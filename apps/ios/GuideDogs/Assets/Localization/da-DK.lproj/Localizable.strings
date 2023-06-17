@@ -1847,10 +1847,6 @@
 
 
 /*  */
-"filter.things_to_do" = "Ting, der skal gøres";
-
-
-/*  */
 "filter.banks" = "Banker og hæveautomater";
 
 
@@ -4115,10 +4111,6 @@
 
 
 /*  */
-"faq.when_to_use.question" = "Hvornår skal jeg bruge Soundscape?";
-
-
-/*  */
 "faq.markers_function.question" = "Hvad er mærker, og hvordan får jeg mest muligt ud af dem?";
 
 
@@ -4360,6 +4352,7 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Hvis du trykker på skærmen to gange med to fingre, lukkes der for alle aktive lydbeskeder.";
+
 
 
 

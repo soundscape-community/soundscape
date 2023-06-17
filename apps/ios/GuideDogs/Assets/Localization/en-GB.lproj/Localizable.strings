@@ -1847,10 +1847,6 @@
 
 
 /*  */
-"filter.things_to_do" = "Things to do";
-
-
-/*  */
 "filter.banks" = "Banks & ATMs";
 
 
@@ -4111,10 +4107,6 @@
 
 
 /*  */
-"faq.when_to_use.question" = "When should I use Soundscape?";
-
-
-/*  */
 "faq.markers_function.question" = "What are Markers and how do I get the most out of them?";
 
 
@@ -4356,6 +4348,7 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Tapping the screen twice with two fingers will silence any active callouts.";
+
 
 
 

@@ -1847,10 +1847,6 @@
 
 
 /*  */
-"filter.things_to_do" = "Saker att göra";
-
-
-/*  */
 "filter.banks" = "Banker och bankomater";
 
 
@@ -4115,10 +4111,6 @@
 
 
 /*  */
-"faq.when_to_use.question" = "När bör jag använda Soundscape?";
-
-
-/*  */
 "faq.markers_function.question" = "Vad är platsmarkörer och hur använder jag dem på bästa sätt?";
 
 
@@ -4360,6 +4352,7 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Tryck på skärmen med två fingrar om du vill tysta alla aktiva informationsljud.";
+
 
 
 

@@ -1847,10 +1847,6 @@
 
 
 /*  */
-"filter.things_to_do" = "Cosas que hacer";
-
-
-/*  */
 "filter.banks" = "Bancos y cajeros automáticos";
 
 
@@ -4115,10 +4111,6 @@
 
 
 /*  */
-"faq.when_to_use.question" = "¿Cuándo debo usar Soundscape?";
-
-
-/*  */
 "faq.markers_function.question" = "¿Qué son los marcadores y cómo puedo aprovecharlos al máximo?";
 
 
@@ -4360,6 +4352,7 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Para silenciar los avisos activos, pulse la pantalla dos veces con dos dedos.";
+
 
 
 
