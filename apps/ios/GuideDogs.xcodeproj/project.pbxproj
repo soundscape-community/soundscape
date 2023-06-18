@@ -662,6 +662,8 @@
 		62F7A30C27B6080900C62390 /* InteractiveBeaconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */; };
 		62F7A30E27B6082A00C62390 /* InteractiveBeaconViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */; };
 		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
+		91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */; };
+		B5499F0EEDE32E16F9814457 /* Pods_Soundscape.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAEDD72453A8268FBA604D2F /* Pods_Soundscape.framework */; };
 		B90C27D61EAF81D600007368 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C27D51EAF81D600007368 /* Sound.swift */; };
 		B918EE9825100FFF00A5354A /* CalloutRangeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */; };
 		B91D3F6427AB5546004159A8 /* UserAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91D3F6327AB5546004159A8 /* UserAction.swift */; };
@@ -875,6 +877,16 @@
 		D30355D31B61401D00E1DDED /* GDAJSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D30355D21B61401D00E1DDED /* GDAJSONObject.m */; };
 		D395B0F71B41DA15005A6407 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D395B0F61B41DA15005A6407 /* Images.xcassets */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		91DC0CD12A423B2200244CC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D3D7CFC01B3D96460020B5E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D3D7CFC71B3D96460020B5E9;
+			remoteInfo = Soundscape;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		B9B06E971E6483900010936A /* CopyFiles */ = {
@@ -1566,6 +1578,11 @@
 		62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconViewModel.swift; sourceTree = "<group>"; };
 		6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExternalNavigationApps.swift; path = Code/App/ExternalNavigationApps.swift; sourceTree = "<group>"; };
 		815775252832F0650DF9D8D4 /* Pods-Soundscape.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.adhoc.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.adhoc.xcconfig"; sourceTree = "<group>"; };
+		914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtilsTest.swift; sourceTree = "<group>"; };
+		91DC0CF32A460FAA00244CC8 /* iOS_GPX_Framework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = iOS_GPX_Framework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		91DC0CF52A460FAA00244CC8 /* Pods_Soundscape.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Soundscape.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		91DC0CF72A460FAA00244CC8 /* TBXML.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TBXML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B90C27D51EAF81D600007368 /* Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Sound.swift; path = Code/Audio/Protocols/Sound.swift; sourceTree = "<group>"; };
 		B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalloutRangeContext.swift; sourceTree = "<group>"; };
 		B91D3F6327AB5546004159A8 /* UserAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAction.swift; sourceTree = "<group>"; };
@@ -1803,6 +1820,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		914DEBCA2A3CE6B9007B161C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D3D7CFC51B3D96460020B5E9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2985,6 +3009,9 @@
 		4AD48659F673FA58D2DF2C07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				91DC0CF32A460FAA00244CC8 /* iOS_GPX_Framework.framework */,
+				91DC0CF52A460FAA00244CC8 /* Pods_Soundscape.framework */,
+				91DC0CF72A460FAA00244CC8 /* TBXML.framework */,
 				280FF2FC26AF6BDF00DE9C5D /* SwiftUI.framework */,
 				2876EE142433FE5600B0A137 /* CoreServices.framework */,
 				D3E2A6361CAD5CA100A5192A /* Accelerate.framework */,
@@ -4252,6 +4279,30 @@
 			path = "Interactive View";
 			sourceTree = "<group>";
 		};
+		914DEBCE2A3CE6B9007B161C /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				914DEBD92A3CE7E6007B161C /* App */,
+			);
+			path = UnitTests;
+			sourceTree = "<group>";
+		};
+		914DEBD92A3CE7E6007B161C /* App */ = {
+			isa = PBXGroup;
+			children = (
+				914DEBDB2A3CE85D007B161C /* Helpers */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		914DEBDB2A3CE85D007B161C /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		94B9789D44F5F13621A0C9B1 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -5089,6 +5140,7 @@
 			children = (
 				D3D7CFCA1B3D96470020B5E9 /* Soundscape */,
 				B9E5F4CE2891DBAC0019DEED /* Packages */,
+				914DEBCE2A3CE6B9007B161C /* UnitTests */,
 				4AD48659F673FA58D2DF2C07 /* Frameworks */,
 				D3D7CFC91B3D96470020B5E9 /* Products */,
 				94B9789D44F5F13621A0C9B1 /* Pods */,
@@ -5099,6 +5151,7 @@
 			isa = PBXGroup;
 			children = (
 				D3D7CFC81B3D96470020B5E9 /* Soundscape.app */,
+				914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -5116,6 +5169,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		914DEBCC2A3CE6B9007B161C /* UnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 914DEBD62A3CE6BA007B161C /* Build configuration list for PBXNativeTarget "UnitTests" */;
+			buildPhases = (
+				914DEBC92A3CE6B9007B161C /* Sources */,
+				914DEBCA2A3CE6B9007B161C /* Frameworks */,
+				914DEBCB2A3CE6B9007B161C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				91DC0CD22A423B2200244CC8 /* PBXTargetDependency */,
+			);
+			name = UnitTests;
+			productName = UnitTests;
+			productReference = 914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D3D7CFC71B3D96460020B5E9 /* Soundscape */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D3D7CFEE1B3D96470020B5E9 /* Build configuration list for PBXNativeTarget "Soundscape" */;
@@ -5161,6 +5232,10 @@
 				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = "Soundscape community";
 				TargetAttributes = {
+					914DEBCC2A3CE6B9007B161C = {
+						CreatedOnToolsVersion = 13.1;
+						TestTargetID = D3D7CFC71B3D96460020B5E9;
+					};
 					D3D7CFC71B3D96460020B5E9 = {
 						CreatedOnToolsVersion = 6.3.2;
 						LastSwiftMigration = 1020;
@@ -5223,11 +5298,19 @@
 			projectRoot = "";
 			targets = (
 				D3D7CFC71B3D96460020B5E9 /* Soundscape */,
+				914DEBCC2A3CE6B9007B161C /* UnitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		914DEBCB2A3CE6B9007B161C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D3D7CFC61B3D96460020B5E9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5428,6 +5511,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		914DEBC92A3CE6B9007B161C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D3D7CFC41B3D96460020B5E9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -6166,6 +6257,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		91DC0CD22A423B2200244CC8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D3D7CFC71B3D96460020B5E9 /* Soundscape */;
+			targetProxy = 91DC0CD12A423B2200244CC8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		316B3F6E2283924E0025526D /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -6338,6 +6437,103 @@
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/AudioKitV2.1/AudioKit/**";
 				VALID_ARCHS = "$(ARCHS_STANDARD)";
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = AdHoc;
+		};
+		914DEBD32A3CE6B9007B161C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.rcos.soundscape.UnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Soundscape.app/Soundscape";
+			};
+			name = Debug;
+		};
+		914DEBD42A3CE6B9007B161C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.rcos.soundscape.UnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Soundscape.app/Soundscape";
+			};
+			name = Release;
+		};
+		914DEBD52A3CE6B9007B161C /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.rcos.soundscape.UnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Soundscape.app/Soundscape";
 			};
 			name = AdHoc;
 		};
@@ -6601,6 +6797,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		914DEBD62A3CE6BA007B161C /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				914DEBD32A3CE6B9007B161C /* Debug */,
+				914DEBD42A3CE6B9007B161C /* Release */,
+				914DEBD52A3CE6B9007B161C /* AdHoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D3D7CFC31B3D96460020B5E9 /* Build configuration list for PBXProject "GuideDogs" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

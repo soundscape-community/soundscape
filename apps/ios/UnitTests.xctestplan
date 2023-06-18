@@ -1,0 +1,34 @@
+{
+  "configurations" : [
+    {
+      "id" : "5D2C2CC2-30EC-422E-AE1D-2F61654BFB02",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-TESTING"
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:GuideDogs.xcodeproj",
+      "identifier" : "D3D7CFC71B3D96460020B5E9",
+      "name" : "Soundscape"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:GuideDogs.xcodeproj",
+        "identifier" : "914DEBCC2A3CE6B9007B161C",
+        "name" : "UnitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

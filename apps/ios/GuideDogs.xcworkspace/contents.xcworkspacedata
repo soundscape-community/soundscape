@@ -10,4 +10,7 @@
    <FileRef
       location = "group:Scripts/Scripts.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:UnitTests.xctestplan">
+   </FileRef>
 </Workspace>

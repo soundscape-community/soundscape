@@ -28,9 +28,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D3D7CFE31B3D96470020B5E9"
-               BuildableName = "SoundscapeUnitTests.xctest"
-               BlueprintName = "SoundscapeUnitTests"
+               BlueprintIdentifier = "914DEBCC2A3CE6B9007B161C"
+               BuildableName = "UnitTests.xctest"
+               BlueprintName = "UnitTests"
                ReferencedContainer = "container:GuideDogs.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -56,7 +56,23 @@
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:UnitTests.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "914DEBCC2A3CE6B9007B161C"
+               BuildableName = "UnitTests.xctest"
+               BlueprintName = "UnitTests"
+               ReferencedContainer = "container:GuideDogs.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
