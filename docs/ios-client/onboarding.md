@@ -20,17 +20,20 @@ Download Xcode from the [App Store](https://apps.apple.com/us/app/xcode/id497799
 
 ## Install Xcode Command Line Tools
 
-Open Xcode and you should be prompted with installing the command line tools, or  run this in a Terminal window:
+Open Xcode and you should be prompted with installing the command line tools, or run this in a Terminal window:
 
 ```sh
 xcode-select --install
 ```
 
+## Install Ruby
+
+_Note:_ while macOS comes with a version of Ruby installed, you should install and use a non-system [Ruby](https://www.ruby-lang.org/)
+using a version manager like [RVM](https://rvm.io/)
+
 ## Install CocoaPods and CocoaPods-Patch
 
 Soundscape uses [CocoaPods](https://cocoapods.org/) as a dependency managers along with [Swift Package Manager](https://www.swift.org/package-manager/), and [CocoaPods-Patch](https://github.com/DoubleSymmetry/cocoapods-patch) to add changes to a third party CocoaPods framework.
-
-_Note:_ before the next step, make sure you have [Ruby](https://www.ruby-lang.org/) installed on your machine.
 
 In the iOS project folder, run the following command to install the dependencies from the `Gemfile`:
 
@@ -40,7 +43,7 @@ bundle install
 
 ## Install CocoaPods Dependencies
 
-Install the CocoaPods dependencies by running the following command in Terminal:
+Install the CocoaPods dependencies by running the following command in Terminal from the iOS project folder:
 
 ```sh
 pod install
@@ -76,7 +79,7 @@ Soundscape uses a backend service to download map tiles and other information. I
 
 ## Building and Running
 
-At this point, you should be able to build and run the `Soundsacpe` target on an iOS simulator. In order to run the app on a real device, you will need to add your Apple Developer account signing info in the _Signing & Capabilities_ section of the project settings.
+At this point, you should be able to build and run the `Soundscape` target on an iOS simulator. In order to run the app on a real device, you will need to add your Apple Developer account signing info in the _Signing & Capabilities_ section of the project settings.
 
 ## Additional Personalization
 

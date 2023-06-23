@@ -3,7 +3,8 @@ Note that this file may only be relevant to the default `Soundscape` scheme (not
 
 ## Running Tests
 ### Running Tests via GitHub Actions
-*This is currently planned but not yet implemented.*
+GitHub Runners should run the iOS tests on each *push* or *pull request* to `main`.
+This is configured in `.github/workflows/ios-tests.yml`
 
 ### Manually Running Tests
 To manually run tests in XCode, go to **Product** → **Test** (`⌘U`) or click and hold down the run button to show more options and select **Test**. This will build the project and run the test plan.
