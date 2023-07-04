@@ -88,6 +88,7 @@ class DebugSettingsContext {
     init() {
         // Set the nearby places map filter to all be on - setting them off removes the corresponding POIs from the map
         // Set default location accuracy to be "best for navigation"
+        // TODO: this is a good place to insert a staging / debug services URL, either hard-coded, or pulled from a build setting in info.plist or something
         userDefaults.register(defaults: [
             UserDefaultKeys.MapType: Int(MKMapType.standard.rawValue),
             UserDefaultKeys.MapFilterPlaces: true,
