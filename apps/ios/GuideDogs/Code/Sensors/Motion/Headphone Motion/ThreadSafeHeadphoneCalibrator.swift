@@ -40,7 +40,7 @@ struct ThreadSafeHeadphoneCalibrator {
         self.calibrator = calibrator
         
         // Initialize queue
-        queue = DispatchQueue(label: "com.company.appname.threadsafecalibrator", qos: qos, attributes: .concurrent)
+        queue = DispatchQueue(label: "io.openscape.openscape.threadsafecalibrator", qos: qos, attributes: .concurrent)
     }
     
     // MARK: Multithreading

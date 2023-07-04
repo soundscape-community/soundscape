@@ -30,7 +30,7 @@ class BLEManager: NSObject {
     private var centralManager: CBCentralManager!
     
     /// Dispatch queue used by the central manager for dispatching central role events
-    private var queue = DispatchQueue(label: "com.company.appname.ble")
+    private var queue = DispatchQueue(label: "io.openscape.openscape.ble")
     
     /// Delegate object informed about device discovery events during a device scan. Set by a
     /// call to `startScan(for:delegate:)`.

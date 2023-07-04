@@ -46,7 +46,7 @@ class ExperimentManager {
         return directory?.appendingPathComponent("controls.json")
     }()
     
-    private let queue = DispatchQueue(label: "com.company.appname.flightmanager")
+    private let queue = DispatchQueue(label: "io.openscape.openscape.flightmanager")
     
     private let service = ExperimentServiceModel()
     

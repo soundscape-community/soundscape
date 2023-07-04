@@ -9,7 +9,7 @@
 import AVFoundation
 
 class FadeableAudioPlayer: AVAudioPlayer {
-    private let queue = DispatchQueue(label: "com.company.appname.fadeableaudioplayer")
+    private let queue = DispatchQueue(label: "io.openscape.openscape.fadeableaudioplayer")
     
     private var isFadingIn = false
     private var cancelFadeIn = false

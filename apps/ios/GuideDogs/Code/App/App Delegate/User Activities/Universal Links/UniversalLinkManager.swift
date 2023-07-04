@@ -14,7 +14,7 @@ class UniversalLinkManager {
     
     private var pendingLinkComponents: [UniversalLinkComponents] = []
     private var homeViewControllerDidLoad = false
-    private var queue = DispatchQueue(label: "com.company.appname.universallinkmanager")
+    private var queue = DispatchQueue(label: "io.openscape.openscape.universallinkmanager")
     // Handlers
     private let recreationalActivityLinkHandler = RecreationalActivityLinkHandler()
     private let shareMarkerLinkHandler = ShareMarkerLinkHandler()

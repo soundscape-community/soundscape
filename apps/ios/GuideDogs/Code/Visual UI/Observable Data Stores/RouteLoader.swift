@@ -11,7 +11,7 @@ import Combine
 import CoreLocation
 
 class RouteLoader: ObservableObject {
-    let queue = DispatchQueue(label: "com.company.appname.routeloader")
+    let queue = DispatchQueue(label: "io.openscape.openscape.routeloader")
     
     @Published var loadingComplete = false
     @Published var routeIDs: [String] = []

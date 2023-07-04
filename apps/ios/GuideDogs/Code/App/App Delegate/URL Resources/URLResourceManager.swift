@@ -26,7 +26,7 @@ class URLResourceManager {
     private var listeners: [AnyCancellable] = []
     private var pendingURLResources: [URLResource] = []
     private var homeViewControllerDidLoad = false
-    private var queue = DispatchQueue(label: "com.company.appname.urlresourcemanager")
+    private var queue = DispatchQueue(label: "io.openscape.openscape.urlresourcemanager")
     // Handlers
     private let gpxHandler = GPXResourceHandler()
     private let routeHandler = RouteResourceHandler()

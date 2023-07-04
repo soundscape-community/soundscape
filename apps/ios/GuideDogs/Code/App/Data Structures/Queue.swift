@@ -14,7 +14,7 @@ struct Queue<T> {
     
     private var list: LinkedList<T>
     
-    private let queue = DispatchQueue(label: "com.company.appname.queue")
+    private let queue = DispatchQueue(label: "io.openscape.openscape.queue")
     
     var count: Int {
         return queue.sync {

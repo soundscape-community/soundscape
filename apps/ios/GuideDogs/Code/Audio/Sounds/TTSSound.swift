@@ -40,7 +40,7 @@ class TTSSound: Sound {
     
     // MARK: Queue
     
-    private let queue = DispatchQueue(label: "com.company.appname.ttssound")
+    private let queue = DispatchQueue(label: "io.openscape.openscape.ttssound")
     
     // MARK: TTS EQ Filters
     

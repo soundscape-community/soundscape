@@ -12,8 +12,7 @@ enum UniversalLinkVersion: String, Codable {
     
     // `rawValue` should be the version
     // in the universal link URL
-    //
-    // e.g. "https://soundscape-app.yourservicesdomain.com/<Version>/<Path>?<QueryItems>"
+    // e.g. "https://share.openscape.io/<Version>/<Path>?<QueryItems>"
     //
     case v1
     case v2

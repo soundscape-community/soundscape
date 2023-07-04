@@ -14,7 +14,7 @@ class TableViewDataSourcePrefetching<Model, CellConfigurator: TableViewCellConfi
     
     private let dispatchGroup = DispatchGroup()
     
-    private let queue = DispatchQueue(label: "com.company.appname.prefetchtable")
+    private let queue = DispatchQueue(label: "io.openscape.openscape.prefetchtable")
     
     // MARK: `TableViewDataSource`
     

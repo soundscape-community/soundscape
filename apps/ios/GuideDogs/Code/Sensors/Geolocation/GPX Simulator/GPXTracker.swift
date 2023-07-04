@@ -19,7 +19,7 @@ class GPXTracker {
     private(set) var rawLocations: [GPXLocation] = []
     private(set) var smoothLocations: [GPXLocation] = []
     
-    private let queue = DispatchQueue(label: "com.company.appname.gpxtracker")
+    private let queue = DispatchQueue(label: "io.openscape.openscape.gpxtracker")
     
     // MARK: Tracking state
 
