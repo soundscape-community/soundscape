@@ -44,25 +44,21 @@ struct AuthoredActivityMetadata: Codable, CustomStringConvertible {
         return "\(id): \(selected) [Previous: \(previouslySelected), ETag: \(etag ?? "unknown"), URL: \(downloadPath?.absoluteString ?? "error")]"
     }
     
-    /// Remote server path that the content can be downloaded from
+    /// Builds the remote server path that the content can be downloaded from
+    /// E.G. https://share.openscape.io/experiences/some-activity.gpx
     var downloadPath: URL? {
         var components = URLComponents()
         
         switch linkVersion {
         case .v1:
             components.scheme = "https"
-            components.host = "soundscapeassets.blob.core.windows.net"
-            components.path = "/sharedcontent/authoring/\(id).gpx"
-            
-        case .v2:
+            components.host = "share.openscape.io"
+            components.path = "/experiences/\(id).gpx"
+        case .v2, .v3:
+            // Version 2 and 3 links also look the same (perk of forking)
             components.scheme = "https"
-            components.host = "stauthoringdata.blob.core.windows.net"
-            components.path = "/authoring/content/activities/\(id)/activity.gpx"
-            
-        case .v3:
-            components.scheme = "https"
-            components.host = "stauthoringdatadev.blob.core.windows.net"
-            components.path = "/authoring/content/activities/\(id)/activity.gpx"
+            components.host = "share.openscape.io"
+            components.path = "experiences/\(id).gpx"
         }
         
         return components.url

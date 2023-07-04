@@ -22,7 +22,7 @@ struct UniversalLinkPathComponents {
          return "/\(vRawValue)/\(pRawValue)"
     }
 
-     // MARK: Initialization
+    // MARK: Initialization
     
     init?(path: String) {
         let pathComponents = path.split(separator: "/", maxSplits: 1)
@@ -34,6 +34,7 @@ struct UniversalLinkPathComponents {
             
             guard let path = UniversalLinkPath(rawValue: pRawValue) else {
                 // Failed to parse `UniversalLinkPath`
+                // Might need to add a new case to UniversalLinkVersion
                 return nil
             }
 
@@ -41,7 +42,7 @@ struct UniversalLinkPathComponents {
             self.version = UniversalLinkVersion.defaultVersion
             self.path = path
         } else if pathComponents.count == 2 {
-            // URL path does includes a version
+            // URL path does include a version
             // Parse path components accordingly
             let vRawValue = String(pathComponents[0])
             let pRawValue = String(pathComponents[1])
@@ -64,7 +65,7 @@ struct UniversalLinkPathComponents {
         }
     }
 
-     init(path: UniversalLinkPath) {
+    init(path: UniversalLinkPath) {
         self.path = path
         // Use the current version when constructing
         // URLs

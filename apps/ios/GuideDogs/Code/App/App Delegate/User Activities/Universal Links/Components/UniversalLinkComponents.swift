@@ -12,11 +12,14 @@ struct UniversalLinkComponents {
     
     // MARK: Properties
     
+    // the base URL for sharing deeplinks in the app
+    // This should be in your associated domains entitlement;
     private static let host = "https://share.openscape.io"
 
     let pathComponents: UniversalLinkPathComponents
     let queryItems: [URLQueryItem]?
     
+    /// The generated share URL
     var url: URL? {
         let host = UniversalLinkComponents.host
         let path = pathComponents.versionedPath
