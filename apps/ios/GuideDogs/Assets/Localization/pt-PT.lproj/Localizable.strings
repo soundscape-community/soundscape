@@ -4106,10 +4106,6 @@
 
 
 /*  */
-"faq.when_to_use.question" = "Quando devo utilizar o Openscape?";
-
-
-/*  */
 "faq.markers_function.question" = "O que são Marcos e como posso tirar o máximo partido deles?";
 
 
@@ -4351,6 +4347,7 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Tocar no ecrã duas vezes com dois dedos irá silenciar todos os avisos ativos.";
+
 
 
 

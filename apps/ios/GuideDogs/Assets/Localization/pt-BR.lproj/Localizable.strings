@@ -4107,10 +4107,6 @@
 
 
 /*  */
-"faq.when_to_use.question" = "Quando devo usar o Openscape?";
-
-
-/*  */
 "faq.markers_function.question" = "O que são favoritos e como obter o máximo deles?";
 
 
@@ -4352,6 +4348,7 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Tocar na tela duas vezes com dois dedos silenciará todas as notificações ativas.";
+
 
 
 
