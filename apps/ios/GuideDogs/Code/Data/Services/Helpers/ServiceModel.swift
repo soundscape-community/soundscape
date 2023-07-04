@@ -20,7 +20,7 @@ class ServiceModel {
         
         var value: String {
             switch self {
-            case .version: return AppContext.appVersion
+            case .version: return "\(AppContext.appVersion)/\(AppContext.appBuild)"
             }
         }
     }
