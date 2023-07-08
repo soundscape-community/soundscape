@@ -155,7 +155,7 @@
 
 
 /*  */
-"general.alert.offline_default.message" = "Openscape werkt offline. openscape blijft wel werken, maar bepaalde functies zijn beperkt.";
+"general.alert.offline_default.message" = "Openscape is offline. Openscape blijft wel werken, maar bepaalde functionaliteiten zijn beperkt beschikbaar.";
 
 
 /*  */
@@ -243,7 +243,7 @@
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Openscape gebruikt uw locatie om plaatsen en dingen om u heen te vinden en deze te beschrijven. De app heeft uw toestemming nodig om Locatievoorzieningen te gebruiken.";
+"general.error.location_services.authorize.description" = "Openscape gebruikt je locatie om plaatsen en dingen om je heen te vinden en deze te beschrijven. De app heeft jouw toestemming nodig om Locatievoorzieningen te gebruiken.";
 
 
 /*  */
@@ -279,7 +279,7 @@
 
 
 /*  */
-"general.error.heading" = "Openscape weet niet in welke richting u kijkt. Houd uw telefoon horizontaal of begin te lopen en probeer het opnieuw";
+"general.error.heading" = "Openscape weet niet in welke richting je kijkt. Houd je telefoon horizontaal of begin met lopen en probeer het opnieuw";
 
 
 /*  */
@@ -299,7 +299,7 @@
 
 
 /*  */
-"general.error.network_connection_required.deleting_data" = "Er is een netwerkverbinding vereist voor het verwijderen en opnieuw laden van de kaartgegevens van Openscape. Controleer of uw telefoon niet in de vliegtuigstand staat.";
+"general.error.network_connection_required.deleting_data" = "Er is een netwerkverbinding vereist voor het verwijderen en opnieuw laden van de kaartgegevens van Openscape. Controleer of je telefoon niet in de vliegtuigstand staat.";
 
 
 /*  */
@@ -331,7 +331,7 @@
 
 
 /*  */
-"device_motion.enable.description" = "Beweging & Conditie bijhouden is momenteel uitgeschakeld. Openscape werkt niet wanneer Beweging & Conditie bijhouden is uitgeschakeld.";
+"device_motion.enable.description" = "Beweging & Conditie bijhouden is momenteel uitgeschakeld. Openscape werkt niet wanneer Beweging & Conditie bijhouden  uitstaat.";
 
 
 /*  */
@@ -343,7 +343,7 @@
 
 
 /*  */
-"device_motion.authorize.description" = "Hiermee kan Openscape uw ervaring verbeteren op basis van het feit of u aan het lopen bent, in een auto zit of stilstaat. De app heeft uw toestemming nodig om Beweging & Conditie te gebruiken. Voordat u openscape hiervoor toestemming geeft. moet u misschien ook Houd conditie bij inschakelen onder Instellingen → Privacy → Beweging & Conditie.";
+"device_motion.authorize.description" = "Openscape werk beter als de app kan bepalen of je aan het lopen bent, in een auto zit of stilstaat. De app heeft je toestemming nodig om Beweging & Conditie te gebruiken. Voordat je openscape hiervoor toestemming geeft, moet je waarschijnlijk ook Houd conditie bij inschakelen onder Instellingen → Privacy → Beweging & Conditie.";
 
 
 /*  */
@@ -359,7 +359,7 @@
 
 
 /*  */
-"settings.clear_cache.alert_message" = "Openscape slaat kaartgegevens op om gegevens- en batterijverbruik te verminderen. Als u opgeslagen gegevens verwijdert, moet Openscape de gegevens opnieuw downloaden.";
+"settings.clear_cache.alert_message" = "Openscape slaat kaartgegevens op om gegevens- en batterijverbruik te verminderen. Als je opgeslagen gegevens verwijdert, moet Openscape de gegevens opnieuw downloaden.";
 
 
 /*  */
@@ -487,11 +487,11 @@
 
 
 /*  */
-"settings.audio.mix_with_others.description" = "Gebruik deze optie om openscape te regelen met de knoppen op uw koptelefoon en afspeelknoppen voor medio op het vergrendelscherm. Als dit is ingeschakeld, kan openscape niet worden gebruikt terwijl andere media zoals podcasts of muziek wordt afgespeeld.";
+"settings.audio.mix_with_others.description" = "Gebruik deze optie om openscape aan te sturen met de knoppen op uw koptelefoon en afspeelknoppen voor medio op het vergrendelscherm. Let op! Als dit is ingeschakeld, kan openscape niet worden gebruikt terwijl andere media zoals podcasts of muziek worden afgespeeld.";
 
 
 /*  */
-"setting.audio.mix_with_others.confirmation" = "Als u deze instelling inschakelt, worden de waarschuwingen van openscape en andere audio onderbroken wanneer u een andere media-app gebruikt. Ga terug naar openscape om de waarschuwingen te hervatten.";
+"setting.audio.mix_with_others.confirmation" = "Als deze instelling is ingeschakeld, worden de waarschuwingen van openscape en andere audio onderbroken wanneer u een andere media-app gebruikt. Ga terug naar openscape om de waarschuwingen te hervatten.";
 
 
 /*  */
@@ -571,7 +571,7 @@
 
 
 /*  */
-"voice.apple.no_siri" = "Houd er rekening mee dat Siri-stemmen niet beschikbaar zijn voor openscape en niet zijn opgenomen in de onderstaande lijst.";
+"voice.apple.no_siri" = "Houd er rekening mee dat Siri-stemmen niet beschikbaar zijn voor openscape en niet zijn opgenomen in de lijst hieronder.";
 
 
 /*  */
@@ -587,7 +587,7 @@
 
 
 /*  */
-"beacon.settings.style.haptic.explanation" = "Deze bakenstijlen omvatten naast het gebruikelijke bakengeluid ook haptische feedback die u kunt voelen. Haptische feedback is alleen beschikbaar wanneer uw telefoon is ontgrendeld en openscape is geopend.";
+"beacon.settings.style.haptic.explanation" = "Deze bakenstijlen omvatten naast het gebruikelijke bakengeluid ook feedback die u kunt voelen. Zogenoemde haptische feedback is alleen beschikbaar wanneer uw telefoon is ontgrendeld en openscape is geopend.";
 
 
 /*  */
@@ -611,11 +611,11 @@
 
 
 /*  */
-"troubleshooting.gps_status.explanation.meters" = "Deze waarde is een schatting van hoe precies openscape weet waar u zich bevindt. Minder dan ca. 10 meter is goed. Minder dan ca. 20 meter is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als u buiten bent en niet onder een constructie staat.";
+"troubleshooting.gps_status.explanation.meters" = "Deze waarde is een schatting van hoe precies openscape kan bepalen waar je je bevindt. Minder dan ca. 10 meter is goed. Minder dan ca. 20 meter is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als je buiten bent en niet ergens onder staat.";
 
 
 /*  */
-"troubleshooting.gps_status.explanation.feet" = "Deze waarde is een schatting van hoe precies openscape weet waar u zich bevindt. Minder dan ca. 30 voet is goed. Minder dan ca. 60 voet is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als u buiten bent en niet onder een constructie staat.";
+"troubleshooting.gps_status.explanation.feet" = "Deze waarde is een schatting van hoe precies openscape kan bepalen waar je je bevindt. Minder dan ca. 30 voet is goed. Minder dan ca. 60 voet is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als je buiten bent en niet ergens onder staat.";
 
 
 /*  */
@@ -631,11 +631,11 @@
 
 
 /*  */
-"troubleshooting.check_audio.hint" = "Dubbeltik om de status te controleren van de koptelefoon die u gebruikt met Openscape.";
+"troubleshooting.check_audio.hint" = "Dubbeltik om de status van de koptelefoon die je gebruikt met Openscape te controleren.";
 
 
 /*  */
-"troubleshooting.check_audio.explanation" = "Tik op deze knop om de status te controleren van de koptelefoon die u gebruikt met Openscape.";
+"troubleshooting.check_audio.explanation" = "Tik op deze knop om de status van de koptelefoon die u gebruikt met Openscape te controleren.";
 
 
 /*  */
@@ -647,7 +647,7 @@
 
 
 /*  */
-"troubleshooting.cache.explanation" = "Openscape downloadt kaartgegevens terwijl u loopt zodat de app u kan vertellen over de objecten en plaatsen om u heen. Als u problemen hebt met openscape of als er te veel geheugen wordt gebruikt, kunt u de opgeslagen kaartgegevens wissen. openscape downloadt vervolgens alleen opnieuw de kaartgegevens rond uw huidige locatie.";
+"troubleshooting.cache.explanation" = "Openscape downloadt kaartgegevens terwijl je loopt zodat de app je kan vertellen over de objecten en plaatsen om je heen. Als je problemen hebt met openscape of als er te veel geheugen wordt gebruikt, kun je de opgeslagen kaartgegevens wissen. Openscape downloadt vervolgens alleen opnieuw de kaartgegevens rond je huidige locatie.";
 
 
 /*  */
@@ -871,7 +871,7 @@
 
 
 /*  */
-"preview.alert.restart.message" = "Wilt u openscape Street Preview opnieuw starten op deze locatie?";
+"preview.alert.restart.message" = "Wil je openscape Street Preview opnieuw starten op deze locatie?";
 
 
 /*  */
@@ -955,7 +955,7 @@
 
 
 /*  */
-"preview.include_unnamed_roads.subtitle" = "Naamloze straten opnemen bij openscape Street Preview";
+"preview.include_unnamed_roads.subtitle" = "Naamloze straten opnemen tijdens openscape Street Preview";
 
 
 /*  */
@@ -967,11 +967,11 @@
 
 
 /*  */
-"preview.include_unnamed_roads.hint.off" = "Dubbeltik om naamloze straten op te nemen bij openscape Street Preview";
+"preview.include_unnamed_roads.hint.off" = "Dubbeltik om naamloze straten op te nemen tijdens openscape Street Preview";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Dubbeltik om naamloze straten uit te sluiten bij openscape Street Preview";
+"preview.include_unnamed_roads.hint.on" = "Dubbeltik om naamloze straten niet op te nemen tijdens openscape Street Preview";
 
 
 /*  */
@@ -999,7 +999,7 @@
 
 
 /*  */
-"preview.tutorial.content.3" = "Bij elk kruispunt kunt u met de telefoon weer kiezen welke straat u wilt volgen of u kunt uw onmiddellijke omgeving verkennen met de bekende Openscape-knoppen onderaan het scherm. Tik op Zoeken om het audiobaken van een willekeurig referentiepunt te starten, wijzig uw locatie om bekijk meer details over de omgeving.";
+"preview.tutorial.content.3" = "Bij elk kruispunt kun je met de telefoon weer kiezen welke straat je wilt volgen of je kunt je onmiddellijke omgeving verkennen met de bekende Openscape-knoppen onderaan het scherm. Tik op Zoeken om het audiobaken van een willekeurig referentiepunt te starten, wijzig je locatie om bekijk meer details over de omgeving.";
 
 
 /*  */
@@ -1459,7 +1459,7 @@
 
 
 /*  */
-"first_use_experience.share.alert.message" = "Wanneer u een Openscape-markering of -route deelt, deelt u de locaties die zijn gekoppeld aan die markering of route. Deel alleen met personen die u vertrouwt.";
+"first_use_experience.share.alert.message" = "Wanneer je een Openscape-markering of -route deelt, deel je de locaties die zijn gekoppeld aan die markering of route. Deel alleen met personen die je vertrouwt.";
 
 
 /*  */
@@ -1499,7 +1499,7 @@
 
 
 /*  */
-"universal_links.marker.share.message" = "Ik heb een Openscape-markering met u gedeeld. \"%@\"";
+"universal_links.marker.share.message" = "Ik heb een Openscape-markering met je gedeeld. \"%@\"";
 
 
 /*  */
@@ -1511,7 +1511,7 @@
 
 
 /*  */
-"siri_shortcuts.description" = "Nadat u Siri-opdrachten hebt toegevoegd, kunt u uw stem gebruiken om ze te activeren ook wanneer openscape niet actief is.";
+"siri_shortcuts.description" = "Als je Siri-opdrachten hebt toegevoegd, kun je je stem gebruiken om ze te activeren ook wanneer openscape niet actief is.";
 
 
 /*  */
@@ -1543,7 +1543,7 @@
 
 
 /*  */
-"url_resource.alert.route.share.message" = "Ik heb een Openscape-route met u gedeeld. \"%@\"";
+"url_resource.alert.route.share.message" = "Ik heb een Openscape-route met je gedeeld. \"%@\"";
 
 
 /*  */
@@ -1551,7 +1551,7 @@
 
 
 /*  */
-"url_resource.alert.route.import.message" = "Gebruik alleen routes van iemand die u vertrouwt. Routes worden niet gemaakt, gedeeld of gecontroleerd door Openscape Community en kunnen fouten bevatten.";
+"url_resource.alert.route.import.message" = "Gebruik alleen routes van iemand die je vertrouwt. Routes worden niet gemaakt, gedeeld of gecontroleerd door Openscape Community en kunnen fouten bevatten.";
 
 
 /*  */
@@ -1591,7 +1591,7 @@
 
 
 /*  */
-"routes.no_routes.hint.2" = "Terwijl u onderweg bent met Openscape, hoort u informatie als u bij een routepunt aankomt en gaat het audiobaken automatisch naar het volgende routepunt.";
+"routes.no_routes.hint.2" = "Als je onderweg bent met Openscape, hoor je wanneer je bij een routepunt aankomt. Het audiobaken gaat daarna automatisch verder naar het volgende punt.";
 
 
 /*  */
@@ -1607,7 +1607,7 @@
 
 
 /*  */
-"routes.tutorial.details" = "U gaat nu terug naar de startpagina van openscape en er wordt een audiobaken op uw eerste routepunt geplaatst. Wanneer u arriveert bij het routepunt, wordt het baken verplaatst naar het volgende routepunt.";
+"routes.tutorial.details" = "Je gaat nu terug naar de startpagina van openscape en er wordt een audiobaken op je eerste routepunt geplaatst. Wanneer je arriveert bij het routepunt, wordt het baken verplaatst naar het volgende routepunt.";
 
 
 /*  */
@@ -1963,15 +1963,15 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Openscape staat momenteel in de sluimerstand. Wanneer u uw huidige locatie verlaat, wordt openscape automatisch geactiveerd. Locatievoorzieningen gebruikt minder voeding om de batterij van uw telefoon te sparen. Tik op de knop hieronder om nu te activeren.";
+"sleep.snoozing.message" = "Openscape staat momenteel in de slaapstand. Wanneer je je huidige locatie verlaat, wordt openscape automatisch geactiveerd. Locatievoorzieningen gebruikt minder voeding om de batterij van uw telefoon te sparen. Tik op de knop hieronder om nu te activeren.";
 
 
 /*  */
-"sleep.sleeping.message" = "Openscape staat momenteel in de slaapstand. openscape kan nu niet gebruikmaken van Locatievoorzieningen en geen gegevens downloaden. Dit bespaart batterijvoeding wanneer u openscape niet gebruikt. Tik op de knop hieronder om openscape te activeren.";
+"sleep.sleeping.message" = "Openscape staat momenteel in de slaapstand. Openscape kan nu niet gebruikmaken van Locatievoorzieningen en geen gegevens downloaden. Dit bespaart batterijvoeding wanneer je openscape niet gebruikt. Tik op de knop hieronder om openscape te activeren.";
 
 
 /*  */
-"sleep.sleep.acc_hint" = "Dubbeltik om openscape in de slaapstand te zetten";
+"sleep.sleep.acc_hint" = "Dubbeltik om Openscape in de slaapstand te zetten";
 
 
 /*  */
@@ -2603,7 +2603,7 @@
 
 
 /*  */
-"menu.learning_resources" = "Openscape-blog";
+"menu.learning_resources" = "Openscape blog";
 
 
 /*  */
@@ -2691,15 +2691,15 @@
 
 
 /*  */
-"devices.explain_ar.disconnected" = "'Head tracking'-koptelefoons zijn Bluetooth-koptelefoons met sensoren die aan openscape doorgeven in welke richting u kijkt. Zo kan openscape uw audiobeleving verbeteren en kunt u zich gemakkelijker verplaatsen.\n\nTik op de knop hieronder om een apparaat te verbinden.";
+"devices.explain_ar.disconnected" = "'Head tracking'-koptelefoons zijn Bluetooth-koptelefoons met sensoren die aan openscape doorgeven in welke richting u kijkt. Zo kan openscape je audiobeleving verbeteren en kun je je op een meer natuurlijke manier door de wereld veprlaatsen.\n\nTik op de knop hieronder om een apparaat te verbinden.";
 
 
 /*  */
-"devices.explain_ar.connected.airpods" = "Uw AirPods zijn gereed voor gebruik. Plaats uw telefoon in uw zak en ga op weg. openscape volgt nu de kijkrichting van uw hoofd zodat u de telefoon niet in uw hand hoeft te houden.";
+"devices.explain_ar.connected.airpods" = "Je AirPods zijn gereed voor gebruik, dus je kunt je telefoon in je zak stoppen en op weg gaan. Openscape volgt nu de kijkrichting van je hoofd zodat je de telefoon niet in je hand hoeft te houden.";
 
 
 /*  */
-"devices.explain_ar.paired" = "Openscape is momenteel niet verbonden met uw %@. Controleer of uw koptelefoon is ingeschakeld en zich in de buurt van uw telefoon bevindt.";
+"devices.explain_ar.paired" = "Openscape is momenteel niet verbonden met je %@. Controleer of je koptelefoon is ingeschakeld en zich in de buurt van je telefoon bevindt.";
 
 
 /*  */
@@ -2715,7 +2715,7 @@
 
 
 /*  */
-"devices.connect_headset.calibrate.explanation" = "Uw koptelefoon is verbonden met openscape maar moet worden gekalibreerd voor gebruik. openscape laat het weten wanneer de koptelefoon moet worden gekalibreerd, bijvoorbeeld elke keer wanneer u deze aanzet.";
+"devices.connect_headset.calibrate.explanation" = "Je koptelefoon is verbonden met openscape maar moet worden gekalibreerd voor gebruik. Openscape laat weten wanneer de koptelefoon moet worden gekalibreerd, bijvoorbeeld elke keer wanneer je deze aanzet.";
 
 
 /*  */
@@ -2723,11 +2723,11 @@
 
 
 /*  */
-"devices.connect_headset.unsupported_firmware" = "Uw AR Headphones moet worden bijgewerkt voordat u deze verbinding kan maken met Openscape. Ga naar de Cortana-app om uw koptelefoon bij te werken.";
+"devices.connect_headset.unsupported_firmware" = "Je AR Headphones moeten worden geÜpdatet voordat deze verbinding kunnen maken met Openscape. Ga naar de Cortana-app om je koptelefoon bij te werken.";
 
 
 /*  */
-"devices.connect_headset.failed" = "Openscape kan geen verbinding maken met uw koptelefoon. Probeer het later opnieuw.";
+"devices.connect_headset.failed" = "Openscape kon geen verbinding maken met je koptelefoon. Probeer het later opnieuw.";
 
 
 /*  */
@@ -2739,7 +2739,7 @@
 
 
 /*  */
-"devices.connect_headset.audio" = "Voordat u uw koptelefoon verbindt met Openscape, moet deze zijn gekoppeld met uw telefoon. Als dat nog niet is gebeurd, gaat u naar de sectie Bluetooth in de app Instellingen iOS om uw apparaat te koppelen en gaat u vervolgens terug naar Openscape.";
+"devices.connect_headset.audio" = "Voordat je je koptelefoon kunt verbinden met Openscape, moet deze zijn gekoppeld met je telefoon. Als dat nog niet is gebeurd, ga je naar Bluetooth in de iOS-instellingen om je apparaat te koppelen. Ga daarna terug naar Openscape.";
 
 
 /*  */
@@ -2751,7 +2751,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "Gefeliciteerd! Uw AirPods zijn gereed voor gebruik. Plaats uw telefoon in uw zak en ga op weg. openscape volgt nu de kijkrichting van uw hoofd zodat u de telefoon niet in uw hand hoeft te houden. Met één tik op de koptelefoonknop dempt u het baken of heft u het dempen op, met twee keer tikken hoort u een waarschuwing voor uw locatie en met drie keer tikken wordt de laatste waarschuwing herhaald.";
+"devices.connect_headset.completed.airpods" = "Gefeliciteerd! Uw AirPods zijn klaar voor gebruik. Je kunt je telefoon in je zak doen op weg gaan. Openscape volgt nu de kijkrichting van je hoofd zodat je de telefoon niet in je hand hoeft te houden. Met één tik op de koptelefoonknop demp je het baken of hef je het dempen op, met twee keer tikken hoor je informatie over je locatie en met drie keer tikken wordt de laatste melding herhaald.";
 
 
 /*  */
@@ -2767,7 +2767,7 @@
 
 
 /*  */
-"devices.test_headset.explanation" = "We hebben rechts van u een audiobaken geplaatst. Luister waar het zich bevindt en draai uw hoofd in die richting. U kunt dit ook doen terwijl uw telefoon in uw zak zit. Als u klaar bent, tikt u op de knop hieronder om terug te gaan naar Openscape. Geniet van uw wandeling met uw nieuwe head tracking-koptelefoon.";
+"devices.test_headset.explanation" = "We hebben rechts van je een audiobaken geplaatst. Luister waar het zich bevindt en draai je hoofd in die richting. Merk je dat je dit ook kunt doen terwijl je telefoon in je zak zit? Als je klaar bent, tik op de knop hieronder om terug te gaan naar Openscape. Geniet van uw wandeling met uw nieuwe head tracking-koptelefoon.";
 
 
 /*  */
@@ -2783,7 +2783,7 @@
 
 
 /*  */
-"devices.forget_headset.prompt.explanation" = "Hierdoor wordt de verbinding van uw koptelefoon met openscape verbroken. U kunt in de toekomst weer verbinden met openscape vanaf hier.";
+"devices.forget_headset.prompt.explanation" = "Hiermee wordt de verbinding van je koptelefoon met Openscape verbroken. Je kunt in de toekomst hier opnieuw verbinden met openscape.";
 
 
 /*  */
