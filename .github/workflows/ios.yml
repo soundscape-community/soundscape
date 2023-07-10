@@ -19,8 +19,9 @@ jobs:
       - name: Install CocoaPods
         working-directory: apps/ios
         run: |
+          bundle config --local path .
           bundle install
-          pod install
+          ./ruby/*/bin/pod install
       - name: Set Default Scheme
         run: |
           scheme_list=$(xcodebuild -list -json | tr -d "\n")
