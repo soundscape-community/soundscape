@@ -19,7 +19,7 @@ jobs:
       - name: Install CocoaPods
         working-directory: apps/ios
         run: |
-          gem uninstall cocoapods cocoapods-patch
+          gem uninstall cocoapods
           bundle install
           pod install
       - name: Set Default Scheme
