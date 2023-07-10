@@ -19,9 +19,9 @@ jobs:
       - name: Install CocoaPods
         working-directory: apps/ios
         run: |
-          bundle config --local path .
+          gem uninstall cocoapods cocoapods-patch
           bundle install
-          ./ruby/*/bin/pod install
+          pod install
       - name: Set Default Scheme
         run: |
           scheme_list=$(xcodebuild -list -json | tr -d "\n")
