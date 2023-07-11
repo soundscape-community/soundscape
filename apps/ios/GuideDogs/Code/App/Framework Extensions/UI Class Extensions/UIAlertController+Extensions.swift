@@ -14,24 +14,33 @@ enum MailClient: String, CaseIterable {
     // These applications must also be defined in 'Queried URL Schemes' in Info.plist
     
     // example: case .outlook
-    case example
+    // case example
+    case systemMail
+    case gmail
+    case outlook
     
     var localizedTitle: String {
         // TODO: Return a localized title string for each mail client
         
         switch self {
-        case .example: return GDLocalizedString("")
+        //case .example: return GDLocalizedString("")
+        case .systemMail: return "System default mail client"
+        case .gmail: return "GMail"
+        case .outlook: return "Microsoft Outlook"
         }
     }
     
     func url(email: String, subject: String) -> URL? {
         let deviceInfo = "iOS \(UIDevice.current.systemVersion), \(UIDevice.current.modelName), \(LocalizationContext.currentAppLocale.identifierHyphened), v\(AppContext.appVersion).\(AppContext.appBuild)"
         let escapedSubject = "\(subject) (\(deviceInfo))".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) ?? GDLocalizedString("settings.feedback.subject")
-        
         // TODO: Return appropriate URL for each mail client
-        
+        print("Email: \(email)")
+        print("Subject: \(subject)")
         switch self {
-        case .example: return URL(string: "URL TO OPEN EMAIL WITH SUBECT LINE")
+        //case .example: return URL(string: "URL TO OPEN EMAIL WITH SUBECT LINE")
+        case .systemMail: return URL(string: "mailto:\(email)?subject=\(escapedSubject)")
+        case .gmail: return URL(string: "googlegmail:///co?subject=\(escapedSubject)&to=\(email)")
+        case .outlook: return URL(string: "ms-outlook://compose?to=\(email)&subject=\(escapedSubject)")
         }
     }
 }

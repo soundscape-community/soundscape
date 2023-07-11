@@ -18,7 +18,6 @@
 				<string>io.openscape.doc</string>
 			</array>
 		</dict>
-
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>Soundscape Document</string>
@@ -92,7 +91,49 @@
 			<string>${PRODUCT_BUNDLE_IDENTIFIER}</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>appname</string>
+				<string>io.openscape.urlscheme</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLIconFile</key>
+			<string></string>
+			<key>CFBundleURLName</key>
+			<string>io.openscape.gmail-integration</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>googlegmail</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>io.openscape.system-mail-integration</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>mailto</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>io.openscape.outlook-mail-integration</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ms-outlook</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>io.openscape.protonmail-integration</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>protonmail</string>
 			</array>
 		</dict>
 	</array>
@@ -176,8 +217,29 @@
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	
-	
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Openscape marker and route file</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>io.openscape.doc</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>openscape</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
@@ -197,29 +259,6 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>soundscape</string>
-				</array>
-			</dict>
-		</dict>
-	</array>
-<key>UTExportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.content</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>Openscape marker and route file</string>
-			<key>UTTypeIconFiles</key>
-			<array/>
-			<key>UTTypeIdentifier</key>
-			<string>io.openscape.doc</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>openscape</string>
 				</array>
 			</dict>
 		</dict>

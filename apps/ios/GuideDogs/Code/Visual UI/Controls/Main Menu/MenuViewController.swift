@@ -114,7 +114,7 @@ class MenuViewController: UIViewController {
             select(.help)
             
         case .feedback:
-            let alertController = UIAlertController(email: GDLocalizationUnnecessary("yourproduct@yourdomain.com"),
+            let alertController = UIAlertController(email: GDLocalizationUnnecessary("oliverappspirations@gmail.com"),
                                                     subject: GDLocalizedString("settings.feedback.subject"),
                                                     preferredStyle: .actionSheet) { [weak self] (mailClient) in
                 if let mailClient = mailClient {
