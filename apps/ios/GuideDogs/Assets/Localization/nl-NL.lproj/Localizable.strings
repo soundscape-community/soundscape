@@ -4139,7 +4139,7 @@
 
 
 /*  */
-"faq.why_does_beacon_disappear.answer" = "Het audiobaken van openscape is met name een richtingaanwijzing, zodat u weet waar uw bestemming is in relatie tot de richting waarin u kijkt. Wanneer openscape niet zeker weet in welke richting u kijkt, wordt het volume van het baken verlaagd. Dit gebeurt het vaakst wanneer de telefoon in een tas of zak zit en u stopt met lopen, bijvoorbeeld om over te steken. Het baken wordt luider wanneer u weer gaat lopen of als u de telefoon vlak houdt en in de richting wijst waarin u kijkt.";
+"faq.why_does_beacon_disappear.answer" = "Het audiobaken van Openscape is met name een richtingaanwijzing, zodat je weet waar je bestemming is ten opzichte van de richting waarin je kijkt. Wanneer Openscape niet zeker weet in welke richting je kijkt, wordt het volume van het baken verlaagd. Meestal gebeurt dit wanneer de telefoon in een tas of zak zit en je stopt met lopen, bijvoorbeeld om over te steken. Het baken wordt luider wanneer je weer gaat lopen of als je de telefoon vlak houdt en in de richting wijst waarin je kijkt.";
 
 
 /*  */
@@ -4155,7 +4155,7 @@
 
 
 /*  */
-"faq.beacon_on_home.answer" = "Openscape ondersteunt het instellen van bakens op adressen. Als u een baken wilt instellen op uw huis of op een ander adres, zoekt u naar een locatie vanuit het Openscape-hoofdscherm. Tik op het scherm Locatiedetails op de knop Audiobaken starten.";
+"faq.beacon_on_home.answer" = "Openscape ondersteunt het instellen van bakens op adressen. Als je een baken wilt instellen op je huis of op een ander adres, zoek dan naar een locatie vanuit het Openscape-hoofdscherm. Tik op het scherm Locatiedetails op de knop Audiobaken starten.";
 
 
 /*  */
@@ -4163,7 +4163,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Openscape kan de locatie van uw bestemming binnen een paar meter bepalen, maar niet minder. Wanneer openscape vaststelt dat u dichtbij uw bestemming bent, hoort u een laatste waarschuwing dat uw bestemming dichtbij is en wordt het baken uitgeschakeld.";
+"faq.how_close_to_destination.answer" = "Openscape kan de locatie van je bestemming tot binnen een paar meter bepalen, maar niet minder. Wanneer Openscape vaststelt dat je dicht bij je bestemming bent, hoor je een laatste melding dat je bestemming dichtbij is en wordt het baken uitgeschakeld.";
 
 
 /*  */
@@ -4171,11 +4171,11 @@
 
 
 /*  */
-"faq.turn_beacon_back_on.answer" = "Ja, u kunt het baken weer aanzetten nadat het door openscape is uitgezet met de knop Baken dempen opheffen. Omdat Locatievoorzieningen tot op circa 10 meter nauwkeurig werkt, kunnen we het gedrag van het baken niet garanderen als u slechts op een paar meter afstand van uw bestemming bent.";
+"faq.turn_beacon_back_on.answer" = "Ja, je kunt het baken met de knop Baken dempen opheffen weer aanzetten nadat het door Openscape is uitgezet. Omdat Locatievoorzieningen tot op circa 10 meter nauwkeurig werkt, kunnen we het gedrag van het baken echter niet garanderen als je slechts op een paar meter afstand van je bestemming bent.";
 
 
 /*  */
-"faq.road_names.question" = "Waarom noemt openscape wegnamen twee keer wanneer ik een kruispunt nader?";
+"faq.road_names.question" = "Waarom noemt Openscape wegnamen twee keer wanneer ik een kruispunt nader?";
 
 
 /*  */
@@ -4219,7 +4219,7 @@
 
 
 /*  */
-"faq.supported_headsets.answer" = "Welke koptelefoon u het beste met openscape kunt gebruiken, is een kwestie van persoonlijke voorkeur en elke keuze heeft voor- en nadelen. De enige specifieke vereiste is dat u een stereokoptelefoon kiest zodat u de ruimtelijke 3D-audiowaarschuwingen van openscape hoort.";
+"faq.supported_headsets.answer" = "Welke koptelefoon je het beste met Openscape kunt gebruiken, is een kwestie van persoonlijke voorkeur en elke keuze heeft voor- en nadelen. De enige specifieke vereiste is dat je een stereokoptelefoon kiest zodat je de ruimtelijke 3D-audiomeldingen van Openscape hoort.";
 
 
 /*  */
@@ -4227,7 +4227,7 @@
 
 
 /*  */
-"faq.battery_impact.answer" = "De levensduur van batterijen varieert aanzienlijk op basis van het model en de leeftijd van uw iPhone. Als het scherm is ingeschakeld, wordt het meeste voeding verbruikt. Als u de levensduur van uw batterij wilt optimaliseren, moet u het scherm steeds vergrendelen. Om de impact op de batterij van uw iPhone te minimaliseren, beschikt openscape nu over een slaapstand en een sluimerstand. Als u de hoeveelheid verbruikte batterijvoeding nog verder wilt verminderen, kunt u openscape het beste sluiten via de Appwisselaar van uw iPhone, wanneer u de app niet gebruikt. ";
+"faq.battery_impact.answer" = "De levensduur van batterijen varieert aanzienlijk op basis van het model en de leeftijd van je iPhone. Als het scherm is ingeschakeld, wordt de meeste voeding verbruikt. Als je de levensduur van je batterij wilt optimaliseren, moet je het scherm steeds vergrendelen. Om de impact op de batterij van je iPhone te minimaliseren, beschikt Openscape nu over een slaapstand. Als je de hoeveelheid verbruikte batterijvoeding nog verder wilt verminderen, kun je Openscape wanneer je de app niet gebruikt het beste sluiten via de Appkiezer van je iPhone. ";
 
 
 /*  */
@@ -4235,7 +4235,7 @@
 
 
 /*  */
-"faq.sleep_mode_battery.answer" = "Als u openscape in de slaapstand wilt zetten, selecteert u de knop Slapen rechtsboven in het scherm. Vervolgens stopt openscape met het gebruiken van de Locatievoorzieningen en mobiele gegevens totdat u de app weer activeert.";
+"faq.sleep_mode_battery.answer" = "Als je openscape in de slaapstand wilt zetten, selecteer dan de knop Slapen rechtsboven in het scherm. Vervolgens stopt Openscape met het gebruiken van de Locatievoorzieningen en mobiele data totdat je de app weer activeert.";
 
 
 /*  */
@@ -4243,7 +4243,7 @@
 
 
 /*  */
-"faq.snooze_mode_battery.answer" = "Als u openscape in de sluimerstand wilt zetten, selecteert u de knop Slapen rechtsboven in het scherm. Als openscape in de slaapstand staat, selecteert u de knop Activeren wanneer ik vertrek. openscape verbruikt dan weinig batterijvoeding totdat u uw huidige locatie verlaat.";
+"faq.snooze_mode_battery.answer" = "Als je Openscape in de sluimerstand wilt zetten, selecteer dat de knop Slapen rechtsboven in het scherm. Als Openscape in de slaapstand staat, selecteer dan de knop Activeren wanneer ik vertrek. Openscape verbruikt dan weinig batterijvoeding totdat je je huidige locatie verlaat.";
 
 
 /*  */
@@ -4259,7 +4259,7 @@
 
 
 /*  */
-"faq.background_battery_impact.answer" = "Openscape is een op locatie gebaseerde app die gebruikmaakt van Locatievoorzieningen om uw locatie vast te stellen. Uit onze testen blijkt dat openscape niet meer batterijvoeding verbruikt dan andere kaarttoepassingen. Als u echter batterijverbruik belangrijk vindt bij het gebruiken van uw telefoon, volgen hier een paar tips om uw verbruik te reduceren:\n\n1. Schakel het scherm zoveel mogelijk uit wanneer u niet met de app werkt.\n2. Sluit de app als u deze niet gebruikt. openscape maakt doorlopend gebruik van locatievoorzieningen als de app actief is. Daardoor weet de app altijd uw locatie, ook wanneer u niet in beweging bent. Vergeet niet om de app weer te starten wanneer u uw reis voortzet.\n3. Zorg bij koud weer dat uw telefoon warm blijft, omdat de batterijen slecht werken bij lagere temperaturen.";
+"faq.background_battery_impact.answer" = "Openscape is een op locatie gebaseerde app die gebruikmaakt van Locatievoorzieningen om je locatie vast te stellen. Uit onze testen blijkt dat Openscape niet meer batterijvoeding verbruikt dan andere naviagie-apps. Als je echter batterijverbruik belangrijk vindt bij het gebruiken van je telefoon, volgen hier een paar tips om je verbruik te reduceren:\n\n1. Schakel het scherm zoveel mogelijk uit wanneer je niet met de app werkt.\n2. Sluit de app als je deze niet gebruikt. Openscape maakt doorlopend gebruik van locatievoorzieningen als de app actief is. Daardoor weet de app altijd je locatie, ook wanneer je niet in beweging bent. Vergeet niet om de app weer te starten wanneer jeje reis voortzet.\n3. Zorg bij koud weer dat je telefoon warm blijft, aangezien batterijen slecht werken bij lagere temperaturen.";
 
 
 /*  */
@@ -4267,15 +4267,15 @@
 
 
 /*  */
-"faq.mobile_data_use.answer" = "Hoeveel mobiele gegevens worden gebruikt, hangt af van hoe u openscape gebruikt. openscape is zo opgezet dat u slechts weinig gegevens gebruikt wanneer u rondloopt en plaatsen opslaat zodat u ze niet elke keer hoeft te downloaden als u teruggaat naar een plaats waar u al bent geweest. Als u het gegevensgebruik wilt verminderen, maakt u waar mogelijk gebruik van Wi-Fi, met name om de app te downloaden. Wanneer u openscape niet gebruikt, kunt u openscape het beste in de slaapstand zetten met de knop Slapen of de app sluiten.";
+"faq.mobile_data_use.answer" = "Hoeveel mobiele data wordt gebruikt is afhankelijk van hoe je Openscape gebruikt. Openscape is zo opgezet dat je slechts weinig gegevens gebruikt wanneer je rondloopt en plaatsen opslaat zodat je ze niet elke keer hoeft te downloaden als je opnieuw op  een plaats komt waar je al bent geweest. Als je het gegevensgebruik wilt verminderen, maak dan waar mogelijk gebruik van Wi-Fi, met name om de app te downloaden. Wanneer je Openscape niet gebruikt, kunje Openscape het beste in de slaapstand zetten met de knop Slapen of de app sluiten.";
 
 
 /*  */
-"faq.difference_from_map_apps.question" = "Waarin verschilt openscape van andere kaarttoepassingen?";
+"faq.difference_from_map_apps.question" = "Waarin verschilt Openscape van andere navigatie-apps?";
 
 
 /*  */
-"faq.difference_from_map_apps.answer" = "Openscape geeft een uitgebreide beschrijving van uw omgeving om u te helpen deze te verkennen en uw route te vinden. Met ruimtelijke audio geeft Openscape, terwijl u loopt, meldingen over referentiepunten, parken, wegen en kruispunten vanuit de richting waarin deze zich fysiek bevinden in uw directe omgeving. Als u bijvoorbeeld een winkel passeert aan uw rechterhand, hoort u de naam van de winkel vanaf de rechterkant. Als u een kruispunt nadert, hoort u alle straatnamen vanuit de richting waarin ze lopen: naar links, rechtdoor en naar rechts.\n\nIn plaats van richtingaanwijzingen zoals in andere kaarttoepassingen hoort u in openscape een audiobaken in de richting van uw bestemming, zodat u uw weg daarnaartoe op uw eigen manier kunt vinden met een verhoogde bewustwording van uw omgeving en van de locatie van uw bestemming. openscape is ontworpen om te worden uitgevoerd in de achtergrond, zodat u de app kunt gebruiken voor een routebeschrijving, terwijl u zich bewust wordt van uw omgeving op weg naar uw bestemming.";
+"faq.difference_from_map_apps.answer" = "Openscape geeft een uitgebreide beschrijving van je omgeving om je te helpen deze te verkennen en jouw route te vinden. Met ruimtelijke audio geeft Openscape, terwijl je loopt, meldingen over referentiepunten, parken, wegen en kruispunten vanuit de richting waarin deze zich fysiek in je omgeving bevinden. Als je bijvoorbeeld een winkel passeert aan je rechterhand, hoor je de naam van de winkel vanaf de rechterkant. Als je een kruispunt nadert, hoor je alle straatnamen vanuit de richting waarin ze lopen: naar links, rechtdoor en naar rechts.\n\nIn plaats van richtingaanwijzingen zoals in andere navigatie-apps hoor je in Openscape een audiobaken in de richting van je bestemming, zodat je je weg daarnaartoe op jouw eigen manier kunt vinden aan de hand van een verhoogde bewustwording van je omgeving en van de locatie van je bestemming. Openscape is ontworpen om te worden uitgevoerd in de achtergrond. Zo kun je \n een app gebruiken die die routeaanwijzingen geeft, terwijl Openscape je helpt met het bewustzijn van de omgeving.";
 
 
 /*  */
@@ -4361,4 +4361,4 @@
 "faq.section.what_is_soundscape" = "Wat is Openscape en hoe kan ik het gebruiken?";
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. ’Lighting up your way with sound’ is a marketing tagline for the app. Intersection - A junction where two or more roads meet or cross. 3D sound is where the audio through your headphones sounds as though it is coming from a given direction, as if it was actually coming from a speaker. Quotes written as \" {NumberedPlaceholder="Openscape"} */
-"faq.when_to_use_soundscape.answer" = "Openscape - De app die het gebruik van innovatieve op audio gebaseerde technologie gebruikt om mensen, met name blinden of slechtzienden, in staat te stellen een beter bewustzijn van hun omgeving op te bouwen. Door hoorbare 3D-audiosignalen te gebruiken wordt het inzicht in de omgeving verrijkt en onstaat een nieuwe manier om je verbonden te voelen met alles wat zich rondom je bevindt. Hierdoor is het mogelijk je met meer zekerheid te verplaatsen. Kruispunt - Een kruispunt waar twee of meer wegen elkaar ontmoeten of kruisen. Bij 3D-geluid klinkt het geluid via je hoofdtelefoon alsof het uit een bepaalde richting komt, alsof het echt uit een luidspreker komt. Citaten geschreven als \\\" {NumberedPlaceholder=\"Openscape\"} */";
+"faq.when_to_use_soundscape.answer" = "Openscape - De app die het gebruik van innovatieve op audio gebaseerde technologie gebruikt om mensen, met name blinden of slechtzienden, in staat te stellen een beter bewustzijn van hun omgeving op te bouwen. Door hoorbare 3D-audiosignalen te gebruiken wordt het inzicht in de omgeving verrijkt en onstaat een nieuwe manier om je verbonden te voelen met alles wat zich rondom je bevindt. Hierdoor is het mogelijk je met meer zekerheid te verplaatsen. Kruispunt - Een punt waar twee of meer wegen elkaar ontmoeten of kruisen. Bij 3D-geluid klinkt het geluid via je hoofdtelefoon alsof het uit een bepaalde richting komt, alsof het echt uit een luidspreker komt. Citaten geschreven als \\\" {NumberedPlaceholder=\"Openscape\"} */";
