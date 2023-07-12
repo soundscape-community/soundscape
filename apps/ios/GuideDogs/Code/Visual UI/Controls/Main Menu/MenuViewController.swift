@@ -118,7 +118,9 @@ class MenuViewController: UIViewController {
                                                     subject: GDLocalizedString("settings.feedback.subject"),
                                                     preferredStyle: .actionSheet) { [weak self] (mailClient) in
                 if let mailClient = mailClient {
+                    print("Got: \(mailClient)")
                     GDATelemetry.track("feedback.sent", with: ["mail_client": mailClient.rawValue])
+
                 }
                 self?.closeMenu()
             }

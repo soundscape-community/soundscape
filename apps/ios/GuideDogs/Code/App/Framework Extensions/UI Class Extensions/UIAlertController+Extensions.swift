@@ -35,11 +35,11 @@ enum MailClient: String, CaseIterable {
         let escapedSubject = "\(subject) (\(deviceInfo))".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) ?? GDLocalizedString("settings.feedback.subject")
         // TODO: Return appropriate URL for each mail client
         print("Email: \(email)")
-        print("Subject: \(subject)")
+        print("escaped Subject: \(escapedSubject)")
         switch self {
-        //case .example: return URL(string: "URL TO OPEN EMAIL WITH SUBECT LINE")
+        //case .example: return URL(string: "URL TO OPEN EMAIL WITH SUBJECT LINE")
         case .systemMail: return URL(string: "mailto:\(email)?subject=\(escapedSubject)")
-        case .gmail: return URL(string: "googlegmail:///co?subject=\(escapedSubject)&to=\(email)")
+        case .gmail: return URL(string: "googlegmail:///co?to=\(email)&subject=\(escapedSubject)")
         case .outlook: return URL(string: "ms-outlook://compose?to=\(email)&subject=\(escapedSubject)")
         }
     }
@@ -51,7 +51,12 @@ extension UIAlertController {
 
         // Create alert actions from mail clients
         let actions = MailClient.allCases.compactMap { (client) -> UIAlertAction? in
-            guard let url = client.url(email: email, subject: subject) else { return nil }
+            print("Processing client: \(client)")
+            guard let url = client.url(email: email, subject: subject) else {
+                print("Unable to construct URL for feedback email compose")
+                return nil 
+            }
+            print("Got URL: \(url)")
             return UIAlertAction(title: client.localizedTitle, url: url) {
                 handler?(client)
             }
