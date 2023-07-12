@@ -28,7 +28,7 @@ enum MailClient: String, CaseIterable {
         // TODO: Return a localized title string for each mail client
         
         switch self {
-        case .systemMail: return "System default mail client"
+        case .systemMail: return "Default"
         case .gmail: return "Gmail"
         case .outlook: return "Microsoft Outlook"
         case .fastmail: return "Fastmail"
