@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 enum MailClient: String, CaseIterable {
     
@@ -93,4 +94,38 @@ extension UIAlertController {
         
         self.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
     }
+
+    /// Create and return a `UIAlertController` that is able to open an external maps app to a given destination
+    convenience init(openInExternalWithLocation: CLLocation, preferredStyle: UIAlertController.Style, handler: ((ExternalNavigationApps?) -> Void)? = nil) {
+        // Create alert actions
+        let actions = ExternalNavigationApps.allCases.compactMap { (mapApp) -> UIAlertAction? in
+            print("Processing app: \(mapApp)")
+            print("location: \(openInExternalWithLocation)")
+            guard let url = mapApp.url(location: openInExternalWithLocation) else {
+                print("Unable to construct URL for share to external maps ap")
+                return nil 
+            }
+            print("Got URL: \(url)")
+            return UIAlertAction(title: mapApp.localizedTitle, url: url) {
+                handler?(mapApp)
+            }
+        }
+        
+        if actions.isEmpty {
+            self.init(title: GDLocalizedString("general.error.error_occurred"),
+                      message: "No maps app installed",
+                      preferredStyle: .alert)
+        } else {
+            self.init(title: GDLocalizedString("general.alert.choose_an_app"),
+                      message: nil,
+                      preferredStyle: preferredStyle)
+            
+            actions.forEach({ action in
+                self.addAction(action)
+            })
+        }
+        
+        self.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
+    }
+
 }

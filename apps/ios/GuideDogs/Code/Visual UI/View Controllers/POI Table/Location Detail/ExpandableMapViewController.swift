@@ -287,13 +287,15 @@ class ExpandableMapViewController: UIViewController {
         
         if let locationDetail = locationDetail {
             // Create and configure the alert controller.
-            let alert = UIAlertController(title: GDLocalizedString("general.alert.choose_an_app"), message: nil, preferredStyle: .actionSheet)
-            
+            //let alert = UIAlertController(title: GDLocalizedString("general.alert.choose_an_app"), message: nil, preferredStyle: .actionSheet)
+            let alert = UIAlertController(openInExternalWithLocation: locationDetail.location, preferredStyle: .actionSheet) { [weak self] (mapsApp) in
+                print("Share to external maps app completion called")
+                if let mapsApp = mapsApp {
+                    print("Map app: \(mapsApp)")
+                }
+            }
             // TODO: Add actions to open the given location in a third-party map application
             // These applications must also be defined in 'Queried URL Schemes' in Info.plist
-                    
-            let cancelAction = UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel)
-            alert.addAction(cancelAction)
             
             present(alert, animated: true, completion: nil)
         }
