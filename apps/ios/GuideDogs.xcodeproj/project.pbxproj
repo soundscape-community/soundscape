@@ -662,6 +662,7 @@
 		62EACA2B26697F4300DBDECC /* WaypointDetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EACA2A26697F4300DBDECC /* WaypointDetailAnnotationView.swift */; };
 		62F7A30C27B6080900C62390 /* InteractiveBeaconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */; };
 		62F7A30E27B6082A00C62390 /* InteractiveBeaconViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */; };
+		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
 		B90C27D61EAF81D600007368 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C27D51EAF81D600007368 /* Sound.swift */; };
 		B918EE9825100FFF00A5354A /* CalloutRangeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */; };
 		B91D3F6427AB5546004159A8 /* UserAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91D3F6327AB5546004159A8 /* UserAction.swift */; };
@@ -1566,6 +1567,7 @@
 		62EACA2A26697F4300DBDECC /* WaypointDetailAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointDetailAnnotationView.swift; sourceTree = "<group>"; };
 		62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconView.swift; sourceTree = "<group>"; };
 		62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconViewModel.swift; sourceTree = "<group>"; };
+		6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExternalNavigationApps.swift; path = Code/App/ExternalNavigationApps.swift; sourceTree = "<group>"; };
 		7D0E8328DAB61AC7721C76C9 /* Pods_Openscape.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Openscape.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		823631751C541F3D9A0EAF3C /* Pods-Openscape.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Openscape.adhoc.xcconfig"; path = "Target Support Files/Pods-Openscape/Pods-Openscape.adhoc.xcconfig"; sourceTree = "<group>"; };
 		B90C27D51EAF81D600007368 /* Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Sound.swift; path = Code/Audio/Protocols/Sound.swift; sourceTree = "<group>"; };
@@ -4988,6 +4990,7 @@
 		D378E0E01B3D97E900909E29 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */,
 				62E92B2B26546146001C5AC2 /* App Delegate */,
 				62B3FE3025A8D59E00FCCA4B /* Feature Flags */,
 				281CB873201676D50059B8C4 /* Data Structures */,
@@ -6032,6 +6035,7 @@
 				621628952853FE9900B1FF5B /* WaypointCard.swift in Sources */,
 				6267899726EC10CE0007E566 /* RecommenderView.swift in Sources */,
 				C30DDAE9225684BC00104085 /* GDASpatialDataResultEntity+Typeable.swift in Sources */,
+				6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */,
 				624DF65427BAEAF6000A634C /* OnboardingContainer.swift in Sources */,
 				623E0104244767BB0081CA5B /* LocationParameters.swift in Sources */,
 				622AB2F6263767A8006BB729 /* MKMapViewDelegate+Extensions.swift in Sources */,
