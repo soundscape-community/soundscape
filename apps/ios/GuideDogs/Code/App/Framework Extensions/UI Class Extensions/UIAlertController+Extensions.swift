@@ -12,21 +12,31 @@ enum MailClient: String, CaseIterable {
     
     // TODO: Add Mail Clients that you would like to support
     // These applications must also be defined in 'Queried URL Schemes' in Info.plist
-    
-    // example: case .outlook
-    // case example
+    // https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/LaunchServicesKeys.html#//apple_ref/doc/plist/info/LSApplicationQueriesSchemes
     case systemMail
     case gmail
     case outlook
-    
+    case protonMail
+    // https://github.com/ProtonMail/ios-mail/issues/27
+    case airmail
+    case dispatch
+    case fastmail
+    case spark
+    case yahooMail
+
     var localizedTitle: String {
         // TODO: Return a localized title string for each mail client
         
         switch self {
-        //case .example: return GDLocalizedString("")
         case .systemMail: return "System default mail client"
-        case .gmail: return "GMail"
+        case .gmail: return "Gmail"
         case .outlook: return "Microsoft Outlook"
+        case .fastmail: return "Fastmail"
+        case .protonMail: return "Proton Mail"
+        case .spark: return "Spark"
+        case .airmail: return "Airmail"
+        case .yahooMail: return "Yahoo Mail"
+        case .dispatch: return "Dispatch"
         }
     }
     
@@ -37,10 +47,15 @@ enum MailClient: String, CaseIterable {
         print("Email: \(email)")
         print("escaped Subject: \(escapedSubject)")
         switch self {
-        //case .example: return URL(string: "URL TO OPEN EMAIL WITH SUBJECT LINE")
-        case .systemMail: return URL(string: "mailto:\(email)?subject=\(escapedSubject)")
-        case .gmail: return URL(string: "googlegmail:///co?to=\(email)&subject=\(escapedSubject)")
-        case .outlook: return URL(string: "ms-outlook://compose?to=\(email)&subject=\(escapedSubject)")
+            case .systemMail: return URL(string: "mailto:\(email)?subject=\(escapedSubject)")
+            case .gmail: return URL(string: "googlegmail:///co?to=\(email)&subject=\(escapedSubject)")
+            case .outlook: return URL(string: "ms-outlook://compose?to=\(email)&subject=\(escapedSubject)")
+            case .protonMail: return URL(string: "protonmail://mailto:foobar@\(email)?subject=\(escapedSubject)")
+            case .spark: return URL(string: "readdle-spark://compose?recipient=\(email)&subject=\(subject)")
+            case .airmail: return URL(string: "airmail://compose?to=\(email)&subject=\(subject)")
+            case .dispatch: return URL(string: "x-dispatch:///compose?to=\(email)&subject=\(subject)")
+            case .fastmail: return URL(string: "fastmail://mail/compose?to=\(email)&subject=\(subject)")
+            case .yahooMail: return  URL(string: "ymail://mail/compose?to=\(email)&subject=\(subject)")
         }
     }
 }
