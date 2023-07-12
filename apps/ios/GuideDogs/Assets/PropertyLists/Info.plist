@@ -92,6 +92,13 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	<string>googlegmail</string>
+		<string>comgooglemaps</string>
+	<string>inbox-gmail</string>
+	<string>ms-outlook</string>
+	</array>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Openscape uses Bluetooth LE to connect to accessories.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>

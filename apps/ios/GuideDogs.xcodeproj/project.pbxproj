@@ -5164,7 +5164,7 @@
 				CLASSPREFIX = GDA;
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1320;
-				ORGANIZATIONNAME = Microsoft;
+				ORGANIZATIONNAME = "Openscape community";
 				TargetAttributes = {
 					D3D7CFC71B3D96460020B5E9 = {
 						CreatedOnToolsVersion = 6.3.2;
