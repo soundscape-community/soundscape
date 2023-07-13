@@ -1,38 +1,21 @@
-# Openscape, an open source revival of Soundscape
+# Openscape: 3D audio awareness for everyone
 
-This is an in-progress community project to bring Soundscape, now Openscape, back to blind and visually impaired travelers everywhere.  
-Join [our discord server](https://discord.gg/j7mMbxyf) to discuss the project, give feedback if you are a tester and help out.
+[![Build Status](https://github.com/openscape-community/openscape/actions/workflows/ios.yml/badge.svg)](https://github.com/openscape-community/openscape/actions/workflows/ios.yml)
 
-# What is Microsoft Soundscape
+This is a community effort to bring the features of [Microsoft Soundscape](https://www.microsoft.com/en-us/research/product/soundscape/) back to blind and visually-impaired travelers everywhere. Starting with the [components released as open source](https://github.com/microsoft/soundscape) by Microsoft Research, we have filled in some of the missing pieces and services to keep it functional.
 
->Microsoft Soundscape *WAS* a product from Microsoft Research that explored the use of innovative audio-based technology to enable people to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around. Unlike step-by-step navigation apps, Soundscape uses 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. It allows you to build a mental map and make personal route choices while being more comfortable within unfamiliar spaces. Soundscape is designed to be used by everyone and live in the background; therefore, feel free to use it in conjunction with other apps such as podcasts, audio books, email and even GPS navigation!
+## What was Microsoft Soundscape?
 
-Additional app features include:
+>Microsoft Soundscape \[was] a product from Microsoft Research that explored the use of innovative audio-based technology to enable people to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around. Unlike step-by-step navigation apps, Soundscape uses 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. It allows you to build a mental map and make personal route choices while being more comfortable within unfamiliar spaces. Soundscape is designed to be used by everyone and live in the background; therefore, feel free to use it in conjunction with other apps such as podcasts, audio books, email and even GPS navigation!
 
-* **Guided Routes** - Using the web authoring tool, users can create and share guided routes for Soundscape.
-* **Street Preview** - An audio virtual reality experience which places the user on a location with the ability to explore the road graph.
-* **Head tracking** (with supported headsets) - Allows the points of interest to stay in place as the user moves the head.
-* **Background Use** - The ability to run in the background while you use other apps.
-* **Current Location** - Quickly hear your current location and direction of travel.
+For more technical details, see the [original README](https://github.com/microsoft/soundscape/blob/main/README.md) from the open-source Soundscape repository.
 
-# Expectations
+## Building Openscape
 
-This open source project is not a turnkey equivalent of the Microsoft Soundscape product offering.  The sources have been modified to remove branding and IP.  References to the production resources were also altered.  Further elements too specific to Microsoft's internal environmen were omitted.
+See the [iOS client build documentation](https://github.com/openscape-community/openscape/blob/main/docs/ios-client/onboarding.md) in the repo, along with the [build tips](https://github.com/openscape-community/openscape/wiki/build-tips) on the wiki.
 
-The core elements of the  service eg. the OSM ingester via [imposm3](https://github.com/omniscale/imposm3) and serving the ingested data as GeoJSON are provided and packaged as containers in svcs/data.
+## Getting involved
 
-Microsoft is committed to supporting this open source offering.  Please use the [Issue tracker of the original repository](https://github.com/microsoft/soundscape/issues) section to ask questions of them.
+Browse through the [open issues](https://github.com/openscape-community/openscape/issues). Items labeled "help-wanted" are particularly good candidates for contribution.
 
-# Contents
-
-The open source project contains three components:
-
-| Component | Sources | Documentation |
-| --------- | ------- | ------------- |
-| Soundscape iOS Client app| [dir](./apps/ios) | [docs](docs/Client.md) |
-| Service backend | [dir](./svcs/data) | [docs](docs/Services.md) |
-| Authoring web app | [dir](./svcs/soundscape-authoring) | [docs](docs/Authoring.md) |
-
-# Trademark Notice
-
-Trademarks This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow Microsoft’s Trademark & Brand Guidelines. Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
+Join [our Discord server](https://discord.gg/VQHkZJ8mcA) to discuss the project, give feedback, or just say hello.
