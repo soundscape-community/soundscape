@@ -115,7 +115,6 @@
 		285C8B812304868F00E466DF /* ARHeadsetGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285C8B802304868E00E466DF /* ARHeadsetGenerator.swift */; };
 		285C8B83230496D900E466DF /* GlyphCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285C8B82230496D900E466DF /* GlyphCallout.swift */; };
 		286145EB2625099F000E5525 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 286145EA2625099F000E5525 /* SDWebImage */; };
-		286145F1262509DA000E5525 /* WindowsAzureMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 286145F0262509DA000E5525 /* WindowsAzureMessaging */; };
 		2866A7C12625013400EBA2D8 /* DZNEmptyDataSet in Frameworks */ = {isa = PBXBuildFile; productRef = 2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */; };
 		2866A7C72625020600EBA2D8 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 2866A7C62625020600EBA2D8 /* AppCenterAnalytics */; };
 		2866A7C92625020600EBA2D8 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 2866A7C82625020600EBA2D8 /* AppCenterCrashes */; };
@@ -1815,7 +1814,6 @@
 				2866A7C72625020600EBA2D8 /* AppCenterAnalytics in Frameworks */,
 				2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
 				2866A7C92625020600EBA2D8 /* AppCenterCrashes in Frameworks */,
-				286145F1262509DA000E5525 /* WindowsAzureMessaging in Frameworks */,
 				286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */,
 				2866A7D5262502D500EBA2D8 /* CocoaLumberjackSwift in Frameworks */,
 				286145EB2625099F000E5525 /* SDWebImage in Frameworks */,
@@ -5150,7 +5148,6 @@
 				2866A7D4262502D500EBA2D8 /* CocoaLumberjackSwift */,
 				28F1ECE1262505DC00E964C0 /* Realm */,
 				286145EA2625099F000E5525 /* SDWebImage */,
-				286145F0262509DA000E5525 /* WindowsAzureMessaging */,
 				281BCBFE262638290031298D /* RealmSwift */,
 				283B0306264B03920092F74F /* SDWebImageSwiftUI */,
 			);
@@ -5224,7 +5221,6 @@
 				2866A7D3262502D500EBA2D8 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				286145E92625099F000E5525 /* XCRemoteSwiftPackageReference "SDWebImage" */,
-				286145EF262509DA000E5525 /* XCRemoteSwiftPackageReference "azure-notificationhubs-ios" */,
 				283B0305264B03920092F74F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			productRefGroup = D3D7CFC91B3D96470020B5E9 /* Products */;
@@ -6643,14 +6639,6 @@
 				minimumVersion = 5.13.2;
 			};
 		};
-		286145EF262509DA000E5525 /* XCRemoteSwiftPackageReference "azure-notificationhubs-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Azure/azure-notificationhubs-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.1.5;
-			};
-		};
 		2866A7BF2625013400EBA2D8 /* XCRemoteSwiftPackageReference "DZNEmptyDataSet" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/dzenbot/DZNEmptyDataSet";
@@ -6716,11 +6704,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 286145E92625099F000E5525 /* XCRemoteSwiftPackageReference "SDWebImage" */;
 			productName = SDWebImage;
-		};
-		286145F0262509DA000E5525 /* WindowsAzureMessaging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 286145EF262509DA000E5525 /* XCRemoteSwiftPackageReference "azure-notificationhubs-ios" */;
-			productName = WindowsAzureMessaging;
 		};
 		2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */ = {
 			isa = XCSwiftPackageProductDependency;

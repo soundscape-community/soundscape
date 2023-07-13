@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "azure-notificationhubs-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Azure/azure-notificationhubs-ios",
-      "state" : {
-        "revision" : "f16d75b983a011ea60c596afe01d067870970ca7",
-        "version" : "3.1.5"
-      }
-    },
-    {
       "identity" : "cocoalumberjack",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/CocoaLumberjack/CocoaLumberjack",
