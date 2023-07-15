@@ -663,6 +663,7 @@
 		62F7A30C27B6080900C62390 /* InteractiveBeaconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */; };
 		62F7A30E27B6082A00C62390 /* InteractiveBeaconViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */; };
 		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
+		6A5DA82F2A633DC900C5FBB8 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 6A5DA82E2A633DC900C5FBB8 /* Sentry */; };
 		B90C27D61EAF81D600007368 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C27D51EAF81D600007368 /* Sound.swift */; };
 		B918EE9825100FFF00A5354A /* CalloutRangeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */; };
 		B91D3F6427AB5546004159A8 /* UserAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91D3F6327AB5546004159A8 /* UserAction.swift */; };
@@ -1811,6 +1812,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A5DA82F2A633DC900C5FBB8 /* Sentry in Frameworks */,
 				283B0307264B03920092F74F /* SDWebImageSwiftUI in Frameworks */,
 				2866A7C72625020600EBA2D8 /* AppCenterAnalytics in Frameworks */,
 				2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
@@ -5153,6 +5155,7 @@
 				286145F0262509DA000E5525 /* WindowsAzureMessaging */,
 				281BCBFE262638290031298D /* RealmSwift */,
 				283B0306264B03920092F74F /* SDWebImageSwiftUI */,
+				6A5DA82E2A633DC900C5FBB8 /* Sentry */,
 			);
 			productName = GuideDogs;
 			productReference = D3D7CFC81B3D96470020B5E9 /* Openscape.app */;
@@ -5226,6 +5229,7 @@
 				286145E92625099F000E5525 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				286145EF262509DA000E5525 /* XCRemoteSwiftPackageReference "azure-notificationhubs-ios" */,
 				283B0305264B03920092F74F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				6A5DA82D2A633DC900C5FBB8 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = D3D7CFC91B3D96470020B5E9 /* Products */;
 			projectDirPath = "";
@@ -6699,6 +6703,14 @@
 				version = 10.11.0;
 			};
 		};
+		6A5DA82D2A633DC900C5FBB8 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -6756,6 +6768,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = Realm;
+		};
+		6A5DA82E2A633DC900C5FBB8 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A5DA82D2A633DC900C5FBB8 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
