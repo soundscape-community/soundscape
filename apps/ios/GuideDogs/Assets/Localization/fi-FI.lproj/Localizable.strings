@@ -3411,11 +3411,11 @@
 
 
 /*  */
-"first_launch.soundscape_language" = "Soundscapen kieli";
+"first_launch.language" = "Soundscapen kieli";
 
 
 /*  */
-"first_launch.soundscape_language.text" = "Valitse kieli, jota haluat Soundscapen käyttävän. Voit aina muuttaa valintaasi sovelluksen asetuksista.";
+"first_launch.language.text" = "Valitse kieli, jota haluat Soundscapen käyttävän. Voit aina muuttaa valintaasi sovelluksen asetuksista.";
 
 
 /*  */

@@ -29,22 +29,21 @@ enum MailClient: String, CaseIterable {
         // TODO: Return a localized title string for each mail client
         
         switch self {
-        case .systemMail: return "Default"
-        case .gmail: return "Gmail"
-        case .outlook: return "Microsoft Outlook"
-        case .fastmail: return "Fastmail"
-        case .protonMail: return "Proton Mail"
-        case .spark: return "Spark"
-        case .airmail: return "Airmail"
-        case .yahooMail: return "Yahoo Mail"
-        case .dispatch: return "Dispatch"
+        case .systemMail: return GDLocalizedString("mail.default")
+        case .gmail: return GDLocalizedString("mail.gmail")
+        case .outlook: return GDLocalizedString("mail.msoutlook")
+        case .fastmail: return GDLocalizedString("mail.fastmail")
+        case .protonMail: return GDLocalizedString("mail.protonmail")
+        case .spark: return GDLocalizedString("mail.spark")
+        case .airmail: return GDLocalizedString("mail.airmail")
+        case .yahooMail: return GDLocalizedString("mail.yahoo")
+        case .dispatch: return GDLocalizedString("mail.dispatch")
         }
     }
     
     func url(email: String, subject: String) -> URL? {
         let deviceInfo = "iOS \(UIDevice.current.systemVersion), \(UIDevice.current.modelName), \(LocalizationContext.currentAppLocale.identifierHyphened), v\(AppContext.appVersion).\(AppContext.appBuild)"
         let escapedSubject = "\(subject) (\(deviceInfo))".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) ?? GDLocalizedString("settings.feedback.subject")
-        // TODO: Return appropriate URL for each mail client
         print("Email: \(email)")
         print("escaped Subject: \(escapedSubject)")
         switch self {

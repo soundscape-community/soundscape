@@ -3411,11 +3411,11 @@
 
 
 /*  */
-"first_launch.soundscape_language" = "Openscape-språk";
+"first_launch.language" = "Openscape-språk";
 
 
 /*  */
-"first_launch.soundscape_language.text" = "Velg språket du vil at openscape skal bruke. Du kan alltids endre valget i appinnstillingene.";
+"first_launch.language.text" = "Velg språket du vil at openscape skal bruke. Du kan alltids endre valget i appinnstillingene.";
 
 
 /*  */
@@ -4358,12 +4358,12 @@
 // MARK: What is Openscape?
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Openscape"} */
-"faq.section.what_is_soundscape" = "Hva er Openscape og hvordan bruker jeg det?";
+"faq.section.what_is" = "Hva er Openscape og hvordan bruker jeg det?";
 
 // MARK: How Openscape Works
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Openscape"} */
-"faq.section.how_soundscape_works" = "Hvordan virker Openscape?";
+"faq.section.how_works" = "Hvordan virker Openscape?";
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Openscape"} */
-"faq.when_to_use_soundscape.question" = "Når bør jeg bruke Openscape?";
+"faq.when_to_use.question" = "Når bør jeg bruke Openscape?";

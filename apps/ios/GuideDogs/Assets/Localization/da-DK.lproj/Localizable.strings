@@ -3411,11 +3411,11 @@
 
 
 /*  */
-"first_launch.soundscape_language" = "Sproget i Openscape";
+"first_launch.language" = "Sproget i Openscape";
 
 
 /*  */
-"first_launch.soundscape_language.text" = "Vælg det sprog, openscape skal bruge. Du kan altid ændre dit valg i appindstillingerne.";
+"first_launch.language.text" = "Vælg det sprog, openscape skal bruge. Du kan altid ændre dit valg i appindstillingerne.";
 
 
 /*  */

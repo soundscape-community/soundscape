@@ -3411,11 +3411,11 @@
 
 
 /*  */
-"first_launch.soundscape_language" = "Taal in Openscape";
+"first_launch.language" = "Taal in Openscape";
 
 
 /*  */
-"first_launch.soundscape_language.text" = "Selecteer de taal waarin u openscape wilt gebruiken. U kunt uw keuze altijd wijzigen in de appinstellingen.";
+"first_launch.language.text" = "Selecteer de taal waarin u openscape wilt gebruiken. U kunt uw keuze altijd wijzigen in de appinstellingen.";
 
 
 /*  */
@@ -4353,12 +4353,12 @@
 
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Openscape"} */
-"faq.when_to_use_soundscape.question" = "Wanneer kan ik Openscape gebruiken?";
+"faq.when_to_use.question" = "Wanneer kan ik Openscape gebruiken?";
 
 // MARK: What is Openscape?
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Openscape"} */
-"faq.section.what_is_soundscape" = "Wat is Openscape en hoe kan ik het gebruiken?";
+"faq.section.what_is" = "Wat is Openscape en hoe kan ik het gebruiken?";
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. ’Lighting up your way with sound’ is a marketing tagline for the app. Intersection - A junction where two or more roads meet or cross. 3D sound is where the audio through your headphones sounds as though it is coming from a given direction, as if it was actually coming from a speaker. Quotes written as \" {NumberedPlaceholder="Openscape"} */
-"faq.when_to_use_soundscape.answer" = "Openscape - De app die het gebruik van innovatieve op audio gebaseerde technologie gebruikt om mensen, met name blinden of slechtzienden, in staat te stellen een beter bewustzijn van hun omgeving op te bouwen. Door hoorbare 3D-audiosignalen te gebruiken wordt het inzicht in de omgeving verrijkt en onstaat een nieuwe manier om je verbonden te voelen met alles wat zich rondom je bevindt. Hierdoor is het mogelijk je met meer zekerheid te verplaatsen. Kruispunt - Een punt waar twee of meer wegen elkaar ontmoeten of kruisen. Bij 3D-geluid klinkt het geluid via je hoofdtelefoon alsof het uit een bepaalde richting komt, alsof het echt uit een luidspreker komt. Citaten geschreven als \\\" {NumberedPlaceholder=\"Openscape\"} */";
+"faq.when_to_use.answer" = "Openscape - De app die het gebruik van innovatieve op audio gebaseerde technologie gebruikt om mensen, met name blinden of slechtzienden, in staat te stellen een beter bewustzijn van hun omgeving op te bouwen. Door hoorbare 3D-audiosignalen te gebruiken wordt het inzicht in de omgeving verrijkt en onstaat een nieuwe manier om je verbonden te voelen met alles wat zich rondom je bevindt. Hierdoor is het mogelijk je met meer zekerheid te verplaatsen. Kruispunt - Een punt waar twee of meer wegen elkaar ontmoeten of kruisen. Bij 3D-geluid klinkt het geluid via je hoofdtelefoon alsof het uit een bepaalde richting komt, alsof het echt uit een luidspreker komt. Citaten geschreven als \\\" {NumberedPlaceholder=\"Openscape\"} */";

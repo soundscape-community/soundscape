@@ -24,7 +24,7 @@ struct OnboardingLanguageView: View {
     var body: some View {
         OnboardingContainer {
             VStack(spacing: 12.0) {
-                GDLocalizedTextView("first_launch.soundscape_language")
+                GDLocalizedTextView("first_launch.language")
                     .onboardingHeaderTextStyle()
                 
                 GDLocalizedTextView("first_launch.beacon.message.3")

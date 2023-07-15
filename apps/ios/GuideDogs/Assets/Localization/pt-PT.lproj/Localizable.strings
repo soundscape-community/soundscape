@@ -3410,11 +3410,11 @@
 
 
 /*  */
-"first_launch.soundscape_language" = "Idioma do Openscape";
+"first_launch.language" = "Idioma do Openscape";
 
 
 /*  */
-"first_launch.soundscape_language.text" = "Selecione o idioma que pretende que o openscape utilize. Poderá alterar a sua seleção nas definições da aplicação.";
+"first_launch.language.text" = "Selecione o idioma que pretende que o openscape utilize. Poderá alterar a sua seleção nas definições da aplicação.";
 
 
 /*  */
