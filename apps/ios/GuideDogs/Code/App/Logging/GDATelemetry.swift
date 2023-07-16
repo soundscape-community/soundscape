@@ -22,7 +22,13 @@ public class GDATelemetry {
         }
         set {
             SettingsContext.shared.telemetryOptout = !newValue
-            Analytics.enabled = newValue
+            if newValue {
+                SentrySDK.start { options in
+                    options.dsn = AppContext.sentryDSN
+                    options.debug = true
+                    options.sampleRate = SettingsContext.shared.telemetryOptout ? 1.0 : 0.0
+                }
+            }
         }
     }
     
@@ -53,12 +59,12 @@ public class GDATelemetry {
         // Analytics.trackEvent(eventName, withProperties: propertiesToSend)
         // Represent these as Sentry breadcrumbs
         // it would be good to collect a set of values used for event name to mark as errors instead of just having everything at info
-        let crum = Breadcrumb()
+        let crumb = Breadcrumb()
         crumb.data = propertiesToSend
         // crumb.data["eventName" = eventName
         crumb.message = eventName
         crumb.level = SentryLevel.info
-        SentrySDK.addBreadcrumb(crumb: crumb)
+        SentrySDK.addBreadcrumb(crumb)
     }
     
 }
