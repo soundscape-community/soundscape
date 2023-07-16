@@ -7,7 +7,8 @@
 //
 
 import Foundation
-import AppCenterAnalytics
+// import AppCenterAnalytics
+import Sentry
 
 public class GDATelemetry {
     
@@ -49,7 +50,15 @@ public class GDATelemetry {
             print("[TEL] Event tracked: \(eventName)" + (propertiesToSend.isEmpty ? "" : " \(propertiesToSend)"))
         }
         
-        Analytics.trackEvent(eventName, withProperties: propertiesToSend)
+        // Analytics.trackEvent(eventName, withProperties: propertiesToSend)
+        // Represent these as Sentry breadcrumbs
+        // it would be good to collect a set of values used for event name to mark as errors instead of just having everything at info
+        let crum = Breadcrumb()
+        crumb.data = propertiesToSend
+        // crumb.data["eventName" = eventName
+        crumb.message = eventName
+        crumb.level = SentryLevel.info
+        SentrySDK.addBreadcrumb(crumb: crumb)
     }
     
 }

@@ -11,6 +11,7 @@ import UIKit
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
+import Sentry
 import Combine
 
 class DynamicLaunchViewController: UIViewController {
@@ -44,9 +45,14 @@ class DynamicLaunchViewController: UIViewController {
         }
         
         if !testEnvironment, !UIDeviceManager.isSimulator {
-            AppCenter.start(withAppSecret: "<#Secret#>", services: [Analytics.self, Crashes.self])
-            Analytics.enabled = !SettingsContext.shared.telemetryOptout
-            Crashes.enabled = !SettingsContext.shared.telemetryOptout
+            // AppCenter.start(withAppSecret: "<#Secret#>", services: [Analytics.self, Crashes.self])
+            // Analytics.enabled = !SettingsContext.shared.telemetryOptout
+            // Crashes.enabled = !SettingsContext.shared.telemetryOptout
+            SentrySDK.start { options in
+                options.dsn = "https://9dfe74a74ea64efaa28ce0e10a7c000f@sentry.openscape.io/3"
+                options.debug = true
+                options.sampleRate = SettingsContext.shared.telemetryOptout ? 1.0 : 0.0
+            }
         }
     }
     
