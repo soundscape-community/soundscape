@@ -1,6 +1,7 @@
 # Openscape: 3D audio awareness for everyone
 
 [![Build Status](https://github.com/openscape-community/openscape/actions/workflows/ios.yml/badge.svg)](https://github.com/openscape-community/openscape/actions/workflows/ios.yml)
+[![Translation Status](https://hosted.weblate.org/widgets/openscape/-/svg-badge.svg)](https://hosted.weblate.org/engage/openscape/)
 
 This is a community effort to bring the features of [Microsoft Soundscape](https://www.microsoft.com/en-us/research/product/soundscape/) back to blind and visually-impaired travelers everywhere. Starting with the [components released as open source](https://github.com/microsoft/soundscape) by Microsoft Research, we have filled in some of the missing pieces and services to keep it functional.
 
@@ -19,3 +20,5 @@ See the [iOS client build documentation](https://github.com/openscape-community/
 Browse through the [open issues](https://github.com/openscape-community/openscape/issues). Items labeled "help-wanted" are particularly good candidates for contribution.
 
 Join [our Discord server](https://discord.gg/VQHkZJ8mcA) to discuss the project, give feedback, or just say hello.
+
+[Translate Openscape](https://hosted.weblate.org/engage/openscape/) in your own language or contribute to an existing translation on Weblate.
