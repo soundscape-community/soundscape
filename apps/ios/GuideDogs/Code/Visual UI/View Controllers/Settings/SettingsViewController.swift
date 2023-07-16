@@ -8,7 +8,6 @@
 
 import UIKit
 
-import AppCenterAnalytics
 
 class SettingsViewController: BaseTableViewController {
     

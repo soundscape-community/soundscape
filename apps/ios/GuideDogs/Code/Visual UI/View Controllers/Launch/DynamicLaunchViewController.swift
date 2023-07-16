@@ -8,9 +8,6 @@
 
 import UIKit
 
-import AppCenter
-import AppCenterAnalytics
-import AppCenterCrashes
 import Sentry
 import Combine
 
@@ -65,7 +62,7 @@ class DynamicLaunchViewController: UIViewController {
         // Force the instantiation of AppContext now by accessing AppContext.shared
         _ = AppContext.shared
         
-        // Instantie the telemetry helper with the appContext object
+        // Instantiate the telemetry helper with the appContext object
         GDATelemetry.helper = TelemetryHelper(appContext: AppContext.shared)
         
         // Do some logging since the app has launched
