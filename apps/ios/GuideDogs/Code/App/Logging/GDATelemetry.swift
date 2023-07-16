@@ -72,6 +72,8 @@ public class GDATelemetry {
                 options.profilesSampleRate = 1.0
                 options.enableAutoPerformanceTracing = true
                 options.swiftAsyncStacktraces = true
+                options.enableAutoSessionTracking = true
+                options.idleTimeout = 30000
             }
         } else {
             GDLogAppInfo("**not** starting Sentry SDK; telemetry Opt-out")
