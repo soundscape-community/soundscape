@@ -351,15 +351,7 @@
 
 
 /*  */
-"settings.screen_title" = "Instellingen";
-
-
-/*  */
 "settings.clear_cache.alert_title" = "Opgeslagen gegevens verwijderen?";
-
-
-/*  */
-"settings.clear_cache.alert_message" = "Openscape slaat kaartgegevens op om gegevens- en batterijverbruik te verminderen. Als je opgeslagen gegevens verwijdert, moet Openscape de gegevens opnieuw downloaden.";
 
 
 /*  */
@@ -367,15 +359,7 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Kies Verwijderen om markeringen, bakens en routes te wissen of Behouden om alleen kaartgegevens te verwijderen. Met Verwijderen wordt de app teruggezet naar de installatiestatus. Dit kan niet ongedaan worden gemaakt!";
-
-
-/*  */
 "settings.clear_cache.no_service.title" = "Kan de opgeslagen kaartgegevens niet wissen";
-
-
-/*  */
-"settings.clear_cache.no_service.message" = "Openscape kan momenteel geen verbinding maken met internet. Er is een internetverbinding vereist om de opgeslagen kaartgegevens te wissen zodat de kaartgegevens kunnen worden vernieuwd.";
 
 
 /*  */
@@ -383,15 +367,7 @@
 
 
 /*  */
-"settings.telemetry.optout.alert_message" = "Met deze actie wordt de opgeslagen informatie gewist en meldt u zich af voor toekomstige verzamelacties van telemetriegegevens. Weet u het zeker?";
-
-
-/*  */
 "settings.telemetry.optout.action" = "Afmelden";
-
-
-/*  */
-"settings.version.history.version" = "Versie %@";
 
 
 /*  */
@@ -399,15 +375,7 @@
 
 
 /*  */
-"settings.feedback.subject" = "Feedback over Openscape";
-
-
-/*  */
 "settings.feedback.choose_email_app" = "Kies een app voor e-mail:";
-
-
-/*  */
-"settings.feedback.no_mail_client_error" = "Geen app voor e-mail geïnstalleerd";
 
 
 /*  */
@@ -415,15 +383,7 @@
 
 
 /*  */
-"settings.units.imperial" = "Imperial (voet)";
-
-
-/*  */
 "settings.units.metric" = "Metrisch (meter)";
-
-
-/*  */
-"settings.clear_data" = "Opgeslagen kaartgegevens wissen";
 
 
 /*  */
@@ -431,15 +391,7 @@
 
 
 /*  */
-"settings.section.general" = "Algemene instellingen";
-
-
-/*  */
 "settings.section.units" = "Meeteenheden";
-
-
-/*  */
-"settings.section.troubleshooting" = "Problemen oplossen";
 
 
 /*  */
@@ -447,15 +399,7 @@
 
 
 /*  */
-"settings.section.telemetry" = "Telemetrie";
-
-
-/*  */
 "settings.section.share_usage_data" = "Gebruiksgegevens delen";
-
-
-/*  */
-"settings.section.telemetry.footer" = "Help Openscape te verbeteren door automatisch diagnoses, foutrapporten en gebruiksgegevens te verzenden. Er worden geen persoonlijke gegevens verzameld.";
 
 
 /*  */
@@ -463,15 +407,7 @@
 
 
 /*  */
-"settings.language.screen_title.2" = "Taal en regio";
-
-
-/*  */
 "settings.language.change_alert" = "Wilt u de app-taal wijzigen in %@?";
-
-
-/*  */
-"settings.language.change_alert_action" = "Wijzigen in %@";
 
 
 /*  */
@@ -479,15 +415,7 @@
 
 
 /*  */
-"settings.audio.media_controls" = "Mediaregelaars";
-
-
-/*  */
 "settings.audio.mix_with_others.title" = "Mediaregelaars inschakelen";
-
-
-/*  */
-"settings.audio.mix_with_others.description" = "Gebruik deze optie om openscape aan te sturen met de knoppen op uw koptelefoon en afspeelknoppen voor medio op het vergrendelscherm. Let op! Als dit is ingeschakeld, kan openscape niet worden gebruikt terwijl andere media zoals podcasts of muziek worden afgespeeld.";
 
 
 /*  */
@@ -495,15 +423,7 @@
 
 
 /*  */
-"settings.volume.other" = "Geluidseffecten";
-
-
-/*  */
 "voice.action.preview" = "Voorbeeld";
-
-
-/*  */
-"voice.preview" = "Hallo. Mijn naam is %@.";
 
 
 /*  */
@@ -511,15 +431,7 @@
 
 
 /*  */
-"voice.voices" = "Stemmen";
-
-
-/*  */
 "voice.voice_rate_test" = "Hoe klinkt dit?";
-
-
-/*  */
-"voice.title.voice_name_and_locale" = "%1$@, %2$@.";
 
 
 /*  */
@@ -527,15 +439,7 @@
 
 
 /*  */
-"voice.voice_cell.selected.acc_hint" = "Deze stem is momenteel geselecteerd. Veeg omhoog of omlaag voor een voorbeeld.";
-
-
-/*  */
 "voice.voice_cell.use.acc_hint" = "Dubbeltik om deze stem te gebruiken. Veeg omhoog of omlaag voor een voorbeeld.";
-
-
-/*  */
-"voice.apple.other_languages" = "Andere talen";
 
 
 /*  */
@@ -543,15 +447,7 @@
 
 
 /*  */
-"voice.apple.female" = "Vrouw";
-
-
-/*  */
 "voice.apple.default" = "%@ (standaardstem)";
-
-
-/*  */
-"voice.apple.preview" = "Dit is %@. Hoe klinkt dit?";
 
 
 /*  */
@@ -559,15 +455,7 @@
 
 
 /*  */
-"voice.settings.enhanced_available.title" = "Verbeterde stem beschikbaar!";
-
-
-/*  */
 "voice.settings.enhanced_available" = "Er is mogelijk een versie met een betere kwaliteit van deze stem beschikbaar. Als u deze en andere stemmen wilt downloaden, gaat u naar de sectie Gesproken materiaal van de iOS-toegankelijkheidsinstellingen.";
-
-
-/*  */
-"voice.settings.enhanced_available.button" = "Huidige versie gebruiken";
 
 
 /*  */
@@ -575,15 +463,7 @@
 
 
 /*  */
-"beacon.settings_title" = "Bakeninstellingen";
-
-
-/*  */
 "beacon.settings.style" = "Audiostijlen";
-
-
-/*  */
-"beacon.settings.style.haptic" = "Haptische stijlen";
 
 
 /*  */
@@ -591,15 +471,7 @@
 
 
 /*  */
-"beacon.settings.cues" = "Aankomst en vertrek";
-
-
-/*  */
 "beacon.settings.melodies" = "Verwijzingen voor vertrek en aankomst inschakelen";
-
-
-/*  */
-"beacon.settings.explanation" = "Als u een bakenstijl kiest, selecteer dan een stijl die prettig is om naar te luisteren en die u buiten in een lawaaierige omgeving goed kunt horen. Zorg dat u de richting gemakkelijk kunt bepalen via het luisterapparaat van uw voorkeur (koptelefoon of telefoonspeaker).";
 
 
 /*  */
@@ -607,15 +479,7 @@
 
 
 /*  */
-"troubleshooting.gps_status" = "Locatienauwkeurigheid";
-
-
-/*  */
 "troubleshooting.gps_status.explanation.meters" = "Dit is een schatting van hoe precies openscape kan bepalen waar je je bevindt. Minder dan ca. 10 meter is goed. Minder dan ca. 20 meter is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als je buiten bent en niet ergens onder staat.";
-
-
-/*  */
-"troubleshooting.gps_status.explanation.feet" = "Dit is een schatting van hoe precies openscape kan bepalen waar je je bevindt. Minder dan ca. 30 voet is goed. Minder dan ca. 60 voet is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als je buiten bent en niet ergens onder staat.";
 
 
 /*  */
@@ -623,15 +487,7 @@
 
 
 /*  */
-"troubleshooting.gps_status.feet" = "±%@ voet";
-
-
-/*  */
 "troubleshooting.check_audio" = "Audio controleren";
-
-
-/*  */
-"troubleshooting.check_audio.hint" = "Dubbeltik om de status van de koptelefoon die je gebruikt met Openscape te controleren.";
 
 
 /*  */
@@ -639,15 +495,7 @@
 
 
 /*  */
-"troubleshooting.cache" = "Kaartgegevens";
-
-
-/*  */
 "troubleshooting.cache.hint" = "Dubbeltik om opgeslagen kaartgegevens te verwijderen en opnieuw te downloaden.";
-
-
-/*  */
-"troubleshooting.cache.explanation" = "Openscape downloadt kaartgegevens terwijl je loopt zodat de app je kan vertellen over de objecten en plaatsen om je heen. Als je problemen hebt met openscape of als er te veel geheugen wordt gebruikt, kun je de opgeslagen kaartgegevens wissen. Openscape downloadt vervolgens alleen opnieuw de kaartgegevens rond je huidige locatie.";
 
 
 /*  */
@@ -655,15 +503,7 @@
 
 
 /*  */
-"settings.about.title.privacy" = "Privacyverklaring van Openscape Community";
-
-
-/*  */
 "settings.about.title.service_agreement" = "Serviceovereenkomst";
-
-
-/*  */
-"settings.about.title.third_party" = "Kennisgevingen van derden";
 
 
 /*  */
@@ -671,15 +511,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_label" = "Dubbeltik om aankondigingen te sluiten";
-
-
-/*  */
 "settings.new_feature.accept_button.acc_hint" = "Dubbeltik om de aankondiging voor de volgende update weer te geven";
-
-
-/*  */
-"settings.new_feature.recent_updates" = "Recente updates";
 
 
 /*  */
@@ -687,15 +519,7 @@
 
 
 /*  */
-"beacon.styles.current" = "Huidig";
-
-
-/*  */
 "beacon.styles.original" = "Oorspronkelijk";
-
-
-/*  */
-"beacon.styles.flare" = "Flits";
 
 
 /*  */
@@ -703,15 +527,7 @@
 
 
 /*  */
-"beacon.styles.tactile" = "Tactiel";
-
-
-/*  */
 "beacon.styles.ping" = "Ping";
-
-
-/*  */
-"beacon.styles.drop" = "Vallen";
 
 
 /*  */
@@ -719,15 +535,7 @@
 
 
 /*  */
-"beacon.styles.signal.slow" = "Signaal (traag)";
-
-
-/*  */
 "beacon.styles.signal.very_slow" = "Signaal (zeer traag)";
-
-
-/*  */
-"beacon.styles.mallet" = "Hamer";
 
 
 /*  */
@@ -735,15 +543,7 @@
 
 
 /*  */
-"beacon.styles.mallet.very_slow" = "Hamer (heel traag)";
-
-
-/*  */
 "beacon.styles.haptic.wand" = "Haptische aanwijzer";
-
-
-/*  */
-"beacon.styles.haptic.pulse" = "Haptische pulsering";
 
 
 /*  */
@@ -751,15 +551,7 @@
 
 
 /*  */
-"beacon.beacon_on" = "Baken op %@";
-
-
-/*  */
 "beacon.distance.unknown" = "Afstand onbekend";
-
-
-/*  */
-"beacon.action.remove_beacon" = "Baken verwijderen";
 
 
 /*  */
@@ -767,15 +559,7 @@
 
 
 /*  */
-"beacon.action.mute_beacon" = "Baken dempen";
-
-
-/*  */
 "beacon.action.mute_beacon.acc_hint" = "Dubbeltik om het audiobaken te dempen.";
-
-
-/*  */
-"beacon.action.unmute_beacon" = "Baken dempen opheffen";
 
 
 /*  */
@@ -783,15 +567,7 @@
 
 
 /*  */
-"beacon.action.mute_unmute_beacon" = "Baken dempen aan of uit";
-
-
-/*  */
 "beacon.action.callout_beacon" = "Waarschuwen voor baken";
-
-
-/*  */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Dubbeltik om het audiobaken te dempen of het dempen op te heffen";
 
 
 /*  */
@@ -799,15 +575,7 @@
 
 
 /*  */
-"beacon.action.view_details.acc_hint.details" = "Dubbeltik om extra details weer te geven";
-
-
-/*  */
 "beacon.distance_update" = "Bakenafstand bijwerken";
-
-
-/*  */
-"beacon.beacon_location_within" = "Baken over %@";
 
 
 /*  */
@@ -815,15 +583,7 @@
 
 
 /*  */
-"preview.title" = "Openscape Street Preview";
-
-
-/*  */
 "preview.current_intersection_unknown.label" = "Huidige locatie onbekend";
-
-
-/*  */
-"preview.next_intersection.label" = "Naar %@";
 
 
 /*  */
@@ -831,15 +591,7 @@
 
 
 /*  */
-"preview.content.orientation.text.with_cardinal" = "%1$@° %2$@";
-
-
-/*  */
 "preview.content.orientation.text.without_cardinal" = "%1$@°";
-
-
-/*  */
-"preview.content.edge.text" = "%1$@ op %2$@";
 
 
 /*  */
@@ -847,15 +599,7 @@
 
 
 /*  */
-"preview.go.title" = "Start";
-
-
-/*  */
 "preview.go_back.title" = "Vorige";
-
-
-/*  */
-"preview.go_back.accessibility_text" = "Dubbeltik om terug te gaan naar het vorige kruispunt";
 
 
 /*  */
@@ -863,15 +607,7 @@
 
 
 /*  */
-"preview.search.accessibility_hint" = "Dubbeltik om te zoeken naar plaatsen in de buurt";
-
-
-/*  */
 "preview.alert.restart.title" = "Voorbeeld wordt al getoond";
-
-
-/*  */
-"preview.alert.restart.message" = "Wil je openscape Street Preview opnieuw starten op deze locatie?";
 
 
 /*  */
@@ -879,15 +615,7 @@
 
 
 /*  */
-"preview.callout.paused" = "Street Preview gepauzeerd";
-
-
-/*  */
 "preview.callout.end" = "Openscape Street Preview beëindigen";
-
-
-/*  */
-"preview.callout.previous" = "Teruggaan naar vorige kruispunt";
 
 
 /*  */
@@ -895,15 +623,7 @@
 
 
 /*  */
-"preview.callout.start.along" = "Street Preview starten langs %@";
-
-
-/*  */
 "preview.callout.continue.at" = "Street Preview voortzetten bij %@";
-
-
-/*  */
-"preview.callout.continue.along" = "Street Preview voortzetten langs %@";
 
 
 /*  */
@@ -911,15 +631,7 @@
 
 
 /*  */
-"preview.callout.road_finder.error_instructions" = "Draai om een weg te selecteren en druk op Start";
-
-
-/*  */
 "preview.callout.road_finder.road" = "%1$@, u loopt naar het %2$@";
-
-
-/*  */
-"preview.callout.road_finder.intersection" = "Volgende kruispunt: %@";
 
 
 /*  */
@@ -927,15 +639,7 @@
 
 
 /*  */
-"preview.callout.road_finder.intersection.end" = "Volgende kruispunt: wegeinde";
-
-
-/*  */
 "preview.callout.approach.end" = "U nadert een wegeinde";
-
-
-/*  */
-"preview.callout.turn.left" = "Links afgeslagen. Nu langs %@";
 
 
 /*  */
@@ -943,15 +647,7 @@
 
 
 /*  */
-"preview.callout.turn.continue" = "Verdergaan langs %@";
-
-
-/*  */
 "preview.callout.turn.roundabout" = "Rotonde verlaten. Nu langs %@";
-
-
-/*  */
-"preview.include_unnamed_roads.title" = "Naamloze straten";
 
 
 /*  */
@@ -959,15 +655,7 @@
 
 
 /*  */
-"preview.include_unnamed_roads.label.off" = "Naamloze straten inschakelen";
-
-
-/*  */
 "preview.include_unnamed_roads.label.on" = "Naamloze straten uitschakelen";
-
-
-/*  */
-"preview.include_unnamed_roads.hint.off" = "Dubbeltik om naamloze straten op te nemen tijdens openscape Street Preview";
 
 
 /*  */
@@ -975,15 +663,7 @@
 
 
 /*  */
-"preview.tutorial.done.hint" = "Dubbeltik om de zelfstudie af te sluiten";
-
-
-/*  */
 "preview.tutorial.title.1" = "Welkom bij Openscape Street Preview!";
-
-
-/*  */
-"preview.tutorial.content.1" = "Verken en krijg inzicht in gebieden waar dan ook ter wereld. U krijgt de beste beleving als u staande op uw plaats ronddraait en een stereokoptelefoon gebruikt.";
 
 
 /*  */
@@ -991,15 +671,7 @@
 
 
 /*  */
-"preview.tutorial.content.2" = "U wordt verplaatst naar het midden van de straat bij de door u geselecteerde locatie. Gebruik de telefoon als aanwijzer, draai langzaam rond en de straatnamen worden opgesomd terwijl u draait. Als u kijkt naar de straat die u wilt volgen, tikt u op Start en gaat u naar het volgende kruispunt.";
-
-
-/*  */
 "preview.tutorial.title.3" = "Uw verkenning voortzetten";
-
-
-/*  */
-"preview.tutorial.content.3" = "Bij elk kruispunt kun je met de telefoon weer kiezen welke straat je wilt volgen of je kunt je onmiddellijke omgeving verkennen met de bekende Openscape-knoppen onderaan het scherm. Tik op Zoeken om het audiobaken van een willekeurig referentiepunt te starten, wijzig je locatie om bekijk meer details over de omgeving.";
 
 
 /*  */
@@ -1007,15 +679,7 @@
 
 
 /*  */
-"location_detail.title.default" = "Locatiedetails";
-
-
-/*  */
 "location_detail.title.marker" = "Markeringsdetails";
-
-
-/*  */
-"location_detail.title.waypoint" = "Routepuntdetails";
 
 
 /*  */
@@ -1023,15 +687,7 @@
 
 
 /*  */
-"location_detail.action.beacon.hint" = "Dubbeltik om een audiobaken op deze locatie in te stellen";
-
-
-/*  */
 "location_detail.action.beacon.hint.disabled" = "Een nieuw audiobaken instellen is uitgeschakeld wanneer navigatie actief is";
-
-
-/*  */
-"location_detail.action.save.hint" = "Dubbeltik om deze locatie als een markering op te slaan";
 
 
 /*  */
@@ -1039,15 +695,7 @@
 
 
 /*  */
-"location_detail.action.share.hint" = "Dubbeltik om deze locatie te delen";
-
-
-/*  */
 "location_detail.action.preview.hint" = "Dubbeltik om een voorbeeld van deze locatie te starten";
-
-
-/*  */
-"location_detail.action.preview.hint.disabled" = "Street Preview is uitgeschakeld als navigatie actief is";
 
 
 /*  */
@@ -1055,15 +703,7 @@
 
 
 /*  */
-"location_detail.default.address" = "Adres onbekend";
-
-
-/*  */
 "location_detail.default.annotation" = "Geen annotatie voor markering";
-
-
-/*  */
-"location.select.hint" = "Dubbeltik om deze locatie te selecteren";
 
 
 /*  */
@@ -1071,15 +711,7 @@
 
 
 /*  */
-"location_detail.disabled.share" = "U kunt deze locatie momenteel niet delen";
-
-
-/*  */
 "location_detail.disabled.generic" = "Deze locatie is momenteel niet beschikbaar";
-
-
-/*  */
-"location_detail.map.view.title" = "Geselecteerde locatie";
 
 
 /*  */
@@ -1087,15 +719,7 @@
 
 
 /*  */
-"location_detail.map.edit.title" = "Locatie bewerken";
-
-
-/*  */
 "location_detail.map.edit.hint" = "Verplaats de kaart naar de correcte locatie";
-
-
-/*  */
-"location_detail.map.edit.accessibility_label" = "Markering verplaatsen";
 
 
 /*  */
@@ -1103,15 +727,7 @@
 
 
 /*  */
-"location_detail.map.edit.north.accessibility_hint" = "Dubbeltik om de markering naar het noorden te verplaatsen. Gebruik acties om te verplaatsen in een andere richting.";
-
-
-/*  */
 "location_detail.map.edit.south.accessibility_hint" = "Dubbeltik om de markering naar het zuiden te verplaatsen. Gebruik acties om te verplaatsen in een andere richting.";
-
-
-/*  */
-"location_detail.map.edit.east.accessibility_hint" = "Dubbeltik om de markering naar het oosten te verplaatsen. Gebruik acties om te verplaatsen in een andere richting.";
 
 
 /*  */
@@ -1119,15 +735,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_annoucement" = "Bezig met verplaatsen, %@ van oorspronkelijke locatie";
-
-
-/*  */
 "location_detail.map.edit.accessibility_action.compass" = "Verplaatsen in richting van telefoon";
-
-
-/*  */
-"location_detail.map.edit.accessibility_action.north" = "Verplaatsen naar het noorden";
 
 
 /*  */
@@ -1135,15 +743,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_action.east" = "Verplaatsen naar het oosten";
-
-
-/*  */
 "location_detail.map.edit.accessibility_action.west" = "Verplaatsen naar het westen";
-
-
-/*  */
-"location_detail.map.edit.accessibility_action.current_location" = "Verplaatsen naar huidige locatie";
 
 
 /*  */
@@ -1151,15 +751,7 @@
 
 
 /*  */
-"location_detail.waypoint" = "Routepunt %@";
-
-
-/*  */
 "location_detail.add_waypoint.existing.hint" = "Dubbeltik om deze markering te verwijderen uit uw route.";
-
-
-/*  */
-"location_detail.add_waypoint.new.hint" = "Dubbeltik om deze markering toe te voegen aan uw route.";
 
 
 /*  */
@@ -1167,15 +759,7 @@
 
 
 /*  */
-"route_detail.action.start_route" = "Route starten";
-
-
-/*  */
 "route_detail.action.stop_route" = "Route stoppen";
-
-
-/*  */
-"route_detail.action.start_event" = "Activiteit starten";
 
 
 /*  */
@@ -1183,15 +767,7 @@
 
 
 /*  */
-"route_detail.action.edit" = "Route bewerken";
-
-
-/*  */
 "route_detail.action.start_route.hint" = "Dubbeltik om deze route te starten";
-
-
-/*  */
-"route_detail.action.start_route.disabled.hint" = "Voeg routepunten toe voordat u de route start";
 
 
 /*  */
@@ -1199,15 +775,7 @@
 
 
 /*  */
-"route_detail.action.start_event.hint" = "Dubbeltik om deze activiteit te starten";
-
-
-/*  */
 "route_detail.action.stop_event.hint" = "Dubbeltik om deze activiteit te stoppen en uw voortgang op te slaan";
-
-
-/*  */
-"route_detail.action.reset.hint" = "Dubbeltik om deze activiteit opnieuw in te stellen en beschikbare updates te downloaden";
 
 
 /*  */
@@ -1215,15 +783,7 @@
 
 
 /*  */
-"route_detail.action.edit.hint" = "Dubbeltik om deze route te bewerken";
-
-
-/*  */
 "route_detail.action.create" = "Nieuwe route";
-
-
-/*  */
-"route_detail.action.create.hint" = "Dubbeltik om een nieuwe route te maken";
 
 
 /*  */
@@ -1231,15 +791,7 @@
 
 
 /*  */
-"route_detail.name.default" = "Route";
-
-
-/*  */
 "route.title.time" = "%@ voorbij";
-
-
-/*  */
-"route.title" = "%1$@・Routepunt %2$@ van %3$@";
 
 
 /*  */
@@ -1247,15 +799,7 @@
 
 
 /*  */
-"route.waypoint.progress.complete.elapsed" = "Voltooid in %@";
-
-
-/*  */
 "route.waypoint.progress.complete" = "Voltooid!";
-
-
-/*  */
-"route.end.completed" = "Route voltooid!・%@";
 
 
 /*  */
@@ -1263,15 +807,7 @@
 
 
 /*  */
-"route.end.not_completed" = "Route gestopt・%@";
-
-
-/*  */
 "route.end.not_completed.accessibility" = "Route gestopt, %@";
-
-
-/*  */
-"route.end.completed.summary" = "%@ routepunten bereikt・Laatste routepunt in de buurt";
 
 
 /*  */
@@ -1279,15 +815,7 @@
 
 
 /*  */
-"route.end.not_completed.summary" = "%1$@ van %2$@ routepunten bereikt・%3$@ over";
-
-
-/*  */
 "route.end.not_completed.summary.accessibility" = "%1$@ van %2$@ routepunten bereikt, %3$@ over";
-
-
-/*  */
-"route.title.accessibility_label" = "%1$@, routepunt %2$@ van %3$@";
 
 
 /*  */
@@ -1295,15 +823,7 @@
 
 
 /*  */
-"route_detail.action.previous.hint" = "Dubbeltik om het baken op het vorige routepunt in te stellen";
-
-
-/*  */
 "route_detail.action.next" = "Volgende routepunt";
-
-
-/*  */
-"route_detail.action.next.hint" = "Dubbeltik om het baken op het volgende routepunt in te stellen";
 
 
 /*  */
@@ -1311,15 +831,7 @@
 
 
 /*  */
-"route_detail.edit.description" = "Beschrijving";
-
-
-/*  */
 "route_detail.edit.description.default" = "Een beschrijving van uw route toevoegen";
-
-
-/*  */
-"route_detail.edit.waypoints_button" = "Routepunten toevoegen";
 
 
 /*  */
@@ -1327,15 +839,7 @@
 
 
 /*  */
-"route_detail.edit.delete" = "Route verwijderen";
-
-
-/*  */
 "route_detail.edit.delete.title" = "Weet u zeker dat u deze route wilt verwijderen?";
-
-
-/*  */
-"route_detail.edit.delete.message" = "Deze actie kan niet ongedaan worden gemaakt.";
 
 
 /*  */
@@ -1343,15 +847,7 @@
 
 
 /*  */
-"route_detail.edit.cancel.message" = "Wilt u uw wijzigingen niet opslaan?";
-
-
-/*  */
 "route_detail.beacon.title" = "Begeleide route";
-
-
-/*  */
-"route_detail.orienteering.title" = "Oriëntatielopen";
 
 
 /*  */
@@ -1359,15 +855,7 @@
 
 
 /*  */
-"route.update.success.title" = "Update voltooid!";
-
-
-/*  */
 "route.update.success.message" = "Uw recreatie-activiteit is bijgewerkt";
-
-
-/*  */
-"route.update.fail.title" = "Bijwerken mislukt";
 
 
 /*  */
@@ -1375,15 +863,7 @@
 
 
 /*  */
-"route.update.unavailable.title" = "U kunt van start!";
-
-
-/*  */
 "route.update.unavailable.message" = "Uw recreatie-activiteit is al bijgewerkt";
-
-
-/*  */
-"tour_detail.beacon.title" = "Begeleide rondleiding";
 
 
 /*  */
@@ -1391,15 +871,7 @@
 
 
 /*  */
-"waypoint.title" = "Routepunt";
-
-
-/*  */
 "waypoint.callout" = "Routepunt, %@";
-
-
-/*  */
-"tour.progress.elapsed_distance.accessibility" = "Baken ingesteld op %1$@. %2$@. %3$@ verstreken. %4$@ routepunten resterend";
 
 
 /*  */
@@ -1407,15 +879,7 @@
 
 
 /*  */
-"tour.progress.elapsed.accessibility" = "Baken ingesteld op %1$@. %2$@ verstreken. %3$@ routepunten resterend";
-
-
-/*  */
 "tour.progress.accessibility" = "Baken ingesteld op %1$@. %2$@ routepunten resterend";
-
-
-/*  */
-"tour.progress.elapsed_distance.accessibility.singular" = "Baken ingesteld op %1$@. %2$@. %3$@ verstreken. 1 routepunt resterend";
 
 
 /*  */
@@ -1423,15 +887,7 @@
 
 
 /*  */
-"tour.progress.elapsed.accessibility.singular" = "Baken ingesteld op %1$@. %2$@ verstreken. 1 routepunt resterend";
-
-
-/*  */
 "tour.progress.accessibility.singular" = "Baken ingesteld op %@. 1 routepunt resterend";
-
-
-/*  */
-"waypoint.audio_available" = "Audio beschikbaar";
 
 
 /*  */
@@ -1439,15 +895,7 @@
 
 
 /*  */
-"waypoint.audio_images_available" = "Afbeeldingen en audio beschikbaar.";
-
-
-/*  */
 "waypoint.callout.button.title" = "Waarschuwen voor routepunt";
-
-
-/*  */
-"waypoint.callout.button.hint" = "Dubbeltik om extra details te horen";
 
 
 /*  */
@@ -1455,15 +903,7 @@
 
 
 /*  */
-"first_use_experience.share.alert.title" = "Delen in Openscape";
-
-
-/*  */
 "first_use_experience.share.alert.message" = "Wanneer je een Openscape-markering of -route deelt, deel je de locaties die zijn gekoppeld aan die markering of route. Deel alleen met personen die je vertrouwt.";
-
-
-/*  */
-"universal_links.alert.error.title" = "Er is iets misgegaan.";
 
 
 /*  */
@@ -1471,15 +911,7 @@
 
 
 /*  */
-"universal_links.alert.share_error.message" = "De inhoud kan niet worden gedeeld.";
-
-
-/*  */
 "universal_links.alert.action.marker" = "Opslaan als markering";
-
-
-/*  */
-"universal_links.alert.action.beacon" = "Een baken instellen";
 
 
 /*  */
@@ -1487,15 +919,7 @@
 
 
 /*  */
-"universal_links.marker.alert.message" = "Gebruik alleen markeringen van iemand die u vertrouwt.";
-
-
-/*  */
 "universal_links.marker_existing.alert.title" = "Markering bestaat al";
-
-
-/*  */
-"universal_links.marker_existing.alert.message" = "Er bestaat al een markering voor die locatie. Wilt u deze vervangen?";
 
 
 /*  */
@@ -1503,15 +927,7 @@
 
 
 /*  */
-"siri_shortcuts.title" = "Siri-opdrachten";
-
-
-/*  */
 "siri_shortcuts.title.beta" = "Siri-opdrachten (bèta)";
-
-
-/*  */
-"siri_shortcuts.description" = "Als je Siri-opdrachten hebt toegevoegd, kun je je stem gebruiken om ze te activeren, ook wanneer Openscape niet actief is.";
 
 
 /*  */
@@ -1519,15 +935,7 @@
 
 
 /*  */
-"user_activity.around_me.title" = "Wat is er om me heen?";
-
-
-/*  */
 "user_activity.ahead_of_me.title" = "Wat is er voor me?";
-
-
-/*  */
-"user_activity.nearby_markers.title" = "Markeringen in de buurt horen";
 
 
 /*  */
@@ -1535,15 +943,7 @@
 
 
 /*  */
-"user_activity.save_marker.title" = "Markering opslaan";
-
-
-/*  */
 "user_activity.street_preview.title" = "Street Preview starten";
-
-
-/*  */
-"url_resource.alert.route.share.message" = "Ik heb een Openscape-route met je gedeeld. \"%@\"";
 
 
 /*  */
@@ -1551,15 +951,7 @@
 
 
 /*  */
-"url_resource.alert.route.import.message" = "Gebruik alleen routes van iemand die je vertrouwt. Routes worden niet gemaakt, gedeeld of gecontroleerd door Openscape Community en kunnen fouten bevatten.";
-
-
-/*  */
 "url_resource.alert.route.import_existing.title" = "Route bestaat al";
-
-
-/*  */
-"url_resource.alert.route.import_existing.message" = "Wilt u deze vervangen? Als u deze route vervangt, worden ook de markeringen in deze route vervangen.";
 
 
 /*  */
@@ -1567,15 +959,7 @@
 
 
 /*  */
-"url_resource.alert.route.import_error.message" = "De inhoud is waarschijnlijk ongeldig.";
-
-
-/*  */
 "routes.title" = "Routes";
-
-
-/*  */
-"routes.action.deleted" = "Route verwijderd";
 
 
 /*  */
@@ -1583,15 +967,7 @@
 
 
 /*  */
-"routes.no_routes.title" = "Aan de slag met routepunten";
-
-
-/*  */
 "routes.no_routes.hint.1" = "Maak een route voor uzelf of voor iemand anders door een set markeringen als routepunten samen te stellen.";
-
-
-/*  */
-"routes.no_routes.hint.2" = "Als je onderweg bent met Openscape, hoor je wanneer je bij een routepunt aankomt. Het audiobaken gaat daarna automatisch verder naar het volgende punt.";
 
 
 /*  */
@@ -1599,15 +975,7 @@
 
 
 /*  */
-"route.no_waypoints.hint.2" = "U kunt de volgorde van routepunten langs een route op elke gewenst moment aanpassen door de route te bewerken.";
-
-
-/*  */
 "routes.tutorial.title" = "De routepunten van uw reis horen";
-
-
-/*  */
-"routes.tutorial.details" = "Je gaat nu terug naar de startpagina van openscape en er wordt een audiobaken op je eerste routepunt geplaatst. Wanneer je arriveert bij het routepunt, wordt het baken verplaatst naar het volgende routepunt.";
 
 
 /*  */
@@ -1615,15 +983,7 @@
 
 
 /*  */
-"routes.sort.by_name" = "Sorteren op naam";
-
-
-/*  */
 "routes.sort.by_name.hint" = "Dubbeltik om te sorteren op naam";
-
-
-/*  */
-"routes.sort.by_distance" = "Sorteren op afstand";
 
 
 /*  */
@@ -1631,15 +991,7 @@
 
 
 /*  */
-"routes.import.alert.title" = "Fout in route";
-
-
-/*  */
 "routes.import.alert.message" = "Gegevens van routepunt ontbreken voor een of meer routes. Bekijk de volgende routes en voeg, indien nodig, opnieuw routepunten toe.";
-
-
-/*  */
-"markers.title" = "Markeringen";
 
 
 /*  */
@@ -1647,15 +999,7 @@
 
 
 /*  */
-"markers.action.deleted" = "Markering verwijderd";
-
-
-/*  */
 "markers.action.deleted_error" = "We kunnen deze markering nu niet verwijderen. Probeer het later opnieuw.";
-
-
-/*  */
-"markers.action.update_error" = "We kunnen deze markering nu niet bijwerken. Probeer het later opnieuw.";
 
 
 /*  */
@@ -1663,15 +1007,7 @@
 
 
 /*  */
-"markers.sort_button.sort_by_name" = "Naam";
-
-
-/*  */
 "markers.sort_button.sort_by_name.voiceover" = "Gesorteerd op naam";
-
-
-/*  */
-"markers.sort_button.sort_by_distance" = "Afstand";
 
 
 /*  */
@@ -1679,15 +1015,7 @@
 
 
 /*  */
-"markers.no_markers.title" = "Aan de slag met markeringen";
-
-
-/*  */
 "markers.no_markers.hint.1" = "Maak markeringen voor uw favoriete bestemmingen, routepunten of locaties waarvoor u een beschrijving wilt horen. Kies een locatie in het startscherm, bijvoorbeeld uw huidige locatie, en selecteer Opslaan als markering.";
-
-
-/*  */
-"markers.no_markers.hint.2" = "Probeer uw huis te markeren, de toegang tot uw werkplek of uw favoriete plek in het park.";
 
 
 /*  */
@@ -1695,15 +1023,7 @@
 
 
 /*  */
-"markers.edit_screen.title.edit" = "Markering bewerken";
-
-
-/*  */
 "markers.edit_screen.done_button.acc_hint" = "Dubbeltik om deze markering op te slaan";
-
-
-/*  */
-"markers.edit_screen.route" = "Opslaan in route: %@";
 
 
 /*  */
@@ -1711,15 +1031,7 @@
 
 
 /*  */
-"markers.marker_with_name" = "Markering. %@";
-
-
-/*  */
 "markers.marker_created" = "Markering gemaakt";
-
-
-/*  */
-"markers.marker_created_on" = "Markering gemaakt op %@";
 
 
 /*  */
@@ -1727,15 +1039,7 @@
 
 
 /*  */
-"markers.marker_at" = "Markering op %@";
-
-
-/*  */
 "markers.marker_along" = "Markering langs %@";
-
-
-/*  */
-"markers.new_badge.acc_label" = "Nieuw. %@";
 
 
 /*  */
@@ -1743,15 +1047,7 @@
 
 
 /*  */
-"markers.destructive_delete_message.routes" = "Deze markering is onderdeel van de volgende routes:\n%@";
-
-
-/*  */
 "markers.annotation" = "Annotatie";
-
-
-/*  */
-"search.no_results_found_with_action" = "Geen resultaten gevonden. Bewerk de tekst of druk op Zoeken voor meer.";
 
 
 /*  */
@@ -1759,15 +1055,7 @@
 
 
 /*  */
-"searching.no_results_found_title" = "Helaas, geen resultaten gevonden";
-
-
-/*  */
 "searching.no_results_found_message" = "Als u naar een specifieke plaats zoekt, kunt u ook proberen te zoeken op naam of adres.";
-
-
-/*  */
-"searching.offline" = "Zoeken is uitgeschakeld als u offline bent";
 
 
 /*  */
@@ -1775,15 +1063,7 @@
 
 
 /*  */
-"search.searching" = "Zoeken";
-
-
-/*  */
 "search.searching_with_punctuation" = "Zoeken…";
-
-
-/*  */
-"search.choose_destination" = "Bestemming kiezen";
 
 
 /*  */
@@ -1791,15 +1071,7 @@
 
 
 /*  */
-"search.no_results_found_error" = "Het ziet ernaar uit dat er geen plaatsen in de buurt zijn. Als u een specifieke plaats zoekt, kunt u zoeken op naam of adres.";
-
-
-/*  */
 "search.use_current_location" = "Huidige locatie";
-
-
-/*  */
-"search.nearby.screen_title" = "Plaatsen in de buurt";
 
 
 /*  */
@@ -1807,15 +1079,7 @@
 
 
 /*  */
-"search.button.markers.accessibility_hint" = "Dubbeltik om opgeslagen markeringen te selecteren of te bewerken";
-
-
-/*  */
 "search.button.nearby.accessibility_hint" = "Dubbeltik om in de omgeving te zoeken naar restaurants, haltes van het openbaar vervoer en meer";
-
-
-/*  */
-"search.button.current_location.accessibility_hint" = "Dubbeltik om een voorbeeld te zien van uw huidige locatie, en om deze te markeren of te delen met een vriend";
 
 
 /*  */
@@ -1823,15 +1087,7 @@
 
 
 /*  */
-"filter.set" = "Filter instellen";
-
-
-/*  */
 "filter.clear.capital" = "Filter wissen";
-
-
-/*  */
-"filter.clear.hint" = "Dubbeltik om het geselecteerde filter te wissen";
 
 
 /*  */
@@ -1839,15 +1095,7 @@
 
 
 /*  */
-"filter.all" = "Alle plaatsen";
-
-
-/*  */
 "filter.transit" = "Openbaar vervoer";
-
-
-/*  */
-"filter.selected" = "%@ (geselecteerd)";
 
 
 /*  */
@@ -1855,15 +1103,7 @@
 
 
 /*  */
-"callouts.panel.title" = "Luisteren naar mijn omgeving";
-
-
-/*  */
 "callouts.turn_on_off" = "Alle waarschuwingen in- of uitschakelen";
-
-
-/*  */
-"callouts.callouts_on" = "Waarschuwingen aan";
 
 
 /*  */
@@ -1871,15 +1111,7 @@
 
 
 /*  */
-"callouts.allow_callouts" = "Waarschuwingen toestaan";
-
-
-/*  */
 "callouts.places_and_landmarks" = "Plaatsen en herkenningspunten";
-
-
-/*  */
-"callouts.places_and_landmarks.info" = "Plaatsen in de buurt zoals winkels of restaurants";
 
 
 /*  */
@@ -1887,15 +1119,7 @@
 
 
 /*  */
-"callouts.mobility.info" = "Informatie over kruispunt en vervoer";
-
-
-/*  */
 "callouts.audio_beacon" = "Afstand tot audiobaken";
-
-
-/*  */
-"callouts.audio_beacon.info" = "Updates voor de afstand tot het audiobaken wanneer het is ingesteld";
 
 
 /*  */
@@ -1903,15 +1127,7 @@
 
 
 /*  */
-"callouts.intersection_callout" = "Waarschuwing voor kruispunt";
-
-
-/*  */
 "callouts.ahead_of_you" = "Vóór u";
-
-
-/*  */
-"callouts.around_you" = "Om u heen";
 
 
 /*  */
@@ -1919,15 +1135,7 @@
 
 
 /*  */
-"callouts.nothing_to_call_out_now" = "Er is momenteel niets om voor te waarschuwen";
-
-
-/*  */
 "callouts.nearby_markers" = "Markeringen in de buurt";
-
-
-/*  */
-"callouts.no_nearby_markers_to_call_out_now" = "Er zijn op dit moment geen markeringen in de buurt om voor te waarschuwen.";
 
 
 /*  */
@@ -1935,15 +1143,7 @@
 
 
 /*  */
-"callouts.action.more_info" = "Meer info";
-
-
-/*  */
 "callouts.hardware.low_battery" = "%1$@ heeft slechts %2$@ procent batterijlading over.";
-
-
-/*  */
-"callouts.departure" = "Waarschuwing voor vertrek";
 
 
 /*  */
@@ -1951,15 +1151,7 @@
 
 
 /*  */
-"sleep.snoozing" = "Sluimerstand";
-
-
-/*  */
 "sleep.sleep" = "Slapen";
-
-
-/*  */
-"sleep.sleeping" = "Slaapstand";
 
 
 /*  */
@@ -1967,15 +1159,7 @@
 
 
 /*  */
-"sleep.sleeping.message" = "Openscape staat momenteel in de slaapstand. Openscape kan nu niet gebruikmaken van Locatievoorzieningen en geen gegevens downloaden. Dit bespaart batterijvoeding wanneer je openscape niet gebruikt. Tik op de knop hieronder om openscape te activeren.";
-
-
-/*  */
 "sleep.sleep.acc_hint" = "Dubbeltik om Openscape in de slaapstand te zetten";
-
-
-/*  */
-"sleep.wake_up_when_i_leave" = "Activeren wanneer ik vertrek";
 
 
 /*  */
@@ -1983,15 +1167,7 @@
 
 
 /*  */
-"sleep.ui.wake_on_leave" = "Activeren aan\nVertrek";
-
-
-/*  */
 "sleep.ui.wake_up_now" = "Activeren\nNu";
-
-
-/*  */
-"intersection.approaching_intersection" = "U nadert een kruispunt";
 
 
 /*  */
@@ -1999,15 +1175,7 @@
 
 
 /*  */
-"directions.intersection_with_name_distance" = "Kruispunt met op %1$@ %2$@ afstand";
-
-
-/*  */
 "directions.intersection_with_name_direction" = "Kruispunt met %1$@ %2$@";
-
-
-/*  */
-"directions.intersection_with_name" = "Kruispunt met %@ dichtbij";
 
 
 /*  */
@@ -2015,15 +1183,7 @@
 
 
 /*  */
-"intersection.named_intersection" = "Kruispunt %@";
-
-
-/*  */
 "directions.at_poi" = "Bij %@";
-
-
-/*  */
-"directions.along_road" = "Langs %@.";
 
 
 /*  */
@@ -2031,15 +1191,7 @@
 
 
 /*  */
-"directions.near_address" = "Bij adres %@";
-
-
-/*  */
 "directions.intersects_with_in" = "Kruist met %1$@ over %2$@";
-
-
-/*  */
-"directions.near_name" = "Bij %@";
 
 
 /*  */
@@ -2047,15 +1199,7 @@
 
 
 /*  */
-"directions.unknown_road" = "Onbekende weg";
-
-
-/*  */
 "directions.previous_location" = "Vorige locatie";
-
-
-/*  */
-"directions.previous_location_along" = "Vorige locatie, langs %@";
 
 
 /*  */
@@ -2063,15 +1207,7 @@
 
 
 /*  */
-"directions.nearest_road_name_is_distance_direction" = "Dichtstbijzijnde weg, %1$@, is %2$@ %3$@";
-
-
-/*  */
 "directions.nearest_road_name_is_distance" = "Dichtstbijzijnde weg, %1$@, op %2$@ afstand";
-
-
-/*  */
-"directions.nearest_road_name_was_distance_direction" = "Dichtstbijzijnde weg, %1$@, was %2$@ %3$@";
 
 
 /*  */
@@ -2079,15 +1215,7 @@
 
 
 /*  */
-"directions.poi_name_is_distance" = "%1$@ is %2$@ weg";
-
-
-/*  */
 "directions.poi_name_was_distance_direction" = "%1$@ was %2$@ %3$@";
-
-
-/*  */
-"directions.roundabout_with_exits_distance_direction" = "Rotonde met %1$@ afslagen %2$@ %3$@";
 
 
 /*  */
@@ -2095,15 +1223,7 @@
 
 
 /*  */
-"directions.roundabout_with_exits_was_distance_direction" = "Rotonde met %1$@ afslagen was %2$@ %3$@";
-
-
-/*  */
 "directions.roundabout_with_exits_direction" = "Rotonde met %1$@ afslagen %2$@";
-
-
-/*  */
-"directions.roundabout_with_exits" = "Rotonde met %1$@ afslagen dichtbij";
 
 
 /*  */
@@ -2111,15 +1231,7 @@
 
 
 /*  */
-"directions.approaching_roundabout" = "U nadert rotonde";
-
-
-/*  */
 "directions.approaching_name_roundabout" = "U nadert rotonde %@";
-
-
-/*  */
-"directions.name_roundabout" = "%@ rotonde";
 
 
 /*  */
@@ -2127,15 +1239,7 @@
 
 
 /*  */
-"directions.approaching_name_with_exits" = "U nadert %1$@ met %2$@ afslagen";
-
-
-/*  */
 "directions.name_roundabout_with_exits" = "Rotonde %1$@ met %2$@ afslagen";
-
-
-/*  */
-"directions.name_with_exits" = "%1$@ met %2$@ afslagen";
 
 
 /*  */
@@ -2143,15 +1247,7 @@
 
 
 /*  */
-"directions.name_goes_left.roundabout" = "%@, gaat naar links bij de rotonde";
-
-
-/*  */
 "directions.name_goes_right" = "%@, gaat naar rechts";
-
-
-/*  */
-"directions.name_goes_right.roundabout" = "%@, gaat naar rechts bij de rotonde";
 
 
 /*  */
@@ -2159,15 +1255,7 @@
 
 
 /*  */
-"directions.name_continues_ahead.roundabout" = "%@, gaat rechtdoor over de rotonde";
-
-
-/*  */
 "directions.direction.ahead" = "vóór u";
-
-
-/*  */
-"directions.direction.ahead_to_the_right" = "vóór u naar rechts";
 
 
 /*  */
@@ -2175,15 +1263,7 @@
 
 
 /*  */
-"directions.direction.behind_to_the_right" = "achter u naar rechts";
-
-
-/*  */
 "directions.direction.behind" = "achter u";
-
-
-/*  */
-"directions.direction.behind_to_the_left" = "achter u naar links";
 
 
 /*  */
@@ -2191,15 +1271,7 @@
 
 
 /*  */
-"directions.direction.ahead_to_the_left" = "vóór u naar links";
-
-
-/*  */
 "directions.direction.away" = "afstand tot";
-
-
-/*  */
-"directions.name_close_by" = "%@ dichtbij";
 
 
 /*  */
@@ -2207,15 +1279,7 @@
 
 
 /*  */
-"directions.name_around_distance" = "%1$@ ongeveer %2$@";
-
-
-/*  */
 "directions.name_is_nearby_street_address" = "%1$@ is dichtbij. Adres is %2$@.";
-
-
-/*  */
-"directions.name_is_currently_street_address" = "%1$@ is nu %2$@. Adres is %3$@.";
 
 
 /*  */
@@ -2223,15 +1287,7 @@
 
 
 /*  */
-"directions.traveling.n" = "U rijdt naar het noorden";
-
-
-/*  */
 "directions.traveling.ne" = "U rijdt naar het noordoosten";
-
-
-/*  */
-"directions.traveling.e" = "U rijdt naar het oosten";
 
 
 /*  */
@@ -2239,15 +1295,7 @@
 
 
 /*  */
-"directions.traveling.s" = "U rijdt naar het zuiden";
-
-
-/*  */
 "directions.traveling.sw" = "U rijdt naar het zuidwesten";
-
-
-/*  */
-"directions.traveling.w" = "U rijdt naar het westen";
 
 
 /*  */
@@ -2255,15 +1303,7 @@
 
 
 /*  */
-"directions.facing.n" = "U kijkt naar het noorden";
-
-
-/*  */
 "directions.facing.ne" = "U kijkt naar het noordoosten";
-
-
-/*  */
-"directions.facing.e" = "U kijkt naar het oosten";
 
 
 /*  */
@@ -2271,15 +1311,7 @@
 
 
 /*  */
-"directions.facing.s" = "U kijkt naar het zuiden";
-
-
-/*  */
 "directions.facing.sw" = "U kijkt naar het zuidwesten";
-
-
-/*  */
-"directions.facing.w" = "U kijkt naar het westen";
 
 
 /*  */
@@ -2287,15 +1319,7 @@
 
 
 /*  */
-"directions.heading.n" = "U loopt naar het noorden";
-
-
-/*  */
 "directions.heading.ne" = "U loopt naar het noordoosten";
-
-
-/*  */
-"directions.heading.e" = "U loopt naar het oosten";
 
 
 /*  */
@@ -2303,15 +1327,7 @@
 
 
 /*  */
-"directions.heading.s" = "U loopt naar het zuiden";
-
-
-/*  */
 "directions.heading.sw" = "U loopt naar het zuidwesten";
-
-
-/*  */
-"directions.heading.w" = "U loopt naar het westen";
 
 
 /*  */
@@ -2319,15 +1335,7 @@
 
 
 /*  */
-"directions.along.traveling.n" = "U rijdt naar het noorden langs %@";
-
-
-/*  */
 "directions.along.traveling.ne" = "U rijdt naar het noordoosten langs %@";
-
-
-/*  */
-"directions.along.traveling.e" = "U rijdt naar het oosten langs %@";
 
 
 /*  */
@@ -2335,15 +1343,7 @@
 
 
 /*  */
-"directions.along.traveling.s" = "U rijdt naar het zuiden langs %@";
-
-
-/*  */
 "directions.along.traveling.sw" = "U rijdt naar het zuidwesten langs %@";
-
-
-/*  */
-"directions.along.traveling.w" = "U rijdt naar het westen langs %@";
 
 
 /*  */
@@ -2351,15 +1351,7 @@
 
 
 /*  */
-"directions.along.facing.n" = "U kijkt naar het noorden langs %@";
-
-
-/*  */
 "directions.along.facing.ne" = "U kijkt naar het noordoosten langs %@";
-
-
-/*  */
-"directions.along.facing.e" = "U kijkt naar het oosten langs %@";
 
 
 /*  */
@@ -2367,15 +1359,7 @@
 
 
 /*  */
-"directions.along.facing.s" = "U kijkt naar het zuiden langs %@";
-
-
-/*  */
 "directions.along.facing.sw" = "U kijkt naar het zuidwesten langs %@";
-
-
-/*  */
-"directions.along.facing.w" = "U kijkt naar het westen langs %@";
 
 
 /*  */
@@ -2383,15 +1367,7 @@
 
 
 /*  */
-"directions.along.heading.n" = "U loopt naar het noorden langs %@";
-
-
-/*  */
 "directions.along.heading.ne" = "U loopt naar het noordoosten langs %@";
-
-
-/*  */
-"directions.along.heading.e" = "U loopt naar het oosten langs %@";
 
 
 /*  */
@@ -2399,15 +1375,7 @@
 
 
 /*  */
-"directions.along.heading.s" = "U loopt naar het zuiden langs %@";
-
-
-/*  */
 "directions.along.heading.sw" = "U loopt naar het zuidwesten langs %@";
-
-
-/*  */
-"directions.along.heading.w" = "U loopt naar het westen langs %@";
 
 
 /*  */
@@ -2415,15 +1383,7 @@
 
 
 /*  */
-"directions.cardinal.north" = "Noorden";
-
-
-/*  */
 "directions.cardinal.north_east" = "Noordoosten";
-
-
-/*  */
-"directions.cardinal.east" = "Oosten";
 
 
 /*  */
@@ -2431,15 +1391,7 @@
 
 
 /*  */
-"directions.cardinal.south" = "Zuiden";
-
-
-/*  */
 "directions.cardinal.south_west" = "Zuidwesten";
-
-
-/*  */
-"directions.cardinal.west" = "Westen";
 
 
 /*  */
@@ -2447,15 +1399,7 @@
 
 
 /*  */
-"directions.cardinal.north.abb" = "N";
-
-
-/*  */
 "directions.cardinal.north_east.abb" = "NO";
-
-
-/*  */
-"directions.cardinal.east.abb" = "O";
 
 
 /*  */
@@ -2463,15 +1407,7 @@
 
 
 /*  */
-"directions.cardinal.south.abb" = "Z";
-
-
-/*  */
 "directions.cardinal.south_west.abb" = "ZW";
-
-
-/*  */
-"directions.cardinal.west.abb" = "W";
 
 
 /*  */
@@ -2479,15 +1415,7 @@
 
 
 /*  */
-"directions.name_distance" = "%1$@, %2$@";
-
-
-/*  */
 "distance.format.m" = "%@ m";
-
-
-/*  */
-"distance.format.meter" = "%@ meter";
 
 
 /*  */
@@ -2495,15 +1423,7 @@
 
 
 /*  */
-"distance.format.km" = "%@ km";
-
-
-/*  */
 "distance.format.kilometer" = "%@ kilometer";
-
-
-/*  */
-"distance.format.kilometers" = "%@ kilometer";
 
 
 /*  */
@@ -2511,15 +1431,7 @@
 
 
 /*  */
-"distance.format.foot" = "%@ voet";
-
-
-/*  */
 "distance.format.feet" = "%@ voet";
-
-
-/*  */
-"distance.format.mi" = "%@ mi";
 
 
 /*  */
@@ -2527,15 +1439,7 @@
 
 
 /*  */
-"distance.format.miles" = "%@ mijl";
-
-
-/*  */
 "ui.action_button.my_location" = "Mijn\nlocatie";
-
-
-/*  */
-"ui.action_button.my_location.acc_hint" = "Dubbeltik voor informatie over uw huidige locatie";
 
 
 /*  */
@@ -2543,15 +1447,7 @@
 
 
 /*  */
-"ui.action_button.nearby_markers.acc_hint" = "Dubbeltik voor informatie over plaatsen in de buurt die u hebt gemarkeerd";
-
-
-/*  */
 "ui.action_button.around_me" = "Om me\nheen";
-
-
-/*  */
-"ui.action_button.around_me.acc_hint" = "Dubbeltik voor informatie over plaatsen in de vier kwadranten om u heen";
 
 
 /*  */
@@ -2559,15 +1455,7 @@
 
 
 /*  */
-"ui.action_button.ahead_of_me.acc_hint" = "Dubbeltik voor informatie over plaatsen vóór u";
-
-
-/*  */
 "ui.menu" = "Menu";
-
-
-/*  */
-"ui.menu.hint" = "Dubbeltik om het menu te openen";
 
 
 /*  */
@@ -2575,15 +1463,7 @@
 
 
 /*  */
-"ui.continue" = "Doorgaan";
-
-
-/*  */
 "menu.events" = "Recreatie-activiteiten";
-
-
-/*  */
-"menu.devices" = "Head tracking-koptelefoon";
 
 
 /*  */
@@ -2591,15 +1471,7 @@
 
 
 /*  */
-"menu.help_and_tutorials" = "Help en zelfstudies";
-
-
-/*  */
 "menu.send_feedback" = "Feedback verzenden";
-
-
-/*  */
-"menu.rate" = "Beoordelen";
 
 
 /*  */
@@ -2607,15 +1479,7 @@
 
 
 /*  */
-"ui.back_button.title" = "Vorige";
-
-
-/*  */
 "bar_icon.external_GPS.acc_label" = "Pictogram Externe GPS-verbinding";
-
-
-/*  */
-"history_view.item_of" = "Item %1$@ van %2$@";
 
 
 /*  */
@@ -2623,15 +1487,7 @@
 
 
 /*  */
-"poi_screen.screen_title.select_a_location" = "Een locatie selecteren";
-
-
-/*  */
 "poi_screen.loading_title.loading" = "Plaatsen in de buurt vinden";
-
-
-/*  */
-"poi_screen.loading_title.finding_error" = "We kunnen geen plaatsen in de buurt vinden. Probeer het later opnieuw.";
 
 
 /*  */
@@ -2639,15 +1495,7 @@
 
 
 /*  */
-"poi_screen.section_header.nearby" = "In de buurt";
-
-
-/*  */
 "poi_cell.accessibility_label.suggested_search" = "Voorgestelde zoekopdracht: %@";
-
-
-/*  */
-"poi_cell.accessibility_hint.suggested_search" = "Dubbeltik om te zoeken naar: %@";
 
 
 /*  */
@@ -2655,15 +1503,7 @@
 
 
 /*  */
-"location_callout_cell.marked_location" = "Gemarkeerde locatie";
-
-
-/*  */
 "location_callout_cell.nearest_road" = "Dichtstbijzijnde weg, %@.";
-
-
-/*  */
-"location_callout_cell.nearest_road.beacon_set_on" = "Dichtstbijzijnde weg, %1$@. Baken is ingesteld op %2$@.";
 
 
 /*  */
@@ -2671,15 +1511,7 @@
 
 
 /*  */
-"devices.airpods.supported_versions" = "Apple AirPods met ruimtelijke audio";
-
-
-/*  */
 "devices.title.pair_audio" = "Audio van koptelefoon koppelen";
-
-
-/*  */
-"devices.title.first_connection" = "Koptelefoon verbonden";
 
 
 /*  */
@@ -2687,15 +1519,7 @@
 
 
 /*  */
-"devices.title.completed_connection" = "Koptelefoon gereed";
-
-
-/*  */
 "devices.explain_ar.disconnected" = "'Head tracking'-koptelefoons zijn Bluetooth-koptelefoons met sensoren die aan openscape doorgeven in welke richting u kijkt. Zo kan openscape je audiobeleving verbeteren en kun je je op een meer natuurlijke manier door de wereld veprlaatsen.\n\nTik op de knop hieronder om een apparaat te verbinden.";
-
-
-/*  */
-"devices.explain_ar.connected.airpods" = "Je AirPods zijn gereed voor gebruik, dus je kunt je telefoon in je zak stoppen en op weg gaan. Openscape volgt nu de kijkrichting van je hoofd zodat je de telefoon niet in je hand hoeft te houden.";
 
 
 /*  */
@@ -2703,15 +1527,7 @@
 
 
 /*  */
-"devices.explain_ar.connecting" = "Openscape maakt verbinding met uw %@. Even wachten...";
-
-
-/*  */
 "devices.connect_headset" = "Koptelefoon verbinden";
-
-
-/*  */
-"devices.connect_headset.calibrate.button" = "Kalibratie starten";
 
 
 /*  */
@@ -2719,15 +1535,7 @@
 
 
 /*  */
-"devices.connect_headset.error_title" = "Kan geen verbinding maken";
-
-
-/*  */
 "devices.connect_headset.unsupported_firmware" = "Je AR Headphones moeten worden geÜpdatet voordat deze verbinding kunnen maken met Openscape. Ga naar de Cortana-app om je koptelefoon bij te werken.";
-
-
-/*  */
-"devices.connect_headset.failed" = "Openscape kon geen verbinding maken met je koptelefoon. Probeer het later opnieuw.";
 
 
 /*  */
@@ -2735,15 +1543,7 @@
 
 
 /*  */
-"devices.connect_headset.explanation" = "Selecteer het type koptelefoon uit de lijst met ondersteunde koptelefoons hieronder.";
-
-
-/*  */
 "devices.connect_headset.audio" = "Voordat je je koptelefoon kunt verbinden met Openscape moet deze zijn gekoppeld met je telefoon. Als dat nog niet is gebeurd, ga je naar Bluetooth in de iOS-instellingen om je apparaat te koppelen. Ga daarna terug naar Openscape.";
-
-
-/*  */
-"devices.connect_headset.calibrate" = "Uw koptelefoon moet worden gekalibreerd. Zet de koptelefoon af, schud er circa 10 seconden voorzichtig mee in alle richtingen en zet de koptelefoon weer op. Dit moet worden herhaald als het kalibratiesignaal weer wordt afgespeeld.";
 
 
 /*  */
@@ -2751,15 +1551,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "Gefeliciteerd! Uw AirPods zijn klaar voor gebruik. Je kunt je telefoon in je zak doen op weg gaan. Openscape volgt nu de kijkrichting van je hoofd zodat je de telefoon niet in je hand hoeft te houden. Met één tik op de koptelefoonknop demp je het baken of hef je het dempen op, met twee keer tikken hoor je informatie over je locatie en met drie keer tikken wordt de laatste melding herhaald.";
-
-
-/*  */
 "devices.connect_headset.completed.test" = "Uw koptelefoon controleren";
-
-
-/*  */
-"devices.connect_headset.completed.test.hint" = "Dubbeltik om uw %@ te controleren";
 
 
 /*  */
@@ -2767,15 +1559,7 @@
 
 
 /*  */
-"devices.test_headset.explanation" = "We hebben rechts van je een audiobaken geplaatst. Luister waar het zich bevindt en draai je hoofd in die richting. Merk je dat je dit ook kunt doen terwijl je telefoon in je zak zit? Als je klaar bent, tik op de knop hieronder om terug te gaan naar Openscape. Geniet van uw wandeling met uw nieuwe head tracking-koptelefoon.";
-
-
-/*  */
 "devices.test_headset.continue" = "Terug naar Openscape";
-
-
-/*  */
-"devices.test_headset.callout" = "We hebben rechts van u een audiobaken geplaatst. Luister waar het zich bevindt en draai uw hoofd in die richting... U kunt dit ook doen terwijl uw telefoon in uw zak zit.";
 
 
 /*  */
@@ -2783,15 +1567,7 @@
 
 
 /*  */
-"devices.forget_headset.prompt.explanation" = "Hiermee wordt de verbinding van je koptelefoon met Openscape verbroken. Je kunt in de toekomst hier opnieuw verbinden met openscape.";
-
-
-/*  */
 "devices.callouts.connected" = "%@ verbonden.";
-
-
-/*  */
-"devices.callouts.needs_calibration" = "Uw koptelefoon moet worden gekalibreerd. Zet de koptelefoon af en schud er voorzichtig mee in alle richtingen.";
 
 
 /*  */
@@ -2799,15 +1575,7 @@
 
 
 /*  */
-"devices.callouts.calibrated" = "Kalibratie voltooid";
-
-
-/*  */
 "devices.callouts.disconnected" = "%@ niet verbonden.";
-
-
-/*  */
-"devices.callouts.check_audio.default" = "'Head tracking'-koptelefoon is niet verbonden.";
 
 
 /*  */
@@ -2815,15 +1583,7 @@
 
 
 /*  */
-"devices.callouts.check_audio.airpods.disconnected" = "Openscape zoekt naar je AirPods. Controleer of ze verbinding hebben met de telefoon.";
-
-
-/*  */
 "devices.troubleshoot.reconnect" = "Opnieuw verbinden";
-
-
-/*  */
-"devices.airpods_unavailable.alert.description" = "Dit apparaat ondersteunt niet het volgen van de kijkrichting met Apple AirPods. Controleer of uw apparaat een iPhone 7 of hoger is en werkt met iOS 14.4 of hoger.";
 
 
 /*  */
@@ -2831,15 +1591,7 @@
 
 
 /*  */
-"devices.reachability.alert.description" = "Je %@ geeft aan Openscape door in welke richting je kijkt. Daarmee kan Openscape je audiobeleving verbeteren. Je kunt het volgen van de kijkrichting inschakelen in de instellingen voor de Head tracking-koptelefoon.";
-
-
-/*  */
 "behavior.experiences.events_list_nav_title" = "Activiteiten";
-
-
-/*  */
-"behavior.experiences.event_nav_title" = "Activiteitendetails";
 
 
 /*  */
@@ -2847,15 +1599,7 @@
 
 
 /*  */
-"behavior.experiences.more_actions" = "Meer acties";
-
-
-/*  */
 "behavior.experiences.download_failed.title" = "Kan activiteit niet downloaden";
-
-
-/*  */
-"behavior.experiences.download_failed.error" = "Pogingen om de activiteit te downloaden zijn mislukt. Probeer het later opnieuw. Gebruik de functie Feedback verzenden of neem contact op met de maker van de activiteit als dit probleem zich blijft voordoen.";
 
 
 /*  */
@@ -2863,15 +1607,7 @@
 
 
 /*  */
-"behavior.experiences.reset_action" = "Activiteit opnieuw instellen";
-
-
-/*  */
 "behavior.experiences.reset_and_update_action" = "Op updates controleren";
-
-
-/*  */
-"behavior.experiences.reset.prompt" = "Als u deze activiteit opnieuw instelt, wordt de huidige voortgang verwijderd en kunt u deze activiteit helemaal opnieuw starten. Controleer bij het opnieuw instellen van deze activiteit ook of er updates zijn. Dan downloadt u bijgewerkte informatie voor deze activiteit als er updates beschikbaar zijn.";
 
 
 /*  */
@@ -2879,15 +1615,7 @@
 
 
 /*  */
-"behavior.experiences.reset.confirmation" = "Activiteit opnieuw ingesteld";
-
-
-/*  */
 "behavior.experiences.delete_action" = "Activiteit verwijderen";
-
-
-/*  */
-"behavior.experience.delete.title" = "Deze activiteit verwijderen?";
 
 
 /*  */
@@ -2895,15 +1623,7 @@
 
 
 /*  */
-"behavior.experiences.delete.confirmation" = "Activiteit verwijderd";
-
-
-/*  */
 "behavior.experiences.no_events.title" = "Recreatie-activiteiten met Openscape (bèta)";
-
-
-/*  */
-"behavior.experiences.no_events.caption.1" = "Non-profitorganisaties, bedrijven en lokale overheden kunnen hun eigen Openscape-toepassingen creëren. Zoals bijvoorbeeld aangepaste sportprogramma's en evenementen, schatzoekactiviteiten, wandeltochten met beschrijving, stadswandelingen enzovoort.";
 
 
 /*  */
@@ -2911,15 +1631,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.media_player_title" = "%1$@: %2$@";
-
-
-/*  */
 "behavior.scavenger_hunt.by_line" = "Van %@";
-
-
-/*  */
-"behavior.scavenger_hunt.callout.nearby_with_name" = "%@ is in de buurt";
 
 
 /*  */
@@ -2927,15 +1639,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.callout.pausing_hunt" = "Teruggaan naar de normale Openscape-weergave.";
-
-
-/*  */
 "behavior.scavenger_hunt.callout.next_flag" = "Baken ingesteld op %1$@, op %2$@ afstand, %3$@ van %4$@";
-
-
-/*  */
-"behavior.scavenger_hunt.callout.next_flag.no_distance" = "Baken ingesteld op %1$@, %2$@ van %3$@";
 
 
 /*  */
@@ -2943,15 +1647,7 @@
 
 
 /*  */
-"behavior.experience.badges.active" = "Actief";
-
-
-/*  */
 "behavior.experience.badges.complete" = "Voltooid";
-
-
-/*  */
-"behavior.experience.badges.not_complete" = "Niet voltooid";
 
 
 /*  */
@@ -2959,15 +1655,7 @@
 
 
 /*  */
-"time.one_minute_ago" = "1 minuut geleden";
-
-
-/*  */
 "time.num_minutes_ago" = "%@ minuten geleden";
-
-
-/*  */
-"time.one_hour_ago" = "1 uur geleden";
 
 
 /*  */
@@ -2975,15 +1663,7 @@
 
 
 /*  */
-"announced_name" = "%@ aangekondigd.";
-
-
-/*  */
 "announced_name.named" = "%1$@, %2$@ aangekondigd.";
-
-
-/*  */
-"announced_name_distance_away.named" = "%1$@, %2$@ aangekondigd, op %3$@ afstand.";
 
 
 /*  */
@@ -2991,15 +1671,7 @@
 
 
 /*  */
-"previous_location.announced_name_distance" = "Vorige locatie. %1$@ aangekondigd, nu op %2$@ afstand.";
-
-
-/*  */
 "beacon_distance_update.announced_name" = "Afstand tot baken gewijzigd. %@ aangekondigd.";
-
-
-/*  */
-"beacon_distance_update.announced_name_distance" = "Afstand tot baken aangepast. %1$@ aangekondigd, nog %2$@ tot baken.";
 
 
 /*  */
@@ -3007,15 +1679,7 @@
 
 
 /*  */
-"intersection_callout.announced_name_distance" = "Waarschuwing voor kruispunt. %1$@ aangekondigd, afstand tot kruispunt is nu %2$@.";
-
-
-/*  */
 "third_party_apps.general.maps" = "Openen in externe kaarten-app";
-
-
-/*  */
-"icloud.kv_store.quota_violation_alert.title" = "Openscape iCloud-opslag is vol";
 
 
 /*  */
@@ -3023,15 +1687,7 @@
 
 
 /*  */
-"poi.unknown" = "Onbekend";
-
-
-/*  */
 "poi.unknown_place" = "Onbekende plek";
-
-
-/*  */
-"audio_player.action.play_again" = "Opnieuw afspelen";
 
 
 /*  */
@@ -3039,15 +1695,7 @@
 
 
 /*  */
-"text.cleaning_things" = "Alles opschonen...…";
-
-
-/*  */
 "action.double_tap_to_repeat" = "Dubbeltik om te herhalen";
-
-
-/*  */
-"location" = "Locatie";
 
 
 /*  */
@@ -3055,15 +1703,7 @@
 
 
 /*  */
-"tutorial.title.plural" = "Zelfstudies";
-
-
-/*  */
 "tutorial.exit" = "Zelfstudie afsluiten";
-
-
-/*  */
-"tutorial.skip" = "Zelfstudie overslaan";
 
 
 /*  */
@@ -3071,15 +1711,7 @@
 
 
 /*  */
-"tutorial.markers.getting_started" = "Aan de slag met markeringen";
-
-
-/*  */
 "tutorial.markers.mark_your_world" = "De wereld om u heen markeren";
-
-
-/*  */
-"tutorial.markers.experience_your_world" = "De wereld om u heen ervaren";
 
 
 /*  */
@@ -3087,15 +1719,7 @@
 
 
 /*  */
-"tutorial.markers.your_marker" = "uw markering";
-
-
-/*  */
 "tutorial.markers.mark_location.acc_hint" = "Dubbeltik om deze locatie te markeren";
-
-
-/*  */
-"tutorial.markers.text.Intro" = "Met Openscape kun je om je heen objecten markeren die je belangrijk vindt. Je kunt bijvoorbeeld een markering opgeven voor jouw huis, de bushalte of gewoon de plek waar je je bevindt.\nProbeer het maar eens. Druk op de knop Markering toevoegen en selecteer een plaats of een adres in de buurt om als voorbeeld te markeren.";
 
 
 /*  */
@@ -3103,15 +1727,7 @@
 
 
 /*  */
-"tutorial.markers.text.NearbyMarkers" = "Uitstekend! U hebt een nieuwe markering met de naam @!marker_name!!.\nDruk nu op de knop Markeringen in de buurt om te horen waar uw markering is. U vindt deze knop onder aan het startscherm.\nProbeer het nu.";
-
-
-/*  */
 "tutorial.markers.text.AudioBeacon" = "U kunt ook een audiobaken instellen op uw markering.\nU gaat dat proberen. Hier is het baken op @!marker_name!!.\nLuister goed waar het is, houd uw telefoon horizontaal en draai ernaartoe.";
-
-
-/*  */
-"tutorial.markers.text.WrapUp" = "Perfect, u kijkt nu naar uw markering, @!marker_name!!.\nHet ziet ernaar uit dat u het begrijpt!\nU kunt uw lijst met markeringen beheren door Markeringen beheren te selecteren in het menu.\nOok kunt u naar de pagina Help en Zelfstudies gaan om de zelfstudie nogmaals te volgen of uitgebreide instructies door te nemen over wat u kunt doen met markeringen. Het baken dat u voor deze zelfstudie hebt ingesteld, wordt nu gewist en u gaat terug naar het vorige scherm.";
 
 
 /*  */
@@ -3119,15 +1735,7 @@
 
 
 /*  */
-"tutorial.beacon.set_a_beacon.acc_hint" = "Dubbeltik om een lijst met plaatsen te laden waarvoor u het baken kunt instellen. Kies een plaats uit de lijst om de zelfstudie te starten.";
-
-
-/*  */
 "tutorial.beacon.getting_started.text" = "Wanneer je een baken instelt op een locatie, speelt Openscape een geluid af uit de richting van die locatie. Deze zelfstudiebevat de stappen voor het instellen en gebruiken van een baken.\n\nDruk op de knop Audiobaken starten hieronder om een lijst met plaatsen in de buurt te openen. Kies een locatie uit de lijst en de zelfstudie begint.";
-
-
-/*  */
-"tutorial.beacon.your_destination" = "uw bestemming";
 
 
 /*  */
@@ -3135,15 +1743,7 @@
 
 
 /*  */
-"tutorial.beacon.poi_selected" = "U hebt %@ geselecteerd als de locatie voor het baken.";
-
-
-/*  */
 "tutorial.beacon.the_audio_beacon" = "Het audiobaken";
-
-
-/*  */
-"tutorial.beacon.the_audio_beacon.text" = "U hebt %@ geselecteerd als de locatie voor uw audiobaken.";
 
 
 /*  */
@@ -3151,15 +1751,7 @@
 
 
 /*  */
-"tutorial.beacon.need_some_silence" = "Op zoek naar stilte?";
-
-
-/*  */
 "tutorial.beacons.text.IntroPart1" = "Wanneer je een baken instelt op een locatie, wordt door Openscape een geluid afgespeeld dat uit de richting komt van die locatie. In deze zelfstudie wordt stapsgewijs uitgelegd hoe je een baken instelt en dit gebruikt.";
-
-
-/*  */
-"tutorial.beacons.text.IntroPart2" = "Druk op de knop Audiobaken starten hieronder om een lijst met plaatsen in de buurt te openen. Kies een locatie uit de lijst en de zelfstudie begint.";
 
 
 /*  */
@@ -3167,15 +1759,7 @@
 
 
 /*  */
-"tutorial.beacons.text.OrientationIsNotFlat" = "Houd om te beginnen uw telefoon vlak in uw hand met het scherm naar de hemel gericht. Zorg dat de bovenkant van de telefoon recht voor u uit wijst.";
-
-
-/*  */
 "tutorial.beacons.text.OrientationAirPods" = "Je AirPods zijn verbonden met Openscape. Wanneer je AirPods zijn verbonden met Openscape, maakt het niet uit hoe je je telefoon vasthoudt. Je kunt deze ook in je zak of een tas stoppen.";
-
-
-/*  */
-"tutorial.beacons.text.OrientationRepeat" = "Om verder te gaan houdt u uw telefoon vlak in uw hand met het scherm naar de hemel gericht";
 
 
 /*  */
@@ -3183,15 +1767,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HoldingPhone.great" = "Geweldig! U houdt uw telefoon alleen op deze manier horizontaal wanneer u stilstaat. Doe de telefoon tijdens het wandelen in een tas of zak binnen handbereik.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconInitial" = "Nu je een baken hebt ingesteld op @!destination!!, wordt door Openscape een geluid afgespeeld dat uit de richting van die locatie komt. Hier komt het audiobaken.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconOutOfBounds" = "Als u goed luistert, hoort u dat het geluid uit een bepaalde richting komt.";
 
 
 /*  */
@@ -3199,15 +1775,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsRotate.ar_headset" = "Draai nu langzaam naar de richting van het baken. U hoort een beltoon wanneer u er recht naar kijkt.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconOutOfBoundsRepeat" = "Draai langzaam tot u de beltoon hoort die aangeeft dat u in de richting van het baken kijkt.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "Perfect, u kijkt nu in de richting van @!destination!!.";
 
 
 /*  */
@@ -3215,15 +1783,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate" = "Probeer nu langzaam weg te draaien uit de richting van het baken, terwijl u uw telefoon nog steeds horizontaal houdt. De beltoon stopt en het baken blijft aangeven waar uw @!destination!! is. Probeer het nu.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Probeer nu langzaam weg te draaien uit de richting van het baken. De beltoon stopt en het baken blijft aangeven waar uw @!destination!! is. Probeer het nu.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconInBoundsRepeat" = "Draai langzaam weg van de richting van het baken.";
 
 
 /*  */
@@ -3231,15 +1791,7 @@
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "Tijdens je tocht geeft Openscape regelmatig een melding met een update over de afstand tot de locatie die door het baken wordt gemarkeerd.";
-
-
-/*  */
 "tutorial.beacons.text.HomeScreen" = "Informatie over de afstand wordt ook weergegeven op het startscherm, samen met het adres van de bakenlocatie, als dat beschikbaar is. Openscape geeft een melding wanneer je in de buurt bent van de bakenlocatie. Daarna stopt het audiobaken.";
-
-
-/*  */
-"tutorial.beacons.text.Mute" = "Als u wilt dat de app om een of andere reden geen geluid maakt, gebruikt u de knop Baken dempen of Slapen op het startscherm. Of dubbeltik met twee vingers op een willekeurige plek op het scherm. Met dubbeltikken met twee vingers worden huidige waarschuwingen gestopt en het audiobaken gedempt. Probeer het nu.";
 
 
 /*  */
@@ -3247,15 +1799,7 @@
 
 
 /*  */
-"tutorial.beacons.text.WrapUp" = "Het lijkt erop dat u het onder de knie hebt! U kunt deze zelfstudie herhalen via het scherm Help en zelfstudies. Het baken dat u voor deze zelfstudie hebt ingesteld, wordt nu gewist en u gaat terug naar het vorige scherm.";
-
-
-/*  */
 "settings.help.title" = "Help";
-
-
-/*  */
-"help.configuration.section.title" = "Openscape configureren";
 
 
 /*  */
@@ -3263,15 +1807,7 @@
 
 
 /*  */
-"settings.help.section.beacons_and_pois" = "Bakens en waarschuwingen";
-
-
-/*  */
 "help.offline.section_title" = "Openscape offline gebruiken";
-
-
-/*  */
-"settings.help.section.home_screen_buttons" = "Startschermknoppen";
 
 
 /*  */
@@ -3279,15 +1815,7 @@
 
 
 /*  */
-"help.offline.page_title" = "Waarom werkt Openscape offline?";
-
-
-/*  */
 "help.offline.description" = "Als er geen internetverbinding is of een storing in de Openscape-services, gaat Openscape naar de offline modus. Openscape blijft wel werken maar bepaalde functies zijn beperkt.";
-
-
-/*  */
-"help.offline.limitations_heading" = "Beperkingen";
 
 
 /*  */
@@ -3295,15 +1823,7 @@
 
 
 /*  */
-"help.offline.troubleshooting_heading" = "Wat kunt u doen?";
-
-
-/*  */
 "help.offline.troubleshooting_description" = "Openscape probeert de normale werking te hervatten wanneer je telefoon is verbonden met Wi-Fi of wanneer mobiele data is ingeschakeld en je je bevindt in een gebied met een goed signaal. Als je telefoon een goede internetverbinding heeft, maar Openscape niet de normale werking hervat, is er mogelijk sprake van een storing in de Openscape-services.";
-
-
-/*  */
-"help.orient.page_title" = "Om me heen";
 
 
 /*  */
@@ -3311,15 +1831,7 @@
 
 
 /*  */
-"help.creating_markers.page_title" = "Markeringen maken";
-
-
-/*  */
 "help.edit_markers.page_title" = "Markeringen aanpassen";
-
-
-/*  */
-"help.remote.page_title" = "Mediaregelaars gebruiken";
 
 
 /*  */
@@ -3327,15 +1839,7 @@
 
 
 /*  */
-"help.text.section_title.what" = "Wat is het?";
-
-
-/*  */
 "help.text.section_title.when" = "Wanneer zou ik het moeten gebruiken?";
-
-
-/*  */
-"help.text.section_title.how" = "Hoe werkt het?";
 
 
 /*  */
@@ -3343,15 +1847,7 @@
 
 
 /*  */
-"help.support" = "Openscape Community-ondersteuning";
-
-
-/*  */
 "terms_of_use.title" = "Gebruiksvoorwaarden";
-
-
-/*  */
-"terms_of_use.message" = "Op het gebruik van Openscape zijn de voorwaarden van %@ van toepassing en de hieronder beschreven voorwaarden (samen de \"Gebruiksvoorwaarden\").";
 
 
 /*  */
@@ -3359,15 +1855,7 @@
 
 
 /*  */
-"terms_of_use.service_agreement" = "Openscape Community-serviceovereenkomst";
-
-
-/*  */
 "terms_of_use.accept_checkbox.acc_label" = "Gebruiksvoorwaarden accepteren";
-
-
-/*  */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Dubbeltik om het selectievakje Gebruiksvoorwaarden accepteren in te schakelen";
 
 
 /*  */
@@ -3375,15 +1863,7 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.on.acc_value" = "Ingeschakeld";
-
-
-/*  */
 "terms_of_use.accept_checkbox.off.acc_value" = "Uitgeschakeld";
-
-
-/*  */
-"terms_of_use.medical_safety_disclaimer" = "Je erkent dat Openscape (1) niet is ontworpen, bedoeld of beschikbaar is gesteld als een medisch apparaat, en (2) niet is ontworpen of bedoeld als vervanging voor professionele medische adviezen, diagnoses, behandelingen of beoordelingen en niet moet worden gebruikt als vervanging of substitutie voor professionele medische adviezen, diagnoses, behandelingen of beoordelingen.\n\nVeiligheidsverklaring\nOpenscape is een navigatiehulpmiddel en moet niet worden gebruikt ter vervanging van mobiele vaardigheden, bewustzijn van je omgeving en gezond verstand. Wees voorzichtig bij het navigeren in je omgeving aangezien de kaartgegevens in Openscape zijn overgenomen uit een programma van derden. Daarom kunnen er beperkingen zijn in de nauwkeurigheid van de gepresenteerde informatie.";
 
 
 /*  */
@@ -3391,15 +1871,7 @@
 
 
 /*  */
-"terms_of_use.accept.new_features.accessibility_hint" = "Dubbeltik om aankondigingen te accepteren en te sluiten";
-
-
-/*  */
 "first_launch.get_started_button.off.acc_hint" = "Schakel het selectievakje Gebruiksvoorwaarden accepteren in voordat u op deze knop drukt";
-
-
-/*  */
-"first_launch.welcome_text" = "Welkom! Voordat u kunt beginnen, moet u wat instellingen opgeven en machtigingen toestaan. Druk op Volgende om te beginnen.";
 
 
 /*  */
@@ -3407,15 +1879,7 @@
 
 
 /*  */
-"first_launch.permission_required" = "Deze toestemming is verplicht.";
-
-
-/*  */
 "first_launch.language" = "Taal in Openscape";
-
-
-/*  */
-"first_launch.language.text" = "Selecteer de taal waarin je Openscape wilt gebruiken. Je kunt je keuze altijd wijzigen in de appinstellingen.";
 
 
 /*  */
@@ -3423,15 +1887,7 @@
 
 
 /*  */
-"first_launch.location.enable_location" = "Locatie inschakelen";
-
-
-/*  */
 "first_launch.device_motion" = "Apparaatbeweging";
-
-
-/*  */
-"first_launch.device_motion.text" = "Hiermee kan Openscape je ervaring verbeteren op basis van het feit of je loopt, in een auto rijdt of stilstaat.";
 
 
 /*  */
@@ -3439,15 +1895,7 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound.text_alt" = "Openscape gebruikt 3D-geluid om je te laten weten wat er in de buurt is. Als je bestemming zich bijvoorbeeld rechts bevindt, hoor je geluid vanuit die richting of als er links een café is, hoor je een melding uit die richting.";
-
-
-/*  */
 "first_launch.heading_somewhere" = "Onderweg naar iets?";
-
-
-/*  */
-"first_launch.heading_somewhere.text" = "Plaats een audiobaken op je bestemming en Openscape zal je op de hoogte houden van de locatie en de omgeving onderweg. Gebruik Openscape samen met uw navigatievaardigheden en je favoriete navigatie-app om de weg naar bestemming te vinden.";
 
 
 /*  */
@@ -3455,15 +1903,7 @@
 
 
 /*  */
-"first_launch.setting_off_way.text" = "Stop je telefoon weg en begin met lopen. Openscape helpt je om je bewust te blijven van waar je bent door de straten, kruispunten en herkenningspunten die je nadert te benoemen. Meldingen kunnen worden aangepast in de instellingen.";
-
-
-/*  */
 "first_launch.find_things_nearby" = "Wilt u meer dingen in de buurt ontdekken?";
-
-
-/*  */
-"first_launch.find_things_nearby.text" = "Houd de telefoon vlak in uw hand en gebruik de knoppen om wegen en komende kruispunten te vinden, en u te oriënteren aan de hand van bekende en nieuwe herkenningspunten om u heen en voor u uit.";
 
 
 /*  */
@@ -3471,15 +1911,7 @@
 
 
 /*  */
-"first_launch.welcome.title.accessibility_label" = "Welkom bij Openscape!";
-
-
-/*  */
 "first_launch.welcome.description" = "Vol vertrouwen navigeren met de ruimtelijke audio van Openscape";
-
-
-/*  */
-"first_launch.welcome.button" = "Aan de slag";
 
 
 /*  */
@@ -3487,15 +1919,7 @@
 
 
 /*  */
-"first_launch.headphones.message.1" = "Openscape werkt geweldig met een koptelefoon. Als je een koptelefoon wilt gebruiken, zet die dan nu op.";
-
-
-/*  */
 "first_launch.headphones.message.2" = "Als je geen koptelefoon hebt of die niet wilt gebruiken, geen probleem! Openscape werkt ook met de speakers op je telefoon.";
-
-
-/*  */
-"first_launch.callouts.title" = "Luisteren naar uw omgeving";
 
 
 /*  */
@@ -3503,15 +1927,7 @@
 
 
 /*  */
-"first_launch.callouts.listen" = "Luister naar een voorbeeld van wat Openscape kan melden op je volgende wandeling";
-
-
-/*  */
 "first_launch.callouts.listen.accessibility_label" = "Luisteren";
-
-
-/*  */
-"first_launch.callouts.listen.accessibility_hint" = "Dubbeltik om te luisteren naar een voorbeeld van wat Openscape kan aankondigen op je volgende wandeling";
 
 
 /*  */
@@ -3519,15 +1935,7 @@
 
 
 /*  */
-"first_launch.callouts.example.3" = "Hoofdstraat gaat naar links";
-
-
-/*  */
 "first_launch.callouts.example.4" = "Hoofdstraat gaat naar rechts";
-
-
-/*  */
-"first_launch.permissions.title" = "Navigeren met Openscape";
 
 
 /*  */
@@ -3535,15 +1943,7 @@
 
 
 /*  */
-"first_launch.permissions.location" = "Locatievoorzieningen met exacte locatie";
-
-
-/*  */
 "first_launch.permissions.motion" = "Beweging & Conditie";
-
-
-/*  */
-"first_launch.permissions.required" = "Deze toestemming is verplicht";
 
 
 /*  */
@@ -3551,15 +1951,7 @@
 
 
 /*  */
-"first_launch.beacon.message.1" = "Wanneer je met Openscape navigeert , hoor je het audiobaken in de richting van je bestemming. Als je het geluid volgt, weet je altijd in welke richting je moet lopen.";
-
-
-/*  */
 "first_launch.beacon.message.2" = "Luister naar de beschikbare audiobakens en selecteer uw voorkeur.";
-
-
-/*  */
-"first_launch.beacon.message.3" = "Dit kan later worden gewijzigd in de app-instellingen.";
 
 
 /*  */
@@ -3567,15 +1959,7 @@
 
 
 /*  */
-"first_launch.beacon.audio.title" = "Ruimtelijk audiobaken";
-
-
-/*  */
 "first_launch.beacon.audio.message" = "Het baken volgt de beweging van uw telefoon en gebruikt ruimtelijke audio zodat u zich altijd bewust bent van de locatie.";
-
-
-/*  */
-"first_launch.beacon.callout.standard" = "Baken wordt rechts van u geplaatst. Draai uw telefoon om het geluid te volgen en ervaar de ruimtelijke audio van het baken.";
 
 
 /*  */
@@ -3583,15 +1967,7 @@
 
 
 /*  */
-"first_launch.beacon.callout.headtracking.standard" = "Baken wordt rechts van u geplaatst. Draai om het geluid te volgen en ervaar de ruimtelijke audio van het baken.";
-
-
-/*  */
 "first_launch.beacon.callout.headtracking.haptic" = "Baken wordt voor u geplaatst. Draai naar links en rechts om de haptische feedback van het baken te ervaren.";
-
-
-/*  */
-"first_launch.beacon.callout.ahead" = "Baken voor u";
 
 
 /*  */
@@ -3599,15 +1975,7 @@
 
 
 /*  */
-"first_launch.prompt.title" = "U kunt van start!";
-
-
-/*  */
 "first_launch.prompt.message" = "Je bent klaar voor je eerste wandeling met Openscape. Als je het direct wilt proberen, kies dan een bestemming in de buurt en start het audiobaken. Je hoort het dan in de richting van je bestemming.";
-
-
-/*  */
-"first_launch.prompt.button" = "Voltooien";
 
 
 /*  */
@@ -3615,15 +1983,7 @@
 
 
 /*  */
-"help.text.destination_beacons.what" = "Als je een baken instelt op een locatie in de buurt kan openscape je op de hoogte houden door een audiobaken te laten klinken vanuit de richting van die locatie. Dit baken kan worden gedempt op het hoofdscherm. Daarnaast geeft Openscape op het hoofdscherm informatie weer over de afstand en het adres, indien bekend.";
-
-
-/*  */
 "help.text.destination_beacons.when" = "Het instellen van een baken is handig wanneer u een herkenningspunt wilt volgen bij het verkennen van een nieuw gebied of wanneer u ergens naartoe gaat en onderweg informatie wilt horen over de omgeving. De bakenfunctie geeft geen routebeschrijving maar een voortdurend hoorbaar geluid dat de richting van het baken aangeeft in relatie tot de plek waar u zich bevindt. Met het audiobaken, uw eigen navigatievaardigheden en desgewenst uw favoriete navigatie-app, kunt u zelf kiezen hoe u zich naar locaties in de buurt begeeft.";
-
-
-/*  */
-"help.text.destination_beacons.how.1" = "<b>Een baken instellen</b>:<br/> Geef eerst de details voor een locatie weer door naar de plaats te zoeken met de zoekbalk of door te tikken op een van de knoppen Plaatsen in de buurt, Opgeslagen markeringen of Huidige locatie. Selecteer vervolgens een locatie. Selecteer op het scherm met locatiedetails de knop Audiobaken starten. Als u erop tikt, gaat u terug naar het startscherm en wordt een audiobaken ingeschakeld vanuit de richting van de door u geselecteerde plaats. De naam van de geselecteerde plaats, de afstand ernaartoe en het fysieke adres, indien beschikbaar, worden nu weergegeven op het hoofdscherm van de app.";
 
 
 /*  */
@@ -3631,15 +1991,7 @@
 
 
 /*  */
-"help.text.destination_beacons.how.3" = "<b>Het audiobaken dempen</b>:<br/> Tik op de knop Baken dempen onder de knop Baken verwijderen op het hoofdscherm.";
-
-
-/*  */
 "help.text.automatic_callouts.what" = "Openscape geeft ook informatie over de dingen om je heen als je ze nadert. Je hoort de naam uit de richting waarin het object zich bevindt. De app doet dit automatisch voor dingen als bedrijven, bushaltes en zelfs kruispunten. Je kunt de automatische waarschuwingen configureren in beheren in Instellingen en je kunt alle waarschuwingen uitzetten wanneer je de app op stil wilt zetten.";
-
-
-/*  */
-"help.text.automatic_callouts.when.1" = "<b>Een nieuw gebied verkennen</b>:<br/> Schakel automatische waarschuwingen in en loop rond om informatie te horen over verschillende winkels, restaurants en andere punten die u passeert.";
 
 
 /*  */
@@ -3647,15 +1999,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.when.3" = "<b>Wanneer u stilte wilt</b>:<br/> Wanneer u een weg wilt oversteken of wilt dat de app stil is, kunt u de waarschuwingen uitzetten. Wanneer waarschuwingen uit zijn, geeft de app alleen informatie door als u handmatig tikt op de knoppen <em>Mijn locatie</em>, <em>Markeringen in de buurt</em>, <em>Om me heen</em> of <em>Vóór me</em>.";
-
-
-/*  */
 "help.text.automatic_callouts.how.1" = "<b>Waarschuwingen in- of uitschakelen</b>:<br/> Als je waarschuwingen uitzet, wordt het geluid van de app gedempt. Je kunt waarschuwingen in- of uitschakelen in Waarschuwingen beheren in Instellingen. Tik op de wisselknop Waarschuwingen toestaan om waarschuwingen uit of aan te zetten. Je kunt waarschuwingen ook in- of uitschakelen met de opdracht Vooruitspringen (dubbeltikken en vasthouden) als je koptelefoon mediaregelaars heeft. Of gebruik de knop Slapen rechtsboven in het startscherm om waarschuwingen te stoppen totdat je Openscape weer activeert.";
-
-
-/*  */
-"help.text.automatic_callouts.how.2" = "<b>Instellen welke meldingen je hoort</b>:<br/> Als je wilt instellen voor welke dingen Openscape automatisch een melding geeft, ga dan naar Instellingen via het menu op het startscherm. in Waarschuwingen beheren in Instellingen  staat een lijst met items waarvoor je een melding kunt ontvangen. Elk item heeft een wisselknop die je kunt in- of uitschakelen. Als je alle meldingen wilt uitschakelen, tik dan op de wisselknop Waarschuwingen toestaan boven aan de lijst.";
 
 
 /*  */
@@ -3663,15 +2007,7 @@
 
 
 /*  */
-"help.text.my_location.when" = "<em>Mijn locatie</em> is handig wanneer u wilt weten waar u bent of wat de hoofdrichting is waarin u loopt.";
-
-
-/*  */
 "help.text.my_location.how" = "Net als met de vier knoppen onderaan het hoofdscherm houdt u de telefoon met het scherm horizontaal en met de bovenkant in de richting waarin u loopt, voordat u op <em>Mijn locatie</em> drukt. Dit werkt als een kompas en geeft aan de app door in welke richting u kijkt. Tik op de knop <em>Mijn locatie</em> en luister.";
-
-
-/*  */
-"help.text.nearby_markers.what" = "Met de knop <em>Markeringen in de buurt</em> hoort u maximaal vier markeringen die het dichtst bij u zijn. Met <em>Markeringen in de buurt</em> kunt u zich gemakkelijker oriënteren met behulp van plaatsen die u al kent.";
 
 
 /*  */
@@ -3679,15 +2015,7 @@
 
 
 /*  */
-"help.text.nearby_markers.how" = "Net als met de vier knoppen onderaan het hoofdscherm houdt u de telefoon met het scherm horizontaal en met de bovenkant in de richting waarin u loopt, voordat u op <em>Markeringen in de buurt</em> drukt. Dit werkt als een kompas en geeft aan de app door in welke richting u kijkt. Tik op de knop <em>Markeringen in de buurt</em> en u hoort maximaal vier markeringen vlakbij u.";
-
-
-/*  */
 "help.text.around_me.what" = "Met de knop <em>Om me heen</em> hoort u informatie over één ding in elk van de vier kwadranten om u heen (vóór, rechts, achter en links van u). <em>Om me heen</em> is bedoeld om u te helpen bij het oriënteren in uw omgeving.";
-
-
-/*  */
-"help.text.around_me.when" = "Wanneer u probeert om uw positie te ontdekken en u te oriënteren in uw omgeving, gebruikt u <em>Om me heen</em> om meer te horen over de dingen om u heen.";
 
 
 /*  */
@@ -3695,15 +2023,7 @@
 
 
 /*  */
-"help.text.ahead_of_me.what" = "Met <em>Vóór me</em> hoort u informatie over de punten voor u. <em>Vóór me</em> is bedoeld om de komende route te verkennen wanneer u zich in een nieuwe omgeving bevindt.";
-
-
-/*  */
 "help.text.ahead_of_me.when" = "Wanneer u door de straat loopt, kunt u met <em>Vóór me</em> de plaatsen en dingen ontdekken die voor u aan beide kanten van de straat verschijnen.";
-
-
-/*  */
-"help.text.ahead_of_me.how" = "Net als met de vier knoppen onderaan het hoofdscherm houdt u de telefoon met het scherm horizontaal en met de bovenkant in de richting waarin u loopt, voordat u op <em>Vóór me</em> drukt. Dit werkt als een kompas en geeft aan de app door in welke richting u kijkt. Tik op de knop <em>Vóór me</em> en u hoort de referentiepunten die zich voor u bevinden.";
 
 
 /*  */
@@ -3711,15 +2031,7 @@
 
 
 /*  */
-"help.text.remote_control.when" = "Mediaregelaars op de koptelefoon kunnen worden gebruikt terwijl Openscape actief is. Dit geldt wanneer je in Openscape bent of terwijl Openscape in de achtergrond werkt en zelfs wanneer je apparaat is vergrendeld. Mediaregelknoppen werken echter niet met Openscape als je met een andere app audio afspeelt zoals muziek, podcasts of video's.";
-
-
-/*  */
 "help.text.remote_control.how" = "<p>Je kunt de volgende functies in Openscape met de mediaregelknoppen op je koptelefoon gebruiken:<p><br>&#x23EF Afspelen/pauzeren: demp huidige waarschuwingen en schakel het bakengeluid aan of uit als een audiobaken is ingesteld. </p><p>&#x23ED Volgende: waarschuwing <em>Mijn locatie</em>.</p><p>&#x23EE Vorige: Laatste waarschuwing herhalen.</p><p>&#x23E9 Vooruitspringen: waarschuwingen in- en uitschakelen.</p><p>&#x23EA Terugspringen: waarschuwing <em>Om me heen</em>.</p>";
-
-
-/*  */
-"help.text.markers.content.1" = "Met Openscape kun je jouw wereld en dingen die jij belangrijk vindt herkenbaar maken.";
 
 
 /*  */
@@ -3727,15 +2039,7 @@
 
 
 /*  */
-"help.text.markers.content.3" = "Openscape geeft automatisch een melding als je langs gemarkeerde plaatsen loopt of deze nadert. Ook kun je de knop Markeringen in de buurt onder aan het startscherm van Openscape gebruiken om een ruimtelijke waarschuwing te horen over gemarkeerde plaatsen om je heen. Bovendien kun je een audiobaken instellen voor een gemarkeerde plaats. Wanneer je dat doet, hoor je het opgegeven Openscape-audiobaken en kun je het gebruiken zoals je gewend bent.";
-
-
-/*  */
 "help.text.creating_markers.content.1" = "Je kunt op drie manieren markeringen maken: zoeken naar de plaats die je wilt opslaan met de zoekbalk, een plek vinden met de knop Plaatsen in de buurt of met de knop Huidige locatie gebruiken. Al deze knoppen vind je op het startscherm van Openscape. Als je de gewenste plaats hebt gevonden en geselecteerd, ga je naar de pagina Locatiedetails. Op deze pagina selecteer je de knop Markering opslaan.";
-
-
-/*  */
-"help.text.creating_markers.content.2" = "Nu hebt u de optie om deze markering aan te passen. Deze stap is optioneel. Als u dat wilt, kunt u de naam van de markering wijzigen en ook een aantekening toevoegen die bij de markering wordt vermeld als extra informatie. Als u klaar bent, selecteert u de knop Gereed om uw markering op te slaan. ";
 
 
 /*  */
@@ -3743,15 +2047,7 @@
 
 
 /*  */
-"help.text.customizing_markers.content.2" = "In het scherm Bewerken kunt u een markering die u niet meer nodig hebt, ook verwijderen.";
-
-
-/*  */
 "help.text.routes.content.what" = "Routes zijn een reeks routepunten. U krijgt een melding als u bij een routepunt arriveert en het audiobaken gaat automatisch naar het volgende routepunt.";
-
-
-/*  */
-"help.text.routes.content.when" = "Mogelijk wilt u een route maken en gebruiken in een bekende omgeving om te zorgen dat u op schema ligt of u wilt een route gebruiken ter ondersteuning op een nieuw traject.";
 
 
 /*  */
@@ -3759,15 +2055,7 @@
 
 
 /*  */
-"help.text.routes.content.how.2" = "<b>Een route bewerken</b>:<br/> Selecteer uw route op de pagina Markeringen en routes en selecteer Route bewerken. Nu kunt u routepunten toevoegen en verwijderen, of de naam en de beschrijving van de route aanpassen.";
-
-
-/*  */
 "help.text.routes.content.how.3" = "<b>Een route delen</b>:<br/> Selecteer uw route op de pagina Markeringen en routes en selecteer vervolgens een van de opties voor Delen.";
-
-
-/*  */
-"help.using_headsets.airpods.what" = "Openscape ondersteunt ruimtelijke audio met de dynamische hoofdvolgfunctie als je AirPods gebruikt. Als ze zijn verbonden met Openscape, geven sensoren in de AirPods aan Openscape door in welke richting je kijkt. Zo kan openscape jouw geluidsbeleving natuurlijker maken terwijl je je verplaatst. Als je openscape gebruikt met AirPods, hoef je de telefoon niet in je hand te houden om Openscape goed te laten werken.";
 
 
 /*  */
@@ -3775,15 +2063,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.how.1" = "<b>Een apparaat verbinden</b>:<br/> Ga naar het 'Head tracking'-koptelefoons in het menu van Openscape om verbinding te maken met je AirPods en volg de instructies op het scherm. Je moet je AirPods wel gekoppeld hebben via de Bluetooth-instellingen van je telefoon voordat je ze verbindt in Openscape.";
-
-
-/*  */
 "help.using_headsets.airpods.how.2" = "<b>Mediaregelaars op uw koptelefoon gebruiken</b>:<br/> Wanneer mediaregelaars zijn ingeschakeld in de Openscape-instellingen, kun je met de mediaregelaars op je AirPods het baken dempen of het dempen opheffen, je locatie laten beschrijven of de laatste waarschuwing laten herhalen. Meer informatie vind je in de Help-sectie \"Mediaregelaars gebruiken\".";
-
-
-/*  */
-"osm.tag.crossing" = "Zebrapad";
 
 
 /*  */
@@ -3791,15 +2071,7 @@
 
 
 /*  */
-"osm.tag.dangerous_area" = "Gevaarlijk gebied";
-
-
-/*  */
 "osm.tag.townhall" = "Gemeentehuis";
-
-
-/*  */
-"osm.tag.steps" = "Trap";
 
 
 /*  */
@@ -3807,15 +2079,7 @@
 
 
 /*  */
-"osm.tag.walking_path" = "Voetpad";
-
-
-/*  */
 "osm.tag.pedestrian_street" = "Voetgangersgebied";
-
-
-/*  */
-"osm.tag.bicycle_path" = "Fietspad";
 
 
 /*  */
@@ -3823,15 +2087,7 @@
 
 
 /*  */
-"osm.tag.service_road" = "Vluchtstrook";
-
-
-/*  */
 "osm.tag.road" = "Weg";
-
-
-/*  */
-"osm.tag.highway" = "Snelweg";
 
 
 /*  */
@@ -3839,15 +2095,7 @@
 
 
 /*  */
-"osm.tag.highway.refed" = "Snelweg %@";
-
-
-/*  */
 "osm.tag.intersection" = "Kruispunt";
-
-
-/*  */
-"osm.tag.roundabout" = "Rotonde";
 
 
 /*  */
@@ -3855,15 +2103,7 @@
 
 
 /*  */
-"osm.tag.merging_lane" = "Invoegstrook";
-
-
-/*  */
 "osm.tag.office_building" = "Kantoorgebouw";
-
-
-/*  */
-"osm.tag.school_building" = "Schoolgebouw";
 
 
 /*  */
@@ -3871,15 +2111,7 @@
 
 
 /*  */
-"osm.tag.convenience_store" = "Supermarkt";
-
-
-/*  */
 "osm.tag.building_entrance" = "Ingang van gebouw";
-
-
-/*  */
-"osm.tag.assembly_point" = "Verzamelpunt";
 
 
 /*  */
@@ -3887,15 +2119,7 @@
 
 
 /*  */
-"osm.tag.turnstile" = "Tourniquet";
-
-
-/*  */
 "osm.tag.cattle_grid" = "Veerooster";
-
-
-/*  */
-"osm.tag.gate" = "Hek";
 
 
 /*  */
@@ -3903,15 +2127,7 @@
 
 
 /*  */
-"osm.tag.parking_lot" = "Parkeerterrein";
-
-
-/*  */
 "osm.tag.parking_entrance" = "Ingang parkeerterrein";
-
-
-/*  */
-"osm.tag.bench" = "Bank";
 
 
 /*  */
@@ -3919,15 +2135,7 @@
 
 
 /*  */
-"osm.tag.post_office" = "Postkantoor";
-
-
-/*  */
 "osm.tag.post_box" = "Brievenbus";
-
-
-/*  */
-"osm.tag.waste_basket" = "Prullenbak";
 
 
 /*  */
@@ -3935,15 +2143,7 @@
 
 
 /*  */
-"osm.tag.bike_parking" = "Fietsenstalling";
-
-
-/*  */
 "osm.tag.cafe" = "Café";
-
-
-/*  */
-"osm.tag.restaurant" = "Restaurant";
 
 
 /*  */
@@ -3951,15 +2151,7 @@
 
 
 /*  */
-"osm.tag.gas_station" = "Benzinepomp";
-
-
-/*  */
 "osm.tag.bank" = "Bank";
-
-
-/*  */
-"osm.tag.atm" = "Geldautomaat";
 
 
 /*  */
@@ -3967,15 +2159,7 @@
 
 
 /*  */
-"osm.tag.atm.refed" = "Geldautomaat %@";
-
-
-/*  */
 "osm.tag.bus_stop" = "Bushalte";
-
-
-/*  */
-"osm.tag.bus_stop.named" = "Bushalte van %@";
 
 
 /*  */
@@ -3983,15 +2167,7 @@
 
 
 /*  */
-"osm.tag.recycling_bin" = "Vuilnisbak";
-
-
-/*  */
 "osm.tag.fountain" = "Fontein";
-
-
-/*  */
-"osm.tag.place_of_worship" = "Gebedshuis";
 
 
 /*  */
@@ -3999,15 +2175,7 @@
 
 
 /*  */
-"osm.tag.car_wash" = "Autowasstraat";
-
-
-/*  */
 "osm.tag.vending_machine" = "Automaat";
-
-
-/*  */
-"osm.tag.playground" = "Speeltuin";
 
 
 /*  */
@@ -4015,15 +2183,7 @@
 
 
 /*  */
-"osm.tag.swimming_pool" = "Zwembad";
-
-
-/*  */
 "osm.tag.garden" = "Tuin";
-
-
-/*  */
-"osm.tag.park" = "Park";
 
 
 /*  */
@@ -4031,15 +2191,7 @@
 
 
 /*  */
-"osm.tag.picnic_area" = "Picknickgebied";
-
-
-/*  */
 "banner.custom_behavior.scavenger_hunt" = "Speurtocht is actief.";
-
-
-/*  */
-"banner.custom_behavior.scavenger_hunt.hint" = "Dubbeltik om te lezen over de speurtocht of deze te onderbreken.";
 
 
 /*  */
@@ -4047,15 +2199,7 @@
 
 
 /*  */
-"banner.offline_help.message" = "Openscape is offline.";
-
-
-/*  */
 "banner.offline_search.message" = "Openscape is offline. Locaties zijn beperkt tot plaatsen waar je eerder langs bent gelopen of die je al hebt gemarkeerd. Meer informatie";
-
-
-/*  */
-"banner.online.message" = "Openscape is weer online";
 
 
 /*  */
@@ -4063,15 +2207,7 @@
 
 
 /*  */
-"share.prompt.title" = "Gebruik je openscape graag?";
-
-
-/*  */
 "share.prompt.message" = "Vertel vrienden en familie over Openscape";
-
-
-/*  */
-"share.action.message" = "Probeer Openscape, mijn favoriete app voor navigeren met 3D-geluid:";
 
 
 /*  */
@@ -4079,15 +2215,7 @@
 
 
 /*  */
-"push.local.home.body" = "Kies een bestemming in de buurt, start het baken en u hoort het in de richting van uw bestemming.";
-
-
-/*  */
 "push.local.walk.title" = "Probeer Openscape tijdens je volgende wandeling";
-
-
-/*  */
-"push.local.walk.body" = "Start de app en geniet van de ervaring. U hoeft niet eens een bestemming te kiezen.";
 
 
 /*  */
@@ -4095,15 +2223,7 @@
 
 
 /*  */
-"faq.title" = "Veelgestelde vragen";
-
-
-/*  */
 "faq.title.abbreviated" = "Veelgestelde vragen";
-
-
-/*  */
-"faq.tips.title" = "Tips";
 
 
 /*  */
@@ -4111,15 +2231,7 @@
 
 
 /*  */
-"faq.markers_function.answer" = "Markeringen zijn plaatsen die je hebt opgeslagen. Dit kunnen plaatsen zijn die je met de app ontdekt hebt of geheel nieuwe plaatsen die je zelf hebt toegevoegd. Je kunt je huidige locatie opslaan als een markering door op de knop Huidige locatie op het startscherm te drukken en vervolgens Opslaan als markering te selecteren. Je kunt andere locaties opslaan als /een markering door te zoeken naar de plaats die je wilt opslaan met de zoekbalk, of door op de knop Plaatsen in de buurt te tikken. Beide opties bevinden zich op het startscherm van Openscape. Als je de gewenste plaats hebt gevonden en deze selecteert, ga je naar de pagina Locatiedetails. Selecteer op deze pagina de knop Opslaan als een markering.";
-
-
-/*  */
 "faq.section.getting_the_best_experience" = "Hoe maak ik optimaal gebruik van Openscape?";
-
-
-/*  */
-"faq.what_can_I_set.question" = "Wat kan ik instellen als een baken?";
 
 
 /*  */
@@ -4127,15 +2239,7 @@
 
 
 /*  */
-"faq.how_to_use_beacon.question" = "Hoe maak ik optimaal gebruik van het baken?";
-
-
-/*  */
 "faq.how_to_use_beacon.answer" = "Je kunt het audiobaken zien als een soort 'vuurtoren' voor je oren. Het laat je weten waar je bestemming zich bevindt, hemelsbreed ten opzichte van je locatie. Net als een vuurtoren vertelt de app niet hoe je er komt, maar moet je zelf onderweg veel navigatiekeuzes maken en als een zeilboot je koers strategisch aanpassen om dichterbij je bestemming te komen. Het continue ritmische geluid van het audiobaken wordt uitgezonden vanuit de richting van je bestemming en zorgt dat je je bewust blijft van de locatie van de bestemming ten opzichte van waar je loopt. Wanneer je recht op de bestemming afloopt of je telefoon naar de bestemming richt, hoor je een hogere beltoon. Op deze manier kun je de richting precies bepalen, aangezien de richting van het ritmische geluid soms moeilijk waar te nemen is in lawaaierige omgevingen. Als je de hogere beltoon wilt horen, moet je de telefoon vlak houden en er langzaam mee zwaaien. Draai je hoofd in dezelfde richting als de telefoon zodat je de beste ruimtelijke geluidsweergave krijgt.\n\nDe metafoor met de vuurtoren voor het bakenontwerp heeft een aantal natuurlijke implicaties:\n\n1. Er is geen 'juiste' richting om te reizen met het baken. Met openscape kies je zelf hoe u er komt.\n2. De hogere beltoon helpt je alleen om de richting van de bestemming te lokaliseren. Het is geen aanduiding voor hoe je er komt.\n3. Als je min of meer weet hoe je bij je bestemming komt, kun je het baken het grootste deel van je reis uitzetten en alleen inschakelen als je dicht bij je bestemming komt.";
-
-
-/*  */
-"faq.why_does_beacon_disappear.question" = "Waarom verdwijnt het audiobaken soms?";
 
 
 /*  */
@@ -4143,15 +2247,7 @@
 
 
 /*  */
-"faq.beacon_on_address.question" = "Kan ik een baken instellen op een adres?";
-
-
-/*  */
 "faq.beacon_on_address.answer" = "Ja, dat kan. Adressen worden niet standaard vermeld, maar kunnen worden gevonden via het zoekveld. Als u het adres wilt opslaan zodat u het de volgende keer niet meer hoeft op te zoeken, kunt u het via het startscherm als markering toevoegen met de knop Toevoegen aan markeringen of met de VoiceOver-acties van het baken op het startscherm.";
-
-
-/*  */
-"faq.beacon_on_home.question" = "Hoe stel ik een baken in op mijn huis?";
 
 
 /*  */
@@ -4159,15 +2255,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.question" = "Wanneer ik een baken instel op een bestemming, hoe dicht bij de bestemming brengt Openscape me dan? ";
-
-
-/*  */
 "faq.how_close_to_destination.answer" = "Openscape kan de locatie van je bestemming tot binnen een paar meter bepalen, maar niet minder. Wanneer Openscape vaststelt dat je dicht bij je bestemming bent, hoor je een laatste melding dat je bestemming dichtbij is en wordt het baken uitgeschakeld.";
-
-
-/*  */
-"faq.turn_beacon_back_on.question" = "Kan ik het baken weer aanzetten als ik dicht bij mij bestemming bent?";
 
 
 /*  */
@@ -4175,15 +2263,7 @@
 
 
 /*  */
-"faq.road_names.question" = "Waarom noemt Openscape wegnamen twee keer wanneer ik een kruispunt nader?";
-
-
-/*  */
 "faq.road_names.answer" = "Om verschillende soorten kruispunten te kunnen weergeven, beschrijft Openscape kruispunten als onderdelen van wegen die op een gemeenschappelijk punt beginnen. Openscape gebruikt ruimtelijke audio om achtereenvolgens de namen aan te geven van de weg naar links, de weg die rechtdoor gaat en de weg die naar rechts gaat. Als de beschrijving van het kruispunt begint met de weg waarop je je bevindt in plaats van de weg naar links, gaat het om een T-splitsing en gaat de weg waarop jij bent, rechtdoor met een afslag naar rechts. Als de beschrijving alleen een weg naar links en een weg naar rechts bevat, weet je dat de weg waarop je je bevindt, eindigt bij de komende T-splitsing. Deze methode voor het beschrijven van kruispunten wordt ook gebruikt als een weg van naam verandert bij een kruispunt.";
-
-
-/*  */
-"faq.why_not_every_business.question" = "Waarom geeft Openscape niet bij elk bedrijf dat ik passeer, een melding?";
 
 
 /*  */
@@ -4191,15 +2271,7 @@
 
 
 /*  */
-"faq.callouts_stopping_in_vehicle.question" = "Waarom hoor ik bepaalde waarschuwingen niet meer wanneer ik in een auto rijd?";
-
-
-/*  */
 "faq.callouts_stopping_in_vehicle.answer" = "Om te voorkomen dat er te veel waarschuwingen worden weergegeven, worden bepaalde categorieën, zoals kruispunten, niet automatisch aangekondigd wanneer u met een auto reist.";
-
-
-/*  */
-"faq.miss_a_callout.question" = "Wat moet ik doen als ik een waarschuwing niet begrijp of niet hoor vanwege omgevingsgeluid?";
 
 
 /*  */
@@ -4207,15 +2279,7 @@
 
 
 /*  */
-"faq.supported_phones.question" = "Op welke telefoon werkt Openscape?";
-
-
-/*  */
 "faq.supported_phones.answer" = "Openscape is momenteel beschikbaar voor Apple iOS, en werkt op de iPhone SE, iPhone 6S en later.";
-
-
-/*  */
-"faq.supported_headsets.question" = "Welke koptelefoon kan ik het beste gebruiken met Openscape?";
 
 
 /*  */
@@ -4223,15 +2287,7 @@
 
 
 /*  */
-"faq.battery_impact.question" = "Wat is de impact van Openscape op de batterij van mijn iPhone?";
-
-
-/*  */
 "faq.battery_impact.answer" = "De levensduur van batterijen varieert aanzienlijk op basis van het model en de leeftijd van je iPhone. Als het scherm is ingeschakeld, wordt de meeste voeding verbruikt. Als je de levensduur van je batterij wilt optimaliseren, moet je het scherm steeds vergrendelen. Om de impact op de batterij van je iPhone te minimaliseren, beschikt Openscape nu over een slaapstand. Als je de hoeveelheid verbruikte batterijvoeding nog verder wilt verminderen, kun je Openscape wanneer je de app niet gebruikt het beste sluiten via de Appkiezer van je iPhone. ";
-
-
-/*  */
-"faq.sleep_mode_battery.question" = "Hoe kan ik de slaapstand inzetten om het gebruik van de batterij van mijn telefoon door Openscape te minimaliseren?";
 
 
 /*  */
@@ -4239,15 +2295,7 @@
 
 
 /*  */
-"faq.snooze_mode_battery.question" = "Hoe kan ik de sluimerstand inzetten om het gebruik van de batterij van mijn telefoon door Openscape te minimaliseren?";
-
-
-/*  */
 "faq.snooze_mode_battery.answer" = "Als je Openscape in de sluimerstand wilt zetten, selecteer dat de knop Slapen rechtsboven in het scherm. Als Openscape in de slaapstand staat, selecteer dan de knop Activeren wanneer ik vertrek. Openscape verbruikt dan weinig batterijvoeding totdat je je huidige locatie verlaat.";
-
-
-/*  */
-"faq.headset_battery_impact.question" = "Wat betekent mijn keuze van koptelefoon voor de levensduur van de batterij van mijn telefoon?";
 
 
 /*  */
@@ -4255,15 +2303,7 @@
 
 
 /*  */
-"faq.background_battery_impact.question" = "Wat is de invloed van het op de achtergrond uitvoeren van Openscape op de levensduur van de batterij van mijn telefoon?";
-
-
-/*  */
 "faq.background_battery_impact.answer" = "Openscape is een op locatie gebaseerde app die gebruikmaakt van Locatievoorzieningen om je locatie vast te stellen. Uit onze testen blijkt dat Openscape niet meer batterijvoeding verbruikt dan andere naviagie-apps. Als je echter batterijverbruik belangrijk vindt bij het gebruiken van je telefoon, volgen hier een paar tips om je verbruik te reduceren:\n\n1. Schakel het scherm zoveel mogelijk uit wanneer je niet met de app werkt.\n2. Sluit de app als je deze niet gebruikt. Openscape maakt doorlopend gebruik van locatievoorzieningen als de app actief is. Daardoor weet de app altijd je locatie, ook wanneer je niet in beweging bent. Vergeet niet om de app weer te starten wanneer jeje reis voortzet.\n3. Zorg bij koud weer dat je telefoon warm blijft, aangezien batterijen slecht werken bij lagere temperaturen.";
-
-
-/*  */
-"faq.mobile_data_use.question" = "Hoeveel mobiele data gebruikt Openscape?";
 
 
 /*  */
@@ -4271,15 +2311,7 @@
 
 
 /*  */
-"faq.difference_from_map_apps.question" = "Waarin verschilt Openscape van andere navigatie-apps?";
-
-
-/*  */
 "faq.difference_from_map_apps.answer" = "Openscape geeft een uitgebreide beschrijving van je omgeving om je te helpen deze te verkennen en jouw route te vinden. Met ruimtelijke audio geeft Openscape, terwijl je loopt, meldingen over referentiepunten, parken, wegen en kruispunten vanuit de richting waarin deze zich fysiek in je omgeving bevinden. Als je bijvoorbeeld een winkel passeert aan je rechterhand, hoor je de naam van de winkel vanaf de rechterkant. Als je een kruispunt nadert, hoor je alle straatnamen vanuit de richting waarin ze lopen: naar links, rechtdoor en naar rechts.\n\nIn plaats van richtingaanwijzingen zoals in andere navigatie-apps hoor je in Openscape een audiobaken in de richting van je bestemming, zodat je je weg daarnaartoe op jouw eigen manier kunt vinden aan de hand van een verhoogde bewustwording van je omgeving en van de locatie van je bestemming. Openscape is ontworpen om op de achtergrond te worden uitgevoerd. Zo kun je \n een navigatie-app gebruiken die die routeaanwijzingen geeft, terwijl Openscape je helpt met het bewustzijn van de omgeving.";
-
-
-/*  */
-"faq.use_with_wayfinding_apps.question" = "Hoe gebruik ik Openscape samen met een navigatie-app?";
 
 
 /*  */
@@ -4287,15 +2319,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.question" = "Hoe bepaal ik wat ik hoor en wanneer ik het hoor in Openscape?";
-
-
-/*  */
 "faq.controlling_what_you_hear.answer" = "Openscape heeft verschillende manieren om te bepalen wat je hoort en wanneer:\n\n1. Meteen alle audio stoppen: dubbeltik op het scherm met twee vingers om meteen alle audio uit te schakelen, met inbegrip van meldingen die momenteel worden afgespeeld en van het baken als het is ingeschakeld. De vmeldingen worden automatisch hervat wanneer je het volgende kruispunt of referentiepunt nadert, maar het audiobaken niet. Selecteer de knop Baken dempen opheffen op het hoofdscherm als je het baken weer wilt horen.\n2. Automatische waarschuwingen stoppen: wanneer je niet rijdt of een bestemming hebt bereikt, is het waarschijnlijk niet meer nodig dat Openscape meldingen blijft geven over je omgeving. In plaats van de app af te sluiten kun je Openscape in de sluimerstand zetten. De app wordt dan geactiveerd wanneer je weer vertrekt. Ook kun je Openscape in de slaapstand zetten waardoor de app uitgeschakeld blijft tot je deze weer inschakelt. Of selecteer Instellingen in het menu en schakel alle waarschuwingen uit in Waarschuwingen beheren.\n3. Het baken stoppen: er zijn verschillende scenario's waarin je wel een bestemming wilt instellen maar geen hoorbaar baken nodig hebt. Je weet bijvoorbeeld precies hoe je bij je bestemming komt, maar je wilt automatische updates krijgen over hoe ver het nog is. Of u weet ongeveer hoe je de bestemming vindt en je hebt het audiobaken pas nodig als je er bijna bent. In beide gevallen kun je het audiobaken in- of uitschakelen met de knop Baken dempen/Baken dempen opheffen op het hoofdscherm.";
-
-
-/*  */
-"faq.holding_phone_flat.question" = "Moet ik de telefoon steeds in mijn hand houden?";
 
 
 /*  */
@@ -4303,15 +2327,7 @@
 
 
 /*  */
-"faq.personalize_experience.question" = "Op welke manieren kan ik mijn Openscape-ervaring aanpassen aan mijn wensen?";
-
-
-/*  */
 "faq.personalize_experience.answer" = "In Openscape kun je de drie belangrijkste aspecten van de meldingen aanpassen die je hoort tijdens het lopen:\n\n1. Stem: kies een van de beschikbare stemmen in iOS voor gebruik in Openscape, en kies ook de snelheid waarmee de meldingen worden uitgesproken. Selecteer in het Menu de opties Instellingen en Stem om de spreeksnelheid en de steminstellingen te bepalen. Je kunt andere stemmen en stemmen met een hogere spraakkwaliteit downloaden in de app iOS-instellingen via Instellingen > Toegankelijkheid > Gesproken materiaal > Stemmen. \n2. Meeteenheid voor afstand: je kunt de afstanden in Openscape laten melden in voeten of meters. Selecteer Instellingen in het Menu. In Meeteenheden kun je afwisselen tussen twee opties: Imperial (voet) en Metrisch (meter).\n3. Markeringen: je kunt in je omgeving markeringen aanbrengen voor persoonlijke en relevante zaken die je belangrijk vindt, zoals je huis, kantoor of je favoriete supermarkt. Openscape geeft dan automatisch een melding over de gemarkeerde plaatsen als je erlangs loopt of ze nadert. Met de knop Markeringen in de buurt onder aan het startscherm van Openscape krijg je een ruimtelijke melding te horen voor gemarkeerde plaatsen om je heen. Deze markeringen zijn persoonlijk en niet beschikbaar voor anderen.\n\nBovendien kun je met de instellingen voor VoiceOver bepalen hoe Openscape werkt:\n\n1. VoiceOver-tips: als VoiceOver-tips zijn ingeschakeld, hoor je meer informatie over alle knoppen op het Openscape startscherm. Schakel VoiceOver-tips in via de app iOS-instellingen via Toegankelijkheid > VoiceOver > Detailniveau. Schakel vervolgens de instelling Spreek hints uit in.\n2. Audioducking: Openscape werkt standaard met Audioducking uitgeschakeld. Wanneer Audioducking is ingeschakeld, zijn automatische meldingen moeilijker te horen als tegelijkertijd VoiceOver wordt gebruikt. We raden aan om Audioducking uit te schakelen zodat je beter alle automatische meldingen kunt horen terwijl je de telefoon gebruikt. Zet Audioducking uit in VoiceOver-instellingen of via de VoiceOver-rotor.\n3. Touch ID of Face ID om te ontgrendelen: als je je telefoon instelt op ontgrendelen met Touch ID of Face ID, gaat het ontgrendelen snel en gemakkelijk en heb je onderweg snel toegang tot de knoppen Mijn locatie, Om me heen en Vóór me. Ontgrendelen met Touch ID of Face ID stel je in via de app iOS-instellingen.";
-
-
-/*  */
-"faq.what_is_osm.question" = "Wat is Open Street Map en waarom gebruiken we dit voor Openscape?";
 
 
 /*  */
@@ -4319,15 +2335,7 @@
 
 
 /*  */
-"faq.tip.beacon_quiet" = "/* Als je je telefoon in je zak houdt en niet verder loopt, stopt het bakengeluid omdat Openscape niet kan bepalen in welke richting je kijkt. Dit kun je verhelpen door weer te gaan lopen, of door je telefoon tevoorschijn te halen en horizontaal voor je uit te houden.";
-
-
-/*  */
 "faq.tip.setting_beacon_on_address" = "Je kunt op elk adres een baken instellen. Zoek op het hoofdscherm van Openscape naar het adres. Nadat je het adres hebt geselecteerd in de zoekresultaten, verschijnt het scherm Locatiedetails met de optie om voor het adres een Audiobaken te starten. Zo kun je een baken instellen voor bedrijven, plaatsen, referentiepunten en gebouwen die niet op Open Street Map staan.";
-
-
-/*  */
-"faq.tip.finding_bus_stops" = "U vindt bushaltes in de buurt door het filter Openbaar vervoer te selecteren in de lijst Plaatsen in de buurt.";
 
 
 /*  */
@@ -4335,30 +2343,14 @@
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "Als je wel met Openscape wilt werken, maar niet de automatische meldingen wilt horen, kun je meldingen uitzetten via Waarschuwingen beheren in Instellingen in het menu. Ook kun je Openscape in de slaapstand zetten met de knop Slapen op het hoofdscherm, als je de app niet wilt gebruiken.";
-
-
-/*  */
 "faq.tip.hold_phone_flat" = "Openscape werkt het beste als je de telefoon plat houdt met het scherm naar boven en de bovenkant van de telefoon van je af wijzend.";
-
-
-/*  */
-"faq.tip.create_marker_at_bus_stop" = "Als u geregeld een bepaalde busroute neemt, stelt u de begin- en eindhaltes in als Markeringen. Ze worden dan opgeslagen en u kunt ze eenvoudig terugvinden in de lijst bij de optie Markeringen beheren in het menu. Stel een baken in zodat u periodieke updates krijgt over hoe dicht u bij de eindhalte bent. Opmerking: u kunt het ritmische geluid uitzetten en onderweg meldingen over de afstand ontvangen.";
 
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Dubbeltik met twee vingers op het scherm om actieve waarschuwingen op stil te zetten.";
 
-
-
-
-/* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Openscape"} */
-"faq.when_to_use.question" = "Wanneer kan ik Openscape gebruiken?";
-
 // MARK: What is Openscape?
 
-/* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Openscape"} */
-"faq.section.what_is" = "Wat is Openscape en hoe kan ik het gebruiken?";
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. ’Lighting up your way with sound’ is a marketing tagline for the app. Intersection - A junction where two or more roads meet or cross. 3D sound is where the audio through your headphones sounds as though it is coming from a given direction, as if it was actually coming from a speaker. Quotes written as \" {NumberedPlaceholder="Openscape"} */
 "faq.when_to_use.answer" = "/Openscape - De app die het gebruik van innovatieve op audio gebaseerde technologie gebruikt om mensen, met name blinden of slechtzienden, in staat te stellen een beter bewustzijn van hun omgeving op te bouwen. Door hoorbare 3D-audiosignalen te gebruiken wordt het inzicht in de omgeving verrijkt en onstaat een nieuwe manier om je verbonden te voelen met alles wat zich rondom je bevindt. Hierdoor is het mogelijk je met meer zekerheid te verplaatsen. Kruispunt - Een punt waar twee of meer wegen elkaar ontmoeten of kruisen. Bij 3D-geluid klinkt het geluid via je hoofdtelefoon alsof het uit een bepaalde richting komt, alsof het echt uit een luidspreker komt. Citaten geschreven als \\\" {NumberedPlaceholder=\"Openscape\"} */";

@@ -351,15 +351,7 @@
 
 
 /*  */
-"settings.screen_title" = "Asetukset";
-
-
-/*  */
 "settings.clear_cache.alert_title" = "Poistetaanko tallennetut tiedot?";
-
-
-/*  */
-"settings.clear_cache.alert_message" = "Openscape tallentaa tietokartan vähentääkseen datan ja akun kulutusta. Tallennettujen tietojen poisto vaatii, että Openscape lataa tiedot uudelleen.";
 
 
 /*  */
@@ -367,15 +359,7 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Valitse \"Poista\" poistaaksesi merkinnät, majakat ja reitit, tai \"Säilytä\" poistaaksesi vain karttatiedot. \"Poista\" nollaa sovelluksen juuri asennettuun tilaan, eikä sitä voi peruuttaa!";
-
-
-/*  */
 "settings.clear_cache.no_service.title" = "Tallennettuja karttatietoja ei voida poistaa";
-
-
-/*  */
-"settings.clear_cache.no_service.message" = "Openscape ei saa yhteyttä Internetiin. Internet-yhteys vaaditaan tallennettujen karttatietojen tyhjentämiseen, jotta karttatiedot voidaan päivittää.";
 
 
 /*  */
@@ -383,15 +367,7 @@
 
 
 /*  */
-"settings.telemetry.optout.alert_message" = "Tämä toiminto poistaa tallennetut tiedot ja kieltää tulevien telemetriatietojen keräämisen. Oletko varma?";
-
-
-/*  */
 "settings.telemetry.optout.action" = "Kiellä käyttö";
-
-
-/*  */
-"settings.version.history.version" = "Versio %@";
 
 
 /*  */
@@ -399,15 +375,7 @@
 
 
 /*  */
-"settings.feedback.subject" = "Openscape -palautetta";
-
-
-/*  */
 "settings.feedback.choose_email_app" = "Valitse sähköpostisovellus:";
-
-
-/*  */
-"settings.feedback.no_mail_client_error" = "Sähköpostisovellusta ei asennettuna";
 
 
 /*  */
@@ -415,15 +383,7 @@
 
 
 /*  */
-"settings.units.imperial" = "Imperiaalinen (jalkaa)";
-
-
-/*  */
 "settings.units.metric" = "Metrinen (metriä)";
-
-
-/*  */
-"settings.clear_data" = "Tyhjennä tallennetut karttatiedot";
 
 
 /*  */
@@ -431,15 +391,7 @@
 
 
 /*  */
-"settings.section.general" = "Yleiset asetukset";
-
-
-/*  */
 "settings.section.units" = "Mittayksiköt";
-
-
-/*  */
-"settings.section.troubleshooting" = "Vianmääritys";
 
 
 /*  */
@@ -447,15 +399,7 @@
 
 
 /*  */
-"settings.section.telemetry" = "Telemetria";
-
-
-/*  */
 "settings.section.share_usage_data" = "Jaa käyttötiedot";
-
-
-/*  */
-"settings.section.telemetry.footer" = "Auta Openscapea parantamaan toimintaansa lähettämällä automaattisesti virheraportteja sekä diagnostiikka- ja käyttötietoja. Henkilökohtaisia tietoja ei kerätä.";
 
 
 /*  */
@@ -463,15 +407,7 @@
 
 
 /*  */
-"settings.language.screen_title.2" = "Kieli ja alue";
-
-
-/*  */
 "settings.language.change_alert" = "Haluatko vaihtaa sovelluksen kieleksi kielen %@?";
-
-
-/*  */
-"settings.language.change_alert_action" = "Vaihda kieleen %@";
 
 
 /*  */
@@ -479,15 +415,7 @@
 
 
 /*  */
-"settings.audio.media_controls" = "Mediasäätimet";
-
-
-/*  */
 "settings.audio.mix_with_others.title" = "Ota mediasäätimet käyttöön";
-
-
-/*  */
-"settings.audio.mix_with_others.description" = "Käytä tätä ottaaksesi käyttöön Soundscapen ohjaamisen kuulokkeidesi painikkeilla ja lukitusnäytön mediantoistopainikkeilla. Huomaa, että kun asetus on käytössä, Soundscapea ei voi käyttää, kun muuta mediaa, kuten podcasteja tai musiikkia, toistetaan.";
 
 
 /*  */
@@ -495,15 +423,7 @@
 
 
 /*  */
-"settings.volume.other" = "Äänitehosteet";
-
-
-/*  */
 "voice.action.preview" = "Esikatselu";
-
-
-/*  */
-"voice.preview" = "Hei. Nimeni on %@.";
 
 
 /*  */
@@ -511,15 +431,7 @@
 
 
 /*  */
-"voice.voices" = "Äänet";
-
-
-/*  */
 "voice.voice_rate_test" = "Miltä tämä kuulostaa?";
-
-
-/*  */
-"voice.title.voice_name_and_locale" = "%1$@, %2$@.";
 
 
 /*  */
@@ -527,15 +439,7 @@
 
 
 /*  */
-"voice.voice_cell.selected.acc_hint" = "Tämä ääni on tällä hetkellä valittuna. Pyyhkäise ylös- tai alaspäin esikatsellaksesi.";
-
-
-/*  */
 "voice.voice_cell.use.acc_hint" = "Kaksoisnapauta käyttääksesi tätä ääntä. Pyyhkäise ylös- ja alaspäin esikatsellaksesi.";
-
-
-/*  */
-"voice.apple.other_languages" = "Muut kielet";
 
 
 /*  */
@@ -543,15 +447,7 @@
 
 
 /*  */
-"voice.apple.female" = "Naispuolinen";
-
-
-/*  */
 "voice.apple.default" = "%@ (Oletusääni)";
-
-
-/*  */
-"voice.apple.preview" = "Tämä on %@. Miltä tämä kuulostaa?";
 
 
 /*  */
@@ -559,15 +455,7 @@
 
 
 /*  */
-"voice.settings.enhanced_available.title" = "Parempi ääni saatavilla!";
-
-
-/*  */
 "voice.settings.enhanced_available" = "Tästä äänestä voi olla saatavilla korkeampilaatuinen versio. Voit ladata sen ja muita ääniä siirtymällä Puhuttu sisältö -osaan iOS-käyttöapuasetuksissa.";
-
-
-/*  */
-"voice.settings.enhanced_available.button" = "Käytä nykyistä versiota";
 
 
 /*  */
@@ -575,15 +463,7 @@
 
 
 /*  */
-"beacon.settings_title" = "Majakan asetukset";
-
-
-/*  */
 "beacon.settings.style" = "Äänityylit";
-
-
-/*  */
-"beacon.settings.style.haptic" = "Värinätyylit";
 
 
 /*  */
@@ -591,15 +471,7 @@
 
 
 /*  */
-"beacon.settings.cues" = "Lähtö ja saapuminen";
-
-
-/*  */
 "beacon.settings.melodies" = "Ota lähtö- ja saapumisvihjeet käyttöön";
-
-
-/*  */
-"beacon.settings.explanation" = "Valitse sellainen majakkatyyli, jota kuuntelet mielelläsi, ja joka kuuluu helposti ulkotiloissa ja ympäristön melussa. Varmista, että voit helposti erottaa sen suunnan haluamallasi kuuntelulaitteella (kuulokkeet tai puhelimen kaiutin).";
 
 
 /*  */
@@ -607,15 +479,7 @@
 
 
 /*  */
-"troubleshooting.gps_status" = "Sijainnin tarkkuus";
-
-
-/*  */
 "troubleshooting.gps_status.explanation.meters" = "Tämä arvo on arvio siitä, kuinka tarkasti openscape tietää, missä sijaitset. Alle ±10 metriä on hyvä. Alle ±20 metriä on hyväksyttävä. Mikä tahansa muu on huono. Sijainnin tiedot ovat tarkimpia ulkotiloissa muualla kuin rakennelmien alla.";
-
-
-/*  */
-"troubleshooting.gps_status.explanation.feet" = "Tämä arvo on arvio siitä, kuinka tarkasti openscape tietää, missä sijaitset. Alle ±30 jalkaa on hyvä. Alle ±60 jalkaa on hyväksyttävä. Mikä tahansa muu on huono. Sijainnin tiedot ovat tarkimpia ulkotiloissa muualla kuin rakennelmien alla.";
 
 
 /*  */
@@ -623,15 +487,7 @@
 
 
 /*  */
-"troubleshooting.gps_status.feet" = "±%@ jalkaa";
-
-
-/*  */
 "troubleshooting.check_audio" = "Tarkista ääni";
-
-
-/*  */
-"troubleshooting.check_audio.hint" = "Kaksoisnapauta tarkistaaksesi Soundscapen kanssa käyttämiesi kuulokkeiden tilan.";
 
 
 /*  */
@@ -639,15 +495,7 @@
 
 
 /*  */
-"troubleshooting.cache" = "Karttatiedot";
-
-
-/*  */
 "troubleshooting.cache.hint" = "Kaksoisnapauta poistaaksesi tallennetut karttatiedot ja ladataksesi ne uudelleen.";
-
-
-/*  */
-"troubleshooting.cache.explanation" = "Openscape lataa karttatietoja kävellessäsi, jotta se voi kertoa sinulle lähiympäristösi kohteista ja paikoista. Jos sinulla on ongelmia Soundscapen kanssa tai se käyttää liikaa muistia, voit tyhjentää tallennetut karttatiedot, ja Soundcape lataa ainoastaan nykyisen lähiympäristösi karttatiedot.";
 
 
 /*  */
@@ -655,15 +503,7 @@
 
 
 /*  */
-"settings.about.title.privacy" = "Openscape Community tietosuojalauseke";
-
-
-/*  */
 "settings.about.title.service_agreement" = "Palvelusopimus";
-
-
-/*  */
-"settings.about.title.third_party" = "Kolmansien osapuolten huomautukset";
 
 
 /*  */
@@ -671,15 +511,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_label" = "Kaksoisnapauta sulkeaksesi ilmoitukset";
-
-
-/*  */
 "settings.new_feature.accept_button.acc_hint" = "Kaksoisnapauta tarkastellaksesi seuraavaa päivitysilmoitusta";
-
-
-/*  */
-"settings.new_feature.recent_updates" = "Viimeisimmät päivitykset";
 
 
 /*  */
@@ -687,15 +519,7 @@
 
 
 /*  */
-"beacon.styles.current" = "Nykyinen";
-
-
-/*  */
 "beacon.styles.original" = "Alkuperäinen";
-
-
-/*  */
-"beacon.styles.flare" = "Leimahdus";
 
 
 /*  */
@@ -703,15 +527,7 @@
 
 
 /*  */
-"beacon.styles.tactile" = "Kosketus";
-
-
-/*  */
 "beacon.styles.ping" = "Ping";
-
-
-/*  */
-"beacon.styles.drop" = "Pudotus";
 
 
 /*  */
@@ -719,15 +535,7 @@
 
 
 /*  */
-"beacon.styles.signal.slow" = "Signaali (hidas)";
-
-
-/*  */
 "beacon.styles.signal.very_slow" = "Signaali (erittäin hidas)";
-
-
-/*  */
-"beacon.styles.mallet" = "Nuija";
 
 
 /*  */
@@ -735,15 +543,7 @@
 
 
 /*  */
-"beacon.styles.mallet.very_slow" = "Nuija (erittäin hidas)";
-
-
-/*  */
 "beacon.styles.haptic.wand" = "Värinäsauva";
-
-
-/*  */
-"beacon.styles.haptic.pulse" = "Toistuva värinä";
 
 
 /*  */
@@ -751,15 +551,7 @@
 
 
 /*  */
-"beacon.beacon_on" = "Majakka on %@";
-
-
-/*  */
 "beacon.distance.unknown" = "Etäisyys tuntematon";
-
-
-/*  */
-"beacon.action.remove_beacon" = "Poista majakka";
 
 
 /*  */
@@ -767,15 +559,7 @@
 
 
 /*  */
-"beacon.action.mute_beacon" = "Hiljennä majakka";
-
-
-/*  */
 "beacon.action.mute_beacon.acc_hint" = "Kaksoisnapauta hiljentääksesi äänimajakan.";
-
-
-/*  */
-"beacon.action.unmute_beacon" = "Poista majakan hiljennys";
 
 
 /*  */
@@ -783,15 +567,7 @@
 
 
 /*  */
-"beacon.action.mute_unmute_beacon" = "Hiljennä majakka tai poista sen hiljennys";
-
-
-/*  */
 "beacon.action.callout_beacon" = "Ilmoitusmajakka";
-
-
-/*  */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Kaksoisnapauta hiljentääksesi äänimajakan tai poistaaksesi sen hiljennyksen";
 
 
 /*  */
@@ -799,15 +575,7 @@
 
 
 /*  */
-"beacon.action.view_details.acc_hint.details" = "Kaksoisnapauta tarkastellaksesi lisätietoja";
-
-
-/*  */
 "beacon.distance_update" = "Majakan etäisyyden päivitys";
-
-
-/*  */
-"beacon.beacon_location_within" = "Majakka on etäisyyden %@ sisällä";
 
 
 /*  */
@@ -815,15 +583,7 @@
 
 
 /*  */
-"preview.title" = "Openscape Street Preview";
-
-
-/*  */
 "preview.current_intersection_unknown.label" = "Nykyinen sijainti tuntematon";
-
-
-/*  */
-"preview.next_intersection.label" = "Risteykseen %@";
 
 
 /*  */
@@ -831,15 +591,7 @@
 
 
 /*  */
-"preview.content.orientation.text.with_cardinal" = "%1$@° %2$@";
-
-
-/*  */
 "preview.content.orientation.text.without_cardinal" = "%1$@°";
-
-
-/*  */
-"preview.content.edge.text" = "%1$@ tietä %2$@ pitkin";
 
 
 /*  */
@@ -847,15 +599,7 @@
 
 
 /*  */
-"preview.go.title" = "Lähde";
-
-
-/*  */
 "preview.go_back.title" = "Edellinen";
-
-
-/*  */
-"preview.go_back.accessibility_text" = "Kaksoisnapauta palataksesi aiempaan risteykseen";
 
 
 /*  */
@@ -863,15 +607,7 @@
 
 
 /*  */
-"preview.search.accessibility_hint" = "Kaksoisnapauta etsiäksesi tai selataksesi lähiympäristön paikkoja";
-
-
-/*  */
 "preview.alert.restart.title" = "Esikatselu on jo käynnissä";
-
-
-/*  */
-"preview.alert.restart.message" = "Haluatko käynnistää openscape Street Preview -toiminnon uudelleen tässä sijainnissa?";
 
 
 /*  */
@@ -879,15 +615,7 @@
 
 
 /*  */
-"preview.callout.paused" = "Street Preview -toiminto pysäytetty";
-
-
-/*  */
 "preview.callout.end" = "Openscape Street Preview -toiminnon päättäminen";
-
-
-/*  */
-"preview.callout.previous" = "Palaa edelliseen risteykseen";
 
 
 /*  */
@@ -895,15 +623,7 @@
 
 
 /*  */
-"preview.callout.start.along" = "Käynnistetään Street Preview -toiminto tiellä %@";
-
-
-/*  */
 "preview.callout.continue.at" = "Jatketaan Street Preview -toimintoa risteyksessä %@";
-
-
-/*  */
-"preview.callout.continue.along" = "Jatketaan Street Preview -toimintoa tietä %@ pitkin";
 
 
 /*  */
@@ -911,15 +631,7 @@
 
 
 /*  */
-"preview.callout.road_finder.error_instructions" = "Käänny valitaksesi tien ja paina Lähde";
-
-
-/*  */
 "preview.callout.road_finder.road" = "%1$@, kuljetaan %2$@";
-
-
-/*  */
-"preview.callout.road_finder.intersection" = "Seuraava risteys: %@";
 
 
 /*  */
@@ -927,15 +639,7 @@
 
 
 /*  */
-"preview.callout.road_finder.intersection.end" = "Seuraava risteys: Tie päättyy";
-
-
-/*  */
 "preview.callout.approach.end" = "Lähestytään tien loppua";
-
-
-/*  */
-"preview.callout.turn.left" = "Käännyttiin vasemmalle. Nyt tiellä %@";
 
 
 /*  */
@@ -943,15 +647,7 @@
 
 
 /*  */
-"preview.callout.turn.continue" = "Jatketaan tietä %@ pitkin";
-
-
-/*  */
 "preview.callout.turn.roundabout" = "Poistuttiin liikenneympyrästä. Nyt tiellä %@";
-
-
-/*  */
-"preview.include_unnamed_roads.title" = "Nimettömät tiet";
 
 
 /*  */
@@ -959,15 +655,7 @@
 
 
 /*  */
-"preview.include_unnamed_roads.label.off" = "Ota nimettömät tiet käyttöön";
-
-
-/*  */
 "preview.include_unnamed_roads.label.on" = "Poista nimettömät tiet käytöstä";
-
-
-/*  */
-"preview.include_unnamed_roads.hint.off" = "Kaksoisnapauta sisällyttääksesi nimettömät tiet openscape Street Preview -toimintoon";
 
 
 /*  */
@@ -975,15 +663,7 @@
 
 
 /*  */
-"preview.tutorial.done.hint" = "Kaksoisnapauta poistuaksesi opetusohjelmasta";
-
-
-/*  */
 "preview.tutorial.title.1" = "Tervetuloa openscape Street Preview -toimintoon!";
-
-
-/*  */
-"preview.tutorial.content.1" = "Tutustu alueeseen missä tahansa päin maailmaa. Suosittelemme parhaan kokemuksen saavuttamiseksi, että seisot ja käännyt paikallasi ja että käytät stereokuulokkeita.";
 
 
 /*  */
@@ -991,15 +671,7 @@
 
 
 /*  */
-"preview.tutorial.content.2" = "Olet keskellä katua lähellä valitsemaasi sijaintia. Käänny hitaasti puhelinta osoittimena käyttäen, ja katujen nimet ilmoitetaan kääntyessäsi. Kun olet kääntyneenä katua kohti, jota pitkin haluat edetä, napauta \"Lähde\", ja siirryt seuraavaan risteykseen.";
-
-
-/*  */
 "preview.tutorial.title.3" = "Tutustumisen jatkaminen";
-
-
-/*  */
-"preview.tutorial.content.3" = "Voit käyttää puhelinta uudelleen kussakin risteyksessä valitaksesi, mitä tietä jatkaa, tai voit tarkastella lähiympäristöäsi näytön alareunan tuttujen Openscape-painikkeiden avulla. Voit napauttaa \"Haku\" käynnistääksesi äänimajakan missä tahansa kiinnostavassa kohteessa, muuttaa sijaintiasi tai vain tarkastella aluetta yksityiskohtaisemmin.";
 
 
 /*  */
@@ -1007,15 +679,7 @@
 
 
 /*  */
-"location_detail.title.default" = "Sijainnin tiedot";
-
-
-/*  */
 "location_detail.title.marker" = "Merkinnän tiedot";
-
-
-/*  */
-"location_detail.title.waypoint" = "Reittipisteiden tiedot";
 
 
 /*  */
@@ -1023,15 +687,7 @@
 
 
 /*  */
-"location_detail.action.beacon.hint" = "Kaksoisnapauta määrittääksesi äänimajakan tähän sijaintiin";
-
-
-/*  */
 "location_detail.action.beacon.hint.disabled" = "Uuden äänimajakan määrittäminen ei ole käytössä, kun reittiopastus on aktiivisena";
-
-
-/*  */
-"location_detail.action.save.hint" = "Kaksoisnapauta tallentaaksesi tämän sijainnin merkintänä";
 
 
 /*  */
@@ -1039,15 +695,7 @@
 
 
 /*  */
-"location_detail.action.share.hint" = "Kaksoisnapauta jakaaksesi tämän sijainnin";
-
-
-/*  */
 "location_detail.action.preview.hint" = "Kaksoisnapauta aloittaaksesi esikatselun tässä sijainnissa";
-
-
-/*  */
-"location_detail.action.preview.hint.disabled" = "Street Preview -toiminto on pois käytöstä, kun reittiopastus on aktiivisena";
 
 
 /*  */
@@ -1055,15 +703,7 @@
 
 
 /*  */
-"location_detail.default.address" = "Osoite tuntematon";
-
-
-/*  */
 "location_detail.default.annotation" = "Ei merkintäselitettä";
-
-
-/*  */
-"location.select.hint" = "Kaksoisnapauta valitaksesi tämän sijainnin";
 
 
 /*  */
@@ -1071,15 +711,7 @@
 
 
 /*  */
-"location_detail.disabled.share" = "Tämän sijainnin jakaminen on pois käytöstä";
-
-
-/*  */
 "location_detail.disabled.generic" = "Tämä sijainti ei tällä hetkellä ole käytössä";
-
-
-/*  */
-"location_detail.map.view.title" = "Valittu sijainti";
 
 
 /*  */
@@ -1087,15 +719,7 @@
 
 
 /*  */
-"location_detail.map.edit.title" = "Muokkaa sijaintia";
-
-
-/*  */
 "location_detail.map.edit.hint" = "Liikuta karttaa oikeaan sijaintiin";
-
-
-/*  */
-"location_detail.map.edit.accessibility_label" = "Merkinnän siirtäminen";
 
 
 /*  */
@@ -1103,15 +727,7 @@
 
 
 /*  */
-"location_detail.map.edit.north.accessibility_hint" = "Siirrä merkintää pohjoiseen kaksoisnapauttamalla. Siirrä toiseen suuntaan toimintojen avulla.";
-
-
-/*  */
 "location_detail.map.edit.south.accessibility_hint" = "Siirrä merkintää etelään kaksoisnapauttamalla. Siirrä toiseen suuntaan toimintojen avulla.";
-
-
-/*  */
-"location_detail.map.edit.east.accessibility_hint" = "Siirrä merkintää itään kaksoisnapauttamalla. Siirrä toiseen suuntaan toimintojen avulla.";
 
 
 /*  */
@@ -1119,15 +735,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_annoucement" = "Siirretään %@ alkuperäisestä sijainnista";
-
-
-/*  */
 "location_detail.map.edit.accessibility_action.compass" = "Siirrä puhelimen suuntaan";
-
-
-/*  */
-"location_detail.map.edit.accessibility_action.north" = "Siirrä pohjoiseen";
 
 
 /*  */
@@ -1135,15 +743,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_action.east" = "Siirrä itään";
-
-
-/*  */
 "location_detail.map.edit.accessibility_action.west" = "Siirrä länteen";
-
-
-/*  */
-"location_detail.map.edit.accessibility_action.current_location" = "Siirry nykyiseen sijaintiin";
 
 
 /*  */
@@ -1151,15 +751,7 @@
 
 
 /*  */
-"location_detail.waypoint" = "Reittipiste %@";
-
-
-/*  */
 "location_detail.add_waypoint.existing.hint" = "Kaksoisnapauta poistaaksesi tämän merkinnän reitiltäsi.";
-
-
-/*  */
-"location_detail.add_waypoint.new.hint" = "Kaksoisnapauta lisätäksesi tämän merkinnän reitillesi.";
 
 
 /*  */
@@ -1167,15 +759,7 @@
 
 
 /*  */
-"route_detail.action.start_route" = "Aloita reitti";
-
-
-/*  */
 "route_detail.action.stop_route" = "Pysäytä reitti";
-
-
-/*  */
-"route_detail.action.start_event" = "Käynnistä aktiviteetti";
 
 
 /*  */
@@ -1183,15 +767,7 @@
 
 
 /*  */
-"route_detail.action.edit" = "Muokkaa reittiä";
-
-
-/*  */
 "route_detail.action.start_route.hint" = "Kaksoisnapauta aloittaaksesi tämän reitin";
-
-
-/*  */
-"route_detail.action.start_route.disabled.hint" = "Lisää reittipisteitä ennen reitin aloitusta";
 
 
 /*  */
@@ -1199,15 +775,7 @@
 
 
 /*  */
-"route_detail.action.start_event.hint" = "Kaksoisnapauta aloittaaksesi tämän aktiviteetin";
-
-
-/*  */
 "route_detail.action.stop_event.hint" = "Kaksoisnapauta pysäyttääksesi tämän aktiviteetin ja tallentaaksesi edistymisesi";
-
-
-/*  */
-"route_detail.action.reset.hint" = "Kaksoisnapauta nollataksesi tämän toiminnon ja ladataksesi saatavilla olevat päivitykset";
 
 
 /*  */
@@ -1215,15 +783,7 @@
 
 
 /*  */
-"route_detail.action.edit.hint" = "Kaksoisnapauta muokataksesi tätä reittiä";
-
-
-/*  */
 "route_detail.action.create" = "Uusi reitti";
-
-
-/*  */
-"route_detail.action.create.hint" = "Kaksoisnapauta luodaksesi uuden reitin";
 
 
 /*  */
@@ -1231,15 +791,7 @@
 
 
 /*  */
-"route_detail.name.default" = "Reitti";
-
-
-/*  */
 "route.title.time" = "%@ kulunut";
-
-
-/*  */
-"route.title" = "%1$@・reittipiste %2$@/%3$@";
 
 
 /*  */
@@ -1247,15 +799,7 @@
 
 
 /*  */
-"route.waypoint.progress.complete.elapsed" = "Valmistunut %@";
-
-
-/*  */
 "route.waypoint.progress.complete" = "Valmistunut";
-
-
-/*  */
-"route.end.completed" = "Reitti kuljettu!・%@";
 
 
 /*  */
@@ -1263,15 +807,7 @@
 
 
 /*  */
-"route.end.not_completed" = "Reitti pysäytetty・%@";
-
-
-/*  */
 "route.end.not_completed.accessibility" = "Reitti pysäytetty %@";
-
-
-/*  */
-"route.end.completed.summary" = "%@ reittipistettä saavutettu・viimeinen reittipiste lähellä";
 
 
 /*  */
@@ -1279,15 +815,7 @@
 
 
 /*  */
-"route.end.not_completed.summary" = "%1$@/%2$@ reittipisteestä saavutettu・%3$@ jäljellä";
-
-
-/*  */
 "route.end.not_completed.summary.accessibility" = "%1$@/%2$@ reittipisteestä saavutettu, %3$@ jäljellä";
-
-
-/*  */
-"route.title.accessibility_label" = "%1$@, reittipiste %2$@/%3$@";
 
 
 /*  */
@@ -1295,15 +823,7 @@
 
 
 /*  */
-"route_detail.action.previous.hint" = "Kaksoisnapauta määrittääksesi majakan edelliseen reittipisteeseen";
-
-
-/*  */
 "route_detail.action.next" = "Seuraava reittipiste";
-
-
-/*  */
-"route_detail.action.next.hint" = "Kaksoisnapauta määrittääksesi majakan seuraavaan reittipisteeseen";
 
 
 /*  */
@@ -1311,15 +831,7 @@
 
 
 /*  */
-"route_detail.edit.description" = "Kuvaus";
-
-
-/*  */
 "route_detail.edit.description.default" = "Lisää kuvaus reittiisi";
-
-
-/*  */
-"route_detail.edit.waypoints_button" = "Lisää reittipisteitä";
 
 
 /*  */
@@ -1327,15 +839,7 @@
 
 
 /*  */
-"route_detail.edit.delete" = "Poista reitti";
-
-
-/*  */
 "route_detail.edit.delete.title" = "Oletko varma, että haluat poistaa tämän reitin?";
-
-
-/*  */
-"route_detail.edit.delete.message" = "Tätä toimintoa ei voi perua.";
 
 
 /*  */
@@ -1343,15 +847,7 @@
 
 
 /*  */
-"route_detail.edit.cancel.message" = "Oletko varma, että haluat poistaa tekemäsi muutokset?";
-
-
-/*  */
 "route_detail.beacon.title" = "Ohjattu reitti";
-
-
-/*  */
-"route_detail.orienteering.title" = "Suunnistus";
 
 
 /*  */
@@ -1359,15 +855,7 @@
 
 
 /*  */
-"route.update.success.title" = "Päivitys on suoritettu.";
-
-
-/*  */
 "route.update.success.message" = "Vapaa-ajan toimintasi on päivitetty";
-
-
-/*  */
-"route.update.fail.title" = "Päivitys epäonnistui";
 
 
 /*  */
@@ -1375,15 +863,7 @@
 
 
 /*  */
-"route.update.unavailable.title" = "Kaikki on valmista.";
-
-
-/*  */
 "route.update.unavailable.message" = "Vapaa-ajan toimintasi on ajan tasalla";
-
-
-/*  */
-"tour_detail.beacon.title" = "Opastettu kierros";
 
 
 /*  */
@@ -1391,15 +871,7 @@
 
 
 /*  */
-"waypoint.title" = "Reittipiste";
-
-
-/*  */
 "waypoint.callout" = "Reittipiste %@";
-
-
-/*  */
-"tour.progress.elapsed_distance.accessibility" = "Majakka asetettu kohteeseen %1$@. %2$@. %3$@ kulunut. %4$@ reittipistettä jäljellä";
 
 
 /*  */
@@ -1407,15 +879,7 @@
 
 
 /*  */
-"tour.progress.elapsed.accessibility" = "Majakka asetettu kohteeseen %1$@. %2$@ kulunut. %3$@ reittipistettä jäljellä";
-
-
-/*  */
 "tour.progress.accessibility" = "Majakka asetettu kohteeseen %1$@. %2$@ reittipistettä jäljellä";
-
-
-/*  */
-"tour.progress.elapsed_distance.accessibility.singular" = "Majakka asetettu kohteeseen %1$@. %2$@. %3$@ kulunut. 1 reittipiste jäljellä";
 
 
 /*  */
@@ -1423,15 +887,7 @@
 
 
 /*  */
-"tour.progress.elapsed.accessibility.singular" = "Majakka asetettu kohteeseen %1$@. %2$@ kulunut. 1 reittipiste jäljellä";
-
-
-/*  */
 "tour.progress.accessibility.singular" = "Majakka asetettu kohteeseen %@. 1 reittipiste jäljellä";
-
-
-/*  */
-"waypoint.audio_available" = "Ääni saatavilla";
 
 
 /*  */
@@ -1439,15 +895,7 @@
 
 
 /*  */
-"waypoint.audio_images_available" = "Kuvia ja ääntä saatavilla.";
-
-
-/*  */
 "waypoint.callout.button.title" = "Reittipisteen huomioteksti";
-
-
-/*  */
-"waypoint.callout.button.hint" = "Kaksoisnapauta kuullaksesi lisätietoja";
 
 
 /*  */
@@ -1455,15 +903,7 @@
 
 
 /*  */
-"first_use_experience.share.alert.title" = "Jakaminen Soundscapessa";
-
-
-/*  */
 "first_use_experience.share.alert.message" = "Kun jaat Openscape-merkinnän tai reitin, jaat sijainnit, jotka on liitetty kyseiseen merkintään tai reittiin. Sinun tulisi jakaa näitä vain henkilöille, joihin luotat.";
-
-
-/*  */
-"universal_links.alert.error.title" = "Hupsista! Jokin meni vikaan.";
 
 
 /*  */
@@ -1471,15 +911,7 @@
 
 
 /*  */
-"universal_links.alert.share_error.message" = "Tätä sisältöä ei voitu jakaa.";
-
-
-/*  */
 "universal_links.alert.action.marker" = "Tallenna merkintänä";
-
-
-/*  */
-"universal_links.alert.action.beacon" = "Määritä majakka";
 
 
 /*  */
@@ -1487,15 +919,7 @@
 
 
 /*  */
-"universal_links.marker.alert.message" = "Käytä merkintöjä vain henkilöiltä, joihin luotat.";
-
-
-/*  */
 "universal_links.marker_existing.alert.title" = "Merkintä on jo olemassa";
-
-
-/*  */
-"universal_links.marker_existing.alert.message" = "Tässä sijainnissa on jo merkintänä. Haluatko korvata sen?";
 
 
 /*  */
@@ -1503,15 +927,7 @@
 
 
 /*  */
-"siri_shortcuts.title" = "Siri-pikakomennot";
-
-
-/*  */
 "siri_shortcuts.title.beta" = "Siri-pikakomennot (beeta)";
-
-
-/*  */
-"siri_shortcuts.description" = "Kun olet lisännyt Siri-pikakomennot, pystyt käyttämään niitä äänikomentojen avulla jopa silloinkin, kun openscape ei ole käynnissä.";
 
 
 /*  */
@@ -1519,15 +935,7 @@
 
 
 /*  */
-"user_activity.around_me.title" = "Mitä on lähiympäristössäni?";
-
-
-/*  */
 "user_activity.ahead_of_me.title" = "Mitä on edessäpäin?";
-
-
-/*  */
-"user_activity.nearby_markers.title" = "Kuuntele lähellä olevia merkintöjä";
 
 
 /*  */
@@ -1535,15 +943,7 @@
 
 
 /*  */
-"user_activity.save_marker.title" = "Tallenna merkintä";
-
-
-/*  */
 "user_activity.street_preview.title" = "Käynnistä Street Preview";
-
-
-/*  */
-"url_resource.alert.route.share.message" = "Jaoin Openscape-reitin kanssasi! \"%@\"";
 
 
 /*  */
@@ -1551,15 +951,7 @@
 
 
 /*  */
-"url_resource.alert.route.import.message" = "Käytä reittejä vain henkilöiltä, joihin luotat. Openscape Community ei luo, jaa tai tarkista reittejä, ja niissä voi olla virheitä.";
-
-
-/*  */
 "url_resource.alert.route.import_existing.title" = "Reitti on jo olemassa";
-
-
-/*  */
-"url_resource.alert.route.import_existing.message" = "Haluatko korvata sen? Tämän reitin korvaaminen korvaa myös merkinnät, joita tällä reitillä käytetään.";
 
 
 /*  */
@@ -1567,15 +959,7 @@
 
 
 /*  */
-"url_resource.alert.route.import_error.message" = "Sisältö vaikuttaa olevan virheellistä.";
-
-
-/*  */
 "routes.title" = "Reitit";
-
-
-/*  */
-"routes.action.deleted" = "Reitti poistettu";
 
 
 /*  */
@@ -1583,15 +967,7 @@
 
 
 /*  */
-"routes.no_routes.title" = "Reitin reittipisteiden käytön aloittaminen";
-
-
-/*  */
 "routes.no_routes.hint.1" = "Luo reitti itsellesi tai jollekulle toiselle järjestämällä joukko merkintöjä reittipisteiksi.";
-
-
-/*  */
-"routes.no_routes.hint.2" = "Kun olet ulkona reitilläsi Soundscapen kanssa, sinulle ilmoitetaan kuhunkin reittipisteeseen saapumisesta, ja äänimajakka siirtyy automaattisesti seuraavaan reittipisteeseen.";
 
 
 /*  */
@@ -1599,15 +975,7 @@
 
 
 /*  */
-"route.no_waypoints.hint.2" = "Voit järjestää reittipisteet uudelleen reitillä koska tahansa muokkaamalla reittiä.";
-
-
-/*  */
 "routes.tutorial.title" = "Kuuntele matkan reittipisteitä";
-
-
-/*  */
-"routes.tutorial.details" = "Palaat nyt Soundscapen aloitusnäytölle ja äänimajakka sijoitetaan ensimmäiseen reittipisteeseesi. Kun saavut reittipisteeseen, majalla siirtyy reittisi seuraavaan reittipisteeseen.";
 
 
 /*  */
@@ -1615,15 +983,7 @@
 
 
 /*  */
-"routes.sort.by_name" = "Lajittele nimen mukaan";
-
-
-/*  */
 "routes.sort.by_name.hint" = "Kaksoisnapauta lajitellaksesi nimen mukaan";
-
-
-/*  */
-"routes.sort.by_distance" = "Lajittele etäisyyden mukaan";
 
 
 /*  */
@@ -1631,15 +991,7 @@
 
 
 /*  */
-"routes.import.alert.title" = "Reittivirhe";
-
-
-/*  */
 "routes.import.alert.message" = "Yhdestä tai useammasta reitistäsi puuttuvat reittipisteet. Tarkista seuraavat reitit tai lisää reittipisteet uudelleen, jos tarpeen.";
-
-
-/*  */
-"markers.title" = "Merkinnät";
 
 
 /*  */
@@ -1647,15 +999,7 @@
 
 
 /*  */
-"markers.action.deleted" = "Merkintä poistettu";
-
-
-/*  */
 "markers.action.deleted_error" = "Emme voi tällä hetkellä poistaa tätä merkintänä. Yritä myöhemmin uudelleen.";
-
-
-/*  */
-"markers.action.update_error" = "Meillä on tällä hetkellä ongelmia tämän merkinnän päivittämisessä. Yritä myöhemmin uudelleen.";
 
 
 /*  */
@@ -1663,15 +1007,7 @@
 
 
 /*  */
-"markers.sort_button.sort_by_name" = "Nimi";
-
-
-/*  */
 "markers.sort_button.sort_by_name.voiceover" = "Lajiteltu nimen mukaan";
-
-
-/*  */
-"markers.sort_button.sort_by_distance" = "Etäisyys";
 
 
 /*  */
@@ -1679,15 +1015,7 @@
 
 
 /*  */
-"markers.no_markers.title" = "Merkintöjen käytön aloittaminen";
-
-
-/*  */
 "markers.no_markers.hint.1" = "Luo merkintöjä suosikkikohteillesi, reittipisteille tai reitille tai mille tahansa sijainneille, joille haluat kuulla ilmoituksen. Valitse sijainti tai nykyinen sijaintisi aloitusnäytöltä ja valitse \"Tallenna merkintänä\".";
-
-
-/*  */
-"markers.no_markers.hint.2" = "Kokeile merkitä kotisi, työpaikkasi sisäänkäynti tai lempipaikkasi puistossa.";
 
 
 /*  */
@@ -1695,15 +1023,7 @@
 
 
 /*  */
-"markers.edit_screen.title.edit" = "Muokkaa merkintää";
-
-
-/*  */
 "markers.edit_screen.done_button.acc_hint" = "Kaksoisnapauta tallentaaksesi tämän merkinnän";
-
-
-/*  */
-"markers.edit_screen.route" = "Tallennettu reittiin: %@";
 
 
 /*  */
@@ -1711,15 +1031,7 @@
 
 
 /*  */
-"markers.marker_with_name" = "Merkintä. %@";
-
-
-/*  */
 "markers.marker_created" = "Merkintä luotu";
-
-
-/*  */
-"markers.marker_created_on" = "Merkintä luotu %@";
 
 
 /*  */
@@ -1727,15 +1039,7 @@
 
 
 /*  */
-"markers.marker_at" = "Merkintä kohteessa %@";
-
-
-/*  */
 "markers.marker_along" = "Merkintä tiellä %@";
-
-
-/*  */
-"markers.new_badge.acc_label" = "Uusi. %@";
 
 
 /*  */
@@ -1743,15 +1047,7 @@
 
 
 /*  */
-"markers.destructive_delete_message.routes" = "Tämä merkintänä on osa seuraavia reittejä:\n%@";
-
-
-/*  */
 "markers.annotation" = "Selite";
-
-
-/*  */
-"search.no_results_found_with_action" = "Tuloksia ei löytynyt. Muokkaa tekstiä tai paina Haku saadaksesi lisätietoja.";
 
 
 /*  */
@@ -1759,15 +1055,7 @@
 
 
 /*  */
-"searching.no_results_found_title" = "Hupsista! Ei tuloksia";
-
-
-/*  */
 "searching.no_results_found_message" = "Jos etsit tiettyä paikkaa, voit yrittää etsiä sitä nimellä tai osoitteella.";
-
-
-/*  */
-"searching.offline" = "Haku on pois käytöstä offline-tilassa";
 
 
 /*  */
@@ -1775,15 +1063,7 @@
 
 
 /*  */
-"search.searching" = "Haetaan";
-
-
-/*  */
 "search.searching_with_punctuation" = "Haetaan...";
-
-
-/*  */
-"search.choose_destination" = "Valitse määränpää";
 
 
 /*  */
@@ -1791,15 +1071,7 @@
 
 
 /*  */
-"search.no_results_found_error" = "Lähistöllä ei vaikuttaisi olevan paikkoja. Jos etsit tiettyä paikkaa, voit yrittää etsiä sitä nimen tai osoitteen avulla.";
-
-
-/*  */
 "search.use_current_location" = "Nykyinen sijainti";
-
-
-/*  */
-"search.nearby.screen_title" = "Lähiympäristön paikat";
 
 
 /*  */
@@ -1807,15 +1079,7 @@
 
 
 /*  */
-"search.button.markers.accessibility_hint" = "Kaksoisnapauta valitaksesi ja muokataksesi merkintöjä, jotka olet tallentanut";
-
-
-/*  */
 "search.button.nearby.accessibility_hint" = "Kaksoisnapauta tutustuaksesi lähiympäristön ravintoloihin, liikennepysäkkeihin ja muihin kohteisiin";
-
-
-/*  */
-"search.button.current_location.accessibility_hint" = "Kaksoisnapauta esikatsellaksesi, merkitäksesi tai jakaaksesi nykyisen sijaintisi ystävän kanssa";
 
 
 /*  */
@@ -1823,15 +1087,7 @@
 
 
 /*  */
-"filter.set" = "Määritä suodatin";
-
-
-/*  */
 "filter.clear.capital" = "Poista suodatin";
-
-
-/*  */
-"filter.clear.hint" = "Kaksoisnapauta poistaaksesi valitun suodattimen";
 
 
 /*  */
@@ -1839,15 +1095,7 @@
 
 
 /*  */
-"filter.all" = "Kaikki paikat";
-
-
-/*  */
 "filter.transit" = "Julkinen liikenne";
-
-
-/*  */
-"filter.selected" = "%@ (valittu)";
 
 
 /*  */
@@ -1855,15 +1103,7 @@
 
 
 /*  */
-"callouts.panel.title" = "Kuuntele ympäristöä";
-
-
-/*  */
 "callouts.turn_on_off" = "Ota ilmoitukset käyttöön tai pois käytöstä";
-
-
-/*  */
-"callouts.callouts_on" = "Ilmoitukset käytössä";
 
 
 /*  */
@@ -1871,15 +1111,7 @@
 
 
 /*  */
-"callouts.allow_callouts" = "Salli ilmoitukset";
-
-
-/*  */
 "callouts.places_and_landmarks" = "Paikat ja maamerkinnät";
-
-
-/*  */
-"callouts.places_and_landmarks.info" = "Lähiympäristön paikat, kuten kaupat ja ravintolat";
 
 
 /*  */
@@ -1887,15 +1119,7 @@
 
 
 /*  */
-"callouts.mobility.info" = "Tietoja risteyksistä ja julkisesta liikenteestä";
-
-
-/*  */
 "callouts.audio_beacon" = "Etäisyys äänimajakkaan";
-
-
-/*  */
-"callouts.audio_beacon.info" = "Äänimajakan etäisyyden päivitykset, kun se on määritetty";
 
 
 /*  */
@@ -1903,15 +1127,7 @@
 
 
 /*  */
-"callouts.intersection_callout" = "Risteyksen ilmoitus";
-
-
-/*  */
 "callouts.ahead_of_you" = "Edessäsi";
-
-
-/*  */
-"callouts.around_you" = "Lähiympäristössäsi";
 
 
 /*  */
@@ -1919,15 +1135,7 @@
 
 
 /*  */
-"callouts.nothing_to_call_out_now" = "Ilmoituksia ei tällä hetkellä ole";
-
-
-/*  */
 "callouts.nearby_markers" = "Merkinnät";
-
-
-/*  */
-"callouts.no_nearby_markers_to_call_out_now" = "Lähellä ei ole ilmoitettavia merkintöjä.";
 
 
 /*  */
@@ -1935,15 +1143,7 @@
 
 
 /*  */
-"callouts.action.more_info" = "Lisätietoja";
-
-
-/*  */
 "callouts.hardware.low_battery" = "Laitteella %1$@ on vain %2$@ prosenttia akkua jäljellä.";
-
-
-/*  */
-"callouts.departure" = "Lähtemisen kuvaselite";
 
 
 /*  */
@@ -1951,15 +1151,7 @@
 
 
 /*  */
-"sleep.snoozing" = "Odotustila";
-
-
-/*  */
 "sleep.sleep" = "Siirry lepotilaan";
-
-
-/*  */
-"sleep.sleeping" = "Lepotilassa";
 
 
 /*  */
@@ -1967,15 +1159,7 @@
 
 
 /*  */
-"sleep.sleeping.message" = "Openscape on lepotilassa. Tämä estää Soundscapea käyttämästä sijaintipalveluita tai lataamasta tietoja. Tämä säästää akkua, kun et käytä Soundscapea. Napauta alla olevaa painiketta herättääksesi Soundscapen.";
-
-
-/*  */
 "sleep.sleep.acc_hint" = "Kaksoisnapauta asettaaksesi Soundscapen lepotilaan";
-
-
-/*  */
-"sleep.wake_up_when_i_leave" = "Herää, kun lähden";
 
 
 /*  */
@@ -1983,15 +1167,7 @@
 
 
 /*  */
-"sleep.ui.wake_on_leave" = "Herää\nlähdettäessä";
-
-
-/*  */
 "sleep.ui.wake_up_now" = "Herää\nNyt";
-
-
-/*  */
-"intersection.approaching_intersection" = "Lähestytään risteystä";
 
 
 /*  */
@@ -1999,15 +1175,7 @@
 
 
 /*  */
-"directions.intersection_with_name_distance" = "Risteys tien %1$@ kanssa %2$@ päässä";
-
-
-/*  */
 "directions.intersection_with_name_direction" = "Risteys tien %1$@ kanssa %2$@";
-
-
-/*  */
-"directions.intersection_with_name" = "Risteys tien %@ kanssa lähellä";
 
 
 /*  */
@@ -2015,15 +1183,7 @@
 
 
 /*  */
-"intersection.named_intersection" = "%@ risteys";
-
-
-/*  */
 "directions.at_poi" = "Kohteessa %@";
-
-
-/*  */
-"directions.along_road" = "Tietä %@ pitkin.";
 
 
 /*  */
@@ -2031,15 +1191,7 @@
 
 
 /*  */
-"directions.near_address" = "Lähellä osoitetta %@";
-
-
-/*  */
 "directions.intersects_with_in" = "Risteää tien %1$@ kanssa %2$@ päässä";
-
-
-/*  */
-"directions.near_name" = "Lähellä kohdetta %@";
 
 
 /*  */
@@ -2047,15 +1199,7 @@
 
 
 /*  */
-"directions.unknown_road" = "Tuntematon tie";
-
-
-/*  */
 "directions.previous_location" = "Edellinen sijainti";
-
-
-/*  */
-"directions.previous_location_along" = "Edellinen sijainti, tiellä %@";
 
 
 /*  */
@@ -2063,15 +1207,7 @@
 
 
 /*  */
-"directions.nearest_road_name_is_distance_direction" = "Lähin tie, %1$@, on %2$@ %3$@";
-
-
-/*  */
 "directions.nearest_road_name_is_distance" = "Lähin tie, %1$@, on %2$@ päässä";
-
-
-/*  */
-"directions.nearest_road_name_was_distance_direction" = "Lähin tie, %1$@, oli %2$@ %3$@";
 
 
 /*  */
@@ -2079,15 +1215,7 @@
 
 
 /*  */
-"directions.poi_name_is_distance" = "%1$@ on %2$@ päässä";
-
-
-/*  */
 "directions.poi_name_was_distance_direction" = "%1$@ oli %2$@ %3$@";
-
-
-/*  */
-"directions.roundabout_with_exits_distance_direction" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä %2$@ %3$@";
 
 
 /*  */
@@ -2095,15 +1223,7 @@
 
 
 /*  */
-"directions.roundabout_with_exits_was_distance_direction" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä oli %2$@ %3$@";
-
-
-/*  */
 "directions.roundabout_with_exits_direction" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä %2$@";
-
-
-/*  */
-"directions.roundabout_with_exits" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä lähellä";
 
 
 /*  */
@@ -2111,15 +1231,7 @@
 
 
 /*  */
-"directions.approaching_roundabout" = "Lähestytään liikenneympyrää";
-
-
-/*  */
 "directions.approaching_name_roundabout" = "Lähestytään %@-liikenneympyrää";
-
-
-/*  */
-"directions.name_roundabout" = "%@ liikenneympyrä";
 
 
 /*  */
@@ -2127,15 +1239,7 @@
 
 
 /*  */
-"directions.approaching_name_with_exits" = "Lähestytään kohdetta %1$@, jossa on %2$@ uloskäyntiä";
-
-
-/*  */
 "directions.name_roundabout_with_exits" = "%1$@ liikenneympyrä, jossa on %2$@ uloskäyntiä";
-
-
-/*  */
-"directions.name_with_exits" = "%1$@, jossa on %2$@ uloskäyntiä";
 
 
 /*  */
@@ -2143,15 +1247,7 @@
 
 
 /*  */
-"directions.name_goes_left.roundabout" = "%@, kääntyy vasemmalle liikenneympyrässä";
-
-
-/*  */
 "directions.name_goes_right" = "%@, kääntyy oikealle";
-
-
-/*  */
-"directions.name_goes_right.roundabout" = "%@, kääntyy oikealle liikenneympyrässä";
 
 
 /*  */
@@ -2159,15 +1255,7 @@
 
 
 /*  */
-"directions.name_continues_ahead.roundabout" = "%@, jatkuu eteenpäin liikenneympyrässä";
-
-
-/*  */
 "directions.direction.ahead" = "edessä";
-
-
-/*  */
-"directions.direction.ahead_to_the_right" = "edessä oikealla";
 
 
 /*  */
@@ -2175,15 +1263,7 @@
 
 
 /*  */
-"directions.direction.behind_to_the_right" = "takana oikealla";
-
-
-/*  */
 "directions.direction.behind" = "takana";
-
-
-/*  */
-"directions.direction.behind_to_the_left" = "takana vasemmalla";
 
 
 /*  */
@@ -2191,15 +1271,7 @@
 
 
 /*  */
-"directions.direction.ahead_to_the_left" = "edessä vasemmalla";
-
-
-/*  */
 "directions.direction.away" = "poissa";
-
-
-/*  */
-"directions.name_close_by" = "%@ lähellä";
 
 
 /*  */
@@ -2207,15 +1279,7 @@
 
 
 /*  */
-"directions.name_around_distance" = "%1$@ noin %2$@";
-
-
-/*  */
 "directions.name_is_nearby_street_address" = "%1$@ on lähellä. Katuosoite on %2$@.";
-
-
-/*  */
-"directions.name_is_currently_street_address" = "%1$@ on tällä hetkellä %2$@. Katuosoite on %3$@.";
 
 
 /*  */
@@ -2223,15 +1287,7 @@
 
 
 /*  */
-"directions.traveling.n" = "Kuljetaan pohjoiseen";
-
-
-/*  */
 "directions.traveling.ne" = "Kuljetaan koilliseen";
-
-
-/*  */
-"directions.traveling.e" = "Kuljetaan itään";
 
 
 /*  */
@@ -2239,15 +1295,7 @@
 
 
 /*  */
-"directions.traveling.s" = "Kuljetaan etelään";
-
-
-/*  */
 "directions.traveling.sw" = "Kuljetaan lounaaseen";
-
-
-/*  */
-"directions.traveling.w" = "Kuljetaan länteen";
 
 
 /*  */
@@ -2255,15 +1303,7 @@
 
 
 /*  */
-"directions.facing.n" = "Kääntyneenä pohjoiseen";
-
-
-/*  */
 "directions.facing.ne" = "Kääntyneenä koilliseen";
-
-
-/*  */
-"directions.facing.e" = "Kääntyneenä itään";
 
 
 /*  */
@@ -2271,15 +1311,7 @@
 
 
 /*  */
-"directions.facing.s" = "Kääntyneenä etelään";
-
-
-/*  */
 "directions.facing.sw" = "Kääntyneenä lounaaseen";
-
-
-/*  */
-"directions.facing.w" = "Kääntyneenä länteen";
 
 
 /*  */
@@ -2287,15 +1319,7 @@
 
 
 /*  */
-"directions.heading.n" = "Matkalla pohjoiseen";
-
-
-/*  */
 "directions.heading.ne" = "Matkalla koilliseen";
-
-
-/*  */
-"directions.heading.e" = "Matkalla itään";
 
 
 /*  */
@@ -2303,15 +1327,7 @@
 
 
 /*  */
-"directions.heading.s" = "Matkalla etelään";
-
-
-/*  */
 "directions.heading.sw" = "Matkalla lounaaseen";
-
-
-/*  */
-"directions.heading.w" = "Matkalla länteen";
 
 
 /*  */
@@ -2319,15 +1335,7 @@
 
 
 /*  */
-"directions.along.traveling.n" = "Kuljetaan pohjoiseen tiellä %@";
-
-
-/*  */
 "directions.along.traveling.ne" = "Kuljetaan koilliseen tiellä %@";
-
-
-/*  */
-"directions.along.traveling.e" = "Kuljetaan itään tietä %@ pitkin";
 
 
 /*  */
@@ -2335,15 +1343,7 @@
 
 
 /*  */
-"directions.along.traveling.s" = "Kuljetaan etelään tiellä %@";
-
-
-/*  */
 "directions.along.traveling.sw" = "Kuljetaan lounaaseen tiellä %@";
-
-
-/*  */
-"directions.along.traveling.w" = "Kuljetaan länteen tiellä %@";
 
 
 /*  */
@@ -2351,15 +1351,7 @@
 
 
 /*  */
-"directions.along.facing.n" = "Kääntyneenä pohjoiseen tiellä %@";
-
-
-/*  */
 "directions.along.facing.ne" = "Kääntyneenä koilliseen tiellä %@";
-
-
-/*  */
-"directions.along.facing.e" = "Kääntyneenä itään tiellä %@";
 
 
 /*  */
@@ -2367,15 +1359,7 @@
 
 
 /*  */
-"directions.along.facing.s" = "Kääntyneenä etelään tiellä %@";
-
-
-/*  */
 "directions.along.facing.sw" = "Kääntyneenä lounaaseen tiellä %@";
-
-
-/*  */
-"directions.along.facing.w" = "Kääntyneenä länteen tiellä %@";
 
 
 /*  */
@@ -2383,15 +1367,7 @@
 
 
 /*  */
-"directions.along.heading.n" = "Matkalla pohjoiseen tiellä %@";
-
-
-/*  */
 "directions.along.heading.ne" = "Matkalla koilliseen tiellä %@";
-
-
-/*  */
-"directions.along.heading.e" = "Matkalla itään tiellä %@";
 
 
 /*  */
@@ -2399,15 +1375,7 @@
 
 
 /*  */
-"directions.along.heading.s" = "Matkalla etelään tiellä %@";
-
-
-/*  */
 "directions.along.heading.sw" = "Matkalla lounaaseen tiellä %@";
-
-
-/*  */
-"directions.along.heading.w" = "Matkalla länteen tiellä %@";
 
 
 /*  */
@@ -2415,15 +1383,7 @@
 
 
 /*  */
-"directions.cardinal.north" = "Pohjoinen";
-
-
-/*  */
 "directions.cardinal.north_east" = "Koillinen";
-
-
-/*  */
-"directions.cardinal.east" = "Itä";
 
 
 /*  */
@@ -2431,15 +1391,7 @@
 
 
 /*  */
-"directions.cardinal.south" = "Etelä";
-
-
-/*  */
 "directions.cardinal.south_west" = "Lounas";
-
-
-/*  */
-"directions.cardinal.west" = "Länsi";
 
 
 /*  */
@@ -2447,15 +1399,7 @@
 
 
 /*  */
-"directions.cardinal.north.abb" = "P";
-
-
-/*  */
 "directions.cardinal.north_east.abb" = "Ko";
-
-
-/*  */
-"directions.cardinal.east.abb" = "I";
 
 
 /*  */
@@ -2463,15 +1407,7 @@
 
 
 /*  */
-"directions.cardinal.south.abb" = "E";
-
-
-/*  */
 "directions.cardinal.south_west.abb" = "Lo";
-
-
-/*  */
-"directions.cardinal.west.abb" = "L";
 
 
 /*  */
@@ -2479,15 +1415,7 @@
 
 
 /*  */
-"directions.name_distance" = "%1$@, %2$@";
-
-
-/*  */
 "distance.format.m" = "%@ m";
-
-
-/*  */
-"distance.format.meter" = "%@ metri";
 
 
 /*  */
@@ -2495,15 +1423,7 @@
 
 
 /*  */
-"distance.format.km" = "%@ km";
-
-
-/*  */
 "distance.format.kilometer" = "%@ kilometri";
-
-
-/*  */
-"distance.format.kilometers" = "%@ kilometriä";
 
 
 /*  */
@@ -2511,15 +1431,7 @@
 
 
 /*  */
-"distance.format.foot" = "%@ jalka";
-
-
-/*  */
 "distance.format.feet" = "%@ jalkaa";
-
-
-/*  */
-"distance.format.mi" = "%@ mi";
 
 
 /*  */
@@ -2527,15 +1439,7 @@
 
 
 /*  */
-"distance.format.miles" = "%@ mailia";
-
-
-/*  */
 "ui.action_button.my_location" = "Oma si-\njaintini";
-
-
-/*  */
-"ui.action_button.my_location.acc_hint" = "Kaksoisnapauta kuullaksesi tietoja nykyisestä sijainnistasi";
 
 
 /*  */
@@ -2543,15 +1447,7 @@
 
 
 /*  */
-"ui.action_button.nearby_markers.acc_hint" = "Kaksoisnapauta kuullaksesi tietoja lähiympäristön paikoista, jotka olet merkinnännyt";
-
-
-/*  */
 "ui.action_button.around_me" = "Lähiym-\npäristö";
-
-
-/*  */
-"ui.action_button.around_me.acc_hint" = "Kaksoisnapauta kuullaksesi tietoja paikoista lähiympäristösi neljästä neljänneksestä";
 
 
 /*  */
@@ -2559,15 +1455,7 @@
 
 
 /*  */
-"ui.action_button.ahead_of_me.acc_hint" = "Kaksoisnapauta kuullaksesi tietoja paikoista, jotka ovat edessäsi";
-
-
-/*  */
 "ui.menu" = "Valikko";
-
-
-/*  */
-"ui.menu.hint" = "Kaksoisnapauta avataksesi valikon";
 
 
 /*  */
@@ -2575,15 +1463,7 @@
 
 
 /*  */
-"ui.continue" = "Jatka";
-
-
-/*  */
 "menu.events" = "Virkistystoimintaa";
-
-
-/*  */
-"menu.devices" = "Päätä seuraavat kuulokkeet";
 
 
 /*  */
@@ -2591,15 +1471,7 @@
 
 
 /*  */
-"menu.help_and_tutorials" = "Ohje ja opetusohjelmat";
-
-
-/*  */
 "menu.send_feedback" = "Lähetä palautetta";
-
-
-/*  */
-"menu.rate" = "Arvostele";
 
 
 /*  */
@@ -2607,15 +1479,7 @@
 
 
 /*  */
-"ui.back_button.title" = "Takaisin";
-
-
-/*  */
 "bar_icon.external_GPS.acc_label" = "Ulkoinen GPS yhdistetty -kuvake";
-
-
-/*  */
-"history_view.item_of" = "Kohde %1$@/%2$@";
 
 
 /*  */
@@ -2623,15 +1487,7 @@
 
 
 /*  */
-"poi_screen.screen_title.select_a_location" = "Valitse sijainti";
-
-
-/*  */
 "poi_screen.loading_title.loading" = "Ladataan lähistön paikkoja";
-
-
-/*  */
-"poi_screen.loading_title.finding_error" = "Huh, meillä on vaikeuksia löytää lähiympäristön paikkoja. Yritä myöhemmin uudelleen.";
 
 
 /*  */
@@ -2639,15 +1495,7 @@
 
 
 /*  */
-"poi_screen.section_header.nearby" = "Lähellä";
-
-
-/*  */
 "poi_cell.accessibility_label.suggested_search" = "Hakuehdotus: %@";
-
-
-/*  */
-"poi_cell.accessibility_hint.suggested_search" = "Kaksoisnapauta etsiäksesi kohdetta: %@";
 
 
 /*  */
@@ -2655,15 +1503,7 @@
 
 
 /*  */
-"location_callout_cell.marked_location" = "Merkitty sijainti";
-
-
-/*  */
 "location_callout_cell.nearest_road" = "Lähin tie, %@.";
-
-
-/*  */
-"location_callout_cell.nearest_road.beacon_set_on" = "Lähin tie, %1$@. Majakka määritettiin kohteeseen %2$@.";
 
 
 /*  */
@@ -2671,15 +1511,7 @@
 
 
 /*  */
-"devices.airpods.supported_versions" = "Apple AirPods -kuulokkeet tilaäänitoiminnolla";
-
-
-/*  */
 "devices.title.pair_audio" = "Yhdistä kuulokeääni";
-
-
-/*  */
-"devices.title.first_connection" = "Kuulokkeet yhdistetty";
 
 
 /*  */
@@ -2687,15 +1519,7 @@
 
 
 /*  */
-"devices.title.completed_connection" = "Kuulokkeet valmiit";
-
-
-/*  */
 "devices.explain_ar.disconnected" = "Päätä seuraavat kuulokkeet ovat Bluetooth-kuulokkeita, joissa on tunnistimet, jotka kertovat Soundscapelle, mihin suuntaan olet kääntyneenä. Tämä auttaa Soundscapea parantamaan äänikokemustasi tehden siitä luonnollisemman, kun liikut maailmassa ympäriinsä.\n\nNapauta alla olevaa painiketta yhdistääksesi laitteen.";
-
-
-/*  */
-"devices.explain_ar.connected.airpods" = "AirPods-kuulokkeesi ovat valmiit käyttöön, joten voit laittaa puhelimen taskuusi ja lähteä! openscape seuraa pääsi suuntaa, joten sinun ei tarvitse pidellä puhelinta kädessäsi.";
 
 
 /*  */
@@ -2703,15 +1527,7 @@
 
 
 /*  */
-"devices.explain_ar.connecting" = "Openscape muodostaa yhteyttä %@ -kuulokkeisiisi. Pieni hetki...";
-
-
-/*  */
 "devices.connect_headset" = "Yhdistä kuulokkeet";
-
-
-/*  */
-"devices.connect_headset.calibrate.button" = "Aloita kalibrointi";
 
 
 /*  */
@@ -2719,15 +1535,7 @@
 
 
 /*  */
-"devices.connect_headset.error_title" = "Yhteyttä ei voi muodostaa";
-
-
-/*  */
 "devices.connect_headset.unsupported_firmware" = "AR Headphones -kuulokkeesi on päivitettävä, ennen kuin ne voidaan yhdistää Soundscapeen. Siirry Cortana-sovellukseen päivittääksesi kuulokkeesi.";
-
-
-/*  */
-"devices.connect_headset.failed" = "Openscape ei voinut yhdistää kuulokkeisiisi. Yritä myöhemmin uudelleen.";
 
 
 /*  */
@@ -2735,15 +1543,7 @@
 
 
 /*  */
-"devices.connect_headset.explanation" = "Valitse kuulokkeidesi tyyppi alla olevasta tuettujen kuulokkeiden luettelosta.";
-
-
-/*  */
 "devices.connect_headset.audio" = "Ennen kuin yhdistät kuulokkeesi Soundscapeen varmista, että ne on yhdistetty puhelimeesi. Jos niitä ei ole vielä yhdistetty, siirry iOS Asetukset -sovelluksen Bluetooth-osaan yhdistääksesi laitteesi ja palaa sitten Soundscapeen.";
-
-
-/*  */
-"devices.connect_headset.calibrate" = "Kuulokkeesi on kalibroitava. Riisu ne päästäsi, ravistele niitä hellävaroen kaikkiin suuntiin noin 10 sekunnin ajan ja pue ne takaisin päähäsi. Tämä on toistettava, jos kalibroinnin äänimerkki jatkuu.";
 
 
 /*  */
@@ -2751,15 +1551,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "Onneksi olkoon! AirPods-kuulokkeesi ovat käyttövalmiit, joten voit laittaa puhelimen taskuusi ja jatkaa matkaa! openscape seuraa nyt pääsi suuntaa, joten sinun ei tarvitse pidellä puhelinta kädessäsi. Yksi kuulokkeiden painikkeen napsautus hiljentää majakan tai poistaa sen hiljennyksen, kaksoisnapsautus kertoo sijaintisi ilmoituksen ja kolmoisnapsautus toistaa viimeisimmän ilmoituksen.";
-
-
-/*  */
 "devices.connect_headset.completed.test" = "Tarkista kuulokkeesi";
-
-
-/*  */
-"devices.connect_headset.completed.test.hint" = "Kaksoisnapauta tarkistaaksesi %@";
 
 
 /*  */
@@ -2767,15 +1559,7 @@
 
 
 /*  */
-"devices.test_headset.explanation" = "Olemme sijoittaneet äänimajakan oikealle puolellesi. Kuuntele, missä se on ja käännä pääsi sitä kohti. Huomaa, kuinka voit tehdä tämän jopa silloin, kun puhelin on taskussasi. Kun olet valmis, napauta alla olevaa painiketta palataksesi Soundscapeen ja nauttiaksesi seuraavasta kävelystäsi uusien päätä seuraavien kuulokkeidesi kanssa.";
-
-
-/*  */
 "devices.test_headset.continue" = "Palaa Soundscapeen";
-
-
-/*  */
-"devices.test_headset.callout" = "Olemme sijoittaneet äänimajakan oikealle puolellesi. Kuuntele, missä se on, ja käännä pääsi sitä kohti... Huomaa, kuinka voit tehdä tämän jopa silloin, kun puhelin on taskussasi.";
 
 
 /*  */
@@ -2783,15 +1567,7 @@
 
 
 /*  */
-"devices.forget_headset.prompt.explanation" = "Tämä katkaisee yhteyden kuulokkeidesi ja Soundscapen välillä. Voit yhdistää Soundscapeen uudelleen täältä tulevaisuudessa.";
-
-
-/*  */
 "devices.callouts.connected" = "%@ yhdistetty.";
-
-
-/*  */
-"devices.callouts.needs_calibration" = "Kuulokkeesi on kalibroitava. Riisu ne päästäsi ja ravistele niitä hellävaroen kaikkiin suuntiin.";
 
 
 /*  */
@@ -2799,15 +1575,7 @@
 
 
 /*  */
-"devices.callouts.calibrated" = "Kalibrointi valmis";
-
-
-/*  */
 "devices.callouts.disconnected" = "%@ katkaisi yhteyden.";
-
-
-/*  */
-"devices.callouts.check_audio.default" = "Päätä seuraavia kuulokkeita ei ole yhdistetty.";
 
 
 /*  */
@@ -2815,15 +1583,7 @@
 
 
 /*  */
-"devices.callouts.check_audio.airpods.disconnected" = "Openscape etsii AirPods-kuulokkeitasi. Varmista, että ne on yhdistetty puhelimeesi.";
-
-
-/*  */
 "devices.troubleshoot.reconnect" = "Muodosta yhteys uudelleen";
-
-
-/*  */
-"devices.airpods_unavailable.alert.description" = "Tämä laite ei tue pään seurantaa Apple AirPods -kuulokkeilla. Tarkista, että laitteesi on iPhone 7 tai uudempi, ja että siinä on versio iOS 14.4 tai uudempi.";
 
 
 /*  */
@@ -2831,15 +1591,7 @@
 
 
 /*  */
-"devices.reachability.alert.description" = "%@ -kuulokkeesi voivat kertoa Soundscapelle, mihin suuntaan olet kääntyneenä, mikä auttaa Soundscapea parantamaan äänikokemustasi. Voit ottaa pään seurannan käyttöön Päätä seuraavat kuulokkeet -asetuksissa.";
-
-
-/*  */
 "behavior.experiences.events_list_nav_title" = "Aktiviteetit";
-
-
-/*  */
-"behavior.experiences.event_nav_title" = "Aktiviteettitiedot";
 
 
 /*  */
@@ -2847,15 +1599,7 @@
 
 
 /*  */
-"behavior.experiences.more_actions" = "Lisää toimintoja";
-
-
-/*  */
 "behavior.experiences.download_failed.title" = "Aktiviteettia ei voida ladata";
-
-
-/*  */
-"behavior.experiences.download_failed.error" = "Aktiviteetin latausyritys epäonnistui. Yritä myöhemmin uudelleen. Käytä \"Lähetä palautetta\" -toimintoa tai ota yhteyttä aktiviteetin luojaan, jos tämä ongelma toistuu.";
 
 
 /*  */
@@ -2863,15 +1607,7 @@
 
 
 /*  */
-"behavior.experiences.reset_action" = "Nollaa aktiviteetti";
-
-
-/*  */
 "behavior.experiences.reset_and_update_action" = "Tarkista päivitykset";
-
-
-/*  */
-"behavior.experiences.reset.prompt" = "Tämän aktiviteetin nollaus poistaa nykyiset edistymistiedot ja sallii aktiviteetin aloittamisen uudelleen. Tämän aktiviteetin nollauksen lisäksi saatat haluta tarkistaa päivitykset. Nollaus lataa tämän aktiviteetin päivitetyt tiedot, jos päivityksiä on saatavilla.";
 
 
 /*  */
@@ -2879,15 +1615,7 @@
 
 
 /*  */
-"behavior.experiences.reset.confirmation" = "Aktiviteetin nollaus";
-
-
-/*  */
 "behavior.experiences.delete_action" = "Poista aktiviteetti";
-
-
-/*  */
-"behavior.experience.delete.title" = "Poistetaanko tämä aktiviteetti?";
 
 
 /*  */
@@ -2895,15 +1623,7 @@
 
 
 /*  */
-"behavior.experiences.delete.confirmation" = "Aktiviteetti poistettu";
-
-
-/*  */
 "behavior.experiences.no_events.title" = "Openscape-vapaa-ajankokemukset (Beta)";
-
-
-/*  */
-"behavior.experiences.no_events.caption.1" = "Voittoa tavoittelemattomat organisaatiot, yritykset ja paikallishallinnot voivat luoda omia Openscape-kokemuksiaan. Näitä voivat olla esimerkiksi sopeutuvat urheiluohjelmat ja tapahtumat, aarteenetsintäaktiviteetit, valikoidut reitit, valikoidut kaupunkiopastukset ja monet muut.";
 
 
 /*  */
@@ -2911,15 +1631,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.media_player_title" = "%1$@: %2$@";
-
-
-/*  */
 "behavior.scavenger_hunt.by_line" = "Tuottanut %@";
-
-
-/*  */
-"behavior.scavenger_hunt.callout.nearby_with_name" = "%@ on lähellä";
 
 
 /*  */
@@ -2927,15 +1639,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.callout.pausing_hunt" = "Palataan tavalliseen Openscape-kokemukseen.";
-
-
-/*  */
 "behavior.scavenger_hunt.callout.next_flag" = "Majakka on asetettu kohteeseen %1$@, %2$@ etäisyydellä, %3$@/%4$@";
-
-
-/*  */
-"behavior.scavenger_hunt.callout.next_flag.no_distance" = "Majakka on asetettu kohteeseen %1$@, %2$@/%3$@";
 
 
 /*  */
@@ -2943,15 +1647,7 @@
 
 
 /*  */
-"behavior.experience.badges.active" = "Aktiivinen";
-
-
-/*  */
 "behavior.experience.badges.complete" = "Valmistunut";
-
-
-/*  */
-"behavior.experience.badges.not_complete" = "Ei valmis";
 
 
 /*  */
@@ -2959,15 +1655,7 @@
 
 
 /*  */
-"time.one_minute_ago" = "1 minuutti sitten";
-
-
-/*  */
 "time.num_minutes_ago" = "%@ minuuttia sitten";
-
-
-/*  */
-"time.one_hour_ago" = "1 tunti sitten";
 
 
 /*  */
@@ -2975,15 +1663,7 @@
 
 
 /*  */
-"announced_name" = "Ilmoitettu %@.";
-
-
-/*  */
 "announced_name.named" = "%1$@, ilmoitettiin %2$@.";
-
-
-/*  */
-"announced_name_distance_away.named" = "%1$@, ilmoitettiin %2$@, %3$@ päässä.";
 
 
 /*  */
@@ -2991,15 +1671,7 @@
 
 
 /*  */
-"previous_location.announced_name_distance" = "Edellinen sijainti. Ilmoitettiin %1$@, %2$@ päässä.";
-
-
-/*  */
 "beacon_distance_update.announced_name" = "Majakan etäisyyden päivitys. Ilmoitettu %@.";
-
-
-/*  */
-"beacon_distance_update.announced_name_distance" = "Majakan etäisyyden päivitys. Ilmoitettu %1$@, majakka on tällä hetkellä %2$@ etäisyydellä.";
 
 
 /*  */
@@ -3007,15 +1679,7 @@
 
 
 /*  */
-"intersection_callout.announced_name_distance" = "Risteyksen ilmoitus. Ilmoitettiin %1$@, risteys on %2$@ päässä.";
-
-
-/*  */
 "third_party_apps.general.maps" = "Avaa ulkoisessa karttasovelluksessa";
-
-
-/*  */
-"icloud.kv_store.quota_violation_alert.title" = "Soundscapen iCloud-tallennustila on täynnä";
 
 
 /*  */
@@ -3023,15 +1687,7 @@
 
 
 /*  */
-"poi.unknown" = "Tuntematon";
-
-
-/*  */
 "poi.unknown_place" = "Tuntematon paikka";
-
-
-/*  */
-"audio_player.action.play_again" = "Toista uudelleen";
 
 
 /*  */
@@ -3039,15 +1695,7 @@
 
 
 /*  */
-"text.cleaning_things" = "Siivotaan...";
-
-
-/*  */
 "action.double_tap_to_repeat" = "Kaksoisnapauta toistaaksesi";
-
-
-/*  */
-"location" = "Sijainti";
 
 
 /*  */
@@ -3055,15 +1703,7 @@
 
 
 /*  */
-"tutorial.title.plural" = "Opetusohjelmat";
-
-
-/*  */
 "tutorial.exit" = "Poistu opetusohjelmasta";
-
-
-/*  */
-"tutorial.skip" = "Ohita opetusohjelma";
 
 
 /*  */
@@ -3071,15 +1711,7 @@
 
 
 /*  */
-"tutorial.markers.getting_started" = "Merkintöjen käytön aloittaminen";
-
-
-/*  */
 "tutorial.markers.mark_your_world" = "Merkitse maailmasi";
-
-
-/*  */
-"tutorial.markers.experience_your_world" = "Koe maailmasi";
 
 
 /*  */
@@ -3087,15 +1719,7 @@
 
 
 /*  */
-"tutorial.markers.your_marker" = "merkintäsi";
-
-
-/*  */
 "tutorial.markers.mark_location.acc_hint" = "Kaksoisnapauta merkitäksesi tämän sijainnin";
-
-
-/*  */
-"tutorial.markers.text.Intro" = "Soundscapen avulla voit merkitä ympäristössäsi mitä tahansa sinulle tärkeää.\nKokeillaan. Paina alla olevaa Lisää merkintä -painiketta ja valitse esimerkiksi lähiympäristön paikka tai osoite.";
 
 
 /*  */
@@ -3103,15 +1727,7 @@
 
 
 /*  */
-"tutorial.markers.text.NearbyMarkers" = "Erinomaista! Sinulla on uusi merkintänä nimeltä @!marker_name!!.\nNyt voit kuulla merkintäsi sijainnin painamalla Merkinnät -painiketta. Tämä painike on aloitusnäytön alaosassa.\nKokeile sitä nyt.";
-
-
-/*  */
 "tutorial.markers.text.AudioBeacon" = "Voit myös määrittää äänimajakan merkintääsi.\nKokeillaan sitä. Tässä on merkinnän @!marker_name!! majakka.\nKuuntele tarkasti, missä se on, ja käänny sitä kohti pidellen puhelintasi vaakatasossa.";
-
-
-/*  */
-"tutorial.markers.text.WrapUp" = "Erinomaista, olet nyt kääntyneenä kohti merkintänä @!marker_name!!.\nVaikutat ymmärtäneen!\nVoit hallita merkintöjen luetteloa valitsemalla valikosta hallitse merkintöjä.\nVoit myös aina vierailla Ohje ja opetusohjelmat -sivulla suorittaaksesi tämän opetusohjelman uudelleen tai lukeaksesi kattavan oppaan kaikesta, mitä voit tehdä merkintöjen avulla. Tätä opetusohjelmaa varten luomasi majakka poistetaan nyt, ja palaat edelliselle näytölle.";
 
 
 /*  */
@@ -3119,15 +1735,7 @@
 
 
 /*  */
-"tutorial.beacon.set_a_beacon.acc_hint" = "Kaksoisnapauta ladataksesi luettelon paikoista, joihin voit määrittää majakan. Valitse paikka luettelosta aloittaaksesi opetusohjelman käytön.";
-
-
-/*  */
 "tutorial.beacon.getting_started.text" = "Kun määrität majakan paikkaan, openscape toistaa äänen, joka tulee kyseisen sijainnin suunnasta. Tämä opetusohjelma käy läpi majakan määrittämisen ja sen käytön.\n\nPaina alla olevaa \"Käynnistä äänimajakka\" -painiketta avataksesi luettelon lähiympäristön paikoista. Valitse sijainti luettelosta ja opetusohjelma alkaa.";
-
-
-/*  */
-"tutorial.beacon.your_destination" = "määränpääsi";
 
 
 /*  */
@@ -3135,15 +1743,7 @@
 
 
 /*  */
-"tutorial.beacon.poi_selected" = "Valitsit kohteen %@ majakan sijainniksi.";
-
-
-/*  */
 "tutorial.beacon.the_audio_beacon" = "Äänimajakka";
-
-
-/*  */
-"tutorial.beacon.the_audio_beacon.text" = "Valitsit kohteen %@ äänimajakkasi sijainniksi.";
 
 
 /*  */
@@ -3151,15 +1751,7 @@
 
 
 /*  */
-"tutorial.beacon.need_some_silence" = "Tarvitsetko hiljaisuutta?";
-
-
-/*  */
 "tutorial.beacons.text.IntroPart1" = "Kun määrität majakan paikkaan, openscape toistaa äänen, joka tulee kyseisen sijainnin suunnasta. Tämä opetusohjelma käy läpi majakan määrittämisen ja sen käytön.";
-
-
-/*  */
-"tutorial.beacons.text.IntroPart2" = "Paina alla olevaa \"Käynnistä äänimajakka\" -painiketta avataksesi luettelon lähiympäristön paikoista. Valitse sijainti luettelosta ja opetusohjelma alkaa.";
 
 
 /*  */
@@ -3167,15 +1759,7 @@
 
 
 /*  */
-"tutorial.beacons.text.OrientationIsNotFlat" = "Aloita pitelemällä puhelintasi kädessäsi vaakatasossa siten, että sen näyttö osoittaa ylös taivaalle ja puhelimen yläosa osoittaa suoraan eteenpäin.";
-
-
-/*  */
 "tutorial.beacons.text.OrientationAirPods" = "AirPods-kuulokkeesi on yhdistetty Soundscapeen. Kun AirPods-kuulokkeet on yhdistetty Soundscapeen, ei ole väliä, kuinka pitelet puhelintasi. Se voi olla taskussa tai laukussa.";
-
-
-/*  */
-"tutorial.beacons.text.OrientationRepeat" = "Jatka pitelemällä puhelinta vaakatasossa kädessäsi siten, että näyttö osoittaa ylös taivaalle.";
 
 
 /*  */
@@ -3183,15 +1767,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HoldingPhone.great" = "Hienoa! Puhelinta on pidettävä vaakatasossa tällä tavoin ainoastaan, kun pysyt paikallasi. Voit laittaa puhelimen kävellessäsi helposti saatavilla olevaan taskuun tai laukkuun.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconInitial" = "Nyt kun olet määrittänyt majakan kohteeseen @!destination!!, openscape alkaa toistaa ääntä, joka kuuluu kyseisen sijainnin suunnasta. Tässä on äänimajakka.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconOutOfBounds" = "Jos kuuntelet huolellisesti, kuulet, että se kuuluu tietystä ympäristösi suunnasta.";
 
 
 /*  */
@@ -3199,15 +1775,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsRotate.ar_headset" = "Käänny nyt hitaasti majakan suuntaan. Kuulet kellon äänen, kun olet kääntyneenä suoraan sitä kohti.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconOutOfBoundsRepeat" = "Käänny hitaasti, kunnes kuulet kellon, joka osoittaa, että olet kääntyneenä majakan suuntaan.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "Erinomaista, olet nyt kääntyneenä kohti kohdetta @!destination!!.";
 
 
 /*  */
@@ -3215,15 +1783,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate" = "Kokeile nyt kääntyä hitaasti poispäin majakan suunnasta samalla, kun pitelet puhelintasi vaakatasossa. Kellon ääni lakkaa ja majakka kertoo sinulle edelleen, missä kohde @!destination!! on. Kokeile sitä nyt.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Kokeile nyt kääntyä hitaasti poispäin majakan suunnasta. Kellon ääni lakkaa ja majakka kertoo sinulle edelleen, missä kohde @!destination!! on. Kokeile sitä nyt.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconInBoundsRepeat" = "Käänny hitaasti poispäin majakan suunnasta.";
 
 
 /*  */
@@ -3231,15 +1791,7 @@
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "Kun etenet matkallasi, openscape kertoo aika-ajoin etäisyytesi majakan osoittamaan sijaintiin tällaisella ilmoituksella.";
-
-
-/*  */
 "tutorial.beacons.text.HomeScreen" = "Etäisyystiedot näytetään myös aloitusnäytöllä majakan sijainnin katuosoitteen kanssa, jos meillä on se. openscape ilmoittaa, kun lähestyt majakan sijaintia, jolloin äänimajakka hiljenee.";
-
-
-/*  */
-"tutorial.beacons.text.Mute" = "Jos haluat hiljentää sovelluksen mistä tahansa syystä, voit käyttää joko majakan hiljennyspainiketta tai lepotilapainiketta aloitusnäytöllä, tai voit kaksoisnapauttaa kahdella sormella missä tahansa näytön kohdassa. Kaksoisnapautus kahdella sormella pysäyttää senhetkiset ilmoitukset ja hiljentää äänimajakan. Kokeile sitä nyt.";
 
 
 /*  */
@@ -3247,15 +1799,7 @@
 
 
 /*  */
-"tutorial.beacons.text.WrapUp" = "Vaikutat ymmärtäneen! Jos haluat toistaa tämän opetusohjelman uudelleen, voit käyttää sitä koska tahansa Ohje ja opetusohjelmat -näytöltä. Tässä tutoriaalissa luomasi majakka poistetaan nyt, ja palaat edelliselle näytölle.";
-
-
-/*  */
 "settings.help.title" = "Ohje";
-
-
-/*  */
-"help.configuration.section.title" = "Soundscapen konfigurointi";
 
 
 /*  */
@@ -3263,15 +1807,7 @@
 
 
 /*  */
-"settings.help.section.beacons_and_pois" = "Majakat ja ilmoitukset";
-
-
-/*  */
 "help.offline.section_title" = "Soundscapen käyttö offline-tilassa";
-
-
-/*  */
-"settings.help.section.home_screen_buttons" = "Aloitusnäytön painikkeet";
 
 
 /*  */
@@ -3279,15 +1815,7 @@
 
 
 /*  */
-"help.offline.page_title" = "Miksi openscape toimii offline-tilassa?";
-
-
-/*  */
 "help.offline.description" = "Kun Internet-yhteyttä ei ole, tai Openscape-palveluissa on häiriö, openscape siirtyy offline-tilaan. openscape toimii siitä huolimatta, mutta jotkin toiminnot voivat olla rajoitettuja.";
-
-
-/*  */
-"help.offline.limitations_heading" = "Rajoitukset";
 
 
 /*  */
@@ -3295,15 +1823,7 @@
 
 
 /*  */
-"help.offline.troubleshooting_heading" = "Mitä voit tehdä?";
-
-
-/*  */
 "help.offline.troubleshooting_description" = "Openscape yrittää palata normaaliin toimintaan, kun puhelimesi on yhdistetty langattomaan verkkoon tai mobiilidata on käytössä, ja olet alueella, jolla on hyvä yhteys. Jos puhelimellasi on hyvä Internet-yhteys, mutta openscape ei palaudu normaaliin toimintaan, Openscape-palveluissa voi olla katkos.";
-
-
-/*  */
-"help.orient.page_title" = "Lähiympäristö";
 
 
 /*  */
@@ -3311,15 +1831,7 @@
 
 
 /*  */
-"help.creating_markers.page_title" = "Luodaan merkintöjä";
-
-
-/*  */
 "help.edit_markers.page_title" = "Merkintöjen mukauttaminen";
-
-
-/*  */
-"help.remote.page_title" = "Mediasäädinten käyttö";
 
 
 /*  */
@@ -3327,15 +1839,7 @@
 
 
 /*  */
-"help.text.section_title.what" = "Mikä se on?";
-
-
-/*  */
 "help.text.section_title.when" = "Milloin käyttäisin sitä?";
-
-
-/*  */
-"help.text.section_title.how" = "Kuinka se toimii?";
 
 
 /*  */
@@ -3343,15 +1847,7 @@
 
 
 /*  */
-"help.support" = "Openscape Community-tuki";
-
-
-/*  */
 "terms_of_use.title" = "Käyttöehdot";
-
-
-/*  */
-"terms_of_use.message" = "Openscapen käyttöön sovelletaan %@ ehtoja sekä alla esitettyjä ehtoja (yhteisesti \"Käyttöehdot\").";
 
 
 /*  */
@@ -3359,15 +1855,7 @@
 
 
 /*  */
-"terms_of_use.service_agreement" = "Openscape Community palvelusopimus";
-
-
-/*  */
 "terms_of_use.accept_checkbox.acc_label" = "Hyväksy käyttöehdot";
-
-
-/*  */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Kaksoisnapauta valitaksesi \"hyväksy käyttöehdot\" -valintaruudun";
 
 
 /*  */
@@ -3375,15 +1863,7 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.on.acc_value" = "Tarkistettu";
-
-
-/*  */
 "terms_of_use.accept_checkbox.off.acc_value" = "Valinta poistettu";
-
-
-/*  */
-"terms_of_use.medical_safety_disclaimer" = "Ymmärrät, että Openscapea (1) ei ole suunniteltu, tarkoitettu tai tehty saatavaksi lääkinnällisenä laitteena ja (2) sitä ei ole suunniteltu korvaamaan eikä sen ole tarkoitus korvata terveydenhuollon ammattilaisen neuvoja, diagnoosia, hoitoa eikä arviota, eikä sen tulisi korvata terveydenhuollon ammattilaisen neuvoa, diagnoosia, hoitoa eikä arviota.\n\nTurvailmoitus\nSoundscape on suunnistusapuväline, eikä sen tulisi toimia liikkumiskyvyn, ympäristön tiedostamisen sekä hyvän arviointikyvyn korvikkeena. Suunnista ympäristössäsi varovaisesti, sillä Openscape -ohjelmaan sisällytetyt karttatiedot on kaapattu kolmannen osapuolen ohjelmalla, jonka vuoksi esitettyjen tietojen tarkkuudessa voi olla rajoituksia.";
 
 
 /*  */
@@ -3391,15 +1871,7 @@
 
 
 /*  */
-"terms_of_use.accept.new_features.accessibility_hint" = "Hyväksy ja sulje ilmoitukset kaksoisnapauttamalla";
-
-
-/*  */
 "first_launch.get_started_button.off.acc_hint" = "Sinun on valittava \"hyväksy käyttöehdot\" -valintaruutu, ennen kuin voit painaa tätä painiketta";
-
-
-/*  */
-"first_launch.welcome_text" = "Tervetuloa! Ennen kuin aloitamme, meidän on suoritettava joitakin määrityksiä ja kysyttävä eri käyttöoikeuksia. Paina Seuraava-painiketta aloittaaksesi.";
 
 
 /*  */
@@ -3407,15 +1879,7 @@
 
 
 /*  */
-"first_launch.permission_required" = "Tämä käyttöoikeus vaaditaan.";
-
-
-/*  */
 "first_launch.language" = "Soundscapen kieli";
-
-
-/*  */
-"first_launch.language.text" = "Valitse kieli, jota haluat Soundscapen käyttävän. Voit aina muuttaa valintaasi sovelluksen asetuksista.";
 
 
 /*  */
@@ -3423,15 +1887,7 @@
 
 
 /*  */
-"first_launch.location.enable_location" = "Ota sijainti käyttöön";
-
-
-/*  */
 "first_launch.device_motion" = "Laitteen liike";
-
-
-/*  */
-"first_launch.device_motion.text" = "Tämä sallii Openscapen parantaa kokemustasi sen perusteella, käveletkö, oletko ajoneuvossa, vai seisotko paikallasi.";
 
 
 /*  */
@@ -3439,15 +1895,7 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound.text_alt" = "Openscape käyttää 3D-ääntä ilmoittaakseen, mitä ympärilläsi on. Jos esimerkiksi määränpääsi on oikealla puolellasi, kuulet äänen, joka tulee siitä suunnasta, tai jos kahvila on vasemmalla puolellasi, kuulet ilmoituksen siitä suunnasta.";
-
-
-/*  */
 "first_launch.heading_somewhere" = "Oletko matkalla jonnekin?";
-
-
-/*  */
-"first_launch.heading_somewhere.text" = "Sijoita äänimajakka määränpäähäsi ja openscape kertoo sinulle sen sijainnin ja tietoja ympäristöstäsi matkalla sinne. Käytä Soundscapea yhdessä suunnistustaitojesi ja mahdollisesti jopa navigointisovelluksen kanssa löytääksesi tien määränpäähäsi.";
 
 
 /*  */
@@ -3455,15 +1903,7 @@
 
 
 /*  */
-"first_launch.setting_off_way.text" = "Laita puhelin pois ja kävele. openscape auttaa sinua pysymään tietoisena sijainnistasi ilmoittamalla tiet, risteykset ja maamerkinnät, kun lähestyt niitä. Ilmoitukset ovat muokattavissa asetuksissa.";
-
-
-/*  */
 "first_launch.find_things_nearby" = "Haluatko löytää lisää lähiympäristön kohteita?";
-
-
-/*  */
-"first_launch.find_things_nearby.text" = "Pitele puhelinta vaakatasossa kädessäsi ja käytä painikkeita teiden ja tulevien risteysten havaitsemiseen, tuttujen maamerkintöjen löytämiseen ja edessä olevien maamerkintöjen tarkasteluun.";
 
 
 /*  */
@@ -3471,15 +1911,7 @@
 
 
 /*  */
-"first_launch.welcome.title.accessibility_label" = "Tervetuloa Openscapeen!";
-
-
-/*  */
 "first_launch.welcome.description" = "Turvallinen suunnistaminen Soundscapen tilaäänen avulla";
-
-
-/*  */
-"first_launch.welcome.button" = "Aloita";
 
 
 /*  */
@@ -3487,15 +1919,7 @@
 
 
 /*  */
-"first_launch.headphones.message.1" = "Openscape toimii hyvin kaikkien kuulokkeiden kanssa. Jos haluat käyttää kuulokkeita, ota ne nyt käyttöön.";
-
-
-/*  */
 "first_launch.headphones.message.2" = "Kuulokkeiden käyttö ei ole pakollista. openscape toimii myös puhelimesi kaiuttimien kautta.";
-
-
-/*  */
-"first_launch.callouts.title" = "Kuuntele ympäristöä";
 
 
 /*  */
@@ -3503,15 +1927,7 @@
 
 
 /*  */
-"first_launch.callouts.listen" = "Kuuntele esimerkkiä siitä, mitä openscape voi ilmoittaa sinulle seuraavan kävelysi aikana";
-
-
-/*  */
 "first_launch.callouts.listen.accessibility_label" = "Kuuntele";
-
-
-/*  */
-"first_launch.callouts.listen.accessibility_hint" = "Napauta kaksi kertaa kuullaksesi esimerkin siitä, mitä openscape voi ilmoittaa sinulle seuraavan kävelysi aikana";
 
 
 /*  */
@@ -3519,15 +1935,7 @@
 
 
 /*  */
-"first_launch.callouts.example.3" = "Pääkatu jatkuu vasemmalle";
-
-
-/*  */
 "first_launch.callouts.example.4" = "Pääkatu jatkuu oikealle";
-
-
-/*  */
-"first_launch.permissions.title" = "Soundscapen avulla suunnistaminen";
 
 
 /*  */
@@ -3535,15 +1943,7 @@
 
 
 /*  */
-"first_launch.permissions.location" = "Sijaintipalvelut tarkalla sijainnilla";
-
-
-/*  */
 "first_launch.permissions.motion" = "Liike ja Kuntoilu";
-
-
-/*  */
-"first_launch.permissions.required" = "Tämä käyttöoikeus vaaditaan.";
 
 
 /*  */
@@ -3551,15 +1951,7 @@
 
 
 /*  */
-"first_launch.beacon.message.1" = "Kun suunnistat Soundscapen avulla, kuulet äänimajakan siitä suunnasta, jossa määränpääsi on. Seuraamalla sen ääntä tiedät, mihin päin kulkea.";
-
-
-/*  */
 "first_launch.beacon.message.2" = "Kuuntele saatavilla olevia äänimajakoita ja valitse haluamasi.";
-
-
-/*  */
-"first_launch.beacon.message.3" = "Tämä voidaan muuttaa myöhemmin sovelluksen asetuksissa.";
 
 
 /*  */
@@ -3567,15 +1959,7 @@
 
 
 /*  */
-"first_launch.beacon.audio.title" = "Tilaäänimajakka";
-
-
-/*  */
 "first_launch.beacon.audio.message" = "Majakka seuraa puhelimesi liikettä ja käyttää tilaääntä, jotta pysyt tietoisena sen sijainnista.";
-
-
-/*  */
-"first_launch.beacon.callout.standard" = "Majakka asetetaan oikealle puolellesi. Käännä puhelinta ja seuraa majakan ääntä kokeaksesi majakan tilaäänen.";
 
 
 /*  */
@@ -3583,15 +1967,7 @@
 
 
 /*  */
-"first_launch.beacon.callout.headtracking.standard" = "Majakka asetetaan oikealle puolellesi. Seuraa majakan ääntä kokeaksesi majakan tilaäänen.";
-
-
-/*  */
 "first_launch.beacon.callout.headtracking.haptic" = "Majakka asetetaan eteesi. Käännä vasemmalle ja oikealle kokeaksesi majakan haptisen palautteen.";
-
-
-/*  */
-"first_launch.beacon.callout.ahead" = "Majakka edessä";
 
 
 /*  */
@@ -3599,15 +1975,7 @@
 
 
 /*  */
-"first_launch.prompt.title" = "Kaikki on valmista.";
-
-
-/*  */
 "first_launch.prompt.message" = "Olet valmis ensimmäiselle kävelyllesi Soundscapen kanssa. Jos haluat kokeilla sitä nyt, sinun tarvitsee vain valita sijainti lähelläsi ja käynnistää äänimajakka niin kuulet sen määränpääsi suunnalta.";
-
-
-/*  */
-"first_launch.prompt.button" = "Valmis";
 
 
 /*  */
@@ -3615,15 +1983,7 @@
 
 
 /*  */
-"help.text.destination_beacons.what" = "Majakan asettaminen lähiympäristön kohteeseen mahdollistaa sen, että openscape voi pitää sinut ajan tasalla toistamalla äänimajakan ääntä, joka tulee kyseisen kohteen suunnasta. Tämä majakka voidaan hiljentää tai sen hiljentäminen poistaa aloitusnäytöllä. Lisäksi openscape näyttää tietoja sijainnista aloitusnäytöllä, mukaan lukien etäisyyden siihen ja sen katuosoitteen, jos se on tiedossa.";
-
-
-/*  */
 "help.text.destination_beacons.when" = "Majakan määrittäminen on hyödyllistä, kun haluat seurata tuttua maamerkkiä samalla, kun tutustut uuteen alueeseen tai kun olet menossa jonnekin ja haluat tietoja ympäristöstäsi matkalla sinne. Majakkatoiminto ei anna käännösohjeita, vaan se antaa sinulle jatkuvasti kuuluvan äänen, joka kertoo sinulle majakan sijainnin suhteessa nykyiseen sijaintiisi. Äänimajakan, suunnistustaitojesi ja jopa suosikkinavigointisovelluksesi avulla voit itse valita, kuinka haluat päästä lähiympäristön kohteisiin.";
-
-
-/*  */
-"help.text.destination_beacons.how.1" = "<b>Majakan määrittäminen tapahtuu seuraavasti</b>:<br/> Tarkastele ensin sijainnin tietoja joko etsimällä paikka hakupalkin avulla tai napauttamalla yhtä painikkeista \"Lähiympäristön paikat\", \"Tallennetut merkinnät\" ja \"Nykyinen sijainti\" ja valitsemalla sijainti. Voit valita sijainnin tietonäytöltä \"Käynnistä äänimajakka\" -painikkeen. Tämän napauttaminen palauttaa sinut aloitusnäytölle ja ottaa käyttöön äänimajakan, joka tulee valitun paikan suunnasta. Valitun paikan nimi ja sen etäisyys sekä fyysinen osoite, jos saatavilla, näkyy nyt sovelluksen päänäytössä.";
 
 
 /*  */
@@ -3631,15 +1991,7 @@
 
 
 /*  */
-"help.text.destination_beacons.how.3" = "<b>Voit hiljentää äänimajakan seuraavasti</b>:<br/> Napauta aloitusnäytöllä \"Hiljennä majakka\" -painiketta \"Poista majakka\" -painikkeen alla.";
-
-
-/*  */
 "help.text.automatic_callouts.what" = "Openscape voi ilmoittaa lähiympäristösi kohteita, kun lähestyt niitä ilmoittamalla niiden nimen siitä suunnasta, jossa ne sijaitsevat. Sovellus tekee tämän automaattisesti kaikenlaisille kohteille, kuten linja-autoille, linja-autopysäkeille ja jopa risteyksille. Voit määrittää, mitä sovellus ilmoittaa automaattisesti \"Hallitse ilmoituksia\" -osassa \"Asetukset\"-näytöllä, ja voit ottaa kaikki ilmoitukset pois käytöstä, kun haluat sovelluksen olevan hiljaa.";
-
-
-/*  */
-"help.text.automatic_callouts.when.1" = "<b>Uuteen alueeseen tutustuminen</b>:<br/> Ota automaattiset ilmoitukset käyttöön ja kävele ympäriinsä kuullaksesi tietoja eri kaupoista, ravintoloista ja muista niiden kaltaisista maamerkeistä, kun ohitat ne.";
 
 
 /*  */
@@ -3647,15 +1999,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.when.3" = "<b>Kun tarvitset hiljaisuutta</b>:<br/> Kun olet aikeissa ylittää tien tai sinun tarvitsee muusta syystä hiljentää sovellus, voit ottaa ilmoitukset pois käytöstä. Kun ilmoitukset ovat pois käytöstä, sovellus kertoo sinulle tietoja ainoastaan, jos valitset manuaalisesti jonkin seuraavista painikkeista: <em>\"Oma sijaintini\"</em>, <em>\"Merkinnät\"</em>, <em>\"Lähiympäristö\"</em> tai <em>\"Edessäpäin\"</em>.";
-
-
-/*  */
 "help.text.automatic_callouts.how.1" = "<b>Ilmoitusten asettaminen käyttöön ja pois käytöstä</b>:<br/> Ilmoitusten asettaminen pois käytöstä hiljentää sovelluksen. Ilmoitukset voidaan ottaa käyttöön tai poistaa käytöstä \"Hallitse ilmoituksia\" -osassa \"Asetukset\" -ruudulla, jossa voit napauttaa \"Salli ilmoitukset\" -vaihtopainiketta ilmoitusten ottamiseksi käyttöön tai poistamiseksi käytöstä. Voit myös ottaa ilmoitukset käyttöön tai poistaa ne käytöstä \"hyppää eteenpäin\" -komentoa käyttäen (kaksoisnapauta ja pidä), jos kuulokkeissasi on mediaohjauspainikkeet. Vaihtoehtoisesti voit käyttää \"Siirry lepotilaan\" -painiketta aloitusnäytön oikeassa yläkulmassa estääksesi Soundscapea suorittamasta ilmoituksia, kunnes haluat herättää sen uudelleen.";
-
-
-/*  */
-"help.text.automatic_callouts.how.2" = "<b>Kuultavien ilmoitusten valinta</b>:<br/> Voit valita, minkä tyyppisten asioiden ilmoitukset openscape kertoo automaattisesti siirtymällä \"Asetukset\"-sivulle \"Aloitus\"-näytöllä olevaa valikkoa käyttäen. \"Hallitse ilmoituksia\" -osa \"Asetukset\"-näytöllä sisältää luettelon sovelluksen käytettävissä olevista ilmoitustyypeistä. Kullakin kohteella on vaihtopainike, joka voidaan ottaa käyttöön tai pois käytöstä. Jos haluat ottaa kaikki ilmoitukset pois käytöstä, napauta \"Salli ilmoitukset\" -kytkintä luettelon yläpuolella.";
 
 
 /*  */
@@ -3663,15 +2007,7 @@
 
 
 /*  */
-"help.text.my_location.when" = "<em>\"Oma sijaintini\"</em> on hyödyllinen, kun sinun on selvitettävä, missä olet, tai mitä ilmansuuntaa kohti olet kääntyneenä.";
-
-
-/*  */
 "help.text.my_location.how" = "Kuten kaikkien aloitusnäytön alaosassa olevien painikkeiden tapauksessa, pidä puhelintasi näyttö vaakatasossa (osoittaen taivasta kohti) ja puhelimen yläosa kohti sitä suuntaa, johon olet kääntyneenä, ennen kuin painat <em>\"Oma sijaintini\"</em> -painiketta. Tämä toimii kompassin tapaan kertoen sovellukselle, mihin suuntaan olet kääntynyt. Napauta yksinkertaisesti <em>\"Oma sijaintini\"</em> -painiketta ja kuuntele.";
-
-
-/*  */
-"help.text.nearby_markers.what" = "<em>\"Merkinnät\"</em> -painike kertoo sinulle enintään neljästä merkistä, jotka ovat sinua lähinnä. <em>\"Merkinnät\"</em> on tarkoitettu auttamaan sinua perehtymään ympäristöösi käyttäen paikkoja, jotka jo tunnet.";
 
 
 /*  */
@@ -3679,15 +2015,7 @@
 
 
 /*  */
-"help.text.nearby_markers.how" = "Kuten kaikkien aloitusnäytön alaosassa olevien painikkeiden tapauksessa, pidä puhelintasi näyttö vaakatasossa (osoittaen taivasta kohti) ja puhelimen yläosa kohti sitä suuntaa, johon olet kääntyneenä, ennen kuin painat <em>\"Merkinnät\"</em>-painiketta. Tämä toimii kompassin tapaan kertoen sovellukselle, mihin suuntaan olet kääntynyt. Napauta yksinkertaisesti <em>\"Merkinnät\"</em> -painiketta ja kuulet useita kiinnostavia kohteita, jotka ovat suunnilleen edessäsi.";
-
-
-/*  */
 "help.text.around_me.what" = "<em>\"Lähiympäristö\"</em>-painike kertoo sinulle yhdestä asiasta kussakin lähiympäristösi neljässä neljänneksessä (edessä, oikealla, takana ja vasemmalla). <em>\"Lähiympäristö\"</em> on tarkoitettu auttamaan sinua perehtymään ympäristöösi.";
-
-
-/*  */
-"help.text.around_me.when" = "Kun haluat päästä jyvälle siitä, missä olet, ja perehtyä ympäristöösi, käytä <em>\"Lähiympäristö\"</em>-toimintoa kuullaksesi lähiympäristösi asioista.";
 
 
 /*  */
@@ -3695,15 +2023,7 @@
 
 
 /*  */
-"help.text.ahead_of_me.what" = "<em>\"Edessäpäin\"</em>-painike kertoo sinulle neljästä edessäsi olevasta kohteesta. <em>\"Edessäpäin\"</em> on tarkoitettu auttamaan sinua tutustumaan edessäsi olevaan reittiin, kun haluat tietoja uudesta alueesta.";
-
-
-/*  */
 "help.text.ahead_of_me.when" = "Kun kävelet kadulla, kokeile käyttää <em>\"Edessäpäin\"</em>-toimintoa löytääksesi kummallakin puolella katua vastaan tulevia asioita.";
-
-
-/*  */
-"help.text.ahead_of_me.how" = "Kuten kaikkien aloitusnäytön alaosassa olevien painikkeiden tapauksessa, pidä puhelintasi näyttö vaakatasossa (osoittaen taivasta kohti) ja puhelimen yläosa kohti sitä suuntaa, johon olet kääntyneenä, ennen kuin painat <em>\"Edessäpäin\"</em>-painiketta. Tämä toimii kompassin tapaan kertoen sovellukselle, mihin suuntaan olet kääntynyt. Napauta yksinkertaisesti <em>\"Edessäpäin\"</em>-painiketta ja kuulet useita kiinnostavia kohteita, jotka ovat suunnilleen edessäsi.";
 
 
 /*  */
@@ -3711,15 +2031,7 @@
 
 
 /*  */
-"help.text.remote_control.when" = "Kuulokkeiden mediasäätimiä voidaan käyttää, kun openscape on päällä. Tämä toimii sekä silloin, kun olet Soundscapessa, että silloin, kun se on taustalla, vaikka laitteesi olisi lukittu. Huomaa kuitenkin, että kuulokkeiden mediasäätimet eivät toimi Soundscapen kanssa, jos toistat ääntä, kuten musiikkia, podcasteja tai videoita toisella sovelluksella.";
-
-
-/*  */
 "help.text.remote_control.how" = "<p>Voit käyttää seuraavia Soundscapen toimintoja kuulokkeidesi mediaohjauspainikkeilla:<p><br>&#x23EF Toista/Pysäytä: Hiljennä nykyiset ilmoitukset ja jos äänimajakka on määritetty, vaihda majakan ääniasetus päälle ja pois päältä. </p><p>&#x23ED Seuraava: Ilmoitus <em>\"Oma sijaintini\"</em>.</p><p>&#x23EE Edellinen: Toista viimeinen ilmoitus.</p><p>&#x23E9 Hyppää eteenpäin: Vaihda ilmoituksia päälle ja pois.</p><p>&#x23EA Hyppää taaksepäin: Ilmoitus <em>\"Lähiympäristö\"</em>.</p>";
-
-
-/*  */
-"help.text.markers.content.1" = "Soundscapen avulla voit merkitä maailmasi ja mitä tahansa sinulle tärkeää.";
 
 
 /*  */
@@ -3727,15 +2039,7 @@
 
 
 /*  */
-"help.text.markers.content.3" = "Openscape ilmoittaa automaattisesti merkityt paikat luodakseen niistä kokemuksen, kun kävelet niiden ohi tai lähestyt niitä. Voit myös käyttää Merkinnät -painiketta Soundscapen aloitusnäytön alaosassa kuullaksesi tilaääni-ilmoitukset ympärilläsi olevista merkityistä paikoista. LIsäksi on mahdollista määrittää äänimajakka mihin tahansa merkittyyn paikkaan. Kun teet tämän, Soundscapen äänimajakka, jonka tunnet, kuuluu ja voit käyttää sitä tavalliseen tapaan.";
-
-
-/*  */
 "help.text.creating_markers.content.1" = "Voit luoda merkintöjä kolmella tapaa: etsimällä hakupalkin avulla paikkaa, jonka haluat tallentaa, etsimällä paikan \"Lähiympäristön paikat\" -painikkeen avulla, tai käyttämällä \"Käytä nykyistä sijaintia\" -painiketta, joista kaikki sijaitsevat Soundscapen aloitusnäytöllä. Kun olet löytänyt haluamasi paikan, sen valitseminen vie sinut \"Sijainnin tiedot\" -sivulle. Valitse tällä sivulla painike \"Tallenna merkintä\".";
-
-
-/*  */
-"help.text.creating_markers.content.2" = "Voit nyt muokata tätä merkintänä. Tämä vaihe on valinnainen. Voit halutessasi muuttaa merkinnän nimeä ja lisätä selitteen, joka ilmoitetaan merkinnän kanssa lisätietojen antamiseksi. Kun olet valmis, valitse \"Valmis\"-painike tallentaaksesi merkintäsi. ";
 
 
 /*  */
@@ -3743,15 +2047,7 @@
 
 
 /*  */
-"help.text.customizing_markers.content.2" = "Voit myös poistaa merkinnän tältä muokkausruudulta, jos et enää tarvitse sitä.";
-
-
-/*  */
 "help.text.routes.content.what" = "Reitit ovat reittipisteiden sarjoja. Sinulle ilmoitetaan kuhunkin reittipisteeseen saapumisesta, ja äänimajakka siirtyy automaattisesti seuraavaan reittipisteeseen.";
-
-
-/*  */
-"help.text.routes.content.when" = "Saatat haluta luoda reitin ja käyttää sitä tuntemassasi paikassa varmistaaksesi, että pysyt reitillä, tai saatat haluta käyttää sitä työkaluna uudella matkalla siihen tutustuessasi.";
 
 
 /*  */
@@ -3759,15 +2055,7 @@
 
 
 /*  */
-"help.text.routes.content.how.2" = "<b>Reitin muokkaaminen</b>:<br/> Valitse reittisi \"Merkinnät ja Reitit\" -sivulla, ja valitse sitten \"Muokkaa reittiä\". Täällä voit lisätä ja poistaa reittipisteitä sekä muokata reitin nimeä ja kuvausta.";
-
-
-/*  */
 "help.text.routes.content.how.3" = "<b>Reitin jakaminen</b>:<br/> Valitse reittisi \"Merkinnät ja Reitit\" -sivulla ja valitse sitten \"Jaa\"-toiminto, joka käyttää kaikkia tavanomaisesti käytössäsi olevia jakotoimintoja.";
-
-
-/*  */
-"help.using_headsets.airpods.what" = "Openscape tukee tilaääntä dynaamisella pään seurannalla, kun käytössä on yhteensopivat AirPods-kuulokkeet. Kun ne on yhdistetty Soundscapeen, AirPods-kuulokkeiden tunnistimet kertovat Soundscapelle, mihin suuntaan pääsi on kääntyneenä. Tämä auttaa Soundscapea parantamaan äänikokemustasi tekemällä siitä luonnollisemman, kun liikut paikasta toiseen maailmassa. Kun käytät Soundscapea yhdistettynä AirPods-kuulokkeisiin, sinun ei tarvitse pidellä puhelintasi, jotta openscape toimisi oikein.";
 
 
 /*  */
@@ -3775,15 +2063,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.how.1" = "<b>Laitteen yhdistäminen</b>:<br/> Siirry kohtaan \"Päätä seuraavat kuulokkeet\" Openscape-valikossa yhdistääksesi AirPods-kuulokkeesi ja seuraa näytön ohjeita. Huomaa, että sinun on yhdistettävä AirPods-kuulokkeesi puhelimeesi Bluetooth-asetuksissa ennen niiden yhdistämistä Soundscapeen.";
-
-
-/*  */
 "help.using_headsets.airpods.how.2" = "<b>Kuulokkeidesi mediasäädinten käyttö</b>:<br/> Kun mediasäätimet on otettu käyttöön Openscape-asetuksissa, voit käyttää AirPods-kuulokkeidesi mediasäätimiä majakan ja sijaintisi ilmoituksen hiljentämiseen tai hiljentämisen poistoon tai viimeisimmän ilmoituksen toistamiseen. LIsätietoja on ohjeen osassa \"Mediaohjaimien käyttö\".";
-
-
-/*  */
-"osm.tag.crossing" = "Suojatie";
 
 
 /*  */
@@ -3791,15 +2071,7 @@
 
 
 /*  */
-"osm.tag.dangerous_area" = "Vaarallinen alue";
-
-
-/*  */
 "osm.tag.townhall" = "Kaupungintalo";
-
-
-/*  */
-"osm.tag.steps" = "Portaat";
 
 
 /*  */
@@ -3807,15 +2079,7 @@
 
 
 /*  */
-"osm.tag.walking_path" = "Kävelypolku";
-
-
-/*  */
 "osm.tag.pedestrian_street" = "Kävelykatu";
-
-
-/*  */
-"osm.tag.bicycle_path" = "Pyörätie";
 
 
 /*  */
@@ -3823,15 +2087,7 @@
 
 
 /*  */
-"osm.tag.service_road" = "Huoltotie";
-
-
-/*  */
 "osm.tag.road" = "Tie";
-
-
-/*  */
-"osm.tag.highway" = "Maantie";
 
 
 /*  */
@@ -3839,15 +2095,7 @@
 
 
 /*  */
-"osm.tag.highway.refed" = "Maantie %@";
-
-
-/*  */
 "osm.tag.intersection" = "Risteys";
-
-
-/*  */
-"osm.tag.roundabout" = "Liikenneympyrä";
 
 
 /*  */
@@ -3855,15 +2103,7 @@
 
 
 /*  */
-"osm.tag.merging_lane" = "Yhdistyvä kaista";
-
-
-/*  */
 "osm.tag.office_building" = "Toimistorakennus";
-
-
-/*  */
-"osm.tag.school_building" = "Koulurakennus";
 
 
 /*  */
@@ -3871,15 +2111,7 @@
 
 
 /*  */
-"osm.tag.convenience_store" = "Päivittäistavarakauppa";
-
-
-/*  */
 "osm.tag.building_entrance" = "Rakennuksen sisäänkäynti";
-
-
-/*  */
-"osm.tag.assembly_point" = "Kokoontumispiste";
 
 
 /*  */
@@ -3887,15 +2119,7 @@
 
 
 /*  */
-"osm.tag.turnstile" = "Kääntyvä portti";
-
-
-/*  */
 "osm.tag.cattle_grid" = "Karjaverkko";
-
-
-/*  */
-"osm.tag.gate" = "Portti";
 
 
 /*  */
@@ -3903,15 +2127,7 @@
 
 
 /*  */
-"osm.tag.parking_lot" = "Pysäköintialue";
-
-
-/*  */
 "osm.tag.parking_entrance" = "Pysäköinnin sisäänkäynti";
-
-
-/*  */
-"osm.tag.bench" = "Penkki";
 
 
 /*  */
@@ -3919,15 +2135,7 @@
 
 
 /*  */
-"osm.tag.post_office" = "Postitoimisto";
-
-
-/*  */
 "osm.tag.post_box" = "Postilaatikko";
-
-
-/*  */
-"osm.tag.waste_basket" = "Roskakori";
 
 
 /*  */
@@ -3935,15 +2143,7 @@
 
 
 /*  */
-"osm.tag.bike_parking" = "Polkupyöräpysäköinti";
-
-
-/*  */
 "osm.tag.cafe" = "Kahvila";
-
-
-/*  */
-"osm.tag.restaurant" = "Ravintola";
 
 
 /*  */
@@ -3951,15 +2151,7 @@
 
 
 /*  */
-"osm.tag.gas_station" = "Huoltoasema";
-
-
-/*  */
 "osm.tag.bank" = "Pankki";
-
-
-/*  */
-"osm.tag.atm" = "Pankkiautomaatti";
 
 
 /*  */
@@ -3967,15 +2159,7 @@
 
 
 /*  */
-"osm.tag.atm.refed" = "Pankkiautomaatti %@";
-
-
-/*  */
 "osm.tag.bus_stop" = "Linja-autopysäkki";
-
-
-/*  */
-"osm.tag.bus_stop.named" = "%@ Linja-autopysäkki";
 
 
 /*  */
@@ -3983,15 +2167,7 @@
 
 
 /*  */
-"osm.tag.recycling_bin" = "Kierrätysastia";
-
-
-/*  */
 "osm.tag.fountain" = "Suihkulähde";
-
-
-/*  */
-"osm.tag.place_of_worship" = "Uskonnollinen rakennus";
 
 
 /*  */
@@ -3999,15 +2175,7 @@
 
 
 /*  */
-"osm.tag.car_wash" = "Autopesula";
-
-
-/*  */
 "osm.tag.vending_machine" = "Myyntiautomaatti";
-
-
-/*  */
-"osm.tag.playground" = "Leikkipuisto";
 
 
 /*  */
@@ -4015,15 +2183,7 @@
 
 
 /*  */
-"osm.tag.swimming_pool" = "Uima-allas";
-
-
-/*  */
 "osm.tag.garden" = "Puutarha";
-
-
-/*  */
-"osm.tag.park" = "Puisto";
 
 
 /*  */
@@ -4031,15 +2191,7 @@
 
 
 /*  */
-"osm.tag.picnic_area" = "Retkialue";
-
-
-/*  */
 "banner.custom_behavior.scavenger_hunt" = "Aarteenetsintä on aktivoitu.";
-
-
-/*  */
-"banner.custom_behavior.scavenger_hunt.hint" = "Kaksoisnapauta lukeaksesi aarteenetsinnästä tai pysäyttääksesi sen.";
 
 
 /*  */
@@ -4047,15 +2199,7 @@
 
 
 /*  */
-"banner.offline_help.message" = "Openscape toimii offline-tilassa.";
-
-
-/*  */
 "banner.offline_search.message" = "Openscape toimii offline-tilassa. Sijainnit on rajoitettu paikkoihin, joiden ohi olet jo aiemmin kävellyt tai jotka on jo merkitty. Lisätietoja";
-
-
-/*  */
-"banner.online.message" = "Openscape on jälleen online-tilassa";
 
 
 /*  */
@@ -4063,15 +2207,7 @@
 
 
 /*  */
-"share.prompt.title" = "Pidätkö Soundscapesta?";
-
-
-/*  */
 "share.prompt.message" = "Kerro ystävillesi ja perheellesi Soundscapesta";
-
-
-/*  */
-"share.action.message" = "Kokeile Soundscapea, sovellusta, jota käytän navigoidakseni 3D-äänen avulla:";
 
 
 /*  */
@@ -4079,15 +2215,7 @@
 
 
 /*  */
-"push.local.home.body" = "Sinun tarvitsee vain valita lähellä oleva määränpää ja käynnistää majakka, niin kuulet sen määränpääsi suunnalta.";
-
-
-/*  */
 "push.local.walk.title" = "Kokeile Soundscapea seuraavalla kävelylläsi";
-
-
-/*  */
-"push.local.walk.body" = "Sinun tarvitsee vain käynnistää sovellus nauttiaksesi kokemuksesta. Sinun ei tarvitse edes valita määränpäätä.";
 
 
 /*  */
@@ -4095,15 +2223,7 @@
 
 
 /*  */
-"faq.title" = "Usein kysytyt kysymykset";
-
-
-/*  */
 "faq.title.abbreviated" = "UKK";
-
-
-/*  */
-"faq.tips.title" = "Vinkkejä";
 
 
 /*  */
@@ -4111,15 +2231,7 @@
 
 
 /*  */
-"faq.markers_function.answer" = "Merkinnät ovat paikkoja, jotka olet säilyttänyt. Ne voivat olla paikkoja, jotka sovellus voi löytää, tai täysin uusia paikkoja, jotka olet lisännyt itse. Voit tallentaa nykyisen sijaintisi merkintänä valitsemalla \"Käytä nykyistä sijaintia\" -painikkeen aloitusnäytöllä ja valitsemalla sitten \"Tallenna merkintänä\". Voit tallentaa muita sijainteja merkintöinä etsimällä hakupalkin avulla paikkaa, jonka haluat tallentaa tai etsimällä paikan käyttämällä \"Lähiympäristön paikat\" -painiketta, jotka ovat molemmat Soundscapen aloitusnäytöllä. Kun olet löytänyt haluamasi paikan, sen valitseminen vie sinut \"Sijainnin tiedot\" -sivulle. Valitse tällä sivulla painike nimeltä \"Tallenna merkintänä\".";
-
-
-/*  */
 "faq.section.getting_the_best_experience" = "Kuinka saan Soundscapen parhaat ominaisuudet käyttööni?";
-
-
-/*  */
-"faq.what_can_I_set.question" = "Minkä voin määrittää majakaksi?";
 
 
 /*  */
@@ -4127,15 +2239,7 @@
 
 
 /*  */
-"faq.how_to_use_beacon.question" = "Kuinka majakkaa kannattaa käyttää?";
-
-
-/*  */
 "faq.how_to_use_beacon.answer" = "Voit ajatella äänimajakkaa \"majakkana korville\", joka ilmoittaa sinulle, missä määränpääsi on suhteessa sijaintiisi linnuntietä. Kuten majakka, se ei kerro sinulle, kuinka määränpää saavutetaan, vaan sinun on ehkä tehtävä monia suunnistusvalintoja matkalla, kuten purjelaivan on tehtävä useita strategisia \"kurssin muutoksia\" majakan lähestymiseksi. Jatkuva äänimajakan rytmikäs ääni kuuluu tilaäänenä määränpään suunnasta ja se auttaa sinua pysymään tietoisena määränpään sijainnista suhteessa sinuun, kun kävelet. Kun kävelet suoraan määränpäätä kohti, tai kun osoitat sitä puhelimella, korkeampitaajuuksinen \"soittokellon\" ääni kuuluu. Tämä ominaisuus sallii sinun tunnistaa määränpään suunnan, koska rytmikkään äänen lähde on joskus vaikea havaita meluisissa ympäristöissä. Kun etsit korkeampitaajuista\"soittokelloa\", pitele puhelinta vaakatasossa ja kuljeta puhelinta edestakaisin hitaasti. Pään kääntäminen samaan suuntaan puhelimen kanssa varmistaa, että saat parhaan mahdollisen tilaäänikokemuksen. \n\nMajakkakielikuvalla on sen suunnittelussa joitakin luonnollisia seurauksia:\n\n1. Majakkaa käytettäessä ei ole \"oikeaa\" kulkusuuntaan. Sen sijaan Soundscapea käytettäessä sinä valitset, kuinka pääset sinne.\n2. Korkeampitaajuuksinen \"soittokello\" auttaa sinua ainoastaan tunnistamaan määränpään suunnan, eikä se osoita, kuinka sinun tulisi siirtyä sinne.\n3. Jos tiedät suurin piirtein, kuinka päästä määränpäähäsi, saatat haluta vaimentaa majakan suurimmaksi osaksi matkaasi ja ottaa sen käyttöön vasta sitten, kun lähestyt määränpäätäsi.";
-
-
-/*  */
-"faq.why_does_beacon_disappear.question" = "Miksi äänimajakka toisinaan katoaa?";
 
 
 /*  */
@@ -4143,15 +2247,7 @@
 
 
 /*  */
-"faq.beacon_on_address.question" = "Voinko asettaa majakan osoitteeseen?";
-
-
-/*  */
 "faq.beacon_on_address.answer" = "Kyllä voit. Osoitteita ei ole luettelossa oletusarvoisesti, mutta ne ovat löydettävissä hakukentän avulla. Jos haluat tallentaa tämän osoitteen, jotta sinun ei tarvitse hakea sitä uudelleen, voit lisätä sen merkiksi aloitusnäytöltä valitsemalla \"lisää merkintöihin\" -painikkeen tai käyttämällä VoiceOver-toimintoja aloitussivun majakassa.";
-
-
-/*  */
-"faq.beacon_on_home.question" = "Kuinka määritän majakan kotiini?";
 
 
 /*  */
@@ -4159,15 +2255,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.question" = "Kun määritän majakan määränpäähän, kuinka lähelle määränpäätä openscape vie minut? ";
-
-
-/*  */
 "faq.how_close_to_destination.answer" = "Openscape voi tunnistaa määränpääsi paikan muutamien metrien etäisyydellä, mutta ei sitä lähempänä. Kun openscape päättelee, että olet lähellä määränpäätäsi, kuulet viimeisen ilmoituksen siitä, että määränpääsi on lähellä, ja majakka poistuu käytöstä.";
-
-
-/*  */
-"faq.turn_beacon_back_on.question" = "Voinko ottaa majakan takaisin käyttöön, kun olen lähellä päämäärääni?";
 
 
 /*  */
@@ -4175,15 +2263,7 @@
 
 
 /*  */
-"faq.road_names.question" = "Miksi openscape ilmoittaa teiden nimet kahdesti, kun lähestyn risteystä?";
-
-
-/*  */
 "faq.road_names.answer" = "Openscape kuvailee risteyksiä tiesegmentteinä, jotka lähtevät yhteisestä pisteestä mahdollistaakseen useita erilaisia risteysten muotoja. openscape käyttää tilaääntä osoittamaan vasemmalle lähtevän tien nimen, sen tien nimen, joka jatkuu suoraan eteenpäin ja sen tien nimen, joka lähtee oikealle, tässä järjestyksessä. Jos risteyksen kuvaus alkaa tiellä, jolla olet, eikä vasemmanpuoleisella tiellä, kyseessä on T-risteys, jossa tie, jolla olet, kulkee eteenpäin ja toinen tie risteää oikealta. Samoin jos kuvaus sisältää vain vasemmalle ja oikealle lähtevät tiet, tiedät, että tie, jolla olet, päättyy edessä olevassa T-risteyksessä. Tämä risteysten kuvailumenetelmä tukee myös tilannetta, jossa tien nimi muuttuu risteyksessä.";
-
-
-/*  */
-"faq.why_not_every_business.question" = "Miksi openscape ei ilmoita kaikista yrityksistä, jotka ohitan?";
 
 
 /*  */
@@ -4191,15 +2271,7 @@
 
 
 /*  */
-"faq.callouts_stopping_in_vehicle.question" = "Miksi jotkin ilmoitukset lakkaavat, kun olen ajoneuvossa?";
-
-
-/*  */
 "faq.callouts_stopping_in_vehicle.answer" = "Jotta ilmoitusten määrää voidaan estää kasvamasta hallitsemattomaksi, joitakin luokkia, kuten risteyksiä, ei ilmoiteta automaattisesti, kun kuljet ajoneuvolla.";
-
-
-/*  */
-"faq.miss_a_callout.question" = "Mitä, jos en ymmärrä ilmoitusta tai en huomaa sitä ympäristön melun takia?";
 
 
 /*  */
@@ -4207,15 +2279,7 @@
 
 
 /*  */
-"faq.supported_phones.question" = "Missä puhelimessa openscape toimii?";
-
-
-/*  */
 "faq.supported_phones.answer" = "Openscape on saatavilla Apple iOS -käyttöjärjestelmälle laitteilla iPhone SE, iPhone 6S ja uudemmat.";
-
-
-/*  */
-"faq.supported_headsets.question" = "Mitä kuulokkeita Soundscapen kanssa tulisi käyttää?";
 
 
 /*  */
@@ -4223,15 +2287,7 @@
 
 
 /*  */
-"faq.battery_impact.question" = "Kuinka openscape vaikuttaa iPhonen akkuun?";
-
-
-/*  */
 "faq.battery_impact.answer" = "Akun kesto vaihtelee merkittävästi riippuen siitä, mikä iPhone sinulla on ja kuinka vanha se on. Näytön päällä pitäminen kuluttaa akkua eniten, joten puhelimesi akun keston maksimoimiseksi näyttö olisi pidettävä lukittuna aina kun mahdollista. Soundscapessa on nyt lepotila ja odotustila iPhonesi akun säästämiseksi. Voit vähentää akun kulutusta entisestään pakottamalla Soundscapen sulkeutumaan iPhonen Sovelluksen vaihtajasta, kun et käytä sitä. ";
-
-
-/*  */
-"faq.sleep_mode_battery.question" = "Kuinka käytän lepotilaa, jotta openscape vaikuttaisi mahdollisimman vähän akun kestoon?";
 
 
 /*  */
@@ -4239,15 +2295,7 @@
 
 
 /*  */
-"faq.snooze_mode_battery.question" = "Kuinka käytän odotustilaa, jotta openscape vaikuttaisi mahdollisimman vähän akun kestoon?";
-
-
-/*  */
 "faq.snooze_mode_battery.answer" = "Voit asettaa Soundscapen odotustilaan valitsemalla \"Siirry lepotilaan\"-painikkeen näytön oikeasta yläkulmasta. Kun openscape on lepotilassa, valitse \"Herää, kun lähden\" -painike, ja openscape siirtyy alhaisen virrankäytön tilaan, kunnes poistut nykyisestä sijainnistasi.";
-
-
-/*  */
-"faq.headset_battery_impact.question" = "Kuinka kuulokevalinta vaikuttaa puhelimen akun kestoon?";
 
 
 /*  */
@@ -4255,15 +2303,7 @@
 
 
 /*  */
-"faq.background_battery_impact.question" = "Kuinka Soundscapen suorittaminen taustalla vaikuttaa puhelimen akun kestoon?";
-
-
-/*  */
 "faq.background_battery_impact.answer" = "Openscape on sijaintiin perustuva sovellus, ja se käyttää sijaintipalveluita määrittääkseen sijaintisi. Testeissämme openscape ei ole käyttänyt enempää akkua kuin keskimääräinen karttasovellus, mutta jos olet huolissasi akun kulutuksesta, kun käytät puhelintasi, seuraavat vinkit auttavat vähentämään kulutusta:\n\n1. Ota näyttö pois käytöstä niin usein kuin mahdollista, kun et käytä sovellusta.\n2. Kun et käytä sovellusta, sulje se. openscape käyttää jatkuvasti sijaintipalveluita, kun se on päällä, joten se tietää aina sijaintisi, jopa silloin, kun et liiku. Älä unohda käynnistää sovellusta uudestaan, kun jatkat matkaasi.\n3. Pidä puhelimesi lämpimänä kylmällä säällä, sillä akkujen suorituskyky on alhaisempi kylmissä lämpötiloissa.";
-
-
-/*  */
-"faq.mobile_data_use.question" = "Kuinka paljon mobiilidataa openscape käyttää?";
 
 
 /*  */
@@ -4271,15 +2311,7 @@
 
 
 /*  */
-"faq.difference_from_map_apps.question" = "Kuinka openscape eroaa muista karttasovelluksista?";
-
-
-/*  */
 "faq.difference_from_map_apps.answer" = "Openscape tarjoaa ympäristön kuvauksen auttaakseen sen tutkimista ja reitin löytämistä. openscape käyttää tilaääntä ilmoittaakseen kiinnostavia kohteita, puistoja, teitä ja risteyksiä siitä suunnasta, jossa ne fyysisesti sijaitsevat lähiympäristössäsi samalla, kun kävelet. Jos esimerkiksi ohitat oikealla puolellasi olevan kaupan, kuulet kaupan nimen oikealta puoleltasi. Kun lähestyt risteystä, kuulet kunkin tien nimen siitä suunnasta, johon se lähtee, ensin vasemmalta puoleltasi, sitten edestä ja seuraavaksi oikealta.\n\nToisin kuin muut kääntymisohjeita antavat karttasovellukset, openscape toistaa majakkaääntä määränpääsi suunnasta antaen sinulle mahdollisuuden löytää reitti sinne omaehtoisesti käyttämällä lisääntynyttä tietoisuutta ympäristöstäsi ja määränpääsi sijainnista. openscape on suunniteltu toimimaan taustalla, mikä mahdollistaa kääntymisohjeita antavan sovelluksen käytön samalla, kun se tarjoaa tietoisuutta ympäristöstä, kun kuljet kohti määränpäätäsi.";
-
-
-/*  */
-"faq.use_with_wayfinding_apps.question" = "Kuinka Soundscapea käytetään opastussovelluksen kanssa?";
 
 
 /*  */
@@ -4287,15 +2319,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.question" = "Kuinka hallitsen sitä, mitä kuulen, ja milloin kuulen sen Soundscapessa?";
-
-
-/*  */
 "faq.controlling_what_you_hear.answer" = "Openscape tarjoaa useita tapoja hallita, mitä kuulet ja milloin:\n\n1. Pysäytä kaikki äänet välittömästi: Kaksoisnapauta näyttöä kahdella sormella pysäyttääksesi kaikki äänet välittömästi, mukaan lukien sillä hetkellä toistettavat ilmoitukset ja majakka, jos se on päällä. Ilmoitukset kuuluvat jälleen, kun lähestyt seuraavaa risteystä tai mielenkiintoista kohdetta, mutta äänimajakka ei. Valitse \"poista majakan hiljennys -painike\" aloitusnäytöltä kuullaksesi majakan jälleen.\n2. Pysäytä automaattiset ilmoitukset: Kun et ole matkalla tai olet saavuttanut määränpääsi, et luultavasti tarvitse Soundscapen jatkuvia ilmoituksia ympäristösi asioista. Sovelluksesta poistumisen sijaan voit asettaa Soundscapen odotustilaan, ja se herää uudelleen, kun lähdet, tai voit asettaa Soundscapen lepotilaan ja se pysyy pois päältä, kunnes päätät laittaa sen jälleen päälle. Vaihtoehtoisesti voit valita \"Asetukset\" valikosta ja ottaa kaikki ilmoitukset pois päältä \"Hallitse ilmoituksia\" -osassa.\n3. Pysäytä majakka: On useita skenaarioita, joissa saatat asettaa määränpään, mutta et tarvitse äänimajakkaa. Saatat esimerkiksi tietää täsmälleen, kuinka päästä määränpäähäsi, mutta haluat automaattisia päivityksiä siitä, kuinka kaukana määränpäästäsi olet. Vaihtoehtoisesti saatat tietää osapuilleen, kuinka päästä määränpäähäsi, ja tarvitset äänimajakkaa vain lähestyessäsi määränpäätäsi. Joka tapauksessa voit valita, milloin kuulet majakan käyttämällä \"hiljennä majakka\"/\"poista majakan hiljennys\" -painiketta aloitusnäytöllä.";
-
-
-/*  */
-"faq.holding_phone_flat.question" = "Onko minun pideltävä puhelinta kädessäni koko ajan?";
 
 
 /*  */
@@ -4303,15 +2327,7 @@
 
 
 /*  */
-"faq.personalize_experience.question" = "Miten voin mukauttaa Openscape-kokemustani?";
-
-
-/*  */
 "faq.personalize_experience.answer" = "Openscape antaa mahdollisen mukauttaa kolmea kävellessä kuultavien ilmoitusten ominaisuutta:\n\n1. Puhe: Voit valita, mitä iOS:in tarjoamia puheääniä haluat Soundscapen käyttävän, samoin kuin ilmoitusten puhenopeuden. Valitse valikosta Asetukset ja sen jälkeen Puhe mukauttaaksesi Puhenopeus- ja Puhe-asetuksia. Lisää puheääniä ja parempia puheääniä, joiden laatu on parempi, on ladattavissa iOS:in Asetukset-sovelluksen kohdassa at Asetukset > Käyttöapu > Puhuttu sisältö > Puheäänet. \n2. Etäisyyden yksikkö: openscape mahdollistaa etäisyyksien kuulemisen jalkoina tai metreinä. Valitse valikosta Asetukset. Mittayksiköt-osa mahdollistaa vaihtamisen kahden asetuksen välillä: Imperiaalinen (jalkaa) ja Metrinen (metriä).\n3. Merkinnät: Voit merkitä maailmaasi mitä tahansa sinulle tärkeää. Voit merkitä henkilökohtaisesti tärkeitä asioita, kuten toimistosi ja lempiruokakauppasi. openscape ilmoittaa silloin automaattisesti merkityt paikat, kun kävelet niiden ohi tai lähestyt niitä, tai voit myös käyttää Merkinnät-painiketta Soundscapen aloitusnäytöllä kuullaksesi tila-ilmoituksen lähiympäristösi paikoista. Nämä merkinnät ovat henkilökohtaisia, eikä niitä kerrota muille.\n\nEdellisten lisäksi seuraavat VoiceOver-asetukset voivat vaikuttaa siihen, kuinka openscape käyttäytyy:\n\n1. VoiceOver-vihjeet: Kun VoiceOver-vihjeet ovat PÄÄLLÄ, kuulet lisätietoja kaikista painikkeista Soundscapen päänäytössä. Voit ottaa VoiceOver-vihjeet käyttöön siirtymällä iOS:in Asetukset-sovellukseen ja siellä kohtaan Käyttöapu > VoiceOver- > Monisanaisuus, ja ottamalla käyttöön asetuksen Puhevihjeet.\n2. Äänen vaimennus: openscape on suunniteltu toimimaan Äänen vaimennus -asetus POIS. Kun Äänen vaimennus on käytössä, automaattisia ilmoituksia voi olla vaikea kuulla, jos VoiceOver-toimintoa käytetään samaan aikaan. Suosittelemme Äänen vaimennuksen poistamista käytöstä, jotta automaattiset ilmoitukset olisi helpompi kuulla, kun vuorovaikutat puhelimen kanssa. Äänen vaimennuksen voi ottaa pois käytöstä VoiceOver-asetuksissa VoiceOver-kääntöasetuksen avulla.\n3. Touch ID tai Face ID lukituksen poistamiseksi: Puhelimen määrittäminen käyttämään Touch ID:tä tai Face ID:tä lukituksen poistamiseksi tekee lukituksen poistamisesta nopeaa ja helppoa ja mahdollistaa Oma sijaintini -, Lähiympäristö- ja Edessäpäin-painikkeiden mahdollisimman nopean käytön matkallasi. Määritä lukituksen poisto Touch ID:n tai Face ID:n avulla iOS:in Asetukset-sovelluksesta.";
-
-
-/*  */
-"faq.what_is_osm.question" = "Mikä on Open Street Map ja miksi käytämme sitä Soundscapessa?";
 
 
 /*  */
@@ -4319,15 +2335,7 @@
 
 
 /*  */
-"faq.tip.beacon_quiet" = "Jos laitat puhelimen taskuusi ja lakkaat liikkumasta, majakan ääni hiljenee, koska openscape ei tiedä, mihin suuntaan olet kääntyneenä. Ratkaise tämä lähtemällä liikkeelle tai ottamalla puhelin taskustasi ja pitelemällä sitä vaakatasossa.";
-
-
-/*  */
 "faq.tip.setting_beacon_on_address" = "Voit määrittää majakan mihin tahansa osoitteeseen. Hae osoitetta Soundscapen päänäytöllä. Kun olet valinnut osoitteen hakutuloksista, \"Sijainnin tiedot\" -näyttö ilmestyy, ja siinä on mahdollista valita osoitteelle \"Käynnistä äänimajakka\". Näin voit määrittää majakan yrityksiin, paikkoihin, mielenkiintoisiin kohteisiin ja asuinpaikkoihin, jotka eivät ole Open Street Maps -kartassa.";
-
-
-/*  */
-"faq.tip.finding_bus_stops" = "Voit etsiä lähiympäristön linja-autopysäkkejä valitsemalla \"Julkinen liikenne\" -suodattimen Lähiympäristön paikat -luettelosta.";
 
 
 /*  */
@@ -4335,19 +2343,12 @@
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "Jos haluat jatkaa vuorovaikutusta Soundscapen kanssa, mutta et halua kuulla automaattisia ilmoituksia, voit ottaa ilmoitukset pois käytöstä siirtymällä valikosta \"Hallitse ilmoituksia\" -osaan sivulla \"Asetukset\". Vaihtoehtoisesti, jos et aio käyttää Soundscapea, voit asettaa sen lepo- tai odotustilaan aloitusnäytön \"Siirry lepotilaan\"-painikkeen avulla.";
-
-
-/*  */
 "faq.tip.hold_phone_flat" = "Openscape toimii parhaiten, kun pitelet puhelinta vaakatasossa siten, että sen näyttö osoittaa taivaalle ja puhelimen yläosa osoittaa sinusta poispäin.";
 
 
 /*  */
-"faq.tip.create_marker_at_bus_stop" = "Jos käytät säännöllisesti linja-autoreittiä, määritä lähtö- ja poistumispysäkkisi merkeiksi. Näin ne tallennetaan, jotta löydät ne uudelleen helposti siirtymällä \"Hallitse merkintöjä\" -kohtaan valikossa ja etsimällä ne luettelosta. Voit määrittää niihin majakan ja saat toistuvia päivityksiä siitä, kuinka lähellä olet poistumispysäkkiäsi. Huomautus: voit ottaa rytmikkään äänen pois käytöstä ja saat silti etäisyyspäivityksiä matkalla.";
-
-
-/*  */
 "faq.tip.two_finger_double_tap" = "Näytön napauttaminen kahdesti kahdella sormella hiljentää mahdolliset aktiiviset ilmoitukset.";
+
 
 
 

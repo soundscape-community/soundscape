@@ -351,15 +351,7 @@
 
 
 /*  */
-"settings.screen_title" = "Ρυθμίσεις";
-
-
-/*  */
 "settings.clear_cache.alert_title" = "Διαγραφή των αποθηκευμένων δεδομένων;";
-
-
-/*  */
-"settings.clear_cache.alert_message" = "Το Openscape αποθηκεύει δεδομένα χάρτη για μείωση της κατανάλωσης δεδομένων και μπαταρίας. Η διαγραφή των αποθηκευμένων δεδομένων θα απαιτήσει από το Openscape να κάνει εκ νέου λήψη των δεδομένων.";
 
 
 /*  */
@@ -367,15 +359,7 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Επιλέξτε \"Διαγραφή\" για να καταργήσετε δείκτες, ηχητικά σήματα και διαδρομές, ή \"Διατήρηση\" για να καταργήσετε μόνο δεδομένα χάρτη. Η \"Διαγραφή\" θα επαναφέρει την εφαρμογή σε μια πρόσφατα εγκατεστημένη κατάσταση και δεν μπορεί να αναιρεθεί!";
-
-
-/*  */
 "settings.clear_cache.no_service.title" = "Αδυναμία απαλοιφής αποθηκευμένων δεδομένων χαρτών";
-
-
-/*  */
-"settings.clear_cache.no_service.message" = "Το openscape αυτή τη στιγμή δεν είναι δυνατόν να συνδεθεί στο διαδίκτυο. Απαιτείται σύνδεση στο διαδίκτυο κατά την εκκαθάριση των αποθηκευμένων δεδομένων χάρτη, έτσι ώστε τα δεδομένα χάρτη να μπορούν να ανανεωθούν.";
 
 
 /*  */
@@ -383,15 +367,7 @@
 
 
 /*  */
-"settings.telemetry.optout.alert_message" = "Η ενέργεια αυτή θα διαγράψει τις αποθηκευμένες πληροφορίες και θα διακόψει τη μελλοντική συλλογή δεδομένων τηλεμετρίας. Είστε σίγουροι;";
-
-
-/*  */
 "settings.telemetry.optout.action" = "Εξαίρεση";
-
-
-/*  */
-"settings.version.history.version" = "Έκδοση %@";
 
 
 /*  */
@@ -399,15 +375,7 @@
 
 
 /*  */
-"settings.feedback.subject" = "Σχόλια Openscape";
-
-
-/*  */
 "settings.feedback.choose_email_app" = "Επιλογή εφαρμογής ηλεκτρονικού ταχυδρομείου:";
-
-
-/*  */
-"settings.feedback.no_mail_client_error" = "Δεν υπάρχει εγκατεστημένη εφαρμογή ηλεκτρονικού ταχυδρομείου";
 
 
 /*  */
@@ -415,15 +383,7 @@
 
 
 /*  */
-"settings.units.imperial" = "Βρετανικό σύστημα (πόδια)";
-
-
-/*  */
 "settings.units.metric" = "Μετρικό σύστημα (μέτρα)";
-
-
-/*  */
-"settings.clear_data" = "Απαλοιφή αποθηκευμένων δεδομένων χαρτών";
 
 
 /*  */
@@ -431,15 +391,7 @@
 
 
 /*  */
-"settings.section.general" = "Γενικές ρυθμίσεις";
-
-
-/*  */
 "settings.section.units" = "Μονάδες μέτρησης";
-
-
-/*  */
-"settings.section.troubleshooting" = "Αντιμετώπιση προβλημάτων";
 
 
 /*  */
@@ -447,15 +399,7 @@
 
 
 /*  */
-"settings.section.telemetry" = "Τηλεμετρία";
-
-
-/*  */
 "settings.section.share_usage_data" = "Κοινή χρήση δεδομένων χρήσης";
-
-
-/*  */
-"settings.section.telemetry.footer" = "Βοηθήστε το Openscape να βελτιωθεί στέλνοντας αυτόματα διαγνωστικά, αναφέροντας σφάλματα και δεδομένα χρήσης. Δεν συλλέγονται προσωπικά δεδομένα.";
 
 
 /*  */
@@ -463,15 +407,7 @@
 
 
 /*  */
-"settings.language.screen_title.2" = "Γλώσσα και περιοχή";
-
-
-/*  */
 "settings.language.change_alert" = "Θέλετε να αλλάξετε τη γλώσσα της εφαρμογής σε %@;";
-
-
-/*  */
-"settings.language.change_alert_action" = "Αλλαγή σε %@";
 
 
 /*  */
@@ -479,15 +415,7 @@
 
 
 /*  */
-"settings.audio.media_controls" = "Στοιχεία ελέγχου πολυμέσων";
-
-
-/*  */
 "settings.audio.mix_with_others.title" = "Ενεργοποίηση στοιχείων ελέγχου πολυμέσων";
-
-
-/*  */
-"settings.audio.mix_with_others.description" = "Χρησιμοποιήστε το για να ενεργοποιήσετε τον έλεγχο openscape με τα κουμπιά στα ακουστικά σας και τα κουμπιά αναπαραγωγής πολυμέσων στην οθόνη κλειδώματος. Θυμηθείτε ότι όταν είναι ενεργοποιημένη, το openscape δεν μπορεί να χρησιμοποιηθεί ενώ αναπαράγονται άλλα μέσα, όπως podcast ή μουσική.";
 
 
 /*  */
@@ -495,15 +423,7 @@
 
 
 /*  */
-"settings.volume.other" = "Ηχητικά εφέ";
-
-
-/*  */
 "voice.action.preview" = "Προεπισκόπηση";
-
-
-/*  */
-"voice.preview" = "Γεια σας. Το όνομά μου είναι %@.";
 
 
 /*  */
@@ -511,15 +431,7 @@
 
 
 /*  */
-"voice.voices" = "Φωνές";
-
-
-/*  */
 "voice.voice_rate_test" = "Πώς σας ακούγεται αυτό;";
-
-
-/*  */
-"voice.title.voice_name_and_locale" = "%1$@, %2$@.";
 
 
 /*  */
@@ -527,15 +439,7 @@
 
 
 /*  */
-"voice.voice_cell.selected.acc_hint" = "Αυτή η φωνή είναι επιλεγμένη αυτήν τη στιγμή. Σαρώστε προς τα πάνω ή προς τα κάτω για προεπισκόπηση.";
-
-
-/*  */
 "voice.voice_cell.use.acc_hint" = "Πατήστε δύο φορές για να χρησιμοποιήσετε αυτήν τη φωνή. Σαρώστε προς τα πάνω ή προς τα κάτω για προεπισκόπηση.";
-
-
-/*  */
-"voice.apple.other_languages" = "Άλλες γλώσσες";
 
 
 /*  */
@@ -543,15 +447,7 @@
 
 
 /*  */
-"voice.apple.female" = "Γυναίκα";
-
-
-/*  */
 "voice.apple.default" = "%@ (Προεπιλεγμένη φωνή)";
-
-
-/*  */
-"voice.apple.preview" = "Αυτό είναι %@. Πώς σας ακούγεται αυτό;";
 
 
 /*  */
@@ -559,15 +455,7 @@
 
 
 /*  */
-"voice.settings.enhanced_available.title" = "Διαθέσιμη βελτιωμένη φωνή!";
-
-
-/*  */
 "voice.settings.enhanced_available" = "Ενδέχεται να υπάρχει μια υψηλότερης ποιότητας έκδοση αυτής της φωνής. Για να κατεβάσετε αυτήν και άλλες φωνές, μεταβείτε στην ενότητα Εκφωνούμενο περιεχόμενο των ρυθμίσεων προσβασιμότητας iOS.";
-
-
-/*  */
-"voice.settings.enhanced_available.button" = "Χρήση τρέχουσας έκδοσης";
 
 
 /*  */
@@ -575,15 +463,7 @@
 
 
 /*  */
-"beacon.settings_title" = "Ρυθμίσεις ηχητικού σήματος";
-
-
-/*  */
 "beacon.settings.style" = "Στυλ ήχου";
-
-
-/*  */
-"beacon.settings.style.haptic" = "Απτικά στυλ";
 
 
 /*  */
@@ -591,15 +471,7 @@
 
 
 /*  */
-"beacon.settings.cues" = "Αναχώρηση και Άφιξη";
-
-
-/*  */
 "beacon.settings.melodies" = "Ενεργοποίηση υποδείξεων αναχώρησης και άφιξης";
-
-
-/*  */
-"beacon.settings.explanation" = "Επιλέγοντας ένα στυλ ηχητικού σήματος, επιλέξτε ένα στυλ που ακούγεται άνετα και εύκολα σε εξωτερικούς χώρους και σε θορυβώδες περιβάλλον. Βεβαιωθείτε ότι μπορείτε εύκολα να καθορίσετε την κατεύθυνσή του μέσω της προτιμώμενης συσκευής ακρόασης (ακουστικά ή ηχείο τηλεφώνου).";
 
 
 /*  */
@@ -607,15 +479,7 @@
 
 
 /*  */
-"troubleshooting.gps_status" = "Ακρίβεια θέσης";
-
-
-/*  */
 "troubleshooting.gps_status.explanation.meters" = "Αυτή η τιμή είναι μια εκτίμηση της ακρίβειας με την οποία το openscape γνωρίζει πού βρίσκεστε. Λιγότερο από ±10 μέτρα είναι καλή. Λιγότερο από ±20 μέτρα είναι αποδεκτή. Οτιδήποτε άλλο είναι κακή. Τα δεδομένα τοποθεσίας είναι πιο ακριβή όταν είστε σε υπαίθριο χώρο και όχι κάτω από οποιεσδήποτε κατασκευές.";
-
-
-/*  */
-"troubleshooting.gps_status.explanation.feet" = "Αυτή η τιμή είναι μια εκτίμηση της ακρίβειας με την οποία το openscape γνωρίζει πού βρίσκεστε. Λιγότερο από ±30 πόδια είναι καλή. Λιγότερο από ±60 πόδια είναι αποδεκτή. Οτιδήποτε άλλο είναι κακή. Τα δεδομένα τοποθεσίας είναι πιο ακριβή όταν είστε σε υπαίθριο χώρο και όχι κάτω από οποιεσδήποτε κατασκευές.";
 
 
 /*  */
@@ -623,15 +487,7 @@
 
 
 /*  */
-"troubleshooting.gps_status.feet" = "±%@ πόδια";
-
-
-/*  */
 "troubleshooting.check_audio" = "Έλεγχος ήχου";
-
-
-/*  */
-"troubleshooting.check_audio.hint" = "Πατήστε δύο φορές για να ελέγξετε την κατάσταση των ακουστικών που χρησιμοποιείτε με το Openscape.";
 
 
 /*  */
@@ -639,15 +495,7 @@
 
 
 /*  */
-"troubleshooting.cache" = "Δεδομένα χάρτη";
-
-
-/*  */
 "troubleshooting.cache.hint" = "Πατήστε δύο φορές για να διαγράψετε και να λάβετε ξανά τα αποθηκευμένα δεδομένα χάρτη.";
-
-
-/*  */
-"troubleshooting.cache.explanation" = "Το openscape λαμβάνει δεδομένα χάρτη καθώς περπατάτε, ώστε να μπορεί να σας πει για τα αντικείμενα και τα μέρη γύρω σας. Εάν αντιμετωπίζετε προβλήματα με το openscape ή χρησιμοποιείται υπερβολική μνήμη, μπορείτε να διαγράψετε τα αποθηκευμένα δεδομένα χάρτη και το openscape θα ανακτήσει μόνο τα δεδομένα χάρτη κοντά στην τρέχουσα τοποθεσία σας.";
 
 
 /*  */
@@ -655,15 +503,7 @@
 
 
 /*  */
-"settings.about.title.privacy" = "Δήλωση προστασίας προσωπικών δεδομένων Openscape Community";
-
-
-/*  */
 "settings.about.title.service_agreement" = "Συμφωνία παροχής υπηρεσιών";
-
-
-/*  */
-"settings.about.title.third_party" = "Σημειώσεις τρίτων";
 
 
 /*  */
@@ -671,15 +511,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_label" = "Πατήστε δύο φορές για να κλείσετε τις ανακοινώσεις";
-
-
-/*  */
 "settings.new_feature.accept_button.acc_hint" = "Πατήστε δύο φορές για να δείτε την επόμενη ανακοίνωση ενημέρωσης";
-
-
-/*  */
-"settings.new_feature.recent_updates" = "Πρόσφατες ενημερώσεις";
 
 
 /*  */
@@ -687,15 +519,7 @@
 
 
 /*  */
-"beacon.styles.current" = "Τρέχον";
-
-
-/*  */
 "beacon.styles.original" = "Αρχικός";
-
-
-/*  */
-"beacon.styles.flare" = "Φωτοβολίδα";
 
 
 /*  */
@@ -703,15 +527,7 @@
 
 
 /*  */
-"beacon.styles.tactile" = "Χτύπημα με το δάκτυλο";
-
-
-/*  */
 "beacon.styles.ping" = "Καμπανάκι";
-
-
-/*  */
-"beacon.styles.drop" = "Σταγόνα";
 
 
 /*  */
@@ -719,15 +535,7 @@
 
 
 /*  */
-"beacon.styles.signal.slow" = "Σήμα (Αργό)";
-
-
-/*  */
 "beacon.styles.signal.very_slow" = "Σήμα (Πολύ αργό)";
-
-
-/*  */
-"beacon.styles.mallet" = "Μπαγκέτα";
 
 
 /*  */
@@ -735,15 +543,7 @@
 
 
 /*  */
-"beacon.styles.mallet.very_slow" = "Μπαγκέτα (Πολύ αργό)";
-
-
-/*  */
 "beacon.styles.haptic.wand" = "Απτικό ραβδί";
-
-
-/*  */
-"beacon.styles.haptic.pulse" = "Απτικός παλμός";
 
 
 /*  */
@@ -751,15 +551,7 @@
 
 
 /*  */
-"beacon.beacon_on" = "Ηχητικό σήμα σε %@";
-
-
-/*  */
 "beacon.distance.unknown" = "Άγνωστη απόσταση";
-
-
-/*  */
-"beacon.action.remove_beacon" = "Κατάργηση ηχητικού σήματος";
 
 
 /*  */
@@ -767,15 +559,7 @@
 
 
 /*  */
-"beacon.action.mute_beacon" = "Σίγαση ηχητικού σήματος";
-
-
-/*  */
 "beacon.action.mute_beacon.acc_hint" = "Πατήστε δύο φορές για σίγαση του ηχητικού σήματος.";
-
-
-/*  */
-"beacon.action.unmute_beacon" = "Κατάργηση σίγασης ηχητικού σήματος";
 
 
 /*  */
@@ -783,15 +567,7 @@
 
 
 /*  */
-"beacon.action.mute_unmute_beacon" = "Σίγαση ή κατάργηση σίγασης ηχητικού σήματος";
-
-
-/*  */
 "beacon.action.callout_beacon" = "Ηχητικό σήμα επεξήγησης";
-
-
-/*  */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Πατήστε δύο φορές για σίγαση ή κατάργηση σίγασης του ηχητικού σήματος";
 
 
 /*  */
@@ -799,15 +575,7 @@
 
 
 /*  */
-"beacon.action.view_details.acc_hint.details" = "Πατήστε δύο φορές για να δείτε πρόσθετες λεπτομέρειες";
-
-
-/*  */
 "beacon.distance_update" = "Ενημέρωση απόστασης ηχητικού σήματος";
-
-
-/*  */
-"beacon.beacon_location_within" = "Ηχητικό σήμα σε %@";
 
 
 /*  */
@@ -815,15 +583,7 @@
 
 
 /*  */
-"preview.title" = "Openscape Street Preview";
-
-
-/*  */
 "preview.current_intersection_unknown.label" = "Η τρέχουσα τοποθεσία είναι άγνωστη";
-
-
-/*  */
-"preview.next_intersection.label" = "Προς %@";
 
 
 /*  */
@@ -831,15 +591,7 @@
 
 
 /*  */
-"preview.content.orientation.text.with_cardinal" = "%1$@° %2$@";
-
-
-/*  */
 "preview.content.orientation.text.without_cardinal" = "%1$@°";
-
-
-/*  */
-"preview.content.edge.text" = "%1$@ επί της %2$@";
 
 
 /*  */
@@ -847,15 +599,7 @@
 
 
 /*  */
-"preview.go.title" = "Μετάβαση";
-
-
-/*  */
 "preview.go_back.title" = "Προηγούμενη";
-
-
-/*  */
-"preview.go_back.accessibility_text" = "Πατήστε δύο φορές για να επιστρέψετε στην προηγούμενη διασταύρωσή σας";
 
 
 /*  */
@@ -863,15 +607,7 @@
 
 
 /*  */
-"preview.search.accessibility_hint" = "Πατήστε δύο φορές για να αναζητήσετε ή να περιηγηθείτε σε κοντινά μέρη";
-
-
-/*  */
 "preview.alert.restart.title" = "Προεπισκόπηση ήδη σε εξέλιξη";
-
-
-/*  */
-"preview.alert.restart.message" = "Θέλετε να επανεκκινήσετε το openscape Street Preview σε αυτήν την τοποθεσία;";
 
 
 /*  */
@@ -879,15 +615,7 @@
 
 
 /*  */
-"preview.callout.paused" = "Το Street Preview διακόπηκε προσωρινά";
-
-
-/*  */
 "preview.callout.end" = "Τερματισμός openscape Street Preview";
-
-
-/*  */
-"preview.callout.previous" = "Επιστροφή στην προηγούμενη διασταύρωση";
 
 
 /*  */
@@ -895,15 +623,7 @@
 
 
 /*  */
-"preview.callout.start.along" = "Έναρξη Street Preview κατά μήκος της %@";
-
-
-/*  */
 "preview.callout.continue.at" = "Συνέχιση Street Preview στο %@";
-
-
-/*  */
-"preview.callout.continue.along" = "Συνέχιση Street Preview κατά μήκος της %@";
 
 
 /*  */
@@ -911,15 +631,7 @@
 
 
 /*  */
-"preview.callout.road_finder.error_instructions" = "Γυρίστε για να επιλέξετε έναν δρόμο και, στη συνέχεια, πατήστε Μετάβαση";
-
-
-/*  */
 "preview.callout.road_finder.road" = "%1$@, κατεύθυνση %2$@";
-
-
-/*  */
-"preview.callout.road_finder.intersection" = "Επόμενη διασταύρωση: %@";
 
 
 /*  */
@@ -927,15 +639,7 @@
 
 
 /*  */
-"preview.callout.road_finder.intersection.end" = "Επόμενη διασταύρωση: Τέλος δρόμου";
-
-
-/*  */
 "preview.callout.approach.end" = "Πλησιάζετε το τέλος του δρόμου";
-
-
-/*  */
-"preview.callout.turn.left" = "Στροφή αριστερά. Τώρα κατά μήκος της %@";
 
 
 /*  */
@@ -943,15 +647,7 @@
 
 
 /*  */
-"preview.callout.turn.continue" = "Συνεχίζοντας κατά μήκος της %@";
-
-
-/*  */
 "preview.callout.turn.roundabout" = "Εξήλθατε από τον κυκλικό κόμβο. Τώρα κατά μήκος της %@";
-
-
-/*  */
-"preview.include_unnamed_roads.title" = "Μη κατονομαζόμενες οδικές αρτηρίες";
 
 
 /*  */
@@ -959,15 +655,7 @@
 
 
 /*  */
-"preview.include_unnamed_roads.label.off" = "Ενεργοποίηση ανώνυμων δρόμων";
-
-
-/*  */
 "preview.include_unnamed_roads.label.on" = "Απενεργοποίηση ανώνυμων δρόμων";
-
-
-/*  */
-"preview.include_unnamed_roads.hint.off" = "Πατήστε δύο φορές για να συμπεριλάβετε ανώνυμους δρόμους κατά τη διάρκεια του openscape Street Preview";
 
 
 /*  */
@@ -975,15 +663,7 @@
 
 
 /*  */
-"preview.tutorial.done.hint" = "Πατήστε δύο φορές για έξοδο από τα Εκπαιδευτικά βοηθήματα";
-
-
-/*  */
 "preview.tutorial.title.1" = "Καλώς ήλθατε στο openscape Street Preview!";
-
-
-/*  */
-"preview.tutorial.content.1" = "Εξερευνήστε και αποκτήστε μια αίσθηση μιας περιοχής οπουδήποτε στον κόσμο. Για την καλύτερη δυνατή εμπειρία, σας συνιστούμε να σηκωθείτε και να κάνετε μια στροφή γύρω από τον εαυτό σας και να χρησιμοποιήσετε στερεοφωνικά ακουστικά.";
 
 
 /*  */
@@ -991,15 +671,7 @@
 
 
 /*  */
-"preview.tutorial.content.2" = "Έχετε μεταφερθεί στη μέση του δρόμου κοντά στην τοποθεσία που επιλέξατε. Χρησιμοποιώντας το τηλέφωνο ως δείκτη, γυρίστε αργά και τα ονόματα των δρόμων θα επεξηγούνται καθώς στρίβετε. Όταν κοιτάτε προς το δρόμο όπου θέλετε να κινηθείτε, πατήστε \"Μετάβαση\" και θα προχωρήσετε στην επόμενη διασταύρωση.";
-
-
-/*  */
 "preview.tutorial.title.3" = "Συνέχιση της εξερεύνησής σας";
-
-
-/*  */
-"preview.tutorial.content.3" = "Σε κάθε διασταύρωση, μπορείτε να χρησιμοποιήσετε ξανά το τηλέφωνο για να επιλέξετε προς ποιον δρόμο θα κατευθυνθείτε ή μπορείτε να εξερευνήσετε το άμεσο περιβάλλον σας χρησιμοποιώντας τα γνωστά κουμπιά openscape στο κάτω μέρος της οθόνης. Μπορείτε να πατήσετε \"Αναζήτηση\" για να ξεκινήσετε το ηχητικό σήμα σε οποιοδήποτε σημείο ενδιαφέροντος, να αλλάξετε την τοποθεσία σας ή απλά να εξερευνήσετε την περιοχή με περισσότερες λεπτομέρειες.";
 
 
 /*  */
@@ -1007,15 +679,7 @@
 
 
 /*  */
-"location_detail.title.default" = "Λεπτομέρειες τοποθεσίας";
-
-
-/*  */
 "location_detail.title.marker" = "Λεπτομέρειες δείκτη";
-
-
-/*  */
-"location_detail.title.waypoint" = "Λεπτομέρειες σημείου πορείας";
 
 
 /*  */
@@ -1023,15 +687,7 @@
 
 
 /*  */
-"location_detail.action.beacon.hint" = "Πατήστε δύο φορές για να ορίσετε ένα ηχητικό σήμα σε αυτήν την τοποθεσία";
-
-
-/*  */
 "location_detail.action.beacon.hint.disabled" = "Η ρύθμιση ενός νέου ηχητικού σήματος είναι απενεργοποιημένη ενώ η καθοδήγηση διαδρομής είναι ενεργή";
-
-
-/*  */
-"location_detail.action.save.hint" = "Πατήστε δύο φορές για να αποθηκεύσετε αυτήν την τοποθεσία ως δείκτη";
 
 
 /*  */
@@ -1039,15 +695,7 @@
 
 
 /*  */
-"location_detail.action.share.hint" = "Πατήστε δύο φορές για κοινή χρήση αυτής της τοποθεσίας";
-
-
-/*  */
 "location_detail.action.preview.hint" = "Πατήστε δύο φορές για να ξεκινήσετε την προεπισκόπηση σε αυτήν την τοποθεσία";
-
-
-/*  */
-"location_detail.action.preview.hint.disabled" = "Το Street Preview είναι απενεργοποιημένο ενώ οι οδηγίες διαδρομής είναι ενεργές";
 
 
 /*  */
@@ -1055,15 +703,7 @@
 
 
 /*  */
-"location_detail.default.address" = "Άγνωστη διεύθυνση";
-
-
-/*  */
 "location_detail.default.annotation" = "Δεν υπάρχει σχολιασμός δείκτη";
-
-
-/*  */
-"location.select.hint" = "Πατήστε δύο φορές για να επιλέξετε αυτήν την τοποθεσία";
 
 
 /*  */
@@ -1071,15 +711,7 @@
 
 
 /*  */
-"location_detail.disabled.share" = "Η κοινή χρήση αυτής της τοποθεσίας δεν είναι διαθέσιμη αυτήν τη στιγμή";
-
-
-/*  */
 "location_detail.disabled.generic" = "Αυτή η τοποθεσία δεν είναι διαθέσιμη αυτήν τη στιγμή";
-
-
-/*  */
-"location_detail.map.view.title" = "Επιλεγμένη τοποθεσία";
 
 
 /*  */
@@ -1087,15 +719,7 @@
 
 
 /*  */
-"location_detail.map.edit.title" = "Επεξεργασία τοποθεσίας";
-
-
-/*  */
 "location_detail.map.edit.hint" = "Μετακίνηση του χάρτη στη σωστή τοποθεσία";
-
-
-/*  */
-"location_detail.map.edit.accessibility_label" = "Ώθηση δείκτη";
 
 
 /*  */
@@ -1103,15 +727,7 @@
 
 
 /*  */
-"location_detail.map.edit.north.accessibility_hint" = "Πατήστε δύο φορές για να ωθήσετε τον δείκτη βόρεια. Χρησιμοποιήστε ενέργειες για να ωθήσετε σε διαφορετική κατεύθυνση.";
-
-
-/*  */
 "location_detail.map.edit.south.accessibility_hint" = "Πατήστε δύο φορές για να ωθήσετε τον δείκτη νότια. Χρησιμοποιήστε ενέργειες για να ωθήσετε σε διαφορετική κατεύθυνση.";
-
-
-/*  */
-"location_detail.map.edit.east.accessibility_hint" = "Πατήστε δύο φορές για να ωθήσετε τον δείκτη ανατολικά. Χρησιμοποιήστε ενέργειες για να ωθήσετε σε διαφορετική κατεύθυνση.";
 
 
 /*  */
@@ -1119,15 +735,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_annoucement" = "Ώθηση, %@ αρχικής θέσης";
-
-
-/*  */
 "location_detail.map.edit.accessibility_action.compass" = "Ώθηση στην κατεύθυνση του τηλεφώνου";
-
-
-/*  */
-"location_detail.map.edit.accessibility_action.north" = "Ώθηση βόρεια";
 
 
 /*  */
@@ -1135,15 +743,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_action.east" = "Ώθηση ανατολικά";
-
-
-/*  */
 "location_detail.map.edit.accessibility_action.west" = "Ώθηση δυτικά";
-
-
-/*  */
-"location_detail.map.edit.accessibility_action.current_location" = "Μετακίνηση στην τρέχουσα θέση";
 
 
 /*  */
@@ -1151,15 +751,7 @@
 
 
 /*  */
-"location_detail.waypoint" = "Σημείο πορείας %@";
-
-
-/*  */
 "location_detail.add_waypoint.existing.hint" = "Πατήστε δύο φορές για να αφαιρέσετε αυτόν τον δείκτη από τη διαδρομή σας.";
-
-
-/*  */
-"location_detail.add_waypoint.new.hint" = "Πατήστε δύο φορές για να προσθέσετε αυτόν τον δείκτη στη διαδρομή σας.";
 
 
 /*  */
@@ -1167,15 +759,7 @@
 
 
 /*  */
-"route_detail.action.start_route" = "Έναρξη διαδρομής";
-
-
-/*  */
 "route_detail.action.stop_route" = "Διακοπή διαδρομής";
-
-
-/*  */
-"route_detail.action.start_event" = "Έναρξη δραστηριότητας";
 
 
 /*  */
@@ -1183,15 +767,7 @@
 
 
 /*  */
-"route_detail.action.edit" = "Επεξεργασία διαδρομής";
-
-
-/*  */
 "route_detail.action.start_route.hint" = "Πατήστε δύο φορές για να ξεκινήσετε αυτήν τη διαδρομή";
-
-
-/*  */
-"route_detail.action.start_route.disabled.hint" = "Προσθήκη σημείων πορείας πριν ξεκινήσετε τη διαδρομή";
 
 
 /*  */
@@ -1199,15 +775,7 @@
 
 
 /*  */
-"route_detail.action.start_event.hint" = "Πατήστε δύο φορές για να ξεκινήσετε αυτήν τη δραστηριότητα";
-
-
-/*  */
 "route_detail.action.stop_event.hint" = "Πατήστε δύο φορές για να σταματήσετε αυτήν τη δραστηριότητα και να αποθηκεύσετε την πρόοδό σας";
-
-
-/*  */
-"route_detail.action.reset.hint" = "Διπλό πάτημα για επαναφορά αυτής της δραστηριότητας και λήψη τυχόν διαθέσιμων ενημερώσεων";
 
 
 /*  */
@@ -1215,15 +783,7 @@
 
 
 /*  */
-"route_detail.action.edit.hint" = "Πατήστε δύο φορές για να επεξεργαστείτε αυτήν τη διαδρομή";
-
-
-/*  */
 "route_detail.action.create" = "Νέα διαδρομή";
-
-
-/*  */
-"route_detail.action.create.hint" = "Πατήστε δύο φορές για να δημιουργήσετε μια νέα διαδρομή";
 
 
 /*  */
@@ -1231,15 +791,7 @@
 
 
 /*  */
-"route_detail.name.default" = "Διαδρομή";
-
-
-/*  */
 "route.title.time" = "%@ παρήλθε";
-
-
-/*  */
-"route.title" = "%1$@・Σημείο πορείας %2$@ από %3$@";
 
 
 /*  */
@@ -1247,15 +799,7 @@
 
 
 /*  */
-"route.waypoint.progress.complete.elapsed" = "Ολοκληρώθηκε στις %@";
-
-
-/*  */
 "route.waypoint.progress.complete" = "Ολοκληρώθηκε!";
-
-
-/*  */
-"route.end.completed" = "Η διαδρομή ολοκληρώθηκε!・%@";
 
 
 /*  */
@@ -1263,15 +807,7 @@
 
 
 /*  */
-"route.end.not_completed" = "Η διαδρομή σταμάτησε・%@";
-
-
-/*  */
 "route.end.not_completed.accessibility" = "Η διαδρομή σταμάτησε, %@";
-
-
-/*  */
-"route.end.completed.summary" = "%@ Σημεία πορείας που φτάσατε・Τελευταίο σημείο πορείας σε κοντινή απόσταση";
 
 
 /*  */
@@ -1279,15 +815,7 @@
 
 
 /*  */
-"route.end.not_completed.summary" = "%1$@ των %2$@ σημείων πορείας που φτάσατε・%3$@ που απομένουν";
-
-
-/*  */
 "route.end.not_completed.summary.accessibility" = "%1$@ των %2$@ σημείων πορείας που φτάσατε, %3$@ που απομένουν";
-
-
-/*  */
-"route.title.accessibility_label" = "%1$@, Σημείο πορείας %2$@ από %3$@";
 
 
 /*  */
@@ -1295,15 +823,7 @@
 
 
 /*  */
-"route_detail.action.previous.hint" = "Πατήστε δύο φορές για να ρυθμίσετε το ηχητικό σήμα στο προηγούμενο σημείο";
-
-
-/*  */
 "route_detail.action.next" = "Επόμενο σημείο πορείας";
-
-
-/*  */
-"route_detail.action.next.hint" = "Πατήστε δύο φορές για να ρυθμίσετε το ηχητικό σήμα στο επόμενο σημείο";
 
 
 /*  */
@@ -1311,15 +831,7 @@
 
 
 /*  */
-"route_detail.edit.description" = "Περιγραφή";
-
-
-/*  */
 "route_detail.edit.description.default" = "Προσθήκη περιγραφής της διαδρομής σας";
-
-
-/*  */
-"route_detail.edit.waypoints_button" = "Προσθήκη σημείων πορείας";
 
 
 /*  */
@@ -1327,15 +839,7 @@
 
 
 /*  */
-"route_detail.edit.delete" = "Διαγραφή διαδρομής";
-
-
-/*  */
 "route_detail.edit.delete.title" = "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτήν τη διαδρομή;";
-
-
-/*  */
-"route_detail.edit.delete.message" = "Δεν είναι δυνατή η αναίρεση αυτής της ενέργειας.";
 
 
 /*  */
@@ -1343,15 +847,7 @@
 
 
 /*  */
-"route_detail.edit.cancel.message" = "Είστε βέβαιοι ότι θέλετε να απορρίψετε τις αλλαγές σας;";
-
-
-/*  */
 "route_detail.beacon.title" = "Καθοδηγούμενο δρομολόγιο";
-
-
-/*  */
-"route_detail.orienteering.title" = "Προσανατολισμός";
 
 
 /*  */
@@ -1359,15 +855,7 @@
 
 
 /*  */
-"route.update.success.title" = "Η ενημέρωση ολοκληρώθηκε!";
-
-
-/*  */
 "route.update.success.message" = "Η ψυχαγωγική σας δραστηριότητα είναι ενημερωμένη";
-
-
-/*  */
-"route.update.fail.title" = "Η ενημέρωση απέτυχε";
 
 
 /*  */
@@ -1375,15 +863,7 @@
 
 
 /*  */
-"route.update.unavailable.title" = "Είστε έτοιμοι!";
-
-
-/*  */
 "route.update.unavailable.message" = "Η ψυχαγωγική σας δραστηριότητα είναι ήδη ενημερωμένη";
-
-
-/*  */
-"tour_detail.beacon.title" = "Ξενάγηση";
 
 
 /*  */
@@ -1391,15 +871,7 @@
 
 
 /*  */
-"waypoint.title" = "Σημείο πορείας";
-
-
-/*  */
 "waypoint.callout" = "Σημείο πορείας %@";
-
-
-/*  */
-"tour.progress.elapsed_distance.accessibility" = "Το ηχητικό σήμα ορίστηκε στις %1$@. %2$@. Πέρασε %3$@. Απομένουν %4$@ σημεία πορείας";
 
 
 /*  */
@@ -1407,15 +879,7 @@
 
 
 /*  */
-"tour.progress.elapsed.accessibility" = "Το ηχητικό σήμα ορίστηκε στις %1$@. Πέρασε %2$@. Απομένουν %3$@ σημεία πορείας";
-
-
-/*  */
 "tour.progress.accessibility" = "Το ηχητικό σήμα ορίστηκε στις %1$@. Απομένουν %2$@ σημεία πορείας";
-
-
-/*  */
-"tour.progress.elapsed_distance.accessibility.singular" = "Το ηχητικό σήμα ορίστηκε στις %1$@. %2$@. Πέρασαν %3$@. Απομένει 1 σημείο πορείας";
 
 
 /*  */
@@ -1423,15 +887,7 @@
 
 
 /*  */
-"tour.progress.elapsed.accessibility.singular" = "Το ηχητικό σήμα ορίστηκε στις %1$@. Πέρασαν %2$@. Απομένει 1 σημείο πορείας";
-
-
-/*  */
 "tour.progress.accessibility.singular" = "Το ηχητικό σήμα ορίστηκε στις %@. Απομένει 1 σημείο πορείας";
-
-
-/*  */
-"waypoint.audio_available" = "Διατίθεται ήχος";
 
 
 /*  */
@@ -1439,15 +895,7 @@
 
 
 /*  */
-"waypoint.audio_images_available" = "Διατίθενται εικόνες και ήχος.";
-
-
-/*  */
 "waypoint.callout.button.title" = "Επεξήγηση σημείου πορείας";
-
-
-/*  */
-"waypoint.callout.button.hint" = "Διπλό πάτημα για να ακούσετε πρόσθετες λεπτομέρειες";
 
 
 /*  */
@@ -1455,15 +903,7 @@
 
 
 /*  */
-"first_use_experience.share.alert.title" = "Κοινή χρήση στο Openscape";
-
-
-/*  */
 "first_use_experience.share.alert.message" = "Όταν κάνετε κοινή χρήση ενός δείκτη ή μιας διαδρομής Openscape, μοιράζεστε τις τοποθεσίες που σχετίζονται με αυτόν τον δείκτη ή τη διαδρομή. Θα πρέπει να τα μοιράζεστε μόνο με άτομα που εμπιστεύεστε.";
-
-
-/*  */
-"universal_links.alert.error.title" = "Δυστυχώς κάτι πήγε στραβά.";
 
 
 /*  */
@@ -1471,15 +911,7 @@
 
 
 /*  */
-"universal_links.alert.share_error.message" = "Δεν ήταν δυνατή η κοινή χρήση αυτού του περιεχομένου.";
-
-
-/*  */
 "universal_links.alert.action.marker" = "Αποθήκευση ως δείκτη";
-
-
-/*  */
-"universal_links.alert.action.beacon" = "Ορισμός ηχητικού σήματος";
 
 
 /*  */
@@ -1487,15 +919,7 @@
 
 
 /*  */
-"universal_links.marker.alert.message" = "Θα πρέπει να χρησιμοποιείτε μόνο δείκτες από κάποιον που εμπιστεύεστε.";
-
-
-/*  */
 "universal_links.marker_existing.alert.title" = "Ο δείκτης ήδη υπάρχει";
-
-
-/*  */
-"universal_links.marker_existing.alert.message" = "Ένας δείκτης υπάρχει ήδη σε αυτήν τη θέση. Θέλετε να τον αντικαταστήσετε;";
 
 
 /*  */
@@ -1503,15 +927,7 @@
 
 
 /*  */
-"siri_shortcuts.title" = "Συντομεύσεις Siri";
-
-
-/*  */
 "siri_shortcuts.title.beta" = "Συντομεύσεις Siri (Beta)";
-
-
-/*  */
-"siri_shortcuts.description" = "Αφού προσθέσετε τις Συντομεύσεις Siri, θα μπορείτε να χρησιμοποιείτε τη φωνή σας για να τα χρησιμοποιήσετε, ακόμα και όταν δεν λειτουργεί το Openscape.";
 
 
 /*  */
@@ -1519,15 +935,7 @@
 
 
 /*  */
-"user_activity.around_me.title" = "Τι είναι το Γύρω μου;";
-
-
-/*  */
 "user_activity.ahead_of_me.title" = "Τι είναι το Μπροστά μου;";
-
-
-/*  */
-"user_activity.nearby_markers.title" = "Ακρόαση κοντινών δεικτών";
 
 
 /*  */
@@ -1535,15 +943,7 @@
 
 
 /*  */
-"user_activity.save_marker.title" = "Αποθήκευση δείκτη";
-
-
-/*  */
 "user_activity.street_preview.title" = "Έναρξη Street Preview";
-
-
-/*  */
-"url_resource.alert.route.share.message" = "Μοιράστηκα μια διαδρομή openscape μαζί σας! \"%@\"";
 
 
 /*  */
@@ -1551,15 +951,7 @@
 
 
 /*  */
-"url_resource.alert.route.import.message" = "Θα πρέπει να χρησιμοποιείτε μόνο διαδρομές από κάποιον που εμπιστεύεστε. Οι διαδρομές δεν δημιουργούνται, κοινοποιούνται ή επανεξετάζονται από τη Openscape Community και ενδέχεται να περιέχουν σφάλματα.";
-
-
-/*  */
 "url_resource.alert.route.import_existing.title" = "Η διαδρομή υπάρχει ήδη";
-
-
-/*  */
-"url_resource.alert.route.import_existing.message" = "Θέλετε να το αντικαταστήσετε; Η αντικατάσταση αυτής της διαδρομής θα αντικαταστήσει επίσης τους δείκτες που χρησιμοποιούνται σε αυτήν τη διαδρομή.";
 
 
 /*  */
@@ -1567,15 +959,7 @@
 
 
 /*  */
-"url_resource.alert.route.import_error.message" = "Το περιεχόμενο φαίνεται να μην είναι έγκυρο.";
-
-
-/*  */
 "routes.title" = "Διαδρομές";
-
-
-/*  */
-"routes.action.deleted" = "Διαγραφή διαδρομής";
 
 
 /*  */
@@ -1583,15 +967,7 @@
 
 
 /*  */
-"routes.no_routes.title" = "Γρήγορα αποτελέσματα με τα σημεία πορείας";
-
-
-/*  */
 "routes.no_routes.hint.1" = "Δημιουργήστε μια διαδρομή για τον εαυτό σας ή για κάποιον άλλο οργανώνοντας ένα σύνολο δεικτών ως σημεία πορείας σε μια διαδρομή.";
-
-
-/*  */
-"routes.no_routes.hint.2" = "Κατά τη διάρκεια της διαδρομής σας με το Openscape, θα ενημερωθείτε για την άφιξη σε κάθε σημείο πορείας και το Ηχητικό σήμα θα προχωρήσει αυτόματα στο επόμενο σημείο πορείας.";
 
 
 /*  */
@@ -1599,15 +975,7 @@
 
 
 /*  */
-"route.no_waypoints.hint.2" = "Μπορείτε να αναδιατάξετε τη σειρά των σημείων κατά μήκος μιας διαδρομής ανά πάσα στιγμή, με επεξεργασία της διαδρομής.";
-
-
-/*  */
 "routes.tutorial.title" = "Ακούστε τα σημεία πορείας σας στο ταξίδι σας";
-
-
-/*  */
-"routes.tutorial.details" = "Τώρα θα επιστρέψετε στην αρχική σελίδα του openscape και ένα ηχητικό σήμα θα τοποθετηθεί στο πρώτο σημείο πορείας σας. Όταν φτάσετε στο σημείο πορείας, το ηχητικό σήμα θα προχωρήσει στο επόμενο σημείο πορείας της διαδρομής σας.";
 
 
 /*  */
@@ -1615,15 +983,7 @@
 
 
 /*  */
-"routes.sort.by_name" = "Ταξινόμηση κατά όνομα";
-
-
-/*  */
 "routes.sort.by_name.hint" = "Διπλό πάτημα για ταξινόμηση κατά όνομα";
-
-
-/*  */
-"routes.sort.by_distance" = "Ταξινόμηση κατά απόσταση";
 
 
 /*  */
@@ -1631,15 +991,7 @@
 
 
 /*  */
-"routes.import.alert.title" = "Σφάλμα διαδρομής";
-
-
-/*  */
 "routes.import.alert.message" = "Τα δεδομένα σημείων πορείας λείπουν για μία ή περισσότερες από τις διαδρομές σας. Ελέγξτε τις ακόλουθες διαδρομές και προσθέστε εκ νέου σημεία πορείας, εάν είναι απαραίτητο.";
-
-
-/*  */
-"markers.title" = "Δείκτες";
 
 
 /*  */
@@ -1647,15 +999,7 @@
 
 
 /*  */
-"markers.action.deleted" = "Ο δείκτης διαγράφηκε";
-
-
-/*  */
 "markers.action.deleted_error" = "Δεν είμαστε σε θέση να διαγράψουμε αυτόν τον δείκτη αυτήν τη στιγμή. Προσπαθήστε ξανά αργότερα.";
-
-
-/*  */
-"markers.action.update_error" = "Αυτή τη στιγμή δυσκολευόμαστε να ενημερώσουμε αυτόν τον δείκτη. Προσπαθήστε ξανά αργότερα.";
 
 
 /*  */
@@ -1663,15 +1007,7 @@
 
 
 /*  */
-"markers.sort_button.sort_by_name" = "Όνομα";
-
-
-/*  */
 "markers.sort_button.sort_by_name.voiceover" = "Ταξινόμηση κατά όνομα";
-
-
-/*  */
-"markers.sort_button.sort_by_distance" = "Απόσταση";
 
 
 /*  */
@@ -1679,15 +1015,7 @@
 
 
 /*  */
-"markers.no_markers.title" = "Γρήγορα αποτελέσματα με δείκτες";
-
-
-/*  */
 "markers.no_markers.hint.1" = "Δημιουργήστε δείκτες για τους αγαπημένους σας προορισμούς, σημεία σε μια διαδρομή ή οποιεσδήποτε τοποθεσίες θέλετε να επεξηγούνται. Απλά επιλέξτε μια θέση, ή ακόμα και την τρέχουσα τοποθεσία σας, από την αρχική οθόνη και επιλέξτε \"Αποθήκευση ως δείκτη\".";
-
-
-/*  */
-"markers.no_markers.hint.2" = "Προσπαθήστε να επισημάνετε το σπίτι σας, την είσοδο στη δουλειά σας ή το αγαπημένο σας σημείο στο πάρκο.";
 
 
 /*  */
@@ -1695,15 +1023,7 @@
 
 
 /*  */
-"markers.edit_screen.title.edit" = "Επεξεργασία δείκτη";
-
-
-/*  */
 "markers.edit_screen.done_button.acc_hint" = "Πατήστε δύο φορές για να αποθηκεύσετε αυτόν τον δείκτη";
-
-
-/*  */
-"markers.edit_screen.route" = "Αποθήκευση στη διαδρομή: %@";
 
 
 /*  */
@@ -1711,15 +1031,7 @@
 
 
 /*  */
-"markers.marker_with_name" = "Δείκτης. %@";
-
-
-/*  */
 "markers.marker_created" = "Δείκτης που δημιουργήθηκε";
-
-
-/*  */
-"markers.marker_created_on" = "Δείκτης που δημιουργήθηκε στις %@";
 
 
 /*  */
@@ -1727,15 +1039,7 @@
 
 
 /*  */
-"markers.marker_at" = "Δείκτης στο %@";
-
-
-/*  */
 "markers.marker_along" = "Δείκτης κατά μήκος της %@";
-
-
-/*  */
-"markers.new_badge.acc_label" = "Νέο. %@";
 
 
 /*  */
@@ -1743,15 +1047,7 @@
 
 
 /*  */
-"markers.destructive_delete_message.routes" = "Ο δείκτης αυτός αποτελεί μέρος των ακόλουθων διαδρομών:\n%@";
-
-
-/*  */
 "markers.annotation" = "Σχόλιο";
-
-
-/*  */
-"search.no_results_found_with_action" = "Δεν βρέθηκαν αποτελέσματα. Κάντε επεξεργασία κειμένου ή πατήστε Αναζήτηση περισσότερων.";
 
 
 /*  */
@@ -1759,15 +1055,7 @@
 
 
 /*  */
-"searching.no_results_found_title" = "Δυστυχώς δεν βρέθηκαν αποστελέσματα.";
-
-
-/*  */
 "searching.no_results_found_message" = "Αν ψάχνετε για ένα συγκεκριμένο μέρος, μπορείτε να δοκιμάσετε να το αναζητήσετε με το όνομα ή τη διεύθυνσή του.";
-
-
-/*  */
-"searching.offline" = "Η αναζήτηση είναι απενεργοποιημένη ενώ βρίσκεστε εκτός σύνδεσης";
 
 
 /*  */
@@ -1775,15 +1063,7 @@
 
 
 /*  */
-"search.searching" = "Αναζήτηση";
-
-
-/*  */
 "search.searching_with_punctuation" = "Αναζήτηση…";
-
-
-/*  */
-"search.choose_destination" = "Επιλέξτε προορισμό";
 
 
 /*  */
@@ -1791,15 +1071,7 @@
 
 
 /*  */
-"search.no_results_found_error" = "Δεν φαίνεται να υπάρχουν μέρη κοντά. Αν ψάχνετε για ένα συγκεκριμένο μέρος, μπορείτε να δοκιμάσετε να το αναζητήσετε με το όνομα ή τη διεύθυνσή του.";
-
-
-/*  */
 "search.use_current_location" = "Τρέχουσα τοποθεσία";
-
-
-/*  */
-"search.nearby.screen_title" = "Κοντινές τοποθεσίες";
 
 
 /*  */
@@ -1807,15 +1079,7 @@
 
 
 /*  */
-"search.button.markers.accessibility_hint" = "Πατήστε δύο φορές για να επιλέξετε ή να επεξεργαστείτε δείκτες που έχετε αποθηκεύσει";
-
-
-/*  */
 "search.button.nearby.accessibility_hint" = "Πατήστε δύο φορές για να εξερευνήσετε κοντινά εστιατόρια, στάσεις συγκοινωνίας και πολλά άλλα";
-
-
-/*  */
-"search.button.current_location.accessibility_hint" = "Πατήστε δύο φορές για προεπισκόπηση, σήμανση ή κοινή χρήση της τρέχουσας τοποθεσίας σας με έναν φίλο";
 
 
 /*  */
@@ -1823,15 +1087,7 @@
 
 
 /*  */
-"filter.set" = "Ορισμός φίλτρου";
-
-
-/*  */
 "filter.clear.capital" = "Απαλοιφή φίλτρου";
-
-
-/*  */
-"filter.clear.hint" = "Διπλό πάτημα για απαλοιφή επιλεγμένου φίλτρου";
 
 
 /*  */
@@ -1839,15 +1095,7 @@
 
 
 /*  */
-"filter.all" = "Όλες οι τοποθεσίες";
-
-
-/*  */
 "filter.transit" = "Δημόσια συγκοινωνία";
-
-
-/*  */
-"filter.selected" = "%@ (επιλεγμένο)";
 
 
 /*  */
@@ -1855,15 +1103,7 @@
 
 
 /*  */
-"callouts.panel.title" = "Ακρόαση του περιβάλλοντος μου";
-
-
-/*  */
 "callouts.turn_on_off" = "Ενεργοποίηση ή απενεργοποίηση όλων των επεξηγήσεων";
-
-
-/*  */
-"callouts.callouts_on" = "Ενεργοποίηση επεξηγήσεων";
 
 
 /*  */
@@ -1871,15 +1111,7 @@
 
 
 /*  */
-"callouts.allow_callouts" = "Να επιτρέπονται οι επεξηγήσεις";
-
-
-/*  */
 "callouts.places_and_landmarks" = "Μέρη και Ορόσημα";
-
-
-/*  */
-"callouts.places_and_landmarks.info" = "Κοντινά μέρη όπως καταστήματα και εστιατόρια";
 
 
 /*  */
@@ -1887,15 +1119,7 @@
 
 
 /*  */
-"callouts.mobility.info" = "Πληροφορίες διασταύρωσης και μεταφοράς";
-
-
-/*  */
 "callouts.audio_beacon" = "Απόσταση από το ηχητικό σήμα";
-
-
-/*  */
-"callouts.audio_beacon.info" = "Ενημερώσεις σχετικά με την απόσταση από το ηχητικό σήμα όταν έχει ρυθμιστεί";
 
 
 /*  */
@@ -1903,15 +1127,7 @@
 
 
 /*  */
-"callouts.intersection_callout" = "Επεξήγηση διασταύρωσης";
-
-
-/*  */
 "callouts.ahead_of_you" = "Μπροστά σας";
-
-
-/*  */
-"callouts.around_you" = "Γύρω σας";
 
 
 /*  */
@@ -1919,15 +1135,7 @@
 
 
 /*  */
-"callouts.nothing_to_call_out_now" = "Δεν υπάρχει τίποτα για επεξήγηση αυτή τη στιγμή.";
-
-
-/*  */
 "callouts.nearby_markers" = "Κοντινοί δείκτες";
-
-
-/*  */
-"callouts.no_nearby_markers_to_call_out_now" = "Δεν υπάρχουν κοντινοί δείκτες για επεξήγηση αυτή τη στιγμή.";
 
 
 /*  */
@@ -1935,15 +1143,7 @@
 
 
 /*  */
-"callouts.action.more_info" = "Περισσότερες πληροφορίες";
-
-
-/*  */
 "callouts.hardware.low_battery" = "Το %1$@ έχει μόνο %2$@ υπολειπόμενο ποσοστό μπαταρίας.";
-
-
-/*  */
-"callouts.departure" = "Επεξήγηση αναχώρησης";
 
 
 /*  */
@@ -1951,15 +1151,7 @@
 
 
 /*  */
-"sleep.snoozing" = "Σε αναβολή";
-
-
-/*  */
 "sleep.sleep" = "Αναστολή λειτουργίας";
-
-
-/*  */
-"sleep.sleeping" = "Σε αναστολή λειτουργίας";
 
 
 /*  */
@@ -1967,15 +1159,7 @@
 
 
 /*  */
-"sleep.sleeping.message" = "Το openscape αυτήν τη στιγμή βρίσκεται σε αναστολή λειτουργίας. Αυτό αποτρέπει το openscape από τη χρήση των Υπηρεσιών τοποθεσίας ή τη λήψη δεδομένων. Αυτό εξοικονομεί μπαταρία όταν δεν χρησιμοποιείτε το Openscape. Πατήστε το παρακάτω κουμπί για να ενεργοποιήσετε το Openscape.";
-
-
-/*  */
 "sleep.sleep.acc_hint" = "Διπλό πάτημα για να τεθεί το openscape σε κατάσταση αναστολής λειτουργίας";
-
-
-/*  */
-"sleep.wake_up_when_i_leave" = "Ενεργοποίηση όταν φύγω";
 
 
 /*  */
@@ -1983,15 +1167,7 @@
 
 
 /*  */
-"sleep.ui.wake_on_leave" = "Ενεργοποίηση κατά\nτην αναχώρηση";
-
-
-/*  */
 "sleep.ui.wake_up_now" = "Ενεργοποίηση\nτώρα";
-
-
-/*  */
-"intersection.approaching_intersection" = "Πλησιάζετε τη διασταύρωση";
 
 
 /*  */
@@ -1999,15 +1175,7 @@
 
 
 /*  */
-"directions.intersection_with_name_distance" = "Διασταύρωση με %1$@ σε απόσταση %2$@";
-
-
-/*  */
 "directions.intersection_with_name_direction" = "Διασταύρωση με %1$@ %2$@";
-
-
-/*  */
-"directions.intersection_with_name" = "Διασταύρωση με %@ κοντά";
 
 
 /*  */
@@ -2015,15 +1183,7 @@
 
 
 /*  */
-"intersection.named_intersection" = "%@ Διασταύρωση";
-
-
-/*  */
 "directions.at_poi" = "Σε %@";
-
-
-/*  */
-"directions.along_road" = "κατά μήκος της %@.";
 
 
 /*  */
@@ -2031,15 +1191,7 @@
 
 
 /*  */
-"directions.near_address" = "Κοντά στη διεύθυνση %@";
-
-
-/*  */
 "directions.intersects_with_in" = "Διασταυρώσεις με %1$@ με %2$@";
-
-
-/*  */
-"directions.near_name" = "Κοντά σε %@";
 
 
 /*  */
@@ -2047,15 +1199,7 @@
 
 
 /*  */
-"directions.unknown_road" = "Άγνωστος δρόμος";
-
-
-/*  */
 "directions.previous_location" = "Προηγούμενη τοποθεσία";
-
-
-/*  */
-"directions.previous_location_along" = "Προηγούμενη τοποθεσία, κατά μήκος της %@";
 
 
 /*  */
@@ -2063,15 +1207,7 @@
 
 
 /*  */
-"directions.nearest_road_name_is_distance_direction" = "Ο κοντινότερος δρόμος, %1$@, είναι %2$@ %3$@";
-
-
-/*  */
 "directions.nearest_road_name_is_distance" = "Ο κοντινότερος δρόμος, %1$@, βρίσκεται σε απόσταση %2$@";
-
-
-/*  */
-"directions.nearest_road_name_was_distance_direction" = "Ο κοντινότερος δρόμος, %1$@, ήταν %2$@ %3$@";
 
 
 /*  */
@@ -2079,15 +1215,7 @@
 
 
 /*  */
-"directions.poi_name_is_distance" = "%1$@ βρίσκεται σε απόσταση %2$@";
-
-
-/*  */
 "directions.poi_name_was_distance_direction" = "%1$@ ήταν %2$@ %3$@";
-
-
-/*  */
-"directions.roundabout_with_exits_distance_direction" = "Κυκλικός κόμβος %1$@ με εξόδους %2$@ %3$@";
 
 
 /*  */
@@ -2095,15 +1223,7 @@
 
 
 /*  */
-"directions.roundabout_with_exits_was_distance_direction" = "Ο κυκλικός κόμβος με %1$@ εξόδους ήταν %2$@ %3$@";
-
-
-/*  */
 "directions.roundabout_with_exits_direction" = "Κυκλικός κόμβος με %1$@ εξόδους %2$@";
-
-
-/*  */
-"directions.roundabout_with_exits" = "Κυκλικός κόμβος με %1$@ εξόδους σε κοντινή απόσταση";
 
 
 /*  */
@@ -2111,15 +1231,7 @@
 
 
 /*  */
-"directions.approaching_roundabout" = "Πλησιάζετε κυκλικό κόμβο";
-
-
-/*  */
 "directions.approaching_name_roundabout" = "Πλησιάζετε  %@ κυκλικό κόμβο";
-
-
-/*  */
-"directions.name_roundabout" = "%@ κυκλικό κόμβο";
 
 
 /*  */
@@ -2127,15 +1239,7 @@
 
 
 /*  */
-"directions.approaching_name_with_exits" = "Πλησιάζετε  %1$@ με %2$@ εξόδους";
-
-
-/*  */
 "directions.name_roundabout_with_exits" = "%1$@ κυκλικό κόμβο με %2$@ εξόδους";
-
-
-/*  */
-"directions.name_with_exits" = "%1$@ με %2$@ εξόδους";
 
 
 /*  */
@@ -2143,15 +1247,7 @@
 
 
 /*  */
-"directions.name_goes_left.roundabout" = "%@, πηγαίνει αριστερά στον κυκλικό κόμβο";
-
-
-/*  */
 "directions.name_goes_right" = "%@, πηγαίνει δεξιά";
-
-
-/*  */
-"directions.name_goes_right.roundabout" = "%@, πηγαίνει δεξιά στον κυκλικό κόμβο";
 
 
 /*  */
@@ -2159,15 +1255,7 @@
 
 
 /*  */
-"directions.name_continues_ahead.roundabout" = "%@, συνεχίζει μπροστά στον κυκλικό κόμβο";
-
-
-/*  */
 "directions.direction.ahead" = "μπροστά";
-
-
-/*  */
-"directions.direction.ahead_to_the_right" = "μπροστά προς τα δεξιά";
 
 
 /*  */
@@ -2175,15 +1263,7 @@
 
 
 /*  */
-"directions.direction.behind_to_the_right" = "πίσω προς τα δεξιά";
-
-
-/*  */
 "directions.direction.behind" = "πίσω";
-
-
-/*  */
-"directions.direction.behind_to_the_left" = "πίσω προς τα αριστερά";
 
 
 /*  */
@@ -2191,15 +1271,7 @@
 
 
 /*  */
-"directions.direction.ahead_to_the_left" = "μπροστά προς τα αριστερά";
-
-
-/*  */
 "directions.direction.away" = "μακριά";
-
-
-/*  */
-"directions.name_close_by" = "%@ κοντά από";
 
 
 /*  */
@@ -2207,15 +1279,7 @@
 
 
 /*  */
-"directions.name_around_distance" = "%1$@ γύρω %2$@";
-
-
-/*  */
 "directions.name_is_nearby_street_address" = "%1$@ είναι κοντά. Η διεύθυνση του δρόμου είναι %2$@.";
-
-
-/*  */
-"directions.name_is_currently_street_address" = "%1$@ είναι προς το παρόν %2$@. Η διεύθυνση του δρόμου είναι %3$@.";
 
 
 /*  */
@@ -2223,15 +1287,7 @@
 
 
 /*  */
-"directions.traveling.n" = "Ταξιδεύοντας βόρεια";
-
-
-/*  */
 "directions.traveling.ne" = "Ταξιδεύοντας βορειοανατολικά";
-
-
-/*  */
-"directions.traveling.e" = "Ταξιδεύοντας ανατολικά";
 
 
 /*  */
@@ -2239,15 +1295,7 @@
 
 
 /*  */
-"directions.traveling.s" = "Ταξιδεύοντας νότια";
-
-
-/*  */
 "directions.traveling.sw" = "Ταξιδεύοντας νοτιοδυτικά";
-
-
-/*  */
-"directions.traveling.w" = "Ταξιδεύοντας δυτικά";
 
 
 /*  */
@@ -2255,15 +1303,7 @@
 
 
 /*  */
-"directions.facing.n" = "Κοιτάζοντας βόρεια";
-
-
-/*  */
 "directions.facing.ne" = "Κοιτάζοντας βορειοανατολικά";
-
-
-/*  */
-"directions.facing.e" = "Κοιτάζοντας ανατολικά";
 
 
 /*  */
@@ -2271,15 +1311,7 @@
 
 
 /*  */
-"directions.facing.s" = "Κοιτάζοντας νότια";
-
-
-/*  */
 "directions.facing.sw" = "Κοιτάζοντας νοτιοδυτικά";
-
-
-/*  */
-"directions.facing.w" = "Κοιτάζοντας δυτικά";
 
 
 /*  */
@@ -2287,15 +1319,7 @@
 
 
 /*  */
-"directions.heading.n" = "Κατεύθυνση βόρεια";
-
-
-/*  */
 "directions.heading.ne" = "Κατεύθυνση βορειοανατολικά";
-
-
-/*  */
-"directions.heading.e" = "Κατεύθυνση ανατολικά";
 
 
 /*  */
@@ -2303,15 +1327,7 @@
 
 
 /*  */
-"directions.heading.s" = "Κατεύθυνση νότια";
-
-
-/*  */
 "directions.heading.sw" = "Κατεύθυνση νοτιοδυτικά";
-
-
-/*  */
-"directions.heading.w" = "Κατεύθυνση δυτικά";
 
 
 /*  */
@@ -2319,15 +1335,7 @@
 
 
 /*  */
-"directions.along.traveling.n" = "Ταξιδεύοντας βόρεια κατά μήκος της %@";
-
-
-/*  */
 "directions.along.traveling.ne" = "Ταξιδεύοντας βορειοανατολικά κατά μήκος της %@";
-
-
-/*  */
-"directions.along.traveling.e" = "Ταξιδεύοντας ανατολικά κατά μήκος της %@";
 
 
 /*  */
@@ -2335,15 +1343,7 @@
 
 
 /*  */
-"directions.along.traveling.s" = "Ταξιδεύοντας νότια κατά μήκος της %@";
-
-
-/*  */
 "directions.along.traveling.sw" = "Ταξιδεύοντας νοτιοδυτικά κατά μήκος της %@";
-
-
-/*  */
-"directions.along.traveling.w" = "Ταξιδεύοντας δυτικά κατά μήκος της %@";
 
 
 /*  */
@@ -2351,15 +1351,7 @@
 
 
 /*  */
-"directions.along.facing.n" = "Κοιτάζοντας βόρεια κατά μήκος της %@";
-
-
-/*  */
 "directions.along.facing.ne" = "Κοιτάζοντας βορειοανατολικά κατά μήκος της %@";
-
-
-/*  */
-"directions.along.facing.e" = "Κοιτάζοντας ανατολικά κατά μήκος της %@";
 
 
 /*  */
@@ -2367,15 +1359,7 @@
 
 
 /*  */
-"directions.along.facing.s" = "Κοιτάζοντας νότια κατά μήκος της %@";
-
-
-/*  */
 "directions.along.facing.sw" = "Κοιτάζοντας νοτιοδυτικά κατά μήκος της %@";
-
-
-/*  */
-"directions.along.facing.w" = "Κοιτάζοντας δυτικά κατά μήκος της %@";
 
 
 /*  */
@@ -2383,15 +1367,7 @@
 
 
 /*  */
-"directions.along.heading.n" = "Κατεύθυνση βόρεια κατά μήκος της %@";
-
-
-/*  */
 "directions.along.heading.ne" = "Κατεύθυνση βορειοανατολικά κατά μήκος της %@";
-
-
-/*  */
-"directions.along.heading.e" = "Κατεύθυνση ανατολικά κατά μήκος της %@";
 
 
 /*  */
@@ -2399,15 +1375,7 @@
 
 
 /*  */
-"directions.along.heading.s" = "Κατεύθυνση νότια κατά μήκος της %@";
-
-
-/*  */
 "directions.along.heading.sw" = "Κατεύθυνση νοτιοδυτικά κατά μήκος της %@";
-
-
-/*  */
-"directions.along.heading.w" = "Κατεύθυνση δυτικά κατά μήκος της %@";
 
 
 /*  */
@@ -2415,15 +1383,7 @@
 
 
 /*  */
-"directions.cardinal.north" = "Βόρεια";
-
-
-/*  */
 "directions.cardinal.north_east" = "Βορειοανατολικά";
-
-
-/*  */
-"directions.cardinal.east" = "Ανατολικά";
 
 
 /*  */
@@ -2431,15 +1391,7 @@
 
 
 /*  */
-"directions.cardinal.south" = "Νότια";
-
-
-/*  */
 "directions.cardinal.south_west" = "Νοτιοδυτικά";
-
-
-/*  */
-"directions.cardinal.west" = "Δυτικά";
 
 
 /*  */
@@ -2447,15 +1399,7 @@
 
 
 /*  */
-"directions.cardinal.north.abb" = "Β";
-
-
-/*  */
 "directions.cardinal.north_east.abb" = "ΒΑ";
-
-
-/*  */
-"directions.cardinal.east.abb" = "Α";
 
 
 /*  */
@@ -2463,15 +1407,7 @@
 
 
 /*  */
-"directions.cardinal.south.abb" = "Ν";
-
-
-/*  */
 "directions.cardinal.south_west.abb" = "ΝΔ";
-
-
-/*  */
-"directions.cardinal.west.abb" = "Δ";
 
 
 /*  */
@@ -2479,15 +1415,7 @@
 
 
 /*  */
-"directions.name_distance" = "%1$@, %2$@";
-
-
-/*  */
 "distance.format.m" = "%@ μ.";
-
-
-/*  */
-"distance.format.meter" = "%@ μέτρο";
 
 
 /*  */
@@ -2495,15 +1423,7 @@
 
 
 /*  */
-"distance.format.km" = "%@ χλμ.";
-
-
-/*  */
 "distance.format.kilometer" = "%@ χιλιόμετρο";
-
-
-/*  */
-"distance.format.kilometers" = "%@ χιλιόμετρα";
 
 
 /*  */
@@ -2511,15 +1431,7 @@
 
 
 /*  */
-"distance.format.foot" = "%@ πόδι";
-
-
-/*  */
 "distance.format.feet" = "%@ πόδια";
-
-
-/*  */
-"distance.format.mi" = "%@ mi";
 
 
 /*  */
@@ -2527,15 +1439,7 @@
 
 
 /*  */
-"distance.format.miles" = "%@ μίλια";
-
-
-/*  */
 "ui.action_button.my_location" = "Η\nτοποθεσία μου";
-
-
-/*  */
-"ui.action_button.my_location.acc_hint" = "Πατήστε δύο φορές για να ακούσετε για την τρέχουσα τοποθεσία σας";
 
 
 /*  */
@@ -2543,15 +1447,7 @@
 
 
 /*  */
-"ui.action_button.nearby_markers.acc_hint" = "Πατήστε δύο φορές για να ακούσετε για κοντινά μέρη που έχετε επισημάνει";
-
-
-/*  */
 "ui.action_button.around_me" = "Γύρω\nμου";
-
-
-/*  */
-"ui.action_button.around_me.acc_hint" = "Πατήστε δύο φορές για να ακούσετε για μέρη στα τέσσερα τεταρτημόρια γύρω σας";
 
 
 /*  */
@@ -2559,15 +1455,7 @@
 
 
 /*  */
-"ui.action_button.ahead_of_me.acc_hint" = "Πατήστε δύο φορές για να μάθετε για τα μέρη μπροστά σας";
-
-
-/*  */
 "ui.menu" = "Μενού";
-
-
-/*  */
-"ui.menu.hint" = "Πατήστε δύο φορές για να ανοίξετε το μενού";
 
 
 /*  */
@@ -2575,15 +1463,7 @@
 
 
 /*  */
-"ui.continue" = "Συνέχεια";
-
-
-/*  */
 "menu.events" = "Ψυχαγωγικές δραστηριότητες";
-
-
-/*  */
-"menu.devices" = "Ακουστικά Head Tracking";
 
 
 /*  */
@@ -2591,15 +1471,7 @@
 
 
 /*  */
-"menu.help_and_tutorials" = "Βοήθεια και εκπαιδευτικά βοηθήματα";
-
-
-/*  */
 "menu.send_feedback" = "Αποστολή σχολίων";
-
-
-/*  */
-"menu.rate" = "Αξιολόγηση";
 
 
 /*  */
@@ -2607,15 +1479,7 @@
 
 
 /*  */
-"ui.back_button.title" = "Πίσω";
-
-
-/*  */
 "bar_icon.external_GPS.acc_label" = "Εικονίδιο εξωτερικής σύνδεσης GPS";
-
-
-/*  */
-"history_view.item_of" = "Στοιχείο %1$@ από %2$@";
 
 
 /*  */
@@ -2623,15 +1487,7 @@
 
 
 /*  */
-"poi_screen.screen_title.select_a_location" = "Επιλογή τοποθεσίας";
-
-
-/*  */
 "poi_screen.loading_title.loading" = "Φόρτωση κοντινών τοποθεσιών";
-
-
-/*  */
-"poi_screen.loading_title.finding_error" = "Ώχ! Δυσκολευόμαστε να βρούμε κοντινά μέρη. Ξαναδοκίμασε αργότερα.";
 
 
 /*  */
@@ -2639,15 +1495,7 @@
 
 
 /*  */
-"poi_screen.section_header.nearby" = "Κοντά";
-
-
-/*  */
 "poi_cell.accessibility_label.suggested_search" = "Προτεινόμενη αναζήτηση: %@";
-
-
-/*  */
-"poi_cell.accessibility_hint.suggested_search" = "Πατήστε δύο φορές για να αναζητήσετε: %@";
 
 
 /*  */
@@ -2655,15 +1503,7 @@
 
 
 /*  */
-"location_callout_cell.marked_location" = "Επισημασμένες τοποθεσίες";
-
-
-/*  */
 "location_callout_cell.nearest_road" = "Κοντινότερος δρόμος, %@.";
-
-
-/*  */
-"location_callout_cell.nearest_road.beacon_set_on" = "Κοντινότερος δρόμος, %1$@. Το ηχητικό σήμα ήταν ρυθμισμένο στο %2$@.";
 
 
 /*  */
@@ -2671,15 +1511,7 @@
 
 
 /*  */
-"devices.airpods.supported_versions" = "Apple AirPods με χωρικό ήχο";
-
-
-/*  */
 "devices.title.pair_audio" = "Σύζευξη ήχου ακουστικών";
-
-
-/*  */
-"devices.title.first_connection" = "Συνδεδεμένα ακουστικά";
 
 
 /*  */
@@ -2687,15 +1519,7 @@
 
 
 /*  */
-"devices.title.completed_connection" = "Έτοιμα ακουστικά";
-
-
-/*  */
 "devices.explain_ar.disconnected" = "Τα ακουστικά head tracking είναι ακουστικά Bluetooth με αισθητήρες που λένε στο openscape πού είστε στραμμένοι. Αυτό βοηθά το openscape να βελτιώσει την εμπειρία ήχου σας, καθιστώντας την πιο φυσική καθώς κινείστε.\n\nΠατήστε το παρακάτω κουμπί για να συνδέσετε μια συσκευή.";
-
-
-/*  */
-"devices.explain_ar.connected.airpods" = "Τα AirPods σας είναι έτοιμα για χρήση, μπορείτε λοιπόν να βάλετε το τηλέφωνό σας στην τσέπη σας και να φύγετε! Το openscape παρακολουθεί την κατεύθυνση του κεφαλιού σας, ώστε να μην χρειάζεται να κρατάτε το τηλέφωνο στο χέρι σας.";
 
 
 /*  */
@@ -2703,15 +1527,7 @@
 
 
 /*  */
-"devices.explain_ar.connecting" = "Το openscape συνδέεται με το %@ σας. Μια στιγμή...";
-
-
-/*  */
 "devices.connect_headset" = "Σύνδεση ακουστικών";
-
-
-/*  */
-"devices.connect_headset.calibrate.button" = "Έναρξη βαθμονόμησης";
 
 
 /*  */
@@ -2719,15 +1535,7 @@
 
 
 /*  */
-"devices.connect_headset.error_title" = "Αδυναμία σύνδεσης";
-
-
-/*  */
 "devices.connect_headset.unsupported_firmware" = "Τα AR Headphones πρέπει να ενημερώνονται για να μπορούν να συνδεθούν στο Openscape. Μεταβείτε στην εφαρμογή Cortana για να ενημερώσετε τα ακουστικά σας.";
-
-
-/*  */
-"devices.connect_headset.failed" = "Το openscape δεν ήταν δυνατό να συνδεθεί με τα ακουστικά σας. Προσπαθήστε ξανά αργότερα.";
 
 
 /*  */
@@ -2735,15 +1543,7 @@
 
 
 /*  */
-"devices.connect_headset.explanation" = "Επιλέξτε τον τύπο των ακουστικών σας από τη λίστα των υποστηριζόμενων ακουστικών παρακάτω.";
-
-
-/*  */
 "devices.connect_headset.audio" = "Πριν συνδέσετε τα ακουστικά σας στο Openscape, βεβαιωθείτε ότι είναι συζευγμένο με το τηλέφωνό σας. Αν δεν έχει ακόμη συζευχθεί, μεταβείτε στην ενότητα Bluetooth στην εφαρμογή Ρυθμίσεις iOS για να συζεύξετε τη συσκευή σας και, στη συνέχεια, επιστρέψτε στο Openscape.";
-
-
-/*  */
-"devices.connect_headset.calibrate" = "Τα ακουστικά σας πρέπει να βαθμονομηθούν. Αφαιρέστε τα από το κεφάλι σας, ανακινήστε τα απαλά προς όλες τις κατευθύνσεις για περίπου 10 δευτερόλεπτα και τοποθετήστε τα ξανά στο κεφάλι σας. Αυτό πρέπει να επαναληφθεί εάν ο ήχος βαθμονόμησης συνεχίσει να ακούγεται.";
 
 
 /*  */
@@ -2751,15 +1551,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "Συγχαρητήρια! Τα AirPods σας είναι έτοιμα για χρήση, μπορείτε λοιπόν να βάλετε το τηλέφωνό σας στην τσέπη σας και να φύγετε! Το openscape θα παρακολουθεί τώρα την κατεύθυνση του κεφαλιού σας, ώστε να μην χρειάζεται να κρατάτε το τηλέφωνο στο χέρι σας. Ένα μόνο πάτημα στο εξωτερικό των ακουστικών θα ενεργοποιήσει ή θα καταργήσει τη σίγαση στο ηχητικό σήμα, με διπλό πάτημα επεξηγείται η τοποθεσία σας και ένα τριπλό πάτημα θα επαναλάβει την τελευταία επεξήγηση.";
-
-
-/*  */
 "devices.connect_headset.completed.test" = "Ελέγξτε τα ακουστικά σας";
-
-
-/*  */
-"devices.connect_headset.completed.test.hint" = "Πατήστε δύο φορές για να ελέγξετε το %@";
 
 
 /*  */
@@ -2767,15 +1559,7 @@
 
 
 /*  */
-"devices.test_headset.explanation" = "Τοποθετήσαμε ένα ηχητικό σήμα στα δεξιά σας. Ακούστε πού είναι, και γυρίστε το κεφάλι σας προς το μέρος του. Παρατηρήστε πώς μπορείτε να το κάνετε αυτό ακόμα και όταν το τηλέφωνό σας είναι στην τσέπη σας. Όταν τελειώσετε, πατήστε το παρακάτω κουμπί για να επιστρέψετε στο openscape και απολαύστε την επόμενη βόλτα σας με τα νέα ακουστικά head tracking.";
-
-
-/*  */
 "devices.test_headset.continue" = "Επιστροφή στο Openscape";
-
-
-/*  */
-"devices.test_headset.callout" = "Τοποθετήσαμε ένα ηχητικό σήμα στα δεξιά σας. Ακούστε πού είναι, και γυρίστε το κεφάλι σας προς το μέρος του... Παρατηρήστε πώς μπορείτε να το κάνετε αυτό ακόμα και όταν το τηλέφωνό σας είναι στην τσέπη σας.";
 
 
 /*  */
@@ -2783,15 +1567,7 @@
 
 
 /*  */
-"devices.forget_headset.prompt.explanation" = "Αυτό θα αποσυνδέσει τα ακουστικά σας από το Openscape. Μπορείτε να συνδεθείτε ξανά στο openscape στο μέλλον από εδώ.";
-
-
-/*  */
 "devices.callouts.connected" = "%@ συνδέθηκε.";
-
-
-/*  */
-"devices.callouts.needs_calibration" = "Τα ακουστικά σας πρέπει να βαθμονομηθούν. Αφαιρέστε τα από το κεφάλι σας και ανακινήστε τα απαλά προς όλες τις κατευθύνσεις.";
 
 
 /*  */
@@ -2799,15 +1575,7 @@
 
 
 /*  */
-"devices.callouts.calibrated" = "Η βαθμονόμηση ολοκληρώθηκε";
-
-
-/*  */
 "devices.callouts.disconnected" = "%@ αποσυνδέθηκε.";
-
-
-/*  */
-"devices.callouts.check_audio.default" = "Δεν υπάρχουν συνδεδεμένα ακουστικά head tracking.";
 
 
 /*  */
@@ -2815,15 +1583,7 @@
 
 
 /*  */
-"devices.callouts.check_audio.airpods.disconnected" = "Το openscape αναζητά τα AirPods σας. Βεβαιωθείτε ότι είναι συνδεδεμένα στο τηλέφωνό σας.";
-
-
-/*  */
 "devices.troubleshoot.reconnect" = "Επανασύνδεση";
-
-
-/*  */
-"devices.airpods_unavailable.alert.description" = "Αυτή η συσκευή δεν υποστηρίζει head tracking με Apple AirPods. Βεβαιωθείτε ότι η συσκευή σας είναι iPhone 7 ή νεότερη έκδοση και εκτελεί iOS 14.4 ή νεότερη έκδοση.";
 
 
 /*  */
@@ -2831,15 +1591,7 @@
 
 
 /*  */
-"devices.reachability.alert.description" = "Το %@ μπορεί να πει στο openscape ποια κατεύθυνση αντιμετωπίζετε και αυτό θα βοηθήσει το openscape να βελτιώσει την εμπειρία ήχου σας. Μπορείτε να ενεργοποιήσετε το head tracking στις ρυθμίσεις ακουστικών head tracking.";
-
-
-/*  */
 "behavior.experiences.events_list_nav_title" = "Δραστηριότητες";
-
-
-/*  */
-"behavior.experiences.event_nav_title" = "Λεπτομέρειες δραστηριότητας";
 
 
 /*  */
@@ -2847,15 +1599,7 @@
 
 
 /*  */
-"behavior.experiences.more_actions" = "Περισσότερες δράσεις";
-
-
-/*  */
 "behavior.experiences.download_failed.title" = "Δεν είναι δυνατή η λήψη δραστηριότητας";
-
-
-/*  */
-"behavior.experiences.download_failed.error" = "Η προσπάθεια λήψης της δραστηριότητας απέτυχε. Προσπαθήστε ξανά αργότερα. Χρησιμοποιήστε τη δυνατότητα \"Αποστολή σχολίων\" ή επικοινωνήστε με τον δημιουργό της δραστηριότητας, εάν αυτό το ζήτημα εξακολουθεί να υφίσταται.";
 
 
 /*  */
@@ -2863,15 +1607,7 @@
 
 
 /*  */
-"behavior.experiences.reset_action" = "Επαναφορά δραστηριότητας";
-
-
-/*  */
 "behavior.experiences.reset_and_update_action" = "Δείτε ενημερώσεις";
-
-
-/*  */
-"behavior.experiences.reset.prompt" = "Η επαναφορά αυτής της δραστηριότητας θα καταργήσει την τρέχουσα πρόοδό σας και θα σας επιτρέψει να ξεκινήσετε ξανά αυτήν τη δραστηριότητα. Εκτός από την επαναφορά αυτής της δραστηριότητας, μπορείτε επίσης να επιλέξετε να ελέγξετε για ενημερώσεις. Αυτό θα κάνει λήψη ενημερωμένων πληροφοριών για αυτήν τη δραστηριότητα, εάν υπάρχουν διαθέσιμες ενημερώσεις.";
 
 
 /*  */
@@ -2879,15 +1615,7 @@
 
 
 /*  */
-"behavior.experiences.reset.confirmation" = "Επαναφορά δραστηριότητας";
-
-
-/*  */
 "behavior.experiences.delete_action" = "Διαγραφή δραστηριότητας";
-
-
-/*  */
-"behavior.experience.delete.title" = "Διαγραφή αυτής της δραστηριότητας;";
 
 
 /*  */
@@ -2895,15 +1623,7 @@
 
 
 /*  */
-"behavior.experiences.delete.confirmation" = "Η δραστηριότητα διαγράφηκε";
-
-
-/*  */
 "behavior.experiences.no_events.title" = "Ψυχαγωγικές δραστηριότητες openscape (Beta)";
-
-
-/*  */
-"behavior.experiences.no_events.caption.1" = "Οι μη κερδοσκοπικοί οργανισμοί, οι επιχειρήσεις και οι τοπικές κυβερνήσεις ενδέχεται να δημιουργήσουν τις δικές τους εμπειρίες που βασίζονται στο Openscape. Παραδείγματα περιλαμβάνουν προσαρμοστικά αθλητικά προγράμματα και εκδηλώσεις, κυνήγια θησαυρού, δραστηριότητες, επιλεγμένες διαδρομές, οδηγούς πόλεων και πολλά άλλα.";
 
 
 /*  */
@@ -2911,15 +1631,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.media_player_title" = "%1$@: %2$@";
-
-
-/*  */
 "behavior.scavenger_hunt.by_line" = "Από %@";
-
-
-/*  */
-"behavior.scavenger_hunt.callout.nearby_with_name" = "%@ είναι κοντά";
 
 
 /*  */
@@ -2927,15 +1639,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.callout.pausing_hunt" = "Επιστροφή στην κανονική εμπειρία του Openscape.";
-
-
-/*  */
 "behavior.scavenger_hunt.callout.next_flag" = "Το ηχητικό σήμα ορίζεται σε %1$@, σε απόσταση %2$@, %3$@ από το %4$@";
-
-
-/*  */
-"behavior.scavenger_hunt.callout.next_flag.no_distance" = "Το ηχητικό σήμα ορίζεται σε %1$@, %2$@ από το %3$@";
 
 
 /*  */
@@ -2943,15 +1647,7 @@
 
 
 /*  */
-"behavior.experience.badges.active" = "Ενεργός";
-
-
-/*  */
 "behavior.experience.badges.complete" = "Ολοκληρώθηκε";
-
-
-/*  */
-"behavior.experience.badges.not_complete" = "Δεν ολοκληρώθηκε";
 
 
 /*  */
@@ -2959,15 +1655,7 @@
 
 
 /*  */
-"time.one_minute_ago" = "Πριν από 1 λεπτό";
-
-
-/*  */
 "time.num_minutes_ago" = "πριν %@ λεπτά";
-
-
-/*  */
-"time.one_hour_ago" = "Πριν 1 ώρα";
 
 
 /*  */
@@ -2975,15 +1663,7 @@
 
 
 /*  */
-"announced_name" = "Ανακοινώθηκε %@.";
-
-
-/*  */
 "announced_name.named" = "%1$@, ανακοινώθηκε %2$@.";
-
-
-/*  */
-"announced_name_distance_away.named" = "%1$@, ανακοινώθηκε %2$@, σε απόσταση %3$@.";
 
 
 /*  */
@@ -2991,15 +1671,7 @@
 
 
 /*  */
-"previous_location.announced_name_distance" = "Προηγούμενη τοποθεσία. Ανακοινώθηκε %1$@, προς το παρόν σε απόσταση %2$@.";
-
-
-/*  */
 "beacon_distance_update.announced_name" = "Ενημέρωση ηχητικού σήματος απόστασης. Ανακοινώθηκε %@.";
-
-
-/*  */
-"beacon_distance_update.announced_name_distance" = "Ενημέρωση ηχητικού σήματος απόστασης. Ανακοινώθηκε %1$@, ηχητικό σήμα είναι προς το παρόν σε απόσταση %2$@.";
 
 
 /*  */
@@ -3007,15 +1679,7 @@
 
 
 /*  */
-"intersection_callout.announced_name_distance" = "Επεξήγηση διασταύρωσης. Ανακοινώθηκε %1$@, διασταύρωση αυτή τη στιγμή σε απόσταση %2$@.";
-
-
-/*  */
 "third_party_apps.general.maps" = "Άνοιγμα σε εξωτερική εφαρμογή χαρτών";
-
-
-/*  */
-"icloud.kv_store.quota_violation_alert.title" = "Ο χώρος αποθήκευσης openscape iCloud είναι πλήρης";
 
 
 /*  */
@@ -3023,15 +1687,7 @@
 
 
 /*  */
-"poi.unknown" = "Άγνωστο";
-
-
-/*  */
 "poi.unknown_place" = "Άγνωστη θέση";
-
-
-/*  */
-"audio_player.action.play_again" = "Αναπαραγωγή ξανά";
 
 
 /*  */
@@ -3039,15 +1695,7 @@
 
 
 /*  */
-"text.cleaning_things" = "Γίνεται εκκαθάριση...";
-
-
-/*  */
 "action.double_tap_to_repeat" = "Διπλό πάτημα για επανάληψη";
-
-
-/*  */
-"location" = "Τοποθεσία";
 
 
 /*  */
@@ -3055,15 +1703,7 @@
 
 
 /*  */
-"tutorial.title.plural" = "Εκπαιδευτικά βοηθήματα";
-
-
-/*  */
 "tutorial.exit" = "Έξοδος από τα Εκπαιδευτικά βοηθήματα";
-
-
-/*  */
-"tutorial.skip" = "Παράλειψη εκπαιδευτικού βοηθήματος";
 
 
 /*  */
@@ -3071,15 +1711,7 @@
 
 
 /*  */
-"tutorial.markers.getting_started" = "Γρήγορα αποτελέσματα με δείκτες";
-
-
-/*  */
 "tutorial.markers.mark_your_world" = "Κατάδειξη του κόσμου σας";
-
-
-/*  */
-"tutorial.markers.experience_your_world" = "Βιώστε τον κόσμο σας";
 
 
 /*  */
@@ -3087,15 +1719,7 @@
 
 
 /*  */
-"tutorial.markers.your_marker" = "ο δείκτης σας";
-
-
-/*  */
 "tutorial.markers.mark_location.acc_hint" = "Πατήστε δύο φορές για δημιουργία δείκτη τοποθεσίας";
-
-
-/*  */
-"tutorial.markers.text.Intro" = "Με το Openscape, μπορείτε να επισημάνετε οτιδήποτε σας ενδιαφέρει. Για παράδειγμα, μπορείτε να επισημάνετε το σπίτι σας, τη στάση του λεωφορείου σας ή ακόμα και μόνο το σημείο όπου βρίσκεστε.\nΔοκιμάστε το. Πατήστε το κουμπί Προσθήκη δείκτη παρακάτω και επιλέξτε ως παράδειγμα ένα κοντινό μέρος ή διεύθυνση για σήμανση.";
 
 
 /*  */
@@ -3103,15 +1727,7 @@
 
 
 /*  */
-"tutorial.markers.text.NearbyMarkers" = "Άριστα! Έχετε ένα νέο δείκτη με το όνομα @!marker_name!!.\nΤώρα, για να ακούσετε πού βρίσκεται ο δείκτης σας, πατήστε το κουμπί Κοντινοί δείκτες. Αυτό το κουμπί μπορεί να βρεθεί στο κάτω μέρος της αρχικής οθόνης.\nΠροσπαθήστε το τώρα.";
-
-
-/*  */
 "tutorial.markers.text.AudioBeacon" = "Μπορείτε επίσης να ορίσετε ένα ηχητικό σήμα στον δείκτη σας.\nΔοκιμάστε το. Εδώ είναι το ηχητικό σήμα στο @!marker_name!!.\nΑκούστε προσεκτικά πού βρίσκεται και κρατήστε το τηλέφωνό σας επίπεδο, κατευθυνόμενοι προς το μέρος του.";
-
-
-/*  */
-"tutorial.markers.text.WrapUp" = "Τέλεια, τώρα στρέφεστε προς τον δείκτη @!marker_name!! σου.\nΦαίνεται ότι το έχετε!\nΜπορείτε να διαχειριστείτε τη λίστα δεικτών επιλέγοντας, διαχείριση δεικτών από το μενού.\nΚαι μπορείτε πάντα να επισκεφθείτε τις σελίδες Βοήθεια και Εκπαιδευτικά βοηθήματα για να περάσετε ξανά από αυτό τα Εκπαιδευτικά βοηθήματα ή να διαβάσετε έναν περιεκτικό οδηγό για όλα όσα μπορείτε να κάνετε με τους δείκτες. Το ηχητικό σήμα που έχετε ορίσει για αυτό τα Εκπαιδευτικά βοηθήματα θα καθαριστεί τώρα και θα επιστρέψετε στην προηγούμενη οθόνη.";
 
 
 /*  */
@@ -3119,15 +1735,7 @@
 
 
 /*  */
-"tutorial.beacon.set_a_beacon.acc_hint" = "Πατήστε δύο φορές για να φορτώσετε μια λίστα με τα μέρη όπου μπορείτε να ορίσετε το ηχητικό σήμα. Επιλέξτε ένα μέρος από τη λίστα για να ξεκινήσετε τα Εκπαιδευτικά βοηθήματα.";
-
-
-/*  */
 "tutorial.beacon.getting_started.text" = "Όταν ορίσετε ένα ηχητικό σήμα σε μια τοποθεσία, το openscape θα αναπαράγει έναν ήχο που προέρχεται από την κατεύθυνση αυτής της τοποθεσίας. Αυτό τα Εκπαιδευτικά βοηθήματα, θα σας καθοδηγήσει στη ρύθμιση ενός ηχητικού σήματος και θα σας δείξει πώς να το χρησιμοποιήσετε.\n\nΠατήστε το κουμπί \"Έναρξη Ηχητικού σήματος\" παρακάτω για να ανοίξετε μια λίστα κοντινών τοποθεσιών. Επιλέξτε μια τοποθεσία από τη λίστα και τα Εκπαιδευτικά βοηθήματα θα ξεκινήσει.";
-
-
-/*  */
-"tutorial.beacon.your_destination" = "ο προορισμός σας";
 
 
 /*  */
@@ -3135,15 +1743,7 @@
 
 
 /*  */
-"tutorial.beacon.poi_selected" = "Επιλέξατε %@ ως τοποθεσία του ηχητικού σήματος.";
-
-
-/*  */
 "tutorial.beacon.the_audio_beacon" = "Το Ηχητικό σήμα";
-
-
-/*  */
-"tutorial.beacon.the_audio_beacon.text" = "Επιλέξατε %@ ως τοποθεσία του ηχητικού σήματός σας.";
 
 
 /*  */
@@ -3151,15 +1751,7 @@
 
 
 /*  */
-"tutorial.beacon.need_some_silence" = "Θέλετε λίγη ησυχία;";
-
-
-/*  */
 "tutorial.beacons.text.IntroPart1" = "Όταν ορίσετε ένα ηχητικό σήμα σε μια τοποθεσία, το openscape θα αναπαράξει έναν ήχο που προέρχεται από την κατεύθυνση αυτής της τοποθεσίας. Αυτό τα Εκπαιδευτικά βοηθήματα θα σας καθοδηγήσει στη ρύθμιση ενός ηχητικού σήματος και θα σας δείξει πώς να το χρησιμοποιήσετε.";
-
-
-/*  */
-"tutorial.beacons.text.IntroPart2" = "Πατήστε το κουμπί \"Έναρξη Ηχητικού σήματος\" παρακάτω για να ανοίξετε μια λίστα με κοντινά μέρη. Επιλέξτε μια τοποθεσία από τη λίστα και τα Εκπαιδευτικά βοηθήματα θα ξεκινήσει.";
 
 
 /*  */
@@ -3167,15 +1759,7 @@
 
 
 /*  */
-"tutorial.beacons.text.OrientationIsNotFlat" = "Για να ξεκινήσετε, κρατήστε το τηλέφωνό σας επίπεδο στο χέρι σας με την οθόνη στραμμένη προς τον ουρανό και με την κορυφή του τηλεφώνου στραμμένη ακριβώς μπροστά σας.";
-
-
-/*  */
 "tutorial.beacons.text.OrientationAirPods" = "Τα AirPods σας είναι συνδεδεμένα στο Openscape. Όταν τα AirPods είναι συνδεδεμένα στο Openscape, δεν έχει σημασία πώς κρατάτε το τηλέφωνό σας. Μπορεί ακόμη και να το τοποθετήσετε στην τσέπη ή την τσάντα σας.";
-
-
-/*  */
-"tutorial.beacons.text.OrientationRepeat" = "Για να συνεχίσετε, κρατήστε το τηλέφωνό σας επίπεδο στο χέρι σας, έτσι ώστε η οθόνη να είναι στραμμένη προς τον ουρανό";
 
 
 /*  */
@@ -3183,15 +1767,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HoldingPhone.great" = "Τέλεια! Κρατώντας το τηλέφωνό σας επίπεδο με αυτόν τον τρόπο απαιτείται μόνο όταν στέκεστε ακίνητοι. Όταν περπατάτε μη διστάσετε να τοποθετήσετε το τηλέφωνο σε μια εύκολα προσβάσιμη τσέπη ή τσάντα.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconInitial" = "Τώρα που έχετε θέσει ένα ηχητικό σήμα στο @!destination!!, το openscape θα αρχίσει να αναπαράγει έναν ήχο που προέρχεται από την κατεύθυνση αυτής της θέσης. Ορίστε τώρα το ηχητικό σήμα.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconOutOfBounds" = "Αν ακούσετε προσεκτικά θα ακούσετε ότι αναπαράγεται από μια συγκεκριμένη κατεύθυνση γύρω σας.";
 
 
 /*  */
@@ -3199,15 +1775,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsRotate.ar_headset" = "Τώρα, στρίψτε αργά προς την κατεύθυνση του ηχητικού σήματος. Θα ακούσετε έναν ήχο κουδουνιού όταν κοιτάτε απευθείας προς αυτόν.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconOutOfBoundsRepeat" = "Γυρίστε αργά μέχρι να ακούσετε το κουδούνι που υποδεικνύει ότι έχετε στραφεί προς την κατεύθυνση του ηχητικού σήματος.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "Τέλεια, τώρα έχετε στραφεί προς την κατεύθυνση του @!destination!!.";
 
 
 /*  */
@@ -3215,15 +1783,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate" = "Τώρα προσπαθήστε να απομακρυνθείτε αργά από την κατεύθυνση του ηχητικού σήματος, ενώ κρατάτε το τηλέφωνό σας επίπεδο. Ο ήχος του κουδουνιού θα σταματήσει και το ηχητικό σήμα συνεχίζει να σας δείχνει που είναι το @!destination!!. Προσπαθήστε το τώρα.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Τώρα προσπαθήστε να απομακρυνθείτε αργά από την κατεύθυνση του ηχητικού σήματος. Ο ήχος του κουδουνιού θα σταματήσει και το ηχητικό σήμα συνεχίζει να σας δείχνει που είναι το @!destination!!. Προσπαθήστε το τώρα.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconInBoundsRepeat" = "Γυρίστε αργά αντίθετα από την κατεύθυνση του ηχητικού σήματος.";
 
 
 /*  */
@@ -3231,15 +1791,7 @@
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "Καθώς προχωράτε στο ταξίδι σας, το openscape θα σας ενημερώνει περιστασιακά για την απόσταση από τη θέση που επισημαίνεται από το ηχητικό σήμα με μια τέτοια επεξήγηση.";
-
-
-/*  */
 "tutorial.beacons.text.HomeScreen" = "Οι πληροφορίες απόστασης εμφανίζονται επίσης στην αρχική οθόνη μαζί με τη διεύθυνση του δρόμου της τοποθεσίας του ηχητικού σήματος, αν την έχουμε. Το openscape θα σας ειδοποιήσει όταν φτάσετε κοντά στη θέση του ηχητικού σήματος, κάνοντάς το να σωπάσει.";
-
-
-/*  */
-"tutorial.beacons.text.Mute" = "Αν θέλετε η εφαρμογή να είναι αθόρυβη για οποιονδήποτε λόγο, μπορείτε είτε να χρησιμοποιήσετε το κουμπί σίγασης ηχητικού σήματος, είτε το κουμπί αναστολής λειτουργίας στην αρχική οθόνη ή μπορείτε να πατήσετε δύο φορές με δύο δάχτυλα οπουδήποτε στην οθόνη. Ένα διπλό πάτημα με δύο δάχτυλα θα σταματήσει τυχόν τρέχουσες επεξηγήσεις και θα ενεργοποιήσει τη σίγαση του ηχητικού σήματος. Προσπαθήστε το τώρα.";
 
 
 /*  */
@@ -3247,15 +1799,7 @@
 
 
 /*  */
-"tutorial.beacons.text.WrapUp" = "Φαίνεται ότι το έχετε! Εάν θέλετε να επαναλάβετε αυτό τα Εκπαιδευτικά βοηθήματα, μπορείτε να αποκτήσετε πρόσβαση σε αυτό ανά πάσα στιγμή στην οθόνη Βοήθεια και Εκπαιδευτικά βοηθήματα. Το ηχητικό σήμα που έχετε ορίσει για αυτό τα Εκπαιδευτικά βοηθήματα θα καθαριστεί τώρα και θα επιστρέψετε στην προηγούμενη οθόνη.";
-
-
-/*  */
 "settings.help.title" = "Βοήθεια";
-
-
-/*  */
-"help.configuration.section.title" = "Ρύθμιση παραμέτρων Openscape";
 
 
 /*  */
@@ -3263,15 +1807,7 @@
 
 
 /*  */
-"settings.help.section.beacons_and_pois" = "Ηχητικά σήματα και επεξηγήσεις";
-
-
-/*  */
 "help.offline.section_title" = "Χρήση openscape χωρίς σύνδεση";
-
-
-/*  */
-"settings.help.section.home_screen_buttons" = "Κουμπιά αρχικής οθόνης";
 
 
 /*  */
@@ -3279,15 +1815,7 @@
 
 
 /*  */
-"help.offline.page_title" = "Γιατί το openscape λειτουργεί εκτός σύνδεσης;";
-
-
-/*  */
 "help.offline.description" = "Όταν δεν υπάρχει σύνδεση στο διαδίκτυο ή γίνεται διακοπή λειτουργίας στις υπηρεσίες Openscape, το openscape μεταβαίνει σε λειτουργία εκτός σύνδεσης. Όμως, το openscape θα συνεχίσει να λειτουργεί, αλλά ορισμένες λειτουργίες μπορεί να είναι περιορισμένες.";
-
-
-/*  */
-"help.offline.limitations_heading" = "Περιορισμοί";
 
 
 /*  */
@@ -3295,15 +1823,7 @@
 
 
 /*  */
-"help.offline.troubleshooting_heading" = "Τι μπορείτε να κάνετε;";
-
-
-/*  */
 "help.offline.troubleshooting_description" = "Το openscape θα προσπαθήσει να συνεχίσει την κανονική λειτουργία όταν το τηλέφωνό σας είναι συνδεδεμένο σε Wi-Fi ή δεδομένα κινητού δικτύου είναι ενεργοποιημένο και βρίσκεστε σε μια περιοχή με καλό σήμα. Εάν το τηλέφωνό σας έχει καλή σύνδεση στο διαδίκτυο, αλλά το openscape δεν συνεχίζει την κανονική λειτουργία, τότε μπορεί να υπάρξει διακοπή στις υπηρεσίες Openscape.";
-
-
-/*  */
-"help.orient.page_title" = "Γύρω μου";
 
 
 /*  */
@@ -3311,15 +1831,7 @@
 
 
 /*  */
-"help.creating_markers.page_title" = "Δημιουργία δεικτών";
-
-
-/*  */
 "help.edit_markers.page_title" = "Εξατομίκευση δεικτών";
-
-
-/*  */
-"help.remote.page_title" = "Χρήση στοιχείων ελέγχου πολυμέσων";
 
 
 /*  */
@@ -3327,15 +1839,7 @@
 
 
 /*  */
-"help.text.section_title.what" = "Τι είναι?";
-
-
-/*  */
 "help.text.section_title.when" = "Πότε θα το χρησιμοποιούσα;";
-
-
-/*  */
-"help.text.section_title.how" = "Πώς λειτουργεί;";
 
 
 /*  */
@@ -3343,15 +1847,7 @@
 
 
 /*  */
-"help.support" = "Υποστήριξη της Openscape Community";
-
-
-/*  */
 "terms_of_use.title" = "Όροι Χρήσης";
-
-
-/*  */
-"terms_of_use.message" = "Η χρήση που κάνετε του Openscape υπόκειται στους όρους του %@ και τους όρους που ορίζονται παρακάτω (εφεξής συνολικά καλούμενοι οι \"Όροι χρήσης\").";
 
 
 /*  */
@@ -3359,15 +1855,7 @@
 
 
 /*  */
-"terms_of_use.service_agreement" = "Συμφωνητικό υπηρεσιών Openscape Community";
-
-
-/*  */
 "terms_of_use.accept_checkbox.acc_label" = "Αποδοχή Όρων Χρήσης";
-
-
-/*  */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Πατήστε δύο φορές για να ελέγξετε το πλαίσιο ελέγχου \"Αποδοχή των όρων χρήσης\"";
 
 
 /*  */
@@ -3375,15 +1863,7 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.on.acc_value" = "Έχει επιλεχθεί";
-
-
-/*  */
 "terms_of_use.accept_checkbox.off.acc_value" = "Δεν έχει επιλεχθεί";
-
-
-/*  */
-"terms_of_use.medical_safety_disclaimer" = "Αναγνωρίζετε ότι το Openscape (1) δεν έχει σχεδιαστεί, δεν προορίζεται ούτε διατίθεται ως ιατροτεχνολογική συσκευή και (2) δεν έχει σχεδιαστεί ή προορίζεται να αντικαταστήσει επαγγελματικές ιατρικές συμβουλές, διάγνωση, θεραπεία ή κρίση και δεν πρέπει να χρησιμοποιείται για να αντικαταστήσει ή ως υποκατάστατο για επαγγελματική ιατρική συμβουλή, διάγνωση, θεραπεία ή κρίση.\n\nΕιδοποίηση ασφαλείας\nΤο openscape είναι ένα βοήθημα περιήγησης και δεν πρέπει να χρησιμοποιείται αντί δεξιοτήτων κινητικότητας, του να έχετε επίγνωση του περιβάλλοντός σας και της ορθής κρίσης. Να προσέχετε όταν περιηγείστε στο περιβάλλον σας καθώς τα δεδομένα χαρτογράφησης που είναι ενσωματωμένα στο πρόγραμμα Openscape καταγράφονται από πρόγραμμα τρίτου και επομένως, μπορεί να υπάρχουν περιορισμοί ως προς την ακρίβεια των παρουσιαζόμενων πληροφοριών.";
 
 
 /*  */
@@ -3391,15 +1871,7 @@
 
 
 /*  */
-"terms_of_use.accept.new_features.accessibility_hint" = "Πατήστε δύο φορές για να αποδεχτείτε και να κλείσετε τις ανακοινώσεις";
-
-
-/*  */
 "first_launch.get_started_button.off.acc_hint" = "Πρέπει να επιλέξετε το πλαίσιο ελέγχου \"Αποδοχή των όρων χρήσης\" για να μπορέσετε να πατήσετε αυτό το κουμπί";
-
-
-/*  */
-"first_launch.welcome_text" = "Καλώς ήρθατε! Πριν ξεκινήσουμε, πρέπει να περάσουμε από κάποια ρύθμιση και να ζητήσουμε αρκετές άδειες. Πατήστε το κουμπί Επόμενο για να ξεκινήσετε.";
 
 
 /*  */
@@ -3407,15 +1879,7 @@
 
 
 /*  */
-"first_launch.permission_required" = "Αυτή η άδεια απαιτείται.";
-
-
-/*  */
 "first_launch.language" = "Γλώσσα Openscape";
-
-
-/*  */
-"first_launch.language.text" = "Επιλέξτε τη γλώσσα που θέλετε να χρησιμοποιεί το Openscape. Μπορείτε πάντα να αλλάξετε την επιλογή σας στις ρυθμίσεις της εφαρμογής.";
 
 
 /*  */
@@ -3423,15 +1887,7 @@
 
 
 /*  */
-"first_launch.location.enable_location" = "Ενεργοποίηση τοποθεσίας";
-
-
-/*  */
 "first_launch.device_motion" = "Κίνηση συσκευής";
-
-
-/*  */
-"first_launch.device_motion.text" = "Αυτό επιτρέπει στο Openscape να βελτιώσει την εμπειρία σας ανάλογα με το αν περπατάτε, βρίσκεστε σε ένα όχημα ή στέκεστε ακίνητοι.";
 
 
 /*  */
@@ -3439,15 +1895,7 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound.text_alt" = "Το openscape χρησιμοποιεί ήχο 3D για να σας ενημερώσει για το τι υπάρχει γύρω σας. Για παράδειγμα, εάν ο προορισμός σας βρίσκεται στα δεξιά σας, θα ακούσετε ήχο που προέρχεται από αυτή την κατεύθυνση. αν ένα καφέ βρίσκεται στα αριστερά σας, θα ακούσετε μια επεξήγηση από αυτή την κατεύθυνση.";
-
-
-/*  */
 "first_launch.heading_somewhere" = "Πηγαίνετε κάπου;";
-
-
-/*  */
-"first_launch.heading_somewhere.text" = "Τοποθετήστε ένα ηχητικό σήμα στον προορισμό σας και το openscape θα σας ενημερώνει για την τοποθεσία του και το περιβάλλον σας, κατά μήκος της της διαδρομής. Χρησιμοποιήστε το Openscape, σε συνδυασμό με τις ικανότητές εύρεσης πορείας σας, ακόμη και την αγαπημένη σας εφαρμογή πλοήγησης, για να βρείτε το δρόμο σας προς τον προορισμό σας.";
 
 
 /*  */
@@ -3455,15 +1903,7 @@
 
 
 /*  */
-"first_launch.setting_off_way.text" = "Αφήστε στην άκρη το τηλέφωνο και περπατήστε. Το openscape θα σας βοηθήσει να παραμείνετε ενήμεροι για το πού βρίσκεστε επεξηγώντας δρόμους, διασταυρώσεις και ορόσημα καθώς τα πλησιάζετε. Οι επεξηγήσεις μπορούν να προσαρμοστούν στις ρυθμίσεις.";
-
-
-/*  */
 "first_launch.find_things_nearby" = "Θέλετε να βρείτε περισσότερα στοιχεία κοντά;";
-
-
-/*  */
-"first_launch.find_things_nearby.text" = "Κρατήστε το τηλέφωνό σας επίπεδο στο χέρι σας και χρησιμοποιήστε τα κουμπιά για να εντοπίσετε δρόμους και επερχόμενες διασταυρώσεις, να προσανατολιστείτε σε σχέση με γνωστά ορόσημα γύρω σας και να εξερευνήσετε ορόσημα μπροστά σας.";
 
 
 /*  */
@@ -3471,15 +1911,7 @@
 
 
 /*  */
-"first_launch.welcome.title.accessibility_label" = "Καλώς ήρθατε στο Openscape!";
-
-
-/*  */
 "first_launch.welcome.description" = "Περιηγηθείτε με εμπιστοσύνη χρησιμοποιώντας τον χωρικό ήχο του Openscape";
-
-
-/*  */
-"first_launch.welcome.button" = " Γρήγορα αποτελέσματα";
 
 
 /*  */
@@ -3487,15 +1919,7 @@
 
 
 /*  */
-"first_launch.headphones.message.1" = "Το openscape λειτουργεί τέλεια με οποιοδήποτε ζεύγος ακουστικών. Εάν θέλετε να χρησιμοποιήσετε ακουστικά, πάρτε τα τώρα.";
-
-
-/*  */
 "first_launch.headphones.message.2" = "Εάν δεν έχετε ακουστικά ή προτιμάτε να μη τα χρησιμοποιήσετε, δεν πειράζει! Το openscape θα λειτουργήσει με τα ηχεία του τηλεφώνου σας.";
-
-
-/*  */
-"first_launch.callouts.title" = "Ακούστε το περιβάλλον σας";
 
 
 /*  */
@@ -3503,15 +1927,7 @@
 
 
 /*  */
-"first_launch.callouts.listen" = "Ακούστε ένα παράδειγμα του τι μπορεί να πει το openscape στην επόμενη βόλτα σας";
-
-
-/*  */
 "first_launch.callouts.listen.accessibility_label" = "Ακρόαση";
-
-
-/*  */
-"first_launch.callouts.listen.accessibility_hint" = "Πατήστε δύο φορές για να ακούσετε ένα παράδειγμα του τι μπορεί να πει το openscape στην επόμενη βόλτα σας";
 
 
 /*  */
@@ -3519,15 +1935,7 @@
 
 
 /*  */
-"first_launch.callouts.example.3" = "Ο κεντρικός δρόμος πάει αριστερά";
-
-
-/*  */
 "first_launch.callouts.example.4" = "Ο κεντρικός δρόμος πάει δεξιά";
-
-
-/*  */
-"first_launch.permissions.title" = "Περιήγηση με το Openscape";
 
 
 /*  */
@@ -3535,15 +1943,7 @@
 
 
 /*  */
-"first_launch.permissions.location" = "Υπηρεσίες τοποθεσίας με ακριβή τοποθεσία";
-
-
-/*  */
 "first_launch.permissions.motion" = "Κίνηση και άθληση";
-
-
-/*  */
-"first_launch.permissions.required" = "Αυτή η άδεια απαιτείται";
 
 
 /*  */
@@ -3551,15 +1951,7 @@
 
 
 /*  */
-"first_launch.beacon.message.1" = "Όταν περιηγείστε με το Openscape, θα ακούτε το ηχητικό σήμα προς την κατεύθυνση του προορισμού σας. Ακολουθώντας τον ήχο του, θα γνωρίζετε πάντα προς τα που να κατευθυνθείτε.";
-
-
-/*  */
 "first_launch.beacon.message.2" = "Ακούστε τα διαθέσιμα ηχητικά σήματα και επιλέξτε την προτίμησή σας.";
-
-
-/*  */
-"first_launch.beacon.message.3" = "Αυτό μπορεί να αλλάξει αργότερα στις ρυθμίσεις της εφαρμογής.";
 
 
 /*  */
@@ -3567,15 +1959,7 @@
 
 
 /*  */
-"first_launch.beacon.audio.title" = "Χωρικό ηχητικό σήμα";
-
-
-/*  */
 "first_launch.beacon.audio.message" = "Το ηχητικό σήμα ακολουθεί την κίνηση του τηλεφώνου σας και χρησιμοποιείτε χωρικό ήχο, έτσι ώστε να γνωρίζετε πάντα τη θέση του.";
-
-
-/*  */
-"first_launch.beacon.callout.standard" = "Τοποθέτηση ηχητικού σήματος στα δεξιά σας. Στρέψτε το τηλέφωνό σας για να ακολουθήσετε τον ήχο και να βιώσετε τον χωρικό ήχο του ηχητικού σήματος.";
 
 
 /*  */
@@ -3583,15 +1967,7 @@
 
 
 /*  */
-"first_launch.beacon.callout.headtracking.standard" = "Τοποθέτηση ηχητικού σήματος στα δεξιά σας. Στρίψτε για να ακολουθήσετε τον ήχο και βιώστε τον χωρικό ήχο του ηχητικού σήματος.";
-
-
-/*  */
 "first_launch.beacon.callout.headtracking.haptic" = "Τοποθέτηση ηχητικού σήματος μπροστά σας. Στρέψτε αριστερά και δεξιά για να λάβετε τα απτικά σχόλια του ηχητικού σήματος.";
-
-
-/*  */
-"first_launch.beacon.callout.ahead" = "Ηχητικό σήμα μπροστά";
 
 
 /*  */
@@ -3599,15 +1975,7 @@
 
 
 /*  */
-"first_launch.prompt.title" = "Είστε έτοιμοι!";
-
-
-/*  */
 "first_launch.prompt.message" = "Είστε έτοιμοι για την επόμενη βόλτα με το Openscape. Για να το δοκιμάσετε τώρα, απλά επιλέξτε έναν κοντινό προορισμό, ξεκινήστε το ηχητικό σήμα και θα το ακούσετε προς την κατεύθυνση του προορισμού σας.";
-
-
-/*  */
-"first_launch.prompt.button" = "Τέλος";
 
 
 /*  */
@@ -3615,15 +1983,7 @@
 
 
 /*  */
-"help.text.destination_beacons.what" = "Η ρύθμιση ενός ηχητικού σήματος σε μια κοντινή τοποθεσία επιτρέπει στο openscape να σας ενημερώνει αναπαράγοντας ένα ηχητικό σήμα που προέρχεται από την κατεύθυνση αυτής της τοποθεσίας. Αυτό το ηχητικό σήμα μπορεί να βρίσκεται σε σίγαση ή όχι, στην αρχική οθόνη. Επιπλέον, το openscape εμφανίζει πληροφορίες σχετικά με την τοποθεσία στην αρχική οθόνη, συμπεριλαμβανομένης της απόστασης από αυτήν και της διεύθυνσης του δρόμου, εάν είναι γνωστή.";
-
-
-/*  */
 "help.text.destination_beacons.when" = "Η ρύθμιση ενός ηχητικού σήματος είναι χρήσιμη όταν θέλετε να παρακολουθείτε ένα οικείο ορόσημο καθώς εξερευνάτε μια νέα περιοχή ή όταν πάτε κάπου και θέλετε να ενημερωθείτε για το περιβάλλον σας στην πορεία. Η λειτουργία ηχητικού σήματος δεν σας δίνει οδηγίες στροφή προς στροφή, αλλά σας δίνει έναν συνεχή ήχο που σας λέει την κατεύθυνση προς το ηχητικό σήμα, σε σχέση με το πού βρίσκεστε εκείνη τη στιγμή. Χρησιμοποιώντας το ηχητικό σήμα, τις υπάρχουσες δεξιότητές σας στην εύρεση πορείας, ακόμη και την αγαπημένη σας εφαρμογή πλοήγησης, μπορείτε να επιλέξετε μόνοι σας πώς θέλετε να φτάσετε σε κοντινές τοποθεσίες.";
-
-
-/*  */
-"help.text.destination_beacons.how.1" = "<b>Για να ορίσετε ένα ηχητικό σήμα</b>:<br/> Πρώτον, προβάλετε τις λεπτομέρειες για μια θέση, είτε χρησιμοποιώντας τη γραμμή αναζήτησης για να αναζητήσετε ένα μέρος, είτε πατώντας ένα από τα κουμπιά \"Τοποθεσίες κοντά\", \"Αποθηκευμένοι δείκτες\", ή \"Τρέχουσα τοποθεσία\" και επιλέγοντας μια θέση. Από την οθόνη λεπτομερειών τοποθεσίας μπορείτε να επιλέξετε το κουμπί \"Έναρξη ηχητικού σήματος\". Πατώντας αυτό θα επιστρέψετε στην αρχική οθόνη και θα ενεργοποιήσετε ένα ηχητικό σήμα που προέρχεται από την κατεύθυνση του τόπου που επιλέξατε. Το όνομα του τόπου που έχετε επιλέξει μαζί με την απόσταση και τη φυσική του διεύθυνση, εάν υπάρχει, θα εμφανίζεται τώρα στην κύρια οθόνη της εφαρμογής.";
 
 
 /*  */
@@ -3631,15 +1991,7 @@
 
 
 /*  */
-"help.text.destination_beacons.how.3" = "<b>Για να σίγαση του ηχητικού σήματος</b>:<br/> Πατήστε το κουμπί \"Σίγαση ηχητικού σήματος\" κάτω από το κουμπί \"Κατάργηση ηχητικού σήματος\" στην αρχική οθόνη.";
-
-
-/*  */
 "help.text.automatic_callouts.what" = "Το openscape μπορεί να σας πει για τα πράγματα γύρω σας καθώς τα πλησιάζετε φωνάζοντας το όνομά τους από την κατεύθυνση στην οποία βρίσκονται. Η εφαρμογή θα το κάνει αυτόματα για όλα τα είδη των στοιχείων όπως επιχειρήσεις, στάσεις λεωφορείων, ακόμη και διασταυρώσεις. Μπορείτε να ρυθμίσετε τις παραμέτρους των επεξηγήσεων που καλεί αυτόματα η εφαρμογή στην ενότητα \"Διαχείριση επεξηγήσεων\" της οθόνης \"Ρυθμίσεις\" και μπορείτε να απενεργοποιήσετε όλες τις επεξηγήσεις όταν θέλετε η εφαρμογή να είναι αθόρυβη.";
-
-
-/*  */
-"help.text.automatic_callouts.when.1" = "<b>Εξερευνώντας μια νέα περιοχή</b>:<br/> Ενεργοποιήστε τις αυτόματες επεξηγήσεις και περπατήστε για να μάθετε για όλα τα διαφορετικά καταστήματα, εστιατόρια κ.ά. καθώς τα προσπερνάτε.";
 
 
 /*  */
@@ -3647,15 +1999,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.when.3" = "<b>Όταν χρειάζεστε σιωπή</b>:<br/> Όταν πρόκειται να διασχίσετε ένα δρόμο. απλά θέλετε. εφαρμογή για να κάνει ησυχία, μπορείτε να απενεργοποιήσετε τις επεξηγήσεις. Όταν οι επεξηγήσεις είναι απενεργοποιημένες, η εφαρμογή θα σας ενημερώσει για πληροφορίες μόνο με μη αυτόματο τρόπο, πατώντας ένα από τα κουμπιά <em>\"Η τοποθεσία μου\"</em>, <em>\"Κοντινοί δείκτες\"</em>, <em>\"Γύρω μου\"</em> ή <em>\"Μπροστά μου\"</em>.";
-
-
-/*  */
 "help.text.automatic_callouts.how.1" = "<b>Ενεργοποίηση ή απενεργοποίηση των επεξηγήσεων</b>:<br/> Η απενεργοποίηση των επεξηγήσεων θα βάλει σε σίγαση την εφαρμογή. Οι επεξηγήσεις μπορούν να ενεργοποιηθούν ή να απενεργοποιηθούν στην ενότητα \"Διαχείριση επεξηγήσεων\" της οθόνης \"Ρυθμίσεις\", όπου μπορείτε να πατήσετε την εναλλαγή \"Να επιτρέπονται οι επεξηγήσεις\" για να ενεργοποιήσετε ή να απενεργοποιήσετε τις προσέλευση. Μπορείτε επίσης να ενεργοποιήσετε ή να απενεργοποιήσετε τις ακυρώσεις προσέλευσης χρησιμοποιώντας την εντολή \"παράλειψη προς τα εμπρός\" (διπλό πάτημα και κράτημα) εάν τα ακουστικά σας έχουν κουμπιά χειριστήριων πολυμέσων. Εναλλακτικά, μπορείτε να χρησιμοποιήσετε το κουμπί \"Αναστολή λειτουργίας\" στην επάνω δεξιά γωνία της αρχικής οθόνης για να σταματήσετε το openscape από το να κάνει επεξηγήσεις μέχρι να επιλέξετε να το ενεργοποιήσετε ξανά.";
-
-
-/*  */
-"help.text.automatic_callouts.how.2" = "<b>Διαχείριση των επεξηγήσεων που ακούτε</b>:<br/> Για να επιλέξετε τους τύπους των στοιχείων που θα επεξηγήσει αυτόματα το Openscape, μεταβείτε στην οθόνη \"Ρυθμίσεις\" χρησιμοποιώντας το μενού στην οθόνη \"Αρχική\". Η ενότητα \"Διαχείριση επεξηγήσεων\" της οθόνης \"Ρυθμίσεις\" περιέχει μια λίστα τύπων στοιχείων που μπορεί να επεξηγήσει η εφαρμογή. Κάθε στοιχείο έχει ένα κουμπί εναλλαγής που μπορείτε να ενεργοποιήσετε. να απενεργοποιήσετε. Αν θέλετε να απενεργοποιήσετε όλες τις επεξηγήσεις, πατήστε την εναλλαγή \"Να επιτρέπονται οι επεξηγήσεις\" στο επάνω μέρος της λίστας.";
 
 
 /*  */
@@ -3663,15 +2007,7 @@
 
 
 /*  */
-"help.text.my_location.when" = "<em>\"Η τοποθεσία μου\"</em> είναι χρήσιμη όταν πρέπει να καταλάβετε πού βρίσκεστε ή ποια βασική κατεύθυνση αντιμετωπίζετε.";
-
-
-/*  */
 "help.text.my_location.how" = "Όπως και με τα τέσσερα κουμπιά στο κάτω μέρος της αρχικής οθόνης, κρατήστε το τηλέφωνό σας με την οθόνη επίπεδη.στραμμένη προς τον ουρανό) και το επάνω μέρος του τηλεφώνου στραμμένο προς την κατεύθυνση που κοιτάτε πριν πατήσετε το κουμπί <em>\"Η τοποθεσία μου\"</em>. Αυτό λειτουργεί σαν πυξίδα που λέει στην εφαρμογή προς ποια κατεύθυνση στρέφεστε. Απλά, πατήστε το κουμπί <em>\"Η τοποθεσία μου\"</em> και ακούστε.";
-
-
-/*  */
-"help.text.nearby_markers.what" = "Το κουμπί <em>\"Κοντινοί δείκτες\"</em> σας ενημερώνει για έως και τέσσερις δείκτες που βρίσκονται πιο κοντά σας. Το <em>\"Κοντινοί δείκτες\"</em> προορίζεται να σας βοηθήσει να προσανατολιστείτε χρησιμοποιώντας μέρη που γνωρίζετε ήδη.";
 
 
 /*  */
@@ -3679,15 +2015,7 @@
 
 
 /*  */
-"help.text.nearby_markers.how" = "Όπως και με τα τέσσερα κουμπιά στο κάτω μέρος της αρχικής οθόνης, κρατήστε το τηλέφωνό σας με την οθόνη επίπεδη.στραμμένη προς τον ουρανό) και το επάνω μέρος του τηλεφώνου στραμμένο προς την κατεύθυνση που κοιτάτε πριν πατήσετε το κουμπί <em>\"Κοντινοί δείκτες\"</em>. Αυτό λειτουργεί σαν πυξίδα που λέει στην εφαρμογή προς ποια κατεύθυνση αντιμετωπίζετε. Απλά, πατήστε το κουμπί <em>\"Κοντινοί δείκτες\"</em> και θα ακούσετε έως και τέσσερις δείκτες κοντά σας.";
-
-
-/*  */
 "help.text.around_me.what" = "Το κουμπί <em>\"Γύρω μου\"</em> σας λέει για ένα πράγμα σε καθένα από τα τέσσερα τεταρτημόρια γύρω σας (μπροστά, δεξιά, πίσω και αριστερά). Το <em>\"Γύρω μου\"</em> έχει ως στόχο να σας βοηθήσει να προσανατολιστείτε στο περιβάλλον σας.";
-
-
-/*  */
-"help.text.around_me.when" = "Όταν προσπαθείτε να βρείτε την πορεία σας και να προσανατολίζεστε στο περιβάλλον σας, χρησιμοποιήστε το <em>\"Γύρω μου\"</em> για να ακούσετε για τα πράγματα γύρω σας.";
 
 
 /*  */
@@ -3695,15 +2023,7 @@
 
 
 /*  */
-"help.text.ahead_of_me.what" = "Το κουμπί <em>\"Μπροστά μου\"</em> σας λέει για τέσσερα πράγματα μπροστά σας. Το <em>\"Μπροστά μου\"</em> έχει ως στόχο να σας βοηθήσει να εξερευνήσετε το δρόμο μπροστά σας, καθώς μαθαίνετε για μια νέα περιοχή.";
-
-
-/*  */
 "help.text.ahead_of_me.when" = "Όταν περπατάτε στο δρόμο, Προσπαθήστε να χρησιμοποιήσετε το <em>\"Μπροστά μου\"</em> για να ανακαλύψετε τα μέρη και τα πράγματα που έρχονται σε κάθε πλευρά του δρόμου μπροστά σας.";
-
-
-/*  */
-"help.text.ahead_of_me.how" = "Όπως και με τα τέσσερα κουμπιά στο κάτω μέρος της αρχικής οθόνης, κρατήστε το τηλέφωνό σας με την οθόνη επίπεδη (στραμμένη προς τον ουρανό) και το επάνω μέρος του τηλεφώνου στραμμένο προς την κατεύθυνση που κοιτάτε πριν πατήσετε το κουμπί <em>\"Μπροστά μου\"</em>. Αυτό λειτουργεί σαν πυξίδα που λέει στην εφαρμογή προς ποια κατεύθυνση αντιμετωπίζετε. Απλά, πατήστε το κουμπί<em>\"Μπροστά μου\"</em> και θα ακούσετε για πολλά σημεία ενδιαφέροντος που βρίσκονται μπροστά σας.";
 
 
 /*  */
@@ -3711,15 +2031,7 @@
 
 
 /*  */
-"help.text.remote_control.when" = "Τα χειριστήρια πολυμέσων ακουστικών μπορούν να χρησιμοποιηθούν κατά την εκτέλεση του Openscape. Αυτό ισχύει είτε βρίσκεστε στο openscape είτε ενώ το openscape βρίσκεστε στο παρασκήνιο, και ακόμη και όταν η συσκευή σας είναι κλειδωμένη. Θυμηθείτε, ωστόσο, ότι τα κουμπιά χειριστήριων πολυμέσων ακουστικών δεν θα λειτουργούν στο openscape αν αναπαράγετε ήχο όπως μουσική, podcast. βίντεο με άλλη εφαρμογή.";
-
-
-/*  */
 "help.text.remote_control.how" = "<p>Μπορείτε να αποκτήσετε πρόσβαση στις ακόλουθες λειτουργίες στο openscape χρησιμοποιώντας τα κουμπιά χειριστήριων πολυμέσων στα ακουστικά σας:<p><br>&#x23EF Αναπαραγωγή/Παύση: Σίγαση οποιωνδήποτε τρεχουσών επεξηγήσεων και αν έχει ρυθμιστεί το ηχητικό σήμα, εναλλαγή του ηχητικού σήματος. </p><p>&#x23ED Επόμενο: Επεξήγηση <em>\"Η τοποθεσία μου\"</em>.</p><p>&#x23EE Προηγούμενο: Επαναλάβετε την τελευταία επεξήγηση.</p><p>&#x23E9 Μετάβαση προς τα εμπρός: Εναλλαγή επεξηγήσεων εντός και εκτός.</p><p>&#x23EA Μια μετάβαση προς τα πίσω: Επεξήγηση <em>\"Γύρω μου\"</em>.</p>";
-
-
-/*  */
-"help.text.markers.content.1" = "Με το Openscape, μπορείτε να επισημάνετε τον κόσμο σας και οτιδήποτε σας ενδιαφέρει.";
 
 
 /*  */
@@ -3727,15 +2039,7 @@
 
 
 /*  */
-"help.text.markers.content.3" = "Για να αντιμετωπίσετε επισημασμένες τοποθεσίες, το openscape θα επεξηγεί αυτόματα επισημασμένες θέσεις καθώς περπατάτε ή τις πλησιάζετε, ή μπορείτε επίσης να χρησιμοποιήσετε το κουμπί Κοντινοί δείκτες στο κάτω μέρος της αρχικής οθόνης του openscape για να ακούσετε μια χωρική επεξήγηση από επισημασμένες θέσεις γύρω σας. Επιπλέον, έχετε τη δυνατότητα να ορίσετε ένα ηχητικό σήμα σε οποιοδήποτε σημειωμένο μέρος. Όταν το κάνετε αυτό, το ηχητικό σήμα openscape με τον οποίο είστε εξοικειωμένοι, θα ακουστεί και μπορείτε να το χειριστείτε ως συνήθως.";
-
-
-/*  */
 "help.text.creating_markers.content.1" = "Μπορείτε να δημιουργήσετε δείκτες με τρεις τρόπους: αναζήτηση για το μέρος που θέλετε να αποθηκεύσετε χρησιμοποιώντας τη γραμμή αναζήτησης, εύρεση χρησιμοποιώντας το κουμπί \"Τοποθεσίες κοντά\" ή χρησιμοποιώντας το κουμπί \"Χρήση τρέχουσας τοποθεσίας\", τα οποία μπορείτε να βρείτε στην αρχική οθόνη του Openscape. Μόλις βρείτε το μέρος που θέλετε, η επιλογή του θα σας μεταφέρει στη σελίδα \"Λεπτομέρειες τοποθεσίας\". Σε αυτήν τη σελίδα, επιλέξτε το κουμπί που ονομάζεται \"Αποθήκευση δείκτη\".";
-
-
-/*  */
-"help.text.creating_markers.content.2" = "Τώρα θα έχετε την επιλογή να προσαρμόσετε αυτόν τον δείκτη. Αυτό το βήμα είναι προαιρετικό. Εάν θέλετε, μπορείτε να αλλάξετε το όνομα του δείκτη και επίσης να προσθέσετε ένα σχόλιο που θα επεξηγηθεί μαζί με το δείκτη για να δοθούν μερικές επιπλέον πληροφορίες. Μόλις τελειώσετε, επιλέξτε το κουμπί \"Τέλος\" για να αποθηκεύσετε το δείκτη σας.  ";
 
 
 /*  */
@@ -3743,15 +2047,7 @@
 
 
 /*  */
-"help.text.customizing_markers.content.2" = "Από αυτήν την οθόνη επεξεργασίας, μπορείτε επίσης να διαγράψετε έναν δείκτη, εάν δεν τον χρειάζεστε πλέον.";
-
-
-/*  */
 "help.text.routes.content.what" = "Οι διαδρομές είναι μια σειρά από σημεία πορείας. Θα ενημερωθείτε κατά την άφιξη σε κάθε σημείο πορείας και το Ηχητικό σήμα θα προχωρήσει αυτόματα στο επόμενο σημείο πορείας.";
-
-
-/*  */
-"help.text.routes.content.when" = "Μπορεί να θέλετε να δημιουργήσετε και να χρησιμοποιήσετε μια διαδρομή κάπου που γνωρίζετε για να βεβαιωθείτε ότι βρίσκεστε στον σωστό δρόμο ή μπορεί να θέλετε να τη χρησιμοποιήσετε ως εργαλείο για να εξοικειωθείτε σε ένα νέο ταξίδι.";
 
 
 /*  */
@@ -3759,15 +2055,7 @@
 
 
 /*  */
-"help.text.routes.content.how.2" = "<b>Επεξεργασία διαδρομής</b>:<br> Επιλέξτε τη διαδρομή σας στη σελίδα \"Δείκτες και διαδρομές\" και, στη συνέχεια, επιλέξτε \"Επεξεργασία διαδρομής\". Από εδώ μπορείτε να προσθέσετε και να καταργήσετε σημεία, καθώς και να επεξεργαστείτε το όνομα και την περιγραφή της διαδρομής.";
-
-
-/*  */
 "help.text.routes.content.how.3" = "<b>Κοινή χρήση διαδρομής</b>:<br> Επιλέξτε τη διαδρομή σας στη σελίδα \"Δείκτες και Διαδρομές\" και, στη συνέχεια, ενεργοποιήστε την επιλογή \"Κοινή χρήση\" χρησιμοποιώντας όλες τις συνήθεις επιλογές κοινής χρήσης που έχετε στη διάθεσή σας.";
-
-
-/*  */
-"help.using_headsets.airpods.what" = "Το openscape υποστηρίζει τον χωρικό ήχο με δυναμική παρακολούθηση κεφαλής όταν χρησιμοποιείτε συμβατά AirPods. Όταν συνδέονται στο Openscape, οι αισθητήρες στα AirPods λένε στο openscape την κατεύθυνση στην οποία είναι στραμμένο το κεφάλι. Αυτό βοηθά το openscape να βελτιώσει την εμπειρία ήχου σας καθιστώντας το πιο φυσικό καθώς μετακινήστε στον κόσμο. Όταν χρησιμοποιείτε το openscape με συνδεδεμένα τα AirPods, δεν χρειάζεται να κρατάτε το τηλέφωνο ώστε να λειτουργεί σωστά το Openscape.";
 
 
 /*  */
@@ -3775,15 +2063,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.how.1" = "<b>Σύνδεση συσκευής</b>:<br/> Μεταβείτε στο στοιχείο \"Ακουστικά Head Tracking\" στο μενού openscape για να συνδέσετε τα AirPods σας και ακολουθήσετε τις οδηγίες που εμφανίζονται στην οθόνη. Θυμηθείτε ότι θα χρειαστεί να κάνετε σύζευξη των AirPods σας με το τηλέφωνό σας στις ρυθμίσεις Bluetooth, πριν τα συνδέσετε στο Openscape.";
-
-
-/*  */
 "help.using_headsets.airpods.how.2" = "<b>Χρήση των στοιχείων ελέγχου πολυμέσων στα ακουστικά σας</b>:<br/> Όταν τα στοιχεία ελέγχου πολυμέσων είναι ενεργοποιημένα στις ρυθμίσεις Openscape, μπορείτε να χρησιμοποιήσετε τα στοιχεία ελέγχου πολυμέσων στα AirPods σας για σίγαση ή κατάργηση σίγασης του ηχητικού σήματος, να επεξηγήσετε την τοποθεσία σας ή να επαναλάβετε την τελευταία επεξήγηση. Για περισσότερες πληροφορίες, ανατρέξτε στην ενότητα βοήθειας \"Χρήση στοιχείων ελέγχου πολυμέσων\".";
-
-
-/*  */
-"osm.tag.crossing" = "Διάβαση πεζών";
 
 
 /*  */
@@ -3791,15 +2071,7 @@
 
 
 /*  */
-"osm.tag.dangerous_area" = "Επικίνδυνη περιοχή";
-
-
-/*  */
 "osm.tag.townhall" = "Δημαρχείο";
-
-
-/*  */
-"osm.tag.steps" = "Σκαλιά";
 
 
 /*  */
@@ -3807,15 +2079,7 @@
 
 
 /*  */
-"osm.tag.walking_path" = "Μονοπάτι πεζοπορίας";
-
-
-/*  */
 "osm.tag.pedestrian_street" = "Πεζόδρομος";
-
-
-/*  */
-"osm.tag.bicycle_path" = "Ποδηλατόδρομος";
 
 
 /*  */
@@ -3823,15 +2087,7 @@
 
 
 /*  */
-"osm.tag.service_road" = "Βοηθητική οδός";
-
-
-/*  */
 "osm.tag.road" = "Δρόμος";
-
-
-/*  */
-"osm.tag.highway" = "Αυτοκινητόδρομος";
 
 
 /*  */
@@ -3839,15 +2095,7 @@
 
 
 /*  */
-"osm.tag.highway.refed" = "Αυτοκινητόδρομος %@";
-
-
-/*  */
 "osm.tag.intersection" = "Διασταύρωση";
-
-
-/*  */
-"osm.tag.roundabout" = "Κυκλικός κόμβος";
 
 
 /*  */
@@ -3855,15 +2103,7 @@
 
 
 /*  */
-"osm.tag.merging_lane" = "Λωρίδα συγχώνευσης";
-
-
-/*  */
 "osm.tag.office_building" = "Κτίριο γραφείων";
-
-
-/*  */
-"osm.tag.school_building" = "Σχολικό κτίριο";
 
 
 /*  */
@@ -3871,15 +2111,7 @@
 
 
 /*  */
-"osm.tag.convenience_store" = "Ψιλικατζίδικο";
-
-
-/*  */
 "osm.tag.building_entrance" = "Είσοδος κτιρίου";
-
-
-/*  */
-"osm.tag.assembly_point" = "Σημείο συναρμολόγησης";
 
 
 /*  */
@@ -3887,15 +2119,7 @@
 
 
 /*  */
-"osm.tag.turnstile" = "Τουρνικέ";
-
-
-/*  */
 "osm.tag.cattle_grid" = "Σχάρα προστασίας";
-
-
-/*  */
-"osm.tag.gate" = "Πύλη";
 
 
 /*  */
@@ -3903,15 +2127,7 @@
 
 
 /*  */
-"osm.tag.parking_lot" = "Χώρος στάθμευσης";
-
-
-/*  */
 "osm.tag.parking_entrance" = "Είσοδος στάθμευσης";
-
-
-/*  */
-"osm.tag.bench" = "Παγκάκι";
 
 
 /*  */
@@ -3919,15 +2135,7 @@
 
 
 /*  */
-"osm.tag.post_office" = "Ταχυδρομείο";
-
-
-/*  */
 "osm.tag.post_box" = "Ταχυδρομική θυρίδα";
-
-
-/*  */
-"osm.tag.waste_basket" = "Καλάθι αχρήστων";
 
 
 /*  */
@@ -3935,15 +2143,7 @@
 
 
 /*  */
-"osm.tag.bike_parking" = "Χώρος στάθμευσης ποδηλάτων";
-
-
-/*  */
 "osm.tag.cafe" = "Καφέ";
-
-
-/*  */
-"osm.tag.restaurant" = "Εστιατόριο";
 
 
 /*  */
@@ -3951,15 +2151,7 @@
 
 
 /*  */
-"osm.tag.gas_station" = "Πρατήριο καυσίμων";
-
-
-/*  */
 "osm.tag.bank" = "Τράπεζα";
-
-
-/*  */
-"osm.tag.atm" = "ATM";
 
 
 /*  */
@@ -3967,15 +2159,7 @@
 
 
 /*  */
-"osm.tag.atm.refed" = "ATM %@";
-
-
-/*  */
 "osm.tag.bus_stop" = "Στάση";
-
-
-/*  */
-"osm.tag.bus_stop.named" = "%@ Στάση";
 
 
 /*  */
@@ -3983,15 +2167,7 @@
 
 
 /*  */
-"osm.tag.recycling_bin" = "Κάδος ανακύκλωσης";
-
-
-/*  */
 "osm.tag.fountain" = "Σιντριβάνι";
-
-
-/*  */
-"osm.tag.place_of_worship" = "Τόπος Λατρείας";
 
 
 /*  */
@@ -3999,15 +2175,7 @@
 
 
 /*  */
-"osm.tag.car_wash" = "Πλυντήριο αυτοκινήτων";
-
-
-/*  */
 "osm.tag.vending_machine" = "Αυτόματος πωλητής";
-
-
-/*  */
-"osm.tag.playground" = "Παιδική χαρά";
 
 
 /*  */
@@ -4015,15 +2183,7 @@
 
 
 /*  */
-"osm.tag.swimming_pool" = "Πισίνα";
-
-
-/*  */
 "osm.tag.garden" = "Κήπος";
-
-
-/*  */
-"osm.tag.park" = "Πάρκο";
 
 
 /*  */
@@ -4031,15 +2191,7 @@
 
 
 /*  */
-"osm.tag.picnic_area" = "Περιοχή πικνίκ";
-
-
-/*  */
 "banner.custom_behavior.scavenger_hunt" = "Το κυνήγι θησαυρού είναι ενεργό.";
-
-
-/*  */
-"banner.custom_behavior.scavenger_hunt.hint" = "Πατήστε δύο φορές για να διαβάσετε για ή να θέσετε σε παύση το κυνήγι θησαυρού.";
 
 
 /*  */
@@ -4047,15 +2199,7 @@
 
 
 /*  */
-"banner.offline_help.message" = "Το openscape λειτουργεί εκτός σύνδεσης.";
-
-
-/*  */
 "banner.offline_search.message" = "Το openscape λειτουργεί εκτός σύνδεσης. Οι τοποθεσίες περιορίζονται σε μέρη που έχετε περπατήσει στο παρελθόν ή έχετε ήδη επισημάνει. Μάθε περισσότερα";
-
-
-/*  */
-"banner.online.message" = "Το openscape είναι και πάλι συνδεδεμένο";
 
 
 /*  */
@@ -4063,15 +2207,7 @@
 
 
 /*  */
-"share.prompt.title" = "Απολαμβάνετε το Openscape;";
-
-
-/*  */
 "share.prompt.message" = "Ενημερώστε τους φίλους και την οικογένειά σας για το Openscape";
-
-
-/*  */
-"share.action.message" = "Δοκιμάστε το Openscape, μια εφαρμογή που απολαμβάνω να χρησιμοποιώ για πλοήγηση με ήχο 3D:";
 
 
 /*  */
@@ -4079,15 +2215,7 @@
 
 
 /*  */
-"push.local.home.body" = "Απλά επιλέξτε έναν κοντινό προορισμό, ξεκινήστε το ηχητικό σήμα και θα το ακούσετε προς την κατεύθυνση του προορισμού σας.";
-
-
-/*  */
 "push.local.walk.title" = "Δοκιμάστε το openscape στην επόμενη βόλτα σας";
-
-
-/*  */
-"push.local.walk.body" = "Απλά ξεκινήστε την εφαρμογή και απολαύστε την εμπειρία. Δεν χρειάζεται καν να επιλέξετε προορισμό.";
 
 
 /*  */
@@ -4095,15 +2223,7 @@
 
 
 /*  */
-"faq.title" = "Συνήθεις ερωτήσεις";
-
-
-/*  */
 "faq.title.abbreviated" = "Συνήθεις ερωτήσεις";
-
-
-/*  */
-"faq.tips.title" = "Συμβουλές";
 
 
 /*  */
@@ -4111,15 +2231,7 @@
 
 
 /*  */
-"faq.markers_function.answer" = "Οι δείκτες είναι μέρη που έχετε αποθηκεύσει. Θα μπορούσαν να είναι μέρη που μπορούν να ανακαλυφθούν μέσα στην εφαρμογή. θα μπορούσαν να είναι εντελώς νέα μέρη που έχετε προσθέσει ο ίδιος. Μπορείτε να αποθηκεύσετε την τρέχουσα θέση σας ως δείκτη επιλέγοντας το κουμπί \"Χρήση τρέχουσας τοποθεσίας\" στην αρχική οθόνη και, στη συνέχεια, επιλέγοντας \"Αποθήκευση ως δείκτη\". Μπορείτε να αποθηκεύσετε άλλες τοποθεσίες ως δείκτες, αναζητώντας το μέρος που θέλετε να αποθηκεύσετε χρησιμοποιώντας τη γραμμή αναζήτησης ή βρίσκοντας τις χρησιμοποιώντας το κουμπί \"Τοποθεσίες κοντά\", και τα δύο μπορούν να βρεθούν στην openscape αρχική οθόνη. Μόλις βρείτε το μέρος που θέλετε, η επιλογή του θα σας μεταφέρει στη σελίδα \"Λεπτομέρειες τοποθεσίας\". Σε αυτήν τη σελίδα, επιλέξτε το κουμπί που ονομάζεται \"Αποθήκευση ως δείκτη\".";
-
-
-/*  */
 "faq.section.getting_the_best_experience" = "Πώς μπορώ να εποφελιθώ περισσότερο από το Openscape;";
-
-
-/*  */
-"faq.what_can_I_set.question" = "Τι μπορώ να ορίζω ως ηχητικό σήμα;";
 
 
 /*  */
@@ -4127,15 +2239,7 @@
 
 
 /*  */
-"faq.how_to_use_beacon.question" = "Πώς μπορώ να χρησιμοποιήσω ένα ηχητικό σήμα σαν επαγγελματίας;";
-
-
-/*  */
 "faq.how_to_use_beacon.answer" = "Μπορείτε να σκεφτείτε το ηχητικό σήμα ως \"φάρο για τα αυτιά\", ειδοποιώντας σας για το πού είναι ο προορισμός σας, σε σχέση με την τοποθεσία σας, καθώς το κοράκι πετάει. Όπως ένας φάρος, δεν σας λέει πώς να φτάσετε εκεί - ίσως χρειαστεί να κάνετε πολλές επιλογές πλοήγησης κατά μήκος της της διαδρομής, ακριβώς όπως ένα ιστιοφόρο θα πρέπει να κάνει πολλά στρατηγικά \"τακ\" για να φτάσει πιο κοντά στην ειδοποίηση. Ο συνεχής ρυθμικός ήχος του ηχητικού σήματος χωρικότητας από την κατεύθυνση του προορισμού, σας βοηθά να έχετε επίγνωση της θέσης τοποθεσίας του προορισμού σε σχέση με εσάς καθώς περπατάτε. Όταν περπατάτε απευθείας προς τον προορισμό ή κατευθύνετε το τηλέφωνο προς τον προορισμό, θα ακουστεί ένας ήχος με υψηλότερο τόνο \"κουδουνίσματος\". Αυτή η λειτουργία σας επιτρέπει να εντοπίσετε την κατεύθυνση του προορισμού, καθώς η κατεύθυνση του ρυθμικού ήχου μπορεί μερικές φορές να είναι δύσκολο να γίνει αντιληπτή σε δυνατά περιβάλλοντα. Όταν αναζητάτε το υψηλότερου τόνου \"κουδούνισμα\", κρατήστε το τηλέφωνο επίπεδο και σαρώστε το τηλέφωνο αργά. Γυρίζοντας το κεφάλι σας προς το σημείο προς την ίδια κατεύθυνση του τηλεφώνου θα εξασφαλίσει ότι έχετε την καλύτερη εμπειρία χωρικού ήχου.\n\nΗ μεταφορά του φάρου για το σχεδιασμό της ηχητικού σήματος έχει πολλές φυσικές επιπτώσεις:\n\n1. Δεν υπάρχει \"σωστή\" κατεύθυνση για να ταξιδέψετε όταν χρησιμοποιείτε το ηχητικό σήμα, αντ' αυτού, με το openscape μπορείτε να επιλέξετε πώς να φτάσετε εκεί\n2. Το υψηλότερου τόνου \"κουδούνισμα\" σας βοηθά να εντοπίσετε μόνο την κατεύθυνση του προορισμού - δεν αποτελεί ένδειξη για το πώς πρέπει να φτάσετε εκεί\n3. Εάν γενικά γνωρίζετε πώς να φτάσετε στον προορισμό σας, μπορεί να θέλετε να ενεργοποιήσετε τη σίγαση του ηχητικού σήματος για το μεγαλύτερο μέρος της διαδρομής σας και να το ενεργοποιήσετε μόνο καθώς πλησιάζετε στον προορισμό σας.";
-
-
-/*  */
-"faq.why_does_beacon_disappear.question" = "Γιατί το ηχητικό σήμα εξαφανίζεται μερικές φορές;";
 
 
 /*  */
@@ -4143,15 +2247,7 @@
 
 
 /*  */
-"faq.beacon_on_address.question" = "Μπορώ να ορίσω ένα ηχητικό σήμα σε μια διεύθυνση;";
-
-
-/*  */
 "faq.beacon_on_address.answer" = "Ναι, μπορείς. Οι διευθύνσεις δεν παρατίθενται από προεπιλογή, αλλά μπορούν να βρεθούν χρησιμοποιώντας το πεδίο αναζήτησης. Για να αποθηκεύσετε αυτήν τη διεύθυνση, ώστε να μην χρειάζεται να την αναζητήσετε ξανά, μπορείτε να την προσθέσετε ως δείκτη από την αρχική οθόνη επιλέγοντας το κουμπί \"προσθήκη σε δείκτες\" ή χρησιμοποιώντας ενέργειες VoiceOver στο ηχητικό σήμα στην αρχική οθόνη.";
-
-
-/*  */
-"faq.beacon_on_home.question" = "Πώς μπορώ να ρυθμίσω έναν ηχητικό σήμα στο σπίτι μου;";
 
 
 /*  */
@@ -4159,15 +2255,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.question" = "Όταν όρισα ένα ηχητικό σήμα σε έναν προορισμό, πόσο κοντά θα με καθοδηγήσει το openscape σε αυτόν; ";
-
-
-/*  */
 "faq.how_close_to_destination.answer" = "Το openscape μπορεί να καθορίσει την τοποθεσία του προορισμού σας σε απόσταση αρκετών μέτρων, αλλά όχι λιγότερο. Όταν το openscape διαπιστώσει ότι βρίσκεστε κοντά στον προορισμό σας, θα ακούσετε μια τελευταία επεξήγηση ότι ο προορισμός σας βρίσκεται κοντά και το ηχητικό σήμα θα σταματήσει.";
-
-
-/*  */
-"faq.turn_beacon_back_on.question" = "Μπορώ να ενεργοποιήσω το ηχητικό σήμα όταν είμαι κοντά στον προορισμό μου;";
 
 
 /*  */
@@ -4175,15 +2263,7 @@
 
 
 /*  */
-"faq.road_names.question" = "Γιατί το openscape επεξηγεί τα ονόματα των δρόμων δύο φορές όταν πλησιάζω σε μια διασταύρωση;";
-
-
-/*  */
 "faq.road_names.answer" = "Για να φιλοξενήσει μια ποικιλία διαμορφώσεων διασταύρωσης, το openscape περιγράφει τις διασταυρώσεις ως τμήματα οδών που αναχωρούν από ένα κοινό σημείο. Το openscape χρησιμοποιεί χωρικό ήχο για να υποδείξει το όνομα του δρόμου που πηγαίνει αριστερά, το όνομα του δρόμου που συνεχίζει ευθεία μπροστά, και το όνομα του δρόμου που πηγαίνει προς τα δεξιά, με αυτή τη σειρά. Εάν η περιγραφή της διασταύρωσης αρχίζει με το δρόμο στον οποίο βρίσκεστε και όχι με τον ένα προς τα αριστερά, τότε η διασταύρωση είναι έναν τύπου Τ με το δρόμο στο οποίο βρίσκεστε να συνεχίζει μπροστά και ένα δρόμο που τέμνεται από τα δεξιά. Ομοίως, εάν η περιγραφή περιλαμβάνει μόνο ένα δρόμο προς τα αριστερά και προς τα δεξιά, θα γνωρίζετε ότι ο δρόμος που βρίσκεστε καταλήγει σε έναν τύπου Τ μπροστά σας. Αυτή η μέθοδος περιγραφής των διασταυρώσεων υποστηρίζει επίσης την περίπτωση που ένας δρόμος αλλάζει όνομα σε μια διασταύρωση.";
-
-
-/*  */
-"faq.why_not_every_business.question" = "Γιατί το openscape δεν ανακοινώνει κάθε επιχείρηση που προσπερνάω;";
 
 
 /*  */
@@ -4191,15 +2271,7 @@
 
 
 /*  */
-"faq.callouts_stopping_in_vehicle.question" = "Γιατί κάποιες επεξηγήσεις σταματούν όταν βρίσκομαι σε όχημα;";
-
-
-/*  */
 "faq.callouts_stopping_in_vehicle.answer" = "Για να σταματήσει ο αριθμός των επεξηγήσεων να γίνεται συντριπτικός, ορισμένες κατηγορίες, όπως οι διασταυρώσεις, δεν ανακοινώνονται αυτόματα όταν ταξιδεύετε με όχημα.";
-
-
-/*  */
-"faq.miss_a_callout.question" = "Τι γίνεται αν δεν καταλαβαίνω μια επεξήγηση ή την χάνω λόγω του θορύβου του περιβάλλοντος;";
 
 
 /*  */
@@ -4207,15 +2279,7 @@
 
 
 /*  */
-"faq.supported_phones.question" = "Σε ποια τηλέφωνα λειτουργεί το Openscape;";
-
-
-/*  */
 "faq.supported_phones.answer" = "Το openscape είναι προς το παρόν διαθέσιμο για Apple iOS, που εκτελείται σε iPhone SE, iPhone 6S και νεότερες συσκευές.";
-
-
-/*  */
-"faq.supported_headsets.question" = "Ποια ακουστικά πρέπει να χρησιμοποιήσω με το Openscape;";
 
 
 /*  */
@@ -4223,15 +2287,7 @@
 
 
 /*  */
-"faq.battery_impact.question" = "Πώς επηρεάζει το openscape την μπαταρία του iPhone μου;";
-
-
-/*  */
 "faq.battery_impact.answer" = "Η διάρκεια ζωής της μπαταρίας ποικίλλει σημαντικά ανάλογα με το ποιο iPhone σας ανήκει και πόσο παλιό είναι. Η μεγαλύτερη διαρροή στην μπαταρία σας είναι η λειτουργία της οθόνης, οπότε για να μεγιστοποιήσετε τη διάρκεια ζωής της μπαταρίας του τηλεφώνου σας θα πρέπει να διατηρείτε την οθόνη κλειδωμένη όποτε είναι δυνατόν. Για να ελαχιστοποιήσετε τον αντίκτυπο στην μπαταρία του iPhone, το openscape διαθέτει τώρα αναστολή λειτουργίας λειτουργίας και λειτουργία αναβολής λειτουργίας. Για να μειώσετε περαιτέρω την ποσότητα της μπαταρίας που χρησιμοποιείτε, όταν δεν χρησιμοποιείτε το Openscape, θα πρέπει να το κλείσετε με τη βία μέσω του App Switcher του iPhone σας. ";
-
-
-/*  */
-"faq.sleep_mode_battery.question" = "Πώς μπορώ να χρησιμοποιήσω τη αναστολή λειτουργίας για να ελαχιστοποιήσω τον αντίκτυπο του openscape στην μπαταρία του τηλεφώνου μου;";
 
 
 /*  */
@@ -4239,15 +2295,7 @@
 
 
 /*  */
-"faq.snooze_mode_battery.question" = "Πώς μπορώ να χρησιμοποιήσω τη λειτουργία αναβολής για να ελαχιστοποιήσω τον αντίκτυπο του openscape στην μπαταρία του τηλεφώνου μου;";
-
-
-/*  */
 "faq.snooze_mode_battery.answer" = "Για να μεταβείτε στη λειτουργία αναβολής του Openscape, επιλέξτε το κουμπί \"Αναστολή λειτουργίας\" στην επάνω δεξιά γωνία της οθόνης. Μόλις το openscape βρεθεί σε κατάσταση αναστολής λειτουργίας, επιλέξτε το κουμπί \"Ενεργοποίηση όταν ξεκινήσω\" και το openscape θα μεταβεί σε κατάσταση χαμηλής ισχύος μέχρι να μετακινηθείτε από την τρέχουσα τοποθεσία σας.";
-
-
-/*  */
-"faq.headset_battery_impact.question" = "Πώς επηρεάζει η επιλογή των ακουστικών μου τη διάρκεια ζωής της μπαταρίας του τηλεφώνου μου;";
 
 
 /*  */
@@ -4255,15 +2303,7 @@
 
 
 /*  */
-"faq.background_battery_impact.question" = "Πώς επηρεάζει η εκτέλεση του openscape στο παρασκήνιο τη διάρκεια ζωής της μπαταρίας του τηλεφώνου μου;";
-
-
-/*  */
 "faq.background_battery_impact.answer" = "Το openscape είναι μια εφαρμογή που βασίζεται στην τοποθεσία και χρησιμοποιεί τις Υπηρεσίες τοποθεσίας για να προσδιορίσει την τοποθεσία σας. Στις δοκιμές μας, το openscape δεν καταναλώνει περισσότερη μπαταρία από τη μέση εφαρμογή χάρτη, αλλά αν ανησυχείτε για την κατανάλωση μπαταρίας όταν χρησιμοποιείτε το τηλέφωνό σας, ακολουθούν μερικές συμβουλές που θα βοηθήσουν στη μείωση της χρήσης:\n\n1. Απενεργοποιήστε την οθόνη όσο το δυνατόν περισσότερο όταν δεν αλληλεπιδράτε με την εφαρμογή.\n2. Όταν δεν χρησιμοποιείτε την εφαρμογή, κλείστε την. Το openscape χρησιμοποιεί υπηρεσίες τοποθεσίας συνεχώς όταν εκτελείται, έτσι ώστε να γνωρίζει πάντα την τοποθεσία σας, ακόμα και όταν δεν μετακινείστε. Μην ξεχάσετε να επανεκκινήσετε την εφαρμογή όταν συνεχίσετε τη διαδρομή σας.\n3. Σε κρύο καιρό, διατηρήστε το τηλέφωνό σας ζεστό καθώς οι μπαταρίες αποδίδουν χειρότερα σε ψυχρότερες θερμοκρασίες.";
-
-
-/*  */
-"faq.mobile_data_use.question" = "Πόσα δεδομένα κινητής τηλεφωνίας χρησιμοποιεί το Openscape;";
 
 
 /*  */
@@ -4271,15 +2311,7 @@
 
 
 /*  */
-"faq.difference_from_map_apps.question" = "Πώς διαφέρει το openscape από άλλες εφαρμογές χάρτη;";
-
-
-/*  */
 "faq.difference_from_map_apps.answer" = "Το openscape παρέχει μια ατμοσφαιρική περιγραφή του περιβάλλοντός σας για να βοηθήσει στην εξερεύνηση και την εύρεση πορείας. Χρησιμοποιώντας χωρικό ήχο, το openscape θα επεξηγήσει σημεία ενδιαφέροντος, πάρκα, δρόμους και διασταυρώσεις από την κατεύθυνση που βρίσκονται φυσικά στο άμεσο περιβάλλον σας καθώς περπατάτε. Για παράδειγμα, αν περάσετε ένα κατάστημα στα δεξιά σας, θα ακούσετε το όνομα του καταστήματος να ακούγεται από τα δεξιά σας. Καθώς πλησιάζετε σε μια διασταύρωση, θα ακούσετε κάθε όνομα δρόμου να ακούγεται από την κατεύθυνση προς την οποία βρίσκεται, ξεκινώντας προς τα αριστερά, μπροστά και δεξιά.\n\nΑντί να στρίβετε τις κατευθύνσεις όπως συχνά παρέχονται από άλλες εφαρμογές χαρτών, το openscape θα αναπαράξει ένα ηχητικό σήμα προς την κατεύθυνση του προορισμού σας, εμψυχώνοντάς σας να φτάσετε εκεί με τους δικούς σας όρους, χρησιμοποιώντας την αυξημένη αντίληψη του περιβάλλοντός σας και τη θέση του προορισμού σας. Το openscape έχει σχεδιαστεί για να εκτελείται στο παρασκήνιο, επιτρέποντάς σας να χρησιμοποιείτε μια εφαρμογή οδηγιών πλοήγησης, ενώ παράλληλα συνεχίζει να παρέχει περιβαλλοντική επίγνωση καθώς κατευθύνεστε προς τον προορισμό σας.";
-
-
-/*  */
-"faq.use_with_wayfinding_apps.question" = "Πώς μπορώ να χρησιμοποιήσω το openscape με μια εφαρμογή εύρεσης πορείας;";
 
 
 /*  */
@@ -4287,15 +2319,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.question" = "Πώς μπορώ να ελέγξω τι ακούω και πότε το ακούω στο Openscape;";
-
-
-/*  */
 "faq.controlling_what_you_hear.answer" = "Το openscape παρέχει διάφορους τρόπους ελέγχου όσων ακούτε και πότε:\n\n1. Σταματήστε αμέσως κάθε ήχο: Πατήστε δύο φορές την οθόνη με δύο δάχτυλα για να απενεργοποιήσετε αμέσως τον ήχο, συμπεριλαμβανομένης οποιασδήποτε επεξήγησης αναπαράγεται εκείνη τη στιγμή και του ηχητικού σήματος, αν είναι σε εξέλιξη. Οι επεξηγήσεις θα συνεχιστούν αυτόματα όταν πλησιάσετε την επόμενη διασταύρωση ή σημείο ενδιαφέροντος, αλλά το ηχητικό σήμα όχι. Επιλέξτε το \"κουμπί μη σίγαση ηχητικού σήματος\" στην κύρια οθόνη για να συνεχίσετε να ακούτε το ηχητικό σήμα.\n2. Διακοπή αυτόματων επεξηγήσεων: Όταν δεν μετακινήστε. δεν έχετε φτάσει σε έναν προορισμό, πιθανότατα δεν θα χρειαστείτε το openscape για να συνεχίσετε να σας ειδοποιεί για πράγματα γύρω σας. Αντί να βγείτε από την εφαρμογή, μπορείτε να θέσετε το openscape σε λειτουργία αναβολής και θα ενεργοποιηθεί ξανά όταν ξεκινήσετε, ή μπορείτε να θέσετε το openscape σε κατάσταση αναστολής λειτουργίας και θα παραμείνει κλειστό μέχρι να επιλέξετε να το ενεργοποιήσετε ξανά. Εναλλακτικά, μπορείτε να επιλέξετε \"Ρυθμίσεις\" από το μενού και να επιλέξετε να απενεργοποιήσετε όλες τις επεξηγήσεις στην ενότητα \"Διαχείριση επεξηγήσεων\".\n3. Σταματήστε το ηχητικό σήμα: Υπάρχουν διάφορα σενάρια για τα οποία μπορείτε να ορίσετε έναν προορισμό, αλλά δεν χρειάζεστε το ηχητικό σήμα. Για παράδειγμα, μπορεί να γνωρίζετε ακριβώς πώς να φτάσετε στον προορισμό σας, αλλά να θέλετε να λαμβάνετε αυτόματες ενημερώσεις σχετικά με το πόσο μακριά βρίσκεστε από τον προορισμό σας. Ή, μπορεί να γνωρίζετε περίπου πώς να φτάσετε στον προορισμό σας και χρειάζεστε μόνο το ηχητικό σήμα καθώς πλησιάζετε στον προορισμό σας. Σε κάθε περίπτωση, μπορείτε να επιλέξετε πότε θα ακούσετε το ηχητικό σήμα, πατώντας το κουμπί \"σίγαση ηχητικού σήματος\"/\"κατάργηση σίγασης ηχητικού σήματος\".";
-
-
-/*  */
-"faq.holding_phone_flat.question" = "Πρέπει να κρατάω το τηλέφωνο στο χέρι μου όλη την ώρα;";
 
 
 /*  */
@@ -4303,15 +2327,7 @@
 
 
 /*  */
-"faq.personalize_experience.question" = "Με ποιους τρόπους μπορώ να εξατομικεύσω την εμπειρία μου στο Openscape;";
-
-
-/*  */
 "faq.personalize_experience.answer" = "Το openscape σάς επιτρέπει να προσαρμόσετε τρεις βασικές πτυχές των επεξηγήσεων που ακούτε καθώς περπατάτε:\n\n1. Φωνή: Μπορείτε να επιλέξετε ποια από τις διαθέσιμες φωνές στο iOS θα θέλατε να χρησιμοποιεί το Openscape, καθώς και την ταχύτητα με την οποία εκφωνούνται οι επεξηγήσεις. Από το Μενού, επιλέξτε Ρυθμίσεις και, στη συνέχεια, Φωνή για να προσαρμόσετε τις ρυθμίσεις Ταχύτητας εκφώνησης και Φωνή. Μπορείτε να κατεβάσετε πρόσθετες φωνές και βελτιωμένες φωνές με υψηλότερη ποιότητα στην εφαρμογή Ρυθμίσεις iOS στις Ρυθμίσεις > Προσβασιμότητα > Εκφωνούμενο περιεχόμενο > Φωνές.\n2. Μέτρηση απόστασης: Το openscape σας επιτρέπει να ακούτε όλες τις αποστάσεις είτε στα πόδια είτε στα μέτρα. Από το Μενού, επιλέξτε Ρυθμίσεις. Η ενότητα Μονάδες μέτρησης σάς επιτρέπει να εναλλάσσεστε μεταξύ δύο επιλογών: Βρετανικό σύστημα (πόδια) και Μετρικό σύστημα (μέτρα).\n3. Δείκτες: Μπορείτε να επισημάνετε τον κόσμο σας με οτιδήποτε σας ενδιαφέρει. Μπορείτε να επισημάνετε πράγματα που είναι προσωπικά και σχετικά με εσάς, όπως το σπίτι σας, το γραφείο σας και το παντοπωλείο της προτίμησής σας. Στη συνέχεια, το openscape θα επεξηγεί αυτόματα επισημασμένες θέσεις καθώς περπατάτε. τις πλησιάζετε, ή μπορείτε επίσης να χρησιμοποιήσετε το κουμπί Κοντινοί δείκτες στο κάτω μέρος της αρχικής οθόνης του openscape για να ακούσετε μια χωρική επεξήγηση των επισημασμένων θέσεων γύρω σας. Αυτοί οι δείκτες θα παραμείνουν προσωπικοί για εσάς και δεν θα είναι διαθέσιμοι σε κανέναν άλλο.\n\n Εκτός από τα παραπάνω, οι ακόλουθες ρυθμίσεις VoiceOver μπορούν να επηρεάσουν τον τρόπο συμπεριφοράς του Openscape:\n\n1. Συμβουλές VoiceOver: Όταν οι συμβουλές VoiceOver είναι ενεργοποιημένες, θα ακούσετε περισσότερες πληροφορίες σχετικά με όλα τα κουμπιά που υπάρχουν στην κύρια οθόνη του Openscape. Μπορείτε να ενεργοποιήσετε τις συμβουλές του VoiceOver μεταβαίνοντας στην εφαρμογή Ρυθμίσεις iOS και στην επιλογή Προσβασιμότητα > VoiceOver > Προφορικός λόγος και ενεργοποιώντας τη ρύθμιση Υποδείξεων ομιλίας.\n2. Βύθιση ήχου: Το openscape έχει σχεδιαστεί για να λειτουργεί με απενεργοποιημένη τη Βύθιση ήχου. Όταν η Βύθιση ήχου είναι σε λειτουργία, οι αυτόματες επεξηγήσεις μπορεί να είναι δύσκολο να ακουστούν εάν το VoiceOver χρησιμοποιείται ταυτόχρονα. Σας συνιστούμε να απενεργοποιήσετε τη Βύθιση ήχου για να διευκολύνετε την ακρόαση όλων των αυτόματων επεξηγήσεων που συμβαίνουν καθώς αλληλεπιδράτε με το τηλέφωνο. Η Βύθιση ήχου μπορεί να απενεργοποιηθεί στις ρυθμίσεις του VoiceOver. μέσω του ρότορα VoiceOver.\n3. Touch ID. Face ID για ξεκλείδωμα: Η ρύθμιση του τηλεφώνου σας για ξεκλείδωμα χρησιμοποιώντας touch ID. Face ID θα κάνει το ξεκλείδωμα του τηλεφώνου γρήγορο και εύκολο και, με τη σειρά του, θα σας επιτρέψει να αποκτήσετε πρόσβαση στα κουμπιά Η τοποθεσία μου, Γύρω μου και Μπροστά μου όσο το δυνατόν γρηγορότερα όταν βρίσκεστε εν κινήσει. Ρυθμίστε το ξεκλείδωμα touch ID. Face ID στην εφαρμογή Ρυθμίσεις iOS.";
-
-
-/*  */
-"faq.what_is_osm.question" = "Τι είναι το Open Street Map και γιατί τον χρησιμοποιούμε για το Openscape;";
 
 
 /*  */
@@ -4319,15 +2335,7 @@
 
 
 /*  */
-"faq.tip.beacon_quiet" = "Αν βάλετε το τηλέφωνό σας στην τσέπη σας και σταματήσετε να κινείστε, το ηχητικό σήμα θα γίνει πιο ήσυχο επειδή το openscape δεν μπορεί να καταλάβει προς τα πού στρέφεστε. Λύστε αυτό το πρόβλημα ξεκινώντας να περπατάτε ξανά. αφαιρώντας το τηλέφωνό σας από την τσέπη ή την τσάντα και κρατώντας το επίπεδο.";
-
-
-/*  */
 "faq.tip.setting_beacon_on_address" = "Μπορείτε να ρυθμίσετε ένα ηχητικό σήμα σε οποιαδήποτε διεύθυνση. Από την κύρια οθόνη του Openscape, αναζητήστε τη διεύθυνση. Αφού επιλέξετε τη διεύθυνση στα αποτελέσματα αναζήτησης, θα εμφανιστεί μια οθόνη \"Λεπτομέρειες τοποθεσίας\" και έχει την επιλογή \"Έναρξη ηχητικού σήματος\" στη διεύθυνση. Με αυτόν τον τρόπο, μπορείτε να ορίσετε έναν ηχητικό σήμα για επιχειρήσεις, μέρη, σημεία ενδιαφέροντος και κατοικίες που δεν βρίσκονται στο Open Street Maps.";
-
-
-/*  */
-"faq.tip.finding_bus_stops" = "Μπορείτε να βρείτε κοντινές στάσεις λεωφορείων επιλέγοντας το φίλτρο \"Δημόσια συγκοινωνία\" στη λίστα Κοντινά μέρη.";
 
 
 /*  */
@@ -4335,19 +2343,12 @@
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "Εάν εξακολουθείτε να θέλετε να αλληλεπιδράτε στο Openscape, αλλά δεν θέλετε να ακούτε αυτόματες επεξηγήσεις, μπορείτε να τις απενεργοποιήσετε πηγαίνοντας στην ενότητα \"Διαχείριση επεξηγήσεων\" της σελίδας \"Ρυθμίσεις\" από το μενού. Εναλλακτικά, αν δεν πρόκειται να χρησιμοποιήσετε το Openscape, μπορείτε να το θέσετε είτε σε κατάσταση αναστολής λειτουργίας είτε σε κατάσταση αναβολής χρησιμοποιώντας το κουμπί \"Αναστολή λειτουργίας\" στην αρχική οθόνη.";
-
-
-/*  */
 "faq.tip.hold_phone_flat" = "Το openscape λειτουργεί καλύτερα όταν κρατάτε το τηλέφωνο επίπεδο με την οθόνη στραμμένη προς τον ουρανό και το πάνω μέρος του τηλεφώνου να δείχνει μακριά σας.";
 
 
 /*  */
-"faq.tip.create_marker_at_bus_stop" = "Εάν υπάρχει μια διαδρομή λεωφορείου που παίρνετε τακτικά, ρυθμίστε τις στάσεις επιβίβασης και αποβίβασης ως Δείκτες. Με αυτόν τον τρόπο θα αποθηκευτούν, ώστε να μπορείτε να τις βρείτε ξανά εύκολα, απλά μεταβείτε στο \"Διαχείριση δεικτών\" από το μενού και βρείτε τις στη λίστα. Μπορείτε να ρυθμίσετε ένα ηχητικό σήμα σε αυτά και θα λάβετε περιοδικές ενημερώσεις σχετικά με το πόσο κοντά βρίσκεστε στη στάση αποβίβασής σας. Σημείωση: μπορείτε να απενεργοποιήσετε τον ρυθμικό ήχο και θα εξακολουθείτε να έχετε ενημερώσεις απόστασης στην πορεία.";
-
-
-/*  */
 "faq.tip.two_finger_double_tap" = "Πατώντας την οθόνη δύο φορές με δύο δάχτυλα θα σιωπήσει τυχόν ενεργές επεξηγήσεις.";
+
 
 
 
