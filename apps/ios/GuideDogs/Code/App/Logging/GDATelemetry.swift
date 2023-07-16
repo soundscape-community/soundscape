@@ -69,6 +69,7 @@ public class GDATelemetry {
                 options.debug = true
                 options.sampleRate = 1.0
                 options.tracesSampleRate = 1.0
+                options.profilesSampleRate = 1.0
                 options.enableAutoPerformanceTracing = true
                 options.swiftAsyncStacktraces = true
             }
