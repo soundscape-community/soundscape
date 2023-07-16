@@ -45,14 +45,7 @@ class DynamicLaunchViewController: UIViewController {
         }
         
         if !testEnvironment, !UIDeviceManager.isSimulator {
-            // AppCenter.start(withAppSecret: "<#Secret#>", services: [Analytics.self, Crashes.self])
-            // Analytics.enabled = !SettingsContext.shared.telemetryOptout
-            // Crashes.enabled = !SettingsContext.shared.telemetryOptout
-            SentrySDK.start { options in
-                options.dsn = AppContext.sentryDSN
-                options.debug = true
-                options.sampleRate = SettingsContext.shared.telemetryOptout ? 1.0 : 0.0
-            }
+            GDATelemetry.setup()
         }
     }
     

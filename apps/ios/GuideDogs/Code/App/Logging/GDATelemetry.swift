@@ -7,7 +7,6 @@
 //
 
 import Foundation
-// import AppCenterAnalytics
 import Sentry
 
 public class GDATelemetry {
@@ -23,11 +22,7 @@ public class GDATelemetry {
         set {
             SettingsContext.shared.telemetryOptout = !newValue
             if newValue {
-                SentrySDK.start { options in
-                    options.dsn = AppContext.sentryDSN
-                    options.debug = true
-                    options.sampleRate = SettingsContext.shared.telemetryOptout ? 1.0 : 0.0
-                }
+                setup()
             }
         }
     }
@@ -56,7 +51,6 @@ public class GDATelemetry {
             print("[TEL] Event tracked: \(eventName)" + (propertiesToSend.isEmpty ? "" : " \(propertiesToSend)"))
         }
         
-        // Analytics.trackEvent(eventName, withProperties: propertiesToSend)
         // Represent these as Sentry breadcrumbs
         // it would be good to collect a set of values used for event name to mark as errors instead of just having everything at info
         let crumb = Breadcrumb()
@@ -67,4 +61,17 @@ public class GDATelemetry {
         SentrySDK.addBreadcrumb(crumb)
     }
     
+    class func setup() {
+        if !SettingsContext.shared.telemetryOptout {
+            GDLogAppInfo("Starting Sentry SDK...")
+            SentrySDK.start { options in
+                options.dsn = AppContext.sentryDSN
+                options.debug = true
+                options.sampleRate = 1.0
+                options.tracesSampleRate = 1.0
+            }
+        } else {
+            GDLogAppInfo("**not** starting Sentry SDK; telemetry Opt-out")
+        }
+    }
 }

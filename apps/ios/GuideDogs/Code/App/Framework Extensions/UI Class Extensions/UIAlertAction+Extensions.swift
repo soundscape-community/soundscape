@@ -18,9 +18,9 @@ extension UIAlertAction {
         }
         
         self.init(title: title, style: .default) { (_) in
-            print("Alert action handler ran (item tapped) - url: \(url)")
+            GDLogAppVerbose("Alert action handler ran (item tapped) - url: \(url)")
             UIApplication.shared.open(url, options: [:]) { success in
-                print("Opened url - success: \(success)")
+                GDLogAppInfo("Opened url - success: \(success)")
             }
             handler?()
         }
