@@ -163,7 +163,7 @@
 
 
 /*  */
-"general.alert.offline_search.message" = "Wanneer openscape offline werkt, is de zoekfunctie uitgeschakeld. Sluit om terug te gaan naar het vorige scherm";
+"general.alert.offline_search.message" = "Wanneer Openscape offline werkt, is de zoekfunctie uitgeschakeld. Druk op Afsluiten om terug te gaan naar het vorige scherm.";
 
 
 /*  */
@@ -331,11 +331,11 @@
 
 
 /*  */
-"device_motion.enable.description" = "Beweging & Conditie bijhouden is momenteel uitgeschakeld. Openscape werkt niet wanneer Beweging & Conditie bijhouden  uitstaat.";
+"device_motion.enable.description" = "Beweging & Conditie bijhouden is momenteel uitgeschakeld. Openscape werkt niet wanneer Beweging & Conditie bijhouden uitstaat.";
 
 
 /*  */
-"device_motion.enable.instructions" = "Schakel Houd conditie bij in de app Instellingen in om door te gaan.\n\n1. Druk op Instellingen openen\n2. Druk op de knop Terug (met de naam Instellingen)\n3. Selecteer Privacy\n4. Selecteer Beweging & Conditie\n5. Schakel Houd conditie bij in\n6. Start openscape opnieuw";
+"device_motion.enable.instructions" = "Schakel Houd conditie bij in Instellingen in om door te gaan.\n\n1. Druk op Instellingen openen\n2. Druk op de knop Terug (met de naam Instellingen)\n3. Selecteer Privacy\n4. Selecteer Beweging & Conditie\n5. Schakel Houd conditie bij in\n6. Start Openscape opnieuw";
 
 
 /*  */
@@ -611,11 +611,11 @@
 
 
 /*  */
-"troubleshooting.gps_status.explanation.meters" = "Deze waarde is een schatting van hoe precies openscape kan bepalen waar je je bevindt. Minder dan ca. 10 meter is goed. Minder dan ca. 20 meter is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als je buiten bent en niet ergens onder staat.";
+"troubleshooting.gps_status.explanation.meters" = "Dit is een schatting van hoe precies openscape kan bepalen waar je je bevindt. Minder dan ca. 10 meter is goed. Minder dan ca. 20 meter is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als je buiten bent en niet ergens onder staat.";
 
 
 /*  */
-"troubleshooting.gps_status.explanation.feet" = "Deze waarde is een schatting van hoe precies openscape kan bepalen waar je je bevindt. Minder dan ca. 30 voet is goed. Minder dan ca. 60 voet is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als je buiten bent en niet ergens onder staat.";
+"troubleshooting.gps_status.explanation.feet" = "Dit is een schatting van hoe precies openscape kan bepalen waar je je bevindt. Minder dan ca. 30 voet is goed. Minder dan ca. 60 voet is redelijk. Hogere waarden zijn slecht. Locatiegegevens zijn het nauwkeurigste als je buiten bent en niet ergens onder staat.";
 
 
 /*  */
@@ -979,7 +979,7 @@
 
 
 /*  */
-"preview.tutorial.title.1" = "Welkom bij openscape Street Preview!";
+"preview.tutorial.title.1" = "Welkom bij Openscape Street Preview!";
 
 
 /*  */
@@ -1511,7 +1511,7 @@
 
 
 /*  */
-"siri_shortcuts.description" = "Als je Siri-opdrachten hebt toegevoegd, kun je je stem gebruiken om ze te activeren ook wanneer openscape niet actief is.";
+"siri_shortcuts.description" = "Als je Siri-opdrachten hebt toegevoegd, kun je je stem gebruiken om ze te activeren, ook wanneer Openscape niet actief is.";
 
 
 /*  */
@@ -1963,7 +1963,7 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Openscape staat momenteel in de slaapstand. Wanneer je je huidige locatie verlaat, wordt openscape automatisch geactiveerd. Locatievoorzieningen gebruikt minder voeding om de batterij van uw telefoon te sparen. Tik op de knop hieronder om nu te activeren.";
+"sleep.snoozing.message" = "Openscape staat momenteel in de slaapstand. Wanneer je je huidige locatie verlaat, wordt Openscape automatisch geactiveerd. Locatievoorzieningen gebruikt minder voeding om de batterij van je telefoon te sparen. Tik op de knop hieronder om nu te activeren.";
 
 
 /*  */
@@ -2739,7 +2739,7 @@
 
 
 /*  */
-"devices.connect_headset.audio" = "Voordat je je koptelefoon kunt verbinden met Openscape, moet deze zijn gekoppeld met je telefoon. Als dat nog niet is gebeurd, ga je naar Bluetooth in de iOS-instellingen om je apparaat te koppelen. Ga daarna terug naar Openscape.";
+"devices.connect_headset.audio" = "Voordat je je koptelefoon kunt verbinden met Openscape moet deze zijn gekoppeld met je telefoon. Als dat nog niet is gebeurd, ga je naar Bluetooth in de iOS-instellingen om je apparaat te koppelen. Ga daarna terug naar Openscape.";
 
 
 /*  */
@@ -2815,7 +2815,7 @@
 
 
 /*  */
-"devices.callouts.check_audio.airpods.disconnected" = "Openscape zoekt naar uw AirPods. Controleer of ze verbinding hebben met de telefoon.";
+"devices.callouts.check_audio.airpods.disconnected" = "Openscape zoekt naar je AirPods. Controleer of ze verbinding hebben met de telefoon.";
 
 
 /*  */
@@ -2831,7 +2831,7 @@
 
 
 /*  */
-"devices.reachability.alert.description" = "Uw %@ geeft aan openscape door in welke richting u kijkt. Daarmee kan openscape uw audiobeleving verbeteren. U kunt het volgen van de kijkrichting inschakelen in de instellingen voor Head tracking-koptelefoon.";
+"devices.reachability.alert.description" = "Je %@ geeft aan Openscape door in welke richting je kijkt. Daarmee kan Openscape je audiobeleving verbeteren. Je kunt het volgen van de kijkrichting inschakelen in de instellingen voor de Head tracking-koptelefoon.";
 
 
 /*  */
@@ -2899,15 +2899,15 @@
 
 
 /*  */
-"behavior.experiences.no_events.title" = "Recreatie-activiteiten met openscape (bèta)";
+"behavior.experiences.no_events.title" = "Recreatie-activiteiten met Openscape (bèta)";
 
 
 /*  */
-"behavior.experiences.no_events.caption.1" = "Non-profitorganisaties, bedrijven en lokale overheden kunnen hun eigen Openscape-toepassingen creëren. Zoals bijvoorbeeld aangepaste sportprogramma's en evenementen, schatzoekactiviteiten, wandeltochten met beschrijving, stadsgidsen enzovoort.";
+"behavior.experiences.no_events.caption.1" = "Non-profitorganisaties, bedrijven en lokale overheden kunnen hun eigen Openscape-toepassingen creëren. Zoals bijvoorbeeld aangepaste sportprogramma's en evenementen, schatzoekactiviteiten, wandeltochten met beschrijving, stadswandelingen enzovoort.";
 
 
 /*  */
-"behavior.experiences.no_events.caption.2" = "Als u meer wilt weten of als uw organisatie belangstelling heeft voor het creëren van eigen Openscape-ervaringen, laat ons dat dan weten op email@address.com";
+"behavior.experiences.no_events.caption.2" = "Als je meer wilt weten of als jouw organisatie belangstelling heeft voor het creëren van eigen Openscape-ervaringen, laat ons dat dan weten op email@address.com";
 
 
 /*  */
@@ -2927,7 +2927,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.callout.pausing_hunt" = "Teruggaan naar de normale Openscape-beleving.";
+"behavior.scavenger_hunt.callout.pausing_hunt" = "Teruggaan naar de normale Openscape-weergave.";
 
 
 /*  */
@@ -3015,7 +3015,7 @@
 
 
 /*  */
-"icloud.kv_store.quota_violation_alert.title" = "Openscape iCloud-opslag vol";
+"icloud.kv_store.quota_violation_alert.title" = "Openscape iCloud-opslag is vol";
 
 
 /*  */
@@ -3095,11 +3095,11 @@
 
 
 /*  */
-"tutorial.markers.text.Intro" = "Met openscape kunt u om u heen objecten markeren die u belangrijk vindt. U kunt bijvoorbeeld een markering opgeven voor uw huis, de bushalte of gewoon de plek waar u zich bevindt.\nProbeer het maar eens. Druk op de knop Markering toevoegen en selecteer een plaats of een adres in de buurt om als voorbeeld te markeren.";
+"tutorial.markers.text.Intro" = "Met Openscape kun je om je heen objecten markeren die je belangrijk vindt. Je kunt bijvoorbeeld een markering opgeven voor jouw huis, de bushalte of gewoon de plek waar je je bevindt.\nProbeer het maar eens. Druk op de knop Markering toevoegen en selecteer een plaats of een adres in de buurt om als voorbeeld te markeren.";
 
 
 /*  */
-"tutorial.markers.text.EditMarker" = "Heel goed! U hebt @!marker_name!! geselecteerd als markering. U hoort een waarschuwing van openscape wanneer u in de buurt komt.\nOp het volgende scherm kunt u desgewenst de naam veranderen.";
+"tutorial.markers.text.EditMarker" = "Heel goed! Je hebt @!marker_name!! geselecteerd als markering. Je hoort een melding van Openscape wanneer je in de buurt komt.\nOp het volgende scherm kun je de naam veranderen als je dat wilt.";
 
 
 /*  */
@@ -3123,7 +3123,7 @@
 
 
 /*  */
-"tutorial.beacon.getting_started.text" = "Wanneer u een baken instelt op een locatie, speelt openscape een geluid af uit de richting van die locatie. Deze zelfstudie bevat de stappen voor het instellen en gebruiken van een baken.\n\nDruk op de knop Audiobaken starten hieronder om een lijst met plaatsen in de buurt te openen. Kies een locatie uit de lijst en de zelfstudie begint.";
+"tutorial.beacon.getting_started.text" = "Wanneer je een baken instelt op een locatie, speelt Openscape een geluid af uit de richting van die locatie. Deze zelfstudiebevat de stappen voor het instellen en gebruiken van een baken.\n\nDruk op de knop Audiobaken starten hieronder om een lijst met plaatsen in de buurt te openen. Kies een locatie uit de lijst en de zelfstudie begint.";
 
 
 /*  */
@@ -3155,7 +3155,7 @@
 
 
 /*  */
-"tutorial.beacons.text.IntroPart1" = "Wanneer u een baken instelt op een locatie, wordt door openscape een geluid afgespeeld dat komt uit de richting van die locatie. In deze zelfstudie wordt stapsgewijs uitgelegd hoe u een baken instelt en dit gebruikt.";
+"tutorial.beacons.text.IntroPart1" = "Wanneer je een baken instelt op een locatie, wordt door Openscape een geluid afgespeeld dat uit de richting komt van die locatie. In deze zelfstudie wordt stapsgewijs uitgelegd hoe je een baken instelt en dit gebruikt.";
 
 
 /*  */
@@ -3171,7 +3171,7 @@
 
 
 /*  */
-"tutorial.beacons.text.OrientationAirPods" = "Uw AirPods zijn verbonden met Openscape. Wanneer uw AirPods zijn verbonden met Openscape, maakt het niet uit hoe u uw telefoon vasthoudt. U kunt deze ook in uw zak of een tas stoppen.";
+"tutorial.beacons.text.OrientationAirPods" = "Je AirPods zijn verbonden met Openscape. Wanneer je AirPods zijn verbonden met Openscape, maakt het niet uit hoe je je telefoon vasthoudt. Je kunt deze ook in je zak of een tas stoppen.";
 
 
 /*  */
@@ -3187,7 +3187,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInitial" = "Nu u een baken hebt ingesteld op @!destination!!, wordt door openscape een geluid afgespeeld dat uit de richting van die locatie komt. Hier komt het audiobaken.";
+"tutorial.beacons.text.BeaconInitial" = "Nu je een baken hebt ingesteld op @!destination!!, wordt door Openscape een geluid afgespeeld dat uit de richting van die locatie komt. Hier komt het audiobaken.";
 
 
 /*  */
@@ -3231,11 +3231,11 @@
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "Tijdens uw tocht geeft openscape met een waarschuwing als deze af en toe updates over de afstand tot de locatie die door het baken wordt gemarkeerd.";
+"tutorial.beacons.text.AutomaticCallout" = "Tijdens je tocht geeft Openscape regelmatig een melding met een update over de afstand tot de locatie die door het baken wordt gemarkeerd.";
 
 
 /*  */
-"tutorial.beacons.text.HomeScreen" = "Informatie over de afstand wordt ook weergegeven op het startscherm samen met het adres van de bakenlocatie, als dat beschikbaar is. openscape geeft een melding wanneer u in de buurt bent van de bakenlocatie. Daarna stopt het audiobaken.";
+"tutorial.beacons.text.HomeScreen" = "Informatie over de afstand wordt ook weergegeven op het startscherm, samen met het adres van de bakenlocatie, als dat beschikbaar is. Openscape geeft een melding wanneer je in de buurt bent van de bakenlocatie. Daarna stopt het audiobaken.";
 
 
 /*  */
@@ -3275,15 +3275,15 @@
 
 
 /*  */
-"help.config.voices.content" = "Openscape kan de stemmen gebruiken die u hebt gedownload in de iOS Instellingen-app met uitzondering van de Siri-stemmen die niet beschikbaar zijn in Openscape. U kunt het beste een van de verbeterde stemmen kiezen omdat deze een veel betere spraakkwaliteit hebben. Om dat te doen moet u echter eerst een verbeterde stem downloaden. Download stemmen in de iOS Instellingen-app via Toegankelijkheid > Gesproken materiaal > Stemmen en tik op een stem. In openscape kunt u de gewenste stem selecteren door naar Instellingen in het hoofdmenu te gaan en Stem te selecteren.";
+"help.config.voices.content" = "Openscape kan de stemmen gebruiken die je hebt gedownload in de iOS Instellingen-app, met uitzondering van de Siri-stemmen die niet beschikbaar zijn in Openscape. Je kunt het beste een van de verbeterde stemmen kiezen omdat deze een veel betere spraakkwaliteit hebben. Om dat te doen moet je echter eerst een verbeterde stem downloaden. Download stemmen in de iOS Instellingen-app via Toegankelijkheid > Gesproken materiaal > Stemmen en tik op een stem. In openscape kun je de gewenste stem selecteren door naar Instellingen in het hoofdmenu te gaan en Stem te selecteren.";
 
 
 /*  */
-"help.offline.page_title" = "Waarom werkt openscape offline?";
+"help.offline.page_title" = "Waarom werkt Openscape offline?";
 
 
 /*  */
-"help.offline.description" = "Als er geen internetverbinding is of een storing in de Openscape-services, gaat openscape naar de offline modus. openscape blijft wel werken maar bepaalde functies zijn beperkt.";
+"help.offline.description" = "Als er geen internetverbinding is of een storing in de Openscape-services, gaat Openscape naar de offline modus. Openscape blijft wel werken maar bepaalde functies zijn beperkt.";
 
 
 /*  */
@@ -3299,7 +3299,7 @@
 
 
 /*  */
-"help.offline.troubleshooting_description" = "Openscape probeert de normale werking te hervatten wanneer uw telefoon is verbonden met Wi-Fi of wanneer mobiele gegevens zijn ingeschakeld en u zich bevindt in een gebied met een goed signaal. Als uw telefoon een goede internetverbinding heeft, maar openscape niet de normale werking hervat, is er mogelijk sprake van een storing in de Openscape-services.";
+"help.offline.troubleshooting_description" = "Openscape probeert de normale werking te hervatten wanneer je telefoon is verbonden met Wi-Fi of wanneer mobiele data is ingeschakeld en je je bevindt in een gebied met een goed signaal. Als je telefoon een goede internetverbinding heeft, maar Openscape niet de normale werking hervat, is er mogelijk sprake van een storing in de Openscape-services.";
 
 
 /*  */
@@ -3351,7 +3351,7 @@
 
 
 /*  */
-"terms_of_use.message" = "Op uw gebruik van Openscape zijn de voorwaarden van %@ van toepassing en de hieronder beschreven voorwaarden (samen de \"Gebruiksvoorwaarden\").";
+"terms_of_use.message" = "Op het gebruik van Openscape zijn de voorwaarden van %@ van toepassing en de hieronder beschreven voorwaarden (samen de \"Gebruiksvoorwaarden\").";
 
 
 /*  */
@@ -3383,7 +3383,7 @@
 
 
 /*  */
-"terms_of_use.medical_safety_disclaimer" = "U erkent dat Openscape (1) niet is ontworpen, bedoeld of beschikbaar is gesteld als een medisch apparaat, en (2) niet is ontworpen of bedoeld als vervanging voor professionele medische adviezen, diagnoses, behandelingen of beoordelingen en niet moeten worden gebruikt als vervanging of substitutie voor professionele medische adviezen, diagnoses, behandelingen of beoordelingen.\n\nVeiligheidsverklaring\nOpenscape is een navigatiehulpmiddel en moet niet worden gebruikt ter vervanging van mobiele vaardigheden, bewustzijn van uw omgeving en gezond verstand. Wees voorzichtig bij het navigeren in uw omgeving omdat de kaartgegevens in Openscape zijn overgenomen uit een programma van derden. Daarom kunnen er beperkingen zijn in de nauwkeurigheid van de gepresenteerde informatie.";
+"terms_of_use.medical_safety_disclaimer" = "Je erkent dat Openscape (1) niet is ontworpen, bedoeld of beschikbaar is gesteld als een medisch apparaat, en (2) niet is ontworpen of bedoeld als vervanging voor professionele medische adviezen, diagnoses, behandelingen of beoordelingen en niet moet worden gebruikt als vervanging of substitutie voor professionele medische adviezen, diagnoses, behandelingen of beoordelingen.\n\nVeiligheidsverklaring\nOpenscape is een navigatiehulpmiddel en moet niet worden gebruikt ter vervanging van mobiele vaardigheden, bewustzijn van je omgeving en gezond verstand. Wees voorzichtig bij het navigeren in je omgeving aangezien de kaartgegevens in Openscape zijn overgenomen uit een programma van derden. Daarom kunnen er beperkingen zijn in de nauwkeurigheid van de gepresenteerde informatie.";
 
 
 /*  */
@@ -3403,7 +3403,7 @@
 
 
 /*  */
-"first_launch.welcome_audio_text" = "Welkom! Met openscape blijft u zich gemakkelijker bewust van waar u bent en waar u naartoe gaat door een unieke audiohulp en door het beschrijven van wegen, kruispunten en plaatsen als u deze nadert. Druk op Volgende om te beginnen.";
+"first_launch.welcome_audio_text" = "Welkom! Met Openscape blijf je je gemakkelijker bewust van waar je bent en waar je naartoe gaat door unieke audioaanwijzingen en door het beschrijven van wegen, kruispunten en plaatsen als je deze nadert. Druk op Volgende om te beginnen.";
 
 
 /*  */
@@ -3415,11 +3415,11 @@
 
 
 /*  */
-"first_launch.language.text" = "Selecteer de taal waarin u openscape wilt gebruiken. U kunt uw keuze altijd wijzigen in de appinstellingen.";
+"first_launch.language.text" = "Selecteer de taal waarin je Openscape wilt gebruiken. Je kunt je keuze altijd wijzigen in de appinstellingen.";
 
 
 /*  */
-"first_launch.location.text" = "Openscape is een op locatie gebaseerde app. We gebruiken uw locatie om dingen om u heen te zoeken en te beschrijven.";
+"first_launch.location.text" = "Openscape is een op locatie gebaseerde app. We gebruiken je locatie om dingen om je heen te zoeken en te beschrijven.";
 
 
 /*  */
@@ -3431,7 +3431,7 @@
 
 
 /*  */
-"first_launch.device_motion.text" = "Hiermee kan Openscape uw ervaring verbeteren op basis van het feit of u loopt, in een auto rijdt of stilstaat.";
+"first_launch.device_motion.text" = "Hiermee kan Openscape je ervaring verbeteren op basis van het feit of je loopt, in een auto rijdt of stilstaat.";
 
 
 /*  */
@@ -3439,7 +3439,7 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound.text_alt" = "Openscape gebruikt 3D-geluid om u te laten weten wat er in de buurt is. Als uw bestemming zich bijvoorbeeld rechts bevindt, hoort u geluid vanuit die richting of als er links een café is, hoort u een waarschuwing uit die richting.";
+"first_launch.lighting_way_with_sound.text_alt" = "Openscape gebruikt 3D-geluid om je te laten weten wat er in de buurt is. Als je bestemming zich bijvoorbeeld rechts bevindt, hoor je geluid vanuit die richting of als er links een café is, hoor je een melding uit die richting.";
 
 
 /*  */
@@ -3447,7 +3447,7 @@
 
 
 /*  */
-"first_launch.heading_somewhere.text" = "Plaats een audiobaken op uw bestemming en openscape zal u op de hoogte houden van de locatie en uw omgeving onderweg. Gebruik openscape samen met uw navigatievaardigheden en uw favoriete navigatie-app om de weg naar bestemming te vinden.";
+"first_launch.heading_somewhere.text" = "Plaats een audiobaken op je bestemming en Openscape zal je op de hoogte houden van de locatie en de omgeving onderweg. Gebruik Openscape samen met uw navigatievaardigheden en je favoriete navigatie-app om de weg naar bestemming te vinden.";
 
 
 /*  */
@@ -3455,7 +3455,7 @@
 
 
 /*  */
-"first_launch.setting_off_way.text" = "Stop uw telefoon weg en ga lopen. openscape helpt u om u bewust te blijven van waar u bent door de straten, kruispunten en herkenningspunten die u nadert te beschrijven. Waarschuwingen kunnen worden aangepast in de instellingen.";
+"first_launch.setting_off_way.text" = "Stop je telefoon weg en begin met lopen. Openscape helpt je om je bewust te blijven van waar je bent door de straten, kruispunten en herkenningspunten die je nadert te benoemen. Meldingen kunnen worden aangepast in de instellingen.";
 
 
 /*  */
@@ -3487,11 +3487,11 @@
 
 
 /*  */
-"first_launch.headphones.message.1" = "Openscape werkt geweldig met een koptelefoon. Als u een koptelefoon wilt gebruiken, zet die dan nu op.";
+"first_launch.headphones.message.1" = "Openscape werkt geweldig met een koptelefoon. Als je een koptelefoon wilt gebruiken, zet die dan nu op.";
 
 
 /*  */
-"first_launch.headphones.message.2" = "Als u geen koptelefoon hebt of die niet wil gebruiken, geen probleem! openscape werkt ook met de speakers op uw telefoon.";
+"first_launch.headphones.message.2" = "Als je geen koptelefoon hebt of die niet wilt gebruiken, geen probleem! Openscape werkt ook met de speakers op je telefoon.";
 
 
 /*  */
@@ -3499,11 +3499,11 @@
 
 
 /*  */
-"first_launch.callouts.message" = "Met openscape bent u zich steeds bewust van waar u bent en waarheen u loopt doordat straten, kruispunten en referentiepunten worden aangekondigd als u ze nadert.";
+"first_launch.callouts.message" = "Met Openscape ben je je steeds bewust van waar je bent en waar je heen loopt doordat straten, kruispunten en referentiepunten worden genoemd als je ze nadert.";
 
 
 /*  */
-"first_launch.callouts.listen" = "Luister naar een voorbeeld van wat openscape kan aankondigen op uw volgende wandeling";
+"first_launch.callouts.listen" = "Luister naar een voorbeeld van wat Openscape kan melden op je volgende wandeling";
 
 
 /*  */
@@ -3511,7 +3511,7 @@
 
 
 /*  */
-"first_launch.callouts.listen.accessibility_hint" = "Dubbeltik om te luisteren naar een voorbeeld van wat openscape kan aankondigen op uw volgende wandeling";
+"first_launch.callouts.listen.accessibility_hint" = "Dubbeltik om te luisteren naar een voorbeeld van wat Openscape kan aankondigen op je volgende wandeling";
 
 
 /*  */
@@ -3655,7 +3655,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Instellen welke waarschuwingen je hoort</b>:<br/> Als je wilt instellen voor welke dingen Openscape automatisch een waarschuwing geeft, ga dan naar Instellingen via het menu op het startscherm. in Waarschuwingen beheren in Instellingen  staat een lijst met items waarvoor je een waarschuwing kunt ontvangen. Elk item heeft een wisselknop die je kunt in- of uitschakelen. Als je alle waarschuwingen wilt uitschakelen, tik dan op de wisselknop Waarschuwingen toestaan boven aan de lijst.";
+"help.text.automatic_callouts.how.2" = "<b>Instellen welke meldingen je hoort</b>:<br/> Als je wilt instellen voor welke dingen Openscape automatisch een melding geeft, ga dan naar Instellingen via het menu op het startscherm. in Waarschuwingen beheren in Instellingen  staat een lijst met items waarvoor je een melding kunt ontvangen. Elk item heeft een wisselknop die je kunt in- of uitschakelen. Als je alle meldingen wilt uitschakelen, tik dan op de wisselknop Waarschuwingen toestaan boven aan de lijst.";
 
 
 /*  */
@@ -4131,7 +4131,7 @@
 
 
 /*  */
-"faq.how_to_use_beacon.answer" = "Je kunt het audiobaken zien als een soort 'vuurtoren' voor je oren. Het laat je weten waar je bestemming zich bevindt, hemelsbreed ten opzichte van je locatie. Net als een vuurtoren vertelt de app niet hoe je er komt, maar moet je zelf onderweg veel navigatiekeuzes maken en net als een zeilboot je koers strategisch aanpassen om dichterbij je bestemming te komen. Het continue ritmische geluid van het audiobaken wordt uitgezonden vanuit de richting van je bestemming en zorgt dat je je bewust blijft van de locatie van de bestemming ten opzichte van waar je loopt. Wanneer je recht op de bestemming afloopt of je telefoon naar de bestemming richt, hoor je een hogere beltoon. Op deze manier kun je de richting precies bepalen, aangezien de richting van het ritmische geluid soms moeilijk waar te nemen is in lawaaierige omgevingen. Als je de hogere beltoon wilt horen, moet je de telefoon vlak houden en er langzaam mee zwaaien. Draai je hoofd in dezelfde richting als de telefoon zodat je de beste ruimtelijke geluidservaring krijgt.\n\nDe metafoor met de vuurtoren voor het bakenontwerp heeft een aantal natuurlijke implicaties:\n\n1. Er is geen 'juiste' richting om te reizen met het baken. Met openscape kies je zelf hoe u er komt.\n2. De hogere beltoon helpt je alleen om de richting van de bestemming te lokaliseren. Het is geen aanduiding voor hoe je er komt.\n3. Als je min of meer weet hoe je bij je bestemming komt, kun je het baken het grootste deel van je reis uitzetten en alleen inschakelen als je dicht bij je bestemming komt.";
+"faq.how_to_use_beacon.answer" = "Je kunt het audiobaken zien als een soort 'vuurtoren' voor je oren. Het laat je weten waar je bestemming zich bevindt, hemelsbreed ten opzichte van je locatie. Net als een vuurtoren vertelt de app niet hoe je er komt, maar moet je zelf onderweg veel navigatiekeuzes maken en als een zeilboot je koers strategisch aanpassen om dichterbij je bestemming te komen. Het continue ritmische geluid van het audiobaken wordt uitgezonden vanuit de richting van je bestemming en zorgt dat je je bewust blijft van de locatie van de bestemming ten opzichte van waar je loopt. Wanneer je recht op de bestemming afloopt of je telefoon naar de bestemming richt, hoor je een hogere beltoon. Op deze manier kun je de richting precies bepalen, aangezien de richting van het ritmische geluid soms moeilijk waar te nemen is in lawaaierige omgevingen. Als je de hogere beltoon wilt horen, moet je de telefoon vlak houden en er langzaam mee zwaaien. Draai je hoofd in dezelfde richting als de telefoon zodat je de beste ruimtelijke geluidsweergave krijgt.\n\nDe metafoor met de vuurtoren voor het bakenontwerp heeft een aantal natuurlijke implicaties:\n\n1. Er is geen 'juiste' richting om te reizen met het baken. Met openscape kies je zelf hoe u er komt.\n2. De hogere beltoon helpt je alleen om de richting van de bestemming te lokaliseren. Het is geen aanduiding voor hoe je er komt.\n3. Als je min of meer weet hoe je bij je bestemming komt, kun je het baken het grootste deel van je reis uitzetten en alleen inschakelen als je dicht bij je bestemming komt.";
 
 
 /*  */
@@ -4159,7 +4159,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.question" = "Wanneer ik een baken instel op een bestemming, hoe dicht bij de bestemming brengt openscape me dan? ";
+"faq.how_close_to_destination.question" = "Wanneer ik een baken instel op een bestemming, hoe dicht bij de bestemming brengt Openscape me dan? ";
 
 
 /*  */
@@ -4179,15 +4179,15 @@
 
 
 /*  */
-"faq.road_names.answer" = "Voor de verschillende kruispuntconfiguraties gebruikt openscape beschrijvingen waarin kruispunten segmenten zijn van wegen die beginnen op een gemeenschappelijk punt. openscape gebruikt ruimtelijke audio om achtereenvolgens de namen aan te geven van de weg naar links, de weg die rechtdoor gaat en de weg die naar rechts gaat. Als de beschrijving van het kruispunt begint met de weg waarop u zich bevindt in plaats van de weg naar links, gaat het om een T-splitsing en gaat de weg waarop u bent, rechtdoor met een afslag naar rechts. Als de beschrijving alleen een weg naar links en een weg naar rechts bevat, weet u dat de weg waarop u zich bevindt, eindigt bij de komende T-splitsing. Deze methode voor het beschrijven van kruispunten wordt ook gebruikt als een weg van naam verandert bij een kruispunt.";
+"faq.road_names.answer" = "Om verschillende soorten kruispunten te kunnen weergeven, beschrijft Openscape kruispunten als onderdelen van wegen die op een gemeenschappelijk punt beginnen. Openscape gebruikt ruimtelijke audio om achtereenvolgens de namen aan te geven van de weg naar links, de weg die rechtdoor gaat en de weg die naar rechts gaat. Als de beschrijving van het kruispunt begint met de weg waarop je je bevindt in plaats van de weg naar links, gaat het om een T-splitsing en gaat de weg waarop jij bent, rechtdoor met een afslag naar rechts. Als de beschrijving alleen een weg naar links en een weg naar rechts bevat, weet je dat de weg waarop je je bevindt, eindigt bij de komende T-splitsing. Deze methode voor het beschrijven van kruispunten wordt ook gebruikt als een weg van naam verandert bij een kruispunt.";
 
 
 /*  */
-"faq.why_not_every_business.question" = "Waarom geeft openscape niet bij elk bedrijf dat ik passeer, een aankondiging?";
+"faq.why_not_every_business.question" = "Waarom geeft Openscape niet bij elk bedrijf dat ik passeer, een melding?";
 
 
 /*  */
-"faq.why_not_every_business.answer" = "Openscape is ontworpen om veel tekst te produceren. Het werkt met Open Street Map als achterliggende gegevensbron. Open Street Map (OSM, https://www.openstreetmap.org/) is een door de community ontwikkelde en bewerkte kaart van de wereld, die steunt op individuen die gegevens invoeren en beheren. Als een bedrijf of referentiepunt niet door openscape wordt aangekondigd, komt dat waarschijnlijk doordat het bedrijf nog niet is toegevoegd of bijgewerkt door een lid van de OSM-community.";
+"faq.why_not_every_business.answer" = "Openscape is niet ontworpen om veel tekst te produceren. Het werkt met Open Street Map als achterliggende gegevensbron. Open Street Map (OSM, https://www.openstreetmap.org/) is een door de community ontwikkelde en bewerkte kaart van de wereld, die steunt op individuen die gegevens invoeren en beheren. Als een bedrijf of referentiepunt niet door Openscape wordt gemeld, komt dat waarschijnlijk doordat het bedrijf nog niet is toegevoegd of bijgewerkt door een lid van de OSM-community.";
 
 
 /*  */
@@ -4203,7 +4203,7 @@
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Openscape bevat een lijst met uw recente waarschuwingen zodat u deze kunt bekijken als u ze hebt gemist. Tik hiervoor op de zoekbalk op het startscherm van Openscape. Onderaan deze pagina ziet u de sectie Recente waarschuwingen waarin de waarschuwing die u hebt gemist, wordt vermeld.";
+"faq.miss_a_callout.answer" = "Openscape heeft een lijst met je recente meldingen zodat je deze kunt bekijken als je ze hebt gemist. Tik hiervoor op de zoekbalk \n op het startscherm van Openscape. Onderaan deze pagina zie je de sectie Recente waarschuwingen waarin de melding staan die je hebt gemist.";
 
 
 /*  */
@@ -4211,11 +4211,11 @@
 
 
 /*  */
-"faq.supported_phones.answer" = "Openscape is momenteel beschikbaar voor Apple iOS, en werkt op iPhone SE, iPhone 6S en later.";
+"faq.supported_phones.answer" = "Openscape is momenteel beschikbaar voor Apple iOS, en werkt op de iPhone SE, iPhone 6S en later.";
 
 
 /*  */
-"faq.supported_headsets.question" = "Welke koptelefoon kan ik het beste gebruiken met with Openscape?";
+"faq.supported_headsets.question" = "Welke koptelefoon kan ik het beste gebruiken met Openscape?";
 
 
 /*  */
@@ -4223,7 +4223,7 @@
 
 
 /*  */
-"faq.battery_impact.question" = "Wat is de impact van openscape op de batterij van mijn iPhone?";
+"faq.battery_impact.question" = "Wat is de impact van Openscape op de batterij van mijn iPhone?";
 
 
 /*  */
@@ -4231,7 +4231,7 @@
 
 
 /*  */
-"faq.sleep_mode_battery.question" = "Hoe gebruik ik de slaapstand om het gebruik van de batterij van mijn telefoon door openscape te minimaliseren?";
+"faq.sleep_mode_battery.question" = "Hoe kan ik de slaapstand inzetten om het gebruik van de batterij van mijn telefoon door Openscape te minimaliseren?";
 
 
 /*  */
@@ -4239,7 +4239,7 @@
 
 
 /*  */
-"faq.snooze_mode_battery.question" = "Hoe gebruik ik de sluimerstand om het gebruik van de batterij van mijn telefoon door openscape te minimaliseren?";
+"faq.snooze_mode_battery.question" = "Hoe kan ik de sluimerstand inzetten om het gebruik van de batterij van mijn telefoon door Openscape te minimaliseren?";
 
 
 /*  */
@@ -4255,7 +4255,7 @@
 
 
 /*  */
-"faq.background_battery_impact.question" = "Wat is de invloed van het op de achtergrond uitvoeren van openscape op de levensduur van de batterij van mijn telefoon?";
+"faq.background_battery_impact.question" = "Wat is de invloed van het op de achtergrond uitvoeren van Openscape op de levensduur van de batterij van mijn telefoon?";
 
 
 /*  */
@@ -4263,7 +4263,7 @@
 
 
 /*  */
-"faq.mobile_data_use.question" = "Hoeveel mobiele gegevens gebruikt Openscape?";
+"faq.mobile_data_use.question" = "Hoeveel mobiele data gebruikt Openscape?";
 
 
 /*  */
@@ -4275,15 +4275,15 @@
 
 
 /*  */
-"faq.difference_from_map_apps.answer" = "Openscape geeft een uitgebreide beschrijving van je omgeving om je te helpen deze te verkennen en jouw route te vinden. Met ruimtelijke audio geeft Openscape, terwijl je loopt, meldingen over referentiepunten, parken, wegen en kruispunten vanuit de richting waarin deze zich fysiek in je omgeving bevinden. Als je bijvoorbeeld een winkel passeert aan je rechterhand, hoor je de naam van de winkel vanaf de rechterkant. Als je een kruispunt nadert, hoor je alle straatnamen vanuit de richting waarin ze lopen: naar links, rechtdoor en naar rechts.\n\nIn plaats van richtingaanwijzingen zoals in andere navigatie-apps hoor je in Openscape een audiobaken in de richting van je bestemming, zodat je je weg daarnaartoe op jouw eigen manier kunt vinden aan de hand van een verhoogde bewustwording van je omgeving en van de locatie van je bestemming. Openscape is ontworpen om te worden uitgevoerd in de achtergrond. Zo kun je \n een app gebruiken die die routeaanwijzingen geeft, terwijl Openscape je helpt met het bewustzijn van de omgeving.";
+"faq.difference_from_map_apps.answer" = "Openscape geeft een uitgebreide beschrijving van je omgeving om je te helpen deze te verkennen en jouw route te vinden. Met ruimtelijke audio geeft Openscape, terwijl je loopt, meldingen over referentiepunten, parken, wegen en kruispunten vanuit de richting waarin deze zich fysiek in je omgeving bevinden. Als je bijvoorbeeld een winkel passeert aan je rechterhand, hoor je de naam van de winkel vanaf de rechterkant. Als je een kruispunt nadert, hoor je alle straatnamen vanuit de richting waarin ze lopen: naar links, rechtdoor en naar rechts.\n\nIn plaats van richtingaanwijzingen zoals in andere navigatie-apps hoor je in Openscape een audiobaken in de richting van je bestemming, zodat je je weg daarnaartoe op jouw eigen manier kunt vinden aan de hand van een verhoogde bewustwording van je omgeving en van de locatie van je bestemming. Openscape is ontworpen om op de achtergrond te worden uitgevoerd. Zo kun je \n een navigatie-app gebruiken die die routeaanwijzingen geeft, terwijl Openscape je helpt met het bewustzijn van de omgeving.";
 
 
 /*  */
-"faq.use_with_wayfinding_apps.question" = "Hoe gebruik ik openscape samen met een navigatie-app?";
+"faq.use_with_wayfinding_apps.question" = "Hoe gebruik ik Openscape samen met een navigatie-app?";
 
 
 /*  */
-"faq.use_with_wayfinding_apps.answer" = "Openscape is ontworpen als een hulpmiddel om u bewuster te maken van details in uw omgeving. Het is niet ontworpen als een navigatie-app met routebeschrijvingen. Het kan wel samen met dergelijke apps worden gebruikt om aanvullende informatie te geven. Als u openscape met deze apps wilt gebruiken, start u eerst uw navigatie-app. Dan gaat u naar openscape en stelt u een baken in op dezelfde bestemming als de navigatie-app. Nu werken beide apps tegelijk en hoort u een routebeschrijving van uw navigatie-app, terwijl u van openscape informatie krijgt over referentiepunten, kruispunten en de afstand tot uw bestemming.";
+"faq.use_with_wayfinding_apps.answer" = "Openscape is ontworpen als een hulpmiddel om je bewuster te maken van details in je omgeving. Het is niet ontworpen als een navigatie-app met routebeschrijvingen. Het kan wel samen met zulke apps worden gebruikt om aanvullende informatie te geven. Als je Openscape met deze apps wilt gebruiken, start je eerst je navigatie-app. Dan ga je naar Openscape en stel je een baken in op dezelfde bestemming als de navigatie-app. Nu werken beide apps tegelijk en hoor je een routebeschrijving van je navigatie-app, terwijl je van Openscape informatie krijgt over referentiepunten, kruispunten en de afstand tot je bestemming.";
 
 
 /*  */
@@ -4291,7 +4291,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.answer" = "Openscape heeft verschillende manieren om te bepalen wat u hoort en wanneer:\n\n1. Meteen alle audio stoppen: dubbeltik op het scherm met twee vingers om meteen alle audio uit te schakelen, met inbegrip van waarschuwingen die momenteel worden afgespeeld en van het baken als het is ingeschakeld. De waarschuwingen worden automatisch hervat wanneer u het volgende kruispunt of referentiepunt nadert, maar het audiobaken niet. Selecteer de knop Baken dempen opheffen op het hoofdscherm als u het baken weer wilt horen.\n2. Automatische waarschuwingen stoppen: wanneer u niet rijdt of een bestemming hebt bereikt, is het waarschijnlijk niet meer nodig dat openscape meldingen blijft geven over uw omgeving. In plaats van de app af te sluiten kunt u openscape in de sluimerstand zetten. De app wordt dan geactiveerd wanneer u weer vertrekt. Ook kunt u openscape in de slaapstand zetten waardoor de app uitgeschakeld blijft tot u deze weer inschakelt. Of selecteer Instellingen in het menu en schakel alle waarschuwingen uit in de sectie Waarschuwingen beheren.\n3. Het baken stoppen: er zijn verschillende scenario's waarin u wel een bestemming wilt instellen maar geen hoorbaar baken nodig hebt. U weet bijvoorbeeld precies hoe u bij uw bestemming komt maar u wilt automatische updates krijgen over hoe ver het nog is. Of u weet ongeveer hoe u de bestemming vindt en u hebt het audiobaken pas nodig als u er bijna bent. In beide gevallen kunt u het audiobaken in- of uitschakelen met de knop Baken dempen/Baken dempen opheffen op het hoofdscherm.";
+"faq.controlling_what_you_hear.answer" = "Openscape heeft verschillende manieren om te bepalen wat je hoort en wanneer:\n\n1. Meteen alle audio stoppen: dubbeltik op het scherm met twee vingers om meteen alle audio uit te schakelen, met inbegrip van meldingen die momenteel worden afgespeeld en van het baken als het is ingeschakeld. De vmeldingen worden automatisch hervat wanneer je het volgende kruispunt of referentiepunt nadert, maar het audiobaken niet. Selecteer de knop Baken dempen opheffen op het hoofdscherm als je het baken weer wilt horen.\n2. Automatische waarschuwingen stoppen: wanneer je niet rijdt of een bestemming hebt bereikt, is het waarschijnlijk niet meer nodig dat Openscape meldingen blijft geven over je omgeving. In plaats van de app af te sluiten kun je Openscape in de sluimerstand zetten. De app wordt dan geactiveerd wanneer je weer vertrekt. Ook kun je Openscape in de slaapstand zetten waardoor de app uitgeschakeld blijft tot je deze weer inschakelt. Of selecteer Instellingen in het menu en schakel alle waarschuwingen uit in Waarschuwingen beheren.\n3. Het baken stoppen: er zijn verschillende scenario's waarin je wel een bestemming wilt instellen maar geen hoorbaar baken nodig hebt. Je weet bijvoorbeeld precies hoe je bij je bestemming komt, maar je wilt automatische updates krijgen over hoe ver het nog is. Of u weet ongeveer hoe je de bestemming vindt en je hebt het audiobaken pas nodig als je er bijna bent. In beide gevallen kun je het audiobaken in- of uitschakelen met de knop Baken dempen/Baken dempen opheffen op het hoofdscherm.";
 
 
 /*  */
@@ -4299,7 +4299,7 @@
 
 
 /*  */
-"faq.holding_phone_flat.answer" = "Nee, tijdens het lopen kunt u de telefoon in een tas of een zak stoppen of op een andere handige plek. openscape gebruikt de richting waarin u loopt om te bepalen welke waarschuwingen voor links en rechts worden aangekondigd. Als u stopt met bewegen, weet openscape niet in welke richting u kijkt. Als het audiobaken is ingeschakeld, merkt u dat dit stil is tot u weer verdergaat. U kunt op elk gewenst moment uw telefoon tevoorschijn halen en op de locatie- en verkenningsknoppen onderaan het scherm drukken. Zorg er wel altijd voor dat de bovenkant van de telefoon in de richting wijst waar u naartoe gaat en dat het scherm naar boven is gericht. In deze horizontale positie gebruikt openscape het kompas van de telefoon om te bepalen in welke richting u kijkt en om ruimtelijke waarschuwingen te geven. Als het baken is ingeschakeld, merkt u ook dat het teruggaat naar het volledige volume.";
+"faq.holding_phone_flat.answer" = "Nee, tijdens het lopen kun je de telefoon in een tas of een zak stoppen of op een andere handige plek. Openscape gebruikt de richting waarin je loopt om te bepalen welke meldingen voor links en rechts worden aangekondigd. Als je stopt met bewegen, weet Openscape niet in welke richting je kijkt. Als het audiobaken is ingeschakeld, merk je dat dit stil is tot je weer verdergaat. Je kunt op elk gewenst moment je telefoon tevoorschijn halen en op de locatie- en verkenningsknoppen onderaan het scherm drukken. Zorg er wel altijd voor dat de bovenkant van de telefoon in de richting wijst waar je naartoe gaat en dat het scherm naar boven is gericht. In deze horizontale positie gebruikt Openscape het kompas van de telefoon om te bepalen in welke richting je kijkt en om ruimtelijke meldignen te geven. Als het baken is ingeschakeld, merk je ook dat het teruggaat naar het volledige volume.";
 
 
 /*  */
@@ -4307,7 +4307,7 @@
 
 
 /*  */
-"faq.personalize_experience.answer" = "In openscape kunt u de drie belangrijkste aspecten aanpassen van de waarschuwingen die u hoort tijdens het lopen:\n\n1. Stem: kies een van de beschikbare stemmen in iOS voor gebruik in Openscape, en kies ook de snelheid waarmee de waarschuwingen worden uitgesproken. Selecteer in het Menu de opties Instellingen en Stem om de spreeksnelheid en de steminstellingen te bepalen. U kunt andere stemmen en stemmen met een hogere spraakkwaliteit downloaden in de app iOS-instellingen via Instellingen > Toegankelijkheid > Gesproken materiaal > Stemmen. \n2. Meeteenheid voor afstand: u kunt de afstanden in openscape laten melden in voeten of meters. Selecteer Instellingen in het Menu. In de sectie Meeteenheden kunt u afwisselen tussen twee opties: Imperial (voet) en Metrisch (meter).\n3. Markeringen: u kunt in uw omgeving markeringen aanbrengen voor persoonlijke en relevante zaken die u belangrijk vindt, zoals uw huis, kantoor of uw favoriete supermarkt. openscape geeft dan automatisch een melding over de gemarkeerde plaatsen als u erlangs loopt of ze nadert. Met de knop Markeringen in de buurt onder aan het startscherm van openscape krijgt u een ruimtelijke waarschuwing te horen voor gemarkeerde plaatsen om u heen. Deze markeringen zijn persoonlijk en niet beschikbaar voor anderen.\n\nBovendien kunt u met de instellingen voor VoiceOver bepalen hoe openscape werkt:\n\n1. VoiceOver-tips: als VoiceOver-tips zijn ingeschakeld, hoort u meer informatie over alle knoppen op het primaire Openscape-scherm. Schakel VoiceOver-tips in via de app iOS-instellingen en de opties Toegankelijkheid > VoiceOver > Detailniveau. Schakel vervolgens de instelling Spreek hints uit in.\n2. Audioducking: openscape werkt standaard met Audioducking uitgeschakeld. Wanneer Audioducking is ingeschakeld, zijn automatische waarschuwingen moeilijker te horen als tegelijkertijd VoiceOver wordt gebruikt. We raden aan om Audioducking uit te schakelen zodat u beter alle automatische waarschuwingen kunt horen terwijl u de telefoon gebruikt. Zet Audioducking uit in VoiceOver-instellingen of via de VoiceOver-rotor.\n3. Touch ID of Face ID om te ontgrendelen: als u uw telefoon instelt op ontgrendelen met Touch ID of Face ID, gaat het ontgrendelen snel en gemakkelijk en hebt u onderweg snel toegang tot de knoppen Mijn locatie, Om me heen en Vóór me. Ontgrendelen met Touch ID of Face ID stelt u in via de app iOS-instellingen.";
+"faq.personalize_experience.answer" = "In Openscape kun je de drie belangrijkste aspecten van de meldingen aanpassen die je hoort tijdens het lopen:\n\n1. Stem: kies een van de beschikbare stemmen in iOS voor gebruik in Openscape, en kies ook de snelheid waarmee de meldingen worden uitgesproken. Selecteer in het Menu de opties Instellingen en Stem om de spreeksnelheid en de steminstellingen te bepalen. Je kunt andere stemmen en stemmen met een hogere spraakkwaliteit downloaden in de app iOS-instellingen via Instellingen > Toegankelijkheid > Gesproken materiaal > Stemmen. \n2. Meeteenheid voor afstand: je kunt de afstanden in Openscape laten melden in voeten of meters. Selecteer Instellingen in het Menu. In Meeteenheden kun je afwisselen tussen twee opties: Imperial (voet) en Metrisch (meter).\n3. Markeringen: je kunt in je omgeving markeringen aanbrengen voor persoonlijke en relevante zaken die je belangrijk vindt, zoals je huis, kantoor of je favoriete supermarkt. Openscape geeft dan automatisch een melding over de gemarkeerde plaatsen als je erlangs loopt of ze nadert. Met de knop Markeringen in de buurt onder aan het startscherm van Openscape krijg je een ruimtelijke melding te horen voor gemarkeerde plaatsen om je heen. Deze markeringen zijn persoonlijk en niet beschikbaar voor anderen.\n\nBovendien kun je met de instellingen voor VoiceOver bepalen hoe Openscape werkt:\n\n1. VoiceOver-tips: als VoiceOver-tips zijn ingeschakeld, hoor je meer informatie over alle knoppen op het Openscape startscherm. Schakel VoiceOver-tips in via de app iOS-instellingen via Toegankelijkheid > VoiceOver > Detailniveau. Schakel vervolgens de instelling Spreek hints uit in.\n2. Audioducking: Openscape werkt standaard met Audioducking uitgeschakeld. Wanneer Audioducking is ingeschakeld, zijn automatische meldingen moeilijker te horen als tegelijkertijd VoiceOver wordt gebruikt. We raden aan om Audioducking uit te schakelen zodat je beter alle automatische meldingen kunt horen terwijl je de telefoon gebruikt. Zet Audioducking uit in VoiceOver-instellingen of via de VoiceOver-rotor.\n3. Touch ID of Face ID om te ontgrendelen: als je je telefoon instelt op ontgrendelen met Touch ID of Face ID, gaat het ontgrendelen snel en gemakkelijk en heb je onderweg snel toegang tot de knoppen Mijn locatie, Om me heen en Vóór me. Ontgrendelen met Touch ID of Face ID stel je in via de app iOS-instellingen.";
 
 
 /*  */
@@ -4315,15 +4315,15 @@
 
 
 /*  */
-"faq.what_is_osm.answer" = "Openscape maakt gebruik van geografische kaartgegevens voor de informatieve waarschuwingen in de app. De primaire bron voor de kaarten die we gebruiken, is Open Street Map (www.openstreetmap.org). Dit is een uitgebreid door de community gegenereerd kaartenplatform, waarmee organisaties en individuele personen de kwaliteit en de gedetailleerdheid van de verstrekte informatie en de toegankelijkheid van hun locaties kunnen verbeteren met de hulpmiddelen van Open Street Map voor het maken van kaarten.";
+"faq.what_is_osm.answer" = "Openscape maakt gebruik van geografische kaartgegevens voor de informatieve meldingen in de app. De primaire bron voor de kaarten die we gebruiken, is Open Street Map (www.openstreetmap.org). Dit is een uitgebreid door de community gegenereerd kaartenplatform, waarmee organisaties en individuele personen de kwaliteit en de gedetailleerdheid van de verstrekte informatie en de toegankelijkheid van hun locaties kunnen verbeteren met de hulpmiddelen van Open Street Map voor het maken van kaarten.";
 
 
 /*  */
-"faq.tip.beacon_quiet" = "Als u uw telefoon in uw zak houdt en niet verder loopt, stopt het bakengeluid omdat openscape niet kan bepalen in welke richting u kijkt. Los dit op door weer te gaan lopen, of door uw telefoon tevoorschijn te halen en horizontaal voor u uit te houden.";
+"faq.tip.beacon_quiet" = "/* Als je je telefoon in je zak houdt en niet verder loopt, stopt het bakengeluid omdat Openscape niet kan bepalen in welke richting je kijkt. Dit kun je verhelpen door weer te gaan lopen, of door je telefoon tevoorschijn te halen en horizontaal voor je uit te houden.";
 
 
 /*  */
-"faq.tip.setting_beacon_on_address" = "U kunt op elk adres een baken instellen. Zoek op het hoofdscherm van openscape naar het adres. Nadat u het adres hebt geselecteerd in de zoekresultaten, verschijnt het scherm Locatiedetails met de optie Audiobaken starten voor het adres. Zo kunt u een baken instellen voor bedrijven, plaatsen, referentiepunten en gebouwen die niet op Open Street Map staan.";
+"faq.tip.setting_beacon_on_address" = "Je kunt op elk adres een baken instellen. Zoek op het hoofdscherm van Openscape naar het adres. Nadat je het adres hebt geselecteerd in de zoekresultaten, verschijnt het scherm Locatiedetails met de optie om voor het adres een Audiobaken te starten. Zo kun je een baken instellen voor bedrijven, plaatsen, referentiepunten en gebouwen die niet op Open Street Map staan.";
 
 
 /*  */
@@ -4335,11 +4335,11 @@
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "Als u wel met openscape wilt werken, maar niet de automatische waarschuwingen wilt horen, kunt u waarschuwingen uitzetten via de sectie Waarschuwingen beheren van de pagina Instellingen in het menu. Ook kunt u openscape in de slaap- of sluimerstand zetten met de knop Slapen op het hoofdscherm, als u de app niet wilt gebruiken.";
+"faq.tip.turning_off_auto_callouts" = "Als je wel met Openscape wilt werken, maar niet de automatische meldingen wilt horen, kun je meldingen uitzetten via Waarschuwingen beheren in Instellingen in het menu. Ook kun je Openscape in de slaapstand zetten met de knop Slapen op het hoofdscherm, als je de app niet wilt gebruiken.";
 
 
 /*  */
-"faq.tip.hold_phone_flat" = "Openscape werkt het beste als u de telefoon vlak houdt met het scherm naar boven en de bovenkant van de telefoon van u af wijzend.";
+"faq.tip.hold_phone_flat" = "Openscape werkt het beste als je de telefoon plat houdt met het scherm naar boven en de bovenkant van de telefoon van je af wijzend.";
 
 
 /*  */
@@ -4361,4 +4361,4 @@
 "faq.section.what_is" = "Wat is Openscape en hoe kan ik het gebruiken?";
 
 /* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. ’Lighting up your way with sound’ is a marketing tagline for the app. Intersection - A junction where two or more roads meet or cross. 3D sound is where the audio through your headphones sounds as though it is coming from a given direction, as if it was actually coming from a speaker. Quotes written as \" {NumberedPlaceholder="Openscape"} */
-"faq.when_to_use.answer" = "Openscape - De app die het gebruik van innovatieve op audio gebaseerde technologie gebruikt om mensen, met name blinden of slechtzienden, in staat te stellen een beter bewustzijn van hun omgeving op te bouwen. Door hoorbare 3D-audiosignalen te gebruiken wordt het inzicht in de omgeving verrijkt en onstaat een nieuwe manier om je verbonden te voelen met alles wat zich rondom je bevindt. Hierdoor is het mogelijk je met meer zekerheid te verplaatsen. Kruispunt - Een punt waar twee of meer wegen elkaar ontmoeten of kruisen. Bij 3D-geluid klinkt het geluid via je hoofdtelefoon alsof het uit een bepaalde richting komt, alsof het echt uit een luidspreker komt. Citaten geschreven als \\\" {NumberedPlaceholder=\"Openscape\"} */";
+"faq.when_to_use.answer" = "/Openscape - De app die het gebruik van innovatieve op audio gebaseerde technologie gebruikt om mensen, met name blinden of slechtzienden, in staat te stellen een beter bewustzijn van hun omgeving op te bouwen. Door hoorbare 3D-audiosignalen te gebruiken wordt het inzicht in de omgeving verrijkt en onstaat een nieuwe manier om je verbonden te voelen met alles wat zich rondom je bevindt. Hierdoor is het mogelijk je met meer zekerheid te verplaatsen. Kruispunt - Een punt waar twee of meer wegen elkaar ontmoeten of kruisen. Bij 3D-geluid klinkt het geluid via je hoofdtelefoon alsof het uit een bepaalde richting komt, alsof het echt uit een luidspreker komt. Citaten geschreven als \\\" {NumberedPlaceholder=\"Openscape\"} */";
