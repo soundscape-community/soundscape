@@ -662,6 +662,7 @@
 		62F7A30C27B6080900C62390 /* InteractiveBeaconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */; };
 		62F7A30E27B6082A00C62390 /* InteractiveBeaconViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */; };
 		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
+		91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */; };
 		91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */; };
 		B5499F0EEDE32E16F9814457 /* Pods_Soundscape.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAEDD72453A8268FBA604D2F /* Pods_Soundscape.framework */; };
 		B90C27D61EAF81D600007368 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C27D51EAF81D600007368 /* Sound.swift */; };
@@ -876,6 +877,7 @@
 		D29832961E4E249700352A5A /* GeoJsonGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832951E4E249700352A5A /* GeoJsonGeometry.swift */; };
 		D30355D31B61401D00E1DDED /* GDAJSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D30355D21B61401D00E1DDED /* GDAJSONObject.m */; };
 		D395B0F71B41DA15005A6407 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D395B0F61B41DA15005A6407 /* Images.xcassets */; };
+		DE65184E7A99BC8A024D5CE8 /* Pods_Soundscape.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91DC0CF52A460FAA00244CC8 /* Pods_Soundscape.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1580,6 +1582,7 @@
 		815775252832F0650DF9D8D4 /* Pods-Soundscape.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.adhoc.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.adhoc.xcconfig"; sourceTree = "<group>"; };
 		914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtilsTest.swift; sourceTree = "<group>"; };
+		91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = " GeolocationManagerTest.swift"; path = "UnitTests/Sensors/Geolocation/Geolocation Manager/ GeolocationManagerTest.swift"; sourceTree = SOURCE_ROOT; };
 		91DC0CF32A460FAA00244CC8 /* iOS_GPX_Framework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = iOS_GPX_Framework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DC0CF52A460FAA00244CC8 /* Pods_Soundscape.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Soundscape.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DC0CF72A460FAA00244CC8 /* TBXML.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TBXML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4282,6 +4285,7 @@
 		914DEBCE2A3CE6B9007B161C /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				91C82AA62A4F56A70086D126 /* Sensors */,
 				914DEBD92A3CE7E6007B161C /* App */,
 			);
 			path = UnitTests;
@@ -4301,6 +4305,30 @@
 				914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		91C82AA62A4F56A70086D126 /* Sensors */ = {
+			isa = PBXGroup;
+			children = (
+				91C82AA72A4F56F80086D126 /* Geolocation */,
+			);
+			path = Sensors;
+			sourceTree = "<group>";
+		};
+		91C82AA72A4F56F80086D126 /* Geolocation */ = {
+			isa = PBXGroup;
+			children = (
+				91C82AAB2A5DCECB0086D126 /* Geolocation Manager */,
+			);
+			path = Geolocation;
+			sourceTree = "<group>";
+		};
+		91C82AAB2A5DCECB0086D126 /* Geolocation Manager */ = {
+			isa = PBXGroup;
+			children = (
+				91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */,
+			);
+			path = "Geolocation Manager";
 			sourceTree = "<group>";
 		};
 		94B9789D44F5F13621A0C9B1 /* Pods */ = {
@@ -5515,6 +5543,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */,
 				91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
