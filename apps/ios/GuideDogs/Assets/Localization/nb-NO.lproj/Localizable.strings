@@ -351,15 +351,7 @@
 
 
 /*  */
-"settings.clear_cache.alert_title" = "Vil du slette lagrede data?";
-
-
-/*  */
 "settings.clear_cache.markers.alert_title" = "Vil du beholde markører og ruter?";
-
-
-/*  */
-"settings.clear_cache.no_service.title" = "Kan ikke fjerne lagrede kartdata";
 
 
 /*  */
@@ -367,15 +359,7 @@
 
 
 /*  */
-"settings.telemetry.optout.action" = "Velg bort";
-
-
-/*  */
 "settings.version.about.version" = "Versjon %1$@ (%2$@)";
-
-
-/*  */
-"settings.feedback.choose_email_app" = "Velg en e-postapp:";
 
 
 /*  */
@@ -383,15 +367,7 @@
 
 
 /*  */
-"settings.units.metric" = "Metrisk (meter)";
-
-
-/*  */
 "settings.about_app" = "Om Openscape";
-
-
-/*  */
-"settings.section.units" = "Måleenheter";
 
 
 /*  */
@@ -399,15 +375,7 @@
 
 
 /*  */
-"settings.section.share_usage_data" = "Del bruksdata";
-
-
-/*  */
 "settings.language.screen_title" = "Språk";
-
-
-/*  */
-"settings.language.change_alert" = "Vil du endre appspråket til %@?";
 
 
 /*  */
@@ -415,15 +383,7 @@
 
 
 /*  */
-"settings.audio.mix_with_others.title" = "Aktiver mediekontroller";
-
-
-/*  */
 "setting.audio.mix_with_others.confirmation" = "Hvis du slår på denne innstillingen blir Soundscapes meldinger og annen lyd midlertidig stanset når du begynner å bruke en annen medieapp. Du kan gå tilbake til openscape for å gjenoppta meldinger.";
-
-
-/*  */
-"voice.action.preview" = "Hør";
 
 
 /*  */
@@ -431,15 +391,7 @@
 
 
 /*  */
-"voice.voice_rate_test" = "Hvordan høres den ut?";
-
-
-/*  */
 "voice.title.voice_name_and_locale_selected" = "%1$@, %2$@, valgt.";
-
-
-/*  */
-"voice.voice_cell.use.acc_hint" = "Dobbelttrykk for å bruke denne stemmen. Stryk opp eller ned for å høre den.";
 
 
 /*  */
@@ -447,15 +399,7 @@
 
 
 /*  */
-"voice.apple.default" = "%@ (standardstemme)";
-
-
-/*  */
 "voice.apple.preview_hint" = "Dobbelttrykk for å velge og spille av et eksempel.";
-
-
-/*  */
-"voice.settings.enhanced_available" = "Det kan hende at en versjon av denne stemmen med høyere kvalitet er tilgjengelig. Hvis du vil laste ned den og andre stemmer, kan du gå til delen Opplest innhold i tilgjengelighetsinnstillingene i iOS.";
 
 
 /*  */
@@ -463,15 +407,7 @@
 
 
 /*  */
-"beacon.settings.style" = "Lydstiler";
-
-
-/*  */
 "beacon.settings.style.haptic.explanation" = "Disse lydsignalstilene omfatter haptisk tilbakemelding slik at du kan føle i tillegg til vanlig lydsignal. Haptisk tilbakemelding er bare tilgjengelig når telefonen er opplåst og openscape er åpen.";
-
-
-/*  */
-"beacon.settings.melodies" = "Aktiver signaler for avgang og ankomst";
 
 
 /*  */
@@ -479,15 +415,7 @@
 
 
 /*  */
-"troubleshooting.gps_status.explanation.meters" = "Denne verdien er et estimat av hvor nøyaktig openscape vet hvor du er. Mindre enn ±10 meter er bra. Mindre enn ±20 meter er ok. Alt annet er dårlig. Posisjonsdata er mest nøyaktige når du er utendørs og ikke under noen andre strukturer.";
-
-
-/*  */
 "troubleshooting.gps_status.meters" = "±%@ meter";
-
-
-/*  */
-"troubleshooting.check_audio" = "Sjekk lyd";
 
 
 /*  */
@@ -495,15 +423,7 @@
 
 
 /*  */
-"troubleshooting.cache.hint" = "Dobbelttrykk for å slette og laste ned lagrede kartdata på nytt.";
-
-
-/*  */
 "settings.about.title.whats_new" = "Nyheter";
-
-
-/*  */
-"settings.about.title.service_agreement" = "Tjenesteavtale";
 
 
 /*  */
@@ -511,15 +431,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_hint" = "Dobbelttrykk for å vise neste oppdateringskunngjøring";
-
-
-/*  */
 "beacon.generic_name" = "Lydsignal";
-
-
-/*  */
-"beacon.styles.original" = "Original";
 
 
 /*  */
@@ -527,15 +439,7 @@
 
 
 /*  */
-"beacon.styles.ping" = "Ping";
-
-
-/*  */
 "beacon.styles.signal" = "Signal";
-
-
-/*  */
-"beacon.styles.signal.very_slow" = "Signal (svært langsomt)";
 
 
 /*  */
@@ -543,15 +447,7 @@
 
 
 /*  */
-"beacon.styles.haptic.wand" = "Haptisk penn";
-
-
-/*  */
 "beacon.audio_beacon" = "Lydsignal";
-
-
-/*  */
-"beacon.distance.unknown" = "Ukjent avstand";
 
 
 /*  */
@@ -559,15 +455,7 @@
 
 
 /*  */
-"beacon.action.mute_beacon.acc_hint" = "Dobbelttrykk for å slå av lydsignalet.";
-
-
-/*  */
 "beacon.action.unmute_beacon.acc_hint" = "Dobbelttrykk for å slå på lydsignalet.";
-
-
-/*  */
-"beacon.action.callout_beacon" = "Les opp lydsignal";
 
 
 /*  */
@@ -575,15 +463,7 @@
 
 
 /*  */
-"beacon.distance_update" = "Oppdatering av lydsignalavstand";
-
-
-/*  */
 "beacon.beacon_location_within_audio_beacon_muted" = "Lydsignal innenfor %@. Lydsignalet er slått av";
-
-
-/*  */
-"preview.current_intersection_unknown.label" = "Nåværende posisjon ukjent";
 
 
 /*  */
@@ -591,15 +471,7 @@
 
 
 /*  */
-"preview.content.orientation.text.without_cardinal" = "%1$@°";
-
-
-/*  */
 "preview.content.edge.text.accessibility_hint" = "Dobbelttrykk for å gå til neste veikryss";
-
-
-/*  */
-"preview.go_back.title" = "Forrige";
 
 
 /*  */
@@ -607,15 +479,7 @@
 
 
 /*  */
-"preview.alert.restart.title" = "Preview pågår allerede";
-
-
-/*  */
 "preview.alert.restart.button" = "Start på nytt";
-
-
-/*  */
-"preview.callout.end" = "Avslutter openscape Street Preview";
 
 
 /*  */
@@ -623,15 +487,7 @@
 
 
 /*  */
-"preview.callout.continue.at" = "Fortsetter Street Preview ved %@";
-
-
-/*  */
 "preview.callout.road_finder.instructions" = "Snu telefonen for å forhåndsvise tilgjengelige veier";
-
-
-/*  */
-"preview.callout.road_finder.road" = "%1$@, på vei mot %2$@";
 
 
 /*  */
@@ -639,15 +495,7 @@
 
 
 /*  */
-"preview.callout.approach.end" = "Du nærmer deg slutten på veien";
-
-
-/*  */
 "preview.callout.turn.right" = "Svingte mot høyre. Nå langs %@";
-
-
-/*  */
-"preview.callout.turn.roundabout" = "Kjørte ut av rundkjøringen. Nå langs %@";
 
 
 /*  */
@@ -655,15 +503,7 @@
 
 
 /*  */
-"preview.include_unnamed_roads.label.on" = "Deaktiver veier uten navn";
-
-
-/*  */
 "preview.include_unnamed_roads.hint.on" = "Dobbelttrykk for å utelate veier uten navn i openscape Street Preview";
-
-
-/*  */
-"preview.tutorial.title.1" = "Velkommen til openscape Street Preview.";
 
 
 /*  */
@@ -671,15 +511,7 @@
 
 
 /*  */
-"preview.tutorial.title.3" = "Fortsett å utforske";
-
-
-/*  */
 "preview.tutorial.content.4" = "Kos deg og ha det gøy!";
-
-
-/*  */
-"location_detail.title.marker" = "Markørinformasjon";
 
 
 /*  */
@@ -687,15 +519,7 @@
 
 
 /*  */
-"location_detail.action.beacon.hint.disabled" = "Angivelse av et nytt lydsignal er deaktivert mens ruteveiledning er aktiv";
-
-
-/*  */
 "location_detail.action.edit.hint" = "Dobbelttrykk for å redigere markøren";
-
-
-/*  */
-"location_detail.action.preview.hint" = "Dobbelttrykk for å starte forhåndsvisning ved denne posisjonen";
 
 
 /*  */
@@ -703,15 +527,7 @@
 
 
 /*  */
-"location_detail.default.annotation" = "Ingen markørkommentar";
-
-
-/*  */
 "location_detail.disabled.save" = "Lagring av en markør ved denne posisjonen er for øyeblikket utilgjengelig";
-
-
-/*  */
-"location_detail.disabled.generic" = "Denne posisjonen er for øyeblikket utilgjengelig";
 
 
 /*  */
@@ -719,15 +535,7 @@
 
 
 /*  */
-"location_detail.map.edit.hint" = "Flytt kartet til riktig posisjon";
-
-
-/*  */
 "location_detail.map.edit.compass.accessibility_hint" = "Dobbelttrykk for å flytte markøren i retningen telefonen peker. Bruk handlinger til å flytte i en annen retning.";
-
-
-/*  */
-"location_detail.map.edit.south.accessibility_hint" = "Dobbelttrykk for å flytte markøren sørover. Bruk handlinger til å flytte i en annen retning.";
 
 
 /*  */
@@ -735,15 +543,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_action.compass" = "Flytt i retningen til telefonen";
-
-
-/*  */
 "location_detail.map.edit.accessibility_action.south" = "Flytt mot sør";
-
-
-/*  */
-"location_detail.map.edit.accessibility_action.west" = "Flytt mot vest";
 
 
 /*  */
@@ -751,15 +551,7 @@
 
 
 /*  */
-"location_detail.add_waypoint.existing.hint" = "Dobbelttrykk for å fjerne denne markøren fra ruten.";
-
-
-/*  */
 "location_detail.add_waypoint.marker.hint" = "Dobbelttrykk for å opprette en markør og legge den til som et veipunkt";
-
-
-/*  */
-"route_detail.action.stop_route" = "Stopp rute";
 
 
 /*  */
@@ -767,15 +559,7 @@
 
 
 /*  */
-"route_detail.action.start_route.hint" = "Dobbelttrykk for å starte denne ruten";
-
-
-/*  */
 "route_detail.action.stop_route.hint" = "Dobbelttrykk for å stoppe denne ruten";
-
-
-/*  */
-"route_detail.action.stop_event.hint" = "Dobbelttrykk for å stoppe denne aktiviteten og lagre fremgangen";
 
 
 /*  */
@@ -783,15 +567,7 @@
 
 
 /*  */
-"route_detail.action.create" = "Ny rute";
-
-
-/*  */
 "route_detail.waypoint.current_beacon" = "Veipunkt %@. Nåværende lydsignal.";
-
-
-/*  */
-"route.title.time" = "%@ er gått";
 
 
 /*  */
@@ -799,15 +575,7 @@
 
 
 /*  */
-"route.waypoint.progress.complete" = "Fullført.";
-
-
-/*  */
 "route.end.completed.accessibility" = "Ruten er fullført. %@";
-
-
-/*  */
-"route.end.not_completed.accessibility" = "Ruten er stoppet, %@";
 
 
 /*  */
@@ -815,15 +583,7 @@
 
 
 /*  */
-"route.end.not_completed.summary.accessibility" = "%1$@ av %2$@ veipunkter nådd, %3$@ gjenstår";
-
-
-/*  */
 "route_detail.action.previous" = "Forrige veipunkt";
-
-
-/*  */
-"route_detail.action.next" = "Neste veipunkt";
 
 
 /*  */
@@ -831,15 +591,7 @@
 
 
 /*  */
-"route_detail.edit.description.default" = "Legg til en beskrivelse av ruten";
-
-
-/*  */
 "route_detail.edit.waypoints_label" = "Veipunkter";
-
-
-/*  */
-"route_detail.edit.delete.title" = "Er du sikker på at du vil slette denne ruten?";
 
 
 /*  */
@@ -847,15 +599,7 @@
 
 
 /*  */
-"route_detail.beacon.title" = "Veiledet rute";
-
-
-/*  */
 "route_detail.beacon.stop" = "Avslutt rute";
-
-
-/*  */
-"route.update.success.message" = "Fritidsaktiviteten er oppdatert";
 
 
 /*  */
@@ -863,15 +607,7 @@
 
 
 /*  */
-"route.update.unavailable.message" = "Fritidsaktiviteten er allerede oppdatert";
-
-
-/*  */
 "tour_detail.beacon.stop" = "Avslutt omvisning";
-
-
-/*  */
-"waypoint.callout" = "Veipunkt, %@";
 
 
 /*  */
@@ -879,15 +615,7 @@
 
 
 /*  */
-"tour.progress.accessibility" = "Lydsignal er angitt på %1$@. %2$@ veipunkter gjenstår";
-
-
-/*  */
 "tour.progress.distance.accessibility.singular" = "Lydsignal er angitt på %1$@, %2$@, 1 veipunkt gjenstår";
-
-
-/*  */
-"tour.progress.accessibility.singular" = "Lydsignal er angitt på %@. 1 veipunkt gjenstår";
 
 
 /*  */
@@ -895,15 +623,7 @@
 
 
 /*  */
-"waypoint.callout.button.title" = "Les opp veipunkt";
-
-
-/*  */
 "recommender.view.title" = "Forslag";
-
-
-/*  */
-"first_use_experience.share.alert.message" = "Når du deler en Openscape-markør eller -rute, deler du posisjonene som er tilknyttet markøren eller ruten. Du må bare dele med personer du stoler på.";
 
 
 /*  */
@@ -911,15 +631,7 @@
 
 
 /*  */
-"universal_links.alert.action.marker" = "Lagre som markør";
-
-
-/*  */
 "universal_links.marker.alert.title" = "Du har fått en markør: %@";
-
-
-/*  */
-"universal_links.marker_existing.alert.title" = "Markøren finnes allerede";
 
 
 /*  */
@@ -927,15 +639,7 @@
 
 
 /*  */
-"siri_shortcuts.title.beta" = "Siri-snarveier (beta)";
-
-
-/*  */
 "user_activity.my_location.title" = "Hva er min posisjon?";
-
-
-/*  */
-"user_activity.ahead_of_me.title" = "Hva ligger foran meg?";
 
 
 /*  */
@@ -943,15 +647,7 @@
 
 
 /*  */
-"user_activity.street_preview.title" = "Start Street Preview";
-
-
-/*  */
 "url_resource.alert.route.import.title" = "Du har fått en rute: %@";
-
-
-/*  */
-"url_resource.alert.route.import_existing.title" = "Ruten finnes allerede";
 
 
 /*  */
@@ -959,15 +655,7 @@
 
 
 /*  */
-"routes.title" = "Ruter";
-
-
-/*  */
 "routes.action.deleted_error" = "Kan ikke slette denne ruten akkurat nå. Prøv på nytt senere.";
-
-
-/*  */
-"routes.no_routes.hint.1" = "Opprett en rute for deg selv eller for noen andre ved å organisere et sett med markører som veipunkter på en rute.";
 
 
 /*  */
@@ -975,15 +663,7 @@
 
 
 /*  */
-"routes.tutorial.title" = "Hør veipunktene på turen";
-
-
-/*  */
 "routes.callout.complete" = "Ruten er fullført.";
-
-
-/*  */
-"routes.sort.by_name.hint" = "Dobbelttrykk for å sortere etter navn";
 
 
 /*  */
@@ -991,15 +671,7 @@
 
 
 /*  */
-"routes.import.alert.message" = "Veipunktdata mangler for en eller flere ruter. Se gjennom følgende ruter, og legg til veipunkter på nytt om nødvendig.";
-
-
-/*  */
 "markers.action.delete" = "Slett markør";
-
-
-/*  */
-"markers.action.deleted_error" = "Kan ikke slette denne markøren akkurat nå. Prøv på nytt senere.";
 
 
 /*  */
@@ -1007,15 +679,7 @@
 
 
 /*  */
-"markers.sort_button.sort_by_name.voiceover" = "Sortert etter navn";
-
-
-/*  */
 "markers.sort_button.sort_by_distance.voiceover" = "Sortert etter avstand";
-
-
-/*  */
-"markers.no_markers.hint.1" = "Opprett markører for favorittdestinasjonene dine, veipunkter på en rute eller posisjoner du ønsker å få lest opp. Velg en posisjon eller nåværende posisjon fra startskjermen, og velg Lagre som markør.";
 
 
 /*  */
@@ -1023,15 +687,7 @@
 
 
 /*  */
-"markers.edit_screen.done_button.acc_hint" = "Dobbelttrykk for å lagre denne markøren";
-
-
-/*  */
 "markers.generic_name" = "Markør";
-
-
-/*  */
-"markers.marker_created" = "Markør opprettet";
 
 
 /*  */
@@ -1039,15 +695,7 @@
 
 
 /*  */
-"markers.marker_along" = "Markør langs %@";
-
-
-/*  */
 "markers.destructive_delete_message" = "Er du sikker på at du vil slette denne markøren?";
-
-
-/*  */
-"markers.annotation" = "Kommentar";
 
 
 /*  */
@@ -1055,15 +703,7 @@
 
 
 /*  */
-"searching.no_results_found_message" = "Hvis du leter etter et bestemt sted, kan du prøve å søke etter navnet eller adressen.";
-
-
-/*  */
 "search.search_for" = "Søk etter %@";
-
-
-/*  */
-"search.searching_with_punctuation" = "Søker ...";
 
 
 /*  */
@@ -1071,15 +711,7 @@
 
 
 /*  */
-"search.use_current_location" = "Nåværende posisjon";
-
-
-/*  */
 "search.view_markers" = "Markører og ruter";
-
-
-/*  */
-"search.button.nearby.accessibility_hint" = "Dobbelttrykk for å utforske restauranter, kollektivstopp med mer i nærheten";
 
 
 /*  */
@@ -1087,15 +719,7 @@
 
 
 /*  */
-"filter.clear.capital" = "Fjern filter";
-
-
-/*  */
 "filter.double_tap_places_category" = "Dobbelttrykk for å filtrere steder etter kategori.";
-
-
-/*  */
-"filter.transit" = "Offentlig transport";
 
 
 /*  */
@@ -1103,15 +727,7 @@
 
 
 /*  */
-"callouts.turn_on_off" = "Slå av eller på alle meldinger";
-
-
-/*  */
 "callouts.callouts_off" = "Meldinger av";
-
-
-/*  */
-"callouts.places_and_landmarks" = "Steder og landemerker";
 
 
 /*  */
@@ -1119,15 +735,7 @@
 
 
 /*  */
-"callouts.audio_beacon" = "Avstand til lydsignalet";
-
-
-/*  */
 "callouts.automatic_callouts" = "Automatiske meldinger";
-
-
-/*  */
-"callouts.ahead_of_you" = "Foran deg";
 
 
 /*  */
@@ -1135,15 +743,7 @@
 
 
 /*  */
-"callouts.nearby_markers" = "Markører i nærheten";
-
-
-/*  */
 "callouts.action.repeat" = "Gjenta";
-
-
-/*  */
-"callouts.hardware.low_battery" = "%1$@ har bare %2$@ prosent batteri igjen.";
 
 
 /*  */
@@ -1151,15 +751,7 @@
 
 
 /*  */
-"sleep.sleep" = "Sett i dvalemodus";
-
-
-/*  */
 "sleep.snoozing.message" = "Openscape er for øyeblikket i pausemodus. Når du forlater nåværende posisjon, vekkes openscape automatisk. Dette bruker stedstjenester i strømsparingsmodus for å spare telefonens batteri. Trykk på knappen nedenfor for å aktivere den nå.";
-
-
-/*  */
-"sleep.sleep.acc_hint" = "Dobbelttrykk for å sette openscape i dvalemodus";
 
 
 /*  */
@@ -1167,15 +759,7 @@
 
 
 /*  */
-"sleep.ui.wake_up_now" = "Vekk\nnå";
-
-
-/*  */
 "directions.intersection_with_name_distance_direction" = "Veikryss med %1$@ %2$@ %3$@";
-
-
-/*  */
-"directions.intersection_with_name_direction" = "Veikryss med %1$@ %2$@";
 
 
 /*  */
@@ -1183,15 +767,7 @@
 
 
 /*  */
-"directions.at_poi" = "Ved %@";
-
-
-/*  */
 "directions.my_location" = "Min posisjon";
-
-
-/*  */
-"directions.intersects_with_in" = "Veikryss med %1$@ om %2$@";
 
 
 /*  */
@@ -1199,15 +775,7 @@
 
 
 /*  */
-"directions.previous_location" = "Forrige posisjon";
-
-
-/*  */
 "directions.amenity.entrance_list" = "Inngangsliste";
-
-
-/*  */
-"directions.nearest_road_name_is_distance" = "Nærmeste vei, %1$@, er %2$@ unna";
 
 
 /*  */
@@ -1215,15 +783,7 @@
 
 
 /*  */
-"directions.poi_name_was_distance_direction" = "%1$@ var %2$@ %3$@";
-
-
-/*  */
 "directions.roundabout_with_exits_distance" = "Rundkjøring med %1$@ utkjøringer %2$@ unna";
-
-
-/*  */
-"directions.roundabout_with_exits_direction" = "Rundkjøring med %1$@ utkjøringer %2$@";
 
 
 /*  */
@@ -1231,15 +791,7 @@
 
 
 /*  */
-"directions.approaching_name_roundabout" = "Du nærmer deg rundkjøringen i %@";
-
-
-/*  */
 "directions.approaching_name_roundabout_with_exits" = "Du nærmer deg rundkjøringen i %1$@ med %2$@ utkjøringer";
-
-
-/*  */
-"directions.name_roundabout_with_exits" = "Rundkjøringen i %1$@ med %2$@ utkjøringer";
 
 
 /*  */
@@ -1247,15 +799,7 @@
 
 
 /*  */
-"directions.name_goes_right" = "%@, går til høyre";
-
-
-/*  */
 "directions.name_continues_ahead" = "%@, fortsetter rett frem";
-
-
-/*  */
-"directions.direction.ahead" = "foran deg";
 
 
 /*  */
@@ -1263,15 +807,7 @@
 
 
 /*  */
-"directions.direction.behind" = "bak";
-
-
-/*  */
 "directions.direction.to_the_left" = "til venstre";
-
-
-/*  */
-"directions.direction.away" = "unna";
 
 
 /*  */
@@ -1279,15 +815,7 @@
 
 
 /*  */
-"directions.name_is_nearby_street_address" = "%1$@ er i nærheten. Adressen er %2$@.";
-
-
-/*  */
 "directions.name_street_address" = "%1$@. Adressen er %2$@. Ukjent avstand.";
-
-
-/*  */
-"directions.traveling.ne" = "Kjører mot nordøst";
 
 
 /*  */
@@ -1295,15 +823,7 @@
 
 
 /*  */
-"directions.traveling.sw" = "Kjører mot sørvest";
-
-
-/*  */
 "directions.traveling.nw" = "Kjører mot nordvest";
-
-
-/*  */
-"directions.facing.ne" = "Du står mot nordøst";
 
 
 /*  */
@@ -1311,15 +831,7 @@
 
 
 /*  */
-"directions.facing.sw" = "Du står mot sørvest";
-
-
-/*  */
 "directions.facing.nw" = "Du står mot nordvest";
-
-
-/*  */
-"directions.heading.ne" = "Du går mot nordøst";
 
 
 /*  */
@@ -1327,15 +839,7 @@
 
 
 /*  */
-"directions.heading.sw" = "Du går mot sørvest";
-
-
-/*  */
 "directions.heading.nw" = "Du går mot nordvest";
-
-
-/*  */
-"directions.along.traveling.ne" = "Kjører mot nordøst langs %@";
 
 
 /*  */
@@ -1343,15 +847,7 @@
 
 
 /*  */
-"directions.along.traveling.sw" = "Kjører mot sørvest langs %@";
-
-
-/*  */
 "directions.along.traveling.nw" = "Kjører mot nordvest langs %@";
-
-
-/*  */
-"directions.along.facing.ne" = "Står mot nordøst langs %@";
 
 
 /*  */
@@ -1359,15 +855,7 @@
 
 
 /*  */
-"directions.along.facing.sw" = "Står mot sørvest langs %@";
-
-
-/*  */
 "directions.along.facing.nw" = "Står mot nordvest langs %@";
-
-
-/*  */
-"directions.along.heading.ne" = "Går mot nordøst langs %@";
 
 
 /*  */
@@ -1375,15 +863,7 @@
 
 
 /*  */
-"directions.along.heading.sw" = "Går mot sørvest langs %@";
-
-
-/*  */
 "directions.along.heading.nw" = "Går mot nordvest langs %@";
-
-
-/*  */
-"directions.cardinal.north_east" = "Nordøst";
 
 
 /*  */
@@ -1391,15 +871,7 @@
 
 
 /*  */
-"directions.cardinal.south_west" = "Sørvest";
-
-
-/*  */
 "directions.cardinal.north_west" = "Nordvest";
-
-
-/*  */
-"directions.cardinal.north_east.abb" = "NØ";
 
 
 /*  */
@@ -1407,15 +879,7 @@
 
 
 /*  */
-"directions.cardinal.south_west.abb" = "SV";
-
-
-/*  */
 "directions.cardinal.north_west.abb" = "NV";
-
-
-/*  */
-"distance.format.m" = "%@ m";
 
 
 /*  */
@@ -1423,15 +887,7 @@
 
 
 /*  */
-"distance.format.kilometer" = "%@ kilometer";
-
-
-/*  */
 "distance.format.ft" = "%@ fot";
-
-
-/*  */
-"distance.format.feet" = "%@ fot";
 
 
 /*  */
@@ -1439,15 +895,7 @@
 
 
 /*  */
-"ui.action_button.my_location" = "Min\nposisjon";
-
-
-/*  */
 "ui.action_button.nearby_markers" = "Markører\ni nærh.";
-
-
-/*  */
-"ui.action_button.around_me" = "Rundt\nmeg";
 
 
 /*  */
@@ -1455,15 +903,7 @@
 
 
 /*  */
-"ui.menu" = "Meny";
-
-
-/*  */
 "ui.menu.close" = "Lukk meny";
-
-
-/*  */
-"menu.events" = "Fritidsaktiviteter";
 
 
 /*  */
@@ -1471,15 +911,7 @@
 
 
 /*  */
-"menu.send_feedback" = "Send tilbakemelding";
-
-
-/*  */
 "menu.learning_resources" = "Openscape-blogg";
-
-
-/*  */
-"bar_icon.external_GPS.acc_label" = "Ikon for tilkobling til ekstern GPS";
 
 
 /*  */
@@ -1487,15 +919,7 @@
 
 
 /*  */
-"poi_screen.loading_title.loading" = "Laster inn steder i nærheten";
-
-
-/*  */
 "poi_screen.loading_title.no_places_matching" = "Det er ingen steder som samsvarer med %@. Prøv et annet filter";
-
-
-/*  */
-"poi_cell.accessibility_label.suggested_search" = "Foreslått søk: %@";
 
 
 /*  */
@@ -1503,15 +927,7 @@
 
 
 /*  */
-"location_callout_cell.nearest_road" = "Nærmeste vei, %@.";
-
-
-/*  */
 "location_callout_cell.nearest_road.nearest_poi" = "Nærmeste vei, %1$@. Nærmeste interessepunkt, %2$@.";
-
-
-/*  */
-"devices.title.pair_audio" = "Parkoble hodetelefonlyd";
 
 
 /*  */
@@ -1519,15 +935,7 @@
 
 
 /*  */
-"devices.explain_ar.disconnected" = "Hodetelefoner med hodesporing er Bluetooth-hodetelefoner med sensorer som forteller openscape hvilken retning du er vendt mot. Dette hjelper openscape med å forbedre lydopplevelsen din, noe som gjør den mer naturlig når du beveger deg rundt i verden.\n\nTrykk på knappen nedenfor for å koble til en enhet.";
-
-
-/*  */
 "devices.explain_ar.paired" = "Openscape er for øyeblikket ikke koblet til %@. Pass på at hodetelefonene er slått på og i nærheten av telefonen.";
-
-
-/*  */
-"devices.connect_headset" = "Koble til hodetelefoner";
 
 
 /*  */
@@ -1535,15 +943,7 @@
 
 
 /*  */
-"devices.connect_headset.unsupported_firmware" = "AR Headphones må oppdateres før de kan kobles til Openscape. Gå til Cortana-appen for å oppdatere hodetelefonene.";
-
-
-/*  */
 "devices.connect_headset.unavailable" = "Du kan for øyeblikket ikke koble deg til enheten du valgte. Prøv på nytt senere.";
-
-
-/*  */
-"devices.connect_headset.audio" = "Før du kobler hodetelefonene til Openscape, må du passe på at de er parkoblet med telefonen. Hvis de ikke er parkoblet ennå, går du til Bluetooth-delen i iOS-appen Innstillinger for å parkoble dem med enheten og går deretter tilbake til Openscape.";
 
 
 /*  */
@@ -1551,15 +951,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.test" = "Sjekk hodetelefonene";
-
-
-/*  */
 "devices.test_headset.title" = "Hodetelefonkontroll";
-
-
-/*  */
-"devices.test_headset.continue" = "Gå tilbake til Openscape";
 
 
 /*  */
@@ -1567,15 +959,7 @@
 
 
 /*  */
-"devices.callouts.connected" = "%@ er koblet til.";
-
-
-/*  */
 "devices.callouts.needs_calibration.in_ear" = "Hodetelefonene må kalibreres. Rist forsiktig hodet i alle retninger.";
-
-
-/*  */
-"devices.callouts.disconnected" = "%@ er koblet fra.";
 
 
 /*  */
@@ -1583,15 +967,7 @@
 
 
 /*  */
-"devices.troubleshoot.reconnect" = "Koble til på nytt";
-
-
-/*  */
 "devices.reachability.alert.title" = "Slå på hodesporing med %@";
-
-
-/*  */
-"behavior.experiences.events_list_nav_title" = "Aktiviteter";
 
 
 /*  */
@@ -1599,15 +975,7 @@
 
 
 /*  */
-"behavior.experiences.download_failed.title" = "Kan ikke laste ned aktiviteten";
-
-
-/*  */
 "behavior.experiences.reset.title" = "Vil du tilbakestille denne aktiviteten?";
-
-
-/*  */
-"behavior.experiences.reset_and_update_action" = "Se etter oppdateringer";
 
 
 /*  */
@@ -1615,15 +983,7 @@
 
 
 /*  */
-"behavior.experiences.delete_action" = "Slett aktivitet";
-
-
-/*  */
 "behavior.experience.delete.explanation" = "Hvis du sletter denne aktiviteten, fjernes den fra telefonen.";
-
-
-/*  */
-"behavior.experiences.no_events.title" = "Fritidsaktiviteter i openscape (beta)";
 
 
 /*  */
@@ -1631,15 +991,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.by_line" = "Av %@";
-
-
-/*  */
 "behavior.scavenger_hunt.callout.complete" = "Aktiviteten er fullført. Gratulerer!";
-
-
-/*  */
-"behavior.scavenger_hunt.callout.next_flag" = "Lydsignal angitt på %1$@, %2$@ unna, %3$@ av %4$@";
 
 
 /*  */
@@ -1647,15 +999,7 @@
 
 
 /*  */
-"behavior.experience.badges.complete" = "Fullført";
-
-
-/*  */
 "time.just_now" = "Akkurat nå";
-
-
-/*  */
-"time.num_minutes_ago" = "for %@ minutter siden";
 
 
 /*  */
@@ -1663,15 +1007,7 @@
 
 
 /*  */
-"announced_name.named" = "%1$@, kunngjorde %2$@.";
-
-
-/*  */
 "previous_location.announced_name" = "Forrige posisjon. Kunngjorde %@.";
-
-
-/*  */
-"beacon_distance_update.announced_name" = "Oppdatering av lydsignalavstand. Kunngjorde %@.";
 
 
 /*  */
@@ -1679,15 +1015,7 @@
 
 
 /*  */
-"third_party_apps.general.maps" = "Åpne i ekstern kartapp";
-
-
-/*  */
 "icloud.kv_store.quota_violation_alert.message" = "iCloud-lagringen for denne appen er full. Hvis du vil opprette en ny markør, må du frigjøre plass ved å fjerne noen av de eksisterende markørene.";
-
-
-/*  */
-"poi.unknown_place" = "Ukjent sted";
 
 
 /*  */
@@ -1695,15 +1023,7 @@
 
 
 /*  */
-"action.double_tap_to_repeat" = "Dobbelttrykk for å gjenta";
-
-
-/*  */
 "text.oops" = "Au da!";
-
-
-/*  */
-"tutorial.exit" = "Avslutt veiledningen";
 
 
 /*  */
@@ -1711,15 +1031,7 @@
 
 
 /*  */
-"tutorial.markers.mark_your_world" = "Marker din verden";
-
-
-/*  */
 "tutorial.markers.add_marker" = "Legg til markør";
-
-
-/*  */
-"tutorial.markers.mark_location.acc_hint" = "Dobbelttrykk for å markere denne posisjonen";
 
 
 /*  */
@@ -1727,15 +1039,7 @@
 
 
 /*  */
-"tutorial.markers.text.AudioBeacon" = "Du kan også angi et lydsignal på markøren.\nPrøv det. Her er lydsignalet på @!marker_name!!.\nHøre nøye etter hvor det er, og snu deg mot det mens du holder telefonen flatt.";
-
-
-/*  */
 "tutorial.beacon.getting_started" = "Kom i gang med lydsignaler";
-
-
-/*  */
-"tutorial.beacon.getting_started.text" = "Når du angir et lydsignal på en posisjon, spiller openscape av en lyd som kommer fra retningen til posisjonen. Denne veiledningen viser hvordan du angir et lydsignal og hvordan du bruker det.\n\nTrykk på knappen Start lydsignal nedenfor for å åpne en liste over steder i nærheten. Velg en posisjon fra listen så starter veiledningen.";
 
 
 /*  */
@@ -1743,15 +1047,7 @@
 
 
 /*  */
-"tutorial.beacon.the_audio_beacon" = "Lydsignalet";
-
-
-/*  */
 "tutorial.beacon.found_the_beacon" = "Så bra! Du fant lydsignalet.";
-
-
-/*  */
-"tutorial.beacons.text.IntroPart1" = "Når du angir et lydsignalet på en posisjon, spiller openscape av en lyd som kommer fra retningen til posisjonen. Denne veiledningen viser deg hvordan du angir et lydsignal og hvordan du bruker det.";
 
 
 /*  */
@@ -1759,15 +1055,7 @@
 
 
 /*  */
-"tutorial.beacons.text.OrientationAirPods" = "AirPods er koblet til Openscape. Når AirPods er koblet til Openscape, spiller det ingen rolle hvordan du holder telefonen. Du kan til og med legge den i lomma eller i veska.";
-
-
-/*  */
 "tutorial.beacons.text.HoldingPhone" = "Å holde telefonen flatt på denne måten er bare nødvendig når du står i ro. Når du går, kan du legge telefonen i lomma eller i veska.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconInitial" = "Nå som du har angitt et lydsignal på @!destination!!, starter openscape å spille av en lyd som kommer fra retningen til posisjonen. Her kommer lydsignalet.";
 
 
 /*  */
@@ -1775,15 +1063,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsRepeat" = "Snu deg langsomt til du hører klokken som indikerer at du er vendt mot retningen til lydsignalet.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconInBounds" = "Hvis du hører nøye etter, kan du høre at den spilles av foran deg, og at det er en klokke i tillegg til det vanlige lydsignalet. Dette er fordi du er vendt mot @!destination!!";
-
-
-/*  */
-"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Prøv nå å snu deg langsomt vekk fra retningen til lydsignalet. Klokkelyden stopper og lydsignalet fortsetter å vise deg hvor @!destination!! er. Prøv det nå.";
 
 
 /*  */
@@ -1791,15 +1071,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HomeScreen" = "Avstandsinformasjon vises også på startskjermen sammen med gateadressen til lydsignalets posisjon hvis vi har den. openscape varsler deg når du nærmer deg lydsignalets posisjon, og lydsignalet slås av.";
-
-
-/*  */
 "tutorial.beacons.text.MuteRepeat" = "Dobbelttrykk med to fingre hvor som helst på skjermen";
-
-
-/*  */
-"settings.help.title" = "Hjelp";
 
 
 /*  */
@@ -1807,15 +1079,7 @@
 
 
 /*  */
-"help.offline.section_title" = "Bruk openscape i frakoblet modus";
-
-
-/*  */
 "help.config.voices.content" = "Openscape kan bare bruke stemmer som du har lastet ned i iOS Innstillinger-appen, med unntak av Siri-stemmer som ikke er tilgjengelige i Openscape. Vi anbefaler at du velger en av stemmene i høyere kvalitet siden de har mye bedre stemmekvalitet, men for å gjøre det må du først laste ned en stemme i høyere kvalitet. Du kan laste ned stemmer i iOS Innstillinger-appen ved å gå til Tilgjengelighet > Opplest innhold > Stemmer og trykke på en stemme. I Openscape-appen kan du velge stemmen du vil bruke, ved å gå til Innstillinger fra hovedmenyen og deretter velge Stemme.";
-
-
-/*  */
-"help.offline.description" = "Når det ikke er noen Internett-tilkobling eller det er et avbrudd i Openscape-tjenestene, går openscape over til frakoblet modus. openscape fungerer fremdeles, men enkelte funksjoner kan være begrenset.";
 
 
 /*  */
@@ -1823,15 +1087,7 @@
 
 
 /*  */
-"help.offline.troubleshooting_description" = "Openscape prøver å gjenoppta normal drift når telefonen kobler seg til Wi-Fi, eller når mobildata aktiveres og du er i et område med bra signal. Hvis telefonen har god Internett-tilkobling, men openscape ikke gjenopptar normal drift, kan det være et avbrudd i Openscape-tjenestene.";
-
-
-/*  */
 "help.explore.page_title" = "Foran meg";
-
-
-/*  */
-"help.edit_markers.page_title" = "Tilpass markører";
 
 
 /*  */
@@ -1839,15 +1095,7 @@
 
 
 /*  */
-"help.text.section_title.when" = "Når skal jeg bruke den?";
-
-
-/*  */
 "help.more_help.section_title" = "Mer hjelp";
-
-
-/*  */
-"terms_of_use.title" = "Vilkår for bruk";
 
 
 /*  */
@@ -1855,15 +1103,7 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.acc_label" = "Godta vilkårene for bruk";
-
-
-/*  */
 "terms_of_use.accept_checkbox.off.acc_hint" = "Dobbelttrykk for å fjerne merket for Godta vilkårene for bruk";
-
-
-/*  */
-"terms_of_use.accept_checkbox.off.acc_value" = "Ikke merket";
 
 
 /*  */
@@ -1871,15 +1111,7 @@
 
 
 /*  */
-"first_launch.get_started_button.off.acc_hint" = "Du må merke av for Godta vilkårene for bruk før du trykker på denne knappen.";
-
-
-/*  */
 "first_launch.welcome_audio_text" = "Velkommen! openscape hjelper deg med å være bevisst på hvor du er og hvor du er på vei, ved å bruke unik lydveiledning og ved å lese opp veier, veikryss og steder når du nærmer deg dem. Trykk på knappen Neste for å begynne.";
-
-
-/*  */
-"first_launch.language" = "Openscape-språk";
 
 
 /*  */
@@ -1887,15 +1119,7 @@
 
 
 /*  */
-"first_launch.device_motion" = "Enhetsbevegelse";
-
-
-/*  */
 "first_launch.lighting_way_with_sound" = "Lyser opp veien med lyd";
-
-
-/*  */
-"first_launch.heading_somewhere" = "Er du på vei et sted?";
 
 
 /*  */
@@ -1903,15 +1127,7 @@
 
 
 /*  */
-"first_launch.find_things_nearby" = "Vil du finne flere ting i nærheten?";
-
-
-/*  */
 "first_launch.welcome.title" = "Velkommen!";
-
-
-/*  */
-"first_launch.welcome.description" = "Naviger med selvtillit ved å bruke romlig lyd i Openscape";
 
 
 /*  */
@@ -1919,15 +1135,7 @@
 
 
 /*  */
-"first_launch.headphones.message.2" = "Hvis du ikke har hodetelefoner eller foretrekker ikke å bruke dem, er det greit. openscape fungerer med høyttalerne på telefonen.";
-
-
-/*  */
 "first_launch.callouts.message" = "Openscape hjelper deg med å være bevisst på hvor du er og hvor du er på vei ved å lese opp veier, veikryss og interessepunkter når du nærmer deg dem.";
-
-
-/*  */
-"first_launch.callouts.listen.accessibility_label" = "Lytt";
 
 
 /*  */
@@ -1935,15 +1143,7 @@
 
 
 /*  */
-"first_launch.callouts.example.4" = "Hovedgaten går til høyre";
-
-
-/*  */
 "first_launch.permissions.message" = "Når du navigerer med Openscape, blir du veiledet av et lydsignal. For å gjøre dette må du gi openscape følgende tillatelser:";
-
-
-/*  */
-"first_launch.permissions.motion" = "Bevegelse og mosjon";
 
 
 /*  */
@@ -1951,15 +1151,7 @@
 
 
 /*  */
-"first_launch.beacon.message.2" = "Lytt til tilgjengelige lydsignaler og velg det du foretrekker.";
-
-
-/*  */
 "first_launch.select_beacon" = "Velg lydsignal";
-
-
-/*  */
-"first_launch.beacon.audio.message" = "Lydsignalet følger bevegelsene til telefonen og bruker romlig lyd slik at du alltid er bevisst på plasseringen til signalet.";
 
 
 /*  */
@@ -1967,15 +1159,7 @@
 
 
 /*  */
-"first_launch.beacon.callout.headtracking.haptic" = "Plasserer lydsignalet foran deg. Snu deg mot venstre og høyre for å høre lydsignalets haptiske tilbakemelding.";
-
-
-/*  */
 "first_launch.beacon.callout.behind" = "Lydsignal bak deg";
-
-
-/*  */
-"first_launch.prompt.message" = "Du er klar for din første tur med Openscape. Hvis du vil prøve det nå, velger du en destinasjon i nærheten og starter lydsignalet. Du hører da signalet i retningen til destinasjonen din.";
 
 
 /*  */
@@ -1983,15 +1167,7 @@
 
 
 /*  */
-"help.text.destination_beacons.when" = "Det kan være nyttig å angi et lydsignal når du vil følge med på et kjent landemerke mens du utforsker et nytt område, eller når du går et sted og vil være oppdatert på omgivelsene på veien. Lydsignalfunksjonen gir ikke veibeskrivelser, men gir deg et kontinuerlig lydsignal som forteller deg retning til lydsignalet i forhold til der du for øyeblikket er. Ved å bruke lydsignalet, eksisterende navigasjonsferdigheter og en navigasjonsapp du liker, kan du selv velge hvordan du kommer til posisjoner i nærheten.";
-
-
-/*  */
 "help.text.destination_beacons.how.2" = "<b>Fjern nåværende lydsignal</b>:<br/> Trykk på knappen Fjern lydsignal på startskjermen.";
-
-
-/*  */
-"help.text.automatic_callouts.what" = "Openscape kan fortelle deg om ting rundt deg når du nærmer deg dem ved å lese opp navnet fra retningen de er plassert i. Appen gjør dette automatisk for alle typer ting som virksomheter, busstopp og veikryss. Du kan konfigurere hva appen automatisk leser opp, i delen Administrer meldinger på skjermen Innstillinger, og du kan slå av alle meldinger når du vil at appen skal være lydløs.";
 
 
 /*  */
@@ -1999,15 +1175,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.1" = "<b>Slå meldinger av eller på</b>:<br/> Hvis du slår av meldinger, slås lyden av for appen. Meldinger kan slås av og på i delen Administrer meldinger på skjermen Innstillinger der du kan trykke på veksleknappen Tillat meldinger for å slå meldinger av og på. Du kan også slå av eller på meldinger ved å bruke kommandoen Hopp fremover (dobbelttrykk og hold) hvis hodetelefonene har mediekontrollknapper. Du kan også bruke knappen Sett i dvalemodus øverst til høyre på startskjermen til å stoppe openscape fra å lese opp meldinger frem til du velger å aktivere den igjen.";
-
-
-/*  */
 "help.text.my_location.what" = "Knappen <em>Min posisjon</em> gir deg raskt informasjon som hjelper deg med å finne ut hvor du er. <em>Min posisjon</em> forteller deg om nåværende posisjon deriblant ting som retningen du er vendt mot, hvor veier og veikryss i nærheten er og hvor interessepunkter i nærheten er.";
-
-
-/*  */
-"help.text.my_location.how" = "Som med alle de fire knappene nederst på startskjermen holder du telefonen flatt (vendt mot himmelen) og toppen av telefonen pekende i retningen du er vendt mot, før du trykker på knappen <em>Min posisjon</em>. Denne fungerer som et kompass som forteller appen hvilken retning du er vendt mot. Trykk på knappen <em>Min posisjon</em> og lytt.";
 
 
 /*  */
@@ -2015,15 +1183,7 @@
 
 
 /*  */
-"help.text.around_me.what" = "Knappen <em>Rundt meg</em> forteller deg om én ting i hver av de fire kvadrantene rundt deg (foran deg, til høyre, bak deg og til venstre). <em>Rundt meg</em> er beregnet på å hjelpe deg med å orientere deg i omgivelsene.";
-
-
-/*  */
 "help.text.around_me.how" = "Som med alle de fire knappene nederst på startskjermen holder du telefonen flatt (vendt mot himmelen) og toppen av telefonen pekende i retningen du er vendt mot, før du trykker på knappen <em>Rundt meg</em>. Denne fungerer som et kompass som forteller appen hvilken retning du er vendt mot. Trykk på knappen <em>Rundt meg</em> så hører du fire interessepunkter rundt deg.";
-
-
-/*  */
-"help.text.ahead_of_me.when" = "Når du går nedover gaten, kan du prøve å bruke <em>Foran meg</em> til å oppdage stedene og tingene som kommer på hver side av veien.";
 
 
 /*  */
@@ -2031,15 +1191,7 @@
 
 
 /*  */
-"help.text.remote_control.how" = "<p>Du kan bruke følgende funksjoner i openscape ved å bruke mediekontrollknappene på hodetelefonene:<p><br>&#x23EF Spill av / stans midlertidig: Slå av alle nåværende meldinger og slå av og på lydsignalet hvis det er angitt. </p><p>&#x23ED Neste: Les opp <em>Min posisjon</em>.</p><p>&#x23EE Forrige: Gjenta siste melding.</p><p>&#x23E9 Hopp fremover: Slå av og på meldinger.</p><p>&#x23EA Hopp bakover: Les opp <em>Rundt meg</em>.</p>";
-
-
-/*  */
 "help.text.markers.content.2" = "Du kan marker ting som er personlige og relevante for deg som hjem, kontor og fortrukket dagligvarebutikk. Du kan markere et sted eller en adresse, men du kan også markere ting som vanligvis ikke finnes på kart, for eksempel innganger til bygninger eller parker, fotgjengerknapper, fotgjengeroverganger eller broer, busstopp eller hundens yndlingstre og bruke disse som referanser når du går.";
-
-
-/*  */
-"help.text.creating_markers.content.1" = "Du kan opprette markører på tre måter: søk etter stedet du vil lagre ved å bruke søkefeltet, finn et sted ved å bruke knappen Steder i nærheten eller bruk knappen Bruk nåværende posisjon. Du finner disse på startskjermen til Openscape. Når du har funnet et sted, kommer du til siden Posisjonsinformasjon hvis du velger det. På denne siden velger du knappen som heter Lagre markør.";
 
 
 /*  */
@@ -2047,15 +1199,7 @@
 
 
 /*  */
-"help.text.routes.content.what" = "Ruter er en rekke veipunkter. Du blir informert når du kommer til hvert veipunkt, og lydsignalet går automatisk videre til neste veipunkt.";
-
-
-/*  */
 "help.text.routes.content.how.1" = "<b>Opprett en rute</b>:<br/> Gå først til Markører og ruter, velg fanen Ruter og velg deretter knappen Ny rute. Gi ruten et navn og en valgfri beskrivelse, og legg deretter til veipunkter mens du går, eller velg dem fra listen over markører. Du kan endre rekkefølgen på veipunktene langs ruten når som helst ved å redigere ruten.";
-
-
-/*  */
-"help.text.routes.content.how.3" = "<b>Del en rute</b>:<br/> Velg ruten på siden Markører og ruter, og velg alternativet Del ved å bruke alle de vanlige delingsalternativene som er tilgjengelige for deg.";
 
 
 /*  */
@@ -2063,15 +1207,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.how.2" = "<b>Bruk mediekontrollene på hodetelefonene</b>:<br/> Når mediekontroller er aktivert i Openscape-innstillingene, kan du bruke mediekontrollene på AirPods til å slå av og på lydsignalet, lese opp posisjonen eller til å gjenta den siste meldingen. Hvis du vil ha mer informasjon, kan du se hjelpedelen Bruk mediekontroller.";
-
-
-/*  */
 "osm.tag.construction" = "Bygging";
-
-
-/*  */
-"osm.tag.townhall" = "Rådhus";
 
 
 /*  */
@@ -2079,15 +1215,7 @@
 
 
 /*  */
-"osm.tag.pedestrian_street" = "Gågate";
-
-
-/*  */
 "osm.tag.residential_street" = "Boligområde";
-
-
-/*  */
-"osm.tag.road" = "Vei";
 
 
 /*  */
@@ -2095,15 +1223,7 @@
 
 
 /*  */
-"osm.tag.intersection" = "Veikryss";
-
-
-/*  */
 "osm.tag.highway_ramp" = "Motorveirampe";
-
-
-/*  */
-"osm.tag.office_building" = "Kontorbygg";
 
 
 /*  */
@@ -2111,15 +1231,7 @@
 
 
 /*  */
-"osm.tag.building_entrance" = "Bygningsinngang";
-
-
-/*  */
 "osm.tag.cycle_barrier" = "Sykkelsperre";
-
-
-/*  */
-"osm.tag.cattle_grid" = "Ferist";
 
 
 /*  */
@@ -2127,15 +1239,7 @@
 
 
 /*  */
-"osm.tag.parking_entrance" = "Parkeringsinngang";
-
-
-/*  */
 "osm.tag.taxi_waiting_area" = "Venteområde for drosjer";
-
-
-/*  */
-"osm.tag.post_box" = "Postboks";
 
 
 /*  */
@@ -2143,15 +1247,7 @@
 
 
 /*  */
-"osm.tag.cafe" = "Kafé";
-
-
-/*  */
 "osm.tag.telephone" = "Telefon";
-
-
-/*  */
-"osm.tag.bank" = "Bank";
 
 
 /*  */
@@ -2159,15 +1255,7 @@
 
 
 /*  */
-"osm.tag.bus_stop" = "Busstopp";
-
-
-/*  */
 "osm.tag.bus_stop.refed" = "Busstopp %@";
-
-
-/*  */
-"osm.tag.fountain" = "Fontene";
 
 
 /*  */
@@ -2175,15 +1263,7 @@
 
 
 /*  */
-"osm.tag.vending_machine" = "Salgsautomat";
-
-
-/*  */
 "osm.tag.sports_field" = "Idrettsplass";
-
-
-/*  */
-"osm.tag.garden" = "Hage";
 
 
 /*  */
@@ -2191,15 +1271,7 @@
 
 
 /*  */
-"banner.custom_behavior.scavenger_hunt" = "Skattejakten er aktiv.";
-
-
-/*  */
 "banner.offline_default.message" = "Openscape fungerer i frakoblet modus. Finn ut mer";
-
-
-/*  */
-"banner.offline_search.message" = "Openscape fungerer i frakoblet modus. Lokasjoner er begrenset til stedene du har gått forbi før eller allerede har markert. Finn ut mer";
 
 
 /*  */
@@ -2207,15 +1279,7 @@
 
 
 /*  */
-"share.prompt.message" = "Fortell venner og familie om Openscape";
-
-
-/*  */
 "push.local.home.title" = "Prøv openscape hjemme";
-
-
-/*  */
-"push.local.walk.title" = "Prøv openscape på neste tur";
 
 
 /*  */
@@ -2223,15 +1287,7 @@
 
 
 /*  */
-"faq.title.abbreviated" = "Vanlige spørsmål";
-
-
-/*  */
 "faq.markers_function.question" = "Hva er markører og hvordan får jeg mest mulig ut av dem?";
-
-
-/*  */
-"faq.section.getting_the_best_experience" = "Hvordan får jeg det beste ut av Openscape?";
 
 
 /*  */
@@ -2239,15 +1295,7 @@
 
 
 /*  */
-"faq.how_to_use_beacon.answer" = "Du kan tenke på lydsignalet som et fyrtårn for ørene, et som varsler deg om hvor destinasjonen er i forhold til posisjonen din. I likhet med et fyrtårn forteller den ikke hvordan du kommer deg dit. Du må gjøre noen navigasjonsvalg på veien, akkurat som en seilbåt må gjøre mange strategiske valg for å komme nærme fyrtårnet. Den kontinuerlige rytmiske lyden til lydsignalet kommer fra retningen til destinasjonen og hjelper deg med å være bevisst på posisjonen til destinasjonen når du går. Når du går i retning destinasjonen eller peker telefonen mot destinasjonen, kan du høre en høy ringelyd. Med denne funksjonen kan du fastslå retningen til destinasjonen siden retningen til den rytmiske lyden av og til kan være vanskelig å oppfatte i omgivelser med mye lyd. Når du leter etter den høye ringelyden, holder du telefonen flatt og stryker telefonen langsomt. Hvis du vrir hodet i samme retning som telefonen, får du den beste romlige lydopplevelsen.\n\nFyrtårnmetaforen for lydsignalets utforming har flere naturlige implikasjoner:\n\n1. Det finnes ingen «riktig» retning å gå i når du bruker lydsignalet. Med openscape kan du i stedet velge hvordan du kommer deg dit.\n2. Den høye ringelyden hjelper deg bare med å fastslå retningen til destinasjonen – det er ikke indikator på hvordan du kommer deg dit.\n3. Hvis du vet hvordan du kommer deg til destinasjonen, kan det hende du vil slå av lydsignalet for mesteparten av turen, og slå det på bare når du nærmer deg destinasjonen.";
-
-
-/*  */
 "faq.why_does_beacon_disappear.answer" = "Soundscapes lydsignal er et retningssignal som forteller deg hvor destinasjonen er i forhold til retningen du er vendt mot. Når openscape er usikker på hvilken retning du er vendt mot, senker den volumet på lydsignalet. Dette skjer ofte hvis du går med telefonen i lomma eller i veska og du slutter å bevege deg, som når du skal krysse gaten. Lydsignalet blir høyere når du begynner å gå igjen eller hvis du holder telefonen flatt og peker den i retningen du er vendt mot.";
-
-
-/*  */
-"faq.beacon_on_address.answer" = "Ja, det kan du. Adresser er ikke oppført som standard, men du kan finne dem ved å bruke søkefeltet. Hvis du vil lagre denne adressen slik at du slipper å søke etter den igjen, kan du legge den til som en markør fra startskjermen ved å velge knappen Legg til markører eller ved å bruke VoiceOver-handlinger på lydsignalet på startskjermen.";
 
 
 /*  */
@@ -2255,15 +1303,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Openscape kan fastslå posisjonen til destinasjonen din inntil flere meter, men ikke mindre. Når openscape fastslår at du nærmer deg destinasjonen, hører du en siste melding om at destinasjonen er i nærheten, og lydsignalet slås av.";
-
-
-/*  */
 "faq.turn_beacon_back_on.answer" = "Ja, du kan slå på lydsignalet igjen når openscape slår det av ved å velge knappen Slå på lydsignal. Siden stedstjenester bare er nøyaktig rundt 10 meter, kan vi imidlertid ikke garantere virkemåten til lydsignalet når du er noen få meter unna destinasjonen.";
-
-
-/*  */
-"faq.road_names.answer" = "For å tilrettelegge for en rekke veikryss beskriver openscape veikryss som segmenter med vei som går fra et felles punkt. openscape bruker romlig lyd til å indikere navnet på veien som går til venstre, navnet på veien som fortsetter rett frem, og navnet på veien som går til høyre, i den rekkefølgen. Hvis beskrivelsen av veikrysset begynner med veien du er på, i stedet for veien til venstre, er veikrysset en T med veien du forsetter på, og veien som kommer inn fra høyre. Hvis beskrivelsen bare omfatter en vei til venstre og høyre, vet du at veien du er på, slutter ved en T foran deg. Denne måten å beskrive veikryss på støtter også tilfeller der en vei bytter navn ved et veikryss.";
 
 
 /*  */
@@ -2271,15 +1311,7 @@
 
 
 /*  */
-"faq.callouts_stopping_in_vehicle.answer" = "For å hindre at antall meldinger blir for mange kunngjøres ikke enkelte kategorier, som veikryss, automatisk når du reiser med bil.";
-
-
-/*  */
 "faq.miss_a_callout.answer" = "Openscape har en liste over nylige meldinger slik at du kan se meldinger du kanskje har gått glipp av. Du finner listen ved å trykke på søkefeltet på startskjermen til Openscape. Nederst på denne siden finner du delen Nylige meldinger der meldingen du har gått glipp av, er oppført.";
-
-
-/*  */
-"faq.supported_phones.answer" = "Openscape er for øyeblikket tilgjengelig for Apple iOS, som kjøres på iPhone SE, iPhone 6S og nyere.";
 
 
 /*  */
@@ -2287,15 +1319,7 @@
 
 
 /*  */
-"faq.battery_impact.answer" = "Batteritiden varierer betydelig avhengig av hvilken iPhone du har og hvor gammel den er. Det som sluker mest batteriet, er å ha skjermen på. Du bør derfor holde skjermen låst så mye som mulig for å øke batteritiden. For å bidra til å redusere påvirkningen på iPhone-batteriet har openscape nå en dvalemodus og en pausemodus. For å redusere batteriforbruket ytterligere når du ikke bruker openscape bør du tvangslukke den via iPhones appveksler. ";
-
-
-/*  */
 "faq.sleep_mode_battery.answer" = "Hvis du vil sette openscape i dvalemodus, velger du knappen Sett i dvalemodus øverst til høyre på skjermen. Når du velger dette, slutter openscape å bruke stedstjenester og mobildata frem til du aktiverer den igjen.";
-
-
-/*  */
-"faq.snooze_mode_battery.answer" = "Hvis du vil sette openscape i pausemodus, velger du knappen Sett i pausemodus øverst til høyre på skjermen. Når openscape er i pausemodus, velger du knappen Vekk når jeg går så går openscape inn i en lavstrømstilstand til du forlater nåværende posisjon.";
 
 
 /*  */
@@ -2303,15 +1327,7 @@
 
 
 /*  */
-"faq.background_battery_impact.answer" = "Openscape er en posisjonsbasert app og bruker stedstjenester til å fastslå posisjonen din. I testene våre bruker ikke openscape mer batteri enn en vanlig kartapp. Hvis du imidlertid er bekymret for batteriforbruket når du bruker telefonen, finner du noen tips nedenfor som bidrar til å redusere batteriforbruket:\n\n1. Slå av skjermen så mye som mulig når du ikke samhandler med appen.\n2. Når du ikke bruker appen, kan du lukke den. openscape bruker kontinuerlig stedstjenester når den kjører slik at den alltid vet posisjonen din, selv om du ikke beveger deg. Ikke glem å starte appen på nytt når du gjenopptar reisen.\n3. I kaldt vær må du holde telefonen varm siden batteriet yter dårligere i kaldere temperaturer.";
-
-
-/*  */
 "faq.mobile_data_use.answer" = "Mengden mobildata som brukes, avhenger av hvordan du bruker Openscape. Vi har laget openscape slik at den bare bruker en liten mengde data når du bruker den ved å gjøre ting som å lagre punkter mens du går, slik at du ikke trenger å laste dem ned på nytt hver gang du går tilbake til et sted du allerede har vært. Hvis du vil redusere mengden mobildata du bruker, må du sørge for at du er koblet til Wi-Fi når det er mulig, særlig for å laste ned appen. Når du ikke bruker Openscape, bør du bruke knappen Sett i dvalemodus for å sette openscape i dvalemodus eller tvangslukke appen.";
-
-
-/*  */
-"faq.difference_from_map_apps.answer" = "Openscape gir deg en beskrivelse av omgivelsene dine for å hjelpe deg med å utforske og finne veien. Ved å bruke romlig lyd leser openscape opp interessepunkter, parker, veier og veikryss fra retningen de fysisk ligger i, i omgivelsene rundt deg mens du går. Hvis du for eksempel går forbi en butikk på høyre side, hører du navnet på butikken fra høyre. Når du nærmer deg et veikryss, hører du navnet på hver vei fra retningen veien går i, med start fra venstre, foran deg og så til høyre.\n\nI stedet for veibeskrivelser som ofte gis av andre kartapper, spiller openscape av lydsignalet i retningen til destinasjonen. Da kan du komme deg dit på dine egne vilkår samtidig som du blir oppmerksom på omgivelsene og posisjonen til destinasjonen. openscape ligger i bakgrunnen slik at du kan bruke en app med veibeskrivelser og samtidig være bevisst på omgivelsene mens du finner veien til destinasjonen.";
 
 
 /*  */
@@ -2319,15 +1335,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.answer" = "Det finner flere måter for å styre det du hører og når du hører det, i Openscape:\n\n1. Stopp umiddelbart all lyd: Dobbelttrykk på skjermen med to fingre for å slå av all lyd umiddelbart, deriblant meldinger som for øyeblikket spilles av og lydsignalet hvis det er på. Meldinger gjenopptas automatisk når du nærmer deg neste veikryss eller interessepunkt, men lydsignalet gjenopptas ikke. Velg knappen Slå på lydsignal på hovedskjermen for å høre lydsignalet igjen.\n2. Stopp automatiske meldinger: Når du ikke beveger deg, eller når du har nådd en destinasjon, er det kanskje ikke nødvendig at openscape fortsetter å varsle deg om ting rundt deg. I stedet for å avslutte appen kan du sette openscape i pausemodus og vekke den igjen når du forlater stedet, eller du kan sette openscape i dvalemodus. Den forblir av til du velger å slå den på igjen. Du kan også velge Innstillinger fra menyen og velge å slå av alle meldinger i delen Administrer meldinger.\n3. Stopp lydsignalet: Det finnes flere tilfeller der du kanskje vil angi en destinasjon, men ikke trenger å ha lydsignalet på. Du vet for eksempel nøyaktig hvordan du kommer deg til destinasjonen, men ønsker å få automatiske oppdateringer om hvor langt unna destinasjonen du er. Det kan hende at du også vil vite sånn cirka hvordan du kommer deg til destinasjonen, og at du bare trenger lydsignalet når du nærmer deg destinasjonen. Du kan uansett velge når du hører lydsignalet ved å trykke på knappen for å slå av og på lydsignalet på hovedskjermen.";
-
-
-/*  */
 "faq.holding_phone_flat.answer" = "Nei. Mens du går, kan du legge telefonen i veska, lomma eller et annet sted. openscape bruker retningen du går i, til å finne ut hvilke meldinger som skal kunngjøres til venstre og til høyre. Når du stopper, vet ikke openscape hvilken retning du er vendt mot. Hvis lydsignalet er på, legger du merke til at det blir stille frem til du begynner å bevege deg igjen. Du kan ta ut telefonen for å trykke på posisjonen og utforske knappene nederst på skjermen når som helst, men husk å holde telefonen med toppen pekende i retningen du er vendt mot og med skjermen mot himmelen. I denne flate stillingen bruker openscape telefonens kompass til å fastslå hvilken retning du er vendt mot og gi deg nøyaktige romlige meldinger. Hvis lydsignalet er på, vil du også merke at det går tilbake til full lydstyrke.";
-
-
-/*  */
-"faq.personalize_experience.answer" = "Med openscape kan du tilpasse tre elementer ved meldingene du hører når du går:\n\n1. Stemme: Du kan velge hvilken av de tilgjengelige stemmene i iOS du vil bruke for Openscape, samt hastigheten som meldingene leses opp i. Fra menyen velger du Innstillinger og deretter Stemme for å justere talehastigheten og stemmeinnstillingene. Du kan laste ned flere stemmer og stemmer i høyere kvalitet i iOS Innstillinger-appen under Innstillinger > Tilgjengelighet > Opplest innhold > Stemmer. \n2. Avstandsmåleenhet: Med openscape kan du høre alle avstander i fot eller meter. Velg Innstillinger fra menyen. Med delen Måleenheter kan du veksle mellom to alternativer: britisk (fot) og metrisk (meter).\n3. Markører: Du kan markere din verden med alt du bryr deg om. Du kan markere ting som er personlige og relevante for deg, som hjem, kontor og foretrukket dagligvarebutikk. openscape leser deretter opp markerte steder mens du går eller nærmer deg dem, eller du kan bruke knappen Markører i nærheten nederst på Openscape-startskjermen for å høre en romlig melding om markerte steder rundt deg. Disse markørene er personlige for deg, og ingen andre kan se dem.\n\nI tillegg til det ovenfor kan følgende VoiceOver-innstillinger påvirke hvordan openscape fungerer:\n\n1. VoiceOver-tips: Når VoiceOver-tips er slått på, hører du informasjon om alle knappene på hovedskjermen til Openscape. Du kan slå på VoiceOver-tips ved å gå til iOS Innstillinger-appen og gå til Tilgjengelighet > VoiceOver > Detaljnivå og slå på Les opp hint-innstillingen.\n2. Lyddemping: openscape er laget for å fungere med lyddemping slått av. Når lyddemping er på, kan det være vanskelig å høre automatiske meldinger hvis VoiceOver brukes samtidig. Vi anbefaler at du slår av lyddemping for å gjøre det enklere å høre alle automatiske meldinger som kommer når du samhandler med telefonen. Du kan slå av lyddemping i VoiceOver-innstillinger eller via VoiceOver-rotoren.\n3. Touch ID eller Face ID for å låse opp: Hvis du angir at telefonen låses opp med Touch ID eller Face ID, er det raskt og enkelt å låse opp telefonen. Da får du tilgang til knappene Min posisjon, Rundt meg og Foran meg så raskt som mulig når du er på farten. Konfigurer opplåsing med Touch ID eller Face ID i iOS Innstillinger-appen.";
 
 
 /*  */
@@ -2335,15 +1343,7 @@
 
 
 /*  */
-"faq.tip.setting_beacon_on_address" = "Du kan angi et lydsignal på en hvilken som helst adresse. Søk etter adressen fra hovedskjermen til Openscape. Etter at du har valgt adressen i søkeresultatene, vises skjermen Posisjonsinformasjon. Der finner du alternativet Start lydsignal på adressen. På denne måten kan du angi et lydsignal på virksomheter, steder, interessepunkter og boligområder som ikke er i Open Street Maps.";
-
-
-/*  */
 "faq.tip.turning_beacon_off" = "Du kan slå av og på den rytmiske lyden til lydsignalet ved å bruke knappene på startskjermen. Hvis lydsignalet slås av, får du fremdeles oppdateringer om avstanden til destinasjonen rundt hver 50. meter.";
-
-
-/*  */
-"faq.tip.hold_phone_flat" = "Openscape fungerer best når du holder telefonen flatt med skjermen mot himmelen og toppen av telefonen pekende vekk fra deg.";
 
 
 /*  */
@@ -2357,8 +1357,3 @@
 
 // MARK: What is Openscape?
 
-
-// MARK: How Openscape Works
-
-/* Openscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Openscape"} */
-"faq.section.how_works" = "Hvordan virker Openscape?";

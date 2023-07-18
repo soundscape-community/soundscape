@@ -351,15 +351,7 @@
 
 
 /*  */
-"settings.clear_cache.alert_title" = "Gespeicherte Daten löschen?";
-
-
-/*  */
 "settings.clear_cache.markers.alert_title" = "Markierungen und Routen beibehalten?";
-
-
-/*  */
-"settings.clear_cache.no_service.title" = "Gespeicherte Kartendaten können nicht gelöscht werden.";
 
 
 /*  */
@@ -367,15 +359,7 @@
 
 
 /*  */
-"settings.telemetry.optout.action" = "Zustimmung widerrufen";
-
-
-/*  */
 "settings.version.about.version" = "Version %1$@ (%2$@)";
-
-
-/*  */
-"settings.feedback.choose_email_app" = "Wählen Sie eine E-Mail-App aus:";
 
 
 /*  */
@@ -383,15 +367,7 @@
 
 
 /*  */
-"settings.units.metric" = "Metrisch (Meter)";
-
-
-/*  */
 "settings.about_app" = "Openscape";
-
-
-/*  */
-"settings.section.units" = "Maßeinheiten";
 
 
 /*  */
@@ -399,15 +375,7 @@
 
 
 /*  */
-"settings.section.share_usage_data" = "Nutzungsdaten freigeben";
-
-
-/*  */
 "settings.language.screen_title" = "Sprache";
-
-
-/*  */
-"settings.language.change_alert" = "Möchten Sie die App-Sprache in %@ ändern?";
 
 
 /*  */
@@ -415,15 +383,7 @@
 
 
 /*  */
-"settings.audio.mix_with_others.title" = "Mediensteuerungen aktivieren";
-
-
-/*  */
 "setting.audio.mix_with_others.confirmation" = "Durch Aktivieren dieser Einstellung werden Openscape-Hinweise und sonstiges Audio angehalten, wenn Sie mit der Nutzung einer anderen Medien-App beginnen. Sie können jederzeit zu openscape zurückkehren, um wieder Hinweise zu hören.";
-
-
-/*  */
-"voice.action.preview" = "Vorschau";
 
 
 /*  */
@@ -431,15 +391,7 @@
 
 
 /*  */
-"voice.voice_rate_test" = "Wie klingt das?";
-
-
-/*  */
 "voice.title.voice_name_and_locale_selected" = "%1$@, %2$@, ausgewählt.";
-
-
-/*  */
-"voice.voice_cell.use.acc_hint" = "Doppeltippen Sie, um diese Stimme zu verwenden. Wischen Sie nach oben oder unten, um eine Vorschau anzuzeigen.";
 
 
 /*  */
@@ -447,15 +399,7 @@
 
 
 /*  */
-"voice.apple.default" = "%@ (Standardstimme)";
-
-
-/*  */
 "voice.apple.preview_hint" = "Doppeltippen, um eine Stimme auszuwählen und eine Vorschau abzuspielen.";
-
-
-/*  */
-"voice.settings.enhanced_available" = "Möglicherweise ist eine Version dieser Stimme in höherer Qualität verfügbar. Um sie und weitere Stimmen herunterzuladen, wechseln Sie zum Abschnitt „Gesprochene Inhalte“ unter „iOS Bedienungshilfen – Einstellungen“.";
 
 
 /*  */
@@ -463,15 +407,7 @@
 
 
 /*  */
-"beacon.settings.style" = "Audio-Stile";
-
-
-/*  */
 "beacon.settings.style.haptic.explanation" = "Diese Beacon-Stile enthalten zusätzlich zum normalen Beacon-Ton ein haptisches Feedback, das Sie fühlen können. Das haptische Feedback ist nur verfügbar, wenn Ihr Telefon entsperrt und openscape geöffnet ist.";
-
-
-/*  */
-"beacon.settings.melodies" = "Start- und Ankunftstöne aktivieren";
 
 
 /*  */
@@ -479,15 +415,7 @@
 
 
 /*  */
-"troubleshooting.gps_status.explanation.meters" = "Dieser Wert gibt ungefähr an, wie genau openscape Ihren aktuellen Standort ermitteln kann. Weniger als ±10 Meter ist gut. Weniger als ±20 Meter ist in Ordnung. Alles andere ist unzureichend. Die Standortdaten sind am genauesten, wenn Sie sich im Freien und nicht in Gebäuden befinden.";
-
-
-/*  */
 "troubleshooting.gps_status.meters" = "±%@ Meter";
-
-
-/*  */
-"troubleshooting.check_audio" = "Audio überprüfen";
 
 
 /*  */
@@ -495,15 +423,7 @@
 
 
 /*  */
-"troubleshooting.cache.hint" = "Doppeltippen, um gespeicherte Kartendaten zu löschen und erneut herunterzuladen.";
-
-
-/*  */
 "settings.about.title.whats_new" = "Neuigkeiten";
-
-
-/*  */
-"settings.about.title.service_agreement" = "Servicevertrag";
 
 
 /*  */
@@ -511,15 +431,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_hint" = "Doppeltippen, um die Ankündigung des nächsten Updates anzuzeigen";
-
-
-/*  */
 "beacon.generic_name" = "Beacon";
-
-
-/*  */
-"beacon.styles.original" = "Original";
 
 
 /*  */
@@ -527,15 +439,7 @@
 
 
 /*  */
-"beacon.styles.ping" = "Ping";
-
-
-/*  */
 "beacon.styles.signal" = "Signal";
-
-
-/*  */
-"beacon.styles.signal.very_slow" = "Signal (sehr langsam)";
 
 
 /*  */
@@ -543,15 +447,7 @@
 
 
 /*  */
-"beacon.styles.haptic.wand" = "Haptischer Stock";
-
-
-/*  */
 "beacon.audio_beacon" = "Audiobeacon";
-
-
-/*  */
-"beacon.distance.unknown" = "Entfernung unbekannt";
 
 
 /*  */
@@ -559,15 +455,7 @@
 
 
 /*  */
-"beacon.action.mute_beacon.acc_hint" = "Doppeltippen, um das Audiobeacon stummzuschalten.";
-
-
-/*  */
 "beacon.action.unmute_beacon.acc_hint" = "Doppeltippen, um die Stummschaltung des Audiobeacons aufzuheben.";
-
-
-/*  */
-"beacon.action.callout_beacon" = "Auf Beacon hinweisen";
 
 
 /*  */
@@ -575,15 +463,7 @@
 
 
 /*  */
-"beacon.distance_update" = "Beacon-Distanzupdate";
-
-
-/*  */
 "beacon.beacon_location_within_audio_beacon_muted" = "Beacon innerhalb von %@. Audiobeacon wurde stummgeschaltet.";
-
-
-/*  */
-"preview.current_intersection_unknown.label" = "Aktueller Standort unbekannt";
 
 
 /*  */
@@ -591,15 +471,7 @@
 
 
 /*  */
-"preview.content.orientation.text.without_cardinal" = "%1$@°";
-
-
-/*  */
 "preview.content.edge.text.accessibility_hint" = "Doppeltippen, um zur nächsten Kreuzung zu wechseln";
-
-
-/*  */
-"preview.go_back.title" = "Zurück";
 
 
 /*  */
@@ -607,15 +479,7 @@
 
 
 /*  */
-"preview.alert.restart.title" = "Vorschau ist bereits aktiviert";
-
-
-/*  */
 "preview.alert.restart.button" = "Neu starten";
-
-
-/*  */
-"preview.callout.end" = "Beenden von openscape Street Preview";
 
 
 /*  */
@@ -623,15 +487,7 @@
 
 
 /*  */
-"preview.callout.continue.at" = "Fortsetzen Street Preview bei %@";
-
-
-/*  */
 "preview.callout.road_finder.instructions" = "Ihr Telefon zur Vorschau der verfügbaren Straßen drehen";
-
-
-/*  */
-"preview.callout.road_finder.road" = "%1$@, Richtung %2$@";
 
 
 /*  */
@@ -639,15 +495,7 @@
 
 
 /*  */
-"preview.callout.approach.end" = "Straßenende voraus";
-
-
-/*  */
 "preview.callout.turn.right" = "Nach rechts abgebogen. Jetzt entlang %@";
-
-
-/*  */
-"preview.callout.turn.roundabout" = "Kreisverkehr verlassen. Jetzt entlang %@";
 
 
 /*  */
@@ -655,15 +503,7 @@
 
 
 /*  */
-"preview.include_unnamed_roads.label.on" = "Unbenannte Straßen deaktivieren";
-
-
-/*  */
 "preview.include_unnamed_roads.hint.on" = "Doppelt tippen, um unbenannte Straßen aus openscape Street Preview auszuschließen";
-
-
-/*  */
-"preview.tutorial.title.1" = "Willkommen bei openscape Street Preview!";
 
 
 /*  */
@@ -671,15 +511,7 @@
 
 
 /*  */
-"preview.tutorial.title.3" = "Die Erkundung fortsetzen";
-
-
-/*  */
 "preview.tutorial.content.4" = "Viel Spaß dabei!";
-
-
-/*  */
-"location_detail.title.marker" = "Details der Markierung";
 
 
 /*  */
@@ -687,15 +519,7 @@
 
 
 /*  */
-"location_detail.action.beacon.hint.disabled" = "Bei aktiver Routenführung ist das Platzieren eines neuen Audiobeacons deaktiviert";
-
-
-/*  */
 "location_detail.action.edit.hint" = "Doppeltippen, um Markierung zu bearbeiten";
-
-
-/*  */
-"location_detail.action.preview.hint" = "Doppeltippen Sie, um die Vorschau an dieser Stelle zu starten";
 
 
 /*  */
@@ -703,15 +527,7 @@
 
 
 /*  */
-"location_detail.default.annotation" = "Keine Markierungsnotiz";
-
-
-/*  */
 "location_detail.disabled.save" = "Speichern einer Markierung an diesem Standort ist derzeit nicht möglich.";
-
-
-/*  */
-"location_detail.disabled.generic" = "Dieser Standort ist derzeit nicht verfügbar.";
 
 
 /*  */
@@ -719,15 +535,7 @@
 
 
 /*  */
-"location_detail.map.edit.hint" = "Die Karte an den richtigen Standort verschieben";
-
-
-/*  */
 "location_detail.map.edit.compass.accessibility_hint" = "Tippen Sie doppelt, um die Markierung in die Richtung zu verschieben, in die Ihr Telefon zeigt. Verwenden Sie Aktionen, um die Markierung in eine andere Richtung zu verschieben.";
-
-
-/*  */
-"location_detail.map.edit.south.accessibility_hint" = "Tippen Sie doppelt, um die Markierung nach Süden zu verschieben. Verwenden Sie Aktionen zum Verschieben in eine andere Richtung.";
 
 
 /*  */
@@ -735,15 +543,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_action.compass" = "In Richtung des Telefons verschieben";
-
-
-/*  */
 "location_detail.map.edit.accessibility_action.south" = "Nach Süden verschieben";
-
-
-/*  */
-"location_detail.map.edit.accessibility_action.west" = "Nach Westen verschieben";
 
 
 /*  */
@@ -751,15 +551,7 @@
 
 
 /*  */
-"location_detail.add_waypoint.existing.hint" = "Doppelt tippen, um diese Markierung aus Ihrer Route zu entfernen.";
-
-
-/*  */
 "location_detail.add_waypoint.marker.hint" = "Doppelt tippen, um eine Markierung zu erstellen und sie als Wegpunkt hinzuzufügen";
-
-
-/*  */
-"route_detail.action.stop_route" = "Route anhalten";
 
 
 /*  */
@@ -767,15 +559,7 @@
 
 
 /*  */
-"route_detail.action.start_route.hint" = "Tippen Sie doppelt, um diese Route zu starten";
-
-
-/*  */
 "route_detail.action.stop_route.hint" = "Tippen Sie doppelt, um diese Route anzuhalten";
-
-
-/*  */
-"route_detail.action.stop_event.hint" = "Tippen Sie doppelt, um diese Aktivität anzuhalten und Ihren Fortschritt zu speichern";
 
 
 /*  */
@@ -783,15 +567,7 @@
 
 
 /*  */
-"route_detail.action.create" = "Neue Route";
-
-
-/*  */
 "route_detail.waypoint.current_beacon" = "Wegpunkt %@. Aktuelles Beacon.";
-
-
-/*  */
-"route.title.time" = "%@ verstrichen";
 
 
 /*  */
@@ -799,15 +575,7 @@
 
 
 /*  */
-"route.waypoint.progress.complete" = "Abgeschlossen!";
-
-
-/*  */
 "route.end.completed.accessibility" = "Route abgeschlossen! %@";
-
-
-/*  */
-"route.end.not_completed.accessibility" = "Route angehalten, %@";
 
 
 /*  */
@@ -815,15 +583,7 @@
 
 
 /*  */
-"route.end.not_completed.summary.accessibility" = "%1$@ von %2$@ Wegpunkten erreicht, %3$@ verbleibend";
-
-
-/*  */
 "route_detail.action.previous" = "Vorheriger Wegpunkt";
-
-
-/*  */
-"route_detail.action.next" = "Nächster Wegpunkt";
 
 
 /*  */
@@ -831,15 +591,7 @@
 
 
 /*  */
-"route_detail.edit.description.default" = "Fügen Sie eine Beschreibung Ihrer Route hinzu";
-
-
-/*  */
 "route_detail.edit.waypoints_label" = "Wegpunkte";
-
-
-/*  */
-"route_detail.edit.delete.title" = "Sind Sie sicher, dass Sie diese Route löschen möchten?";
 
 
 /*  */
@@ -847,15 +599,7 @@
 
 
 /*  */
-"route_detail.beacon.title" = "Geführte Route";
-
-
-/*  */
 "route_detail.beacon.stop" = "Route beenden";
-
-
-/*  */
-"route.update.success.message" = "Ihre Freizeitaktivität ist auf dem neuesten Stand";
 
 
 /*  */
@@ -863,15 +607,7 @@
 
 
 /*  */
-"route.update.unavailable.message" = "Ihre Freizeitaktivität ist bereits auf dem neuesten Stand";
-
-
-/*  */
 "tour_detail.beacon.stop" = "Tour beenden";
-
-
-/*  */
-"waypoint.callout" = "Wegpunkt, %@";
 
 
 /*  */
@@ -879,15 +615,7 @@
 
 
 /*  */
-"tour.progress.accessibility" = "Beacon auf %1$@ platziert. %2$@ verbleibende Wegpunkte";
-
-
-/*  */
 "tour.progress.distance.accessibility.singular" = "Beacon auf %1$@ platziert, %2$@, 1 verbleibender Wegpunkt";
-
-
-/*  */
-"tour.progress.accessibility.singular" = "Beacon auf %@ platziert. 1 verbleibender Wegpunkt";
 
 
 /*  */
@@ -895,15 +623,7 @@
 
 
 /*  */
-"waypoint.callout.button.title" = "Wegpunkt vorlesen";
-
-
-/*  */
 "recommender.view.title" = "Vorschlag";
-
-
-/*  */
-"first_use_experience.share.alert.message" = "Wenn Sie eine Openscape-Markierung oder -Route freigeben, geben Sie die mit dieser Markierung oder Route verknüpften Orte frei. Sie sollten sie nur mit Personen teilen, denen Sie vertrauen.";
 
 
 /*  */
@@ -911,15 +631,7 @@
 
 
 /*  */
-"universal_links.alert.action.marker" = "Als Markierung speichern";
-
-
-/*  */
 "universal_links.marker.alert.title" = "Sie haben eine Markierung erhalten: \"%@\"";
-
-
-/*  */
-"universal_links.marker_existing.alert.title" = "Markierung ist bereits vorhanden";
 
 
 /*  */
@@ -927,15 +639,7 @@
 
 
 /*  */
-"siri_shortcuts.title.beta" = "Siri-Kurzbefehle (Beta)";
-
-
-/*  */
 "user_activity.my_location.title" = "Was ist mein Standort?";
-
-
-/*  */
-"user_activity.ahead_of_me.title" = "Was befindet sich vor mir?";
 
 
 /*  */
@@ -943,15 +647,7 @@
 
 
 /*  */
-"user_activity.street_preview.title" = "Street Preview starten";
-
-
-/*  */
 "url_resource.alert.route.import.title" = "Sie haben eine Route erhalten: \"%@\"";
-
-
-/*  */
-"url_resource.alert.route.import_existing.title" = "Route existiert bereits";
 
 
 /*  */
@@ -959,15 +655,7 @@
 
 
 /*  */
-"routes.title" = "Routen";
-
-
-/*  */
 "routes.action.deleted_error" = "Diese Route kann zurzeit nicht gelöscht werden. Versuchen Sie es später noch einmal.";
-
-
-/*  */
-"routes.no_routes.hint.1" = "Erstellen Sie für sich oder eine andere Person eine Route, indem Sie eine Reihe von Markierungen als Wegpunkte einrichten.";
 
 
 /*  */
@@ -975,15 +663,7 @@
 
 
 /*  */
-"routes.tutorial.title" = "Verfolgen Sie Ihre Wegpunkte auf dem Weg";
-
-
-/*  */
 "routes.callout.complete" = "Route abgeschlossen!";
-
-
-/*  */
-"routes.sort.by_name.hint" = "Doppelt tippen, um nach Namen zu sortieren";
 
 
 /*  */
@@ -991,15 +671,7 @@
 
 
 /*  */
-"routes.import.alert.message" = "Für eine oder mehrere Ihrer Routen fehlen Wegpunktdaten. Bitte überprüfen Sie die folgenden Routen, und fügen Sie gegebenenfalls Wegpunkte neu hinzu.";
-
-
-/*  */
 "markers.action.delete" = "Markierung löschen";
-
-
-/*  */
-"markers.action.deleted_error" = "Diese Markierung kann derzeit nicht gelöscht werden. Versuchen Sie es später erneut.";
 
 
 /*  */
@@ -1007,15 +679,7 @@
 
 
 /*  */
-"markers.sort_button.sort_by_name.voiceover" = "Nach Name sortiert";
-
-
-/*  */
 "markers.sort_button.sort_by_distance.voiceover" = "Nach Entfernung sortiert";
-
-
-/*  */
-"markers.no_markers.hint.1" = "Erstellen Sie Markierungen für Ihre Lieblingsziele, Wegpunkte einer Route oder andere Orte, die Sie hervorheben möchten. Wählen Sie einfach einen Ort oder Ihren aktuellen Standort auf dem Startbildschirm aus. Wählen Sie dann \"Als Markierung speichern\" aus.";
 
 
 /*  */
@@ -1023,15 +687,7 @@
 
 
 /*  */
-"markers.edit_screen.done_button.acc_hint" = "Doppelt tippen, um diese Markierung zu speichern";
-
-
-/*  */
 "markers.generic_name" = "Markierung";
-
-
-/*  */
-"markers.marker_created" = "Markierung erstellt";
 
 
 /*  */
@@ -1039,15 +695,7 @@
 
 
 /*  */
-"markers.marker_along" = "Markierung entlang %@";
-
-
-/*  */
 "markers.destructive_delete_message" = "Möchten Sie diese Markierung wirklich löschen?";
-
-
-/*  */
-"markers.annotation" = "Anmerkung";
 
 
 /*  */
@@ -1055,15 +703,7 @@
 
 
 /*  */
-"searching.no_results_found_message" = "Wenn Sie nach einem bestimmten Ort suchen, versuchen Sie, nach dem Namen oder der Adresse zu suchen.";
-
-
-/*  */
 "search.search_for" = "Nach „%@“ suchen";
-
-
-/*  */
-"search.searching_with_punctuation" = "Suchen ...";
 
 
 /*  */
@@ -1071,15 +711,7 @@
 
 
 /*  */
-"search.use_current_location" = "Aktueller Standort";
-
-
-/*  */
 "search.view_markers" = "Markierungen und Routen";
-
-
-/*  */
-"search.button.nearby.accessibility_hint" = "Doppeltippen, um nahe gelegene Restaurants, Zwischenstopps und mehr zu erkunden";
 
 
 /*  */
@@ -1087,15 +719,7 @@
 
 
 /*  */
-"filter.clear.capital" = "Filter löschen";
-
-
-/*  */
 "filter.double_tap_places_category" = "Doppeltippen, um Orte nach Kategorie zu filtern.";
-
-
-/*  */
-"filter.transit" = "Öffentliche Verkehrsmittel";
 
 
 /*  */
@@ -1103,15 +727,7 @@
 
 
 /*  */
-"callouts.turn_on_off" = "Alle Hinweise aktivieren oder deaktivieren";
-
-
-/*  */
 "callouts.callouts_off" = "Hinweise aus";
-
-
-/*  */
-"callouts.places_and_landmarks" = "Orte und Orientierungspunkte";
 
 
 /*  */
@@ -1119,15 +735,7 @@
 
 
 /*  */
-"callouts.audio_beacon" = "Distanz zum Audiobeacon";
-
-
-/*  */
 "callouts.automatic_callouts" = "Automatische Hinweise";
-
-
-/*  */
-"callouts.ahead_of_you" = "Vor Ihnen";
 
 
 /*  */
@@ -1135,15 +743,7 @@
 
 
 /*  */
-"callouts.nearby_markers" = "Markierungen in der Nähe";
-
-
-/*  */
 "callouts.action.repeat" = "Wiederholen";
-
-
-/*  */
-"callouts.hardware.low_battery" = "%1$@ hat nur noch %2$@ Prozent Batteriekapazität.";
 
 
 /*  */
@@ -1151,15 +751,7 @@
 
 
 /*  */
-"sleep.sleep" = "Ruhemodus aktivieren";
-
-
-/*  */
 "sleep.snoozing.message" = "Openscape ist derzeit im Standbymodus. Wenn Sie Ihren aktuellen Standort verlassen, wird openscape automatisch aktiviert. Im Standbymodus werden Ortungsdienste verwendet, aber mit geringer Leistung, um den Telefonakku zu schonen. Tippen Sie auf die Schaltfläche unten, um die App zu aktivieren.";
-
-
-/*  */
-"sleep.sleep.acc_hint" = "Doppeltippen, um openscape in den Ruhemodus zu versetzen";
 
 
 /*  */
@@ -1167,15 +759,7 @@
 
 
 /*  */
-"sleep.ui.wake_up_now" = "Jetzt\naktivieren";
-
-
-/*  */
 "directions.intersection_with_name_distance_direction" = "Kreuzung mit %1$@ %2$@ %3$@";
-
-
-/*  */
-"directions.intersection_with_name_direction" = "Kreuzung mit %1$@ %2$@";
 
 
 /*  */
@@ -1183,15 +767,7 @@
 
 
 /*  */
-"directions.at_poi" = "Am %@";
-
-
-/*  */
 "directions.my_location" = "Mein Standort";
-
-
-/*  */
-"directions.intersects_with_in" = "Kreuzt mit %1$@ in %2$@";
 
 
 /*  */
@@ -1199,15 +775,7 @@
 
 
 /*  */
-"directions.previous_location" = "Vorheriger Standort";
-
-
-/*  */
 "directions.amenity.entrance_list" = "Liste der Eingänge";
-
-
-/*  */
-"directions.nearest_road_name_is_distance" = "Nächste Straße, %1$@, ist %2$@ entfernt";
 
 
 /*  */
@@ -1215,15 +783,7 @@
 
 
 /*  */
-"directions.poi_name_was_distance_direction" = "%1$@ war %2$@ %3$@";
-
-
-/*  */
 "directions.roundabout_with_exits_distance" = "Kreisverkehr mit %1$@ Ausfahrten %2$@ entfernt";
-
-
-/*  */
-"directions.roundabout_with_exits_direction" = "Kreisverkehr mit %1$@ Ausfahrten %2$@";
 
 
 /*  */
@@ -1231,15 +791,7 @@
 
 
 /*  */
-"directions.approaching_name_roundabout" = "%@-Kreisverkehr vor Ihnen";
-
-
-/*  */
 "directions.approaching_name_roundabout_with_exits" = "%1$@-Kreisverkehr mit %2$@ Ausfahrten voraus";
-
-
-/*  */
-"directions.name_roundabout_with_exits" = "%1$@ Kreisverkehr mit %2$@ Ausfahrten";
 
 
 /*  */
@@ -1247,15 +799,7 @@
 
 
 /*  */
-"directions.name_goes_right" = "%@, geht nach rechts ab";
-
-
-/*  */
 "directions.name_continues_ahead" = "%@, weiter geradeaus";
-
-
-/*  */
-"directions.direction.ahead" = "voraus";
 
 
 /*  */
@@ -1263,15 +807,7 @@
 
 
 /*  */
-"directions.direction.behind" = "hinten";
-
-
-/*  */
 "directions.direction.to_the_left" = "nach links";
-
-
-/*  */
-"directions.direction.away" = "weg";
 
 
 /*  */
@@ -1279,15 +815,7 @@
 
 
 /*  */
-"directions.name_is_nearby_street_address" = "%1$@ ist in der Nähe. Straßenadresse lautet %2$@.";
-
-
-/*  */
 "directions.name_street_address" = "%1$@. Die Straßenadresse lautet %2$@. Entfernung unbekannt.";
-
-
-/*  */
-"directions.traveling.ne" = "Nach Nordosten fahrend";
 
 
 /*  */
@@ -1295,15 +823,7 @@
 
 
 /*  */
-"directions.traveling.sw" = "Nach Südwesten fahrend";
-
-
-/*  */
 "directions.traveling.nw" = "Nach Nordwesten fahrend";
-
-
-/*  */
-"directions.facing.ne" = "Blickrichtung Nordosten";
 
 
 /*  */
@@ -1311,15 +831,7 @@
 
 
 /*  */
-"directions.facing.sw" = "Blickrichtung Südwesten";
-
-
-/*  */
 "directions.facing.nw" = "Blickrichtung Nordwesten";
-
-
-/*  */
-"directions.heading.ne" = "Richtung Nordosten";
 
 
 /*  */
@@ -1327,15 +839,7 @@
 
 
 /*  */
-"directions.heading.sw" = "Richtung Südwesten";
-
-
-/*  */
 "directions.heading.nw" = "Richtung Nordwesten";
-
-
-/*  */
-"directions.along.traveling.ne" = "Auf %@ nach Nordosten fahrend";
 
 
 /*  */
@@ -1343,15 +847,7 @@
 
 
 /*  */
-"directions.along.traveling.sw" = "Auf %@ nach Südwesten fahrend";
-
-
-/*  */
 "directions.along.traveling.nw" = "Auf %@ nach Nordwesten fahrend";
-
-
-/*  */
-"directions.along.facing.ne" = "Auf %@ in Blickrichtung Nordosten";
 
 
 /*  */
@@ -1359,15 +855,7 @@
 
 
 /*  */
-"directions.along.facing.sw" = "Auf %@ in Blickrichtung Südwesten";
-
-
-/*  */
 "directions.along.facing.nw" = "Auf %@ in Blickrichtung Nordwesten";
-
-
-/*  */
-"directions.along.heading.ne" = "Auf %@ in Richtung Nordosten";
 
 
 /*  */
@@ -1375,15 +863,7 @@
 
 
 /*  */
-"directions.along.heading.sw" = "Auf %@ in Richtung Südwesten";
-
-
-/*  */
 "directions.along.heading.nw" = "Auf %@ in Richtung Nordwesten";
-
-
-/*  */
-"directions.cardinal.north_east" = "Nordost";
 
 
 /*  */
@@ -1391,15 +871,7 @@
 
 
 /*  */
-"directions.cardinal.south_west" = "Südwest";
-
-
-/*  */
 "directions.cardinal.north_west" = "Nordwest";
-
-
-/*  */
-"directions.cardinal.north_east.abb" = "NO";
 
 
 /*  */
@@ -1407,15 +879,7 @@
 
 
 /*  */
-"directions.cardinal.south_west.abb" = "SW";
-
-
-/*  */
 "directions.cardinal.north_west.abb" = "NW";
-
-
-/*  */
-"distance.format.m" = "%@ m";
 
 
 /*  */
@@ -1423,15 +887,7 @@
 
 
 /*  */
-"distance.format.kilometer" = "%@ Kilometer";
-
-
-/*  */
 "distance.format.ft" = "%@ ft";
-
-
-/*  */
-"distance.format.feet" = "%@ Fuß";
 
 
 /*  */
@@ -1439,15 +895,7 @@
 
 
 /*  */
-"ui.action_button.my_location" = "Mein\nStandort";
-
-
-/*  */
 "ui.action_button.nearby_markers" = "Mark.\nin Nähe";
-
-
-/*  */
-"ui.action_button.around_me" = "Um mich\nherum";
 
 
 /*  */
@@ -1455,15 +903,7 @@
 
 
 /*  */
-"ui.menu" = "Menü";
-
-
-/*  */
 "ui.menu.close" = "Menü schließen";
-
-
-/*  */
-"menu.events" = "Freizeitaktivitäten";
 
 
 /*  */
@@ -1471,15 +911,7 @@
 
 
 /*  */
-"menu.send_feedback" = "Feedback senden";
-
-
-/*  */
 "menu.learning_resources" = "Openscape-Blog";
-
-
-/*  */
-"bar_icon.external_GPS.acc_label" = "Symbol für „Mit externem GPS verbunden“";
 
 
 /*  */
@@ -1487,15 +919,7 @@
 
 
 /*  */
-"poi_screen.loading_title.loading" = "Laden der Orte in der Nähe";
-
-
-/*  */
 "poi_screen.loading_title.no_places_matching" = "Es gibt keine mit %@ übereinstimmenden Orte. Probieren Sie einen anderen Filter aus";
-
-
-/*  */
-"poi_cell.accessibility_label.suggested_search" = "Vorgeschlagene Suche: %@";
 
 
 /*  */
@@ -1503,15 +927,7 @@
 
 
 /*  */
-"location_callout_cell.nearest_road" = "Nächste Straße, %@.";
-
-
-/*  */
 "location_callout_cell.nearest_road.nearest_poi" = "Nächste Straße, %1$@. Nächster Point-of-interest, %2$@.";
-
-
-/*  */
-"devices.title.pair_audio" = "Kopfhörer-Audio koppeln";
 
 
 /*  */
@@ -1519,15 +935,7 @@
 
 
 /*  */
-"devices.explain_ar.disconnected" = "Head Tracking-Kopfhörer sind Bluetooth-Kopfhörer mit Sensoren, anhand derer openscape erkennt, in welche Richtung Sie schauen. Dadurch kann openscape Ihre Audioerfahrung verbessern, sodass sie natürlicher klingt, während Sie unterwegs sind.\n\nTippen Sie auf die Schaltfläche unten, um eine Verbindung mit einem Gerät herzustellen.";
-
-
-/*  */
 "devices.explain_ar.paired" = "Openscape ist derzeit nicht mit %@ verbunden. Stellen Sie sicher, dass Ihre Kopfhörer aktiviert sind und sich in der Nähe Ihres Telefons befindet.";
-
-
-/*  */
-"devices.connect_headset" = "Kopfhörer verbinden";
 
 
 /*  */
@@ -1535,15 +943,7 @@
 
 
 /*  */
-"devices.connect_headset.unsupported_firmware" = "Die AR Headphones müssen aktualisiert werden, bevor sie eine Verbindung mit openscape herstellen können. Rufen Sie die Cortana-App auf, um Ihre Kopfhörer zu aktualisieren.";
-
-
-/*  */
 "devices.connect_headset.unavailable" = "Das von Ihnen gewählte Gerät ist derzeit nicht für eine Verbindung verfügbar. Bitte versuchen Sie es später noch einmal.";
-
-
-/*  */
-"devices.connect_headset.audio" = "Bevor Sie Ihre Kopfhörer mit openscape verbinden, stellen Sie sicher, dass sie mit Ihrem Telefon gekoppelt ist. Wenn sie noch nicht gekoppelt sind, wechseln Sie zum Abschnitt „Bluetooth“ in der iOS-Einstellungen-App, um Ihr Gerät zu koppeln, und kehren Sie dann zu openscape zurück.";
 
 
 /*  */
@@ -1551,15 +951,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.test" = "Ihre Kopfhörer überprüfen";
-
-
-/*  */
 "devices.test_headset.title" = "Kopfhörer überprüfen";
-
-
-/*  */
-"devices.test_headset.continue" = "Zu openscape zurückkehren";
 
 
 /*  */
@@ -1567,15 +959,7 @@
 
 
 /*  */
-"devices.callouts.connected" = "%@ verbunden.";
-
-
-/*  */
 "devices.callouts.needs_calibration.in_ear" = "Ihre Kopfhörer müssen kalibriert werden. Schütteln Sie Ihre Kopf vorsichtig in alle Richtungen.";
-
-
-/*  */
-"devices.callouts.disconnected" = "%@ getrennt.";
 
 
 /*  */
@@ -1583,15 +967,7 @@
 
 
 /*  */
-"devices.troubleshoot.reconnect" = "Erneut verbinden";
-
-
-/*  */
 "devices.reachability.alert.title" = "Aktivieren von Head Tracking mit %@";
-
-
-/*  */
-"behavior.experiences.events_list_nav_title" = "Aktivitäten";
 
 
 /*  */
@@ -1599,15 +975,7 @@
 
 
 /*  */
-"behavior.experiences.download_failed.title" = "Aktivität kann nicht heruntergeladen werden";
-
-
-/*  */
 "behavior.experiences.reset.title" = "Diese Aktivität zurücksetzen?";
-
-
-/*  */
-"behavior.experiences.reset_and_update_action" = "Nach Updates suchen";
 
 
 /*  */
@@ -1615,15 +983,7 @@
 
 
 /*  */
-"behavior.experiences.delete_action" = "Aktivität löschen";
-
-
-/*  */
 "behavior.experience.delete.explanation" = "Wenn Sie diese Aktivität löschen, wird sie von Ihrem Telefon entfernt.";
-
-
-/*  */
-"behavior.experiences.no_events.title" = "Openscape-Freizeitaktivitäten (Beta)";
 
 
 /*  */
@@ -1631,15 +991,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.by_line" = "Von %@";
-
-
-/*  */
 "behavior.scavenger_hunt.callout.complete" = "Aktivität abgeschlossen! Herzlichen Glückwunsch!";
-
-
-/*  */
-"behavior.scavenger_hunt.callout.next_flag" = "Beacon auf %1$@ platziert, %2$@ entfernt, %3$@ von %4$@";
 
 
 /*  */
@@ -1647,15 +999,7 @@
 
 
 /*  */
-"behavior.experience.badges.complete" = "Abgeschlossen";
-
-
-/*  */
 "time.just_now" = "Jetzt";
-
-
-/*  */
-"time.num_minutes_ago" = "vor %@ Minuten";
 
 
 /*  */
@@ -1663,15 +1007,7 @@
 
 
 /*  */
-"announced_name.named" = "%1$@, %2$@ angekündigt.";
-
-
-/*  */
 "previous_location.announced_name" = "Vorheriger Standort. Angekündigt %@.";
-
-
-/*  */
-"beacon_distance_update.announced_name" = "Beacon-Distanzupdate. %@ angekündigt.";
 
 
 /*  */
@@ -1679,15 +1015,7 @@
 
 
 /*  */
-"third_party_apps.general.maps" = "In einer externen Karten-App öffnen";
-
-
-/*  */
 "icloud.kv_store.quota_violation_alert.message" = "iCloud-Speicher für diese App ist voll. Zum Erstellen einer neuen Markierung müssen Sie zunächst Speicher freigeben, indem Sie einige der gespeicherten Markierungen löschen.";
-
-
-/*  */
-"poi.unknown_place" = "Unbekannter Ort";
 
 
 /*  */
@@ -1695,15 +1023,7 @@
 
 
 /*  */
-"action.double_tap_to_repeat" = "Doppeltippen zum Wiederholen";
-
-
-/*  */
 "text.oops" = "Es gab ein Problem.";
-
-
-/*  */
-"tutorial.exit" = "Tutorial beenden";
 
 
 /*  */
@@ -1711,15 +1031,7 @@
 
 
 /*  */
-"tutorial.markers.mark_your_world" = "Markieren Sie Ihre Welt";
-
-
-/*  */
 "tutorial.markers.add_marker" = "Markierung hinzufügen";
-
-
-/*  */
-"tutorial.markers.mark_location.acc_hint" = "Doppelt tippen, um diese Position zu markieren";
 
 
 /*  */
@@ -1727,15 +1039,7 @@
 
 
 /*  */
-"tutorial.markers.text.AudioBeacon" = "Sie können das Audiobeacon auch an Ihrer Markierung platzieren.\nProbieren wir es aus. Hier ist das Beacon an @!marker_name!!.\nHören Sie genau hin, halten Sie Ihr Telefon flach in der Hand, und drehen Sie sich in die Richtung, aus der Sie das Beaconsignal hören.";
-
-
-/*  */
 "tutorial.beacon.getting_started" = "Erste Schritte mit Beacons";
-
-
-/*  */
-"tutorial.beacon.getting_started.text" = "Wenn Sie das Beacon an einem Standort platzieren, spielt openscape einen Sound aus der Richtung dieses Standorts ab. In diesem Tutorial erfahren Sie Schritt für Schritt, wie Sie ein Beacon platzieren und wie Sie es verwenden.\n\nTippen Sie auf „Audiobeacon starten“, um eine Liste der Orte in der Nähe zu öffnen. Wählen Sie einen Standort aus der Liste aus, und das Tutorial wird gestartet.";
 
 
 /*  */
@@ -1743,15 +1047,7 @@
 
 
 /*  */
-"tutorial.beacon.the_audio_beacon" = "Das Audiobeacon";
-
-
-/*  */
 "tutorial.beacon.found_the_beacon" = "Großartig! Sie haben Ihr Beacon gefunden!";
-
-
-/*  */
-"tutorial.beacons.text.IntroPart1" = "Wenn Sie ein Beacon an einem Standort platzieren, spielt openscape einen Sound aus der Richtung dieses Standorts ab. In diesem Tutorial erhalten Sie schrittweise Anleitungen zum Platzieren eines Beacons und seiner Verwendungsweise.";
 
 
 /*  */
@@ -1759,15 +1055,7 @@
 
 
 /*  */
-"tutorial.beacons.text.OrientationAirPods" = "Ihre AirPods sind mit openscape verbunden. Bei einer Verbindung der AirPods mit openscape ist es nicht wichtig, wie Sie ihr Telefon halten. Sie können es sogar einstecken oder in Ihrer Tasche verstauen.";
-
-
-/*  */
 "tutorial.beacons.text.HoldingPhone" = "Das Telefon auf diese Weise flach zu halten, ist nur erforderlich, wenn Sie still stehen. Wenn Sie in Bewegung sind, können Sie das Telefon in eine Jackentasche oder eine Tasche einstecken.";
-
-
-/*  */
-"tutorial.beacons.text.BeaconInitial" = "Nun, da Sie ein Beacon an @!destination!! platziert haben, wird von openscape ein Ton kommend aus der Richtung dieses Standort abgespielt. Das ist das Audiobeacon.";
 
 
 /*  */
@@ -1775,15 +1063,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsRepeat" = "Drehen Sie sich langsam, bis Sie die Glocke hören, die indiziert, dass Sie in die Beaconrichtung schauen.";
-
-
-/*  */
 "tutorial.beacons.text.BeaconInBounds" = "Wenn Sie genau hinhören, werden Sie feststellen, dass der Hinweis direkt von vorn abgespielt wird. Außerdem hören Sie neben dem normalen Beaconsound einen Glockenton. Das bedeutet, Sie blicken direkt in Richtung von @!destination!!";
-
-
-/*  */
-"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Nun drehen Sie sich langsam von der Richtung des Beacons weg. Der Glockenton ist nicht mehr zu hören, und nur noch der Beaconsound gibt an, wo sich Ihr @!destination!! Ziel befindet. Versuchen Sie es jetzt.";
 
 
 /*  */
@@ -1791,15 +1071,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HomeScreen" = "Auf dem Startbildschirm werden auch die Entfernungsinformationen zusammen mit der Straßenadresse des Beacon-Standorts (falls verfügbar) angezeigt. openscape benachrichtigt Sie, wenn Sie sich in der Nähe des Beacon-Standorts befinden, woraufhin das Audiobeacon verstummt.";
-
-
-/*  */
 "tutorial.beacons.text.MuteRepeat" = "Mit zwei Fingern auf eine beliebige Bildschirmstelle doppeltippen";
-
-
-/*  */
-"settings.help.title" = "Hilfe";
 
 
 /*  */
@@ -1807,15 +1079,7 @@
 
 
 /*  */
-"help.offline.section_title" = "Verwendung von openscape offline";
-
-
-/*  */
 "help.config.voices.content" = "Openscape kann alle Stimmen verwenden, die Sie in der iOS-Einstellungen-App heruntergeladen haben, mit Ausnahme der Siri-Stimmen, die für openscape nicht verfügbar sind. Wir empfehlen, eine der Stimmen unter „Erweitert“ zu wählen, da sie eine viel höhere Sprachqualität aufweisen. Dazu müssen Sie zuerst eine erweiterte Stimme herunterladen. Sie können Stimmen in der iOS-Einstellungen-App herunterladen, indem Sie auf „Bedienhilfen > Gesprochene Inhalte > Stimmen“ gehen und auf eine Stimme tippen. In der Openscape-App wählen Sie die gewünschte Stimme aus, indem Sie im Hauptmenü zu „Einstellungen“ wechseln und dann „Stimme“ auswählen.";
-
-
-/*  */
-"help.offline.description" = "Wenn es keine Internetverbindung oder einen Ausfall des Openscape-Dienstes gibt, wechselt openscape in den Offlinemodus. openscape wird dann weiter ausgeführt, aber einige Funktionen sind möglicherweise eingeschränkt.";
 
 
 /*  */
@@ -1823,15 +1087,7 @@
 
 
 /*  */
-"help.offline.troubleshooting_description" = "Openscape versucht, in den Normalbetrieb zu wechseln, sobald Ihr Telefon mit WLAN verbunden wird oder mobile Daten aktiviert sind, und Sie sich in einem Bereich mit gutem Signal befinden. Wenn Ihr Telefon über eine gute Internetverbindung verfügt, aber openscape nicht in den Normalbetrieb zurückkehrt, gibt es möglicherweise einen Ausfall der Openscape-Dienste.";
-
-
-/*  */
 "help.explore.page_title" = "Vor mir";
-
-
-/*  */
-"help.edit_markers.page_title" = "Anpassen von Markierungen";
 
 
 /*  */
@@ -1839,15 +1095,7 @@
 
 
 /*  */
-"help.text.section_title.when" = "Wann würde ich es verwenden?";
-
-
-/*  */
 "help.more_help.section_title" = "Weitere Hilfe";
-
-
-/*  */
-"terms_of_use.title" = "Nutzungsbedingungen";
 
 
 /*  */
@@ -1855,15 +1103,7 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.acc_label" = "Nutzungsbedingungen akzeptieren";
-
-
-/*  */
 "terms_of_use.accept_checkbox.off.acc_hint" = "Doppeltippen, um das Kontrollkästchen „Nutzungsbedingungen akzeptieren“ zu deaktivieren";
-
-
-/*  */
-"terms_of_use.accept_checkbox.off.acc_value" = "Deaktiviert";
 
 
 /*  */
@@ -1871,15 +1111,7 @@
 
 
 /*  */
-"first_launch.get_started_button.off.acc_hint" = "Sie müssen das Kontrollkästchen „Nutzungsbedingungen akzeptieren“ aktivieren, bevor Sie diese Schaltfläche antippen können.";
-
-
-/*  */
 "first_launch.welcome_audio_text" = "Herzlich willkommen! openscape zeigt Ihnen mit einzigartigen akustischen Hinweisen und Hinweisen zu Straßen, Kreuzungen und Orte in Ihrer Nähe Ihre Position und Ihr Ziel an. Drücken Sie die Taste „Weiter“, um zu beginnen.";
-
-
-/*  */
-"first_launch.language" = "Openscape-Sprache";
 
 
 /*  */
@@ -1887,15 +1119,7 @@
 
 
 /*  */
-"first_launch.device_motion" = "Gerätebewegung";
-
-
-/*  */
 "first_launch.lighting_way_with_sound" = "Beleuchten Sie Ihren Weg mit Sound";
-
-
-/*  */
-"first_launch.heading_somewhere" = "Haben Sie ein bestimmtes Ziel?";
 
 
 /*  */
@@ -1903,15 +1127,7 @@
 
 
 /*  */
-"first_launch.find_things_nearby" = "Möchten Sie weitere Interessenspunkte in der Nähe finden?";
-
-
-/*  */
 "first_launch.welcome.title" = "Willkommen!";
-
-
-/*  */
-"first_launch.welcome.description" = "Sichere Navigation dank räumlichen Audioinformationen per Openscape";
 
 
 /*  */
@@ -1919,15 +1135,7 @@
 
 
 /*  */
-"first_launch.headphones.message.2" = "Wenn Sie keine Kopfhörer haben oder sie lieber nicht benutzen möchten, ist das auch kein Problem! openscape funktioniert auch mit den Lautsprechern Ihres Telefons.";
-
-
-/*  */
 "first_launch.callouts.message" = "Openscape hilft Ihnen dabei, sich bewusst zu machen, wo Sie sind und wohin Sie gehen, indem es Straßen, Kreuzungen und interessante Punkte ankündigt, wenn Sie sich ihnen nähern.";
-
-
-/*  */
-"first_launch.callouts.listen.accessibility_label" = "Anhören";
 
 
 /*  */
@@ -1935,15 +1143,7 @@
 
 
 /*  */
-"first_launch.callouts.example.4" = "Hauptstraße geht nach rechts";
-
-
-/*  */
 "first_launch.permissions.message" = "Wenn Sie mit openscape navigieren, werden Sie von einem Audiobeacon geführt. Dazu müssen Sie openscape die folgenden Berechtigungen erteilen:";
-
-
-/*  */
-"first_launch.permissions.motion" = "Bewegung & Fitness";
 
 
 /*  */
@@ -1951,15 +1151,7 @@
 
 
 /*  */
-"first_launch.beacon.message.2" = "Hören Sie sich die verfügbaren Audiobeacons an, und wählen Sie Ihre bevorzugte Option aus.";
-
-
-/*  */
 "first_launch.select_beacon" = "Beacon auswählen";
-
-
-/*  */
-"first_launch.beacon.audio.message" = "Das Beacon folgt den Bewegungen Ihres Telefons und verwendet räumliches Audio, sodass Sie immer wissen, wo es sich befindet.";
 
 
 /*  */
@@ -1967,15 +1159,7 @@
 
 
 /*  */
-"first_launch.beacon.callout.headtracking.haptic" = "Platzierung des Beacons vor Ihnen. Drehen Sie sich nach links und rechts, um das haptische Feedback des Beacons zu spüren.";
-
-
-/*  */
 "first_launch.beacon.callout.behind" = "Beacon hinten Ihnen";
-
-
-/*  */
-"first_launch.prompt.message" = "Sie sind bereit für Ihren ersten Spaziergang mit Openscape. Um gleich loszulegen, wählen Sie einfach ein nahe gelegenes Ziel aus, und starten Sie das Audiobeacon. Sie werden es aus der Richtung Ihres Ziels hören.";
 
 
 /*  */
@@ -1983,15 +1167,7 @@
 
 
 /*  */
-"help.text.destination_beacons.when" = "Das Platzieren eines Beacons ist nützlich, wenn Sie bei der Erkundung eines neuen Gebiets einen vertrauten Orientierungspunkt im Auge behalten möchten, oder wenn Sie irgendwo hingehen und unterwegs über Ihre Umgebung informiert werden möchten. Mit der Beacon-Funktion erhalten Sie keine Navigationsanweisungen, sondern hören einen kontinuierlichen Ton, der Ihnen die Richtung zum Beacon relativ zu Ihrer aktuellen Position angibt. Mithilfe des Audiobeacons, Ihrer vorhandenen Wegfindungsfähigkeiten und sogar Ihrer bevorzugten Navigations-App können Sie selbst entscheiden, wie Sie zu Orten in der Nähe gelangen möchten.";
-
-
-/*  */
 "help.text.destination_beacons.how.2" = "<b>Entfernen eines aktuellen Beacons</b>:<br/> Tippen Sie auf dem Startbildschirm einfach auf die Schaltfläche „Beacon entfernen“.";
-
-
-/*  */
-"help.text.automatic_callouts.what" = "Openscape informiert Sie über Dinge um Sie herum, wenn Sie sich ihnen nähern, indem ein Hinweis aus der Richtung erfolgt, in der sie sich befinden. Die App tut dies automatisch für alle möglichen Points-of-Interest wie Geschäfte, Bushaltestellen und sogar Kreuzungen. Im Abschnitt „Hinweise verwalten“ des Einstellungsbildschirms können Sie konfigurieren, auf was die App automatisch hinweisen soll. Sie können auch alle Hinweise ausschalten, wenn Sie nicht durch die App gestört werden möchten.";
 
 
 /*  */
@@ -1999,15 +1175,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.1" = "<b>Hinweise ein- oder ausschalten</b>:<br/> Durch Ausschalten der Hinweise wird die App stummgeschaltet. Hinweise können im Abschnitt „Hinweise verwalten“ auf dem Bildschirm „Einstellungen“ ein- oder ausgeschaltet werden. Tippen Sie dazu auf den Umschalter „Hinweise zulassen“. Ebenfalls können Sie die Hinweise mit dem Befehl „Vorwärts springen“ (doppeltippen und halten) ein- oder ausschalten, wenn Ihre Kopfhörer über Mediensteuerungstasten verfügt. Verwenden Sie alternativ die Schaltfläche „Ruhemodus aktivieren“ in der oberen rechten Ecke des Startbildschirms, um openscape davon abzuhalten, Hinweise anzusagen, bis Sie es wieder aktivieren.";
-
-
-/*  */
 "help.text.my_location.what" = "Über <em>„Mein Standort“</em> können Sie einfach ermitteln, wo Sie sich gerade befinden. <em>„Mein Standort“</em> bietet Ihnen Informationen zu Ihrem aktuellen Standort, Ihrer Blickrichtung und den Orten, Kreuzungen oder Points-of-Interest in der Nähe.";
-
-
-/*  */
-"help.text.my_location.how" = "Wie bei allen vier Schaltflächen am unteren Rand des Startbildschirms halten Sie das Telefon mit dem Bildschirm flach (zum Himmel zeigend) und mit der Oberseite in die Richtung, in die Sie schauen, bevor Sie die Schaltfläche <em>„Mein Standort“</em> antippen. Dies wirkt wie ein Kompass, der der App mitteilt, in welche Richtung Sie blicken. Tippen Sie einfach auf die Taste <em>„Mein Standort“</em>, und hören Sie zu.";
 
 
 /*  */
@@ -2015,15 +1183,7 @@
 
 
 /*  */
-"help.text.around_me.what" = "Die Schaltfläche <em>„Um mich herum“</em> informiert über jeweils einen Point-of-Interest in jedem der vier Quadranten um Sie herum (vorne, rechts, hinten und links). <em> „Um mich herum“</em> soll Ihnen helfen, sich in Ihrer Umgebung zu orientieren.";
-
-
-/*  */
 "help.text.around_me.how" = "Wie bei allen vier Schaltflächen am unteren Rand des Startbildschirms, halten Sie Ihr Telefon mit dem Bildschirm flach (zum Himmel zeigend) und mit der Oberseite in die Richtung, in die Sie schauen, bevor Sie die Schaltfläche <em>„Um mich herum“</em> antippen. Dies wirkt wie ein Kompass, der der App mitteilt, in welche Richtung Sie schauen. Tippen Sie einfach auf die Schaltfläche <em>„Um mich herum“</em>, und Sie werden Hinweise zu vier Points-of-Interest hören, die sich im Bereich um Sie herum befinden.";
-
-
-/*  */
-"help.text.ahead_of_me.when" = "Wenn Sie eine Straße entlang laufen, können Sie <em>„Vor mir“</em> verwenden, um Plätze und Points-of-Interest auf beiden Seiten des Weges vor Ihnen zu entdecken.";
 
 
 /*  */
@@ -2031,15 +1191,7 @@
 
 
 /*  */
-"help.text.remote_control.how" = "<p>Mithilfe der Kopfhörer-Mediensteuerungen können Sie auf folgende Openscape-Funktionen zugreifen:<p><br>&#x23EF Wiedergabe/Pause: Alle aktuellen Hinweise stummschalten und, falls das Audiobeacon platziert ist, das Beacon-Audiosignal ein- oder ausschalten. </p><p>&#x23ED Weiter: Hinweis <em>„Mein Standort“</em>.</p><p>&#x23EE Zurück: Letzten Hinweis wiederholen.</p><p>&#x23E9 Vorwärts springen: Hinweise ein- oder ausschalten.</p><p>&#x23EA Rückwärts springen: Hinweis <em>„Um mich herum“</em>.</p>";
-
-
-/*  */
 "help.text.markers.content.2" = "Sie können Dinge markieren, die für Sie persönlich und wichtig sind, wie Ihr Zuhause, Ihr Büro oder Ihr bevorzugter Supermarkt. Sie können jeden Ort oder jede Adresse markieren, aber auch Orientierungspunkte, die für gewöhnlich nicht auf Karten eingetragen sind, z. B. Eingänge zu Gebäuden oder Parks, Push-to-Walk-Tasten, Fußgängerüberwege oder Brücken, Bushaltestellen oder sogar den Lieblingsbaum Ihres Hundes, und diese als Referenzen entlang Ihres Weges verwenden.";
-
-
-/*  */
-"help.text.creating_markers.content.1" = "Sie können Markierungen auf drei Arten erstellen: Suche nach dem Ort, den Sie speichern möchten, über die Suchleiste, mithilfe der Schaltfläche „Orte in der Nähe“ oder mit der Option „Aktuellen Standort verwenden“. Alle diese Optionen befinden sich auf dem Openscape-Startbildschirm. Sobald Sie den gewünschten Ort gefunden haben, wählen Sie ihn aus, und Sie werden zur Seite „Standortdetails“ geleitet. Tippen Sie hier auf die Schaltfläche „Markierung speichern“.";
 
 
 /*  */
@@ -2047,15 +1199,7 @@
 
 
 /*  */
-"help.text.routes.content.what" = "Routen bestehen aus einer Reihe von Wegpunkten. Sie werden bei der Ankunft an einem Wegpunkt informiert. Dann springt das Audiobeacon automatisch zum nächsten Wegpunkt.";
-
-
-/*  */
 "help.text.routes.content.how.1" = "<b>Route erstellen</b>:<br/> Gehen Sie zunächst zu \"Markierungen und Routen\", wählen Sie die Registerkarte \"Routen\" aus, und wählen Sie dann die Schaltfläche \"Neue Route\" aus. Geben Sie der Route einen Namen und eine optionale Beschreibung, und fügen Sie dann nach und nach Wegpunkte hinzu, oder wählen Sie diese aus Ihrer Liste der Markierungen aus. Sie können die Reihenfolge der Wegpunkte entlang einer Route jederzeit neu anordnen, indem Sie die Route bearbeiten.";
-
-
-/*  */
-"help.text.routes.content.how.3" = "<b>Route teilen</b>:<br/> Wählen Sie auf der Seite „Markierungen und Routen“ Ihre Route aus. Wählen Sie dann die Option „Teilen“ sowie eine der verfügbaren Optionen aus.";
 
 
 /*  */
@@ -2063,15 +1207,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.how.2" = "<b>Verwenden der Kopfhörer-Mediensteuerungen</b>:<br/> Wenn Mediensteuerungen in den Openscape-Einstellungen aktiviert sind, können Sie die Mediensteuerungen an Ihren AirPods verwenden, um das Beacon ein- oder auszuschalten, einen Hinweis zu Ihrem Standort zu erhalten oder den letzten Hinweis zu wiederholen. Weitere Informationen finden Sie im Hilfeabschnitt „Mediensteuerungen verwenden“.";
-
-
-/*  */
 "osm.tag.construction" = "Baustelle";
-
-
-/*  */
-"osm.tag.townhall" = "Rathaus";
 
 
 /*  */
@@ -2079,15 +1215,7 @@
 
 
 /*  */
-"osm.tag.pedestrian_street" = "Fußgängerzone";
-
-
-/*  */
 "osm.tag.residential_street" = "Anliegerstraße";
-
-
-/*  */
-"osm.tag.road" = "Straße";
 
 
 /*  */
@@ -2095,15 +1223,7 @@
 
 
 /*  */
-"osm.tag.intersection" = "Kreuzung";
-
-
-/*  */
 "osm.tag.highway_ramp" = "Autobahnauffahrt";
-
-
-/*  */
-"osm.tag.office_building" = "Bürogebäude";
 
 
 /*  */
@@ -2111,15 +1231,7 @@
 
 
 /*  */
-"osm.tag.building_entrance" = "Gebäudeeingang";
-
-
-/*  */
 "osm.tag.cycle_barrier" = "Fahrradschranke";
-
-
-/*  */
-"osm.tag.cattle_grid" = "Rindergitter";
 
 
 /*  */
@@ -2127,15 +1239,7 @@
 
 
 /*  */
-"osm.tag.parking_entrance" = "Parkplatzeinfahrt";
-
-
-/*  */
 "osm.tag.taxi_waiting_area" = "Taxi Wartebereich";
-
-
-/*  */
-"osm.tag.post_box" = "Briefkasten";
 
 
 /*  */
@@ -2143,15 +1247,7 @@
 
 
 /*  */
-"osm.tag.cafe" = "Café";
-
-
-/*  */
 "osm.tag.telephone" = "Telefon";
-
-
-/*  */
-"osm.tag.bank" = "Bank";
 
 
 /*  */
@@ -2159,15 +1255,7 @@
 
 
 /*  */
-"osm.tag.bus_stop" = "Bushaltestelle";
-
-
-/*  */
 "osm.tag.bus_stop.refed" = "Bushaltestelle %@";
-
-
-/*  */
-"osm.tag.fountain" = "Brunnen";
 
 
 /*  */
@@ -2175,15 +1263,7 @@
 
 
 /*  */
-"osm.tag.vending_machine" = "Verkaufsautomat";
-
-
-/*  */
 "osm.tag.sports_field" = "Sportplatz";
-
-
-/*  */
-"osm.tag.garden" = "Garten";
 
 
 /*  */
@@ -2191,15 +1271,7 @@
 
 
 /*  */
-"banner.custom_behavior.scavenger_hunt" = "Schnitzeljagd ist aktiv.";
-
-
-/*  */
 "banner.offline_default.message" = "Openscape ist im Offlinemodus. Weitere Informationen";
-
-
-/*  */
-"banner.offline_search.message" = "Openscape ist im Offlinemodus. Standorte sind auf Plätze beschränkt, die Sie bereits passiert oder markiert haben. Weitere Informationen";
 
 
 /*  */
@@ -2207,15 +1279,7 @@
 
 
 /*  */
-"share.prompt.message" = "Erzählen Sie Ihren Freunden und Ihrer Familie von Openscape";
-
-
-/*  */
 "push.local.home.title" = "Probieren Sie openscape zu Hause aus";
-
-
-/*  */
-"push.local.walk.title" = "Testen Sie openscape bei Ihrem nächsten Spaziergang";
 
 
 /*  */
@@ -2223,15 +1287,7 @@
 
 
 /*  */
-"faq.title.abbreviated" = "FAQ";
-
-
-/*  */
 "faq.markers_function.question" = "Was sind Markierungen, und wie nutze ich sie optimal?";
-
-
-/*  */
-"faq.section.getting_the_best_experience" = "Wie nutze ich openscape optimal?";
 
 
 /*  */
@@ -2239,15 +1295,7 @@
 
 
 /*  */
-"faq.how_to_use_beacon.answer" = "Sie können sich das akustische Beacon als ein „Leuchtturm für die Ohren“ vorstellen, der Sie darüber informiert, wo sich Ihr Ziel relativ zu Ihrem Standort in der Luftlinie befindet. Genau wie ein Leuchtturm gibt es Ihnen nicht den Weg dahin vor – Sie müssen möglicherweise viele Navigationsentscheidungen auf dem Weg treffen, so wie ein Segelboot viele strategische Wendemanöver machen muss, um näher an den Leuchtturm zu kommen. Der kontinuierliche, rhythmische Ton des Audiobeacons wird aus der Richtung des Ziels verräumlicht und hilft Ihnen, sich unterwegs der Zielposition relativ zu der aktuellen Position bewusst zu bleiben. Wenn Sie direkt auf das Ziel zugehen oder das Telefon auf das Ziel richten, ertönt ein höherer Tonsignal. Über diese Funktion können Sie die Richtung des Ziels bestimmen, da die Richtung des rhythmischen Tonsignals in lauten Umgebungen manchmal schwer wahrzunehmen sein kann. Halten Sie bei der Suche nach dem höheren Tonsignal das Telefon flach, und schwenken Sie es langsam; drehen Sie Ihren Kopf in die gleiche Richtung wie das Telefon, um ein optimales räumliches Klangerlebnis zu erhalten.\n\nDie Leuchtturm-Metapher für das Beacondesign hat mehrere natürliche Implikationen:\n\n1. Es gibt keine „richtige“ Richtung, in die man gehen muss, um das Beacon zu erreichen. Stattdessen entscheidet man mithilfe von Openscape, wie man dorthin gelangt;\n2. Der höhere Signalton hilft Ihnen nur, die Richtung des Ziels zu bestimmen – er gibt keine Hinweis darauf, wie Sie dorthin gelangen sollen;\n3. Wenn Sie bereits wissen, wie Sie zu Ihrem Ziel kommen, können Sie das Beacon für den größten Teil Ihres Weges stummschalten und erst wieder einschalten, wenn Sie sich Ihrem Ziel nähern.";
-
-
-/*  */
 "faq.why_does_beacon_disappear.answer" = "Das Audiobeacon von openscape ist im Wesentlichen ein Richtungshinweis, der Ihnen mitteilt, wo sich Ihr Ziel in Bezug auf die Richtung, in die Sie schauen, befindet. Wenn openscape nicht sicher ist, in welche Richtung Sie schauen, wird die Lautstärke des Signaltons verringert. Dies geschieht meistens dann, wenn Sie mit eingestecktem Telefon unterwegs sind und sich nicht mehr bewegen, z. B. weil Sie gleich eine Straße überqueren möchten. Das Signal wird lauter, sobald Sie sich wieder in Bewegung setzen, oder wenn Sie das Telefon flach (mit der Oberseite zum Himmel) halten und in die Richtung zeigen, in die Sie schauen.";
-
-
-/*  */
-"faq.beacon_on_address.answer" = "Ja. Adressen werden nicht standardmäßig aufgelistet, können jedoch über das Suchfeld gefunden werden. Um eine Adresse zu speichern, können Sie sie vom Startbildschirm aus als Markierung hinzufügen, indem Sie auf „Zu Markierungen hinzufügen“ tippen oder VoiceOver-Aktionen des Beacons auf dem Startbildschirm verwenden.";
 
 
 /*  */
@@ -2255,15 +1303,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Openscape kann die Position Ihres Ziels mit einer Genauigkeit von einigen Metern bestimmen. Wenn openscape feststellt, dass Sie sich in der Nähe Ihres Ziels befinden, hören Sie einen letzten Hinweis, dass Ihr Ziel in der Nähe ist, und das Beacon schaltet sich aus.";
-
-
-/*  */
 "faq.turn_beacon_back_on.answer" = "Ja, Sie können das Beacon wieder einschalten, sobald es von openscape ausgeschaltet wird, indem Sie „Stummschaltung des Beacons aufheben“ auswählen. Jedoch kann angesichts der geringen Genauigkeit der Ortungsdienste unter 10 Metern das Verhalten des Beacons nicht garantiert werden, wenn Sie sich nur noch wenige Meter von Ihrem Ziel entfernt sind.";
-
-
-/*  */
-"faq.road_names.answer" = "Um eine Vielzahl von Kreuzungskonfigurationen zu ermöglichen, beschreibt openscape Kreuzungen als Segmente von Straßen, die von einem gemeinsamen Punkt ausgehen. openscape verwendet räumliches Audio, um den Namen der Straße anzugeben, die nach links abgeht, den Namen der Straße, die gerade aus verläuft, dann die Straße, die nach rechts abgeht und so weiter in dieser Reihenfolge. Wenn die Beschreibung der Kreuzung mit der Straße beginnt, auf der Sie sich gerade befinden, und nicht mit der Straße links, dann handelt es sich um eine T-Kreuzung, bei der die Straße, auf der Sie sich befinden, von einer Straße von rechts gekreuzt wird. Ähnlich verhält es sich, wenn die Beschreibung nur eine Straße nach links und nach rechts enthält, dann wissen Sie, dass die Straße, auf der Sie sich befinden, an einer T-Kreuzung vor Ihnen endet. Diese Beschreibungsmethode für Kreuzungen unterstützt auch den Fall, dass eine Straße an einer Kreuzung ihren Namen ändert.";
 
 
 /*  */
@@ -2271,15 +1311,7 @@
 
 
 /*  */
-"faq.callouts_stopping_in_vehicle.answer" = "Um zu verhindern, dass die Anzahl der Hinweise zu überwältigend wird, werden einige Kategorien, z. B. Kreuzungen, nicht automatisch angekündigt, wenn Sie in einem Fahrzeug unterwegs sind.";
-
-
-/*  */
 "faq.miss_a_callout.answer" = "Openscape hat eine Liste der zuletzt genannten Hinweise, sodass Sie möglicherweise verpasste Hinweise wieder aufrufen können. Tippen Sie dazu in die Suchleiste auf dem Openscape-Startbildschirm. Unten auf der Seite sehen Sie den Abschnitt „Neueste Hinweise“, wo Sie den verpassten Hinweis finden.";
-
-
-/*  */
-"faq.supported_phones.answer" = "Openscape ist derzeit für Apple iOS verfügbar und funktioniert mit iPhone SE, iPhone 6S und neueren Versionen.";
 
 
 /*  */
@@ -2287,15 +1319,7 @@
 
 
 /*  */
-"faq.battery_impact.answer" = "Die Akkulaufzeit unterscheidet sich signifikant je nach Modell und Alter Ihres iPhone. Um die Akkulaufzeit zu maximieren, sollten Sie den Bildschirm daher möglichst immer gesperrt halten. Um die Auswirkungen auf den Akku Ihres iPhone zu minimieren, bietet openscape jetzt einen Standby- und Ruhemodus. Um den Akkuverbrauch weiter zu reduzieren, sollten Sie das Schließen von openscape über den App-Umschalter Ihres iPhone erzwingen. ";
-
-
-/*  */
 "faq.sleep_mode_battery.answer" = "Wählen Sie zum Versetzen von openscape in den Ruhemodus die Schaltfläche „Ruhemodus“ oben rechts am Bildschirm aus. Bei dieser Auswahl hält openscape die Verwendung von Ortungsdiensten und mobilen Daten an, bis sie die Anwendung wieder aufrufen.";
-
-
-/*  */
-"faq.snooze_mode_battery.answer" = "Wählen Sie zum Versetzen von openscape in den Standbymodus die Schaltfläche „Ruhemodus aktivieren“ oben rechts am Bildschirm. Sobald openscape im Ruhemodus ist, tippen Sie auf „Bei Bewegung aktivieren“, und openscape geht in einen Zustand niedriger Leistung über, bis Sie Ihren aktuellen Standort verlassen.";
 
 
 /*  */
@@ -2303,15 +1327,7 @@
 
 
 /*  */
-"faq.background_battery_impact.answer" = "Openscape ist eine standortbasierte App, die die Ortungsdienste verwendet, um Ihren Standort zu bestimmen. In unseren Tests verbrauchte openscape nicht mehr Batterieleistung als die durchschnittliche kartenbasierte Anwendung. Wenn Sie jedoch Bedenken wegen des Batterieverbrauchs bei der Nutzung Ihres Telefons haben, beachten Sie die nachfolgenden Tipps, um den Verbrauch zu senken:\n\n1. Schalten Sie die Bildschirmanzeige möglichst aus, wenn Sie nicht mit der App interagieren.\n2. Schließen Sie die App, wenn Sie sie nicht verwenden. openscape verwendet im laufenden Betrieb kontinuierlich den Ortungsdienst, sodass es Ihren Standort immer kennt, auch wenn Sie sich nicht bewegen. Vergessen Sie nicht, die App neu zu starten, wenn Sie Ihren Weg fortsetzen.\n3. Halten Sie Ihr Telefon bei Kälte warm, da die Batterieleistung bei kalten Temperaturen nachlässt.";
-
-
-/*  */
 "faq.mobile_data_use.answer" = "Die Menge der verwendeten mobilen Daten hängt davon ab, wie Sie openscape verwenden. openscape ist darauf ausgelegt, nur eine kleine Menge an Daten zu verbrauchen, wenn Sie unterwegs sind, indem Sie z. B. Punkte speichern, während Sie herumlaufen, damit Sie sie nicht jedes Mal erneut herunterladen müssen, wenn Sie an einen Ort zurückkehren, an dem Sie bereits waren. Um den mobilen Datenverbrauch zu reduzieren, stellen Sie sicher, dass Sie nach Möglichkeit mit WLAN verbunden sind, insbesondere um die App herunterzuladen. Wenn Sie openscape nicht verwenden, sollten Sie die Schaltfläche „Ruhemodus“ verwenden, um openscape in den Ruhezustand zu versetzen oder das Schließen der App zu erzwingen.";
-
-
-/*  */
-"faq.difference_from_map_apps.answer" = "Openscape bietet eine Beschreibung Ihrer Umgebung als Hilfe bei der Erkundung und Wegfindung. Mithilfe von räumlichem Sound ruft openscape Points-of-Interest, Parks, Straßen und Kreuzungen aus der Richtung auf, in der sie sich in Ihrer unmittelbaren Umgebung befinden, während Sie gehen. Wenn Sie zum Beispiel an einem Geschäft auf der rechten Seite vorbeigehen, hören Sie den Namen des Geschäfts von rechts ertönen. Wenn Sie sich einer Kreuzung nähern, hören Sie jeden Straßennamen aus der Richtung, in die die Straßen abzweigen, beginnend zu Ihrer Linken, vor Ihnen und zu Ihrer Rechten.\n\nAnstelle von Abbiegehinweisen, wie sie oft von anderen Anwendungen geliefert werden, spielt openscape ein akustisches Signal in Richtung Ihres Ziels ab, sodass Sie Ihren Weg dorthin selbst bestimmen können, indem Sie die Wahrnehmung für Ihre Umgebung und die Lage Ihres Ziels nutzen. openscape ist für die Ausführung im Hintergrund konzipiert, sodass Sie eine App für Abbiegehinweise verwenden können, während Sie unterwegs zu Ihrem Ziel weiterhin auf Ihre Umgebung aufmerksam gemacht werden.";
 
 
 /*  */
@@ -2319,15 +1335,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.answer" = "Openscape bietet mehrere Möglichkeiten, um zu steuern, was Sie hören, und wann Sie es hören:\n\n1. Alle Audiosignale sofort stoppen: Doppeltippen Sie mit zwei Fingern auf den Bildschirm, um alle Audiosignale sofort auszuschalten, einschließlich aller Hinweise, die derzeit abgespielt sind, und des Beacons, wenn eines aktiv ist. Die Hinweisfunktion wird automatisch aktiviert, sobald Sie sich der nächsten Kreuzung oder dem nächsten Point-of-Interest nähern, das Audiobeacon bleibt jedoch stummgeschaltet. Tippen Sie auf dem Startbildschirm auf „Stummschaltung des Beacons aufheben“, um das Beacon wieder zu hören.\n2. Automatische Hinweise anhalten: Wenn Sie nicht mehr unterwegs sind oder Ihr Ziel erreicht haben, benötigen Sie openscape wahrscheinlich nicht mehr, um Sie über Dinge in Ihrer Umgebung zu informieren. Anstatt die App zu beenden, können Sie openscape bis zur erneuten Aktivierung in den Ruhemodus versetzen. Sie können openscape auch in den Standbymodus schalten, damit es aus bleibt, bis Sie es wieder einschalten. Alternativ können Sie unter „Einstellungen“ im Abschnitt „Hinweise verwalten“ festlegen, dass alle Hinweise ausgeschaltet werden sollen.\n3. Beacon anhalten: Es gibt mehrere Szenarien, in denen Sie ein Ziel festlegen, aber das Audiobeacon nicht benötigen. Sie wissen zum Beispiel genau, wie Sie Ihr Ziel erreichen, möchten aber automatische Updates darüber erhalten, wie weit Sie von Ihrem Ziel entfernt sind. Oder Sie wissen ungefähr, wie Sie zu Ihrem Ziel kommen, und benötigen das Beacon nur, wenn Sie sich Ihrem Ziel nähern. In jedem Fall können Sie auswählen, wann Sie das Beacon hören möchten, indem Sie auf dem Hauptbildschirm zwischen den Schaltflächen „Beacon stummschalten“ und „Stummschaltung des Beacons aufheben“ umschalten.";
-
-
-/*  */
 "faq.holding_phone_flat.answer" = "Nein. Unterwegs können Sie das Telefon in eine Tasche, Ihre Jacke etc. stecken. openscape folgt der Richtung, in die Sie gehen, um zu ermitteln, welche Hinweise zu Ihrer Linken und zu Ihrer Rechten angesagt werden sollen. Wenn Sie anhalten, weiß openscape nicht, in welche Richtung Sie schauen. Wenn das Audiobeacon aktiviert ist, werden Sie feststellen, dass es leise wird, bis Sie sich wieder bewegen. Sie können das Telefon jederzeit herausholen, um auf die Ortungs- und Erkundungstasten am unteren Rand des Bildschirms zu tippen. Stellen Sie dabei sicher, dass Sie das Telefon so halten, dass die Telefonoberseite in die Richtung zeigt, in die Sie schauen, und der Bildschirm zum Himmel. In dieser „flachen“ Position verwendet openscape den Kompass des Telefons, um zu bestimmen, in welche Richtung Sie blicken, und um genaue räumliche Angaben zu machen. Wenn das Beacon eingeschaltet ist, werden Sie feststellen, dass es wieder auf volle Lautstärke zurückkehrt.";
-
-
-/*  */
-"faq.personalize_experience.answer" = "Mit openscape können Sie drei wichtige Aspekte der Hinweise anpassen, die Sie unterwegs hören:\n\n1. Stimme: Sie können auswählen, welche der verfügbaren iOS-Stimmen openscape verwenden soll, und die Geschwindigkeit festlegen, mit der Hinweise gesprochen werden. Wählen Sie im Menü „Einstellungen“ – „Stimme“ aus, um die Sprechgeschwindigkeit und Stimmeneinstellungen anzupassen. Zusätzliche oder verbesserte Stimmen mit höher Qualität können in der iOS-Einstellungen-App unter „Einstellungen > Bedienungshilfen > Gesprochene Inhalte > Stimmen“ heruntergeladen werden. \n2.Distanzmaß: Mit openscape können Sie festlegen, ob Distanzen in Metern oder Fuß angesagt werden. Wählen Sie im Menü „Einstellungen“ aus. Im Abschnitt „Maßeinheiten“ können Sie zwischen zwei Optionen umschalten: Imperial (Fuß) und Metrisch (Meter).\n3. Markierungen: Sie können Ihre Welt und alles darin markieren, was Ihnen wichtig ist. Sie können Orte markieren, die für Sie persönlich und relevant sind, wie z. B. Ihr Zuhause, Ihr Büro und Ihren bevorzugten Lebensmittelladen. openscape ruft dann automatisch die markierten Orte auf, wenn Sie an ihnen vorbeigehen oder sich ihnen nähern. Verwenden Sie die Schaltfläche „Markierungen in der Nähe“ am unteren Rand des Openscape-Startbildschirms, um einen räumlichen Hinweis auf die markierten Orte um Sie herum zu hören. Diese Markierungen bleiben persönlich und sind für andere Personen nicht verfügbar.\n\nZusätzlich zu den oben genannten können die folgenden VoiceOver-Einstellungen das Verhalten von openscape beeinflussen:\n\n1. VoiceOver-Tipps: Bei aktivierten VoiceOver-Tipps erhalten Sie mehr Informationen zu allen Schaltflächen auf dem Openscape-Startbildschirm. Sie schalten VoiceOver-Tipps, indem Sie in der iOS-Einstellungen-App zu „Bedienungshilfen > VoiceOver > Ausführlichkeit“ navigieren und die Einstellung „Sprechhinweise“ aktivieren.\n2. Audio-Ducking: openscape ist für die Nutzung mit ausgeschaltetem Audio-Ducking konzipiert. Wenn Audio-Ducking eingeschaltet ist, können automatische Hinweise schwer zu hören sein, wenn gleichzeitig VoiceOver verwendet wird. Wir empfehlen, das Audio-Ducking auszuschalten, damit Sie alle automatischen Hinweise, die bei der Interaktion mit dem Telefon auftreten, besser hören können. Audio-Ducking kann in den VoiceOver-Einstellungen oder über den VoiceOver-Rotor ausgeschaltet werden.\n3. Touch ID oder Face ID zum Entsperren: Wenn Ihr Telefon mit Touch ID oder Face ID entsperrt wird, können Sie das Telefon schnell und einfach entsperren und so auch unterwegs schnellstmöglich auf die Schaltflächen „Mein Standort“, „Um mich herum“ und „Vor mir“ zugreifen. Richten Sie die Entsperrung mit Touch ID oder Face ID in der iOS-Einstellungen-App ein.";
 
 
 /*  */
@@ -2335,19 +1343,12 @@
 
 
 /*  */
-"faq.tip.setting_beacon_on_address" = "Sie können an jeder beliebigen Adresse ein Beacon platzieren. Suchen Sie auf dem Hauptbildschirm von openscape nach der Adresse. Nachdem Sie sie in den Suchergebnissen ausgewählt haben, wird der Bildschirm „Standortdetails“ angezeigt. Sie sehen die Option „Audiobeacon starten“ für die Adresse. So können Sie ein Beacon an Geschäften, Plätzen, Points-of-Interest und Häusern platzieren, die nicht in Open Street Maps gelistet sind.";
-
-
-/*  */
 "faq.tip.turning_beacon_off" = "Sie können den rhythmischen Beacon-Ton mit der Stummschalttaste auf dem Startbildschirm ein- und ausschalten. Wenn das Beacon stummgeschaltet ist, erhalten Sie weiterhin etwa alle 50 Meter Updates über die Entfernung zu Ihrem Ziel.";
 
 
 /*  */
-"faq.tip.hold_phone_flat" = "Openscape funktioniert am besten, wenn Sie das Telefon flach halten, so dass der Bildschirm in den Himmel zeigt und die Oberseite des Telefons von Ihnen weg zeigt.";
-
-
-/*  */
 "faq.tip.two_finger_double_tap" = "Wenn Sie mit zwei Fingern zweimal auf den Bildschirm tippen, werden alle aktiven Hinweise stummgeschaltet.";
+
 
 
 
