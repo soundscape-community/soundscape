@@ -5407,7 +5407,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=/opt/homebrew/bin:$PATH\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=openscape\nexport SENTRY_PROJECT=openscape\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+			shellScript = "PATH=/opt/homebrew/bin:$PATH\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=openscape-developers\nexport SENTRY_PROJECT=openscape\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
 		};
 		81B7791EAB5FA4B62EA6B44D /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
