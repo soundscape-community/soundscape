@@ -23,6 +23,22 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Push a new beta build to TestFlight
 
+### ios clean_testers
+
+```sh
+[bundle exec] fastlane ios clean_testers
+```
+
+Removes testers if they haven't launched the app in a month
+
+### ios certificates
+
+```sh
+[bundle exec] fastlane ios certificates
+```
+
+Syncs code signing certificates
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

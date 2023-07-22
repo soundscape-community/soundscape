@@ -27,4 +27,9 @@ platform :ios do
   lane :clean_testers do
     clean_testflight_testers
   end
+  desc "Syncs code signing certificates"
+  lane :certificates do
+    match(clone_branch_directly: true)
+  end
+
 end

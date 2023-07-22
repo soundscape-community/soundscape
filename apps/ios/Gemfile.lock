@@ -158,6 +158,8 @@ GEM
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
     fastlane-plugin-clean_testflight_testers (0.3.0)
+    fastlane-plugin-sentry (1.15.0)
+      os (~> 1.1, >= 1.1.4)
     ffi (1.15.5)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -285,6 +287,7 @@ DEPENDENCIES
   cocoapods-patch (= 1.0.2)
   fastlane
   fastlane-plugin-clean_testflight_testers
+  fastlane-plugin-sentry
 
 BUNDLED WITH
    2.3.25
