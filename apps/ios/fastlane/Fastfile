@@ -22,4 +22,9 @@ platform :ios do
     build_app(workspace: "GuideDogs.xcworkspace", scheme: "Openscape")
     upload_to_testflight
   end
+
+  desc "Removes testers if they haven't launched the app in a month"
+  lane :clean_testers do
+    clean_testflight_testers
+  end
 end
