@@ -30,7 +30,7 @@ platform :ios do
       output_name: "openscape.ipa",
       output_directory: "build", # so git ignores
       export_xcargs: "-allowProvisioningUpdates",
-      clean: true,
+      clean: false,
       export_options: {
         provisioningProfiles: {
           "io.openscape.openscape" => "match AppStore io.openscape.openscape"
@@ -39,7 +39,9 @@ platform :ios do
         }
       }
     )
-    # Upload dsyms to sentry...
+    # Upload dsyms to sentry: install sentry-cli and run sentry-cli login --url https://sentry.openscape.io
+    # generate a token and paste it into the prompt from that command - it will store it in ~.sentryclirc
+    sentry_upload_dif(org_slug: "openscape-developers", project_slug: "openscape", path: "./build")
     #upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 
