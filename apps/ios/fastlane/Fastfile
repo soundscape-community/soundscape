@@ -18,18 +18,31 @@ default_platform(:ios)
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
+    unlock_keychain
     increment_build_number(xcodeproj: "GuideDogs.xcodeproj")
-    build_app(workspace: "GuideDogs.xcworkspace", scheme: "Openscape")
-    upload_to_testflight
+    build_app(
+      workspace: "GuideDogs.xcworkspace",
+      scheme: "Openscape",
+      output_name: "openscape.ipa",
+      export_xcargs: "-allowProvisioningUpdates",
+      clean: true
+    )
+    #upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 
   desc "Removes testers if they haven't launched the app in a month"
   lane :clean_testers do
     clean_testflight_testers
   end
-  desc "Syncs code signing certificates"
-  lane :certificates do
-    match(clone_branch_directly: true)
+
+  # To push new certificates to the repository (must have sufficient role in app store connect):
+  # bundle exec fastlane match development
+  # bundle exec fastlane match appstore
+
+  desc "Retrieves and installs code signing certificates"
+  lane:certs do
+    unlock_keychain
+    match(clone_branch_directly: true, readonly: true)
   end
 
 end

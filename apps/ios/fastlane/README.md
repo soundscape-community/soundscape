@@ -31,13 +31,13 @@ Push a new beta build to TestFlight
 
 Removes testers if they haven't launched the app in a month
 
-### ios certificates
+### ios certs
 
 ```sh
-[bundle exec] fastlane ios certificates
+[bundle exec] fastlane ios certs
 ```
 
-Syncs code signing certificates
+Retrieves and installs code signing certificates
 
 ----
 
