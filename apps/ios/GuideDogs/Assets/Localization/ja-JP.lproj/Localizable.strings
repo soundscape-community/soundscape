@@ -351,15 +351,7 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_title" = "マーカーおよびルートを維持しますか?";
-
-
-/*  */
 "settings.telemetry.optout.alert_title" = "テレメトリーのオプトアウト";
-
-
-/*  */
-"settings.version.about.version" = "バージョン %1$@ (%2$@)";
 
 
 /*  */
@@ -367,15 +359,7 @@
 
 
 /*  */
-"settings.about_app" = "Openscape について";
-
-
-/*  */
 "settings.section.about" = "概要";
-
-
-/*  */
-"settings.language.screen_title" = "言語";
 
 
 /*  */
@@ -383,15 +367,7 @@
 
 
 /*  */
-"setting.audio.mix_with_others.confirmation" = "この設定をオンにすると、他のメディア アプリの使用を開始したときに、Openscape のコールアウトなどの音声が一時停止されます。Openscape に戻るとコールアウトが再開されます。";
-
-
-/*  */
 "voice.settings.speaking_rate" = "読み上げ速度";
-
-
-/*  */
-"voice.title.voice_name_and_locale_selected" = "%1$@、%2$@ を選択しました。";
 
 
 /*  */
@@ -399,15 +375,7 @@
 
 
 /*  */
-"voice.apple.preview_hint" = "選択してプレビューを再生するにはダブルタップします。";
-
-
-/*  */
 "voice.apple.no_siri" = "Siri の声は openscape で使用できないため、一覧に表示されません。";
-
-
-/*  */
-"beacon.settings.style.haptic.explanation" = "これらのビーコン スタイルでは、通常のビーコン音声に加えて触覚フィードバックを感じることができます。触覚フィードバックは、携帯電話のロックが解除されており、Openscape が開いているときにのみ利用できます。";
 
 
 /*  */
@@ -415,15 +383,7 @@
 
 
 /*  */
-"troubleshooting.gps_status.meters" = "±%@ メートル";
-
-
-/*  */
 "troubleshooting.check_audio.explanation" = "Openscape で使用しているヘッドホンの状態を確認するには、このボタンをタップします。";
-
-
-/*  */
-"settings.about.title.whats_new" = "新機能";
 
 
 /*  */
@@ -431,15 +391,7 @@
 
 
 /*  */
-"beacon.generic_name" = "ビーコン";
-
-
-/*  */
 "beacon.styles.shimmer" = "シマー";
-
-
-/*  */
-"beacon.styles.signal" = "シグナル";
 
 
 /*  */
@@ -447,15 +399,7 @@
 
 
 /*  */
-"beacon.audio_beacon" = "音声ビーコン";
-
-
-/*  */
 "beacon.action.remove_beacon.double_tap.acc_hint" = "現在の音声ビーコンを削除するにはこのボタンをダブルタップします";
-
-
-/*  */
-"beacon.action.unmute_beacon.acc_hint" = "音声ビーコンのミュートを解除するにはダブルタップします。";
 
 
 /*  */
@@ -463,15 +407,7 @@
 
 
 /*  */
-"beacon.beacon_location_within_audio_beacon_muted" = "%@ 以内にビーコンがあります。音声ビーコンがミュートされています";
-
-
-/*  */
 "preview.approaching_intersection.label" = "まもなく交差点";
-
-
-/*  */
-"preview.content.edge.text.accessibility_hint" = "次の交差点へ移動するにはダブルタップします";
 
 
 /*  */
@@ -479,15 +415,7 @@
 
 
 /*  */
-"preview.alert.restart.button" = "再開";
-
-
-/*  */
 "preview.callout.start.at" = "%@ の Street Preview を開始します";
-
-
-/*  */
-"preview.callout.road_finder.instructions" = "道路のプレビューをするには、スマートフォンをその方向に向けます";
 
 
 /*  */
@@ -495,15 +423,7 @@
 
 
 /*  */
-"preview.callout.turn.right" = "右折して %@ へ";
-
-
-/*  */
 "preview.include_unnamed_roads.subtitle" = "Openscape Street Preview で無名道路を含める";
-
-
-/*  */
-"preview.include_unnamed_roads.hint.on" = "Openscape Street Preview で無名道路を除外するには、ダブルタップします";
 
 
 /*  */
@@ -511,15 +431,7 @@
 
 
 /*  */
-"preview.tutorial.content.4" = "お楽しみください。";
-
-
-/*  */
 "location_detail.action.beacon" = "音声ビーコンを開始";
-
-
-/*  */
-"location_detail.action.edit.hint" = "マーカーを編集するにはダブルタップします";
 
 
 /*  */
@@ -527,15 +439,7 @@
 
 
 /*  */
-"location_detail.disabled.save" = "現在、この場所にマーカーを保存できません";
-
-
-/*  */
 "location_detail.map.view.hint" = "編集して新しい場所を選択します";
-
-
-/*  */
-"location_detail.map.edit.compass.accessibility_hint" = "スマートフォンで指す方向にマーカーを少し動かすには、ダブルタップします。別の方向に少し動かすには、アクションを使用します。";
 
 
 /*  */
@@ -543,15 +447,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility_action.south" = "南に少し移動";
-
-
-/*  */
 "location_detail.map.edit.accessibility.beacon.callout" = "ビーコンを開始してマーカーの場所をトラッキングします。元の場所の %@ を少し移動。";
-
-
-/*  */
-"location_detail.add_waypoint.marker.hint" = "マーカーを作成してウェイポイントとして追加するには、ダブルタップします";
 
 
 /*  */
@@ -559,15 +455,7 @@
 
 
 /*  */
-"route_detail.action.stop_route.hint" = "ダブル タップすると、このルートを停止します";
-
-
-/*  */
 "route_detail.action.share.hint" = "ダブル タップすると、このルートを共有します";
-
-
-/*  */
-"route_detail.waypoint.current_beacon" = "ウェイポイント %@。現在のビーコン。";
 
 
 /*  */
@@ -575,15 +463,7 @@
 
 
 /*  */
-"route.end.completed.accessibility" = "ルートが終了しました! %@";
-
-
-/*  */
 "route.end.completed.summary.accessibility" = "%@ のウェイポイントに到着しました。最後のウェイポイントが近くにあります";
-
-
-/*  */
-"route_detail.action.previous" = "以前のウェイポイント";
 
 
 /*  */
@@ -591,15 +471,7 @@
 
 
 /*  */
-"route_detail.edit.waypoints_label" = "ウェイポイント";
-
-
-/*  */
 "route_detail.edit.cancel.title" = "未保存の変更";
-
-
-/*  */
-"route_detail.beacon.stop" = "ルートを終了";
 
 
 /*  */
@@ -607,15 +479,7 @@
 
 
 /*  */
-"tour_detail.beacon.stop" = "ツアーを終了";
-
-
-/*  */
 "tour.progress.distance.accessibility" = "%1$@ にビーコンが設定されました。距離は %2$@。残り %3$@ 個のウェイポイント";
-
-
-/*  */
-"tour.progress.distance.accessibility.singular" = "%1$@ にビーコンが設定されました。距離は %2$@。残り 1 個のウェイポイント";
 
 
 /*  */
@@ -623,15 +487,7 @@
 
 
 /*  */
-"recommender.view.title" = "提案";
-
-
-/*  */
 "universal_links.alert.import_error.message" = "リンクが無効になっているようです。";
-
-
-/*  */
-"universal_links.marker.alert.title" = "マーカーを受け取りました: \"%@\"";
 
 
 /*  */
@@ -639,15 +495,7 @@
 
 
 /*  */
-"user_activity.my_location.title" = "現在地はどこ?";
-
-
-/*  */
 "user_activity.search.title" = "Openscape で検索";
-
-
-/*  */
-"url_resource.alert.route.import.title" = "ルートを受け取りました: \"%@\"";
 
 
 /*  */
@@ -655,15 +503,7 @@
 
 
 /*  */
-"routes.action.deleted_error" = "現在このルートを削除できません。後ほど再度お試しください。";
-
-
-/*  */
 "route.no_waypoints.hint.1" = "ルート名を指定して、オプションで説明を入力します。その後、ルートを進む中でウェイポイントを追加するか、マーカーのリストから選択します。";
-
-
-/*  */
-"routes.callout.complete" = "ルートが終了しました!";
 
 
 /*  */
@@ -671,15 +511,7 @@
 
 
 /*  */
-"markers.action.delete" = "マーカーを削除";
-
-
-/*  */
 "markers.action.add_to_markers" = "マーカーに追加";
-
-
-/*  */
-"markers.sort_button.sort_by_distance.voiceover" = "距離で並べ替えられています";
 
 
 /*  */
@@ -687,15 +519,7 @@
 
 
 /*  */
-"markers.generic_name" = "マーカー";
-
-
-/*  */
 "markers.marker_distance_from_poi" = "マーカー、%2$@ から %1$@";
-
-
-/*  */
-"markers.destructive_delete_message" = "このマーカーを削除しますか?";
 
 
 /*  */
@@ -703,15 +527,7 @@
 
 
 /*  */
-"search.search_for" = "「%@」を検索";
-
-
-/*  */
 "search.results_found_first_result" = "検索結果: %@ 件。最初の結果: %@";
-
-
-/*  */
-"search.view_markers" = "マーカーおよびルート";
 
 
 /*  */
@@ -719,15 +535,7 @@
 
 
 /*  */
-"filter.double_tap_places_category" = "カテゴリで場所を絞り込むにはダブルタップします。";
-
-
-/*  */
 "filter.not_available" = "使用できないカテゴリ フィルターがあります。[%@] を選択して、近くの場所を見つけることができます";
-
-
-/*  */
-"callouts.callouts_off" = "コールアウトをオフ";
 
 
 /*  */
@@ -735,15 +543,7 @@
 
 
 /*  */
-"callouts.automatic_callouts" = "自動コールアウト";
-
-
-/*  */
 "callouts.marked_points" = "マーカーを付けた位置";
-
-
-/*  */
-"callouts.action.repeat" = "繰り返し";
 
 
 /*  */
@@ -751,15 +551,7 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Openscape は現在スヌーズ状態です。現在地から移動すると、Openscape のスヌーズは自動的に解除されます。この状態では位置情報サービスが使用されますが、低電力モードでバッテリー消費が抑えられます。すぐにスヌーズを解除するには、下のボタンをタップしてください。";
-
-
-/*  */
 "sleep.wake_up_now" = "すぐにスリープ解除";
-
-
-/*  */
-"directions.intersection_with_name_distance_direction" = "%1$@ との交差点まで %3$@、%2$@";
 
 
 /*  */
@@ -767,15 +559,7 @@
 
 
 /*  */
-"directions.my_location" = "現在地";
-
-
-/*  */
 "directions.unknown_address" = "不明な住所です";
-
-
-/*  */
-"directions.amenity.entrance_list" = "入口の一覧";
 
 
 /*  */
@@ -783,15 +567,7 @@
 
 
 /*  */
-"directions.roundabout_with_exits_distance" = "分岐が %1$@ つの環状交差点まで %2$@";
-
-
-/*  */
 "directions.approaching_name" = "まもなく %@";
-
-
-/*  */
-"directions.approaching_name_roundabout_with_exits" = "まもなく %1$@ 環状交差点、分岐は %2$@ つです";
 
 
 /*  */
@@ -799,15 +575,7 @@
 
 
 /*  */
-"directions.name_continues_ahead" = "直進すると%@";
-
-
-/*  */
 "directions.direction.to_the_right" = "右方向";
-
-
-/*  */
-"directions.direction.to_the_left" = "左方向";
 
 
 /*  */
@@ -815,15 +583,7 @@
 
 
 /*  */
-"directions.name_street_address" = "%1$@。住所は %2$@。距離は不明です。";
-
-
-/*  */
 "directions.traveling.se" = "南東へ走行中";
-
-
-/*  */
-"directions.traveling.nw" = "北西へ走行中";
 
 
 /*  */
@@ -831,15 +591,7 @@
 
 
 /*  */
-"directions.facing.nw" = "北西向き";
-
-
-/*  */
 "directions.heading.se" = "南東方向へ";
-
-
-/*  */
-"directions.heading.nw" = "北西方向へ";
 
 
 /*  */
@@ -847,15 +599,7 @@
 
 
 /*  */
-"directions.along.traveling.nw" = "%@ を北西へ移動中";
-
-
-/*  */
 "directions.along.facing.se" = "%@ で南東向き";
-
-
-/*  */
-"directions.along.facing.nw" = "%@ で北西向き";
 
 
 /*  */
@@ -863,15 +607,7 @@
 
 
 /*  */
-"directions.along.heading.nw" = "%@ を北西方向へ";
-
-
-/*  */
 "directions.cardinal.south_east" = "南東";
-
-
-/*  */
-"directions.cardinal.north_west" = "北西";
 
 
 /*  */
@@ -879,15 +615,7 @@
 
 
 /*  */
-"directions.cardinal.north_west.abb" = "北西";
-
-
-/*  */
 "distance.format.meters" = "%@ メートル";
-
-
-/*  */
-"distance.format.ft" = "%@ ft";
 
 
 /*  */
@@ -895,15 +623,7 @@
 
 
 /*  */
-"ui.action_button.nearby_markers" = "近くの\nマーカー";
-
-
-/*  */
 "ui.action_button.ahead_of_me" = "前方\n";
-
-
-/*  */
-"ui.menu.close" = "メニューを閉じる";
 
 
 /*  */
@@ -911,15 +631,7 @@
 
 
 /*  */
-"menu.learning_resources" = "Openscape ブログ";
-
-
-/*  */
 "history_view.item_of.no_callouts_yet" = "コールアウトがありません";
-
-
-/*  */
-"poi_screen.loading_title.no_places_matching" = "%@ に該当する場所は見つかりません。別のフィルターを試してください";
 
 
 /*  */
@@ -927,15 +639,7 @@
 
 
 /*  */
-"location_callout_cell.nearest_road.nearest_poi" = "最寄りの道路、%1$@ です。最寄りの特定地点、%2$@ です。";
-
-
-/*  */
 "devices.title.calibrate" = "ヘッドホンの調整";
-
-
-/*  */
-"devices.explain_ar.paired" = "Openscape は現在 %@ に接続されていません。ヘッドホンの電源が入っていること、スマートフォンの近くにあることを確認してください。";
 
 
 /*  */
@@ -943,15 +647,7 @@
 
 
 /*  */
-"devices.connect_headset.unavailable" = "選択されたデバイスは現在接続できません。後ほど再度お試しください。";
-
-
-/*  */
 "devices.connect_headset.calibrate.in_ear" = "ヘッドホンの調整が必要です。約 10 秒間あらゆる方向に向かってゆっくりと頭を動かしてください。引き続き調整の必要を知らせるチャイムが鳴る場合は、この作業を繰り返す必要があります。";
-
-
-/*  */
-"devices.test_headset.title" = "ヘッドホンのチェック";
 
 
 /*  */
@@ -959,15 +655,7 @@
 
 
 /*  */
-"devices.callouts.needs_calibration.in_ear" = "ヘッドホンの調整が必要です。あらゆる方向に向かってゆっくりと頭を動かしてください。";
-
-
-/*  */
 "devices.callouts.check_audio.airpods" = "Apple AirPods が接続されました。";
-
-
-/*  */
-"devices.reachability.alert.title" = "%@ でヘッド トラッキングを有効にする";
 
 
 /*  */
@@ -975,15 +663,7 @@
 
 
 /*  */
-"behavior.experiences.reset.title" = "このアクティビティをリセットしますか?";
-
-
-/*  */
 "behavior.experiences.updates.prompt" = "アップデートが利用可能な場合は、これによりこのアクティビティがリセットされ、アップデートがダウンロードされます。";
-
-
-/*  */
-"behavior.experience.delete.explanation" = "このアクティビティを削除すると、ご利用の携帯電話から削除されます。";
 
 
 /*  */
@@ -991,15 +671,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.callout.complete" = "アクティビティ完了です! おめでとうございます!";
-
-
-/*  */
 "behavior.scavenger_hunt.callout.started" = "アクティビティが開始されました!";
-
-
-/*  */
-"time.just_now" = "たった今";
 
 
 /*  */
@@ -1007,15 +679,7 @@
 
 
 /*  */
-"previous_location.announced_name" = "前の場所。通知済みの %@。";
-
-
-/*  */
 "intersection_callout.announced_name" = "交差点のコールアウト。通知済みの %@ です。";
-
-
-/*  */
-"icloud.kv_store.quota_violation_alert.message" = "iCloud ストレージにアプリで使用できる空き容量がありません。新しいマーカーを作成するには、既存のマーカーをいくつか削除して、空き容量を増やす必要があります。";
 
 
 /*  */
@@ -1023,15 +687,7 @@
 
 
 /*  */
-"text.oops" = "問題が発生しました。";
-
-
-/*  */
 "tutorial.exit.alert_title" = "チュートリアルを終了してよろしいですか?";
-
-
-/*  */
-"tutorial.markers.add_marker" = "マーカーを追加";
 
 
 /*  */
@@ -1039,15 +695,7 @@
 
 
 /*  */
-"tutorial.beacon.getting_started" = "ビーコンの使い方";
-
-
-/*  */
 "tutorial.beacon.mark_location.acc_hint" = "この場所をビーコンのチュートリアルで使用するには、ダブルタップします";
-
-
-/*  */
-"tutorial.beacon.found_the_beacon" = "すばらしい! ビーコンを見つけました!";
 
 
 /*  */
@@ -1055,15 +703,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HoldingPhone" = "このようにスマートフォンを水平に持つ必要があるのは、立ち止まっているときだけです。歩いているときは、ポケットやカバンなど、取り出しやすいところにスマートフォンを入れておいて構いません。";
-
-
-/*  */
 "tutorial.beacons.text.BeaconOutOfBoundsRotate" = "次に、スマートフォンを水平に持ったまま、ビーコンの方向にゆっくりと向きを変えます。ビーコンの方向を向くと、ベルのサウンドが聞こえます。";
-
-
-/*  */
-"tutorial.beacons.text.BeaconInBounds" = "注意深く聴くと、サウンドが自分の目の前で鳴っていること、通常のビーコンに加えてベルのサウンドが鳴っていることがわかります。これは、@!destination!! の正面に立っているからです。";
 
 
 /*  */
@@ -1071,15 +711,7 @@
 
 
 /*  */
-"tutorial.beacons.text.MuteRepeat" = "画面の任意の場所を 2 本指でダブルタップする";
-
-
-/*  */
 "help.using_headsets.airpods.title" = "Apple AirPods の使用";
-
-
-/*  */
-"help.config.voices.content" = "Openscape では、iOS の [設定] アプリでダウンロードした声を使用できます。ただし、Siri の声は openscape では使用できません。音声の品質が高いため、「拡張」の声を選択することをお勧めしますが、「拡張」の声を選択するにはあらかじめダウンロードしておく必要があります。iOS の [設定] アプリで声をダウンロードするには、[アクセシビリティ]、[読み上げコンテンツ]、[声] の順に選択して、声をタップします。Openscape アプリで、使用する声を選択するには、メイン メニューの [設定] を選択し、[声] を選択します。";
 
 
 /*  */
@@ -1087,15 +719,7 @@
 
 
 /*  */
-"help.explore.page_title" = "前方";
-
-
-/*  */
 "help.tutorial.footer.disabled" = "ルート案内がアクティブのときは、チュートリアルは利用できません";
-
-
-/*  */
-"help.more_help.section_title" = "さらにヘルプを見る";
 
 
 /*  */
@@ -1103,15 +727,7 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.off.acc_hint" = "[使用条件に同意する] チェック ボックスをオフにするには、ダブル タップします";
-
-
-/*  */
 "terms_of_use.accept.new_features" = "同意";
-
-
-/*  */
-"first_launch.welcome_audio_text" = "ようこそ。Openscape は現在地や目的地の情報を確認しながら歩くのに役立ちます。独自の音声ガイドがあり、道路や交差点、さまざまな場所に近付くとコールアウトでお知らせします。始めるには [次へ] ボタンを押してください。";
 
 
 /*  */
@@ -1119,15 +735,7 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound" = "音で道を明るく照らす";
-
-
-/*  */
 "first_launch.setting_off_way" = "出発ですか?";
-
-
-/*  */
-"first_launch.welcome.title" = "ようこそ!";
 
 
 /*  */
@@ -1135,15 +743,7 @@
 
 
 /*  */
-"first_launch.callouts.message" = "Openscape では、道路、交差点、特定地点に向かって進むとコールアウトされるので、現在地と目的地を常に把握できます。";
-
-
-/*  */
 "first_launch.callouts.example.1" = "喫茶店";
-
-
-/*  */
-"first_launch.permissions.message" = "移動中に openscape を使用すると、音声ビーコンでガイドが聞こえます。この機能を使用するには、次の項目を許可する必要があります:";
 
 
 /*  */
@@ -1151,15 +751,7 @@
 
 
 /*  */
-"first_launch.select_beacon" = "ビーコンを選択";
-
-
-/*  */
 "first_launch.beacon.callout.haptic" = "前方のビーコンです。スマートフォンを左右に向けて、ビーコンの触覚フィードバックを確かめてください。";
-
-
-/*  */
-"first_launch.beacon.callout.behind" = "後方のビーコン";
 
 
 /*  */
@@ -1167,15 +759,7 @@
 
 
 /*  */
-"help.text.destination_beacons.how.2" = "<b>現在のビーコンを削除するには</b>:<br/> ホーム画面の [ビーコンを削除] ボタンを押します。";
-
-
-/*  */
 "help.text.automatic_callouts.when.2" = "<b>特定の場所への移動</b>:<br/> 特定の場所に向かって歩く際には、交差点の自動コールアウトが特に役立つ可能性があります。交差点のコールアウトを使用すると、交差点に近付くとその交差点の構造がわかり、交差点を出るときには、どの道路にいるかを確認できます。";
-
-
-/*  */
-"help.text.my_location.what" = "[<em>現在地</em>] ボタンを使用すると、自分の現在地を簡単に確認できるように情報が提供されます。[<em>現在地</em>] ボタンでは、自分が向いている方向、近くの道路や交差点がどこにあるか、近くの特定地点がどこにあるかなど、現在地に関する情報がわかります。";
 
 
 /*  */
@@ -1183,15 +767,7 @@
 
 
 /*  */
-"help.text.around_me.how" = "ホーム画面の下部の 4 つのボタンはどれも同じですが、スマートフォンの画面を上 (空) に向けて水平に持ち、スマートフォンの画面上部を自分が向いている方向に合わせてから、[<em>周辺</em>] ボタンを押します。これにより、コンパスを合わせるように、自分が向いている方向をアプリに伝えることができます。[<em>周辺</em>] ボタンをタップすると、自分の周辺にある 4 つの特定地点の情報が聞こえます。";
-
-
-/*  */
 "help.text.remote_control.what" = "ヘッドホンのメディアコントロール ボタンを使用して、Openscape の特定の機能にアクセスできます。この機能は、再生、一時停止、次へ、前へなどのメディアコントロール ボタンのある有線または Bluetooth のヘッドホンで使用できます。ヘッドホンによって使用できるボタンが異なる場合があるため、使用できる機能については、以下の動作の一覧を参照してください。<br>なお、この機能は、Apple のメディアコントロール (再生や一時停止など) に対応しているヘッドホンでのみ使用できます。";
-
-
-/*  */
-"help.text.markers.content.2" = "自宅やオフィス、よく行くコンビニやスーパーなど、個人的に重要な場所にマーカーを付けることができます。マーカーは任意の場所や住所に付けることができますが、たとえば、ビルや公園の入口、横断歩道の押しボタン、横断歩道や歩道橋、バス停、飼っているイヌのお気に入りの木など、これまでは地図上になかったような場所にもマーカーを付けることができ、歩くときの目印として使用できます。";
 
 
 /*  */
@@ -1199,15 +775,7 @@
 
 
 /*  */
-"help.text.routes.content.how.1" = "<b>ルートを作成する</b>:<br/> まず、\"マーカーおよびルート\" に移動して \"ルート\" タブを選択し、\"新しいルート\" ボタンを選択します。ルート名を指定して、オプションで説明を入力します。その後、ルートを進む中でウェイポイントを追加するか、マーカーのリストから選択します。ウェイポイントの順序は、ルートを進む間いつでもルートを編集することで変更できます。";
-
-
-/*  */
 "help.using_headsets.airpods.when" = "通常の openscape の使用時はいつでも AirPods を openscape で使用できます。AirPods を使用すると、高品質の音声を使用でき、Openscape のハンズフリー機能が向上します。";
-
-
-/*  */
-"osm.tag.construction" = "工事中";
 
 
 /*  */
@@ -1215,15 +783,7 @@
 
 
 /*  */
-"osm.tag.residential_street" = "住宅地内の道路";
-
-
-/*  */
 "osm.tag.highway.named" = "%@ 車道";
-
-
-/*  */
-"osm.tag.highway_ramp" = "接続道路";
 
 
 /*  */
@@ -1231,15 +791,7 @@
 
 
 /*  */
-"osm.tag.cycle_barrier" = "歩行者自転車用柵";
-
-
-/*  */
 "osm.tag.restroom" = "トイレ";
-
-
-/*  */
-"osm.tag.taxi_waiting_area" = "タクシー乗り場";
 
 
 /*  */
@@ -1247,15 +799,7 @@
 
 
 /*  */
-"osm.tag.telephone" = "電話";
-
-
-/*  */
 "osm.tag.atm.named" = "%@ ATM";
-
-
-/*  */
-"osm.tag.bus_stop.refed" = "バス停 %@";
 
 
 /*  */
@@ -1263,15 +807,7 @@
 
 
 /*  */
-"osm.tag.sports_field" = "運動場";
-
-
-/*  */
 "osm.tag.picnic_table" = "ピクニック テーブル";
-
-
-/*  */
-"banner.offline_default.message" = "Openscape はオフラインです。詳細情報";
 
 
 /*  */
@@ -1279,15 +815,7 @@
 
 
 /*  */
-"push.local.home.title" = "自宅で openscape を試す";
-
-
-/*  */
 "whats_new.3_2_0.2.description" = "拡張版の声も含め、追加の声をダウンロードするには、iOS のアクセシビリティの設定の [読み上げコンテンツ] を開きます。";
-
-
-/*  */
-"faq.markers_function.question" = "マーカーとはどのようなもので、活用するにはどうしたらよいですか?";
 
 
 /*  */
@@ -1295,15 +823,7 @@
 
 
 /*  */
-"faq.why_does_beacon_disappear.answer" = "Openscape の音声ビーコンは、基本的には、ユーザーが向いている方向に対して目的地がどこにあるか、その方向を知らせる合図です。ユーザーがどちらの方向を向いているかを openscape が認識できないときには、ビーコンの音量が下がります。多くの場合、このような状態になるのは、ポケットやカバンにスマートフォンを入れたまま歩いていて、横断歩道で立ち止まったときなどです。再び動き出すか、スマートフォンを自分の向いている方向に合わせて水平に持つとビーコンが大きな音で聞こえるようになります。";
-
-
-/*  */
 "faq.beacon_on_home.answer" = "Openscape では、住所にビーコンを設定できます。自宅やその他の住所にビーコンを設定するには、Openscape のメイン画面で場所を検索します。[場所の詳細] 画面で [音声ビーコンを開始] ボタンをタップします。";
-
-
-/*  */
-"faq.turn_beacon_back_on.answer" = "はい。Openscape で一度オフにしたビーコンは、[ビーコンのミュートを解除] ボタンを選択すると、再びオンにすることができます。ただし、位置情報サービスの精度は約 10 メートルであるため、目的地から数メートルの距離にいる場合、ビーコンの動作は保証されません。";
 
 
 /*  */
@@ -1311,15 +831,7 @@
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Openscape には最近のコールアウトの一覧があり、聞き逃したコールアウトを確認できます。この一覧を確認するには、Openscape ホーム画面の検索バーをタップします。このページの下に [最近のコールアウト] のセクションがあり、聞き逃したコールアウトが表示されます。";
-
-
-/*  */
 "faq.supported_headsets.answer" = "Openscape で使用するヘッドホンは、お好みで選択してください。それぞれのヘッドホンにメリットとトレードオフがあります。唯一の必須事項は、Openscape の 3D 空間オーディオのコールアウトを体験できるように、ステレオ ヘッドホンを使用することです。";
-
-
-/*  */
-"faq.sleep_mode_battery.answer" = "Openscape をスリープ モードにするには、画面上部の右端にある [スリープ] ボタンを選択します。選択すると、スリープ モードを解除するまで、Openscape による位置情報サービスとモバイル データの使用が停止されます。";
 
 
 /*  */
@@ -1327,15 +839,7 @@
 
 
 /*  */
-"faq.mobile_data_use.answer" = "モバイル データの使用量は、Openscape の使い方によって異なります。Openscape は外出先や移動中に使用するデータ量が少なくなるように設計されています。たとえば、歩いた地点の情報は保存され、既に行った場所を再度歩く場合に毎回データをダウンロードせずに済むようになっています。モバイル データの使用量を減らすには、特にアプリをダウンロードするときなどは、可能な限り Wi-Fi に接続するようにします。Openscape を使用しないときは、[スリープ] ボタンを使用して openscape をスリープ モードにするか、アプリを強制的に終了します。";
-
-
-/*  */
 "faq.use_with_wayfinding_apps.answer" = "Openscape は、従来の方法では知りえなかった、自分の周辺の情報を知ることができる視覚サポート アプリです。道順を案内するアプリではありませんが、道案内のアプリと併せて使用すると、補助的な情報が得られます。そのようなアプリと openscape を併用する場合は、道案内のアプリを先に起動します。それから openscape に切り替えて、道案内のアプリと同じ目的地にビーコンを設定します。この状態で両方のアプリを実行しておくと、道案内アプリで進む道の指示が聞こえるのと同時に、Openscape で特定地点や交差点、目的地までの距離に関する情報を確認できます。";
-
-
-/*  */
-"faq.holding_phone_flat.answer" = "その必要はありません。移動中はカバンやポケットなど、好きなところにスマートフォンを入れておいて構いません。Openscape はユーザーが歩いている方向をもとに、左右どちらからコールアウトが聞こえるようにするかを判断します。ユーザーが止まると、Openscape はユーザーが向いている方向がわからなくなります。音声ビーコンをオンにしている場合、ユーザーが動き出すまで、音が鳴らなくなります。いつでもスマートフォンを取り出して画面下部にある位置情報や探索のボタンを使用することができますが、必ずスマートフォンの上部を向かう方向に向け、画面が上 (空) を向くように持ってください。この「水平」な位置では、Openscape がスマートフォンのコンパスを使用して、ユーザーが向いている方角を判断し、立体音響のコールアウトを正確に提供できます。ビーコンがオンになっている場合、フルボリュームで聞こえるようになります。";
 
 
 /*  */
@@ -1343,11 +847,8 @@
 
 
 /*  */
-"faq.tip.turning_beacon_off" = "ホーム画面のミュート ボタンを使うと、一定のリズムのビーコンのサウンドのオン/オフを切り替えることができます。ビーコンがミュートされていても、目的地までの距離に関する情報は、約 50 メートルごとに通知されます。";
-
-
-/*  */
 "faq.tip.two_finger_double_tap" = "画面を 2 本指で 2 回タップすると、アクティブなコールアウトがすべて停止されます。";
+
 
 
 
