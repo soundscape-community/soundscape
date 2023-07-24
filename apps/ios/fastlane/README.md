@@ -39,6 +39,30 @@ Removes testers if they haven't launched the app in a month
 
 Retrieves and installs code signing certificates
 
+### ios bumpPatch
+
+```sh
+[bundle exec] fastlane ios bumpPatch
+```
+
+Increment the app's patch version
+
+### ios bumpMinor
+
+```sh
+[bundle exec] fastlane ios bumpMinor
+```
+
+Increment the app's minor version
+
+### ios bumpMajor
+
+```sh
+[bundle exec] fastlane ios bumpMajor
+```
+
+Increment the app's major version (major changes!)
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

@@ -54,6 +54,7 @@ platform :ios do
     #upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 
+
   desc "Removes testers if they haven't launched the app in a month"
   lane :clean_testers do
     clean_testflight_testers
@@ -67,5 +68,27 @@ platform :ios do
   lane:certs do
     unlock_keychain
     match(clone_branch_directly: true, readonly: true)
+  end
+
+  # Lanes to bump the version number
+  desc "Increment the app's patch version"
+  lane :bumpPatch do
+    increment_version_number(
+      bump_type: "patch"
+    )
+  end
+
+  desc "Increment the app's minor version"
+  lane :bumpMinor do
+    increment_version_number(
+      bump_type: "minor"
+    )
+  end
+
+  desc "Increment the app's major version (major changes!)"
+  lane :bumpMajor do
+    increment_version_number(
+      bump_type: "major"
+    )
   end
 end
