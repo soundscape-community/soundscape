@@ -14,6 +14,10 @@
 # update_fastlane
 
 default_platform(:ios)
+# Don't generate docs for any lane if we're in CI
+before_all do |lane|
+  skip_docs if ENV['CI']
+end
 
 platform :ios do
   # Idea: write a lane that adds either the full changelog or a subset of changes
