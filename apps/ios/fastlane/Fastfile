@@ -22,15 +22,19 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     # Generate changelog...
-    unlock_keychain
+    # If we're running in continuous integration, set up match and a temporary keychain with no expiration timeout (so long builds won't error for signing):
+    setup_ci(timeout: 0) if ENV['CI']
+    # Set up cocoapods for CI (we assume developers do their own setup and don't want this)
+    cocoapods(deployment: true) if ENV['CI']
+    sync_code_signing
     #increment_build_number(xcodeproj: "GuideDogs.xcodeproj")
     build_app(
       workspace: "GuideDogs.xcworkspace",
       scheme: "Openscape",
       output_name: "openscape.ipa",
       output_directory: "build", # so git ignores
-      export_xcargs: "-allowProvisioningUpdates",
-      clean: false,
+      export_xcargs: "-allowProvisioningUpdates", # so automatic Xcode management might work for devs if it can
+      clean: true,
       export_options: {
         provisioningProfiles: {
           "io.openscape.openscape" => "match AppStore io.openscape.openscape"
