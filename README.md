@@ -1,6 +1,6 @@
 # Openscape: 3D audio awareness for everyone
 
-[![Build Status](https://github.com/openscape-community/openscape/actions/workflows/ios.yml/badge.svg)](https://github.com/openscape-community/openscape/actions/workflows/ios.yml)
+[![Build Status](https://github.com/openscape-community/openscape/actions/workflows/build-for-testflight.yml/badge.svg)](https://github.com/openscape-community/openscape/actions/workflows/build-for-testflight.yml)
 
 This is a community effort to bring the features of [Microsoft Soundscape](https://www.microsoft.com/en-us/research/product/soundscape/) back to blind and visually-impaired travelers everywhere. Starting with the [components released as open source](https://github.com/microsoft/soundscape) by Microsoft Research, we have filled in some of the missing pieces and services to keep it functional.
 
