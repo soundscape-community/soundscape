@@ -27,15 +27,15 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     # Ensure any changes going into a testflight workflow are commited to git
-    ensure_git_status_clean
+    #ensure_git_status_clean
     # Generate changelog...
     # If we're running in continuous integration, set up match and a temporary keychain with no expiration timeout (so long builds won't error for signing):
     setup_ci(timeout: 0) if ENV['CI']
     # Set up cocoapods for CI (we assume developers do their own setup and don't want this)
     cocoapods(deployment: true) if ENV['CI']
     sync_code_signing
-    build_number = increment_build_number(xcodeproj: "GuideDogs.xcodeproj")
-    commit_version_bump(message: "Bump for build #{build_number}", xcodeproj: "apps/ios/GuideDogs.xcodeproj")
+    build_number = increment_build_number
+    commit_version_bump(message: "Bump for build #{build_number}", xcodeproj: "GuideDogs.xcodeproj")
     build_app(
       workspace: "GuideDogs.xcworkspace",
       scheme: "Openscape",
