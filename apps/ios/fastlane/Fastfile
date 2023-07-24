@@ -35,7 +35,7 @@ platform :ios do
     cocoapods(deployment: true) if ENV['CI']
     sync_code_signing
     build_number = increment_build_number(xcodeproj: "GuideDogs.xcodeproj")
-    commit_version_bump(message: "Bump for build #{build_number}")
+    commit_version_bump(message: "Bump for build #{build_number}", xcodeproj: "apps/ios/GuideDogs.xcodeproj")
     build_app(
       workspace: "GuideDogs.xcworkspace",
       scheme: "Openscape",
