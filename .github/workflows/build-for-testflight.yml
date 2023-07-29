@@ -15,6 +15,6 @@ jobs:
         run: bundle install
       - name: setup and build with fastlane
         working-directory: apps/ios
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         run: bundle exec fastlane beta
-          env:
-            MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
