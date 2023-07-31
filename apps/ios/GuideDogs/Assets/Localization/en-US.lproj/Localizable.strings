@@ -311,7 +311,7 @@
 "mail.spark" = "Spark";
 /* Translated name of Airmail (https://airmailapp.com/) */
 "mail.airmail" = "Airmail";
-/* Translated name of Yahoo Mail (https://mail.yahoo.com*/)
+/* Translated name of Yahoo Mail (https://mail.yahoo.com) */
 "mail.yahoo" = "Yahoo Mail";
 /* Translated name of Dispatch Mail app (No site URL found, was dispatchapp.net) */
 "mail.dispatch" = "Dispatch";
