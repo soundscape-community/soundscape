@@ -51,13 +51,18 @@ class RouteGuidance: BehaviorBase {
     private(set) var content: RouteDetail
     private(set) var nearestIntersectionKey: String?
     
+    /// If we are transitioning to a waypoint but have not yet arrived, this contains information about the upcoming waypoint beacon. We do this transition instead of just changing if `isArrivingAtWaypoint` is `true`.
+    /// see: `setOrTransitionBeacon(to waypoint:, enableAudio:, skipAsyncFinish:)`
     private var pendingBeaconArgs: PendingBeaconArgs?
+    /// see: `nextWaypoint(automatic:)`
     private var isArrivingAtWaypoint = false
+    /// If we have ever visited the final waypoint; is *not* reset by `activate()`
     private var arrivedAtFinalWaypoint = false
+    /// Seems related to beacons, somehow.
     private var isFinished = false
+    /// Receives `dynamicPlayerFinished` events
     private var beaconObserver: AnyCancellable?
-    // Unless `shouldResume = true`, the route's state will be reset each time
-    // the route is activated
+    /// Unless `shouldResume = true`, the route's state will be reset each time the route is activated
     var shouldResume = false
     
     private var lastSaveTime: Date?
@@ -340,6 +345,8 @@ class RouteGuidance: BehaviorBase {
     
     /// Updates the `waypointIndex` property of the state object to be the index of the
     /// next waypoint and then saves the route guidance's state.
+    /// - Parameter automatic: If `false`, we play departure callouts immediately instead of queueing.
+    ///   Usually `true` if the cause of this change was automatic, or `false` if the user manually tapped the "Next" button
     func nextWaypoint(automatic: Bool = false) {
         if let index = state.waypointIndex {
             // Next() increases the index until the last index and then stops incrementing
