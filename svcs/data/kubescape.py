@@ -6,19 +6,21 @@ from psycopg2.extensions import make_dsn, parse_dsn
 
 class SoundscapeKube:
     def __init__(self, arg1, arg2):
-        self.databases = {
-            'osm': {
-                'name': 'osm',
-                'dsn2': make_dsn(
-                    user=os.environ['POSTGIS_USER'],
-                    password=os.environ['POSTGIS_PASSWORD'],
-                    host=os.environ['POSTGIS_HOST'],
-                    port=os.environ['POSTGIS_PORT'],
-                    dbname=os.environ['POSTGIS_DBNAME'],
-                ),
-                'dbstatus': None,
-            }
+        pass
+
+    databases = {
+        'osm': {
+            'name': 'osm',
+            'dsn2': make_dsn(
+                user=os.environ['POSTGIS_USER'],
+                password=os.environ['POSTGIS_PASSWORD'],
+                host=os.environ['POSTGIS_HOST'],
+                port=os.environ['POSTGIS_PORT'],
+                dbname=os.environ['POSTGIS_DBNAME'],
+            ),
+            'dbstatus': None,
         }
+    }
 
     def connect(self):
         pass
