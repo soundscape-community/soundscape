@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-               BuildableName = "Openscape.app"
-               BlueprintName = "Openscape"
+               BuildableName = "Soundscape.app"
+               BlueprintName = "Soundscape"
                ReferencedContainer = "container:GuideDogs.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -125,8 +125,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -153,8 +153,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

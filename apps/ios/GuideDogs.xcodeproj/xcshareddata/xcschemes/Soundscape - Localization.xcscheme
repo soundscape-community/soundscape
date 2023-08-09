@@ -5,58 +5,6 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
-      <PreActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "# Reset feature flags for current configuration&#10;${SRCROOT}/../../build-tools/scripts/feature-flags/reset_feature_flags.sh &quot;${SRCROOT}/GuideDogs/Assets/Configurations/FeatureFlags-${CONFIGURATION}.xcconfig&quot;&#10;">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Openscape.app"
-                     BlueprintName = "Openscape"
-                     ReferencedContainer = "container:GuideDogs.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "# Set &apos;FF_ENABLE_ALL&apos; feature flag for current configuration&#10;${SRCROOT}/../../build-tools/scripts/feature-flags/set_feature_flags.sh &quot;${SRCROOT}/GuideDogs/Assets/Configurations/FeatureFlags-${CONFIGURATION}.xcconfig&quot; &quot;-D FF_ENABLE_ALL&quot;&#10;">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Openscape.app"
-                     BlueprintName = "Openscape"
-                     ReferencedContainer = "container:GuideDogs.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
-      <PostActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "# Reset feature flags for current configuration&#10;${SRCROOT}/../../build-tools/scripts/feature-flags/reset_feature_flags.sh &quot;${SRCROOT}/GuideDogs/Assets/Configurations/FeatureFlags-${CONFIGURATION}.xcconfig&quot;&#10;">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Openscape.app"
-                     BlueprintName = "Openscape"
-                     ReferencedContainer = "container:GuideDogs.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PostActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -67,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-               BuildableName = "Openscape.app"
-               BlueprintName = "Openscape"
+               BuildableName = "Soundscape.app"
+               BlueprintName = "Soundscape"
                ReferencedContainer = "container:GuideDogs.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -97,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -166,6 +114,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = "IDELaunchSchemeLanguageBoundedString"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -177,8 +126,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -205,8 +154,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

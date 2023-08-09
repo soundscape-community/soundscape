@@ -15,8 +15,8 @@
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Openscape.app"
-                     BlueprintName = "Openscape"
+                     BuildableName = "Soundscape.app"
+                     BlueprintName = "Soundscape"
                      ReferencedContainer = "container:GuideDogs.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
@@ -26,13 +26,13 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "# Set &apos;FF_ENABLE_ALL&apos; feature flag for current configuration&#10;${SRCROOT}/../../build-tools/scripts/feature-flags/set_feature_flags.sh &quot;${SRCROOT}/GuideDogs/Assets/Configurations/FeatureFlags-${CONFIGURATION}.xcconfig&quot; &quot;-D FF_DISABLE_ALL -D SCREENSHOTS_GENERATOR&quot;&#10;">
+               scriptText = "# Set &apos;FF_ENABLE_ALL&apos; feature flag for current configuration&#10;${SRCROOT}/../../build-tools/scripts/feature-flags/set_feature_flags.sh &quot;${SRCROOT}/GuideDogs/Assets/Configurations/FeatureFlags-${CONFIGURATION}.xcconfig&quot; &quot;-D FF_ENABLE_ALL&quot;&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Openscape.app"
-                     BlueprintName = "Openscape"
+                     BuildableName = "Soundscape.app"
+                     BlueprintName = "Soundscape"
                      ReferencedContainer = "container:GuideDogs.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
@@ -49,8 +49,8 @@
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Openscape.app"
-                     BlueprintName = "Openscape"
+                     BuildableName = "Soundscape.app"
+                     BlueprintName = "Soundscape"
                      ReferencedContainer = "container:GuideDogs.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
@@ -67,8 +67,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-               BuildableName = "Openscape.app"
-               BlueprintName = "Openscape"
+               BuildableName = "Soundscape.app"
+               BlueprintName = "Soundscape"
                ReferencedContainer = "container:GuideDogs.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -97,8 +97,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -113,26 +113,52 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B9904BC025C8BE3F00C4BC03"
-               BuildableName = "SoundscapeScreenshotsGenerator.xctest"
-               BlueprintName = "SoundscapeScreenshotsGenerator"
+               BlueprintIdentifier = "D3D7CFE31B3D96470020B5E9"
+               BuildableName = "SoundscapeUnitTests.xctest"
+               BlueprintName = "SoundscapeUnitTests"
                ReferencedContainer = "container:GuideDogs.xcodeproj">
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "SoundscapeScreenshotsGenerator/testScreenshot1()">
+                  Identifier = "AutomaticCalloutsUnitTests/testDestinationCallout()">
                </Test>
                <Test
-                  Identifier = "SoundscapeScreenshotsGenerator/testScreenshot3()">
+                  Identifier = "AutomaticCalloutsUnitTests/testFilteredCategories()">
                </Test>
                <Test
-                  Identifier = "SoundscapeScreenshotsGenerator/testScreenshot5()">
+                  Identifier = "AutomaticCalloutsUnitTests/testNearbyCallouts()">
+               </Test>
+               <Test
+                  Identifier = "GuideDogsUnitTests/testAudioQueueingScenario6">
+               </Test>
+               <Test
+                  Identifier = "GuideDogsUnitTests/testFindTheWay">
+               </Test>
+               <Test
+                  Identifier = "GuideDogsUnitTests/testSettingsContextEnglishGBChange">
+               </Test>
+               <Test
+                  Identifier = "GuideDogsUnitTests/testSettingsContextEnglishGBFlipFlop">
+               </Test>
+               <Test
+                  Identifier = "GuideDogsUnitTests/testSoundQueueingScenario1">
+               </Test>
+               <Test
+                  Identifier = "GuideDogsUnitTests/testSoundQueueingScenario2">
+               </Test>
+               <Test
+                  Identifier = "GuideDogsUnitTests/testSoundQueueingScenario3">
+               </Test>
+               <Test
+                  Identifier = "GuideDogsUnitTests/testSoundQueueingScenario4">
+               </Test>
+               <Test
+                  Identifier = "SharedContentUnitTests/testParseGPX()">
+               </Test>
+               <Test
+                  Identifier = "TelemetryUnitTests/testUpload()">
                </Test>
             </SkippedTests>
-            <LocationScenarioReference
-               identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
-               referenceType = "1">
-            </LocationScenarioReference>
          </TestableReference>
       </Testables>
    </TestAction>
@@ -151,8 +177,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -179,8 +205,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Openscape.app"
-            BlueprintName = "Openscape"
+            BuildableName = "Soundscape.app"
+            BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
