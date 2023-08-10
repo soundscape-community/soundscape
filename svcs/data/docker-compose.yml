@@ -24,9 +24,7 @@ services:
       - POSTGRES_PASSWORD=secret
       - PGUSER=postgres
     volumes:
-      - postgis:/var/lib/postgresql
-    ports:
-      - "5432:5432"
+      - postgis:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
