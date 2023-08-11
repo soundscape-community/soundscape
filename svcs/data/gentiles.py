@@ -254,6 +254,7 @@ async def app_factory():
 
     # assume ingress addding /tiles/
     app.add_routes([web.get(r'/{zoom:\d+}/{x:\d+}/{y:\d+}.json', tile_handler),
+                    web.get(r'/tiles/{zoom:\d+}/{x:\d+}/{y:\d+}.json', tile_handler), # also respond to requests for /tiles/...
                     web.get('/probe/alive', alive_handler),
                     web.get('/metrics', metrics_handler)])
     return app
