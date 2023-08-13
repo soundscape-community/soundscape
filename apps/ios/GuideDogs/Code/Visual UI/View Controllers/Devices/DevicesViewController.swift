@@ -176,7 +176,7 @@ class DevicesViewController: UIViewController {
     
     // MARK: - Properties
     
-    let queue = DispatchQueue(label: "io.openscape.openscape.devicesui")
+    let queue = DispatchQueue(label: "services.soundscape.devicesui")
     
     /// Flag set to true if the DevicesViewController was launched automatically (e.g. because the currently
     /// connected headset needs to be recalibrated) or false if it was launched because the user navigated to it

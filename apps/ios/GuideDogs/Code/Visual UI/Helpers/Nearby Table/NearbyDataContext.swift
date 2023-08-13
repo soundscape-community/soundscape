@@ -24,7 +24,7 @@ class NearbyDataContext {
     
     private(set) var location: CLLocation?
     private var initialNearbyRequestToken: RequestToken?
-    private let queue = DispatchQueue(label: "io.openscape.openscape.nearbytable")
+    private let queue = DispatchQueue(label: "services.soundscape.nearbytable")
     private var pois: [POI] = []
     private(set) var data: CurrentValueSubject<NearbyData, NearbyError>
     private(set) var isLoading = false

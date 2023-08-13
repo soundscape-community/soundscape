@@ -73,8 +73,8 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     
     // MARK: Synchronized Properties
     
-    private let networkQueue = DispatchQueue(label: "io.openscape.openscape.spatialdata.network", qos: .utility)
-    private var dispatchQueue = DispatchQueue(label: "io.openscape.openscape.spatialdata", qos: .utility, attributes: .concurrent)
+    private let networkQueue = DispatchQueue(label: "services.soundscape.spatialdata.network", qos: .utility)
+    private var dispatchQueue = DispatchQueue(label: "services.soundscape.spatialdata", qos: .utility, attributes: .concurrent)
     private var fetchingTiles = false
     
     /// Set of tiles the spatial data context is currently using to generate the list of spatial data result entities around the user

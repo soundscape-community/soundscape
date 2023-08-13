@@ -34,7 +34,7 @@ class BaseBLEDevice: NSObject, BLEDevice {
 
     private(set) var state: BLEDeviceState = .unknown
 
-    private var queue: DispatchQueue = DispatchQueue(label: "io.openscape.openscape.bledevice")
+    private var queue: DispatchQueue = DispatchQueue(label: "services.soundscape.bledevice")
     private var charDiscoveryGroup: DispatchGroup = DispatchGroup()
 
     private(set) var services: [CBUUID: CBService] = [:]
