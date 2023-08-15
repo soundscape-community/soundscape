@@ -155,7 +155,7 @@
 
 
 /*  */
-"general.alert.offline_default.message" = "Openscape is working offline. Nevertheless, openscape will continue to work, but some functions may be limited.";
+"general.alert.offline_default.message" = "Soundscape is working offline. Nevertheless, Soundscape will continue to work, but some functions may be limited.";
 
 
 /*  */
@@ -163,7 +163,7 @@
 
 
 /*  */
-"general.alert.offline_search.message" = "When openscape is working offline, search is disabled. Dismiss to return to the previous screen";
+"general.alert.offline_search.message" = "When Soundscape is working offline, search is disabled. Dismiss to return to the previous screen";
 
 
 /*  */
@@ -231,11 +231,11 @@
 
 
 /*  */
-"general.error.location_services" = "Turn on Location Services to use Openscape";
+"general.error.location_services" = "Turn on Location Services to use Soundscape";
 
 
 /*  */
-"general.error.precise_location" = "Turn on Precise Location to use Openscape";
+"general.error.precise_location" = "Turn on Precise Location to use Soundscape";
 
 
 /*  */
@@ -243,7 +243,7 @@
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Openscape uses your location to find and tell you about the places and things around you. The app needs your permission to use Location Services.";
+"general.error.location_services.authorize.description" = "Soundscape uses your location to find and tell you about the places and things around you. The app needs your permission to use Location Services.";
 
 
 /*  */
@@ -255,7 +255,7 @@
 
 
 /*  */
-"general.error.location_services_resume" = "Open Openscape to resume Location Services";
+"general.error.location_services_resume" = "Open Soundscape to resume Location Services";
 
 
 /*  */
@@ -263,7 +263,7 @@
 
 
 /*  */
-"general.error.location_services_enable_description" = "Location Services are currently disabled. Openscape cannot work when Location Services are turned off.";
+"general.error.location_services_enable_description" = "Location Services are currently disabled. Soundscape cannot work when Location Services are turned off.";
 
 
 /*  */
@@ -279,7 +279,7 @@
 
 
 /*  */
-"general.error.heading" = "Openscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again";
+"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again";
 
 
 /*  */
@@ -299,7 +299,7 @@
 
 
 /*  */
-"general.error.network_connection_required.deleting_data" = "A network connection is required when deleting and reloading Openscape's map data. Check that your phone is not in airplane mode.";
+"general.error.network_connection_required.deleting_data" = "A network connection is required when deleting and reloading Soundscape's map data. Check that your phone is not in airplane mode.";
 
 
 /*  */
@@ -331,11 +331,11 @@
 
 
 /*  */
-"device_motion.enable.description" = "Motion & Fitness tracking is currently disabled. Openscape cannot work when Motion & Fitness tracking is turned off.";
+"device_motion.enable.description" = "Motion & Fitness tracking is currently disabled. Soundscape cannot work when Motion & Fitness tracking is turned off.";
 
 
 /*  */
-"device_motion.enable.instructions" = "Turn On Fitness Tracking in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the Back button (titled Settings)\n3. Select Privacy\n4. Select Motion & Fitness\n5. Turn on Fitness Tracking\n6. Restart Openscape";
+"device_motion.enable.instructions" = "Turn On Fitness Tracking in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the Back button (titled Settings)\n3. Select Privacy\n4. Select Motion & Fitness\n5. Turn on Fitness Tracking\n6. Restart Soundscape";
 
 
 /*  */
@@ -343,7 +343,7 @@
 
 
 /*  */
-"device_motion.authorize.description" = "This allows Openscape to improve your experience based on whether you are walking, in a vehicle, or standing still. The app needs your permission to use Motion & Fitness. Before you authorise openscape to use this permission, you may need to enable Fitness Tracking under Settings → Privacy → Motion & Fitness.";
+"device_motion.authorize.description" = "This allows Soundscape to improve your experience based on whether you are walking, in a vehicle, or standing still. The app needs your permission to use Motion & Fitness. Before you authorise Soundscape to use this permission, you may need to enable Fitness Tracking under Settings → Privacy → Motion & Fitness.";
 
 
 /*  */
@@ -367,7 +367,7 @@
 
 
 /*  */
-"settings.about_app" = "About Openscape";
+"settings.about_app" = "About Soundscape";
 
 
 /*  */
@@ -383,7 +383,7 @@
 
 
 /*  */
-"setting.audio.mix_with_others.confirmation" = "Turning this setting on will cause Openscape's callouts and other audio to pause whenever you start using a different media app. You can return to openscape to resume callouts.";
+"setting.audio.mix_with_others.confirmation" = "Turning this setting on will cause Soundscape's callouts and other audio to pause whenever you start using a different media app. You can return to Soundscape to resume callouts.";
 
 
 /*  */
@@ -403,11 +403,11 @@
 
 
 /*  */
-"voice.apple.no_siri" = "Note that Siri voices are not available to openscape and are not in the list below.";
+"voice.apple.no_siri" = "Note that Siri voices are not available to Soundscape and are not in the list below.";
 
 
 /*  */
-"beacon.settings.style.haptic.explanation" = "These beacon styles include haptic feedback that you can feel in addition to normal beacon audio. Haptic feedback is only available when your phone is unlocked and openscape is open.";
+"beacon.settings.style.haptic.explanation" = "These beacon styles include haptic feedback that you can feel in addition to normal beacon audio. Haptic feedback is only available when your phone is unlocked and Soundscape is open.";
 
 
 /*  */
@@ -419,7 +419,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.explanation" = "Tap this button to hear about the status of the headphones you are using with Openscape.";
+"troubleshooting.check_audio.explanation" = "Tap this button to hear about the status of the headphones you are using with Soundscape.";
 
 
 /*  */
@@ -499,11 +499,11 @@
 
 
 /*  */
-"preview.include_unnamed_roads.subtitle" = "Include unnamed roads during openscape Street Preview";
+"preview.include_unnamed_roads.subtitle" = "Include unnamed roads during Soundscape Street Preview";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Double tap to exclude unnamed roads during openscape Street Preview";
+"preview.include_unnamed_roads.hint.on" = "Double tap to exclude unnamed roads during Soundscape Street Preview";
 
 
 /*  */
@@ -635,7 +635,7 @@
 
 
 /*  */
-"universal_links.marker.share.message" = "I've shared a openscape marker with you! \"%@\"";
+"universal_links.marker.share.message" = "I've shared a Soundscape marker with you! \"%@\"";
 
 
 /*  */
@@ -643,7 +643,7 @@
 
 
 /*  */
-"user_activity.search.title" = "Search in Openscape";
+"user_activity.search.title" = "Search in Soundscape";
 
 
 /*  */
@@ -751,7 +751,7 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Openscape is currently snoozing. When you leave your current location, openscape will automatically wake up. This uses Location Services in a low power mode to conserve your phone's battery. Tap the button below to wake up now.";
+"sleep.snoozing.message" = "Soundscape is currently snoozing. When you leave your current location, Soundscape will automatically wake up. This uses Location Services in a low power mode to conserve your phone's battery. Tap the button below to wake up now.";
 
 
 /*  */
@@ -911,7 +911,7 @@
 
 
 /*  */
-"menu.learning_resources" = "Openscape Blog";
+"menu.learning_resources" = "Soundscape Blog";
 
 
 /*  */
@@ -935,11 +935,11 @@
 
 
 /*  */
-"devices.explain_ar.paired" = "Openscape is not currently connected to your %@. Please ensure your headphones are turned on and near your phone.";
+"devices.explain_ar.paired" = "Soundscape is not currently connected to your %@. Please ensure your headphones are turned on and near your phone.";
 
 
 /*  */
-"devices.connect_headset.calibrate.explanation" = "Your headphones connected successfully to openscape but must be calibrated before use. openscape will inform you whenever headphones calibration is needed, for example each time you turn it on.";
+"devices.connect_headset.calibrate.explanation" = "Your headphones connected successfully to Soundscape but must be calibrated before use. Soundscape will inform you whenever headphones calibration is needed, for example each time you turn it on.";
 
 
 /*  */
@@ -987,7 +987,7 @@
 
 
 /*  */
-"behavior.experiences.no_events.caption.2" = "To find out more or express your organisation’s interest in creating customised openscape experiences, please write to us at email@address.com";
+"behavior.experiences.no_events.caption.2" = "To find out more or express your organisation’s interest in creating customised Soundscape experiences, please write to us at email@address.com";
 
 
 /*  */
@@ -1035,7 +1035,7 @@
 
 
 /*  */
-"tutorial.markers.text.EditMarker" = "Great! You have selected @!marker_name!! as a marker. You will hear it called out by openscape when you are close by.\nOn the next screen you can change it's name if you'd like to.";
+"tutorial.markers.text.EditMarker" = "Great! You have selected @!marker_name!! as a marker. You will hear it called out by Soundscape when you are close by.\nOn the next screen you can change it's name if you'd like to.";
 
 
 /*  */
@@ -1079,7 +1079,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Openscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Openscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the openscape app, you can select the voice you want to use by going to Settings from the main menu and then selecting \"Voice\".";
+"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape app, you can select the voice you want to use by going to Settings from the main menu and then selecting \"Voice\".";
 
 
 /*  */
@@ -1111,11 +1111,11 @@
 
 
 /*  */
-"first_launch.welcome_audio_text" = "Welcome! openscape helps you stay aware of where you are and where you're going by using unique audio guidance and by calling out roads, intersections, and places as you approach them. Press the Next button to begin.";
+"first_launch.welcome_audio_text" = "Welcome! Soundscape helps you stay aware of where you are and where you're going by using unique audio guidance and by calling out roads, intersections, and places as you approach them. Press the Next button to begin.";
 
 
 /*  */
-"first_launch.location.text" = "Openscape is a location-based app. We use your location to find and call out things around you.";
+"first_launch.location.text" = "Soundscape is a location-based app. We use your location to find and call out things around you.";
 
 
 /*  */
@@ -1131,11 +1131,11 @@
 
 
 /*  */
-"first_launch.headphones.title" = "Listening to Openscape";
+"first_launch.headphones.title" = "Listening to Soundscape";
 
 
 /*  */
-"first_launch.callouts.message" = "Openscape helps you stay aware of where you are and where you're going by calling out roads, intersections and points of interest as you approach them.";
+"first_launch.callouts.message" = "Soundscape helps you stay aware of where you are and where you're going by calling out roads, intersections and points of interest as you approach them.";
 
 
 /*  */
@@ -1143,11 +1143,11 @@
 
 
 /*  */
-"first_launch.permissions.message" = "When navigating with openscape you will be guided by an audio beacon. To do that, openscape needs you to enable the following permissions:";
+"first_launch.permissions.message" = "When navigating with Soundscape you will be guided by an audio beacon. To do that, Soundscape needs you to enable the following permissions:";
 
 
 /*  */
-"first_launch.beacon.message.1" = "When navigating with Openscape, you will hear the audio beacon in the direction of your destination. By following its sound, you will always know which way to go.";
+"first_launch.beacon.message.1" = "When navigating with Soundscape, you will hear the audio beacon in the direction of your destination. By following its sound, you will always know which way to go.";
 
 
 /*  */
@@ -1163,7 +1163,7 @@
 
 
 /*  */
-"help.text.destination_beacons.what" = "Setting a beacon on a nearby location allows openscape to keep you informed by playing an audible beacon sound coming from the direction of that location. This beacon can be muted or unmuted on the home screen. Additionally, openscape displays information about the location on the home screen including the distance to it and its street address if it is known.";
+"help.text.destination_beacons.what" = "Setting a beacon on a nearby location allows Soundscape to keep you informed by playing an audible beacon sound coming from the direction of that location. This beacon can be muted or unmuted on the home screen. Additionally, Soundscape displays information about the location on the home screen including the distance to it and its street address if it is known.";
 
 
 /*  */
@@ -1187,11 +1187,11 @@
 
 
 /*  */
-"help.text.remote_control.when" = "Headphone media controls can be used while openscape is running. This is true whether you are currently in openscape or while openscape is in the background and even while your device is locked. Note however that headphone media control buttons will not work with openscape if you are playing audio like music, podcasts or videos with another app.";
+"help.text.remote_control.when" = "Headphone media controls can be used while Soundscape is running. This is true whether you are currently in Soundscape or while Soundscape is in the background and even while your device is locked. Note however that headphone media control buttons will not work with Soundscape if you are playing audio like music, podcasts or videos with another app.";
 
 
 /*  */
-"help.text.markers.content.3" = "To experience marked places, openscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby markers button at the bottom of the openscape home screen to hear a spatial callout of marked places around you. In addition, you have the ability to set an audio beacon on any marked place. When you do this, the openscape audio beacon you are familiar with, will be heard and you can operate it as usual.";
+"help.text.markers.content.3" = "To experience marked places, Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby markers button at the bottom of the Soundscape home screen to hear a spatial callout of marked places around you. In addition, you have the ability to set an audio beacon on any marked place. When you do this, the Soundscape audio beacon you are familiar with, will be heard and you can operate it as usual.";
 
 
 /*  */
@@ -1203,7 +1203,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.how.1" = "<b>Connecting a Device</b>:<br/> Go to the \"Head Tracking Headphones\" item in the openscape menu to connect your AirPods and follow the instructions on screen. Note that you will need to pair your AirPods to your phone in the Bluetooth settings before connecting them in Openscape.";
+"help.using_headsets.airpods.how.1" = "<b>Connecting a Device</b>:<br/> Go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your AirPods and follow the instructions on screen. Note that you will need to pair your AirPods to your phone in the Bluetooth settings before connecting them in Soundscape.";
 
 
 /*  */
@@ -1271,11 +1271,11 @@
 
 
 /*  */
-"banner.offline_help.message" = "Openscape is working offline.";
+"banner.offline_help.message" = "Soundscape is working offline.";
 
 
 /*  */
-"share.prompt.title" = "Enjoying Openscape?";
+"share.prompt.title" = "Enjoying Soundscape?";
 
 
 /*  */
@@ -1287,7 +1287,7 @@
 
 
 /*  */
-"faq.markers_function.answer" = "Markers are places that you have saved. They could be places that are discoverable within the app, or they could be entirely new places you have added yourself. You can save your current location as a marker by selecting the \"Use Current Location\" button on the home screen and then selecting \"Save as Marker\". You can save other locations as a marker by searching for the place you would like to save using the search bar, or finding somewhere using the \"Places Nearby\" button, both of which can be found on the openscape home screen. Once you have found the place you would like, selecting it will take you to the \"Location Details\" page. On this page, select the button called \"Save as Marker\".";
+"faq.markers_function.answer" = "Markers are places that you have saved. They could be places that are discoverable within the app, or they could be entirely new places you have added yourself. You can save your current location as a marker by selecting the \"Use Current Location\" button on the home screen and then selecting \"Save as Marker\". You can save other locations as a marker by searching for the place you would like to save using the search bar, or finding somewhere using the \"Places Nearby\" button, both of which can be found on the Soundscape home screen. Once you have found the place you would like, selecting it will take you to the \"Location Details\" page. On this page, select the button called \"Save as Marker\".";
 
 
 /*  */
@@ -1299,11 +1299,11 @@
 
 
 /*  */
-"faq.how_close_to_destination.question" = "When I set a beacon on a destination, how close will openscape get me to the destination? ";
+"faq.how_close_to_destination.question" = "When I set a beacon on a destination, how close will Soundscape get me to the destination? ";
 
 
 /*  */
-"faq.road_names.question" = "Why does openscape call out road names twice when I approach an intersection?";
+"faq.road_names.question" = "Why does Soundscape call out road names twice when I approach an intersection?";
 
 
 /*  */
@@ -1311,39 +1311,39 @@
 
 
 /*  */
-"faq.supported_phones.question" = "What phone does openscape run on?";
+"faq.supported_phones.question" = "What phone does Soundscape run on?";
 
 
 /*  */
-"faq.battery_impact.question" = "How does openscape impact my iPhone’s battery?";
+"faq.battery_impact.question" = "How does Soundscape impact my iPhone’s battery?";
 
 
 /*  */
-"faq.snooze_mode_battery.question" = "How do I use Snooze mode to minimise Openscape’s impact on my phone battery?";
+"faq.snooze_mode_battery.question" = "How do I use Snooze mode to minimise Soundscape’s impact on my phone battery?";
 
 
 /*  */
-"faq.background_battery_impact.question" = "How does running openscape in the background impact battery life of my phone?";
+"faq.background_battery_impact.question" = "How does running Soundscape in the background impact battery life of my phone?";
 
 
 /*  */
-"faq.difference_from_map_apps.question" = "How is openscape different from other map apps?";
+"faq.difference_from_map_apps.question" = "How is Soundscape different from other map apps?";
 
 
 /*  */
-"faq.controlling_what_you_hear.question" = "How do I control what I hear and when I hear it in Openscape?";
+"faq.controlling_what_you_hear.question" = "How do I control what I hear and when I hear it in Soundscape?";
 
 
 /*  */
-"faq.personalize_experience.question" = "In what ways can I personalise my openscape experience?";
+"faq.personalize_experience.question" = "In what ways can I personalise my Soundscape experience?";
 
 
 /*  */
-"faq.tip.beacon_quiet" = "If you put your phone in your pocket and stop moving, the beacon sound will get quieter because openscape can’t tell which way you are facing. Solve this by starting to walk again, or pulling your phone out and holding it flat.";
+"faq.tip.beacon_quiet" = "If you put your phone in your pocket and stop moving, the beacon sound will get quieter because Soundscape can’t tell which way you are facing. Solve this by starting to walk again, or pulling your phone out and holding it flat.";
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "If you still want to interact with openscape but don’t want to hear automatic callouts you can turn callouts off by going to the \"Manage Callouts\" section of the \"Settings\" page from the menu. Or, if you aren’t going to be using openscape you can put it in either Sleep or Snooze mode using the \"Sleep\" button on the home screen.";
+"faq.tip.turning_off_auto_callouts" = "If you still want to interact with Soundscape but don’t want to hear automatic callouts you can turn callouts off by going to the \"Manage Callouts\" section of the \"Settings\" page from the menu. Or, if you aren’t going to be using Soundscape you can put it in either Sleep or Snooze mode using the \"Sleep\" button on the home screen.";
 
 
 

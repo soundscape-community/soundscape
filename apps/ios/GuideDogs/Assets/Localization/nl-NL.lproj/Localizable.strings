@@ -155,7 +155,7 @@
 
 
 /*  */
-"general.alert.offline_default.message" = "Openscape is offline. Openscape blijft wel werken, maar bepaalde functionaliteiten zijn beperkt beschikbaar.";
+"general.alert.offline_default.message" = "Soundscape is offline. Soundscape blijft wel werken, maar bepaalde functionaliteiten zijn beperkt beschikbaar.";
 
 
 /*  */
@@ -163,7 +163,7 @@
 
 
 /*  */
-"general.alert.offline_search.message" = "Wanneer Openscape offline werkt, is de zoekfunctie uitgeschakeld. Druk op Afsluiten om terug te gaan naar het vorige scherm.";
+"general.alert.offline_search.message" = "Wanneer Soundscape offline werkt, is de zoekfunctie uitgeschakeld. Druk op Afsluiten om terug te gaan naar het vorige scherm.";
 
 
 /*  */
@@ -231,11 +231,11 @@
 
 
 /*  */
-"general.error.location_services" = "Schakel Locatievoorzieningen in om Openscape te gebruiken";
+"general.error.location_services" = "Schakel Locatievoorzieningen in om Soundscape te gebruiken";
 
 
 /*  */
-"general.error.precise_location" = "Schakel Exacte locatie in om Openscape te gebruiken";
+"general.error.precise_location" = "Schakel Exacte locatie in om Soundscape te gebruiken";
 
 
 /*  */
@@ -243,7 +243,7 @@
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Openscape gebruikt je locatie om plaatsen en dingen om je heen te vinden en deze te beschrijven. De app heeft jouw toestemming nodig om Locatievoorzieningen te gebruiken.";
+"general.error.location_services.authorize.description" = "Soundscape gebruikt je locatie om plaatsen en dingen om je heen te vinden en deze te beschrijven. De app heeft jouw toestemming nodig om Locatievoorzieningen te gebruiken.";
 
 
 /*  */
@@ -255,7 +255,7 @@
 
 
 /*  */
-"general.error.location_services_resume" = "Open Openscape om Locatievoorzieningen te hervatten";
+"general.error.location_services_resume" = "Open Soundscape om Locatievoorzieningen te hervatten";
 
 
 /*  */
@@ -263,7 +263,7 @@
 
 
 /*  */
-"general.error.location_services_enable_description" = "Locatievoorzieningen zijn momenteel uitgeschakeld. Openscape kan niet werken als Locatievoorzieningen zijn uitgeschakeld.";
+"general.error.location_services_enable_description" = "Locatievoorzieningen zijn momenteel uitgeschakeld. Soundscape kan niet werken als Locatievoorzieningen zijn uitgeschakeld.";
 
 
 /*  */
@@ -279,7 +279,7 @@
 
 
 /*  */
-"general.error.heading" = "Openscape weet niet in welke richting je kijkt. Houd je telefoon horizontaal of begin met lopen en probeer het opnieuw";
+"general.error.heading" = "Soundscape weet niet in welke richting je kijkt. Houd je telefoon horizontaal of begin met lopen en probeer het opnieuw";
 
 
 /*  */
@@ -299,7 +299,7 @@
 
 
 /*  */
-"general.error.network_connection_required.deleting_data" = "Er is een netwerkverbinding vereist voor het verwijderen en opnieuw laden van de kaartgegevens van Openscape. Controleer of je telefoon niet in de vliegtuigstand staat.";
+"general.error.network_connection_required.deleting_data" = "Er is een netwerkverbinding vereist voor het verwijderen en opnieuw laden van de kaartgegevens van Soundscape. Controleer of je telefoon niet in de vliegtuigstand staat.";
 
 
 /*  */
@@ -331,11 +331,11 @@
 
 
 /*  */
-"device_motion.enable.description" = "Beweging & Conditie bijhouden is momenteel uitgeschakeld. Openscape werkt niet wanneer Beweging & Conditie bijhouden uitstaat.";
+"device_motion.enable.description" = "Beweging & Conditie bijhouden is momenteel uitgeschakeld. Soundscape werkt niet wanneer Beweging & Conditie bijhouden uitstaat.";
 
 
 /*  */
-"device_motion.enable.instructions" = "Schakel Houd conditie bij in Instellingen in om door te gaan.\n\n1. Druk op Instellingen openen\n2. Druk op de knop Terug (met de naam Instellingen)\n3. Selecteer Privacy\n4. Selecteer Beweging & Conditie\n5. Schakel Houd conditie bij in\n6. Start Openscape opnieuw";
+"device_motion.enable.instructions" = "Schakel Houd conditie bij in Instellingen in om door te gaan.\n\n1. Druk op Instellingen openen\n2. Druk op de knop Terug (met de naam Instellingen)\n3. Selecteer Privacy\n4. Selecteer Beweging & Conditie\n5. Schakel Houd conditie bij in\n6. Start Soundscape opnieuw";
 
 
 /*  */
@@ -343,7 +343,7 @@
 
 
 /*  */
-"device_motion.authorize.description" = "Openscape werk beter als de app kan bepalen of je aan het lopen bent, in een auto zit of stilstaat. De app heeft je toestemming nodig om Beweging & Conditie te gebruiken. Voordat je openscape hiervoor toestemming geeft, moet je waarschijnlijk ook Houd conditie bij inschakelen onder Instellingen → Privacy → Beweging & Conditie.";
+"device_motion.authorize.description" = "Soundscape werk beter als de app kan bepalen of je aan het lopen bent, in een auto zit of stilstaat. De app heeft je toestemming nodig om Beweging & Conditie te gebruiken. Voordat je Soundscape hiervoor toestemming geeft, moet je waarschijnlijk ook Houd conditie bij inschakelen onder Instellingen → Privacy → Beweging & Conditie.";
 
 
 /*  */
@@ -367,7 +367,7 @@
 
 
 /*  */
-"settings.about_app" = "Over Openscape";
+"settings.about_app" = "Over Soundscape";
 
 
 /*  */
@@ -383,7 +383,7 @@
 
 
 /*  */
-"setting.audio.mix_with_others.confirmation" = "Als deze instelling is ingeschakeld, worden de waarschuwingen van openscape en andere audio onderbroken wanneer u een andere media-app gebruikt. Ga terug naar openscape om de waarschuwingen te hervatten.";
+"setting.audio.mix_with_others.confirmation" = "Als deze instelling is ingeschakeld, worden de waarschuwingen van Soundscape en andere audio onderbroken wanneer u een andere media-app gebruikt. Ga terug naar Soundscape om de waarschuwingen te hervatten.";
 
 
 /*  */
@@ -403,11 +403,11 @@
 
 
 /*  */
-"voice.apple.no_siri" = "Houd er rekening mee dat Siri-stemmen niet beschikbaar zijn voor openscape en niet zijn opgenomen in de lijst hieronder.";
+"voice.apple.no_siri" = "Houd er rekening mee dat Siri-stemmen niet beschikbaar zijn voor Soundscape en niet zijn opgenomen in de lijst hieronder.";
 
 
 /*  */
-"beacon.settings.style.haptic.explanation" = "Deze bakenstijlen omvatten naast het gebruikelijke bakengeluid ook feedback die u kunt voelen. Zogenoemde haptische feedback is alleen beschikbaar wanneer uw telefoon is ontgrendeld en openscape is geopend.";
+"beacon.settings.style.haptic.explanation" = "Deze bakenstijlen omvatten naast het gebruikelijke bakengeluid ook feedback die u kunt voelen. Zogenoemde haptische feedback is alleen beschikbaar wanneer uw telefoon is ontgrendeld en Soundscape is geopend.";
 
 
 /*  */
@@ -419,7 +419,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.explanation" = "Tik op deze knop om de status van de koptelefoon die u gebruikt met Openscape te controleren.";
+"troubleshooting.check_audio.explanation" = "Tik op deze knop om de status van de koptelefoon die u gebruikt met Soundscape te controleren.";
 
 
 /*  */
@@ -499,11 +499,11 @@
 
 
 /*  */
-"preview.include_unnamed_roads.subtitle" = "Naamloze straten opnemen tijdens openscape Street Preview";
+"preview.include_unnamed_roads.subtitle" = "Naamloze straten opnemen tijdens Soundscape Street Preview";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Dubbeltik om naamloze straten niet op te nemen tijdens openscape Street Preview";
+"preview.include_unnamed_roads.hint.on" = "Dubbeltik om naamloze straten niet op te nemen tijdens Soundscape Street Preview";
 
 
 /*  */
@@ -635,7 +635,7 @@
 
 
 /*  */
-"universal_links.marker.share.message" = "Ik heb een Openscape-markering met je gedeeld. \"%@\"";
+"universal_links.marker.share.message" = "Ik heb een Soundscape-markering met je gedeeld. \"%@\"";
 
 
 /*  */
@@ -643,7 +643,7 @@
 
 
 /*  */
-"user_activity.search.title" = "Zoeken in Openscape";
+"user_activity.search.title" = "Zoeken in Soundscape";
 
 
 /*  */
@@ -751,7 +751,7 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Openscape staat momenteel in de slaapstand. Wanneer je je huidige locatie verlaat, wordt Openscape automatisch geactiveerd. Locatievoorzieningen gebruikt minder voeding om de batterij van je telefoon te sparen. Tik op de knop hieronder om nu te activeren.";
+"sleep.snoozing.message" = "Soundscape staat momenteel in de slaapstand. Wanneer je je huidige locatie verlaat, wordt Soundscape automatisch geactiveerd. Locatievoorzieningen gebruikt minder voeding om de batterij van je telefoon te sparen. Tik op de knop hieronder om nu te activeren.";
 
 
 /*  */
@@ -911,7 +911,7 @@
 
 
 /*  */
-"menu.learning_resources" = "Openscape blog";
+"menu.learning_resources" = "Soundscape blog";
 
 
 /*  */
@@ -935,11 +935,11 @@
 
 
 /*  */
-"devices.explain_ar.paired" = "Openscape is momenteel niet verbonden met je %@. Controleer of je koptelefoon is ingeschakeld en zich in de buurt van je telefoon bevindt.";
+"devices.explain_ar.paired" = "Soundscape is momenteel niet verbonden met je %@. Controleer of je koptelefoon is ingeschakeld en zich in de buurt van je telefoon bevindt.";
 
 
 /*  */
-"devices.connect_headset.calibrate.explanation" = "Je koptelefoon is verbonden met openscape maar moet worden gekalibreerd voor gebruik. Openscape laat weten wanneer de koptelefoon moet worden gekalibreerd, bijvoorbeeld elke keer wanneer je deze aanzet.";
+"devices.connect_headset.calibrate.explanation" = "Je koptelefoon is verbonden met Soundscape maar moet worden gekalibreerd voor gebruik. Soundscape laat weten wanneer de koptelefoon moet worden gekalibreerd, bijvoorbeeld elke keer wanneer je deze aanzet.";
 
 
 /*  */
@@ -987,7 +987,7 @@
 
 
 /*  */
-"behavior.experiences.no_events.caption.2" = "Als je meer wilt weten of als jouw organisatie belangstelling heeft voor het creëren van eigen Openscape-ervaringen, laat ons dat dan weten op email@address.com";
+"behavior.experiences.no_events.caption.2" = "Als je meer wilt weten of als jouw organisatie belangstelling heeft voor het creëren van eigen Soundscape-ervaringen, laat ons dat dan weten op email@address.com";
 
 
 /*  */
@@ -1035,7 +1035,7 @@
 
 
 /*  */
-"tutorial.markers.text.EditMarker" = "Heel goed! Je hebt @!marker_name!! geselecteerd als markering. Je hoort een melding van Openscape wanneer je in de buurt komt.\nOp het volgende scherm kun je de naam veranderen als je dat wilt.";
+"tutorial.markers.text.EditMarker" = "Heel goed! Je hebt @!marker_name!! geselecteerd als markering. Je hoort een melding van Soundscape wanneer je in de buurt komt.\nOp het volgende scherm kun je de naam veranderen als je dat wilt.";
 
 
 /*  */
@@ -1079,7 +1079,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Openscape kan de stemmen gebruiken die je hebt gedownload in de iOS Instellingen-app, met uitzondering van de Siri-stemmen die niet beschikbaar zijn in Openscape. Je kunt het beste een van de verbeterde stemmen kiezen omdat deze een veel betere spraakkwaliteit hebben. Om dat te doen moet je echter eerst een verbeterde stem downloaden. Download stemmen in de iOS Instellingen-app via Toegankelijkheid > Gesproken materiaal > Stemmen en tik op een stem. In openscape kun je de gewenste stem selecteren door naar Instellingen in het hoofdmenu te gaan en Stem te selecteren.";
+"help.config.voices.content" = "Soundscape kan de stemmen gebruiken die je hebt gedownload in de iOS Instellingen-app, met uitzondering van de Siri-stemmen die niet beschikbaar zijn in Soundscape. Je kunt het beste een van de verbeterde stemmen kiezen omdat deze een veel betere spraakkwaliteit hebben. Om dat te doen moet je echter eerst een verbeterde stem downloaden. Download stemmen in de iOS Instellingen-app via Toegankelijkheid > Gesproken materiaal > Stemmen en tik op een stem. In Soundscape kun je de gewenste stem selecteren door naar Instellingen in het hoofdmenu te gaan en Stem te selecteren.";
 
 
 /*  */
@@ -1111,11 +1111,11 @@
 
 
 /*  */
-"first_launch.welcome_audio_text" = "Welkom! Met Openscape blijf je je gemakkelijker bewust van waar je bent en waar je naartoe gaat door unieke audioaanwijzingen en door het beschrijven van wegen, kruispunten en plaatsen als je deze nadert. Druk op Volgende om te beginnen.";
+"first_launch.welcome_audio_text" = "Welkom! Met Soundscape blijf je je gemakkelijker bewust van waar je bent en waar je naartoe gaat door unieke audioaanwijzingen en door het beschrijven van wegen, kruispunten en plaatsen als je deze nadert. Druk op Volgende om te beginnen.";
 
 
 /*  */
-"first_launch.location.text" = "Openscape is een op locatie gebaseerde app. We gebruiken je locatie om dingen om je heen te zoeken en te beschrijven.";
+"first_launch.location.text" = "Soundscape is een op locatie gebaseerde app. We gebruiken je locatie om dingen om je heen te zoeken en te beschrijven.";
 
 
 /*  */
@@ -1131,11 +1131,11 @@
 
 
 /*  */
-"first_launch.headphones.title" = "Luisteren naar Openscape";
+"first_launch.headphones.title" = "Luisteren naar Soundscape";
 
 
 /*  */
-"first_launch.callouts.message" = "Met Openscape ben je je steeds bewust van waar je bent en waar je heen loopt doordat straten, kruispunten en referentiepunten worden genoemd als je ze nadert.";
+"first_launch.callouts.message" = "Met Soundscape ben je je steeds bewust van waar je bent en waar je heen loopt doordat straten, kruispunten en referentiepunten worden genoemd als je ze nadert.";
 
 
 /*  */
@@ -1143,7 +1143,7 @@
 
 
 /*  */
-"first_launch.permissions.message" = "Wanneer je navigeert met Openscape, word je begeleid door een audiobaken. Als je dat wilt gebruiken, moet je voor het volgende toestemming geven:";
+"first_launch.permissions.message" = "Wanneer je navigeert met Soundscape, word je begeleid door een audiobaken. Als je dat wilt gebruiken, moet je voor het volgende toestemming geven:";
 
 
 /*  */
@@ -1187,7 +1187,7 @@
 
 
 /*  */
-"help.text.remote_control.what" = "Met de mediaregelknoppen op je koptelefoon heb je toegang tot bepaalde functies in Openscape. Deze functionaliteit werkt op alle vaste en Bluetooth-koptelefoons met mediaregelknoppen als Afspelen, Pauzeren, Volgende, Vorige en andere. Verschillende koptelefoons hebben mogelijk andere knoppen dus kijk in de onderstaande lijst met acties om te bepalen welke beschikbaar zijn op jouw koptelefoon.<br>Houd er ook rekening mee dat deze functie alleen werkt op koptelefoons die mediaregelknoppen van Apple ondersteunen (zoals afspelen en pauzeren).";
+"help.text.remote_control.what" = "Met de mediaregelknoppen op je koptelefoon heb je toegang tot bepaalde functies in Soundscape. Deze functionaliteit werkt op alle vaste en Bluetooth-koptelefoons met mediaregelknoppen als Afspelen, Pauzeren, Volgende, Vorige en andere. Verschillende koptelefoons hebben mogelijk andere knoppen dus kijk in de onderstaande lijst met acties om te bepalen welke beschikbaar zijn op jouw koptelefoon.<br>Houd er ook rekening mee dat deze functie alleen werkt op koptelefoons die mediaregelknoppen van Apple ondersteunen (zoals afspelen en pauzeren).";
 
 
 /*  */
@@ -1203,7 +1203,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.when" = "Je kunt de AirPods altijd met Openscape gebruiken als je met Openscape wilt werken. Met AirPods krijg je geluid van hoge kwaliteit en kun je Openscape gemakkelijker handsfree gebruiken.";
+"help.using_headsets.airpods.when" = "Je kunt de AirPods altijd met Soundscape gebruiken als je met Soundscape wilt werken. Met AirPods krijg je geluid van hoge kwaliteit en kun je Soundscape gemakkelijker handsfree gebruiken.";
 
 
 /*  */
@@ -1271,7 +1271,7 @@
 
 
 /*  */
-"banner.offline_default.message" = "Openscape is offline. Meer informatie";
+"banner.offline_default.message" = "Soundscape is offline. Meer informatie";
 
 
 /*  */
@@ -1279,7 +1279,7 @@
 
 
 /*  */
-"push.local.home.title" = "Probeer openscape thuis";
+"push.local.home.title" = "Probeer Soundscape thuis";
 
 
 /*  */
@@ -1295,31 +1295,31 @@
 
 
 /*  */
-"faq.why_does_beacon_disappear.answer" = "Het audiobaken van Openscape is met name een richtingaanwijzing, zodat je weet waar je bestemming is ten opzichte van de richting waarin je kijkt. Wanneer Openscape niet zeker weet in welke richting je kijkt, wordt het volume van het baken verlaagd. Meestal gebeurt dit wanneer de telefoon in een tas of zak zit en je stopt met lopen, bijvoorbeeld om over te steken. Het baken wordt luider wanneer je weer gaat lopen of als je de telefoon vlak houdt en in de richting wijst waarin je kijkt.";
+"faq.why_does_beacon_disappear.answer" = "Het audiobaken van Soundscape is met name een richtingaanwijzing, zodat je weet waar je bestemming is ten opzichte van de richting waarin je kijkt. Wanneer Soundscape niet zeker weet in welke richting je kijkt, wordt het volume van het baken verlaagd. Meestal gebeurt dit wanneer de telefoon in een tas of zak zit en je stopt met lopen, bijvoorbeeld om over te steken. Het baken wordt luider wanneer je weer gaat lopen of als je de telefoon vlak houdt en in de richting wijst waarin je kijkt.";
 
 
 /*  */
-"faq.beacon_on_home.answer" = "Openscape ondersteunt het instellen van bakens op adressen. Als je een baken wilt instellen op je huis of op een ander adres, zoek dan naar een locatie vanuit het Openscape-hoofdscherm. Tik op het scherm Locatiedetails op de knop Audiobaken starten.";
+"faq.beacon_on_home.answer" = "Soundscape ondersteunt het instellen van bakens op adressen. Als je een baken wilt instellen op je huis of op een ander adres, zoek dan naar een locatie vanuit het Soundscape-hoofdscherm. Tik op het scherm Locatiedetails op de knop Audiobaken starten.";
 
 
 /*  */
-"faq.turn_beacon_back_on.answer" = "Ja, je kunt het baken met de knop Baken dempen opheffen weer aanzetten nadat het door Openscape is uitgezet. Omdat Locatievoorzieningen tot op circa 10 meter nauwkeurig werkt, kunnen we het gedrag van het baken echter niet garanderen als je slechts op een paar meter afstand van je bestemming bent.";
+"faq.turn_beacon_back_on.answer" = "Ja, je kunt het baken met de knop Baken dempen opheffen weer aanzetten nadat het door Soundscape is uitgezet. Omdat Locatievoorzieningen tot op circa 10 meter nauwkeurig werkt, kunnen we het gedrag van het baken echter niet garanderen als je slechts op een paar meter afstand van je bestemming bent.";
 
 
 /*  */
-"faq.why_not_every_business.answer" = "Openscape is niet ontworpen om veel tekst te produceren. Het werkt met Open Street Map als achterliggende gegevensbron. Open Street Map (OSM, https://www.openstreetmap.org/) is een door de community ontwikkelde en bewerkte kaart van de wereld, die steunt op individuen die gegevens invoeren en beheren. Als een bedrijf of referentiepunt niet door Openscape wordt gemeld, komt dat waarschijnlijk doordat het bedrijf nog niet is toegevoegd of bijgewerkt door een lid van de OSM-community.";
+"faq.why_not_every_business.answer" = "Soundscape is niet ontworpen om veel tekst te produceren. Het werkt met Open Street Map als achterliggende gegevensbron. Open Street Map (OSM, https://www.openstreetmap.org/) is een door de community ontwikkelde en bewerkte kaart van de wereld, die steunt op individuen die gegevens invoeren en beheren. Als een bedrijf of referentiepunt niet door Soundscape wordt gemeld, komt dat waarschijnlijk doordat het bedrijf nog niet is toegevoegd of bijgewerkt door een lid van de OSM-community.";
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Openscape heeft een lijst met je recente meldingen zodat je deze kunt bekijken als je ze hebt gemist. Tik hiervoor op de zoekbalk \n op het startscherm van Openscape. Onderaan deze pagina zie je de sectie Recente waarschuwingen waarin de melding staan die je hebt gemist.";
+"faq.miss_a_callout.answer" = "Soundscape heeft een lijst met je recente meldingen zodat je deze kunt bekijken als je ze hebt gemist. Tik hiervoor op de zoekbalk \n op het startscherm van Soundscape. Onderaan deze pagina zie je de sectie Recente waarschuwingen waarin de melding staan die je hebt gemist.";
 
 
 /*  */
-"faq.supported_headsets.answer" = "Welke koptelefoon je het beste met Openscape kunt gebruiken, is een kwestie van persoonlijke voorkeur en elke keuze heeft voor- en nadelen. De enige specifieke vereiste is dat je een stereokoptelefoon kiest zodat je de ruimtelijke 3D-audiomeldingen van Openscape hoort.";
+"faq.supported_headsets.answer" = "Welke koptelefoon je het beste met Soundscape kunt gebruiken, is een kwestie van persoonlijke voorkeur en elke keuze heeft voor- en nadelen. De enige specifieke vereiste is dat je een stereokoptelefoon kiest zodat je de ruimtelijke 3D-audiomeldingen van Soundscape hoort.";
 
 
 /*  */
-"faq.sleep_mode_battery.answer" = "Als je openscape in de slaapstand wilt zetten, selecteer dan de knop Slapen rechtsboven in het scherm. Vervolgens stopt Openscape met het gebruiken van de Locatievoorzieningen en mobiele data totdat je de app weer activeert.";
+"faq.sleep_mode_battery.answer" = "Als je Soundscape in de slaapstand wilt zetten, selecteer dan de knop Slapen rechtsboven in het scherm. Vervolgens stopt Soundscape met het gebruiken van de Locatievoorzieningen en mobiele data totdat je de app weer activeert.";
 
 
 /*  */
@@ -1327,19 +1327,19 @@
 
 
 /*  */
-"faq.mobile_data_use.answer" = "Hoeveel mobiele data wordt gebruikt is afhankelijk van hoe je Openscape gebruikt. Openscape is zo opgezet dat je slechts weinig gegevens gebruikt wanneer je rondloopt en plaatsen opslaat zodat je ze niet elke keer hoeft te downloaden als je opnieuw op  een plaats komt waar je al bent geweest. Als je het gegevensgebruik wilt verminderen, maak dan waar mogelijk gebruik van Wi-Fi, met name om de app te downloaden. Wanneer je Openscape niet gebruikt, kunje Openscape het beste in de slaapstand zetten met de knop Slapen of de app sluiten.";
+"faq.mobile_data_use.answer" = "Hoeveel mobiele data wordt gebruikt is afhankelijk van hoe je Soundscape gebruikt. Soundscape is zo opgezet dat je slechts weinig gegevens gebruikt wanneer je rondloopt en plaatsen opslaat zodat je ze niet elke keer hoeft te downloaden als je opnieuw op  een plaats komt waar je al bent geweest. Als je het gegevensgebruik wilt verminderen, maak dan waar mogelijk gebruik van Wi-Fi, met name om de app te downloaden. Wanneer je Soundscape niet gebruikt, kunje Soundscape het beste in de slaapstand zetten met de knop Slapen of de app sluiten.";
 
 
 /*  */
-"faq.use_with_wayfinding_apps.answer" = "Openscape is ontworpen als een hulpmiddel om je bewuster te maken van details in je omgeving. Het is niet ontworpen als een navigatie-app met routebeschrijvingen. Het kan wel samen met zulke apps worden gebruikt om aanvullende informatie te geven. Als je Openscape met deze apps wilt gebruiken, start je eerst je navigatie-app. Dan ga je naar Openscape en stel je een baken in op dezelfde bestemming als de navigatie-app. Nu werken beide apps tegelijk en hoor je een routebeschrijving van je navigatie-app, terwijl je van Openscape informatie krijgt over referentiepunten, kruispunten en de afstand tot je bestemming.";
+"faq.use_with_wayfinding_apps.answer" = "Soundscape is ontworpen als een hulpmiddel om je bewuster te maken van details in je omgeving. Het is niet ontworpen als een navigatie-app met routebeschrijvingen. Het kan wel samen met zulke apps worden gebruikt om aanvullende informatie te geven. Als je Soundscape met deze apps wilt gebruiken, start je eerst je navigatie-app. Dan ga je naar Soundscape en stel je een baken in op dezelfde bestemming als de navigatie-app. Nu werken beide apps tegelijk en hoor je een routebeschrijving van je navigatie-app, terwijl je van Soundscape informatie krijgt over referentiepunten, kruispunten en de afstand tot je bestemming.";
 
 
 /*  */
-"faq.holding_phone_flat.answer" = "Nee, tijdens het lopen kun je de telefoon in een tas of een zak stoppen of op een andere handige plek. Openscape gebruikt de richting waarin je loopt om te bepalen welke meldingen voor links en rechts worden aangekondigd. Als je stopt met bewegen, weet Openscape niet in welke richting je kijkt. Als het audiobaken is ingeschakeld, merk je dat dit stil is tot je weer verdergaat. Je kunt op elk gewenst moment je telefoon tevoorschijn halen en op de locatie- en verkenningsknoppen onderaan het scherm drukken. Zorg er wel altijd voor dat de bovenkant van de telefoon in de richting wijst waar je naartoe gaat en dat het scherm naar boven is gericht. In deze horizontale positie gebruikt Openscape het kompas van de telefoon om te bepalen in welke richting je kijkt en om ruimtelijke meldignen te geven. Als het baken is ingeschakeld, merk je ook dat het teruggaat naar het volledige volume.";
+"faq.holding_phone_flat.answer" = "Nee, tijdens het lopen kun je de telefoon in een tas of een zak stoppen of op een andere handige plek. Soundscape gebruikt de richting waarin je loopt om te bepalen welke meldingen voor links en rechts worden aangekondigd. Als je stopt met bewegen, weet Soundscape niet in welke richting je kijkt. Als het audiobaken is ingeschakeld, merk je dat dit stil is tot je weer verdergaat. Je kunt op elk gewenst moment je telefoon tevoorschijn halen en op de locatie- en verkenningsknoppen onderaan het scherm drukken. Zorg er wel altijd voor dat de bovenkant van de telefoon in de richting wijst waar je naartoe gaat en dat het scherm naar boven is gericht. In deze horizontale positie gebruikt Soundscape het kompas van de telefoon om te bepalen in welke richting je kijkt en om ruimtelijke meldignen te geven. Als het baken is ingeschakeld, merk je ook dat het teruggaat naar het volledige volume.";
 
 
 /*  */
-"faq.what_is_osm.answer" = "Openscape maakt gebruik van geografische kaartgegevens voor de informatieve meldingen in de app. De primaire bron voor de kaarten die we gebruiken, is Open Street Map (www.openstreetmap.org). Dit is een uitgebreid door de community gegenereerd kaartenplatform, waarmee organisaties en individuele personen de kwaliteit en de gedetailleerdheid van de verstrekte informatie en de toegankelijkheid van hun locaties kunnen verbeteren met de hulpmiddelen van Open Street Map voor het maken van kaarten.";
+"faq.what_is_osm.answer" = "Soundscape maakt gebruik van geografische kaartgegevens voor de informatieve meldingen in de app. De primaire bron voor de kaarten die we gebruiken, is Open Street Map (www.openstreetmap.org). Dit is een uitgebreid door de community gegenereerd kaartenplatform, waarmee organisaties en individuele personen de kwaliteit en de gedetailleerdheid van de verstrekte informatie en de toegankelijkheid van hun locaties kunnen verbeteren met de hulpmiddelen van Open Street Map voor het maken van kaarten.";
 
 
 /*  */
@@ -1349,5 +1349,5 @@
 /*  */
 "faq.tip.two_finger_double_tap" = "Dubbeltik met twee vingers op het scherm om actieve waarschuwingen op stil te zetten.";
 
-// MARK: What is Openscape?
+// MARK: What is Soundscape?
 
