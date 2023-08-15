@@ -28,6 +28,10 @@ class GeometryUtils {
     static let earthRadius = Double(6378137)
     
     /// Parses a GeoJSON string and returns the coordinates and type values.
+    ///
+    /// See:
+    /// * https://geojson.org
+    /// * RFC 7946
     static func coordinates(geoJson: String) -> (type: GeometryType?, points: [Any]?) {
         guard !geoJson.isEmpty, let jsonObject = GDAJSONObject(string: geoJson) else {
                 return (nil, nil)
@@ -47,7 +51,7 @@ class GeometryUtils {
         return (geometryType, geometry)
     }
     
-    /// Returns whether a coordinate lies inside of path.
+    /// Returns whether a coordinate lies inside of the region contained within the coordinate path.
     /// The path is always considered closed, regardless of whether the last point equals the first or not.
     static func geometryContainsLocation(location: CLLocationCoordinate2D, coordinates: [CLLocationCoordinate2D]) -> Bool {
         guard coordinates.count > 0 else {
@@ -82,8 +86,8 @@ class GeometryUtils {
     /// point on that path which is no further away from the first point than the specified `maxDistance`.
     ///
     /// - Parameters:
-    ///   - path: The reference path.
-    ///   - maxDistance: The max distance for calculating the reference coordinate along the path.
+    ///     - for: The reference path.
+    ///     - maxDistance: The max distance for calculating the reference coordinate along the path.
     /// - Returns: The bearing of a coordinates path.
     ///
     /// - note: The path most have more than one coordinate.
@@ -116,7 +120,7 @@ class GeometryUtils {
     ///     - path: The reference path.
     ///     - coordinate: The reference coordinate.
     ///     - reversedDirection: If `true` is passed, the returned sub-coordinates will be
-    ///     cauculated from the reference coordinate to the start of the path.
+    ///     calculated from the reference coordinate to the start of the path.
     /// - Returns: The sub-coordinates from a coordinate on a path until the end or start of the path.
     static func split(path: [CLLocationCoordinate2D],
                       atCoordinate coordinate: CLLocationCoordinate2D,
@@ -165,7 +169,7 @@ class GeometryUtils {
     ///  and there are more than 2 coordinates).
     ///
     /// - Parameters:
-    ///   - path: The reference path.
+    ///     - path: The reference path.
     /// - Returns: `true` if the path is a circular path, `false` otherwise.
     static func pathIsCircular(_ path: [CLLocationCoordinate2D]) -> Bool {
         guard path.count > 2, let first = path.first, let last = path.last else {
@@ -178,7 +182,7 @@ class GeometryUtils {
     ///  Returns the distance of a coordinate path
     ///
     /// - Parameters:
-    ///   - path: The reference path.
+    ///     - path: The reference path.
     /// - Returns: The distance of a coordinate path
     static func pathDistance(_ path: [CLLocationCoordinate2D]) -> CLLocationDistance {
         guard path.count > 1 else {
@@ -194,7 +198,7 @@ class GeometryUtils {
         return distance
     }
     
-    /// Calculates a coordinate on a path at a target distance from the path's first coordinate.
+    /// Calculates a coordinate on a path at a target distance along the path from the path's first coordinate.
     /// - note: If the target distance is greater than the path distance, the last path coordinate is returned.
     /// - note: If the target distance is between two coordinates on the path, a synthesized coordinate between the coordinates is returned.
     /// - note: If the target distance is smaller or equal to zero, the first path coordinate is returned.
@@ -303,6 +307,8 @@ class GeometryUtils {
         return ((cX - projX) * (cX - projX) + (cY - projY) * (cY - projY), lat, lon)
     }
     
+    /// Finds the closest point on an edge of the polygon (including intermediate points along edges) to the given coordinate.
+    /// - Returns: `nil` if the polygon is empty (i.e. no edges)
     static func closestEdge(from coordinate: CLLocationCoordinate2D, on polygon: GAMultiLine) -> CLLocation? {
         var coordinates: [CLLocationCoordinate2D] = []
         
@@ -316,7 +322,13 @@ class GeometryUtils {
         return closestEdge(from: coordinate, on: coordinates)
     }
     
+    /// Finds the closest point on the path (including intermediate points along edges) to the given coordinate.
+    /// - Returns: `nil` if there are no edges (less than two points in `path`)
     static func closestEdge(from coordinate: CLLocationCoordinate2D, on path: [CLLocationCoordinate2D]) -> CLLocation? {
+        guard !path.isEmpty else {
+            return nil;
+        }
+        
         // Used to calculate distance to a point on a polygon
         let zoomLevel: UInt = 23
         let res: Double = VectorTile.groundResolution(latitude: coordinate.latitude, zoom: zoomLevel)
@@ -364,10 +376,9 @@ class GeometryUtils {
     /// ```
     ///
     /// - Parameters:
-    ///     - start: The start coordinate.
-    ///     - end: The end coordinate.
+    ///     - coordinates: The original coordinate path.
     ///     - distance: The fixed distance to use between the interpolated coodinates.
-    /// - Returns: An coordinates path including the original coordinates and any coordiantes between
+    /// - Returns: A coordinate path including the original coordinates and any coordiantes between
     /// them with a fixed distance of `distance`.
     static func interpolateToEqualDistance(coordinates: [CLLocationCoordinate2D],
                                            distance targetDistance: CLLocationDistance) -> [CLLocationCoordinate2D] {
@@ -447,6 +458,7 @@ class GeometryUtils {
 extension GeometryUtils {
     
     /// Returns a generated coordinate representing the mean center of a given array of coordinates.
+    /// - Note: See `centroid(coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D?`
     static func centroid(geoJson: String) -> CLLocationCoordinate2D? {
         guard let points = GeometryUtils.coordinates(geoJson: geoJson).points else {
             return nil
@@ -472,7 +484,7 @@ extension GeometryUtils {
     }
     
     /// Returns a generated coordinate representing the mean center of a given array of `CLLocation` objects.
-    /// - Note: See `centroid(locations: [CLLocation]) -> CLLocationCoordinate2D?`
+    /// - Note: See `centroid(coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D?`
     static func centroid(locations: [CLLocation]) -> CLLocationCoordinate2D? {
         return GeometryUtils.centroid(coordinates: locations.map { (location) -> CLLocationCoordinate2D in
             return location.coordinate
