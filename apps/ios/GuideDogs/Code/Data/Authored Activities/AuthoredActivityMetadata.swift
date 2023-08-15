@@ -57,7 +57,7 @@ struct AuthoredActivityMetadata: Codable, CustomStringConvertible {
         case .v2, .v3:
             // Version 2 and 3 links also look the same (perk of forking)
             components.scheme = "https"
-            components.host = "share.openscape.io"
+            components.host = "share.soundscape.services"
             components.path = "experiences/\(id).gpx"
         }
         
