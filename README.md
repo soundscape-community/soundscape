@@ -1,7 +1,6 @@
 # Soundscape: 3D audio awareness for everyone
 
-<<<<<<< HEAD
-[![Build Status](https://github.com/openscape-community/openscape/actions/workflows/build-for-testflight.yml/badge.svg)](https://github.com/openscape-community/openscape/actions/workflows/build-for-testflight.yml)
+[![Build Status](https://github.com/soundscape-community/soundscape/actions/workflows/build-for-testflight.yml/badge.svg)](https://github.com/soundscape-community/soundscape/actions/workflows/build-for-testflight.yml)
 [![Translation Status](https://hosted.weblate.org/widgets/openscape/-/svg-badge.svg)](https://hosted.weblate.org/engage/openscape/)
 
 This is a community effort to bring the features of [Microsoft Soundscape](https://www.microsoft.com/en-us/research/product/soundscape/) back to blind and visually-impaired travelers everywhere. Starting with the [components released as open source](https://github.com/microsoft/soundscape) by Microsoft Research, we have filled in some of the missing pieces and services to keep it functional.
@@ -12,14 +11,14 @@ This is a community effort to bring the features of [Microsoft Soundscape](https
 
 For more technical details, see the [original README](https://github.com/microsoft/soundscape/blob/main/README.md) from the open-source Soundscape repository.
 
-## Building Openscape
+## Building Soundscape
 
-See the [iOS client build documentation](https://github.com/openscape-community/openscape/blob/main/docs/ios-client/onboarding.md) in the repo, along with the [build tips](https://github.com/openscape-community/openscape/wiki/build-tips) on the wiki.
+See the [iOS client build documentation](https://github.com/soundscape-community/soundscape/blob/main/docs/ios-client/onboarding.md) in the repo, along with the [build tips](https://github.com/soundscape-community/soundscape/wiki/build-tips) on the wiki.
 
 ## Getting involved
 
-Browse through the [open issues](https://github.com/openscape-community/openscape/issues). Items labeled "help-wanted" are particularly good candidates for contribution.
+Browse through the [open issues](https://github.com/soundscape-community/soundscape/issues). Items labeled "help-wanted" are particularly good candidates for contribution.
 
 Join [our Discord server](https://discord.gg/VQHkZJ8mcA) to discuss the project, give feedback, or just say hello.
 
-[Translate Openscape](https://hosted.weblate.org/engage/openscape/) in your own language or contribute to an existing translation on Weblate.
+[Translate Soundscape](https://hosted.weblate.org/engage/openscape/) in your own language or contribute to an existing translation on Weblate.
