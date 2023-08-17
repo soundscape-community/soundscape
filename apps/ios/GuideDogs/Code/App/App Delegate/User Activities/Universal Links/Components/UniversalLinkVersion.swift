@@ -1,6 +1,6 @@
 //
 //  UniversalLinkVersion.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -27,7 +27,7 @@ enum UniversalLinkVersion: String, Codable {
         }
     }
     
-    // `defaultVersion` is used when Openscape
+    // `defaultVersion` is used when Soundscape
     // is launched with an unversioned universal link
     static let defaultVersion: UniversalLinkVersion = .v1
     

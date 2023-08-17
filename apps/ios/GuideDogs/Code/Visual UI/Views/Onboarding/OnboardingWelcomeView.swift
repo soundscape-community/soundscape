@@ -1,6 +1,6 @@
 //
 //  OnboardingWelcomeView.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -30,7 +30,7 @@ struct OnboardingWelcomeView: View {
     
     var body: some View {
         NavigationView {
-            OnboardingContainer(coverImage: Image("permissions-intro"), accessibilityLabel: GDLocalizationUnnecessary("Openscape")) {
+            OnboardingContainer(coverImage: Image("permissions-intro"), accessibilityLabel: GDLocalizationUnnecessary("Soundscape")) {
                 Spacer()
                 
                 VStack(spacing: 12.0) {

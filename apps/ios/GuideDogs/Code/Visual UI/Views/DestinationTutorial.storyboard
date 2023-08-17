@@ -11,7 +11,7 @@
         <!--Destination Tutorial Beacon Page-->
         <scene sceneID="b48-se-ECg">
             <objects>
-                <viewController storyboardIdentifier="beaconDTViewController" id="zA5-5c-FCh" customClass="DestinationTutorialBeaconPage" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="beaconDTViewController" id="zA5-5c-FCh" customClass="DestinationTutorialBeaconPage" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8vL-GE-wjX"/>
                         <viewControllerLayoutGuide type="bottom" id="yDj-cs-EYU"/>
@@ -94,7 +94,7 @@
         <!--Destination Tutorial Mute Page-->
         <scene sceneID="Q70-ja-Lrb">
             <objects>
-                <viewController storyboardIdentifier="calloutsDTViewController" id="M6P-kj-DC1" customClass="DestinationTutorialMutePage" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="calloutsDTViewController" id="M6P-kj-DC1" customClass="DestinationTutorialMutePage" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zap-EA-Wfv"/>
                         <viewControllerLayoutGuide type="bottom" id="aLg-YN-JWZ"/>
@@ -180,7 +180,7 @@
         <!--Destination Tutorial Intro View Controller-->
         <scene sceneID="BuG-iZ-gcH">
             <objects>
-                <viewController storyboardIdentifier="DestinationTutorialIntroViewController" id="7KP-q4-au9" customClass="DestinationTutorialIntroViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DestinationTutorialIntroViewController" id="7KP-q4-au9" customClass="DestinationTutorialIntroViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dj6-Zd-Ize"/>
                         <viewControllerLayoutGuide type="bottom" id="1BX-gt-RzN"/>
@@ -233,7 +233,7 @@
                                     <constraint firstItem="FpU-a8-ZfG" firstAttribute="top" secondItem="6ib-yD-kKQ" secondAttribute="bottom" constant="30" id="z6U-22-7h8"/>
                                 </constraints>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GPG-FV-LxO" customClass="RoundedSolidButton" customModule="Openscape" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GPG-FV-LxO" customClass="RoundedSolidButton" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="32" y="549" width="311" height="45"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -264,7 +264,7 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="localization" value="location_detail.action.beacon"/>
                                 </userDefinedRuntimeAttributes>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TIL-Gg-vR7" customClass="RoundedSolidButton" customModule="Openscape" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TIL-Gg-vR7" customClass="RoundedSolidButton" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="32" y="614" width="311" height="45"/>
                                 <color key="backgroundColor" systemColor="systemRedColor"/>
                                 <constraints>
@@ -333,7 +333,7 @@
         <!--Destination Tutorial Info Page-->
         <scene sceneID="BVS-js-cVM">
             <objects>
-                <viewController storyboardIdentifier="homeDTViewController" id="qh4-hg-MRk" customClass="DestinationTutorialInfoPage" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="homeDTViewController" id="qh4-hg-MRk" customClass="DestinationTutorialInfoPage" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MYJ-cT-xNx"/>
                         <viewControllerLayoutGuide type="bottom" id="u64-b0-CZB"/>
@@ -417,7 +417,7 @@
         <!--Destination Tutorial View Controller-->
         <scene sceneID="P0R-hf-Tks">
             <objects>
-                <viewController modalTransitionStyle="crossDissolve" id="waj-t4-HpH" customClass="DestinationTutorialViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="crossDissolve" id="waj-t4-HpH" customClass="DestinationTutorialViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Y5W-R3-HRH"/>
                         <viewControllerLayoutGuide type="bottom" id="a2Z-6u-xAQ"/>
@@ -440,7 +440,7 @@
                                     <action selector="pageControlOnValueChanged:" destination="waj-t4-HpH" eventType="valueChanged" id="ynr-Wy-Fe6"/>
                                 </connections>
                             </pageControl>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A2s-1e-di2" customClass="RoundedSolidButton" customModule="Openscape" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A2s-1e-di2" customClass="RoundedSolidButton" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="32" y="616.5" width="311" height="45"/>
                                 <color key="backgroundColor" systemColor="systemRedColor"/>
                                 <constraints>

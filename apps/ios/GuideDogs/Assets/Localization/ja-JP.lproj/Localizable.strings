@@ -155,7 +155,7 @@
 
 
 /*  */
-"general.alert.offline_default.message" = "Openscape はオフラインです。このままでも openscape を使用できますが、一部の機能が制限される場合があります。";
+"general.alert.offline_default.message" = "Soundscape はオフラインです。このままでも Soundscape を使用できますが、一部の機能が制限される場合があります。";
 
 
 /*  */
@@ -163,7 +163,7 @@
 
 
 /*  */
-"general.alert.offline_search.message" = "Openscape がオフラインの場合、検索は無効になります。閉じると、前の画面に戻ります";
+"general.alert.offline_search.message" = "Soundscape がオフラインの場合、検索は無効になります。閉じると、前の画面に戻ります";
 
 
 /*  */
@@ -231,11 +231,11 @@
 
 
 /*  */
-"general.error.location_services" = "Openscape を使用するには位置情報サービスを有効にしてください";
+"general.error.location_services" = "Soundscape を使用するには位置情報サービスを有効にしてください";
 
 
 /*  */
-"general.error.precise_location" = "Openscape を使用するには [正確な位置情報] を有効にしてください";
+"general.error.precise_location" = "Soundscape を使用するには [正確な位置情報] を有効にしてください";
 
 
 /*  */
@@ -243,7 +243,7 @@
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Openscape は位置情報を使用して、周辺の場所などに関する情報を提供します。このアプリは、位置情報サービスを使用するため、ユーザーの許可が必要です。";
+"general.error.location_services.authorize.description" = "Soundscape は位置情報を使用して、周辺の場所などに関する情報を提供します。このアプリは、位置情報サービスを使用するため、ユーザーの許可が必要です。";
 
 
 /*  */
@@ -255,7 +255,7 @@
 
 
 /*  */
-"general.error.location_services_resume" = "Openscape を開いて位置情報サービスを再開してください";
+"general.error.location_services_resume" = "Soundscape を開いて位置情報サービスを再開してください";
 
 
 /*  */
@@ -263,7 +263,7 @@
 
 
 /*  */
-"general.error.location_services_enable_description" = "位置情報サービスが無効になっています。位置情報サービスが無効な状態では Openscape を使用できません。";
+"general.error.location_services_enable_description" = "位置情報サービスが無効になっています。位置情報サービスが無効な状態では Soundscape を使用できません。";
 
 
 /*  */
@@ -279,7 +279,7 @@
 
 
 /*  */
-"general.error.heading" = "向いている方向が openscape で認識されません。スマートフォンを水平に持つか、歩き出して、再度試してください";
+"general.error.heading" = "向いている方向が Soundscape で認識されません。スマートフォンを水平に持つか、歩き出して、再度試してください";
 
 
 /*  */
@@ -299,7 +299,7 @@
 
 
 /*  */
-"general.error.network_connection_required.deleting_data" = "Openscape の地図データを消去して再読み込みするには、ネットワーク接続が必要です。スマートフォンが機内モードになっていないことを確認してください。";
+"general.error.network_connection_required.deleting_data" = "Soundscape の地図データを消去して再読み込みするには、ネットワーク接続が必要です。スマートフォンが機内モードになっていないことを確認してください。";
 
 
 /*  */
@@ -331,11 +331,11 @@
 
 
 /*  */
-"device_motion.enable.description" = "モーションとフィットネスのトラッキングが無効になっています。モーションとフィットネスのトラッキングがオフになっていると Openscape を使用できません。";
+"device_motion.enable.description" = "モーションとフィットネスのトラッキングが無効になっています。モーションとフィットネスのトラッキングがオフになっていると Soundscape を使用できません。";
 
 
 /*  */
-"device_motion.enable.instructions" = "続行するには [設定] アプリで [フィットネストラッキング] をオンにします。\n\n1. [設定を開く] を押します\n2. [設定] に戻るボタンを押します\n3. [プライバシー] を選択します\n4. [モーションとフィットネス] を選択します\n5. [フィットネストラッキング] をオンにします\n6. openscape を再起動します";
+"device_motion.enable.instructions" = "続行するには [設定] アプリで [フィットネストラッキング] をオンにします。\n\n1. [設定を開く] を押します\n2. [設定] に戻るボタンを押します\n3. [プライバシー] を選択します\n4. [モーションとフィットネス] を選択します\n5. [フィットネストラッキング] をオンにします\n6. Soundscape を再起動します";
 
 
 /*  */
@@ -343,7 +343,7 @@
 
 
 /*  */
-"device_motion.authorize.description" = "これにより、歩行中か乗車中か立ち止まっているのかという状態が反映されるようになり、Openscape のエクスペリエンスが向上します。アプリに「モーションとフィットネス」の使用を許可する必要があります。このアクセス許可を openscape に付与するには、[設定]、[プライバシー]、[モーションとフィットネス] の順に開いて [フィットネストラッキング] を有効にしておく必要があります。";
+"device_motion.authorize.description" = "これにより、歩行中か乗車中か立ち止まっているのかという状態が反映されるようになり、Soundscape のエクスペリエンスが向上します。アプリに「モーションとフィットネス」の使用を許可する必要があります。このアクセス許可を Soundscape に付与するには、[設定]、[プライバシー]、[モーションとフィットネス] の順に開いて [フィットネストラッキング] を有効にしておく必要があります。";
 
 
 /*  */
@@ -367,7 +367,7 @@
 
 
 /*  */
-"settings.about_app" = "Openscape について";
+"settings.about_app" = "Soundscape について";
 
 
 /*  */
@@ -383,7 +383,7 @@
 
 
 /*  */
-"setting.audio.mix_with_others.confirmation" = "この設定をオンにすると、他のメディア アプリの使用を開始したときに、Openscape のコールアウトなどの音声が一時停止されます。Openscape に戻るとコールアウトが再開されます。";
+"setting.audio.mix_with_others.confirmation" = "この設定をオンにすると、他のメディア アプリの使用を開始したときに、Soundscape のコールアウトなどの音声が一時停止されます。Soundscape に戻るとコールアウトが再開されます。";
 
 
 /*  */
@@ -403,11 +403,11 @@
 
 
 /*  */
-"voice.apple.no_siri" = "Siri の声は openscape で使用できないため、一覧に表示されません。";
+"voice.apple.no_siri" = "Siri の声は Soundscape で使用できないため、一覧に表示されません。";
 
 
 /*  */
-"beacon.settings.style.haptic.explanation" = "これらのビーコン スタイルでは、通常のビーコン音声に加えて触覚フィードバックを感じることができます。触覚フィードバックは、携帯電話のロックが解除されており、Openscape が開いているときにのみ利用できます。";
+"beacon.settings.style.haptic.explanation" = "これらのビーコン スタイルでは、通常のビーコン音声に加えて触覚フィードバックを感じることができます。触覚フィードバックは、携帯電話のロックが解除されており、Soundscape が開いているときにのみ利用できます。";
 
 
 /*  */
@@ -419,7 +419,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.explanation" = "Openscape で使用しているヘッドホンの状態を確認するには、このボタンをタップします。";
+"troubleshooting.check_audio.explanation" = "Soundscape で使用しているヘッドホンの状態を確認するには、このボタンをタップします。";
 
 
 /*  */
@@ -499,11 +499,11 @@
 
 
 /*  */
-"preview.include_unnamed_roads.subtitle" = "Openscape Street Preview で無名道路を含める";
+"preview.include_unnamed_roads.subtitle" = "Soundscape Street Preview で無名道路を含める";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Openscape Street Preview で無名道路を除外するには、ダブルタップします";
+"preview.include_unnamed_roads.hint.on" = "Soundscape Street Preview で無名道路を除外するには、ダブルタップします";
 
 
 /*  */
@@ -635,7 +635,7 @@
 
 
 /*  */
-"universal_links.marker.share.message" = "Openscape マーカーをあなたと共有しました! \"%@\"";
+"universal_links.marker.share.message" = "Soundscape マーカーをあなたと共有しました! \"%@\"";
 
 
 /*  */
@@ -643,7 +643,7 @@
 
 
 /*  */
-"user_activity.search.title" = "Openscape で検索";
+"user_activity.search.title" = "Soundscape で検索";
 
 
 /*  */
@@ -751,7 +751,7 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Openscape は現在スヌーズ状態です。現在地から移動すると、Openscape のスヌーズは自動的に解除されます。この状態では位置情報サービスが使用されますが、低電力モードでバッテリー消費が抑えられます。すぐにスヌーズを解除するには、下のボタンをタップしてください。";
+"sleep.snoozing.message" = "Soundscape は現在スヌーズ状態です。現在地から移動すると、Soundscape のスヌーズは自動的に解除されます。この状態では位置情報サービスが使用されますが、低電力モードでバッテリー消費が抑えられます。すぐにスヌーズを解除するには、下のボタンをタップしてください。";
 
 
 /*  */
@@ -911,7 +911,7 @@
 
 
 /*  */
-"menu.learning_resources" = "Openscape ブログ";
+"menu.learning_resources" = "Soundscape ブログ";
 
 
 /*  */
@@ -935,11 +935,11 @@
 
 
 /*  */
-"devices.explain_ar.paired" = "Openscape は現在 %@ に接続されていません。ヘッドホンの電源が入っていること、スマートフォンの近くにあることを確認してください。";
+"devices.explain_ar.paired" = "Soundscape は現在 %@ に接続されていません。ヘッドホンの電源が入っていること、スマートフォンの近くにあることを確認してください。";
 
 
 /*  */
-"devices.connect_headset.calibrate.explanation" = "ヘッドホンは正常に openscape に接続されていますが、使用前に調整が必要です。ヘッドホンをオンにしたときなど、ヘッドホンの調整が必要な場合には、Openscape から通知されます。";
+"devices.connect_headset.calibrate.explanation" = "ヘッドホンは正常に Soundscape に接続されていますが、使用前に調整が必要です。ヘッドホンをオンにしたときなど、ヘッドホンの調整が必要な場合には、Soundscape から通知されます。";
 
 
 /*  */
@@ -987,7 +987,7 @@
 
 
 /*  */
-"behavior.experiences.no_events.caption.2" = "詳細について知りたい場合やカスタムの openscape エクスペリエンスの作成に興味がある場合は、email@address.com までご連絡ください。";
+"behavior.experiences.no_events.caption.2" = "詳細について知りたい場合やカスタムの Soundscape エクスペリエンスの作成に興味がある場合は、email@address.com までご連絡ください。";
 
 
 /*  */
@@ -1035,7 +1035,7 @@
 
 
 /*  */
-"tutorial.markers.text.EditMarker" = "できました。@!marker_name!! をマーカーとして選択しました。近くまで行くと、Openscape でコールアウトされます。\n次の画面で、必要に応じてマーカーの名前を変更できます。";
+"tutorial.markers.text.EditMarker" = "できました。@!marker_name!! をマーカーとして選択しました。近くまで行くと、Soundscape でコールアウトされます。\n次の画面で、必要に応じてマーカーの名前を変更できます。";
 
 
 /*  */
@@ -1079,7 +1079,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Openscape では、iOS の [設定] アプリでダウンロードした声を使用できます。ただし、Siri の声は openscape では使用できません。音声の品質が高いため、「拡張」の声を選択することをお勧めしますが、「拡張」の声を選択するにはあらかじめダウンロードしておく必要があります。iOS の [設定] アプリで声をダウンロードするには、[アクセシビリティ]、[読み上げコンテンツ]、[声] の順に選択して、声をタップします。Openscape アプリで、使用する声を選択するには、メイン メニューの [設定] を選択し、[声] を選択します。";
+"help.config.voices.content" = "Soundscape では、iOS の [設定] アプリでダウンロードした声を使用できます。ただし、Siri の声は Soundscape では使用できません。音声の品質が高いため、「拡張」の声を選択することをお勧めしますが、「拡張」の声を選択するにはあらかじめダウンロードしておく必要があります。iOS の [設定] アプリで声をダウンロードするには、[アクセシビリティ]、[読み上げコンテンツ]、[声] の順に選択して、声をタップします。Soundscape アプリで、使用する声を選択するには、メイン メニューの [設定] を選択し、[声] を選択します。";
 
 
 /*  */
@@ -1111,11 +1111,11 @@
 
 
 /*  */
-"first_launch.welcome_audio_text" = "ようこそ。Openscape は現在地や目的地の情報を確認しながら歩くのに役立ちます。独自の音声ガイドがあり、道路や交差点、さまざまな場所に近付くとコールアウトでお知らせします。始めるには [次へ] ボタンを押してください。";
+"first_launch.welcome_audio_text" = "ようこそ。Soundscape は現在地や目的地の情報を確認しながら歩くのに役立ちます。独自の音声ガイドがあり、道路や交差点、さまざまな場所に近付くとコールアウトでお知らせします。始めるには [次へ] ボタンを押してください。";
 
 
 /*  */
-"first_launch.location.text" = "Openscape は、位置情報を使用するアプリです。ユーザーの位置情報を使用して、周辺の情報を確認し、コールアウトします。";
+"first_launch.location.text" = "Soundscape は、位置情報を使用するアプリです。ユーザーの位置情報を使用して、周辺の情報を確認し、コールアウトします。";
 
 
 /*  */
@@ -1131,11 +1131,11 @@
 
 
 /*  */
-"first_launch.headphones.title" = "Openscape の音声を聞く";
+"first_launch.headphones.title" = "Soundscape の音声を聞く";
 
 
 /*  */
-"first_launch.callouts.message" = "Openscape では、道路、交差点、特定地点に向かって進むとコールアウトされるので、現在地と目的地を常に把握できます。";
+"first_launch.callouts.message" = "Soundscape では、道路、交差点、特定地点に向かって進むとコールアウトされるので、現在地と目的地を常に把握できます。";
 
 
 /*  */
@@ -1143,7 +1143,7 @@
 
 
 /*  */
-"first_launch.permissions.message" = "移動中に openscape を使用すると、音声ビーコンでガイドが聞こえます。この機能を使用するには、次の項目を許可する必要があります:";
+"first_launch.permissions.message" = "移動中に Soundscape を使用すると、音声ビーコンでガイドが聞こえます。この機能を使用するには、次の項目を許可する必要があります:";
 
 
 /*  */
@@ -1187,7 +1187,7 @@
 
 
 /*  */
-"help.text.remote_control.what" = "ヘッドホンのメディアコントロール ボタンを使用して、Openscape の特定の機能にアクセスできます。この機能は、再生、一時停止、次へ、前へなどのメディアコントロール ボタンのある有線または Bluetooth のヘッドホンで使用できます。ヘッドホンによって使用できるボタンが異なる場合があるため、使用できる機能については、以下の動作の一覧を参照してください。<br>なお、この機能は、Apple のメディアコントロール (再生や一時停止など) に対応しているヘッドホンでのみ使用できます。";
+"help.text.remote_control.what" = "ヘッドホンのメディアコントロール ボタンを使用して、Soundscape の特定の機能にアクセスできます。この機能は、再生、一時停止、次へ、前へなどのメディアコントロール ボタンのある有線または Bluetooth のヘッドホンで使用できます。ヘッドホンによって使用できるボタンが異なる場合があるため、使用できる機能については、以下の動作の一覧を参照してください。<br>なお、この機能は、Apple のメディアコントロール (再生や一時停止など) に対応しているヘッドホンでのみ使用できます。";
 
 
 /*  */
@@ -1203,7 +1203,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.when" = "通常の openscape の使用時はいつでも AirPods を openscape で使用できます。AirPods を使用すると、高品質の音声を使用でき、Openscape のハンズフリー機能が向上します。";
+"help.using_headsets.airpods.when" = "通常の Soundscape の使用時はいつでも AirPods を Soundscape で使用できます。AirPods を使用すると、高品質の音声を使用でき、Soundscape のハンズフリー機能が向上します。";
 
 
 /*  */
@@ -1271,7 +1271,7 @@
 
 
 /*  */
-"banner.offline_default.message" = "Openscape はオフラインです。詳細情報";
+"banner.offline_default.message" = "Soundscape はオフラインです。詳細情報";
 
 
 /*  */
@@ -1279,7 +1279,7 @@
 
 
 /*  */
-"push.local.home.title" = "自宅で openscape を試す";
+"push.local.home.title" = "自宅で Soundscape を試す";
 
 
 /*  */
@@ -1295,31 +1295,31 @@
 
 
 /*  */
-"faq.why_does_beacon_disappear.answer" = "Openscape の音声ビーコンは、基本的には、ユーザーが向いている方向に対して目的地がどこにあるか、その方向を知らせる合図です。ユーザーがどちらの方向を向いているかを openscape が認識できないときには、ビーコンの音量が下がります。多くの場合、このような状態になるのは、ポケットやカバンにスマートフォンを入れたまま歩いていて、横断歩道で立ち止まったときなどです。再び動き出すか、スマートフォンを自分の向いている方向に合わせて水平に持つとビーコンが大きな音で聞こえるようになります。";
+"faq.why_does_beacon_disappear.answer" = "Soundscape の音声ビーコンは、基本的には、ユーザーが向いている方向に対して目的地がどこにあるか、その方向を知らせる合図です。ユーザーがどちらの方向を向いているかを Soundscape が認識できないときには、ビーコンの音量が下がります。多くの場合、このような状態になるのは、ポケットやカバンにスマートフォンを入れたまま歩いていて、横断歩道で立ち止まったときなどです。再び動き出すか、スマートフォンを自分の向いている方向に合わせて水平に持つとビーコンが大きな音で聞こえるようになります。";
 
 
 /*  */
-"faq.beacon_on_home.answer" = "Openscape では、住所にビーコンを設定できます。自宅やその他の住所にビーコンを設定するには、Openscape のメイン画面で場所を検索します。[場所の詳細] 画面で [音声ビーコンを開始] ボタンをタップします。";
+"faq.beacon_on_home.answer" = "Soundscape では、住所にビーコンを設定できます。自宅やその他の住所にビーコンを設定するには、Soundscape のメイン画面で場所を検索します。[場所の詳細] 画面で [音声ビーコンを開始] ボタンをタップします。";
 
 
 /*  */
-"faq.turn_beacon_back_on.answer" = "はい。Openscape で一度オフにしたビーコンは、[ビーコンのミュートを解除] ボタンを選択すると、再びオンにすることができます。ただし、位置情報サービスの精度は約 10 メートルであるため、目的地から数メートルの距離にいる場合、ビーコンの動作は保証されません。";
+"faq.turn_beacon_back_on.answer" = "はい。Soundscape で一度オフにしたビーコンは、[ビーコンのミュートを解除] ボタンを選択すると、再びオンにすることができます。ただし、位置情報サービスの精度は約 10 メートルであるため、目的地から数メートルの距離にいる場合、ビーコンの動作は保証されません。";
 
 
 /*  */
-"faq.why_not_every_business.answer" = "Openscape は音声がうるさくなりすぎないように設計されています。また、バックエンドのデータ ソースとして Open Street Map を使用しています。Open Street Map (OSM、http://www.openstreetmap.org/) は、コミュニティで開発と編集が行われている地図で、データの入力や収集、整理は個人に頼っています。Openscape で通知されない店舗や特定地点がある場合、原因として最も可能性が高いのは、OSM コミュニティのメンバーによってその場所の情報がまだ追加されていないか、場合によっては更新が行われていないことです。";
+"faq.why_not_every_business.answer" = "Soundscape は音声がうるさくなりすぎないように設計されています。また、バックエンドのデータ ソースとして Open Street Map を使用しています。Open Street Map (OSM、http://www.openstreetmap.org/) は、コミュニティで開発と編集が行われている地図で、データの入力や収集、整理は個人に頼っています。Soundscape で通知されない店舗や特定地点がある場合、原因として最も可能性が高いのは、OSM コミュニティのメンバーによってその場所の情報がまだ追加されていないか、場合によっては更新が行われていないことです。";
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Openscape には最近のコールアウトの一覧があり、聞き逃したコールアウトを確認できます。この一覧を確認するには、Openscape ホーム画面の検索バーをタップします。このページの下に [最近のコールアウト] のセクションがあり、聞き逃したコールアウトが表示されます。";
+"faq.miss_a_callout.answer" = "Soundscape には最近のコールアウトの一覧があり、聞き逃したコールアウトを確認できます。この一覧を確認するには、Soundscape ホーム画面の検索バーをタップします。このページの下に [最近のコールアウト] のセクションがあり、聞き逃したコールアウトが表示されます。";
 
 
 /*  */
-"faq.supported_headsets.answer" = "Openscape で使用するヘッドホンは、お好みで選択してください。それぞれのヘッドホンにメリットとトレードオフがあります。唯一の必須事項は、Openscape の 3D 空間オーディオのコールアウトを体験できるように、ステレオ ヘッドホンを使用することです。";
+"faq.supported_headsets.answer" = "Soundscape で使用するヘッドホンは、お好みで選択してください。それぞれのヘッドホンにメリットとトレードオフがあります。唯一の必須事項は、Soundscape の 3D 空間オーディオのコールアウトを体験できるように、ステレオ ヘッドホンを使用することです。";
 
 
 /*  */
-"faq.sleep_mode_battery.answer" = "Openscape をスリープ モードにするには、画面上部の右端にある [スリープ] ボタンを選択します。選択すると、スリープ モードを解除するまで、Openscape による位置情報サービスとモバイル データの使用が停止されます。";
+"faq.sleep_mode_battery.answer" = "Soundscape をスリープ モードにするには、画面上部の右端にある [スリープ] ボタンを選択します。選択すると、スリープ モードを解除するまで、Soundscape による位置情報サービスとモバイル データの使用が停止されます。";
 
 
 /*  */
@@ -1327,19 +1327,19 @@
 
 
 /*  */
-"faq.mobile_data_use.answer" = "モバイル データの使用量は、Openscape の使い方によって異なります。Openscape は外出先や移動中に使用するデータ量が少なくなるように設計されています。たとえば、歩いた地点の情報は保存され、既に行った場所を再度歩く場合に毎回データをダウンロードせずに済むようになっています。モバイル データの使用量を減らすには、特にアプリをダウンロードするときなどは、可能な限り Wi-Fi に接続するようにします。Openscape を使用しないときは、[スリープ] ボタンを使用して openscape をスリープ モードにするか、アプリを強制的に終了します。";
+"faq.mobile_data_use.answer" = "モバイル データの使用量は、Soundscape の使い方によって異なります。Soundscape は外出先や移動中に使用するデータ量が少なくなるように設計されています。たとえば、歩いた地点の情報は保存され、既に行った場所を再度歩く場合に毎回データをダウンロードせずに済むようになっています。モバイル データの使用量を減らすには、特にアプリをダウンロードするときなどは、可能な限り Wi-Fi に接続するようにします。Soundscape を使用しないときは、[スリープ] ボタンを使用して Soundscape をスリープ モードにするか、アプリを強制的に終了します。";
 
 
 /*  */
-"faq.use_with_wayfinding_apps.answer" = "Openscape は、従来の方法では知りえなかった、自分の周辺の情報を知ることができる視覚サポート アプリです。道順を案内するアプリではありませんが、道案内のアプリと併せて使用すると、補助的な情報が得られます。そのようなアプリと openscape を併用する場合は、道案内のアプリを先に起動します。それから openscape に切り替えて、道案内のアプリと同じ目的地にビーコンを設定します。この状態で両方のアプリを実行しておくと、道案内アプリで進む道の指示が聞こえるのと同時に、Openscape で特定地点や交差点、目的地までの距離に関する情報を確認できます。";
+"faq.use_with_wayfinding_apps.answer" = "Soundscape は、従来の方法では知りえなかった、自分の周辺の情報を知ることができる視覚サポート アプリです。道順を案内するアプリではありませんが、道案内のアプリと併せて使用すると、補助的な情報が得られます。そのようなアプリと Soundscape を併用する場合は、道案内のアプリを先に起動します。それから Soundscape に切り替えて、道案内のアプリと同じ目的地にビーコンを設定します。この状態で両方のアプリを実行しておくと、道案内アプリで進む道の指示が聞こえるのと同時に、Soundscape で特定地点や交差点、目的地までの距離に関する情報を確認できます。";
 
 
 /*  */
-"faq.holding_phone_flat.answer" = "その必要はありません。移動中はカバンやポケットなど、好きなところにスマートフォンを入れておいて構いません。Openscape はユーザーが歩いている方向をもとに、左右どちらからコールアウトが聞こえるようにするかを判断します。ユーザーが止まると、Openscape はユーザーが向いている方向がわからなくなります。音声ビーコンをオンにしている場合、ユーザーが動き出すまで、音が鳴らなくなります。いつでもスマートフォンを取り出して画面下部にある位置情報や探索のボタンを使用することができますが、必ずスマートフォンの上部を向かう方向に向け、画面が上 (空) を向くように持ってください。この「水平」な位置では、Openscape がスマートフォンのコンパスを使用して、ユーザーが向いている方角を判断し、立体音響のコールアウトを正確に提供できます。ビーコンがオンになっている場合、フルボリュームで聞こえるようになります。";
+"faq.holding_phone_flat.answer" = "その必要はありません。移動中はカバンやポケットなど、好きなところにスマートフォンを入れておいて構いません。Soundscape はユーザーが歩いている方向をもとに、左右どちらからコールアウトが聞こえるようにするかを判断します。ユーザーが止まると、Soundscape はユーザーが向いている方向がわからなくなります。音声ビーコンをオンにしている場合、ユーザーが動き出すまで、音が鳴らなくなります。いつでもスマートフォンを取り出して画面下部にある位置情報や探索のボタンを使用することができますが、必ずスマートフォンの上部を向かう方向に向け、画面が上 (空) を向くように持ってください。この「水平」な位置では、Soundscape がスマートフォンのコンパスを使用して、ユーザーが向いている方角を判断し、立体音響のコールアウトを正確に提供できます。ビーコンがオンになっている場合、フルボリュームで聞こえるようになります。";
 
 
 /*  */
-"faq.what_is_osm.answer" = "Openscape は、アプリ内で情報をコールアウトするために、地図データを利用します。地図データの主要な情報源となっているのが Open Street Map (www.openstreetmap.org) です。Open Street Map は、充実したコミュニティによって作成されている地図データ プラットフォームで、組織や個人が Open Street Map の地図編集ツールを使用して、提供される情報の品質や精度とその空間へのアクセス性を向上させることができます。";
+"faq.what_is_osm.answer" = "Soundscape は、アプリ内で情報をコールアウトするために、地図データを利用します。地図データの主要な情報源となっているのが Open Street Map (www.openstreetmap.org) です。Open Street Map は、充実したコミュニティによって作成されている地図データ プラットフォームで、組織や個人が Open Street Map の地図編集ツールを使用して、提供される情報の品質や精度とその空間へのアクセス性を向上させることができます。";
 
 
 /*  */

@@ -6,25 +6,25 @@
   Licensed under the MIT License.
 */
 
-/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. {NumberedPlaceholder="Openscape"} */
-"NSBluetoothPeripheralUsageDescription" = "Openscape uses Bluetooth LE to connect to accessories.";
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. {NumberedPlaceholder="Soundscape"} */
+"NSBluetoothPeripheralUsageDescription" = "Soundscape uses Bluetooth LE to connect to accessories.";
 
 /* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. This
    Permission is new to iOS 13.
-    {NumberedPlaceholder="Openscape"} */
-"NSBluetoothAlwaysUsageDescription" = "Openscape uses Bluetooth LE to connect to accessories.";
+    {NumberedPlaceholder="Soundscape"} */
+"NSBluetoothAlwaysUsageDescription" = "Soundscape uses Bluetooth LE to connect to accessories.";
 
-/* A message that tells the user why the app is requesting access to the user’s location information at all times. {NumberedPlaceholder="Openscape"} */
-"NSLocationAlwaysUsageDescription" = "Openscape uses your location to provide you with relevant information about your surroundings.";
+/* A message that tells the user why the app is requesting access to the user’s location information at all times. {NumberedPlaceholder="Soundscape"} */
+"NSLocationAlwaysUsageDescription" = "Soundscape uses your location to provide you with relevant information about your surroundings.";
 
-/* A message that tells the user why the app is requesting access to the user's location at all times in iOS versions earlier than iOS 10.0. {NumberedPlaceholder="Openscape"} */
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Openscape uses your location to provide you with relevant information about your surroundings.";
+/* A message that tells the user why the app is requesting access to the user's location at all times in iOS versions earlier than iOS 10.0. {NumberedPlaceholder="Soundscape"} */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Soundscape uses your location to provide you with relevant information about your surroundings.";
 
-/* A message that tells the user why the app is requesting access to the user’s location information while running in the foreground. {NumberedPlaceholder="Openscape"} */
-"NSLocationWhenInUseUsageDescription" = "Openscape uses your location to provide you with relevant information about your surroundings.";
+/* A message that tells the user why the app is requesting access to the user’s location information while running in the foreground. {NumberedPlaceholder="Soundscape"} */
+"NSLocationWhenInUseUsageDescription" = "Soundscape uses your location to provide you with relevant information about your surroundings.";
 
-/* A message that tells the user why the app is requesting access to the device’s accelerometer. {NumberedPlaceholder="Openscape"} */
-"NSMotionUsageDescription" = "Openscape uses motion detection to personalize automatic callouts.";
+/* A message that tells the user why the app is requesting access to the device’s accelerometer. {NumberedPlaceholder="Soundscape"} */
+"NSMotionUsageDescription" = "Soundscape uses motion detection to personalize automatic callouts.";
 
-/* A message that tells the user why the app is requesting access to the user’s photo library. {NumberedPlaceholder="Openscape"} */
-"NSPhotoLibraryUsageDescription" = "Openscape uses the photo library for attaching photos to feedback.";
+/* A message that tells the user why the app is requesting access to the user’s photo library. {NumberedPlaceholder="Soundscape"} */
+"NSPhotoLibraryUsageDescription" = "Soundscape uses the photo library for attaching photos to feedback.";

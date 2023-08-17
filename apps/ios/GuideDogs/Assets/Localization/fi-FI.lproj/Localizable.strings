@@ -155,7 +155,7 @@
 
 
 /*  */
-"general.alert.offline_default.message" = "Openscape on offline-tilassa. openscape jatkaa kuitenkin toimintaansa, mutta jotkin toiminnot voivat olla rajoitettuja.";
+"general.alert.offline_default.message" = "Soundscape on offline-tilassa. Soundscape jatkaa kuitenkin toimintaansa, mutta jotkin toiminnot voivat olla rajoitettuja.";
 
 
 /*  */
@@ -163,7 +163,7 @@
 
 
 /*  */
-"general.alert.offline_search.message" = "Kun openscape toimii offline-tilassa, haku on pois käytöstä. Hylkää palataksesi edelliselle näytölle";
+"general.alert.offline_search.message" = "Kun Soundscape toimii offline-tilassa, haku on pois käytöstä. Hylkää palataksesi edelliselle näytölle";
 
 
 /*  */
@@ -243,7 +243,7 @@
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Openscape käyttää sijaintiasi löytääkseen paikkoja ja asioita ympäriltäsi ja kertoakseen niistä sinulle. Tämä sovellus tarvitsee luvan sijaintipalveluiden käyttöön.";
+"general.error.location_services.authorize.description" = "Soundscape käyttää sijaintiasi löytääkseen paikkoja ja asioita ympäriltäsi ja kertoakseen niistä sinulle. Tämä sovellus tarvitsee luvan sijaintipalveluiden käyttöön.";
 
 
 /*  */
@@ -255,7 +255,7 @@
 
 
 /*  */
-"general.error.location_services_resume" = "Avaa Openscape jatkaaksesi sijaintipalveluiden käyttöä";
+"general.error.location_services_resume" = "Avaa Soundscape jatkaaksesi sijaintipalveluiden käyttöä";
 
 
 /*  */
@@ -263,7 +263,7 @@
 
 
 /*  */
-"general.error.location_services_enable_description" = "Sijaintipalvelut on poistettu käytöstä. Openscape ei voi toimia, kun sijaintipalvelut ovat pois käytöstä.";
+"general.error.location_services_enable_description" = "Sijaintipalvelut on poistettu käytöstä. Soundscape ei voi toimia, kun sijaintipalvelut ovat pois käytöstä.";
 
 
 /*  */
@@ -279,7 +279,7 @@
 
 
 /*  */
-"general.error.heading" = "Openscape ei ole varma, mihin suuntaan olet kääntyneenä. Pitele puhelintasi vaakatasossa tai ala kävellä ja yritä uudelleen.";
+"general.error.heading" = "Soundscape ei ole varma, mihin suuntaan olet kääntyneenä. Pitele puhelintasi vaakatasossa tai ala kävellä ja yritä uudelleen.";
 
 
 /*  */
@@ -331,11 +331,11 @@
 
 
 /*  */
-"device_motion.enable.description" = "Liikkeen ja kuntoilun seuranta on poistettu käytöstä. Openscape ei voi toimia, kun Liikkeen ja kuntoilun seuranta on poistettu käytöstä.";
+"device_motion.enable.description" = "Liikkeen ja kuntoilun seuranta on poistettu käytöstä. Soundscape ei voi toimia, kun Liikkeen ja kuntoilun seuranta on poistettu käytöstä.";
 
 
 /*  */
-"device_motion.enable.instructions" = "Ota Kuntoseuranta käyttöön Asetukset-sovelluksessa jatkaaksesi.\n\n1. Paina Avaa Asetukset\n2. Paina Takaisin-painiketta (nimeltä Asetukset)\n3. Valitse Tietosuoja\n4. Valitse Liike ja Kuntoilu\n5. Ota Kuntoseuranta käyttöön\n6. Käynnistä openscape uudelleen";
+"device_motion.enable.instructions" = "Ota Kuntoseuranta käyttöön Asetukset-sovelluksessa jatkaaksesi.\n\n1. Paina Avaa Asetukset\n2. Paina Takaisin-painiketta (nimeltä Asetukset)\n3. Valitse Tietosuoja\n4. Valitse Liike ja Kuntoilu\n5. Ota Kuntoseuranta käyttöön\n6. Käynnistä Soundscape uudelleen";
 
 
 /*  */
@@ -407,7 +407,7 @@
 
 
 /*  */
-"beacon.settings.style.haptic.explanation" = "Nämä majakkatyylit sisältävät värinäpalautteen, jonka voit tuntea tavanomaisten majakkaäänten lisäksi. Värinäpalaute on käytössä vain, kun puhelin ei ole lukittu ja openscape on avattu.";
+"beacon.settings.style.haptic.explanation" = "Nämä majakkatyylit sisältävät värinäpalautteen, jonka voit tuntea tavanomaisten majakkaäänten lisäksi. Värinäpalaute on käytössä vain, kun puhelin ei ole lukittu ja Soundscape on avattu.";
 
 
 /*  */
@@ -499,11 +499,11 @@
 
 
 /*  */
-"preview.include_unnamed_roads.subtitle" = "Sisällytä nimettömät tiet openscape Street Preview -toimintoon";
+"preview.include_unnamed_roads.subtitle" = "Sisällytä nimettömät tiet Soundscape Street Preview -toimintoon";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Kaksoisnapauta jättääksesi pois nimettömät tiet openscape Street Preview -toiminnosta";
+"preview.include_unnamed_roads.hint.on" = "Kaksoisnapauta jättääksesi pois nimettömät tiet Soundscape Street Preview -toiminnosta";
 
 
 /*  */
@@ -635,7 +635,7 @@
 
 
 /*  */
-"universal_links.marker.share.message" = "Jaoin Openscape-merkinnän kanssasi! \"%@\"";
+"universal_links.marker.share.message" = "Jaoin Soundscape-merkinnän kanssasi! \"%@\"";
 
 
 /*  */
@@ -751,7 +751,7 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Openscape on odotustilassa. Kun lähdet nykyisestä sijainnistasi, openscape herää automaattisesti. Tämä käyttää sijaintipalveluita akunsäästötilassa säästääkseen puhelimesi akkua. Napauta alla olevaa painiketta herättääksesi nyt.";
+"sleep.snoozing.message" = "Soundscape on odotustilassa. Kun lähdet nykyisestä sijainnistasi, Soundscape herää automaattisesti. Tämä käyttää sijaintipalveluita akunsäästötilassa säästääkseen puhelimesi akkua. Napauta alla olevaa painiketta herättääksesi nyt.";
 
 
 /*  */
@@ -939,7 +939,7 @@
 
 
 /*  */
-"devices.connect_headset.calibrate.explanation" = "Kuulokkeesi yhdistyivät Soundscapeen onnistuneesti, mutta ne on kalibroitava ennen käyttöä. openscape ilmoittaa, kun kuulokkeiden kalibrointi on tarpeen, esimerkiksi joka kerta, kun käynnistät sen.";
+"devices.connect_headset.calibrate.explanation" = "Kuulokkeesi yhdistyivät Soundscapeen onnistuneesti, mutta ne on kalibroitava ennen käyttöä. Soundscape ilmoittaa, kun kuulokkeiden kalibrointi on tarpeen, esimerkiksi joka kerta, kun käynnistät sen.";
 
 
 /*  */
@@ -987,7 +987,7 @@
 
 
 /*  */
-"behavior.experiences.no_events.caption.2" = "Lähetä meille sähköpostia osoitteeseen email@address.com, jos haluat lisätietoja tai jos organisaatiosi on kiinnostunut luomaan mukautettuja Openscape-kokemuksia";
+"behavior.experiences.no_events.caption.2" = "Lähetä meille sähköpostia osoitteeseen email@address.com, jos haluat lisätietoja tai jos organisaatiosi on kiinnostunut luomaan mukautettuja Soundscape-kokemuksia";
 
 
 /*  */
@@ -1079,7 +1079,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Openscape voi käyttää mitä tahansa iOS:in asetuksissa lataamiasi puheääniä, paitsi Siri-puheääniä, jotka eivät olet Soundscapen käytössä. Suosittelemme valitsemaan jonkin \"Paremmista\" puheäänistä, koska niiden äänen laatu on paljon parempi, mutta sitä varten sinun on ensin ladattava parempi ääni. Voit ladata puheääniä iOS:in Asetukset-sovelluksella siirtymällä kohtaan Käyttöapu > Puhuttu sisältö > Puheäänet ja napauttamalla ääntä. Voit valita Openscape-sovelluksessa haluamasi äänen siirtymällä päävalikosta kohtaan Asetukset ja valitsemalla asetuksen \"Puhe\".";
+"help.config.voices.content" = "Soundscape voi käyttää mitä tahansa iOS:in asetuksissa lataamiasi puheääniä, paitsi Siri-puheääniä, jotka eivät olet Soundscapen käytössä. Suosittelemme valitsemaan jonkin \"Paremmista\" puheäänistä, koska niiden äänen laatu on paljon parempi, mutta sitä varten sinun on ensin ladattava parempi ääni. Voit ladata puheääniä iOS:in Asetukset-sovelluksella siirtymällä kohtaan Käyttöapu > Puhuttu sisältö > Puheäänet ja napauttamalla ääntä. Voit valita Soundscape-sovelluksessa haluamasi äänen siirtymällä päävalikosta kohtaan Asetukset ja valitsemalla asetuksen \"Puhe\".";
 
 
 /*  */
@@ -1111,11 +1111,11 @@
 
 
 /*  */
-"first_launch.welcome_audio_text" = "Tervetuloa! openscape auttaa sinua pysymään ajan tasalla siitä, missä olet, ja mihin olet menossa käyttämällä ainutlaatuisia ääniopasteita ja ilmoittamalla tiet, risteykset ja paikat, kun lähestyt niitä. Paina Seuraava-painiketta aloittaaksesi.";
+"first_launch.welcome_audio_text" = "Tervetuloa! Soundscape auttaa sinua pysymään ajan tasalla siitä, missä olet, ja mihin olet menossa käyttämällä ainutlaatuisia ääniopasteita ja ilmoittamalla tiet, risteykset ja paikat, kun lähestyt niitä. Paina Seuraava-painiketta aloittaaksesi.";
 
 
 /*  */
-"first_launch.location.text" = "Openscape on sijaintiin perustuva sovellus. Käytämme sijaintiasi löytääksemme asioita ympäristöstäsi ja ilmoittaaksemme niistä.";
+"first_launch.location.text" = "Soundscape on sijaintiin perustuva sovellus. Käytämme sijaintiasi löytääksemme asioita ympäristöstäsi ja ilmoittaaksemme niistä.";
 
 
 /*  */
@@ -1135,7 +1135,7 @@
 
 
 /*  */
-"first_launch.callouts.message" = "Openscape auttaa sinua pysymään tietoisena siitä, missä olet ja mihin olet menossa. Se mainitsee tiet, risteykset ja kiinnostavat kohteet kun lähestyt niitä.";
+"first_launch.callouts.message" = "Soundscape auttaa sinua pysymään tietoisena siitä, missä olet ja mihin olet menossa. Se mainitsee tiet, risteykset ja kiinnostavat kohteet kun lähestyt niitä.";
 
 
 /*  */
@@ -1203,7 +1203,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.when" = "Voit käyttää AirPods-kuulokkeita Soundscapen kanssa aina, kun tavallisesti käyttäisit Soundscapea. AirPods-kuulokkeiden käyttö tarjoaa korkealaatuisen äänen ja sallii kädet vapauttavamman Openscape-käyttökokemuksen.";
+"help.using_headsets.airpods.when" = "Voit käyttää AirPods-kuulokkeita Soundscapen kanssa aina, kun tavallisesti käyttäisit Soundscapea. AirPods-kuulokkeiden käyttö tarjoaa korkealaatuisen äänen ja sallii kädet vapauttavamman Soundscape-käyttökokemuksen.";
 
 
 /*  */
@@ -1271,7 +1271,7 @@
 
 
 /*  */
-"banner.offline_default.message" = "Openscape toimii offline-tilassa. Lisätietoja";
+"banner.offline_default.message" = "Soundscape toimii offline-tilassa. Lisätietoja";
 
 
 /*  */
@@ -1295,19 +1295,19 @@
 
 
 /*  */
-"faq.why_does_beacon_disappear.answer" = "Soundscapen äänimajakka on pohjimmiltaan suuntavihje, joka kertoo, missä suunnassa määränpääsi on suhteessa suuntaan, johon olet kääntyneenä. Kun openscape ei ole varma siitä, mihin suuntaan olet kääntyneenä, se vaimentaa majakan ääntä. Useimmiten tämä tapahtuu, kun olet kävellyt puhelin taskussa tai laukussa ja lakkaat liikkumasta esimerkiksi kadun ylitystä varten. Majakan ääni voimistuu, kun alat jälleen liikkumaan tai pitelet puhelinta vaakatasossa ja osoitat sillä suuntaan, johon olet kääntyneenä.";
+"faq.why_does_beacon_disappear.answer" = "Soundscapen äänimajakka on pohjimmiltaan suuntavihje, joka kertoo, missä suunnassa määränpääsi on suhteessa suuntaan, johon olet kääntyneenä. Kun Soundscape ei ole varma siitä, mihin suuntaan olet kääntyneenä, se vaimentaa majakan ääntä. Useimmiten tämä tapahtuu, kun olet kävellyt puhelin taskussa tai laukussa ja lakkaat liikkumasta esimerkiksi kadun ylitystä varten. Majakan ääni voimistuu, kun alat jälleen liikkumaan tai pitelet puhelinta vaakatasossa ja osoitat sillä suuntaan, johon olet kääntyneenä.";
 
 
 /*  */
-"faq.beacon_on_home.answer" = "Openscape tukee majakoiden määrittämistä osoitteisiin. Voit määrittää majakan kotiisi tai mihin tahansa muuhun osoitteeseen etsimällä sijaintia Soundscapen päänäytöltä. Napauta \"Sijainnin tiedot\" -näytöllä \"Käynnistä äänimajakka\" -painiketta.";
+"faq.beacon_on_home.answer" = "Soundscape tukee majakoiden määrittämistä osoitteisiin. Voit määrittää majakan kotiisi tai mihin tahansa muuhun osoitteeseen etsimällä sijaintia Soundscapen päänäytöltä. Napauta \"Sijainnin tiedot\" -näytöllä \"Käynnistä äänimajakka\" -painiketta.";
 
 
 /*  */
-"faq.turn_beacon_back_on.answer" = "Kyllä, voit laittaa majakan uudelleen päälle, kun openscape on laittanut sen pois päältä valitsemalla \"poista majakan hiljennys -painikkeen\". Koska sijaintipalvelut ovat kuitenkin tarkkoja vain noin 10 metrin etäisyydellä, emme voi taata majakan toimintaa, kun olet muutaman metrin päässä määränpäästäsi.";
+"faq.turn_beacon_back_on.answer" = "Kyllä, voit laittaa majakan uudelleen päälle, kun Soundscape on laittanut sen pois päältä valitsemalla \"poista majakan hiljennys -painikkeen\". Koska sijaintipalvelut ovat kuitenkin tarkkoja vain noin 10 metrin etäisyydellä, emme voi taata majakan toimintaa, kun olet muutaman metrin päässä määränpäästäsi.";
 
 
 /*  */
-"faq.why_not_every_business.answer" = "Openscape on suunniteltu olemaan puhumatta liikaa. Se käyttää myös Open Street Map -karttapalvelua taustatietolähteenään. Open Street Map (OSM, https://www.openstreetmap.org/) on yhteisön kehittämä ja muokkaama maailmankartta, joka on riippuvainen yksilöistä, jotka syöttävät ja valikoivat tietoja. Jos openscape ei ilmoita yritystä tai kiinnostavaa kohdetta, todennäköisin syy siihen on, että OSM-yhteisön jäsen ei ole lisännyt, tai joissakin tapauksissa päivittänyt, yritystä.";
+"faq.why_not_every_business.answer" = "Soundscape on suunniteltu olemaan puhumatta liikaa. Se käyttää myös Open Street Map -karttapalvelua taustatietolähteenään. Open Street Map (OSM, https://www.openstreetmap.org/) on yhteisön kehittämä ja muokkaama maailmankartta, joka on riippuvainen yksilöistä, jotka syöttävät ja valikoivat tietoja. Jos Soundscape ei ilmoita yritystä tai kiinnostavaa kohdetta, todennäköisin syy siihen on, että OSM-yhteisön jäsen ei ole lisännyt, tai joissakin tapauksissa päivittänyt, yritystä.";
 
 
 /*  */
@@ -1319,7 +1319,7 @@
 
 
 /*  */
-"faq.sleep_mode_battery.answer" = "Voit asettaa Soundscapen lepotilaan valitsemalla \"Siirry lepotilaan\"-painikkeen näytön oikeasta yläkulmasta. Kun valitset tämän, openscape lakkaa käyttämästä sijaintipalveluita ja mobiilidataa, kunnes päätät taas herättää sen.";
+"faq.sleep_mode_battery.answer" = "Voit asettaa Soundscapen lepotilaan valitsemalla \"Siirry lepotilaan\"-painikkeen näytön oikeasta yläkulmasta. Kun valitset tämän, Soundscape lakkaa käyttämästä sijaintipalveluita ja mobiilidataa, kunnes päätät taas herättää sen.";
 
 
 /*  */
@@ -1331,15 +1331,15 @@
 
 
 /*  */
-"faq.use_with_wayfinding_apps.answer" = "Openscape on suunniteltu parantamaan tietoisuutta ympäristöstäsi ja antamaan lisätietoja sen yksityiskohdista, joita et ehkä muuten huomaisi. Sitä ei ole suunniteltu kääntymisohjeita antavaksi navigointisovellukseksi, mutta sitä voidaan käyttää sellaisten rinnalla antamaan täydentäviä tietoja. Jos haluat käyttää Soundscapea näiden sovellusten rinnalla, käynnistä ensin navigointisovellus. Siirry sitten Soundscapeen ja määritä äänimajakka samaan määränpäähän kuin navigointisovelluksessa. Tässä vaiheessa molemmat sovellukset ovat käynnissä ja kuulet kävelyohjeita navigointisovelluksestasi samalla, kun saat päivityksiä mielenkiintoisista kohteista, risteyksistä ja etäisyydestäsi määränpäähän Soundscapesta.";
+"faq.use_with_wayfinding_apps.answer" = "Soundscape on suunniteltu parantamaan tietoisuutta ympäristöstäsi ja antamaan lisätietoja sen yksityiskohdista, joita et ehkä muuten huomaisi. Sitä ei ole suunniteltu kääntymisohjeita antavaksi navigointisovellukseksi, mutta sitä voidaan käyttää sellaisten rinnalla antamaan täydentäviä tietoja. Jos haluat käyttää Soundscapea näiden sovellusten rinnalla, käynnistä ensin navigointisovellus. Siirry sitten Soundscapeen ja määritä äänimajakka samaan määränpäähän kuin navigointisovelluksessa. Tässä vaiheessa molemmat sovellukset ovat käynnissä ja kuulet kävelyohjeita navigointisovelluksestasi samalla, kun saat päivityksiä mielenkiintoisista kohteista, risteyksistä ja etäisyydestäsi määränpäähän Soundscapesta.";
 
 
 /*  */
-"faq.holding_phone_flat.answer" = "Ei! Voit laittaa puhelimen laukkuun tai taskuun tai mihin tahansa helppoon paikkaan. Soudscape käyttää kävelysuuntaasi päätelläkseen, mitä se ilmoittaa vasemmalla ja oikealla puolellasi. Kun lakkaat liikkumasta, openscape ei tiedä, mihin suuntaan olet kääntyneenä. Jos äänimajakka on päällä, huomaat, että se hiljenee, kunnes liikut taas. Voit ottaa koska tahansa puhelimen esiin painaaksesi sijainti- ja tutustumispainikkeita näytön alaosassa, mutta varmista, että pitelet puhelinta siten, että sen yläosa osoittaa taivaalle. Tässä \"vaakatasoisessa\" asennossa openscape käyttää puhelimen kompassia päätelläkseen, mihin suuntaan olet kääntyneenä ja antaa tarkkoja tilailmoituksia. Jos majakka on päällä huomaat, että sen äänenvoimakkuus myös kasvaa täydeksi.";
+"faq.holding_phone_flat.answer" = "Ei! Voit laittaa puhelimen laukkuun tai taskuun tai mihin tahansa helppoon paikkaan. Soudscape käyttää kävelysuuntaasi päätelläkseen, mitä se ilmoittaa vasemmalla ja oikealla puolellasi. Kun lakkaat liikkumasta, Soundscape ei tiedä, mihin suuntaan olet kääntyneenä. Jos äänimajakka on päällä, huomaat, että se hiljenee, kunnes liikut taas. Voit ottaa koska tahansa puhelimen esiin painaaksesi sijainti- ja tutustumispainikkeita näytön alaosassa, mutta varmista, että pitelet puhelinta siten, että sen yläosa osoittaa taivaalle. Tässä \"vaakatasoisessa\" asennossa Soundscape käyttää puhelimen kompassia päätelläkseen, mihin suuntaan olet kääntyneenä ja antaa tarkkoja tilailmoituksia. Jos majakka on päällä huomaat, että sen äänenvoimakkuus myös kasvaa täydeksi.";
 
 
 /*  */
-"faq.what_is_osm.answer" = "Openscape käyttää maantieteellisiä karttatietoja antaakseen tietoja sovelluksen ilmoituksissa. Tärkein käyttämämme lähde on Open Street Map (www.openstreetmap.org), joka on rikas yhteisön luoma kartta-alusta, joka antaa organisaatioille ja yksilöille mahdollisuuden parantaa annettujen tietojen laatua ja tarkkuutta sekä tilojen saavutettavuutta Open Street Map -karttojen luontityökalujen avulla.";
+"faq.what_is_osm.answer" = "Soundscape käyttää maantieteellisiä karttatietoja antaakseen tietoja sovelluksen ilmoituksissa. Tärkein käyttämämme lähde on Open Street Map (www.openstreetmap.org), joka on rikas yhteisön luoma kartta-alusta, joka antaa organisaatioille ja yksilöille mahdollisuuden parantaa annettujen tietojen laatua ja tarkkuutta sekä tilojen saavutettavuutta Open Street Map -karttojen luontityökalujen avulla.";
 
 
 /*  */

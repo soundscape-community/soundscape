@@ -11,7 +11,7 @@
         <!--Tour Card Container Hosting Controller-->
         <scene sceneID="RkX-4a-gQ9">
             <objects>
-                <hostingController storyboardIdentifier="TourCardContainerHost" id="MaB-gE-2Wh" customClass="TourCardContainerHostingController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController"/>
+                <hostingController storyboardIdentifier="TourCardContainerHost" id="MaB-gE-2Wh" customClass="TourCardContainerHostingController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PVT-Od-lbn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2331" y="-1152"/>
@@ -19,7 +19,7 @@
         <!--Navigation Controller-->
         <scene sceneID="IvO-QN-Zls">
             <objects>
-                <navigationController modalTransitionStyle="crossDissolve" modalPresentationStyle="currentContext" id="7et-YF-5hx" customClass="NavigationController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController modalTransitionStyle="crossDissolve" modalPresentationStyle="currentContext" id="7et-YF-5hx" customClass="NavigationController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" translucent="NO" id="cMv-KF-F6h">
                         <rect key="frame" x="0.0" y="48" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -99,7 +99,7 @@
         <!--Beacon View Hosting Controller-->
         <scene sceneID="VbI-NV-Cie">
             <objects>
-                <hostingController storyboardIdentifier="BeaconViewHostingController" id="Nlm-va-O9y" customClass="BeaconViewHostingController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <hostingController storyboardIdentifier="BeaconViewHostingController" id="Nlm-va-O9y" customClass="BeaconViewHostingController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="lCz-T0-rRz"/>
                 </hostingController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wba-Pz-3Fb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -181,7 +181,7 @@
         <!--HomeViewController-->
         <scene sceneID="a4Q-mN-6WF">
             <objects>
-                <viewController title="Home" extendedLayoutIncludesOpaqueBars="YES" definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" modalTransitionStyle="crossDissolve" modalPresentationStyle="overFullScreen" id="PZ9-iU-l1C" userLabel="HomeViewController" customClass="HomeViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Home" extendedLayoutIncludesOpaqueBars="YES" definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" modalTransitionStyle="crossDissolve" modalPresentationStyle="overFullScreen" id="PZ9-iU-l1C" userLabel="HomeViewController" customClass="HomeViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="XAW-SP-jg6"/>
                         <viewControllerLayoutGuide type="bottom" id="yRX-3D-ku0"/>
@@ -368,7 +368,7 @@
         <!--Callout Button Panel View Controller-->
         <scene sceneID="JJV-st-uvX">
             <objects>
-                <viewController storyboardIdentifier="CalloutButtonPanel" id="gdB-jw-QN3" customClass="CalloutButtonPanelViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CalloutButtonPanel" id="gdB-jw-QN3" customClass="CalloutButtonPanelViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Zed-1y-3sF"/>
                         <viewControllerLayoutGuide type="bottom" id="hQv-3m-1zO"/>
@@ -778,7 +778,7 @@ Markers</string>
         <!--Recommender View Hosting Controller-->
         <scene sceneID="dm0-SK-ao6">
             <objects>
-                <hostingController storyboardIdentifier="RecommenderViewHostingController" id="TfH-hk-ad7" customClass="RecommenderViewHostingController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController"/>
+                <hostingController storyboardIdentifier="RecommenderViewHostingController" id="TfH-hk-ad7" customClass="RecommenderViewHostingController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BiG-Ok-qv4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1122" y="-413"/>
@@ -786,7 +786,7 @@ Markers</string>
         <!--Standby View Controller-->
         <scene sceneID="Gyc-vz-1kH">
             <objects>
-                <viewController id="Grr-Cc-oJv" customClass="StandbyViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Grr-Cc-oJv" customClass="StandbyViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="oYc-rm-ce7"/>
                         <viewControllerLayoutGuide type="bottom" id="Q0m-aY-2hH"/>
@@ -821,7 +821,7 @@ Markers</string>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aCK-aV-ziP">
                                         <rect key="frame" x="32" y="316.5" width="350" height="130.5"/>
-                                        <string key="text">Openscape is currently sleeping. This prevents openscape from using your location information or downloading data. This conserves battery when you are not using Soundscape. Tap the button below to wake  openscape up.</string>
+                                        <string key="text">Soundscape is currently sleeping. This prevents openscape from using your location information or downloading data. This conserves battery when you are not using Soundscape. Tap the button below to wake  openscape up.</string>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -1021,7 +1021,7 @@ Markers</string>
         <!--Card State View Controller-->
         <scene sceneID="DvE-uS-xgF">
             <objects>
-                <viewController storyboardIdentifier="CardStateViewController" id="a2C-Hp-NQk" customClass="CardStateViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CardStateViewController" id="a2C-Hp-NQk" customClass="CardStateViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="a6m-3z-awb"/>
                         <viewControllerLayoutGuide type="bottom" id="qGZ-K2-Eea"/>

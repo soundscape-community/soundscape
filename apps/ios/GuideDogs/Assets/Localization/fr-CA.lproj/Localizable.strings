@@ -155,7 +155,7 @@
 
 
 /*  */
-"general.alert.offline_default.message" = "Openscape est en mode hors ligne. openscape continue quand même à fonctionner, mais certaines fonctions peuvent être limitées.";
+"general.alert.offline_default.message" = "Soundscape est en mode hors ligne. Soundscape continue quand même à fonctionner, mais certaines fonctions peuvent être limitées.";
 
 
 /*  */
@@ -163,7 +163,7 @@
 
 
 /*  */
-"general.alert.offline_search.message" = "Quand openscape est en mode hors ligne, la recherche est désactivée. Ignorez pour revenir à l’écran précédent";
+"general.alert.offline_search.message" = "Quand Soundscape est en mode hors ligne, la recherche est désactivée. Ignorez pour revenir à l’écran précédent";
 
 
 /*  */
@@ -231,11 +231,11 @@
 
 
 /*  */
-"general.error.location_services" = "Activer les services de localisation pour utiliser Openscape";
+"general.error.location_services" = "Activer les services de localisation pour utiliser Soundscape";
 
 
 /*  */
-"general.error.precise_location" = "Activer Localisation précise pour utiliser Openscape";
+"general.error.precise_location" = "Activer Localisation précise pour utiliser Soundscape";
 
 
 /*  */
@@ -243,7 +243,7 @@
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Openscape utilise votre localisation pour rechercher et vous indiquer les lieux et les choses qui vous entourent. L’appli nécessite votre autorisation pour utiliser les services de localisation.";
+"general.error.location_services.authorize.description" = "Soundscape utilise votre localisation pour rechercher et vous indiquer les lieux et les choses qui vous entourent. L’appli nécessite votre autorisation pour utiliser les services de localisation.";
 
 
 /*  */
@@ -255,7 +255,7 @@
 
 
 /*  */
-"general.error.location_services_resume" = "Ouvrir Openscape pour reprendre les services de localisation";
+"general.error.location_services_resume" = "Ouvrir Soundscape pour reprendre les services de localisation";
 
 
 /*  */
@@ -263,7 +263,7 @@
 
 
 /*  */
-"general.error.location_services_enable_description" = "Les services de localisation sont actuellement désactivés. Openscape ne peut pas fonctionner lorsque les services de localisation sont désactivés.";
+"general.error.location_services_enable_description" = "Les services de localisation sont actuellement désactivés. Soundscape ne peut pas fonctionner lorsque les services de localisation sont désactivés.";
 
 
 /*  */
@@ -279,7 +279,7 @@
 
 
 /*  */
-"general.error.heading" = "Openscape n’est pas sûr de la direction face à vous. Tenez votre téléphone à plat ou commencez à marcher et réessayez";
+"general.error.heading" = "Soundscape n’est pas sûr de la direction face à vous. Tenez votre téléphone à plat ou commencez à marcher et réessayez";
 
 
 /*  */
@@ -299,7 +299,7 @@
 
 
 /*  */
-"general.error.network_connection_required.deleting_data" = "Une connexion réseau est requise lors de la suppression et du rechargement des données de carte de Openscape. Vérifiez que votre téléphone n’est pas en mode Avion.";
+"general.error.network_connection_required.deleting_data" = "Une connexion réseau est requise lors de la suppression et du rechargement des données de carte de Soundscape. Vérifiez que votre téléphone n’est pas en mode Avion.";
 
 
 /*  */
@@ -331,11 +331,11 @@
 
 
 /*  */
-"device_motion.enable.description" = "Mouvements et forme physique est actuellement désactivé. Openscape ne peut pas fonctionner lorsque Mouvements et forme physique est désactivé.";
+"device_motion.enable.description" = "Mouvements et forme physique est actuellement désactivé. Soundscape ne peut pas fonctionner lorsque Mouvements et forme physique est désactivé.";
 
 
 /*  */
-"device_motion.enable.instructions" = "Activez Suivi forme dans l’appli Réglages pour continuer.\n\n1. Appuyez sur Ouvrir les réglages.\n2. Appuyez sur le bouton Retour (intitulé Réglages)\n3. Sélectionnez Confidentialité\n4. Sélectionnez Mouvements et forme physique\n5. Activer Suivi d’activité physique\n6. Redémarrez Openscape";
+"device_motion.enable.instructions" = "Activez Suivi forme dans l’appli Réglages pour continuer.\n\n1. Appuyez sur Ouvrir les réglages.\n2. Appuyez sur le bouton Retour (intitulé Réglages)\n3. Sélectionnez Confidentialité\n4. Sélectionnez Mouvements et forme physique\n5. Activer Suivi d’activité physique\n6. Redémarrez Soundscape";
 
 
 /*  */
@@ -343,7 +343,7 @@
 
 
 /*  */
-"device_motion.authorize.description" = "Cette option permet à Openscape d’améliorer votre expérience que vous soyez à pied, en voiture ou immobile. L’appli nécessite votre autorisation pour utiliser Mouvements et forme. Avant d’autoriser openscape à utiliser cette option, vous devrez peut-être activer Suivi d’activité physique sous Réglages → Confidentialité → Mouvements et forme physique.";
+"device_motion.authorize.description" = "Cette option permet à Soundscape d’améliorer votre expérience que vous soyez à pied, en voiture ou immobile. L’appli nécessite votre autorisation pour utiliser Mouvements et forme. Avant d’autoriser Soundscape à utiliser cette option, vous devrez peut-être activer Suivi d’activité physique sous Réglages → Confidentialité → Mouvements et forme physique.";
 
 
 /*  */
@@ -367,7 +367,7 @@
 
 
 /*  */
-"settings.about_app" = "À propos de Openscape";
+"settings.about_app" = "À propos de Soundscape";
 
 
 /*  */
@@ -383,7 +383,7 @@
 
 
 /*  */
-"setting.audio.mix_with_others.confirmation" = "Si vous activez ce paramètre, les notifications de openscape et les autres sons seront mis en pause chaque fois que vous commencerez à utiliser une autre appli multimédia. Vous pouvez revenir dans openscape pour réactiver les notifications.";
+"setting.audio.mix_with_others.confirmation" = "Si vous activez ce paramètre, les notifications de Soundscape et les autres sons seront mis en pause chaque fois que vous commencerez à utiliser une autre appli multimédia. Vous pouvez revenir dans Soundscape pour réactiver les notifications.";
 
 
 /*  */
@@ -403,11 +403,11 @@
 
 
 /*  */
-"voice.apple.no_siri" = "Notez que les voix de Siri ne sont pas disponibles pour openscape et ne figurent pas dans la liste ci-dessous.";
+"voice.apple.no_siri" = "Notez que les voix de Siri ne sont pas disponibles pour Soundscape et ne figurent pas dans la liste ci-dessous.";
 
 
 /*  */
-"beacon.settings.style.haptic.explanation" = "Ces styles de balise incluent des rétroactions haptiques que vous pouvez ressentir en plus du son de la balise normale. Les rétroactions haptiques sont disponibles uniquement lorsque votre téléphone est déverrouillé et que openscape est ouvert.";
+"beacon.settings.style.haptic.explanation" = "Ces styles de balise incluent des rétroactions haptiques que vous pouvez ressentir en plus du son de la balise normale. Les rétroactions haptiques sont disponibles uniquement lorsque votre téléphone est déverrouillé et que Soundscape est ouvert.";
 
 
 /*  */
@@ -419,7 +419,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.explanation" = "Appuyez sur ce bouton pour entendre le statut du casque que vous utilisez avec Openscape.";
+"troubleshooting.check_audio.explanation" = "Appuyez sur ce bouton pour entendre le statut du casque que vous utilisez avec Soundscape.";
 
 
 /*  */
@@ -499,11 +499,11 @@
 
 
 /*  */
-"preview.include_unnamed_roads.subtitle" = "Inclure les routes sans nom lors de l’utilisation de openscape Street Preview";
+"preview.include_unnamed_roads.subtitle" = "Inclure les routes sans nom lors de l’utilisation de Soundscape Street Preview";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Appuyez deux fois pour exclure les routes sans nom lors de l’utilisation de openscape Street Preview";
+"preview.include_unnamed_roads.hint.on" = "Appuyez deux fois pour exclure les routes sans nom lors de l’utilisation de Soundscape Street Preview";
 
 
 /*  */
@@ -635,7 +635,7 @@
 
 
 /*  */
-"universal_links.marker.share.message" = "J’ai partagé un Marqueur openscape avec vous! \"%@\"";
+"universal_links.marker.share.message" = "J’ai partagé un Marqueur Soundscape avec vous! \"%@\"";
 
 
 /*  */
@@ -643,7 +643,7 @@
 
 
 /*  */
-"user_activity.search.title" = "Rechercher dans Openscape";
+"user_activity.search.title" = "Rechercher dans Soundscape";
 
 
 /*  */
@@ -751,7 +751,7 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Openscape est désactivé temporairement. Lorsque vous quittez votre emplacement actuel, openscape sort automatiquement de veille. Les services de localisation sont utilisés, mais en mode d’économie de batterie afin d’économiser la batterie de votre téléphone. Appuyez sur le bouton ci-dessous pour sortir de veille.";
+"sleep.snoozing.message" = "Soundscape est désactivé temporairement. Lorsque vous quittez votre emplacement actuel, Soundscape sort automatiquement de veille. Les services de localisation sont utilisés, mais en mode d’économie de batterie afin d’économiser la batterie de votre téléphone. Appuyez sur le bouton ci-dessous pour sortir de veille.";
 
 
 /*  */
@@ -911,7 +911,7 @@
 
 
 /*  */
-"menu.learning_resources" = "Blogue Openscape";
+"menu.learning_resources" = "Blogue Soundscape";
 
 
 /*  */
@@ -935,11 +935,11 @@
 
 
 /*  */
-"devices.explain_ar.paired" = "Openscape n’est actuellement pas connecté à votre %@. Veuillez vous assurer que votre casque est activé et proche de votre téléphone.";
+"devices.explain_ar.paired" = "Soundscape n’est actuellement pas connecté à votre %@. Veuillez vous assurer que votre casque est activé et proche de votre téléphone.";
 
 
 /*  */
-"devices.connect_headset.calibrate.explanation" = "Votre casque est connecté à Openscape, mais doit être étalonné avant d’être utilisé. openscape vous informe dès que l’étalonnage du casque est nécessaire, par exemple chaque fois que vous l’activez.";
+"devices.connect_headset.calibrate.explanation" = "Votre casque est connecté à Soundscape, mais doit être étalonné avant d’être utilisé. Soundscape vous informe dès que l’étalonnage du casque est nécessaire, par exemple chaque fois que vous l’activez.";
 
 
 /*  */
@@ -987,7 +987,7 @@
 
 
 /*  */
-"behavior.experiences.no_events.caption.2" = "Pour en savoir plus ou exprimer l’intérêt de votre organisation dans la création d’expériences openscape personnalisées, écrivez-nous à email@address.com";
+"behavior.experiences.no_events.caption.2" = "Pour en savoir plus ou exprimer l’intérêt de votre organisation dans la création d’expériences Soundscape personnalisées, écrivez-nous à email@address.com";
 
 
 /*  */
@@ -1035,7 +1035,7 @@
 
 
 /*  */
-"tutorial.markers.text.EditMarker" = "Bravo! Vous avez sélectionné @!marker_name!! en tant que marqueur. Il vous sera notifié par openscape lorsque vous vous trouverez à proximité.\nSur l’écran suivant, vous pouvez modifier son nom si vous le souhaitez.";
+"tutorial.markers.text.EditMarker" = "Bravo! Vous avez sélectionné @!marker_name!! en tant que marqueur. Il vous sera notifié par Soundscape lorsque vous vous trouverez à proximité.\nSur l’écran suivant, vous pouvez modifier son nom si vous le souhaitez.";
 
 
 /*  */
@@ -1079,7 +1079,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Openscape peut utiliser n’importe quelle voix téléchargée dans l’appli Réglages iOS, à l’exception des voix de Siri qui ne sont pas disponibles pour Openscape. Nous vous recommandons de sélectionner l’une des voix « Améliorée », car elles ont une qualité vocale bien supérieure, mais pour cela, vous devez d’abord télécharger une voix premium. Vous pouvez télécharger des voix dans l’appli Réglages d’iOS en accédant à Accessibilité > Contenu énoncé > Voix et en appuyant sur une voix. Au sein de l’appli Openscape, vous pouvez sélectionner la voix de votre choix à utiliser en accédant à Réglages dans le menu principal, puis en appuyant sur « Voix ».";
+"help.config.voices.content" = "Soundscape peut utiliser n’importe quelle voix téléchargée dans l’appli Réglages iOS, à l’exception des voix de Siri qui ne sont pas disponibles pour Soundscape. Nous vous recommandons de sélectionner l’une des voix « Améliorée », car elles ont une qualité vocale bien supérieure, mais pour cela, vous devez d’abord télécharger une voix premium. Vous pouvez télécharger des voix dans l’appli Réglages d’iOS en accédant à Accessibilité > Contenu énoncé > Voix et en appuyant sur une voix. Au sein de l’appli Soundscape, vous pouvez sélectionner la voix de votre choix à utiliser en accédant à Réglages dans le menu principal, puis en appuyant sur « Voix ».";
 
 
 /*  */
@@ -1111,11 +1111,11 @@
 
 
 /*  */
-"first_launch.welcome_audio_text" = "Bienvenue! openscape vous tient informé de votre emplacement et de votre direction grâce à un système d’audio-guidage unique et en vous indiquant les routes, les intersections et les emplacements à mesure que vous vous en approchez. Appuyez sur le bouton Suivant pour commencer.";
+"first_launch.welcome_audio_text" = "Bienvenue! Soundscape vous tient informé de votre emplacement et de votre direction grâce à un système d’audio-guidage unique et en vous indiquant les routes, les intersections et les emplacements à mesure que vous vous en approchez. Appuyez sur le bouton Suivant pour commencer.";
 
 
 /*  */
-"first_launch.location.text" = "Openscape est une appli basée sur la localisation. Nous utilisons votre localisation pour rechercher et indiquer ce qui vous entoure.";
+"first_launch.location.text" = "Soundscape est une appli basée sur la localisation. Nous utilisons votre localisation pour rechercher et indiquer ce qui vous entoure.";
 
 
 /*  */
@@ -1131,11 +1131,11 @@
 
 
 /*  */
-"first_launch.headphones.title" = "Écoute de Openscape";
+"first_launch.headphones.title" = "Écoute de Soundscape";
 
 
 /*  */
-"first_launch.callouts.message" = "Openscape vous permet de savoir à chaque instant où vous vous trouvez et dans quelle direction vous vous dirigez en signalant les rues, les intersections et les points d’intérêt à mesure que vous en approchez.";
+"first_launch.callouts.message" = "Soundscape vous permet de savoir à chaque instant où vous vous trouvez et dans quelle direction vous vous dirigez en signalant les rues, les intersections et les points d’intérêt à mesure que vous en approchez.";
 
 
 /*  */
@@ -1143,7 +1143,7 @@
 
 
 /*  */
-"first_launch.permissions.message" = "Lorsque vous vous déplacez avec Openscape, vous êtes guidé par une balise audio. Pour cela, vous devez accorder à openscape les autorisations suivantes :";
+"first_launch.permissions.message" = "Lorsque vous vous déplacez avec Soundscape, vous êtes guidé par une balise audio. Pour cela, vous devez accorder à Soundscape les autorisations suivantes :";
 
 
 /*  */
@@ -1187,7 +1187,7 @@
 
 
 /*  */
-"help.text.remote_control.what" = "Vous pouvez accéder à certaines fonctionnalités de openscape grâce aux boutons de commande de votre casque. Cette fonctionnalité est compatible avec tous les casques avec fil ou Bluetooth comportant des boutons de commande comme Lecture, Pause, Suivant, Précédent, etc. Les boutons peuvent varier selon les casques, veuillez consulter la liste des actions ci-dessous pour déterminer celles qui sont disponibles.<br>Notez également que cette fonctionnalité n’est compatible qu’avec des casques prenant en charge les commandes multimédias Apple (comme la lecture et la pause).";
+"help.text.remote_control.what" = "Vous pouvez accéder à certaines fonctionnalités de Soundscape grâce aux boutons de commande de votre casque. Cette fonctionnalité est compatible avec tous les casques avec fil ou Bluetooth comportant des boutons de commande comme Lecture, Pause, Suivant, Précédent, etc. Les boutons peuvent varier selon les casques, veuillez consulter la liste des actions ci-dessous pour déterminer celles qui sont disponibles.<br>Notez également que cette fonctionnalité n’est compatible qu’avec des casques prenant en charge les commandes multimédias Apple (comme la lecture et la pause).";
 
 
 /*  */
@@ -1203,7 +1203,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.when" = "Vous pouvez utiliser les AirPods avec openscape chaque fois que vous utiliseriez Openscape. L’utilisation des AirPods vous offre un son de haute qualité qui vous permet de bénéficier d’une expérience openscape mains libres.";
+"help.using_headsets.airpods.when" = "Vous pouvez utiliser les AirPods avec Soundscape chaque fois que vous utiliseriez Soundscape. L’utilisation des AirPods vous offre un son de haute qualité qui vous permet de bénéficier d’une expérience Soundscape mains libres.";
 
 
 /*  */
@@ -1271,7 +1271,7 @@
 
 
 /*  */
-"banner.offline_default.message" = "Openscape est en mode hors ligne. En savoir plus";
+"banner.offline_default.message" = "Soundscape est en mode hors ligne. En savoir plus";
 
 
 /*  */
@@ -1279,7 +1279,7 @@
 
 
 /*  */
-"push.local.home.title" = "Essayez openscape chez vous";
+"push.local.home.title" = "Essayez Soundscape chez vous";
 
 
 /*  */
@@ -1295,31 +1295,31 @@
 
 
 /*  */
-"faq.why_does_beacon_disappear.answer" = "La balise audible de openscape est à la base un indice directionnel, qui vous indique où votre destination se trouve par rapport à la direction face à vous. Si openscape n’est pas sûr de la direction face à vous, il réduit le volume de la balise. La plupart du temps, cela se produit si vous marchez avec le téléphone rangé dans une poche ou un sac et si vous arrêtez de vous déplacer, par exemple pour traverser une rue. Le volume de la balise augmente dès que vous recommencez à vous déplacer ou si vous tenez le téléphone à plat et le pointez dans la direction face à vous.";
+"faq.why_does_beacon_disappear.answer" = "La balise audible de Soundscape est à la base un indice directionnel, qui vous indique où votre destination se trouve par rapport à la direction face à vous. Si Soundscape n’est pas sûr de la direction face à vous, il réduit le volume de la balise. La plupart du temps, cela se produit si vous marchez avec le téléphone rangé dans une poche ou un sac et si vous arrêtez de vous déplacer, par exemple pour traverser une rue. Le volume de la balise augmente dès que vous recommencez à vous déplacer ou si vous tenez le téléphone à plat et le pointez dans la direction face à vous.";
 
 
 /*  */
-"faq.beacon_on_home.answer" = "Openscape prend en charge la définition de balises sur des adresses. Pour définir une balise sur votre domicile ou sur toute autre adresse, recherchez un emplacement à partir de l’écran principal de Openscape. Dans l’écran « Détail de l’emplacement », appuyez sur le bouton « Démarrer la balise sonore ».";
+"faq.beacon_on_home.answer" = "Soundscape prend en charge la définition de balises sur des adresses. Pour définir une balise sur votre domicile ou sur toute autre adresse, recherchez un emplacement à partir de l’écran principal de Soundscape. Dans l’écran « Détail de l’emplacement », appuyez sur le bouton « Démarrer la balise sonore ».";
 
 
 /*  */
-"faq.turn_beacon_back_on.answer" = "Oui, vous pouvez réactiver la balise lorsque openscape l’a désactivée en sélectionnant le bouton « Réactiver le son de la balise ». Toutefois, étant donné que les services de localisation ne sont précis qu’à environ 10 mètres, nous ne pouvons pas garantir le comportement de la balise si vous vous trouvez à quelques mètres de votre destination.";
+"faq.turn_beacon_back_on.answer" = "Oui, vous pouvez réactiver la balise lorsque Soundscape l’a désactivée en sélectionnant le bouton « Réactiver le son de la balise ». Toutefois, étant donné que les services de localisation ne sont précis qu’à environ 10 mètres, nous ne pouvons pas garantir le comportement de la balise si vous vous trouvez à quelques mètres de votre destination.";
 
 
 /*  */
-"faq.why_not_every_business.answer" = "Openscape est conçu de manière à ne pas être trop bavard. En outre, il utilise Open Street Map comme source de données principale. Open Street Map (OSM, https://www.openstreetmap.org/) est une carte du monde modifiée et développée par la communauté, qui repose sur des personnes pour la saisie et l’organisation des données. Si une entreprise ou un point d’intérêt n’est pas annoncé par Openscape, la raison la plus probable est que l’entreprise n’a pas encore été ajoutée ou, dans certains cas, mise à jour par un membre de la communauté OSM.";
+"faq.why_not_every_business.answer" = "Soundscape est conçu de manière à ne pas être trop bavard. En outre, il utilise Open Street Map comme source de données principale. Open Street Map (OSM, https://www.openstreetmap.org/) est une carte du monde modifiée et développée par la communauté, qui repose sur des personnes pour la saisie et l’organisation des données. Si une entreprise ou un point d’intérêt n’est pas annoncé par Soundscape, la raison la plus probable est que l’entreprise n’a pas encore été ajoutée ou, dans certains cas, mise à jour par un membre de la communauté OSM.";
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Openscape dispose d’une liste de vos récentes notifications activées afin que vous puissiez consulter celles que vous pourriez avoir manquées. Pour cela, appuyez sur la barre de recherche de l’écran d’accueil de Openscape. Au bas de cette page, vous trouverez une section intitulée « Notifications activées récentes », présentant une liste des notifications activées manquées.";
+"faq.miss_a_callout.answer" = "Soundscape dispose d’une liste de vos récentes notifications activées afin que vous puissiez consulter celles que vous pourriez avoir manquées. Pour cela, appuyez sur la barre de recherche de l’écran d’accueil de Soundscape. Au bas de cette page, vous trouverez une section intitulée « Notifications activées récentes », présentant une liste des notifications activées manquées.";
 
 
 /*  */
-"faq.supported_headsets.answer" = "Le casque que vous utilisez avec openscape est une question de préférences personnelles et chaque option offre des avantages et des inconvénients. La seule exigence spécifique consiste à utiliser une paire d’écouteurs stéréo afin de pouvoir tirer parti des notifications audio spatiales 3D de Openscape.";
+"faq.supported_headsets.answer" = "Le casque que vous utilisez avec Soundscape est une question de préférences personnelles et chaque option offre des avantages et des inconvénients. La seule exigence spécifique consiste à utiliser une paire d’écouteurs stéréo afin de pouvoir tirer parti des notifications audio spatiales 3D de Soundscape.";
 
 
 /*  */
-"faq.sleep_mode_battery.answer" = "Pour mettre openscape en mode Mettre en veille, sélectionnez le bouton « Mettre en veille » dans le coin supérieur droit de l’écran. Lorsque vous sélectionnez cette option, openscape arrête d’utiliser les services de localisation et les données mobiles jusqu’à ce que vous choisissiez de le sortir de veille.";
+"faq.sleep_mode_battery.answer" = "Pour mettre Soundscape en mode Mettre en veille, sélectionnez le bouton « Mettre en veille » dans le coin supérieur droit de l’écran. Lorsque vous sélectionnez cette option, Soundscape arrête d’utiliser les services de localisation et les données mobiles jusqu’à ce que vous choisissiez de le sortir de veille.";
 
 
 /*  */
@@ -1327,19 +1327,19 @@
 
 
 /*  */
-"faq.mobile_data_use.answer" = "La quantité de données mobiles utilisées dépend de la façon dont vous utilisez Openscape. Nous avons conçu openscape de manière à n’utiliser qu’une petite quantité de données lorsque vous êtes en déplacement et sur le point d’effectuer des opérations, telles qu’enregistrer des points lorsque vous marchez afin de ne pas devoir les retélécharger chaque fois que vous retournez à un endroit auquel vous êtes déjà allé. Pour réduire la quantité de données mobiles que vous utilisez, assurez-vous d’être connecté au Wi-Fi dès que possible, en particulier pour télécharger l’appli. Si vous n’utilisez pas Openscape, vous devez appuyer sur le bouton « Mettre en veille » pour mettre openscape en veille ou pour forcer la fermeture de l’appli.";
+"faq.mobile_data_use.answer" = "La quantité de données mobiles utilisées dépend de la façon dont vous utilisez Soundscape. Nous avons conçu Soundscape de manière à n’utiliser qu’une petite quantité de données lorsque vous êtes en déplacement et sur le point d’effectuer des opérations, telles qu’enregistrer des points lorsque vous marchez afin de ne pas devoir les retélécharger chaque fois que vous retournez à un endroit auquel vous êtes déjà allé. Pour réduire la quantité de données mobiles que vous utilisez, assurez-vous d’être connecté au Wi-Fi dès que possible, en particulier pour télécharger l’appli. Si vous n’utilisez pas Soundscape, vous devez appuyer sur le bouton « Mettre en veille » pour mettre Soundscape en veille ou pour forcer la fermeture de l’appli.";
 
 
 /*  */
-"faq.use_with_wayfinding_apps.answer" = "Openscape est conçu comme une appli de sensibilisation pour fournir des détails sur votre environnement dont vous pouvez ne pas être conscient s’il ne le faisait pas. Bien qu’il ne soit pas conçu comme une appli de navigation détaillée, il peut être utilisé en complément de telles applis pour fournir des informations complémentaires. Pour utiliser openscape avec ces applis, commencez par lancer votre application de navigation. Ensuite, basculez dans openscape et définissez une balise sur la même destination que dans l’application de navigation. À ce stade, les deux applis sont en cours d’exécution et vous entendez des itinéraires provenant de votre application de navigation, tout en recevant de openscape des mises à jour sur les points d’intérêt, les intersections et votre distance par rapport à votre destination.";
+"faq.use_with_wayfinding_apps.answer" = "Soundscape est conçu comme une appli de sensibilisation pour fournir des détails sur votre environnement dont vous pouvez ne pas être conscient s’il ne le faisait pas. Bien qu’il ne soit pas conçu comme une appli de navigation détaillée, il peut être utilisé en complément de telles applis pour fournir des informations complémentaires. Pour utiliser Soundscape avec ces applis, commencez par lancer votre application de navigation. Ensuite, basculez dans Soundscape et définissez une balise sur la même destination que dans l’application de navigation. À ce stade, les deux applis sont en cours d’exécution et vous entendez des itinéraires provenant de votre application de navigation, tout en recevant de Soundscape des mises à jour sur les points d’intérêt, les intersections et votre distance par rapport à votre destination.";
 
 
 /*  */
-"faq.holding_phone_flat.answer" = "Non! Lorsque vous marchez, vous pouvez ranger le téléphone dans un sac, une poche ou tout autre endroit qui vous semble pratique. openscape utilise la direction dans laquelle vous marchez pour déterminer les notifications à annoncer sur votre gauche et votre droite. Lorsque vous arrêtez de vous déplacer, openscape ne sait pas quelle direction se trouve face à vous. Si les balises audibles sont activées, vous remarquerez qu’il devient silencieux jusqu’à ce que vous recommenciez à vous déplacer. Vous pouvez sortir le téléphone pour appuyer sur les boutons d’emplacement et d’exploration en bas de l’écran à tout moment, mais veillez à maintenir le téléphone le haut pointant dans la direction face à vous et l’écran vers le ciel. Dans cette position « à plat », openscape utilise la boussole du téléphone pour déterminer la route face à vous et fournir des notifications spatiales précises. Si la balise est activée, vous remarquerez également que le volume est totalement réactivé.";
+"faq.holding_phone_flat.answer" = "Non! Lorsque vous marchez, vous pouvez ranger le téléphone dans un sac, une poche ou tout autre endroit qui vous semble pratique. Soundscape utilise la direction dans laquelle vous marchez pour déterminer les notifications à annoncer sur votre gauche et votre droite. Lorsque vous arrêtez de vous déplacer, Soundscape ne sait pas quelle direction se trouve face à vous. Si les balises audibles sont activées, vous remarquerez qu’il devient silencieux jusqu’à ce que vous recommenciez à vous déplacer. Vous pouvez sortir le téléphone pour appuyer sur les boutons d’emplacement et d’exploration en bas de l’écran à tout moment, mais veillez à maintenir le téléphone le haut pointant dans la direction face à vous et l’écran vers le ciel. Dans cette position « à plat », Soundscape utilise la boussole du téléphone pour déterminer la route face à vous et fournir des notifications spatiales précises. Si la balise est activée, vous remarquerez également que le volume est totalement réactivé.";
 
 
 /*  */
-"faq.what_is_osm.answer" = "Openscape dessine des données de carte géographique pour fournir les notifications informatives dans l’appli. La source de carte principale que nous utilisons est Open Street Map (www.openstreetmap.org), qui est une plateforme de cartographie riche générée par la communauté et qui permet aux organisations et aux personnes d’améliorer la qualité et la précision des informations fournies, ainsi que l’accessibilité de leurs espaces à l’aide des outils de création de carte Open Street Map.";
+"faq.what_is_osm.answer" = "Soundscape dessine des données de carte géographique pour fournir les notifications informatives dans l’appli. La source de carte principale que nous utilisons est Open Street Map (www.openstreetmap.org), qui est une plateforme de cartographie riche générée par la communauté et qui permet aux organisations et aux personnes d’améliorer la qualité et la précision des informations fournies, ainsi que l’accessibilité de leurs espaces à l’aide des outils de création de carte Open Street Map.";
 
 
 /*  */

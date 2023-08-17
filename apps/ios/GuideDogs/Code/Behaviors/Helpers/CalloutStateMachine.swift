@@ -1,6 +1,6 @@
 //
 //  CalloutStateMachine.swift
-//  Openscape
+//  Soundscape
 //
 //  This class manages the callout of a list of callouts, one after another,
 //  with the ability to hush or restart the whole set of callouts.

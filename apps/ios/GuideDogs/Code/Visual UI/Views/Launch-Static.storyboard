@@ -29,7 +29,7 @@
                                         <rect key="frame" x="0.0" y="207" width="240" height="111"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <attributedString key="attributedText">
-                                            <fragment content="Openscape">
+                                            <fragment content="Soundscape">
                                                 <attributes>
                                                     <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <font key="NSFont" size="38" name="AppleSDGothicNeo-Thin"/>
