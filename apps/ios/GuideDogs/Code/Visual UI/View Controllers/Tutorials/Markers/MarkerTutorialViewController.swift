@@ -242,8 +242,10 @@ class MarkerTutorialViewController: BaseTutorialViewController {
             return
         }
         
-        headTitle.text = page.title
-        imageView.image = page.image
+        DispatchQueue.main.async {
+            self.headTitle.text = page.title
+            self.imageView.image = page.image
+        }
         changeActionButton(with: page.buttonTitle, action: page.buttonAction)
 
         if page.buttonTitle == nil {
@@ -377,7 +379,9 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         
         let entityKeyToInclude = selectedPOI?.key != nil ? [selectedPOI!.key] : []
         let event = ExplorationModeToggled(.nearbyMarkers, requiredMarkerKeys: entityKeyToInclude, logContext: "marker_tutorial") { [weak self] _ in
-            self?.showNextPage()
+            DispatchQueue.main.async {
+                self?.showNextPage()
+            }
         }
         
         AppContext.process(event)
