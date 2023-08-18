@@ -581,7 +581,7 @@
 "settings.about.title.whats_new" = "What's New?";
 
 /* Settings About Title, Privacy and Cookies */
-"settings.about.title.privacy" = "Soundscape Privacy Statement";
+"settings.about.title.privacy" = "Soundscape Community Privacy Statement";
 
 /* Settings About Title, Service Agreement */
 "settings.about.title.service_agreement" = "Services Agreement";
@@ -1297,7 +1297,7 @@
 "url_resource.alert.route.import.title" = "You've received a route: \"%@\"";
 
 /* Message for alert that is displayed when importing a route */
-"url_resource.alert.route.import.message" = "You should only use routes from someone you trust. Routes may contain errors.";
+"url_resource.alert.route.import.message" = "You should only use routes from someone you trust. Routes are not created, shared with or reviewed by Soundscape Community and may contain errors.";
 
 /* Title for alert that is displayed when importing an existing route. */
 "url_resource.alert.route.import_existing.title" = "Route already exists";
@@ -2749,7 +2749,7 @@
 "help.more_help.section_title" = "More Help";
 
 /* Help Tutorial, Link to the Company Support website */
-"help.support" = "Soundscape Support";
+"help.support" = "Soundscape Community Support";
 
 //------------------------------------------------------------------------------
 // MARK: - Terms of Use
@@ -2765,7 +2765,7 @@
 "terms_of_use.message.prompt" = "Please check the box below to agree and continue.";
 
 /* Title of the link to the Company Services Agreement. This value will be used in the placeholder %@ that appears in the terms_of_use.message string */
-"terms_of_use.service_agreement" = "Soundscape Services Agreement";
+"terms_of_use.service_agreement" = "Soundscape Community Services Agreement";
 
 /* Terms of use checkbox accessibility label */
 "terms_of_use.accept_checkbox.acc_label" = "Accept Terms of Use";
@@ -2783,7 +2783,7 @@
 "terms_of_use.accept_checkbox.off.acc_value" = "Unchecked";
 
 /* App's medical device and safety disclaimer, "(1)" and (2)" are used for an inline, numbered list */
-"terms_of_use.medical_safety_disclaimer" = "You acknowledge that Soundscape (1) is not designed, intended, or made available as a medical device, and (2) is not designed or intended to be a substitute for professional medical advice, diagnosis, treatment, or judgment and should not be used to replace or as a substitute for professional medical advice, diagnosis, treatment, or judgment.\n\nSafety Notice\nOpenscape is a navigation aid and should not be used in lieu of mobility skills, being aware of your surroundings, and good judgement. Use caution when navigating your environment as the mapping data incorporated into the Soundscape program is captured from a third-party program, and therefore, there may be limitations with the accuracy of the information presented.";
+"terms_of_use.medical_safety_disclaimer" = "You acknowledge that Soundscape (1) is not designed, intended, or made available as a medical device, and (2) is not designed or intended to be a substitute for professional medical advice, diagnosis, treatment, or judgment and should not be used to replace or as a substitute for professional medical advice, diagnosis, treatment, or judgment.\n\nSafety Notice\nSoundscape is a navigation aid and should not be used in lieu of mobility skills, being aware of your surroundings, and good judgement. Use caution when navigating your environment as the mapping data incorporated into the Soundscape program is captured from a third-party program, and therefore, there may be limitations with the accuracy of the information presented.";
 
 /* Label for the accept button that will be displayed as a new feature annoucement to existing users */
 "terms_of_use.accept.new_features" = "Accept";
@@ -2808,10 +2808,10 @@
 "first_launch.permission_required" = "This permission is required.";
 
 /* Notification, Soundscap Language {NumberedPlaceholder="Soundscape"} */
-"first_launch.language" = "Soundscape Language";
+"first_launch.soundscape_language" = "Soundscape Language";
 
 /* Notification, introductuction to Soundscap Language {NumberedPlaceholder="Soundscape"} */
-"first_launch.language.text" = "Select the language you would like Soundscape to use. You can always change your selection in the app settings.";
+"first_launch.soundscape_language.text" = "Select the language you would like Soundscape to use. You can always change your selection in the app settings.";
 
 /* Notification, Introduction to app location information {NumberedPlaceholder="Soundscape"} */
 "first_launch.location.text" = "Soundscape is a location-based app. We use your location to find and call out things around you.";
@@ -3357,13 +3357,13 @@
 // MARK: What is Soundscape?
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
-"faq.section.what_is" = "What is Soundscape and how should I use it?";
+"faq.section.what_is_soundscape" = "What is Soundscape and how should I use it?";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
-"faq.when_to_use.question" = "When should I use Soundscape?";
+"faq.when_to_use_soundscape.question" = "When should I use Soundscape?";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. ’Lighting up your way with sound’ is a marketing tagline for the app. Intersection - A junction where two or more roads meet or cross. 3D sound is where the audio through your headphones sounds as though it is coming from a given direction, as if it was actually coming from a speaker. Quotes written as \" {NumberedPlaceholder="Soundscape"} */
-"faq.when_to_use.answer" = "Soundscape has features and benefits that span a variety of scenarios and time scales. Furthermore, Soundscape’s value to you may evolve over time so how you use it today may differ from how you will use it in three months. People often think about apps in terms of \"what problem is this app good at solving?\" Soundscape certainly can be used on a case by case basis when you have a specific information need – such as keeping track of a destination as you make your way there, helping to orient yourself when you emerge from a metro station, getting your bearings when exiting a car, or finding the street names for, or distance to, the next intersection. However, the philosophy behind Soundscape is one of \"lighting up your world with sound\", designed to be used anytime you are out and about to provide ambient awareness of your surroundings, such as keeping you aware of the names of the streets you are on, the direction you are heading, and the names of businesses you are passing. In this use mode, our users have referred to Soundscape as a \"nice companion app\", which supports \"serendipity\", to \"fill in the gaps in your mental map\" and provide more \"confidence when walking\". Here are some other examples of how our users are incorporating Soundscape into their life:\n\n\"Soundscape helped me get back on track after I got off the bus and headed off in the wrong direction.\"\n\n\"Even in the town where I have lived for 3 years, I have built an improved picture of what is around me [with Soundscape].\"\n\n\"The 3D sound enhances my experience of a walk, as I feel more connected to my environment…I am more likely to try a new route now that I have the app to use.\"\n\n\"I miss the serendipity of walking around and noticing things. Having Soundscape is nice – it requires no effort to hear about things around me. The relational information is useful and is a great app for situational awareness and exploring commercial corridors.\"\n\n\"[I used Soundscape] to locate a pub in the middle of York. [I] used a range of its options to first locate and then actually find it. It took me to within 3 meters of the door – brilliant!\"";
+"faq.when_to_use_soundscape.answer" = "Soundscape has features and benefits that span a variety of scenarios and time scales. Furthermore, Soundscape’s value to you may evolve over time so how you use it today may differ from how you will use it in three months. People often think about apps in terms of \"what problem is this app good at solving?\" Soundscape certainly can be used on a case by case basis when you have a specific information need – such as keeping track of a destination as you make your way there, helping to orient yourself when you emerge from a metro station, getting your bearings when exiting a car, or finding the street names for, or distance to, the next intersection. However, the philosophy behind Soundscape is one of \"lighting up your world with sound\", designed to be used anytime you are out and about to provide ambient awareness of your surroundings, such as keeping you aware of the names of the streets you are on, the direction you are heading, and the names of businesses you are passing. In this use mode, our users have referred to Soundscape as a \"nice companion app\", which supports \"serendipity\", to \"fill in the gaps in your mental map\" and provide more \"confidence when walking\". Here are some other examples of how our users are incorporating Soundscape into their life:\n\n\"Soundscape helped me get back on track after I got off the bus and headed off in the wrong direction.\"\n\n\"Even in the town where I have lived for 3 years, I have built an improved picture of what is around me [with Soundscape].\"\n\n\"The 3D sound enhances my experience of a walk, as I feel more connected to my environment…I am more likely to try a new route now that I have the app to use.\"\n\n\"I miss the serendipity of walking around and noticing things. Having Soundscape is nice – it requires no effort to hear about things around me. The relational information is useful and is a great app for situational awareness and exploring commercial corridors.\"\n\n\"[I used Soundscape] to locate a pub in the middle of York. [I] used a range of its options to first locate and then actually find it. It took me to within 3 meters of the door – brilliant!\"";
 
 /* Marker - A location that has been marked as important by the user or application. This can be an address, a business or a custom place such as an entrance, a bus stop or a bench. */
 "faq.markers_function.question" = "What are Markers and how do I get the most out of them?";
@@ -3445,7 +3445,7 @@
 // MARK: How Soundscape Works
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
-"faq.section.how_works" = "How does Soundscape work?";
+"faq.section.how_soundscape_works" = "How does Soundscape work?";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
 "faq.supported_phones.question" = "What phone does Soundscape run on?";
