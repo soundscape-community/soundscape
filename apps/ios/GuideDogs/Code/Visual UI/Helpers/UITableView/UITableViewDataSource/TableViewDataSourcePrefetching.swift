@@ -1,6 +1,6 @@
 //
 //  TableViewDataSourcePrefetching.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -14,7 +14,7 @@ class TableViewDataSourcePrefetching<Model, CellConfigurator: TableViewCellConfi
     
     private let dispatchGroup = DispatchGroup()
     
-    private let queue = DispatchQueue(label: "io.openscape.openscape.prefetchtable")
+    private let queue = DispatchQueue(label: "services.soundscape.prefetchtable")
     
     // MARK: `TableViewDataSource`
     

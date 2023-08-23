@@ -1,6 +1,6 @@
 //
 //  ServiceModel.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -34,9 +34,9 @@ class ServiceModel {
     static let errorRealm = "GDAHTTPErrorRealm"
     
     /// Domain name to resolve for production services
-    private static let productionServicesHostName = "https://prod0.openscape.io"
+    private static let productionServicesHostName = "https://newprod0.openscape.io"
     /// Domain part of the URL for learning resources
-    private static let productionAssestsHostName = "https://openscape.io"
+    private static let productionAssestsHostName = "https://soundscape.services"
     // Do not change `productionVoicesHostName`!
     private static let productionVoicesHostName = "https://yourstaticblobstore"
     

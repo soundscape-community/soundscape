@@ -1,6 +1,6 @@
 //
 //  AppContext.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -39,10 +39,10 @@ class AppContext {
     
     static let shared = AppContext()
     
-    static let appDisplayName = "Openscape"
+    static let appDisplayName = "Soundscape"
     static let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     static let appBuild = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as! String
-    static let appStoreId = "1240320677"
+    static let appStoreId = "6449701760"
 
     static var appState: UIApplication.State = .inactive
     static let appLaunchedInBackground: Bool = UIApplication.shared.applicationState == .background
@@ -376,7 +376,7 @@ extension AppContext {
     
     struct Links {
         static func privacyPolicyURL(for locale: Locale) -> URL {
-            return URL(string: "https://openscape.io/privacy-policy")!
+            return URL(string: "https://ialabs.ie/privacy-policy")!
         }
         
         static func servicesAgreementURL(for locale: Locale) -> URL {

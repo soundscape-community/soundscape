@@ -1,6 +1,6 @@
 //
 //  UniversalLinkComponents.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -14,7 +14,7 @@ struct UniversalLinkComponents {
     
     // the base URL for sharing deeplinks in the app
     // This should be in your associated domains entitlement;
-    private static let host = "https://share.openscape.io"
+    private static let host = "https://share.soundscape.services"
 
     let pathComponents: UniversalLinkPathComponents
     let queryItems: [URLQueryItem]?

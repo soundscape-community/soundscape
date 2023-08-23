@@ -1,9 +1,9 @@
 //
 //  ExternalNavigationApps.swift
-//  Openscape
+//  Soundscape
 //
 //  Created by Blake Oliver on 7/11/23.
-//  Copyright © 2023 Openscape community. All rights reserved.
+//  Copyright © 2023 Soundscape community. All rights reserved.
 //
 
 import Foundation

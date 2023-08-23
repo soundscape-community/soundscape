@@ -1,0 +1,22 @@
+name: "build and submit to testflight"
+on:
+  push:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup ssh agent and deploy key(s)
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install gems
+        working-directory: apps/ios
+        run: bundle install
+      - name: setup and build with fastlane
+        working-directory: apps/ios
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        run: bundle exec fastlane beta

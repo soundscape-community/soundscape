@@ -1,6 +1,6 @@
 //
 //  Queue.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -14,7 +14,7 @@ struct Queue<T> {
     
     private var list: LinkedList<T>
     
-    private let queue = DispatchQueue(label: "io.openscape.openscape.queue")
+    private let queue = DispatchQueue(label: "services.soundscape.queue")
     
     var count: Int {
         return queue.sync {

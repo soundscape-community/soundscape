@@ -24,7 +24,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DDR-AT-LF3">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="32"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Openscape is working offline. Learn more" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBQ-9Z-5Uu">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Soundscape is working offline. Learn more" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBQ-9Z-5Uu">
                                     <rect key="frame" x="8" y="8" width="359" height="16"/>
                                     <accessibility key="accessibilityConfiguration">
                                         <accessibilityTraits key="traits" staticText="YES"/>

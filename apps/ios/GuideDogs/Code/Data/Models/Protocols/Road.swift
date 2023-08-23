@@ -1,6 +1,6 @@
 //
 //  Road.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -117,7 +117,7 @@ extension Road {
         }
     }
     
-    /// In OSM, roads can be split to multiple segments. These segments are connected by intersection objects synthesized by Openscape.
+    /// In OSM, roads can be split to multiple segments. These segments are connected by intersection objects synthesized by Soundscape.
     ///
     /// This returns the next road segments for a road at an intersection.
     /// - note: Roads can split into multiple road segments, such as this [OSM node](https://www.openstreetmap.org/node/539666019).

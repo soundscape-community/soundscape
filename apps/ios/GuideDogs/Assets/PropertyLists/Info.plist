@@ -5,12 +5,12 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en_US</string>
 	<key>CFBundleDisplayName</key>
-	<string>Openscape</string>
+	<string>Soundscape</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Openscape Document</string>
+			<string>Soundscape Document</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -83,7 +83,7 @@
 	<key>CFBundleSpokenName</key>
 	<string>${BUNDLE_SPOKEN_NAME}</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>7</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -104,21 +104,21 @@
 		<string>x-dispatch</string>
 	</array>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Openscape uses Bluetooth LE to connect to accessories.</string>
+	<string>Soundscape uses Bluetooth LE to connect to accessories.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Openscape uses Bluetooth LE to connect to accessories.</string>
+	<string>Soundscape uses Bluetooth LE to connect to accessories.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Openscape uses your location to provide you with relevant information about your surroundings.</string>
+	<string>Soundscape uses your location to provide you with relevant information about your surroundings.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Openscape uses your location to provide you with relevant information about your surroundings.</string>
+	<string>Soundscape uses your location to provide you with relevant information about your surroundings.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Openscape uses your location to provide you with relevant information about your surroundings.</string>
+	<string>Soundscape uses your location to provide you with relevant information about your surroundings.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Openscape uses motion detection to personalize automatic callouts.</string>
+	<string>Soundscape uses motion detection to personalize automatic callouts.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Openscape uses the photo library for attaching photos to feedback.</string>
+	<string>Soundscape uses the photo library for attaching photos to feedback.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER).activity.my-location</string>
@@ -182,7 +182,7 @@
 				<string>public.content</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Openscape marker and route file</string>
+			<string>Soundscape marker and route file</string>
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>

@@ -1,6 +1,6 @@
 //
 //  AudioEngine.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -143,7 +143,7 @@ class AudioEngine: AudioEngineProtocol {
     
     // MARK: Dispatch Queue
     
-    private let queue = DispatchQueue(label: "io.openscape.openscape.audioengine")
+    private let queue = DispatchQueue(label: "services.soundscape.audioengine")
     
     // MARK: Public State
     

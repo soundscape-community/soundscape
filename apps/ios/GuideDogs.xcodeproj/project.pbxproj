@@ -862,6 +862,7 @@
 		C3FA2EFD236A3A6A00ADB8BC /* BannerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FA2EFC236A3A6A00ADB8BC /* BannerContainer.swift */; };
 		C3FA2EFF236A4A8000ADB8BC /* AlertContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FA2EFE236A4A8000ADB8BC /* AlertContainer.swift */; };
 		C3FA2F01236A4A9500ADB8BC /* ModalViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FA2F00236A4A9500ADB8BC /* ModalViewContainer.swift */; };
+		C4F94572D08285E140899289 /* Pods_Soundscape.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CB77B72F2800A9A8B08A9F0 /* Pods_Soundscape.framework */; };
 		D225D72E1E493A9700289270 /* LocationUpdateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D225D72D1E493A9700289270 /* LocationUpdateFilter.swift */; };
 		D22A38351E6100ED00C3AA71 /* ReverseGeocoderContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22A38341E6100ED00C3AA71 /* ReverseGeocoderContext.swift */; };
 		D22E23AF1E27EDE700E66FC6 /* VectorTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22E23AE1E27EDE700E66FC6 /* VectorTile.swift */; };
@@ -873,7 +874,6 @@
 		D29832961E4E249700352A5A /* GeoJsonGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832951E4E249700352A5A /* GeoJsonGeometry.swift */; };
 		D30355D31B61401D00E1DDED /* GDAJSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D30355D21B61401D00E1DDED /* GDAJSONObject.m */; };
 		D395B0F71B41DA15005A6407 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D395B0F61B41DA15005A6407 /* Images.xcassets */; };
-		FEA7A931A1628AAAADF3067F /* Pods_Openscape.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0E8328DAB61AC7721C76C9 /* Pods_Openscape.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -889,7 +889,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		236AEDCBBFCF5CE218920644 /* Pods-Openscape.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Openscape.release.xcconfig"; path = "Target Support Files/Pods-Openscape/Pods-Openscape.release.xcconfig"; sourceTree = "<group>"; };
+		0CB77B72F2800A9A8B08A9F0 /* Pods_Soundscape.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Soundscape.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2800ABF02654427300B2622F /* AuthoredActivityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthoredActivityCell.swift; sourceTree = "<group>"; };
 		2800ABF326545F4C00B2622F /* AuthoredActivitiesList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthoredActivitiesList.swift; path = "GuideDogs/Code/Visual UI/Views/Authored Activities/AuthoredActivitiesList.swift"; sourceTree = SOURCE_ROOT; };
 		2800ABF6265460C800B2622F /* RouteDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailsView.swift; sourceTree = "<group>"; };
@@ -1238,7 +1238,7 @@
 		28F94F762490425F0010D2B3 /* HapticEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HapticEngine.swift; path = Code/Haptics/HapticEngine.swift; sourceTree = "<group>"; };
 		28FCD314281C93F0007CEFE7 /* HandledEventAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandledEventAction.swift; sourceTree = "<group>"; };
 		28FD0C46206AAC37000FC731 /* NewFeaturesView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = NewFeaturesView.xib; path = "Code/Visual UI/Controls/New Feature Announcement/NewFeaturesView.xib"; sourceTree = "<group>"; };
-		2B33C7E8FC26262D2C908CB6 /* Pods-Openscape.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Openscape.debug.xcconfig"; path = "Target Support Files/Pods-Openscape/Pods-Openscape.debug.xcconfig"; sourceTree = "<group>"; };
+		2CE0A71CF64BDEF1A8FCDF22 /* Pods-Soundscape.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.release.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.release.xcconfig"; sourceTree = "<group>"; };
 		2F4432FF1D36B5A300CA437D /* licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = licenses.html; sourceTree = "<group>"; };
 		2F4433011D36B5B300CA437D /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AboutViewController.swift; path = "Code/Visual UI/View Controllers/Settings/AboutViewController.swift"; sourceTree = "<group>"; };
 		31013A6420D9ACBE00205D1F /* HomeViewController+RemoteControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "HomeViewController+RemoteControl.swift"; path = "Code/Visual UI/View Controllers/Home/HomeViewController+RemoteControl.swift"; sourceTree = "<group>"; };
@@ -1288,14 +1288,12 @@
 		31F12C4122569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = StreetSuffixAbbreviations_fr.plist; path = Assets/PropertyLists/StreetSuffixAbbreviations_fr.plist; sourceTree = "<group>"; };
 		31F1370322B867B800FC1860 /* GeolocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeolocationManager.swift; path = "Code/Sensors/Geolocation/Geolocation Manager/GeolocationManager.swift"; sourceTree = "<group>"; };
 		31FE6C77233A7B760098D8C5 /* TelemetryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TelemetryHelper.swift; path = Code/App/Logging/TelemetryHelper.swift; sourceTree = "<group>"; };
-		4947404B8209AB0A5F3B0EB1 /* Pods-Soundscape.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.release.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.release.xcconfig"; sourceTree = "<group>"; };
 		568480881CB73F51004B4227 /* main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = main.storyboard; sourceTree = "<group>"; };
 		5684808F1CBC975E004B4227 /* Soundscape-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = "Soundscape-Bridging-Header.h"; path = "Code/App/Soundscape-Bridging-Header.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		568480901CBC9C94004B4227 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = HomeViewController.swift; path = "Code/Visual UI/View Controllers/Home/HomeViewController.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		568480921CBC9CEE004B4227 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = SettingsViewController.swift; path = "Code/Visual UI/View Controllers/Settings/SettingsViewController.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		568480971CBD6A19004B4227 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		568480A31CBDA685004B4227 /* POITableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = POITableViewCell.swift; path = "Code/Visual UI/Controls/UITableView/POITableViewCell.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		5A99A67E08FC20519550F09D /* Pods-Soundscape.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.debug.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.debug.xcconfig"; sourceTree = "<group>"; };
 		620118C724AAB489004B0380 /* LocationAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationAction.swift; sourceTree = "<group>"; };
 		620118C824AAB489004B0380 /* LocationActionAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationActionAlert.swift; sourceTree = "<group>"; };
 		620118C924AAB489004B0380 /* LocationActionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationActionDelegate.swift; sourceTree = "<group>"; };
@@ -1567,8 +1565,7 @@
 		62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconView.swift; sourceTree = "<group>"; };
 		62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconViewModel.swift; sourceTree = "<group>"; };
 		6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExternalNavigationApps.swift; path = Code/App/ExternalNavigationApps.swift; sourceTree = "<group>"; };
-		7D0E8328DAB61AC7721C76C9 /* Pods_Openscape.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Openscape.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		823631751C541F3D9A0EAF3C /* Pods-Openscape.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Openscape.adhoc.xcconfig"; path = "Target Support Files/Pods-Openscape/Pods-Openscape.adhoc.xcconfig"; sourceTree = "<group>"; };
+		815775252832F0650DF9D8D4 /* Pods-Soundscape.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.adhoc.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.adhoc.xcconfig"; sourceTree = "<group>"; };
 		B90C27D51EAF81D600007368 /* Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Sound.swift; path = Code/Audio/Protocols/Sound.swift; sourceTree = "<group>"; };
 		B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalloutRangeContext.swift; sourceTree = "<group>"; };
 		B91D3F6327AB5546004159A8 /* UserAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAction.swift; sourceTree = "<group>"; };
@@ -1778,6 +1775,7 @@
 		C3FA2F00236A4A9500ADB8BC /* ModalViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ModalViewContainer.swift; path = Code/Notifications/Containers/ModalViewContainer.swift; sourceTree = "<group>"; };
 		C3FA2F02236B557F00ADB8BC /* sv-SE */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "sv-SE"; path = "sv-SE.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		C3FA2F03236B557F00ADB8BC /* sv-SE */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "sv-SE"; path = "sv-SE.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		CA8EE99DA4F34403EFB5AF2B /* Pods-Soundscape.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.debug.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.debug.xcconfig"; sourceTree = "<group>"; };
 		D225D72D1E493A9700289270 /* LocationUpdateFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationUpdateFilter.swift; path = Code/Sensors/Geolocation/Filters/LocationUpdateFilter.swift; sourceTree = "<group>"; };
 		D22A38341E6100ED00C3AA71 /* ReverseGeocoderContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = ReverseGeocoderContext.swift; path = Code/Generators/Geocoding/ReverseGeocoderContext.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		D22E23AE1E27EDE700E66FC6 /* VectorTile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VectorTile.swift; path = Code/Data/Models/Helpers/VectorTile.swift; sourceTree = "<group>"; };
@@ -1800,9 +1798,8 @@
 		D3CE458A1C17377700AC1A25 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		D3CE458C1C17378B00AC1A25 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		D3CE458E1C1737AE00AC1A25 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		D3D7CFC81B3D96470020B5E9 /* Openscape.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Openscape.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3D7CFC81B3D96470020B5E9 /* Soundscape.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soundscape.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3E2A6361CAD5CA100A5192A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		E1C725071707AF59CE42CF40 /* Pods-Soundscape.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.adhoc.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.adhoc.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1820,7 +1817,7 @@
 				281BCBFF262638290031298D /* RealmSwift in Frameworks */,
 				28F1ECE2262505DC00E964C0 /* Realm in Frameworks */,
 				2866A7C12625013400EBA2D8 /* DZNEmptyDataSet in Frameworks */,
-				FEA7A931A1628AAAADF3067F /* Pods_Openscape.framework in Frameworks */,
+				C4F94572D08285E140899289 /* Pods_Soundscape.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3000,7 +2997,7 @@
 				D334CB751B9F682400546BF1 /* MapKit.framework */,
 				D3CE458E1C1737AE00AC1A25 /* MobileCoreServices.framework */,
 				D384DE871B867AD400884DE5 /* ReplayKit.framework */,
-				7D0E8328DAB61AC7721C76C9 /* Pods_Openscape.framework */,
+				0CB77B72F2800A9A8B08A9F0 /* Pods_Soundscape.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -4258,12 +4255,9 @@
 		94B9789D44F5F13621A0C9B1 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5A99A67E08FC20519550F09D /* Pods-Soundscape.debug.xcconfig */,
-				4947404B8209AB0A5F3B0EB1 /* Pods-Soundscape.release.xcconfig */,
-				E1C725071707AF59CE42CF40 /* Pods-Soundscape.adhoc.xcconfig */,
-				2B33C7E8FC26262D2C908CB6 /* Pods-Openscape.debug.xcconfig */,
-				236AEDCBBFCF5CE218920644 /* Pods-Openscape.release.xcconfig */,
-				823631751C541F3D9A0EAF3C /* Pods-Openscape.adhoc.xcconfig */,
+				CA8EE99DA4F34403EFB5AF2B /* Pods-Soundscape.debug.xcconfig */,
+				2CE0A71CF64BDEF1A8FCDF22 /* Pods-Soundscape.release.xcconfig */,
+				815775252832F0650DF9D8D4 /* Pods-Soundscape.adhoc.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -5104,7 +5098,7 @@
 		D3D7CFC91B3D96470020B5E9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D3D7CFC81B3D96470020B5E9 /* Openscape.app */,
+				D3D7CFC81B3D96470020B5E9 /* Soundscape.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -5122,23 +5116,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D3D7CFC71B3D96460020B5E9 /* Openscape */ = {
+		D3D7CFC71B3D96460020B5E9 /* Soundscape */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D3D7CFEE1B3D96470020B5E9 /* Build configuration list for PBXNativeTarget "Openscape" */;
+			buildConfigurationList = D3D7CFEE1B3D96470020B5E9 /* Build configuration list for PBXNativeTarget "Soundscape" */;
 			buildPhases = (
-				AA3DA63581E438C1AB55C6CC /* [CP] Check Pods Manifest.lock */,
+				7EFF796CAF7E9A7CD6D9070B /* [CP] Check Pods Manifest.lock */,
 				D3D7CFC41B3D96460020B5E9 /* Sources */,
 				D3D7CFC51B3D96460020B5E9 /* Frameworks */,
 				D3D7CFC61B3D96460020B5E9 /* Resources */,
 				B9B06E971E6483900010936A /* CopyFiles */,
 				31500FEE224CA30000BD0A4E /* Localization Validation */,
-				81B7791EAB5FA4B62EA6B44D /* [CP] Embed Pods Frameworks */,
+				5B0340000E919C2F3805558C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Openscape;
+			name = Soundscape;
 			packageProductDependencies = (
 				286F409C2624FF6000C3F80B /* NVActivityIndicatorView */,
 				2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
@@ -5152,7 +5146,7 @@
 				283B0306264B03920092F74F /* SDWebImageSwiftUI */,
 			);
 			productName = GuideDogs;
-			productReference = D3D7CFC81B3D96470020B5E9 /* Openscape.app */;
+			productReference = D3D7CFC81B3D96470020B5E9 /* Soundscape.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -5165,7 +5159,7 @@
 				CLASSPREFIX = GDA;
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1430;
-				ORGANIZATIONNAME = "Openscape community";
+				ORGANIZATIONNAME = "Soundscape community";
 				TargetAttributes = {
 					D3D7CFC71B3D96460020B5E9 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -5228,7 +5222,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D3D7CFC71B3D96460020B5E9 /* Openscape */,
+				D3D7CFC71B3D96460020B5E9 /* Soundscape */,
 			);
 		};
 /* End PBXProject section */
@@ -5389,13 +5383,13 @@
 			shellPath = /bin/sh;
 			shellScript = "# Only run in debug type builds (\"Debug\", \"Debug-FF\", etc)\nif [[ ${CONFIGURATION} == \"Debug\"* ]]; then\n    ${SRCROOT}/Scripts/LocalizationLinter/main.swift\n    echo \"Skipping Localization Validation script (non-debug build)\"\nelse \n    echo \"Skipping Localization Validation script (non-debug build)\"\nfi\n";
 		};
-		81B7791EAB5FA4B62EA6B44D /* [CP] Embed Pods Frameworks */ = {
+		5B0340000E919C2F3805558C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openscape/Pods-Openscape-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Soundscape/Pods-Soundscape-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/TBXML/TBXML.framework",
 				"${BUILT_PRODUCTS_DIR}/iOS-GPX-Framework/iOS_GPX_Framework.framework",
 			);
@@ -5406,10 +5400,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Openscape/Pods-Openscape-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Soundscape/Pods-Soundscape-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AA3DA63581E438C1AB55C6CC /* [CP] Check Pods Manifest.lock */ = {
+		7EFF796CAF7E9A7CD6D9070B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -5424,7 +5418,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Openscape-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Soundscape-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6288,16 +6282,16 @@
 		};
 		3163C7431DFDB27D00C9E605 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 823631751C541F3D9A0EAF3C /* Pods-Openscape.adhoc.xcconfig */;
+			baseConfigurationReference = 815775252832F0650DF9D8D4 /* Pods-Soundscape.adhoc.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon Beta";
-				BUNDLE_SPOKEN_NAME = "Openscape Adhoc";
+				BUNDLE_SPOKEN_NAME = "Soundscape Adhoc";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/SoundscapeDF.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = "";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -6319,7 +6313,8 @@
 					"\"${PODS_ROOT}/Headers/Public/HockeySDK\"",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Openscape;
+				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6332,7 +6327,7 @@
 				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DADHOC";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.openscape.openscape-adhoc";
+				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-adhoc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -6479,18 +6474,18 @@
 		};
 		D3D7CFEF1B3D96470020B5E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2B33C7E8FC26262D2C908CB6 /* Pods-Openscape.debug.xcconfig */;
+			baseConfigurationReference = CA8EE99DA4F34403EFB5AF2B /* Pods-Soundscape.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon Beta";
-				BUNDLE_SPOKEN_NAME = "Openscape Debug";
+				BUNDLE_SPOKEN_NAME = "Soundscape Debug";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = F3AZTWNYRT;
+				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
 				FILE_SHARING_ENABLED = YES;
@@ -6511,7 +6506,8 @@
 					"\"${PODS_ROOT}/Headers/Public/HockeySDK\"",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Openscape;
+				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6524,7 +6520,7 @@
 				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.openscape.openscape-debug";
+				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -6541,17 +6537,19 @@
 		};
 		D3D7CFF01B3D96470020B5E9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 236AEDCBBFCF5CE218920644 /* Pods-Openscape.release.xcconfig */;
+			baseConfigurationReference = 2CE0A71CF64BDEF1A8FCDF22 /* Pods-Soundscape.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BUNDLE_SPOKEN_NAME = Openscape;
+				BUNDLE_SPOKEN_NAME = Soundscape;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_TEAM = F3AZTWNYRT;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
 				FILE_SHARING_ENABLED = NO;
@@ -6571,7 +6569,8 @@
 					"\"${PODS_ROOT}/Headers/Public/HockeySDK\"",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Openscape;
+				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6584,9 +6583,10 @@
 				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = io.openscape.openscape;
+				PRODUCT_BUNDLE_IDENTIFIER = services.soundscape;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore services.soundscape 1691940011";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "GuideDogs/Code/App/Soundscape-Bridging-Header.h";
@@ -6611,7 +6611,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D3D7CFEE1B3D96470020B5E9 /* Build configuration list for PBXNativeTarget "Openscape" */ = {
+		D3D7CFEE1B3D96470020B5E9 /* Build configuration list for PBXNativeTarget "Soundscape" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D3D7CFEF1B3D96470020B5E9 /* Debug */,

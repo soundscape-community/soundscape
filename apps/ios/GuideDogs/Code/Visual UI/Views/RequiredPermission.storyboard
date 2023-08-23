@@ -10,7 +10,7 @@
         <!--Authorize Locations View Controller-->
         <scene sceneID="Omm-CN-HYw">
             <objects>
-                <viewController storyboardIdentifier="authorizeLocationServices" id="RS3-PK-ADb" customClass="AuthorizeLocationsViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="authorizeLocationServices" id="RS3-PK-ADb" customClass="AuthorizeLocationsViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="mpm-o4-3tW"/>
                         <viewControllerLayoutGuide type="bottom" id="t8E-d2-f6I"/>
@@ -43,7 +43,7 @@
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4RJ-f3-DYr" userLabel="Description">
                                         <rect key="frame" x="16" y="193.66666666666669" width="361" height="86.333333333333314"/>
-                                        <string key="text">Openscape uses your location to find and tell you about the places and things around you. The app needs your permission to use Location Services.</string>
+                                        <string key="text">Soundscape uses your location to find and tell you about the places and things around you. The app needs your permission to use Location Services.</string>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -75,7 +75,7 @@
                                     <constraint firstAttribute="bottom" secondItem="eEB-YU-a4w" secondAttribute="bottom" constant="20" id="b4A-ID-4rW"/>
                                 </constraints>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fN9-1O-Mes" customClass="RoundedSolidButton" customModule="Openscape" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fN9-1O-Mes" customClass="RoundedSolidButton" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="16" y="728" width="361" height="50"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -148,7 +148,7 @@
         <!--Authorize Motion Fitness View Controller-->
         <scene sceneID="6ta-A9-CB3">
             <objects>
-                <viewController storyboardIdentifier="authorizeMotionFitness" id="yzn-WA-4qz" customClass="AuthorizeMotionFitnessViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="authorizeMotionFitness" id="yzn-WA-4qz" customClass="AuthorizeMotionFitnessViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0kD-u3-PiS"/>
                         <viewControllerLayoutGuide type="bottom" id="Paj-N3-kPl"/>
@@ -181,7 +181,7 @@
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BUh-Ps-VHA" userLabel="Description">
                                         <rect key="frame" x="16" y="227.66666666666669" width="361" height="174.33333333333331"/>
-                                        <string key="text">This allows Openscape to improve your experience based on whether you are walking, in a vehicle, or standing still. The app needs your permission to use Motion &amp; Fitness. Before you authorize openscape to use this permission, you may need to enable Fitness Tracking under Settings → Privacy → Motion &amp; Fitness.</string>
+                                        <string key="text">This allows Soundscape to improve your experience based on whether you are walking, in a vehicle, or standing still. The app needs your permission to use Motion &amp; Fitness. Before you authorize openscape to use this permission, you may need to enable Fitness Tracking under Settings → Privacy → Motion &amp; Fitness.</string>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -212,7 +212,7 @@
                                     <constraint firstItem="ROK-lQ-fex" firstAttribute="centerX" secondItem="ZFC-Lu-uiS" secondAttribute="centerX" id="pGX-co-Lxp"/>
                                 </constraints>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a8A-YS-zSC" customClass="RoundedSolidButton" customModule="Openscape" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a8A-YS-zSC" customClass="RoundedSolidButton" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="16" y="728" width="361" height="50"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -292,7 +292,7 @@
         <!--Enable Location Services View Controller-->
         <scene sceneID="NeP-F8-TzE">
             <objects>
-                <viewController storyboardIdentifier="enableLocationServices" id="OrM-2I-v7n" customClass="EnableLocationServicesViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="enableLocationServices" id="OrM-2I-v7n" customClass="EnableLocationServicesViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="edZ-G1-x2O"/>
                         <viewControllerLayoutGuide type="bottom" id="Pf7-hT-kow"/>
@@ -323,7 +323,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="localization" value="general.error.location_services_enable"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Services are currently disabled. Openscape cannot work when Location Services are turned off." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vOC-0w-niP" userLabel="Description">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Services are currently disabled. Soundscape cannot work when Location Services are turned off." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vOC-0w-niP" userLabel="Description">
                                         <rect key="frame" x="16" y="193.66666666666669" width="361" height="64.333333333333314"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -359,7 +359,7 @@
                                     <constraint firstItem="fds-X1-n1L" firstAttribute="leading" secondItem="AOg-a4-zp2" secondAttribute="leading" id="u9Y-GQ-T0S"/>
                                 </constraints>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H9U-Iu-rkZ" customClass="RoundedSolidButton" customModule="Openscape" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H9U-Iu-rkZ" customClass="RoundedSolidButton" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="16" y="728" width="361" height="50"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -431,7 +431,7 @@
         <!--Enable Motion Fitness View Controller-->
         <scene sceneID="9bw-Bz-BRk">
             <objects>
-                <viewController storyboardIdentifier="enableMotionFitness" id="QwB-gc-J1o" customClass="EnableMotionFitnessViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="enableMotionFitness" id="QwB-gc-J1o" customClass="EnableMotionFitnessViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="oc6-MY-NGn"/>
                         <viewControllerLayoutGuide type="bottom" id="z0j-Ta-sUe"/>
@@ -459,7 +459,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="localization" value="device_motion.enable.title"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Motion &amp; Fitness tracking is currently disabled. Openscape cannot work when Motion &amp; Fitness tracking is turned off." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r4G-D9-w4A" userLabel="Description">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Motion &amp; Fitness tracking is currently disabled. Soundscape cannot work when Motion &amp; Fitness tracking is turned off." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r4G-D9-w4A" userLabel="Description">
                                         <rect key="frame" x="16" y="227.66666666666671" width="361" height="64.333333333333343"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -476,7 +476,7 @@
 2. Select Privacy
 3. Select Motion &amp; Fitness
 4. Turn on Fitness Tracking
-5. Restart Openscape</string>
+5. Restart Soundscape</string>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -496,7 +496,7 @@
                                     <constraint firstItem="3pn-m0-v3Y" firstAttribute="centerX" secondItem="TwR-L5-PdH" secondAttribute="centerX" id="yCV-id-vLp"/>
                                 </constraints>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c3z-4d-20Q" customClass="RoundedSolidButton" customModule="Openscape" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c3z-4d-20Q" customClass="RoundedSolidButton" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="16" y="728" width="361" height="50"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>

@@ -1,6 +1,6 @@
 //
 //  RouteLoader.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -11,7 +11,7 @@ import Combine
 import CoreLocation
 
 class RouteLoader: ObservableObject {
-    let queue = DispatchQueue(label: "io.openscape.openscape.routeloader")
+    let queue = DispatchQueue(label: "services.soundscape.routeloader")
     
     @Published var loadingComplete = false
     @Published var routeIDs: [String] = []

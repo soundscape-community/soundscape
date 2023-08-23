@@ -1,6 +1,6 @@
 //
 //  URLResourceManager.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -26,7 +26,7 @@ class URLResourceManager {
     private var listeners: [AnyCancellable] = []
     private var pendingURLResources: [URLResource] = []
     private var homeViewControllerDidLoad = false
-    private var queue = DispatchQueue(label: "io.openscape.openscape.urlresourcemanager")
+    private var queue = DispatchQueue(label: "services.soundscape.urlresourcemanager")
     // Handlers
     private let gpxHandler = GPXResourceHandler()
     private let routeHandler = RouteResourceHandler()

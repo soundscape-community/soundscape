@@ -1,6 +1,6 @@
 //
 //  GPXTracker.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -19,7 +19,7 @@ class GPXTracker {
     private(set) var rawLocations: [GPXLocation] = []
     private(set) var smoothLocations: [GPXLocation] = []
     
-    private let queue = DispatchQueue(label: "io.openscape.openscape.gpxtracker")
+    private let queue = DispatchQueue(label: "services.soundscape.gpxtracker")
     
     // MARK: Tracking state
 

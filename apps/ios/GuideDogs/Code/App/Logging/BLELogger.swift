@@ -59,7 +59,7 @@ class BLELogger: DDAbstractLogger {
         logService = CBMutableService(type: BLELoggerServiceCBUUID, primary: true)
         logService.characteristics = [logCharacteristic]
         
-        peripheralManager = CBPeripheralManager(delegate: self, queue: DispatchQueue(label: "io.openscape.openscape.ble-logger"))
+        peripheralManager = CBPeripheralManager(delegate: self, queue: DispatchQueue(label: "services.soundscape.ble-logger"))
     }
     
     fileprivate func sendData() {
@@ -136,7 +136,7 @@ extension BLELogger {
     }
     
     override var loggerName: DDLoggerName {
-        return DDLoggerName("io.openscape.openscape.blelogger")
+        return DDLoggerName("services.soundscape.blelogger")
     }
 }
 

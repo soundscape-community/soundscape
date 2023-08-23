@@ -11,7 +11,7 @@
         <!--Help-->
         <scene sceneID="GeS-UV-Bv4">
             <objects>
-                <tableViewController title="Help" id="HeB-TC-6m6" customClass="HelpViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Help" id="HeB-TC-6m6" customClass="HelpViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="default" sectionIndexMinimumDisplayRowCount="1" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="t4e-Vh-8vY">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="804"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -25,7 +25,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </view>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="defaultCell" textLabel="ePu-bo-0ov" style="IBUITableViewCellStyleDefault" id="FsP-kc-bCW" customClass="CustomDisclosureTableViewCell" customModule="Openscape" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="defaultCell" textLabel="ePu-bo-0ov" style="IBUITableViewCellStyleDefault" id="FsP-kc-bCW" customClass="CustomDisclosureTableViewCell" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="FsP-kc-bCW" id="1RK-0u-BtO">
@@ -92,7 +92,7 @@
         <!--Help Page Title-->
         <scene sceneID="b9X-Os-024">
             <objects>
-                <viewController title="Help Page Title" id="deu-ZT-efG" customClass="HelpPageViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Help Page Title" id="deu-ZT-efG" customClass="HelpPageViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="CTH-mC-PVD"/>
                         <viewControllerLayoutGuide type="bottom" id="8hb-5S-yk6"/>
@@ -300,7 +300,7 @@
         <!--Frequently Asked Questions-->
         <scene sceneID="yGU-eg-QjF">
             <objects>
-                <tableViewController title="Frequently Asked Questions" id="ID7-Dj-jiD" customClass="HelpPageFAQListTableViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Frequently Asked Questions" id="ID7-Dj-jiD" customClass="HelpPageFAQListTableViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="7Vz-89-W9g">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="804"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -308,7 +308,7 @@
                         <color key="tintColor" name="Foreground 1"/>
                         <color key="separatorColor" name="Background 3"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="QuestionCell" textLabel="toJ-XF-oW2" style="IBUITableViewCellStyleDefault" id="nEw-lc-Q1V" customClass="CustomDisclosureTableViewCell" customModule="Openscape" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="QuestionCell" textLabel="toJ-XF-oW2" style="IBUITableViewCellStyleDefault" id="nEw-lc-Q1V" customClass="CustomDisclosureTableViewCell" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nEw-lc-Q1V" id="agb-Eh-ecJ">
@@ -346,7 +346,7 @@
         <!--FAQ Title-->
         <scene sceneID="k3m-OY-845">
             <objects>
-                <viewController title="FAQ Title" id="vsj-yu-qxK" customClass="HelpPageFAQViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="FAQ Title" id="vsj-yu-qxK" customClass="HelpPageFAQViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="tTn-jS-EFt"/>
                         <viewControllerLayoutGuide type="bottom" id="2N7-Xr-Jku"/>
@@ -439,7 +439,7 @@
         <!--Help Page Title-->
         <scene sceneID="8be-hX-vJJ">
             <objects>
-                <viewController title="Help Page Title" id="DA9-qa-U77" customClass="HelpPageGenericViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Help Page Title" id="DA9-qa-U77" customClass="HelpPageGenericViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="lE1-v5-AV0"/>
                         <viewControllerLayoutGuide type="bottom" id="D2P-Y7-Z3H"/>
@@ -508,7 +508,7 @@
         <!--Offline Help Page View Controller-->
         <scene sceneID="0wU-1u-cqr">
             <objects>
-                <viewController storyboardIdentifier="OfflinePage" id="GdR-lA-crN" customClass="OfflineHelpPageViewController" customModule="Openscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="OfflinePage" id="GdR-lA-crN" customClass="OfflineHelpPageViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="oIR-Td-9KM"/>
                         <viewControllerLayoutGuide type="bottom" id="XcH-2u-yG7"/>

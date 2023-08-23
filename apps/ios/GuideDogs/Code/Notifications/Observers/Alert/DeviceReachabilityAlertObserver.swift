@@ -1,6 +1,6 @@
 //
 //  DeviceReachabilityAlertObserver.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -15,7 +15,7 @@ class DeviceReachabilityAlertObserver: NotificationObserver {
     weak var delegate: NotificationObserverDelegate?
     private(set) var didDismiss = false
     private var alert: UIAlertController?
-    private let dispatchQueue = DispatchQueue(label: "io.openscape.openscape.device_reachability", qos: .background, attributes: .concurrent)
+    private let dispatchQueue = DispatchQueue(label: "services.soundscape.device_reachability", qos: .background, attributes: .concurrent)
     private let dispatchGroup = DispatchGroup()
     private var active: [DeviceReachability] = []
     

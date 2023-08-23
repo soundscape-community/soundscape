@@ -1,6 +1,6 @@
 //
 //  ExperimentManager.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -46,7 +46,7 @@ class ExperimentManager {
         return directory?.appendingPathComponent("controls.json")
     }()
     
-    private let queue = DispatchQueue(label: "io.openscape.openscape.flightmanager")
+    private let queue = DispatchQueue(label: "services.soundscape.flightmanager")
     
     private let service = ExperimentServiceModel()
     

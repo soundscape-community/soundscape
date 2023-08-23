@@ -1,6 +1,6 @@
 //
 //  UniversalLinkManager.swift
-//  Openscape
+//  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
@@ -14,7 +14,7 @@ class UniversalLinkManager {
     
     private var pendingLinkComponents: [UniversalLinkComponents] = []
     private var homeViewControllerDidLoad = false
-    private var queue = DispatchQueue(label: "io.openscape.openscape.universallinkmanager")
+    private var queue = DispatchQueue(label: "services.soundscape.universallinkmanager")
     // Handlers
     private let recreationalActivityLinkHandler = RecreationalActivityLinkHandler()
     private let shareMarkerLinkHandler = ShareMarkerLinkHandler()
