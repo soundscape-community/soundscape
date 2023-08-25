@@ -78,7 +78,7 @@ extension RouteParameters {
         
         // Save file to temporary directory using a localized filename
         // todo: good place to get the extension of the file to export from our imfo.plist instead of hardcoding it here
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).openscape")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).soundscape")
         
         do {
             try data.write(to: url)
