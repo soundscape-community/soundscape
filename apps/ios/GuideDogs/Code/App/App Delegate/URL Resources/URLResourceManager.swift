@@ -93,7 +93,7 @@ class URLResourceManager {
         switch resource.identifier {
         case .gpx: handler = gpxHandler
         case .route: handler = routeHandler
-        case .legacy_soundscape_route: handler = routeHandler
+        case .openscape_route: handler = routeHandler
         }
         
         handler.handleURLResource(with: resource.url)

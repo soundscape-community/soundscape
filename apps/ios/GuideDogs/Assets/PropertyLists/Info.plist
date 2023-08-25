@@ -10,24 +10,32 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Soundscape Document</string>
+			<string>Soundscape route and marker file</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>io.openscape.doc</string>
+				<string>services.soundscape.doc</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Soundscape Document</string>
+			<string>Microsoft Soundscape app route and marker file</string>
 			<key>LSHandlerRank</key>
-			<string>Default</string>
+			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.microsoft.soundscape.doc</string>
 			</array>
 			<key>NSExportableTypes</key>
+			<string>NSExportableTypes</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Openscape route and marker file</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
+			<key>LSItemContentTypes</key>
 			<array>
 				<string>io.openscape.doc</string>
 			</array>
@@ -88,10 +96,6 @@
 	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>googlegmail</string>
@@ -103,6 +107,10 @@
 		<string>fastmail</string>
 		<string>x-dispatch</string>
 	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Soundscape uses Bluetooth LE to connect to accessories.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
@@ -205,7 +213,7 @@
 				<string>public.content</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Legacy Soundscape app route and marker file</string>
+			<string>Soundscape route and marker file</string>
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>
@@ -215,6 +223,46 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>soundscape</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.content</string>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Soundscape route and marker file</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>services.soundscape.doc</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>soundscape</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.content</string>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Openscape route and marker file</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>io.openscape.doc</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>openscape</string>
 				</array>
 			</dict>
 		</dict>
