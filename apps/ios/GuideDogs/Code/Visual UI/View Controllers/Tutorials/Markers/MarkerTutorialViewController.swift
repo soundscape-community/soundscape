@@ -379,7 +379,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         
         let entityKeyToInclude = selectedPOI?.key != nil ? [selectedPOI!.key] : []
         let event = ExplorationModeToggled(.nearbyMarkers, requiredMarkerKeys: entityKeyToInclude, logContext: "marker_tutorial") { [weak self] _ in
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self?.showNextPage()
             }
         }
