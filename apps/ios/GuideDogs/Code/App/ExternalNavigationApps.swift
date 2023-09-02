@@ -27,11 +27,12 @@ enum ExternalNavigationApps: String, CaseIterable{
             case .appleMaps: return "Apple Maps"
         }
     }
-    func url(location: CLLocation) -> URL? {
+    func url(location: CLLocation, label: String) -> URL? {
         // Zoom level for all supported map apps and sites
         let zoom = 10
+        let escapedLabel = label.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) ?? "Location"
         switch self {
-            case .appleMaps: return URL(string: "https://maps.apple.com/?sll=\(location.coordinate.latitude),\(location.coordinate.longitude)&z=\(zoom)&t=s")
+            case .appleMaps: return URL(string: "https://maps.apple.com/?ll=\(location.coordinate.latitude),\(location.coordinate.longitude)&z=\(zoom)&q=\(escapedLabel)")
             case .googleMaps: return URL(string: "https://www.google.com/maps/search/?api=1&query=\(location.coordinate.latitude)%2C\(location.coordinate.longitude)")
             case .waze: return URL(string: "https://www.waze.com/ul?ll=\(location.coordinate.latitude)%2C\(location.coordinate.longitude)&navigate=yes&zoom=\(zoom)")
 

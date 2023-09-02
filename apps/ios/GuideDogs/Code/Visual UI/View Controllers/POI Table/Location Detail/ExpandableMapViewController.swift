@@ -288,7 +288,7 @@ class ExpandableMapViewController: UIViewController {
         if let locationDetail = locationDetail {
             // Create and configure the alert controller.
             //let alert = UIAlertController(title: GDLocalizedString("general.alert.choose_an_app"), message: nil, preferredStyle: .actionSheet)
-            let alert = UIAlertController(openInExternalWithLocation: locationDetail.location, preferredStyle: .actionSheet) { [weak self] (mapsApp) in
+            let alert = UIAlertController(openInExternalWithLocation: locationDetail.location, label: locationDetail.displayName, preferredStyle: .actionSheet) { [weak self] (mapsApp) in
                 print("Share to external maps app completion called")
                 if let mapsApp = mapsApp {
                     print("Map app: \(mapsApp)")
