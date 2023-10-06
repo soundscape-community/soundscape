@@ -661,6 +661,7 @@
 		62EACA2B26697F4300DBDECC /* WaypointDetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EACA2A26697F4300DBDECC /* WaypointDetailAnnotationView.swift */; };
 		62F7A30C27B6080900C62390 /* InteractiveBeaconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */; };
 		62F7A30E27B6082A00C62390 /* InteractiveBeaconViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */; };
+		9109FFF62ACCB10B002EC850 /* DestinationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9109FFF52ACCB10B002EC850 /* DestinationManagerTest.swift */; };
 		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
 		91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */; };
 		91C82ABE2A6B08500086D126 /* RouteGuidanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */; };
@@ -1579,6 +1580,7 @@
 		62EACA2A26697F4300DBDECC /* WaypointDetailAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointDetailAnnotationView.swift; sourceTree = "<group>"; };
 		62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconView.swift; sourceTree = "<group>"; };
 		62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconViewModel.swift; sourceTree = "<group>"; };
+		9109FFF52ACCB10B002EC850 /* DestinationManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationManagerTest.swift; sourceTree = SOURCE_ROOT; };
 		6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExternalNavigationApps.swift; path = Code/App/ExternalNavigationApps.swift; sourceTree = "<group>"; };
 		815775252832F0650DF9D8D4 /* Pods-Soundscape.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soundscape.adhoc.xcconfig"; path = "Target Support Files/Pods-Soundscape/Pods-Soundscape.adhoc.xcconfig"; sourceTree = "<group>"; };
 		914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4284,10 +4286,19 @@
 			path = "Interactive View";
 			sourceTree = "<group>";
 		};
+		9109FFF42ACCB0D5002EC850 /* Destination Manager */ = {
+			isa = PBXGroup;
+			children = (
+				9109FFF52ACCB10B002EC850 /* DestinationManagerTest.swift */,
+			);
+			path = "Destination Manager";
+			sourceTree = "<group>";
+		};
 		914DEBCE2A3CE6B9007B161C /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
 				91C82ABB2A6B03790086D126 /* Behaviors */,
+				91C82AB52A67182E0086D126 /* Data */,
 				91C82AA62A4F56A70086D126 /* Sensors */,
 				914DEBD92A3CE7E6007B161C /* App */,
 			);
@@ -4316,6 +4327,14 @@
 				91C82AA72A4F56F80086D126 /* Geolocation */,
 			);
 			path = Sensors;
+			sourceTree = "<group>";
+		};
+		91C82AB52A67182E0086D126 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				9109FFF42ACCB0D5002EC850 /* Destination Manager */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 		91C82AA72A4F56F80086D126 /* Geolocation */ = {
@@ -5563,6 +5582,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91C82ABE2A6B08500086D126 /* RouteGuidanceTest.swift in Sources */,
+				9109FFF62ACCB10B002EC850 /* DestinationManagerTest.swift in Sources */,
 				91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */,
 				91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */,
 			);
