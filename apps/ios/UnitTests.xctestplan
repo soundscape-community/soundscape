@@ -9,7 +9,15 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:GuideDogs.xcodeproj",
+          "identifier" : "D3D7CFC71B3D96460020B5E9",
+          "name" : "Soundscape"
+        }
+      ]
+    },
     "commandLineArgumentEntries" : [
       {
         "argument" : "-TESTING"
