@@ -7,7 +7,8 @@
 //
 
 import Foundation
-import iOS_GPX_Framework
+import CoreLocation
+import CoreGPX
 
 // MARK: - Data Models
 
@@ -161,7 +162,10 @@ struct AuthoredActivityContent {
 // MARK: - Parsing GPX Event Data
 
 fileprivate extension GPXWaypoint {
-    var coordinate: CLLocationCoordinate2D {
+    var coordinate: CLLocationCoordinate2D? {
+        guard let latitude = latitude, let longitude = longitude else {
+            return nil
+        }
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 }
@@ -181,7 +185,11 @@ extension AuthoredActivityContent {
             return nil
         }
         
-        guard let ext = metadata.extensions?.soundscapeSCExtensions, let actType = AuthoredActivityType.parse(ext.behavior) else {
+        guard let ext = metadata.extensions?.soundscapeSCExtensions,
+              let id = ext.id, // required here
+              let behavior = ext.behavior, // required here
+              let locale = ext.locale, // required here
+              let actType = AuthoredActivityType.parse(behavior) else {
             return nil
         }
         
@@ -189,7 +197,7 @@ extension AuthoredActivityContent {
             return nil
         }
         
-        guard let creator = metadata.author.name, !creator.isEmpty else {
+        guard let creator = metadata.author?.name, !creator.isEmpty else {
             return nil
         }
         
@@ -198,8 +206,8 @@ extension AuthoredActivityContent {
         }
         
         var imageURL: URL?
-        if let image = metadata.link, image.mimetype.hasPrefix("image") {
-            imageURL = URL(string: image.href)
+        if let image = metadata.links.first, image.mimetype?.hasPrefix("image") != nil, let href = image.href {
+            imageURL = URL(string: href)
         }
         
         // Parse the waypoints and POIs based on the file version
@@ -212,11 +220,11 @@ extension AuthoredActivityContent {
                 return nil
             }
             
-            return AuthoredActivityContent(id: ext.identifier,
+            return AuthoredActivityContent(id: id,
                                            type: actType,
                                            name: name,
                                            creator: creator,
-                                           locale: ext.locale,
+                                           locale: locale,
                                            availability: ext.availability,
                                            expires: ext.expires,
                                            image: imageURL,
@@ -225,24 +233,25 @@ extension AuthoredActivityContent {
                                            pois: [])
             
         case "2":
-            guard let route = gpx.routes.first, route.routepoints.count > 0 else {
+            guard let route = gpx.routes.first, route.points.count > 0 else {
                 return nil
             }
             
-            let wpts: [ActivityWaypoint] = waypoints(from: route.routepoints)
+            let wpts: [ActivityWaypoint] = waypoints(from: route.points)
             
             // For waypoints in this experience, require names, descriptions, and street addresses
             guard !wpts.isEmpty, !wpts.contains(where: { $0.name == nil }) else {
                 return nil
             }
             
-            let pois = gpx.waypoints.map { ActivityPOI(coordinate: $0.coordinate, name: $0.name, description: $0.desc) }
+            // TODO: maybe don't use !
+            let pois = gpx.waypoints.map { ActivityPOI(coordinate: $0.coordinate!, name: $0.name!, description: $0.desc) }
             
-            return AuthoredActivityContent(id: ext.identifier,
+            return AuthoredActivityContent(id: id,
                                            type: actType,
                                            name: name,
                                            creator: creator,
-                                           locale: ext.locale,
+                                           locale: locale,
                                            availability: ext.availability,
                                            expires: ext.expires,
                                            image: imageURL,
@@ -264,37 +273,40 @@ extension AuthoredActivityContent {
         let audioMimeTypes = Set(["audio/mpeg", "audio/x-m4a"])
         
         return waypoints.map { wpt in
-            let links = wpt.extensions?.soundscapeLinkExtensions?.links
+            let links = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
+                guard let mimetype = $0.mimetype else { return false }
+                return imageMimeTypes.contains(mimetype)
+            }) ?? []
             
-            let parsedImages = links?.filter({ imageMimeTypes.contains($0.mimetype) })
-                .compactMap { (link) -> ActivityWaypointImage? in
-                    guard let url = URL(string: link.href) else {
-                        return nil
-                    }
-                    
-                    return ActivityWaypointImage(url: url, altText: link.text)
+            let parsedImages = links.compactMap { (link) -> ActivityWaypointImage? in
+                guard let href = link.href,
+                      let url = URL(string: href) else {
+                    return nil
                 }
+                
+                return ActivityWaypointImage(url: url, altText: link.text)
+            }
             
-            let parsedAudioClips = links?.filter({ audioMimeTypes.contains($0.mimetype) })
-                .compactMap { (link) -> ActivityWaypointAudioClip? in
-                    guard let url = URL(string: link.href) else {
-                        return nil
-                    }
-                    
-                    return ActivityWaypointAudioClip(url: url, description: link.text)
+            let parsedAudioClips = links.compactMap { (link) -> ActivityWaypointAudioClip? in
+                guard let href = link.href,
+                      let url = URL(string: href) else {
+                    return nil
                 }
+                
+                return ActivityWaypointAudioClip(url: url, description: link.text)
+            }
             
             let allAnnotations = wpt.extensions?.soundscapeAnnotationExtensions?.annotations
             let departure = allAnnotations?.first(where: { $0.type == "departure" })?.content
             let arrival = allAnnotations?.first(where: { $0.type == "arrival" })?.content
             
-            return ActivityWaypoint(coordinate: wpt.coordinate,
+            return ActivityWaypoint(coordinate: wpt.coordinate!, // TODO: maybe shouldn't be !
                                     name: wpt.name,
                                     description: wpt.desc,
                                     departureCallout: departure,
                                     arrivalCallout: arrival,
-                                    images: parsedImages ?? [],
-                                    audioClips: parsedAudioClips ?? [])
+                                    images: parsedImages,
+                                    audioClips: parsedAudioClips)
         }
     }
 }

@@ -5,9 +5,6 @@
       location = "group:GuideDogs.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Pods/Pods.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Scripts/Scripts.xcodeproj">
    </FileRef>
    <FileRef

@@ -9,7 +9,7 @@
 import Foundation
 import CoreLocation
 import CocoaLumberjackSwift
-import iOS_GPX_Framework
+import CoreGPX
 
 struct RoadAdjacentDataView: AdjacentDataView, Equatable {
     

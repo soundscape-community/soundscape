@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import iOS_GPX_Framework
+import CoreGPX
 import CoreMotion.CMMotionActivity
 
 class GPXTracker {

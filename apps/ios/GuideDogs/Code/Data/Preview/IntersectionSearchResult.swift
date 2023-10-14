@@ -8,7 +8,7 @@
 
 import Foundation
 import CoreLocation
-import iOS_GPX_Framework
+import CoreGPX
 
 /// An object representing a result of an intersection search along a road at a specific coordinate
 struct IntersectionSearchResult {
