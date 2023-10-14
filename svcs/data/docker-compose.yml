@@ -41,8 +41,8 @@ services:
     build:
       dockerfile: Dockerfile.ingest
     environment:
-      - GEN_REGIONS="${GEN_REGIONS:-district-of-columbia}"
-      - LOOP_TIME="${LOOP_TIME:-14400}"
+      - GEN_REGIONS=${GEN_REGIONS:-district-of-columbia}
+      - LOOP_TIME=${LOOP_TIME:-14400}
       - NAMESPACE=soundscape
       - POSTGIS_HOST=postgis
       - POSTGIS_PORT=5432
