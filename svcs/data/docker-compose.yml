@@ -1,6 +1,11 @@
 # This container setup provisions a PostGIS server, downloads and ingests OSM
 # data for Washington, DC, and runs a Soundscape GeoJSON tile server.
 #
+# the following variables can be set in .env:
+# GEN_REGIONS: set to any location listed in extracts.json, or add new ones
+# from the available downloads at http://download.geofabrik.de/
+# LOOP_TIME: The time between database updates in seconds.
+#
 # To run:
 #   $ docker-compose up --build
 #
@@ -36,10 +41,8 @@ services:
     build:
       dockerfile: Dockerfile.ingest
     environment:
-      # set this to any location listed in extracts.json, or add new ones
-      # from the available downloads at http://download.geofabrik.de/
-      - GEN_REGIONS=district-of-columbia
-      - LOOP_TIME=14400
+      - GEN_REGIONS="${GEN_REGIONS:-district-of-columbia}"
+      - LOOP_TIME="${LOOP_TIME:-14400}"
       - NAMESPACE=soundscape
       - POSTGIS_HOST=postgis
       - POSTGIS_PORT=5432
