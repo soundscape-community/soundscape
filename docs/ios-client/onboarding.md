@@ -9,8 +9,8 @@ As of Soundscape version 5.3.1 (October 2022):
 * macOS 12.6.1
 * Xcode 13.4.1
 * iOS 14.1
-* CocoaPods 1.11.3
-* CocoaPods Patch 1.0.2
+* CocoaPods 1.11.3 (since removed)
+* CocoaPods Patch 1.0.2 (since removed)
 
 ## Install Xcode
 
@@ -31,22 +31,12 @@ xcode-select --install
 _Note:_ while macOS comes with a version of Ruby installed, you should install and use a non-system [Ruby](https://www.ruby-lang.org/)
 using a version manager like [RVM](https://rvm.io/)
 
-## Install CocoaPods and CocoaPods-Patch
-
-Soundscape uses [CocoaPods](https://cocoapods.org/) as a dependency managers along with [Swift Package Manager](https://www.swift.org/package-manager/), and [CocoaPods-Patch](https://github.com/DoubleSymmetry/cocoapods-patch) to add changes to a third party CocoaPods framework.
+## Install Fastlane
 
 In the iOS project folder, run the following command to install the dependencies from the `Gemfile`:
 
 ```sh
 bundle install
-```
-
-## Install CocoaPods Dependencies
-
-Install the CocoaPods dependencies by running the following command in Terminal from the iOS project folder:
-
-```sh
-pod install
 ```
 
 ## Opening the Project

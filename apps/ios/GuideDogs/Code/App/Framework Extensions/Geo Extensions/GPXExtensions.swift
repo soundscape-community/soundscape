@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 import CoreGPX
 import CoreMotion.CMMotionActivity
 
