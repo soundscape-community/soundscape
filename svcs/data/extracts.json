@@ -86,7 +86,7 @@
     },
     {
 	"name": "world",
-	"url": "https://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf ",
+	"url": "https://ftp5.gwdg.de/pub/misc/openstreetmap/planet.openstreetmap.org/pbf/planet-latest.osm.pbf",
 	"bbox": [0.0, 0.0, 0.0, 0.0]
     },
     {
