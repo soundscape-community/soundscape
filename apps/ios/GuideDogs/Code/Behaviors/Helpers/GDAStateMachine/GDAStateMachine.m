@@ -427,22 +427,22 @@ static inline void Log(NSString * format, ...)
         // Schedule timeout processing.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             // Lock.
-            pthread_mutex_lock(&_mutex);
+            pthread_mutex_lock(&self->_mutex);
             
             // If the operation timed out, change to the default state.
-            BOOL timedout = _stateNumber == stateNumber;
+            BOOL timedout = self->_stateNumber == stateNumber;
             if (timedout)
             {
                 // Log.
-                Log(@"%@: State '%@' timed out after %.0f seconds. Transition to state '%@'", _name, [state name], timeout, [_timeoutState name]);
+                Log(@"%@: State '%@' timed out after %.0f seconds. Transition to state '%@'", self->_name, [state name], timeout, [self->_timeoutState name]);
                 
                 // Transition to the timeout state.
-                [self transitionToState:_timeoutState
+                [self transitionToState:self->_timeoutState
                                  object:[state name]];
             }
             
             // Unlock.
-            pthread_mutex_unlock(&_mutex);
+            pthread_mutex_unlock(&self->_mutex);
             
             // If the operation timed out, notify the delegate.
             if (timedout && [[self delegate] respondsToSelector:@selector(stateMachine:timedOutWithState:)])

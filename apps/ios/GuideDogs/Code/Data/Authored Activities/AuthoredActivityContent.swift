@@ -213,6 +213,8 @@ extension AuthoredActivityContent {
         // Parse the waypoints and POIs based on the file version
         switch ext.version ?? "1" {
         case "1":
+            // Version 1 just uses all the top-level waypoints `<wpt></wpt>` defined in the GPX, in order
+            
             let wpts: [ActivityWaypoint] = waypoints(from: gpx.waypoints)
             
             // For waypoints in this experience, require names, descriptions, and street addresses
