@@ -95,12 +95,12 @@ extension UIAlertController {
     }
 
     /// Create and return a `UIAlertController` that is able to open an external maps app to a given destination
-    convenience init(openInExternalWithLocation: CLLocation, preferredStyle: UIAlertController.Style, handler: ((ExternalNavigationApps?) -> Void)? = nil) {
+    convenience init(openInExternalWithLocation: CLLocation, label: String, preferredStyle: UIAlertController.Style, handler: ((ExternalNavigationApps?) -> Void)? = nil) {
         // Create alert actions
         let actions = ExternalNavigationApps.allCases.compactMap { (mapApp) -> UIAlertAction? in
             print("Processing app: \(mapApp)")
             print("location: \(openInExternalWithLocation)")
-            guard let url = mapApp.url(location: openInExternalWithLocation) else {
+            guard let url = mapApp.url(location: openInExternalWithLocation, label: label) else {
                 print("Unable to construct URL for share to external maps ap")
                 return nil 
             }
