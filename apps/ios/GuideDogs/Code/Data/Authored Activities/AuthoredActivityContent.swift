@@ -235,10 +235,14 @@ extension AuthoredActivityContent {
                                            pois: [])
             
         case "2":
-            guard let route = gpx.routes.first, route.points.count > 0 else {
+            // Version 2 uses the first route `<rte></rte>`, taking the contained route points as its waypoints
+            // It then uses the top-level GPX waypoints `<wpt></wpt>` as POIs
+            
+            guard let route = gpx.routes.first, !route.points.isEmpty else {
                 return nil
             }
             
+            // Waypoints are strict about requiring names and locations
             let wpts: [ActivityWaypoint] = waypoints(from: route.points)
             
             // For waypoints in this experience, require names, descriptions, and street addresses
@@ -246,8 +250,14 @@ extension AuthoredActivityContent {
                 return nil
             }
             
-            // TODO: maybe don't use !
-            let pois = gpx.waypoints.map { ActivityPOI(coordinate: $0.coordinate!, name: $0.name!, description: $0.desc) }
+            let pois: [ActivityPOI] = gpx.waypoints.compactMap {
+                guard let coord = $0.coordinate else {
+                    // skip waypoints without a location (why does GPX allow this waypoints to lack a location?)
+                    // TODO: maybe log a warning
+                    return nil
+                }
+                return ActivityPOI(coordinate: coord, name: $0.name ?? "Unlabeled POI", description: $0.desc)
+            }
             
             return AuthoredActivityContent(id: id,
                                            type: actType,
@@ -274,13 +284,13 @@ extension AuthoredActivityContent {
         let imageMimeTypes = Set(["image/jpeg", "image/jpg", "image/png"])
         let audioMimeTypes = Set(["audio/mpeg", "audio/x-m4a"])
         
-        return waypoints.map { wpt in
-            let links = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
+        return waypoints.compactMap { wpt in
+            let links: [GPXLink] = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
                 guard let mimetype = $0.mimetype else { return false }
                 return imageMimeTypes.contains(mimetype)
             }) ?? []
             
-            let parsedImages = links.compactMap { (link) -> ActivityWaypointImage? in
+            let parsedImages: [ActivityWaypointImage] = links.compactMap { link in
                 guard let href = link.href,
                       let url = URL(string: href) else {
                     return nil
@@ -289,7 +299,7 @@ extension AuthoredActivityContent {
                 return ActivityWaypointImage(url: url, altText: link.text)
             }
             
-            let parsedAudioClips = links.compactMap { (link) -> ActivityWaypointAudioClip? in
+            let parsedAudioClips: [ActivityWaypointAudioClip] = links.compactMap { link in
                 guard let href = link.href,
                       let url = URL(string: href) else {
                     return nil
@@ -298,11 +308,18 @@ extension AuthoredActivityContent {
                 return ActivityWaypointAudioClip(url: url, description: link.text)
             }
             
-            let allAnnotations = wpt.extensions?.soundscapeAnnotationExtensions?.annotations
-            let departure = allAnnotations?.first(where: { $0.type == "departure" })?.content
-            let arrival = allAnnotations?.first(where: { $0.type == "arrival" })?.content
+            let annotations = wpt.extensions?.soundscapeAnnotationExtensions
+            let departure = annotations?.getFirstAnnotation(withType: "departure")?.content
+            let arrival = annotations?.getFirstAnnotation(withType: "arrival")?.content
             
-            return ActivityWaypoint(coordinate: wpt.coordinate!, // TODO: maybe shouldn't be !
+            // Coordinate shouldn't be nil, but CoreGPX allows it to be so.
+            // For now we just skip those points
+            // TODO: there's probably a better way to enforce this
+            guard let coordinate = wpt.coordinate else {
+                return nil
+            }
+            
+            return ActivityWaypoint(coordinate: coordinate,
                                     name: wpt.name,
                                     description: wpt.desc,
                                     departureCallout: departure,

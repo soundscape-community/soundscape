@@ -93,13 +93,17 @@ extension GPXRoot {
 
 extension GPXExtensionsElement {
     /// Sets the first child tag with the specified name, or creates a new one if it does not exist.
-    public func set_property(_ name: String, to value: String) {
-        for child in children {
-            if child.name == name {
-                child.text = value
-                return
-            }
+    /// If value is `nil`, removes specified tags
+    public func set_property(_ name: String, to value: String?) {
+        guard let value = value else {
+            children.removeAll(where: { $0.name == name })
+            return
         }
+        if let child = children.first(where: { $0.name == name }) {
+            child.text = value
+            return
+        }
+        
         let new_element = GPXExtensionsElement(name: value)
         new_element.text = value
         children.append(new_element)
@@ -107,12 +111,7 @@ extension GPXExtensionsElement {
     
     /// Gets the first child tag with the specified name, or nil if not found
     public func get_property(_ name: String) -> String? {
-        for child in children {
-            if child.name == name {
-                return child.text
-            }
-        }
-        return nil
+        return children.first(where: { $0.name == name })?.text
     }
 }
 
@@ -171,7 +170,7 @@ func BuildGPXExtension(_ type: GPXExtensionsKeys) -> GPXExtensionsElement {
 // TODO: Many of the properties in the various extensions are NSNumber in the Objective-C versions. That means they could be any number type, from floating point to integer types to booleans. We should probably figure out what they're actually supposed to be.
 
 /// child tags within a `GPXTrackPointExtensions` which has tag `gpxtpx:TrackPointExtension`
-/// https://www8.garmin.com/xmlschemas/TrackPointExtensionv2.xsd
+/// - seealso: [](https://www8.garmin.com/xmlschemas/TrackPointExtensionv2.xsd)
 enum GPXTrackPointExtensionsProperties : String {
     case kHeartRate = "gpxtpx:hr" // unsigned int
     case kCadence = "gpxtpx:cad" // unsigned int
@@ -197,13 +196,18 @@ extension GPXExtensionView<GPXTrackPointExtensionsProperties> {
     }
 }
 
+/// - seealso: [](https://trails.io/GPX/1/0/trails_1.0.xsd)
 enum GPXTrailsTrackExtensionsProperties : String {
     case kElementActivity = "trailsio:activity"
 }
 extension GPXExtensionView<GPXTrailsTrackExtensionsProperties> {
-    // TODO: this
+    public var activityType: String? {
+        get { get_single(.kElementActivity) }
+        set {set_single(.kElementActivity, to: newValue) }
+    }
 }
 
+/// - seealso: [](https://trails.io/GPX/1/0/trails_1.0.xsd)
 enum GPXTrailsTrackPointExtensionsProperties : String {
     case kElementHorizontalAcc = "trailsio:hacc"
     case kElementVerticalAcc = "trailsio:vacc"
@@ -282,12 +286,38 @@ enum GPXSoundscapeSharedContentExtensionsProperties : String {
     case kElementVersion = "gpxsc:version"
     // Experience Tags
     case kElementLocale = "gpxsc:locale" // 'required'
+    // ??
+    case kElementRegion = "gpxsc:region"
 }
 /// attribute keys within a `GPXSoundscapeSharedContentExtensions` which has tag `gpxsc:meta`
 enum GPXSoundscapeSharedContentExtensionsAttributes : String {
     case kAttributeStartDate = "start"
     case kAttributeEndDate = "end"
     case kAttributeExpires = "expires"
+}
+class GPXSoundscapeRegion {
+    var latitude: CLLocationDegrees
+    var longitude: CLLocationDegrees
+    var radius: CLLocationDistance
+    
+    init?(element: GPXExtensionsElement) {
+        guard element.name == GPXSoundscapeSharedContentExtensionsProperties.kElementRegion.rawValue,
+              let lat = element.attributes["lat"],
+              let lat = CLLocationDegrees(lat),
+              let lon = element.attributes["lon"],
+              let lon = CLLocationDegrees(lon),
+              let rad = element.attributes["radius"],
+              let rad = CLLocationDistance(rad) else {
+            return nil
+        }
+        latitude = lat
+        longitude = lon
+        radius = rad
+    }
+    
+    var region: CLCircularRegion {
+        return CLCircularRegion(center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), radius: radius, identifier: "SoundscapeExperienceRegion")
+    }
 }
 extension GPXExtensionView<GPXSoundscapeSharedContentExtensionsProperties> {
     public var id: String? {
@@ -302,7 +332,16 @@ extension GPXExtensionView<GPXSoundscapeSharedContentExtensionsProperties> {
         get { get_single(.kElementVersion) }
         set { set_single(.kElementVersion, to: newValue) }
     }
-    // TODO: apparently there may be a GPXSoundscapeRegion in here too?
+    /// Seems to be unused.
+    public var region: GPXSoundscapeRegion? {
+        get {
+            guard let element = ref?.children.first(where: {$0.name == E.kElementRegion.rawValue}) else {
+                return nil
+            }
+            return GPXSoundscapeRegion(element: element)
+        }
+        // TODO: make a setter
+    }
     /// If set to an invalid or unknown value, will not catch that and will save/read back that locale identifier
     public var locale: Locale? {
         get {
@@ -315,7 +354,7 @@ extension GPXExtensionView<GPXSoundscapeSharedContentExtensionsProperties> {
     }
     /// This is the correct date formatter for the GPX format
     private static let dateFormatter = ISO8601DateFormatter()
-    /// If nil, then start date is in the distant past
+    /// If `nil`, then start date is in the distant past
     public var startDate: Date? {
         get {
             guard let startStr = ref?.attributes[GPXSoundscapeSharedContentExtensionsAttributes.kAttributeStartDate.rawValue],
@@ -332,7 +371,7 @@ extension GPXExtensionView<GPXSoundscapeSharedContentExtensionsProperties> {
             ref?.attributes[GPXSoundscapeSharedContentExtensionsAttributes.kAttributeStartDate.rawValue] = value
         }
     }
-    /// If nil, then end date in the distant future
+    /// If `nil`, then end date is in the distant future
     public var endDate: Date? {
         get {
             guard let endStr = ref?.attributes[GPXSoundscapeSharedContentExtensionsAttributes.kAttributeEndDate.rawValue],
@@ -379,6 +418,13 @@ enum GPXSoundscapeAnnotationAttributes : String {
     case kAttributeTitle = "title"
     case kAttributeType = "type"
 }
+
+/// ```xml
+/// From the following GPX tags:
+/// <gpxsc:annotations>
+///     <gpxsc:annotation type="TYPE HERE" title="TITLE HERE">CONTENT HERE</gpxsc:annotation> [0..N]
+/// </gpxsc:annotations>
+/// ```
 class GPXAnnotation {
     // TODO: make this work better with the GPX system
     var title: String?
@@ -395,10 +441,17 @@ class GPXAnnotation {
 extension GPXExtensionView<GPXSoundscapeAnnotationExtensionsProperties> {
     public var annotations: [GPXAnnotation] {
         get {
-            // We store stuff as GPXSoundscapeLink which is an empty subclass of GPXLink
             return ref?.children.filter({$0.name == E.kAnnotation.rawValue}).compactMap( GPXAnnotation.init ) ?? []
         }
         // TODO: a setter maybe?
+    }
+    
+    /// Parses and returns the first `gpxsc:annotation` child found with the specified annotation type
+    public func getFirstAnnotation(withType type: String) -> GPXAnnotation? {
+        guard let element = ref?.children.first(where: {$0.name == E.kAnnotation.rawValue && $0.attributes[GPXSoundscapeAnnotationAttributes.kAttributeType.rawValue] == type }) else {
+            return nil
+        }
+        return GPXAnnotation(element: element)
     }
 }
 
@@ -426,14 +479,56 @@ extension GPXExtensionView<GPXSoundscapeLinkExtensionsProperties> {
 enum GPXSoundscapePOIExtensionsProperties : String {
     case kElementStreetAddress = "gpxsc:street"
     case kElementPhone = "gpxsc:phone"
-    case kElementHomepage = "gpxsc:link" // this is the same type as `GPXSoundscapeLink`
+    case kElementHomepage = "link" // I think this is a normal link, and lacks a "gpxsc:"
+}
+extension GPXExtensionView<GPXSoundscapePOIExtensionsProperties> {
+    public var street: String? {
+        get { get_single(.kElementStreetAddress) }
+        set { set_single(.kElementStreetAddress, to: newValue) }
+    }
+    public var phone: String? {
+        get { get_single(.kElementPhone) }
+        set { set_single(.kElementPhone, to: newValue) }
+    }
+    public var homepage: GPXLink? {
+        get {
+            guard let element = ref?.children.first(where: { $0.name == E.kElementHomepage.rawValue }) else {
+                return nil
+            }
+            let link = GPXLink()
+            link.mimetype = element.get_property("type")
+            link.text = element.get_property("name")
+            link.href = element.attributes["href"]
+            return link
+        }
+        set {
+            // if set to nil, remove all links
+            guard let newValue = newValue else {
+                ref?.children.removeAll(where: { $0.name == E.kElementHomepage.rawValue })
+                return
+            }
+            guard let element = ref?.children.first(where: { $0.name == E.kElementHomepage.rawValue }) else{
+                // If there is no existing link element, create a new one
+                let element = GPXExtensionsElement(name: E.kElementHomepage.rawValue)
+                element.attributes["href"] = newValue.href
+                element.set_property("type", to: newValue.mimetype)
+                element.set_property("name", to: newValue.text)
+                ref?.children.append(element)
+                return
+            }
+            // otherwise there is an existing one: overwrite it
+            element.attributes["href"] = newValue.href
+            element.set_property("type", to: newValue.mimetype)
+            element.set_property("name", to: newValue.text)
+        }
+    }
 }
 
 /// CoreGPX seems to prefer to leave things just as `GPXExtensionsElement`s so we'll just use that
-/// But, for ease of use add ``ExtensionWrapper`` to allow easy lookup of named tags
+/// But, for ease of use add ``GPXExtensionView`` to allow easy lookup of named tags
 extension GPXExtensions {
     /// A getter specifically for our extensions
-    func get_ext(_ name: GPXExtensionsKeys) -> GPXExtensionsElement? {
+    private func get_ext(_ name: GPXExtensionsKeys) -> GPXExtensionsElement? {
         return children.first { $0.name == name.rawValue }
     }
     
@@ -503,8 +598,6 @@ extension GPXExtensions {
         }
         return GPXExtensionView(ext)
     }
-    
-    // GPXSoundscapeRegion ????????
 }
 
 // MARK: End Implementing Custom GPX Extensions

@@ -4,13 +4,11 @@ This document describes how to build and run the Soundscape iOS app.
 
 ## Supported Tooling Versions
 
-As of Soundscape version 5.3.1 (October 2022):
+As of Soundscape Community version 1.0.1 (October 2023):
 
 * macOS 12.6.1
 * Xcode 13.4.1
 * iOS 14.1
-* CocoaPods 1.11.3 (since removed)
-* CocoaPods Patch 1.0.2 (since removed)
 
 ## Install Xcode
 
@@ -31,7 +29,7 @@ xcode-select --install
 _Note:_ while macOS comes with a version of Ruby installed, you should install and use a non-system [Ruby](https://www.ruby-lang.org/)
 using a version manager like [RVM](https://rvm.io/)
 
-## Install Fastlane
+## Install Fastlane (optional)
 
 In the iOS project folder, run the following command to install the dependencies from the `Gemfile`:
 
