@@ -11,7 +11,6 @@ jobs:
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v3
-            - run: cd apps/ios && bundle install # may be able to skip this if we don't need fastlane
             - name: Build
               run: xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace -scheme Soundscape -destination 'platform=iOS Simulator,name=iPhone 13'
             - name: Test

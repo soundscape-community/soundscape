@@ -177,9 +177,8 @@ extension AuthoredActivityContent {
     
     /// Parses a custom GPX file with the data for an adaptive sports event.
     ///
-    /// - Parameter url: URL for downloading the GPX data
-    /// - Throws: SharedContentError if the file cannot be parsed (or required data is missing)
-    /// - Returns: An AdaptiveSportsEvent struct
+    /// - Parameter gpx: A parsed GPX file
+    /// - Returns: An ``AuthoredActivityContent``, or `nil` if parsing failed or required properties were missing. Currently, waypoints or POIs may be skipped if they lack coordinate data.
     static func parse(gpx: GPXRoot) -> AuthoredActivityContent? {
         guard let metadata = gpx.metadata else {
             return nil
@@ -276,10 +275,10 @@ extension AuthoredActivityContent {
         }
     }
     
-    /// Parses a list of GPXWaypoints into POIWaypoints and AnnotationWaypoints.
+    /// Parses a list of ``GPXWaypoint``s into ``ActivityWaypoint``s
     ///
-    /// - Parameter waypoints: an array of GPXWaypoints
-    /// - Returns: an array of POIWaypoints and an array of AnnotationWaypoints
+    /// - Parameter waypoints: an array of ``GPXWaypoint``s
+    /// - Returns: an array of ``ActivityWaypoint``s including annotation data (if applicable)
     private static func waypoints(from waypoints: [GPXWaypoint]) -> [ActivityWaypoint] {
         let imageMimeTypes = Set(["image/jpeg", "image/jpg", "image/png"])
         let audioMimeTypes = Set(["audio/mpeg", "audio/x-m4a"])
