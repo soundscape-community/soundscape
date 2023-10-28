@@ -11,7 +11,7 @@
 
 import Foundation
 import CoreLocation
-import iOS_GPX_Framework
+import CoreGPX
 
 enum ActivityLoaderError: Error {
     case loadingError
@@ -123,7 +123,7 @@ class AuthoredActivityLoader {
             return nil
         }
         
-        guard let gpx = GPXParser.parseGPX(at: contentURL) else {
+        guard let gpx = GPXParser(withURL: contentURL)?.parsedData() else {
             return nil
         }
         
@@ -285,7 +285,7 @@ class AuthoredActivityLoader {
         }
         
         // Validate that we can parse the new data
-        guard let gpx = GPXParser.parseGPX(with: data) else {
+        guard let gpx = GPXParser(withData: data).parsedData() else {
             GDLogWarn(.routeGuidance, "Unable to parse GPX for \(id)")
             
             NotificationCenter.default.post(name: .didTryActivityUpdate, object: self, userInfo: [

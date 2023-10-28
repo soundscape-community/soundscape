@@ -186,7 +186,7 @@ class DestinationManager: DestinationManagerProtocol {
             
             // Don't directly access the beacon POI - we don't want to have to retrieve it from
             // the database at frequency we receive heading updates. Instead, just check if there is
-            // currently a beacon playing, and then only update the `isBeaconInBounds` flag is there is.
+            // currently a beacon playing, and then only update the `isBeaconInBounds` flag if there is.
             guard self.beaconPlayerId != nil else {
                 return
             }
@@ -211,6 +211,10 @@ class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Manage Destination Methods
     
+    /// Checks whether the current destination is the specified key.
+    /// - Parameters:
+    ///   - key: the destination's entity key in the `SpatialDataCache`. Same as the referenceID in `setDestination()`.
+    /// - Returns: `false` if the destination isn't set or the entity key doesn't match the destination
     func isDestination(key: String) -> Bool {
         guard destinationKey == key || destination?.entityKey == key else {
             // Return false if the destination isn't set or the entityKey doesn't match the destination

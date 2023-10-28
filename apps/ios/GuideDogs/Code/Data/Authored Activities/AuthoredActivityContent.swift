@@ -7,7 +7,8 @@
 //
 
 import Foundation
-import iOS_GPX_Framework
+import CoreLocation
+import CoreGPX
 
 // MARK: - Data Models
 
@@ -161,7 +162,10 @@ struct AuthoredActivityContent {
 // MARK: - Parsing GPX Event Data
 
 fileprivate extension GPXWaypoint {
-    var coordinate: CLLocationCoordinate2D {
+    var coordinate: CLLocationCoordinate2D? {
+        guard let latitude = latitude, let longitude = longitude else {
+            return nil
+        }
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 }
@@ -173,15 +177,18 @@ extension AuthoredActivityContent {
     
     /// Parses a custom GPX file with the data for an adaptive sports event.
     ///
-    /// - Parameter url: URL for downloading the GPX data
-    /// - Throws: SharedContentError if the file cannot be parsed (or required data is missing)
-    /// - Returns: An AdaptiveSportsEvent struct
+    /// - Parameter gpx: A parsed GPX file
+    /// - Returns: An ``AuthoredActivityContent``, or `nil` if parsing failed or required properties were missing. Currently, waypoints or POIs may be skipped if they lack coordinate data.
     static func parse(gpx: GPXRoot) -> AuthoredActivityContent? {
         guard let metadata = gpx.metadata else {
             return nil
         }
         
-        guard let ext = metadata.extensions?.soundscapeSCExtensions, let actType = AuthoredActivityType.parse(ext.behavior) else {
+        guard let ext = metadata.extensions?.soundscapeSCExtensions,
+              let id = ext.id, // required here
+              let behavior = ext.behavior, // required here
+              let locale = ext.locale, // required here
+              let actType = AuthoredActivityType.parse(behavior) else {
             return nil
         }
         
@@ -189,7 +196,7 @@ extension AuthoredActivityContent {
             return nil
         }
         
-        guard let creator = metadata.author.name, !creator.isEmpty else {
+        guard let creator = metadata.author?.name, !creator.isEmpty else {
             return nil
         }
         
@@ -198,13 +205,15 @@ extension AuthoredActivityContent {
         }
         
         var imageURL: URL?
-        if let image = metadata.link, image.mimetype.hasPrefix("image") {
-            imageURL = URL(string: image.href)
+        if let image = metadata.links.first, image.mimetype?.hasPrefix("image") != nil, let href = image.href {
+            imageURL = URL(string: href)
         }
         
         // Parse the waypoints and POIs based on the file version
         switch ext.version ?? "1" {
         case "1":
+            // Version 1 just uses all the top-level waypoints `<wpt></wpt>` defined in the GPX, in order
+            
             let wpts: [ActivityWaypoint] = waypoints(from: gpx.waypoints)
             
             // For waypoints in this experience, require names, descriptions, and street addresses
@@ -212,11 +221,11 @@ extension AuthoredActivityContent {
                 return nil
             }
             
-            return AuthoredActivityContent(id: ext.identifier,
+            return AuthoredActivityContent(id: id,
                                            type: actType,
                                            name: name,
                                            creator: creator,
-                                           locale: ext.locale,
+                                           locale: locale,
                                            availability: ext.availability,
                                            expires: ext.expires,
                                            image: imageURL,
@@ -225,24 +234,35 @@ extension AuthoredActivityContent {
                                            pois: [])
             
         case "2":
-            guard let route = gpx.routes.first, route.routepoints.count > 0 else {
+            // Version 2 uses the first route `<rte></rte>`, taking the contained route points as its waypoints
+            // It then uses the top-level GPX waypoints `<wpt></wpt>` as POIs
+            
+            guard let route = gpx.routes.first, !route.points.isEmpty else {
                 return nil
             }
             
-            let wpts: [ActivityWaypoint] = waypoints(from: route.routepoints)
+            // Waypoints are strict about requiring names and locations
+            let wpts: [ActivityWaypoint] = waypoints(from: route.points)
             
             // For waypoints in this experience, require names, descriptions, and street addresses
             guard !wpts.isEmpty, !wpts.contains(where: { $0.name == nil }) else {
                 return nil
             }
             
-            let pois = gpx.waypoints.map { ActivityPOI(coordinate: $0.coordinate, name: $0.name, description: $0.desc) }
+            let pois: [ActivityPOI] = gpx.waypoints.compactMap {
+                guard let coord = $0.coordinate else {
+                    // skip waypoints without a location (why does GPX allow this waypoints to lack a location?)
+                    // TODO: maybe log a warning
+                    return nil
+                }
+                return ActivityPOI(coordinate: coord, name: $0.name ?? "Unlabeled POI", description: $0.desc)
+            }
             
-            return AuthoredActivityContent(id: ext.identifier,
+            return AuthoredActivityContent(id: id,
                                            type: actType,
                                            name: name,
                                            creator: creator,
-                                           locale: ext.locale,
+                                           locale: locale,
                                            availability: ext.availability,
                                            expires: ext.expires,
                                            image: imageURL,
@@ -255,46 +275,56 @@ extension AuthoredActivityContent {
         }
     }
     
-    /// Parses a list of GPXWaypoints into POIWaypoints and AnnotationWaypoints.
+    /// Parses a list of ``GPXWaypoint``s into ``ActivityWaypoint``s
     ///
-    /// - Parameter waypoints: an array of GPXWaypoints
-    /// - Returns: an array of POIWaypoints and an array of AnnotationWaypoints
+    /// - Parameter waypoints: an array of ``GPXWaypoint``s
+    /// - Returns: an array of ``ActivityWaypoint``s including annotation data (if applicable)
     private static func waypoints(from waypoints: [GPXWaypoint]) -> [ActivityWaypoint] {
         let imageMimeTypes = Set(["image/jpeg", "image/jpg", "image/png"])
         let audioMimeTypes = Set(["audio/mpeg", "audio/x-m4a"])
         
-        return waypoints.map { wpt in
-            let links = wpt.extensions?.soundscapeLinkExtensions?.links
+        return waypoints.compactMap { wpt in
+            let links: [GPXLink] = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
+                guard let mimetype = $0.mimetype else { return false }
+                return imageMimeTypes.contains(mimetype)
+            }) ?? []
             
-            let parsedImages = links?.filter({ imageMimeTypes.contains($0.mimetype) })
-                .compactMap { (link) -> ActivityWaypointImage? in
-                    guard let url = URL(string: link.href) else {
-                        return nil
-                    }
-                    
-                    return ActivityWaypointImage(url: url, altText: link.text)
+            let parsedImages: [ActivityWaypointImage] = links.compactMap { link in
+                guard let href = link.href,
+                      let url = URL(string: href) else {
+                    return nil
                 }
+                
+                return ActivityWaypointImage(url: url, altText: link.text)
+            }
             
-            let parsedAudioClips = links?.filter({ audioMimeTypes.contains($0.mimetype) })
-                .compactMap { (link) -> ActivityWaypointAudioClip? in
-                    guard let url = URL(string: link.href) else {
-                        return nil
-                    }
-                    
-                    return ActivityWaypointAudioClip(url: url, description: link.text)
+            let parsedAudioClips: [ActivityWaypointAudioClip] = links.compactMap { link in
+                guard let href = link.href,
+                      let url = URL(string: href) else {
+                    return nil
                 }
+                
+                return ActivityWaypointAudioClip(url: url, description: link.text)
+            }
             
-            let allAnnotations = wpt.extensions?.soundscapeAnnotationExtensions?.annotations
-            let departure = allAnnotations?.first(where: { $0.type == "departure" })?.content
-            let arrival = allAnnotations?.first(where: { $0.type == "arrival" })?.content
+            let annotations = wpt.extensions?.soundscapeAnnotationExtensions
+            let departure = annotations?.getFirstAnnotation(withType: "departure")?.content
+            let arrival = annotations?.getFirstAnnotation(withType: "arrival")?.content
             
-            return ActivityWaypoint(coordinate: wpt.coordinate,
+            // Coordinate shouldn't be nil, but CoreGPX allows it to be so.
+            // For now we just skip those points
+            // TODO: there's probably a better way to enforce this
+            guard let coordinate = wpt.coordinate else {
+                return nil
+            }
+            
+            return ActivityWaypoint(coordinate: coordinate,
                                     name: wpt.name,
                                     description: wpt.desc,
                                     departureCallout: departure,
                                     arrivalCallout: arrival,
-                                    images: parsedImages ?? [],
-                                    audioClips: parsedAudioClips ?? [])
+                                    images: parsedImages,
+                                    audioClips: parsedAudioClips)
         }
     }
 }

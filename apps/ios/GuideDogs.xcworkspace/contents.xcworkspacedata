@@ -5,9 +5,9 @@
       location = "group:GuideDogs.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Pods/Pods.xcodeproj">
+      location = "group:Scripts/Scripts.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Scripts/Scripts.xcodeproj">
+      location = "group:UnitTests.xctestplan">
    </FileRef>
 </Workspace>

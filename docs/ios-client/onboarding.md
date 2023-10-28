@@ -4,13 +4,11 @@ This document describes how to build and run the Soundscape iOS app.
 
 ## Supported Tooling Versions
 
-As of Soundscape version 5.3.1 (October 2022):
+As of Soundscape Community version 1.0.1 (October 2023):
 
 * macOS 12.6.1
 * Xcode 13.4.1
 * iOS 14.1
-* CocoaPods 1.11.3
-* CocoaPods Patch 1.0.2
 
 ## Install Xcode
 
@@ -20,30 +18,22 @@ Download Xcode from the [App Store](https://apps.apple.com/us/app/xcode/id497799
 
 ## Install Xcode Command Line Tools
 
-Open Xcode and you should be prompted with installing the command line tools, or  run this in a Terminal window:
+Open Xcode and you should be prompted with installing the command line tools, or run this in a Terminal window:
 
 ```sh
 xcode-select --install
 ```
 
-## Install CocoaPods and CocoaPods-Patch
+## Install Fastlane (optional)
 
-Soundscape uses [CocoaPods](https://cocoapods.org/) as a dependency managers along with [Swift Package Manager](https://www.swift.org/package-manager/), and [CocoaPods-Patch](https://github.com/DoubleSymmetry/cocoapods-patch) to add changes to a third party CocoaPods framework.
+Installing Fastlane requires a [Ruby](https://www.ruby-lang.org/) installation.
 
-_Note:_ before the next step, make sure you have [Ruby](https://www.ruby-lang.org/) installed on your machine.
+> __Note:__ while macOS comes with a version of Ruby installed, you should install and use a non-system [Ruby](https://www.ruby-lang.org/) using a version manager like [RVM](https://rvm.io/)
 
-In the iOS project folder, run the following command to install the dependencies from the `Gemfile`:
+In the iOS project folder `apps/ios`, run the following command to install the dependencies from the `Gemfile`:
 
 ```sh
 bundle install
-```
-
-## Install CocoaPods Dependencies
-
-Install the CocoaPods dependencies by running the following command in Terminal:
-
-```sh
-pod install
 ```
 
 ## Opening the Project
@@ -76,7 +66,7 @@ Soundscape uses a backend service to download map tiles and other information. I
 
 ## Building and Running
 
-At this point, you should be able to build and run the `Soundsacpe` target on an iOS simulator. In order to run the app on a real device, you will need to add your Apple Developer account signing info in the _Signing & Capabilities_ section of the project settings.
+At this point, you should be able to build and run the `Soundscape` target on an iOS simulator. In order to run the app on a real device, you will need to add your Apple Developer account signing info in the _Signing & Capabilities_ section of the project settings.
 
 ## Additional Personalization
 

@@ -16,15 +16,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install specific CocoaPods version
-        uses: maxim-lobanov/setup-cocoapods@v1
-        with:
-          podfile-path: apps/ios/Podfile.lock
-      - name: Install CocoaPods packages
+      - name: Install Fastlane
         working-directory: apps/ios
         run: |
           bundle install
-          pod install
       - name: Set Default Scheme
         run: |
           scheme_list=$(xcodebuild -list -json | tr -d "\n")

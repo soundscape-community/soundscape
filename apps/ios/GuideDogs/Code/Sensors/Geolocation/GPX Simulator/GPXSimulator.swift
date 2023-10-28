@@ -7,7 +7,8 @@
 //
 
 import Foundation
-import iOS_GPX_Framework
+import CoreLocation
+import CoreGPX
 
 struct GPXIndex {
     static let zero = GPXIndex(track: 0, segment: 0, point: 0)
@@ -108,11 +109,11 @@ class GPXSimulator {
     // MARK: Computed Properties
     
     var allTrackPoints: [GPXTrackPoint]? {
-        var trackPoints = [GPXTrackPoint]()
+        var trackPoints: [GPXTrackPoint] = []
         
         for track in gpx.tracks {
-            for segment in track.tracksegments {
-                for point in segment.trackpoints {
+            for segment in track.segments {
+                for point in segment.points {
                     trackPoints.append(point)
                 }
             }
@@ -131,8 +132,8 @@ class GPXSimulator {
     init?(gpx: GPXRoot) {
         // Check if file has any data
         guard let firstTrack = gpx.tracks.first,
-            let firstSegment = firstTrack.tracksegments.first,
-            firstSegment.trackpoints.first != nil else {
+            let firstSegment = firstTrack.segments.first,
+            firstSegment.points.first != nil else {
                 return nil
         }
         
@@ -149,7 +150,7 @@ class GPXSimulator {
     }
 
     convenience init?(filepath: String) {
-        guard let gpx = GPXParser.parseGPX(atPath: filepath) else {
+        guard let gpx = GPXParser(withPath: filepath)?.parsedData() else {
             return nil
         }
         
@@ -539,15 +540,15 @@ class GPXSimulator {
     /// If the jump lands on the next or previous segment or track, it will return 0 as the point
     private func indexByJumpingPoints(_ index: GPXIndex, pointsToJump: Int) -> GPXIndex? {
         let track = gpx.tracks[currentIndex.track]
-        let segment = track.tracksegments[currentIndex.segment]
+        let segment = track.segments[currentIndex.segment]
         
         if currentIndex.point + pointsToJump < 0 {
             // Jump back to segment start
             return GPXIndex(track: currentIndex.track, segment: currentIndex.segment, point: 0)
-        } else if currentIndex.point + pointsToJump < segment.trackpoints.count {
+        } else if currentIndex.point + pointsToJump < segment.points.count {
             // Still inside current segment
             return currentIndex.indexByAddingPoints(pointsToJump)
-        } else if currentIndex.segment < track.tracksegments.count-1 {
+        } else if currentIndex.segment < track.segments.count-1 {
             // Next segment
             return currentIndex.nextSegment()
         } else if currentIndex.track == gpx.tracks.count-1 {
@@ -565,16 +566,16 @@ class GPXSimulator {
         }
         
         let track = gpx.tracks[index.track]
-        guard index.segment >= 0 && index.segment < track.tracksegments.count else {
+        guard index.segment >= 0 && index.segment < track.segments.count else {
             return nil
         }
         
-        let segment = track.tracksegments[index.segment]
-        guard index.point >= 0 && index.point < segment.trackpoints.count else {
+        let segment = track.segments[index.segment]
+        guard index.point >= 0 && index.point < segment.points.count else {
             return nil
         }
         
-        let point = segment.trackpoints[index.point]
+        let point = segment.points[index.point]
         return point
     }
     
@@ -592,8 +593,7 @@ class GPXSimulator {
         
         // Synthesize the speed if needed
         if !gpxLocation.location.speed.isValid && synthesizeSpeed && !trackPoint.hasSoundscapeExtension {
-            let speed = self.speed(for: index)
-            if speed.isValid {
+            if let speed = self.speed(for: index), speed.isValid {
                 gpxLocation.location = gpxLocation.location.with(speed: speed)
             }
         }
@@ -605,13 +605,16 @@ class GPXSimulator {
         guard let trackPoint = self.trackPoint(at: index) else { return -1 }
         
         // Try to get existing track course
-        if let trackCourse = trackPoint.course?.doubleValue, (trackCourse as CLLocationDirection).isValid {
+        if let trackCourseStr = trackPoint.extensions?.children.first(where: { $0.name == "course"})?.text,
+           let trackCourse = CLLocationDirection(trackCourseStr),
+           trackCourse.isValid {
+            // I am like 95% sure the previous code here meant the extensions course, but if that breaks you might want to look here first.
             return trackCourse
         }
         
         if let extensions = trackPoint.extensions,
             let garminExtensions = extensions.garminExtensions,
-            let trackCourse = garminExtensions.course?.doubleValue,
+            let trackCourse = garminExtensions.course,
             (trackCourse as CLLocationDirection).isValid {
             return trackCourse
         }
@@ -639,17 +642,22 @@ class GPXSimulator {
         return trackPoint.gpxLocation().location.bearing(to: nextTrackPoint.gpxLocation().location)
     }
 
-    private func speed(for index: GPXIndex) -> CLLocationSpeed {
-        guard let trackPoint = self.trackPoint(at: index) else { return -1 }
+    private func speed(for index: GPXIndex) -> CLLocationSpeed? {
+        guard let trackPoint = self.trackPoint(at: index) else {
+            return nil
+        }
         
         // Try to get the existing speed value
-        if let trackSpeed = trackPoint.speed?.doubleValue, trackSpeed.isValid {
+        if let trackSpeedStr = trackPoint.extensions?.children.first(where: {$0.name == "speed"})?.text,
+           let trackSpeed = CLLocationSpeed(trackSpeedStr),
+           trackSpeed.isValid {
+            // I am like 95% sure the previous code here meant the extensions speed, but if that breaks you might want to look here first.
             return trackSpeed
         }
         
         if let extensions = trackPoint.extensions,
             let garminExtensions = extensions.garminExtensions,
-            let trackSpeed = garminExtensions.speed?.doubleValue,
+            let trackSpeed = garminExtensions.speed,
             trackSpeed.isValid {
             return trackSpeed
         }
@@ -661,10 +669,16 @@ class GPXSimulator {
         }
         
         let prevIndex = GPXIndex(track: index.track, segment: index.segment, point: index.point-1)
-        guard let prevTrackPoint = self.trackPoint(at: prevIndex) else { return -1 }
+        guard let prevTrackPoint = self.trackPoint(at: prevIndex) else {
+            return nil
+        }
         
-        let location = CLLocation(latitude: trackPoint.latitude, longitude: trackPoint.longitude)
-        let prevLocation = CLLocation(latitude: prevTrackPoint.latitude, longitude: prevTrackPoint.longitude)
+        guard let currentLatitude = trackPoint.latitude, let currentLongitude = trackPoint.longitude,
+              let prevLatitude = prevTrackPoint.latitude, let prevLongitude = prevTrackPoint.longitude else {
+            return nil
+        }
+        let location = CLLocation(latitude: currentLatitude, longitude: currentLongitude)
+        let prevLocation = CLLocation(latitude: prevLatitude, longitude: prevLongitude)
         
         let distance = location.distance(from: prevLocation)
         let time = timeIntervalBetweenLocations
@@ -674,8 +688,8 @@ class GPXSimulator {
     
     func index(for trackPoint: GPXTrackPoint) -> GPXIndex? {
         for (trackIndex, track) in gpx.tracks.enumerated() {
-            for (segmentIndex, segment) in track.tracksegments.enumerated() {
-                for (pointIndex, point) in segment.trackpoints.enumerated() where point === trackPoint {
+            for (segmentIndex, segment) in track.segments.enumerated() {
+                for (pointIndex, point) in segment.points.enumerated() where point === trackPoint {
                     return GPXIndex(track: trackIndex, segment: segmentIndex, point: pointIndex)
                 }
             }
@@ -686,12 +700,12 @@ class GPXSimulator {
     
     private func trackPoints(trackIndex: Int, segmentIndex: Int? = nil) -> [GPXTrackPoint] {
         if let segmentIndex = segmentIndex {
-            return gpx.tracks[trackIndex].tracksegments[segmentIndex].trackpoints
+            return gpx.tracks[trackIndex].segments[segmentIndex].points
         }
         
         var trackPoints: [GPXTrackPoint] = []
-        for trackSegment in gpx.tracks[trackIndex].tracksegments {
-            trackPoints.append(contentsOf: trackSegment.trackpoints)
+        for trackSegment in gpx.tracks[trackIndex].segments {
+            trackPoints.append(contentsOf: trackSegment.points)
         }
         
         return trackPoints
@@ -712,7 +726,6 @@ class GPXSimulator {
             closestTrackPoint = trackPoint
             closestDistance = distance
         }
-        
         return closestTrackPoint
     }
 
