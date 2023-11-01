@@ -2,6 +2,7 @@ name: "build and submit to testflight"
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 jobs:
   build:
     runs-on: macos-13
