@@ -55,14 +55,28 @@ services:
       postgis:
         condition: service_healthy
 
-  tilesrv:
+  tilesrv-blue:
     image: soundscape/tilesrv
     build:
       dockerfile: Dockerfile.tilesrv
     environment:
       - DSN=host=postgis port=5432 dbname=osm user=postgres password=secret
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8081:8080"
     depends_on:
       postgis:
         condition: service_healthy
+
+  tilesrv-green:
+    image: soundscape/tilesrv
+    build:
+      dockerfile: Dockerfile.tilesrv
+    environment:
+      - DSN=host=postgis port=5432 dbname=osm user=postgres password=secret
+    ports:
+      - "127.0.0.1:8082:8080"
+    depends_on:
+      postgis:
+        condition: service_healthy
+    # prevent tilesrv-green from starting automatically
+    profiles: ["tilesrv-green"]
