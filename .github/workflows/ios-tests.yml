@@ -3,9 +3,14 @@ on:
     push:
         branches:
             - main
+        paths:
+            - 'apps/ios/**'
+            - '.github/workflows/ios-tests.yml'
     pull_request:
         branches:
             - main
+        paths:
+            - 'apps/ios/**'
 jobs:
     unit-tests:
         runs-on: macos-latest
