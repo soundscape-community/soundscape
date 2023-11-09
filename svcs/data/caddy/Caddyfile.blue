@@ -1,0 +1,26 @@
+# Caddy configuration file for Soundscape back-end services 
+
+# There are two Caddy configuration files that should be placed in /etc/caddy on
+# the server. A symbolic link /etc/caddy/Caddyfile points to the current active
+# configuration. The only difference between the two configurations is the port
+# number to forward the request to, 8081 for blue and 8082 for green.
+
+tiles.soundscape.services {
+    reverse_proxy localhost:8081 {
+        header_up X-Real-IP {remote_host}
+    }
+    header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+}
+
+newprod0.openscape.io {
+    reverse_proxy localhost:8081 {
+        header_up X-Real-IP {remote_host}
+    }
+    header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+}
+
+share.soundscape.services {
+    header /.well-known/apple-app-site-association Content-Type application/json
+    root * /home/soundscape/share.soundscape.services/
+    file_server
+}

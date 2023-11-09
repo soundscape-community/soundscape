@@ -11,10 +11,25 @@
 #
 # Once all three components are running (PostGIS server, ingest service, tile
 # server), test by fetching a tile in your browser, e.g.:
-#   http://localhost:8080/16/18745/25070.json
+#   http://localhost:8081/16/18745/25070.json
 #
 # Helpful tool for finding other tile coordinates (the last two numbers in the
 # above URL): http://bboxfinder.com/
+
+# There are two tilesrv services defined, tilesrv-blue and tilesrv-green to
+# allow for updates without downtime. tilesrv-blue is started by default. 
+#
+# To update:
+# docker compose up --build -d tilesrv-green
+# Test tilesrv-green on localhost:8082
+# switch Caddy config:
+# sudo ln -s /etc/caddy/Caddyfile.green /etc/caddy/Caddyfile
+# sudo systemctl reload caddy
+# if everything works, bring down tilesrv-blue:
+# docker compose stop tilesrv-blue
+# docker compose rm tilesrv-blue
+#
+# For the next update swap blue and green in the instructions above.
 version: '3.8'
 
 volumes:
@@ -55,14 +70,28 @@ services:
       postgis:
         condition: service_healthy
 
-  tilesrv:
+  tilesrv-blue:
     image: soundscape/tilesrv
     build:
       dockerfile: Dockerfile.tilesrv
     environment:
       - DSN=host=postgis port=5432 dbname=osm user=postgres password=secret
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8081:8080"
     depends_on:
       postgis:
         condition: service_healthy
+
+  tilesrv-green:
+    image: soundscape/tilesrv
+    build:
+      dockerfile: Dockerfile.tilesrv
+    environment:
+      - DSN=host=postgis port=5432 dbname=osm user=postgres password=secret
+    ports:
+      - "127.0.0.1:8082:8080"
+    depends_on:
+      postgis:
+        condition: service_healthy
+    # prevent tilesrv-green from starting automatically
+    profiles: ["tilesrv-green"]
