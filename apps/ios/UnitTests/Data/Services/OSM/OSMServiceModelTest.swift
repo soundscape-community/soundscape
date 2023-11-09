@@ -82,10 +82,19 @@ final class OSMServiceModelTest: XCTestCase {
             //XCTAssertEqual(RPI.dynamicURL, "https://rpi.edu")
             XCTAssertEqual(RPI.streetName, "8th Street")
             XCTAssertEqual(RPI.addressLine, "110 8th Street")
-            XCTAssertFalse(RPI.coordinates?.isEmpty ?? true)
+            let geometry = RPI.geometry
+            XCTAssertNotNil(geometry)
+            if case .multiPolygon(let coordinates) = geometry {
+                XCTAssertFalse(coordinates.isEmpty)
+            } else {
+                XCTFail("RPI geometry should be a multiPolygon")
+            }
             // Ensure RPI is roughly where it should be (with error since the exact location may shift as properties change over time)
             XCTAssertEqual(RPI.centroidLatitude, 42.73036, accuracy: 0.05)
             XCTAssertEqual(RPI.centroidLongitude, -73.67663, accuracy: 0.05)
+            
+            
+            
             
             // get by id since there are multiple segments of Sage Avenue
             guard let sage_ave = tiledata.roads.first(where: {$0.key == "ft-282843345"}) else {

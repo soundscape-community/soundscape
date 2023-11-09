@@ -666,10 +666,12 @@
 		914BAAF32AD745E400CB2171 /* DestinationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */; };
 		914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */; };
 		915FF9F62ADE4BAF002B3690 /* AuthoredActivityContentTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915FF9F42ADE3F91002B3690 /* AuthoredActivityContentTest.swift */; };
+		91745DD52AFB0E6C003EC104 /* GeoJsonGeometryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91745DD42AFB0E6C003EC104 /* GeoJsonGeometryTest.swift */; };
+		91745DD62AFB0F32003EC104 /* GeometryUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */; };
+		91745DD82AFC48E0003EC104 /* GeoJsonFeatureTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91745DD72AFC48E0003EC104 /* GeoJsonFeatureTest.swift */; };
 		91B6ADAA2AF19CB600FFE4E9 /* OSMServiceModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B6ADA92AF19CB600FFE4E9 /* OSMServiceModelTest.swift */; };
 		91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */; };
 		91C82ABE2A6B08500086D126 /* RouteGuidanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */; };
-		91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */; };
 		B90C27D61EAF81D600007368 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C27D51EAF81D600007368 /* Sound.swift */; };
 		B918EE9825100FFF00A5354A /* CalloutRangeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */; };
 		B91D3F6427AB5546004159A8 /* UserAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91D3F6327AB5546004159A8 /* UserAction.swift */; };
@@ -1585,6 +1587,8 @@
 		914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtilsTest.swift; sourceTree = "<group>"; };
 		915FF9F42ADE3F91002B3690 /* AuthoredActivityContentTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthoredActivityContentTest.swift; sourceTree = "<group>"; };
+		91745DD42AFB0E6C003EC104 /* GeoJsonGeometryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoJsonGeometryTest.swift; sourceTree = "<group>"; };
+		91745DD72AFC48E0003EC104 /* GeoJsonFeatureTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoJsonFeatureTest.swift; sourceTree = "<group>"; };
 		91B6ADA92AF19CB600FFE4E9 /* OSMServiceModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSMServiceModelTest.swift; sourceTree = "<group>"; };
 		91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = " GeolocationManagerTest.swift"; path = "UnitTests/Sensors/Geolocation/Geolocation Manager/ GeolocationManagerTest.swift"; sourceTree = SOURCE_ROOT; };
 		91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteGuidanceTest.swift; path = "UnitTests/Behaviors/Route Guidance/RouteGuidanceTest.swift"; sourceTree = SOURCE_ROOT; };
@@ -4347,6 +4351,31 @@
 			path = "Authored Activities";
 			sourceTree = "<group>";
 		};
+		91745DD12AFB0E6C003EC104 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				91745DD22AFB0E6C003EC104 /* JSON Parsing */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		91745DD22AFB0E6C003EC104 /* JSON Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				91745DD32AFB0E6C003EC104 /* OSM */,
+			);
+			path = "JSON Parsing";
+			sourceTree = "<group>";
+		};
+		91745DD32AFB0E6C003EC104 /* OSM */ = {
+			isa = PBXGroup;
+			children = (
+				91745DD72AFC48E0003EC104 /* GeoJsonFeatureTest.swift */,
+				91745DD42AFB0E6C003EC104 /* GeoJsonGeometryTest.swift */,
+			);
+			path = OSM;
+			sourceTree = "<group>";
+		};
 		91C82AA62A4F56A70086D126 /* Sensors */ = {
 			isa = PBXGroup;
 			children = (
@@ -4374,6 +4403,7 @@
 		91C82AB52A67182E0086D126 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				91745DD12AFB0E6C003EC104 /* Models */,
 				915FF9F32ADE3F91002B3690 /* Authored Activities */,
 				914BAAF12AD745E400CB2171 /* Destination Manager */,
 				914BAAED2AD745BC00CB2171 /* Services */,
@@ -5561,8 +5591,10 @@
 				914BAAF32AD745E400CB2171 /* DestinationManagerTest.swift in Sources */,
 				91C82ABE2A6B08500086D126 /* RouteGuidanceTest.swift in Sources */,
 				91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */,
-				91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */,
+				91745DD82AFC48E0003EC104 /* GeoJsonFeatureTest.swift in Sources */,
+				91745DD52AFB0E6C003EC104 /* GeoJsonGeometryTest.swift in Sources */,
 				91B6ADAA2AF19CB600FFE4E9 /* OSMServiceModelTest.swift in Sources */,
+				91745DD62AFB0F32003EC104 /* GeometryUtilsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
