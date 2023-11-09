@@ -267,22 +267,18 @@ class ReverseGeocoderContext: ReverseGeocoder {
                 continue
             }
             
-            guard let points = osmEntity.coordinates as? GALine else { continue }
+            guard let points = osmEntity.geometry?.coordinates as? [CLLocationCoordinate2D] else { continue }
 
             let isStickyRoad = stickyRoad?.localizedName == road.localizedName
             var previous: CLLocationCoordinate2D?
 
             for point in points {
-                guard previous != nil else {
-                    previous = point.toCoordinate()
-                    continue
-                }
-                
-                let current = point.toCoordinate()
+                let prev = previous ?? point
+                let current = point
                 
                 // Calculate the distance from the user's location to the road segment
                 let (dist, lat, lon) = GeometryUtils.squaredDistance(location: usersLocation.coordinate,
-                                                                     start: previous!,
+                                                                     start: prev,
                                                                      end: current,
                                                                      zoom: zoomLevel)
                 
