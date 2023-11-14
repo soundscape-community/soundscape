@@ -73,7 +73,7 @@ class TileData: Object {
         return VectorTile(quadKey: quadkey)
     }
     
-    convenience init(withParsedData json: OSMTileDataJson, quadkey: String, etag: String, superCategories: SuperCategories) {
+    convenience init(withParsedData json: GeoJsonFeatureCollection, quadkey: String, etag: String, superCategories: SuperCategories) {
         self.init()
         
         // Get the vector tile info
