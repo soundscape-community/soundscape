@@ -352,14 +352,13 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             completionHandler(false)
             return
         }
-        
-        serviceModel.getTileData(tile: tile, categories: [:], queue: networkQueue) { (statusCode, data, error) in
-            // Make sure we don't encounter errors and successfully got the tile
-            guard error == nil, statusCode == .success, data != nil else {
+        Task {
+            do {
+                let serviceResult = try await serviceModel.getTileData(tile: tile, categories: [:])
+            } catch {
                 completionHandler(false)
                 return
             }
-            
             completionHandler(true)
         }
     }
@@ -494,25 +493,23 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             return
         }
         
-        serviceModel.getTileData(tile: tile, categories: categories, queue: networkQueue) { (statusCode, data, error) in
-            guard error == nil else {
+        Task.detached {
+            let serviceResult: OSMServiceResult
+            do {
+                serviceResult = try await self.serviceModel.getTileData(tile: tile, categories: categories)
+            } catch {
                 self.processFetchedTile(tile, retryCount: retryCount, error: error, dispatchGroup: dispatchGroup, progress: progress)
                 return
             }
             
-            guard statusCode == .success else {
+            switch serviceResult {
+            case .notModified:
                 SpatialDataContext.extendTileExpiration(tile)
                 self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
-                return
+            case .modified(_, let tileData):
+                SpatialDataContext.storeTile(tile, data: tileData)
+                self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
             }
-            
-            guard let tileData = data else {
-                self.processFetchedTile(tile, retryCount: retryCount, error: SpatialDataContextError.missingData, dispatchGroup: dispatchGroup, progress: progress)
-                return
-            }
-            
-            SpatialDataContext.storeTile(tile, data: tileData)
-            self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
         }
     }
     

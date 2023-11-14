@@ -38,6 +38,7 @@ extension SpatialDataCache {
     }
 }
 
+/// Note that the SpatialDataCache is entirely static.
 class SpatialDataCache: NSObject {
     
     // MARK: Geocoders

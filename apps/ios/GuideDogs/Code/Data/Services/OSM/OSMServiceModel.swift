@@ -8,10 +8,33 @@
 
 import Foundation
 
-enum HTTPStatusCode: Int {
-    case unknown = 0
-    case success = 200
-    case notModified = 304
+enum HTTPStatusCode: Equatable {
+    typealias RawValue = Int
+    case unknown(_ code: RawValue)
+    case success
+    case notModified
+    
+    public init(rawValue: RawValue) {
+        switch rawValue {
+        case 200:
+            self = .success
+        case 304:
+            self = .notModified
+        default:
+            self = .unknown(rawValue)
+        }
+    }
+    
+    var rawValue: RawValue {
+        switch self {
+        case .unknown(let code):
+            return code
+        case .success:
+            return 200
+        case .notModified:
+            return 304
+        }
+    }
 }
 
 enum HTTPHeader: String {
@@ -19,32 +42,38 @@ enum HTTPHeader: String {
     case eTag = "Etag"
 }
 
-enum ServiceError: Error {
+enum OSMServiceError: Error {
+    /// Means that we were unable to convert the response into an `HTTPURLResponse`
+    case badServerResponse
+    /// If the response had a bad status code
+    case badStatusCode(code: Int)
     case jsonParseFailed
+    /// Occurs when `getDynamicData` receives an invalid URL
+    case invalidDynamicURL
+    /// Occurs when `getDynamicData` fails to decode the received string with utf-8
+    case stringDecodingFailed
 }
 
 class OSMServiceModel: OSMServiceModelProtocol {
     /// Path to the tile server
     private static let path = "/tiles"
+    public static let shared = OSMServiceModel()
     
-    func getTileDataWithQueue(tile: VectorTile, categories: SuperCategories, queue: DispatchQueue, callback: @escaping OSMServiceModelProtocol.TileDataLookupCallback) {
+    /// Asynchronously gets
+    func getTileData(tile: VectorTile, categories: SuperCategories) async throws -> OSMServiceResult {
         let url = URL(string: "\(ServiceModel.servicesHostName)\(OSMServiceModel.path)/\(tile.zoom)/\(tile.x)/\(tile.y).json")!
+        
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: ServiceModel.requestTimeout)
         
-        // Set the etag header
-        do {
-            try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                var etag = ""
-                if let tiledata = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) {
-                    etag = tiledata.etag
-                }
-                request.setValue(etag, forHTTPHeaderField: HTTPHeader.ifNoneMatch.rawValue)
+        // Set the etag header if it is cached
+        try autoreleasepool {
+            let cache = try RealmHelper.getCacheRealm()
+            
+            var etag = ""
+            if let tiledata = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) {
+                etag = tiledata.etag
             }
-        } catch {
-            callback(.unknown, nil, NSError(domain: ServiceModel.errorRealm, code: 0, userInfo: nil))
-            return
+            request.setValue(etag, forHTTPHeaderField: HTTPHeader.ifNoneMatch.rawValue)
         }
         
         // Set `App-Version` header
@@ -52,32 +81,37 @@ class OSMServiceModel: OSMServiceModelProtocol {
         
         // Some housekeeping: Show the network activity indicator on the status bar, and log the request
         ServiceModel.logNetworkRequest(request)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        // TODO: log these errors
+        //ServiceModel.logNetworkResponse(response, request: request, error: error)
         
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            let validationCallback = { (statusCode, newError) in
-                callback(statusCode, nil, newError)
-            }
-            
-            guard let (status, etag, json) = ServiceModel.validateJsonResponse(request: request, response: response, data: data, error: error, callback: validationCallback) else {
-                return
-            }
-            
-            queue.async {
-                callback(status, TileData(withParsedData: json, quadkey: tile.quadKey, etag: etag, superCategories: categories), nil)
-            }
+        
+        // Is the response of the proper type? (it always should be...)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            GDLogNetworkError("Response error: response object is not an HTTPURLResponse")
+            throw OSMServiceError.badServerResponse
         }
         
-        task.resume()
+        let newEtag = httpResponse.value(forHTTPHeaderField: HTTPHeader.eTag.rawValue) ?? NSUUID().uuidString
+
+        
+        switch HTTPStatusCode(rawValue: httpResponse.statusCode) {
+        case .unknown(let code):
+            throw OSMServiceError.badStatusCode(code: code)
+        case .notModified:
+            // Check the ETag (if the request returned a 304, then there is nothing to do because the data hasn't changed)
+            // TODO: in what case will this happen? how does this work?
+            return .notModified
+        case .success:
+            let featureCollection = try JSONDecoder().decode(GeoJsonFeatureCollection.self, from: data)
+            
+            return .modified(newEtag: newEtag, tileData: TileData(withParsedData: featureCollection, quadkey: tile.quadKey, etag: newEtag, superCategories: categories))
+        }
     }
     
-    func getDynamicData(dynamicURL: String, callback: @escaping OSMServiceModelProtocol.DynamicDataLookupCallback) {
-        guard !dynamicURL.isEmpty else {
-            callback(.unknown, nil, NSError(domain: ServiceModel.errorDomain, code: 0, userInfo: nil))
-            return
-        }
-        
-        guard let url = URL(string: dynamicURL) else {
-            return
+    func getDynamicData(dynamicURL: String) async throws -> String {
+        guard !dynamicURL.isEmpty, let url = URL(string: dynamicURL) else {
+            throw OSMServiceError.invalidDynamicURL
         }
         
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: ServiceModel.requestTimeout)
@@ -88,20 +122,23 @@ class OSMServiceModel: OSMServiceModelProtocol {
         ServiceModel.logNetworkRequest(request)
         
         // Create the data task and start it
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            let validationCallback = { (statusCode, newError) in
-                callback(statusCode, nil, newError)
-            }
-            
-            guard let status = ServiceModel.validateResponse(request: request, response: response, data: data, error: error, callback: validationCallback) else {
-                return
-            }
-            
-            DispatchQueue.main.async {
-                callback(status, String.init(data: data!, encoding: .utf8), nil)
-            }
+        let (data, response) = try await URLSession.shared.data(for: request)
+        // TODO: log if this errors
+        //ServiceModel.logNetworkResponse(response, request: request, error: error)
+        // Is the response of the proper type? (it always should be...)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            GDLogNetworkError("Response error: response object is not an HTTPURLResponse")
+            throw OSMServiceError.badServerResponse
         }
         
-        task.resume()
+        if case .unknown(let code) = HTTPStatusCode(rawValue: httpResponse.statusCode) {
+            // Make sure we have a known status
+            throw OSMServiceError.badStatusCode(code: code)
+        }
+        
+        guard let decodedString = String(data: data, encoding: .utf8) else {
+            throw OSMServiceError.stringDecodingFailed
+        }
+        return decodedString
     }
 }
