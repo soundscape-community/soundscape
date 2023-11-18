@@ -347,19 +347,34 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         return dataView
     }
     
+    enum ServiceConnectionState {
+        /// Couldn't find the current tile to request
+        case currentTileNil
+        /// Called the service and received a bad response or error
+        case failed
+        /// Success.
+        case success
+    }
+    func checkServiceConnection() async -> ServiceConnectionState {
+        guard let tile = currentTile else {
+            return .currentTileNil
+        }
+        do {
+            _ = try await serviceModel.getTileData(tile: tile, categories: [:])
+            return .success
+        } catch {
+            return .failed
+        }
+    }
+    
     func checkServiceConnection(completionHandler: @escaping (_ success: Bool) -> Void) {
         guard let tile = currentTile else {
             completionHandler(false)
             return
         }
         Task {
-            do {
-                let serviceResult = try await serviceModel.getTileData(tile: tile, categories: [:])
-            } catch {
-                completionHandler(false)
-                return
-            }
-            completionHandler(true)
+            let status = await checkServiceConnection()
+            completionHandler(status == .success)
         }
     }
     
@@ -383,25 +398,31 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     }
     
     func updateSpatialData(at location: CLLocation, completion: @escaping () -> Void) -> Progress? {
-        let dispatchGroup = DispatchGroup()
-        let progress = updateSpatialDataAsync(location: location, overridePrioritizeCurrent: false, dispatchGroup: dispatchGroup)
-        
-        if let progress = progress {
-            dispatchGroup.notify(queue: DispatchQueue.main, execute: {
-                completion()
-            })
-            
-            return progress
-        } else {
+        guard let (task, progress) = updateSpatialDataAsync(location: location, overridePrioritizeCurrent: false) else {
             // If data for the given location is already cached,
             // return immediately
             completion()
             return nil
         }
+        
+        Task {
+            _ = await task.result
+            completion()
+        }
+        return progress
+    }
+    
+    /// Since the progress isn't returned until after completion, it isn't very useful.
+    func updateSpatialData(at location: CLLocation) async -> Progress? {
+        guard let (task, progress) = updateSpatialDataAsync(location: location, overridePrioritizeCurrent: false) else {
+            return nil
+        }
+        _ = await task.value
+        return progress
     }
     
     @discardableResult
-    fileprivate func updateSpatialDataAsync(location: CLLocation, reloadPORs: Bool = false, overridePrioritizeCurrent: Bool? = nil, dispatchGroup: DispatchGroup? = nil) -> Progress? {
+    fileprivate func updateSpatialDataAsync(location: CLLocation, reloadPORs: Bool = false, overridePrioritizeCurrent: Bool? = nil) -> (Task<(), Never>, Progress)? {
         let current = VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)
         let currentCached = SpatialDataContext.isCached(tile: current)
         
@@ -471,78 +492,76 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         
         state = .loading
         
-        // Enter the dispatch group for each tile
-        toFetch.forEach { _ in dispatchGroup?.enter() }
-        
         let progress = Progress(totalUnitCount: Int64(toFetch.count))
-        
-        for tile in toFetch {
-            if !SpatialDataContext.needsFetching(tile: tile) {
-                processFetchedTile(tile, dispatchGroup: dispatchGroup, progress: progress)
-            } else {
-                fetchTileAsync(tile, dispatchGroup: dispatchGroup, progress: progress)
-            }
+        let task = Task {
+            return await withTaskGroup(of: Void.self, body: { group in
+                for tile in toFetch {
+                    group.addTask {
+                        if !SpatialDataContext.needsFetching(tile: tile) {
+                            self.processFetchedTile(tile, progress: progress)
+                        } else {
+                            do {
+                                try await self.fetchTileAsync(tile, progress: progress)
+                            } catch {
+                                GDLogSpatialDataError("Unable to fetch tile \(tile.quadKey). Cancelling")
+                                
+                                self.canceledTilesCount += 1
+                                
+                                if tile == self.currentTile {
+                                    // The user is in an unsupported region, or has no internet, or Azure is down...
+                                    self.state = .error
+                                }
+                            }
+                        }
+                    }
+                }
+            })
         }
         
-        return progress
+        return (task, progress)
     }
     
-    private func fetchTileAsync(_ tile: VectorTile, retryCount: UInt = 0, dispatchGroup: DispatchGroup?, progress: Progress?) {
+    /// Makes three attempts to fetch the specified tile. If unsuccessful, it will throw the last error thrown by the OSM service model.
+    /// If successful, it will appropriately update local tile information
+    private func fetchTileAsync(_ tile: VectorTile, progress: Progress) async throws {
         guard let categories = superCategories else {
-            self.processFetchedTile(tile, retryCount: retryCount, error: SpatialDataContextError.noCategories, dispatchGroup: dispatchGroup, progress: progress)
-            return
+            throw SpatialDataContextError.noCategories
         }
         
-        Task.detached {
-            let serviceResult: OSMServiceResult
+        let serviceResult: OSMServiceResult
+        do { // dirty but less complicated version of 3 retries
+            serviceResult = try await self.serviceModel.getTileData(tile: tile, categories: categories)
+        } catch {
             do {
                 serviceResult = try await self.serviceModel.getTileData(tile: tile, categories: categories)
             } catch {
-                self.processFetchedTile(tile, retryCount: retryCount, error: error, dispatchGroup: dispatchGroup, progress: progress)
-                return
+                // this one will either succeed and continue or will cause the function to throw the error
+                serviceResult = try await self.serviceModel.getTileData(tile: tile, categories: categories)
             }
-            
-            switch serviceResult {
-            case .notModified:
-                SpatialDataContext.extendTileExpiration(tile)
-                self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
-            case .modified(_, let tileData):
-                SpatialDataContext.storeTile(tile, data: tileData)
-                self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
-            }
+        }
+        
+        switch serviceResult {
+        case .notModified:
+            SpatialDataContext.extendTileExpiration(tile)
+            self.processFetchedTile(tile, progress: progress)
+        case .modified(_, let tileData):
+            SpatialDataContext.storeTile(tile, data: tileData)
+            self.processFetchedTile(tile, progress: progress)
         }
     }
     
-    private func processFetchedTile(_ tile: VectorTile, retryCount: UInt = 0, error: Error? = nil, dispatchGroup: DispatchGroup?, progress: Progress?) {
+    private func processFetchedTile(_ tile: VectorTile, progress: Progress) {
         let loc = currentLocation ?? originalRequestLocation
         
-        // If error is not nil, we were unable to get the tile
-        if error != nil {
-            // RECURSIVE: Retry the call up to three times total, and then cancel the call (a.k.a. give up and admit defeat)
-            if retryCount < 2 {
-                fetchTileAsync(tile, retryCount: (retryCount + 1), dispatchGroup: dispatchGroup, progress: progress)
-                return
-            }
-            
-            GDLogSpatialDataError("Unable to fetch tile \(tile.quadKey). Cancelling")
-            
-            canceledTilesCount += 1
-            
-            if tile == currentTile {
-                // The user is in an unsupported region, or has no internet, or Azure is down...
-                state = .error
-            }
-        } else {
-            // We got the tile
-            dispatchQueue.sync(flags: .barrier) {
-                _ = self.tiles.insert(tile)
-            }
-            
-            // If the tile we just fetched is the current tile (the tile the user is
-            // currently in), immediately pass on the location update...
-            if tile == currentTile, let location = loc {
-                notifyLocationUpdated(location, tilesChanged: true)
-            }
+        /// We got the tile
+        dispatchQueue.sync(flags: .barrier) {
+            _ = self.tiles.insert(tile)
+        }
+        
+        // If the tile we just fetched is the current tile (the tile the user is
+        // currently in), immediately pass on the location update...
+        if tile == currentTile, let location = loc {
+            notifyLocationUpdated(location, tilesChanged: true)
         }
         
         var tilesCount = 0
@@ -571,8 +590,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             }
         }
         
-        progress?.completedUnitCount += 1
-        dispatchGroup?.leave()
+        progress.completedUnitCount += 1
     }
     
     fileprivate func notifyLocationUpdated(_ location: CLLocation, tilesChanged: Bool = false) {

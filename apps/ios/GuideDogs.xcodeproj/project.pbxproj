@@ -663,6 +663,7 @@
 		62F7A30E27B6082A00C62390 /* InteractiveBeaconViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */; };
 		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
 		91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */ = {isa = PBXBuildFile; productRef = 91172A722AD8D56D00E6E8E9 /* CoreGPX */; };
+		912AA98E2B0831C800EB0BD3 /* SpatialDataContextTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912AA98D2B0831C800EB0BD3 /* SpatialDataContextTest.swift */; };
 		914BAAF32AD745E400CB2171 /* DestinationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */; };
 		914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */; };
 		915FF9F62ADE4BAF002B3690 /* AuthoredActivityContentTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915FF9F42ADE3F91002B3690 /* AuthoredActivityContentTest.swift */; };
@@ -1583,6 +1584,7 @@
 		62F7A30B27B6080900C62390 /* InteractiveBeaconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconView.swift; sourceTree = "<group>"; };
 		62F7A30D27B6082A00C62390 /* InteractiveBeaconViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveBeaconViewModel.swift; sourceTree = "<group>"; };
 		6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExternalNavigationApps.swift; path = Code/App/ExternalNavigationApps.swift; sourceTree = "<group>"; };
+		912AA98D2B0831C800EB0BD3 /* SpatialDataContextTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialDataContextTest.swift; sourceTree = "<group>"; };
 		914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DestinationManagerTest.swift; sourceTree = "<group>"; };
 		914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngineTest.swift; sourceTree = "<group>"; };
 		914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4285,6 +4287,14 @@
 			path = "Interactive View";
 			sourceTree = "<group>";
 		};
+		912AA98B2B08319F00EB0BD3 /* Spatial Data */ = {
+			isa = PBXGroup;
+			children = (
+				912AA98D2B0831C800EB0BD3 /* SpatialDataContextTest.swift */,
+			);
+			path = "Spatial Data";
+			sourceTree = "<group>";
+		};
 		914BAAED2AD745BC00CB2171 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -4405,6 +4415,7 @@
 		91C82AB52A67182E0086D126 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				912AA98B2B08319F00EB0BD3 /* Spatial Data */,
 				91745DD12AFB0E6C003EC104 /* Models */,
 				915FF9F32ADE3F91002B3690 /* Authored Activities */,
 				914BAAF12AD745E400CB2171 /* Destination Manager */,
@@ -5590,6 +5601,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				915FF9F62ADE4BAF002B3690 /* AuthoredActivityContentTest.swift in Sources */,
+				912AA98E2B0831C800EB0BD3 /* SpatialDataContextTest.swift in Sources */,
 				914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */,
 				914BAAF32AD745E400CB2171 /* DestinationManagerTest.swift in Sources */,
 				91C82ABE2A6B08500086D126 /* RouteGuidanceTest.swift in Sources */,

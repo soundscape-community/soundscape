@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Always means a good response
 enum OSMServiceResult {
     case notModified
     case modified(newEtag: String, tileData: TileData)
