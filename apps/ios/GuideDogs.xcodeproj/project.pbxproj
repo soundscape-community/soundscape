@@ -881,7 +881,6 @@
 		D298328C1E4A960300352A5A /* Intersection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D298328B1E4A960300352A5A /* Intersection.swift */; };
 		D29832901E4BF80600352A5A /* GeoJsonFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = D298328F1E4BF80600352A5A /* GeoJsonFeature.swift */; };
 		D29832921E4CF18100352A5A /* SuperCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832911E4CF18100352A5A /* SuperCategory.swift */; };
-		D29832941E4CF27900352A5A /* OsmTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832931E4CF27900352A5A /* OsmTag.swift */; };
 		D29832961E4E249700352A5A /* GeoJsonGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832951E4E249700352A5A /* GeoJsonGeometry.swift */; };
 		D30355D31B61401D00E1DDED /* GDAJSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D30355D21B61401D00E1DDED /* GDAJSONObject.m */; };
 		D395B0F71B41DA15005A6407 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D395B0F61B41DA15005A6407 /* Images.xcassets */; };
@@ -1812,7 +1811,6 @@
 		D298328B1E4A960300352A5A /* Intersection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Intersection.swift; path = "Code/Data/Models/Cache Models/Intersection.swift"; sourceTree = "<group>"; };
 		D298328F1E4BF80600352A5A /* GeoJsonFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GeoJsonFeature.swift; path = "Code/Data/Models/JSON Parsing/OSM/GeoJsonFeature.swift"; sourceTree = "<group>"; };
 		D29832911E4CF18100352A5A /* SuperCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuperCategory.swift; path = Code/Data/Models/Helpers/SuperCategory.swift; sourceTree = "<group>"; };
-		D29832931E4CF27900352A5A /* OsmTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OsmTag.swift; path = Code/Data/Models/Helpers/OsmTag.swift; sourceTree = "<group>"; };
 		D29832951E4E249700352A5A /* GeoJsonGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GeoJsonGeometry.swift; path = "Code/Data/Models/JSON Parsing/OSM/GeoJsonGeometry.swift"; sourceTree = "<group>"; };
 		D30355D11B61401D00E1DDED /* GDAJSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GDAJSONObject.h; path = Code/Data/Models/Helpers/GDAJSONObject.h; sourceTree = "<group>"; };
 		D30355D21B61401D00E1DDED /* GDAJSONObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = GDAJSONObject.m; path = Code/Data/Models/Helpers/GDAJSONObject.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -2876,7 +2874,6 @@
 				D30355D11B61401D00E1DDED /* GDAJSONObject.h */,
 				D30355D21B61401D00E1DDED /* GDAJSONObject.m */,
 				28A7AB0720F7CC1D00DF41D8 /* MarkerQueue.swift */,
-				D29832931E4CF27900352A5A /* OsmTag.swift */,
 				C325408620229EB9007D4E78 /* POIQueue.swift */,
 				28E60D411FE4903A00EAB5C0 /* Quadrant.swift */,
 				28B50A871FEAEBD900E8149C /* RealmHelper.swift */,
@@ -5930,7 +5927,6 @@
 				28246D1A21ED372A004C8F09 /* LinkedList.swift in Sources */,
 				C38841D52268FCC400F6DFA5 /* POI+Similarity.swift in Sources */,
 				C363227D22DFB6B700715374 /* Heading+Order.swift in Sources */,
-				D29832941E4CF27900352A5A /* OsmTag.swift in Sources */,
 				623E0102244767BB0081CA5B /* CoordinateParameters.swift in Sources */,
 				C36527A1224BF50E0056F570 /* Type.swift in Sources */,
 				2832D35826D4236A0052EE47 /* RouteTutorialView.swift in Sources */,

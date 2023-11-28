@@ -34,7 +34,7 @@ final class SpatialDataContextTest: XCTestCase {
         
         _ = await sdc.updateSpatialData(at: rpi_loc)
         XCTAssertTrue(sdc.loadedSpatialData)
-        XCTAssertTrue(sdc.state == .ready)
+        XCTAssertEqual(sdc.state, .ready)
         
         // we should have the vectortile stored
         XCTAssertTrue(sdc.currentTiles.contains(where: {$0.x == rpi_tile.x && $0.y == rpi_tile.y}))

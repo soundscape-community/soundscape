@@ -368,7 +368,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     }
     
     func checkServiceConnection(completionHandler: @escaping (_ success: Bool) -> Void) {
-        guard let tile = currentTile else {
+        guard let _ = currentTile else {
             completionHandler(false)
             return
         }

@@ -168,6 +168,7 @@ class GDASpatialDataResultEntity: Object {
                 longitude = point.longitude
             } else if let json_data = try? JSONEncoder().encode(geometry) {
                 coordinatesJson = String(data: json_data, encoding: .utf8)
+                self._geometry = geometry
             }
             
             let centroid = geometry.centroid

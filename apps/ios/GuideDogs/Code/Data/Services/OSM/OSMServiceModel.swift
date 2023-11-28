@@ -54,6 +54,7 @@ enum OSMServiceError: Error {
     case stringDecodingFailed
 }
 
+/// The `OSMServiceModel` should not rely on any state; it just gets fetches and parses data
 class OSMServiceModel: OSMServiceModelProtocol {
     /// Path to the tile server
     private static let path = "/tiles"
