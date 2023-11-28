@@ -164,14 +164,13 @@ class SpatialDataCache: NSObject {
         }
     }
     
-    /// Loops through all Routes with `isNew == true` and sets `isNew` to false
+    /// Sets all ``Route``s to `isNew = false`
     static func clearNewRoutes() throws {
-        let newRoutes = routes(withPredicate: NSPredicate(format: "isNew == true"))
-
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 return
             }
+            let newRoutes = database.objects(Route.self).filter({ $0.isNew })
             
             try database.write {
                 for route in newRoutes {
@@ -387,7 +386,7 @@ class SpatialDataCache: NSObject {
     }
     
     static func tilesForReferenceEntities(at zoomLevel: UInt) -> Set<VectorTile> {
-        let referenceEntities = SpatialDataCache.referenceEntities()
+        let referenceEntities = SpatialDataCache.referenceEntities(isTemp: false)
         let tiles = referenceEntities.map { VectorTile(latitude: $0.latitude, longitude: $0.longitude, zoom: zoomLevel) }
         return Set(tiles)
     }

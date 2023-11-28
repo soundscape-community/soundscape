@@ -13,8 +13,8 @@ import RealmSwift
 class LocalizedString: Object {
     /// Lowercase ISO 639-1 alpha2 code (second column), or a lowercase ISO 639-2 code if an ISO 639-1 code doesn't exist.
     /// http://www.loc.gov/standards/iso639-2/php/code_list.php
-    @objc dynamic var language: String = ""
-    @objc dynamic var string: String = ""
+    @Persisted var language: String = ""
+    @Persisted var string: String = ""
 
     convenience init(language: String, string: String) {
         self.init()
@@ -28,35 +28,35 @@ class GDASpatialDataResultEntity: Object {
     
     // MARK: - Realm properties
     
-    @objc dynamic var key: String = UUID().uuidString
-    @objc dynamic var lastSelectedDate: Date?
+    @Persisted(primaryKey: true) var key: String = UUID().uuidString
+    @Persisted var lastSelectedDate: Date?
     /// The default entity name
-    @objc dynamic var name: String = ""
+    @Persisted var name: String = ""
     /// Array of localized entity names. e.g. `["en": "Louvre Museum", "fr": "Musée du Louvre"]`
-    let names = List<LocalizedString>()
+    @Persisted var names: List<LocalizedString>
     /// For some OSM entities (i.e. "Road", "Walking Path" and "Bus stop")
     /// we also store the type (i.e, "road", "walking_path", "bus_stop")
     /// so we can localize and display the name correctly.
-    @objc dynamic var nameTag: String = ""
+    @Persisted var nameTag: String = ""
     /// "ref" stands for "reference" and is used for reference numbers or codes.
     /// Common for roads, highway exits, routes, etc. It is also used for shops and amenities
     /// that are numbered officially as part of a retail brand or network respectively.
     /// - note: https://wiki.openstreetmap.org/wiki/Key:ref
-    @objc dynamic var ref: String = ""
-    @objc dynamic var superCategory: String = SuperCategory.undefined.rawValue
-    @objc dynamic var amenity: String!
-    @objc dynamic var phone: String?
-    @objc dynamic var addressLine: String?
-    @objc dynamic var streetName: String?
-    @objc dynamic var roundabout: Bool = false
-    @objc dynamic var coordinatesJson: String?
-    @objc dynamic var entrancesJson: String?
-    @objc dynamic var dynamicURL: String?
-    @objc dynamic var dynamicData: String?
-    @objc dynamic var latitude: CLLocationDegrees = 0.0
-    @objc dynamic var longitude: CLLocationDegrees = 0.0
-    @objc dynamic var centroidLatitude: CLLocationDegrees = 0.0
-    @objc dynamic var centroidLongitude: CLLocationDegrees = 0.0
+    @Persisted var ref: String = ""
+    @Persisted var superCategory: String = SuperCategory.undefined.rawValue
+    @Persisted var amenity: String!
+    @Persisted var phone: String?
+    @Persisted var addressLine: String?
+    @Persisted var streetName: String?
+    @Persisted var roundabout: Bool = false
+    @Persisted var coordinatesJson: String?
+    @Persisted var entrancesJson: String?
+    @Persisted var dynamicURL: String?
+    @Persisted var dynamicData: String?
+    @Persisted var latitude: CLLocationDegrees = 0.0
+    @Persisted var longitude: CLLocationDegrees = 0.0
+    @Persisted var centroidLatitude: CLLocationDegrees = 0.0
+    @Persisted var centroidLongitude: CLLocationDegrees = 0.0
     
     // MARK: - Computed & Non-Realm Properties
     
@@ -107,22 +107,6 @@ class GDASpatialDataResultEntity: Object {
         _entrances = entranceObjects
         
         return _entrances
-    }
-    
-    // MARK: - Realm Related
-    
-    /// Indicates which property represents the primary key of this object
-    override static func primaryKey() -> String {
-        return "key"
-    }
-    
-    /// Returns the names of properties which Realm should ignore
-    static override func ignoredProperties() -> [String] {
-        return ["_geometry",
-                "geometry",
-                "coordinates",
-                "_entrances",
-                "entrances"]
     }
     
     // MARK: - Initialization

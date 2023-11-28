@@ -12,11 +12,11 @@ import RealmSwift
 
 class OsmTag: Object {
     
-    @objc dynamic var key = ""
+    @Persisted(primaryKey: true) var key = ""
     
-    @objc dynamic var name = ""
+    @Persisted var name = ""
     
-    @objc dynamic var value = ""
+    @Persisted var value = ""
     
     convenience init(name: String, value: String) {
         self.init()
@@ -25,12 +25,5 @@ class OsmTag: Object {
         self.value = value
         
         self.key = name + "=" + value
-    }
-    
-    /// Indicates which property represents the primary key of this object
-    ///
-    /// - Returns: The name of the property that represents the primary key of this object
-    override static func primaryKey() -> String {
-        return "key"
     }
 }
