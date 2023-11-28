@@ -296,7 +296,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     // MARK: Static Methods
     
     static func add(detail: LocationDetail, telemetryContext: String?, isTemporary: Bool = false, notify: Bool = true) throws -> String {
-        if let id = detail.markerId, let marker = SpatialDataCache.referenceEntityByKey(id) {
+        if let id = detail.markerId, let marker = SpatialDataCustom.referenceEntityByKey(id) {
             try update(entity: marker, location: detail.location.coordinate, nickname: detail.nickname, address: detail.estimatedAddress, annotation: detail.annotation, context: telemetryContext, isTemp: isTemporary)
             
             return id
@@ -332,7 +332,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             let database = try RealmHelper.getDatabaseRealm()
             let cache = try RealmHelper.getCacheRealm()
             
-            if let existingMarker = SpatialDataCache.referenceEntityByEntityKey(entityKey) {
+            if let existingMarker = SpatialDataCustom.referenceEntityByEntityKey(entityKey) {
                 // Update and return the existing marker
                 try update(entity: existingMarker, nickname: nickname, address: estimatedAddress, annotation: annotation, context: context, isTemp: temporary)
                 
@@ -498,7 +498,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             // match, then we can also update the marker to set `isTemp` to false. This covers the only edge case where
             // we allow permanent markers to become temporary: when a marker is deleted and there is currently a beacon
             // set on the location of that marker.
-            if let existingMarker = SpatialDataCache.referenceEntityByGenericLocation(location, isTemp: nil) {
+            if let existingMarker = SpatialDataCustom.referenceEntityByGenericLocation(location, isTemp: nil) {
                 let tempStatusMatches = existingMarker.isTemp == temporary
                 let propertiesMatch = existingMarker.nickname == nickname &&
                                       existingMarker.estimatedAddress == estimatedAddress &&

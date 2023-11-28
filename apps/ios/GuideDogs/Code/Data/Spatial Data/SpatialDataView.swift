@@ -156,7 +156,7 @@ class SpatialDataView: SpatialDataViewProtocol {
         tiles = SpatialDataCache.tileData(for: vectorTiles)
         
         // Get the marked points
-        markedPoints = SpatialDataCache.referenceEntitiesNear(location.coordinate, range: range)
+        markedPoints = SpatialDataCustom.referenceEntitiesNear(location.coordinate, range: range)
         
         // Get the generic locations (these will get merged with the regular POIs)
         genericLocations = SpatialDataCache.genericLocationsNear(location, range: range)

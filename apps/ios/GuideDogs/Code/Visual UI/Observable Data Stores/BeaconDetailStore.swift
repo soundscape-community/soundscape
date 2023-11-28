@@ -29,7 +29,7 @@ class BeaconDetailStore: ObservableObject {
             
             // Active audio beacon is following a route
             self.init(beacon: beacon)
-        } else if let key = manager.destinationKey, let beacon = SpatialDataCache.referenceEntityByKey(key) {
+        } else if let key = manager.destinationKey, let beacon = SpatialDataCustom.referenceEntityByKey(key) {
             let beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: manager.isAudioEnabled)
             
             // Active audio beacon is set on a location
@@ -96,7 +96,7 @@ class BeaconDetailStore: ObservableObject {
                 // are following a route
                 if let userInfo = notification.userInfo as? [String: Any],
                    let key = userInfo[DestinationManager.Keys.destinationKey] as? String,
-                   let beacon = SpatialDataCache.referenceEntityByKey(key),
+                   let beacon = SpatialDataCustom.referenceEntityByKey(key),
                    let isAudioEnabled = userInfo[DestinationManager.Keys.isAudioEnabled] as? Bool {
                     // Beacon was set - Update beacon so that it is placed on the new location
                     self.beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: isAudioEnabled)

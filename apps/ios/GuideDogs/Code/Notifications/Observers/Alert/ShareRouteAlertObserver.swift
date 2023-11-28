@@ -78,7 +78,7 @@ class ShareRouteAlertObserver: NotificationObserver {
             // Reset `currentAlert` after it has been presented
             self.currentAlert = nil
             
-            if SpatialDataCache.routeByKey(route.id) != nil {
+            if SpatialDataCustom.routeByKey(route.id) != nil {
                 // Route already exists
                 // Present another alert to ask the user what to do
                 self.presentImportExistingRouteAlert(newRoute: route)

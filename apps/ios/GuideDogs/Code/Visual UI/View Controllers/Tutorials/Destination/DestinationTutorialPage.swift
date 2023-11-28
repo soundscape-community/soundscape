@@ -28,7 +28,7 @@ class DestinationTutorialPage: BaseTutorialViewController {
             return nil
         }
         
-        return SpatialDataCache.referenceEntityByKey(key)
+        return SpatialDataCustom.referenceEntityByKey(key)
     }
     
     // MARK: BaseTutorialViewController Overrides

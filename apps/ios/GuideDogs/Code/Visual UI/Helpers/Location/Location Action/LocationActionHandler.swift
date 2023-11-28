@@ -47,7 +47,7 @@ struct LocationActionHandler {
             markerId = nil
         }
         
-        guard let markerId = markerId, SpatialDataCache.referenceEntityByEntityKey(markerId) != nil else {
+        guard let markerId = markerId, SpatialDataCustom.referenceEntityByEntityKey(markerId) != nil else {
             throw LocationActionError.failedToSaveMarker
         }
         

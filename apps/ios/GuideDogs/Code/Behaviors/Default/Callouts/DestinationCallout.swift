@@ -42,7 +42,7 @@ struct DestinationCallout: POICalloutProtocol {
     }
     
     var marker: ReferenceEntity? {
-        return SpatialDataCache.referenceEntityByEntityKey(key)
+        return SpatialDataCustom.referenceEntityByEntityKey(key)
     }
     
     /// A computed property for accessing the POI referenced by the key stored in this Callout object. Note

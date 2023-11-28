@@ -64,7 +64,7 @@ class RouteRecommender: Recommender {
         
         // Search for routes near the given location and sort
         // by `lastSelectedDate`
-        let nearby = SpatialDataCache.routesNear(location.coordinate, range: 5000)
+        let nearby = SpatialDataCustom.routesNear(location.coordinate, range: 5000)
             .compactMap({ route -> (route: Route, distance: CLLocationDistance, selected: Date, created: Date)? in
                 // Because these routes were returned by `SpatialDataCache.routesNear`, the first waypoint location
                 // should never be `nil`

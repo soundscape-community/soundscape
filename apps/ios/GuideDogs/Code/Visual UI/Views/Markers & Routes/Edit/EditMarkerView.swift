@@ -293,7 +293,7 @@ struct EditMarkerView: View {
         let finalAnnotation = annotation.isEmpty ? nil : annotation
         let detail = updatedLocation ?? locationDetail
         
-        if let id = locationDetail.markerId ?? SpatialDataCache.referenceEntity(source: locationDetail.source, isTemp: true)?.id {
+        if let id = locationDetail.markerId ?? SpatialDataCustom.referenceEntity(source: locationDetail.source, isTemp: true)?.id {
             // Save marker ID
             markerId = id
             
@@ -332,7 +332,7 @@ struct EditMarkerView: View {
     
     private func updateExisting(id: String, coordinate: CLLocationCoordinate2D?, nickname: String?, address: String?, annotation: String?) throws {
         try autoreleasepool {
-            guard let entity = SpatialDataCache.referenceEntityByKey(id) else {
+            guard let entity = SpatialDataCustom.referenceEntityByKey(id) else {
                 return
             }
             

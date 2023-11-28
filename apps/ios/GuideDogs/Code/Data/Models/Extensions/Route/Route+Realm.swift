@@ -41,7 +41,7 @@ extension Route {
                 
                 return database.objects(Route.self)
                     .compactMap { route -> (id: String, distance: CLLocationDistance)? in
-                        guard let start = route.waypoints.ordered.first, let entity = SpatialDataCache.referenceEntityByKey(start.markerId) else {
+                        guard let start = route.waypoints.ordered.first, let entity = SpatialDataCustom.referenceEntityByKey(start.markerId) else {
                             return (id: route.id, distance: CLLocationDistance.greatestFiniteMagnitude)
                         }
                         
@@ -121,7 +121,7 @@ extension Route {
     }
     
     static func deleteAll() throws {
-        try SpatialDataCache.routes().forEach({
+        try SpatialDataCustom.routes().forEach({
             try delete($0.id)
         })
     }
@@ -180,7 +180,7 @@ extension Route {
                 route.lastUpdatedDate = lastSelectedAndUpdatedDate
                 
                 // Update first waypoint latitude and longitude
-                if let first = waypoints.ordered.first, let marker = SpatialDataCache.referenceEntityByKey(first.markerId) {
+                if let first = waypoints.ordered.first, let marker = SpatialDataCustom.referenceEntityByKey(first.markerId) {
                     route.firstWaypointLatitude = marker.latitude
                     route.firstWaypointLongitude = marker.longitude
                 } else {
@@ -235,13 +235,13 @@ extension Route {
     }
     
     static func removeWaypointFromAllRoutes(markerId: String) throws {
-        try SpatialDataCache.routesContaining(markerId: markerId).forEach({
+        try SpatialDataCustom.routesContaining(markerId: markerId).forEach({
             try removeWaypoint(from: $0, markerId: markerId)
         })
     }
     
     static func updateWaypointInAllRoutes(markerId: String) throws {
-        try SpatialDataCache.routesContaining(markerId: markerId).forEach({
+        try SpatialDataCustom.routesContaining(markerId: markerId).forEach({
             guard let first = $0.waypoints.ordered.first else {
                 return
             }

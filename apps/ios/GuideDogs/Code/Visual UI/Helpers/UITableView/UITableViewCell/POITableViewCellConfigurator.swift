@@ -27,7 +27,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
     // MARK: `TableViewCellConfigurator`
     
     func configure(_ cell: TableViewCell, forDisplaying model: Model) {
-        if let marker = SpatialDataCache.referenceEntityByEntityKey(model.key), marker.isTemp == false {
+        if let marker = SpatialDataCustom.referenceEntityByEntityKey(model.key), marker.isTemp == false {
             configureTitle(cell, marker: marker)
             configureDetail(cell, marker: marker)
             configureImageView(cell, marker: marker)

@@ -58,8 +58,8 @@ class MarkersAndRoutesListHostViewController: UIHostingController<AnyView> {
         // If the user has returned to the Home screen from Saved Markers, remove the
         // isNew flag from all marked points.
         do {
-            try SpatialDataCache.clearNewReferenceEntities()
-            try SpatialDataCache.clearNewRoutes()
+            try SpatialDataCustom.clearNewReferenceEntities()
+            try SpatialDataCustom.clearNewRoutes()
         } catch {
             GDLogAppError("Unable to clear isNew flag for reference entities!")
         }

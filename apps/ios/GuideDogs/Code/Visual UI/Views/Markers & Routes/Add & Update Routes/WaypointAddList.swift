@@ -101,7 +101,7 @@ struct WaypointAddList_Previews: PreviewProvider {
         
         AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
         
-        let markerIds = SpatialDataCache.referenceEntities().compactMap({ return $0.id })
+        let markerIds = SpatialDataCustom.referenceEntities().compactMap({ return $0.id })
         let waypoints: [IdentifiableLocationDetail]
         
         if let id = markerIds.first, let detail = LocationDetail(markerId: id) {

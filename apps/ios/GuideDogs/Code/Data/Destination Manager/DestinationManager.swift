@@ -67,7 +67,7 @@ class DestinationManager: DestinationManagerProtocol {
             return nil
         }
         
-        return SpatialDataCache.referenceEntityByKey(destinationKey)
+        return SpatialDataCustom.referenceEntityByKey(destinationKey)
     }
 
     // All continuous audio should be disabled on launch
@@ -233,7 +233,7 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - logContext: The context of the call that will be passed to the telemetry service
     /// - Throws: If the destination cannot be set
     func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws {
-        guard let entity = SpatialDataCache.referenceEntityByKey(referenceID) else {
+        guard let entity = SpatialDataCustom.referenceEntityByKey(referenceID) else {
             throw DestinationManagerError.referenceEntityDoesNotExist
         }
         
@@ -301,7 +301,7 @@ class DestinationManager: DestinationManagerProtocol {
     @discardableResult
     func setDestination(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
         // If the reference entity already exists, just set the destination to that
-        if let ref = SpatialDataCache.referenceEntityByGenericLocation(location) {
+        if let ref = SpatialDataCustom.referenceEntityByGenericLocation(location) {
             try setDestination(referenceID: ref.id, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
             
             return ref.id
@@ -355,7 +355,7 @@ class DestinationManager: DestinationManagerProtocol {
     @discardableResult
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) throws -> String {
         // If the reference entity already exists, just set the destination to that
-        if let ref = SpatialDataCache.referenceEntityByEntityKey(entityKey) {
+        if let ref = SpatialDataCustom.referenceEntityByEntityKey(entityKey) {
             try setDestination(referenceID: ref.id, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
             
             return ref.id
