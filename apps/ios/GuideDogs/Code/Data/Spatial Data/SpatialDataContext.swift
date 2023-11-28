@@ -19,7 +19,6 @@ enum SpatialDataState {
 }
 
 enum SpatialDataContextError: Error {
-    case noCategories
     case missingData
 }
 
@@ -61,7 +60,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     private weak var settings: SettingsContext?
 
     fileprivate var updateFilter: MotionActivityUpdateFilter
-    fileprivate var superCategories: SuperCategories?
+    fileprivate var superCategories: SuperCategories
     
     fileprivate var currentLocation: CLLocation?
     fileprivate var originalRequestLocation: CLLocation?
@@ -117,7 +116,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         var loadedSpatialData = false
         
         dispatchQueue.sync {
-            loadedSpatialData = !fetchingTiles && superCategories != nil && tiles.count > 0
+            loadedSpatialData = !fetchingTiles && tiles.count > 0
         }
         
         return loadedSpatialData
@@ -155,21 +154,22 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         updateFilter = MotionActivityUpdateFilter(minTime: SpatialDataContext.refreshTimeInterval,
                                                   minDistance: SpatialDataContext.refreshDistanceInterval,
                                                   motionActivity: motionActivity)
-
-        super.init()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onNetworkConnectionDidChange), name: Notification.Name.networkConnectionChanged, object: nil)
         
         // Parse the super categories from the assets file
         guard let categories = SpatialDataContext.loadDefaultCategories() else {
             GDLogAppError("Unable to load super categories")
             state = .error
             superCategories = [:]
+            super.init()
             return
         }
         
         state = .waitingForLocation
         superCategories = categories
+        
+        super.init()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onNetworkConnectionDidChange), name: Notification.Name.networkConnectionChanged, object: nil)
         
         // Register to receive a notification when the app has finished initializing
         NotificationCenter.default.addObserver(self, selector: #selector(self.onAppDidInitialize), name: NSNotification.Name.appDidInitialize, object: nil)
@@ -524,21 +524,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     /// Makes three attempts to fetch the specified tile. If unsuccessful, it will throw the last error thrown by the OSM service model.
     /// If successful, it will appropriately update local tile information
     private func fetchTileAsync(_ tile: VectorTile, progress: Progress) async throws {
-        guard let categories = superCategories else {
-            throw SpatialDataContextError.noCategories
-        }
-        
-        let serviceResult: OSMServiceResult
-        do { // dirty but less complicated version of 3 retries
-            serviceResult = try await self.serviceModel.getTileData(tile: tile, categories: categories)
-        } catch {
-            do {
-                serviceResult = try await self.serviceModel.getTileData(tile: tile, categories: categories)
-            } catch {
-                // this one will either succeed and continue or will cause the function to throw the error
-                serviceResult = try await self.serviceModel.getTileData(tile: tile, categories: categories)
-            }
-        }
+        let serviceResult = try await self.serviceModel.getTileData(tile: tile, categories: superCategories, tries: 3)
         
         switch serviceResult {
         case .notModified:
@@ -715,12 +701,6 @@ extension SpatialDataContext: GeolocationManagerUpdateDelegate {
         currentLocation = location
         
         AppContext.shared.audioEngine.updateUserLocation(location)
-        
-        guard superCategories != nil else {
-            GDLogSpatialDataVerbose("Location updated - Skipping data update (super categories nil)")
-            notifyLocationUpdated(location)
-            return
-        }
         
         if state == .waitingForLocation {
             // We have a location now so we shouldn't be waiting in this state any more
