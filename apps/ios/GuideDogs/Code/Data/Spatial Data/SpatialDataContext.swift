@@ -202,7 +202,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             let tile = VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)
             
             // This is only an error if the current tile isn't cached
-            if SpatialDataContext.isCached(tile: tile) {
+            if SpatialDataCache.isCached(tile: tile) {
                 state = .ready
             } else {
                 state = .error
@@ -289,7 +289,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             let tile = VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)
             
             // Ensure we at least have the current tile and the user's current location
-            guard SpatialDataContext.isCached(tile: tile) else {
+            guard SpatialDataCache.isCached(tile: tile) else {
                 return
             }
             
@@ -424,7 +424,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     @discardableResult
     fileprivate func updateSpatialDataAsync(location: CLLocation, reloadPORs: Bool = false, overridePrioritizeCurrent: Bool? = nil) -> (Task<(), Never>, Progress)? {
         let current = VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)
-        let currentCached = SpatialDataContext.isCached(tile: current)
+        let currentCached = SpatialDataCache.isCached(tile: current)
         
         if let overridePrioritizeCurrent = overridePrioritizeCurrent {
             prioritize = overridePrioritizeCurrent
@@ -497,7 +497,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             return await withTaskGroup(of: Void.self, body: { group in
                 for tile in toFetch {
                     group.addTask {
-                        if !SpatialDataContext.needsFetching(tile: tile) {
+                        if !SpatialDataCache.needsFetching(tile: tile) {
                             self.processFetchedTile(tile, progress: progress)
                         } else {
                             do {
@@ -542,10 +542,10 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         
         switch serviceResult {
         case .notModified:
-            SpatialDataContext.extendTileExpiration(tile)
+            await SpatialDataCache.extendTileExpiration(tile)
             self.processFetchedTile(tile, progress: progress)
         case .modified(_, let tileData):
-            SpatialDataContext.storeTile(tile, data: tileData)
+            await SpatialDataCache.storeTile(tile, data: tileData)
             self.processFetchedTile(tile, progress: progress)
         }
     }
@@ -632,83 +632,6 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     
     // MARK: - Class Methods
     
-    /// Checks if the tile is in the cache
-    /// - Parameter tile: The VectorTile to check for
-    private class func isCached(tile: VectorTile) -> Bool {
-        do {
-            return try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                guard cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) != nil else {
-                    // The tile isn't in the cache
-                    GDLogSpatialDataVerbose("Tile Miss: (\(tile.x), \(tile.y), \(tile.zoom))")
-                    return false
-                }
-                
-                // The tile is cached and still has time to live, so return the cached version
-                GDLogSpatialDataVerbose("Tile Hit: (\(tile.x), \(tile.y), \(tile.zoom))")
-                return true
-            }
-        } catch {
-            GDLogSpatialDataError("Failed `isCached(tile)` with error: \(error)")
-            return false
-        }
-    }
-    
-    /// Checks if the tile needs to be fetched (it either isn't in the cache or it has expired)
-    /// - Parameter tile: VectorTile to check for
-    private class func needsFetching(tile: VectorTile) -> Bool {
-        do {
-            return try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                guard let cachedTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) else {
-                    // The tile isn't in the cache
-                    GDLogSpatialDataVerbose("Tile Miss: (\(tile.x), \(tile.y), \(tile.zoom))")
-                    return true
-                }
-                
-                guard cachedTile.ttl as Date > Date() else {
-                    // The tile is in the cache, but the cache has expired
-                    GDLogSpatialDataVerbose("Tile Expired: (\(tile.x), \(tile.y), \(tile.zoom))")
-                    return true
-                }
-                
-                // The tile is cached and still has time to live, so it doesn't need fetched
-                GDLogSpatialDataVerbose("Tile Hit: (\(tile.x), \(tile.y), \(tile.zoom))")
-                return false
-            }
-        } catch {
-            GDLogSpatialDataError("Failed `needsFetching(tile:`")
-            return false
-        }
-    }
-    
-    private class func storeTile(_ tile: VectorTile, data: TileData) {
-        do {
-            try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                // Remove the existing tiles before storing the updated tile so that we remove old (bad)
-                // intersection data from before we fixed the server intersection code (where multiple versions
-                // of the same intersection were being returned in adjacent tiles)
-                if let existingTile = SpatialDataCache.tileData(for: [tile]).first {
-                    try cache.write {
-                        cache.delete(existingTile.intersections)
-                    }
-                }
-                
-                try cache.write {
-                    cache.add(data, update: .modified)
-                }
-            }
-        } catch {
-            GDLogSpatialDataWarn("Unable to store tile (\(tile.x), \(tile.y), \(tile.zoom))")
-        }
-        
-        GDLogSpatialDataVerbose("Tile Add/Update: (\(tile.x), \(tile.y), \(tile.zoom))")
-    }
-    
     /// Given the user's location and the current set of tiles we have loaded and are tracking, this
     /// method returns the remaining set of tiles we should continue to track, and the list of new
     /// tiles we need to download.
@@ -738,44 +661,6 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         let missingTiles = neededTiles.filter { !remainingTiles.contains($0) } // Get the tiles we need but don't have
         
         return (remainingTiles, missingTiles)
-    }
-    
-    private class func extendTileExpiration(_ tile: VectorTile) {
-        do {
-            
-            try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                guard let existingTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) else {
-                    return
-                }
-                
-                try cache.write {
-                    existingTile.ttl = TileData.getNewExpiration()
-                }
-            }
-        } catch {
-            GDLogSpatialDataWarn("Unable to extend tile's expiration (\(tile.x), \(tile.y), \(tile.zoom))")
-        }
-    }
-    
-    private class func expireAllTiles() {
-        GDLogAppInfo("Expiring all stored tiles")
-        
-        autoreleasepool {
-            do {
-                let cache = try RealmHelper.getCacheRealm()
-                let tiles = cache.objects(TileData.self)
-                
-                try cache.write {
-                    for tile in tiles {
-                        tile.ttl = TileData.getExpiredTtl()
-                    }
-                }
-            } catch {
-                GDLogAppError("Unable to expire all tiles...")
-            }
-        }
     }
     
     private class func loadDefaultCategories() -> SuperCategories? {
@@ -814,7 +699,9 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         if currentVersion != version {
             // The version has changed, expire tiles to make sure they reload with appropriately assigned super categories
             UserDefaults.standard.set(version, forKey: Keys.categoriesVersion)
-            expireAllTiles()
+            Task {
+                await SpatialDataCache.expireAllTiles()
+            }
         }
         
         return categories

@@ -143,6 +143,10 @@ extension RealmHelper {
         return try Realm(configuration: cacheConfig)
     }
     
+    class func getCacheRealm(actor: Actor) async throws -> Realm {
+        return try await Realm(configuration: cacheConfig, actor: actor)
+    }
+    
     class func getCacheRealm(config: Realm.Configuration = cacheConfig) throws -> Realm {
         return try Realm(configuration: config)
     }

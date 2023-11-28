@@ -14,13 +14,6 @@ import RealmSwift
 class SpatialDataCustom {
     
     struct Predicates {
-        
-        static func nickname(_ text: String) -> NSPredicate {
-            return NSPredicate(format: "nickname CONTAINS[c] %@", text)
-        }
-        
-        static let lastSelectedDate = NSPredicate(format: "lastSelectedDate != NULL")
-        
         static func distance(_ coordinate: CLLocationCoordinate2D,
                              span: CLLocationDistance? = nil,
                              latKey: String = "centroidLatitude",

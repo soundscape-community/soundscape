@@ -13,11 +13,6 @@ import MapKit
 extension SpatialDataCache {
     
     struct Predicates {
-        
-        static func nickname(_ text: String) -> NSPredicate {
-            return NSPredicate(format: "nickname CONTAINS[c] %@", text)
-        }
-        
         static let lastSelectedDate = NSPredicate(format: "lastSelectedDate != NULL")
         
         static func distance(_ coordinate: CLLocationCoordinate2D,
@@ -31,17 +26,13 @@ extension SpatialDataCache {
                                latitudeKey: latKey,
                                longitudeKey: lonKey)
         }
-
-        static func isTemporary(_ flag: Bool) -> NSPredicate {
-            return NSPredicate(format: "isTemp = %@", NSNumber(value: flag))
-        }
     }
 }
 
 /// Note that the SpatialDataCache is entirely static.
 /// Manages the ``RealmHelper.cache`` realm
-class SpatialDataCache: NSObject {
-    
+@globalActor actor SpatialDataCache {
+    static let shared = SpatialDataCache()
     // MARK: Geocoders
     
     private static var geocoder: Geocoder?
@@ -271,5 +262,125 @@ class SpatialDataCache: NSObject {
             
             completionHandler(results.first)
         }
+    }
+    
+    // MARK: Update Cache
+    
+    /// Checks if the tile is in the cache
+    /// - Parameter tile: The VectorTile to check for
+    static func isCached(tile: VectorTile) -> Bool {
+        do {
+            return try autoreleasepool {
+                let cache = try RealmHelper.getCacheRealm()
+                
+                guard cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) != nil else {
+                    // The tile isn't in the cache
+                    GDLogSpatialDataVerbose("Tile Miss: (\(tile.x), \(tile.y), \(tile.zoom))")
+                    return false
+                }
+                
+                // The tile is cached and still has time to live, so return the cached version
+                GDLogSpatialDataVerbose("Tile Hit: (\(tile.x), \(tile.y), \(tile.zoom))")
+                return true
+            }
+        } catch {
+            GDLogSpatialDataError("Failed `isCached(tile)` with error: \(error)")
+            return false
+        }
+    }
+    
+    /// Checks if the tile needs to be fetched (it either isn't in the cache or it has expired)
+    /// - Parameter tile: VectorTile to check for
+    static func needsFetching(tile: VectorTile) -> Bool {
+        do {
+            return try autoreleasepool {
+                let cache = try RealmHelper.getCacheRealm()
+                
+                guard let cachedTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) else {
+                    // The tile isn't in the cache
+                    GDLogSpatialDataVerbose("Tile Miss: (\(tile.x), \(tile.y), \(tile.zoom))")
+                    return true
+                }
+                
+                guard cachedTile.ttl as Date > Date() else {
+                    // The tile is in the cache, but the cache has expired
+                    GDLogSpatialDataVerbose("Tile Expired: (\(tile.x), \(tile.y), \(tile.zoom))")
+                    return true
+                }
+                
+                // The tile is cached and still has time to live, so it doesn't need fetched
+                GDLogSpatialDataVerbose("Tile Hit: (\(tile.x), \(tile.y), \(tile.zoom))")
+                return false
+            }
+        } catch {
+            GDLogSpatialDataError("Failed `needsFetching(tile:`")
+            return false
+        }
+    }
+    
+    @SpatialDataCache
+    static func storeTile(_ tile: VectorTile, data: TileData) async {
+        do {
+            try await Task { // task is effectively async autoreleasepool
+                let cache = try await RealmHelper.getCacheRealm(actor: SpatialDataCache.shared)
+                
+                // Remove the existing tiles before storing the updated tile so that we remove old (bad)
+                // intersection data from before we fixed the server intersection code (where multiple versions
+                // of the same intersection were being returned in adjacent tiles)
+                // NOTE: it looks like this is migration-related code?
+                if let existingTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) {
+                    try await cache.asyncWrite {
+                        cache.delete(existingTile.intersections)
+                    }
+                }
+                
+                try await cache.asyncWrite {
+                    cache.add(data, update: .modified)
+                }
+            }.value
+        } catch {
+            GDLogSpatialDataWarn("Unable to store tile (\(tile.x), \(tile.y), \(tile.zoom))")
+        }
+        
+        GDLogSpatialDataVerbose("Tile Add/Update: (\(tile.x), \(tile.y), \(tile.zoom))")
+    }
+    
+    @SpatialDataCache
+    static func extendTileExpiration(_ tile: VectorTile) async {
+        await Task {
+            do {
+                let cache = try await RealmHelper.getCacheRealm(actor: SpatialDataCache.shared)
+                
+                guard let existingTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) else {
+                    return
+                }
+                
+                try await cache.asyncWrite {
+                    existingTile.ttl = TileData.getNewExpiration()
+                }
+            } catch {
+                GDLogSpatialDataWarn("Unable to extend tile's expiration (\(tile.x), \(tile.y), \(tile.zoom))")
+            }
+        }.value
+    }
+    
+    @SpatialDataCache
+    static func expireAllTiles() async {
+        GDLogAppInfo("Expiring all stored tiles")
+        
+        await Task {
+            do {
+                let cache = try await RealmHelper.getCacheRealm(actor: SpatialDataCache.shared)
+                let tiles = cache.objects(TileData.self)
+                
+                try await cache.asyncWrite {
+                    for tile in tiles {
+                        tile.ttl = TileData.getExpiredTtl()
+                    }
+                }
+            } catch {
+                GDLogAppError("Unable to expire all tiles...")
+            }
+        }.value
     }
 }
