@@ -178,18 +178,17 @@ class GDASpatialDataResultEntity: Object {
         }
         
         // Set geolocation information
-        if let geometry = feature.geometry {
-            if case .point(let point) = geometry {
-                latitude = point.latitude
-                longitude = point.longitude
-            } else if let json_data = try? JSONEncoder().encode(geometry) {
-                coordinatesJson = String(data: json_data, encoding: .utf8)
-            }
-            
-            let centroid = geometry.centroid
-            centroidLatitude = centroid.latitude
-            centroidLongitude = centroid.longitude
+        if case .point(let point) = feature.geometry {
+            latitude = point.latitude
+            longitude = point.longitude
+        } else if let json_data = try? JSONEncoder().encode(feature.geometry) {
+            coordinatesJson = String(data: json_data, encoding: .utf8)
+            _geometry = feature.geometry;
         }
+        
+        let centroid = feature.geometry.centroid
+        centroidLatitude = centroid.latitude
+        centroidLongitude = centroid.longitude
         
         // Road specific metadata
         

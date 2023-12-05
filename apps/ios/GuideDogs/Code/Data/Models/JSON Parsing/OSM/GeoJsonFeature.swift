@@ -80,8 +80,9 @@ final class GeoJsonFeature: Decodable {
     var superCategory: SuperCategory = .undefined
     
     /// Geometry of this feature
-    /// While Features are required to have a `geometry` member, it may be `null` for unlocated features, represented here as `nil`
-    var geometry: GeoJsonGeometry?
+    ///
+    /// GeoJSON spec allows null geometries, but we don't (we throw a parse failure if missing)
+    var geometry: GeoJsonGeometry
     
     var isCrossing = false
     
@@ -143,12 +144,12 @@ final class GeoJsonFeature: Decodable {
             isRoundabout = true
         }
         
-        // TODO: it is unclear if geometry not existing should cause the feature to be rejected
-        geometry = try? container.decode(GeoJsonGeometry.self, forKey: .geometry)
+        // GeoJSON spec permits null geometries, but we don't
+        geometry = try container.decode(GeoJsonGeometry.self, forKey: .geometry)
         
         // Fix geometries for crossings with LineString geometries
         if isCrossing, case .lineString = geometry,
-           let median = geometry?.getLineMedian() {
+           let median = geometry.getLineMedian() {
             geometry = GeoJsonGeometry(point: median)
         }
         
@@ -272,14 +273,10 @@ final class GeoJsonFeature: Decodable {
         let startCopy = GeoJsonFeature(copyFrom: self)
         let endCopy = GeoJsonFeature(copyFrom: self)
         
-        guard let first = geometry?.first, let last = geometry?.last else {
-            return nil
-        }
-        
-        startCopy.geometry = .point(coordinates: first)
+        startCopy.geometry = .point(coordinates: geometry.first)
         startCopy.superCategory = SuperCategory.mobility
 
-        endCopy.geometry = .point(coordinates: last)
+        endCopy.geometry = .point(coordinates: geometry.last)
         endCopy.superCategory = SuperCategory.mobility
             
         return (startCopy, endCopy)

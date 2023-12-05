@@ -51,7 +51,7 @@ final class GeoJsonFeatureTest: XCTestCase {
         XCTAssertEqual(rpi_feature.type, "amenity")
         XCTAssertEqual(rpi_feature.value, "university")
         XCTAssertEqual(rpi_feature.osmIds, ["ft-100000000008670722"])
-        XCTAssertEqual(rpi_feature.geometry?.rawValue, "MultiPolygon")
+        XCTAssertEqual(rpi_feature.geometry.rawValue, "MultiPolygon")
         //XCTAssertEqual(rpi_feature.superCategory, .undefined)
         
         XCTAssertEqual(rpi_feature.properties, [
@@ -105,7 +105,7 @@ final class GeoJsonFeatureTest: XCTestCase {
         XCTAssertEqual(sage_feature.type, "highway")
         XCTAssertEqual(sage_feature.value, "tertiary")
         XCTAssertEqual(sage_feature.osmIds, ["ft-669453514"])
-        XCTAssertEqual(sage_feature.geometry?.rawValue, "LineString")
+        XCTAssertEqual(sage_feature.geometry.rawValue, "LineString")
         
         XCTAssertEqual(sage_feature.properties, [
             "highway": "tertiary",
