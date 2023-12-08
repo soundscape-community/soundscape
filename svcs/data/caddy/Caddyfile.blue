@@ -5,11 +5,22 @@
 # configuration. The only difference between the two configurations is the port
 # number to forward the request to, 8081 for blue and 8082 for green.
 
+(cors) {
+  @origin{args.0} header Origin {args.0}
+  header @origin{args.0} Access-Control-Allow-Origin "{args.0}"
+  header @origin{args.0} Vary Origin
+}
+
 tiles.soundscape.services {
     reverse_proxy localhost:8081 {
         header_up X-Real-IP {remote_host}
     }
     header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    header Access-Control-Allow-Methods "GET"
+    header Access-Control-Allow-Headers "*"
+
+    # Allow requests coming from the Soundscape web client hosted on Github
+    import cors https://soundscape-community.github.io
 }
 
 newprod0.openscape.io {
