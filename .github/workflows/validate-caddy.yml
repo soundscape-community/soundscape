@@ -1,0 +1,34 @@
+name: Validate Caddyfiles
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - svcs/data/caddy/**
+      - .github/workflows/validate-caddy.yml
+  pull_request:
+    branches: [ main ]
+    paths:
+      - svcs/data/caddy/**
+      - .github/workflows/validate-caddy.yml
+
+jobs:
+  validate:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Caddy
+      run: |
+        curl -sSLo caddy.tar.gz "https://github.com/caddyserver/caddy/releases/download/v2.4.6/caddy_2.4.6_linux_amd64.tar.gz"
+        tar xzvf caddy.tar.gz caddy
+        sudo mv caddy /usr/local/bin/
+        caddy version
+
+    - name: Verify Caddyfile.blue
+      run: caddy validate --config ./svcs/data/caddy/Caddyfile.blue
+
+    - name: Verify Caddyfile.green
+      run: caddy validate --config ./svcs/data/caddy/Caddyfile.green
