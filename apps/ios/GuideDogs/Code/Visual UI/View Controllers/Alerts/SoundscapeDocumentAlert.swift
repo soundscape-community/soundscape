@@ -92,7 +92,7 @@ struct SoundscapeDocumentAlert: ShareAlertFactory {
             return nil
         }
         
-        guard let route = SpatialDataCache.routeByKey(id) else {
+        guard let route = SpatialDataCustom.routeByKey(id) else {
             return nil
         }
         

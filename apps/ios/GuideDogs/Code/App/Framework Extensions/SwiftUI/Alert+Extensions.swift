@@ -14,7 +14,7 @@ extension Alert {
                                   deleteAction: @escaping (() -> Void),
                                   cancelAction: @escaping (() -> Void) = {}) -> Alert {
         let message: Text
-        let routes = SpatialDataCache.routesContaining(markerId: markerId)
+        let routes = SpatialDataCustom.routesContaining(markerId: markerId)
         if routes.isEmpty {
             message = GDLocalizedTextView("general.alert.destructive_undone_message")
         } else {

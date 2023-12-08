@@ -31,59 +31,8 @@ extension GDASpatialDataResultEntity {
         return closestEntrance
     }
     
-    func closestEdge(from location: CLLocation) -> CLLocation? {
-        guard let coordinates = coordinates else {
-            return nil
-        }
-        // If we have coordinates, use those to update the distance and bearing,
-        // otherwise, use the `latitude` and `longitude` properties
-        
-        var closestLocation: CLLocation?
-        var minimumDistance = CLLocationDistanceMax
-        
-        if geometryType == .lineString || geometryType == .multiPoint {
-            guard let coordinates = coordinates as? GALine else {
-                return nil
-            }
-            
-            for coordinate in coordinates {
-                let lat = coordinate[1]
-                let lon = coordinate[0]
-                
-                let newLocation = CLLocation(latitude: lat, longitude: lon)
-                let distance = newLocation.distance(from: location)
-                
-                if distance < minimumDistance {
-                    closestLocation = newLocation
-                    minimumDistance = distance
-                }
-            }
-        } else if geometryType == .multiLineString || geometryType == .polygon {
-            guard let polygon = coordinates as? GAMultiLine else {
-                return nil
-            }
-            
-            closestLocation = GeometryUtils.closestEdge(from: location.coordinate, on: polygon)
-        } else if geometryType == .multiPolygon {
-            guard let polygons = coordinates as? GAMultiLineCollection else {
-                return nil
-            }
-            
-            for polygon in polygons {
-                guard let newLocation = GeometryUtils.closestEdge(from: location.coordinate, on: polygon) else {
-                    continue
-                }
-                
-                let distance = newLocation.distance(from: location)
-                
-                if distance < minimumDistance {
-                    closestLocation = newLocation
-                    minimumDistance = distance
-                }
-            }
-        }
-        
-        return closestLocation
+    func closestEdge(from location: CLLocationCoordinate2D) -> CLLocationCoordinate2D? {
+        return geometry?.closestEdge(to: location)
     }
     
 }

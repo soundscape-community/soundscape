@@ -14,16 +14,16 @@ class Address: Object {
     
     // MARK: Realm Properties
     
-    @objc dynamic var key: String = UUID().uuidString
-    @objc dynamic var lastSelectedDate: Date?
-    @objc dynamic var name: String = ""
-    @objc dynamic var addressLine: String?
-    @objc dynamic var streetName: String?
-    @objc dynamic var latitude: CLLocationDegrees = 0.0
-    @objc dynamic var longitude: CLLocationDegrees = 0.0
-    @objc dynamic var centroidLatitude: CLLocationDegrees = 0.0
-    @objc dynamic var centroidLongitude: CLLocationDegrees = 0.0
-    @objc dynamic var searchString: String?
+    @Persisted(primaryKey: true) var key: String = UUID().uuidString
+    @Persisted var lastSelectedDate: Date?
+    @Persisted var name: String = ""
+    @Persisted var addressLine: String?
+    @Persisted var streetName: String?
+    @Persisted var latitude: CLLocationDegrees = 0.0
+    @Persisted var longitude: CLLocationDegrees = 0.0
+    @Persisted var centroidLatitude: CLLocationDegrees = 0.0
+    @Persisted var centroidLongitude: CLLocationDegrees = 0.0
+    @Persisted var searchString: String?
     
     // MARK: Initialization
     
@@ -39,12 +39,4 @@ class Address: Object {
         centroidLongitude = geocodedAddress.location.coordinate.longitude
         self.searchString = searchString
     }
-    
-    // MARK: Realm
-    
-    /// Indicates which property represents the primary key of this object
-    override static func primaryKey() -> String {
-        return "key"
-    }
-    
 }

@@ -346,7 +346,7 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
             }
             
             // Transform entity keys to entity objects
-            markers.append(contentsOf: filtered.compactMap { SpatialDataCache.referenceEntityByEntityKey($0) })
+            markers.append(contentsOf: filtered.compactMap { SpatialDataCustom.referenceEntityByEntityKey($0) })
         }
         
         return markers.map { POICallout(.nearbyMarkers, key: $0.getPOI().key, includeDistance: true) }

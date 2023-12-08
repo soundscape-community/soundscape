@@ -11,7 +11,7 @@ import RealmSwift
 
 /// Point is a class that acts like CLLocationCoordinate2D, but it is hashable. This
 /// class is only intended for use in TileData.findIntersections(...), hence the
-/// fileprivate access specifier.
+/// private access specifier.
 private class Point: Hashable {
     // MARK: Properties
     let lat: Double
@@ -43,25 +43,25 @@ private class Point: Hashable {
 /// simple access to the fundamentally different types of OSM data.
 class TileData: Object {
     
-    @objc dynamic var quadkey = ""
+    @Persisted(primaryKey: true) var quadkey = ""
     
     // Array of the pois which have a super category in our super category mapping table
-    let pois = List<GDASpatialDataResultEntity>()
+    @Persisted var pois: List<GDASpatialDataResultEntity>
     
     // Array of the pois which represent roads
-    let roads = List<GDASpatialDataResultEntity>()
+    @Persisted var roads: List<GDASpatialDataResultEntity>
     
     // Array of the pois which represent walking paths
-    let paths = List<GDASpatialDataResultEntity>()
+    @Persisted var paths: List<GDASpatialDataResultEntity>
     
     // Array of the pois which represent intersections
-    let intersections = List<Intersection>()
+    @Persisted var intersections: List<Intersection>
     
     // Temporary set the etag to an empty string - eventually, we will need to actually implement an etag for checking if data has changed
-    @objc dynamic var etag = ""
+    @Persisted var etag = ""
     
     // One week TTL for the time being
-    @objc dynamic var ttl = Date(timeIntervalSinceNow: 7 * 24 * 60 * 60)
+    @Persisted var ttl = Date(timeIntervalSinceNow: 7 * 24 * 60 * 60)
     
     static var ttlLength: TimeInterval {
         return 7 * 24 * 60 * 60
@@ -73,7 +73,7 @@ class TileData: Object {
         return VectorTile(quadKey: quadkey)
     }
     
-    convenience init(withParsedData json: [String: Any], quadkey: String, etag: String, superCategories: SuperCategories) {
+    convenience init(withParsedData json: GeoJsonFeatureCollection, quadkey: String, etag: String, superCategories: SuperCategories) {
         self.init()
         
         // Get the vector tile info
@@ -85,12 +85,7 @@ class TileData: Object {
         // Store the etag for checking future updates
         self.etag = etag
         
-        guard let featuresJson = json["features"] as? [Any] else { return }
-        
-        for featureJson in featuresJson {
-            // Try to parse the feature - the GeoJsonFeature initializer is failable
-            guard let feature = GeoJsonFeature(json: featureJson as! [String: Any], superCategories: superCategories) else { continue }
-            
+        for feature in json.features {
             // Check if it is a road, intersection, etc.
             if feature.superCategory == .roads {
                 roads.append(GDASpatialDataResultEntity(feature: feature)!)
@@ -128,17 +123,6 @@ class TileData: Object {
                 GDLogAppError("Unable to serialize POI entrance data")
             }
         }
-    }
-    
-    override static func ignoredProperties() -> [String] {
-        return ["entrances"]
-    }
-    
-    /// Indicates which property represents the primary key of this object
-    ///
-    /// - Returns: The name of the property that represents the primary key of this object
-    override static func primaryKey() -> String {
-        return "quadkey"
     }
     
     static func getNewExpiration() -> Date {

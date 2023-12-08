@@ -50,7 +50,7 @@ class MarkerModel: ObservableObject {
     }
     
     private func update() {
-        guard let marker = SpatialDataCache.referenceEntityByKey(id) else {
+        guard let marker = SpatialDataCustom.referenceEntityByKey(id) else {
             return
         }
         

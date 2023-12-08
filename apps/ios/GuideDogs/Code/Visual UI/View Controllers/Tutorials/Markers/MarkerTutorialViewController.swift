@@ -84,7 +84,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     private var selectedPOI: POI?
     private var referenceEntity: ReferenceEntity? {
         guard let selectedPOI = selectedPOI else { return nil }
-        return SpatialDataCache.referenceEntityByEntityKey(selectedPOI.key)
+        return SpatialDataCustom.referenceEntityByEntityKey(selectedPOI.key)
     }
     
     var player: FadeableAudioPlayer?

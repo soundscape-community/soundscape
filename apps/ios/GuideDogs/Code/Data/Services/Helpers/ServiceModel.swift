@@ -28,11 +28,6 @@ class ServiceModel {
     /// Maximum amount of time (in seconds) to let a request live before timing it out
     static let requestTimeout = 20.0
     
-    /// String for identifying errors that originate from openscape services
-    static let errorDomain = "GDAHTTPErrorDomain"
-    /// String for identifying errors that originate from Realm
-    static let errorRealm = "GDAHTTPErrorRealm"
-    
     /// Domain name to resolve for production services
     private static let productionServicesHostName = "https://tiles.soundscape.services"
     /// Domain part of the URL for learning resources
@@ -68,143 +63,6 @@ class ServiceModel {
         return productionVoicesHostName
     }
     
-    static func validateResponse(request: URLRequest, response: URLResponse?, data: Data?, error: Error?, callback: @escaping (HTTPStatusCode, Error?) -> Void) -> HTTPStatusCode? {
-        // Some more housekeeping
-        ServiceModel.logNetworkResponse(response, request: request, error: error)
-        
-        // Do we have an error?
-        guard error == nil else {
-            DispatchQueue.main.async {
-                callback(.unknown, error!)
-            }
-            
-            return nil
-        }
-        
-        // Is the response of the proper type? (it always should be...)
-        guard let httpResponse = response as? HTTPURLResponse else {
-            GDLogNetworkError("Response error: response object is not an HTTPURLResponse")
-            
-            DispatchQueue.main.async {
-                callback(.unknown, NSError(domain: ServiceModel.errorDomain, code: NSURLErrorBadServerResponse, userInfo: nil))
-            }
-            
-            return nil
-        }
-        
-        let status = HTTPStatusCode(rawValue: httpResponse.statusCode) ?? .unknown
-        
-        // Make sure we have a known status
-        guard status != .unknown else {
-            DispatchQueue.main.async {
-                callback(status, NSError(domain: ServiceModel.errorDomain, code: status.rawValue, userInfo: nil))
-            }
-            
-            return nil
-        }
-        
-        // Check the ETag (if the request returned a 304, then there is nothing to do because the data hasn't changed)
-        guard status != .notModified else {
-            DispatchQueue.main.async {
-                callback(status, nil)
-            }
-            
-            return nil
-        }
-        
-        // If we get this far, then the data property should not be nil
-        guard data != nil else {
-            DispatchQueue.main.async {
-                callback(status, nil)
-            }
-            
-            return nil
-        }
-        
-        return status
-    }
-    
-    static func validateJsonResponse(request: URLRequest, response: URLResponse?, data: Data?, error: Error?) -> [String: Any]? {
-        guard error == nil else {
-            return nil
-        }
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            return nil
-        }
-        
-        guard let status = HTTPStatusCode(rawValue: httpResponse.statusCode), status == .success else {
-            return nil
-        }
-        
-        guard let data = data else {
-            return nil
-        }
-        
-        guard let json = try? JSONSerialization.jsonObject(with: data) else {
-            return nil
-        }
-        
-        return json as? [String: Any]
-    }
-    
-    static func validateJsonResponse(request: URLRequest, response: URLResponse?, data: Data?, error: Error?, callback: @escaping (HTTPStatusCode, Error?) -> Void) -> (HTTPStatusCode, String, [String: Any])? {
-        // Some more housekeeping
-        ServiceModel.logNetworkResponse(response, request: request, error: error)
-        
-        // Do we have an error?
-        guard error == nil else {
-            DispatchQueue.main.async {
-                callback(.unknown, error!)
-            }
-            
-            return nil
-        }
-        
-        // Is the response of the proper type? (it always should be...)
-        guard let httpResponse = response as? HTTPURLResponse else {
-            GDLogNetworkError("Response error: response object is not an HTTPURLResponse")
-            
-            DispatchQueue.main.async {
-                callback(.unknown, NSError(domain: ServiceModel.errorDomain, code: NSURLErrorBadServerResponse, userInfo: nil))
-            }
-            
-            return nil
-        }
-        
-        let newEtag = httpResponse.allHeaderFields[HTTPHeader.eTag.rawValue] as? String ?? NSUUID().uuidString
-        let status = HTTPStatusCode(rawValue: httpResponse.statusCode) ?? .unknown
-        
-        // Make sure we have a known status
-        guard status != .unknown else {
-            DispatchQueue.main.async {
-                callback(status, NSError(domain: ServiceModel.errorDomain, code: status.rawValue, userInfo: nil))
-            }
-            
-            return nil
-        }
-        
-        // Check the ETag (if the request returned a 304, then there is nothing to do because the data hasn't changed)
-        guard status != .notModified else {
-            DispatchQueue.main.async {
-                callback(status, nil)
-            }
-            
-            return nil
-        }
-        
-        // If we get this far, then the data property should not be nil, and it should be valid JSON
-        guard let data = data, let parsed = try? JSONSerialization.jsonObject(with: data), let json = parsed as? [String: Any] else {
-            DispatchQueue.main.async {
-                callback(status, ServiceError.jsonParseFailed)
-            }
-            
-            return nil
-        }
-        
-        return (status, newEtag, json)
-    }
-    
     static func logNetworkRequest(_ request: URLRequest) {
         guard let httpMethod = request.httpMethod else {
             return
@@ -221,12 +79,11 @@ class ServiceModel {
             return
         }
         
-        let responseStatus: HTTPStatusCode
-        
+        let statusString: String
         if let res = response as? HTTPURLResponse {
-            responseStatus = HTTPStatusCode(rawValue: res.statusCode) ?? .unknown
+            statusString = res.statusCode.description
         } else {
-            responseStatus = .unknown
+            statusString = "unknown"
         }
         
         guard let httpMethod = request.httpMethod else {
@@ -236,9 +93,9 @@ class ServiceModel {
         let method = httpMethod.count > 2 ? httpMethod.substring(to: 3)! : httpMethod
         
         if error != nil {
-            GDLogNetworkError("Response error (\(method)) \(responseStatus.rawValue) '\(request.url?.absoluteString ?? "unknown")': \(error.debugDescription)")
+            GDLogNetworkError("Response error (\(method)) \(statusString) '\(request.url?.absoluteString ?? "unknown")': \(error.debugDescription)")
         } else {
-            GDLogNetworkVerbose("Response (\(method)) \(responseStatus.rawValue) '\(request.url?.absoluteString ?? "unknown")'")
+            GDLogNetworkVerbose("Response (\(method)) \(statusString) '\(request.url?.absoluteString ?? "unknown")'")
         }
     }
 }

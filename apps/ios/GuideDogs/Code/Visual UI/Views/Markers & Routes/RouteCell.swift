@@ -43,7 +43,7 @@ class RouteModel: ObservableObject {
     }
     
     private func update() {
-        guard let route = SpatialDataCache.routeByKey(id) else {
+        guard let route = SpatialDataCustom.routeByKey(id) else {
             return
         }
         

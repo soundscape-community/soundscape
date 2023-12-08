@@ -76,7 +76,7 @@ struct POICallout: POICalloutProtocol {
     
     var marker: ReferenceEntity? {
         // Check by both entity key and key in case this is a generic location marker
-        return SpatialDataCache.referenceEntityByEntityKey(key)
+        return SpatialDataCustom.referenceEntityByEntityKey(key)
     }
     
     /// Constructor for the POI callout

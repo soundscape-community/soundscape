@@ -128,6 +128,7 @@ extension RealmHelper {
         return RealmHelper.shared.databaseConfig
     }
     
+    /// The database realm contains data on the user's markers (``ReferenceEntity``) and ``Route``s.
     class func getDatabaseRealm() throws -> Realm {
         return try Realm(configuration: databaseConfig)
     }
@@ -136,8 +137,14 @@ extension RealmHelper {
         return try Realm(configuration: config)
     }
     
+    /// The cache realm contains persisted ``TileData`` objects and other objects contained therein.
+    /// It is the main local cache of world map data.
     class func getCacheRealm() throws -> Realm {
         return try Realm(configuration: cacheConfig)
+    }
+    
+    class func getCacheRealm(actor: Actor) async throws -> Realm {
+        return try await Realm(configuration: cacheConfig, actor: actor)
     }
     
     class func getCacheRealm(config: Realm.Configuration = cacheConfig) throws -> Realm {

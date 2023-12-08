@@ -94,9 +94,9 @@ class ShareMarkerAlertObserver: NotificationObserver {
             let existingMarker: ReferenceEntity?
             
             if let location = location as? GenericLocation {
-                existingMarker = SpatialDataCache.referenceEntityByGenericLocation(location)
+                existingMarker = SpatialDataCustom.referenceEntityByGenericLocation(location)
             } else {
-                existingMarker = SpatialDataCache.referenceEntityByEntityKey(location.key)
+                existingMarker = SpatialDataCustom.referenceEntityByEntityKey(location.key)
             }
             
             if let existingMarker = existingMarker {

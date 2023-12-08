@@ -13,11 +13,6 @@ import MapKit
 extension SpatialDataCache {
     
     struct Predicates {
-        
-        static func nickname(_ text: String) -> NSPredicate {
-            return NSPredicate(format: "nickname CONTAINS[c] %@", text)
-        }
-        
         static let lastSelectedDate = NSPredicate(format: "lastSelectedDate != NULL")
         
         static func distance(_ coordinate: CLLocationCoordinate2D,
@@ -31,15 +26,13 @@ extension SpatialDataCache {
                                latitudeKey: latKey,
                                longitudeKey: lonKey)
         }
-
-        static func isTemporary(_ flag: Bool) -> NSPredicate {
-            return NSPredicate(format: "isTemp = %@", NSNumber(value: flag))
-        }
     }
 }
 
-class SpatialDataCache: NSObject {
-    
+/// Note that the SpatialDataCache is entirely static.
+/// Manages the ``RealmHelper.cache`` realm
+@globalActor actor SpatialDataCache {
+    static let shared = SpatialDataCache()
     // MARK: Geocoders
     
     private static var geocoder: Geocoder?
@@ -133,190 +126,6 @@ class SpatialDataCache: NSObject {
         return osmPoiSearchProvider.objects(predicate: predicate) as? [Road]
     }
     
-    // MARK: Routes
-    
-    static func routeByKey(_ key: String) -> Route? {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return nil
-            }
-            
-            return database.object(ofType: Route.self, forPrimaryKey: key)
-        }
-    }
-    
-    static func routes(withPredicate predicate: NSPredicate? = nil) -> [Route] {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return []
-            }
-            
-            let results: Results<Route>
-            
-            if let predicate = predicate {
-                results = database.objects(Route.self).filter(predicate)
-            } else {
-                results = database.objects(Route.self)
-            }
-            
-            return Array(results)
-        }
-    }
-    
-    /// Loops through all Routes with `isNew == true` and sets `isNew` to false
-    static func clearNewRoutes() throws {
-        let newRoutes = routes(withPredicate: NSPredicate(format: "isNew == true"))
-
-        try autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return
-            }
-            
-            try database.write {
-                for route in newRoutes {
-                    route.isNew = false
-                }
-            }
-        }
-    }
-    
-    static func routesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [Route] {
-        let predicate = Predicates.distance(coordinate, span: range * 2, latKey: "firstWaypointLatitude", lonKey: "firstWaypointLongitude")
-        return routes(withPredicate: predicate)
-    }
-    
-    static func routesContaining(markerId: String) -> [Route] {
-        let predicate = NSPredicate(format: "SUBQUERY(waypoints, $waypoint, $waypoint.markerId == %@).@count > 0", markerId)
-        return routes(withPredicate: predicate)
-    }
-    
-    // MARK: Reference Entities
-    
-    static func containsReferenceEntity(withKey key: String) -> Bool {
-        return referenceEntityByKey(key) != nil
-    }
-    
-    static func referenceEntities(with predicate: NSPredicate) -> [ReferenceEntity] {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return []
-            }
-            
-            return Array(database.objects(ReferenceEntity.self).filter(predicate))
-        }
-    }
-    
-    ///
-    /// Returns reference entity objects where `object.isTemp == isTemp`
-    ///
-    /// Parameter: isTemp true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
-    ///
-    static func referenceEntities(isTemp: Bool = false) -> [ReferenceEntity] {
-        return referenceEntities(with: Predicates.isTemporary(isTemp))
-    }
-    
-    static func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return nil
-            }
-            
-            return database.object(ofType: ReferenceEntity.self, forPrimaryKey: key)
-        }
-    }
-    
-    static func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity? {
-        return referenceEntities(with: NSPredicate(format: "entityKey = %@", key)).first ?? referenceEntityByKey(key)
-    }
-    
-    ///
-    /// Returns reference entity objects near the given coordinate and with the expected `isTemp` value (if expected value is provided)
-    ///
-    /// Parameters:
-    /// - coordinate returns objects near the given coordiante
-    /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
-    ///
-    static func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D, isTemp: Bool? = false) -> ReferenceEntity? {
-        return referenceEntitiesNear(coordinate, range: 1.0, isTemp: isTemp).first
-    }
-    
-    ///
-    /// Returns reference entity objects near the given location and with the expected `isTemp` value (if expected value is provided)
-    ///
-    /// Parameters:
-    /// - location returns objects near the given location
-    /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
-    ///
-    static func referenceEntityByGenericLocation(_ location: GenericLocation, isTemp: Bool? = false) -> ReferenceEntity? {
-        return referenceEntityByLocation(location.location.coordinate, isTemp: isTemp)
-    }
-    
-    ///
-    /// Returns reference entity objects matching the given source and with the expected `isTemp` value (if expected value is provided)
-    ///
-    /// Parameters:
-    /// - source defines what the reference entity is based on
-    /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
-    ///
-    static func referenceEntity(source: LocationDetail.Source, isTemp: Bool? = false) -> ReferenceEntity? {
-        var marker: ReferenceEntity?
-        
-        switch source {
-        case .entity(let id): marker = SpatialDataCache.referenceEntityByEntityKey(id)
-        case .coordinate(let location): marker = SpatialDataCache.referenceEntityByLocation(location.coordinate, isTemp: isTemp)
-        case .designData: marker = nil
-        case .screenshots(let poi): marker = SpatialDataCache.referenceEntityByEntityKey(poi.key)
-        }
-        
-        if let isTemp = isTemp, let marker = marker {
-            // Only return markers with the given value for `isTemp`
-            return marker.isTemp == isTemp ? marker : nil
-        } else {
-            // Do not filter by `isTemp`
-            return marker
-        }
-    }
-    
-    ///
-    /// Returns reference entity objects near the given coordinate and with the expected `isTemp` value (if expected value is provided)
-    ///
-    /// Parameters:
-    /// - coordinate returns objects near the given coordiante
-    /// - range search distance in meters
-    /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
-    ///
-    static func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance, isTemp: Bool? = false) -> [ReferenceEntity] {
-        var predicate: NSPredicate
-        
-        if let isTemp = isTemp {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
-                Predicates.distance(coordinate, span: range * 2, latKey: "latitude", lonKey: "longitude"),
-                Predicates.isTemporary(isTemp)
-            ])
-        } else {
-            predicate = Predicates.distance(coordinate, span: range * 2, latKey: "latitude", lonKey: "longitude")
-        }
-        
-        return referenceEntities(with: predicate)
-    }
-    
-    /// Loops through all ReferenceEntities with `isNew == true` and sets `isNew` to false
-    static func clearNewReferenceEntities() throws {
-        let newReferenceEntities = referenceEntities(with: NSPredicate(format: "isNew == true"))
-
-        try autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return
-            }
-            
-            try database.write {
-                for entity in newReferenceEntities {
-                    entity.isNew = false
-                }
-            }
-        }
-    }
-    
     // MARK: Intersection Entities
     
     static func intersectionEntities(with predicate: NSPredicate) -> [Intersection] {
@@ -371,7 +180,7 @@ class SpatialDataCache: NSObject {
         var tiles: Set<VectorTile> = []
         
         if forReferences {
-            let porTiles = SpatialDataCache.tilesForReferenceEntities(at: zoomLevel)
+            let porTiles = SpatialDataCustom.tilesForReferenceEntities(at: zoomLevel)
             for porTile in porTiles {
                 tiles.insert(porTile)
             }
@@ -383,12 +192,6 @@ class SpatialDataCache: NSObject {
         }
         
         return tiles
-    }
-    
-    static func tilesForReferenceEntities(at zoomLevel: UInt) -> Set<VectorTile> {
-        let referenceEntities = SpatialDataCache.referenceEntities()
-        let tiles = referenceEntities.map { VectorTile(latitude: $0.latitude, longitude: $0.longitude, zoom: zoomLevel) }
-        return Set(tiles)
     }
     
     static func tileData(for tiles: [VectorTile]) -> [TileData] {
@@ -461,4 +264,123 @@ class SpatialDataCache: NSObject {
         }
     }
     
+    // MARK: Update Cache
+    
+    /// Checks if the tile is in the cache
+    /// - Parameter tile: The VectorTile to check for
+    static func isCached(tile: VectorTile) -> Bool {
+        do {
+            return try autoreleasepool {
+                let cache = try RealmHelper.getCacheRealm()
+                
+                guard cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) != nil else {
+                    // The tile isn't in the cache
+                    GDLogSpatialDataVerbose("Tile Miss: (\(tile.x), \(tile.y), \(tile.zoom))")
+                    return false
+                }
+                
+                // The tile is cached and still has time to live, so return the cached version
+                GDLogSpatialDataVerbose("Tile Hit: (\(tile.x), \(tile.y), \(tile.zoom))")
+                return true
+            }
+        } catch {
+            GDLogSpatialDataError("Failed `isCached(tile)` with error: \(error)")
+            return false
+        }
+    }
+    
+    /// Checks if the tile needs to be fetched (it either isn't in the cache or it has expired)
+    /// - Parameter tile: VectorTile to check for
+    static func needsFetching(tile: VectorTile) -> Bool {
+        do {
+            return try autoreleasepool {
+                let cache = try RealmHelper.getCacheRealm()
+                
+                guard let cachedTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) else {
+                    // The tile isn't in the cache
+                    GDLogSpatialDataVerbose("Tile Miss: (\(tile.x), \(tile.y), \(tile.zoom))")
+                    return true
+                }
+                
+                guard cachedTile.ttl as Date > Date() else {
+                    // The tile is in the cache, but the cache has expired
+                    GDLogSpatialDataVerbose("Tile Expired: (\(tile.x), \(tile.y), \(tile.zoom))")
+                    return true
+                }
+                
+                // The tile is cached and still has time to live, so it doesn't need fetched
+                GDLogSpatialDataVerbose("Tile Hit: (\(tile.x), \(tile.y), \(tile.zoom))")
+                return false
+            }
+        } catch {
+            GDLogSpatialDataError("Failed `needsFetching(tile:`")
+            return false
+        }
+    }
+    
+    @SpatialDataCache
+    static func storeTile(_ tile: VectorTile, data: TileData) async {
+        do {
+            try await Task { // task is effectively async autoreleasepool
+                let cache = try await RealmHelper.getCacheRealm(actor: SpatialDataCache.shared)
+                
+                // Remove the existing tiles before storing the updated tile so that we remove old (bad)
+                // intersection data from before we fixed the server intersection code (where multiple versions
+                // of the same intersection were being returned in adjacent tiles)
+                // NOTE: it looks like this is migration-related code?
+                if let existingTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) {
+                    try await cache.asyncWrite {
+                        cache.delete(existingTile.intersections)
+                    }
+                }
+                
+                try await cache.asyncWrite {
+                    cache.add(data, update: .modified)
+                }
+            }.value
+        } catch {
+            GDLogSpatialDataWarn("Unable to store tile (\(tile.x), \(tile.y), \(tile.zoom))")
+        }
+        
+        GDLogSpatialDataVerbose("Tile Add/Update: (\(tile.x), \(tile.y), \(tile.zoom))")
+    }
+    
+    @SpatialDataCache
+    static func extendTileExpiration(_ tile: VectorTile) async {
+        await Task {
+            do {
+                let cache = try await RealmHelper.getCacheRealm(actor: SpatialDataCache.shared)
+                
+                guard let existingTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) else {
+                    return
+                }
+                
+                try await cache.asyncWrite {
+                    existingTile.ttl = TileData.getNewExpiration()
+                }
+            } catch {
+                GDLogSpatialDataWarn("Unable to extend tile's expiration (\(tile.x), \(tile.y), \(tile.zoom))")
+            }
+        }.value
+    }
+    
+    @SpatialDataCache
+    static func expireAllTiles() async {
+        GDLogAppInfo("Expiring all stored tiles")
+        
+        await Task {
+            do {
+                let cache = try await RealmHelper.getCacheRealm(actor: SpatialDataCache.shared)
+                let tiles = cache.objects(TileData.self)
+                
+                try await cache.asyncWrite {
+                    for tile in tiles {
+                        tile.ttl = TileData.getExpiredTtl()
+                    }
+                }
+            } catch {
+                GDLogAppError("Unable to expire all tiles...")
+            }
+        }.value
+    }
 }

@@ -188,7 +188,7 @@ extension CloudKeyValueStore {
     
     /// Store reference entities from database to cloud store
     private func store() {
-        var localReferenceEntities = SpatialDataCache.referenceEntities()
+        var localReferenceEntities = SpatialDataCustom.referenceEntities()
         
         // Filter only objects that require an update
         localReferenceEntities = localReferenceEntities.filter { shouldUpdateCloudReferenceEntity(withLocalReferenceEntity: $0) }
@@ -208,7 +208,7 @@ extension CloudKeyValueStore {
         guard let id = markerParameters.id else { return false }
         
         // True if local database does not contain the cloud entity
-        guard let localReferenceEntity = SpatialDataCache.referenceEntityByKey(id) else { return true }
+        guard let localReferenceEntity = SpatialDataCustom.referenceEntityByKey(id) else { return true }
         
         return localReferenceEntity.shouldUpdate(withMarkerParameters: markerParameters)
     }

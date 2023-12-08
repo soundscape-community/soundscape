@@ -8,19 +8,31 @@
 
 import Foundation
 
+/// Always means a good response
+enum OSMServiceResult {
+    case notModified
+    case modified(newEtag: String, tileData: TileData)
+}
+
 protocol OSMServiceModelProtocol {
-    // MARK: Type Alias
-    typealias TileDataLookupCallback = (HTTPStatusCode, TileData?, Error?) -> Void
-    typealias DynamicDataLookupCallback = (HTTPStatusCode, String?, Error?) -> Void
     
     // MARK: Functions
-    func getTileDataWithQueue(tile: VectorTile, categories: SuperCategories, queue: DispatchQueue, callback: @escaping TileDataLookupCallback)
-    func getDynamicData(dynamicURL: String, callback: @escaping DynamicDataLookupCallback)
+    func getTileData(tile: VectorTile, categories: SuperCategories) async throws -> OSMServiceResult
+    func getDynamicData(dynamicURL: String) async throws -> String
 }
 
 extension OSMServiceModelProtocol {
-    
-    func getTileData(tile: VectorTile, categories: SuperCategories, queue: DispatchQueue = DispatchQueue.main, callback: @escaping TileDataLookupCallback) {
-        getTileDataWithQueue(tile: tile, categories: categories, queue: queue, callback: callback)
+    /// Retries until success or `tries` attempts have been made. If unsuccessful, the last error will be thrown.
+    func getTileData(tile: VectorTile, categories: SuperCategories, tries: Int) async throws -> OSMServiceResult {
+        for _ in 0..<tries - 1 {
+            do {
+                return try await self.getTileData(tile: tile, categories: categories)
+            } catch {
+                // if we fail, then try again for n-1 tries
+                continue
+            }
+        }
+        // on the last (n-th) try, we don't catch
+        return try await self.getTileData(tile: tile, categories: categories)
     }
 }

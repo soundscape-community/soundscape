@@ -92,7 +92,7 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let marker = SpatialDataCache.referenceEntityByKey(markerId) else {
+        guard let marker = SpatialDataCustom.referenceEntityByKey(markerId) else {
             return nil
         }
         
@@ -100,9 +100,9 @@ struct MarkerParameters: Codable {
     }
     
     init?(entity: POI) {
-        if let entity = entity as? GenericLocation, let marker = SpatialDataCache.referenceEntityByLocation(entity.location.coordinate) {
+        if let entity = entity as? GenericLocation, let marker = SpatialDataCustom.referenceEntityByLocation(entity.location.coordinate) {
             self.init(marker: marker)
-        } else if let marker = SpatialDataCache.referenceEntityByEntityKey(entity.key) {
+        } else if let marker = SpatialDataCustom.referenceEntityByEntityKey(entity.key) {
             self.init(marker: marker)
         } else {
             self.init(entity: entity, markerId: nil, estimatedAddress: nil, nickname: nil, annotation: nil, lastUpdatedDate: nil)
@@ -140,7 +140,7 @@ struct MarkerParameters: Codable {
         
         let lastUpdatedDate: Date?
         
-        if let markerId = markerId, let marker = SpatialDataCache.referenceEntityByEntityKey(markerId) {
+        if let markerId = markerId, let marker = SpatialDataCustom.referenceEntityByEntityKey(markerId) {
             lastUpdatedDate = marker.lastUpdatedDate
         } else {
             lastUpdatedDate = nil

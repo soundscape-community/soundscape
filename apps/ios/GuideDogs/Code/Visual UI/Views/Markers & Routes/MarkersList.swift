@@ -119,7 +119,7 @@ struct MarkersList: View {
     }
     
     func entity(for markerID: String) -> POI? {
-        return SpatialDataCache.referenceEntityByKey(markerID)?.getPOI()
+        return SpatialDataCustom.referenceEntityByKey(markerID)?.getPOI()
     }
     
     private func confirmationAlert(for markerID: String) -> Alert {

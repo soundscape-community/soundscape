@@ -142,7 +142,7 @@ struct LocationDetail {
     
     private var marker: ReferenceEntity? {
         // Search for markers (including temporary markers) at the given location
-        return SpatialDataCache.referenceEntity(source: source, isTemp: nil)
+        return SpatialDataCustom.referenceEntity(source: source, isTemp: nil)
     }
     
     // Name Properties
@@ -356,7 +356,7 @@ extension LocationDetail {
     }
     
     init?(markerId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let marker = SpatialDataCache.referenceEntityByKey(markerId) else {
+        guard let marker = SpatialDataCustom.referenceEntityByKey(markerId) else {
             return nil
         }
         

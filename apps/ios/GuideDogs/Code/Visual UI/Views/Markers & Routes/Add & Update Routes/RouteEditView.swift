@@ -33,7 +33,7 @@ struct RouteEditView: View {
             case .add: return GDLocalizedString("route_detail.action.create")
             case .edit: return GDLocalizedString("route_detail.action.edit")
             case .import(let route):
-                if SpatialDataCache.routeByKey(route.id) == nil {
+                if SpatialDataCustom.routeByKey(route.id) == nil {
                     // Import a new route
                     return GDLocalizedString("route_detail.action.create")
                 } else {

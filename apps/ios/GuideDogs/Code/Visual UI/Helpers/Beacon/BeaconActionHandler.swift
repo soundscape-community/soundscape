@@ -24,7 +24,7 @@ struct BeaconActionHandler {
             return nil
         }
         
-        guard let beacon = SpatialDataCache.referenceEntityByKey(key) else {
+        guard let beacon = SpatialDataCustom.referenceEntityByKey(key) else {
             // Failed to fetch beacon
             return nil
         }

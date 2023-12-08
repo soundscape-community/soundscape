@@ -361,7 +361,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         }
         
         // Generate callouts for the new decision point
-        if let key = beaconKey, let beacon = SpatialDataCache.referenceEntityByKey(key) {
+        if let key = beaconKey, let beacon = SpatialDataCustom.referenceEntityByKey(key) {
             let location = beacon.closestLocation(from: to.node.location)
             let distance = to.node.location.distance(from: location)
             let arrivedAtBeacon = distance < 15.0

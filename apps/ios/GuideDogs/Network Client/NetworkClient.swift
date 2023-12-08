@@ -17,7 +17,7 @@ struct NetworkResponse {
     var statusCode: HTTPStatusCode
     
     static var empty: NetworkResponse {
-        return .init(allHeaderFields: [:], statusCode: .unknown)
+        return .init(allHeaderFields: [:], statusCode: .unknown(0))
     }
 }
 
@@ -34,15 +34,10 @@ extension URLSession: NetworkClient {
             response.log(request: request)
             
             guard let httpResponse = response as? HTTPURLResponse else {
-                return (data, NetworkResponse(allHeaderFields: [:], statusCode: .unknown))
+                return (data, NetworkResponse(allHeaderFields: [:], statusCode: .unknown(0)))
             }
             
-            guard let status = HTTPStatusCode(rawValue: httpResponse.statusCode) else {
-                return (data, NetworkResponse(allHeaderFields: httpResponse.allHeaderFields, statusCode: .unknown))
-            }
-            
-            let netResponse = NetworkResponse(allHeaderFields: httpResponse.allHeaderFields, statusCode: status)
-            return (data, netResponse)
+            return (data, NetworkResponse(allHeaderFields: httpResponse.allHeaderFields, statusCode: HTTPStatusCode(rawValue: httpResponse.statusCode)))
         } else {
             return try await withCheckedThrowingContinuation { continuation in
                 let task: URLSessionDataTask = dataTask(with: request) { (data, response, error) in
@@ -58,12 +53,12 @@ extension URLSession: NetworkClient {
                     
                     response?.log(request: request)
                     
-                    guard let httpResponse = response as? HTTPURLResponse, let status = HTTPStatusCode(rawValue: httpResponse.statusCode) else {
+                    guard let httpResponse = response as? HTTPURLResponse else {
                         continuation.resume(with: .success((data, .empty)))
                         return
                     }
                     
-                    let response = NetworkResponse(allHeaderFields: httpResponse.allHeaderFields, statusCode: status)
+                    let response = NetworkResponse(allHeaderFields: httpResponse.allHeaderFields, statusCode: HTTPStatusCode(rawValue: httpResponse.statusCode))
                     continuation.resume(with: .success((data, response)))
                 }
                 
@@ -85,17 +80,17 @@ extension URLRequest {
 
 extension URLResponse {
     func log(request: URLRequest) {
-        let responseStatus: HTTPStatusCode
+        let statusString: String
         if let res = self as? HTTPURLResponse {
-            responseStatus = HTTPStatusCode(rawValue: res.statusCode) ?? .unknown
+            statusString = res.statusCode.description
         } else {
-            responseStatus = .unknown
+            statusString = "unknown"
         }
         
         guard let method = request.httpMethod?.prefix(3) else {
             return
         }
         
-        GDLogVerbose(.network, "Response (\(method)) \(responseStatus.rawValue) '\(request.url?.absoluteString ?? "unknown")'")
+        GDLogVerbose(.network, "Response (\(method)) \(statusString) '\(request.url?.absoluteString ?? "unknown")'")
     }
 }

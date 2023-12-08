@@ -27,30 +27,6 @@ class GeometryUtils {
 
     static let earthRadius = Double(6378137)
     
-    /// Parses a GeoJSON string and returns the coordinates and type values.
-    ///
-    /// See:
-    /// * https://geojson.org
-    /// * RFC 7946
-    static func coordinates(geoJson: String) -> (type: GeometryType?, points: [Any]?) {
-        guard !geoJson.isEmpty, let jsonObject = GDAJSONObject(string: geoJson) else {
-                return (nil, nil)
-        }
-        
-        let geometryType: GeometryType?
-        if let typeString = jsonObject.string(atPath: "type") {
-            geometryType = GeometryType(rawValue: typeString)
-        } else {
-            geometryType = nil
-        }
-        
-        guard let geometry = jsonObject.array(atPath: "coordinates") else {
-            return (geometryType, nil)
-        }
-        
-        return (geometryType, geometry)
-    }
-    
     /// Returns whether a coordinate lies inside of the region contained within the coordinate path.
     /// The path is always considered closed, regardless of whether the last point equals the first or not.
     static func geometryContainsLocation(location: CLLocationCoordinate2D, coordinates: [CLLocationCoordinate2D]) -> Bool {
@@ -307,24 +283,9 @@ class GeometryUtils {
         return ((cX - projX) * (cX - projX) + (cY - projY) * (cY - projY), lat, lon)
     }
     
-    /// Finds the closest point on an edge of the polygon (including intermediate points along edges) to the given coordinate.
-    /// - Returns: `nil` if the polygon is empty (i.e. no edges)
-    static func closestEdge(from coordinate: CLLocationCoordinate2D, on polygon: GAMultiLine) -> CLLocation? {
-        var coordinates: [CLLocationCoordinate2D] = []
-        
-        // Transform to a continuous coordinates path
-        for line in polygon {
-            for point in line {
-                coordinates.append(point.toCoordinate())
-            }
-        }
-                
-        return closestEdge(from: coordinate, on: coordinates)
-    }
-    
     /// Finds the closest point on the path (including intermediate points along edges) to the given coordinate.
     /// - Returns: `nil` if there are no edges (less than two points in `path`)
-    static func closestEdge(from coordinate: CLLocationCoordinate2D, on path: [CLLocationCoordinate2D]) -> CLLocation? {
+    static func closestEdge(from coordinate: CLLocationCoordinate2D, on path: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D? {
         guard !path.isEmpty else {
             return nil;
         }
@@ -333,7 +294,7 @@ class GeometryUtils {
         let zoomLevel: UInt = 23
         let res: Double = VectorTile.groundResolution(latitude: coordinate.latitude, zoom: zoomLevel)
         
-        var closestLocation: CLLocation?
+        var closestLocation: CLLocationCoordinate2D?
         var minimumDistance = CLLocationDistanceMax
         
         for i in 0..<path.count - 1 {
@@ -356,7 +317,7 @@ class GeometryUtils {
             let distance = sqrt(distanceSq) * res
             
             if distance < minimumDistance {
-                closestLocation = CLLocation(latitude: lat, longitude: long)
+                closestLocation = CLLocationCoordinate2D(latitude: lat, longitude: long)
                 minimumDistance = distance
             }
         }
@@ -456,32 +417,6 @@ class GeometryUtils {
 // MARK: - Centroid Calculations
 
 extension GeometryUtils {
-    
-    /// Returns a generated coordinate representing the mean center of a given array of coordinates.
-    /// - Note: See `centroid(coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D?`
-    static func centroid(geoJson: String) -> CLLocationCoordinate2D? {
-        guard let points = GeometryUtils.coordinates(geoJson: geoJson).points else {
-            return nil
-        }
-        
-        // Check if `points` contains one point (e.g. point)
-        if let point = points as? GAPoint {
-            return point.toCoordinate()
-        }
-        
-        // Check if `points` contains an array of points (e.g. line, polygon)
-        if let points = points as? GALine {
-            return GeometryUtils.centroid(coordinates: points.toCoordinates())
-        }
-        
-        // Check if `points` contains a two dimensional array of points (e.g. lines, polygons)
-        if let points = points as? GAMultiLine {
-            let flattened = Array(points.toCoordinates().joined())
-            return GeometryUtils.centroid(coordinates: flattened)
-        }
-        
-       return nil
-    }
     
     /// Returns a generated coordinate representing the mean center of a given array of `CLLocation` objects.
     /// - Note: See `centroid(coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D?`

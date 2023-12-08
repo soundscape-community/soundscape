@@ -163,16 +163,16 @@ class Intersection: Object, Locatable, Localizable {
     // MARK: Realm properties
     
     /// Synthesized primary key for this intersection
-    @objc dynamic var key: String = ""
+    @Persisted(primaryKey: true) var key: String = ""
     
     /// Array of the road POIs that meet at this intersection
-    let roadIds = List<IntersectionRoadId>()
+    @Persisted var roadIds: List<IntersectionRoadId>
     
     /// Latitude of the intersection
-    @objc dynamic var latitude: CLLocationDegrees = 0.0
+    @Persisted var latitude: CLLocationDegrees = 0.0
     
     /// Longitude of the intersection
-    @objc dynamic var longitude: CLLocationDegrees = 0.0
+    @Persisted var longitude: CLLocationDegrees = 0.0
     
     // MARK: Non-Realm Properties
     
@@ -231,37 +231,12 @@ class Intersection: Object, Locatable, Localizable {
             self.key += String(roadId)
         }
         
-        if let lat = feature.geometry?.point?[1] {
-            latitude = lat
-        }
-        
-        if let lon = feature.geometry?.point?[0] {
-            longitude = lon
+        if case .point(let coordinate) = feature.geometry {
+            latitude = coordinate.latitude
+            longitude = coordinate.longitude
         }
         
         self.key += String(latitude) + String(longitude)
-    }
-    
-    // MARK: Methods
-    
-    /// Returns the names of properties which Realm should ignore
-    ///
-    /// - Returns: List of ignored properties
-    static override func ignoredProperties() -> [String] {
-        return ["roads",
-                "distinctRoads",
-                "localizedRoadNames",
-                "_localizedName",
-                "localizedName",
-                "location",
-                "coordinate"]
-    }
-    
-    /// Indicates which property represents the primary key of this object
-    ///
-    /// - Returns: The name of the property that represents the primary key of this object
-    override static func primaryKey() -> String {
-        return "key"
     }
     
     /// Returns the localized name for the intersection, which contains the

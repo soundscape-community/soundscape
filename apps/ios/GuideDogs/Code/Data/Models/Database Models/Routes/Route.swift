@@ -117,7 +117,7 @@ class Route: Object, ObjectKeyIdentifiable {
         let pWaypoints = parameters.waypoints.compactMap({ return RouteWaypoint(from: $0) })
         waypoints.append(objectsIn: pWaypoints)
         
-        if let first = pWaypoints.ordered.first, let marker = SpatialDataCache.referenceEntityByKey(first.markerId) {
+        if let first = pWaypoints.ordered.first, let marker = SpatialDataCustom.referenceEntityByKey(first.markerId) {
             firstWaypointLatitude = marker.latitude
             firstWaypointLongitude = marker.longitude
         }
