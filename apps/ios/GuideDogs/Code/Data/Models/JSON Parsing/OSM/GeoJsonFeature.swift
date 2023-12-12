@@ -8,37 +8,40 @@
 
 import Foundation
 
-struct GeoJsonKeys {
-    /// Key for accessing the feature_type string of a GeoJson feature
-    static let featureType = "feature_type"
-    
-    /// Key for accessing the feature_value string of a GeoJson feature
-    static let featureValue = "feature_value"
-    
-    /// Key for accessing the geometry object of a GeoJson feature
-    static let geometry = "geometry"
-    
-    /// Key for accessing the OSM IDs array of a GeoJson feature
-    static let osmIds = "osm_ids"
-    
-    /// Key for accessing the priority integer of a GeoJson feature
-    static let priority = "priority"
-    
-    /// Key for accessing the properties dictionary of a GeoJson feature
-    static let properties = "properties"
-    
-    /// Key for accessing the name property from the properties dictionary of a GeoJson feature
-    static let name = "name"
-    
-    /// Key for accessing the ref property from the properties dictionary of a GeoJson feature
-    static let ref = "ref"
-    
-    /// Prefix string which all localized names have in the properties dictionary of a GeoJson feature
-    static let i18nNamePrefix = "name:"
+enum GeoJsonFeatureError: Error {
+    /// Thrown when the json's `type` property is not `"Feature"`
+    case incorrectTypeField
+    /// When a feature does not have a name
+    ///
+    /// Optionally contains a string containing its `feature_type` and `feature_value`: `<type>=<value>`.
+    ///
+    /// While the [GeoJson spec](https://datatracker.ietf.org/doc/html/rfc7946#section-3.2) does not require a name, we are unable to handle features we can't find a name for (Note: I'm not sure why, so I may just be replicating a historical bug).
+    case nameless(propVal: String?)
 }
 
-class GeoJsonFeature {
-
+final class GeoJsonFeature: Decodable {
+    enum CodingKeys: String, CodingKey {
+        /// Key for accessing the `feature_type` property of a GeoJson feature
+        case feature_type
+        /// Key for accessing the `feature_value` property of a GeoJson feature
+        case feature_value
+        /// Key for accessing the `geometry` (``GeoJsonGeometry``) object of a GeoJson feature
+        case geometry
+        /// Key for accessing the OSM IDs array of a GeoJson feature
+        case osm_ids
+        /// Key for accessing the `priority` integer of a GeoJson feature
+        case priority
+        /// Key for accessing the `properties` dictionary of a GeoJson feature
+        case properties
+        /// Key for accessing the `name` property from the properties dictionary of a GeoJson feature
+        case name
+        /// Key for accessing the `ref` property from the properties dictionary of a GeoJson feature
+        case ref
+        /// Prefix string which all localized names have in the properties dictionary of a GeoJson feature
+        case i18nNamePrefix = "name:"
+        /// Key for the json `type`, should always be `"Feature"`
+        case type
+    }
     // MARK: Properties
     
     /// Name of the feature
@@ -77,7 +80,9 @@ class GeoJsonFeature {
     var superCategory: SuperCategory = .undefined
     
     /// Geometry of this feature
-    var geometry: GeoJsonGeometry?
+    ///
+    /// GeoJSON spec allows null geometries, but we don't (we throw a parse failure if missing)
+    var geometry: GeoJsonGeometry
     
     var isCrossing = false
     
@@ -85,18 +90,27 @@ class GeoJsonFeature {
     
     // MARK: Initializers
     
-    init?(json: [String: Any], superCategories: SuperCategories) {
-        // Parse the OSM IDs
-        if let ids = GeoJsonFeature.extractIDs(from: json) {
-            osmIds = ids
+    /// ``JSONDecoder``
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        // Object's `type` property must be "Feature"
+        let parsed_type = try container.decode(String.self, forKey: .type)
+        guard parsed_type == "Feature" else {
+            throw GeoJsonFeatureError.incorrectTypeField
         }
         
+        // Parse OSM IDs
+        let parsed_ids = try? container.decode([Int].self, forKey: .osm_ids)
+        osmIds = parsed_ids?.map({ "ft\($0)" }) ?? []
+        
         // Parse the general feature information
-        type = json[GeoJsonKeys.featureType] as? String ?? ""
-        value = json[GeoJsonKeys.featureValue] as? String ?? ""
+        let parsed_feature_type = try? container.decode(String.self, forKey: .feature_type)
+        type = parsed_feature_type ?? ""
+        let parsed_feature_value = try? container.decode(String.self, forKey: .feature_value)
+        value = parsed_feature_value ?? ""
         
-        let nameObjects = GeoJsonFeature.extractNames(from: json)
-        
+        let nameObjects = GeoJsonFeature.extractNames(from: container)
         // Entities should have a name or a tag (which will be transformed to a localized name at runtime)
         guard nameObjects.name != nil || nameObjects.tag != nil else {
             // Collect information about this nameless feature for later analysis
@@ -106,28 +120,21 @@ class GeoJsonFeature {
                 GeoJsonFeature.unhandledNamelessFeatures.insert(propVal)
             }
             
-            return nil
+            throw GeoJsonFeatureError.nameless(propVal: propVal)
         }
         
         name = nameObjects.name
         names = nameObjects.names
         nameTag = nameObjects.tag
         
-        let featureProperties = json[GeoJsonKeys.properties] as? [String: String]
-        
-        if let properties = featureProperties {
-            self.properties = properties
+        // note: `properties` isn't required by spec to be [String: String], but appears to always be in data from OSM
+        if let featureProperties = try? container.decode([String: String].self, forKey: .properties) {
+            self.properties = featureProperties
             
-            if let ref = properties[GeoJsonKeys.ref] {
+            if let ref = properties[CodingKeys.ref.rawValue] {
                 self.ref = ref
             }
         }
-        
-        // Parse the geometry information - features must have a geometry according to the GeoJSON spec
-        guard let geoData = json[GeoJsonKeys.geometry] as? [String: Any] else {
-            return nil
-        }
-        
         if GeoJsonFeature.hasTag("footway=crossing", props: properties) ||
             nameObjects.tag == GeoJsonFeature.FeatureNameTag.crossing {
             isCrossing = true
@@ -137,26 +144,18 @@ class GeoJsonFeature {
             isRoundabout = true
         }
         
-        // Ensure we have a valid geometry or return nil otherwise
-        guard let geo = GeoJsonGeometry(geoJSON: geoData) else {
-            return nil
-        }
+        // GeoJSON spec permits null geometries, but we don't
+        geometry = try container.decode(GeoJsonGeometry.self, forKey: .geometry)
         
         // Fix geometries for crossings with LineString geometries
-        if isCrossing && geo.type == .lineString {
-            if let median = geo.getLineMedian() {
-                geometry = GeoJsonGeometry(point: median)
-            } else {
-                geometry = geo
-            }
-        } else {
-            geometry = geo
+        if isCrossing, case .lineString = geometry,
+           let median = geometry.getLineMedian() {
+            geometry = GeoJsonGeometry(point: median)
         }
         
         // Parse the priority of the feature
-        if let parsedPriority = json[GeoJsonKeys.priority] as? UInt {
-            priority = parsedPriority
-        }
+        let parsedPriority = try? container.decode(UInt.self, forKey: .priority)
+        priority = parsedPriority ?? 0
         
         //
         // Deal with super categories and missing names:
@@ -224,6 +223,8 @@ class GeoJsonFeature {
             }
         }
         
+#if false
+        // TODO: this is currently unused (we never passed in any supercategories, even before refactoring), but should probably be reviewed to determine if it should get implemented
         // General Case: look up the category in the list of categories we got from the server
         var applicableCategories: Set<SuperCategory> = []
         for (key, value) in properties {
@@ -238,6 +239,7 @@ class GeoJsonFeature {
         if let prioritizedCategory = GeoJsonFeature.prioritizedCategories.first(where: { applicableCategories.contains($0) }) {
             superCategory = prioritizedCategory
         }
+#endif
     }
     
     init(copyFrom: GeoJsonFeature) {
@@ -261,28 +263,23 @@ class GeoJsonFeature {
             self.properties[key] = value
         }
         
+        // enums are pass-by-value
         self.priority = copyFrom.priority
         self.superCategory = copyFrom.superCategory
-        self.geometry = GeoJsonGeometry(copyFrom: copyFrom.geometry)
+        self.geometry = copyFrom.geometry
     }
     
     func decomposePathToStartAndEndCrossings() -> (start: GeoJsonFeature, end: GeoJsonFeature)? {
         let startCopy = GeoJsonFeature(copyFrom: self)
         let endCopy = GeoJsonFeature(copyFrom: self)
         
-        guard let createdStart = startCopy.geometry?.clipToFirstPoint(), let createdEnd = endCopy.geometry?.clipToLastPoint() else {
-            return nil
-        }
-        
-        if createdStart && createdEnd {
-            // Make crossing start and end points mobility POIs by default
-            startCopy.superCategory = SuperCategory.mobility
-            endCopy.superCategory = SuperCategory.mobility
+        startCopy.geometry = .point(coordinates: geometry.first)
+        startCopy.superCategory = SuperCategory.mobility
+
+        endCopy.geometry = .point(coordinates: geometry.last)
+        endCopy.superCategory = SuperCategory.mobility
             
-            return (startCopy, endCopy)
-        }
-        
-        return nil
+        return (startCopy, endCopy)
     }
     
     /// Check if a set of properties contains a key-value pair matching the input tag. Tags are
@@ -335,28 +332,28 @@ class GeoJsonFeature {
 extension GeoJsonFeature {
     
     fileprivate static func extractIDs(from json: [String: Any]) -> [String]? {
-        guard let ids = json[GeoJsonKeys.osmIds] as? [Int] else { return nil }
+        guard let ids = json[CodingKeys.osm_ids.rawValue] as? [Int] else { return nil }
         
         return ids.map({ (id) -> String in
             return "ft\(id)"
         })
     }
     
-    fileprivate static func extractNames(from json: [String: Any]) -> (name: String?, names: [String: String]?, tag: String?) {
-        guard let properties = json[GeoJsonKeys.properties] as? [String: String] else { return (nil, nil, nil) }
-        
-        if let value = json[GeoJsonKeys.featureValue] as? String {
-            // Special case: intersections (calculated intersections have value "gd_intersection" by definition)
-            if value == "gd_intersection" {
-                return (name: GDLocalizedString("osm.tag.intersection"), nil, "intersection")
-            }
+    fileprivate static func extractNames(from container: KeyedDecodingContainer<CodingKeys>) -> (name: String?, names: [String: String]?, tag: String?) {
+        guard let properties = try? container.decode([String: String].self, forKey: .properties) else {
+            return (nil, nil, nil)
         }
         
-        if let type = json[GeoJsonKeys.featureType] as? String {
+        if let value = try? container.decode(String.self, forKey: .feature_value),
+           value == "gd_intersection" {
+            // Special case: intersections (calculated intersections have value "gd_intersection" by definition)
+            return (name: GDLocalizedString("osm.tag.intersection"), nil, "intersection")
+        }
+        
+        if let type = try? container.decode(String.self, forKey: .feature_type),
+           type == "gd_entrance_list"{
             // Special case: entrance list (calculated entrance lists have type "gd_entrance_list" by definition)
-            if type == "gd_entrance_list" {
-                return (name: GDLocalizedString("directions.amenity.entrance_list"), nil, nil)
-            }
+            return (name: GDLocalizedString("directions.amenity.entrance_list"), nil, nil)
         }
 
         var name: String?
@@ -364,12 +361,12 @@ extension GeoJsonFeature {
 
         // Try to extract name and i18n names
         for (property, value) in properties {
-            if property == GeoJsonKeys.name {
+            if property == CodingKeys.name.rawValue {
                 name = value
                 continue
             }
             
-            if let range = property.range(of: GeoJsonKeys.i18nNamePrefix) {
+            if let range = property.range(of: CodingKeys.i18nNamePrefix.rawValue) {
                 var languageCode = property
                 languageCode.removeSubrange(range)
                 
@@ -382,7 +379,7 @@ extension GeoJsonFeature {
         }
         
         // Custom name extractions
-        if name == nil, let featureValue = json[GeoJsonKeys.featureValue] as? String {
+        if name == nil, let featureValue = try? container.decode(String.self, forKey: .feature_value) {
             if featureValue == "atm", let atm = properties["operator"], atm.count > 0 {
                 name = atm
             } else if featureValue == "bank" {

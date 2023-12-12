@@ -60,29 +60,22 @@ class GDASpatialDataResultEntity: Object {
     
     // MARK: - Computed & Non-Realm Properties
     
-    var geometryType: GeometryType?
-    
-    private var _coordinates: [Any]?
-    var coordinates: [Any]? {
-        if _coordinates != nil {
-            return _coordinates
+    private var _geometry: GeoJsonGeometry?
+    var geometry: GeoJsonGeometry? {
+        if _geometry != nil {
+            return _geometry
         }
-        
-        // If there aren't coordinates, there is nothing to return
-        guard let coordinatesJson = coordinatesJson, !coordinatesJson.isEmpty else {
+        // Otherwise, try to parse
+        // TODO: we might want to store that we tried before and failed
+        guard let geoJSON  = coordinatesJson else {
             return nil
         }
-        
-        // Get the coordinates and the geometry type from the GeoJSON object
-        let parsedCoordinates = GeometryUtils.coordinates(geoJson: coordinatesJson)
-        
-        if let geometryType = parsedCoordinates.type {
-            self.geometryType = geometryType
-        }
-        
-        _coordinates = parsedCoordinates.points
-        
-        return _coordinates
+        _geometry = GeoJsonGeometry(geoJSON: geoJSON)
+        return _geometry
+    }
+    
+    var coordinates: Any? {
+        return geometry?.coordinates
     }
 
     private var _entrances: [POI]?
@@ -92,6 +85,9 @@ class GDASpatialDataResultEntity: Object {
         }
         
         // Only POIs with non-point geometries can have entrances
+        if case .point = geometry {
+            return nil
+        }
         guard coordinates != nil,
             let jsonData = entrancesJson?.data(using: .utf8) else {
             return nil
@@ -122,8 +118,8 @@ class GDASpatialDataResultEntity: Object {
     
     /// Returns the names of properties which Realm should ignore
     static override func ignoredProperties() -> [String] {
-        return ["geometryType",
-                "_coordinates",
+        return ["_geometry",
+                "geometry",
                 "coordinates",
                 "_entrances",
                 "entrances"]
@@ -182,22 +178,17 @@ class GDASpatialDataResultEntity: Object {
         }
         
         // Set geolocation information
-        if let geometry = feature.geometry {
-            if geometry.type == .point, let point = geometry.point, point.count > 1 {
-                latitude = point[1]
-                longitude = point[0]
-            } else {
-                coordinatesJson = geometry.coordinateJSON
-            }
-            
-            if let centroid = geometry.centroid {
-                centroidLatitude = centroid[1]
-                centroidLongitude = centroid[0]
-            } else {
-                centroidLatitude = latitude
-                centroidLongitude = longitude
-            }
+        if case .point(let point) = feature.geometry {
+            latitude = point.latitude
+            longitude = point.longitude
+        } else if let json_data = try? JSONEncoder().encode(feature.geometry) {
+            coordinatesJson = String(data: json_data, encoding: .utf8)
+            _geometry = feature.geometry;
         }
+        
+        let centroid = feature.geometry.centroid
+        centroidLatitude = centroid.latitude
+        centroidLongitude = centroid.longitude
         
         // Road specific metadata
         
@@ -225,14 +216,12 @@ class GDASpatialDataResultEntity: Object {
     // MARK: - Geometries
     
     /// Returns whether a coordinate lies inside the entity.
-    /// - note: This is only valid for entities that contain geometries, such as buildings.
+    /// - note: This is only valid for entities that contain geometries with an area (polygons and multiPolygons), such as buildings.
     func contains(location: CLLocationCoordinate2D) -> Bool {
-        guard let points = self.coordinates as? GAMultiLine else { return false }
-        let coordinates = points.toCoordinates()
-     
-        guard !coordinates.isEmpty else { return false }
-     
-        return GeometryUtils.geometryContainsLocation(location: location, coordinates: coordinates.first!)
+        guard let geometry = geometry else {
+            return false
+        }
+        return geometry.withinArea(location)
     }
     
     // MARK: `NSObject`
