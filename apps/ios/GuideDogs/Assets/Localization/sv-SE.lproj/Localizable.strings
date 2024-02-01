@@ -163,7 +163,7 @@
 
 
 /*  */
-"general.alert.offline_search.message" = "När openscape är offline är sökfunktionen inaktiverad. Stäng om du vill gå tillbaka till föregående skärm.";
+"general.alert.offline_search.message" = "Sökfunktionen är inaktiverad när Openscape är i offline-läge. Stäng om du vill gå tillbaka till föregående skärm";
 
 
 /*  */
@@ -848,6 +848,7 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Tryck på skärmen med två fingrar om du vill tysta alla aktiva informationsljud.";
+
 
 
 
