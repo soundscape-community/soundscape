@@ -53,7 +53,7 @@ struct AuthoredActivityMetadata: Codable, CustomStringConvertible {
         case .v2, .v3:
             components.scheme = "https"
             components.host = "share.soundscape.services"
-            components.path = "activities/\(id)/activity.gpx"
+            components.path = "/activities/\(id)/activity.gpx"
         default:
             // no other versions currently supported
             break
