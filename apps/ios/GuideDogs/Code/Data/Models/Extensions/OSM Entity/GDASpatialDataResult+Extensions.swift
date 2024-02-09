@@ -30,8 +30,8 @@ extension GDASpatialDataResultEntity: SelectablePOI {
     func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {
         if useEntranceIfAvailable, let entrance = closestEntrance(from: location) {
             return entrance.closestLocation(from: location)
-        } else if let edge = closestEdge(from: location.coordinate) {
-            return CLLocation(edge)
+        } else if let edge = closestEdge(from: location) {
+            return edge
         }
         
         return CLLocation(latitude: latitude, longitude: longitude)
