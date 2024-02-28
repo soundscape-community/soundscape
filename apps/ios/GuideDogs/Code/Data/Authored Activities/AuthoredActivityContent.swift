@@ -179,7 +179,7 @@ extension AuthoredActivityContent {
     ///
     /// - Parameter gpx: A parsed GPX file
     /// - Returns: An ``AuthoredActivityContent``, or `nil` if parsing failed or required properties were missing. Currently, waypoints or POIs may be skipped if they lack coordinate data.
-    static func parse(gpx: GPXRoot) -> AuthoredActivityContent? {
+    static func parse(gpx: GPXRoot, baseURL: URL) -> AuthoredActivityContent? {
         guard let metadata = gpx.metadata else {
             return nil
         }
@@ -206,7 +206,7 @@ extension AuthoredActivityContent {
         
         var imageURL: URL?
         if let image = metadata.links.first, image.mimetype?.hasPrefix("image") != nil, let href = image.href {
-            imageURL = URL(string: href)
+            imageURL = URL(string: href, relativeTo: baseURL)
         }
         
         // Parse the waypoints and POIs based on the file version
@@ -214,7 +214,7 @@ extension AuthoredActivityContent {
         case "1":
             // Version 1 just uses all the top-level waypoints `<wpt></wpt>` defined in the GPX, in order
             
-            let wpts: [ActivityWaypoint] = waypoints(from: gpx.waypoints)
+            let wpts: [ActivityWaypoint] = waypoints(from: gpx.waypoints, baseURL: baseURL)
             
             // For waypoints in this experience, require names, descriptions, and street addresses
             guard !wpts.isEmpty, !wpts.contains(where: { $0.name == nil }) else {
@@ -242,7 +242,7 @@ extension AuthoredActivityContent {
             }
             
             // Waypoints are strict about requiring names and locations
-            let wpts: [ActivityWaypoint] = waypoints(from: route.points)
+            let wpts: [ActivityWaypoint] = waypoints(from: route.points, baseURL: baseURL)
             
             // For waypoints in this experience, require names, descriptions, and street addresses
             guard !wpts.isEmpty, !wpts.contains(where: { $0.name == nil }) else {
@@ -279,7 +279,7 @@ extension AuthoredActivityContent {
     ///
     /// - Parameter waypoints: an array of ``GPXWaypoint``s
     /// - Returns: an array of ``ActivityWaypoint``s including annotation data (if applicable)
-    private static func waypoints(from waypoints: [GPXWaypoint]) -> [ActivityWaypoint] {
+    private static func waypoints(from waypoints: [GPXWaypoint], baseURL: URL) -> [ActivityWaypoint] {
         let imageMimeTypes = Set(["image/jpeg", "image/jpg", "image/png"])
         let audioMimeTypes = Set(["audio/mpeg", "audio/x-m4a"])
         
@@ -291,7 +291,7 @@ extension AuthoredActivityContent {
             
             let parsedImages: [ActivityWaypointImage] = links.compactMap { link in
                 guard let href = link.href,
-                      let url = URL(string: href) else {
+                      let url = URL(string: href, relativeTo: baseURL) else {
                     return nil
                 }
                 
@@ -300,7 +300,7 @@ extension AuthoredActivityContent {
             
             let parsedAudioClips: [ActivityWaypointAudioClip] = links.compactMap { link in
                 guard let href = link.href,
-                      let url = URL(string: href) else {
+                      let url = URL(string: href, relativeTo: baseURL) else {
                     return nil
                 }
                 
