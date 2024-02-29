@@ -286,7 +286,7 @@ extension AuthoredActivityContent {
         return waypoints.compactMap { wpt in
             let links: [GPXLink] = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
                 guard let mimetype = $0.mimetype else { return false }
-                return imageMimeTypes.contains(mimetype)
+                return imageMimeTypes.contains(mimetype) || audioMimeTypes.contains(mimetype)
             }) ?? []
             
             let parsedImages: [ActivityWaypointImage] = links.compactMap { link in
