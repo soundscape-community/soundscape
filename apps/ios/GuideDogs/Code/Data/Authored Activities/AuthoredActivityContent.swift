@@ -284,12 +284,12 @@ extension AuthoredActivityContent {
         let audioMimeTypes = Set(["audio/mpeg", "audio/x-m4a"])
         
         return waypoints.compactMap { wpt in
-            let links: [GPXLink] = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
+            let imageLinks: [GPXLink] = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
                 guard let mimetype = $0.mimetype else { return false }
-                return imageMimeTypes.contains(mimetype) || audioMimeTypes.contains(mimetype)
+                return imageMimeTypes.contains(mimetype)
             }) ?? []
             
-            let parsedImages: [ActivityWaypointImage] = links.compactMap { link in
+            let parsedImages: [ActivityWaypointImage] = imageLinks.compactMap { link in
                 guard let href = link.href,
                       let url = URL(string: href, relativeTo: baseURL) else {
                     return nil
@@ -298,7 +298,12 @@ extension AuthoredActivityContent {
                 return ActivityWaypointImage(url: url, altText: link.text)
             }
             
-            let parsedAudioClips: [ActivityWaypointAudioClip] = links.compactMap { link in
+            let audioLinks: [GPXLink] = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
+                guard let mimetype = $0.mimetype else { return false }
+                return audioMimeTypes.contains(mimetype)
+            }) ?? []
+            
+            let parsedAudioClips: [ActivityWaypointAudioClip] = audioLinks.compactMap { link in
                 guard let href = link.href,
                       let url = URL(string: href, relativeTo: baseURL) else {
                     return nil
