@@ -27,7 +27,7 @@ class BoseFramesMotionManager: NSObject {
     
     // MARK: UserHeadingProvider attributes
     private var _id: UUID
-    weak var headingDelegate: UserHeadingProviderDelegate?
+    private weak var _headingDelegate: UserHeadingProviderDelegate?
     var _accuracy = 10000.0 // Just a very high value... Will adjust when we start getting updates
 
     
@@ -93,44 +93,66 @@ extension BoseFramesMotionManager: CalibratableDevice {
         device.connect()
     }
 
+    
+     // TODO: Implement Device.connect
+     /*
+     - If UUID != nil
+     - Scan for BLE-device
+     - Set some status (disconnected -> connecting -> connected)?
+     - Discover services and characteristics
+     - status = connecting
+     - Start rotation sensor
+     - status = connected
+     */
     func connect() {
-        /*
-         TODO:
-         - If UUID != nil
-         - Scan for BLE-device
-         - Set some status (disconnected -> connecting -> connected)?
-         - Discover services and characteristics
-         - status = connecting
-         - Start rotation sensor
-         - status = connected
-         */
+
         GDLogHeadphoneMotionInfo("FIXME: connect function NOT IMPLEMENTED")
 
         if let handler = self.deviceConnectedHandler {
-          handler(.success(self))
+            // Dummy call to the handler, just to test app flow
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5){
+                handler(.success(self))
+            }
+//            handler(.failure(.unavailable))
         }
     }
     
+    // TODO: Implement Device.disconnect Stop motion updates. Call BLEManager to disconnect
     func disconnect() {
         GDLogHeadphoneMotionInfo("FIXME: disconnect function NOT IMPLEMENTED")
-        // TODO: Stop motion updates. Call BLEManager to disconnect
+
     }
     
 }
 
 // MARK: UserHeadingProvider
 extension BoseFramesMotionManager: UserHeadingProvider {
+    var headingDelegate: UserHeadingProviderDelegate? {
+        get {
+            return self._headingDelegate
+        }
+        set (newDelegate) {
+            self._headingDelegate = newDelegate
+        }
+    }
+    
     var accuracy: Double {
         return self._accuracy
     }
     
+    // TODO: Implement UserHeadingProvider.startUserHeadingUpdates
+    /*
+     - Create an update listener (CBPeripheral.didUpdateValue that transforms sensor data to a heading and then propagates the value to self._headingDelegate
+        This stuff should be in the BoseBLEDevice class. That one should provide heading update notifications that can be propagated from here!
+     */
     func startUserHeadingUpdates() {
         guard self.isConnected else {
             return
         }
         GDLogHeadphoneMotionInfo("FIXME: Start Bose sensor updates")
     }
-    
+
+    // TODO: Implement UserHeadingProvider.stopUserHeadingUpdates
     func stopUserHeadingUpdates() {
         guard self.isConnected else {
             return

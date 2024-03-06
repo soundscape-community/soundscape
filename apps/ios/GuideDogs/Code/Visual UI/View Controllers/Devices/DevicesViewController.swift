@@ -619,7 +619,7 @@ class DevicesViewController: UIViewController {
                 // Now that we have given the user instructions for calibrating, add the device (which should start the calibration)
                 AppContext.shared.deviceManager.add(device: device)
             }
-            
+
             self.state = .calibrating
             
         case .calibrating:
