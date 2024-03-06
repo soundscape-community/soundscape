@@ -406,6 +406,8 @@
 		31F12C4222569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist in Resources */ = {isa = PBXBuildFile; fileRef = 31F12C4122569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist */; };
 		31F1370422B867B800FC1860 /* GeolocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F1370322B867B800FC1860 /* GeolocationManager.swift */; };
 		31FE6C78233A7B760098D8C5 /* TelemetryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE6C77233A7B760098D8C5 /* TelemetryHelper.swift */; };
+		3D55C9112B9838B4003CF8E6 /* BoseFramesMotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D55C9102B9838B4003CF8E6 /* BoseFramesMotionManager.swift */; };
+		3D55C9132B983BA4003CF8E6 /* BoseFramesMotionManagerReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D55C9122B983BA4003CF8E6 /* BoseFramesMotionManagerReachability.swift */; };
 		568480891CB73F51004B4227 /* main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 568480881CB73F51004B4227 /* main.storyboard */; };
 		568480911CBC9C94004B4227 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568480901CBC9C94004B4227 /* HomeViewController.swift */; };
 		568480931CBC9CEE004B4227 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568480921CBC9CEE004B4227 /* SettingsViewController.swift */; };
@@ -1307,6 +1309,9 @@
 		31F12C4122569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = StreetSuffixAbbreviations_fr.plist; path = Assets/PropertyLists/StreetSuffixAbbreviations_fr.plist; sourceTree = "<group>"; };
 		31F1370322B867B800FC1860 /* GeolocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeolocationManager.swift; path = "Code/Sensors/Geolocation/Geolocation Manager/GeolocationManager.swift"; sourceTree = "<group>"; };
 		31FE6C77233A7B760098D8C5 /* TelemetryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TelemetryHelper.swift; path = Code/App/Logging/TelemetryHelper.swift; sourceTree = "<group>"; };
+		3D55C9102B9838B4003CF8E6 /* BoseFramesMotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoseFramesMotionManager.swift; sourceTree = "<group>"; };
+		3D55C9122B983BA4003CF8E6 /* BoseFramesMotionManagerReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoseFramesMotionManagerReachability.swift; sourceTree = "<group>"; };
+		3D55C9142B9848FA003CF8E6 /* SoundscapeDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SoundscapeDebug.entitlements; sourceTree = SOURCE_ROOT; };
 		568480881CB73F51004B4227 /* main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = main.storyboard; sourceTree = "<group>"; };
 		5684808F1CBC975E004B4227 /* Soundscape-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = "Soundscape-Bridging-Header.h"; path = "Code/App/Soundscape-Bridging-Header.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		568480901CBC9C94004B4227 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = HomeViewController.swift; path = "Code/Visual UI/View Controllers/Home/HomeViewController.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -3791,6 +3796,7 @@
 			children = (
 				627004E326055A4300FBF5E5 /* HeadphoneMotionManagerReachability.swift */,
 				627004EB26055A5500FBF5E5 /* HeadphoneMotionReachabilityWrapper.swift */,
+				3D55C9122B983BA4003CF8E6 /* BoseFramesMotionManagerReachability.swift */,
 			);
 			name = Reachability;
 			sourceTree = "<group>";
@@ -4101,6 +4107,7 @@
 				62B455632583FF8900665131 /* HeadphoneMotionManager.swift */,
 				620BC32F25F2A94C007DBA29 /* HeadphoneMotionManagerWrapper.swift */,
 				620BC33E25F2CC98007DBA29 /* HeadphoneMotionManagerStatus.swift */,
+				3D55C9102B9838B4003CF8E6 /* BoseFramesMotionManager.swift */,
 			);
 			name = "Headphone Motion";
 			sourceTree = "<group>";
@@ -5278,6 +5285,7 @@
 		D3D7CFCA1B3D96470020B5E9 /* Soundscape */ = {
 			isa = PBXGroup;
 			children = (
+				3D55C9142B9848FA003CF8E6 /* SoundscapeDebug.entitlements */,
 				D378E0DF1B3D97E200909E29 /* Code */,
 				D378E0EB1B3D98D800909E29 /* Assets */,
 			);
@@ -5956,6 +5964,7 @@
 				C30DDAEC2256935F00104085 /* Typeable.swift in Sources */,
 				C3F93CBF22D40A53009EF801 /* (null) in Sources */,
 				C34333AE221CDB2F00D9CECD /* FilterTableViewHeaderView.swift in Sources */,
+				3D55C9132B983BA4003CF8E6 /* BoseFramesMotionManagerReachability.swift in Sources */,
 				6201428424BF986400F003D5 /* NearbyFilterTableViewController.swift in Sources */,
 				C31BEE252215EA1B00EE9284 /* TableViewDelegate.swift in Sources */,
 				B954678A24EB2B02006866EF /* SecondaryRoadsContext.swift in Sources */,
@@ -5992,6 +6001,7 @@
 				C355858A21B7188F00218FF0 /* EnableMotionFitnessViewController.swift in Sources */,
 				316C1D5A211CDDB3006EBB0B /* StandbyViewController.swift in Sources */,
 				28162B9E24CB6A0B00B05CCC /* Locatable.swift in Sources */,
+				3D55C9112B9838B4003CF8E6 /* BoseFramesMotionManager.swift in Sources */,
 				28F94F66248845690010D2B3 /* CustomDisclosureTableViewCell.swift in Sources */,
 				62B428F72626379D005101DC /* EditableMapViewController.swift in Sources */,
 				626789B626FA58570007E566 /* RouteCompleteViewRepresentable.swift in Sources */,
@@ -6496,7 +6506,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
+				INFOPLIST_KEY_CFBundleDisplayName = "Soundscape-EARS";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6762,12 +6772,12 @@
 				BUNDLE_SPOKEN_NAME = "Soundscape Debug";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_STATIC_ANALYZER_MODE = deep;
-				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SoundscapeDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 21;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = X4H33NKGKY;
+				DEVELOPMENT_TEAM = SBXB9WC8M3;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
 				FILE_SHARING_ENABLED = YES;
@@ -6786,7 +6796,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
+				INFOPLIST_KEY_CFBundleDisplayName = "Soundscape-EARS";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6800,7 +6810,7 @@
 				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-debug";
+				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-debug-EARS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -6844,7 +6854,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
+				INFOPLIST_KEY_CFBundleDisplayName = "Soundscape-EARS";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (

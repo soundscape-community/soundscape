@@ -589,6 +589,11 @@ class DevicesViewController: UIViewController {
                 self?.state = .pairingAudio
             }))
             
+            alert.addAction(UIAlertAction(title: GDLocalizationUnnecessary(BoseFramesMotionManager.DEVICE_MODEL_NAME), style: .default, handler: { [weak self] (_) in
+                self?.selectedDeviceType = BoseFramesMotionManager.self
+                self?.state = .pairingAudio
+            }))
+            
             present(alert, animated: true, completion: nil)
             
         case .pairingAudio:
@@ -600,6 +605,8 @@ class DevicesViewController: UIViewController {
             
             if type == HeadphoneMotionManagerWrapper.self {
                 name = GDLocalizationUnnecessary("Apple AirPods")
+            } else if type == BoseFramesMotionManager.self {
+                name = GDLocalizationUnnecessary(BoseFramesMotionManager.DEVICE_MODEL_NAME)
             } else {
                 name = GDLocalizationUnnecessary("AR Headphones")
             }
