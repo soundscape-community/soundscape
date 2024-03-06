@@ -33,6 +33,12 @@ class BoseFramesMotionManager: NSObject {
     
     
     // MARK: Initializers
+    convenience init(id: UUID, name: String) {
+        self.init()
+        self._name = ""
+        self._id = id
+    }
+    
     override init() {
 
         self._name = ""
