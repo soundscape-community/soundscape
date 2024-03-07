@@ -20,7 +20,7 @@ class BoseSensorDataProcessor {
 
         switch valueAsArr[0] {
         case BoseSensorConfiguration.ROTATION_ID:
-            GDLogBLEInfo("Got an rotation data update, read 12 bytes: \(valueAsArr)")
+//            GDLogBLEInfo("Got an rotation data update, read 12 bytes: \(valueAsArr)")
             let rotationData = processQuaternionData(quaternionByteArray: valueAsArr)
             let heading = yawToHeading(yaw: rotationData.yaw)
             return HeadingValue(heading, rotationData.accuracy)
