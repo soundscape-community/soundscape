@@ -14,7 +14,8 @@ class BoseFramesMotionManager: NSObject {
     // MARK: Attributes
     private let queue: OperationQueue
     private var deviceConnectedHandler: DeviceCompletionHandler?
-
+    private var bleBoseFrames: BoseFramesBLEDevice?
+    
     // MARK: Device attributes
     private var _name: String
     let model = BoseFramesMotionManager.DEVICE_MODEL_NAME
@@ -54,6 +55,7 @@ class BoseFramesMotionManager: NSObject {
 
 // MARK: CalibratableDevice
 extension BoseFramesMotionManager: CalibratableDevice {
+    
     var name: String {
         return self._name
     }
@@ -93,36 +95,22 @@ extension BoseFramesMotionManager: CalibratableDevice {
         device.connect()
     }
 
-    
-     // TODO: Implement Device.connect
-     /*
-     - If UUID != nil
-     - Scan for BLE-device
-     - Set some status (disconnected -> connecting -> connected)?
-     - Discover services and characteristics
-     - status = connecting
-     - Start rotation sensor
-     - status = connected
-     */
     func connect() {
 
         GDLogHeadphoneMotionInfo("FIXME: connect function NOT IMPLEMENTED")
 
-        if let handler = self.deviceConnectedHandler {
-            // Dummy call to the handler, just to test app flow
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5){
-                handler(.success(self))
-            }
-//            handler(.failure(.unavailable))
+        guard !self.isConnected else {
+            GDLogHeadphoneMotionInfo("Connecting Bose Frames, but they are already connected.")
+            return
         }
+        
+        AppContext.shared.bleManager.startScan(for: BoseFramesBLEDevice.self, delegate: self)
     }
     
-    // TODO: Implement Device.disconnect Stop motion updates. Call BLEManager to disconnect
     func disconnect() {
-        GDLogHeadphoneMotionInfo("FIXME: disconnect function NOT IMPLEMENTED")
-
+        GDLogHeadphoneMotionInfo("FIXME! Disconnect called, but has no way to diconnect!")
+        stopUserHeadingUpdates()
     }
-    
 }
 
 // MARK: UserHeadingProvider
@@ -140,15 +128,12 @@ extension BoseFramesMotionManager: UserHeadingProvider {
         return self._accuracy
     }
     
-    // TODO: Implement UserHeadingProvider.startUserHeadingUpdates
-    /*
-     - Create an update listener (CBPeripheral.didUpdateValue that transforms sensor data to a heading and then propagates the value to self._headingDelegate
-        This stuff should be in the BoseBLEDevice class. That one should provide heading update notifications that can be propagated from here!
-     */
     func startUserHeadingUpdates() {
         guard self.isConnected else {
             return
         }
+        bleBoseFrames?.headingUpdateDelegate = self
+        bleBoseFrames?.startHeadTracking()
         GDLogHeadphoneMotionInfo("FIXME: Start Bose sensor updates")
     }
 
@@ -157,6 +142,45 @@ extension BoseFramesMotionManager: UserHeadingProvider {
         guard self.isConnected else {
             return
         }
+        bleBoseFrames?.headingUpdateDelegate = nil
+        bleBoseFrames?.stopHeadTracking()
         GDLogHeadphoneMotionInfo("FIXME: Stop Bose sensor updates")
+    }
+}
+
+extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
+    func onHeadingUpdate(newHeading: HeadingValue!) {
+        self._accuracy = Double(newHeading.accuracy!)
+        self._calibrationState = (_accuracy < 5 ?  .calibrated : .calibrating )
+        self._headingDelegate?.userHeadingProvider(self, didUpdateUserHeading: newHeading)
+    }
+}
+
+extension BoseFramesMotionManager: BLEManagerScanDelegate {
+    func onDeviceStateChanged(_ device: BLEDevice) {
+        if(device.state != .ready) {
+            GDLogHeadphoneMotionInfo("Bose Frames are not ready... Something perhaps needs to be done")
+        }
+    }
+    
+    func onDeviceNameChanged(_ device: BLEDevice, _ name: String) {
+        self._name = name
+    }
+    
+    func onDevicesChanged(_ discovered: [BLEDevice]) {
+        for i in 0..<discovered.count {
+            if(discovered[i] is BoseFramesBLEDevice) {
+                self.bleBoseFrames = (discovered[i] as! BoseFramesBLEDevice)
+                let device = self
+                device.isConnected = true
+                self.queue.addOperation {
+                    if let callback = device.deviceConnectedHandler {
+                        callback(.success(device))
+                    }
+                    device.startUserHeadingUpdates()
+                }
+                break
+            }
+        }
     }
 }
