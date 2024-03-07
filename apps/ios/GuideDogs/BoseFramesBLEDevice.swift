@@ -15,7 +15,16 @@ struct BOSE_FRAMES_SERVICE_CONSTANTS {
     static let CBUUID_HEADTRACKING_DATA_CHARACTERISTIC: CBUUID = CBUUID(string: "56A72AB8-4988-4CC8-A752-FBD1D54A953D")
     static let CBUUID_HEADTRACKING_INFO_CHARACTERISTIC: CBUUID = CBUUID(string: "855CB3E7-98FF-42A6-80FC-40B32A2221C1")
 }
-
+protocol BoseInitializationDoneDelegate {
+    func onBoseConfigDidRead()
+}
+private enum BoseFramesState: String, Codable {
+    case unknown
+    case discovered
+    case connecting
+    case connected
+    case ready
+}
 class BoseFramesBLEDevice: BaseBLEDevice {
 
     private var boseSensorConfig: CBCharacteristic?
@@ -23,7 +32,12 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     private let eventProcessor: BoseSensorDataProcessor
     private var sensorConfig: BoseSensorConfiguration?
     private var isHeadtrackingStarted: Bool = false
+    private var boseConnectionState: BoseFramesState = .unknown
+    private var isFirstConnection: Bool = true
+    
+//    private var hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease: Bool = false
     var headingUpdateDelegate: BoseHeadingUpdateDelegate?
+    var initializationDelegate: BoseInitializationDoneDelegate?
     
     override class var services: [BLEDeviceService.Type] {
         get {
@@ -47,6 +61,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         guard let config = sensorConfig
         else {
             GDLogBLEError("Cannot start headtracking. Bose headphones are not ready (missing config)")
+//            hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease = true
             return
         }
         
@@ -54,6 +69,9 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         let myData = config.toConfigToData()
         self.writeValueToConfig(value: myData)
         self.isHeadtrackingStarted = true
+        let state: HeadsetConnectionEvent.State = isFirstConnection ? .firstConnection : .reconnected
+        AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: state))
+        isFirstConnection = false
     }
     
     func stopHeadTracking() {
@@ -67,8 +85,10 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         let myData = config.toConfigToData()
         self.writeValueToConfig(value: myData)
         self.isHeadtrackingStarted = false
+        AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
     }
     
+
     func isHeadTrackingStarted() -> Bool {
         return self.isHeadtrackingStarted
     }
@@ -89,47 +109,81 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     }
     
     // MARK: Internal stuff
-    internal override func initializationComplete() {
-        GDLogBLEInfo("caught init complete. Leta upp Charateristics")
+   /* override internal func onDidConnect(_ peripheral: CBPeripheral) {
+        super.onDidConnect(peripheral)
+        GDLogBLEInfo("Bose didConnect")
+    }*/
+    
+    internal override func onConnectionComplete() {
+        super.onConnectionComplete()
+        GDLogBLEInfo("Connection to Bose Frames has completed.")
+        boseConnectionState = .connected
+        
         for service in self.peripheral.services! {
             if (service.uuid.uuidString == "FDD2") {
                 for c in service.characteristics! {
                     if c.uuid.uuidString == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_CONFIG_CHARACTERISTIC.uuidString {
+                        GDLogBLEInfo("Found Bose Config Characteristic")
                         self.boseSensorConfig = c
 //                        self.peripheral.setNotifyValue(true, for: self.boseSensorConfig!)
                         self.peripheral.readValue(for: c)
                         continue
                     }
                     if c.uuid.uuidString == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_DATA_CHARACTERISTIC.uuidString {
+                        GDLogBLEInfo("Found Bose Data Characteristic")
                         self.boseSensorData = c
-  //                      boseDevice.setNotifyValue(true, for: self.boseHeadTrackingData!)
+                        self.peripheral.setNotifyValue(true, for: c)
                         //   boseDevice.readValue(for: self.boseHeadTrackingData!)
                         continue
                     }
                 }
             }
         }
-        super.initializationComplete()
     }
     
     internal override func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        guard let value = characteristic.value 
+        super.peripheral(peripheral, didUpdateValueFor: characteristic, error: error)
+        
+        guard let value = characteristic.value
         else { return }
         
         switch characteristic.uuid {
         case BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_CONFIG_CHARACTERISTIC:
+            GDLogBLEInfo("Read Bose sensor config")
             sensorConfig = BoseSensorConfiguration.parseValue(data: value)
-        
+            boseConnectionState = .ready
+            
+            // Signal, somehow, that the device is ready...
+            initializationDelegate?.onBoseConfigDidRead()
+            
+            /*
+             if(hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease) {
+             
+             hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease = false
+             startHeadTracking()
+             }*/
+            
         case BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_DATA_CHARACTERISTIC:
             let heading = eventProcessor.processSensorData(eventData: value)
             if let h = heading, let delegate = headingUpdateDelegate {
                 delegate.onHeadingUpdate(newHeading: h)
+            } else {
+                GDLogBLEInfo("ERROR: No heading update delegate!")
             }
             
         default:
             GDLogBLEInfo("Got updated value for an unexpected characteristic: \(characteristic.uuid.uuidString) = \(characteristic.value)")
         }
-
+    }
+    internal override func onWasDiscovered(_ peripheral: CBPeripheral, advertisementData: [String : Any]) {
+        super.onWasDiscovered(peripheral, advertisementData: advertisementData)
+        switch boseConnectionState {
+        case .discovered, .unknown:
+            AppContext.shared.bleManager.connect(self)
+            boseConnectionState = .connecting
+        case .connected, .connecting, .ready:
+            GDLogBLEInfo("Received an onWasDiscovered, but device has already been discovered. Ignoring...")
+        }
     }
 }
 
