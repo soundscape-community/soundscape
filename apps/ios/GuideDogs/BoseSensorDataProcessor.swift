@@ -133,7 +133,12 @@ class BoseSensorDataProcessor {
     }
 
     private func yawToHeading(yaw: Double) -> Double {
-        return abs(180 - (((yaw + Double.pi) / (2 * Double.pi)) * 360))
+        let bearing = abs(180 - (((yaw + Double.pi) / (2 * Double.pi)) * 360))
+//        let bearingtest2 = ((((yaw + Double.pi)/(2*Double.pi))*360) + 180) % 360
+        let toPositiveBearing = ((yaw + Double.pi) / (2 * Double.pi)) * 360
+        let correctRotationBearing = (toPositiveBearing + 180).truncatingRemainder(dividingBy: 360)
+        GDLogBLEInfo("Yaw \(yaw) to bearing \(bearing) correctedAndRotated \(correctRotationBearing)")
+        return correctRotationBearing
     }
     
     private func processQuaternionData(quaternionByteArray: [UInt8]) -> RotationData {

@@ -10,24 +10,30 @@ import Foundation
 import Combine
 
 
-
+extension Notification.Name {
+    static let boseFramesDeviceConnected = Notification.Name("GDABoseFramesConnected")
+    static let boseFramesDeviceConnectionFailed = Notification.Name("GDABoseFramesConnectionFailed")
+}
 class BoseFramesMotionManager: NSObject {
-    
+
     static let DEVICE_MODEL_NAME: String = GDLocalizationUnnecessary("Bose Frames (Rondo)")
-    
+        
     // MARK: Attributes
     private let queue: OperationQueue
     //    private var deviceConnectedHandler: DeviceCompletionHandler?
     private var bleBoseFrames: BoseFramesBLEDevice?
-    private var initializationSemaphore: DispatchSemaphore?
+//    private var initializationSemaphore: DispatchSemaphore?
+    private var connectionTimer: Timer?
+    private let connectionTimeOutSeconds: Double = 30.0
     private(set) var status: CurrentValueSubject<HeadphoneMotionStatus, Never>
     
     // MARK: Device attributes
     private var _name: String
     let model = BoseFramesMotionManager.DEVICE_MODEL_NAME
     let type: DeviceType = .boseFramesRondo
-//    var isConnected = false
-    var isFirstConnection = false
+    private(set) var isConnecting = false
+    var isFirstConnection = true
+    private let accuracy_calibration_required_threshold: Double = 5.0 // If accuracy is above this value, consider the device calibrating
     private var _calibrationState: DeviceCalibrationState = .needsCalibrating
     private var _calibrationOverridden: Bool = false
     private var _deviceDelegate: DeviceDelegate?
@@ -106,27 +112,11 @@ extension BoseFramesMotionManager: CalibratableDevice {
     static func setupDevice(callback: @escaping DeviceCompletionHandler) {
         GDLogHeadphoneMotionInfo("Setting up new Bose device")
         let device = BoseFramesMotionManager()
-        let semaphore = DispatchSemaphore(value: 0)
-        device.initializationSemaphore = semaphore
-        
         device.isFirstConnection = true
-        //        device.deviceConnectedHandler = callback
+
+        callback(.success(device))
         
         device.connect()
-        device.status.value = .disconnected
-        // I Think this is a pretty ugly way of making the initialization syncronous, but it must be done in sync...
-        semaphore.wait()
-   /*     callback(.success(device))
-*/
-        callback(.success(device))
-/*        let result = semaphore.wait(timeout: .now() + 30)
-        switch result {
-        case .success:
-            callback(.success(device))
-        case .timedOut:
-            callback(.failure(.failedConnection))
-        }
-  */
     }
     
     func connect() {
@@ -135,12 +125,27 @@ extension BoseFramesMotionManager: CalibratableDevice {
             GDLogHeadphoneMotionInfo("Connecting Bose Frames, but they are already connected.")
             return
         }
+        isConnecting = true
         
         AppContext.shared.bleManager.startScan(for: BoseFramesBLEDevice.self, delegate: self)
+        
+        connectionTimer = Timer.scheduledTimer(withTimeInterval: connectionTimeOutSeconds, repeats: false) {timer in
+            self.queue.addOperation {
+                GDLogHeadphoneMotionError("Bose: Connection timed out!")
+                AppContext.shared.bleManager.stopScan()
+                self.status.value = .disconnected
+                self.isConnecting = false
+                NotificationCenter.default.post(name: Notification.Name.boseFramesDeviceConnectionFailed, object: nil)
+                self.connectionTimer?.invalidate()
+                self.connectionTimer = nil
+            }
+        }
     }
     
     func disconnect() {
         GDLogHeadphoneMotionInfo("FIXME! Disconnect called, but has no way to diconnect!")
+        connectionTimer?.invalidate()
+        connectionTimer = nil
         status.value = .disconnected
         stopUserHeadingUpdates()
     }
@@ -196,11 +201,13 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
             if previousCalibrationState != .calibrated {
                 status.value = .calibrated
                 _calibrationState = .calibrated
+                GDLogHeadphoneMotionInfo("Bose: Done calibrating!")
                 NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidFinish, object: nil)
             }
         } else if previousCalibrationState != .calibrating {
             status.value = .connected
             _calibrationState = .calibrating
+            GDLogHeadphoneMotionInfo("Bose: Start calibrating!")
             NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidStart, object: nil)
         }
 
@@ -248,11 +255,15 @@ extension BoseFramesMotionManager: BLEManagerScanDelegate {
 extension BoseFramesMotionManager: BoseInitializationDoneDelegate {
     func onBoseConfigDidRead() {
         GDLogHeadphoneMotionInfo("Config has been read by the BLE-device, we set to go!")
+
+        connectionTimer?.invalidate()
+        connectionTimer = nil
+        isConnecting = false
         AppContext.shared.bleManager.stopScan()
+        NotificationCenter.default.post(name: Notification.Name.boseFramesDeviceConnected, object: nil)
         status.value = (_calibrationState == .calibrated ? .calibrated : .connected)
-        
+        isFirstConnection = false
         // Need to start the sensor to calibrate?
-        
-        initializationSemaphore?.signal()
+//        initializationSemaphore?.signal()
     }
 }
