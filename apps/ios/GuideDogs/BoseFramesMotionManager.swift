@@ -149,6 +149,9 @@ extension BoseFramesMotionManager: CalibratableDevice {
         isConnecting = false
         status.value = .disconnected
         stopUserHeadingUpdates()
+        if(self._calibrationState == .calibrating) {
+            NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationCancelled, object: nil)
+        }
         deviceDelegate?.didDisconnectDevice(self)
     }
 }

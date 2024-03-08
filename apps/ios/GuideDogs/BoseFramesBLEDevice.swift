@@ -134,7 +134,6 @@ class BoseFramesBLEDevice: BaseBLEDevice {
                     if c.uuid.uuidString == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_CONFIG_CHARACTERISTIC.uuidString {
                         GDLogBLEInfo("Found Bose Config Characteristic")
                         self.boseSensorConfig = c
-//                        self.peripheral.setNotifyValue(true, for: self.boseSensorConfig!)
                         self.peripheral.readValue(for: c)
                         continue
                     }
@@ -159,7 +158,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
         } else {
             GDLogBLEInfo("Bose was disconnected but wasn't ready so skipping notification")
-        }        
+        }
     }
     
     internal override func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
