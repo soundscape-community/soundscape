@@ -262,7 +262,7 @@ class DevicesViewController: UIViewController {
                         }
                         
                         let oldValue = self.state
-                        
+                        GDLogHeadphoneMotionInfo("Bose: State changed to \(newValue)")
                         /// Special case for Bose. When connecting, we need to wait for BLE to discover etc.
                         /// When setting connectedDevice, it triggers the status subscriber with another .disconnected
                         /// which in turn throws us back to the Connect Headphones-view. So, skip the transition if
@@ -275,11 +275,11 @@ class DevicesViewController: UIViewController {
                             case .unavailable, .inactive: return // no-op
                             case .disconnected:
                                 GDLogHeadphoneMotionInfo("Bose: State changed to .disconnected")
-//                                self.state = .disconnected
-                                self.state = .paired
+                                self.state = .disconnected
+//                                self.state = .paired
                             case .connected:
                                 //self.state = .completedPairing
-                                self.state = .paired
+                                self.state = .calibrating //.paired
                             case .calibrated:
                                 self.state = device.isFirstConnection ? .completedPairing : .connected
                             }
@@ -723,6 +723,7 @@ class DevicesViewController: UIViewController {
             
         case .completedPairing:
             // Return to the home screen
+            AppContext.process(HeadsetTestEvent(.end))
             performSegue(withIdentifier: Segue.unwind, sender: self)
             
         case .paired, .connected:

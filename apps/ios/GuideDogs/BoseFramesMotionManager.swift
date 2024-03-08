@@ -73,7 +73,6 @@ extension BoseFramesMotionManager: CalibratableDevice {
         else {
             return false
         }
-        
         return status.value == .calibrated || status.value == .connected // boseDevice.state == .ready
     }
     
@@ -143,9 +142,10 @@ extension BoseFramesMotionManager: CalibratableDevice {
     }
     
     func disconnect() {
-        GDLogHeadphoneMotionInfo("FIXME! Disconnect called, but has no way to diconnect!")
+        GDLogHeadphoneMotionInfo("Disconnect called")
         connectionTimer?.invalidate()
         connectionTimer = nil
+        isConnecting = false
         status.value = .disconnected
         stopUserHeadingUpdates()
     }
@@ -199,13 +199,13 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
         self._accuracy = Double(newHeading.accuracy!)
         if _accuracy < 5 {
             if previousCalibrationState != .calibrated {
-                status.value = .calibrated
+//                status.value = .calibrated
                 _calibrationState = .calibrated
-                GDLogHeadphoneMotionInfo("Bose: Done calibrating!")
+//                GDLogHeadphoneMotionInfo("Bose: Done calibrating!")
                 NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidFinish, object: nil)
             }
         } else if previousCalibrationState != .calibrating {
-            status.value = .connected
+//            status.value = .connected
             _calibrationState = .calibrating
             GDLogHeadphoneMotionInfo("Bose: Start calibrating!")
             NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidStart, object: nil)
@@ -244,7 +244,7 @@ extension BoseFramesMotionManager: BLEManagerScanDelegate {
             for i in 0..<discovered.count {
                 if(discovered[i] is BoseFramesBLEDevice) {
                     self.bleBoseFrames = (discovered[i] as! BoseFramesBLEDevice)
-                    bleBoseFrames?.initializationDelegate = self
+                    bleBoseFrames?.deviceStateChangedDelegate = self
                     break
                 }
             }
@@ -252,8 +252,13 @@ extension BoseFramesMotionManager: BLEManagerScanDelegate {
     }
 }
 
-extension BoseFramesMotionManager: BoseInitializationDoneDelegate {
-    func onBoseConfigDidRead() {
+extension BoseFramesMotionManager: BoseStateChangeDelegate {
+    func onBoseDeviceDisconnected() {
+        GDLogHeadphoneMotionInfo("Bose was disconnected (StateChanged)")
+        self.disconnect()
+    }
+    
+    func onBoseDeviceReady() {
         GDLogHeadphoneMotionInfo("Config has been read by the BLE-device, we set to go!")
 
         connectionTimer?.invalidate()

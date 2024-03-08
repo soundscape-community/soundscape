@@ -15,8 +15,9 @@ struct BOSE_FRAMES_SERVICE_CONSTANTS {
     static let CBUUID_HEADTRACKING_DATA_CHARACTERISTIC: CBUUID = CBUUID(string: "56A72AB8-4988-4CC8-A752-FBD1D54A953D")
     static let CBUUID_HEADTRACKING_INFO_CHARACTERISTIC: CBUUID = CBUUID(string: "855CB3E7-98FF-42A6-80FC-40B32A2221C1")
 }
-protocol BoseInitializationDoneDelegate {
-    func onBoseConfigDidRead()
+protocol BoseStateChangeDelegate {
+    func onBoseDeviceReady()
+    func onBoseDeviceDisconnected()
 }
 private enum BoseFramesState: String, Codable {
     case unknown
@@ -37,7 +38,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     
 //    private var hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease: Bool = false
     var headingUpdateDelegate: BoseHeadingUpdateDelegate?
-    var initializationDelegate: BoseInitializationDoneDelegate?
+    var deviceStateChangedDelegate: BoseStateChangeDelegate?
     
     override class var services: [BLEDeviceService.Type] {
         get {
@@ -140,6 +141,18 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             }
         }
     }
+    internal override func onDidDisconnect(_ peripheral: CBPeripheral) {
+        let wasReady: Bool = (state == .ready)
+        super.onDidDisconnect(peripheral)
+
+        if (wasReady){
+            GDLogBLEInfo("Bose was disconnected, notifying of state change")
+            deviceStateChangedDelegate?.onBoseDeviceDisconnected()
+            AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
+        } else {
+            GDLogBLEInfo("Bose was disconnected but wasn't ready so skipping notification")
+        }
+    }
     
     internal override func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         super.peripheral(peripheral, didUpdateValueFor: characteristic, error: error)
@@ -154,7 +167,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             boseConnectionState = .ready
             
             // Signal, somehow, that the device is ready...
-            initializationDelegate?.onBoseConfigDidRead()
+            deviceStateChangedDelegate?.onBoseDeviceReady()
             
             /*
              if(hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease) {
