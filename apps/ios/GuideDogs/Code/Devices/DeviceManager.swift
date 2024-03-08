@@ -237,7 +237,7 @@ extension DeviceManager {
         case .apple:
             return HeadphoneMotionManagerWrapper(id: uuid, name: name)
         case .boseFramesRondo:
-            return BoseFramesMotionManager(id: uuid, name: name)
+            return BoseFramesMotionManager()//id: uuid, name: name)
         }
     }
 }
