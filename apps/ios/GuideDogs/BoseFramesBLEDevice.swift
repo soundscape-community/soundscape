@@ -35,8 +35,17 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     private var isHeadtrackingStarted: Bool = false
     private var boseConnectionState: BoseFramesState = .unknown
     private var isFirstConnection: Bool = true
+    var name: String? {
+        get {            
+            return self.peripheral.name
+        }
+    }
+    var uuid: UUID {
+        get {
+            return self.peripheral.identifier
+        }
+    }
     
-//    private var hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease: Bool = false
     var headingUpdateDelegate: BoseHeadingUpdateDelegate?
     var deviceStateChangedDelegate: BoseStateChangeDelegate?
     
@@ -51,7 +60,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         eventProcessor = BoseSensorDataProcessor()
         super.init(peripheral: peripheral, type: deviceType, delegate: delegate)
     }
-    // Denna anropas från BLEManager när en enhet hittades
+    
     required convenience init(peripheral: CBPeripheral, delegate: BLEDeviceDelegate?) {
         self.init(peripheral: peripheral, type: .headset, delegate: delegate)
     }
@@ -62,7 +71,6 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         guard let config = sensorConfig
         else {
             GDLogBLEError("Cannot start headtracking. Bose headphones are not ready (missing config)")
-//            hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease = true
             return
         }
         
@@ -151,7 +159,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
         } else {
             GDLogBLEInfo("Bose was disconnected but wasn't ready so skipping notification")
-        }
+        }        
     }
     
     internal override func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -165,16 +173,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             GDLogBLEInfo("Read Bose sensor config")
             sensorConfig = BoseSensorConfiguration.parseValue(data: value)
             boseConnectionState = .ready
-            
-            // Signal, somehow, that the device is ready...
             deviceStateChangedDelegate?.onBoseDeviceReady()
-            
-            /*
-             if(hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease) {
-             
-             hasRequestedToStartButWasMissingConfigSoGoAheadAndStartWhenConfigHasBeenReadPlease = false
-             startHeadTracking()
-             }*/
             
         case BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_DATA_CHARACTERISTIC:
             let heading = eventProcessor.processSensorData(eventData: value)

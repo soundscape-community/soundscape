@@ -99,7 +99,7 @@ class DevicesViewController: UIViewController {
                 case is HeadphoneMotionManagerWrapper:
                     return GDLocalizedString("devices.connect_headset.completed.airpods")
                 case is BoseFramesMotionManager:
-                    return GDLocalizedString("devices.connect_headset.completed.airpods")
+                    return GDLocalizedString("TODO: Add a localized string for when we reach connection state .completedPairing, which we now have done!")
                 default:
                     return nil
                 }
@@ -131,7 +131,7 @@ class DevicesViewController: UIViewController {
                 case is HeadphoneMotionManagerWrapper:
                     return GDLocalizedString("devices.explain_ar.connected.airpods")
                 case is BoseFramesMotionManager:
-                    return GDLocalizedString("TODO: Add localizedString for when Bose have been connected!")//"devices.explain_ar.connected.airpods")
+                    return GDLocalizedString("TODO: Add localizedString for when Bose have been connected, as they now have done!")//"devices.explain_ar.connected.airpods")
                 
                 default:
                     return nil
@@ -794,13 +794,11 @@ class DevicesViewController: UIViewController {
                     self.connectedDevice = device
                     GDLogHeadphoneMotionInfo("Bose: Done setting connectedDevice")
                     
-//                    self.state = .pairingAudio
                     NotificationCenter.default.addObserver(forName: Notification.Name.boseFramesDeviceConnected, object: nil, queue: OperationQueue.current) { (_) in
                         GDLogHeadphoneMotionInfo("Bose: Caught notification of connection!")
                         AppContext.shared.deviceManager.add(device: device)
                         
-                        self.state = .calibrating //.completedPairing // .firstConnection//.paired
-//                        AppContext.shared.deviceManager.add(device: device)
+                        self.state = .calibrating
                         DispatchQueue.main.async { [weak self] in
                             self?.renderView()
                         }
@@ -975,7 +973,6 @@ extension DevicesViewController: DeviceManagerDelegate {
                 dismiss(animated: true, completion: nil)
                 return
             }
-            
             state = .paired
         } else {
             state = .disconnected

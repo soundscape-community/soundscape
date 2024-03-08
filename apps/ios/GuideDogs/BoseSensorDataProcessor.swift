@@ -20,13 +20,12 @@ class BoseSensorDataProcessor {
 
         switch valueAsArr[0] {
         case BoseSensorConfiguration.ROTATION_ID:
-//            GDLogBLEInfo("Got an rotation data update, read 12 bytes: \(valueAsArr)")
             let rotationData = processQuaternionData(quaternionByteArray: valueAsArr)
             let heading = yawToHeading(yaw: rotationData.yaw)
             return HeadingValue(heading, rotationData.accuracy)
        
         default:
-            GDLogHeadphoneMotionInfo("EventProcessor received data for an unsupporter sensor type: \(valueAsArr[0])")
+            GDLogHeadphoneMotionInfo("EventProcessor received data for an unsupported sensor type: \(valueAsArr[0])")
             return nil
     /*
         case self.currentSensorConfig?.accelerometerId:
@@ -54,7 +53,6 @@ class BoseSensorDataProcessor {
 
     
     // MARK: Experiments
-     // Yaw: 0: North=0 (+/- 10% of pi), South = abs(pi +/10%), Neg: W (-pi/2), Pos: E (pi/2)
     private static func dataToYawString(_ value: Double) -> String {
         let absValue = abs(value)
         let sign = (value < 0 ? -1 : 1)
@@ -100,6 +98,11 @@ class BoseSensorDataProcessor {
     // Processing vector data from: https://github.com/zakaton/Bose-Frames-Web-SDK
     private func processVectorData(vectorByteArray: [UInt8]) {
         let sensorId: UInt8 = vectorByteArray[0] // 0=Accellerometer 1=Gyroscope 2=Rotation 3=Game-rotation
+        guard sensorId == 0 || sensorId == 1 else {
+            GDLogBLEError("Attempted do decode Bose sensor data as vector, but received data from a sensor that does not deliver vector data!")
+            return
+        }
+                
         let timeStamp:UInt16 = BitUtils.twoBytesToUInt16(vectorByteArray[1], vectorByteArray[2])
         let x_raw: Int16 = BitUtils.twoBytesToInt16(vectorByteArray[3], vectorByteArray[4])
         let y_raw: Int16 = BitUtils.twoBytesToInt16(vectorByteArray[5], vectorByteArray[6])
@@ -133,11 +136,9 @@ class BoseSensorDataProcessor {
     }
 
     private func yawToHeading(yaw: Double) -> Double {
-        let bearing = abs(180 - (((yaw + Double.pi) / (2 * Double.pi)) * 360))
-//        let bearingtest2 = ((((yaw + Double.pi)/(2*Double.pi))*360) + 180) % 360
         let toPositiveBearing = ((yaw + Double.pi) / (2 * Double.pi)) * 360
         let correctRotationBearing = (toPositiveBearing + 180).truncatingRemainder(dividingBy: 360)
-        GDLogBLEInfo("Yaw \(yaw) to bearing \(bearing) correctedAndRotated \(correctRotationBearing)")
+        GDLogBLEVerbose("Bose heading update: Yaw \(yaw) to bearing \(correctRotationBearing)")
         return correctRotationBearing
     }
     
@@ -148,6 +149,12 @@ class BoseSensorDataProcessor {
     // Processing quaternion data from: https://github.com/zakaton/Bose-Frames-Web-SDK
     private func processQuaternionData(quaternionByteArray: [UInt8], hasAccuracy: Bool) -> RotationData {
         let sensorId: UInt8 = quaternionByteArray[0] // 0=Accellerometer 1=Gyroscope 2=Rotation 3=Game-rotation
+        
+        guard sensorId == 2 || sensorId == 3 else {
+            GDLogBLEError("Bose: Attempted to decode sensor as quaternion data, but the provided data is of the wrong type (sensor: \(sensorId)")
+            return RotationData(yaw: 0, roll: 0, pitch: 0, accuracy: 10000.0)
+        }        
+        
         let timeStamp:UInt16 = BitUtils.twoBytesToUInt16(quaternionByteArray[1], quaternionByteArray[2])
         let x_raw: Int16 = BitUtils.twoBytesToInt16(quaternionByteArray[3], quaternionByteArray[4])
         let y_raw: Int16 = BitUtils.twoBytesToInt16(quaternionByteArray[5], quaternionByteArray[6])
