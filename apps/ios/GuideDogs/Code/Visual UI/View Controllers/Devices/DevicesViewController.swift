@@ -385,11 +385,19 @@ class DevicesViewController: UIViewController {
                         self.state = .paired
                     }
                 } else if let first = first as? BoseFramesMotionManager {
-                    if first.status.value == .calibrated {
+                    if first.status.value == .calibrated ||  first.status.value == .connected || first.isConnected {
                         self.state = .connected
+                        AppContext.shared.deviceManager.add(device: first)
+                        first.startUserHeadingUpdates()
+                        
+                    } else if first.isConnecting {
+                        self.state = .pairingAudio
+                        
                     } else {
+                        GDLogHeadphoneMotionInfo("Entered Devices view with Bose as current device, but no idea what state to initialize the view in! Just setting it to paired...")
                         self.state = .paired
                     }
+                                 
                 } else if first.isConnected {
                     state = .connected
                 } else {
@@ -677,6 +685,9 @@ class DevicesViewController: UIViewController {
                 self?.selectedDeviceType = BoseFramesMotionManager.self
                 self?.state = .pairingAudio
             }))
+
+            // In case the test sound was playing when we disconnected
+            AppContext.process(HeadsetTestEvent(.end))
             
             present(alert, animated: true, completion: nil)
             
@@ -703,8 +714,11 @@ class DevicesViewController: UIViewController {
                 // Now that we have given the user instructions for calibrating, add the device (which should start the calibration)
                 AppContext.shared.deviceManager.add(device: device)
             }
-
-            self.state = .calibrating
+            
+            if let boseDev = self.connectedDevice as? BoseFramesMotionManager {
+                self.state = (boseDev.status.value == .calibrated ? .completedPairing : .calibrating)
+                self.state = .calibrating
+            }
             
         case .calibrating:
             // Override the calibration procedure
@@ -726,8 +740,8 @@ class DevicesViewController: UIViewController {
             AppContext.process(HeadsetTestEvent(.end))
             performSegue(withIdentifier: Segue.unwind, sender: self)
             
-        case .paired, .connected:
-                        
+        case .paired:
+            /// There's Cancel-button
             if let dev = connectedDevice as? BoseFramesMotionManager, self.state == .paired {
                 dev.disconnect()
                 connectedDevice = nil
@@ -751,6 +765,8 @@ class DevicesViewController: UIViewController {
                     self?.present(alert, animated: true, completion: nil)
                 }
             }
+        case .connected:
+            GDLogHeadphoneMotionInfo("---------->>>>>>>>> HELLO!!!! CAUGHT A PRIMARY BUTTON ACTION WHEN CURRENT STATE IS .CONNECTED!!! WHAT MUST BE DONE HERE???")
             
         case .testHeadset:
             // Stop the test
@@ -797,8 +813,9 @@ class DevicesViewController: UIViewController {
                     NotificationCenter.default.addObserver(forName: Notification.Name.boseFramesDeviceConnected, object: nil, queue: OperationQueue.current) { (_) in
                         GDLogHeadphoneMotionInfo("Bose: Caught notification of connection!")
                         AppContext.shared.deviceManager.add(device: device)
+                        guard let device = self.connectedDevice as? BoseFramesMotionManager else {return}
                         
-                        self.state = .calibrating
+                        self.state = (device.status.value == .calibrated ? .completedPairing : .calibrating)
                         DispatchQueue.main.async { [weak self] in
                             self?.renderView()
                         }
@@ -885,8 +902,8 @@ extension DevicesViewController: DeviceManagerDelegate {
         guard let calibratableDevice = device as? CalibratableDevice else {
             if let device = device as? HeadphoneMotionManagerWrapper, device.isFirstConnection {
                 state = .completedPairing
-            } else if let device = device as? BoseFramesMotionManager, device.isFirstConnection {
-                state = .completedPairing
+//            } else if let device = device as? BoseFramesMotionManager, device.isFirstConnection {
+//                state = .completedPairing
             } else {
                 state = .connected
             }

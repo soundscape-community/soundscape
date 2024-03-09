@@ -138,7 +138,7 @@ class BoseSensorDataProcessor {
     private func yawToHeading(yaw: Double) -> Double {
         let toPositiveBearing = ((yaw + Double.pi) / (2 * Double.pi)) * 360
         let correctRotationBearing = (toPositiveBearing + 180).truncatingRemainder(dividingBy: 360)
-        GDLogBLEVerbose("Bose heading update: Yaw \(yaw) to bearing \(correctRotationBearing)")
+        //GDLogBLEVerbose("Bose heading update: Yaw \(yaw) to bearing \(correctRotationBearing)")
         return correctRotationBearing
     }
     
