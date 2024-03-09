@@ -131,7 +131,7 @@ class DevicesViewController: UIViewController {
                 case is HeadphoneMotionManagerWrapper:
                     return GDLocalizedString("devices.explain_ar.connected.airpods")
                 case is BoseFramesMotionManager:
-                    return GDLocalizedString("TODO: Add localizedString for when Bose have been connected, as they now have done!")//"devices.explain_ar.connected.airpods")
+                    return "TODO: Add localizedString for when Bose have been connected, as they now have done!" //"devices.explain_ar.connected.airpods")
                 
                 default:
                     return nil
