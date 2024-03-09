@@ -60,8 +60,8 @@ class BoseFramesMotionManager: NSObject {
 // MARK: CalibratableDevice
 extension BoseFramesMotionManager: CalibratableDevice {
         var isConnected: Bool {
-        if bleBoseFrames != nil {
-            return status.value == .calibrated || status.value == .connected // boseDevice.state == .ready
+        if let boseDevice = bleBoseFrames  {
+            return boseDevice.state == .ready //return status.value == .calibrated || status.value == .connected // boseDevice.state == .ready
         }
         else {
             return false
@@ -198,10 +198,10 @@ extension BoseFramesMotionManager: UserHeadingProvider {
 extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
     func onHeadingUpdate(newHeading: HeadingValue!) {
         let previousCalibrationState = _calibrationState
-        GDLogHeadphoneMotionInfo("Got heading update: \(newHeading.value) : \(newHeading.accuracy!)")
+        GDLogHeadphoneMotionVerbose("Got heading update: \(newHeading.value) : \(newHeading.accuracy!)")
         
         self._accuracy = Double(newHeading.accuracy!)
-        if _accuracy < 5 {
+        if _accuracy < self.accuracy_calibration_required_threshold {
             if previousCalibrationState != .calibrated {
 //                status.value = .calibrated
                 _calibrationState = .calibrated
@@ -269,7 +269,7 @@ extension BoseFramesMotionManager: BoseStateChangeDelegate {
         isConnecting = false
         AppContext.shared.bleManager.stopScan()
         NotificationCenter.default.post(name: Notification.Name.boseFramesDeviceConnected, object: nil)
-        status.value = (_calibrationState == .calibrated ? .calibrated : .connected)
+//        status.value = (_calibrationState == .calibrated ? .calibrated : .connected)
         isFirstConnection = false
     }
 }

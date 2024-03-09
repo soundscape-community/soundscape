@@ -183,9 +183,10 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             }
             
         default:
-            GDLogBLEInfo("Got updated value for an unexpected characteristic: \(characteristic.uuid.uuidString) = \(characteristic.value)")
+            GDLogBLEVerbose("Got updated value for an unexpected characteristic: \(characteristic.uuid.uuidString) = \(characteristic.value)")
         }
     }
+    
     internal override func onWasDiscovered(_ peripheral: CBPeripheral, advertisementData: [String : Any]) {
         super.onWasDiscovered(peripheral, advertisementData: advertisementData)
         switch boseConnectionState {
