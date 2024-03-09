@@ -15,7 +15,7 @@ struct BOSE_FRAMES_SERVICE_CONSTANTS {
     static let CBUUID_HEADTRACKING_DATA_CHARACTERISTIC: CBUUID = CBUUID(string: "56A72AB8-4988-4CC8-A752-FBD1D54A953D")
     static let CBUUID_HEADTRACKING_INFO_CHARACTERISTIC: CBUUID = CBUUID(string: "855CB3E7-98FF-42A6-80FC-40B32A2221C1")
 }
-protocol BoseStateChangeDelegate {
+protocol BoseBLEStateChangeDelegate {
     func onBoseDeviceReady()
     func onBoseDeviceDisconnected()
 }
@@ -47,7 +47,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     }
     
     var headingUpdateDelegate: BoseHeadingUpdateDelegate?
-    var deviceStateChangedDelegate: BoseStateChangeDelegate?
+    var deviceStateChangedDelegate: BoseBLEStateChangeDelegate?
     
     override class var services: [BLEDeviceService.Type] {
         get {

@@ -99,7 +99,7 @@ class DevicesViewController: UIViewController {
                 case is HeadphoneMotionManagerWrapper:
                     return GDLocalizedString("devices.connect_headset.completed.airpods")
                 case is BoseFramesMotionManager:
-                    return GDLocalizedString("TODO: Add a localized string for when we reach connection state .completedPairing, which we now have done!")
+                    return "TODO: Add a localized string for when we reach connection state .completedPairing, which we now have done!"
                 default:
                     return nil
                 }

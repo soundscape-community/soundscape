@@ -255,7 +255,7 @@ extension BoseFramesMotionManager: BLEManagerScanDelegate {
     }
 }
 
-extension BoseFramesMotionManager: BoseStateChangeDelegate {
+extension BoseFramesMotionManager: BoseBLEStateChangeDelegate {
     func onBoseDeviceDisconnected() {
         GDLogHeadphoneMotionInfo("Bose was disconnected (StateChanged)")
         self.disconnect()
