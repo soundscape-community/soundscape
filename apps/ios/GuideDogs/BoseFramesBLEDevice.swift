@@ -27,7 +27,7 @@ private enum BoseFramesState: String, Codable {
     case ready
 }
 class BoseFramesBLEDevice: BaseBLEDevice {
-
+    private let bose_heading_update_interval: UInt16 = 40 // Valid intervals in ms: 320, 160, 80, 40, 20,
     private var boseSensorConfig: CBCharacteristic?
     private var boseSensorData: CBCharacteristic?
     private let eventProcessor: BoseSensorDataProcessor
@@ -74,7 +74,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             return
         }
         
-        config.rotationPeriod = 80
+        config.rotationPeriod = bose_heading_update_interval
         let myData = config.toConfigToData()
         self.writeValueToConfig(value: myData)
         self.isHeadtrackingStarted = true
