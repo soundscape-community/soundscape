@@ -116,7 +116,7 @@ class DevicesViewController: UIViewController {
                     }
                 case let device as BoseFramesMotionManager:
 //                    if device.status.value == .connected {
-                    if device.isConnecting {
+                    if device.status.value == .connecting {
                         return GDLocalizedString("devices.explain_ar.connecting", BoseFramesMotionManager.DEVICE_MODEL_NAME)
                     } else {
                         return GDLocalizedString("devices.explain_ar.paired", BoseFramesMotionManager.DEVICE_MODEL_NAME)
