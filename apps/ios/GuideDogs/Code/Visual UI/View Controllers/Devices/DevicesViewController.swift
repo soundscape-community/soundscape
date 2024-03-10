@@ -115,7 +115,6 @@ class DevicesViewController: UIViewController {
                         return GDLocalizedString("devices.explain_ar.paired", "AirPods")
                     }
                 case let device as BoseFramesMotionManager:
-//                    if device.status.value == .connected {
                     if device.status.value == .connecting {
                         return GDLocalizedString("devices.explain_ar.connecting", BoseFramesMotionManager.DEVICE_MODEL_NAME)
                     } else {
@@ -148,27 +147,29 @@ class DevicesViewController: UIViewController {
             case .calibrating: return GDLocalizedString("general.alert.dismiss")
             case .completedPairing, .testHeadset: return GDLocalizedString("devices.test_headset.continue")
             case .paired, .connected:
-                if let device = device {
-                    let status: HeadphoneMotionStatus
-                    if let dev = device as? HeadphoneMotionManagerWrapper {
-                        status = dev.status.value
-                    } else if let dev = device as? BoseFramesMotionManager {
-                        status = dev.status.value
-                        if(dev.isConnecting) {
-                            return GDLocalizedString("general.alert.cancel")
-                        }
-                        
-                    } else {
-                        return ""
-                    }
-                    
-                    if(status == .connected) {
+                switch device {
+                case let dev as HeadphoneMotionManagerWrapper:
+                    if(dev.status.value == .connected) {
                         return GDLocalizedString("general.alert.cancel")
                     } else {
                         return GDLocalizedString("settings.bluetooth.forget")
                     }
+                case let dev as BoseFramesMotionManager:
+                    switch dev.status.value {
+                    case .disconnected:
+                        return GDLocalizedString("general.alert.cancel")
+                    case .connecting:
+                        return GDLocalizedString("general.alert.cancel")
+                    case .connected, .ready:
+                        return GDLocalizedString("settings.bluetooth.forget")
+//                    case  .ready:
+//                        return GDLocalizedString("devices.test_headset.continue")
+                    default:
+                        return "What should we put here? What can the device state be when View.state is .paired"
+                    }
+                default:
+                    return ""
                 }
-                return ""
             }
         }
         
@@ -267,20 +268,23 @@ class DevicesViewController: UIViewController {
                         /// When setting connectedDevice, it triggers the status subscriber with another .disconnected
                         /// which in turn throws us back to the Connect Headphones-view. So, skip the transition if
                         /// old and new values are both .disconnected
-                        if (newValue == .disconnected && (device.isFirstConnection || device.isConnecting)) {
+                        if (newValue == .disconnected && (device.isFirstConnection || device.status.value == .connecting)) {
                             self.state = .paired
                         } else {
                             
                             switch newValue {
-                            case .unavailable, .inactive: return // no-op
+                            case .unknown: return // no-op
+                            case .connecting:
+                                GDLogHeadphoneMotionInfo("Bose: State changed to .connecting")
+                                self.state = .pairingAudio
                             case .disconnected:
                                 GDLogHeadphoneMotionInfo("Bose: State changed to .disconnected")
                                 self.state = .disconnected
-//                                self.state = .paired
                             case .connected:
                                 //self.state = .completedPairing
                                 self.state = .calibrating //.paired
-                            case .calibrated:
+                            case .ready:
+                                // TODO: Device is ready and not connected for the first time. Should be send it to "Calibrating" or "testHeadSet" instead?
                                 self.state = device.isFirstConnection ? .completedPairing : .connected
                             }
                         }
@@ -293,6 +297,25 @@ class DevicesViewController: UIViewController {
                             }
                         }
                     })
+                // Watch changes in calibration status for Bose frames, adjust View when calibration started
+                bleDeviceCalibrationStatusSubscriber = device.calibrationStateObservable
+                    .receive(on: RunLoop.main)
+                    .sink(receiveValue: { [weak self] (newValue) in
+                        guard let `self` = self else {
+                            return
+                        }
+                        
+                        guard let device = self.connectedDevice as? BoseFramesMotionManager else {
+                            return
+                        }
+                        
+                        if(newValue == .needsCalibrating || newValue == .calibrating) {
+                            self.state = .calibrating
+                        } else {
+                            self.state = .connected
+                        }
+                    })
+                
             } else {
                 // Stop listening for updates
                 headphoneMotionStatusSubscriber?.cancel()
@@ -314,6 +337,7 @@ class DevicesViewController: UIViewController {
     @IBOutlet var secondaryBtnConstraints: [NSLayoutConstraint]!
     
     private var headphoneMotionStatusSubscriber: AnyCancellable?
+    private var bleDeviceCalibrationStatusSubscriber: AnyCancellable?
     
     private var calibrationObserver: NSObjectProtocol?
     private var calibrationUpdateObserver: NSObjectProtocol?
@@ -371,8 +395,8 @@ class DevicesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         if launchedAutomatically {
+            GDLogHeadphoneMotionInfo("viewDidLoad: Is launched automatically, setting state to .calibrating")
             state = .calibrating
         }
         
@@ -385,21 +409,26 @@ class DevicesViewController: UIViewController {
                         self.state = .paired
                     }
                 } else if let first = first as? BoseFramesMotionManager {
-                    if first.status.value == .calibrated ||  first.status.value == .connected || first.isConnected {
-                        self.state = .connected
-                        AppContext.shared.deviceManager.add(device: first)
-                        first.startUserHeadingUpdates()
-                        
-                    } else if first.isConnecting {
+                    let devStatus = first.status.value
+                    switch devStatus {
+                    case .connecting:
                         self.state = .pairingAudio
                         
-                    } else {
+                    case.connected:
+                        state = .connected
+                        
+                    case .ready:
+                        AppContext.shared.deviceManager.add(device: first)
+                        first.startUserHeadingUpdates()
+                        state = .connected
+                        
+                    default:
                         GDLogHeadphoneMotionInfo("Entered Devices view with Bose as current device, but no idea what state to initialize the view in! Just setting it to paired...")
                         self.state = .paired
                     }
-                                 
                 } else if first.isConnected {
                     state = .connected
+                    
                 } else {
                     state = .paired
                 }
@@ -716,8 +745,13 @@ class DevicesViewController: UIViewController {
             }
             
             if let boseDev = self.connectedDevice as? BoseFramesMotionManager {
-                self.state = (boseDev.status.value == .calibrated ? .completedPairing : .calibrating)
-                self.state = .calibrating
+                if(boseDev.status.value != .ready) {
+                    GDLogHeadphoneMotionError("Bose: !!!!!! firstConnection-button presssed for Bose device, but device is not ready. What to do????????????????????")
+                } else {
+                    self.state = (boseDev.calibrationState == .calibrated ? .completedPairing : .calibrating)
+                }
+/*                self.state = (boseDev.status.value == .calibrated ? .completedPairing : .calibrating)
+                self.state = .calibrating*/
             }
             
         case .calibrating:
@@ -740,15 +774,15 @@ class DevicesViewController: UIViewController {
             AppContext.process(HeadsetTestEvent(.end))
             performSegue(withIdentifier: Segue.unwind, sender: self)
             
-        case .paired:
-            /// There's Cancel-button
+        case .paired, .connected:
+/*
             if let dev = connectedDevice as? BoseFramesMotionManager, self.state == .paired {
                 dev.disconnect()
                 connectedDevice = nil
                 selectedDeviceType = nil
                 self.state = .disconnected
                 
-            } else {
+            } else {*/
                 let alert = UIAlertController(title: GDLocalizedString("devices.forget_headset.prompt.forget"),
                                               message: GDLocalizedString("devices.forget_headset.prompt.explanation"),
                                               preferredStyle: .alert)
@@ -764,10 +798,11 @@ class DevicesViewController: UIViewController {
                 DispatchQueue.main.async { [weak self] in
                     self?.present(alert, animated: true, completion: nil)
                 }
-            }
+            //}
+            /*
         case .connected:
-            GDLogHeadphoneMotionInfo("---------->>>>>>>>> HELLO!!!! CAUGHT A PRIMARY BUTTON ACTION WHEN CURRENT STATE IS .CONNECTED!!! WHAT MUST BE DONE HERE???")
-            
+            performSegue(withIdentifier: Segue.unwind, sender: self)
+            */
         case .testHeadset:
             // Stop the test
             AppContext.process(HeadsetTestEvent(.end))
@@ -815,7 +850,7 @@ class DevicesViewController: UIViewController {
                         AppContext.shared.deviceManager.add(device: device)
                         guard let device = self.connectedDevice as? BoseFramesMotionManager else {return}
                         
-                        self.state = (device.status.value == .calibrated ? .completedPairing : .calibrating)
+                        self.state = (device.calibrationState == .calibrated ? .completedPairing : .calibrating)
                         DispatchQueue.main.async { [weak self] in
                             self?.renderView()
                         }

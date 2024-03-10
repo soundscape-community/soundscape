@@ -60,28 +60,39 @@ class BoseFramesMotionManager: NSObject {
     
     // MARK: CalibratableDevice
     private let accuracy_calibration_required_threshold: Double = 12.0 // If accuracy is above this value, consider the device calibrating
-    private var _calibrationState: DeviceCalibrationState
+//    private var _calibrationState: DeviceCalibrationState
     private var _calibrationOverridden: Bool
-    
+    private(set) var calibrationStateObservable: CurrentValueSubject<DeviceCalibrationState, Never>
     private var _deviceDelegate: DeviceDelegate?
     
     
     // MARK: UserHeadingProvider attributes
-    private var _idDummy: UUID // Create a dummy Id for this device as it will not get its ID until connected, but Device requires a non-optional id
+    /// Create a dummy Id for this device as it will not get its ID until connected.
+    /// First, the `Device` protocol requires a non-optional id.
+    /// Second, DeviceManager initiates the object with stored id and name, which may be used for reconnection (dunno, havn't looked...
+    private var _idDummy: UUID
+    private var _nameDummy: String // D,o
     private weak var _headingDelegate: UserHeadingProviderDelegate?
     var _accuracy = 10000.0 // Just a very high value... Will adjust when we start getting updates
     
     
     
     // MARK: Initializers
+    convenience init(id: UUID, name: String) {
+        self.init()
+        self._idDummy = id
+        self._nameDummy = name
+    }
+    
     override init() {
         self._idDummy = UUID()
+        self._nameDummy = ""
         queue = OperationQueue()
         queue.name = "BoseMotionUpdatesQueue"
         queue.qualityOfService = .userInteractive
         status = .init(.unknown)
         
-        _calibrationState = .needsCalibrating
+        calibrationStateObservable = .init(.needsCalibrating)
         _calibrationOverridden = false
         
         super.init()
@@ -106,7 +117,7 @@ extension BoseFramesMotionManager: CalibratableDevice {
         if let dev = bleBoseFrames, let name = dev.name {
             return name
         } else {
-            return ""
+            return _nameDummy
         }
     }
     
@@ -120,8 +131,9 @@ extension BoseFramesMotionManager: CalibratableDevice {
     }
     
     var calibrationState: DeviceCalibrationState {
-        return self._calibrationState
+        return self.calibrationStateObservable.value
     }
+  
     
     var calibrationOverriden: Bool {
         get {
@@ -146,7 +158,7 @@ extension BoseFramesMotionManager: CalibratableDevice {
         GDLogHeadphoneMotionInfo("Bose: SetupDevice")
         let device = BoseFramesMotionManager()
 
-        callback(.success(device))
+            callback(.success(device))
         
         device.connect()
     }
@@ -172,6 +184,8 @@ extension BoseFramesMotionManager: CalibratableDevice {
                 self.status.value = .disconnected
 
                 NotificationCenter.default.post(name: Notification.Name.boseFramesDeviceConnectionFailed, object: nil)
+                
+                self.deviceDelegate?.didFailToConnectDevice(self, error: DeviceError.failedConnection)
             }
         }
     }
@@ -183,7 +197,7 @@ extension BoseFramesMotionManager: CalibratableDevice {
     
         status.value = .disconnected
         stopUserHeadingUpdates()
-        if (self._calibrationState == .calibrating) {
+        if (self.calibrationState == .calibrating) {
             NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationCancelled, object: nil)
         }
         bleBoseFrames = nil
@@ -237,7 +251,7 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
         var accuracyRingQueue = [Double](repeating: 100.0, count: 10) // Collect 10 latest values for averaging accuracy
         var ringQueuePosition: Int = 0
         
-        let previousCalibrationState = _calibrationState
+        let previousCalibrationState = calibrationState
 
         GDLogHeadphoneMotionVerbose("Bose: Got heading update: \(newHeading.value) : \(newHeading.accuracy!)")
         
@@ -245,18 +259,18 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
         self._accuracy = Double(newHeading.accuracy!)
         accuracyRingQueue[ringQueuePosition] = _accuracy
         ringQueuePosition = (ringQueuePosition + 1) % 10
-        var averageAccuracy = accuracyRingQueue.mean()!
+        let averageAccuracy = accuracyRingQueue.mean()!
         
         if averageAccuracy < self.accuracy_calibration_required_threshold {
             if previousCalibrationState != .calibrated {
                 GDLogHeadphoneMotionInfo("Bose: Done calibrating!")
-                _calibrationState = .calibrated
+                calibrationStateObservable.value = .calibrated
                 NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidFinish, object: nil)
             }
             
         } else if previousCalibrationState != .calibrating {
             GDLogHeadphoneMotionInfo("Bose: Start calibrating!")
-            _calibrationState = .calibrating
+            calibrationStateObservable.value = .calibrating
             NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidStart, object: nil)
         }
 
@@ -267,7 +281,11 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
             guard let `self` = self else {
                 return
             }
-            self._headingDelegate?.userHeadingProvider(self, didUpdateUserHeading: newHeading)
+            
+            queue.addOperation {
+                self._headingDelegate?.userHeadingProvider(self, didUpdateUserHeading: newHeading)
+            }
+
         }
     }
 }
@@ -318,7 +336,12 @@ extension BoseFramesMotionManager: BLEManagerScanDelegate {
 
                         case .ready:
                             GDLogHeadphoneMotionInfo("Bose: Device is ready")
+                            connectionTimer?.invalidate()
+                            connectionTimer = nil
+                            AppContext.shared.bleManager.stopScan()
+                            NotificationCenter.default.post(name: Notification.Name.boseFramesDeviceConnected, object: nil)
                             self.status.value = .ready
+                            self.deviceDelegate?.didConnectDevice(self)
                       }
                     })
                 break
@@ -327,7 +350,9 @@ extension BoseFramesMotionManager: BLEManagerScanDelegate {
     }
 }
 
+// TODO: Remove me. This one is not needed. All states changes trigger a routine in the subscriber above...
 extension BoseFramesMotionManager: BoseBLEStateChangeDelegate {
+    // Hmm... maybe this one is good to have, otherwise we need to check previous state value in the subscriber above...
     func onBoseDeviceDisconnected() {
         GDLogHeadphoneMotionInfo("Bose: Device was disconnected (StateChanged)")
         self.disconnect()
@@ -336,9 +361,5 @@ extension BoseFramesMotionManager: BoseBLEStateChangeDelegate {
     func onBoseDeviceReady() {
         GDLogHeadphoneMotionInfo("Bose: Config has been read by the BLE-device, we're set to go!")
 
-        connectionTimer?.invalidate()
-        connectionTimer = nil
-        AppContext.shared.bleManager.stopScan()
-        NotificationCenter.default.post(name: Notification.Name.boseFramesDeviceConnected, object: nil)
     }
 }
