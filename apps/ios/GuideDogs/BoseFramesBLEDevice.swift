@@ -95,7 +95,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     
     // MARK: Controls for headtracking
     func startHeadTracking() {
-        guard let config = sensorConfig
+        guard let config = sensorConfig, isHeadtrackingStarted == false
         else {
             GDLogBLEError("Bose: Attempted to start headtracking, but device is not ready")
             return
@@ -108,13 +108,13 @@ class BoseFramesBLEDevice: BaseBLEDevice {
 
         let state: HeadsetConnectionEvent.State = isFirstConnection ? .firstConnection : .reconnected
         
-        AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: isFirstConnection ? .firstConnection : .reconnected))
+        AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: state))
 
         isFirstConnection = false
     }
     
     func stopHeadTracking() {
-        guard let config = sensorConfig
+        guard let config = sensorConfig, isHeadtrackingStarted == true
         else {
             GDLogBLEError("Bose: Attempted to stop headtracking, but device is not ready")
             return
@@ -155,7 +155,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     
     internal override func onConnectionComplete() {
         super.onConnectionComplete()
-        GDLogBLEInfo("Bose: Connection to Bose Frames has completed.")
+        GDLogBLEInfo("Bose: Connection to Bose Frames has completed. Will initialize before ready")
         
         for service in self.peripheral.services! {
             if (service.uuid == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_SERVICE) {
@@ -184,7 +184,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     }
     
     internal override func onDidDisconnect(_ peripheral: CBPeripheral) {
-        let wasReady: Bool = (state == .ready)
+//        let wasReady: Bool = (state == .ready)
         super.onDidDisconnect(peripheral)
         
         boseConnectionState.value = .disconnected
