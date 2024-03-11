@@ -105,11 +105,11 @@ class BoseFramesBLEDevice: BaseBLEDevice {
 
         self.writeValueToConfig(value: config.toConfigToData())
         self.isHeadtrackingStarted = true
-
+/*
         let state: HeadsetConnectionEvent.State = isFirstConnection ? .firstConnection : .reconnected
         
         AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: state))
-
+*/
         isFirstConnection = false
     }
     
@@ -125,7 +125,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         self.writeValueToConfig(value: config.toConfigToData())
         self.isHeadtrackingStarted = false
         
-        AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
+  //      AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
     }
     
     func isHeadTrackingStarted() -> Bool {

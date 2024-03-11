@@ -31,6 +31,7 @@ class BoseFramesMotionManagerReachability: DeviceReachability {
     /// Dummy implementation.
     /// Redesign needed: Cannot use BLEManager as it cancells an ongoing discovery. Perhaps use coreBluetooth to see if headset is reachable?
     func ping(timeoutInterval: TimeInterval, completion: @escaping ReachabilityCompletion) {
+        GDLogHeadphoneMotionInfo("Bose: [PING] returning dummy ping value...")
         return completion(true)
     }
     
