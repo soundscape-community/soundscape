@@ -9,24 +9,22 @@
 import Foundation
 class BoseFramesMotionManagerReachability: DeviceReachability {
     /*
-     Plan
-     -
-     */
-    private var boseBleDevice: BoseFramesBLEDevice? {
+        private var boseBleDevice: BoseFramesBLEDevice? {
         get {
             return boseStateDelegate?.boseDevice
         }
     }
+    */
     
     private var timer: Timer?
     private var completionHandler: ReachabilityCompletion?
     private let lock = NSLock()
     private var isActive: Bool = false
-    private var boseStateDelegate: BoseDeviceStateDelegate?
+//    private var boseStateDelegate: BoseBLEStateChangeDelegate?
     
     init(){
         GDLogHeadphoneMotionInfo("[PING] BoseMotionReachability created")
-        boseStateDelegate = BoseDeviceStateDelegate(livePingHandler: self.cleanup)
+  //      boseStateDelegate = BoseDeviceStateDelegate(livePingHandler: self.cleanup)
     }
     /// Dummy implementation.
     /// Redesign needed: Cannot use BLEManager as it cancells an ongoing discovery. Perhaps use coreBluetooth to see if headset is reachable?
@@ -83,7 +81,7 @@ class BoseFramesMotionManagerReachability: DeviceReachability {
         timer?.invalidate()
         timer = nil
         
-        boseStateDelegate = nil
+//        boseStateDelegate = nil
         
         GDLogHeadphoneMotionInfo("[PING] Bose reachability: \(isReachable)")
         // Return reachability and reset
@@ -94,8 +92,8 @@ class BoseFramesMotionManagerReachability: DeviceReachability {
         isActive = false
     }
     
-
 }
+/*
 fileprivate class BoseDeviceStateDelegate: BLEManagerScanDelegate {
     var boseDevice: BoseFramesBLEDevice?
     var pingHandler: (Bool) -> Void
@@ -132,7 +130,7 @@ fileprivate class BoseDeviceStateDelegate: BLEManagerScanDelegate {
             for i in 0..<discovered.count {
                 if(discovered[i] is BoseFramesBLEDevice) {
                     boseDevice = (discovered[i] as! BoseFramesBLEDevice)
-                    boseDevice?.deviceStateChangedDelegate = self
+                    boseDevice?.stateDidChangeDelegate = self
                     return
                 }
             }
@@ -140,6 +138,10 @@ fileprivate class BoseDeviceStateDelegate: BLEManagerScanDelegate {
     }
 }
 extension BoseDeviceStateDelegate: BoseBLEStateChangeDelegate {
+    func onBoseDeviceStateChange(oldState: BLEDeviceState, newState: BLEDeviceState) {
+        <#code#>
+    }
+    
     func onBoseDeviceReady() {
         GDLogHeadphoneMotionInfo("[PING] Bose Frames are ready (but doing nothing, as I think this was handled above)")
     }
@@ -156,3 +158,4 @@ extension BoseDeviceStateDelegate: BoseHeadingUpdateDelegate {
         self.pingHandler(true)
     }
 }
+*/

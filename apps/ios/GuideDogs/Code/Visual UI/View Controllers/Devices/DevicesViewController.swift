@@ -160,10 +160,8 @@ class DevicesViewController: UIViewController {
                         return GDLocalizedString("general.alert.cancel")
                     case .connecting:
                         return GDLocalizedString("general.alert.cancel")
-                    case .connected, .ready:
+                    case .ready:
                         return GDLocalizedString("settings.bluetooth.forget")
-//                    case  .ready:
-//                        return GDLocalizedString("devices.test_headset.continue")
                     default:
                         return "What should we put here? What can the device state be when View.state is .paired"
                     }
@@ -280,10 +278,11 @@ class DevicesViewController: UIViewController {
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .pairingAudio")
                             self.state = .pairingAudio
                             
-                        case .connected:
+/*                        case .connected: // NOTE! This one is not triggered from the BLEDEvice anymore. Remove from status enum
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .connected")
                             //self.state = .completedPairing
                             self.state = .calibrating //.paired
+ */
                         case .ready:
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .completedPairing OR .connected")
                             // TODO: Device is ready and not connected for the first time. Should be send it to "Calibrating" or "testHeadSet" instead?
@@ -360,6 +359,8 @@ class DevicesViewController: UIViewController {
                 return
             }
             
+            GDLogHeadphoneMotionInfo("Bose: new DeviceViewController state. \(state)")
+            
             if state == .disconnected {
                 GDLogHeadphoneMotionVerbose("self.state set to .disconnected")
             }
@@ -427,9 +428,9 @@ class DevicesViewController: UIViewController {
             case .connecting:
                 self.state = .pairingAudio
                 
-            case.connected:
+/*            case.connected:
                 state = .connected
-                
+  */
             case .ready:
                 AppContext.shared.deviceManager.add(device: firstDevice)
                 firstDevice.startUserHeadingUpdates()
@@ -761,8 +762,6 @@ class DevicesViewController: UIViewController {
                 } else {
                     self.state = (boseDev.calibrationState == .calibrated ? .completedPairing : .calibrating)
                 }
-/*                self.state = (boseDev.status.value == .calibrated ? .completedPairing : .calibrating)
-                self.state = .calibrating*/
             }
             
         case .calibrating:
@@ -786,34 +785,21 @@ class DevicesViewController: UIViewController {
             performSegue(withIdentifier: Segue.unwind, sender: self)
             
         case .paired, .connected:
-/*
-            if let dev = connectedDevice as? BoseFramesMotionManager, self.state == .paired {
-                dev.disconnect()
-                connectedDevice = nil
-                selectedDeviceType = nil
-                self.state = .disconnected
-                
-            } else {*/
-                let alert = UIAlertController(title: GDLocalizedString("devices.forget_headset.prompt.forget"),
-                                              message: GDLocalizedString("devices.forget_headset.prompt.explanation"),
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
-                alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.forget"), style: .destructive, handler: { [weak self] (_) in
-                    if let device = AppContext.shared.deviceManager.devices.first {
-                        AppContext.shared.deviceManager.remove(device: device)
-                        self?.state = .disconnected
-                        self?.connectedDevice = nil
-                    }
-                }))
-                
-                DispatchQueue.main.async { [weak self] in
-                    self?.present(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: GDLocalizedString("devices.forget_headset.prompt.forget"),
+                                          message: GDLocalizedString("devices.forget_headset.prompt.explanation"),
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.forget"), style: .destructive, handler: { [weak self] (_) in
+                if let device = AppContext.shared.deviceManager.devices.first {
+                    AppContext.shared.deviceManager.remove(device: device)
+                    self?.state = .disconnected
+                    self?.connectedDevice = nil
                 }
-            //}
-            /*
-        case .connected:
-            performSegue(withIdentifier: Segue.unwind, sender: self)
-            */
+            }))
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.present(alert, animated: true, completion: nil)
+            }
         case .testHeadset:
             // Stop the test
             AppContext.process(HeadsetTestEvent(.end))
@@ -948,8 +934,6 @@ extension DevicesViewController: DeviceManagerDelegate {
         guard let calibratableDevice = device as? CalibratableDevice else {
             if let device = device as? HeadphoneMotionManagerWrapper, device.isFirstConnection {
                 state = .completedPairing
-//            } else if let device = device as? BoseFramesMotionManager, device.isFirstConnection {
-//                state = .completedPairing
             } else {
                 state = .connected
             }
