@@ -59,7 +59,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     private var sensorConfig: BoseSensorConfiguration?
    
     private var boseCharacteristicSensorData: CBCharacteristic?
-    private let eventProcessor: BoseSensorDataProcessor
+//    private let eventProcessor: BoseSensorDataProcessor
    
     private var isHeadtrackingStarted: Bool = false
     private(set) var isFirstConnection: Bool = true
@@ -73,7 +73,6 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     
     // MARK: - Init
     override init(peripheral: CBPeripheral, type deviceType: BLEDeviceType, delegate: BLEDeviceDelegate?) {
-        eventProcessor = BoseSensorDataProcessor()
         super.init(peripheral: peripheral, type: deviceType, delegate: delegate)
     }
     
@@ -119,22 +118,29 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     }
     
     internal func writeValueToConfig(value: Data){
-        let device = super.peripheral
-        guard
-            let configCharacteristic = boseCharacteristicSensorConfig
+
+        guard 
+            self.state == .ready
         else {
-            GDLogBLEError("Bose: Trying to write to config, but something failed...")
+            GDLogBLEError("Bose: Trying to write to config, but state != ready. Trying anyway")
             return
         }
         
-        if(self.state != .ready) {
-            GDLogBLEError("Bose: Trying to write to config, but state != ready. Trying anyway")
+        guard
+            let configCharacteristic = boseCharacteristicSensorConfig
+        else {
+            GDLogBLEError("Bose: Trying to write to config, but is missing a reference to the config characteristic. Has the device completed setup? (current device.state: \(self.state)")
+            return
         }
+        
+        let device = super.peripheral
         device.writeValue(value, for: configCharacteristic, type: .withResponse)
     }
     
     // MARK: - BLE Device lifecycle
     /// The device has been discovered. BaseBLEDevice will set state to .discovered if it was .unknown
+    /// We will initiate connection to the Peripheral here.
+    /// We should really check the advertisement data to veryfy that we have the correct Peripheral...
     internal override func onWasDiscovered(_ peripheral: CBPeripheral, advertisementData: [String : Any]) {
         let oldState = self.state
 
@@ -185,8 +191,59 @@ class BoseFramesBLEDevice: BaseBLEDevice {
     internal override func onConnectionComplete() {
         
         GDLogBLEInfo("Bose: onConnectionComplete. Requesting current configuration")
+        // Peripheral has services
+        guard
+            let services = self.peripheral.services
+        else {
+            GDLogBLEError("Bose: ERROR Peripheral does not have any services!")
+            return
+        }
+        // Peripheral has the Bose service with the headtracking characteristics
+        guard
+            let boseService = services.first (where: {
+                $0.uuid == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_SERVICE
+            })
+        else {
+            GDLogBLEError("Bose: ERROR Peripheral does not offer the Headtracking service!")
+            return
+        }
+        // The service has characteristics
+        guard
+            let characteristics = boseService.characteristics
+        else {
+            GDLogBLEError("Bose: ERROR The Peripheral offer the Headtracking service but it has no characteristics!")
+            return
+        }
+        // Peripheral has the headtracking config characteristic
+        guard
+            let configCharacteristic = characteristics.first (where: {
+                $0.uuid == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_CONFIG_CHARACTERISTIC
+            })
+        else {
+            GDLogBLEError("Bose: ERROR Peripheral does not have the Headtracking config characteristic!")
+            return
+        }
+        // Peripheral has the headtracking data characteristic
+        guard
+            let dataCharacteristic = characteristics.first (where: {
+                $0.uuid == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_DATA_CHARACTERISTIC
+            })
+        else {
+            GDLogBLEError("Bose: ERROR Peripheral does not have the Headtracking data characteristic!")
+            return
+        }
+
+        self.boseCharacteristicSensorConfig = configCharacteristic
+        self.peripheral.readValue(for: configCharacteristic)
         
-        for service in self.peripheral.services! {
+        self.boseCharacteristicSensorData = dataCharacteristic
+        self.peripheral.setNotifyValue(true, for: dataCharacteristic)
+
+        // Now, await notification of reading the config value and set new state from there
+        
+        
+        /*
+        for service in services {
             if (service.uuid == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_SERVICE) {
                 for c in service.characteristics! {
                     switch c.uuid {
@@ -212,15 +269,18 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             GDLogBLEError("Bose: onConnectionComplete ERROR. Did not find both Config and Data Characteristic. This will not work...")
             return 
         }
-        
+        */
         // Now, await response from the config charateristic and continue the flow in peripheral (_:didUpdateValue:_) when getting config data
     }
     
+    /// Called from Peripheral (_:didReadCharacteristic:_)
     private func onDidReadDeviceConfig(){
         GDLogBLEInfo("Bose: onDidReadConfig")
 
         // Only trigger state change if we are initializing...
-        guard self.state == .initializing else {
+        guard 
+            self.state == .initializing
+        else {
             return
         }
 
@@ -254,11 +314,36 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         }
     }
     
+    /// Called from Peripheral(_:didUpdateValueFor:_) when receiveing a new sensor data value
+    private func onDidReadHeadingValue(value: Data!) {
+        // No delegate listening to updates? No point in processing it...
+        guard
+            let delegate = headingUpdateDelegate
+        else {
+            GDLogBLEError("Bose: ERROR(?) No heading update delegate!")
+            return
+        }
+
+        // Process Data object into a HeadValue
+        let heading = BoseSensorDataProcessor.processSensorData(eventData: value)
+        
+        // Ensure sucess
+        guard
+            let h = heading
+        else {
+            GDLogBLEError("Bose: ERROR Failed to process sensor data into a HeadingValue!")
+            return
+        }
+        
+        delegate.onHeadingUpdate(newHeading: h)
+    }
+    
     // MARK: Read value
     internal override func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
 
         
-        guard let value = characteristic.value
+        guard 
+            let value = characteristic.value
         else { return }
         
         switch characteristic.uuid {
@@ -269,12 +354,7 @@ class BoseFramesBLEDevice: BaseBLEDevice {
             self.onDidReadDeviceConfig()
             
         case BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_DATA_CHARACTERISTIC:
-            let heading = eventProcessor.processSensorData(eventData: value)
-            if let h = heading, let delegate = headingUpdateDelegate {
-                delegate.onHeadingUpdate(newHeading: h)
-            } else {
-                GDLogBLEInfo("ERROR: No heading update delegate!")
-            }
+            self.onDidReadHeadingValue(value: value)
             
         default:
             GDLogBLEVerbose("Got updated value for an unexpected characteristic: \(characteristic.uuid.uuidString) = \(characteristic.value)")

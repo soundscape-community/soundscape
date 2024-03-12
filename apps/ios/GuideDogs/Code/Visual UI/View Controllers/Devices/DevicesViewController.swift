@@ -791,9 +791,12 @@ class DevicesViewController: UIViewController {
             alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
             alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.forget"), style: .destructive, handler: { [weak self] (_) in
                 if let device = AppContext.shared.deviceManager.devices.first {
+                    let name = device.name
+                    device.disconnect()
                     AppContext.shared.deviceManager.remove(device: device)
                     self?.state = .disconnected
                     self?.connectedDevice = nil
+                    AppContext.shared.eventProcessor.process(HeadsetConnectionEvent(name, state: .disconnected))
                 }
             }))
             
@@ -838,15 +841,21 @@ class DevicesViewController: UIViewController {
                     }
                     
                 } else if let device = device as? BoseFramesMotionManager {
-                    GDLogHeadphoneMotionInfo("Bose: Setting connectedDevice")
+                    GDLogHeadphoneMotionInfo("Bose: setupDevice succeeded")
                     self.connectedDevice = device
-                    GDLogHeadphoneMotionInfo("Bose: Done setting connectedDevice")
-                    
+                    self.state = .paired
+         /*           DispatchQueue.main.async { [weak self] in
+                        self?.renderView()
+                    }
+           */
                     NotificationCenter.default.addObserver(forName: Notification.Name.boseFramesDeviceConnected, object: nil, queue: OperationQueue.current) { (_) in
                         GDLogHeadphoneMotionInfo("Bose: Caught notification of connection!")
-                        AppContext.shared.deviceManager.add(device: device)
-                        guard let device = self.connectedDevice as? BoseFramesMotionManager else {return}
+                        guard 
+                            let device = self.connectedDevice as? BoseFramesMotionManager
+                        else {return}
                         
+                        AppContext.shared.deviceManager.add(device: device)
+     
                         self.state = (device.calibrationState == .calibrated ? .completedPairing : .calibrating)
                         DispatchQueue.main.async { [weak self] in
                             self?.renderView()
