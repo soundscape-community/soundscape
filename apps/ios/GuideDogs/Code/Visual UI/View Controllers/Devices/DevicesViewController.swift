@@ -276,7 +276,7 @@ class DevicesViewController: UIViewController {
                             }
                         case .connecting:
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .pairingAudio")
-                            self.state = .pairingAudio
+                            self.state = .paired //.pairingAudio
                             
 /*                        case .connected: // NOTE! This one is not triggered from the BLEDEvice anymore. Remove from status enum
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .connected")
