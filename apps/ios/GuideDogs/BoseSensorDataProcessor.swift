@@ -15,7 +15,7 @@ class BoseSensorDataProcessor {
         let accuracy: Double
     }
     // MARK: Process data
-    func processSensorData(eventData: Data) -> HeadingValue? {
+    static func processSensorData(eventData: Data) -> HeadingValue? {
        let valueAsArr = BitUtils.dataToByteArray(data: eventData)
 
         switch valueAsArr[0] {
@@ -96,7 +96,7 @@ class BoseSensorDataProcessor {
     
     // MARK: Decoding
     // Processing vector data from: https://github.com/zakaton/Bose-Frames-Web-SDK
-    private func processVectorData(vectorByteArray: [UInt8]) {
+    private static func processVectorData(vectorByteArray: [UInt8]) {
         let sensorId: UInt8 = vectorByteArray[0] // 0=Accellerometer 1=Gyroscope 2=Rotation 3=Game-rotation
         guard sensorId == 0 || sensorId == 1 else {
             GDLogBLEError("Attempted do decode Bose sensor data as vector, but received data from a sensor that does not deliver vector data!")
@@ -135,19 +135,19 @@ class BoseSensorDataProcessor {
         """)
     }
 
-    private func yawToHeading(yaw: Double) -> Double {
+    private static func yawToHeading(yaw: Double) -> Double {
         let toPositiveBearing = ((yaw + Double.pi) / (2 * Double.pi)) * 360
         let correctRotationBearing = (toPositiveBearing + 180).truncatingRemainder(dividingBy: 360)
         //GDLogBLEVerbose("Bose heading update: Yaw \(yaw) to bearing \(correctRotationBearing)")
         return correctRotationBearing
     }
     
-    private func processQuaternionData(quaternionByteArray: [UInt8]) -> RotationData {
+    private static func processQuaternionData(quaternionByteArray: [UInt8]) -> RotationData {
         return processQuaternionData(quaternionByteArray: quaternionByteArray, hasAccuracy: true)
     }
 
     // Processing quaternion data from: https://github.com/zakaton/Bose-Frames-Web-SDK
-    private func processQuaternionData(quaternionByteArray: [UInt8], hasAccuracy: Bool) -> RotationData {
+    private static func processQuaternionData(quaternionByteArray: [UInt8], hasAccuracy: Bool) -> RotationData {
         let sensorId: UInt8 = quaternionByteArray[0] // 0=Accellerometer 1=Gyroscope 2=Rotation 3=Game-rotation
         
         guard sensorId == 2 || sensorId == 3 else {
@@ -155,7 +155,7 @@ class BoseSensorDataProcessor {
             return RotationData(yaw: 0, roll: 0, pitch: 0, accuracy: 10000.0)
         }        
         
-        let timeStamp:UInt16 = BitUtils.twoBytesToUInt16(quaternionByteArray[1], quaternionByteArray[2])
+        let _:UInt16 = BitUtils.twoBytesToUInt16(quaternionByteArray[1], quaternionByteArray[2]) // Timestamp, we have no use for this one...
         let x_raw: Int16 = BitUtils.twoBytesToInt16(quaternionByteArray[3], quaternionByteArray[4])
         let y_raw: Int16 = BitUtils.twoBytesToInt16(quaternionByteArray[5], quaternionByteArray[6])
         let z_raw: Int16 = BitUtils.twoBytesToInt16(quaternionByteArray[7], quaternionByteArray[8])

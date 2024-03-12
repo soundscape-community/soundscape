@@ -23,12 +23,9 @@ enum BoseFramesMotionManagerStatus: Int, Equatable, Comparable {
     /// disconnected:  The manager has been created but `bleBoseFrames` is likely nil. Either we have yet to discover the BLE device or it has been explicitly disconnected
     case disconnected
     
-    /// connecting: Connection (pairing) with the device has started. `bleBoseFrames` may still be nil (it will be created as part of the process)
+    /// connecting: Connection (pairing) with the device has started. `bleBoseFrames` may still be nil (it will be created as part of the `connecting`process)
     case connecting
-    
-    /// connected: Connection has completed. The device is now in the process of discovering services and configuring the device (i.e., initializing). Not yet ready, startUserHeadingUpdates will fail
-//    case connected
-    
+ 
     /// ready: The device is ready to use
     case ready
 
@@ -258,13 +255,14 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
         self._accuracy = averageAccuracy
         GDLogHeadphoneMotionVerbose("Bose: Received heading update: \(newHeading.value), snapshot accuracy: \(newHeading.accuracy), calculated accuracy: \(_accuracy) | \(accuracyRingBuffer)")
 
+        // Needs calibration?
         if averageAccuracy < self.accuracy_calibration_required_threshold {
             if previousCalibrationState != .calibrated {
                 GDLogHeadphoneMotionInfo("Bose: Done calibrating (\(_accuracy)!")
                 calibrationStateObservable.value = .calibrated
                 queue.addOperation {
                     NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidFinish, object: nil)
-                    AppContext.process(HeadsetCalibrationEvent(self.name, deviceType: .boseFramesRondo, callout: "Kalibrerade", state: .calibrated))
+                    AppContext.process(HeadsetCalibrationEvent(self.name, deviceType: .boseFramesRondo, callout: "", state: .calibrated))
                 }
             }
             
@@ -278,7 +276,7 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
                 calibrationStateObservable.value = .calibrating
                 queue.addOperation {
                     NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidStart, object: nil)
-                    AppContext.process(HeadsetCalibrationEvent(self.name, deviceType: .boseFramesRondo, callout: "Kalibreras", state: .calibrating))
+                    AppContext.process(HeadsetCalibrationEvent(self.name, deviceType: .boseFramesRondo, callout: "", state: .calibrating))
                 }
             }
         }
@@ -315,6 +313,7 @@ extension BoseFramesMotionManager: BLEManagerScanDelegate {
         
         for i in 0..<discovered.count {
             if let device  = discovered[i] as? BoseFramesBLEDevice {
+                GDLogHeadphoneMotionInfo("Bose: BLEManager did notify about a discovered Bose device. Chaching a reference and listen to state changes")
                 AppContext.shared.bleManager.stopScan()
                 self.bleBoseFrames = device
                 device.stateDidChangeDelegate = self
