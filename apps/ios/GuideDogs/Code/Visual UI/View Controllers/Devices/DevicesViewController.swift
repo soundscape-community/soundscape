@@ -263,37 +263,35 @@ class DevicesViewController: UIViewController {
                             return
                         }
                         
-                        let oldValue = self.state
-//                        GDLogHeadphoneMotionInfo("Bose: State changed to \(newValue)")
-                        /// Special case for Bose. When connecting, we need to wait for BLE to discover etc.
-                        /// When setting connectedDevice, it triggers the status subscriber with another .disconnected
-                        /// which in turn throws us back to the Connect Headphones-view. So, skip the transition if
-                        /// old and new values are both .disconnected
-                        if (newValue == .disconnected && (device.isFirstConnection || device.status.value == .connecting)) {
-                            GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .paired")
-                            self.state = .paired
-                        } else {
-                            
-                            switch newValue {
-                            case .unknown: return // no-op
-                            case .connecting:
-                                GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .pairingAudio")
-                                self.state = .pairingAudio
-                            case .disconnected:
+                        let oldViewState = self.state
+
+                        switch newValue {
+                        case .unknown: return // no-op
+                            /// The device has disconnected. Special case
+                        case .disconnected:
+                            if (device.isFirstConnection || device.status.value == .connecting) {
+                                GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .paired")
+                                self.state = .paired
+                            } else {
                                 GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .disconnected")
                                 self.state = .disconnected
-                            case .connected:
-                                GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .connected")
-                                //self.state = .completedPairing
-                                self.state = .calibrating //.paired
-                            case .ready:
-                                GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .completedPairing OR .connected")
-                                // TODO: Device is ready and not connected for the first time. Should be send it to "Calibrating" or "testHeadSet" instead?
-                                self.state = device.isFirstConnection ? .completedPairing : .connected
                             }
+                        case .connecting:
+                            GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .pairingAudio")
+                            self.state = .pairingAudio
+                            
+                        case .connected:
+                            GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .connected")
+                            //self.state = .completedPairing
+                            self.state = .calibrating //.paired
+                        case .ready:
+                            GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .completedPairing OR .connected")
+                            // TODO: Device is ready and not connected for the first time. Should be send it to "Calibrating" or "testHeadSet" instead?
+                            self.state = device.isFirstConnection ? .completedPairing : .connected
                         }
                         
-                        if oldValue == self.state {
+                        
+                        if oldViewState == self.state {
                             // If `renderView` is not automatically called because
                             // of a new value for `state`, call it manually
                             DispatchQueue.main.async { [weak self] in

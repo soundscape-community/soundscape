@@ -152,9 +152,13 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         super.onDidConnect(peripheral)
         GDLogBLEInfo("Bose didConnect")
     }*/
-    
+    /// Called from BaseBLE when services and characterstics have been discovered
+    internal override func onSetupComplete() {
+        /// TODO: Called from BaseBLE when services and charactersis have been discovered. BaseBLE propagates call to onConnectionComplete
+        super.onSetupComplete()
+    }
     internal override func onConnectionComplete() {
-        super.onConnectionComplete()
+        
         GDLogBLEInfo("Bose: Connection to Bose Frames has completed. Will initialize before ready")
         
         for service in self.peripheral.services! {
@@ -181,6 +185,8 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         if boseCharacteristicSensorData != nil && boseCharacteristicSensorConfig != nil {
             boseConnectionState.value = .connected
         }
+        /// Sets state to .ready and notifies delegate. Done setting up
+        super.onConnectionComplete()
     }
     
     internal override func onDidDisconnect(_ peripheral: CBPeripheral) {

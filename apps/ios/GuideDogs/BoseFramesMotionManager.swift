@@ -16,16 +16,20 @@ extension Notification.Name {
 }
 
 import Foundation
-
+/// State model specific for 
 enum BoseFramesMotionManagerStatus: Int, Equatable, Comparable {
     /// unknown: Status unknown. Inital state before attampting any connection. `bleBoseFrames` is probably nil
     case unknown
+    
     /// disconnect: bleBoseFrames has been created but has yet to start connecting, or the device has been disconnected
     case disconnected
+    
     /// connecting: Connection (pairing) with the device has started. `bleBoseFrames` may still be nil
     case connecting
+    
     /// connected: Connection has completed. The device is now in the process of discovering services and configuring the device. Not yet ready, startUserHeadingUpdates will fail
     case connected
+    
     /// ready: The device is ready to use
     case ready
 
