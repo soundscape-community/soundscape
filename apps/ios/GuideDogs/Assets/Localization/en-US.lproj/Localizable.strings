@@ -589,6 +589,9 @@
 /* Settings About Title, Third Party Notices */
 "settings.about.title.third_party" = "Third Party Notices";
 
+/* Settings About Title, Copyright Notices */
+"settings.about.title.copyright" = "Copyright Notices";
+
 //------------------------------------------------------------------------------
 // MARK: Settings (New Feature)
 //------------------------------------------------------------------------------
