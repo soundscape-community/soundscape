@@ -161,6 +161,13 @@ extension UIWindow {
     open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionEnded(motion, with: event)
         
+        if(motion == .motionShake){
+            print("Motion detected.")
+            //need to append to sounds somehow
+            //TTSSound("Motion detected.")
+        }
+        
+        
         // We use the shake motion to pause and resume a GPX simulation
         guard FeatureFlag.isEnabled(.developerTools),
             motion == .motionShake,

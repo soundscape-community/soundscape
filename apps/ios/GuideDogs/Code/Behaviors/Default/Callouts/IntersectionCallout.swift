@@ -53,6 +53,8 @@ struct IntersectionCallout: CalloutProtocol {
         // Construct the output phrase
         var sounds: [Sound] = []
         
+            sounds.append(TTSSound("Testing testing"))
+        
         // Add the sound effect
         if includePrefixSound {
             sounds.append(GlyphSound(.poiSense, direction: .ahead))

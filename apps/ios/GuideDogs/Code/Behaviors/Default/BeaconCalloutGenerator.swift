@@ -347,4 +347,6 @@ extension BeaconCalloutGenerator: CalloutGroupDelegate {
     func calloutsCompleted(for group: CalloutGroup, finished: Bool) {
         GDLogVerbose(.autoCallout, "Finished callout group (\(group.id))")
     }
+    
+    
 }

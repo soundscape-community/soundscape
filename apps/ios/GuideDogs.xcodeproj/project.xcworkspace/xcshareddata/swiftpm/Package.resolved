@@ -10,21 +10,21 @@
       }
     },
     {
-      "identity" : "azure-notificationhubs-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Azure/azure-notificationhubs-ios",
-      "state" : {
-        "revision" : "f16d75b983a011ea60c596afe01d067870970ca7",
-        "version" : "3.1.5"
-      }
-    },
-    {
       "identity" : "cocoalumberjack",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/CocoaLumberjack/CocoaLumberjack",
       "state" : {
         "revision" : "0188d31089b5881a269e01777be74c7316924346",
         "version" : "3.8.0"
+      }
+    },
+    {
+      "identity" : "coregpx",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vincentneo/CoreGPX.git",
+      "state" : {
+        "revision" : "90dea5dea799e2b3684f5c72f07141d8516ce80b",
+        "version" : "0.9.2"
       }
     },
     {

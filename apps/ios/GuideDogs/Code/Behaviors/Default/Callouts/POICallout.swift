@@ -156,6 +156,8 @@ struct POICallout: POICalloutProtocol {
         
         var sounds = [Sound]()
         
+        sounds.append(TTSSound("Hello world."))
+        
         if includePrefixSound {
             sounds.append(GlyphSound(category.glyph, at: soundLocation))
         }
@@ -165,6 +167,7 @@ struct POICallout: POICalloutProtocol {
                 sounds.append(TTSSound(GDLocalizedString("directions.at_poi", name), at: soundLocation))
             } else {
                 sounds.append(TTSSound(name, at: soundLocation))
+                
             }
         } else { // Explore and Orient
             let formattedName = LanguageFormatter.string(from: distance, accuracy: location.horizontalAccuracy, name: name)
