@@ -13,9 +13,9 @@ on:
             - 'apps/ios/**'
 jobs:
     unit-tests:
-        runs-on: macos-latest
+        runs-on: macos-14
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Build
               run: xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace -scheme Soundscape -destination 'platform=iOS Simulator,name=iPhone 13'
             - name: Test
