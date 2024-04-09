@@ -161,10 +161,26 @@ extension UIWindow {
     open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionEnded(motion, with: event)
         
+        
         if(motion == .motionShake){
             print("Motion detected.")
-            //need to append to sounds somehow
-            //TTSSound("Motion detected.")
+           
+            var sounds: [Sound] = []
+            
+            sounds.append(TTSSound("Motion detected"))
+            //sounds
+            
+            // need to append to sounds somehow
+            
+            
+        
+            
+            
+            
+            //
+            
+            
+            
         }
         
         

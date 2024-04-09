@@ -301,6 +301,9 @@ extension CalloutStateMachine {
         })
     }
     
+    
+    
+    
     private func stateAnnounceCallout() -> GDAStateMachineState {
         return GDAStateMachine.state(name: .announceCallout, enter: { [weak self] (_, nextStateName, _) in
             GDLogVerbose(.stateMachine, "Entering state: \(State.announceCallout)")
@@ -337,8 +340,29 @@ extension CalloutStateMachine {
                 sounds = callout.sounds(for: strongSelf.geo?.location, automotive: strongSelf.motionActivityContext.isInVehicle)
             }
             
+            //sounds is called here
+            
             strongSelf.audioEngine.play(sounds) { (success) in
                 calloutGroup.delegate?.calloutFinished(callout, completed: success)
+                
+                //look at this code
+                let previousSound: Sounds
+                previousSound = sounds
+                
+                let motionNoticed: Bool
+                motionNoticed = false
+                
+                /*if(motionNoticed){
+                    strongSelf.audioEngine.play(previousSound) { (success) in
+                        calloutGroup.delegate?.calloutFinished(callout, completed: success)
+                }
+                else{
+                    strongSelf.audioEngine.play(sounds) { (success) in
+                        calloutGroup.delegate?.calloutFinished(callout, completed: success)
+                }*/
+                
+                
+                
                 
                 guard strongSelf.currentState != State.stopping.rawValue else {
                     GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
