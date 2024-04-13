@@ -233,6 +233,7 @@ extension CalloutStateMachine {
             }
             
             if sounds.count > 0 {
+                
                 strongSelf.audioEngine.play(Sounds(sounds)) { (success) in
                     guard strongSelf.currentState != State.stopping.rawValue else {
                         GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
@@ -342,50 +343,89 @@ extension CalloutStateMachine {
             
             //sounds is called here
             
-            strongSelf.audioEngine.play(sounds) { (success) in
-                calloutGroup.delegate?.calloutFinished(callout, completed: success)
-                
-                //look at this code
-                let previousSound: Sounds
-                previousSound = sounds
-                
-                let motionNoticed: Bool
-                motionNoticed = false
-                
-                /*if(motionNoticed){
-                    strongSelf.audioEngine.play(previousSound) { (success) in
-                        calloutGroup.delegate?.calloutFinished(callout, completed: success)
+            let previousSound: Sounds = sounds
+            
+            
+            
+            
+            let motionNoticed: Bool
+            motionNoticed = false
+            
+            
+            
+            
+            
+            
+            //strongSelf.audioEngine.play(sounds) { (success) in
+            //    calloutGroup.delegate?.calloutFinished(callout, completed: success)
+            
+            if(motionNoticed){
+                strongSelf.audioEngine.play(previousSound) { (success) in
+                    calloutGroup.delegate?.calloutFinished(callout, completed: success)
+                    
+                    /*} else{
+                     strongSelf.audioEngine.play(sounds) { (success) in
+                     calloutGroup.delegate?.calloutFinished(callout, completed: success)
+                     }
+                     }*/
+                    
+                    
+                    
+                    
+                    guard strongSelf.currentState != State.stopping.rawValue else {
+                        GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
+                        strongSelf.stateMachine.fireEvent(.stopped)
+                        calloutGroup.onComplete?(false)
+                        return
+                    }
+                    
+                    guard strongSelf.currentState != State.off.rawValue else {
+                        GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
+                        calloutGroup.onComplete?(false)
+                        return
+                    }
+                    
+                    guard success else {
+                        GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
+                        calloutGroup.onComplete?(false)
+                        strongSelf.stateMachine.fireEvent(.failed)
+                        return
+                    }
+                    
+                    strongSelf.stateMachine.fireEvent(.delayCalloutAnnounced)
+                } //
+            } else {
+                strongSelf.audioEngine.play(sounds) { (success) in
+                    calloutGroup.delegate?.calloutFinished(callout, completed: success)
+                    
+                    guard strongSelf.currentState != State.stopping.rawValue else {
+                        GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
+                        strongSelf.stateMachine.fireEvent(.stopped)
+                        calloutGroup.onComplete?(false)
+                        return
+                    }
+                    
+                    guard strongSelf.currentState != State.off.rawValue else {
+                        GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
+                        calloutGroup.onComplete?(false)
+                        return
+                    }
+                    
+                    guard success else {
+                        GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
+                        calloutGroup.onComplete?(false)
+                        strongSelf.stateMachine.fireEvent(.failed)
+                        return
+                    }
+                    
+                    strongSelf.stateMachine.fireEvent(.delayCalloutAnnounced)
+                    
                 }
-                else{
-                    strongSelf.audioEngine.play(sounds) { (success) in
-                        calloutGroup.delegate?.calloutFinished(callout, completed: success)
-                }*/
                 
-                
-                
-                
-                guard strongSelf.currentState != State.stopping.rawValue else {
-                    GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
-                    strongSelf.stateMachine.fireEvent(.stopped)
-                    calloutGroup.onComplete?(false)
-                    return
-                }
-                
-                guard strongSelf.currentState != State.off.rawValue else {
-                    GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
-                    calloutGroup.onComplete?(false)
-                    return
-                }
-                
-                guard success else {
-                    GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
-                    calloutGroup.onComplete?(false)
-                    strongSelf.stateMachine.fireEvent(.failed)
-                    return
-                }
-                
-                strongSelf.stateMachine.fireEvent(.delayCalloutAnnounced)
             }
+            
+            //update the previous sound so that it contains the sound just played
+            //previousSound = sounds
             
             CalloutStateMachineLogger.log(callout: callout, context: strongSelf.calloutGroup?.logContext)
             
