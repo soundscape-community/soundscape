@@ -99,7 +99,8 @@ class DevicesViewController: UIViewController {
                 case is HeadphoneMotionManagerWrapper:
                     return GDLocalizedString("devices.connect_headset.completed.airpods")
                 case is BoseFramesMotionManager:
-                    return "TODO: Add a localized string for when we reach connection state .completedPairing, which we now have done!"
+                    //return "TODO: Add a localized string for when we reach connection state .completedPairing, which we now have done!"
+                    return GDLocalizedString("devices.connect_headset.completed.boseframes")
                 default:
                     return nil
                 }
@@ -130,7 +131,8 @@ class DevicesViewController: UIViewController {
                 case is HeadphoneMotionManagerWrapper:
                     return GDLocalizedString("devices.explain_ar.connected.airpods")
                 case is BoseFramesMotionManager:
-                    return "TODO: Add localizedString for when Bose have been connected, as they now have done!" //"devices.explain_ar.connected.airpods")
+//                    return "TODO: Add localizedString for when Bose have been connected, as they now have done!" //"devices.explain_ar.connected.airpods")
+                    return GDLocalizedString("devices.explain_ar.connected.boseframes")
                 
                 default:
                     return nil
@@ -278,11 +280,6 @@ class DevicesViewController: UIViewController {
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .pairingAudio")
                             self.state = .paired //.pairingAudio
                             
-/*                        case .connected: // NOTE! This one is not triggered from the BLEDEvice anymore. Remove from status enum
-                            GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .connected")
-                            //self.state = .completedPairing
-                            self.state = .calibrating //.paired
- */
                         case .ready:
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController state changed to .completedPairing OR .connected")
                             // TODO: Device is ready and not connected for the first time. Should be send it to "Calibrating" or "testHeadSet" instead?
@@ -306,12 +303,13 @@ class DevicesViewController: UIViewController {
                             return
                         }
                         
-                        guard let device = self.connectedDevice as? BoseFramesMotionManager else {
+                        guard let device = self.connectedDevice as? BoseFramesMotionManager, device.status.value != .disconnected else {
                             return
                         }
                         
                         if(newValue == .needsCalibrating || newValue == .calibrating) {
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController calibration state changed to .calibrating")
+                                
                             self.state = .calibrating
                         } else {
                             GDLogHeadphoneMotionInfo("Bose: DeviceViewController calibration state changed to .connected")
@@ -408,7 +406,18 @@ class DevicesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        switch AppContext.shared.deviceManager.devices.first {
+        let device: Device?
+        let devices = AppContext.shared.deviceManager.devices
+        
+        if let testDevice = connectedDevice {
+            GDLogHeadphoneMotionInfo("viewDidLoad: Using connectedDevice")
+            device = testDevice
+        } else {
+            GDLogHeadphoneMotionInfo("viewDidLoad: No connectedDevice, using the first in the devicemanager")
+            device = devices.first
+        }
+        
+        switch device {
         case let firstDevice as HeadphoneMotionManagerWrapper:
             if launchedAutomatically {
                 GDLogHeadphoneMotionInfo("viewDidLoad: Is launched automatically with Airpods, setting state to .calibrating")
@@ -427,10 +436,7 @@ class DevicesViewController: UIViewController {
                 
             case .connecting:
                 self.state = .pairingAudio
-                
-/*            case.connected:
-                state = .connected
-  */
+    
             case .ready:
                 AppContext.shared.deviceManager.add(device: firstDevice)
                 firstDevice.startUserHeadingUpdates()
@@ -442,7 +448,7 @@ class DevicesViewController: UIViewController {
             }
             
         default:
-            if let firstDevice = AppContext.shared.deviceManager.devices.first {
+            if let firstDevice = device {
                 state = ( firstDevice.isConnected ? .connected : .paired)
             } else {
                 state = .disconnected
@@ -459,6 +465,14 @@ class DevicesViewController: UIViewController {
         GDATelemetry.trackScreenView("devices")
         
         AppContext.shared.deviceManager.delegate = self
+
+        // Set the device currently connected AppContext.shared.deviceManager.devices.first is NOT guaranteed to be the one connected!
+        AppContext.shared.deviceManager.devices.forEach() { device in
+            if device.isConnected {
+                self.connectedDevice = device
+                return
+            }
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -510,6 +524,13 @@ class DevicesViewController: UIViewController {
             imageView.layer.add(transition, forKey: kCATransition)
             text.layer.add(transition, forKey: kCATransition)
         }
+
+        // Debug
+        if connectedDevice != nil {
+            GDLogHeadphoneMotionInfo("renderingView WITH a device connected")
+        } else {
+            GDLogHeadphoneMotionInfo("renderingView WITHOUT a device connected. Using the first in device manager which seems not to be very useful...")
+        }
         
         let currentDevice = connectedDevice ?? AppContext.shared.deviceManager.devices.first
         
@@ -524,7 +545,7 @@ class DevicesViewController: UIViewController {
         
         secondaryBtn.isHidden = state.secondaryBtnIsHidden
         secondaryBtn.accessibilityLabel = state.secondaryBtnText
-        secondaryBtn.accessibilityHint = state.secondaryBtnHint(for: AppContext.shared.deviceManager.devices.first)
+        secondaryBtn.accessibilityHint = state.secondaryBtnHint(for: currentDevice)
         secondaryBtnLabel.isHidden = state.secondaryBtnIsHidden
         secondaryBtnLabel.text = state.secondaryBtnText
         secondaryBtnLabel.textColor = Colors.Background.secondary
@@ -790,7 +811,8 @@ class DevicesViewController: UIViewController {
                                           preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
             alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.forget"), style: .destructive, handler: { [weak self] (_) in
-                if let device = AppContext.shared.deviceManager.devices.first {
+                let testDevice = (self?.connectedDevice ?? AppContext.shared.deviceManager.devices.first)
+                if let device = testDevice {
                     let name = device.name
                     device.disconnect()
                     AppContext.shared.deviceManager.remove(device: device)
@@ -844,10 +866,7 @@ class DevicesViewController: UIViewController {
                     GDLogHeadphoneMotionInfo("Bose: setupDevice succeeded")
                     self.connectedDevice = device
                     self.state = .paired
-         /*           DispatchQueue.main.async { [weak self] in
-                        self?.renderView()
-                    }
-           */
+
                     NotificationCenter.default.addObserver(forName: Notification.Name.boseFramesDeviceConnected, object: nil, queue: OperationQueue.current) { (_) in
                         GDLogHeadphoneMotionInfo("Bose: Caught notification of connection!")
                         guard 
@@ -940,6 +959,9 @@ class DevicesViewController: UIViewController {
 extension DevicesViewController: DeviceManagerDelegate {
     
     func didConnectDevice(_ device: Device) {
+
+        connectedDevice = device
+        
         guard let calibratableDevice = device as? CalibratableDevice else {
             if let device = device as? HeadphoneMotionManagerWrapper, device.isFirstConnection {
                 state = .completedPairing
