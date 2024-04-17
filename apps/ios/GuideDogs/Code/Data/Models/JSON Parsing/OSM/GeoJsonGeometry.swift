@@ -318,7 +318,7 @@ public enum GeoJsonGeometry: Equatable, Codable {
 
 extension GeoJsonGeometry {
     private static func into_coord_pair(_ coord: CLLocationCoordinate2D) -> [CLLocationDegrees] {
-        return [coord.latitude, coord.longitude]
+        return [coord.longitude, coord.latitude]
     }
     
     

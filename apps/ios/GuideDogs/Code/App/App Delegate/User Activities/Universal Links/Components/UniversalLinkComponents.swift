@@ -31,7 +31,7 @@ struct UniversalLinkComponents {
          // Add query items
         components.queryItems = queryItems
 
-         return components.url
+        return components.url
     }
     
     // MARK: Initialization

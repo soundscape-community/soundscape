@@ -896,7 +896,7 @@
                     <navigationItem key="navigationItem" title="Third Party Notices" id="rpD-K2-j5x">
                         <barButtonItem key="backBarButtonItem" title="Back" id="w2t-7L-djt"/>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.about.title.third_party"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.about.title.copyright"/>
                         </userDefinedRuntimeAttributes>
                     </navigationItem>
                     <connections>
