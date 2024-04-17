@@ -330,8 +330,8 @@ class DevicesViewController: UIViewController {
             guard oldValue != state else {
                 return
             }
-            if(            state == .disconnected) {
-                GDLogHeadphoneMotionInfo("self.state set to .disconnected")
+            if state == .disconnected {
+                GDLogHeadphoneMotionVerbose("self.state set to .disconnected")
             }
             if state == .calibrating && !launchedAutomatically {
                 calibrationUpdateObserver = NotificationCenter.default.addObserver(forName: Notification.Name.ARHeadsetCalibrationUpdated, object: nil, queue: OperationQueue.main) { [weak self] (_) in
