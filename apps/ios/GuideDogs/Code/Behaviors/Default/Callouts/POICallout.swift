@@ -156,7 +156,7 @@ struct POICallout: POICalloutProtocol {
         
         var sounds = [Sound]()
         
-        sounds.append(TTSSound("Hello world."))
+        //sounds.append(TTSSound("Hello world."))
         
         
         

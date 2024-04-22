@@ -80,4 +80,7 @@ class CalloutHistory {
         calloutStack.clear()
         delegate?.onHistoryCleared()
     }
+    
+    
+    
 }

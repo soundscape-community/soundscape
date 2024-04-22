@@ -160,28 +160,30 @@ extension UIWindow {
 
     open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionEnded(motion, with: event)
-        
+        var isRepeating = true
         
         if(motion == .motionShake){
             print("Motion detected.")
            
-            var sounds: [Sound] = []
+            /*guard !isRepeating else {
+                AppContext.shared.eventProcessor.hush(playSound: false)
+                isRepeating = false
+                return
+            }*/
             
-            sounds.append(TTSSound("Motion detected"))
-            //sounds
+            guard let callout = AppContext.shared.calloutHistory.callouts.last else {
+                return
+            }
             
-            // need to append to sounds somehow
+            isRepeating = true
+
+            AppContext.process(RepeatCalloutEvent(callout: callout) { (_) in
+                isRepeating = false
+            })
             
-            
-        
-            
-            
-            
-            //
-            
-            
-            
+            return
         }
+            
         
         
         // We use the shake motion to pause and resume a GPX simulation
