@@ -42,9 +42,8 @@ But after that, I quickly got confused again. Line 157 (as of writing this) says
 
 I’ve made some more progress in understanding the code and have even started making some slight contributions. The biggest thing I discovered was where the sounds get passed to the Audio Engine. This is done in CalloutStateMachine.swift - the particular line is
 
-strongSelf.audioEngine.play(sounds) { (success) in
-
-                    calloutGroup.delegate?.calloutFinished(callout, completed: success)
+    strongSelf.audioEngine.play(sounds) { (success) in
+        calloutGroup.delegate?.calloutFinished(callout, completed: success)
 
 I don’t entirely understand the whole line, but it calls .play on the audioEngine, which is a big sign. It also calls sounds, which is an array of particular sound objects that are grouped into a callout.
 
