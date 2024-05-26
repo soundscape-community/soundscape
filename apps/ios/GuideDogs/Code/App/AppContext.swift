@@ -383,6 +383,10 @@ extension AppContext {
             return URL(string: "https://soundscape.services")!
         }
     
+        static func youtubeURL(for locale: Locale) -> URL {
+            return URL(string: "https://www.youtube.com/@SoundscapeCommunity")!
+        }
+
         static let companySupportURL = URL(string: "https://discord.gg/XakpNsVMBZ")!
         
         static let accessibilityFrance = URL(string: "https://soundscape.services")!
