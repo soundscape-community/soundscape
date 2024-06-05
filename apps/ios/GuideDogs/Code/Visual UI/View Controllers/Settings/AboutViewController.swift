@@ -51,7 +51,8 @@ class AboutApplicationViewController: BaseTableViewController {
             AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), segue: "ShowVersionHistorySegue"),
             AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Privacy Policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale), event: "about.privacy_policy"),
             AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Services Agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale), event: "about.services_agreement"),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), segue: "ShowThirdPartyNoticesSegue")
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), segue: "ShowThirdPartyNoticesSegue"),
+            AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("YouTube Channel"), url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale), event: "about.youtube_channel")
         ]
         
         if LocalizationContext.currentAppLocale == Locale.frFr {
