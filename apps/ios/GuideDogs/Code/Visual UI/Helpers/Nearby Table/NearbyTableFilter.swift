@@ -19,7 +19,11 @@ struct NearbyTableFilter: Equatable {
     static var defaultFilters: [NearbyTableFilter] {
         return [
             .defaultFilter,
-            NearbyTableFilter(type: .transit)
+            NearbyTableFilter(type: .transit),
+            NearbyTableFilter(type: .food),
+            NearbyTableFilter(type: .park),
+            NearbyTableFilter(type: .business),
+            NearbyTableFilter(type: .hotel)
         ]
     }
     
@@ -51,15 +55,27 @@ struct NearbyTableFilter: Equatable {
         
         if let type = type {
             switch type {
-            case .transit:
-                self.localizedString = GDLocalizedString("filter.transit")
-                self.image = UIImage(named: "Transit")
-            }
-        } else {
-            // There is no `PrimaryType` filter selected
-            self.localizedString = GDLocalizedString("filter.all")
-            self.image = UIImage(named: "AllPlaces")
-        }
+                       case .transit:
+                           self.localizedString = GDLocalizedString("filter.transit")
+                           self.image = UIImage(named: "Transit")
+                       case .food:
+                           self.localizedString = GDLocalizedString("filter.food")
+                           self.image = UIImage(named: "Food")
+                       case .park:
+                           self.localizedString = GDLocalizedString("filter.park")
+                           self.image = UIImage(named: "Park")
+                       case .business:
+                           self.localizedString = GDLocalizedString("filter.business")
+                           self.image = UIImage(named: "Business")
+                       case .hotel:
+                           self.localizedString = GDLocalizedString("filter.hotel")
+                           self.image = UIImage(named: "Hotel")
+                       }
+                   } else {
+                       // There is no `PrimaryType` filter selected
+                       self.localizedString = GDLocalizedString("filter.all")
+                       self.image = UIImage(named: "AllPlaces")
+                   }
     }
     
     // MARK: Equatable
