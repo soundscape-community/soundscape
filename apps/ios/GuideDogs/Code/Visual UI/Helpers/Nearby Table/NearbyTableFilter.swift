@@ -19,7 +19,11 @@ struct NearbyTableFilter: Equatable {
     static var defaultFilters: [NearbyTableFilter] {
         return [
             .defaultFilter,
-            NearbyTableFilter(type: .transit)
+            NearbyTableFilter(type: .transit),
+            NearbyTableFilter(type: .food),
+            NearbyTableFilter(type: .park),
+            NearbyTableFilter(type: .business),
+            NearbyTableFilter(type: .hotel)
         ]
     }
     
