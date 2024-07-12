@@ -59,8 +59,8 @@ struct NearbyTableFilter: Equatable {
                        self.localizedString = GDLocalizedString("filter.transit")
                        self.image = UIImage(named: "Transit")
                    case .food:
-                       self.localizedString = GDLocalizedString("filter.food")
-                       self.image = UIImage(named: "Food")
+                       self.localizedString = GDLocalizedString("filter.food_drink")
+                       self.image = UIImage(named: "Food and Drinks")
                    case .park:
                        self.localizedString = GDLocalizedString("filter.park")
                        self.image = UIImage(named: "Park")

@@ -1533,9 +1533,6 @@
 /* Filters, Transit */
 "filter.transit" = "Public Transit";
 
-/* Filters, Food */
-"filter.transit" = "Restaurant";
-
 /* Displayed next to the name of the filter to indicate that the filter is currently selected. %@ is the name of a filter */
 "filter.selected" = "%@ (selected)";
 
