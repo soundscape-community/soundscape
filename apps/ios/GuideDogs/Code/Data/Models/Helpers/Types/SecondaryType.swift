@@ -11,6 +11,10 @@ import Foundation
 enum SecondaryType: Type {
     
     case transitStop
+    case food
+    case park
+    case business
+    case hotel
     
     func matches(poi: POI) -> Bool {
         guard let typeable = poi as? Typeable else {

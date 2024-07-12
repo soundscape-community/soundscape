@@ -12,13 +12,31 @@ extension GDASpatialDataResultEntity: Typeable {
     
     func isOfType(_ type: PrimaryType) -> Bool {
         switch type {
-        case .transit: return isOfType(.transitStop)
+        case .transit:
+            return isOfType(.transitStop)
+        case .food:
+            return isFood()
+        case .park:
+            return isPark()
+        case .business:
+            return isBusiness()
+        case .hotel:
+            return isHotel()
         }
     }
     
     func isOfType(_ type: SecondaryType) -> Bool {
         switch type {
-        case .transitStop: return isTransitStop()
+        case .transitStop:
+            return isTransitStop()
+        case .food:
+            return isFood()
+        case .park:
+            return isPark()
+        case .business:
+            return isBusiness()
+        case .hotel:
+            return isHotel()
         }
     }
     
@@ -29,5 +47,24 @@ extension GDASpatialDataResultEntity: Typeable {
         
         return category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
     }
+
+    private func isFood() -> Bool {
+        // Implement your logic for food type
+        return false
+    }
     
+    private func isPark() -> Bool {
+        // Implement your logic for park type
+        return false
+    }
+    
+    private func isBusiness() -> Bool {
+        // Implement your logic for business type
+        return false
+    }
+    
+    private func isHotel() -> Bool {
+        // Implement your logic for hotel type
+        return false
+    }
 }
