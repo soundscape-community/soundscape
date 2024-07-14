@@ -12,7 +12,7 @@ enum SecondaryType: Type {
     
     case transitStop
     case food
-    case park
+    case education
     case business
     case hotel
     

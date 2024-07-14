@@ -21,6 +21,7 @@ enum SuperCategory: String {
     case landmarks = "landmark"
     case places = "place"
     case mobility = "mobility"
+    case food = "food"
     case information = "information"
     case objects = "object"
     case safety = "safety"

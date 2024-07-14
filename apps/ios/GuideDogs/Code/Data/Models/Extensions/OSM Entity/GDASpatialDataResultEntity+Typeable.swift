@@ -31,7 +31,7 @@ extension GDASpatialDataResultEntity: Typeable {
             return isTransitStop()
         case .food:
             return isFood()
-        case .park:
+        case .education:
             return isEducation()
         case .business:
             return isBusiness()
@@ -49,22 +49,27 @@ extension GDASpatialDataResultEntity: Typeable {
     }
 
     private func isFood() -> Bool {
-        // Implement your logic for food type
-        return false
+        guard let category = SuperCategory(rawValue: superCategory) else {
+            return false
+        }
+        let isFoodLocation = category == .food && localizedName.lowercased().contains(GDLocalizedString("osm.tag.restaurant").lowercased())
+        
+        if isFoodLocation {
+            print("Food location found: \(localizedName)")
+        }
+        
+        return isFoodLocation
     }
     
     private func isEducation() -> Bool {
-        // Implement your logic for park type
         return false
     }
     
     private func isBusiness() -> Bool {
-        // Implement your logic for business type
         return false
     }
     
     private func isHotel() -> Bool {
-        // Implement your logic for hotel type
         return false
     }
 }
