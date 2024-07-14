@@ -16,8 +16,8 @@ extension GDASpatialDataResultEntity: Typeable {
             return isOfType(.transitStop)
         case .food:
             return isFood()
-        case .park:
-            return isPark()
+        case .education:
+            return isEducation()
         case .business:
             return isBusiness()
         case .hotel:
@@ -32,7 +32,7 @@ extension GDASpatialDataResultEntity: Typeable {
         case .food:
             return isFood()
         case .park:
-            return isPark()
+            return isEducation()
         case .business:
             return isBusiness()
         case .hotel:
@@ -53,7 +53,7 @@ extension GDASpatialDataResultEntity: Typeable {
         return false
     }
     
-    private func isPark() -> Bool {
+    private func isEducation() -> Bool {
         // Implement your logic for park type
         return false
     }

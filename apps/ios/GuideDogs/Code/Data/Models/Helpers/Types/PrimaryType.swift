@@ -12,7 +12,7 @@ enum PrimaryType: String, CaseIterable, Type {
     
     case transit
     case food
-    case park
+    case education
     case business
     case hotel
     
