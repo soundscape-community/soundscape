@@ -207,6 +207,17 @@ class GeoJsonFeature {
             return
         }
         
+        //TODO JON
+        if value == "college"{
+            superCategory = SuperCategory.landmarks
+            return
+        }
+        
+        if value == "bridge"{
+            superCategory = SuperCategory.landmarks
+            return
+        }
+        
         // Case: Banks
         if value == "bank" {
             superCategory = SuperCategory.places

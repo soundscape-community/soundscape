@@ -21,7 +21,7 @@ struct NearbyTableFilter: Equatable {
             .defaultFilter,
             NearbyTableFilter(type: .transit),
             NearbyTableFilter(type: .food),
-            NearbyTableFilter(type: .education),
+            NearbyTableFilter(type: .landmarks),
             NearbyTableFilter(type: .business),
             NearbyTableFilter(type: .hotel)
         ]
@@ -61,8 +61,8 @@ struct NearbyTableFilter: Equatable {
                    case .food:
                        self.localizedString = GDLocalizedString("filter.food_drink")
                        self.image = UIImage(named: "Food and Drinks")
-                   case .education:
-                       self.localizedString = GDLocalizedString("filter.education")
+                   case .landmarks:
+                       self.localizedString = GDLocalizedString("filter.landmarks")
                        self.image = UIImage(named: "Park")
                    case .business:
                        self.localizedString = GDLocalizedString("filter.business")

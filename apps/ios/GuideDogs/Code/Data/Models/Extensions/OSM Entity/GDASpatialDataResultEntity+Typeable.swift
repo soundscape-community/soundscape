@@ -16,8 +16,8 @@ extension GDASpatialDataResultEntity: Typeable {
             return isOfType(.transitStop)
         case .food:
             return isFood()
-        case .education:
-            return isEducation()
+        case .landmarks:
+            return isLandmarks()
         case .business:
             return isBusiness()
         case .hotel:
@@ -31,8 +31,8 @@ extension GDASpatialDataResultEntity: Typeable {
             return isTransitStop()
         case .food:
             return isFood()
-        case .education:
-            return isEducation()
+        case .landmarks:
+            return isLandmarks()
         case .business:
             return isBusiness()
         case .hotel:
@@ -44,16 +44,24 @@ extension GDASpatialDataResultEntity: Typeable {
         guard let category = SuperCategory(rawValue: superCategory) else {
             return false
         }
+        print("category: \(category)")
+        let isTransitLocation = category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
+        print("tranist: \(isTransitLocation)")
+        if isTransitLocation {
+            print("Transit location found: \(localizedName)")
+        }
+        return isTransitLocation
+//        return category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
         
-        return category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
     }
 
     private func isFood() -> Bool {
         guard let category = SuperCategory(rawValue: superCategory) else {
             return false
         }
+        print("categroy: \(category)")
         let isFoodLocation = category == .food && localizedName.lowercased().contains(GDLocalizedString("osm.tag.restaurant").lowercased())
-        
+        print("FOOD: \(isFoodLocation)")
         if isFoodLocation {
             print("Food location found: \(localizedName)")
         }
@@ -61,8 +69,18 @@ extension GDASpatialDataResultEntity: Typeable {
         return isFoodLocation
     }
     
-    private func isEducation() -> Bool {
-        return false
+    private func isLandmarks() -> Bool {
+        guard let category = SuperCategory(rawValue: superCategory) else {
+            return false
+        }
+        print("category: \(category)")
+        let isLandmarkLocation = category == .landmarks && localizedName.lowercased().contains(GDLocalizedString("osm.tag.landmark").lowercased())
+        print("LANDMARK: \(isLandmarkLocation)")
+        if isLandmarkLocation {
+            print("Landmark location found: \(localizedName)")
+        }
+        
+        return isLandmarkLocation
     }
     
     private func isBusiness() -> Bool {

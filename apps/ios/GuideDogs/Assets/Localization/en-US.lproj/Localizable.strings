@@ -1533,8 +1533,8 @@
 /* Filters, Transit */
 "filter.transit" = "Public Transit";
 
-/* Filters, education */
-"filter.education" = "Education";
+/* Filters, lnadmarks */
+"filter.landmarks" = "Landmarks";
 
 /* Displayed next to the name of the filter to indicate that the filter is currently selected. %@ is the name of a filter */
 "filter.selected" = "%@ (selected)";
