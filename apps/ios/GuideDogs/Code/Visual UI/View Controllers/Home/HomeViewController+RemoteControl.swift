@@ -57,7 +57,6 @@ extension HomeViewController: RemoteCommandManagerDelegate {
     }
     
     private func handleRepeat() -> Bool {
-        
         guard !isRepeating else {
             AppContext.shared.eventProcessor.hush(playSound: false)
             isRepeating = false

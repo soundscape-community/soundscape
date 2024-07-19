@@ -302,9 +302,6 @@ extension CalloutStateMachine {
         })
     }
     
-    
-    
-    
     private func stateAnnounceCallout() -> GDAStateMachineState {
         return GDAStateMachine.state(name: .announceCallout, enter: { [weak self] (_, nextStateName, _) in
             GDLogVerbose(.stateMachine, "Entering state: \(State.announceCallout)")
@@ -345,81 +342,27 @@ extension CalloutStateMachine {
             
             let previousSound: Sounds = sounds
             
-            
-            
-            
-            let motionNoticed: Bool
-            motionNoticed = false
-            
-            
-            
-            
-            
-            
-            //strongSelf.audioEngine.play(sounds) { (success) in
-            //    calloutGroup.delegate?.calloutFinished(callout, completed: success)
-            
-            if(motionNoticed){
-                strongSelf.audioEngine.play(previousSound) { (success) in
-                    calloutGroup.delegate?.calloutFinished(callout, completed: success)
-                    
-                    /*} else{
-                     strongSelf.audioEngine.play(sounds) { (success) in
-                     calloutGroup.delegate?.calloutFinished(callout, completed: success)
-                     }
-                     }*/
-                    
-                    
-                    
-                    
-                    guard strongSelf.currentState != State.stopping.rawValue else {
-                        GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
-                        strongSelf.stateMachine.fireEvent(.stopped)
-                        calloutGroup.onComplete?(false)
-                        return
-                    }
-                    
-                    guard strongSelf.currentState != State.off.rawValue else {
-                        GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
-                        calloutGroup.onComplete?(false)
-                        return
-                    }
-                    
-                    guard success else {
-                        GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
-                        calloutGroup.onComplete?(false)
-                        strongSelf.stateMachine.fireEvent(.failed)
-                        return
-                    }
-                    
-                    strongSelf.stateMachine.fireEvent(.delayCalloutAnnounced)
-                } //
-            } else {
-                strongSelf.audioEngine.play(sounds) { (success) in
-                    calloutGroup.delegate?.calloutFinished(callout, completed: success)
-                    
-                    guard strongSelf.currentState != State.stopping.rawValue else {
-                        GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
-                        strongSelf.stateMachine.fireEvent(.stopped)
-                        calloutGroup.onComplete?(false)
-                        return
-                    }
-                    
-                    guard strongSelf.currentState != State.off.rawValue else {
-                        GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
-                        calloutGroup.onComplete?(false)
-                        return
-                    }
-                    
-                    guard success else {
-                        GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
-                        calloutGroup.onComplete?(false)
-                        strongSelf.stateMachine.fireEvent(.failed)
-                        return
-                    }
-                    
-                    strongSelf.stateMachine.fireEvent(.delayCalloutAnnounced)
-                    
+            strongSelf.audioEngine.play(sounds) { (success) in
+                calloutGroup.delegate?.calloutFinished(callout, completed: success)
+
+                guard strongSelf.currentState != State.stopping.rawValue else {
+                    GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
+                    strongSelf.stateMachine.fireEvent(.stopped)
+                    calloutGroup.onComplete?(false)
+                    return
+                }
+
+                guard strongSelf.currentState != State.off.rawValue else {
+                    GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
+                    calloutGroup.onComplete?(false)
+                    return
+                }
+
+                guard success else {
+                    GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
+                    calloutGroup.onComplete?(false)
+                    strongSelf.stateMachine.fireEvent(.failed)
+                    return
                 }
                 
             }

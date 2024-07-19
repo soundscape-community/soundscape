@@ -160,25 +160,14 @@ extension UIWindow {
 
     open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionEnded(motion, with: event)
-        var isRepeating = true
         
-        if(motion == .motionShake){
-            print("Motion detected.")
-           
-            /*guard !isRepeating else {
-                AppContext.shared.eventProcessor.hush(playSound: false)
-                isRepeating = false
-                return
-            }*/
+        if(motion == .motionShake && SettingsContext.shared.shakeCalloutsEnabled){
             
             guard let callout = AppContext.shared.calloutHistory.callouts.last else {
                 return
             }
-            
-            isRepeating = true
 
             AppContext.process(RepeatCalloutEvent(callout: callout) { (_) in
-                isRepeating = false
             })
             
             return

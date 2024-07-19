@@ -67,7 +67,6 @@ class GenericAnnouncementEvent: UserInitiatedEvent {
     }
 }
 
-
 class SystemGenerator: ManualGenerator {
     
     private var eventTypes: [Event.Type] = [

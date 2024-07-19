@@ -1573,6 +1573,12 @@
 /* Callouts Information, Updates about didtance to the audio beacon when it's set */
 "callouts.audio_beacon.info" = "Updates about distance to the audio beacon when it's set";
 
+/* Shake callouts */
+"callouts.shake_callouts" = "Enable Shake Callouts";
+
+/*  Shake callouts info */
+"callouts.shake_callouts.info" = "Allow callouts to be repeated by shaking the device";
+
 /* Callouts Title, Automatic Callouts */
 "callouts.automatic_callouts" = "Automatic Callouts";
 
