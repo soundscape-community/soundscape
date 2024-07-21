@@ -18,8 +18,8 @@ extension GDASpatialDataResultEntity: Typeable {
             return isFood()
         case .landmarks:
             return isLandmarks()
-        case .business:
-            return isBusiness()
+        case .park:
+            return isPark()
         case .hotel:
             return isHotel()
         }
@@ -33,8 +33,8 @@ extension GDASpatialDataResultEntity: Typeable {
             return isFood()
         case .landmarks:
             return isLandmarks()
-        case .business:
-            return isBusiness()
+        case .park:
+            return isPark()
         case .hotel:
             return isHotel()
         }
@@ -75,7 +75,7 @@ extension GDASpatialDataResultEntity: Typeable {
             }
         }
 
-        return category == .food
+        return category == .foods
     }
 
 
@@ -95,9 +95,45 @@ extension GDASpatialDataResultEntity: Typeable {
         return category == .landmarks
     }
     
-    private func isBusiness() -> Bool {
-        return false
+    private func isPark() -> Bool {
+        guard let category = SuperCategory(rawValue: superCategory) else {
+            return false
+        }
+
+        let parkKeywords = [
+            "park", "garden", "green space", "recreation area", "playground",
+            "nature reserve", "botanical garden", "public garden", "field", "reserve"
+        ]
+        
+        // Keywords to exclude parking lots
+        let excludeKeywords = [
+            "parking lot", "car park", "parking", "garage", "park and ride"
+        ]
+
+        let lowercasedName = localizedName.lowercased()
+
+        // Check if the name contains any park keyword
+        var containsParkKeyword = false
+        for keyword in parkKeywords {
+            if lowercasedName.contains(keyword) {
+                containsParkKeyword = true
+                break
+            }
+        }
+        
+        // Check if the name contains any exclude keyword
+        var containsExcludeKeyword = false
+        for keyword in excludeKeywords {
+            if lowercasedName.contains(keyword) {
+                containsExcludeKeyword = true
+                break
+            }
+        }
+
+        return containsParkKeyword && !containsExcludeKeyword
     }
+
+
     
     private func isHotel() -> Bool {
         return false

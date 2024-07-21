@@ -13,7 +13,7 @@ enum SecondaryType: Type {
     case transitStop
     case food
     case landmarks
-    case business
+    case park
     case hotel
     
     func matches(poi: POI) -> Bool {
