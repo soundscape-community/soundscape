@@ -3243,6 +3243,8 @@
 
 /* Open Street Map term. A bus stop is a place where passengers can board or alight from a bus. Its position may be marked by a shelter, pole, bus lay-by, or road markings. */
 "osm.tag.bus_stop" = "Bus Stop";
+/* Open Street Map term. A bus stop is a place where passengers can go to a landmark*/
+"osm.tag.landmark" = "Landmark";
 
 /* Open Street Map term. Used as a display name for place or a location. %@ is a bus stop name, such as "London Bus Stop". */
 "osm.tag.bus_stop.named" = "%@ Bus Stop";

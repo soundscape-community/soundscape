@@ -41,46 +41,58 @@ extension GDASpatialDataResultEntity: Typeable {
     }
     
     private func isTransitStop() -> Bool {
+        print("Raw superCategory: \(superCategory)")
         guard let category = SuperCategory(rawValue: superCategory) else {
+            print("Failed to map superCategory to SuperCategory enum")
             return false
         }
-        print("category: \(category)")
+        print("Mapped category: \(category)")
         let isTransitLocation = category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
-        print("tranist: \(isTransitLocation)")
+        print("Transit location check: \(isTransitLocation)")
         if isTransitLocation {
             print("Transit location found: \(localizedName)")
         }
         return isTransitLocation
-//        return category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
-        
     }
 
+    //convinence store
     private func isFood() -> Bool {
         guard let category = SuperCategory(rawValue: superCategory) else {
             return false
         }
-        print("categroy: \(category)")
-        let isFoodLocation = category == .food && localizedName.lowercased().contains(GDLocalizedString("osm.tag.restaurant").lowercased())
-        print("FOOD: \(isFoodLocation)")
-        if isFoodLocation {
-            print("Food location found: \(localizedName)")
+
+        // Expanded keywords or patterns to identify food-related places
+        let foodKeywords = [
+            "restaurant", "cafe", "bistro", "diner", "eatery",
+            "bakery", "pub", "bar", "coffee", "tea",
+            "fast food", "food truck", "pizzeria",
+            "buffet", "deli"
+        ]
+
+        for keyword in foodKeywords {
+            if localizedName.lowercased().contains(keyword) {
+                return true
+            }
         }
-        
-        return isFoodLocation
+
+        return category == .food
     }
-    
+
+
     private func isLandmarks() -> Bool {
         guard let category = SuperCategory(rawValue: superCategory) else {
             return false
         }
-        print("category: \(category)")
-        let isLandmarkLocation = category == .landmarks && localizedName.lowercased().contains(GDLocalizedString("osm.tag.landmark").lowercased())
-        print("LANDMARK: \(isLandmarkLocation)")
-        if isLandmarkLocation {
-            print("Landmark location found: \(localizedName)")
+
+        let landmarkKeywords = ["monument", "statue", "museum", "historic", "landmark", "cathedral"]
+
+        for keyword in landmarkKeywords {
+            if localizedName.lowercased().contains(keyword) {
+                return true
+            }
         }
-        
-        return isLandmarkLocation
+
+        return category == .landmarks
     }
     
     private func isBusiness() -> Bool {
