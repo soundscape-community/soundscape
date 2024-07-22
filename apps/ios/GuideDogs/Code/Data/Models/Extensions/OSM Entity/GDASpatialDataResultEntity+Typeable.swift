@@ -57,26 +57,27 @@ extension GDASpatialDataResultEntity: Typeable {
 
     //convinence store
     private func isFood() -> Bool {
+        print("Raw superCategory: \(superCategory)")
         guard let category = SuperCategory(rawValue: superCategory) else {
+            print("Failed to map superCategory to SuperCategory enum")
             return false
         }
+        print("Mapped category: \(category)")
+        let isFoodLocation = category == .places &&
+        localizedName.lowercased().contains(GDLocalizedString("osm.tag.restaurant").lowercased())
+//        let osmTags = ["amenity=restaurant", "amenity=bar", "amenity=cafe", "amenity=fast_food", "amenity=ice_cream", "amenity=pub"]
 
-        // Expanded keywords or patterns to identify food-related places
-        let foodKeywords = [
-            "restaurant", "cafe", "bistro", "diner", "eatery",
-            "bakery", "pub", "bar", "coffee", "tea",
-            "fast food", "food truck", "pizzeria",
-            "buffet", "deli"
-        ]
-
-        for keyword in foodKeywords {
-            if localizedName.lowercased().contains(keyword) {
-                return true
-            }
+        // List of restaurant-related OSM tags using localized strings
+        print("Transit location check: \(isFoodLocation)")
+        
+        if isFoodLocation {
+            print("Food location found: \(localizedName)")
         }
-
-        return category == .foods
+        
+        return isFoodLocation
     }
+
+
 
 
     private func isLandmarks() -> Bool {

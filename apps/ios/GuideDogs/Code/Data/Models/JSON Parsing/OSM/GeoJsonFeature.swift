@@ -208,15 +208,28 @@ class GeoJsonFeature {
         }
         
         //TODO JON
-        if value == "college"{
-            superCategory = SuperCategory.landmarks
+        if value == "fast_food"{
+            superCategory = SuperCategory.foods
             return
         }
         
-        if value == "bridge"{
-            superCategory = SuperCategory.landmarks
+        if value == "restaurants"{
+            superCategory = SuperCategory.foods
             return
         }
+        
+        
+        if value == "food"{
+            superCategory = SuperCategory.foods
+            return
+        }
+        
+        
+        if value == "deli"{
+            superCategory = SuperCategory.foods
+            return
+        }
+        
         
         // Case: Banks
         if value == "bank" {

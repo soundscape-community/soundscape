@@ -3220,12 +3220,6 @@
 /* Open Street Map term. Refers to any parking space designed for bicycles, where one can leave a pedal cycle unattended in reasonable security. */
 "osm.tag.bike_parking" = "Bike Parking";
 
-/* Open Street Map term. An informal place with sit-down facilities selling beverages and light meals and/or snacks. */
-"osm.tag.cafe" = "Cafe";
-
-/* Open Street Map term. Generally a formal eating places with sit-down facilities selling full meals served by waiters and often licensed (where allowed) to sell alcoholic drinks. */
-"osm.tag.restaurant" = "Restaurant";
-
 /* Open Street Map term. A public telephone, phone box, or telephone on a stand or wall. Usually you pay to use them, often only via a pre-pay card. */
 "osm.tag.telephone" = "Telephone";
 
@@ -3246,11 +3240,29 @@
 
 /* Open Street Map term. A bus stop is a place where passengers can board or alight from a bus. Its position may be marked by a shelter, pole, bus lay-by, or road markings. */
 "osm.tag.bus_stop" = "Bus Stop";
-/* Open Street Map term. A bus stop is a place where passengers can go to a landmark*/
+/* Open Street Map term. A bus stop is a place where passengers can go to a landmark */
 "osm.tag.landmark" = "Landmark";
 
 /* Open Street Map term. Used as a display name for place or a location. %@ is a bus stop name, such as "London Bus Stop". */
 "osm.tag.bus_stop.named" = "%@ Bus Stop";
+
+/* Open Street Map term. An informal place with sit-down facilities selling beverages and light meals and/or snacks. */
+"osm.tag.cafe" = "Cafe";
+
+/* Open Street Map term. Generally a formal eating places with sit-down facilities selling full meals served by waiters and often licensed (where allowed) to sell alcoholic drinks. */
+"osm.tag.restaurant" = "Restaurant";
+
+/* Open Street Map term. Fast food is a place where food that is prepared and served very quickly. */
+"osm.tag.fast_food" = "fast_food";
+
+/* Open Street Map term. A bar is an place where alcoholic beverages are served. */
+"osm.tag.bar" = "bar";
+
+/* Open Street Map term. An ice cream shop is a place where ice cream is sold. */
+"osm.tag.ice_cream" = "amenity=ice_cream";
+
+/* Open Street Map term. A pub is a place selling beer and other alcoholic drinks; may also provide food or accommodation (UK). */
+"osm.tag.pub" = "amenity=pub";
 
 /* Open Street Map term. Used as a display name for place or a location. %@ is a bus stop id, such as "Bus Stop 7" or "Bus Stop B". */
 "osm.tag.bus_stop.refed" = "Bus Stop %@";
