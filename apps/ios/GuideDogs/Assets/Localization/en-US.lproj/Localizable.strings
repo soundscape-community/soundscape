@@ -3259,10 +3259,22 @@
 "osm.tag.bar" = "bar";
 
 /* Open Street Map term. An ice cream shop is a place where ice cream is sold. */
-"osm.tag.ice_cream" = "amenity=ice_cream";
+"osm.tag.ice_cream" = "ice_cream";
 
 /* Open Street Map term. A pub is a place selling beer and other alcoholic drinks; may also provide food or accommodation (UK). */
-"osm.tag.pub" = "amenity=pub";
+"osm.tag.pub" = "pub";
+
+/* Open Street Map term. A coffee shop isa place that typically sells coffee and pastries. */
+"osm.tag.coffee_shop" = "coffee_shop";
+
+/* Open Street Map term. A monument is a structure created to commemorate a person. */
+"osm.tag.monument" = "monument";
+/* Other OSM tags... */
+"osm.tag.statue" = "statue";
+"osm.tag.museum" = "museum";
+"osm.tag.historic" = "historic";
+"osm.tag.landmark" = "landmark";
+"osm.tag.cathedral" = "cathedral";
 
 /* Open Street Map term. Used as a display name for place or a location. %@ is a bus stop id, such as "Bus Stop 7" or "Bus Stop B". */
 "osm.tag.bus_stop.refed" = "Bus Stop %@";

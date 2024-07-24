@@ -58,43 +58,63 @@ extension GDASpatialDataResultEntity: Typeable {
     //convinence store
     private func isFood() -> Bool {
         print("Raw superCategory: \(superCategory)")
+        
         guard let category = SuperCategory(rawValue: superCategory) else {
             print("Failed to map superCategory to SuperCategory enum")
             return false
         }
         print("Mapped category: \(category)")
-        let isFoodLocation = category == .places &&
-        localizedName.lowercased().contains(GDLocalizedString("osm.tag.restaurant").lowercased())
-//        let osmTags = ["amenity=restaurant", "amenity=bar", "amenity=cafe", "amenity=fast_food", "amenity=ice_cream", "amenity=pub"]
-
-        // List of restaurant-related OSM tags using localized strings
-        print("Transit location check: \(isFoodLocation)")
         
-        if isFoodLocation {
-            print("Food location found: \(localizedName)")
+        let restaurantTags = [
+            GDLocalizedString("osm.tag.restaurant"),
+            GDLocalizedString("osm.tag.fast_food"),
+            GDLocalizedString("osm.tag.cafe"),
+            GDLocalizedString("osm.tag.bar"),
+            GDLocalizedString("osm.tag.ice_cream"),
+            GDLocalizedString("osm.tag.pub"),
+            GDLocalizedString("osm.tag.coffee_shop")
+            
+        ]
+        
+        let isRestaurantLocation = category == .places && restaurantTags.contains(amenity)
+        
+        print("Place name: \(localizedName)")
+        print("Restaurant location check: \(isRestaurantLocation)")
+        
+        if isRestaurantLocation {
+            print("Restaurant location found with amenity: \(amenity)")
         }
         
-        return isFoodLocation
+        return isRestaurantLocation
     }
-
-
-
 
     private func isLandmarks() -> Bool {
         guard let category = SuperCategory(rawValue: superCategory) else {
             return false
         }
 
-        let landmarkKeywords = ["monument", "statue", "museum", "historic", "landmark", "cathedral"]
+        let landmarkTags = [
+            GDLocalizedString("osm.tag.monument"),
+            GDLocalizedString("osm.tag.statue"),
+            GDLocalizedString("osm.tag.museum"),
+            GDLocalizedString("osm.tag.historic"),
+            GDLocalizedString("osm.tag.landmark"),
+            GDLocalizedString("osm.tag.cathedral")
+        ]
 
-        for keyword in landmarkKeywords {
-            if localizedName.lowercased().contains(keyword) {
-                return true
-            }
-        }
+        let lowercasedAmenity = amenity.lowercased()
 
-        return category == .landmarks
+        let isLandmarkLocation = landmarkTags.contains(lowercasedAmenity)
+
+        // Print the debug statements
+        print("Place name: \(localizedName)")
+        print("Landmark location check: \(isLandmarkLocation)")
+        print("Raw superCategory: \(superCategory)")
+        print("Mapped category: \(category)")
+
+        return isLandmarkLocation || category == .landmarks
     }
+
     
     private func isPark() -> Bool {
         guard let category = SuperCategory(rawValue: superCategory) else {
