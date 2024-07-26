@@ -3250,7 +3250,7 @@
 "osm.tag.cafe" = "Cafe";
 
 /* Open Street Map term. Generally a formal eating places with sit-down facilities selling full meals served by waiters and often licensed (where allowed) to sell alcoholic drinks. */
-"osm.tag.restaurant" = "Restaurant";
+"osm.tag.restaurant" = "restaurant";
 
 /* Open Street Map term. Fast food is a place where food that is prepared and served very quickly. */
 "osm.tag.fast_food" = "fast_food";
@@ -3310,8 +3310,18 @@
 "osm.tag.garden" = "Garden";
 
 /* Open Street Map term. An area of open space for recreational use, usually designed and in semi-natural state with grassy areas, trees and bushes. Parks are usually urban, but not always. */
-"osm.tag.park" = "Park";
+"osm.tag.park" = "leisure=park";
 
+//TODO JON
+"osm.tag.garden" = "leisure=garden";
+"osm.tag.playground" = "leisure=playground";
+"osm.tag.nature_reserve" = "leisure=nature_reserve";
+"osm.tag.botanical_garden" = "leisure=botanical_garden";
+"osm.tag.public_garden" = "leisure=public_garden";
+"osm.tag.field" = "leisure=field";
+"osm.tag.reserve" = "leisure=reserve";
+"osm.tag.green_space" = "leisure=green_space";
+"osm.tag.recreation_area" = "leisure=recreation_area";
 /* Open Street Map term. A table with benches, ideal for food and rest. */
 "osm.tag.picnic_table" = "Picnic Table";
 

@@ -98,7 +98,6 @@ extension GDASpatialDataResultEntity: Typeable {
             GDLocalizedString("osm.tag.statue"),
             GDLocalizedString("osm.tag.museum"),
             GDLocalizedString("osm.tag.historic"),
-            GDLocalizedString("osm.tag.landmark"),
             GDLocalizedString("osm.tag.cathedral")
         ]
 
@@ -112,7 +111,7 @@ extension GDASpatialDataResultEntity: Typeable {
         print("Raw superCategory: \(superCategory)")
         print("Mapped category: \(category)")
 
-        return isLandmarkLocation || category == .landmarks
+        return isLandmarkLocation 
     }
 
     
@@ -121,38 +120,32 @@ extension GDASpatialDataResultEntity: Typeable {
             return false
         }
 
-        let parkKeywords = [
-            "park", "garden", "green space", "recreation area", "playground",
-            "nature reserve", "botanical garden", "public garden", "field", "reserve"
+        // OSM tags related to parks and green spaces
+        let parkTags = [
+            GDLocalizedString("osm.tag.park"),
+            GDLocalizedString("osm.tag.garden"),
+            GDLocalizedString("osm.tag.green_space"),
+            GDLocalizedString("osm.tag.recreation_area"),
+            GDLocalizedString("osm.tag.playground"),
+            GDLocalizedString("osm.tag.nature_reserve"),
+            GDLocalizedString("osm.tag.botanical_garden"),
+            GDLocalizedString("osm.tag.public_garden"),
+            GDLocalizedString("osm.tag.field"),
+            GDLocalizedString("osm.tag.reserve")
         ]
-        
-        // Keywords to exclude parking lots
-        let excludeKeywords = [
-            "parking lot", "car park", "parking", "garage", "park and ride"
-        ]
 
-        let lowercasedName = localizedName.lowercased()
+        let lowercasedAmenity = amenity.lowercased()
 
-        // Check if the name contains any park keyword
-        var containsParkKeyword = false
-        for keyword in parkKeywords {
-            if lowercasedName.contains(keyword) {
-                containsParkKeyword = true
-                break
-            }
-        }
-        
-        // Check if the name contains any exclude keyword
-        var containsExcludeKeyword = false
-        for keyword in excludeKeywords {
-            if lowercasedName.contains(keyword) {
-                containsExcludeKeyword = true
-                break
-            }
-        }
+        let isParkLocation = parkTags.contains(lowercasedAmenity)
 
-        return containsParkKeyword && !containsExcludeKeyword
+        print("Place name: \(localizedName)")
+        print("Park location check: \(isParkLocation)")
+        print("Raw superCategory: \(superCategory)")
+        print("Mapped category: \(category)")
+
+        return isParkLocation
     }
+
 
 
     
