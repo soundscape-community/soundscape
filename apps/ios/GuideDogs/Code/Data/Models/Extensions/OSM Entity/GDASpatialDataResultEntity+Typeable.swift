@@ -43,24 +43,18 @@ extension GDASpatialDataResultEntity: Typeable {
     private func isTransitStop() -> Bool {
         print("Raw superCategory: \(superCategory)")
         guard let category = SuperCategory(rawValue: superCategory) else {
-            print("Failed to map superCategory to SuperCategory enum")
             return false
         }
         print("Mapped category: \(category)")
         let isTransitLocation = category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
-        print("Transit location check: \(isTransitLocation)")
-        if isTransitLocation {
-            print("Transit location found: \(localizedName)")
-        }
+
         return isTransitLocation
     }
 
     //convinence store
     private func isFood() -> Bool {
-        print("Raw superCategory: \(superCategory)")
         
         guard let category = SuperCategory(rawValue: superCategory) else {
-            print("Failed to map superCategory to SuperCategory enum")
             return false
         }
         print("Mapped category: \(category)")
@@ -77,13 +71,6 @@ extension GDASpatialDataResultEntity: Typeable {
         ]
         
         let isRestaurantLocation = category == .places && restaurantTags.contains(amenity)
-        
-        print("Place name: \(localizedName)")
-        print("Restaurant location check: \(isRestaurantLocation)")
-        
-        if isRestaurantLocation {
-            print("Restaurant location found with amenity: \(amenity)")
-        }
         
         return isRestaurantLocation
     }
@@ -105,45 +92,31 @@ extension GDASpatialDataResultEntity: Typeable {
 
         let isLandmarkLocation = landmarkTags.contains(lowercasedAmenity)
 
-        // Print the debug statements
-        print("Place name: \(localizedName)")
-        print("Landmark location check: \(isLandmarkLocation)")
-        print("Raw superCategory: \(superCategory)")
-        print("Mapped category: \(category)")
-
         return isLandmarkLocation 
     }
 
     
     private func isPark() -> Bool {
-        guard let category = SuperCategory(rawValue: superCategory) else {
-            return false
-        }
+            guard let category = SuperCategory(rawValue: superCategory) else {
+                print("Failed to map superCategory to SuperCategory enum")
+                return false
+            }
 
-        // OSM tags related to parks and green spaces
-        let parkTags = [
-            GDLocalizedString("osm.tag.park"),
-            GDLocalizedString("osm.tag.garden"),
-            GDLocalizedString("osm.tag.green_space"),
-            GDLocalizedString("osm.tag.recreation_area"),
-            GDLocalizedString("osm.tag.playground"),
-            GDLocalizedString("osm.tag.nature_reserve"),
-            GDLocalizedString("osm.tag.botanical_garden"),
-            GDLocalizedString("osm.tag.public_garden"),
-            GDLocalizedString("osm.tag.field"),
-            GDLocalizedString("osm.tag.reserve")
-        ]
+            // OSM tags related to parks and green spaces in English
+            let parkTags = [
+                "park", "garden", "green_space", "recreation_area", "playground",
+                "nature_reserve", "botanical_garden", "public_garden", "field", "reserve"
+            ]
 
         let lowercasedAmenity = amenity.lowercased()
 
-        let isParkLocation = parkTags.contains(lowercasedAmenity)
+            let isParkLocation = category == .places && parkTags.contains { tag in tag == lowercasedAmenity }
+            print("Place name: \(localizedName)")
+            print("Park location check: \(isParkLocation)")
+            print("Raw superCategory: \(superCategory)")
+            print("Mapped category: \(category)")
+            return isParkLocation
 
-        print("Place name: \(localizedName)")
-        print("Park location check: \(isParkLocation)")
-        print("Raw superCategory: \(superCategory)")
-        print("Mapped category: \(category)")
-
-        return isParkLocation
     }
 
 
