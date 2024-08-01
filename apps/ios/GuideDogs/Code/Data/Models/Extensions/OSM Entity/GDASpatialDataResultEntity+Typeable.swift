@@ -77,9 +77,11 @@ extension GDASpatialDataResultEntity: Typeable {
 
     private func isLandmarks() -> Bool {
         guard let category = SuperCategory(rawValue: superCategory) else {
+            print("Failed to map superCategory to SuperCategory enum")
             return false
         }
 
+        // OSM tags related to landmarks in English
         let landmarkTags = [
             GDLocalizedString("osm.tag.monument"),
             GDLocalizedString("osm.tag.statue"),
@@ -90,10 +92,16 @@ extension GDASpatialDataResultEntity: Typeable {
 
         let lowercasedAmenity = amenity.lowercased()
 
-        let isLandmarkLocation = landmarkTags.contains(lowercasedAmenity)
-
-        return isLandmarkLocation 
+        let isLandmarkLocation = category == .landmarks && landmarkTags.contains { tag in tag == lowercasedAmenity }
+        
+        print("Place name: \(localizedName)")
+        print("Landmark location check: \(isLandmarkLocation)")
+        print("Raw superCategory: \(superCategory)")
+        print("Mapped category: \(category)")
+        
+        return isLandmarkLocation
     }
+
 
     
     private func isPark() -> Bool {
