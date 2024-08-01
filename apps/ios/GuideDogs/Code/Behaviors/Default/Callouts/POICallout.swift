@@ -156,8 +156,6 @@ struct POICallout: POICalloutProtocol {
         
         var sounds = [Sound]()
         
-        
-        
         if includePrefixSound {
             sounds.append(GlyphSound(category.glyph, at: soundLocation))
         }

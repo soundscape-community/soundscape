@@ -55,7 +55,8 @@ class SettingsViewController: BaseTableViewController {
     private static let collapsibleCalloutIndexPaths: [IndexPath] = [
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue)
+        IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue),
+        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue)
     ]
     
     // MARK: Properties

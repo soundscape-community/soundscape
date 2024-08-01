@@ -233,7 +233,6 @@ extension CalloutStateMachine {
             }
             
             if sounds.count > 0 {
-                
                 strongSelf.audioEngine.play(Sounds(sounds)) { (success) in
                     guard strongSelf.currentState != State.stopping.rawValue else {
                         GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
@@ -337,11 +336,7 @@ extension CalloutStateMachine {
             } else {
                 sounds = callout.sounds(for: strongSelf.geo?.location, automotive: strongSelf.motionActivityContext.isInVehicle)
             }
-            
-            //sounds is called here
-            
-            let previousSound: Sounds = sounds
-            
+                     
             strongSelf.audioEngine.play(sounds) { (success) in
                 calloutGroup.delegate?.calloutFinished(callout, completed: success)
 
@@ -364,11 +359,8 @@ extension CalloutStateMachine {
                     strongSelf.stateMachine.fireEvent(.failed)
                     return
                 }
-                
+                strongSelf.stateMachine.fireEvent(.delayCalloutAnnounced)
             }
-            
-            //update the previous sound so that it contains the sound just played
-            //previousSound = sounds
             
             CalloutStateMachineLogger.log(callout: callout, context: strongSelf.calloutGroup?.logContext)
             

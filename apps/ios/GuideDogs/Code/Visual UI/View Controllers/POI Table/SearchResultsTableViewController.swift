@@ -26,7 +26,6 @@ protocol SearchResultsTableViewControllerDelegate: LocationActionDelegate {
 
 class SearchResultsTableViewController: UITableViewController{
     
-    
     typealias ListItem = ListItemTableViewCellConfigurator.ListItem
     
     enum ViewConfiguration {
@@ -149,13 +148,7 @@ class SearchResultsTableViewController: UITableViewController{
                 
                 return poi
             })
-        
-        let lastCallout = callouts[0]
-        
-        //play the callout from here
-        
-        
-        
+           
         let selectionDataSource = TableViewDataSource(header: nil, models: selections.asListItemWithoutIndex, cellConfigurator: configurator)
         let calloutDataSource = TableViewDataSource(header: GDLocalizedString("poi_screen.header.recent.callouts"), models: callouts.asListItemWithoutIndex, cellConfigurator: configurator)
         
