@@ -51,7 +51,6 @@ extension GDASpatialDataResultEntity: Typeable {
         return isTransitLocation
     }
 
-    //convinence store
     private func isFood() -> Bool {
         
         guard let category = SuperCategory(rawValue: superCategory) else {
@@ -81,13 +80,8 @@ extension GDASpatialDataResultEntity: Typeable {
             return false
         }
 
-        // OSM tags related to landmarks in English
         let landmarkTags = [
-            GDLocalizedString("osm.tag.monument"),
-            GDLocalizedString("osm.tag.statue"),
-            GDLocalizedString("osm.tag.museum"),
-            GDLocalizedString("osm.tag.historic"),
-            GDLocalizedString("osm.tag.cathedral")
+            "monument", "statue", "museum", "historic", "cathedral"
         ]
 
         let lowercasedAmenity = amenity.lowercased()
@@ -102,15 +96,12 @@ extension GDASpatialDataResultEntity: Typeable {
         return isLandmarkLocation
     }
 
-
-    
     private func isPark() -> Bool {
             guard let category = SuperCategory(rawValue: superCategory) else {
                 print("Failed to map superCategory to SuperCategory enum")
                 return false
             }
 
-            // OSM tags related to parks and green spaces in English
             let parkTags = [
                 "park", "garden", "green_space", "recreation_area", "playground",
                 "nature_reserve", "botanical_garden", "public_garden", "field", "reserve"
@@ -126,9 +117,6 @@ extension GDASpatialDataResultEntity: Typeable {
             return isParkLocation
 
     }
-
-
-
     
     private func isHotel() -> Bool {
         return false
