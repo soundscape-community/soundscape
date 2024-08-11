@@ -511,6 +511,10 @@
 /* Title of the settings screen for beacons. This screen allows users to configure the way the audio beacon sounds. See Terms for the definition of "beacon". */
 "beacon.settings_title" = "Beacon Settings";
 
+
+/* Title of a section in the beacon settings page where the user can select the distance threshold when a beacon automatically stops playing. */
+"beacon.settings.vicinity" = "Enter Vicinity Distance";
+
 /* Title of a section in the beacon settings page where the user can select a style for their beacon. The various styles mainly differ in the sounds that are played for the beacon, though there are two styles that include some haptics as well. */
 "beacon.settings.style" = "Audio Styles";
 
