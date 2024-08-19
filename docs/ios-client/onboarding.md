@@ -40,46 +40,13 @@ bundle install
 
 At this point, you can open the `GuideDogs.xcworkspace` file, which is the main entry point to the Xcode project.
 
-## Add Azure Notification Hub Secrets
+## Creating test builds for your local device
 
-Soundscape uses Azure Notification Hub to send push notifications to users. In order for this to work in your app, you will need to create an account in [Azure](https://azure.microsoft.com).
+You can test out your own builds of Soundscape on a physical device, even if you're not a paid member of the Apple Developer Program, but you'll need to adjust some build settings . Under GuideDogs > Signing & Capabilities > Debug:
 
-In your Azure account:
+1. Change the "Bundle Identifier" to services.soundscape-debug.your_username
+2. Click the trash can icon next to:
+  1. Associated Domains
+  2. iCloud
 
-1. Setup a Notification Hubs service (you can have one for Production and one for AdHoc)
-2. Copy the connection strings and paths
-3. Open the project file at `/Soundscape/Assets/PropertyLists/Info.plist`
-4. Copy the to the following keys and values:
-   1. `SOUNDSCAPE_AZURE_NH_CONNECTION_STRING` - The production connection string
-   2. `SOUNDSCAPE_AZURE_NH_PATH` - The production Notification Hub path
-   3. `SOUNDSCAPE_AZURE_DF_NH_CONNECTION_STRING` - The adhoc connection string
-   4. `SOUNDSCAPE_AZURE_DF_NH_PATH` - The adhoc Notification Hub path
-
-If these values are not set, receiving push notifications will not work.
-
-## Add Your Services URLs
-
-Soundscape uses a backend service to download map tiles and other information. In the following files, replace the static URL properties with the address of your services.
-
-* `ServiceModel.swift`
-* `UniversalLinkComponents.swift`
-
-## Building and Running
-
-At this point, you should be able to build and run the `Soundscape` target on an iOS simulator. In order to run the app on a real device, you will need to add your Apple Developer account signing info in the _Signing & Capabilities_ section of the project settings.
-
-## Additional Personalization
-
-Additional personalization options:
-
-* In the _General_ section of the project settings, you can change the following properties:
-  * `Display Name`
-  * `Bundle Identifier`
-* In the _Build Settings_ section of the project settings, you can change the following properties:
-  * `Primary App Icon Set Name`
-  * `BUNDLE_SPOKEN_NAME`
-* In `AppContext.swift` you can change the following properties:
-  * `appDisplayName`
-  * `appStoreId`
-* Do a general search and replace instances of `CompanyName` and `AppName`.
-* Do a general search for `TODOs` and make changes as needed.
+Once this is done, you should be able to use your device as the Xcode build target. You may additionally need to adjust some settings on your device, including enableing Developer Mode under Settings > Privacy & Security.

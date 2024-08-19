@@ -1,6 +1,6 @@
 # Build Configurations
 
-The Soundcape Xcode project contains 3 build configurations. We used each configuration for the purposes defined below, but you may wish to use a different configuration model.
+The Soundscape Xcode project contains 3 build configurations. We used each configuration for the purposes defined below, but you may wish to use a different configuration model.
 
 * **Debug** - Used for local builds / when installing directly from Xcode
 * **AdHoc** - Used for testing outside of TestFlight releases
