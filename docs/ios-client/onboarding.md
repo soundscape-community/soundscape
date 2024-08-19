@@ -46,7 +46,7 @@ You can test out your own builds of Soundscape on a physical device, even if you
 
 1. Change the "Bundle Identifier" to services.soundscape-debug.your_username
 2. Click the trash can icon next to:
-  1. Associated Domains
-  2. iCloud
+    1. Associated Domains
+    2. iCloud
 
 Once this is done, you should be able to use your device as the Xcode build target. You may additionally need to adjust some settings on your device, including enableing Developer Mode under Settings > Privacy & Security.
