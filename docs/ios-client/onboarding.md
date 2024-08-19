@@ -39,14 +39,3 @@ bundle install
 ## Opening the Project
 
 At this point, you can open the `GuideDogs.xcworkspace` file, which is the main entry point to the Xcode project.
-
-## Creating test builds for your local device
-
-You can test out your own builds of Soundscape on a physical device, even if you're not a paid member of the Apple Developer Program, but you'll need to adjust some build settings . Under GuideDogs > Signing & Capabilities > Debug:
-
-1. Change the "Bundle Identifier" to services.soundscape-debug.your_username
-2. Click the trash can icon next to:
-    1. Associated Domains
-    2. iCloud
-
-Once this is done, you should be able to use your device as the Xcode build target. You may additionally need to adjust some settings on your device, including enableing Developer Mode under Settings > Privacy & Security.
