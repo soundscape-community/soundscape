@@ -61,7 +61,7 @@ struct BeaconSelectionView: View {
                         value: $enterImmediateVicinityDistance,
                         unitsLocalization: "distance.format.meters",
                         stepSize: 5.0,
-                        minValue: 5.0,
+                        minValue: 0.0,
                         maxValue: 50.0
                     )
                     .onChange(of: enterImmediateVicinityDistance, perform: { _ in

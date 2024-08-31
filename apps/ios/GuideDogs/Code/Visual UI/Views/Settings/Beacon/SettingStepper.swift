@@ -39,16 +39,40 @@ struct SettingStepper: View {
     
     var body: some View {
         VStack {
-            Stepper(
-                onIncrement: increment,
-                onDecrement: decrement
-            ) {
+            /// We don't use the native `Stepper` because the increment/decrement
+            /// controls can't be styled, and the defaults are low contrast.
+            HStack {
                 // truncate `value` at the decimal point
                 Text(GDLocalizedString(unitsLocalization, String(format: "%.0f", value)))
                     .foregroundColor(.primaryForeground)
                     .font(.body)
                     .lineLimit(nil)
+
+                Spacer()
+
+                Button(action: decrement) {
+                    Text("-")
+                        .font(.title)
+                        .frame(width: 44, height: 30)
+                        .background(Color.gray.opacity(0.3))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+                .accessibilityLabel(Text("Decrease"))
+                .disabled(value <= self.minValue)
+
+                Button(action: increment) {
+                    Text("+")
+                        .font(.title)
+                        .frame(width: 44, height: 30)
+                        .background(Color.gray.opacity(0.3))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+                .accessibilityLabel(Text("Increase"))
+                .disabled(value >= self.maxValue)
             }
+            .accessibilityElement(children: .combine)
             .padding()
             .background(Color.primaryBackground)
         }
