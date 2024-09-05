@@ -72,9 +72,20 @@ struct SettingStepper: View {
                 .accessibilityLabel(Text("Increase"))
                 .disabled(value >= self.maxValue)
             }
-            .accessibilityElement(children: .combine)
             .padding()
             .background(Color.primaryBackground)
+            .accessibilityElement(children: .ignore)
+            .accessibilityValue("\(Int(value)) \(unitsLocalization)")
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                case .increment:
+                    increment()
+                case .decrement:
+                    decrement()
+                @unknown default:
+                    break
+                }
+            }
         }
     }
 }
