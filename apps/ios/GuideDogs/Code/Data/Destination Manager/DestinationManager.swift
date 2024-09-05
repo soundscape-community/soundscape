@@ -25,9 +25,6 @@ enum DestinationManagerError: Error {
 
 class DestinationManager: DestinationManagerProtocol {
     
-    static let LeaveImmediateVicinityDistance: CLLocationDistance = SettingsContext.shared.leaveImmediateVicinityDistance
-    static let EnterImmediateVicinityDistance: CLLocationDistance = SettingsContext.shared.enterImmediateVicinityDistance
-    
     // MARK: Notification Keys
     
     struct Keys {
@@ -614,10 +611,10 @@ class DestinationManager: DestinationManagerProtocol {
         
         let distance = origin.distanceToClosestLocation(from: location)
         
-        if isWithinGeofence && distance >= DestinationManager.LeaveImmediateVicinityDistance {
+        if isWithinGeofence && distance >= SettingsContext.shared.leaveImmediateVicinityDistance {
             // Left immediate vicinity
             return false
-        } else if !isWithinGeofence && distance <= DestinationManager.EnterImmediateVicinityDistance {
+        } else if !isWithinGeofence && distance <= SettingsContext.shared.enterImmediateVicinityDistance {
             // Entered immediate vicinity
             return true
         }

@@ -86,7 +86,7 @@ struct DestinationCallout: POICalloutProtocol {
             return Sounds(sounds)
             
         case .beaconGeofence:
-            let formattedDistance = LanguageFormatter.formattedDistance(from: DestinationManager.EnterImmediateVicinityDistance)
+            let formattedDistance = LanguageFormatter.formattedDistance(from: SettingsContext.shared.enterImmediateVicinityDistance)
             
             // Inform the user why the audio beacon has stopped
             if causedAudioDisabled {
