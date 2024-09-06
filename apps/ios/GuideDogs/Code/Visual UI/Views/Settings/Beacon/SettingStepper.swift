@@ -75,7 +75,7 @@ struct SettingStepper: View {
             .padding()
             .background(Color.primaryBackground)
             .accessibilityElement(children: .ignore)
-            .accessibilityValue("\(Int(value)) \(unitsLocalization)")
+            .accessibilityValue(GDLocalizedString(unitsLocalization, String(format: "%.0f", value)))
             .accessibilityAdjustableAction { direction in
                 switch direction {
                 case .increment:
