@@ -16,12 +16,12 @@ extension GDASpatialDataResultEntity: Typeable {
             return isOfType(.transitStop)
         case .food:
             return isFood()
-        case .landmarks:
-            return isLandmarks()
         case .park:
             return isPark()
-        case .hotel:
-            return isHotel()
+        case .bank:
+            return isBank()
+        case .grocery:
+            return isGrocery()
         }
     }
     
@@ -31,94 +31,48 @@ extension GDASpatialDataResultEntity: Typeable {
             return isTransitStop()
         case .food:
             return isFood()
-        case .landmarks:
-            return isLandmarks()
         case .park:
             return isPark()
-        case .hotel:
-            return isHotel()
+        case .bank:
+            return isBank()
+        case .grocery:
+            return isGrocery()
         }
     }
     
     private func isTransitStop() -> Bool {
-        print("Raw superCategory: \(superCategory)")
         guard let category = SuperCategory(rawValue: superCategory) else {
             return false
         }
-        print("Mapped category: \(category)")
         let isTransitLocation = category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
 
         return isTransitLocation
     }
 
-    private func isFood() -> Bool {
-        
-        guard let category = SuperCategory(rawValue: superCategory) else {
-            return false
-        }
-        print("Mapped category: \(category)")
-        
-        let restaurantTags = [
-            GDLocalizedString("osm.tag.restaurant"),
-            GDLocalizedString("osm.tag.fast_food"),
-            GDLocalizedString("osm.tag.cafe"),
-            GDLocalizedString("osm.tag.bar"),
-            GDLocalizedString("osm.tag.ice_cream"),
-            GDLocalizedString("osm.tag.pub"),
-            GDLocalizedString("osm.tag.coffee_shop")
-            
-        ]
-        
-        let isRestaurantLocation = category == .places && restaurantTags.contains(amenity)
-        
-        return isRestaurantLocation
+    /// All filters follow the same pattern: is amenity any one of a set of tags?
+    private func isAnyOf(tags: Array<String>) -> Bool {
+        return tags.contains(amenity)
     }
 
-    private func isLandmarks() -> Bool {
-        guard let category = SuperCategory(rawValue: superCategory) else {
-            print("Failed to map superCategory to SuperCategory enum")
-            return false
-        }
-
-        let landmarkTags = [
-            "monument", "statue", "museum", "historic", "cathedral"
-        ]
-
-        let lowercasedAmenity = amenity.lowercased()
-
-        let isLandmarkLocation = category == .landmarks && landmarkTags.contains { tag in tag == lowercasedAmenity }
-        
-        print("Place name: \(localizedName)")
-        print("Landmark location check: \(isLandmarkLocation)")
-        print("Raw superCategory: \(superCategory)")
-        print("Mapped category: \(category)")
-        
-        return isLandmarkLocation
+    private func isFood() -> Bool {
+        return isAnyOf(tags: [
+            "restaurant", "fast_food", "cafe", "bar", "ice_cream", "pub",
+            "coffee_shop"
+        ]);
     }
 
     private func isPark() -> Bool {
-            guard let category = SuperCategory(rawValue: superCategory) else {
-                print("Failed to map superCategory to SuperCategory enum")
-                return false
-            }
-
-            let parkTags = [
-                "park", "garden", "green_space", "recreation_area", "playground",
-                "nature_reserve", "botanical_garden", "public_garden", "field", "reserve"
-            ]
-
-        let lowercasedAmenity = amenity.lowercased()
-
-            let isParkLocation = category == .places && parkTags.contains { tag in tag == lowercasedAmenity }
-            print("Place name: \(localizedName)")
-            print("Park location check: \(isParkLocation)")
-            print("Raw superCategory: \(superCategory)")
-            print("Mapped category: \(category)")
-            return isParkLocation
-
+        return isAnyOf(tags: [
+            "park", "garden", "green_space", "recreation_area", "playground",
+            "nature_reserve", "botanical_garden", "public_garden", "field", "reserve"
+        ]);
     }
-    
-    private func isHotel() -> Bool {
-        return false
+
+    private func isBank() -> Bool {
+        return isAnyOf(tags: ["bank", "atm"]);
+    }
+
+    private func isGrocery() -> Bool {
+        return isAnyOf(tags: ["convenience", "supermarket"]);
     }
 }

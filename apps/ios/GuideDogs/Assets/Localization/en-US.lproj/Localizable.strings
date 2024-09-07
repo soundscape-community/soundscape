@@ -1533,11 +1533,21 @@
 /* Filters, Transit */
 "filter.transit" = "Public Transit";
 
-/* Filters, Landmarks */
-"filter.landmarks" = "Landmarks";
+/* Filters, Food & Drink */
+"filter.food_drink" = "Food & Drink";
 
 /* Filters, Parks */
-"filter.park" = "Park";
+"filter.parks" = "Parks";
+
+/* Filter, Things To Do */
+"filter.things_to_do" = "Things to do";
+
+/* Filters, Groceries & Convenience Stores */
+"filter.groceries" = "Groceries & Convenience Stores";
+
+/* Filters, Banks & ATMs */
+"filter.banks" = "Banks & ATMs";
+
 
 /* Displayed next to the name of the filter to indicate that the filter is currently selected. %@ is the name of a filter */
 "filter.selected" = "%@ (selected)";
@@ -3268,13 +3278,13 @@
 "osm.tag.coffee_shop" = "coffee_shop";
 
 /* Open Street Map term. A monument is a structure created to commemorate a person. */
-"osm.tag.monument" = "monument";
+"osm.tag.monument" = "Monument";
 /* Other OSM tags... */
-"osm.tag.statue" = "statue";
-"osm.tag.museum" = "museum";
-"osm.tag.historic" = "historic";
-"osm.tag.landmark" = "landmark";
-"osm.tag.cathedral" = "cathedral";
+"osm.tag.statue" = "Statue";
+"osm.tag.museum" = "Museum";
+"osm.tag.historic" = "Historic";
+"osm.tag.landmark" = "Landmark";
+"osm.tag.cathedral" = "Cathedral";
 
 /* Open Street Map term. Used as a display name for place or a location. %@ is a bus stop id, such as "Bus Stop 7" or "Bus Stop B". */
 "osm.tag.bus_stop.refed" = "Bus Stop %@";
@@ -3310,18 +3320,17 @@
 "osm.tag.garden" = "Garden";
 
 /* Open Street Map term. An area of open space for recreational use, usually designed and in semi-natural state with grassy areas, trees and bushes. Parks are usually urban, but not always. */
-"osm.tag.park" = "leisure=park";
+"osm.tag.park" = "Park";
 
-//TODO JON
-"osm.tag.garden" = "leisure=garden";
-"osm.tag.playground" = "leisure=playground";
-"osm.tag.nature_reserve" = "leisure=nature_reserve";
-"osm.tag.botanical_garden" = "leisure=botanical_garden";
-"osm.tag.public_garden" = "leisure=public_garden";
-"osm.tag.field" = "leisure=field";
-"osm.tag.reserve" = "leisure=reserve";
-"osm.tag.green_space" = "leisure=green_space";
-"osm.tag.recreation_area" = "leisure=recreation_area";
+"osm.tag.playground" = "Playground";
+"osm.tag.nature_reserve" = "Nature Reserve";
+"osm.tag.botanical_garden" = "Botanical Garden";
+"osm.tag.public_garden" = "Public Garden";
+"osm.tag.field" = "Field";
+"osm.tag.reserve" = "Reserve";
+"osm.tag.green_space" = "Green Space";
+"osm.tag.recreation_area" = "Recreation Area";
+
 /* Open Street Map term. A table with benches, ideal for food and rest. */
 "osm.tag.picnic_table" = "Picnic Table";
 
