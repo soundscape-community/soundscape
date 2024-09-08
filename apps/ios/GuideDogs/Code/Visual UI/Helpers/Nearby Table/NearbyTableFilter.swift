@@ -54,24 +54,24 @@ struct NearbyTableFilter: Equatable {
         self.type = type
         
         if let type = type {
-           switch type {
-           case .transit:
-               self.localizedString = GDLocalizedString("filter.transit")
-               self.image = UIImage(named: "Transit")
-           case .food:
-               self.localizedString = GDLocalizedString("filter.food_drink")
-               self.image = UIImage(named: "Food and Drinks")
-           case .park:
-               self.localizedString = GDLocalizedString("filter.parks")
-               self.image = UIImage(named: "Parks")
-           case .bank:
-               self.localizedString = GDLocalizedString("filter.banks")
-               self.image = UIImage(named: "Banks & ATMs")
-           case .grocery:
-               self.localizedString = GDLocalizedString("filter.groceries")
-               self.image = UIImage(named: "Groceries")
-           }
-       } else {
+            switch type {
+            case .transit:
+                self.localizedString = GDLocalizedString("filter.transit")
+                self.image = UIImage(named: "Transit")
+            case .food:
+                self.localizedString = GDLocalizedString("filter.food_drink")
+                self.image = UIImage(named: "Food & Drink")
+            case .park:
+                self.localizedString = GDLocalizedString("filter.parks")
+                self.image = UIImage(named: "Parks")
+            case .bank:
+                self.localizedString = GDLocalizedString("filter.banks")
+                self.image = UIImage(named: "Banks & ATMs")
+            case .grocery:
+                self.localizedString = GDLocalizedString("filter.groceries")
+                self.image = UIImage(named: "Groceries & Convenience Stores")
+            }
+        } else {
             // There is no `PrimaryType` filter selected
             self.localizedString = GDLocalizedString("filter.all")
             self.image = UIImage(named: "AllPlaces")

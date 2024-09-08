@@ -38,16 +38,16 @@ final class NearbyTableFilterTest: XCTestCase {
                 XCTAssertEqual(filter.image, UIImage(named: "Transit"))
             case .food:
                 XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.food_drink"))
-                XCTAssertEqual(filter.image, UIImage(named: "Food"))
-            case .landmarks:
-                XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.landmarks"))
-                XCTAssertEqual(filter.image, UIImage(named: "Landmarks"))
-            case .business:
-                XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.business"))
-                XCTAssertEqual(filter.image, UIImage(named: "Business"))
-            case .hotel:
-                XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.hotel"))
-                XCTAssertEqual(filter.image, UIImage(named: "Hotel"))
+                XCTAssertEqual(filter.image, UIImage(named: "Food & Drink"))
+            case .park:
+                XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.parks"))
+                XCTAssertEqual(filter.image, UIImage(named: "Parks"))
+            case .bank:
+                XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.banks"))
+                XCTAssertEqual(filter.image, UIImage(named: "Banks & ATMs"))
+            case .grocery:
+                XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.groceries"))
+                XCTAssertEqual(filter.image, UIImage(named: "Groceries & Convenience Stores "))
             }
         }
     }
