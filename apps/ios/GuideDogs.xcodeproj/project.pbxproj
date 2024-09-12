@@ -720,6 +720,7 @@
 		B9EE98081E3656B7007ADBED /* UIDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EE98071E3656B7007ADBED /* UIDeviceManager.swift */; };
 		B9F0F96B1E10A40700F32F70 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F0F96A1E10A40700F32F70 /* BaseTableViewController.swift */; };
 		B9F749A21F16153900DC10C6 /* CoreLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F749A11F16153900DC10C6 /* CoreLocation+Extensions.swift */; };
+		BDA963AE2C69483300261EF2 /* SettingStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA963AD2C69483300261EF2 /* SettingStepper.swift */; };
 		C3060705205C544E00C39489 /* AddressGeocoderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3060704205C544E00C39489 /* AddressGeocoderProtocol.swift */; };
 		C306DF8522F0D71300248E9F /* CompoundFilterPredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C306DF8422F0D71300248E9F /* CompoundFilterPredicate.swift */; };
 		C30DBD2023A2C19400082B27 /* SearchResultsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DBD1F23A2C19400082B27 /* SearchResultsUpdater.swift */; };
@@ -1648,6 +1649,7 @@
 		B9EE98071E3656B7007ADBED /* UIDeviceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDeviceManager.swift; path = Code/Devices/UIDeviceManager.swift; sourceTree = "<group>"; };
 		B9F0F96A1E10A40700F32F70 /* BaseTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BaseTableViewController.swift; path = "Code/Visual UI/View Controllers/BaseTableViewController.swift"; sourceTree = "<group>"; };
 		B9F749A11F16153900DC10C6 /* CoreLocation+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CoreLocation+Extensions.swift"; path = "Code/App/Framework Extensions/Geo Extensions/CoreLocation+Extensions.swift"; sourceTree = "<group>"; };
+		BDA963AD2C69483300261EF2 /* SettingStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStepper.swift; sourceTree = "<group>"; };
 		C3060704205C544E00C39489 /* AddressGeocoderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddressGeocoderProtocol.swift; path = Code/Generators/Geocoding/Protocols/AddressGeocoderProtocol.swift; sourceTree = "<group>"; };
 		C306DF8422F0D71300248E9F /* CompoundFilterPredicate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CompoundFilterPredicate.swift; path = Code/Data/Models/Helpers/Filter/CompoundFilterPredicate.swift; sourceTree = "<group>"; };
 		C30DBD1F23A2C19400082B27 /* SearchResultsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsUpdater.swift; sourceTree = "<group>"; };
@@ -2605,6 +2607,7 @@
 		2896378326D7099B001694C0 /* Beacon */ = {
 			isa = PBXGroup;
 			children = (
+				BDA963AD2C69483300261EF2 /* SettingStepper.swift */,
 				2832D36526D54DE60052EE47 /* BeaconSelectionView.swift */,
 				2832D36726D54E0B0052EE47 /* BeaconSelectionHostViewController.swift */,
 				2896378826D70D3F001694C0 /* BeaconOptionCell.swift */,
@@ -5722,6 +5725,7 @@
 				62CE14CF25C0DEC3001CBC0B /* HeadphoneCalibration.swift in Sources */,
 				C37E33D52368DBA60033D640 /* NotificationManager.swift in Sources */,
 				C317F26523722ECF000579BA /* NotificationObserver.swift in Sources */,
+				BDA963AE2C69483300261EF2 /* SettingStepper.swift in Sources */,
 				C317F26923722F1A000579BA /* NotificationObserverDelegate.swift in Sources */,
 				62B11A3727ACAAC50094FE66 /* RoundedBackground.swift in Sources */,
 				C37E33C423677EC00033D640 /* AlertType.swift in Sources */,

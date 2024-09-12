@@ -15,6 +15,7 @@ struct BeaconSelectionView: View {
     @State var isPresented: Bool = false
     @State var selectedBeaconKey: String
     @State var areMelodiesEnabled: Bool
+    @State var enterImmediateVicinityDistance: Double
     
     let initialBeacon: String
     let initialMelodies: Bool
@@ -22,6 +23,7 @@ struct BeaconSelectionView: View {
     init() {
         _selectedBeaconKey = State(initialValue: SettingsContext.shared.selectedBeacon)
         _areMelodiesEnabled = State(initialValue: SettingsContext.shared.playBeaconStartAndEndMelodies)
+        _enterImmediateVicinityDistance = State(initialValue: SettingsContext.shared.enterImmediateVicinityDistance)
         initialBeacon = SettingsContext.shared.selectedBeacon
         initialMelodies = SettingsContext.shared.playBeaconStartAndEndMelodies
     }
@@ -52,7 +54,20 @@ struct BeaconSelectionView: View {
                             SettingsContext.shared.playBeaconStartAndEndMelodies = areMelodiesEnabled
                             beaconDemo.play(styleChanged: true)
                         })
-                    
+
+                    TableHeaderCell(text: GDLocalizedString("beacon.settings.vicinity"))
+
+                    SettingStepper(
+                        value: $enterImmediateVicinityDistance,
+                        unitsLocalization: "distance.format.meters",
+                        stepSize: 5.0,
+                        minValue: 0.0,
+                        maxValue: 50.0
+                    )
+                    .onChange(of: enterImmediateVicinityDistance, perform: { _ in
+                        SettingsContext.shared.enterImmediateVicinityDistance = enterImmediateVicinityDistance
+                    })
+
                     TableHeaderCell(text: GDLocalizedString("beacon.settings.style"))
                     
                     ForEach(BeaconOption.allAvailableCases(for: .standard)) { details in
