@@ -281,7 +281,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
             }
             
             // Don't do a location update for the destination if we have already entered the immediate vicinity
-            guard destination.distanceToClosestLocation(from: location) > DestinationManager.EnterImmediateVicinityDistance else {
+            guard destination.distanceToClosestLocation(from: location) > SettingsContext.shared.enterImmediateVicinityDistance else {
                 return nil
             }
         }

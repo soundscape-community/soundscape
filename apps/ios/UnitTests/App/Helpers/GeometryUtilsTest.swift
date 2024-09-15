@@ -12,6 +12,132 @@ import CoreLocation
 
 class GeometryUtilsTest: XCTestCase {
     
+    // TODO: `GeometryUtils::coordinates(geoJson:)` would be better if the `GeometryType` enum used associated values (coordinates), which would let us avoid the fact that it currently returns a vague `[Any]?` and instead just return a `GeometryType`. According to comments in `GeometryUtils`, the reason for this is compatibility with Objective-C. However, if we can move away from that, we could have much better code.
+    
+    // GeoJSON strings taken/adapted from the GeoJSON spec, RFC-7946
+    
+    /// normal test case for `GeometryUtils::coordinates(geoJson:)`
+    func testGeoJSONCoordinates_Point() throws {
+        /// `Point`-- coordinates are a `[Double]`
+        let point = GeometryUtils.coordinates(geoJson: """
+{
+    "type": "Point",
+    "coordinates": [100.0, 0.0]
+}
+""")
+        XCTAssertEqual(point.type, GeometryType.point)
+        XCTAssertEqual(point.points as! [Double], [100.0, 0.0])
+    }
+    
+    /// normal test case for `GeometryUtils::coordinates(geoJson:)`
+    func testGeoJSONCoordinates_LineString() throws {
+        /// `LineString`-- coordinates are a `[[Double]]`
+        let lineString = GeometryUtils.coordinates(geoJson: """
+{
+    "type": "LineString",
+    "coordinates": [
+        [100.0, 0.0],
+        [101.0, 1.0]
+    ]
+}
+""")
+        XCTAssertEqual(lineString.type, GeometryType.lineString)
+        XCTAssertEqual(lineString.points as! [[Double]], [[100.0, 0.0], [101.0, 1.0]])
+    }
+    /// normal test case for `GeometryUtils::coordinates(geoJson:)`
+    func testGeoJSONCoordinates_Polygon() throws {
+        /// `Polygon`-- coordinates are a `[[[Double]]]`
+        let poly = GeometryUtils.coordinates(geoJson: """
+{
+    "type": "Polygon",
+    "coordinates": [
+        [
+            [100.0, 0.0],
+            [101.0, 0.0],
+            [101.0, 1.0],
+            [100.0, 1.0],
+            [100.0, 0.0]
+        ],
+        [
+            [100.8, 0.8],
+            [100.8, 0.2],
+            [100.2, 0.2],
+            [100.2, 0.8],
+            [100.8, 0.8]
+        ]
+    ]
+}
+""")
+        XCTAssertEqual(poly.type, GeometryType.polygon)
+        XCTAssertEqual(poly.points as! [[[Double]]], [
+            [
+                [100.0, 0.0],
+                [101.0, 0.0],
+                [101.0, 1.0],
+                [100.0, 1.0],
+                [100.0, 0.0]
+            ],
+            [
+                [100.8, 0.8],
+                [100.8, 0.2],
+                [100.2, 0.2],
+                [100.2, 0.8],
+                [100.8, 0.8]
+            ]
+        ])
+    }
+    
+    // Skipping type `MultiPoint` as equivalent
+    // Skipping type `MultiLineString` as equivalent
+    // Skipping type `MultiPolygon` as equivalent
+    
+    func testGeoJSONCoordinates_invalidType() throws {
+        let a = GeometryUtils.coordinates(geoJson: """
+{
+    "type": "a",
+    "coordinates": [100.0, 0.0]
+}
+""")
+        // TODO: apparently invalid types become GeometryType.multiPolygon - should it?
+        XCTAssertEqual(a.type, .multiPolygon)
+        XCTAssertEqual(a.points as! [Double], [100.0, 0.0])
+    }
+    
+    /// edge case for `GeometryUtils::coordinates(geoJson:)` with empty input
+    /// which should result in `(nil, nil)`
+    func testGeoJSONCoordinates_emptystring() throws {
+        let emptyString = GeometryUtils.coordinates(geoJson: "")
+        XCTAssertNil(emptyString.type)
+        XCTAssertNil(emptyString.points)
+    }
+    
+    /// edge cases for `GeometryUtils::coordinates(geoJson:)` with malformed json
+    /// which should result in `(nil, nil)`
+    func testGeoJSONCoordinates_malformed() throws {
+        let badKey = GeometryUtils.coordinates(geoJson: "{a: 1}");
+        XCTAssertNil(badKey.type)
+        XCTAssertNil(badKey.points)
+        
+        let badValue = GeometryUtils.coordinates(geoJson: "{\"a\": asdf}")
+        XCTAssertNil(badValue.type)
+        XCTAssertNil(badValue.points)
+    }
+    
+    /// edge cases for `GeometryUtils::coordinates(geoJson:)` with missing keys
+    /// which should result in one or both return fields being `nil`
+    func testGeoJSONCoordinates_missing() throws {
+        let noType = GeometryUtils.coordinates(geoJson: """
+{"coordinates": [100.0, 0.0]}
+""")
+        XCTAssertNil(noType.type)
+        XCTAssertEqual(noType.points as! [Double], [100.0, 0.0])
+        
+        let noCoords = GeometryUtils.coordinates(geoJson: """
+{"type": "Point"}
+""")
+        XCTAssertEqual(noCoords.type, GeometryType.point)
+        XCTAssertNil(noCoords.points)
+    }
     // TODO: test `geometryContainsLocation`
     func testExample() throws {
         XCTAssert(Soundscape.GeometryUtils.geometryContainsLocation(location: CLLocationCoordinate2D.init(latitude: 1, longitude: 1), coordinates: [CLLocationCoordinate2D.init(latitude: 1, longitude: 1), CLLocationCoordinate2D.init(latitude: 3, longitude: 3)]))
@@ -208,21 +334,25 @@ class GeometryUtilsTest: XCTestCase {
         for lon in [0.0, 5.0, 10.0, 15.0, 20.0] {
             let on_path = CLLocationCoordinate2DMake(0, lon)
             let on_path_closest = GeometryUtils.closestEdge(from: on_path, on: path)
-            XCTAssertEqual(on_path_closest, on_path)
+            XCTAssertNotNil(on_path_closest)
+            XCTAssertEqual(on_path_closest!.coordinate, on_path)
             
             let parallel = CLLocationCoordinate2DMake(10, lon)
             let parallel_closest = GeometryUtils.closestEdge(from: parallel, on: path)
-            XCTAssertEqual(parallel_closest, on_path)
+            XCTAssertNotNil(parallel_closest)
+            XCTAssertEqual(parallel_closest!.coordinate, on_path)
         }
         
         for lat in [-10.0, -5.0, 0, 5.0, 10.0] {
             let before = CLLocationCoordinate2DMake(lat, -10)
             let before_closest = GeometryUtils.closestEdge(from: before, on: path)
-            XCTAssertEqual(before_closest, path.first)
+            XCTAssertNotNil(before_closest);
+            XCTAssertEqual(before_closest!.coordinate, path.first)
             
             let after = CLLocationCoordinate2DMake(lat, 30)
             let after_closest = GeometryUtils.closestEdge(from: after, on: path)
-            XCTAssertEqual(after_closest, path.last)
+            XCTAssertNotNil(after_closest)
+            XCTAssertEqual(after_closest!.coordinate, path.last)
         }
     }
     
@@ -267,11 +397,13 @@ class GeometryUtilsTest: XCTestCase {
         
         let n_pole = CLLocationCoordinate2DMake(90, 0)
         let n_pole_closest = GeometryUtils.closestEdge(from: n_pole, on: path)
-        XCTAssertEqual(n_pole_closest, path.first)
+        XCTAssertNotNil(n_pole_closest)
+        XCTAssertEqual(n_pole_closest!.coordinate, path.first)
         
         let s_pole = CLLocationCoordinate2DMake(-90, 0)
         let s_pole_closest = GeometryUtils.closestEdge(from: s_pole, on: path)
-        XCTAssertEqual(s_pole_closest, path.first)
+        XCTAssertNotNil(s_pole_closest)
+        XCTAssertEqual(s_pole_closest!.coordinate, path.first)
     }
     
     

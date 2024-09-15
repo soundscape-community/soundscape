@@ -103,7 +103,7 @@ struct PreviewGenerator<DecisionPoint: RootedPreviewGraph>: ManualGenerator {
             var callouts: [CalloutProtocol] = []
             
             if event.arrived {
-                let formattedDistance = LanguageFormatter.formattedDistance(from: DestinationManager.EnterImmediateVicinityDistance)
+                let formattedDistance = LanguageFormatter.formattedDistance(from: SettingsContext.shared.enterImmediateVicinityDistance)
                 
                 callouts.append(GenericCallout(.preview, description: "arrived at beacon (in preview)") { (_, _, _) -> [Sound] in
                     let earcon = GlyphSound(.beaconFound)

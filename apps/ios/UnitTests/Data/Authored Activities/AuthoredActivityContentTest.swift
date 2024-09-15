@@ -15,6 +15,7 @@ final class AuthoredActivityContentTest: XCTestCase {
     
     // MARK: Test GPX Parsing
     
+    static let baseURL = URL(string: "https://example.com")!
     /// Tests parsing from GPX
     /// Using `GPXSoundscapeSharedContentExtensions` v1
     /// And minimal other details
@@ -63,7 +64,7 @@ final class AuthoredActivityContentTest: XCTestCase {
             XCTFail("Failed to get parsedData")
             return
         }
-        guard let activity = AuthoredActivityContent.parse(gpx: root) else {
+        guard let activity = AuthoredActivityContent.parse(gpx: root, baseURL: AuthoredActivityContentTest.baseURL) else {
             XCTFail("Failed to create AuthoredActivityContent from GPXRoot")
             return
         }
@@ -150,7 +151,7 @@ final class AuthoredActivityContentTest: XCTestCase {
             XCTFail("Failed to get parsedData")
             return
         }
-        guard let activity = AuthoredActivityContent.parse(gpx: root) else {
+        guard let activity = AuthoredActivityContent.parse(gpx: root, baseURL: AuthoredActivityContentTest.baseURL) else {
             XCTFail("Failed to create AuthoredActivityContent from GPXRoot")
             return
         }

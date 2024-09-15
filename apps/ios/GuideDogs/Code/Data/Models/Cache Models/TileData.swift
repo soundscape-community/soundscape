@@ -73,7 +73,7 @@ class TileData: Object {
         return VectorTile(quadKey: quadkey)
     }
     
-    convenience init(withParsedData json: GeoJsonFeatureCollection, quadkey: String, etag: String, superCategories: SuperCategories) {
+    convenience init(withParsedData json: [String: Any], quadkey: String, etag: String, superCategories: SuperCategories) {
         self.init()
         
         // Get the vector tile info
@@ -85,7 +85,12 @@ class TileData: Object {
         // Store the etag for checking future updates
         self.etag = etag
         
-        for feature in json.features {
+        guard let featuresJson = json["features"] as? [Any] else { return }
+        
+        for featureJson in featuresJson {
+            // Try to parse the feature - the GeoJsonFeature initializer is failable
+            guard let feature = GeoJsonFeature(json: featureJson as! [String: Any], superCategories: superCategories) else { continue }
+            
             // Check if it is a road, intersection, etc.
             if feature.superCategory == .roads {
                 roads.append(GDASpatialDataResultEntity(feature: feature)!)

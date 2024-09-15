@@ -127,8 +127,15 @@ class AuthoredActivityLoader {
             return nil
         }
         
+        guard let index = knownActivities.events.firstIndex(where: { activityID == $0.id }),
+        let baseURL = knownActivities.events[index].downloadPath else {
+            GDLogAppError("Unable to find download path for activity with ID: \(activityID)")
+            return nil
+        }
+        
+        
         // Parse the GPX file and validate its contents
-        return AuthoredActivityContent.parse(gpx: gpx)
+        return AuthoredActivityContent.parse(gpx: gpx, baseURL: baseURL)
     }
     
     func add(_ activityID: String, linkVersion: UniversalLinkVersion) async throws {
@@ -296,8 +303,8 @@ class AuthoredActivityLoader {
             throw ActivityLoaderError.unableToLoadContent
         }
         
-        guard let content = AuthoredActivityContent.parse(gpx: gpx) else {
-            GDLogWarn(.routeGuidance, "Unable to parse activity content from GPX for \(id)")
+        guard let content = AuthoredActivityContent.parse(gpx: gpx, baseURL: metadata.downloadPath!) else {
+            GDLogWarn(.routeGuidance, "Unable to parse activity content from GPX for \(id), URL = \(metadata.downloadPath)")
             
             NotificationCenter.default.post(name: .didTryActivityUpdate, object: self, userInfo: [
                 Keys.updateSuccess: false,

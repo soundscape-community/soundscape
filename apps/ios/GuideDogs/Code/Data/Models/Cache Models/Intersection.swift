@@ -231,9 +231,12 @@ class Intersection: Object, Locatable, Localizable {
             self.key += String(roadId)
         }
         
-        if case .point(let coordinate) = feature.geometry {
-            latitude = coordinate.latitude
-            longitude = coordinate.longitude
+        if let lat = feature.geometry?.point?[1] {
+            latitude = lat
+        }
+        
+        if let lon = feature.geometry?.point?[0] {
+            longitude = lon
         }
         
         self.key += String(latitude) + String(longitude)

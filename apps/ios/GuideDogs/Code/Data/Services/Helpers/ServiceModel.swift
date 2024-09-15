@@ -148,7 +148,7 @@ class ServiceModel {
         return json as? [String: Any]
     }
     
-    static func validateJsonResponse(request: URLRequest, response: URLResponse?, data: Data?, error: Error?, callback: @escaping (HTTPStatusCode, Error?) -> Void) -> (HTTPStatusCode, String, GeoJsonFeatureCollection)? {
+    static func validateJsonResponse(request: URLRequest, response: URLResponse?, data: Data?, error: Error?, callback: @escaping (HTTPStatusCode, Error?) -> Void) -> (HTTPStatusCode, String, [String: Any])? {
         // Some more housekeeping
         ServiceModel.logNetworkResponse(response, request: request, error: error)
         
@@ -194,7 +194,7 @@ class ServiceModel {
         }
         
         // If we get this far, then the data property should not be nil, and it should be valid JSON
-        guard let data = data, let parsed = try? JSONDecoder().decode(GeoJsonFeatureCollection.self, from: data) else {
+        guard let data = data, let parsed = try? JSONSerialization.jsonObject(with: data), let json = parsed as? [String: Any] else {
             DispatchQueue.main.async {
                 callback(status, ServiceError.jsonParseFailed)
             }
@@ -202,7 +202,7 @@ class ServiceModel {
             return nil
         }
         
-        return (status, newEtag, parsed)
+        return (status, newEtag, json)
     }
     
     static func logNetworkRequest(_ request: URLRequest) {

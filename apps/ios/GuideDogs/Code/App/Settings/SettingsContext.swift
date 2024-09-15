@@ -8,6 +8,7 @@
 
 import Foundation
 import AVFoundation
+import CoreLocation
 
 extension Notification.Name {
     static let automaticCalloutsEnabledChanged = Notification.Name("GDAAutomaticCalloutsChanged")
@@ -55,6 +56,8 @@ class SettingsContext {
         fileprivate static let previewIntersectionsIncludeUnnamedRoads = "GDASettingsPreviewIntersectionsIncludeUnnamedRoads"
         fileprivate static let audioSessionMixesWithOthers = "GDAAudioSessionMixesWithOthers"
         fileprivate static let markerSortStyle           = "GDAMarkerSortStyle"
+        fileprivate static let leaveImmediateVicinityDistance = "GDALeaveImmediateVicinityDistance"
+        fileprivate static let enterImmediateVicinityDistance = "GDAEnterImmediateVicinityDistance"
         
         fileprivate static let ttsGain = "GDATTSAudioGain"
         fileprivate static let beaconGain = "GDABeaconAudioGain"
@@ -105,7 +108,9 @@ class SettingsContext {
             Keys.senseDestination: true,
             Keys.previewIntersectionsIncludeUnnamedRoads: false,
             Keys.audioSessionMixesWithOthers: true,
-            Keys.markerSortStyle: SortStyle.distance.rawValue
+            Keys.markerSortStyle: SortStyle.distance.rawValue,
+            Keys.leaveImmediateVicinityDistance: 30.0,
+            Keys.enterImmediateVicinityDistance: 15.0
         ])
         
         resetLocaleIfNeeded()
@@ -120,7 +125,7 @@ class SettingsContext {
     }
     
     // MARK: Properties
-
+    
     var appUseCount: Int {
         get {
             return userDefaults.integer(forKey: Keys.appUseCount)
@@ -318,7 +323,7 @@ class SettingsContext {
     }
     
     // MARK: Push Notifications
-
+    
     var apnsDeviceToken: Data? {
         get {
             return userDefaults.data(forKey: Keys.apnsDeviceToken)
@@ -369,6 +374,23 @@ class SettingsContext {
         }
     }
     
+    var leaveImmediateVicinityDistance: CLLocationDistance {
+        get {
+            return userDefaults.double(forKey: Keys.leaveImmediateVicinityDistance) as CLLocationDistance
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.leaveImmediateVicinityDistance)
+        }
+    }
+    
+    var enterImmediateVicinityDistance: CLLocationDistance {
+        get {
+            return userDefaults.double(forKey: Keys.enterImmediateVicinityDistance) as CLLocationDistance
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.enterImmediateVicinityDistance)
+        }
+    }
 }
 
 extension SettingsContext: AutoCalloutSettingsProvider {
