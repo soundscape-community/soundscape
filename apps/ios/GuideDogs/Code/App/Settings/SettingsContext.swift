@@ -12,6 +12,7 @@ import CoreLocation
 
 extension Notification.Name {
     static let automaticCalloutsEnabledChanged = Notification.Name("GDAAutomaticCalloutsChanged")
+    static let shakeCalloutsEnabledChanged = Notification.Name("GDAShakeCalloutsChanged")
     static let autoCalloutCategorySenseChanged = Notification.Name("GDAAutomaticCalloutSenseChanged")
     static let beaconVolumeChanged = Notification.Name("GDABeaconVolumeChanged")
     static let ttsVolumeChanged = Notification.Name("GDATTSVolumeChanged")
@@ -42,6 +43,7 @@ class SettingsContext {
         fileprivate static let useOldBeacon              = "GDASettingsUseOldBeacon"
         fileprivate static let playBeaconStartEndMelody  = "GDAPlayBeaconStartEndMelody"
         fileprivate static let automaticCalloutsEnabled  = "GDASettingsAutomaticCalloutsEnabled"
+        fileprivate static let shakeCalloutsEnabled      = "GDASettingsShakeCalloutsEnabled"
         fileprivate static let sensePlace                = "GDASettingsPlaceSenseEnabled"
         fileprivate static let senseLandmark             = "GDASettingsLandmarkSenseEnabled"
         fileprivate static let senseMobility             = "GDASettingsMobilitySenseEnabled"
@@ -96,6 +98,7 @@ class SettingsContext {
             Keys.useOldBeacon: false,
             Keys.playBeaconStartEndMelody: false,
             Keys.automaticCalloutsEnabled: true,
+            Keys.shakeCalloutsEnabled: true,
             Keys.sensePlace: true,
             Keys.senseLandmark: true,
             Keys.senseMobility: true,
@@ -399,6 +402,16 @@ extension SettingsContext: AutoCalloutSettingsProvider {
             userDefaults.set(newValue, forKey: Keys.automaticCalloutsEnabled)
             
             NotificationCenter.default.post(name: .automaticCalloutsEnabledChanged, object: self, userInfo: [Keys.enabled: newValue])
+        }
+    }
+    
+    var shakeCalloutsEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.shakeCalloutsEnabled)
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.shakeCalloutsEnabled)
+            NotificationCenter.default.post(name: .shakeCalloutsEnabledChanged, object: self, userInfo: [Keys.enabled: newValue])
         }
     }
     

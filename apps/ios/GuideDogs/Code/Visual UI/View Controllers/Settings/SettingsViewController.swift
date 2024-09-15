@@ -27,6 +27,7 @@ class SettingsViewController: BaseTableViewController {
         case poi = 1
         case mobility = 2
         case beacon = 3
+        case shake = 4
     }
     
     private static let cellIdentifiers: [IndexPath: String] = [
@@ -43,6 +44,7 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue): "poiCallouts",
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue): "mobilityCallouts",
         IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue): "beaconCallouts",
+        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue): "shakeCallouts",
         
         IndexPath(row: 0, section: Section.streetPreview.rawValue): "streetPreview",
         IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
@@ -53,7 +55,8 @@ class SettingsViewController: BaseTableViewController {
     private static let collapsibleCalloutIndexPaths: [IndexPath] = [
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue)
+        IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue),
+        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue)
     ]
     
     // MARK: Properties
@@ -82,7 +85,7 @@ class SettingsViewController: BaseTableViewController {
         switch sectionType {
         case .general: return 6
         case .audio: return 1
-        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 4 : 1
+        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 5 : 1
         case .streetPreview: return 1
         case .troubleshooting: return 1
         case .about: return 1
@@ -108,6 +111,7 @@ class SettingsViewController: BaseTableViewController {
                 case .poi: cell.type = .poi
                 case .mobility: cell.type = .mobility
                 case .beacon: cell.type = .beacon
+                case .shake: cell.type = .shake
                 }
             }
             
