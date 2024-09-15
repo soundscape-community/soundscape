@@ -8,7 +8,7 @@
 
 import CoreLocation
 
-struct ExplorationModeToggled: UserInitiatedEvent { //code handled when one of the four bottom buttons are pressed
+struct ExplorationModeToggled: UserInitiatedEvent {
     let sender: AnyObject?
     let mode: ExplorationGenerator.Mode
     let requiredMarkerKeys: [String]
@@ -25,7 +25,7 @@ struct ExplorationModeToggled: UserInitiatedEvent { //code handled when one of t
     ///       this mode are finished playing after having toggled a mode on
     init(_ mode: ExplorationGenerator.Mode, sender: AnyObject? = nil, requiredMarkerKeys: [String] = [], logContext: String? = nil, completion: ((Bool) -> Void)? = nil) {
         self.mode = mode
-        self.sender = sender //obtained from function call
+        self.sender = sender
         self.requiredMarkerKeys = requiredMarkerKeys
         self.completionHandler = completion
         

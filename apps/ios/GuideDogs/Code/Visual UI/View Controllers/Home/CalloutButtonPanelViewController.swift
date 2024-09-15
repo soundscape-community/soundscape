@@ -120,7 +120,7 @@ class CalloutButtonPanelViewController: UIViewController {
     
     // MARK: `IBAction`
     
-    @IBAction private func onLocateTouchUpInside(_ sender: AnyObject?) { //Triggered when user clicks 'My Location' on main menu
+    @IBAction private func onLocateTouchUpInside(_ sender: AnyObject?) {
         updateAnimation(locateImageView, locateAnimation, true)
         
         let completion: (Bool) -> Void = { [weak self] _ in
@@ -146,7 +146,7 @@ class CalloutButtonPanelViewController: UIViewController {
         AppContext.process(event)
     }
     
-    @IBAction private func onOrientateTouchUpInside(_ sender: AnyObject?) { //Triggered when user clicks 'Around Me'
+    @IBAction private func onOrientateTouchUpInside(_ sender: AnyObject?) {
         updateAnimation(orientateImageView, orientateAnimation, true)
 
         AppContext.process(ExplorationModeToggled(.aroundMe, sender: sender, logContext: logContext) { [weak self] _ in
@@ -162,7 +162,7 @@ class CalloutButtonPanelViewController: UIViewController {
         })
     }
     
-    @IBAction private func onLookAheadTouchUpInside(_ sender: AnyObject?) { //Triggered when user clicks 'Ahead of Me'
+    @IBAction private func onLookAheadTouchUpInside(_ sender: AnyObject?) {
         updateAnimation(exploreImageView, exploreAnimation, true)
         
         AppContext.process(ExplorationModeToggled(.aheadOfMe, sender: sender, logContext: logContext) { [weak self] _ in
@@ -178,7 +178,7 @@ class CalloutButtonPanelViewController: UIViewController {
         })
     }
     
-    @IBAction private func onMarkedPointsTouchUpInside(_ sender: AnyObject?) { //Triggered when user clicks 'Nearby Markers'
+    @IBAction private func onMarkedPointsTouchUpInside(_ sender: AnyObject?) {
         updateAnimation(markedPointImageView, markedPointsAnimation, true)
         
         AppContext.process(ExplorationModeToggled(.nearbyMarkers, sender: sender, logContext: logContext) { [weak self] _ in

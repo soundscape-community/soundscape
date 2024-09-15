@@ -336,29 +336,30 @@ extension CalloutStateMachine {
             } else {
                 sounds = callout.sounds(for: strongSelf.geo?.location, automotive: strongSelf.motionActivityContext.isInVehicle)
             }
-                     
+            
             strongSelf.audioEngine.play(sounds) { (success) in
                 calloutGroup.delegate?.calloutFinished(callout, completed: success)
-
+                
                 guard strongSelf.currentState != State.stopping.rawValue else {
                     GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
                     strongSelf.stateMachine.fireEvent(.stopped)
                     calloutGroup.onComplete?(false)
                     return
                 }
-
+                
                 guard strongSelf.currentState != State.off.rawValue else {
                     GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
                     calloutGroup.onComplete?(false)
                     return
                 }
-
+                
                 guard success else {
                     GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
                     calloutGroup.onComplete?(false)
                     strongSelf.stateMachine.fireEvent(.failed)
                     return
                 }
+                
                 strongSelf.stateMachine.fireEvent(.delayCalloutAnnounced)
             }
             

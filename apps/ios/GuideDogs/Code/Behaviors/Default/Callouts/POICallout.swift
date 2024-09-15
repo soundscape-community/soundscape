@@ -111,7 +111,7 @@ struct POICallout: POICalloutProtocol {
         self.includeDistance = includeDistance
         self.includePrefixSound = includePrefixSound
     }
-   	 
+    
     /// Sounds to callout
     func sounds(for location: CLLocation?, isRepeat: Bool, automotive: Bool = false) -> Sounds {
         guard let location = location ?? self.location, let poi = poi else {

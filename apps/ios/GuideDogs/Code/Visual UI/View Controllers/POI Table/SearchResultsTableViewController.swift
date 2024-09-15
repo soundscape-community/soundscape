@@ -24,7 +24,7 @@ protocol SearchResultsTableViewControllerDelegate: LocationActionDelegate {
     var isAccessibilityActionsEnabled: Bool { get }
 }
 
-class SearchResultsTableViewController: UITableViewController{
+class SearchResultsTableViewController: UITableViewController {
     
     typealias ListItem = ListItemTableViewCellConfigurator.ListItem
     
@@ -148,7 +148,7 @@ class SearchResultsTableViewController: UITableViewController{
                 
                 return poi
             })
-           
+        
         let selectionDataSource = TableViewDataSource(header: nil, models: selections.asListItemWithoutIndex, cellConfigurator: configurator)
         let calloutDataSource = TableViewDataSource(header: GDLocalizedString("poi_screen.header.recent.callouts"), models: callouts.asListItemWithoutIndex, cellConfigurator: configurator)
         
