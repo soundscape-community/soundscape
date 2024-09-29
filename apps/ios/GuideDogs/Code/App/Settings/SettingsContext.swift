@@ -380,6 +380,8 @@ class SettingsContext {
         }
         set {
             userDefaults.set(newValue, forKey: Keys.leaveImmediateVicinityDistance)
+            // Ensure leave is always 10m greater than enter
+            userDefaults.set(newValue - 15.0, forKey: Keys.enterImmediateVicinityDistance)
         }
     }
     
@@ -389,6 +391,8 @@ class SettingsContext {
         }
         set {
             userDefaults.set(newValue, forKey: Keys.enterImmediateVicinityDistance)
+            // Ensure leave is always 15m greater than enter
+            userDefaults.set(newValue + 15.0, forKey: Keys.leaveImmediateVicinityDistance)
         }
     }
 }
