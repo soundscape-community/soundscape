@@ -98,7 +98,7 @@ class SettingsContext {
             Keys.useOldBeacon: false,
             Keys.playBeaconStartEndMelody: false,
             Keys.automaticCalloutsEnabled: true,
-            Keys.shakeCalloutsEnabled: true,
+            Keys.shakeCalloutsEnabled: false,
             Keys.sensePlace: true,
             Keys.senseLandmark: true,
             Keys.senseMobility: true,

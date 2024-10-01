@@ -3404,6 +3404,24 @@
 // MARK: - What's New
 //------------------------------------------------------------------------------
 
+/* Title for the shake to repeat last callout feature */
+"whats_new.1_2_0.0.title" = "Shake to Repeat the Last Callout";
+
+/* Description of shake to repeat feature */
+"whats_new.1_2_0.0.description" = "You can now shake your device to repeat the last callout. To enable this feature, switch on the 'Repeat Callouts' toggle in settings.";
+
+/* Title of the beacon vicinity distance feature */
+"whats_new.1_2_0.1.title" = "Beacon Vicinity Distance Setting";
+
+/* Description of the beacon vicinity distance feature */
+"whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. You can adjust this setting in Audio Beacon settings.\n\nWe would particularly welcome feedback on your experience with setting different distances (0, 5, and 10 metres), for the Audio Beacon to switch off. In our internal testing we are seeing some inconsistencies in behaviour and are keen to get feedback from a wider base of users.";
+
+/* Title of the  categories in places nearby feature */
+"whats_new.1_2_0.2.title" = "Categories in Places Nearby";
+
+/* Description of the categories in places nearby feature */
+"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc";
+
 /* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settings app. {NumberedPlaceholder="iOS"} */
 "whats_new.3_2_0.2.description" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
 
