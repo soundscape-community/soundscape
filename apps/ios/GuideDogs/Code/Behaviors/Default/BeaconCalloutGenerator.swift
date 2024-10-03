@@ -237,7 +237,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
         }
         
         let causedAudioDisabled = event.beaconWasEnabled && !event.beaconIsEnabled
-        guard let destinations = getCalloutsForBeacon(nearby: event.location, origin: .beaconGeofence, causedAudioDisable: causedAudioDisabled) else {
+        guard let destinations = getCalloutsForBeacon(nearby: event.location, origin: .beaconGeofence, causedAudioDisable: causedAudioDisabled, didExitGeofence: !event.didEnter) else {
             return nil
         }
         
@@ -261,7 +261,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
         return group
     }
     
-    private func getCalloutsForBeacon(nearby location: CLLocation, origin: CalloutOrigin, causedAudioDisable: Bool = false) -> [DestinationCallout]? {
+    private func getCalloutsForBeacon(nearby location: CLLocation, origin: CalloutOrigin, causedAudioDisable: Bool = false, didExitGeofence: Bool = false) -> [DestinationCallout]? {
         // Check if destination callouts are enabled
         guard settings.destinationSenseEnabled else {
             GDLogAutoCalloutInfo("Skipping beacon auto callouts. Beacon callouts are not enabled.")
@@ -271,6 +271,16 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
         // Check if a destination is currently set
         guard let key = destinationKey else {
             return nil
+        }
+        
+        /// Only play "Beacon within x units" callouts when entering (not exitinhg) beacon geofence. For large values of
+        /// enterImmediateVicinityDistance, when exiting a geofence, the auto callouts will immediately announce a
+        /// "Beacon: x units" value greater than the geofence radius, and we don't want to mistakenly imply we're
+        /// moving towards the beacon.
+        if origin == .beaconGeofence {
+            guard !didExitGeofence else {
+                return nil
+            }
         }
         
         // If the callout is not coming from .auto, there are no additional checks to make
