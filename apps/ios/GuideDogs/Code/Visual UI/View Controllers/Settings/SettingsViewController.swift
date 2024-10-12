@@ -106,7 +106,6 @@ class SettingsViewController: BaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        // Return a default height for cells
         return expandedSections.contains(indexPath.section) ? UITableView.automaticDimension : 0
     }
     
@@ -122,34 +121,37 @@ class SettingsViewController: BaseTableViewController {
         }
 
         // Configure the cell based on the section type
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
+        cell.backgroundColor = UIColor(named: "CellBackgroundColor") // Set a custom dark background color
+
         switch sectionType {
         case .callouts:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! CalloutSettingsCellView
-            cell.delegate = self
+            let calloutCell = cell as! CalloutSettingsCellView
+            calloutCell.delegate = self
             
             if let rowType = CalloutsRow(rawValue: indexPath.row) {
                 switch rowType {
-                case .all: cell.type = .all
-                case .poi: cell.type = .poi
-                case .mobility: cell.type = .mobility
-                case .beacon: cell.type = .beacon
-                case .shake: cell.type = .shake
+                case .all: calloutCell.type = .all
+                case .poi: calloutCell.type = .poi
+                case .mobility: calloutCell.type = .mobility
+                case .beacon: calloutCell.type = .beacon
+                case .shake: calloutCell.type = .shake
                 }
             }
-            return cell
+            return calloutCell
             
         case .telemetry:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! TelemetrySettingsTableViewCell
-            cell.parent = self
-            return cell
+            let telemetryCell = cell as! TelemetrySettingsTableViewCell
+            telemetryCell.parent = self
+            return telemetryCell
             
         case .audio:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! MixAudioSettingCell
-            cell.delegate = self
-            return cell
+            let audioCell = cell as! MixAudioSettingCell
+            audioCell.delegate = self
+            return audioCell
             
         default:
-            return tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
+            return cell
         }
     }
     
@@ -188,9 +190,37 @@ class SettingsViewController: BaseTableViewController {
         header.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleHeaderTap(_:))))
         header.tag = section // Set the tag to identify the section
 
-        header.textLabel?.textColor = .systemBlue // Change text color
-        header.textLabel?.font = UIFont.boldSystemFont(ofSize: 18) // Change font size
+        // Customize header title
+        header.textLabel?.textColor = .white // Change header text color to white for contrast
+        header.textLabel?.font = UIFont.boldSystemFont(ofSize: 18) // Make the text bold
+
+        // Customize header appearance
+        header.contentView.backgroundColor = UIColor(named: "HeaderBackgroundColor") // Set a custom darker color
+        header.layer.borderColor = UIColor.clear.cgColor // Optional: set border color
+        header.layer.borderWidth = 0.0 // Optional: border width
+        header.layer.cornerRadius = 8.0 // Set rounded corners
+        header.layer.masksToBounds = true // Clip content to rounded corners
+        
+        // Optional: Add some padding
+        header.contentView.layoutMargins = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
+        
+        // Add chevron icon
+        let chevronImageView = UIImageView(image: UIImage(systemName: "chevron.right")) // Use system image
+        chevronImageView.tintColor = .white // Set the color for the arrow
+        chevronImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add chevron to header
+        header.contentView.addSubview(chevronImageView)
+
+        // Set up constraints for chevron
+        NSLayoutConstraint.activate([
+            chevronImageView.trailingAnchor.constraint(equalTo: header.contentView.trailingAnchor, constant: -15),
+            chevronImageView.centerYAnchor.constraint(equalTo: header.contentView.centerYAnchor),
+            chevronImageView.widthAnchor.constraint(equalToConstant: 20),
+            chevronImageView.heightAnchor.constraint(equalToConstant: 20)
+        ])
     }
+
     @objc private func handleHeaderTap(_ gesture: UITapGestureRecognizer) {
         guard let header = gesture.view as? UITableViewHeaderFooterView else { return }
         let section = header.tag
@@ -272,3 +302,4 @@ extension SettingsViewController: LargeBannerContainerView {
         tableView.reloadData()
     }
 }
+
