@@ -4382,3 +4382,16 @@
 "faq.tip.two_finger_double_tap" = "Para silenciar los avisos activos, pulse la pantalla dos veces con dos dedos.";
 
 
+
+"mail.airmail" = "Airmail";
+"settings.about.title.copyright" = "Avisos de derechos de autor";
+"mail.gmail" = "Gmail";
+"mail.msoutlook" = "Microsoft Outlook";
+"mail.default" = "Por defecto";
+"mail.fastmail" = "Fastmail";
+"mail.yahoo" = "Correo Yahoo";
+"mail.protonmail" = "Proton Mail";
+"mail.spark" = "Spark";
+"filter.parks" = "Parques";
+"callouts.shake_callouts" = "Repetir avisos";
+"callouts.shake_callouts.info" = "Agita el dispositivo para repetir la última llamada";
