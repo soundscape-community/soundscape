@@ -3260,7 +3260,7 @@
 
 /* Open Street Map term. A bus stop is a place where passengers can board or alight from a bus. Its position may be marked by a shelter, pole, bus lay-by, or road markings. */
 "osm.tag.bus_stop" = "Bus Stop";
-/* Open Street Map term. A bus stop is a place where passengers can go to a landmark */
+/* Open Street Map term. A landmark is A tree or other feature remarkable due to its size or prominent location, usually visible from great distances and useful for navigation. */
 "osm.tag.landmark" = "Landmark";
 
 /* Open Street Map term. Used as a display name for place or a location. %@ is a bus stop name, such as "London Bus Stop". */
@@ -3293,7 +3293,6 @@
 "osm.tag.statue" = "Statue";
 "osm.tag.museum" = "Museum";
 "osm.tag.historic" = "Historic";
-"osm.tag.landmark" = "Landmark";
 "osm.tag.cathedral" = "Cathedral";
 
 /* Open Street Map term. Used as a display name for place or a location. %@ is a bus stop id, such as "Bus Stop 7" or "Bus Stop B". */
@@ -3332,7 +3331,6 @@
 /* Open Street Map term. An area of open space for recreational use, usually designed and in semi-natural state with grassy areas, trees and bushes. Parks are usually urban, but not always. */
 "osm.tag.park" = "Park";
 
-"osm.tag.playground" = "Playground";
 "osm.tag.nature_reserve" = "Nature Reserve";
 "osm.tag.botanical_garden" = "Botanical Garden";
 "osm.tag.public_garden" = "Public Garden";
