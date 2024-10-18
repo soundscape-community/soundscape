@@ -195,7 +195,7 @@
 
 
 /*  */
-"general.alert.survey.title" = "Vi vil gjerne høre fra deg.";
+"general.alert.survey.title" = "Vi vil gjerne høre fra deg!";
 
 
 /*  */
@@ -4380,6 +4380,7 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Hvis du trykker på skjermen to ganger med to fingre, slås lyden av for alle aktive meldinger.";
+
 
 
 
