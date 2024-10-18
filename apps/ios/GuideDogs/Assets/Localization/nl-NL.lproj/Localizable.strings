@@ -131,7 +131,7 @@
 
 
 /*  */
-"general.loading.almost_ready" = "Bijna klaar...";
+"general.loading.almost_ready" = "Bijna klaar…";
 
 
 /*  */
@@ -559,7 +559,7 @@
 
 
 /*  */
-"voice.settings.enhanced_available.title" = "Verbeterde stem beschikbaar.";
+"voice.settings.enhanced_available.title" = "Verbeterde stem beschikbaar!";
 
 
 /*  */
@@ -651,7 +651,7 @@
 
 
 /*  */
-"settings.about.title.whats_new" = "Nieuwe functies";
+"settings.about.title.whats_new" = "Wat is er nieuw?";
 
 
 /*  */
@@ -4382,3 +4382,42 @@
 "faq.tip.two_finger_double_tap" = "Dubbeltik met twee vingers op het scherm om actieve waarschuwingen op stil te zetten.";
 
 
+
+"mail.yahoo" = "Yahoo Mail";
+"mail.dispatch" = "Dispatch";
+"osm.tag.fast_food" = "Fastfood";
+"osm.tag.bar" = "kroeg";
+"osm.tag.ice_cream" = "IJssalon";
+"osm.tag.pub" = "Café";
+"osm.tag.coffee_shop" = "Koffiebar";
+"osm.tag.monument" = "Monument";
+"osm.tag.statue" = "Standbeeld";
+"osm.tag.museum" = "Museum";
+"osm.tag.historic" = "Historisch";
+"osm.tag.cathedral" = "Kathedraal";
+"osm.tag.nature_reserve" = "Natuurreservaat";
+"osm.tag.botanical_garden" = "Botanische tuin";
+"osm.tag.field" = "Veld";
+"osm.tag.reserve" = "Reservaat";
+"osm.tag.recreation_area" = "Recreatiegebied";
+"whats_new.1_2_0.0.description" = "Je kunt nu je apparaat schudden om de laatste aankondiging te herhalen. Schakel hiervoor de \"Herhaal aankondigingen\" optie in bij instellingen.";
+"whats_new.1_2_0.1.title" = "Instelling om de nabijheid van bakens aan te passen";
+"whats_new.1_2_0.2.title" = "Categorieën bij plaatsen in de buurt";
+"whats_new.1_2_0.2.description" = "Je kunt nu de lijst met plaatsen in de buurt filteren op categorieën zoals openbaar vervoer, eten & drinken, enz.";
+"settings.about.title.copyright" = "Auteursrechten";
+"filter.parks" = "Parken";
+"callouts.shake_callouts" = "Aankondigingen herhalen";
+"callouts.shake_callouts.info" = "Schud het apparaat om de laatste aankondiging te herhalen";
+"osm.tag.landmark" = "Oriëntatiepunt";
+"beacon.settings.vicinity" = "Voer nabijheidsafstand in";
+"osm.tag.public_garden" = "Publiek toegankelijke tuin";
+"osm.tag.green_space" = "Groen";
+"whats_new.1_2_0.0.title" = "Schud om de laatste melding te herhalen";
+"whats_new.1_2_0.1.description" = "Je kunt nu de afstand aanpassen waarop het baken automatisch wordt gedempt wanneer je nadert. Je kunt deze instelling aanpassen in de Audiobaken-instellingen.\n\nWe zijn vooral benieuwd naar je feedback over je ervaring met het instellen van verschillende afstanden (0, 5 en 10 meter) voor het uitschakelen van het Audio Baken. Tijdens onze interne tests zien we enkele inconsistenties in het gedrag, en we zijn erg geïnteresseerd in feedback van een bredere groep gebruikers.";
+"mail.airmail" = "Airmail";
+"mail.default" = "Standaard";
+"mail.gmail" = "gmail";
+"mail.msoutlook" = "Microsoft Outlook";
+"mail.fastmail" = "Fastmail";
+"mail.protonmail" = "Proton Mail";
+"mail.spark" = "Spark";
