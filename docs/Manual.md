@@ -4,7 +4,7 @@ This document describes how to operate the Soundscape App and access its feature
 
 ## Overview
 
-[Soundscape Community](https://apps.apple.com/us/app/soundscape-community/id6449701760) is an IOS app on the app store [[Website](https://soundscape.services/)]. Abandoned by Microsoft, Sounscape Community aims to pick up where Microsoft left off and develop the app further.
+[Soundscape Community](https://apps.apple.com/us/app/soundscape-community/id6449701760) is an IOS app on the app store [[Website](https://soundscape.services/)]. Abandoned by Microsoft, Soundscape Community aims to pick up where Microsoft left off and develop the app further.
 
 ## Purpose
 
