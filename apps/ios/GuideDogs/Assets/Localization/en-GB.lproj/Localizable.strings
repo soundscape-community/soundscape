@@ -403,7 +403,7 @@
 
 
 /*  */
-"settings.feedback.choose_email_app" = "Choose a email app:";
+"settings.feedback.choose_email_app" = "Choose an email app:";
 
 
 /*  */
@@ -2777,7 +2777,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "Congratulations! Your AirPods are ready for use, so you can put your phone in your pocket and go! Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. A single click on the headphones button will mute or unmute the beacon, double click will callout your location, and a triple click will repeat the last callout.";
+"devices.connect_headset.completed.airpods" = "Congratulations! Your AirPods are ready for use, so you can put your phone in your pocket and go! Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. A single click on the headphones button will mute or unmute the beacon, double click will call out your location, and a triple click will repeat the last callout.";
 
 
 /*  */
@@ -3257,7 +3257,7 @@
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "As you progress on your journey, Soundscape will occasionally update you about the distance to the location marked by the beacon with a call out like this.";
+"tutorial.beacons.text.AutomaticCallout" = "As you progress on your journey, Soundscape will occasionally update you about the distance to the location marked by the beacon with a callout like this.";
 
 
 /*  */
@@ -3673,11 +3673,11 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.1" = "<b>Turning callouts on or off</b>:<br/> Turning callouts off will silence the app. Callouts can be turned on or off in the \"Manage Callouts\" section of the \"Settings\" screen where you can tap the \"Allow Callouts\" toggle to turn callouts on or off. You can also turn callouts on or off by using the \"skip forward\" command (double tap and hold) if your headphones have media control buttons. Alternatively, you can use the \"Sleep\" button in the upper right hand corner of the home screen to stop Soundscape from making callouts until you choose to wake it up again.";
+"help.text.automatic_callouts.how.1" = "<b>Turning callouts on or off</b>:<br/> Turning callouts off will silence the app. Callouts can be turned on or off in the \"Manage Callouts\" section of the \"Settings\" screen where you can tap the \"Allow Callouts\" toggle to turn them on or off. You can also turn callouts on or off by using the \"skip forward\" command (double tap and hold) if your headphones have media control buttons. Alternatively, you can use the \"Sleep\" button in the upper right hand corner of the home screen to stop Soundscape from making callouts until you wake it up.";
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically callout, go to the \"Settings\" screen using the menu on the \"Home\" screen. The \"Manage Callouts\" section of the \"Settings\" screen contains a list of types of things the app can callout. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
+"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen using the menu on the \"Home\" screen. The \"Manage Callouts\" section of the \"Settings\" screen contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
 
 
 /*  */
@@ -3753,7 +3753,7 @@
 
 
 /*  */
-"help.text.creating_markers.content.1" = "You can create markers in three ways: searching for the place you would like to save using the search bar, finding somewhere using the \"Places Nearby\" button, or using the \"Current Location\" button, all of which can be found on the Soundscape home screen. Once you have found the place you would like, selecting it will take you to the \"Location Details\" page. On this page, select the button called \"Save Marker\".";
+"help.text.creating_markers.content.1" = "You can create markers in three ways: searching for the place you would like to save using the search bar, finding somewhere using the \"Places Nearby\" button, or using the \"Current Location\" button, all of which can be found on the Soundscape home screen. Once you have found the place you would like, selecting it will take you to the \"Location Details\" page. On this page, select the button called \"Save as Marker\".";
 
 
 /*  */
@@ -4373,7 +4373,7 @@
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "If you still want to interact with Soundscape but don’t want to hear automatic callouts, you can turn them off by going to the \"Manage Callouts\" section of the \"Settings\" screen from the menu and then turn off \"Allow Callouts\". Or, if you aren’t going to be using Soundscape you can put it in either Sleep or Snooze mode using the \"Sleep\" button on the home screen.";
+"faq.tip.turning_off_auto_callouts" = "If you still want to interact with Soundscape but don’t want to hear automatic callouts, you can turn them off by going to the \"Manage Callouts\" section of the \"Settings\" screen from the menu and then turn off \"Allow Callouts\". Or, if you aren’t going to be using Soundscape, you can put it in either Sleep or Snooze mode using the \"Sleep\" button on the home screen.";
 
 
 /*  */
