@@ -2290,7 +2290,7 @@
 "devices.connect_headset.calibrate.in_ear" = "Your headphones need to be calibrated. Gently shake your head in all directions for about 10 seconds. This must be repeated if the calibration chime continues to play.";
 
 /* Message displayed to the user after they successfully connect Soundscape to their AR headset. {NumberedPlaceholder="AirPods", "Soundscape"} */
-"devices.connect_headset.completed.airpods" = "Congratulations! Your AirPods are ready for use, so you can put your phone in your pocket and go! Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. A single click on the headphones button will mute or unmute the beacon, double click will callout your location, and a triple click will repeat the last callout.";
+"devices.connect_headset.completed.airpods" = "Congratulations! Your AirPods are ready for use, so you can put your phone in your pocket and go! Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. A single click on the headphones button will mute or unmute the beacon, double click will call out your location, and a triple click will repeat the last callout.";
 
 /* Button label for a button that allows users to test their newly connected headset */
 "devices.connect_headset.completed.test" = "Check Your Headphones";
@@ -2690,7 +2690,7 @@
 "tutorial.beacons.text.MobilitySkills" = "The beacon always points directly towards the location you selected. It does not tell you the paths to follow or give you directions to get to that location. Use this beacon as a tool to decide how you want to get there.";
 
 /* Tutorial, Automatic Callouts {NumberedPlaceholder="Soundscape"} */
-"tutorial.beacons.text.AutomaticCallout" = "As you progress on your journey, Soundscape will occasionally update you about the distance to the location marked by the beacon with a call out like this.";
+"tutorial.beacons.text.AutomaticCallout" = "As you progress on your journey, Soundscape will occasionally update you about the distance to the location marked by the beacon with a callout like this.";
 
 /* Tutorial, Home Screen {NumberedPlaceholder="Soundscape"} */
 "tutorial.beacons.text.HomeScreen" = "Distance information is also displayed on the home screen along with the street address of the beacon's location if we have it. Soundscape will notify you when you get close to the beacon's location, at which point the audio beacon will silence.";
