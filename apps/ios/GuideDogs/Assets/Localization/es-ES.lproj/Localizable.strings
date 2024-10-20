@@ -195,7 +195,7 @@
 
 
 /*  */
-"general.alert.survey.title" = "Nos encantaría conocer su opinión.";
+"general.alert.survey.title" = "¡Nos encantaría conocer su opinión!";
 
 
 /*  */
@@ -367,7 +367,7 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Elija \"Eliminar\" para quitar marcadores, señales y rutas, o \"Mantener\" para quitar solo datos de mapas. \"Eliminar\" restablecerá la aplicación a un estado de recién instalada y no se podrá deshacer.";
+"settings.clear_cache.markers.alert_message" = "Elija \"Eliminar\" para quitar marcadores, señales y rutas, o \"Mantener\" para quitar solo datos de mapas. ¡ \"Eliminar\" restablecerá la aplicación a un estado de recién instalada y no se podrá deshacer!";
 
 
 /*  */
@@ -559,7 +559,7 @@
 
 
 /*  */
-"voice.settings.enhanced_available.title" = "Voz mejorada disponible";
+"voice.settings.enhanced_available.title" = "¡Voz mejorada disponible!";
 
 
 /*  */
@@ -815,7 +815,7 @@
 
 
 /*  */
-"preview.title" = "Soundscape Street Preview";
+"preview.title" = "Avance de Soundscape Street";
 
 
 /*  */
@@ -979,7 +979,7 @@
 
 
 /*  */
-"preview.tutorial.title.1" = "Le damos la bienvenida a Soundscape Street Preview.";
+"preview.tutorial.title.1" = "¡Bienvenid@s al avance de Soundscape Street!";
 
 
 /*  */
@@ -1155,7 +1155,7 @@
 
 
 /*  */
-"location_detail.add_waypoint.existing.hint" = "Pulse dos veces para eliminar este marcador de la ruta";
+"location_detail.add_waypoint.existing.hint" = "Pulse dos veces para eliminar este marcador de su ruta.";
 
 
 /*  */
@@ -1251,7 +1251,7 @@
 
 
 /*  */
-"route.waypoint.progress.complete" = "Completado.";
+"route.waypoint.progress.complete" = "¡Completado!";
 
 
 /*  */
@@ -1359,7 +1359,7 @@
 
 
 /*  */
-"route.update.success.title" = "Actualización completada.";
+"route.update.success.title" = "¡Actualización completada!";
 
 
 /*  */
@@ -1375,7 +1375,7 @@
 
 
 /*  */
-"route.update.unavailable.title" = "Todo listo.";
+"route.update.unavailable.title" = "¡Todo listo!";
 
 
 /*  */
@@ -2767,7 +2767,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "Enhorabuena. Los AirPods están listos para usarse. Guarde el teléfono en el bolsillo y empiece a moverse. Soundscape está realizando ahora el seguimiento de la dirección de su cabeza, por lo que no tiene que llevar el teléfono en la mano. Para silenciar o reactivar la señal, haga clic una vez en el botón de los auriculares. Para recibir un aviso de la ubicación, haga doble clic. Para repetir el último aviso, haga clic tres veces.";
+"devices.connect_headset.completed.airpods" = "¡Enhorabuena! Tus AirPods están listos para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape seguirá ahora la dirección de tu cabeza para que no tengas que sostener el teléfono en la mano. Un solo clic en el botón de los auriculares silenciará o anulará el silencio de la baliza, un doble clic indicará tu ubicación y un triple clic repetirá la última indicación.";
 
 
 /*  */
@@ -3127,7 +3127,7 @@
 
 
 /*  */
-"tutorial.markers.text.WrapUp" = "Perfecto, ahora está orientado hacia su marcador, @!marker_name!!.\nParece que lo ha entendido.\nPara administrar su lista de marcadores, seleccione Administrar marcadores en el menú.\nTambién puede visitar las páginas de Ayuda y tutoriales para repasar este tutorial de nuevo o leer una guía completa sobre todo lo que puede hacer con los marcadores. La señal que establece para este tutorial se borrará ahora y regresará a la pantalla anterior.";
+"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás frente a tu marcador, @¡marker_name!\n¡Parece que ya lo tienes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La baliza que configuraste para este tutorial se borrará y volverás a la pantalla anterior.";
 
 
 /*  */
@@ -3247,7 +3247,7 @@
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "Conforme avance en su recorrido, Soundscape irá actualizando ocasionalmente la distancia hasta la ubicación marcada por la señal con un aviso como este.";
+"tutorial.beacons.text.AutomaticCallout" = "A medida que avance en su viaje, Soundscape le informará ocasionalmente de la distancia hasta el lugar marcado por la baliza con un aviso como éste.";
 
 
 /*  */
@@ -3287,7 +3287,7 @@
 
 
 /*  */
-"settings.help.section.home_screen_buttons" = "Botones de la pantalla principal";
+"settings.help.section.home_screen_buttons" = "Escuchar mi entorno";
 
 
 /*  */
@@ -3639,7 +3639,7 @@
 
 
 /*  */
-"help.text.destination_beacons.how.1" = "<b>Para establecer una señal</b>:<br/> en primer lugar, vea los detalles de una ubicación usando la barra de búsqueda para buscar un lugar, o pulsando en uno de los botones \"Lugares cercanos\", \"Marcadores guardados\" o \"Ubicación actual\" y seleccionando una ubicación. En la pantalla de detalles de la ubicación, puede seleccionar el botón \"Iniciar señal de audio\". Al pulsar en él, volverá a la pantalla principal y activará una señal de audio proveniente de la dirección del lugar que ha seleccionado. El nombre del lugar que ha seleccionado, junto con su distancia y dirección física, si están disponibles, aparecerán ahora en la pantalla principal de la aplicación.";
+"help.text.destination_beacons.how.1" = "<b>Para configurar una baliza</b>:<br/> Primero, vea los detalles de una ubicación usando la barra de búsqueda para buscar un lugar, o tocando uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. Desde la pantalla de detalles de ubicación puede seleccionar el botón \"Start Audio Beacon\". Al tocar esto, regresará a la pantalla de inicio y se encenderá una baliza audible que proviene de la dirección del lugar que seleccionó. El nombre del lugar que ha seleccionado junto con su distancia y dirección física, si está disponible, ahora se mostrará en la pantalla principal de la aplicación.";
 
 
 /*  */
@@ -3667,11 +3667,11 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.1" = "<b>Activación y desactivación de avisos</b>:<br/> la desactivación de avisos silenciará la aplicación. Para activarlos o desactivarlos, en la sección \"Administrar avisos\" de la pantalla \"Ajustes\", pulse en la alternancia \"Permitir avisos\". También puede activar o desactivar avisos con el comando \"saltar adelante\" (pulse dos veces y mantenga pulsado) si los auriculares tienen botones de control multimedia. También puede usar el botón \"Suspender\" en la esquina superior derecha de la pantalla principal para que Soundscape deje de realizar avisos hasta que elija reactivarlos de nuevo.";
+"help.text.automatic_callouts.how.1" = "<b>Activar o desactivar las llamadas</b>: Al desactivar las llamadas,<br/> se silenciará la aplicación. Las llamadas se pueden activar o desactivar en la sección \"Administrar llamadas\" de la pantalla \"Configuración\", donde puedes tocar el botón \"Permitir llamadas\" para activarlas o desactivarlas. También puede activar o desactivar las llamadas mediante el comando \"saltar hacia adelante\" (toque dos veces y mantenga presionado) si sus auriculares tienen botones de control de medios. Alternativamente, puede usar el botón \"Dormir\" en la esquina superior derecha de la pantalla de inicio para evitar que Soundscape haga llamadas hasta que lo despierte.";
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Administración de los avisos que oye</b>:<br/> para elegir los tipos de elementos de los que avisará Soundscape automáticamente, vaya a la pantalla \"Ajustes\" con el menú de la pantalla \"Inicio\". La sección \"Administrar avisos\" de la pantalla \"Ajustes\" incluye una lista de tipos de elementos de los que puede avisar la aplicación. Cada elemento tiene un botón de alternancia que puede activar o desactivar. Si desea desactivar todos los avisos, pulse en el botón de alternancia \"Permitir avisos\" en la parte superior de la lista.";
+"help.text.automatic_callouts.how.2" = "<b>Administrar las llamadas que escucha:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, vaya a la pantalla \"Configuración\" usando el menú en la pantalla \"Inicio\". La sección \"Administrar llamadas\" de la pantalla \"Configuración\" contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si desea desactivar todas las llamadas, toque el botón \"Permitir llamadas\" en la parte superior de la lista.";
 
 
 /*  */
@@ -3731,7 +3731,7 @@
 
 
 /*  */
-"help.text.remote_control.how" = "<p>Puede obtener acceso a las siguientes características de Soundscape con los botones de control multimedia de sus auriculares:<p><br>&#x23EF Reproducir/Pausa: silenciar los avisos actuales y, si la señal de audio está establecida, alternar el audio de la señal. </p><p>&#x23ED Siguiente: aviso <em>\"Mi ubicación\"</em>.</p><p>&#x23EE Anterior: repetir último aviso.</p><p>&#x23E9 Omitir reenviar: activar y desactivar avisos.</p><p>&#x23EA Saltar atrás: aviso <em>\"Alrededor de mí\"</em>.</p>";
+"help.text.remote_control.how" = "<p>Puede acceder a las siguientes funciones de Soundscape utilizando los botones de control multimedia de los auriculares:<p><br>&#x23EF Reproducir/Pausar: Silencie las llamadas actuales y, si la baliza de audio está configurada, active el audio de la baliza. </p><p>&#x23ED siguiente: Llame <em>\"Mi ubicación\".</em></p><p>&#x23EE Anterior: Repita la última llamada.</p><p>&#x23E9 Saltar hacia adelante: Activa y desactiva las llamadas.</p><p>&#x23EA Saltar hacia atrás: Grita <em>\"A mi alrededor\".</em></p>";
 
 
 /*  */
@@ -3747,7 +3747,7 @@
 
 
 /*  */
-"help.text.creating_markers.content.1" = "Puede crear marcadores de tres maneras: buscando el lugar que desea guardar usando la barra de búsqueda, buscando un lugar con el botón \"Lugares cercanos\" o usando el botón \"Usar ubicación actual\", todo ello en la pantalla principal de Soundscape. Una vez que haya encontrado el lugar que desea, al seleccionarlo, irá a la página \"Detalles de la ubicación\". En esta página, seleccione el botón \"Guardar marcador\".";
+"help.text.creating_markers.content.1" = "Puede crear marcadores de tres formas: buscando el lugar que le gustaría guardar mediante la barra de búsqueda, encontrando algún lugar mediante el botón \"Lugares cercanos\" o utilizando el botón \"Ubicación actual\", todos ellos en la pantalla de inicio de Soundscape. Una vez que haya encontrado el lugar que desea, al seleccionarlo accederá a la página \"Detalles de la ubicación\". En esta página, seleccione el botón \"Guardar como marcador\".";
 
 
 /*  */
@@ -4139,7 +4139,7 @@
 
 
 /*  */
-"faq.markers_function.answer" = "Los marcadores son lugares que ha guardado. Podrían ser lugares detectables dentro de la aplicación u otros completamente nuevos que ha agregado usted mismo. Para guardar su ubicación actual como marcador, seleccione el botón \"Usar ubicación actual\" en la pantalla principal y, a continuación, \"Guardar como marcador\". Puede guardar otras ubicaciones como marcador buscando el lugar que desea guardar con la barra de búsqueda o buscando un lugar mediante el botón \"Lugares cercanos\"; ambos se encuentran en la página principal de Soundscape. Una vez que ha encontrado el lugar que desea, al seleccionarlo, irá a la página \"Detalles de la ubicación\". En esta página, seleccione el botón \"Guardar como marcador\".";
+"faq.markers_function.answer" = "Los marcadores son lugares que has guardado. Pueden ser lugares descubiertos por la aplicación o lugares totalmente nuevos que hayas añadido tú mismo. Puedes guardar tu ubicación actual como marcador seleccionando el botón \"Ubicación actual\" en la pantalla de inicio y, a continuación, \"Guardar como marcador\". Puede guardar otras ubicaciones como marcador buscando el lugar que le gustaría guardar utilizando la barra de búsqueda, o encontrando algún lugar utilizando el botón \"Lugares cercanos\", ambos en la pantalla de inicio de Soundscape. Una vez que haya encontrado el lugar que desea, al seleccionarlo accederá a la página \"Detalles de la ubicación\". En esta página, seleccione el botón \"Guardar como marcador\".";
 
 
 /*  */
@@ -4151,7 +4151,7 @@
 
 
 /*  */
-"faq.what_can_I_set.answer" = "Puede establecer una señal de audio en cualquier negocio, lugar, punto de interés, dirección o cruce siempre que aparezca en los datos de Bing o lo haya agregado como marcador. Hay algunas maneras en las que puede agregar una ubicación como marcador. En primer lugar, vea los detalles para una ubicación mediante la barra de búsqueda para buscar un lugar, o pulsando en uno de los botones \"Lugares cercanos\", \"Marcadores guardados\" o \"Ubicación actual\" y seleccionando una ubicación. En la pantalla de detalles de la ubicación, puede seleccionar el botón \"Iniciar señal de audio\". Al pulsar en él, volverá a la pantalla principal y activará una señal de audio proveniente de la dirección del lugar que ha seleccionado. El nombre del lugar que ha seleccionado, junto con su distancia y dirección física, si están disponibles, aparecerán ahora en la pantalla principal de la aplicación.";
+"faq.what_can_I_set.answer" = "Puede establecer una baliza de audio en cualquier negocio, lugar, punto de interés, dirección o intersección. Hay varias formas de establecer una ubicación como baliza. En primer lugar, consulta los detalles de una ubicación utilizando la barra de búsqueda o pulsando uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. En la pantalla de detalles de la ubicación puede seleccionar el botón \"Iniciar baliza de audio\". Al pulsarlo, volverá a la pantalla de inicio y se encenderá una baliza acústica procedente del lugar que haya seleccionado. El nombre del lugar que ha seleccionado junto con su distancia y dirección física, si está disponible, se mostrará ahora en la pantalla principal de la aplicación.";
 
 
 /*  */
@@ -4183,7 +4183,7 @@
 
 
 /*  */
-"faq.beacon_on_home.answer" = "Soundscape admite el establecimiento de señales en direcciones. Para establecer una señal en su casa, o en otra dirección, busque una ubicación en la pantalla principal de Soundscape. En la pantalla \"Detalles de la ubicación\", pulse en el botón \"Iniciar señal de audio\".";
+"faq.beacon_on_home.answer" = "Soundscape permite establecer balizas en direcciones. Para establecer una baliza en su casa, o en cualquier otra dirección, desde la pantalla principal, pulse en la barra de búsqueda y escriba la dirección. En la pantalla \"Detalles de la ubicación\", pulse el botón \"Iniciar baliza de audio\".";
 
 
 /*  */
@@ -4191,7 +4191,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de su destino a menos de varios metros, pero no menos. Cuando Soundscape determine que está cerca de su destino, escuchará un aviso final de que su destino está cerca y la señal se apagará.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de su destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de su destino, oirá un último aviso de que su destino está cerca y la baliza se apagará. Puede ajustar cuándo se apaga la baliza seleccionando el botón \"Baliza de audio\" en la pantalla \"Configuración\" y moviendo el control deslizante \"Introducir distancia de proximidad\" hacia arriba o hacia abajo.";
 
 
 /*  */
@@ -4231,7 +4231,7 @@
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Soundscape tiene una lista de avisos recientes para que pueda volver a visitar avisos que pueda haber pasado por alto. Para encontrarla, pulse en la barra de búsqueda en la pantalla principal de Soundscape. En la parte inferior de esta página, hay una sección \"Avisos recientes\", donde aparecerá el aviso que ha pasado por alto.";
+"faq.miss_a_callout.answer" = "Soundscape tiene una lista de sus llamadas recientes para que pueda volver a visitar las llamadas que se haya perdido. Para ello, pulse en la barra de búsqueda de la pantalla de inicio de Soundscape. En la parte inferior de esta página, hay una sección de \"Llamadas recientes\" donde aparecerá la llamada que te perdiste. También puedes agitar el teléfono para repetir la última llamada. En la sección \"Gestionar llamadas\" de la pantalla \"Ajustes\", active la opción \"Repetir llamadas\".\n";
 
 
 /*  */
@@ -4267,7 +4267,7 @@
 
 
 /*  */
-"faq.sleep_mode_battery.answer" = "Para poner Soundscape en el Modo de Suspender, seleccione el botón \"Suspender\" de la esquina superior derecha de la pantalla. Al seleccionar esto, Soundscape dejará de usar Localización y los datos móviles hasta que elija reactivarlos de nuevo.";
+"faq.sleep_mode_battery.answer" = "Para poner Soundscape en modo reposo, seleccione el botón \"Reposo\" en la esquina superior derecha de la pantalla de inicio. Cuando lo seleccione, Soundscape dejará de utilizar los servicios de localización y los datos móviles hasta que lo despierte.";
 
 
 /*  */
@@ -4275,7 +4275,7 @@
 
 
 /*  */
-"faq.snooze_mode_battery.answer" = "Para poner Soundscape en el modo de aplazamiento, seleccione el botón \"Suspender\" de la esquina superior derecha de la pantalla. Cuando Soundscape se encuentre en el modo de suspensión, seleccione el botón \"Reactivar cuando salga\" y Soundscape entrará en un estado de bajo consumo de la batería hasta que se vaya de la ubicación actual.";
+"faq.snooze_mode_battery.answer" = "Para poner Soundscape en modo reposo, seleccione el botón \"Reposo\" en la esquina superior derecha de la pantalla de inicio. Una vez que Soundscape esté en modo Reposo, seleccione el botón \"Despertar cuando me vaya\" y Soundscape pasará a un estado de bajo consumo hasta que abandone su ubicación actual.";
 
 
 /*  */
@@ -4323,7 +4323,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.answer" = "Soundscape ofrece varias maneras de controlar lo que se oye y cuándo: \n\n1. Detener inmediatamente todo el audio: pulse dos veces en la pantalla con dos dedos para desactivar inmediatamente todo el audio, incluido cualquier aviso que se esté reproduciendo y la señal si está activada. Los avisos se reanudarán automáticamente al aproximarse al siguiente cruce o punto de interés, pero no así la señal de audio. Seleccione el botón \"reactivar señal\" en la pantalla principal para continuar oyendo la señal.\n2. Detener avisos automáticos: cuando no viaje o haya llegado a un destino, probablemente no necesitará que Soundscape continúe notificándole elementos de su entorno. En lugar de salir de la aplicación, puede colocar Soundscape en modo de aplazamiento y se reactivará de nuevo cuando salga o bien, puede poner a Soundscape en el modo de suspensión y permanecerá desactivado hasta que decida volver a activarlo. También puede seleccionar \"Ajustes\" en el menú y elegir desactivar todos los avisos en la sección \"Administrar avisos\".\n3. Detener la señal: hay varios escenarios para los que podría establecer un destino, pero que no necesitan la señal de audio activada. Por ejemplo, puede saber exactamente cómo llegar a su destino, pero desear obtener actualizaciones automáticas acerca de la distancia que queda hasta llegar a él. O bien, es posible que sepa aproximadamente cómo llegar a su destino y solo necesite la señal de audio cuando esté cerca de él. En cualquier caso, puede elegir cuándo oír la señal alternando el botón \"silenciar señal\"/\"reactivar señal\" en la pantalla principal.";
+"faq.controlling_what_you_hear.answer" = "Soundscape ofrece varias formas de controlar lo que escuchas y cuándo:\n\n1. Detener inmediatamente todo el audio: Toque dos veces la pantalla con dos dedos para apagar inmediatamente todo el audio, incluyendo cualquier aviso que se esté reproduciendo en ese momento y la baliza si está encendida. Los avisos se reanudarán automáticamente cuando se acerque a la siguiente intersección o punto de interés, pero la baliza acústica no. Seleccione el \"botón para anular el silencio de la baliza\" en la pantalla de inicio para reanudar la audición de la baliza.\n2. Detener las llamadas automáticas: Cuando no esté viajando o haya llegado a un destino, probablemente no necesitará que Soundscape siga avisándole de las cosas que le rodean. En lugar de salir de la aplicación, puede poner Soundscape en modo Snooze y se despertará de nuevo cuando salga, o puede poner Soundscape en modo Sleep y permanecerá apagado hasta que lo despierte. Alternativamente, puede seleccionar \"Configuración\" en el menú y elegir desactivar todas las llamadas en la sección \"Administrar llamadas\".\n3. Detener la baliza: Hay varios escenarios para los que podrías establecer un destino, pero no necesitar la baliza acústica encendida. Por ejemplo, puede que sepa exactamente cómo llegar a su destino pero quiera recibir actualizaciones automáticas sobre la distancia a la que se encuentra de su destino. O puede que sepa más o menos cómo llegar a su destino y sólo necesite la baliza acústica cuando se acerque a él. En cualquier caso, puedes elegir cuándo escuchar la baliza pulsando el botón \"Silenciar baliza\"/\"Desactivar baliza\" en la pantalla de inicio.";
 
 
 /*  */
@@ -4331,7 +4331,7 @@
 
 
 /*  */
-"faq.holding_phone_flat.answer" = "No. Cuando camine, puede meter el teléfono en una bolsa, un bolsillo o en cualquier otro lugar adecuado para llevarlo. Soundscape usará la dirección hacia la que camina para averiguar qué avisos emitirá a su izquierda y a su derecha. Cuando se pare, Soundscape no sabrá hacia qué dirección está orientado. Si la señal de audio está activada, observará que se silencia hasta que vuelva a moverse. Saque el teléfono y presione los botones de ubicación y exploración de la parte inferior de la pantalla en cualquier momento, sujetando el teléfono con la parte superior apuntando a la dirección hacia la que está orientado y con la pantalla mirando hacia arriba. En esta posición horizontal, Soundscape usará la brújula del teléfono para determinar hacia qué dirección está orientado y proporcionará avisos espaciales precisos. Si la señal está activada, también observará que el volumen se restablece por completo.";
+"faq.holding_phone_flat.answer" = "¡No, no! Mientras camina puede guardar el teléfono en una bolsa o bolsillo o donde sea conveniente. El paisaje sonoro usará la dirección que usted está caminando para averiguar qué llamadas anunciar a su izquierda y a su derecha. Cuando dejas de moverte, Soundscape no sabe hacia qué dirección te diriges. Si la baliza audible está encendida, notará que se calla hasta que comience a moverse de nuevo. Puedes sacar el teléfono para tocar los botones \"Escuchar mi entorno\" en la parte inferior de la pantalla de inicio en cualquier momento, pero asegúrate de sujetarlo con la parte superior apuntando hacia la dirección en la que estás mirando y con la pantalla hacia el cielo. En esta posición \"plana\", Soundscape utilizará la brújula del teléfono para determinar hacia qué dirección se está mirando y proporcionar llamadas espaciales precisas. Si la baliza está encendida, también se dará cuenta de que vuelve a todo su volumen.";
 
 
 /*  */
@@ -4355,7 +4355,7 @@
 
 
 /*  */
-"faq.tip.setting_beacon_on_address" = "Puede establecer una señal en cualquier dirección. En la pantalla principal de Soundscape, busque la dirección. Tras seleccionar la dirección en los resultados de la búsqueda, aparecerá una pantalla \"Detalles de la ubicación\" y tendrá una opción para \"Iniciar señal de audio\" en la dirección. De esta manera, puede establecer una señal en los negocios, lugares, puntos de interés y residencias que no se incluyan en Open Street Maps.";
+"faq.tip.setting_beacon_on_address" = "Puede fijar una baliza en cualquier dirección. En la pantalla de inicio, pulse sobre la barra de búsqueda y escriba la dirección. Tras seleccionar la dirección en los resultados de la búsqueda, se mostrará una pantalla de \"Detalles de la ubicación\" con una opción para \"Iniciar baliza de audio\" en la dirección. De este modo, puede establecer una baliza en negocios, lugares, puntos de interés y residencias que no estén en Open Street Map.";
 
 
 /*  */
@@ -4363,11 +4363,11 @@
 
 
 /*  */
-"faq.tip.turning_beacon_off" = "Para activar y desactivar el sonido rítmico de la señal, use el botón silenciador de la pantalla principal. Si la señal está silenciada, recibirá actualizaciones de la distancia a su destino cada 50 metros aproximadamente.";
+"faq.tip.turning_beacon_off" = "Puedes activar y desactivar el sonido rítmico de la baliza con el botón de silencio de la pantalla de inicio. Si la baliza está silenciada, seguirás recibiendo actualizaciones sobre la distancia a tu destino cada 50 metros aproximadamente.";
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "Si sigue queriendo interactuar con Soundscape, pero no desea oír avisos automáticos, para desactivar avisos, vaya a la sección \"Administrar avisos\" de la página \"Ajustes\" en el menú. O bien, si no va a usar Soundscape, puede establecer el modo de suspensión o de aplazamiento con el botón \"Suspender\" en la pantalla principal.";
+"faq.tip.turning_off_auto_callouts" = "Si quiere seguir interactuando con Soundscape pero no quiere oír las llamadas automáticas, puede desactivarlas yendo a la sección \"Gestionar llamadas\" de la pantalla \"Configuración\" del menú y desactivando \"Permitir llamadas\". O, si no va a utilizar Soundscape, puede ponerlo en modo de reposo o de repetición utilizando el botón \"Reposo\" de la pantalla de inicio.";
 
 
 /*  */
@@ -4375,7 +4375,7 @@
 
 
 /*  */
-"faq.tip.create_marker_at_bus_stop" = "Si hay una ruta de autobuses que utilice a menudo, establezca sus paradas de recogida y salida como Marcadores. De esta manera se guardarán para que pueda volver a encontrarlas fácilmente en la lista que aparece en el menú \"Administrar marcadores\". Puede establecer una señal en ellas y recibirá actualizaciones periódicas sobre la distancia hasta la parada de salida. Nota: Puede desactivar el sonido rítmico y seguir obteniendo actualizaciones de la distancia por el camino.";
+"faq.tip.create_marker_at_bus_stop" = "Si hay una ruta de autobús que toma regularmente, establezca sus paradas de recogida y salida como Marcadores. De esta forma se guardarán para que puedas encontrarlas fácilmente, sólo tienes que ir a \"Marcadores y Rutas\" desde la pantalla de inicio y encontrarlas en la página \"Marcadores\". Puedes establecer una baliza en ellos y recibirás actualizaciones periódicas sobre lo cerca que estás de tu parada de salida. Nota: puedes desactivar el sonido rítmico y seguirás recibiendo actualizaciones de la distancia a lo largo del camino.";
 
 
 /*  */
@@ -4398,8 +4398,8 @@
 "mail.dispatch" = "Dispatch";
 "beacon.settings.vicinity" = "Introduzca la distancia de proximidad";
 "osm.tag.landmark" = "Marca";
-"osm.tag.pub" = "pub";
-"osm.tag.coffee_shop" = "cafetería";
+"osm.tag.pub" = "Pub";
+"osm.tag.coffee_shop" = "Cafetería";
 "osm.tag.monument" = "Monumento";
 "osm.tag.statue" = "Estatua";
 "osm.tag.museum" = "Museo";
@@ -4416,8 +4416,8 @@
 "whats_new.1_2_0.1.title" = "Configuración de la distancia de proximidad de la baliza";
 "whats_new.1_2_0.2.title" = "Categorías en lugares próximos";
 "whats_new.1_2_0.2.description" = "Ahora puede filtrar la lista de lugares cercanos por categorías, como transporte público, comida y bebida, etc.";
-"osm.tag.bar" = "bar";
+"osm.tag.bar" = "Bar";
 "osm.tag.fast_food" = "Comida rápida";
-"osm.tag.ice_cream" = "helado";
+"osm.tag.ice_cream" = "Heladería";
 "whats_new.1_2_0.0.description" = "Ahora puede sacudir su dispositivo para repetir la última llamada. Para habilitar esta función, active el botón 'Repetir llamadas' en los ajustes.";
 "whats_new.1_2_0.1.description" = "Ahora puedes ajustar la distancia a la que la baliza se silencia automáticamente cuando te acercas. Puedes ajustar esta opción en la configuración de la baliza de audio.\n\nNos gustaría conocer tu experiencia con la desactivación de la baliza de audio a diferentes distancias (0,5 y 10 metros). En nuestras pruebas internas estamos observando algunas incoherencias en el comportamiento y nos gustaría conocer la opinión de una base más amplia de usuarios.";
