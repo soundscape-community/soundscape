@@ -1611,7 +1611,7 @@
 
 
 /*  */
-"routes.callout.complete" = "Ruta completada.";
+"routes.callout.complete" = "¡Ruta completada!";
 
 
 /*  */
@@ -1811,7 +1811,7 @@
 
 
 /*  */
-"search.button.nearby.accessibility_hint" = "Pulse dos veces para explorar restaurantes cercanos, paradas de tránsito, etc.";
+"search.button.nearby.accessibility_hint" = "Toque dos veces para explorar restaurantes cercanos, paradas de transporte público y mucho más";
 
 
 /*  */
@@ -2939,7 +2939,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.callout.complete" = "Se ha completado la actividad. Enhorabuena.";
+"behavior.scavenger_hunt.callout.complete" = "¡Actividad completada! ¡Felicidades!";
 
 
 /*  */
@@ -2955,7 +2955,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.callout.started" = "Actividad iniciada.";
+"behavior.scavenger_hunt.callout.started" = "¡Actividad iniciada!";
 
 
 /*  */
@@ -3067,7 +3067,7 @@
 
 
 /*  */
-"text.oops" = "Vaya.";
+"text.oops" = "¡Vaya!";
 
 
 /*  */
@@ -3163,7 +3163,7 @@
 
 
 /*  */
-"tutorial.beacon.found_the_beacon" = "Fantástico. Ha encontrado la señal.";
+"tutorial.beacon.found_the_beacon" = "¡Genial! ¡Has encontrado tu faro!";
 
 
 /*  */
@@ -3483,11 +3483,11 @@
 
 
 /*  */
-"first_launch.welcome.title" = "Bienvenido.";
+"first_launch.welcome.title" = "¡Bienvenid@!";
 
 
 /*  */
-"first_launch.welcome.title.accessibility_label" = "Le damos la bienvenida a Soundscape.";
+"first_launch.welcome.title.accessibility_label" = "¡Bienvenid@ a Soundscape!";
 
 
 /*  */
@@ -3615,7 +3615,7 @@
 
 
 /*  */
-"first_launch.prompt.title" = "Todo listo.";
+"first_launch.prompt.title" = "¡Ya está todo listo!";
 
 
 /*  */
