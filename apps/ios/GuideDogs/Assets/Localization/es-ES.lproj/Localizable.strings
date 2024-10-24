@@ -3671,7 +3671,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Administrar las llamadas que escucha:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, vaya a la pantalla \"Configuración\" usando el menú en la pantalla \"Inicio\". La sección \"Administrar llamadas\" de la pantalla \"Configuración\" contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si desea desactivar todas las llamadas, toque el botón \"Permitir llamadas\" en la parte superior de la lista.";
+"help.text.automatic_callouts.how.2" = "<b>Administrar las llamadas que escucha:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, vaya a la pantalla \"Configuración\" usando el menú en la pantalla de inicio. La sección \"Administrar llamadas\" de la pantalla \"Configuración\" contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si desea desactivar todas las llamadas, toque el botón \"Permitir llamadas\" en la parte superior de la lista.";
 
 
 /*  */
