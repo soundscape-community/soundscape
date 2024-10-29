@@ -39,7 +39,8 @@ This document describes how to operate the Soundscape App and access its feature
     - ```Share``` allows users to share the location selected.    
 
 #### Audio Beacon
-  -  ```Honestly I don't know we need to test this.```
+  - Audio beacon allows users to keep track of landmarks. 
+  - This is done through sending a sound in the direction of the landmark in question. This makes it easy to navigate to its location.
 
 ## Homepage Functions
 
@@ -102,7 +103,7 @@ This document describes how to operate the Soundscape App and access its feature
     - Enable Haptic Styles (Wand or Pulse)
       - Vibrate phone
   - ```Volume```
-    - Alows you to change the voTlume of the beacon, the voice, and the sound effects using slidebars
+    - Alows you to change the volume of the beacon, the voice, and the sound effects using slidebars
   - ```Head Tracking Headphones```
     - Works the same as the head tracking button seen in the waffle button
   - ```Siri Shortcuts(Beta)```
@@ -186,7 +187,7 @@ This document describes how to operate the Soundscape App and access its feature
       - ```Tips```
         - Lists some tips in an essay format.
       - ```Using Soundscape Offline```
-        - Explains soundscape's offline mode
+        - Explains Soundscape's offline mode
     - ```Tutorials```
       - ```Getting Started With Beacons*```
         - Provides a tutorial on how to make an audio beacon step-by-step.
