@@ -44,9 +44,10 @@ This document describes how to operate the Soundscape App and access its feature
 ## Homepage Functions
 
 #### Places Nearby
-  - ```Places Nearby``` has 2 subsections: ```All Places``` and ```Public Transit```. Each of these finds the respective areas and returns them as a list. Users are able to set filters to narrow down the locations they are searching for.
-    - The only filters available are ```All Places``` and ```Public Transit```.
-    - Using this, users are able to create markers for preexisting locations on the Soundscape app.
+  - ```Places Nearby``` has 2 main subsections: ```All Places``` and ```Public Transit```.
+  - There are also 4 additional subsections: ```Food and Drink```, ```Parks```, ```Groceries & Convenience Stores```, and  ```Banks & ATMs```.
+  - Each of these finds the respective areas and returns them as a list. Users are able to set filters to narrow down the locations they are searching for.
+  - Using this, users are able to create markers for preexisting locations on the Soundscape app.
 
 #### Markers and Routes
   - Users are able to access their  Markers  and Routes (as outlined in the ```Basic Features``` section).
