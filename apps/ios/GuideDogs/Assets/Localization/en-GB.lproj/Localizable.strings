@@ -175,11 +175,11 @@
 
 
 /*  */
-"general.loading.start" = "Getting things ready...";
+"general.loading.start" = "Getting things ready…";
 
 
 /*  */
-"general.loading.end" = "Cleaning things up...";
+"general.loading.end" = "Cleaning things up…";
 
 
 /*  */
@@ -2729,7 +2729,7 @@
 
 
 /*  */
-"devices.explain_ar.connecting" = "Soundscape is connecting to your %@. One moment...";
+"devices.explain_ar.connecting" = "Soundscape is connecting to your %@. One moment…";
 
 
 /*  */
@@ -2801,7 +2801,7 @@
 
 
 /*  */
-"devices.test_headset.callout" = "We've placed an audio beacon to your right. Listen where it is, and turn your head towards it... Notice how you can do this even when your phone is in your pocket.";
+"devices.test_headset.callout" = "We've placed an audio beacon to your right. Listen where it is, and turn your head towards it… Notice how you can do this even when your phone is in your pocket.";
 
 
 /*  */
