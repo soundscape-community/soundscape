@@ -175,7 +175,7 @@
 
 
 /*  */
-"general.loading.start" = "Preparando todo...";
+"general.loading.start" = "Preparando todo…";
 
 
 /*  */
@@ -2719,7 +2719,7 @@
 
 
 /*  */
-"devices.explain_ar.connecting" = "Soundscape se está conectando a su %@. Un momento...";
+"devices.explain_ar.connecting" = "Soundscape se está conectando a su %@. Un momento…";
 
 
 /*  */
@@ -2791,7 +2791,7 @@
 
 
 /*  */
-"devices.test_headset.callout" = "Hemos colocado una señal de audio a su derecha. Escuche dónde se encuentra y gire la cabeza hacia ella... Observe cómo puede hacer esto incluso con el teléfono en el bolsillo.";
+"devices.test_headset.callout" = "Hemos colocado una señal de audio a su derecha. Escuche dónde se encuentra y gire la cabeza hacia ella… Observe cómo puede hacer esto incluso con el teléfono en el bolsillo.";
 
 
 /*  */
@@ -3291,7 +3291,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Soundscape puede usar cualquiera de las voces que has descargado en la aplicación de  configuración de iOS, salvo las voces de Siri, que no están disponibles en Soundscape. Te recomendamos que elijas una de las voces \"Mejoradas\" ya que su calidad de voz es mucho mejor. Sin embargo, para usarla primero tendrás que descargar una voz mejorada. Para descargar voces en la aplicación de configuración de iOS tienes que ir a Accesibilidad > Contenido leído > Voces y pulsar en una voz. En la aplicación Soundscape, puedes seleccionar la voz que desees de la forma siguiente: ve a Ajustes desde el menú principal y selecciona \"Voces\".";
+"help.config.voices.content" = "Soundscape puede usar cualquiera de las voces que has descargado en la aplicación de configuración de iOS, salvo las voces de Siri, que no están disponibles en Soundscape. Te recomendamos que elijas una de las voces \"Mejoradas\" ya que su calidad de voz es mucho mejor. Sin embargo, para usarla primero tendrás que descargar una voz mejorada. Para descargar voces en la aplicación de configuración de iOS tienes que ir a Accesibilidad > Contenido leído > Voces y pulsar en una voz. En la aplicación Soundscape, puedes seleccionar la voz que desees de la forma siguiente: ve a Ajustes desde el menú principal y selecciona \"Voces\".";
 
 
 /*  */
@@ -3667,7 +3667,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.1" = "<b>Activar o desactivar los avisos</b>: Al desactivar los avisos,<br/> se silenciará la aplicación. Los avisos se pueden activar o desactivar en la sección \"Administrar Avisos\" de la pantalla \"Ajustes\", donde puedes tocar el botón \"Permitir Avisos\" para activarlos o desactivarlos. También puedes activar o desactivar los avisos mediante el comando \"saltar hacia adelante\" (toca dos veces y mantén  presionado) si tus auriculares tienen botones de control de medios. Alternativamente, puedes usar el botón \"Suspender\" en la esquina superior derecha de la pantalla de inicio para evitar que Soundscape haga avisos hasta que lo despiertes.";
+"help.text.automatic_callouts.how.1" = "<b>Activar o desactivar los avisos</b>: Al desactivar los avisos,<br/> se silenciará la aplicación. Los avisos se pueden activar o desactivar en la sección \"Administrar Avisos\" de la pantalla \"Ajustes\", donde puedes tocar el botón \"Permitir Avisos\" para activarlos o desactivarlos. También puedes activar o desactivar los avisos mediante el comando \"saltar hacia adelante\" (toca dos veces y mantén presionado) si tus auriculares tienen botones de control de medios. Alternativamente, puedes usar el botón \"Suspender\" en la esquina superior derecha de la pantalla de inicio para evitar que Soundscape haga avisos hasta que lo despiertes.";
 
 
 /*  */
@@ -4191,7 +4191,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se apaga la señal seleccionando el \nbotón \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Introducir distancia de proximidad\" hacia arriba o hacia abajo.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se apaga la señal seleccionando el botón \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Introducir distancia de proximidad\" hacia arriba o hacia abajo.";
 
 
 /*  */
