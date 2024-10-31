@@ -3699,7 +3699,7 @@
 
 
 /*  */
-"help.text.around_me.what" = "El botón <em>\"Alrededor de mí\"</em> le informa de algo cosa en cada uno de los cuadrantes que se encuentran a su alrededor (delante, a la derecha, detrás y a la izquierda). <em>\"Alrededor de mí\"</em> está pensando para ayudarle a orientarse en su entorno.";
+"help.text.around_me.what" = "El botón <em>\"A mi alrededor\"</em> te informa sobre una cosa en cada uno de los cuatro cuadrantes que te rodean (adelante, a la derecha, detrás y a la izquierda). <em>\"A mi alrededor\"</em> tiene la intención de ayudarte a orientarte en tu entorno.";
 
 
 /*  */
