@@ -3223,7 +3223,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "Perfecto, ahora estás orientado en la dirección de @!destination!!.";
+"tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "¡Perfecto, ahora estás orientado en la dirección de @!destination!!.";
 
 
 /*  */
