@@ -260,3 +260,9 @@ Upon clicking on a location/marker, the user is given multiple options in order 
 - Provides a top-view map containing the location at a point
 - ```Street Split``` button allows user to find the location on a navigation app of their choice: ```Apple Maps```, ```Google Maps```, ```Waze```, etc.
 - ```Zoom``` button lets user get a larger view of the map and edit the point location
+
+
+## Offline Mode
+- When in offline mode a yellow message appears across the top of the screen that describes the limitations of working offline
+- If users click on this description a larger version details the limitations that offline mode creates
+- The large description provides ```Why is Soundscape working offline?```, the ```Limitations``` of offline mode and ```What can you do?``` as the user.
