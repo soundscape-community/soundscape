@@ -149,19 +149,38 @@ This document describes how to operate the Soundscape App and access its feature
     - ```Configuring Soundscape```
       - ```Voices```
         - Summary of how to use IOS voices to work with the soundscape app.
-        - The IOS voice (the voice used in your Siri) is also the one being used in soundscape. 
+        - Soundscape is unable to use the voice Siri uses, but it can use any of the other voices downloaded in the IOS Settings app
+        - To download the voices the user has to go to the settings app, then go to Accessibility, then to Spoken Content, and then Voices and tap on a voice.
+        - They can change to that voice in the Soundscape app
       - ```Using Apple AirPods```
         - Summary of how to use AirPods with Soundscape.
+        - It tells the user that using AirPods provides an optimal listening experience because of the spatial audio they provide in accordance with the app
+        - They can and should be used at all use times because of these added abilities
+        - AirPods also provide an ease of use of the ```Media Controls```
+        - Their is then a description of how to connect the airpods within the app by going to the Head Tracking Headphones in the Soundscape menu
       - ```Using Media Controls```
         - Summary of how to use Media Controls with soundscape.
+        - The Media Controls work the same as media controls for music or video player apps, containing control buttons like Play, Pause, Next, Previous and other options
+        - However, if the user is using another video or music app that uses media controls, this will take priority over Soundscape and will prohibit Soundscape media controls from being used
+        - What do the controls do?
+          - Play/Pause: Mute any current callouts and toggle the beacon audio(if it is set)
+          - Next: Callout "My Location"
+          - Previous: Repeat last callout
+          - Skip Forward: Toggle callouts
+          - Skip Backward: Callout "Around Me"
       - ```App Setup*```
         - How to setup the app. Provides a brief tutorial on how to setup the app (the tutorial is played upon opening the app).
         - Swipe down to exit.
     - ```Beacons and Callouts```
       - ```Audio Beacon```
         - Summary of audio beacon and its functions
+        - The Audio Beacon allows the user to place it on a nearby location or marker and plays sound towards that location
+        - Information about the beacon will be displayed on the app home screen
       - ```Automatic Callouts```
         - Summary of how to use automatic callouts.
+        - Automatic Callouts tell the user about things around them as they navigate through their surroundings.
+        - These callouts can be turend off in the Settings screen
+        - If the user silences the callouts they can manually tap on one of the buttons to get information around them, like "My Location" or "Nearby Markers" and the callouts will then be played
     - ```Home Screen Buttons```
       - ```My Location```
         - Explains "My Location" on the homescreen.  
