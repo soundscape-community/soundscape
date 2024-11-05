@@ -135,10 +135,10 @@
 "general.alert.error.message" = "Please try again later.";
 
 /* Text displayed while we are doing work to start an experience */
-"general.loading.start" = "Getting things ready...";
+"general.loading.start" = "Getting things ready…";
 
 /* Text displayed while we are doing work to end an experience */
-"general.loading.end" = "Cleaning things up...";
+"general.loading.end" = "Cleaning things up…";
 
 /* VoiceOver label for a button that mutes the audio when it is tapped */
 "general.mute" = "Mute";
@@ -2254,7 +2254,7 @@
 "devices.explain_ar.paired" = "Soundscape is not currently connected to your %@. Please ensure your headphones are turned on and near your phone.";
 
 /* Message indicating that the app is connecting to head tracking headphones, %@ headphones name, "Soundscape is connecting to your AirPods. One moment...",  {NumberedPlaceholder="Soundscape"} */
-"devices.explain_ar.connecting" = "Soundscape is connecting to your %@. One moment...";
+"devices.explain_ar.connecting" = "Soundscape is connecting to your %@. One moment…";
 
 /* Label for a button that starts the process for connecting a bluetooth head tracking headset to the app */
 "devices.connect_headset" = "Connect Headphones";
@@ -2308,7 +2308,7 @@
 "devices.test_headset.continue" = "Return to Soundscape";
 
 /* Announcement that occurs when the user presses the "Check Your Headphones" button */
-"devices.test_headset.callout" = "We've placed an audio beacon to your right. Listen where it is, and turn your head towards it... Notice how you can do this even when your phone is in your pocket.";
+"devices.test_headset.callout" = "We've placed an audio beacon to your right. Listen where it is, and turn your head towards it… Notice how you can do this even when your phone is in your pocket.";
 
 /* Title of a prompt that is presented to users when they tap the "Forget This Device" button to disconnect and forget a head tracking headset */
 "devices.forget_headset.prompt.forget" = "Are you sure you wish to forget these headphones?";
