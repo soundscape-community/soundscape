@@ -279,7 +279,7 @@
 
 
 /*  */
-"general.error.heading" = "Soundscape no está seguro sobre frente a qué dirección se encuentra actualmente. Mantenga el teléfono plano o comience a caminar e inténtelo de nuevo";
+"general.error.heading" = "Soundscape no está seguro sobre frente a qué dirección se encuentra actualmente. Mantenga el teléfono plano o comience a caminar e inténtelo de nuevo.";
 
 
 /*  */
@@ -675,7 +675,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_hint" = "Pulse dos veces para ver el anuncio de la siguiente actualización";
+"settings.new_feature.accept_button.acc_hint" = "Pulse dos veces para ver el anuncio de la siguiente actualización.";
 
 
 /*  */
@@ -763,7 +763,7 @@
 
 
 /*  */
-"beacon.action.remove_beacon.double_tap.acc_hint" = "Pulse dos veces en este botón para quitar la señal de audio actual";
+"beacon.action.remove_beacon.double_tap.acc_hint" = "Pulse dos veces en este botón para quitar la señal de audio actual.";
 
 
 /*  */
@@ -791,7 +791,7 @@
 
 
 /*  */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Pulse dos veces para silenciar o reactivar la señal de audio";
+"beacon.action.mute_unmute_beacon.acc_hint" = "Pulse dos veces para silenciar o reactivar la señal de audio.";
 
 
 /*  */
@@ -799,7 +799,7 @@
 
 
 /*  */
-"beacon.action.view_details.acc_hint.details" = "Pulse dos veces para ver detalles adicionales";
+"beacon.action.view_details.acc_hint.details" = "Pulse dos veces para ver detalles adicionales.";
 
 
 /*  */
@@ -811,7 +811,7 @@
 
 
 /*  */
-"beacon.beacon_location_within_audio_beacon_muted" = "Señal a menos de %@. Se ha silenciado la señal de audio";
+"beacon.beacon_location_within_audio_beacon_muted" = "Señal a menos de %@. Se ha silenciado la señal de audio.";
 
 
 /*  */
@@ -843,7 +843,7 @@
 
 
 /*  */
-"preview.content.edge.text.accessibility_hint" = "Pulse dos veces para pasar al siguiente cruce";
+"preview.content.edge.text.accessibility_hint" = "Pulse dos veces para pasar al siguiente cruce.";
 
 
 /*  */
@@ -863,7 +863,7 @@
 
 
 /*  */
-"preview.search.accessibility_hint" = "Pulse dos veces para buscar o examinar lugares cercanos";
+"preview.search.accessibility_hint" = "Pulse dos veces para buscar o examinar lugares cercanos.";
 
 
 /*  */
@@ -967,15 +967,15 @@
 
 
 /*  */
-"preview.include_unnamed_roads.hint.off" = "Pulse dos veces para incluir carreteras sin nombre durante Soundscape Street Preview";
+"preview.include_unnamed_roads.hint.off" = "Pulse dos veces para incluir carreteras sin nombre durante Soundscape Street Preview.";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Pulse dos veces para excluir carreteras sin nombre durante Soundscape Street Preview";
+"preview.include_unnamed_roads.hint.on" = "Pulse dos veces para excluir carreteras sin nombre durante Soundscape Street Preview.";
 
 
 /*  */
-"preview.tutorial.done.hint" = "Pulse dos veces para salir del tutorial";
+"preview.tutorial.done.hint" = "Pulse dos veces para salir del tutorial.";
 
 
 /*  */
@@ -1023,35 +1023,35 @@
 
 
 /*  */
-"location_detail.action.beacon.hint" = "Pulse dos veces para establecer una señal de audio en esta ubicación";
+"location_detail.action.beacon.hint" = "Pulse dos veces para establecer una señal de audio en esta ubicación.";
 
 
 /*  */
-"location_detail.action.beacon.hint.disabled" = "El establecimiento de una nueva señal de audio está deshabilitado mientras la guía de la ruta esté activa";
+"location_detail.action.beacon.hint.disabled" = "El establecimiento de una nueva señal de audio está deshabilitado mientras la guía de la ruta esté activa.";
 
 
 /*  */
-"location_detail.action.save.hint" = "Pulse dos veces para guardar esta ubicación como marcador";
+"location_detail.action.save.hint" = "Pulse dos veces para guardar esta ubicación como marcador.";
 
 
 /*  */
-"location_detail.action.edit.hint" = "Pulse dos veces para editar el marcador";
+"location_detail.action.edit.hint" = "Pulse dos veces para editar el marcador.";
 
 
 /*  */
-"location_detail.action.share.hint" = "Pulse dos veces para compartir esta ubicación";
+"location_detail.action.share.hint" = "Pulse dos veces para compartir esta ubicación.";
 
 
 /*  */
-"location_detail.action.preview.hint" = "Pulse dos veces para iniciar la vista previa en esta ubicación";
+"location_detail.action.preview.hint" = "Pulse dos veces para iniciar la vista previa en esta ubicación.";
 
 
 /*  */
-"location_detail.action.preview.hint.disabled" = "Street Preview está deshabilitada mientras la guía de la ruta está activa";
+"location_detail.action.preview.hint.disabled" = "Street Preview está deshabilitada mientras la guía de la ruta está activa.";
 
 
 /*  */
-"location_detail.action.directions.hint" = "Pulse dos veces para abrir esta ubicación en una aplicación de mapas externa";
+"location_detail.action.directions.hint" = "Pulse dos veces para abrir esta ubicación en una aplicación de mapas externa.";
 
 
 /*  */
@@ -1063,7 +1063,7 @@
 
 
 /*  */
-"location.select.hint" = "Pulse dos veces para seleccionar esta ubicación";
+"location.select.hint" = "Pulse dos veces para seleccionar esta ubicación.";
 
 
 /*  */
@@ -1083,7 +1083,7 @@
 
 
 /*  */
-"location_detail.map.view.hint" = "Editar para seleccionar una nueva ubicación";
+"location_detail.map.view.hint" = "Edite para seleccionar una nueva ubicación.";
 
 
 /*  */
@@ -1091,7 +1091,7 @@
 
 
 /*  */
-"location_detail.map.edit.hint" = "Mueva el mapa a la ubicación correcta";
+"location_detail.map.edit.hint" = "Mueva el mapa a la ubicación correcta.";
 
 
 /*  */
@@ -1163,7 +1163,7 @@
 
 
 /*  */
-"location_detail.add_waypoint.marker.hint" = "Pulse dos veces para crear un marcador y agregarlo como punto de referencia";
+"location_detail.add_waypoint.marker.hint" = "Pulse dos veces para crear un marcador y agregarlo como punto de referencia.";
 
 
 /*  */
@@ -1187,35 +1187,35 @@
 
 
 /*  */
-"route_detail.action.start_route.hint" = "Pulse dos veces para iniciar esta ruta";
+"route_detail.action.start_route.hint" = "Pulse dos veces para iniciar esta ruta.";
 
 
 /*  */
-"route_detail.action.start_route.disabled.hint" = "Agregar puntos de ruta antes de iniciar la ruta";
+"route_detail.action.start_route.disabled.hint" = "Agregue puntos de ruta antes de iniciar la ruta.";
 
 
 /*  */
-"route_detail.action.stop_route.hint" = "Pulse dos veces para detener esta ruta";
+"route_detail.action.stop_route.hint" = "Pulse dos veces para detener esta ruta.";
 
 
 /*  */
-"route_detail.action.start_event.hint" = "Pulse dos veces para iniciar esta actividad";
+"route_detail.action.start_event.hint" = "Pulse dos veces para iniciar esta actividad.";
 
 
 /*  */
-"route_detail.action.stop_event.hint" = "Pulse dos veces para detener esta actividad y guardar el progreso";
+"route_detail.action.stop_event.hint" = "Pulse dos veces para detener esta actividad y guardar el progreso.";
 
 
 /*  */
-"route_detail.action.reset.hint" = "Pulse dos veces para restablecer esta actividad y descargar las actualizaciones disponibles";
+"route_detail.action.reset.hint" = "Pulse dos veces para restablecer esta actividad y descargar las actualizaciones disponibles.";
 
 
 /*  */
-"route_detail.action.share.hint" = "Pulse dos veces para compartir esta ruta";
+"route_detail.action.share.hint" = "Pulse dos veces para compartir esta ruta.";
 
 
 /*  */
-"route_detail.action.edit.hint" = "Pulse dos veces para editar esta ruta";
+"route_detail.action.edit.hint" = "Pulse dos veces para editar esta ruta.";
 
 
 /*  */
@@ -1223,7 +1223,7 @@
 
 
 /*  */
-"route_detail.action.create.hint" = "Pulse dos veces para crear una nueva ruta";
+"route_detail.action.create.hint" = "Pulse dos veces para crear una nueva ruta.";
 
 
 /*  */
@@ -1295,7 +1295,7 @@
 
 
 /*  */
-"route_detail.action.previous.hint" = "Pulse dos veces para establecer la señal en el punto de ruta anterior";
+"route_detail.action.previous.hint" = "Pulse dos veces para establecer la señal en el punto de ruta anterior.";
 
 
 /*  */
@@ -1303,7 +1303,7 @@
 
 
 /*  */
-"route_detail.action.next.hint" = "Pulse dos veces para establecer la señal en el siguiente punto de ruta";
+"route_detail.action.next.hint" = "Pulse dos veces para establecer la señal en el siguiente punto de ruta.";
 
 
 /*  */
@@ -1447,7 +1447,7 @@
 
 
 /*  */
-"waypoint.callout.button.hint" = "Pulse dos veces para oír detalles adicionales";
+"waypoint.callout.button.hint" = "Pulse dos veces para oír detalles adicionales.";
 
 
 /*  */
@@ -1619,7 +1619,7 @@
 
 
 /*  */
-"routes.sort.by_name.hint" = "Pulse dos veces para ordenar por nombre";
+"routes.sort.by_name.hint" = "Pulse dos veces para ordenar por nombre.";
 
 
 /*  */
@@ -1627,7 +1627,7 @@
 
 
 /*  */
-"routes.sort.by_distance.hint" = "Pulse dos veces para ordenar por distancia";
+"routes.sort.by_distance.hint" = "Pulse dos veces para ordenar por distancia.";
 
 
 /*  */
@@ -1699,7 +1699,7 @@
 
 
 /*  */
-"markers.edit_screen.done_button.acc_hint" = "Pulse dos veces para guardar este marcador";
+"markers.edit_screen.done_button.acc_hint" = "Pulse dos veces para guardar este marcador.";
 
 
 /*  */
@@ -1807,15 +1807,15 @@
 
 
 /*  */
-"search.button.markers.accessibility_hint" = "Pulse dos veces para seleccionar o editar marcadores que haya seleccionado";
+"search.button.markers.accessibility_hint" = "Pulse dos veces para seleccionar o editar marcadores que haya seleccionado.";
 
 
 /*  */
-"search.button.nearby.accessibility_hint" = "Toque dos veces para explorar restaurantes cercanos, paradas de transporte público y mucho más";
+"search.button.nearby.accessibility_hint" = "Pulse dos veces para explorar restaurantes cercanos, paradas de transporte público y mucho más.";
 
 
 /*  */
-"search.button.current_location.accessibility_hint" = "Pulse dos veces para obtener una vista previa, marcar o compartir su ubicación actual con un amigo";
+"search.button.current_location.accessibility_hint" = "Pulse dos veces para obtener una vista previa, marcar o compartir su ubicación actual con un amigo.";
 
 
 /*  */
@@ -1831,7 +1831,7 @@
 
 
 /*  */
-"filter.clear.hint" = "Pulse dos veces para borrar el filtro seleccionado";
+"filter.clear.hint" = "Pulse dos veces para borrar el filtro seleccionado.";
 
 
 /*  */
@@ -1867,7 +1867,7 @@
 
 
 /*  */
-"filter.not_available" = "Algunos filtros de categorías no están disponibles. Aun así, para examinar lugares cercanos, seleccione \"%@\"";
+"filter.not_available" = "Algunos filtros de categorías no están disponibles. Aun así, para examinar lugares cercanos, seleccione \"%@\".";
 
 
 /*  */
@@ -1935,7 +1935,7 @@
 
 
 /*  */
-"callouts.nothing_to_call_out_now" = "No hay nada de lo que avisar ahora mismo";
+"callouts.nothing_to_call_out_now" = "No hay nada de lo que avisar ahora mismo.";
 
 
 /*  */
@@ -1987,7 +1987,7 @@
 
 
 /*  */
-"sleep.sleep.acc_hint" = "Pulse dos veces para poner a Soundscape en suspensión";
+"sleep.sleep.acc_hint" = "Pulse dos veces para poner a Soundscape en suspensión.";
 
 
 /*  */
@@ -2551,7 +2551,7 @@
 
 
 /*  */
-"ui.action_button.my_location.acc_hint" = "Pulse dos veces para oír información acerca de su ubicación actual";
+"ui.action_button.my_location.acc_hint" = "Pulse dos veces para oír información acerca de su ubicación actual.";
 
 
 /*  */
@@ -2559,7 +2559,7 @@
 
 
 /*  */
-"ui.action_button.nearby_markers.acc_hint" = "Pulse dos veces para oír información acerca de los lugares cercanos que ha marcado";
+"ui.action_button.nearby_markers.acc_hint" = "Pulse dos veces para oír información acerca de los lugares cercanos que ha marcado.";
 
 
 /*  */
@@ -2567,7 +2567,7 @@
 
 
 /*  */
-"ui.action_button.around_me.acc_hint" = "Pulse dos veces para oír información acerca de los lugares de los cuatro cuadrantes de su alrededor";
+"ui.action_button.around_me.acc_hint" = "Pulse dos veces para oír información acerca de los lugares de los cuatro cuadrantes de su alrededor.";
 
 
 /*  */
@@ -2575,7 +2575,7 @@
 
 
 /*  */
-"ui.action_button.ahead_of_me.acc_hint" = "Pulse dos veces para oír información sobre los lugares que se encuentran delante";
+"ui.action_button.ahead_of_me.acc_hint" = "Pulse dos veces para oír información sobre los lugares que se encuentran delante.";
 
 
 /*  */
@@ -2583,7 +2583,7 @@
 
 
 /*  */
-"ui.menu.hint" = "Pulse dos veces para abrir el menú";
+"ui.menu.hint" = "Pulse dos veces para abrir el menú.";
 
 
 /*  */
@@ -2663,7 +2663,7 @@
 
 
 /*  */
-"poi_cell.accessibility_hint.suggested_search" = "Pulse dos veces para buscar: %@";
+"poi_cell.accessibility_hint.suggested_search" = "Pulse dos veces para buscar: %@.";
 
 
 /*  */
@@ -2775,7 +2775,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.test.hint" = "Pulse dos veces para comprobar los %@";
+"devices.connect_headset.completed.test.hint" = "Pulse dos veces para comprobar los %@.";
 
 
 /*  */
@@ -3107,7 +3107,7 @@
 
 
 /*  */
-"tutorial.markers.mark_location.acc_hint" = "Pulse dos veces para marcar esta ubicación";
+"tutorial.markers.mark_location.acc_hint" = "Pulse dos veces para marcar esta ubicación.";
 
 
 /*  */
@@ -3147,7 +3147,7 @@
 
 
 /*  */
-"tutorial.beacon.mark_location.acc_hint" = "Pulse dos veces para usar esta ubicación para el tutorial de señales";
+"tutorial.beacon.mark_location.acc_hint" = "Pulse dos veces para usar esta ubicación para el tutorial de señales.";
 
 
 /*  */
@@ -3307,7 +3307,7 @@
 
 
 /*  */
-"help.offline.limitations_description" = "Los avisos continuarán funcionando si te encuentras en una zona por la que has pasado antes, que se ha guardado en tu historial de avisos. De manera similar, puedes colocar una señal de audio o crear un marcador en lugares que se han almacenado en tu historial de avisos";
+"help.offline.limitations_description" = "Los avisos continuarán funcionando si te encuentras en una zona por la que has pasado antes, que se ha guardado en tu historial de avisos. De manera similar, puedes colocar una señal de audio o crear un marcador en lugares que se han almacenado en tu historial de avisos.";
 
 
 /*  */
@@ -3383,11 +3383,11 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Pulse dos veces para activar la casilla \"aceptar las condiciones de uso\"";
+"terms_of_use.accept_checkbox.on.acc_hint" = "Pulse dos veces para activar la casilla \"aceptar las condiciones de uso\".";
 
 
 /*  */
-"terms_of_use.accept_checkbox.off.acc_hint" = "Pulse dos veces para desactivar la casilla \"aceptar las condiciones de uso\"";
+"terms_of_use.accept_checkbox.off.acc_hint" = "Pulse dos veces para desactivar la casilla \"aceptar las condiciones de uso\".";
 
 
 /*  */
@@ -3407,11 +3407,11 @@
 
 
 /*  */
-"terms_of_use.accept.new_features.accessibility_hint" = "Pulse dos veces para aceptar y cerrar anuncios";
+"terms_of_use.accept.new_features.accessibility_hint" = "Pulse dos veces para aceptar y cerrar anuncios.";
 
 
 /*  */
-"first_launch.get_started_button.off.acc_hint" = "Para poder presionar este botón, active la casilla \"aceptar las condiciones de uso\"";
+"first_launch.get_started_button.off.acc_hint" = "Para poder presionar este botón, active la casilla \"aceptar las condiciones de uso\".";
 
 
 /*  */
@@ -3527,7 +3527,7 @@
 
 
 /*  */
-"first_launch.callouts.listen.accessibility_hint" = "Pulse dos veces para escuchar un ejemplo de sobre lo que Soundscape podría avisar en su próximo paseo";
+"first_launch.callouts.listen.accessibility_hint" = "Pulse dos veces para escuchar un ejemplo de sobre lo que Soundscape podría avisar en su próximo paseo.";
 
 
 /*  */
@@ -3559,7 +3559,7 @@
 
 
 /*  */
-"first_launch.permissions.required" = "Este permiso es obligatorio";
+"first_launch.permissions.required" = "Este permiso es obligatorio.";
 
 
 /*  */
@@ -4187,7 +4187,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.question" = "Cuando establezca una señal en un destino, ¿me llevará Soundscape cerca del destino? ";
+"faq.how_close_to_destination.question" = "Cuando establezca una señal en un destino, ¿me llevará Soundscape cerca del destino?";
 
 
 /*  */
@@ -4259,7 +4259,7 @@
 
 
 /*  */
-"faq.battery_impact.answer" = "La duración de la batería varía en gran medida en función del iPhone que tengas y de tu antigüedad. El mayor consumo de la batería se produce al tener la pantalla encendida, por lo que para maximizar su duración, debes mantener la pantalla bloqueada siempre que sea posible. Para ayudar a minimizar el impacto en la batería de iPhone, Soundscape ahora tiene un modo de reposo y un modo de aplazamiento. Para reducir aún más el uso de la batería, cuando no uses Soundscape, debes forzar cerrar la aplicación con el Selector de aplicación de iPhone. ";
+"faq.battery_impact.answer" = "La duración de la batería varía en gran medida en función del iPhone que tengas y de tu antigüedad. El mayor consumo de la batería se produce al tener la pantalla encendida, por lo que para maximizar su duración, debes mantener la pantalla bloqueada siempre que sea posible. Para ayudar a minimizar el impacto en la batería de iPhone, Soundscape ahora tiene un modo de reposo y un modo de aplazamiento. Para reducir aún más el uso de la batería, cuando no uses Soundscape, debes forzar cerrar la aplicación con el Selector de aplicación de iPhone.";
 
 
 /*  */
