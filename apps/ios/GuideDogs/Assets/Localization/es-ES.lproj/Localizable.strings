@@ -1047,7 +1047,7 @@
 
 
 /*  */
-"location_detail.action.preview.hint.disabled" = "Street Preview está deshabilitada mientras la guía de la ruta está activa.";
+"location_detail.action.preview.hint.disabled" = "La vista previa de calle está deshabilitada mientras la guía de la ruta está activa.";
 
 
 /*  */
