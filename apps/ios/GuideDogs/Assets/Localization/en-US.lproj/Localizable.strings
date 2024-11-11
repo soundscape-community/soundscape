@@ -3084,7 +3084,7 @@
 "help.text.creating_markers.content.1" = "You can create markers in three ways: searching for the place you would like to save using the search bar, finding somewhere using the \"Places Nearby\" button, or using the \"Current Location\" button, all of which can be found on the Soundscape home screen. Once you have found the place you would like, selecting it will take you to the \"Location Details\" page. On this page, select the button called \"Save as Marker\".";
 
 /* Notification, Creating Markers help content continued, Quotation marks are written as \" */
-"help.text.creating_markers.content.2" = "You will now have the option to customize this marker. This step is optional. If you want to, you can change the name of the marker and also add an annotation that will be called out along with the marker to provide some extra information. Once you are done, select the \"Done\" button to save your Marker. ";
+"help.text.creating_markers.content.2" = "You will now have the option to customize this marker. This step is optional. If you want to, you can change the name of the marker and also add an annotation that will be called out along with the marker to provide some extra information. Once you are done, select the \"Done\" button to save your Marker.";
 
 /* Notification, Customizing Markers help content. "Markers & Routes" should be translated the same as the string with key 'search.view_markers'. Quotes written as \" */
 "help.text.customizing_markers.content.1" = "If you want to rename a marker you previously created, or add an annotation to it, then you can do so by selecting the marker from the \"Markers\" tab of the \"Markers & Routes\" page, then selecting the \"Edit Marker\" button. You can use this to give markers descriptive or useful nicknames, as well as giving them a longer description using the annotation field.";
@@ -3417,7 +3417,7 @@
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
 
 /* Description of the categories in places nearby feature */
-"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc";
+"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc.";
 
 /* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settings app. {NumberedPlaceholder="iOS"} */
 "whats_new.3_2_0.2.description" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
