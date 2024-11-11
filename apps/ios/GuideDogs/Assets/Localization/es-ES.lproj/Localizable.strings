@@ -279,15 +279,15 @@
 
 
 /*  */
-"general.error.heading" = "Soundscape no está seguro sobre frente a qué dirección se encuentra actualmente. Mantenga el teléfono plano o comience a caminar e inténtelo de nuevo.";
+"general.error.heading" = "Soundscape no está seguro de qué dirección estás mirando. Por favor, mantén tu teléfono plano o empieza a caminar y vuelve a intentarlo.";
 
 
 /*  */
-"general.error.location_services_find_location_error.try_again" = "Tenemos problemas para encontrar su ubicación actual. Vuelva a intentarlo más tarde.";
+"general.error.location_services_find_location_error.try_again" = "Estamos teniendo problemas para encontrar su ubicación actual. Inténtelo de nuevo más tarde.";
 
 
 /*  */
-"general.error.wifi" = "No parece que esté conectado a Wi-Fi.";
+"general.error.wifi" = "¡Ups! Parece que no estás conectado a ninguna WiFi.";
 
 
 /*  */
@@ -967,11 +967,11 @@
 
 
 /*  */
-"preview.include_unnamed_roads.hint.off" = "Pulse dos veces para incluir carreteras sin nombre durante Soundscape Street Preview.";
+"preview.include_unnamed_roads.hint.off" = "Pulsa dos veces para incluir carreteras sin nombre durante la vista previa de Soundscape Street .";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Pulse dos veces para excluir carreteras sin nombre durante Soundscape Street Preview.";
+"preview.include_unnamed_roads.hint.on" = "Pulse dos veces para excluir carreteras sin nombre durante la vista previa de Soundscape Street .";
 
 
 /*  */
@@ -1027,7 +1027,7 @@
 
 
 /*  */
-"location_detail.action.beacon.hint.disabled" = "El establecimiento de una nueva señal de audio está deshabilitado mientras la guía de la ruta esté activa.";
+"location_detail.action.beacon.hint.disabled" = "El ajuste de una nueva señal de audio está desactivado mientras la guía de ruta está activa.";
 
 
 /*  */
@@ -1191,7 +1191,7 @@
 
 
 /*  */
-"route_detail.action.start_route.disabled.hint" = "Agregue puntos de ruta antes de iniciar la ruta.";
+"route_detail.action.start_route.disabled.hint" = "Añadir puntos a la ruta antes de iniciarla.";
 
 
 /*  */
@@ -1447,7 +1447,7 @@
 
 
 /*  */
-"waypoint.callout.button.hint" = "Pulse dos veces para oír detalles adicionales.";
+"waypoint.callout.button.hint" = "Pulse dos veces para escuchar información adicional.";
 
 
 /*  */
@@ -1807,15 +1807,15 @@
 
 
 /*  */
-"search.button.markers.accessibility_hint" = "Pulse dos veces para seleccionar o editar marcadores que haya seleccionado.";
+"search.button.markers.accessibility_hint" = "Pulse dos veces para seleccionar o editar los marcadores que ha guardado.";
 
 
 /*  */
-"search.button.nearby.accessibility_hint" = "Pulse dos veces para explorar restaurantes cercanos, paradas de transporte público y mucho más.";
+"search.button.nearby.accessibility_hint" = "Doble pulsación para explorar restaurantes cercanos, paradas y más.";
 
 
 /*  */
-"search.button.current_location.accessibility_hint" = "Pulse dos veces para obtener una vista previa, marcar o compartir su ubicación actual con un amigo.";
+"search.button.current_location.accessibility_hint" = "Pulsa dos veces para previsualizar, marcar o compartir tu ubicación actual con un amigo.";
 
 
 /*  */
@@ -1867,7 +1867,7 @@
 
 
 /*  */
-"filter.not_available" = "Algunos filtros de categorías no están disponibles. Aun así, para examinar lugares cercanos, seleccione \"%@\".";
+"filter.not_available" = "Algunos filtros de categoría no están disponibles. Todavía puede buscar lugares cercanos seleccionando \"%@\".";
 
 
 /*  */
@@ -1935,7 +1935,7 @@
 
 
 /*  */
-"callouts.nothing_to_call_out_now" = "No hay nada de lo que avisar ahora mismo.";
+"callouts.nothing_to_call_out_now" = "No hay nada de lo que avisar ahora.";
 
 
 /*  */
@@ -1987,7 +1987,7 @@
 
 
 /*  */
-"sleep.sleep.acc_hint" = "Pulse dos veces para poner a Soundscape en suspensión.";
+"sleep.sleep.acc_hint" = "Pulse dos veces para poner en suspensión a Soundscape.";
 
 
 /*  */
@@ -2551,7 +2551,7 @@
 
 
 /*  */
-"ui.action_button.my_location.acc_hint" = "Pulse dos veces para oír información acerca de su ubicación actual.";
+"ui.action_button.my_location.acc_hint" = "Pulse dos veces para conocer su ubicación actual.";
 
 
 /*  */
@@ -2567,7 +2567,7 @@
 
 
 /*  */
-"ui.action_button.around_me.acc_hint" = "Pulse dos veces para oír información acerca de los lugares de los cuatro cuadrantes de su alrededor.";
+"ui.action_button.around_me.acc_hint" = "Pulse dos veces para oír información acerca de los lugares de los cuatro cuadrantes que te rodean.";
 
 
 /*  */
@@ -2575,7 +2575,7 @@
 
 
 /*  */
-"ui.action_button.ahead_of_me.acc_hint" = "Pulse dos veces para oír información sobre los lugares que se encuentran delante.";
+"ui.action_button.ahead_of_me.acc_hint" = "Doble pulsación para escuchar información de los lugares delante de ti.";
 
 
 /*  */
@@ -3307,7 +3307,7 @@
 
 
 /*  */
-"help.offline.limitations_description" = "Los avisos continuarán funcionando si te encuentras en una zona por la que has pasado antes, que se ha guardado en tu historial de avisos. De manera similar, puedes colocar una señal de audio o crear un marcador en lugares que se han almacenado en tu historial de avisos.";
+"help.offline.limitations_description" = "Los avisos siguen funcionando si usted se encuentra en un área por la que ha pasado antes y que ha sido almacenada en su historial de mensajes de texto. De forma similar, puede colocar una señal de audio o crear un marcador en lugares que han sido almacenados en su historial.";
 
 
 /*  */
@@ -3407,19 +3407,19 @@
 
 
 /*  */
-"terms_of_use.accept.new_features.accessibility_hint" = "Pulse dos veces para aceptar y cerrar anuncios.";
+"terms_of_use.accept.new_features.accessibility_hint" = "Doble pulsación para aceptar y cerrar los anuncios.";
 
 
 /*  */
-"first_launch.get_started_button.off.acc_hint" = "Para poder presionar este botón, active la casilla \"aceptar las condiciones de uso\".";
+"first_launch.get_started_button.off.acc_hint" = "Debe marcar la casilla \"aceptar los términos de uso\" antes de poder pulsar este botón.";
 
 
 /*  */
-"first_launch.welcome_text" = "Le damos la bienvenida. Antes de comenzar, necesitamos configurar algunos valores y pedir varios permisos. Presione el botón Siguiente para iniciar.";
+"first_launch.welcome_text" = "¡Bienvenido/-a! Antes de comenzar, tenemos que pasar por algunos ajustes y aceptar varios permisos. Presione el botón Siguiente para iniciar.";
 
 
 /*  */
-"first_launch.welcome_audio_text" = "Te damos la bienvenida. Soundscape te ayuda a reconocer dónde te encuentras y hacia dónde vas mediante el uso de una guía de audio única y llamando a carreteras, cruces y lugares a medida que te acercas a ellos. Presiona el botón Siguiente para comenzar.";
+"first_launch.welcome_audio_text" = "¡Bienvenido/-a! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, intersecciones y lugares cuando te acercas. Pulse el botón Siguiente para comenzar.";
 
 
 /*  */
@@ -3527,7 +3527,7 @@
 
 
 /*  */
-"first_launch.callouts.listen.accessibility_hint" = "Pulse dos veces para escuchar un ejemplo de sobre lo que Soundscape podría avisar en su próximo paseo.";
+"first_launch.callouts.listen.accessibility_hint" = "Pulse dos veces para escuchar un ejemplo de lo que Soundscape podría decir en su próximo paseo.";
 
 
 /*  */
@@ -4107,7 +4107,7 @@
 
 
 /*  */
-"whats_new.3_2_0.2.description" = "Puede descargar más voces, entre ellas voces de calidad mejoradas, en la sección Contenido leído de los ajustes de accesibilidad de iOS.";
+"whats_new.3_2_0.2.description" = "Se pueden descargar voces adicionales, incluidas las de calidad mejorada, en la sección Contenido hablado de la configuración de accesibilidad de iOS.";
 
 
 /*  */
@@ -4415,7 +4415,7 @@
 "whats_new.1_2_0.0.title" = "Agitar para repetir el último aviso";
 "whats_new.1_2_0.1.title" = "Configuración de la distancia de proximidad de la señal";
 "whats_new.1_2_0.2.title" = "Categorías en lugares próximos";
-"whats_new.1_2_0.2.description" = "Ahora puede filtrar la lista de lugares cercanos por categorías, como transporte público, comida y bebida, etc.";
+"whats_new.1_2_0.2.description" = "Ahora puedes filtrar la lista de lugares cercanos por categorías como transporte público, comida y bebida, etc.";
 "osm.tag.bar" = "Bar";
 "osm.tag.fast_food" = "Comida rápida";
 "osm.tag.ice_cream" = "Heladería";
