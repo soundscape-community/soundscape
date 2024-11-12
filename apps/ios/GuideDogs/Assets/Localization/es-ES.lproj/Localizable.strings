@@ -491,7 +491,7 @@
 
 
 /*  */
-"setting.audio.mix_with_others.confirmation" = "Si activa este ajuste, los avisos y otras señales de audio de Soundscape se pausarán cada vez que inicie otra aplicación multimedia. Puede volver a Soundscape para reanudar los avisos.";
+"setting.audio.mix_with_others.confirmation" = "Si activas este ajuste, los avisos y otras señales de audio de Soundscape se pausarán cada vez que inicies otra aplicación multimedia. Puedes volver a Soundscape para reanudar los avisos.";
 
 
 /*  */
@@ -571,7 +571,7 @@
 
 
 /*  */
-"voice.apple.no_siri" = "Tenga en cuenta que las voces de Siri no están disponibles en Soundscape y no figuran en la lista de abajo.";
+"voice.apple.no_siri" = "Ten en cuenta que las voces de Siri no están disponibles en Soundscape y no figuran en la lista de abajo.";
 
 
 /*  */
@@ -907,7 +907,7 @@
 
 
 /*  */
-"preview.callout.road_finder.instructions" = "Gire el teléfono para obtener una vista previa de las carreteras disponibles";
+"preview.callout.road_finder.instructions" = "Gira el teléfono para obtener una vista previa de las carreteras disponibles";
 
 
 /*  */
@@ -939,7 +939,7 @@
 
 
 /*  */
-"preview.callout.turn.right" = "Giro a la derecha. Ahora por %@";
+"preview.callout.turn.right" = "Giró a la derecha. Ahora por %@";
 
 
 /*  */
@@ -1511,7 +1511,7 @@
 
 
 /*  */
-"siri_shortcuts.description" = "Después de agregar Atajos de Siri, podrá usar la voz para invocarlos incluso cuando Soundscape no se esté ejecutando.";
+"siri_shortcuts.description" = "Después de agregar Atajos de Siri, podrás usar la voz para invocarlos incluso cuando Soundscape no se esté ejecutando.";
 
 
 /*  */
@@ -3307,7 +3307,7 @@
 
 
 /*  */
-"help.offline.limitations_description" = "Los avisos siguen funcionando si usted se encuentra en un área por la que ha pasado antes y que ha sido almacenada en su historial de mensajes de texto. De forma similar, puede colocar una señal de audio o crear un marcador en lugares que han sido almacenados en su historial.";
+"help.offline.limitations_description" = "Los avisos siguen funcionando si te encuentras en un área por la que has pasado antes y que has sido almacenada en tu historial de mensajes de texto. De forma similar, puedes colocar una señal de audio o crear un marcador en lugares que han sido almacenados en tu historial.";
 
 
 /*  */
@@ -3511,7 +3511,7 @@
 
 
 /*  */
-"first_launch.callouts.title" = "Oiga su entorno";
+"first_launch.callouts.title" = "Oye tu entorno";
 
 
 /*  */
@@ -3519,7 +3519,7 @@
 
 
 /*  */
-"first_launch.callouts.listen" = "Escuche un ejemplo sobre de lo que Soundscape podría avisar en su próximo paseo";
+"first_launch.callouts.listen" = "Escucha un ejemplo sobre de lo que Soundscape podría avisar en tu próximo paseo";
 
 
 /*  */
@@ -3591,7 +3591,7 @@
 
 
 /*  */
-"first_launch.beacon.callout.standard" = "Colocando la señal a su derecha. Gire el teléfono para seguir su sonido y experimentar el audio espacial de la señal.";
+"first_launch.beacon.callout.standard" = "Colocando la señal a tu derecha. Gira el teléfono para seguir su sonido y experimentar el audio espacial de la señal.";
 
 
 /*  */
@@ -3599,7 +3599,7 @@
 
 
 /*  */
-"first_launch.beacon.callout.headtracking.standard" = "Colocando la señal a su derecha. Gire para seguir su sonido y probar el audio espacial de la señal.";
+"first_launch.beacon.callout.headtracking.standard" = "Colocando la señal a tu derecha. Gira para seguir su sonido y probar el audio espacial de la señal.";
 
 
 /*  */
@@ -3659,7 +3659,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.when.2" = "<b>Caminar hasta una ubicación específica</b>:<br/> cuando te dirijas a una ubicación concreta, los avisos automáticos para cruces pueden ser especialmente útiles. Los avisos de cruces le informan de la disposición de cruces cuando te aproximas a ellos y confirman la carretera en la que te encuentras al salir de ellos.";
+"help.text.automatic_callouts.when.2" = "<b>Caminar hasta una ubicación específica</b>:<br/> cuando te dirijas a una ubicación concreta, los avisos automáticos para cruces pueden ser especialmente útiles. Los avisos de cruces te informan de la disposición de cruces cuando te aproximas a ellos y confirman la carretera en la que te encuentras al salir de ellos.";
 
 
 /*  */
@@ -3671,7 +3671,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Administrar los avisos que escucha:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, ve a la pantalla \"Ajustes\" desde el menú principal y luego pulsa \"Administrar Avisos\". Esta sección contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si deseas desactivar todos los avisos, toca el botón \"Permitir Avisos\" en la parte superior de la lista.";
+"help.text.automatic_callouts.how.2" = "<b>Administrar los avisos que escuchas:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, ve a la pantalla \"Ajustes\" desde el menú principal y luego pulsa \"Administrar Avisos\". Esta sección contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si deseas desactivar todos los avisos, toca el botón \"Permitir Avisos\" en la parte superior de la lista.";
 
 
 /*  */
