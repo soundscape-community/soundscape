@@ -3381,7 +3381,7 @@
 
 
 /*  */
-"terms_of_use.message.prompt" = "Please check the box below to agree and continue.";
+"terms_of_use.message.prompt" = "Please tick the box below to agree and continue.";
 
 
 /*  */
@@ -3421,7 +3421,7 @@
 
 
 /*  */
-"first_launch.get_started_button.off.acc_hint" = "You must check the \"accept the terms of use\" checkbox before you can press this button.";
+"first_launch.get_started_button.off.acc_hint" = "You must tick the \"accept the terms of use\" checkbox before you can press this button.";
 
 
 /*  */
