@@ -19,7 +19,7 @@
 
 
 /*  */
-"general.alert.not_now" = "No ahora";
+"general.alert.not_now" = "Ahora no";
 
 
 /*  */
@@ -31,7 +31,7 @@
 
 
 /*  */
-"general.alert.done" = "Listo";
+"general.alert.done" = "Hecho";
 
 
 /*  */
@@ -103,7 +103,7 @@
 
 
 /*  */
-"general.alert.open_settings" = "Abrir Ajustes";
+"general.alert.open_settings" = "Abrir ajustes";
 
 
 /*  */
@@ -115,7 +115,7 @@
 
 
 /*  */
-"general.alert.confirmation_title" = "¿Seguro que quiere hacerlo?";
+"general.alert.confirmation_title" = "¿Estás seguro?";
 
 
 /*  */
@@ -131,7 +131,7 @@
 
 
 /*  */
-"general.loading.almost_ready" = "Casi está listo…";
+"general.loading.almost_ready" = "Ya casi está…";
 
 
 /*  */
@@ -159,11 +159,11 @@
 
 
 /*  */
-"general.alert.offline_search.title" = "La búsqueda no está disponible";
+"general.alert.offline_search.title" = "Búsqueda no disponible";
 
 
 /*  */
-"general.alert.offline_search.message" = "Cuando Soundscape está funcionando sin conexión, la búsqueda está deshabilitada. Descarte para regresar a la pantalla anterior";
+"general.alert.offline_search.message" = "Cuando Soundscape funciona sin conexión, la búsqueda está desactivada. Descartar para volver a la pantalla anterior";
 
 
 /*  */
@@ -171,7 +171,7 @@
 
 
 /*  */
-"general.alert.error.message" = "Inténtalo de nuevo más tarde.";
+"general.alert.error.message" = "Por favor, inténtalo de nuevo más tarde.";
 
 
 /*  */
@@ -179,7 +179,7 @@
 
 
 /*  */
-"general.loading.end" = "Poniendo todo en orden…";
+"general.loading.end" = "Limpiando…";
 
 
 /*  */
@@ -231,19 +231,19 @@
 
 
 /*  */
-"general.error.location_services" = "Activa Servicios de localización para usar Soundscape";
+"general.error.location_services" = "Activar los servicios de ubicación para utilizar Soundscape";
 
 
 /*  */
-"general.error.precise_location" = "Activa Ubicación precisa para usar Soundscape";
+"general.error.precise_location" = "Activar la ubicación precisa para utilizar Soundscape";
 
 
 /*  */
-"general.error.location_services.authorize.title" = "Autorizar Servicios de localización";
+"general.error.location_services.authorize.title" = "Permitir servicios de ubicación";
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Soundscape usa tu ubicación para encontrar los lugares y elementos de tu entorno e informarle de ellos. La aplicación necesita tu permiso para usar Servicios de localización.";
+"general.error.location_services.authorize.description" = "Soundscape usa tu ubicación para encontrar e informarte sobre los lugares y cosas que te rodean. La aplicación debe tener tu permiso para utilizar los servicios de ubicación.";
 
 
 /*  */
@@ -255,19 +255,19 @@
 
 
 /*  */
-"general.error.location_services_resume" = "Abre Soundscape para reanudar Servicios de localización";
+"general.error.location_services_resume" = "Abre Soundscape para reanudar servicios de ubicación";
 
 
 /*  */
-"general.error.location_services_enable" = "Habilitar Servicios de localización";
+"general.error.location_services_enable" = "Habilitar servicios de ubicación";
 
 
 /*  */
-"general.error.location_services_enable_description" = "Los Servicios de localización están deshabilitados actualmente. Soundscape no puede funcionar cuando los Servicios de localización están desactivados.";
+"general.error.location_services_enable_description" = "Si los servicios de ubicación están deshabilitados. Soundscape no puede funcionar.";
 
 
 /*  */
-"general.error.location_services_enable_instructions.2" = "Activa Servicios de localización en la aplicación Ajustes para continuar.\n\n1. Presiona el botón atrás (con el título Ajustes)\n2. Selecciona Privacidad\n3. Selecciona Servicios de localización\n4. Activa Servicios de localización";
+"general.error.location_services_enable_instructions.2" = "Activa los servicios de ubicación en la aplicación para continuar.\n\n1. Pulsa el botón Atrás (en Ajustes)\n2. Selecciona Privacidad\n3. Selecciona Servicios de ubicación \n4. Activar los servicios de ubicación";
 
 
 /*  */
@@ -367,19 +367,19 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Elige \"Eliminar\" para quitar marcadores, señales y rutas, o \"Mantener\" para quitar solo datos de mapas. ¡ \"Eliminar\" restablecerá la aplicación a un estado de recién instalada y no se podrá deshacer!";
+"settings.clear_cache.markers.alert_message" = "Selecciona \"Eliminar\" para eliminar los marcadores, señales y rutas, o \"Mantener\" para eliminar únicamente los datos del mapa.¡ \"Eliminar\" restablecerá la aplicación a su estado original y no se puede deshacer!";
 
 
 /*  */
-"settings.clear_cache.no_service.title" = "No se pueden borrar los datos de mapas almacenados";
+"settings.clear_cache.no_service.title" = "No se pueden borrar los datos de los mapas almacenados";
 
 
 /*  */
-"settings.clear_cache.no_service.message" = "Soundscape no puede conectarse ahora a Internet. Se requiere una conexión a Internet al borrar los datos de mapas almacenados para que se puedan actualizar los datos de mapas.";
+"settings.clear_cache.no_service.message" = "Soundscape no puede conectarse a internet. Se requiere una conexión a Internet para borrar los datos del mapa almacenados, para que los datos del mapa puedan actualizarse.";
 
 
 /*  */
-"settings.telemetry.optout.alert_title" = "Rechazo de telemetría";
+"settings.telemetry.optout.alert_title" = "Desactivar telemetría";
 
 
 /*  */
@@ -563,7 +563,7 @@
 
 
 /*  */
-"voice.settings.enhanced_available" = "Es posible que haya una versión de esta voz con más calidad de sonido. Para descargarla, así como para descargar otras voces, ve a la sección Contenido leído de los ajustes de accesibilidad de iOS.";
+"voice.settings.enhanced_available" = "Es posible que exista una versión de mayor calidad para esta voz. Para descargarla y descargar otras voces, ve a la sección Contenido hablado de los ajustes de accesibilidad de iOS.";
 
 
 /*  */
@@ -2711,15 +2711,15 @@
 
 
 /*  */
-"devices.explain_ar.connected.airpods" = "Tus AirPods están listos para usar. Guarda el teléfono en el bolsillo y empieza a moverte. Soundscape está realizando ahora el seguimiento de la dirección de tu cabeza, por lo que no tienes que llevar el teléfono en la mano.";
+"devices.explain_ar.connected.airpods" = "Tus AirPods están listos para su uso, ¡así que puedes guardar tu teléfono en el bolsillo y listo! Soundscape está registrando la orientación de tu cabeza para que no tengas que sostener el teléfono en la mano.";
 
 
 /*  */
-"devices.explain_ar.paired" = "Soundscape no está conectado actualmente a %@. Comprueba que los auriculares están activados y que se encuentran cerca del teléfono.";
+"devices.explain_ar.paired" = "Soundscape no está conectado actualmente a %@. Por favor asegúrate de que tus auriculares están encendidos y cerca de tu teléfono.";
 
 
 /*  */
-"devices.explain_ar.connecting" = "Soundscape se está conectando a su %@. Un momento…";
+"devices.explain_ar.connecting" = "Soundscape se está conectando a %@. Un momento…";
 
 
 /*  */
@@ -2739,7 +2739,7 @@
 
 
 /*  */
-"devices.connect_headset.unsupported_firmware" = "Para poder conectar los AR Headphones a Soundscape, debe haberlos actualizado antes. Ve a la aplicación Cortana para actualizar los auriculares.";
+"devices.connect_headset.unsupported_firmware" = "Los cascos de realidad aumentada deben actualizarse antes de que puedan conectarse a Soundscape. Ve a la aplicación Cortana para actualizar los auriculares.";
 
 
 /*  */
@@ -2751,23 +2751,23 @@
 
 
 /*  */
-"devices.connect_headset.explanation" = "Selecciona el tipo de auriculares en la lista siguiente de auriculares admitidos.";
+"devices.connect_headset.explanation" = "Selecciona el tipo de auriculares de la lista de auriculares compatibles que se muestra a continuación.";
 
 
 /*  */
-"devices.connect_headset.audio" = "Antes de conectar los auriculares a Soundscape, asegúrate de que están emparejados con el teléfono. Si aún no lo están, ve a la sección Bluetooth en la aplicación de Ajustes de iOS para emparejar el dispositivo y después vuelve a Soundscape.";
+"devices.connect_headset.audio" = "Antes de conectar los auriculares a Soundscape, asegúrate de que está emparejado con tu teléfono. Si aún no están emparejados, ve a la sección de Bluetooth en la Configuración de iOS para emparejar tu dispositivo y luego regresa a Soundscape.";
 
 
 /*  */
-"devices.connect_headset.calibrate" = "Los auriculares tienen que calibrarse. Quítatelos y sacúdelos con suavidad en todas las direcciones durante unos 10 segundos, y vuelve a colocártelos. Deberá repetir esta operación si continúas oyendo la campanilla de la calibración.";
+"devices.connect_headset.calibrate" = "Los auriculares deben estar calibrados. Quítate los de la cabeza, agítalos suavemente en todas direcciones durante unos 10 segundos y colócalos de nuevo sobre tu cabeza. Debe repetirse si el timbre de calibración sigue sonando.";
 
 
 /*  */
-"devices.connect_headset.calibrate.in_ear" = "Los auriculares tienen que calibrarse. Sacude la cabeza con suavidad en todas las direcciones durante unos 10 segundos. Deberá repetir esta operación si continúas oyendo la campanilla de la calibración.";
+"devices.connect_headset.calibrate.in_ear" = "Los auriculares deben estar calibrados. Agita suavemente la cabeza en todas las direcciones durante unos 10 segundos. Debes repetirlo si el timbre de calibración sigue sonando.";
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "¡Enhorabuena! Tus AirPods están listos para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape seguirá ahora la dirección de tu cabeza para que no tengas que sostener el teléfono en la mano. Un solo clic en el botón de los auriculares silenciará o anulará el silencio de la señal, un doble clic indicará tu ubicación y un triple clic repetirá el último aviso.";
+"devices.connect_headset.completed.airpods" = "¡Enhorabuena! Tus AirPods están listos para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape seguirá ahora la orientación de tu cabeza para que no tengas que sostener el teléfono en la mano. Un solo clic en el botón de los auriculares silenciará o desactivará la señal, un doble clic indicará tu ubicación y un triple clic repetirá la última indicación.";
 
 
 /*  */
@@ -3431,11 +3431,11 @@
 
 
 /*  */
-"first_launch.soundscape_language.text" = "Selecciona el idioma que deseas que use Soundscape. Siempre podrás cambiar tu selección en los ajustes de la aplicación.";
+"first_launch.soundscape_language.text" = "Selecciona el idioma que deseas usar en Soundscape. Siempre podrás cambiar tu elección en los ajustes de la aplicación.";
 
 
 /*  */
-"first_launch.location.text" = "Soundscape es una ubicación basada en ubicación. Usamos su ubicación para encontrar todas las cosas que se encuentran a tu alrededor y avisarte de ellas.";
+"first_launch.location.text" = "Soundscape es una aplicación basada en la ubicación. Utilizamos tu ubicación para encontrar y avisar de las cosas que te rodean.";
 
 
 /*  */
