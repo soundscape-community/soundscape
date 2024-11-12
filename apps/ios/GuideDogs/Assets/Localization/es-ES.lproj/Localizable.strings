@@ -171,7 +171,7 @@
 
 
 /*  */
-"general.alert.error.message" = "Inténtelo de nuevo más tarde.";
+"general.alert.error.message" = "Inténtalo de nuevo más tarde.";
 
 
 /*  */
@@ -195,11 +195,11 @@
 
 
 /*  */
-"general.alert.survey.title" = "¡Nos encantaría conocer su opinión!";
+"general.alert.survey.title" = "¡Nos encantaría conocer tu opinión!";
 
 
 /*  */
-"general.alert.survey.message" = "¿Tiene tiempo para completar una encuesta de 5 minutos?";
+"general.alert.survey.message" = "¿Tienes tiempo para completar una encuesta de 5 minutos?";
 
 
 /*  */
@@ -231,11 +231,11 @@
 
 
 /*  */
-"general.error.location_services" = "Active Servicios de localización para usar Soundscape";
+"general.error.location_services" = "Activa Servicios de localización para usar Soundscape";
 
 
 /*  */
-"general.error.precise_location" = "Active Ubicación precisa para usar Soundscape";
+"general.error.precise_location" = "Activa Ubicación precisa para usar Soundscape";
 
 
 /*  */
@@ -243,19 +243,19 @@
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Soundscape usa su ubicación para encontrar los lugares y elementos de su entorno e informarle de ellos. La aplicación necesita su permiso para usar Servicios de localización.";
+"general.error.location_services.authorize.description" = "Soundscape usa tu ubicación para encontrar los lugares y elementos de tu entorno e informarle de ellos. La aplicación necesita tu permiso para usar Servicios de localización.";
 
 
 /*  */
-"general.error.location_services.authorize.instructions" = "1. Abra la aplicación Ajustes a continuación\n2. Seleccione \"Ubicación\"\n3. Seleccione \"Siempre\" o \"Mientras uso la aplicación\"";
+"general.error.location_services.authorize.instructions" = "1. Abre la aplicación Ajustes a continuación\n2. Selecciona \"Ubicación\"\n3. Selecciona \"Siempre\" o \"Mientras uso la aplicación\"";
 
 
 /*  */
-"general.error.location_services.precise_location.instructions" = "1. Abra la aplicación Ajustes a continuación\n2. Seleccione \"Ubicación\"\n3. Active \"Ubicación precisa\"";
+"general.error.location_services.precise_location.instructions" = "1. Abre la aplicación Ajustes a continuación\n2. Selecciona \"Ubicación\"\n3. Activa \"Ubicación precisa\"";
 
 
 /*  */
-"general.error.location_services_resume" = "Abra Soundscape para reanudar Servicios de localización";
+"general.error.location_services_resume" = "Abre Soundscape para reanudar Servicios de localización";
 
 
 /*  */
@@ -267,15 +267,15 @@
 
 
 /*  */
-"general.error.location_services_enable_instructions.2" = "Active Servicios de localización en la aplicación Ajustes para continuar.\n\n1. Presione el botón atrás (con el título Ajustes)\n2. Seleccione Privacidad\n3. Seleccione Servicios de localización\n4. Active Servicios de localización";
+"general.error.location_services_enable_instructions.2" = "Activa Servicios de localización en la aplicación Ajustes para continuar.\n\n1. Presiona el botón atrás (con el título Ajustes)\n2. Selecciona Privacidad\n3. Selecciona Servicios de localización\n4. Activa Servicios de localización";
 
 
 /*  */
-"general.error.location_services_enable_instructions.3" = "Active Servicios de localización en la aplicación Ajustes para continuar.\n\n1. Presione Abrir ajustes\n2. Presione el botón atrás (con el título Ajustes)\n3. Seleccione Privacidad\n4. Seleccione Servicios de localización\n5. Active Servicios de localización";
+"general.error.location_services_enable_instructions.3" = "Activa Servicios de localización en la aplicación Ajustes para continuar.\n\n1. Presiona Abrir ajustes\n2. Presiona el botón atrás (con el título Ajustes)\n3. Selecciona Privacidad\n4. Selecciona Servicios de localización\n5. Activa Servicios de localización";
 
 
 /*  */
-"general.error.location_services_find_location_error" = "Tenemos problemas para encontrar su ubicación actual.";
+"general.error.location_services_find_location_error" = "Tenemos problemas para encontrar tu ubicación actual.";
 
 
 /*  */
@@ -283,7 +283,7 @@
 
 
 /*  */
-"general.error.location_services_find_location_error.try_again" = "Estamos teniendo problemas para encontrar su ubicación actual. Inténtelo de nuevo más tarde.";
+"general.error.location_services_find_location_error.try_again" = "Estamos teniendo problemas para encontrar tu ubicación actual. Inténtalo de nuevo más tarde.";
 
 
 /*  */
@@ -291,7 +291,7 @@
 
 
 /*  */
-"general.error.wifi.info" = "Necesitará una conexión Wi-Fi para descargar.";
+"general.error.wifi.info" = "Necesitarás una conexión Wi-Fi para descargar.";
 
 
 /*  */
@@ -299,7 +299,7 @@
 
 
 /*  */
-"general.error.network_connection_required.deleting_data" = "Se requiere una conexión de red para eliminar y volver a cargar datos de mapas de Soundscape. Compruebe que el teléfono no se encuentra en el modo avión.";
+"general.error.network_connection_required.deleting_data" = "Se requiere una conexión de red para eliminar y volver a cargar datos de mapas de Soundscape. Comprueba que el teléfono no se encuentra en el modo avión.";
 
 
 /*  */
@@ -307,15 +307,15 @@
 
 
 /*  */
-"general.error.ble.unauthorized.message" = "Se requiere permiso Bluetooth para conectar sus dispositivos. Abra la aplicación Ajustes para habilitar el Bluetooth. Tenga en cuenta que esto puede hacer que se reinicie la aplicación.";
+"general.error.ble.unauthorized.message" = "Se requiere permiso Bluetooth para conectar tus dispositivos. Abre la aplicación Ajustes para habilitar el Bluetooth. Ten en cuenta que esto puede hacer que se reinicie la aplicación.";
 
 
 /*  */
-"general.error.add_marker_error" = "Tenemos problemas para marcar este lugar. Vuelva a intentarlo más tarde.";
+"general.error.add_marker_error" = "Tenemos problemas para marcar este lugar. Vuelve a intentarlo más tarde.";
 
 
 /*  */
-"general.error.set_beacon_error" = "Tenemos problemas para configurar la señal actualmente. Vuelva a intentarlo más tarde.";
+"general.error.set_beacon_error" = "Tenemos problemas para configurar la señal actualmente. Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -335,7 +335,7 @@
 
 
 /*  */
-"device_motion.enable.instructions" = "Active Seguimiento deportivo en la aplicación Ajustes para continuar.\n\n1. Presione Abrir Ajustes\n2. Presione el botón Atrás (con el título Ajustes)\n3. Seleccione Privacidad\n4. Seleccione Actividad física\n5. Active Seguimiento deportivo\n6. Reinicie Soundscape";
+"device_motion.enable.instructions" = "Activa Seguimiento deportivo en la aplicación Ajustes para continuar.\n\n1. Presiona Abrir Ajustes\n2. Presiona el botón Atrás (con el título Ajustes)\n3. Selecciona Privacidad\n4. Selecciona Actividad física\n5. Activa Seguimiento deportivo\n6. Reinicia Soundscape";
 
 
 /*  */
@@ -343,11 +343,11 @@
 
 
 /*  */
-"device_motion.authorize.description" = "Esto permite a Soundscape mejorar su experiencia en función de si camina, se desplaza en un vehículo o permanece quieto. La aplicación necesita su permiso para usar Actividad física. Antes de autorizar a Soundscape para que use este permiso, es posible que tenga que habilitar Seguimiento deportivo en Ajustes → Privacidad → Actividad física.";
+"device_motion.authorize.description" = "Esto permite a Soundscape mejorar tu experiencia en función de si caminas, te desplazas en un vehículo o permaneces quieto. La aplicación necesita tu permiso para usar Actividad física. Antes de autorizar a Soundscape para que use este permiso, es posible que tengas que habilitar Seguimiento deportivo en Ajustes → Privacidad → Actividad física.";
 
 
 /*  */
-"device_motion.authorize.instructions" = "1. Abra la aplicación Ajustes a continuación\n2. Active el seguimiento de Actividad física";
+"device_motion.authorize.instructions" = "1. Abre la aplicación Ajustes a continuación\n2. Activa el seguimiento de Actividad física";
 
 
 /*  */
@@ -355,7 +355,7 @@
 
 
 /*  */
-"settings.clear_cache.alert_title" = "¿Desea eliminar los datos almacenados?";
+"settings.clear_cache.alert_title" = "¿Deseas eliminar los datos almacenados?";
 
 
 /*  */
@@ -363,11 +363,11 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_title" = "¿Desea mantener marcadores y rutas?";
+"settings.clear_cache.markers.alert_title" = "¿Deseas mantener marcadores y rutas?";
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Elija \"Eliminar\" para quitar marcadores, señales y rutas, o \"Mantener\" para quitar solo datos de mapas. ¡ \"Eliminar\" restablecerá la aplicación a un estado de recién instalada y no se podrá deshacer!";
+"settings.clear_cache.markers.alert_message" = "Elige \"Eliminar\" para quitar marcadores, señales y rutas, o \"Mantener\" para quitar solo datos de mapas. ¡ \"Eliminar\" restablecerá la aplicación a un estado de recién instalada y no se podrá deshacer!";
 
 
 /*  */
@@ -383,7 +383,7 @@
 
 
 /*  */
-"settings.telemetry.optout.alert_message" = "Esta acción borrará la información almacenada y rechazará la futura recopilación de telemetría. ¿Seguro que desea realizarla?";
+"settings.telemetry.optout.alert_message" = "Esta acción borrará la información almacenada y rechazará la futura recopilación de telemetría. ¿Seguro que deseas realizarla?";
 
 
 /*  */
@@ -403,7 +403,7 @@
 
 
 /*  */
-"settings.feedback.choose_email_app" = "Elija una aplicación de correo:";
+"settings.feedback.choose_email_app" = "Elige una aplicación de correo:";
 
 
 /*  */
@@ -455,7 +455,7 @@
 
 
 /*  */
-"settings.section.telemetry.footer" = "Ayude a Soundscape a mejorar enviando automáticamente datos de uso, informes de errores y diagnósticos. No se recopilan datos personales.";
+"settings.section.telemetry.footer" = "Ayuda a Soundscape a mejorar enviando automáticamente datos de uso, informes de errores y diagnósticos. No se recopilan datos personales.";
 
 
 /*  */
@@ -467,7 +467,7 @@
 
 
 /*  */
-"settings.language.change_alert" = "¿Desea cambiar el idioma de la aplicación a %@?";
+"settings.language.change_alert" = "¿Deseas cambiar el idioma de la aplicación a %@?";
 
 
 /*  */
@@ -487,7 +487,7 @@
 
 
 /*  */
-"settings.audio.mix_with_others.description" = "Use esta opción para habilitar el control de Soundscape con los botones de los auriculares y los botones de reproducción multimedia de la pantalla de bloqueo. Tenga en cuenta que cuando está activada, no se puede usar Soundscape mientras se reproducen otros medios como podcasts o música.";
+"settings.audio.mix_with_others.description" = "Usa esta opción para habilitar el control de Soundscape con los botones de los auriculares y los botones de reproducción multimedia de la pantalla de bloqueo. Ten en cuenta que cuando está activada, no se puede usar Soundscape mientras se reproducen otros medios como podcasts o música.";
 
 
 /*  */
@@ -527,11 +527,11 @@
 
 
 /*  */
-"voice.voice_cell.selected.acc_hint" = "Esta voz está seleccionada actualmente. Deslice rápidamente hacia arriba o hacia abajo para obtener una vista previa.";
+"voice.voice_cell.selected.acc_hint" = "Esta voz está seleccionada actualmente. Desliza rápidamente hacia arriba o hacia abajo para obtener una vista previa.";
 
 
 /*  */
-"voice.voice_cell.use.acc_hint" = "Pulse dos veces para usar esta voz. Deslice rápidamente hacia arriba o hacia abajo para obtener una vista previa.";
+"voice.voice_cell.use.acc_hint" = "Pulsa dos veces para usar esta voz. Desliza rápidamente hacia arriba o hacia abajo para obtener una vista previa.";
 
 
 /*  */
@@ -555,7 +555,7 @@
 
 
 /*  */
-"voice.apple.preview_hint" = "Pulse dos veces la voz para seleccionarla y reproducir una muestra.";
+"voice.apple.preview_hint" = "Pulsa dos veces la voz para seleccionarla y reproducir una muestra.";
 
 
 /*  */
@@ -563,7 +563,7 @@
 
 
 /*  */
-"voice.settings.enhanced_available" = "Es posible que haya una versión de esta voz con más calidad de sonido. Para descargarla, así como para descargar otras voces, vaya a la sección Contenido leído de los ajustes de accesibilidad de iOS.";
+"voice.settings.enhanced_available" = "Es posible que haya una versión de esta voz con más calidad de sonido. Para descargarla, así como para descargar otras voces, ve a la sección Contenido leído de los ajustes de accesibilidad de iOS.";
 
 
 /*  */
@@ -587,7 +587,7 @@
 
 
 /*  */
-"beacon.settings.style.haptic.explanation" = "Estos estilos de señal incluyen retroalimentación háptica que puede sentir además del audio de señal normal. La retroalimentación háptica solo está disponible cuando el teléfono está desbloqueado y Soundscape está abierto.";
+"beacon.settings.style.haptic.explanation" = "Estos estilos de señal incluyen retroalimentación háptica que puedes sentir además del audio de señal normal. La retroalimentación háptica solo está disponible cuando el teléfono está desbloqueado y Soundscape está abierto.";
 
 
 /*  */
@@ -599,7 +599,7 @@
 
 
 /*  */
-"beacon.settings.explanation" = "Al elegir un estilo de señal, seleccione un estilo que resulte cómodo en los oídos y que se escuche fácilmente al aire libre y en entornos ruidosos. Asegúrese de que puede determinar con facilidad su dirección a través de su dispositivo de escucha preferido (auriculares o altavoz del teléfono).";
+"beacon.settings.explanation" = "Al elegir un estilo de señal, selecciona un estilo que resulte cómodo en los oídos y que se escuche fácilmente al aire libre y en entornos ruidosos. Asegúrate de que puedes determinar con facilidad tu dirección a través de tu dispositivo de escucha preferido (auriculares o altavoz del teléfono).";
 
 
 /*  */
@@ -611,11 +611,11 @@
 
 
 /*  */
-"troubleshooting.gps_status.explanation.meters" = "Este valor es una estimación de la precisión con la que Soundscape sabe dónde se encuentra. Menos de ±10 metros es una buena distancia. Menos de ±20 metros es una distancia correcta. Todas las distancias que sean superiores serán insuficientes. Los datos de ubicación tienen la máxima precisión cuando el usuario se encuentra en el exterior y no debajo de estructuras.";
+"troubleshooting.gps_status.explanation.meters" = "Este valor es una estimación de la precisión con la que Soundscape sabe dónde te encuentras. Menos de ±10 metros es una buena distancia. Menos de ±20 metros es una distancia correcta. Todas las distancias que sean superiores serán insuficientes. Los datos de ubicación tienen la máxima precisión cuando el usuario se encuentra en el exterior y no debajo de estructuras.";
 
 
 /*  */
-"troubleshooting.gps_status.explanation.feet" = "Este valor es una estimación de la precisión con la que Soundscape sabe dónde se encuentra. Menos de ±30 pies es una buena distancia. Menos de ±60 pies es una distancia correcta. Todas las distancias que sean superiores serán insuficientes. Los datos de ubicación tienen la máxima precisión cuando el usuario se encuentra en el exterior y no debajo de estructuras.";
+"troubleshooting.gps_status.explanation.feet" = "Este valor es una estimación de la precisión con la que Soundscape sabe dónde te encuentras. Menos de ±30 pies es una buena distancia. Menos de ±60 pies es una distancia correcta. Todas las distancias que sean superiores serán insuficientes. Los datos de ubicación tienen la máxima precisión cuando el usuario se encuentra en el exterior y no debajo de estructuras.";
 
 
 /*  */
@@ -631,7 +631,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.hint" = "Pulse dos veces para comprobar el estado de los auriculares que usa con Soundscape.";
+"troubleshooting.check_audio.hint" = "Pulsa dos veces para comprobar el estado de los auriculares que usas con Soundscape.";
 
 
 /*  */
@@ -643,11 +643,11 @@
 
 
 /*  */
-"troubleshooting.cache.hint" = "Pulse dos veces para eliminar y volver a cargar datos de mapas almacenados.";
+"troubleshooting.cache.hint" = "Pulsa dos veces para eliminar y volver a cargar datos de mapas almacenados.";
 
 
 /*  */
-"troubleshooting.cache.explanation" = "Soundscape descarga datos de mapas conforme camina para poder indicarle los elementos y lugares que tiene a su alrededor. Si tiene problemas con Soundscape o consume demasiada memoria, puede borrar los datos de mapas almacenados y Soundscape solo volverá a descargar los datos de mapas que se encuentran cerca de su ubicación actual.";
+"troubleshooting.cache.explanation" = "Soundscape descarga datos de mapas conforme camina para poder indicarte los elementos y lugares que tienes a tu alrededor. Si tienes problemas con Soundscape o consume demasiada memoria, puedes borrar los datos de mapas almacenados y Soundscape solo volverá a descargar los datos de mapas que se encuentran cerca de tu ubicación actual.";
 
 
 /*  */
@@ -671,11 +671,11 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_label" = "Pulse dos veces para cerrar anuncios";
+"settings.new_feature.accept_button.acc_label" = "Pulsa dos veces para cerrar anuncios";
 
 
 /*  */
-"settings.new_feature.accept_button.acc_hint" = "Pulse dos veces para ver el anuncio de la siguiente actualización.";
+"settings.new_feature.accept_button.acc_hint" = "Pulsa dos veces para ver el anuncio de la siguiente actualización.";
 
 
 /*  */
@@ -763,7 +763,7 @@
 
 
 /*  */
-"beacon.action.remove_beacon.double_tap.acc_hint" = "Pulse dos veces en este botón para quitar la señal de audio actual.";
+"beacon.action.remove_beacon.double_tap.acc_hint" = "Pulsa dos veces en este botón para quitar la señal de audio actual.";
 
 
 /*  */
@@ -771,7 +771,7 @@
 
 
 /*  */
-"beacon.action.mute_beacon.acc_hint" = "Pulse dos veces para silenciar la señal de audio.";
+"beacon.action.mute_beacon.acc_hint" = "Pulsa dos veces para silenciar la señal de audio.";
 
 
 /*  */
@@ -779,7 +779,7 @@
 
 
 /*  */
-"beacon.action.unmute_beacon.acc_hint" = "Pulse dos veces para reactivar la señal de audio.";
+"beacon.action.unmute_beacon.acc_hint" = "Pulsa dos veces para reactivar la señal de audio.";
 
 
 /*  */
@@ -791,7 +791,7 @@
 
 
 /*  */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Pulse dos veces para silenciar o reactivar la señal de audio.";
+"beacon.action.mute_unmute_beacon.acc_hint" = "Pulsa dos veces para silenciar o reactivar la señal de audio.";
 
 
 /*  */
@@ -799,7 +799,7 @@
 
 
 /*  */
-"beacon.action.view_details.acc_hint.details" = "Pulse dos veces para ver detalles adicionales.";
+"beacon.action.view_details.acc_hint.details" = "Pulsa dos veces para ver detalles adicionales.";
 
 
 /*  */
@@ -815,7 +815,7 @@
 
 
 /*  */
-"preview.title" = "Avance de Soundscape Street";
+"preview.title" = "vista previa de calle de Soundscape";
 
 
 /*  */
@@ -843,7 +843,7 @@
 
 
 /*  */
-"preview.content.edge.text.accessibility_hint" = "Pulse dos veces para pasar al siguiente cruce.";
+"preview.content.edge.text.accessibility_hint" = "Pulsa dos veces para pasar al siguiente cruce.";
 
 
 /*  */
@@ -863,7 +863,7 @@
 
 
 /*  */
-"preview.search.accessibility_hint" = "Pulse dos veces para buscar o examinar lugares cercanos.";
+"preview.search.accessibility_hint" = "Pulsa dos veces para buscar o examinar lugares cercanos.";
 
 
 /*  */
@@ -871,7 +871,7 @@
 
 
 /*  */
-"preview.alert.restart.message" = "¿Desea reiniciar Soundscape Street Preview en esta ubicación?";
+"preview.alert.restart.message" = "¿Deseas reiniciar la vista previa de calle de Soundscape en esta ubicación?";
 
 
 /*  */
@@ -879,11 +879,11 @@
 
 
 /*  */
-"preview.callout.paused" = "Street Preview en pausa";
+"preview.callout.paused" = "vista previa de calle en pausa";
 
 
 /*  */
-"preview.callout.end" = "Finalizando Soundscape Street Preview";
+"preview.callout.end" = "Finalizando la vista previa de calle de Soundscape";
 
 
 /*  */
@@ -891,19 +891,19 @@
 
 
 /*  */
-"preview.callout.start.at" = "Iniciando Street Preview en %@";
+"preview.callout.start.at" = "Iniciando la vista previa de calle en %@";
 
 
 /*  */
-"preview.callout.start.along" = "Iniciando Street Preview por %@";
+"preview.callout.start.along" = "Iniciando la vista previa de calle por %@";
 
 
 /*  */
-"preview.callout.continue.at" = "Continuando Street Preview en %@";
+"preview.callout.continue.at" = "Continuando la vista previa de calle en %@";
 
 
 /*  */
-"preview.callout.continue.along" = "Continuando Street Preview por %@";
+"preview.callout.continue.along" = "Continuando la vista previa de calle por %@";
 
 
 /*  */
@@ -911,7 +911,7 @@
 
 
 /*  */
-"preview.callout.road_finder.error_instructions" = "Gire para seleccionar una carretera y, a continuación, presione Ir";
+"preview.callout.road_finder.error_instructions" = "Gira para seleccionar una carretera y, a continuación, presiona Ir";
 
 
 /*  */
@@ -955,7 +955,7 @@
 
 
 /*  */
-"preview.include_unnamed_roads.subtitle" = "Incluir carreteras sin nombre durante Soundscape Street Preview";
+"preview.include_unnamed_roads.subtitle" = "Incluir carreteras sin nombre durante la vista previa de calle de Soundscape";
 
 
 /*  */
@@ -967,19 +967,19 @@
 
 
 /*  */
-"preview.include_unnamed_roads.hint.off" = "Pulsa dos veces para incluir carreteras sin nombre durante la vista previa de Soundscape Street .";
+"preview.include_unnamed_roads.hint.off" = "Pulsa dos veces para incluir carreteras sin nombre durante la vista previa de calle de Soundscape.";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Pulse dos veces para excluir carreteras sin nombre durante la vista previa de Soundscape Street .";
+"preview.include_unnamed_roads.hint.on" = "Pulsa dos veces para excluir carreteras sin nombre durante la vista previa de calle de Soundscape.";
 
 
 /*  */
-"preview.tutorial.done.hint" = "Pulse dos veces para salir del tutorial.";
+"preview.tutorial.done.hint" = "Pulsa dos veces para salir del tutorial.";
 
 
 /*  */
-"preview.tutorial.title.1" = "¡Bienvenid@s al avance de Soundscape Street Preview!";
+"preview.tutorial.title.1" = "¡Bienvenid@s a la vista previa de calle de Soundscape!";
 
 
 /*  */
@@ -1023,7 +1023,7 @@
 
 
 /*  */
-"location_detail.action.beacon.hint" = "Pulse dos veces para establecer una señal de audio en esta ubicación.";
+"location_detail.action.beacon.hint" = "Pulsa dos veces para establecer una señal de audio en esta ubicación.";
 
 
 /*  */
@@ -1031,19 +1031,19 @@
 
 
 /*  */
-"location_detail.action.save.hint" = "Pulse dos veces para guardar esta ubicación como marcador.";
+"location_detail.action.save.hint" = "Pulsa dos veces para guardar esta ubicación como marcador.";
 
 
 /*  */
-"location_detail.action.edit.hint" = "Pulse dos veces para editar el marcador.";
+"location_detail.action.edit.hint" = "Pulsa dos veces para editar el marcador.";
 
 
 /*  */
-"location_detail.action.share.hint" = "Pulse dos veces para compartir esta ubicación.";
+"location_detail.action.share.hint" = "Pulsa dos veces para compartir esta ubicación.";
 
 
 /*  */
-"location_detail.action.preview.hint" = "Pulse dos veces para iniciar la vista previa en esta ubicación.";
+"location_detail.action.preview.hint" = "Pulsa dos veces para iniciar la vista previa en esta ubicación.";
 
 
 /*  */
@@ -1051,7 +1051,7 @@
 
 
 /*  */
-"location_detail.action.directions.hint" = "Pulse dos veces para abrir esta ubicación en una aplicación de mapas externa.";
+"location_detail.action.directions.hint" = "Pulsa dos veces para abrir esta ubicación en una aplicación de mapas externa.";
 
 
 /*  */
@@ -1063,7 +1063,7 @@
 
 
 /*  */
-"location.select.hint" = "Pulse dos veces para seleccionar esta ubicación.";
+"location.select.hint" = "Pulsa dos veces para seleccionar esta ubicación.";
 
 
 /*  */
@@ -1083,7 +1083,7 @@
 
 
 /*  */
-"location_detail.map.view.hint" = "Edite para seleccionar una nueva ubicación.";
+"location_detail.map.view.hint" = "Edita para seleccionar una nueva ubicación.";
 
 
 /*  */
@@ -1091,7 +1091,7 @@
 
 
 /*  */
-"location_detail.map.edit.hint" = "Mueva el mapa a la ubicación correcta.";
+"location_detail.map.edit.hint" = "Mueve el mapa a la ubicación correcta.";
 
 
 /*  */
@@ -1099,23 +1099,23 @@
 
 
 /*  */
-"location_detail.map.edit.compass.accessibility_hint" = "Pulse dos veces para posicionar el marcador en la dirección en que apunta el teléfono. Use acciones para posicionar en una dirección diferente.";
+"location_detail.map.edit.compass.accessibility_hint" = "Pulsa dos veces para posicionar el marcador en la dirección en que apunta el teléfono. Usa acciones para posicionar en una dirección diferente.";
 
 
 /*  */
-"location_detail.map.edit.north.accessibility_hint" = "Pulse dos veces para posicionar el marcador al norte. Use acciones para posicionar en una dirección diferente.";
+"location_detail.map.edit.north.accessibility_hint" = "Pulsa dos veces para posicionar el marcador al norte. Usa acciones para posicionar en una dirección diferente.";
 
 
 /*  */
-"location_detail.map.edit.south.accessibility_hint" = "Pulse dos veces para posicionar el marcador al sur. Use acciones para posicionar en una dirección diferente.";
+"location_detail.map.edit.south.accessibility_hint" = "Pulsa dos veces para posicionar el marcador al sur. Usa acciones para posicionar en una dirección diferente.";
 
 
 /*  */
-"location_detail.map.edit.east.accessibility_hint" = "Pulse dos veces para posicionar el marcador al este. Use acciones para posicionar en una dirección diferente.";
+"location_detail.map.edit.east.accessibility_hint" = "Pulsa dos veces para posicionar el marcador al este. Usa acciones para posicionar en una dirección diferente.";
 
 
 /*  */
-"location_detail.map.edit.west.accessibility_hint" = "Pulse dos veces para posicionar el marcador al oeste. Use acciones para posicionar en una dirección diferente.";
+"location_detail.map.edit.west.accessibility_hint" = "Pulsa dos veces para posicionar el marcador al oeste. Usa acciones para posicionar en una dirección diferente.";
 
 
 /*  */
@@ -1155,15 +1155,15 @@
 
 
 /*  */
-"location_detail.add_waypoint.existing.hint" = "Pulse dos veces para eliminar este marcador de su ruta.";
+"location_detail.add_waypoint.existing.hint" = "Pulsa dos veces para eliminar este marcador de tu ruta.";
 
 
 /*  */
-"location_detail.add_waypoint.new.hint" = "Pulse dos veces para agregar este marcador a la ruta.";
+"location_detail.add_waypoint.new.hint" = "Pulsa dos veces para agregar este marcador a la ruta.";
 
 
 /*  */
-"location_detail.add_waypoint.marker.hint" = "Pulse dos veces para crear un marcador y agregarlo como punto de referencia.";
+"location_detail.add_waypoint.marker.hint" = "Pulsa dos veces para crear un marcador y agregarlo como punto de referencia.";
 
 
 /*  */
@@ -1187,35 +1187,35 @@
 
 
 /*  */
-"route_detail.action.start_route.hint" = "Pulse dos veces para iniciar esta ruta.";
+"route_detail.action.start_route.hint" = "Pulsa dos veces para iniciar esta ruta.";
 
 
 /*  */
-"route_detail.action.start_route.disabled.hint" = "Añadir puntos a la ruta antes de iniciarla.";
+"route_detail.action.start_route.disabled.hint" = "Añade puntos a la ruta antes de iniciarla.";
 
 
 /*  */
-"route_detail.action.stop_route.hint" = "Pulse dos veces para detener esta ruta.";
+"route_detail.action.stop_route.hint" = "Pulsa dos veces para detener esta ruta.";
 
 
 /*  */
-"route_detail.action.start_event.hint" = "Pulse dos veces para iniciar esta actividad.";
+"route_detail.action.start_event.hint" = "Pulsa dos veces para iniciar esta actividad.";
 
 
 /*  */
-"route_detail.action.stop_event.hint" = "Pulse dos veces para detener esta actividad y guardar el progreso.";
+"route_detail.action.stop_event.hint" = "Pulsa dos veces para detener esta actividad y guardar el progreso.";
 
 
 /*  */
-"route_detail.action.reset.hint" = "Pulse dos veces para restablecer esta actividad y descargar las actualizaciones disponibles.";
+"route_detail.action.reset.hint" = "Pulsa dos veces para restablecer esta actividad y descargar las actualizaciones disponibles.";
 
 
 /*  */
-"route_detail.action.share.hint" = "Pulse dos veces para compartir esta ruta.";
+"route_detail.action.share.hint" = "Pulsa dos veces para compartir esta ruta.";
 
 
 /*  */
-"route_detail.action.edit.hint" = "Pulse dos veces para editar esta ruta.";
+"route_detail.action.edit.hint" = "Pulsa dos veces para editar esta ruta.";
 
 
 /*  */
@@ -1223,7 +1223,7 @@
 
 
 /*  */
-"route_detail.action.create.hint" = "Pulse dos veces para crear una nueva ruta.";
+"route_detail.action.create.hint" = "Pulsa dos veces para crear una nueva ruta.";
 
 
 /*  */
@@ -1295,7 +1295,7 @@
 
 
 /*  */
-"route_detail.action.previous.hint" = "Pulse dos veces para establecer la señal en el punto de ruta anterior.";
+"route_detail.action.previous.hint" = "Pulsa dos veces para establecer la señal en el punto de ruta anterior.";
 
 
 /*  */
@@ -1303,7 +1303,7 @@
 
 
 /*  */
-"route_detail.action.next.hint" = "Pulse dos veces para establecer la señal en el siguiente punto de ruta.";
+"route_detail.action.next.hint" = "Pulsa dos veces para establecer la señal en el siguiente punto de ruta.";
 
 
 /*  */
@@ -1447,7 +1447,7 @@
 
 
 /*  */
-"waypoint.callout.button.hint" = "Pulse dos veces para escuchar información adicional.";
+"waypoint.callout.button.hint" = "Pulsa dos veces para escuchar información adicional.";
 
 
 /*  */
@@ -1459,7 +1459,7 @@
 
 
 /*  */
-"first_use_experience.share.alert.message" = "Cuando comparte un marcador o una ruta de Soundscape, está compartiendo las ubicaciones asociadas a ese marcador o esa ruta. Solo debe compartir con personas en las que confíe.";
+"first_use_experience.share.alert.message" = "Cuando compartes un marcador o una ruta de Soundscape, estás compartiendo las ubicaciones asociadas a ese marcador o esa ruta. Solo debes compartir con personas en las que confíes.";
 
 
 /*  */
@@ -1499,7 +1499,7 @@
 
 
 /*  */
-"universal_links.marker.share.message" = "He compartido un marcador de Soundscape con usted. \"%@\"";
+"universal_links.marker.share.message" = "He compartido un marcador de Soundscape contigo. \"%@\"";
 
 
 /*  */
@@ -1539,11 +1539,11 @@
 
 
 /*  */
-"user_activity.street_preview.title" = "Iniciar Street Preview";
+"user_activity.street_preview.title" = "Iniciar la vista previa de calle";
 
 
 /*  */
-"url_resource.alert.route.share.message" = "He compartido una ruta de Soundscape con usted. \"%@\"";
+"url_resource.alert.route.share.message" = "He compartido una ruta de Soundscape contigo. \"%@\"";
 
 
 /*  */
@@ -1551,7 +1551,7 @@
 
 
 /*  */
-"url_resource.alert.route.import.message" = "Solo debe usar rutas de alguien en quien confíe. Soundscape Community no crea, comparte ni revisa las rutas y pueden contener errores.";
+"url_resource.alert.route.import.message" = "Solo debes usar rutas de alguien en quien confíes. Soundscape Community no crea, comparte ni revisa las rutas y pueden contener errores.";
 
 
 /*  */
@@ -1579,7 +1579,7 @@
 
 
 /*  */
-"routes.action.deleted_error" = "No se puede eliminar esta ruta actualmente. Vuelva a intentarlo más tarde.";
+"routes.action.deleted_error" = "No se puede eliminar esta ruta actualmente. Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -1587,19 +1587,19 @@
 
 
 /*  */
-"routes.no_routes.hint.1" = "Cree una ruta para usted o para otra persona organizando un conjunto de marcadores como puntos de referencia en una ruta.";
+"routes.no_routes.hint.1" = "Crea una ruta para ti o para otra persona organizando un conjunto de marcadores como puntos de referencia en una ruta.";
 
 
 /*  */
-"routes.no_routes.hint.2" = "Mientras se encuentre en una ruta con Soundscape, se le informará a su llegada a cada uno de los puntos de ruta y la señal de audio avanzará automáticamente hasta el siguiente punto de ruta.";
+"routes.no_routes.hint.2" = "Mientras te encuentres en una ruta con Soundscape, se te informará a tu llegada a cada uno de los puntos de ruta y la señal de audio avanzará automáticamente hasta el siguiente punto de ruta.";
 
 
 /*  */
-"route.no_waypoints.hint.1" = "Asigne un nombre a su ruta y agregue una descripción opcional. A continuación, puede agregar puntos de ruta a medida que avance o elegirlos en su lista de marcadores.";
+"route.no_waypoints.hint.1" = "Asigna un nombre a tu ruta y agrega una descripción opcional. A continuación, puedes agregar puntos de ruta a medida que avances o elegirlos en tu lista de marcadores.";
 
 
 /*  */
-"route.no_waypoints.hint.2" = "Puede reorganizar el orden de los puntos de ruta a lo largo de una ruta en cualquier momento editándola.";
+"route.no_waypoints.hint.2" = "Puedes reorganizar el orden de los puntos de ruta a lo largo de una ruta en cualquier momento editándola.";
 
 
 /*  */
@@ -1619,7 +1619,7 @@
 
 
 /*  */
-"routes.sort.by_name.hint" = "Pulse dos veces para ordenar por nombre.";
+"routes.sort.by_name.hint" = "Pulsa dos veces para ordenar por nombre.";
 
 
 /*  */
@@ -1627,7 +1627,7 @@
 
 
 /*  */
-"routes.sort.by_distance.hint" = "Pulse dos veces para ordenar por distancia.";
+"routes.sort.by_distance.hint" = "Pulsa dos veces para ordenar por distancia.";
 
 
 /*  */
@@ -1651,11 +1651,11 @@
 
 
 /*  */
-"markers.action.deleted_error" = "No se puede eliminar este marcador actualmente. Vuelva a intentarlo más tarde.";
+"markers.action.deleted_error" = "No se puede eliminar este marcador actualmente. Vuelve a intentarlo más tarde.";
 
 
 /*  */
-"markers.action.update_error" = "Tenemos problemas para actualizar este marcador actualmente. Vuelva a intentarlo más tarde.";
+"markers.action.update_error" = "Tenemos problemas para actualizar este marcador actualmente. Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -1683,11 +1683,11 @@
 
 
 /*  */
-"markers.no_markers.hint.1" = "Cree marcadores para sus destinos favoritos, puntos de una ruta o cualquier ubicación para la que desee oír avisos. Solo tiene que elegir una ubicación, o incluso su ubicación actual, en la pantalla de inicio, y seleccionar \"Guardar como marcador\".";
+"markers.no_markers.hint.1" = "Crea marcadores para tus destinos favoritos, puntos de una ruta o cualquier ubicación para la que desees oír avisos. Solo tienes que elegir una ubicación, o incluso tu ubicación actual, en la pantalla de inicio, y seleccionar \"Guardar como marcador\".";
 
 
 /*  */
-"markers.no_markers.hint.2" = "Intente marcar su casa, la entrada a su trabajo o su lugar favorito del parque.";
+"markers.no_markers.hint.2" = "Intenta marcar tu casa, la entrada a tu trabajo o tu lugar favorito del parque.";
 
 
 /*  */
@@ -1699,7 +1699,7 @@
 
 
 /*  */
-"markers.edit_screen.done_button.acc_hint" = "Pulse dos veces para guardar este marcador.";
+"markers.edit_screen.done_button.acc_hint" = "Pulsa dos veces para guardar este marcador.";
 
 
 /*  */
@@ -1755,7 +1755,7 @@
 
 
 /*  */
-"search.no_results_found_with_hint" = "No se han encontrado resultados. Intente editar su término de búsqueda.";
+"search.no_results_found_with_hint" = "No se han encontrado resultados. Intenta editar tu término de búsqueda.";
 
 
 /*  */
@@ -1791,7 +1791,7 @@
 
 
 /*  */
-"search.no_results_found_error" = "No parece que haya lugares cerca. Si busca un lugar específico, puede intentar buscar por nombre o dirección.";
+"search.no_results_found_error" = "No parece que haya lugares cerca. Si buscas un lugar específico, puedes intentar buscar por nombre o dirección.";
 
 
 /*  */
@@ -1807,11 +1807,11 @@
 
 
 /*  */
-"search.button.markers.accessibility_hint" = "Pulse dos veces para seleccionar o editar los marcadores que ha guardado.";
+"search.button.markers.accessibility_hint" = "Pulsa dos veces para seleccionar o editar los marcadores que has guardado.";
 
 
 /*  */
-"search.button.nearby.accessibility_hint" = "Doble pulsación para explorar restaurantes cercanos, paradas y más.";
+"search.button.nearby.accessibility_hint" = "Pulsa Dos Veces para explorar restaurantes cercanos, paradas y más.";
 
 
 /*  */
@@ -1831,7 +1831,7 @@
 
 
 /*  */
-"filter.clear.hint" = "Pulse dos veces para borrar el filtro seleccionado.";
+"filter.clear.hint" = "Pulsa dos veces para borrar el filtro seleccionado.";
 
 
 /*  */
@@ -1923,11 +1923,11 @@
 
 
 /*  */
-"callouts.ahead_of_you" = "Delante suya";
+"callouts.ahead_of_you" = "Delante tuya";
 
 
 /*  */
-"callouts.around_you" = "A su alrededor";
+"callouts.around_you" = "A tu alrededor";
 
 
 /*  */
@@ -1987,7 +1987,7 @@
 
 
 /*  */
-"sleep.sleep.acc_hint" = "Pulse dos veces para poner en suspensión a Soundscape.";
+"sleep.sleep.acc_hint" = "Pulsa dos veces para poner en suspensión a Soundscape.";
 
 
 /*  */
@@ -2551,7 +2551,7 @@
 
 
 /*  */
-"ui.action_button.my_location.acc_hint" = "Pulse dos veces para conocer su ubicación actual.";
+"ui.action_button.my_location.acc_hint" = "Pulsa dos veces para conocer tu ubicación actual.";
 
 
 /*  */
@@ -2559,7 +2559,7 @@
 
 
 /*  */
-"ui.action_button.nearby_markers.acc_hint" = "Pulse dos veces para oír información acerca de los lugares cercanos que ha marcado.";
+"ui.action_button.nearby_markers.acc_hint" = "Pulsa dos veces para oír información acerca de los lugares cercanos que has marcado.";
 
 
 /*  */
@@ -2567,7 +2567,7 @@
 
 
 /*  */
-"ui.action_button.around_me.acc_hint" = "Pulse dos veces para oír información acerca de los lugares de los cuatro cuadrantes que te rodean.";
+"ui.action_button.around_me.acc_hint" = "Pulsa dos veces para oír información acerca de los lugares de los cuatro cuadrantes que te rodean.";
 
 
 /*  */
@@ -2575,7 +2575,7 @@
 
 
 /*  */
-"ui.action_button.ahead_of_me.acc_hint" = "Doble pulsación para escuchar información de los lugares delante de ti.";
+"ui.action_button.ahead_of_me.acc_hint" = "Pulsa dos veces para escuchar información de los lugares delante de ti.";
 
 
 /*  */
@@ -2583,7 +2583,7 @@
 
 
 /*  */
-"ui.menu.hint" = "Pulse dos veces para abrir el menú.";
+"ui.menu.hint" = "Pulsa dos veces para abrir el menú.";
 
 
 /*  */
@@ -2647,7 +2647,7 @@
 
 
 /*  */
-"poi_screen.loading_title.finding_error" = "Tenemos problemas para encontrar los lugares cercanos. Vuelva a intentarlo más tarde.";
+"poi_screen.loading_title.finding_error" = "Tenemos problemas para encontrar los lugares cercanos. Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -2663,7 +2663,7 @@
 
 
 /*  */
-"poi_cell.accessibility_hint.suggested_search" = "Pulse dos veces para buscar: %@.";
+"poi_cell.accessibility_hint.suggested_search" = "Pulsa dos veces para buscar: %@.";
 
 
 /*  */
@@ -2707,15 +2707,15 @@
 
 
 /*  */
-"devices.explain_ar.disconnected" = "Los auriculares con seguimiento de cabeza son auriculares Bluetooth con sensores que indican a Soundscape el lugar frente al cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio, lo que hace que su desplazamiento por el mundo sea más natural.\n\nPulse en el botón siguiente para conectar un dispositivo.";
+"devices.explain_ar.disconnected" = "Los auriculares con seguimiento de cabeza son auriculares Bluetooth con sensores que indican a Soundscape el lugar frente al cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio, lo que hace que su desplazamiento por el mundo sea más natural.\n\nPulsa en el botón siguiente para conectar un dispositivo.";
 
 
 /*  */
-"devices.explain_ar.connected.airpods" = "Sus AirPods están listos para usarse. Guarde el teléfono en el bolsillo y empiece a moverse. Soundscape está realizando ahora el seguimiento de la dirección de su cabeza, por lo que no tiene que llevar el teléfono en la mano.";
+"devices.explain_ar.connected.airpods" = "Tus AirPods están listos para usar. Guarda el teléfono en el bolsillo y empieza a moverte. Soundscape está realizando ahora el seguimiento de la dirección de tu cabeza, por lo que no tienes que llevar el teléfono en la mano.";
 
 
 /*  */
-"devices.explain_ar.paired" = "Soundscape no está conectado actualmente a %@. Compruebe que los auriculares están activados y que se encuentran cerca del teléfono.";
+"devices.explain_ar.paired" = "Soundscape no está conectado actualmente a %@. Comprueba que los auriculares están activados y que se encuentran cerca del teléfono.";
 
 
 /*  */
@@ -2731,7 +2731,7 @@
 
 
 /*  */
-"devices.connect_headset.calibrate.explanation" = "Los auriculares se han conectado correctamente a Soundscape, pero tiene que calibrarlos para poder usarlos. Soundscape le informará siempre que sea necesaria la calibración de los auriculares, como cada vez que los active.";
+"devices.connect_headset.calibrate.explanation" = "Los auriculares se han conectado correctamente a Soundscape, pero tienes que calibrarlos para poder usarlos. Soundscape te informará siempre que sea necesaria la calibración de los auriculares, como cada vez que los actives.";
 
 
 /*  */
@@ -2739,31 +2739,31 @@
 
 
 /*  */
-"devices.connect_headset.unsupported_firmware" = "Para poder conectar los AR Headphones a Soundscape, debe haberlos actualizado antes. Vaya a la aplicación Cortana para actualizar los auriculares.";
+"devices.connect_headset.unsupported_firmware" = "Para poder conectar los AR Headphones a Soundscape, debe haberlos actualizado antes. Ve a la aplicación Cortana para actualizar los auriculares.";
 
 
 /*  */
-"devices.connect_headset.failed" = "Soundscape no pudo conectarse a los auriculares. Inténtelo de nuevo más tarde.";
+"devices.connect_headset.failed" = "Soundscape no pudo conectarse a los auriculares. Inténtalo de nuevo más tarde.";
 
 
 /*  */
-"devices.connect_headset.unavailable" = "El dispositivo que ha seleccionado no está disponible actualmente para conectarlo. Inténtelo de nuevo más tarde.";
+"devices.connect_headset.unavailable" = "El dispositivo que has seleccionado no está disponible actualmente para conectarlo. Inténtalo de nuevo más tarde.";
 
 
 /*  */
-"devices.connect_headset.explanation" = "Seleccione el tipo de auriculares en la lista siguiente de auriculares admitidos.";
+"devices.connect_headset.explanation" = "Selecciona el tipo de auriculares en la lista siguiente de auriculares admitidos.";
 
 
 /*  */
-"devices.connect_headset.audio" = "Antes de conectar los auriculares a Soundscape, asegúrese de que están emparejados con el teléfono. Si aún no lo están, vaya a la sección Bluetooth en la aplicación de Ajustes de iOS para emparejar el dispositivo y después vuelva a Soundscape.";
+"devices.connect_headset.audio" = "Antes de conectar los auriculares a Soundscape, asegúrate de que están emparejados con el teléfono. Si aún no lo están, ve a la sección Bluetooth en la aplicación de Ajustes de iOS para emparejar el dispositivo y después vuelve a Soundscape.";
 
 
 /*  */
-"devices.connect_headset.calibrate" = "Los auriculares tienen que calibrarse. Quíteselos y sacúdalos con suavidad en todas las direcciones durante unos 10 segundos, y vuelva a colocárselos. Deberá repetir esta operación si continúa oyendo la campanilla de la calibración.";
+"devices.connect_headset.calibrate" = "Los auriculares tienen que calibrarse. Quítatelos y sacúdelos con suavidad en todas las direcciones durante unos 10 segundos, y vuelve a colocártelos. Deberá repetir esta operación si continúas oyendo la campanilla de la calibración.";
 
 
 /*  */
-"devices.connect_headset.calibrate.in_ear" = "Los auriculares tienen que calibrarse. Sacuda la cabeza con suavidad en todas las direcciones durante unos 10 segundos. Deberá repetir esta operación si continúa oyendo la campanilla de la calibración.";
+"devices.connect_headset.calibrate.in_ear" = "Los auriculares tienen que calibrarse. Sacude la cabeza con suavidad en todas las direcciones durante unos 10 segundos. Deberá repetir esta operación si continúas oyendo la campanilla de la calibración.";
 
 
 /*  */
@@ -2775,7 +2775,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.test.hint" = "Pulse dos veces para comprobar los %@.";
+"devices.connect_headset.completed.test.hint" = "Pulsa dos veces para comprobar los %@.";
 
 
 /*  */
@@ -2783,7 +2783,7 @@
 
 
 /*  */
-"devices.test_headset.explanation" = "Hemos colocado una señal de audio a su derecha. Escuche dónde se encuentra y gire la cabeza hacia ella. Observe cómo puede hacer esto incluso con el teléfono en el bolsillo. Cuando haya terminado, pulse en el botón siguiente para volver a Soundscape y disfrute de su próximo paseo con sus nuevos auriculares con seguimiento de cabeza.";
+"devices.test_headset.explanation" = "Hemos colocado una señal de audio a tu derecha. Escucha dónde se encuentra y gira la cabeza hacia ella. Observa cómo puedes hacer esto incluso con el teléfono en el bolsillo. Cuando hayas terminado, pulsa en el botón siguiente para volver a Soundscape y disfruta de tu próximo paseo con tus nuevos auriculares con seguimiento de cabeza.";
 
 
 /*  */
@@ -2791,15 +2791,15 @@
 
 
 /*  */
-"devices.test_headset.callout" = "Hemos colocado una señal de audio a su derecha. Escuche dónde se encuentra y gire la cabeza hacia ella… Observe cómo puede hacer esto incluso con el teléfono en el bolsillo.";
+"devices.test_headset.callout" = "Hemos colocado una señal de audio a tu derecha. Escucha dónde se encuentra y gira la cabeza hacia ella… Observa cómo puedes hacer esto incluso con el teléfono en el bolsillo.";
 
 
 /*  */
-"devices.forget_headset.prompt.forget" = "¿Seguro que desea olvidar estos auriculares?";
+"devices.forget_headset.prompt.forget" = "¿Seguro que deseas olvidar estos auriculares?";
 
 
 /*  */
-"devices.forget_headset.prompt.explanation" = "Esto desconectará los auriculares de Soundscape. Puede conectarse a Soundscape de nuevo en el futuro desde aquí.";
+"devices.forget_headset.prompt.explanation" = "Esto desconectará los auriculares de Soundscape. Puedes conectarte a Soundscape de nuevo en el futuro desde aquí.";
 
 
 /*  */
@@ -2807,11 +2807,11 @@
 
 
 /*  */
-"devices.callouts.needs_calibration" = "Los auriculares tienen que calibrarse. Quíteselos y sacúdalos con suavidad en todas las direcciones.";
+"devices.callouts.needs_calibration" = "Los auriculares tienen que calibrarse. Quítatelos y sacúdelos con suavidad en todas las direcciones.";
 
 
 /*  */
-"devices.callouts.needs_calibration.in_ear" = "Los auriculares tienen que calibrarse. Sacúdalos con suavidad en todas las direcciones.";
+"devices.callouts.needs_calibration.in_ear" = "Los auriculares tienen que calibrarse. Sacúdelos con suavidad en todas las direcciones.";
 
 
 /*  */
@@ -2831,7 +2831,7 @@
 
 
 /*  */
-"devices.callouts.check_audio.airpods.disconnected" = "Soundscape está buscando sus AirPods. Asegúrese de que están conectados al teléfono.";
+"devices.callouts.check_audio.airpods.disconnected" = "Soundscape está buscando tus AirPods. Asegúrate de que están conectados al teléfono.";
 
 
 /*  */
@@ -2839,11 +2839,11 @@
 
 
 /*  */
-"devices.airpods_unavailable.alert.description" = "Este dispositivo no admite el seguimiento de cabeza con Apple AirPods. Compruebe que el dispositivo es un iPhone 7 o posterior y que está ejecutando iOS 14.4 o posterior.";
+"devices.airpods_unavailable.alert.description" = "Este dispositivo no admite el seguimiento de cabeza con Apple AirPods. Comprueba que el dispositivo es un iPhone 7 o posterior y que está ejecutando iOS 14.4 o posterior.";
 
 
 /*  */
-"devices.reachability.alert.title" = "Active el seguimiento de cabeza con %@";
+"devices.reachability.alert.title" = "Activa el seguimiento de cabeza con %@";
 
 
 /*  */
@@ -2871,7 +2871,7 @@
 
 
 /*  */
-"behavior.experiences.download_failed.error" = "Error al intentar descargar la actividad. Inténtelo de nuevo más tarde. Utilice la característica \"Enviar comentarios\" o póngase en contacto con el creador de la actividad si este problema persiste.";
+"behavior.experiences.download_failed.error" = "Error al intentar descargar la actividad. Inténtalo de nuevo más tarde. Utiliza la característica \"Enviar comentarios\" o pónte en contacto con el creador de la actividad si este problema persiste.";
 
 
 /*  */
@@ -3107,7 +3107,7 @@
 
 
 /*  */
-"tutorial.markers.mark_location.acc_hint" = "Pulse dos veces para marcar esta ubicación.";
+"tutorial.markers.mark_location.acc_hint" = "Pulsa dos veces para marcar esta ubicación.";
 
 
 /*  */
@@ -3135,7 +3135,7 @@
 
 
 /*  */
-"tutorial.beacon.set_a_beacon.acc_hint" = "Pulse dos veces para cargar una lista de lugares en los que puede establecer la señal. Elija un lugar en la lista para iniciar el tutorial.";
+"tutorial.beacon.set_a_beacon.acc_hint" = "Pulsa dos veces para cargar una lista de lugares en los que puedes establecer la señal. Elige un lugar en la lista para iniciar el tutorial.";
 
 
 /*  */
@@ -3147,7 +3147,7 @@
 
 
 /*  */
-"tutorial.beacon.mark_location.acc_hint" = "Pulse dos veces para usar esta ubicación para el tutorial de señales.";
+"tutorial.beacon.mark_location.acc_hint" = "Pulsa dos veces para usar esta ubicación para el tutorial de señales.";
 
 
 /*  */
@@ -3383,11 +3383,11 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Pulse dos veces para activar la casilla \"aceptar las condiciones de uso\".";
+"terms_of_use.accept_checkbox.on.acc_hint" = "Pulsa dos veces para activar la casilla \"aceptar las condiciones de uso\".";
 
 
 /*  */
-"terms_of_use.accept_checkbox.off.acc_hint" = "Pulse dos veces para desactivar la casilla \"aceptar las condiciones de uso\".";
+"terms_of_use.accept_checkbox.off.acc_hint" = "Pulsa dos veces para desactivar la casilla \"aceptar las condiciones de uso\".";
 
 
 /*  */
@@ -3407,7 +3407,7 @@
 
 
 /*  */
-"terms_of_use.accept.new_features.accessibility_hint" = "Doble pulsación para aceptar y cerrar los anuncios.";
+"terms_of_use.accept.new_features.accessibility_hint" = "Pulsa dos veces para aceptar y cerrar los anuncios.";
 
 
 /*  */
@@ -3431,11 +3431,11 @@
 
 
 /*  */
-"first_launch.soundscape_language.text" = "Seleccione el idioma que desea que use Soundscape. Siempre podrá cambiar su selección en los ajustes de la aplicación.";
+"first_launch.soundscape_language.text" = "Selecciona el idioma que deseas que use Soundscape. Siempre podrás cambiar tu selección en los ajustes de la aplicación.";
 
 
 /*  */
-"first_launch.location.text" = "Soundscape es una ubicación basada en ubicación. Usamos su ubicación para encontrar todas las cosas que se encuentran a su alrededor y avisarle de ellas.";
+"first_launch.location.text" = "Soundscape es una ubicación basada en ubicación. Usamos su ubicación para encontrar todas las cosas que se encuentran a tu alrededor y avisarte de ellas.";
 
 
 /*  */
@@ -3447,7 +3447,7 @@
 
 
 /*  */
-"first_launch.device_motion.text" = "Esto le permite a Soundscape mejorar su experiencia en función de si va a pie, se desplaza en un vehículo o no se mueve.";
+"first_launch.device_motion.text" = "Esto le permite a Soundscape mejorar tu experiencia en función de si va a pie, se desplaza en un vehículo o no se mueve.";
 
 
 /*  */
@@ -3455,7 +3455,7 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound.text_alt" = "Soundscape usa sonido 3D para indicarle qué hay a su alrededor. Por ejemplo, si su destino está a su derecha, oirá un sonido procedente de esa dirección, o si hay una cafetería a su izquierda, oirá un aviso procedente de esa dirección.";
+"first_launch.lighting_way_with_sound.text_alt" = "Soundscape usa sonido 3D para indicarte qué hay a tu alrededor. Por ejemplo, si tu destino está a tu derecha, oirá un sonido procedente de esa dirección, o si hay una cafetería a tu izquierda, oirá un aviso procedente de esa dirección.";
 
 
 /*  */
@@ -3479,7 +3479,7 @@
 
 
 /*  */
-"first_launch.find_things_nearby.text" = "Mantén el teléfono en posición horizontal en la mano y usa los botones para encontrar carreteras y cruces próximos, orientarte con puntos de referencia conocidos a su alrededor y explorar puntos de referencia que se encuentren delante de ti.";
+"first_launch.find_things_nearby.text" = "Mantén el teléfono en posición horizontal en la mano y usa los botones para encontrar carreteras y cruces próximos, orientarte con puntos de referencia conocidos a tu alrededor y explorar puntos de referencia que se encuentren delante de ti.";
 
 
 /*  */
@@ -3527,7 +3527,7 @@
 
 
 /*  */
-"first_launch.callouts.listen.accessibility_hint" = "Pulse dos veces para escuchar un ejemplo de lo que Soundscape podría decir en su próximo paseo.";
+"first_launch.callouts.listen.accessibility_hint" = "Pulsa dos veces para escuchar un ejemplo de lo que Soundscape podría decir en tu próximo paseo.";
 
 
 /*  */
@@ -4055,7 +4055,7 @@
 
 
 /*  */
-"banner.custom_behavior.scavenger_hunt.hint" = "Pulse dos veces para leer acerca de la búsqueda del tesoro o para pausarla.";
+"banner.custom_behavior.scavenger_hunt.hint" = "Pulsa dos veces para leer acerca de la búsqueda del tesoro o para pausarla.";
 
 
 /*  */
@@ -4079,15 +4079,15 @@
 
 
 /*  */
-"share.prompt.title" = "¿Está disfrutando de Soundscape?";
+"share.prompt.title" = "¿Estás disfrutando de Soundscape?";
 
 
 /*  */
-"share.prompt.message" = "Hable a sus amigos y familiares de Soundscape";
+"share.prompt.message" = "Habla a tus amigos y familiares de Soundscape";
 
 
 /*  */
-"share.action.message" = "Pruebe Soundscape, una aplicación que disfruto usando para la navegación con sonido 3D:";
+"share.action.message" = "Prueba Soundscape, una aplicación que disfruto usando para la navegación con sonido 3D:";
 
 
 /*  */
@@ -4339,7 +4339,7 @@
 
 
 /*  */
-"faq.personalize_experience.answer" = "Soundscape te permite personalizar tres aspectos clave de los sonidos que escuchas mientras caminas:\n\n1. Voz: puedes elegir cuál de las voces disponibles en iOS quieres que use Soundscape , así como la velocidad a la que se pronuncian los mensajes. En el menú, selecciona \" Ajustes \" y, a continuación, en \" Ajustes Generales\", selecciona Voz para ajustar la velocidad de habla y la configuración de voz . Se pueden descargar voces adicionales y voces mejoradas con una calidad superior en la aplicación Configuración de iOS en Ajustes > Accesibilidad > Contenido hablado > Voces. \n2. Distancia métrica: Soundscape te permite escuchar todas las distancias en pies o metros. En el menú, selecciona \" Ajustes \" y, a continuación, en \" Ajustes Generales\", selecciona \"Idioma y región\". La sección Unidades de medida te permite alternar entre dos opciones: Imperial (pies) y Métrico (metros).\n3. Marcadores: puedes marcar tu mundo con cualquier cosa que te importe. Puedes marcar cosas que sean personales y relevantes para ti, como tu casa, tu oficina y tu supermercado preferido. Luego, Soundscape te indicará automáticamente los lugares marcados a medida que pases por ellos o te acerques a ellos, o también puedes usar el botón Marcadores cercanos en la parte inferior de la pantalla de inicio de Soundscape para escuchar un aviso espacial de los lugares marcados a tu alrededor. Estos marcadores seguirán siendo personales para ti y no estarán disponibles para nadie más.\n\nAdemás de lo anterior, las siguientes configuraciones de VoiceOver pueden influir en el comportamiento de Soundscape :\n\n1. Sugerencias de VoiceOver: cuando las sugerencias de VoiceOver están activadas, escuchará más información sobre todos los botones en la pantalla principal de Soundscape . Puede activar las sugerencias de VoiceOver navegando a la aplicación Configuración de iOS y yendo a Accesibilidad > VoiceOver > Verbosidad, y activando la configuración Sugerencias de voz.\n2. Atenuación de audio: Soundscape está diseñado para funcionar con la atenuación de audio desactivada. Cuando la atenuación de audio está activada, las llamadas automáticas pueden resultar difíciles de escuchar si se utiliza VoiceOver simultáneamente. Recomendamos desactivar la atenuación de audio para que sea más fácil escuchar todas las llamadas automáticas que se producen mientras interactúa con el teléfono. La atenuación de audio se puede desactivar en la configuración de VoiceOver o a través del rotor de VoiceOver.\n3. Desbloqueo con Touch ID o Face ID: configurar el teléfono para que se desbloquee con Touch ID o Face ID hará que desbloquear el teléfono sea rápido y fácil y, a su vez, te permitirá acceder a los botones Mi ubicación , A mi alrededor y Delante de mí lo más rápido posible cuando estés en movimiento. Configura el desbloqueo con Touch ID o Face ID en la aplicación Configuración de iOS .";
+"faq.personalize_experience.answer" = "Soundscape te permite personalizar tres aspectos clave de los sonidos que escuchas mientras caminas:\n\n1. Voz: puedes elegir cuál de las voces disponibles en iOS quieres que use Soundscape , así como la velocidad a la que se pronuncian los mensajes. En el menú, selecciona \" Ajustes \" y, a continuación, en \" Ajustes Generales\", selecciona Voz para ajustar la velocidad de habla y la configuración de voz . Se pueden descargar voces adicionales y voces mejoradas con una calidad superior en la aplicación Configuración de iOS en Ajustes > Accesibilidad > Contenido hablado > Voces. \n2. Distancia métrica: Soundscape te permite escuchar todas las distancias en pies o metros. En el menú, selecciona \" Ajustes \" y, a continuación, en \" Ajustes Generales\", selecciona \"Idioma y región\". La sección Unidades de medida te permite alternar entre dos opciones: Imperial (pies) y Métrico (metros).\n3. Marcadores: puedes marcar tu mundo con cualquier cosa que te importe. Puedes marcar cosas que sean personales y relevantes para ti, como tu casa, tu oficina y tu supermercado preferido. Luego, Soundscape te indicará automáticamente los lugares marcados a medida que pases por ellos o te acerques a ellos, o también puedes usar el botón Marcadores cercanos en la parte inferior de la pantalla de inicio de Soundscape para escuchar un aviso espacial de los lugares marcados a tu alrededor. Estos marcadores seguirán siendo personales para ti y no estarán disponibles para nadie más.\n\nAdemás de lo anterior, las siguientes configuraciones de VoiceOver pueden influir en el comportamiento de Soundscape :\n\n1. Sugerencias de VoiceOver: cuando las sugerencias de VoiceOver están activadas, escucharás más información sobre todos los botones en la pantalla principal de Soundscape . Puedes activar las sugerencias de VoiceOver navegando a la aplicación Configuración de iOS y yendo a Accesibilidad > VoiceOver > Verbosidad, y activando la configuración Sugerencias de voz.\n2. Atenuación de audio: Soundscape está diseñado para funcionar con la atenuación de audio desactivada. Cuando la atenuación de audio está activada, las llamadas automáticas pueden resultar difíciles de escuchar si se utiliza VoiceOver simultáneamente. Recomendamos desactivar la atenuación de audio para que sea más fácil escuchar todas las llamadas automáticas que se producen mientras interactúa con el teléfono. La atenuación de audio se puede desactivar en la configuración de VoiceOver o a través del rotor de VoiceOver.\n3. Desbloqueo con Touch ID o Face ID: configurar el teléfono para que se desbloquee con Touch ID o Face ID hará que desbloquear el teléfono sea rápido y fácil y, a su vez, te permitirá acceder a los botones Mi ubicación , A mi alrededor y Delante de mí lo más rápido posible cuando estés en movimiento. Configura el desbloqueo con Touch ID o Face ID en la aplicación Configuración de iOS .";
 
 
 /*  */
@@ -4419,5 +4419,5 @@
 "osm.tag.bar" = "Bar";
 "osm.tag.fast_food" = "Comida rápida";
 "osm.tag.ice_cream" = "Heladería";
-"whats_new.1_2_0.0.description" = "Ahora puede sacudir su dispositivo para repetir el último aviso. Para habilitar esta función, active el botón 'Repetir Avisos' en los ajustes.";
+"whats_new.1_2_0.0.description" = "Ahora puede sacudir su dispositivo para repetir el último aviso. Para habilitar esta función, activa el botón 'Repetir Avisos' en los ajustes.";
 "whats_new.1_2_0.1.description" = "Ahora puedes ajustar la distancia a la que la señal se silencia automáticamente cuando te acercas. Puedes ajustar esta opción en la configuración de la señal de audio.\n\nNos gustaría conocer tu experiencia con la desactivación de la señal de audio a diferentes distancias (0,5 y 10 metros). En nuestras pruebas internas estamos observando algunas incoherencias en el comportamiento y nos gustaría conocer la opinión de una base más amplia de usuarios.";
