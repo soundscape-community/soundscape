@@ -221,7 +221,7 @@
 "general.error.location_services_find_location_error" = "We are having trouble finding your current location.";
 
 /* Error message when Soundscape does not know the user's heading */
-"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again";
+"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again.";
 
 /* Error message Soundscape is having trouble determining current location. Try again later */
 "general.error.location_services_find_location_error.try_again" = "We are having trouble finding your current location. Try again later.";
@@ -607,7 +607,7 @@
 "settings.new_feature.accept_button.acc_label" = "Double tap to close announcements";
 
 /* Settings new feature, instruction to double tap to view next update announcement */
-"settings.new_feature.accept_button.acc_hint" = "Double tap to view next update announcement";
+"settings.new_feature.accept_button.acc_hint" = "Double tap to view next update announcement.";
 
 /* Settings New Feature, title Recent Updates */
 "settings.new_feature.recent_updates" = "Recent Updates";
@@ -677,7 +677,7 @@
 "beacon.action.remove_beacon" = "Remove Beacon";
 
 /* Notification, Double tap this button to remove current audio beacon */
-"beacon.action.remove_beacon.double_tap.acc_hint" = "Double tap this button to remove the current audio beacon";
+"beacon.action.remove_beacon.double_tap.acc_hint" = "Double tap this button to remove the current audio beacon.";
 
 /* Button, Mute Beacon */
 "beacon.action.mute_beacon" = "Mute Beacon";
@@ -698,13 +698,13 @@
 "beacon.action.callout_beacon" = "Call out Beacon";
 
 /* Notification, Double tap to unmute or mute the audio beacon */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Double tap to mute or unmute the audio beacon";
+"beacon.action.mute_unmute_beacon.acc_hint" = "Double tap to mute or unmute the audio beacon.";
 
 /* Title text of the button used to view the detail view */
 "beacon.action.view_details" = "View Details";
 
 /* Hint text of the button used to view the detail view */
-"beacon.action.view_details.acc_hint.details" = "Double tap to view additional details";
+"beacon.action.view_details.acc_hint.details" = "Double tap to view additional details.";
 
 /* Button, Beacon Distance Update */
 "beacon.distance_update" = "Beacon Distance Update";
@@ -713,7 +713,7 @@
 "beacon.beacon_location_within" = "Beacon within %@";
 
 /* Notification, Beacon location nearby. Audio beacon has been muted. */
-"beacon.beacon_location_within_audio_beacon_muted" = "Beacon within %@. Audio beacon has been muted";
+"beacon.beacon_location_within_audio_beacon_muted" = "Beacon within %@. Audio beacon has been muted.";
 
 //------------------------------------------------------------------------------
 // MARK: - Preview
@@ -741,7 +741,7 @@
 "preview.content.edge.text" = "%1$@ on %2$@";
 
 /* Accessibility hint for the button to select a direction of travel */
-"preview.content.edge.text.accessibility_hint" = "Double tap to move to the next intersection";
+"preview.content.edge.text.accessibility_hint" = "Double tap to move to the next intersection.";
 
 /* Title for button to go to the next intersection */
 "preview.go.title" = "Go";
@@ -756,7 +756,7 @@
 "preview.search.label" = "Explore Nearby";
 
 /* Accessibility hint for the "Explore" button */
-"preview.search.accessibility_hint" = "Double tap to search or browse nearby places";
+"preview.search.accessibility_hint" = "Double tap to search or browse nearby places.";
 
 /* Title for the alert displayed when ther user tries to restart the preview experience at a new location */
 "preview.alert.restart.title" = "Preview Already in Progress";
@@ -834,13 +834,13 @@
 "preview.include_unnamed_roads.label.on" = "Disable Unnamed Roads";
 
 /* Voiceover hint for a button to turn on a setting to include unnamed roads. {NumberedPlaceholder="Soundscape Street Preview"} */
-"preview.include_unnamed_roads.hint.off" = "Double tap to include unnamed roads during Soundscape Street Preview";
+"preview.include_unnamed_roads.hint.off" = "Double tap to include unnamed roads during Soundscape Street Preview.";
 
 /* Voiceover hint for a button to turn off a setting to include unnamed roads. {NumberedPlaceholder="Soundscape Street Preview"} */
-"preview.include_unnamed_roads.hint.on" = "Double tap to exclude unnamed roads during Soundscape Street Preview";
+"preview.include_unnamed_roads.hint.on" = "Double tap to exclude unnamed roads during Soundscape Street Preview.";
 
 /* Accessibility hint for the button to end the preview tutorial */
-"preview.tutorial.done.hint" = "Double tap to exit the tutorial";
+"preview.tutorial.done.hint" = "Double tap to exit the tutorial.";
 
 /* Title for the first set of tutorial content. {NumberedPlaceholder="Soundscape Street Preview"} */
 "preview.tutorial.title.1" = "Welcome to Soundscape Street Preview!";
@@ -880,28 +880,28 @@
 "location_detail.action.beacon" = "Start Audio Beacon";
 
 /* Voiceover hint for the action to set a beacon */
-"location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location";
+"location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location.";
 
 /* Text displayed when audio beacon action is disabled */
-"location_detail.action.beacon.hint.disabled" = "Setting a new audio beacon is disabled while route guidance is active";
+"location_detail.action.beacon.hint.disabled" = "Setting a new audio beacon is disabled while route guidance is active.";
 
 /* Voiceover hint for the action to save marker */
-"location_detail.action.save.hint" = "Double tap to save this location as a marker";
+"location_detail.action.save.hint" = "Double tap to save this location as a marker.";
 
 /* Voiceover hint for the action to edit marker */
-"location_detail.action.edit.hint" = "Double tap to edit marker";
+"location_detail.action.edit.hint" = "Double tap to edit marker.";
 
 /* Voiceover hint for the action to share */
-"location_detail.action.share.hint" = "Double tap to share this location";
+"location_detail.action.share.hint" = "Double tap to share this location.";
 
 /* Voiceover hint for the action to preview */
-"location_detail.action.preview.hint" = "Double tap to start previewing at this location";
+"location_detail.action.preview.hint" = "Double tap to start previewing at this location.";
 
 /* Text displayed when street preview is disabled */
-"location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active";
+"location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active.";
 
 /* Voiceover hint for the action to get directions */
-"location_detail.action.directions.hint" = "Double tap to open this location in an external maps app";
+"location_detail.action.directions.hint" = "Double tap to open this location in an external maps app.";
 
 /* Default address for a location */
 "location_detail.default.address" = "Address unknown";
@@ -910,7 +910,7 @@
 "location_detail.default.annotation" = "No marker annotation";
 
 /* Accessibility hint to select a location */
-"location.select.hint" = "Double tap to select this location";
+"location.select.hint" = "Double tap to select this location.";
 
 /* Text displayed when the location cannot be saved as a marker */
 "location_detail.disabled.save" = "Saving a marker at this location is currently unavailable";
@@ -925,13 +925,13 @@
 "location_detail.map.view.title" = "Selected Location";
 
 /* Hint text displayed when the user is viewing the expanded map view */
-"location_detail.map.view.hint" = "Edit to select a new location";
+"location_detail.map.view.hint" = "Edit to select a new location.";
 
 /* Title text displayed when the user is selecting a location via the expanded map view */
 "location_detail.map.edit.title" = "Edit Location";
 
 /* Hint text displayed when the user is selecting a location via the expanded map view */
-"location_detail.map.edit.hint" = "Move the map to the correct location";
+"location_detail.map.edit.hint" = "Move the map to the correct location.";
 
 /* Accessibility label used when the user is moving the marker location via custom Voiceover experience, Here, "nudge" means moving a small distance. */
 "location_detail.map.edit.accessibility_label" = "Nudge Marker";
@@ -985,7 +985,7 @@
 "location_detail.add_waypoint.new.hint" = "Double tap to add this marker to your route.";
 
 /* Accessibility hint for markers in a list that can be created abd added to a list */
-"location_detail.add_waypoint.marker.hint" = "Double tap to create a marker and add it as a waypoint";
+"location_detail.add_waypoint.marker.hint" = "Double tap to create a marker and add it as a waypoint.";
 
 //------------------------------------------------------------------------------
 // MARK: - Route Detail
@@ -1007,34 +1007,34 @@
 "route_detail.action.edit" = "Edit Route";
 
 /* Voiceover hint for the action to start the route */
-"route_detail.action.start_route.hint" = "Double tap to start this route";
+"route_detail.action.start_route.hint" = "Double tap to start this route.";
 
 /* Voiceover hint for the action to start the route when the action is disabled. This action is only disabled when no waypoints have been added to a route yet. */
-"route_detail.action.start_route.disabled.hint" = "Add waypoints before starting the route";
+"route_detail.action.start_route.disabled.hint" = "Add waypoints before starting the route.";
 
 /* Voiceover hint for the action to stop the route */
-"route_detail.action.stop_route.hint" = "Double tap to stop this route";
+"route_detail.action.stop_route.hint" = "Double tap to stop this route.";
 
 /* Voiceover hint for the action to start the recreational activity. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
-"route_detail.action.start_event.hint" = "Double tap to start this activity";
+"route_detail.action.start_event.hint" = "Double tap to start this activity.";
 
 /* Voiceover hint for the action to pause the recreational activity. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
-"route_detail.action.stop_event.hint" = "Double tap to stop this activity and save your progress";
+"route_detail.action.stop_event.hint" = "Double tap to stop this activity and save your progress.";
 
 /* Voiceover hint for the action to reset the recreational activity so that the user can try it again. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
-"route_detail.action.reset.hint" = "Double tap to reset this activity and download any available updates";
+"route_detail.action.reset.hint" = "Double tap to reset this activity and download any available updates.";
 
 /* Voiceover hint for the action to share */
-"route_detail.action.share.hint" = "Double tap to share this route";
+"route_detail.action.share.hint" = "Double tap to share this route.";
 
 /* Accessibility hint for the edit button on the Route Detail screen */
-"route_detail.action.edit.hint" = "Double tap to edit this route";
+"route_detail.action.edit.hint" = "Double tap to edit this route.";
 
 /* Add button on the Route list screen */
 "route_detail.action.create" = "New Route";
 
 /* VoiceOver hint for the add button on the Route list screen */
-"route_detail.action.create.hint" = "Double tap to create a new route";
+"route_detail.action.create.hint" = "Double tap to create a new route.";
 
 /* Accessbility label for the index of a waypoint in a route and an indication that the audio beacon is currently playing on this waypoint's location, %@ is the index, "Waypoint 2. Current beacon." {NumberedPlaceholder="%@"} */
 "route_detail.waypoint.current_beacon" = "Waypoint %@. Current beacon.";
@@ -1088,13 +1088,13 @@
 "route_detail.action.previous" = "Previous Waypoint";
 
 /* Hint text of the button used to move to the previous waypoint */
-"route_detail.action.previous.hint" = "Double tap to set the beacon on the previous waypoint";
+"route_detail.action.previous.hint" = "Double tap to set the beacon on the previous waypoint.";
 
 /* Title text of the button used to move to the next waypoint */
 "route_detail.action.next" = "Next Waypoint";
 
 /* Hint text of the button used to move to the next waypoint */
-"route_detail.action.next.hint" = "Double tap to set the beacon on the next waypoint";
+"route_detail.action.next.hint" = "Double tap to set the beacon on the next waypoint.";
 
 /* Text displayed in cluster annotations on the map. %@ is the index of the first clustered annotation and the +... indicates that there are additional annotations in that cluster {NumberedPlaceholder="%@"} */
 "waypoint_detail.annotation.cluster.title" = "%@,...";
@@ -1206,7 +1206,7 @@
 "waypoint.callout.button.title" = "Call out waypoint";
 
 /* Voiceover hint to callout the current waypoint */
-"waypoint.callout.button.hint" = "Double tap to hear additional details";
+"waypoint.callout.button.hint" = "Double tap to hear additional details.";
 
 //------------------------------------------------------------------------------
 // MARK: - Recommender
@@ -1359,13 +1359,13 @@
 "routes.sort.by_name" = "Sort by Name";
 
 /* VoiceOver hint for a button that will cause the list of routes to be sorted by their names */
-"routes.sort.by_name.hint" = "Double tap to sort by name";
+"routes.sort.by_name.hint" = "Double tap to sort by name.";
 
 /* Text for a button that will cause the list of routes to be sorted by their distance from the user */
 "routes.sort.by_distance" = "Sort by Distance";
 
 /* VoiceOver hint for a button that will cause the list of routes to be sorted by their distance from the user */
-"routes.sort.by_distance.hint" = "Double tap to sort by distance";
+"routes.sort.by_distance.hint" = "Double tap to sort by distance.";
 
 /* Title of an alert for imporing routes */
 "routes.import.alert.title" = "Route Error";
@@ -1423,7 +1423,7 @@
 "markers.edit_screen.title.edit" = "Edit Marker";
 
 /* Notification, Double tap to save this marker */
-"markers.edit_screen.done_button.acc_hint" = "Double tap to save this marker";
+"markers.edit_screen.done_button.acc_hint" = "Double tap to save this marker.";
 
 /* This is a label that is displayed on the Save Marker screen when the user is saving a new marker and adding it to a route. %@ is the name of the route. Example: "Saving to Route: Home to Grocery Store" (where "Home to Grocery Store" is the name of a route the user created {NumberedPlaceholder="%@"} */
 "markers.edit_screen.route" = "Saving to Route: %@";
@@ -1508,13 +1508,13 @@
 "search.view_markers" = "Markers & Routes";
 
 /* Accessibility hint when the user selects the markers button on the home screen */
-"search.button.markers.accessibility_hint" = "Double tap to select or edit markers you have saved";
+"search.button.markers.accessibility_hint" = "Double tap to select or edit markers you have saved.";
 
 /* Accessibility hint when the user selects the nearby places button on the home screen */
-"search.button.nearby.accessibility_hint" = "Double tap to explore nearby restaurants, transit stops and more";
+"search.button.nearby.accessibility_hint" = "Double tap to explore nearby restaurants, transit stops and more.";
 
 /* Accessibility hint when the user selects the current location button on the home screen */
-"search.button.current_location.accessibility_hint" = "Double tap to preview, mark, or share your current location with a friend";
+"search.button.current_location.accessibility_hint" = "Double tap to preview, mark, or share your current location with a friend.";
 
 /* Search filter alert title */
 "filter.alert_title" = "Filter places by category";
@@ -1526,7 +1526,7 @@
 "filter.clear.capital" = "Clear Filter";
 
 /* Accessibility hint for the "Clear Filter" button */
-"filter.clear.hint" = "Double tap to clear selected filter";
+"filter.clear.hint" = "Double tap to clear selected filter.";
 
 /* Search filter button description */
 "filter.double_tap_places_category" = "Double tap to filter places by category.";
@@ -1557,7 +1557,7 @@
 "filter.selected" = "%@ (selected)";
 
 /* Message displayed when category filters are not available, %@ is a placeholder for the value of the `filter.all` translated string, Quotes written as \" {NumberedPlaceholder="%@"} */
-"filter.not_available" = "Some category filters are not available. You can still browse nearby places by selecting \"%@\"";
+"filter.not_available" = "Some category filters are not available. You can still browse nearby places by selecting \"%@\".";
 
 //------------------------------------------------------------------------------
 // MARK: - Callouts
@@ -1618,7 +1618,7 @@
 "callouts.marked_points" = "Marked Points";
 
 /* Callouts notification, There is nothing to call out right now */
-"callouts.nothing_to_call_out_now" = "There is nothing to call out right now";
+"callouts.nothing_to_call_out_now" = "There is nothing to call out right now.";
 
 /* Callouts Title, Nearby Markers */
 "callouts.nearby_markers" = "Nearby Markers";
@@ -1661,7 +1661,7 @@
 "sleep.sleeping.message" = "Soundscape is currently sleeping. This prevents Soundscape from using Location Services or downloading data. This conserves battery when you are not using Soundscape. Tap the button below to wake up Soundscape.";
 
 /* Sleep Notification, Double tap to put Soundscape to sleep. Putting the app in an idle state for a period of time. {NumberedPlaceholder="Soundscape"} */
-"sleep.sleep.acc_hint" = "Double tap to put Soundscape to sleep";
+"sleep.sleep.acc_hint" = "Double tap to put Soundscape to sleep.";
 
 /* Sleep Button, restore the app from a sleep (idle) state when a user leaves his location. */
 "sleep.wake_up_when_i_leave" = "Wake Up When I Leave";
@@ -2112,31 +2112,31 @@
 "ui.action_button.my_location" = "My\nLocation";
 
 /* Accessibility Notification, Double tap to hear about your current location. */
-"ui.action_button.my_location.acc_hint" = "Double tap to hear about your current location";
+"ui.action_button.my_location.acc_hint" = "Double tap to hear about your current location.";
 
 /* Similar to `callouts.nearby_markers`. Text that is shown in a small square button. It should be constrained to two lines with up to 8 characters each. Use "\n" to represent a new line character. {NumberedPlaceholder="\n"} */
 "ui.action_button.nearby_markers" = "Nearby\nMarkers";
 
 /* Accessibility Notification, Double tap to hear about nearby places that you have marked */
-"ui.action_button.nearby_markers.acc_hint" = "Double tap to hear about nearby places that you have marked";
+"ui.action_button.nearby_markers.acc_hint" = "Double tap to hear about nearby places that you have marked.";
 
 /* Similar to `help.orient.page_title`. Text that is shown in a small square button. It should be constrained to two lines with up to 8 characters each. Use "\n" to represent a new line character. {NumberedPlaceholder="\n"} */
 "ui.action_button.around_me" = "Around\nMe";
 
 /* Accessibility Notification, Double tap to hear about places in the four quadrants around you */
-"ui.action_button.around_me.acc_hint" = "Double tap to hear about places in the four quadrants around you";
+"ui.action_button.around_me.acc_hint" = "Double tap to hear about places in the four quadrants around you.";
 
 /* Similar to `help.explore.page_title`. Text that is shown in a small square button. It should be constrained to two lines with up to 8 characters each. Use "\n" to represent a new line character. {NumberedPlaceholder="\n"} */
 "ui.action_button.ahead_of_me" = "Ahead\nof Me";
 
 /* Accessibility Notification, Double tap to hear about places in front of you */
-"ui.action_button.ahead_of_me.acc_hint" = "Double tap to hear about places in front of you";
+"ui.action_button.ahead_of_me.acc_hint" = "Double tap to hear about places in front of you.";
 
 /* Title, Menu */
 "ui.menu" = "Menu";
 
 /* VoiceOver hint for the menu button */
-"ui.menu.hint" = "Double tap to open the menu";
+"ui.menu.hint" = "Double tap to open the menu.";
 
 /* Button title, Close Menu */
 "ui.menu.close" = "Close Menu";
@@ -2204,7 +2204,7 @@
 "poi_cell.accessibility_label.suggested_search" = "Suggested search: %@";
 
 /* Accessibility hint for a search result that is a suggested search query, %@ suggested search query, "Double tap to search for: <Some Search String>" {NumberedPlaceholder="%@"} */
-"poi_cell.accessibility_hint.suggested_search" = "Double tap to search for: %@";
+"poi_cell.accessibility_hint.suggested_search" = "Double tap to search for: %@.";
 
 /* Header for recent callouts section */
 "poi_screen.header.recent.callouts" = "Recent Callouts";
@@ -2296,7 +2296,7 @@
 "devices.connect_headset.completed.test" = "Check Your Headphones";
 
 /* VoiceOver hint for the button that allows users to test their newly connected headset, %@ is the type of headset, "Double tap to check your AirPods Pro". {NumberedPlaceholder="%@"} */
-"devices.connect_headset.completed.test.hint" = "Double tap to check your %@";
+"devices.connect_headset.completed.test.hint" = "Double tap to check your %@.";
 
 /* Title of the Check Headset screen */
 "devices.test_headset.title" = "Headphones Check";
@@ -2573,7 +2573,7 @@
 "tutorial.markers.your_marker" = "your marker";
 
 /* Tutorial notification, Double tap to mark this location */
-"tutorial.markers.mark_location.acc_hint" = "Double tap to mark this location";
+"tutorial.markers.mark_location.acc_hint" = "Double tap to mark this location.";
 
 //------------------------------------------------------------------------------
 // MARK: Tutorials (Markers Texts)
@@ -2611,7 +2611,7 @@
 "tutorial.beacon.your_destination" = "your destination";
 
 /* Tutorial notification, Double tap to use location selected for the beacon tutorial */
-"tutorial.beacon.mark_location.acc_hint" = "Double tap to use this location for the beacon tutorial";
+"tutorial.beacon.mark_location.acc_hint" = "Double tap to use this location for the beacon tutorial.";
 
 /* Tutorial notification, %@ is a location, "You selected <Starbucks> as the location for the beacon." {NumberedPlaceholder="%@"} */
 "tutorial.beacon.poi_selected" = "You selected %@ as the location for the beacon.";
@@ -2739,7 +2739,7 @@
 "help.offline.limitations_heading" = "Limitations";
 
 /* Help Limitations Description, Offline */
-"help.offline.limitations_description" = "Callouts will continue to work if you are in an area that you have walked by before and that has been stored in your callout history. Similarly, you can place an audio beacon or create a marker on places that have been stored in your callout history";
+"help.offline.limitations_description" = "Callouts will continue to work if you are in an area that you have walked by before and that has been stored in your callout history. Similarly, you can place an audio beacon or create a marker on places that have been stored in your callout history.";
 
 /* Help Troubleshooting Title, Offline */
 "help.offline.troubleshooting_heading" = "What can you do?";
@@ -2800,10 +2800,10 @@
 "terms_of_use.accept_checkbox.acc_label" = "Accept Terms of Use";
 
 /* Double tap to check the accept terms of use checkbox. Quotes written as \" */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Double tap to check the \"accept the terms of use\" checkbox";
+"terms_of_use.accept_checkbox.on.acc_hint" = "Double tap to check the \"accept the terms of use\" checkbox.";
 
 /* Double tap to uncheck the accept terms of use checkbox. Quotes written as \" */
-"terms_of_use.accept_checkbox.off.acc_hint" = "Double tap to uncheck the \"accept the terms of use\" checkbox";
+"terms_of_use.accept_checkbox.off.acc_hint" = "Double tap to uncheck the \"accept the terms of use\" checkbox.";
 
 /* Terms of use accept checkbox has been checked */
 "terms_of_use.accept_checkbox.on.acc_value" = "Checked";
@@ -2818,14 +2818,14 @@
 "terms_of_use.accept.new_features" = "Accept";
 
 /* Accessibility hint for the accept button that will be displayed as a new feature annoucement to existing users */
-"terms_of_use.accept.new_features.accessibility_hint" = "Double tap to accept and close annoucements";
+"terms_of_use.accept.new_features.accessibility_hint" = "Double tap to accept and close announcements.";
 
 //------------------------------------------------------------------------------
 // MARK: - First Launch
 //------------------------------------------------------------------------------
 
 /* Button title accessibility hint. Quotes written as \" */
-"first_launch.get_started_button.off.acc_hint" = "You must check the \"accept the terms of use\" checkbox before you can press this button";
+"first_launch.get_started_button.off.acc_hint" = "You must check the \"accept the terms of use\" checkbox before you can press this button.";
 
 /* Notification, Welcome message */
 "first_launch.welcome_text" = "Welcome! Before we get started, we need to go through some setup and ask for several permissions. Press the Next button to start.";
@@ -2912,7 +2912,7 @@
 "first_launch.callouts.listen.accessibility_label" = "Listen";
 
 /* Accessibility hint for button that plays example callouts {NumberedPlaceholder="Soundscape"} */
-"first_launch.callouts.listen.accessibility_hint" = "Double tap to listen to an example of what Soundscape might call out on your next walk";
+"first_launch.callouts.listen.accessibility_hint" = "Double tap to listen to an example of what Soundscape might call out on your next walk.";
 
 /* Example callout for a coffee shop / cafe */
 "first_launch.callouts.example.1" = "Cafe";
@@ -2936,7 +2936,7 @@
 "first_launch.permissions.motion" = "Motion & Fitness";
 
 /* Text to indicate that a permission is required */
-"first_launch.permissions.required" = "This permission is required";
+"first_launch.permissions.required" = "This permission is required.";
 
 /* Title text for screen to choose an audio beacon */
 "first_launch.beacon.title" = "Choose an Audio Beacon";
@@ -3084,7 +3084,7 @@
 "help.text.creating_markers.content.1" = "You can create markers in three ways: searching for the place you would like to save using the search bar, finding somewhere using the \"Places Nearby\" button, or using the \"Current Location\" button, all of which can be found on the Soundscape home screen. Once you have found the place you would like, selecting it will take you to the \"Location Details\" page. On this page, select the button called \"Save as Marker\".";
 
 /* Notification, Creating Markers help content continued, Quotation marks are written as \" */
-"help.text.creating_markers.content.2" = "You will now have the option to customize this marker. This step is optional. If you want to, you can change the name of the marker and also add an annotation that will be called out along with the marker to provide some extra information. Once you are done, select the \"Done\" button to save your Marker. ";
+"help.text.creating_markers.content.2" = "You will now have the option to customize this marker. This step is optional. If you want to, you can change the name of the marker and also add an annotation that will be called out along with the marker to provide some extra information. Once you are done, select the \"Done\" button to save your Marker.";
 
 /* Notification, Customizing Markers help content. "Markers & Routes" should be translated the same as the string with key 'search.view_markers'. Quotes written as \" */
 "help.text.customizing_markers.content.1" = "If you want to rename a marker you previously created, or add an annotation to it, then you can do so by selecting the marker from the \"Markers\" tab of the \"Markers & Routes\" page, then selecting the \"Edit Marker\" button. You can use this to give markers descriptive or useful nicknames, as well as giving them a longer description using the annotation field.";
@@ -3417,7 +3417,7 @@
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
 
 /* Description of the categories in places nearby feature */
-"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc";
+"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc.";
 
 /* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settings app. {NumberedPlaceholder="iOS"} */
 "whats_new.3_2_0.2.description" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
@@ -3486,7 +3486,7 @@
 "faq.beacon_on_home.answer" = "Soundscape supports setting beacons on addresses. To set a beacon on your home, or any other address, from the main screen, tap on the search bar and then type the address. On the \"Location Details\" screen, tap the \"Start Audio Beacon\" button.";
 
 /* A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
-"faq.how_close_to_destination.question" = "When I set a beacon on a destination, how close will Soundscape get me to the destination? ";
+"faq.how_close_to_destination.question" = "When I set a beacon on a destination, how close will Soundscape get me to the destination?";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. {NumberedPlaceholder="Soundscape"} */
 "faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several meters, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by selecting the \"Audio Beacon\" button from the \"Settings\" screen and then moving the \"Enter Vicinity Distance\" slider up or down.";
@@ -3542,7 +3542,7 @@
 "faq.battery_impact.question" = "How does Soundscape impact my iPhone’s battery?";
 
 /* Sleep - To put the app in an idle state for a period of time. Snooze - To put the app in an idle state that is interrupted by user movement. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape","iPhone"} */
-"faq.battery_impact.answer" = "Battery life varies significantly depending on which iPhone you own and how old it is. The biggest drain on your battery is having the screen on, so to maximize the battery life of your phone you should keep the screen locked whenever possible. To help minimize the impact on your iPhone battery Soundscape now has a Sleep Mode and a Snooze Mode. To further reduce the amount of battery you use, when you aren’t using Soundscape, you should force close it via your iPhone’s App Switcher. ";
+"faq.battery_impact.answer" = "Battery life varies significantly depending on which iPhone you own and how old it is. The biggest drain on your battery is having the screen on, so to maximize the battery life of your phone you should keep the screen locked whenever possible. To help minimize the impact on your iPhone battery Soundscape now has a Sleep Mode and a Snooze Mode. To further reduce the amount of battery you use, when you aren’t using Soundscape, you should force close it via your iPhone’s App Switcher.";
 
 /* Sleep - To put the app in an idle state for a period of time. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
 "faq.sleep_mode_battery.question" = "How do I use Sleep Mode to minimize Soundscape’s impact on my phone battery?";
