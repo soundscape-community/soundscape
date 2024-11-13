@@ -66,13 +66,13 @@ class SettingsViewController: BaseTableViewController {
     
     // Section Descriptions
     private static let sectionDescriptions: [Section: String] = [
-        .general: "General settings for the app.",
-        .audio: "Control how audio interacts with other media.",
-        .callouts: "Manage the callouts that help navigate.",
-        .streetPreview: "Settings for including unnamed roads.",
-        .troubleshooting: "Options for troubleshooting the app.",
-        .about: "Information about the app.",
-        .telemetry: "Manage data collection and privacy."
+        .general: GDLocalizedString("settings.section.general"),
+        .audio: GDLocalizedString("settings.audio.media_controls"),
+        .callouts: GDLocalizedString("menu.manage_callouts"),
+        .streetPreview: GDLocalizedString("settings.section.street_preview"),
+        .troubleshooting: GDLocalizedString("settings.section.troubleshooting"),
+        .about: GDLocalizedString("settings.section.about"),
+        .telemetry: GDLocalizedString("settings.section.telemetry")
     ]
 
     // MARK: View Life Cycle
@@ -293,3 +293,4 @@ extension SettingsViewController: LargeBannerContainerView {
         tableView.reloadData()
     }
 }
+
