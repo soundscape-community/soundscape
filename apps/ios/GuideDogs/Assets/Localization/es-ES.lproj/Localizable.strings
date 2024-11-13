@@ -3411,15 +3411,15 @@
 
 
 /*  */
-"first_launch.get_started_button.off.acc_hint" = "Debe marcar la casilla \"aceptar los términos de uso\" antes de poder pulsar este botón.";
+"first_launch.get_started_button.off.acc_hint" = "Debes marcar la casilla \"aceptar los términos de uso\" antes de poder pulsar este botón.";
 
 
 /*  */
-"first_launch.welcome_text" = "¡Bienvenido/-a! Antes de comenzar, tenemos que pasar por algunos ajustes y aceptar varios permisos. Presione el botón Siguiente para iniciar.";
+"first_launch.welcome_text" = "¡Bienvenido/-a! Antes de comenzar, tenemos que pasar por algunos ajustes y aceptar varios permisos. Presiona el botón Siguiente para iniciar.";
 
 
 /*  */
-"first_launch.welcome_audio_text" = "¡Bienvenido/-a! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, intersecciones y lugares cuando te acercas. Pulse el botón Siguiente para comenzar.";
+"first_launch.welcome_audio_text" = "¡Bienvenido/-a! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, intersecciones y lugares cuando te acercas. Pulsa el botón Siguiente para comenzar.";
 
 
 /*  */
@@ -3451,23 +3451,23 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound" = "Iluminando su camino con sonido";
+"first_launch.lighting_way_with_sound" = "Iluminando tu camino con sonido";
 
 
 /*  */
-"first_launch.lighting_way_with_sound.text_alt" = "Soundscape usa sonido 3D para indicarte qué hay a tu alrededor. Por ejemplo, si tu destino está a tu derecha, oirá un sonido procedente de esa dirección, o si hay una cafetería a tu izquierda, oirá un aviso procedente de esa dirección.";
+"first_launch.lighting_way_with_sound.text_alt" = "Soundscape usa sonido 3D para indicarte qué hay a tu alrededor. Por ejemplo, si tu destino está a tu derecha, oirás un sonido procedente de esa dirección, o si hay una cafetería a tu izquierda, oirás un aviso procedente de esa dirección.";
 
 
 /*  */
-"first_launch.heading_somewhere" = "¿Se dirige a algún lugar?";
+"first_launch.heading_somewhere" = "¿Te diriges a algún lugar?";
 
 
 /*  */
-"first_launch.heading_somewhere.text" = "Coloque una señal de audio en el destino y Soundscape le mantendrá informado de su ubicación y su entorno en el trayecto. Use Soundscape junto con sus habilidades de orientación e incluso su aplicación de navegación favorita para encontrar el camino a su destino.";
+"first_launch.heading_somewhere.text" = "Coloca una señal de audio en el destino y Soundscape te mantendrá informado de tu ubicación y tu entorno en el trayecto. Usa Soundscape junto con tus habilidades de orientación e incluso tu aplicación de navegación favorita para encontrar el camino a tu destino.";
 
 
 /*  */
-"first_launch.setting_off_way" = "¿Va a empezar el trayecto?";
+"first_launch.setting_off_way" = "¿Vas a empezar el trayecto?";
 
 
 /*  */
@@ -3475,7 +3475,7 @@
 
 
 /*  */
-"first_launch.find_things_nearby" = "¿Desea encontrar más cosas cerca?";
+"first_launch.find_things_nearby" = "¿Deseas encontrar más cosas cerca?";
 
 
 /*  */
@@ -3491,7 +3491,7 @@
 
 
 /*  */
-"first_launch.welcome.description" = "Navegue con confianza utilizando el audio espacial de Soundscape";
+"first_launch.welcome.description" = "Navega con confianza utilizando el audio espacial de Soundscape";
 
 
 /*  */
@@ -3503,11 +3503,11 @@
 
 
 /*  */
-"first_launch.headphones.message.1" = "Soundscape funciona muy bien con cualquier tipo de auriculares. Si desea usar auriculares, tómelos ahora.";
+"first_launch.headphones.message.1" = "Soundscape funciona muy bien con cualquier tipo de auriculares. Si deseas usar auriculares, tómalos ahora.";
 
 
 /*  */
-"first_launch.headphones.message.2" = "Si no tiene auriculares o prefiere no usarlos, Soundscape seguirá funcionando con los altavoces del teléfono.";
+"first_launch.headphones.message.2" = "Si no tienes auriculares o prefieres no usarlos, Soundscape seguirá funcionando con los altavoces del teléfono.";
 
 
 /*  */
@@ -3567,11 +3567,11 @@
 
 
 /*  */
-"first_launch.beacon.message.1" = "Al navegar con Soundscape, oirá la señal de audio en la dirección de su destino. Siguiendo su sonido, siempre sabrá qué camino tomar.";
+"first_launch.beacon.message.1" = "Al navegar con Soundscape, oirás la señal de audio en la dirección de tu destino. Siguiendo su sonido, siempre sabrás qué camino tomar.";
 
 
 /*  */
-"first_launch.beacon.message.2" = "Escuche las señales de audio disponibles y seleccione su preferencia.";
+"first_launch.beacon.message.2" = "Escucha las señales de audio disponibles y selecciona tu preferencia.";
 
 
 /*  */
