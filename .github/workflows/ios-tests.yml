@@ -19,7 +19,7 @@ jobs:
             - name: setup
               run: |
                 # Find path of latest installed Xcode version
-                xcode_path="$(ls -d /Applications/Xcode*.app | sort -V | tail -n1)"
+                xcode_path="$(ls -d /Applications/Xcode*.app | grep -v -E 'Release_Candidate|Beta' | sort -V | tail -n1)"
                 echo "Xcode path: ${xcode_path}"
                 sudo xcode-select -s "${xcode_path}/Contents/Developer"
                 xcodebuild -version
