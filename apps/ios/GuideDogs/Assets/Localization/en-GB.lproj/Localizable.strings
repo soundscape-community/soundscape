@@ -3301,7 +3301,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape App, you can select the voice you want to use by tapping the \"General Settings\" button on the \"Settings\" screen and then selecting \"Voice\".";
+"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape App, you can select the voice you want to use by tapping \"Settings\" on the main menu and then from \"General Settings\" selecting \"Voice\".";
 
 
 /*  */
@@ -3677,7 +3677,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen within the main menu and then tap \"Manage Callouts\". This section contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
+"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen within the main menu. The \"Manage Callouts\" section of the \"Settings Screen\" contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
 
 
 /*  */
@@ -4197,7 +4197,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several metres, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by selecting the \"Audio Beacon\" button from the \"Settings\" screen and then moving the \"Enter Vicinity Distance\" slider up or down.";
+"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several metres, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by going to \"Audio Beacon\" from the \"Settings\" screen and then moving the \"Enter Vicinity Distance\" slider up or down.";
 
 
 /*  */
