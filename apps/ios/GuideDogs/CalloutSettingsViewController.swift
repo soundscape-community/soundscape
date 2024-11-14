@@ -4,10 +4,10 @@ class CalloutSettingsViewController: UITableViewController {
     
     private enum CalloutsRow: Int, CaseIterable {
         case all = 0
-        case poi = 1
-        case mobility = 2
-        case beacon = 3
-        case shake = 4
+        case poi
+        case mobility
+        case beacon
+        case shake
     }
     
     private static let cellIdentifiers: [CalloutsRow: String] = [
@@ -30,11 +30,9 @@ class CalloutSettingsViewController: UITableViewController {
         self.title = GDLocalizedString("menu.manage_callouts")
         
         // Register the cells
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "allCallouts")
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "poiCallouts")
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "mobilityCallouts")
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "beaconCallouts")
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "shakeCallouts")
+        for identifier in CalloutSettingsViewController.cellIdentifiers.values {
+            self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
+        }
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -42,7 +40,7 @@ class CalloutSettingsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return CalloutsRow.allCases.count
+        return automaticCalloutsEnabled ? CalloutsRow.allCases.count : 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -54,42 +52,28 @@ class CalloutSettingsViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         cell.selectionStyle = .none
         
+        // Configure the cell based on the row type
+        let switchView = UISwitch(frame: .zero)
+        switchView.addTarget(self, action: #selector(toggleCalloutSetting(_:)), for: .valueChanged)
+        switchView.tag = rowType.rawValue
+        cell.accessoryView = switchView
+        
         switch rowType {
         case .all:
-            cell.textLabel?.text = GDLocalizedString("menu.manage_callouts.all")
-            let switchView = UISwitch(frame: .zero)
+            cell.textLabel?.text = GDLocalizedString("Allow Callouts")
             switchView.setOn(automaticCalloutsEnabled, animated: true)
-            switchView.tag = CalloutsRow.all.rawValue
-            switchView.addTarget(self, action: #selector(toggleCalloutSetting(_:)), for: .valueChanged)
-            cell.accessoryView = switchView
         case .poi:
-            cell.textLabel?.text = GDLocalizedString("menu.manage_callouts.poi")
-            let switchView = UISwitch(frame: .zero)
+            cell.textLabel?.text = GDLocalizedString("Places and Landmarks")
             switchView.setOn(poiCalloutsEnabled, animated: true)
-            switchView.tag = CalloutsRow.poi.rawValue
-            switchView.addTarget(self, action: #selector(toggleCalloutSetting(_:)), for: .valueChanged)
-            cell.accessoryView = switchView
         case .mobility:
-            cell.textLabel?.text = GDLocalizedString("menu.manage_callouts.mobility")
-            let switchView = UISwitch(frame: .zero)
+            cell.textLabel?.text = GDLocalizedString("Mobility")
             switchView.setOn(mobilityCalloutsEnabled, animated: true)
-            switchView.tag = CalloutsRow.mobility.rawValue
-            switchView.addTarget(self, action: #selector(toggleCalloutSetting(_:)), for: .valueChanged)
-            cell.accessoryView = switchView
         case .beacon:
-            cell.textLabel?.text = GDLocalizedString("menu.manage_callouts.beacon")
-            let switchView = UISwitch(frame: .zero)
+            cell.textLabel?.text = GDLocalizedString("Distance to the Audio Beacon")
             switchView.setOn(beaconCalloutsEnabled, animated: true)
-            switchView.tag = CalloutsRow.beacon.rawValue
-            switchView.addTarget(self, action: #selector(toggleCalloutSetting(_:)), for: .valueChanged)
-            cell.accessoryView = switchView
         case .shake:
-            cell.textLabel?.text = GDLocalizedString("menu.manage_callouts.shake")
-            let switchView = UISwitch(frame: .zero)
+            cell.textLabel?.text = GDLocalizedString("Repeat Callouts")
             switchView.setOn(shakeCalloutsEnabled, animated: true)
-            switchView.tag = CalloutsRow.shake.rawValue
-            switchView.addTarget(self, action: #selector(toggleCalloutSetting(_:)), for: .valueChanged)
-            cell.accessoryView = switchView
         }
         
         return cell
@@ -101,6 +85,7 @@ class CalloutSettingsViewController: UITableViewController {
         case .all:
             automaticCalloutsEnabled = sender.isOn
             SettingsContext.shared.automaticCalloutsEnabled = sender.isOn
+            tableView.reloadData()  // Refresh the table to show/hide rows based on the "all" toggle
         case .poi:
             poiCalloutsEnabled = sender.isOn
         case .mobility:
@@ -111,11 +96,6 @@ class CalloutSettingsViewController: UITableViewController {
             shakeCalloutsEnabled = sender.isOn
         case .none:
             break
-        }
-        
-        // Update table view based on automatic callouts state
-        if sender.tag == CalloutsRow.all.rawValue {
-            tableView.reloadData()
         }
     }
 }

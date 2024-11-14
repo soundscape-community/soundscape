@@ -46,9 +46,10 @@ class GeneralSettingsViewController: UITableViewController {
             case .languageAndRegion, .voice, .beaconSettings, .manageDevices, .siriShortcuts:
                 cell.accessoryType = .disclosureIndicator // These would open additional settings screens
             case .volumeSettings:
-                // Example: Adding a slider for volume control
+                // Example: Adding a slider for volume control directly in the cell
                 let volumeSlider = UISlider()
                 volumeSlider.value = 0.5 // Default value; adjust based on saved settings
+                volumeSlider.addTarget(self, action: #selector(volumeSliderChanged(_:)), for: .valueChanged)
                 cell.accessoryView = volumeSlider
             }
         }
@@ -63,25 +64,60 @@ class GeneralSettingsViewController: UITableViewController {
         if let rowType = GeneralRow(rawValue: indexPath.row) {
             switch rowType {
             case .languageAndRegion:
-                // Navigate to Language & Region settings screen
-                print("Open Language & Region settings")
+                openLanguageAndRegionSettings()
             case .voice:
-                // Navigate to Voice settings screen
-                print("Open Voice settings")
+                openVoiceSettings()
             case .beaconSettings:
-                // Navigate to Beacon Settings screen
-                print("Open Beacon Settings")
+                openBeaconSettings()
             case .manageDevices:
-                // Navigate to Manage Devices settings screen
-                print("Open Manage Devices settings")
+                openManageDevicesSettings()
             case .siriShortcuts:
-                // Navigate to Siri Shortcuts settings screen
-                print("Open Siri Shortcuts settings")
+                openSiriShortcutsSettings()
             case .volumeSettings:
                 // Volume setting already has a slider; no further action required here
                 break
             }
         }
+    }
+
+    // Helper methods for each setting action
+    private func openLanguageAndRegionSettings() {
+        // Logic to load or modify Language & Region settings.
+        showActionAlert(title: "Language & Region", message: "This opens Language & Region settings.")
+    }
+
+    private func openVoiceSettings() {
+        // Logic to load or modify Voice settings.
+        showActionAlert(title: "Voice", message: "This opens Voice settings.")
+    }
+
+    private func openBeaconSettings() {
+        // Logic to load or modify Beacon settings.
+        showActionAlert(title: "Beacon Settings", message: "This opens Beacon Settings.")
+    }
+
+    private func openManageDevicesSettings() {
+        // Logic to load or modify Manage Devices settings.
+        showActionAlert(title: "Manage Devices", message: "This opens Manage Devices settings.")
+    }
+
+    private func openSiriShortcutsSettings() {
+        // Logic to load or modify Siri Shortcuts settings.
+        showActionAlert(title: "Siri Shortcuts", message: "This opens Siri Shortcuts settings.")
+    }
+
+    // Volume slider action
+    @objc private func volumeSliderChanged(_ sender: UISlider) {
+        let volume = sender.value
+        // Logic to save or update volume settings in SettingsContext or similar
+        print("Volume changed to: \(volume)")
+    }
+
+    // Helper method to show action alerts as placeholders
+    private func showActionAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
 }
 
