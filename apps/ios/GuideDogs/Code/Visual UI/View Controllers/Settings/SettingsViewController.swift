@@ -6,6 +6,114 @@
 //  Licensed under the MIT License.
 //
 
+//
+//  SettingsViewController.swift
+//  Soundscape
+//
+import UIKit
+import AppCenterAnalytics
+
+class SettingsViewController: BaseTableViewController {
+
+    @IBOutlet weak var largeBannerContainerView: UIView! // IBOutlet for the banner container view
+
+    private enum Section: Int, CaseIterable {
+        case general = 0
+        case audio
+        case callouts
+        case streetPreview
+        case troubleshooting
+        case about
+        case telemetry
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.title = GDLocalizedString("settings.screen_title")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
+        
+        GDLogActionInfo("Opened 'Settings'")
+        GDATelemetry.trackScreenView("settings")
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return Section.allCases.count
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1 // Each section has one row to navigate to its own view controller
+    }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath)
+        cell.accessoryType = .disclosureIndicator // Show an arrow to indicate navigation
+
+        switch Section(rawValue: indexPath.section) {
+        case .general:
+            cell.textLabel?.text = GDLocalizedString("settings.section.general")
+        case .audio:
+            cell.textLabel?.text = GDLocalizedString("settings.audio.media_controls")
+        case .callouts:
+            cell.textLabel?.text = GDLocalizedString("menu.manage_callouts")
+        case .streetPreview:
+            cell.textLabel?.text = GDLocalizedString("settings.section.street_preview")
+        case .troubleshooting:
+            cell.textLabel?.text = GDLocalizedString("settings.section.troubleshooting")
+        case .about:
+            cell.textLabel?.text = GDLocalizedString("settings.section.about")
+        case .telemetry:
+            cell.textLabel?.text = GDLocalizedString("settings.section.telemetry")
+        default:
+            cell.textLabel?.text = ""
+        }
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let section = Section(rawValue: indexPath.section)
+        let viewController: UIViewController
+        
+        switch section {
+        case .general:
+            viewController = GeneralSettingsViewController()
+        case .audio:
+            viewController = AudioSettingsViewController()
+        case .callouts:
+            viewController = CalloutSettingsViewController()
+        case .streetPreview:
+            viewController = StreetPreviewViewController()
+        case .troubleshooting:
+            viewController = TroubleshootingViewController()
+        case .about:
+            viewController = AboutSettingsViewController() // Navigates to AboutSettingsViewController
+        case .telemetry:
+            viewController = TelemetrySettingsViewController()
+        default:
+            return
+        }
+        
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch Section(rawValue: section) {
+        case .general: return GDLocalizedString("settings.section.general")
+        case .audio: return GDLocalizedString("settings.audio.media_controls")
+        case .callouts: return GDLocalizedString("menu.manage_callouts")
+        case .about: return GDLocalizedString("settings.section.about")
+        case .streetPreview: return GDLocalizedString("preview.title")
+        case .troubleshooting: return GDLocalizedString("settings.section.troubleshooting")
+        case .telemetry: return GDLocalizedString("settings.section.telemetry")
+        default: return nil
+        }
+    }
+}
+
+
+/*
 import UIKit
 import AppCenterAnalytics
 
@@ -95,15 +203,19 @@ class SettingsViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let sectionType = Section(rawValue: section) else { return 0 }
         
-        switch sectionType {
-        case .general: return expandedSections.contains(section) ? 6 : 0
-        case .audio: return expandedSections.contains(section) ? 1 : 0
-        case .callouts:
-            return SettingsContext.shared.automaticCalloutsEnabled && expandedSections.contains(section) ? 5 : 0
-        case .streetPreview, .troubleshooting, .about, .telemetry:
-            return expandedSections.contains(section) ? 1 : 0
+        if expandedSections.contains(section) {
+            switch sectionType {
+            case .general: return 6
+            case .audio: return 1
+            case .callouts:
+                return SettingsContext.shared.automaticCalloutsEnabled ? 5 : 0
+            case .streetPreview, .troubleshooting, .about, .telemetry:
+                return 1
+            }
         }
+        return 0
     }
+
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return expandedSections.contains(indexPath.section) ? UITableView.automaticDimension : 0
@@ -220,11 +332,14 @@ class SettingsViewController: BaseTableViewController {
         if expandedSections.contains(section) {
             expandedSections.remove(section)
             tableView.reloadSections(IndexSet(integer: section), with: .automatic)
+            UIAccessibility.post(notification: .announcement, argument: "Section collapsed")
         } else {
             expandedSections.insert(section)
             tableView.reloadSections(IndexSet(integer: section), with: .automatic)
+            UIAccessibility.post(notification: .announcement, argument: "Section expanded")
         }
     }
+
 }
 
 extension SettingsViewController: MixAudioSettingCellDelegate {
@@ -294,3 +409,4 @@ extension SettingsViewController: LargeBannerContainerView {
     }
 }
 
+*/
