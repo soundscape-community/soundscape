@@ -635,7 +635,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.explanation" = "Pulse en este botón para oír sobre el estado de los auriculares que usa con Soundscape.";
+"troubleshooting.check_audio.explanation" = "Pulsa en este botón para oír sobre el estado de los auriculares que usas con Soundscape.";
 
 
 /*  */
@@ -2907,7 +2907,7 @@
 
 
 /*  */
-"behavior.experience.delete.explanation" = "Si elimina esta experiencia, se quitará del teléfono.";
+"behavior.experience.delete.explanation" = "Si eliminas esta experiencia, se quitará del teléfono.";
 
 
 /*  */
@@ -3291,7 +3291,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Soundscape puede usar cualquiera de las voces que has descargado en la aplicación de configuración de iOS, salvo las voces de Siri, que no están disponibles en Soundscape. Te recomendamos que elijas una de las voces \"Mejoradas\" ya que su calidad de voz es mucho mejor. Sin embargo, para usarla primero tendrás que descargar una voz mejorada. Para descargar voces en la aplicación de configuración de iOS tienes que ir a Accesibilidad > Contenido leído > Voces y pulsar en una voz. En la aplicación Soundscape, puedes seleccionar la voz que desees de la forma siguiente: pulsa el botón \"Ajustes Generales\" desde la pantalla \"Ajustes\" y selecciona \"Voz\".";
+"help.config.voices.content" = "Soundscape puede usar cualquiera de las voces que has descargado en la aplicación de configuración de iOS, salvo las voces de Siri, que no están disponibles en Soundscape. Te recomendamos que elijas una de las voces \"Mejoradas\" ya que su calidad de voz es mucho mejor. Sin embargo, para usarla primero tendrás que descargar una voz mejorada. Para descargar voces en la aplicación de configuración de iOS tienes que ir a Accesibilidad > Contenido leído > Voces y pulsar en una voz. En la aplicación Soundscape, puedes seleccionar la voz que desees de la forma siguiente: pulsa \"Ajustes\" desde el menú principal y, a continuación, en \"Ajustes Generales\", selecciona \"Voz\".";
 
 
 /*  */
@@ -3587,7 +3587,7 @@
 
 
 /*  */
-"first_launch.beacon.audio.message" = "La señal sigue el movimiento del teléfono y usa audio espacial para que siempre esté al tanto de su ubicación.";
+"first_launch.beacon.audio.message" = "La señal sigue el movimiento del teléfono y usa audio espacial para que siempre estés al tanto de tu ubicación.";
 
 
 /*  */
@@ -3615,11 +3615,11 @@
 
 
 /*  */
-"first_launch.prompt.title" = "¡Ya está todo listo!";
+"first_launch.prompt.title" = "¡Ya estás preparado!";
 
 
 /*  */
-"first_launch.prompt.message" = "Está listo para su primer paseo con Soundscape. Para probarlo ahora, simplemente elija un destino cercano, inicie la señal de audio y lo escuchará en la dirección de su destino.";
+"first_launch.prompt.message" = "Estás listo para tu primer paseo con Soundscape. Para probarlo ahora, simplemente elige un destino cercano, inicia la señal de audio y lo escucharás en la dirección de tu destino.";
 
 
 /*  */
@@ -3671,7 +3671,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Administrar los avisos que escuchas:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, ve a la pantalla \"Ajustes\" desde el menú principal y luego pulsa \"Administrar Avisos\". Esta sección contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si deseas desactivar todos los avisos, toca el botón \"Permitir Avisos\" en la parte superior de la lista.";
+"help.text.automatic_callouts.how.2" = "<b>Administrar los avisos que escuchas:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, ve a la pantalla \"Ajustes\" desde el menú principal. La sección \"Administrar Avisos\" de la pantalla \"Ajustes\" contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si deseas desactivar todos los avisos, toca el botón \"Permitir Avisos\" en la parte superior de la lista.";
 
 
 /*  */
@@ -4191,7 +4191,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se apaga la señal seleccionando el botón \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Introducir distancia de proximidad\" hacia arriba o hacia abajo.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se apaga la señal yendo a \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Distancia de entrar en la proximidad\" hacia arriba o hacia abajo.";
 
 
 /*  */
@@ -4396,7 +4396,7 @@
 "callouts.shake_callouts" = "Repetir avisos";
 "callouts.shake_callouts.info" = "Agita el dispositivo para repetir el último aviso";
 "mail.dispatch" = "Dispatch";
-"beacon.settings.vicinity" = "Introduzca la distancia de proximidad";
+"beacon.settings.vicinity" = "Distancia de entrar en la proximidad";
 "osm.tag.landmark" = "Marca";
 "osm.tag.pub" = "Pub";
 "osm.tag.coffee_shop" = "Cafetería";
