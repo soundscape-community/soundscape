@@ -635,7 +635,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.explanation" = "Pulsa en este botón para oír sobre el estado de los auriculares que usas con Soundscape.";
+"troubleshooting.check_audio.explanation" = "Pulsa en este botón para conocer el estado de los auriculares que usas con Soundscape.";
 
 
 /*  */
@@ -2907,7 +2907,7 @@
 
 
 /*  */
-"behavior.experience.delete.explanation" = "Si eliminas esta experiencia, se quitará del teléfono.";
+"behavior.experience.delete.explanation" = "Si eliminas esta actividad, se eliminará de tu teléfono.";
 
 
 /*  */
@@ -4191,7 +4191,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se apaga la señal yendo a \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Distancia de entrar en la proximidad\" hacia arriba o hacia abajo.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de su destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de su destino, oirá un último aviso de que su destino está cerca y la baliza se apagará. Puede ajustar cuándo se apaga la baliza yendo a «Señal de audio» en la pantalla «Configuración» y moviendo el control deslizante «Introducir distancia de proximidad» hacia arriba o hacia abajo.";
 
 
 /*  */
@@ -4396,7 +4396,7 @@
 "callouts.shake_callouts" = "Repetir avisos";
 "callouts.shake_callouts.info" = "Agita el dispositivo para repetir el último aviso";
 "mail.dispatch" = "Dispatch";
-"beacon.settings.vicinity" = "Distancia de entrar en la proximidad";
+"beacon.settings.vicinity" = "Introduzca la distancia de proximidad";
 "osm.tag.landmark" = "Marca";
 "osm.tag.pub" = "Pub";
 "osm.tag.coffee_shop" = "Cafetería";
