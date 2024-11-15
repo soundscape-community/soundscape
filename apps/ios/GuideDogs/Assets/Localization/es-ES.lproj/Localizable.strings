@@ -3235,7 +3235,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Intenta ahora alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote donde se encuentra @!destination!!. Inténtalo ahora.";
+"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote dónde se encuentra tu @!destination!! Inténtalo ahora.";
 
 
 /*  */
