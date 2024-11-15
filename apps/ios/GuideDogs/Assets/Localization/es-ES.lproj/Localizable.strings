@@ -1331,7 +1331,7 @@
 
 
 /*  */
-"route_detail.edit.delete.title" = "¿Seguro que desea eliminar esta ruta?";
+"route_detail.edit.delete.title" = "¿Seguro que deseas eliminar esta ruta?";
 
 
 /*  */
@@ -1343,7 +1343,7 @@
 
 
 /*  */
-"route_detail.edit.cancel.message" = "¿Seguro que desea descartar los cambios?";
+"route_detail.edit.cancel.message" = "¿Seguro que deseas descartar los cambios?";
 
 
 /*  */
@@ -1483,11 +1483,11 @@
 
 
 /*  */
-"universal_links.marker.alert.title" = "Ha recibido un marcador: \"%@\"";
+"universal_links.marker.alert.title" = "Has recibido un marcador: \"%@\"";
 
 
 /*  */
-"universal_links.marker.alert.message" = "Solo debe usar marcadores de alguien en quien confíe.";
+"universal_links.marker.alert.message" = "Solo debes usar marcadores de alguien en quien confíes.";
 
 
 /*  */
@@ -1495,7 +1495,7 @@
 
 
 /*  */
-"universal_links.marker_existing.alert.message" = "Ya existe un marcador en esta ubicación. ¿Desea reemplazarlo?";
+"universal_links.marker_existing.alert.message" = "Ya existe un marcador en esta ubicación. ¿Deseas reemplazarlo?";
 
 
 /*  */
@@ -1547,7 +1547,7 @@
 
 
 /*  */
-"url_resource.alert.route.import.title" = "Ha recibido una ruta: \"%@\"";
+"url_resource.alert.route.import.title" = "Has recibido una ruta: \"%@\"";
 
 
 /*  */
@@ -1559,7 +1559,7 @@
 
 
 /*  */
-"url_resource.alert.route.import_existing.message" = "¿Desea reemplazarla? Al sustituir esta ruta también se reemplazarán los marcadores usados en esta ruta.";
+"url_resource.alert.route.import_existing.message" = "¿Deseas reemplazarla? Al sustituir esta ruta también se reemplazarán los marcadores usados en esta ruta.";
 
 
 /*  */
@@ -1635,7 +1635,7 @@
 
 
 /*  */
-"routes.import.alert.message" = "Faltan datos de punto de ruta para una o más de sus rutas. Revise las siguientes rutas y vuelva a agregar puntos de ruta si es necesario.";
+"routes.import.alert.message" = "Faltan datos de punto de ruta para una o más de tus rutas. Revisa las siguientes rutas y vuelve a agregar puntos de ruta si es necesario.";
 
 
 /*  */
@@ -1739,7 +1739,7 @@
 
 
 /*  */
-"markers.destructive_delete_message" = "¿Seguro que desea eliminar este marcador?";
+"markers.destructive_delete_message" = "¿Seguro que deseas eliminar este marcador?";
 
 
 /*  */
@@ -1835,7 +1835,7 @@
 
 
 /*  */
-"filter.double_tap_places_category" = "Pulse dos veces para filtrar lugares por categoría.";
+"filter.double_tap_places_category" = "Pulsa dos veces para filtrar lugares por categoría.";
 
 
 /*  */
@@ -1867,7 +1867,7 @@
 
 
 /*  */
-"filter.not_available" = "Algunos filtros de categoría no están disponibles. Todavía puede buscar lugares cercanos seleccionando \"%@\".";
+"filter.not_available" = "Algunos filtros de categoría no están disponibles. Todavía puedes buscar lugares cercanos seleccionando \"%@\".";
 
 
 /*  */
@@ -2651,7 +2651,7 @@
 
 
 /*  */
-"poi_screen.loading_title.no_places_matching" = "No hay lugares que coincidan con %@. Pruebe un filtro diferente";
+"poi_screen.loading_title.no_places_matching" = "No hay lugares que coincidan con %@. Prueba un filtro diferente";
 
 
 /*  */
@@ -3035,7 +3035,7 @@
 
 
 /*  */
-"icloud.kv_store.quota_violation_alert.message" = "El almacenamiento de iCloud para esta aplicación está completo. Para crear un nuevo marcador, necesitará liberar espacio quitando algunos de sus marcadores existentes.";
+"icloud.kv_store.quota_violation_alert.message" = "El almacenamiento de iCloud para esta aplicación está completo. Para crear un nuevo marcador, necesitarás liberar espacio quitando algunos de tus marcadores existentes.";
 
 
 /*  */
@@ -3175,7 +3175,7 @@
 
 
 /*  */
-"tutorial.beacons.text.IntroPart2" = "Presione el botón \"Iniciar señal de audio\" a continuación para abrir una lista de lugares cercanos. Elija una ubicación en la lista y el tutorial comenzará.";
+"tutorial.beacons.text.IntroPart2" = "Presiona el botón \"Iniciar señal de audio\" a continuación para abrir una lista de lugares cercanos. Elije una ubicación en la lista y el tutorial comenzará.";
 
 
 /*  */
@@ -3235,7 +3235,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Intente ahora alejarse lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándole donde se encuentra @!destination!!. Inténtalo ahora.";
+"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Intenta ahora alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote donde se encuentra @!destination!!. Inténtalo ahora.";
 
 
 /*  */
@@ -4067,7 +4067,7 @@
 
 
 /*  */
-"banner.offline_search.message" = "Soundscape está funcionando sin conexión. Las ubicaciones se limitan a lugares por los que ha caminado antes o que ya ha marcado. Más información";
+"banner.offline_search.message" = "Soundscape está funcionando sin conexión. Las ubicaciones se limitan a lugares por los que has caminado antes o que ya has marcado. Más información";
 
 
 /*  */
