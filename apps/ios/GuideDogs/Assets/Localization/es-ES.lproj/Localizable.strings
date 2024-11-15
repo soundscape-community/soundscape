@@ -3239,7 +3239,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRepeat" = "Aléjase lentamente de la dirección de la señal.";
+"tutorial.beacons.text.BeaconInBoundsRepeat" = "Aléjate lentamente de la dirección de la señal.";
 
 
 /*  */
@@ -3259,7 +3259,7 @@
 
 
 /*  */
-"tutorial.beacons.text.MuteRepeat" = "Pulse dos veces con dos dedos en cualquier lugar de la pantalla";
+"tutorial.beacons.text.MuteRepeat" = "Pulsa dos veces con dos dedos en cualquier lugar de la pantalla";
 
 
 /*  */
@@ -3287,7 +3287,7 @@
 
 
 /*  */
-"settings.help.section.home_screen_buttons" = "Escuchar mi entorno";
+"settings.help.section.home_screen_buttons" = "Botones \"Escuchar mi entorno\"";
 
 
 /*  */
@@ -4095,7 +4095,7 @@
 
 
 /*  */
-"push.local.home.body" = "Solo tiene que elegir un destino cercano e iniciar la señal; la oirá en la dirección de su destino.";
+"push.local.home.body" = "Solo tienes que elegir un destino cercano e iniciar la señal; la oirás en la dirección de tu destino.";
 
 
 /*  */
@@ -4191,7 +4191,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de su destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de su destino, oirá un último aviso de que su destino está cerca y la baliza se apagará. Puede ajustar cuándo se apaga la baliza yendo a «Señal de audio» en la pantalla «Configuración» y moviendo el control deslizante «Introducir distancia de proximidad» hacia arriba o hacia abajo.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que estás cerca de tu destino, oirás un último aviso de que tu destino está cerca y la baliza se apagará. Puedes ajustar cuándo se apaga la baliza yendo a \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Distancia de Silenciar el audio\" hacia arriba o hacia abajo.";
 
 
 /*  */
@@ -4396,7 +4396,7 @@
 "callouts.shake_callouts" = "Repetir avisos";
 "callouts.shake_callouts.info" = "Agita el dispositivo para repetir el último aviso";
 "mail.dispatch" = "Dispatch";
-"beacon.settings.vicinity" = "Introduzca la distancia de proximidad";
+"beacon.settings.vicinity" = "Distancia de silenciar el audio";
 "osm.tag.landmark" = "Marca";
 "osm.tag.pub" = "Pub";
 "osm.tag.coffee_shop" = "Cafetería";
@@ -4413,7 +4413,7 @@
 "osm.tag.green_space" = "zona verde";
 "osm.tag.recreation_area" = "área recreativa";
 "whats_new.1_2_0.0.title" = "Agitar para repetir el último aviso";
-"whats_new.1_2_0.1.title" = "Configuración de la distancia de proximidad de la señal";
+"whats_new.1_2_0.1.title" = "Configuración de la distancia de silenciar la señal";
 "whats_new.1_2_0.2.title" = "Categorías en lugares próximos";
 "whats_new.1_2_0.2.description" = "Ahora puedes filtrar la lista de lugares cercanos por categorías como transporte público, comida y bebida, etc.";
 "osm.tag.bar" = "Bar";
