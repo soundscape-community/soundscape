@@ -578,7 +578,7 @@
 "beacon.settings_title" = "Beacon Settings";
 
 /*  */
-"beacon.settings.vicinity" = "Enter Vicinity Distance";
+"beacon.settings.vicinity" = "Audio Mute Distance";
 
 /*  */
 "beacon.settings.style" = "Audio Styles";
@@ -3297,7 +3297,7 @@
 
 
 /*  */
-"settings.help.section.home_screen_buttons" = "Hear My Surroundings";
+"settings.help.section.home_screen_buttons" = "\"Hear My Surroundings\" Buttons";
 
 
 /*  */
@@ -4197,7 +4197,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several metres, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by going to \"Audio Beacon\" from the \"Settings\" screen and then moving the \"Enter Vicinity Distance\" slider up or down.";
+"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several metres, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by going to \"Audio Beacon\" from the \"Settings\" screen and then moving the \"Audio Mute Distance\" slider up or down.";
 
 
 /*  */
@@ -4409,7 +4409,7 @@
 "osm.tag.coffee_shop" = "Coffee Shop";
 "whats_new.1_2_0.0.title" = "Shake to Repeat the Last Callout";
 "whats_new.1_2_0.0.description" = "You can now shake your device to repeat the last callout. To enable this feature, switch on the 'Repeat Callouts' toggle in settings.";
-"whats_new.1_2_0.1.title" = "Beacon Vicinity Distance Setting";
+"whats_new.1_2_0.1.title" = "Beacon Mute Distance Setting";
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
 "whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc.";
 "settings.about.title.copyright" = "Copyright Notices";
