@@ -404,6 +404,17 @@
 /* Language display name. %1$@ is a language name, %2$@ is the country name. e.g. "English (United Kingdom)" {NumberedPlaceholder="%1$@", "%2$@"} */
 "settings.language.language_name" = "%1$@ (%2$@)";
 
+"menu.manage_callouts.all" = "Allow Callouts";
+
+"menu.manage_callouts.poi" = "Places and Landmarks";
+
+"menu.manage_callouts.mobility" = "Mobility";
+
+"menu.manage_callouts.beacon" = "Distance to the Audio Beacon";
+
+"menu.manage_callouts.shake" = "Repeat Callouts";
+
+
 //------------------------------------------------------------------------------
 // MARK: Settings (Sections)
 //------------------------------------------------------------------------------
@@ -428,6 +439,7 @@
 
 /* Settings title, Manage data collection and privacy */
 "settings.section.telemetry" = "Manage data collection and privacy.";
+
 
 
 //------------------------------------------------------------------------------
