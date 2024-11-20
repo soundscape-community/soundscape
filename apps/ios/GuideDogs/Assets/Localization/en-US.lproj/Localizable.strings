@@ -513,7 +513,7 @@
 
 
 /* Title of a section in the beacon settings page where the user can select the distance threshold when a beacon automatically stops playing. */
-"beacon.settings.vicinity" = "Enter Vicinity Distance";
+"beacon.settings.vicinity" = "Audio Mute Distance";
 
 /* Title of a section in the beacon settings page where the user can select a style for their beacon. The various styles mainly differ in the sounds that are played for the beacon, though there are two styles that include some haptics as well. */
 "beacon.settings.style" = "Audio Styles";
@@ -2724,10 +2724,10 @@
 "help.offline.section_title" = "Using Soundscape Offline";
 
 /* Help section title */
-"settings.help.section.home_screen_buttons" = "Hear My Surroundings";
+"settings.help.section.home_screen_buttons" = "\"Hear My Surroundings\" Buttons";
 
 /* Help content describing how user can choose a voice and download additional voices */
-"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape App, you can select the voice you want to use by tapping the \"General Settings\" button on the \"Settings\" screen and then selecting \"Voice\".";
+"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape App, you can select the voice you want to use by tapping \"Settings\" on the main menu and then from \"General Settings\" selecting \"Voice\".";
 
 /* Help Page Title, Offline */
 "help.offline.page_title" = "Why is Soundscape working offline?";
@@ -3024,7 +3024,7 @@
 "help.text.automatic_callouts.how.1" = "<b>Turning callouts on or off</b>:<br/> Turning callouts off will silence the app. Callouts can be turned on or off in the \"Manage Callouts\" section of the \"Settings\" screen where you can tap the \"Allow Callouts\" toggle to turn them on or off. You can also turn callouts on or off by using the \"skip forward\" command (double tap and hold) if your headphones have media control buttons. Alternatively, you can use the \"Sleep\" button in the upper right-hand corner of the home screen to stop Soundscape from making callouts until you wake it up.";
 
 /* Notification, Information how to turn on callouts continued. Ensure that "Manage Callouts" is translated the same as `menu.manage_callouts` and "Allow callouts" is translated the same as `callouts.allow_callouts`. Quotes written as \" {NumberedPlaceholder="<b>","</b>","<br/>"} */
-"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen within the main menu and then tap \"Manage Callouts\". This section contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
+"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen within the main menu. The \"Manage Callouts\" section of the \"Settings Screen\" contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
 
 /* Notification, Information about what My Location does. Ensure that "My Location" is translated the same as `directions.my_location`. Quotes written as \" {NumberedPlaceholder="<em>","</em>"} */
 "help.text.my_location.what" = "The <em>\"My Location\"</em> button quickly gives you information that helps you figure out where you currently are. <em>\"My Location\"</em> tells you about your current location including things like the direction you are facing, where nearby roads or intersections are, and where nearby points of interest are.";
@@ -3408,7 +3408,7 @@
 "whats_new.1_2_0.0.description" = "You can now shake your device to repeat the last callout. To enable this feature, switch on the 'Repeat Callouts' toggle in settings.";
 
 /* Title of the beacon vicinity distance feature */
-"whats_new.1_2_0.1.title" = "Beacon Vicinity Distance Setting";
+"whats_new.1_2_0.1.title" = "Beacon Mute Distance Setting";
 
 /* Description of the beacon vicinity distance feature */
 "whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. You can adjust this setting in Audio Beacon settings.\n\nWe would particularly welcome feedback on your experience with setting different distances (0, 5, and 10 metres), for the Audio Beacon to switch off. In our internal testing we are seeing some inconsistencies in behaviour and are keen to get feedback from a wider base of users.";
@@ -3489,7 +3489,7 @@
 "faq.how_close_to_destination.question" = "When I set a beacon on a destination, how close will Soundscape get me to the destination?";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. {NumberedPlaceholder="Soundscape"} */
-"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several meters, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by selecting the \"Audio Beacon\" button from the \"Settings\" screen and then moving the \"Enter Vicinity Distance\" slider up or down.";
+"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several meters, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by going to \"Audio Beacon\" from the \"Settings\" screen and then moving the \"Audio Mute Distance\" slider up or down.";
 
 /* A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. */
 "faq.turn_beacon_back_on.question" = "Can I turn the beacon back on when I am close to my destination?";
