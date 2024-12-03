@@ -1,16 +1,9 @@
-//
 //  SettingsViewController.swift
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
 //
-
-//
-//  SettingsViewController.swift
-//  Soundscape
-//
-
 
 import UIKit
 import AppCenterAnalytics
@@ -20,11 +13,12 @@ class SettingsViewController: BaseTableViewController {
     private enum Section: Int, CaseIterable {
         case general = 0
         case audio = 1
-        case callouts = 2
-        case streetPreview = 3
-        case troubleshooting = 4
-        case about = 5
-        case telemetry = 6
+        case beacon = 2 // New Beacon section
+        case callouts = 3
+        case streetPreview = 4
+        case troubleshooting = 5
+        case about = 6
+        case telemetry = 7
     }
     
     private enum CalloutsRow: Int, CaseIterable {
@@ -38,12 +32,13 @@ class SettingsViewController: BaseTableViewController {
     private static let cellIdentifiers: [IndexPath: String] = [
         IndexPath(row: 0, section: Section.general.rawValue): "languageAndRegion",
         IndexPath(row: 1, section: Section.general.rawValue): "voice",
-        IndexPath(row: 2, section: Section.general.rawValue): "beaconSettings",
-        IndexPath(row: 3, section: Section.general.rawValue): "volumeSettings",
-        IndexPath(row: 4, section: Section.general.rawValue): "manageDevices",
-        IndexPath(row: 5, section: Section.general.rawValue): "siriShortcuts",
+        IndexPath(row: 2, section: Section.general.rawValue): "volumeSettings",
+        IndexPath(row: 3, section: Section.general.rawValue): "manageDevices",
+        IndexPath(row: 4, section: Section.general.rawValue): "siriShortcuts",
 
         IndexPath(row: 0, section: Section.audio.rawValue): "mixAudio",
+
+        IndexPath(row: 0, section: Section.beacon.rawValue): "beaconSettings", // Added for beacon section
 
         IndexPath(row: CalloutsRow.all.rawValue, section: Section.callouts.rawValue): "allCallouts",
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue): "poiCallouts",
@@ -72,13 +67,14 @@ class SettingsViewController: BaseTableViewController {
     
     // Section Descriptions
     private static let sectionDescriptions: [Section: String] = [
-        .general: GDLocalizedString("settings.section.general"),
-        .audio: GDLocalizedString("settings.audio.media_controls"),
-        .callouts: GDLocalizedString("menu.manage_callouts"),
-        .streetPreview: GDLocalizedString("settings.section.street_preview"),
-        .troubleshooting: GDLocalizedString("settings.section.troubleshooting"),
-        .about: GDLocalizedString("settings.section.about"),
-        .telemetry: GDLocalizedString("settings.section.telemetry")
+        .general: "General settings for the app.",
+        .audio: "Control how audio interacts with other media.",
+        .beacon: "Settings for beacon management.", // Description for beacon section
+        .callouts: "Manage the callouts that help navigate.",
+        .streetPreview: "Settings for including unnamed roads.",
+        .troubleshooting: "Options for troubleshooting the app.",
+        .about: "Information about the app.",
+        .telemetry: "Manage data collection and privacy."
     ]
 
     // MARK: View Life Cycle
@@ -91,7 +87,7 @@ class SettingsViewController: BaseTableViewController {
         GDATelemetry.trackScreenView("settings")
 
         self.title = GDLocalizedString("settings.screen_title")
-        expandedSections = []
+        expandedSections = [] // Initialize or reset expanded sections
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -101,17 +97,15 @@ class SettingsViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let sectionType = Section(rawValue: section) else { return 0 }
         
-        if expandedSections.contains(section) {
-            switch sectionType {
-            case .general: return 6
-            case .audio: return 1
-            case .callouts:
-                return SettingsContext.shared.automaticCalloutsEnabled ? 5 : 0
-            case .streetPreview, .troubleshooting, .about, .telemetry:
-                return 1
-            }
+        switch sectionType {
+        case .general: return expandedSections.contains(section) ? 5 : 0
+        case .audio: return expandedSections.contains(section) ? 1 : 0
+        case .beacon: return expandedSections.contains(section) ? 1 : 0 // Logic for beacon section
+        case .callouts:
+            return SettingsContext.shared.automaticCalloutsEnabled && expandedSections.contains(section) ? 5 : 0
+        case .streetPreview, .troubleshooting, .about, .telemetry:
+            return expandedSections.contains(section) ? 1 : 0
         }
-        return 0
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -120,7 +114,7 @@ class SettingsViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard expandedSections.contains(indexPath.section) else {
-            return UITableViewCell()
+            return UITableViewCell() // Return an empty cell if the section is not expanded
         }
         
         let identifier = SettingsViewController.cellIdentifiers[indexPath]
@@ -145,7 +139,7 @@ class SettingsViewController: BaseTableViewController {
         if let rowType = CalloutsRow(rawValue: indexPath.row) {
             switch rowType {
             case .all:
-                cell.type = .all
+                cell.type = .all // Ensure this matches with your CalloutSettingCellType
             case .poi:
                 cell.type = .poi
             case .mobility:
@@ -158,13 +152,13 @@ class SettingsViewController: BaseTableViewController {
         }
     }
 
-    
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let sectionType = Section(rawValue: section) else { return nil }
 
         switch sectionType {
         case .general: return GDLocalizedString("settings.section.general")
         case .audio: return GDLocalizedString("settings.audio.media_controls")
+        case .beacon: return GDLocalizedString("Beacon") // Title for beacon section
         case .callouts: return GDLocalizedString("menu.manage_callouts")
         case .about: return GDLocalizedString("settings.section.about")
         case .streetPreview: return GDLocalizedString("preview.title")
@@ -176,7 +170,6 @@ class SettingsViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         guard let sectionType = Section(rawValue: section) else { return nil }
 
-        
         if expandedSections.contains(section) {
             return SettingsViewController.sectionDescriptions[sectionType]
         }
@@ -194,24 +187,13 @@ class SettingsViewController: BaseTableViewController {
         header.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleHeaderTap(_:))))
         header.tag = section
 
-        
         header.textLabel?.textColor = .white
         header.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-
-       
         header.contentView.backgroundColor = UIColor(named: "HeaderBackgroundColor")
-        header.layer.borderColor = UIColor.clear.cgColor
-        header.layer.borderWidth = 0.0
-        header.layer.cornerRadius = 8.0
-        header.layer.masksToBounds = true
         
-        header.contentView.layoutMargins = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
-        
-        // ">" icon
         let chevronImageView = UIImageView(image: UIImage(systemName: "chevron.right"))
         chevronImageView.tintColor = .white
         chevronImageView.translatesAutoresizingMaskIntoConstraints = false
-        
         header.contentView.addSubview(chevronImageView)
 
         NSLayoutConstraint.activate([
@@ -223,32 +205,29 @@ class SettingsViewController: BaseTableViewController {
     }
 
     @objc private func handleHeaderTap(_ gesture: UITapGestureRecognizer) {
-        guard let header = gesture.view as? UITableViewHeaderFooterView else { return }
-        let section = header.tag
-        
-        if section == Section.general.rawValue {
-            // Navigate to GeneralSettingsViewController
-            let generalSettingsVC = GeneralSettingsViewController()
-            self.navigationController?.pushViewController(generalSettingsVC, animated: true)
-        } else if section == Section.callouts.rawValue {
-            // Navigate to CalloutsSettingsViewController
-            let calloutsSettingsVC = CalloutSettingsViewController()
-            self.navigationController?.pushViewController(calloutsSettingsVC, animated: true)
-        } else {
-            // Toggle expand/collapse for other sections
-            tableView.beginUpdates()
-            if expandedSections.contains(section) {
-                expandedSections.remove(section)
-                tableView.reloadSections(IndexSet(integer: section), with: .automatic)
-                UIAccessibility.post(notification: .announcement, argument: "Section collapsed")
+            guard let header = gesture.view as? UITableViewHeaderFooterView else { return }
+            let section = header.tag
+
+            if section == Section.callouts.rawValue {
+                // Navigate to CalloutsSettingsViewController
+                let calloutsSettingsVC = CalloutSettingsViewController()
+                self.navigationController?.pushViewController(calloutsSettingsVC, animated: true)
             } else {
-                expandedSections.insert(section)
-                tableView.reloadSections(IndexSet(integer: section), with: .automatic)
-                UIAccessibility.post(notification: .announcement, argument: "Section expanded")
+                // Toggle expand/collapse for other sections
+                tableView.beginUpdates()
+                if expandedSections.contains(section) {
+                    expandedSections.remove(section)
+                    tableView.reloadSections(IndexSet(integer: section), with: .automatic)
+                    UIAccessibility.post(notification: .announcement, argument: "Section collapsed")
+                } else {
+                    expandedSections.insert(section)
+                    tableView.reloadSections(IndexSet(integer: section), with: .automatic)
+                    UIAccessibility.post(notification: .announcement, argument: "Section expanded")
+                }
+                tableView.endUpdates()
             }
-            tableView.endUpdates()
-        }
     }
+
 }
 
 extension SettingsViewController: MixAudioSettingCellDelegate {
@@ -302,13 +281,11 @@ extension SettingsViewController: CalloutSettingsCellViewDelegate {
         
         let indexPaths = SettingsViewController.collapsibleCalloutIndexPaths
         
-        tableView.beginUpdates()
         if SettingsContext.shared.automaticCalloutsEnabled && !tableView.contains(indexPaths: indexPaths) {
             tableView.insertRows(at: indexPaths, with: .automatic)
         } else if !SettingsContext.shared.automaticCalloutsEnabled && tableView.contains(indexPaths: indexPaths) {
             tableView.deleteRows(at: indexPaths, with: .automatic)
         }
-        tableView.endUpdates()
     }
 }
 
