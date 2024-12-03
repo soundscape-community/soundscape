@@ -743,7 +743,7 @@
 //------------------------------------------------------------------------------
 
 /* Street Preview, View title, Street Preview is functionality that allows the user to select any location in the world to preview the area at street level in order to familiarise and build a mental map of the space. {NumberedPlaceholder="Soundscape Street Preview"} */
-"preview.title" = "Soundscape Street Preview";
+"preview.title" = "Street Preview";
 
 /* Text displayed when the current location is not known while previewing */
 "preview.current_intersection_unknown.label" = "Current Location Unknown";
