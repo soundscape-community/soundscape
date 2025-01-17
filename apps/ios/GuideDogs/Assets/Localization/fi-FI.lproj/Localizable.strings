@@ -1251,7 +1251,7 @@
 
 
 /*  */
-"route.waypoint.progress.complete" = "Valmistunut";
+"route.waypoint.progress.complete" = "Valmistunut!";
 
 
 /*  */
@@ -1359,7 +1359,7 @@
 
 
 /*  */
-"route.update.success.title" = "Päivitys on suoritettu.";
+"route.update.success.title" = "Päivitys suoritettu!";
 
 
 /*  */
@@ -1375,7 +1375,7 @@
 
 
 /*  */
-"route.update.unavailable.title" = "Kaikki on valmista.";
+"route.update.unavailable.title" = "Kaikki on valmista!";
 
 
 /*  */
@@ -3615,7 +3615,7 @@
 
 
 /*  */
-"first_launch.prompt.title" = "Kaikki on valmista.";
+"first_launch.prompt.title" = "Kaikki on valmista!";
 
 
 /*  */
@@ -4380,9 +4380,3 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Näytön napauttaminen kahdesti kahdella sormella hiljentää mahdolliset aktiiviset ilmoitukset.";
-
-
-
-
-
-
