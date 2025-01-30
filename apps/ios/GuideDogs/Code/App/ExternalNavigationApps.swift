@@ -14,7 +14,7 @@ import CoreLocation
 /// then add to the enum and the switches below
 /// "deeplinks" are different than URL schemes; deeplinks can be arbitrary domains
 /// and will usually fall back to a web version if the corresponding app isn't installed, while URL schemes tend to be less cross-platform and need to be manually added in Info.plist.
-enum ExternalNavigationApps: String, CaseIterable {
+enum ExternalNavigationApps: String, CaseIterable{
     case appleMaps
     case googleMaps
     case waze
@@ -22,7 +22,7 @@ enum ExternalNavigationApps: String, CaseIterable {
     /// Should return a localized title for each supported app
     var localizedTitle: String {
         switch self {
-            case .googleMaps: return "Google Maps"
+        case .googleMaps: return "Google Maps"
             case .waze: return "Waze"
             case .appleMaps: return "Apple Maps"
         }

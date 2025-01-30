@@ -32,9 +32,6 @@
   },
   "testTargets" : [
     {
-      "skippedTests" : [
-        "AudioEngineTest"
-      ],
       "target" : {
         "containerPath" : "container:GuideDogs.xcodeproj",
         "identifier" : "914DEBCC2A3CE6B9007B161C",

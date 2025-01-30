@@ -161,6 +161,20 @@ extension UIWindow {
     open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionEnded(motion, with: event)
         
+        if(motion == .motionShake && SettingsContext.shared.shakeCalloutsEnabled){
+            
+            guard let callout = AppContext.shared.calloutHistory.callouts.last else {
+                return
+            }
+
+            AppContext.process(RepeatCalloutEvent(callout: callout) { (_) in
+            })
+            
+            return
+        }
+            
+        
+        
         // We use the shake motion to pause and resume a GPX simulation
         guard FeatureFlag.isEnabled(.developerTools),
             motion == .motionShake,
