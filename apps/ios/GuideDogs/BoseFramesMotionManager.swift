@@ -3,7 +3,8 @@
 //  Soundscape
 //
 //  Created by Niklas Mellegård on 2024-03-06.
-//  Copyright © 2024 Soundscape community. All rights reserved.
+//  Copyright © 2024 Soundscape community. 
+//  Licensed under the MIT License.
 //
 
 import Foundation
@@ -58,7 +59,7 @@ class BoseFramesMotionManager: NSObject {
     
     // MARK: CalibratableDevice
     /// Threshold for accuracy estimation. Value above this indicates uncalibrated device
-    private let accuracy_calibration_required_threshold: Double = 20.0
+    private let accuracy_calibration_required_threshold: Double = 28.0
     private var accuracyRingBuffer = [Double](repeating: 100.0, count: 10) // Collect 10 latest values for averaging accuracy
     private var accuracyRingBufferPosition: Int = 0
     private var _calibrationOverridden: Bool
@@ -69,7 +70,7 @@ class BoseFramesMotionManager: NSObject {
     // MARK: UserHeadingProvider attributes
     /// Create a dummy Id for this device as it will not get its ID until connected.
     /// First, the `Device` protocol requires a non-optional id.
-    /// Second, DeviceManager initiates the object with stored id and name, which may be used for reconnection (dunno, havn't looked...
+    /// Second, DeviceManager initiates the object with stored id and name, which may be used for reconnection (dunno, havn't looked... sånt
     private var _idDummy: UUID
     private var _nameDummy: String // D,o
     private weak var _headingDelegate: UserHeadingProviderDelegate?

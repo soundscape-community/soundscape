@@ -6459,7 +6459,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 8;
-				DEVELOPMENT_TEAM = SBXB9WC8M3;
+				DEVELOPMENT_TEAM = BWRGW3T83X;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
 				FILE_SHARING_ENABLED = YES;
@@ -6478,7 +6478,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Soundscape-EARS";
+				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6492,7 +6492,7 @@
 				MARKETING_VERSION = 1.2.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DADHOC";
-				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-adhoc-EARS-1";
+				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-adhoc-1";
 				PRODUCT_NAME = "$(TARGET_NAME)-EARS";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -6749,7 +6749,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = SBXB9WC8M3;
+				DEVELOPMENT_TEAM = BWRGW3T83X;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
 				FILE_SHARING_ENABLED = YES;
@@ -6768,7 +6768,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Soundscape-EARS";
+				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6782,7 +6782,7 @@
 				MARKETING_VERSION = 1.2.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-EARS-1";
+				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-1";
 				PRODUCT_NAME = "$(TARGET_NAME)-EARS";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -6826,7 +6826,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Soundscape-EARS";
+				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (

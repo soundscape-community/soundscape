@@ -3,7 +3,9 @@
 //  Soundscape
 //
 //  Created by Niklas Mellegård on 2024-03-02.
-//  Copyright © 2024 Soundscape community. All rights reserved.
+//  Copyright © 2024 Soundscape community. 
+//  Licensed under the MIT License.
+
 //
 
 import Foundation
