@@ -66,6 +66,7 @@ services:
       - POSTGIS_DBNAME=osm
     volumes:
       - tiles:/tiles
+      - ./extra_data:/extra_data
     depends_on:
       postgis:
         condition: service_healthy
