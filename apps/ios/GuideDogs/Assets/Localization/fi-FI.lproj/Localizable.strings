@@ -175,11 +175,11 @@
 
 
 /*  */
-"general.loading.start" = "Kohta on valmista...";
+"general.loading.start" = "Valmistellaan asioita…";
 
 
 /*  */
-"general.loading.end" = "Siivotaan...";
+"general.loading.end" = "Siivotaan asioita…";
 
 
 /*  */
@@ -319,7 +319,7 @@
 
 
 /*  */
-"general.error.preview" = "Sijainnin esikatselua ei voitu aloittaa tässä sijainnissa";
+"general.error.preview" = "Sijainnin esikatselua ei voitu käynnistää tässä sijainnissa.";
 
 
 /*  */
@@ -411,7 +411,7 @@
 
 
 /*  */
-"settings.general.voice" = "Puhe";
+"settings.general.voice" = "Puheen ääni";
 
 
 /*  */
@@ -511,7 +511,7 @@
 
 
 /*  */
-"voice.voices" = "Äänet";
+"voice.voices" = "Puheen äänet";
 
 
 /*  */
@@ -527,11 +527,11 @@
 
 
 /*  */
-"voice.voice_cell.selected.acc_hint" = "Tämä ääni on tällä hetkellä valittuna. Pyyhkäise ylös- tai alaspäin esikatsellaksesi.";
+"voice.voice_cell.selected.acc_hint" = "Tämä puheen ääni on tällä hetkellä valittuna. Pyyhkäise ylös- tai alaspäin esikatsellaksesi.";
 
 
 /*  */
-"voice.voice_cell.use.acc_hint" = "Kaksoisnapauta käyttääksesi tätä ääntä. Pyyhkäise ylös- ja alaspäin esikatsellaksesi.";
+"voice.voice_cell.use.acc_hint" = "Kaksoisnapauta käyttääksesi tätä puheen ääntä. Pyyhkäise ylös- ja alaspäin esikatsellaksesi.";
 
 
 /*  */
@@ -547,7 +547,7 @@
 
 
 /*  */
-"voice.apple.default" = "%@ (Oletusääni)";
+"voice.apple.default" = "%@ (Puheen oletusääni)";
 
 
 /*  */
@@ -559,11 +559,11 @@
 
 
 /*  */
-"voice.settings.enhanced_available.title" = "Parempi ääni saatavilla!";
+"voice.settings.enhanced_available.title" = "Parempi puheen ääni saatavilla!";
 
 
 /*  */
-"voice.settings.enhanced_available" = "Tästä äänestä voi olla saatavilla korkeampilaatuinen versio. Voit ladata sen ja muita ääniä siirtymällä Puhuttu sisältö -osaan iOS-käyttöapuasetuksissa.";
+"voice.settings.enhanced_available" = "Tästä puheen äänestä voi olla saatavilla korkeampilaatuinen versio. Voit ladata sen ja muita puheen ääniä siirtymällä Puhuttu sisältö -osaan iOSin saavutettavuusasetuksissa.";
 
 
 /*  */
@@ -571,7 +571,7 @@
 
 
 /*  */
-"voice.apple.no_siri" = "Huomaa, että Siri-äänet eivät ole saatavilla Soundscapelle, ja ne eivät sisälly alla olevaan luetteloon.";
+"voice.apple.no_siri" = "Huomaa, että Siri-puheen äänet eivät ole Soundscapen käytettävissä eivätkä ne ole alla olevassa luettelossa.";
 
 
 /*  */
@@ -651,7 +651,7 @@
 
 
 /*  */
-"settings.about.title.whats_new" = "Uudet ominaisuudet";
+"settings.about.title.whats_new" = "Mitä uutta?";
 
 
 /*  */
@@ -675,7 +675,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_hint" = "Kaksoisnapauta tarkastellaksesi seuraavaa päivitysilmoitusta";
+"settings.new_feature.accept_button.acc_hint" = "Kaksoisnapauta tarkastellaksesi seuraavaa päivitysilmoitusta.";
 
 
 /*  */
@@ -763,7 +763,7 @@
 
 
 /*  */
-"beacon.action.remove_beacon.double_tap.acc_hint" = "Kaksoisnapauta tätä painiketta poistaaksesi nykyisen äänimajakan";
+"beacon.action.remove_beacon.double_tap.acc_hint" = "Kaksoisnapauta tätä painiketta poistaaksesi nykyisen äänimajakan.";
 
 
 /*  */
@@ -791,7 +791,7 @@
 
 
 /*  */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Kaksoisnapauta hiljentääksesi äänimajakan tai poistaaksesi sen hiljennyksen";
+"beacon.action.mute_unmute_beacon.acc_hint" = "Kaksoisnapauta mykistääksesi äänimajakan tai poistaaksesi sen mykistyksen.";
 
 
 /*  */
@@ -799,7 +799,7 @@
 
 
 /*  */
-"beacon.action.view_details.acc_hint.details" = "Kaksoisnapauta tarkastellaksesi lisätietoja";
+"beacon.action.view_details.acc_hint.details" = "Kaksoisnapauta tarkastellaksesi lisäyksityiskohdat.";
 
 
 /*  */
@@ -811,11 +811,11 @@
 
 
 /*  */
-"beacon.beacon_location_within_audio_beacon_muted" = "Majakka on etäisyyden %@ sisällä. Äänimajakka on hiljennetty";
+"beacon.beacon_location_within_audio_beacon_muted" = "Majakka %@:n sisällä. Äänimajakka on mykistetty.";
 
 
 /*  */
-"preview.title" = "Soundscape Street Preview";
+"preview.title" = "Soundscape Streetin esikatselu";
 
 
 /*  */
@@ -843,7 +843,7 @@
 
 
 /*  */
-"preview.content.edge.text.accessibility_hint" = "Kaksoisnapauta siirtyäksesi seuraavaan risteykseen";
+"preview.content.edge.text.accessibility_hint" = "Kaksoisnapauta siirtyäksesi seuraavaan risteykseen.";
 
 
 /*  */
@@ -863,7 +863,7 @@
 
 
 /*  */
-"preview.search.accessibility_hint" = "Kaksoisnapauta etsiäksesi tai selataksesi lähiympäristön paikkoja";
+"preview.search.accessibility_hint" = "Kaksoisnapauta etsiäksesi tai selataksesi lähiympäristön paikkoja.";
 
 
 /*  */
@@ -967,15 +967,15 @@
 
 
 /*  */
-"preview.include_unnamed_roads.hint.off" = "Kaksoisnapauta sisällyttääksesi nimettömät tiet Soundscape Street Preview -toimintoon";
+"preview.include_unnamed_roads.hint.off" = "Kaksoisnapauta sisällyttääksesi nimettömät tiet Soundscape Street -esikatselun aikana.";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Kaksoisnapauta jättääksesi pois nimettömät tiet Soundscape Street Preview -toiminnosta";
+"preview.include_unnamed_roads.hint.on" = "Kaksoisnapauta jättääksesi pois nimettömät tiet Soundscape Street -esikatselun aikana.";
 
 
 /*  */
-"preview.tutorial.done.hint" = "Kaksoisnapauta poistuaksesi opetusohjelmasta";
+"preview.tutorial.done.hint" = "Kaksoisnapauta poistuaksesi opetusohjelmasta.";
 
 
 /*  */
@@ -1007,7 +1007,7 @@
 
 
 /*  */
-"location_detail.title.default" = "Sijainnin tiedot";
+"location_detail.title.default" = "Sijainnin yksityiskohdat";
 
 
 /*  */
@@ -1023,35 +1023,35 @@
 
 
 /*  */
-"location_detail.action.beacon.hint" = "Kaksoisnapauta määrittääksesi äänimajakan tähän sijaintiin";
+"location_detail.action.beacon.hint" = "Kaksoisnapauta määrittääksesi äänimajakan tähän sijaintiin.";
 
 
 /*  */
-"location_detail.action.beacon.hint.disabled" = "Uuden äänimajakan määrittäminen ei ole käytössä, kun reittiopastus on aktiivisena";
+"location_detail.action.beacon.hint.disabled" = "Uuden äänimajakan asettaminen on poissa käytöstä, kun reittiopastus on aktiivinen.";
 
 
 /*  */
-"location_detail.action.save.hint" = "Kaksoisnapauta tallentaaksesi tämän sijainnin merkintänä";
+"location_detail.action.save.hint" = "Kaksoisnapauta tallentaaksesi tämän sijainnin merkitsimenä.";
 
 
 /*  */
-"location_detail.action.edit.hint" = "Kaksoisnapauta muokataksesi merkintänä";
+"location_detail.action.edit.hint" = "Kaksoisnapauta muokataksesi merkitsintä.";
 
 
 /*  */
-"location_detail.action.share.hint" = "Kaksoisnapauta jakaaksesi tämän sijainnin";
+"location_detail.action.share.hint" = "Kaksoisnapauta jakaaksesi tämän sijainnin.";
 
 
 /*  */
-"location_detail.action.preview.hint" = "Kaksoisnapauta aloittaaksesi esikatselun tässä sijainnissa";
+"location_detail.action.preview.hint" = "Kaksoisnapauta aloittaaksesi esikatselun tässä sijainnissa.";
 
 
 /*  */
-"location_detail.action.preview.hint.disabled" = "Street Preview -toiminto on pois käytöstä, kun reittiopastus on aktiivisena";
+"location_detail.action.preview.hint.disabled" = "Street Preview on poissa käytöstä, kun reittiopastus on aktiivisena.";
 
 
 /*  */
-"location_detail.action.directions.hint" = "Kaksoisnapauta avataksesi tämän sijainnin ulkoisessa karttasovelluksessa";
+"location_detail.action.directions.hint" = "Kaksoisnapauta avataksesi tämän sijainnin ulkoisessa karttasovelluksessa.";
 
 
 /*  */
@@ -1063,7 +1063,7 @@
 
 
 /*  */
-"location.select.hint" = "Kaksoisnapauta valitaksesi tämän sijainnin";
+"location.select.hint" = "Kaksoisnapauta valitaksesi tämän sijainnin.";
 
 
 /*  */
@@ -1083,7 +1083,7 @@
 
 
 /*  */
-"location_detail.map.view.hint" = "Muokkaa valitaksesi uuden sijainnin";
+"location_detail.map.view.hint" = "Muokkaa valitaksesi uuden sijainnin.";
 
 
 /*  */
@@ -1091,7 +1091,7 @@
 
 
 /*  */
-"location_detail.map.edit.hint" = "Liikuta karttaa oikeaan sijaintiin";
+"location_detail.map.edit.hint" = "Liikuta karttaa oikeaan sijaintiin.";
 
 
 /*  */
@@ -1163,7 +1163,7 @@
 
 
 /*  */
-"location_detail.add_waypoint.marker.hint" = "Luo merkintä napauttamalla kaksi kertaa ja lisää se reittipisteeksi";
+"location_detail.add_waypoint.marker.hint" = "Kaksoisnapauta luodaksesi merkitsimen ja lisätäksesi sen reittipisteeksi.";
 
 
 /*  */
@@ -1187,27 +1187,27 @@
 
 
 /*  */
-"route_detail.action.start_route.hint" = "Kaksoisnapauta aloittaaksesi tämän reitin";
+"route_detail.action.start_route.hint" = "Kaksoisnapauta aloittaaksesi tämän reitin.";
 
 
 /*  */
-"route_detail.action.start_route.disabled.hint" = "Lisää reittipisteitä ennen reitin aloitusta";
+"route_detail.action.start_route.disabled.hint" = "Lisää reittipisteitä ennen reitin aloittamista.";
 
 
 /*  */
-"route_detail.action.stop_route.hint" = "Kaksoisnapauta pysäyttääksesi tämän reitin";
+"route_detail.action.stop_route.hint" = "Kaksoisnapauta lopettaaksesi tämän reitin.";
 
 
 /*  */
-"route_detail.action.start_event.hint" = "Kaksoisnapauta aloittaaksesi tämän aktiviteetin";
+"route_detail.action.start_event.hint" = "Kaksoisnapauta aloittaaksesi tämän aktiviteetin.";
 
 
 /*  */
-"route_detail.action.stop_event.hint" = "Kaksoisnapauta pysäyttääksesi tämän aktiviteetin ja tallentaaksesi edistymisesi";
+"route_detail.action.stop_event.hint" = "Kaksoisnapauta pysäyttääksesi tämän aktiviteetin ja tallentaaksesi edistymisesi.";
 
 
 /*  */
-"route_detail.action.reset.hint" = "Kaksoisnapauta nollataksesi tämän toiminnon ja ladataksesi saatavilla olevat päivitykset";
+"route_detail.action.reset.hint" = "Kaksoisnapauta nollataksesi tämän toiminnon ja ladataksesi saatavilla olevat päivitykset.";
 
 
 /*  */
@@ -1251,7 +1251,7 @@
 
 
 /*  */
-"route.waypoint.progress.complete" = "Valmistunut";
+"route.waypoint.progress.complete" = "Valmistunut!";
 
 
 /*  */
@@ -1271,11 +1271,11 @@
 
 
 /*  */
-"route.end.completed.summary" = "%@ reittipistettä saavutettu・viimeinen reittipiste lähellä";
+"route.end.completed.summary" = "%@ reittipistettä saavutettu・Viimeinen lähiympäristön reittipiste";
 
 
 /*  */
-"route.end.completed.summary.accessibility" = "%@ reittipistettä saavutettu, viimeinen reittipiste lähellä";
+"route.end.completed.summary.accessibility" = "%@ reittipistettä saavutettu, viimeinen lähiympäristön reittipiste";
 
 
 /*  */
@@ -1359,7 +1359,7 @@
 
 
 /*  */
-"route.update.success.title" = "Päivitys on suoritettu.";
+"route.update.success.title" = "Päivitys suoritettu!";
 
 
 /*  */
@@ -1375,7 +1375,7 @@
 
 
 /*  */
-"route.update.unavailable.title" = "Kaikki on valmista.";
+"route.update.unavailable.title" = "Kaikki on valmista!";
 
 
 /*  */
@@ -1511,7 +1511,7 @@
 
 
 /*  */
-"siri_shortcuts.description" = "Kun olet lisännyt Siri-pikakomennot, pystyt käyttämään niitä äänikomentojen avulla jopa silloinkin, kun Soundscape ei ole käynnissä.";
+"siri_shortcuts.description" = "Kun olet lisännyt Siri-pikakuvakkeet, voit käyttää niitä puheen äänelläsi, vaikka Soundscape ei ole käynnissä.";
 
 
 /*  */
@@ -1527,7 +1527,7 @@
 
 
 /*  */
-"user_activity.nearby_markers.title" = "Kuuntele lähellä olevia merkintöjä";
+"user_activity.nearby_markers.title" = "Kuuntele lähiympäristön merkitsimiä";
 
 
 /*  */
@@ -1607,7 +1607,7 @@
 
 
 /*  */
-"routes.tutorial.details" = "Palaat nyt Soundscapen aloitusnäytölle ja äänimajakka sijoitetaan ensimmäiseen reittipisteeseesi. Kun saavut reittipisteeseen, majalla siirtyy reittisi seuraavaan reittipisteeseen.";
+"routes.tutorial.details" = "Palaat nyt Soundscapen kotinäytölle ja äänimajakka sijoitetaan ensimmäiseen reittipisteeseesi. Kun saavut reittipisteeseen, majalla siirtyy reittisi seuraavaan reittipisteeseen.";
 
 
 /*  */
@@ -1683,7 +1683,7 @@
 
 
 /*  */
-"markers.no_markers.hint.1" = "Luo merkintöjä suosikkikohteillesi, reittipisteille tai reitille tai mille tahansa sijainneille, joille haluat kuulla ilmoituksen. Valitse sijainti tai nykyinen sijaintisi aloitusnäytöltä ja valitse \"Tallenna merkintänä\".";
+"markers.no_markers.hint.1" = "Luo merkitsimiä suosikkikohteillesi, reittipisteille tai reitille tai mille tahansa sijainneille, joille haluat kuulla ilmoituksen. Valitse sijainti tai nykyinen sijaintisi kotinäytöltä ja valitse \"Tallenna merkitsimenä\".";
 
 
 /*  */
@@ -1791,7 +1791,7 @@
 
 
 /*  */
-"search.no_results_found_error" = "Lähistöllä ei vaikuttaisi olevan paikkoja. Jos etsit tiettyä paikkaa, voit yrittää etsiä sitä nimen tai osoitteen avulla.";
+"search.no_results_found_error" = "Lähiympäristön paikkoja ei vaikuttaisi olevan. Jos etsit tiettyä paikkaa, voit yrittää etsiä sitä nimen tai osoitteen avulla.";
 
 
 /*  */
@@ -1811,7 +1811,7 @@
 
 
 /*  */
-"search.button.nearby.accessibility_hint" = "Kaksoisnapauta tutustuaksesi lähiympäristön ravintoloihin, liikennepysäkkeihin ja muihin kohteisiin";
+"search.button.nearby.accessibility_hint" = "Kaksoisnapauta tutustuaksesi lähiympäristön ravintoloihin, liikennepysäkkeihin ja muihin kohteisiin.";
 
 
 /*  */
@@ -1867,7 +1867,7 @@
 
 
 /*  */
-"filter.not_available" = "Joidenkin luokkien suodattimia ei ole saatavilla. Voit silti selata lähiympäristön paikkoja valitsemalla \"%@\"";
+"filter.not_available" = "Joidenkin luokkien suodattimia ei ole saatavilla. Voit silti selata lähiympäristön paikkoja valitsemalla \"%@\".";
 
 
 /*  */
@@ -1939,11 +1939,11 @@
 
 
 /*  */
-"callouts.nearby_markers" = "Merkinnät";
+"callouts.nearby_markers" = "Lähiympäristön merkitsimet";
 
 
 /*  */
-"callouts.no_nearby_markers_to_call_out_now" = "Lähellä ei ole ilmoitettavia merkintöjä.";
+"callouts.no_nearby_markers_to_call_out_now" = "Lähistöllä ei ole merkitsimiä, joita voitaisiin kutsua juuri nyt.";
 
 
 /*  */
@@ -2023,7 +2023,7 @@
 
 
 /*  */
-"directions.intersection_with_name" = "Risteys tien %@ kanssa lähellä";
+"directions.intersection_with_name" = "Risteys %@:n kanssa lähistöllä";
 
 
 /*  */
@@ -2119,7 +2119,7 @@
 
 
 /*  */
-"directions.roundabout_with_exits" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä lähellä";
+"directions.roundabout_with_exits" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä lähistöllä";
 
 
 /*  */
@@ -2227,7 +2227,7 @@
 
 
 /*  */
-"directions.name_is_nearby_street_address" = "%1$@ on lähellä. Katuosoite on %2$@.";
+"directions.name_is_nearby_street_address" = "%1$@ on lähistöllä. Katuosoite on %2$@.";
 
 
 /*  */
@@ -2555,11 +2555,11 @@
 
 
 /*  */
-"ui.action_button.nearby_markers" = "Merkin-\nnät";
+"ui.action_button.nearby_markers" = "Lähistöllä olevat\nMerkitsimet";
 
 
 /*  */
-"ui.action_button.nearby_markers.acc_hint" = "Kaksoisnapauta kuullaksesi tietoja lähiympäristön paikoista, jotka olet merkinnännyt";
+"ui.action_button.nearby_markers.acc_hint" = "Kaksoisnapauta kuullaksesi tietoja lähiympäristön paikoista, jotka olet merkinnännyt.";
 
 
 /*  */
@@ -2643,7 +2643,7 @@
 
 
 /*  */
-"poi_screen.loading_title.loading" = "Ladataan lähistön paikkoja";
+"poi_screen.loading_title.loading" = "Ladataan lähiympäristön paikkoja";
 
 
 /*  */
@@ -2655,7 +2655,7 @@
 
 
 /*  */
-"poi_screen.section_header.nearby" = "Lähellä";
+"poi_screen.section_header.nearby" = "Lähistöllä";
 
 
 /*  */
@@ -2935,7 +2935,7 @@
 
 
 /*  */
-"behavior.scavenger_hunt.callout.nearby_with_name" = "%@ on lähellä";
+"behavior.scavenger_hunt.callout.nearby_with_name" = "%@ on lähistöllä";
 
 
 /*  */
@@ -3111,7 +3111,7 @@
 
 
 /*  */
-"tutorial.markers.text.Intro" = "Soundscapen avulla voit merkitä ympäristössäsi mitä tahansa sinulle tärkeää.\nKokeillaan. Paina alla olevaa Lisää merkintä -painiketta ja valitse esimerkiksi lähiympäristön paikka tai osoite.";
+"tutorial.markers.text.Intro" = "Soundscapella voit merkitä ympäriltäsi kaiken, mistä välität. Voit esimerkiksi merkitä kotisi, bussipysäkin tai jopa vain paikan, jossa olet.\nKokeillaan; paina alla olevaa Lisää merkitsin -painiketta ja valitse esimerkiksi lähiympäristön paikka tai osoite, jonka haluat merkitä.";
 
 
 /*  */
@@ -3119,7 +3119,7 @@
 
 
 /*  */
-"tutorial.markers.text.NearbyMarkers" = "Erinomaista! Sinulla on uusi merkintänä nimeltä @!marker_name!!.\nNyt voit kuulla merkintäsi sijainnin painamalla Merkinnät -painiketta. Tämä painike on aloitusnäytön alaosassa.\nKokeile sitä nyt.";
+"tutorial.markers.text.NearbyMarkers" = "Erinomaista! Sinulla on uusi merkitsin nimeltä @!marker_name!!.\nNyt voit kuulla merkitsintäsi sijainnin painamalla Lähiympäristön merkitsimet -painiketta. Tämä painike on kotinäytön alaosassa.\nKokeile sitä nyt.";
 
 
 /*  */
@@ -3127,7 +3127,7 @@
 
 
 /*  */
-"tutorial.markers.text.WrapUp" = "Erinomaista, olet nyt kääntyneenä kohti merkintänä @!marker_name!!.\nVaikutat ymmärtäneen!\nVoit hallita merkintöjen luetteloa valitsemalla valikosta hallitse merkintöjä.\nVoit myös aina vierailla Ohje ja opetusohjelmat -sivulla suorittaaksesi tämän opetusohjelman uudelleen tai lukeaksesi kattavan oppaan kaikesta, mitä voit tehdä merkintöjen avulla. Tätä opetusohjelmaa varten luomasi majakka poistetaan nyt, ja palaat edelliselle näytölle.";
+"tutorial.markers.text.WrapUp" = "Täydellistä, olet nyt edessäsi merkitsintäsi @!marker_name!!.\nNäyttää siltä, että olet saanut sen!\nVoit hallita merkkiluetteloasi valitsemalla kotinäytöltä Merkitsimet ja reitit.\nJa voit aina käydä Ohje ja opetusohjelmat -sivuilla käydäksesi tämän opetusohjelman uudelleen läpi tai lukeaksesi kattavan oppaan kaikesta, mitä voit tehdä merkitsimillä. Tälle opetusohjelmalle asettamasi majakka tyhjennetään nyt ja palaat edelliseen näyttöön.";
 
 
 /*  */
@@ -3251,11 +3251,11 @@
 
 
 /*  */
-"tutorial.beacons.text.HomeScreen" = "Etäisyystiedot näytetään myös aloitusnäytöllä majakan sijainnin katuosoitteen kanssa, jos meillä on se. Soundscape ilmoittaa, kun lähestyt majakan sijaintia, jolloin äänimajakka hiljenee.";
+"tutorial.beacons.text.HomeScreen" = "Etäisyystiedot näytetään myös kotinäytöllä majakan sijainnin katuosoitteen kanssa, jos meillä on se. Soundscape ilmoittaa, kun lähestyt majakan sijaintia, jolloin äänimajakka hiljenee.";
 
 
 /*  */
-"tutorial.beacons.text.Mute" = "Jos haluat hiljentää sovelluksen mistä tahansa syystä, voit käyttää joko majakan hiljennyspainiketta tai lepotilapainiketta aloitusnäytöllä, tai voit kaksoisnapauttaa kahdella sormella missä tahansa näytön kohdassa. Kaksoisnapautus kahdella sormella pysäyttää senhetkiset ilmoitukset ja hiljentää äänimajakan. Kokeile sitä nyt.";
+"tutorial.beacons.text.Mute" = "Jos haluat mykistää sovelluksen mistä tahansa syystä, voit käyttää joko majakan mykistyspainiketta tai lepo-painiketta kotinäytöllä, tai voit kaksoisnapauttaa kahdella sormella missä tahansa näytön kohdassa. Kaksoisnapautus kahdella sormella pysäyttää senhetkiset ilmoitukset ja mykistää äänimajakan. Kokeile sitä nyt.";
 
 
 /*  */
@@ -3287,11 +3287,11 @@
 
 
 /*  */
-"settings.help.section.home_screen_buttons" = "Aloitusnäytön painikkeet";
+"settings.help.section.home_screen_buttons" = "\"Kuule ympäristöni\" -painikkeet";
 
 
 /*  */
-"help.config.voices.content" = "Soundscape voi käyttää mitä tahansa iOS:in asetuksissa lataamiasi puheääniä, paitsi Siri-puheääniä, jotka eivät olet Soundscapen käytössä. Suosittelemme valitsemaan jonkin \"Paremmista\" puheäänistä, koska niiden äänen laatu on paljon parempi, mutta sitä varten sinun on ensin ladattava parempi ääni. Voit ladata puheääniä iOS:in Asetukset-sovelluksella siirtymällä kohtaan Käyttöapu > Puhuttu sisältö > Puheäänet ja napauttamalla ääntä. Voit valita Soundscape-sovelluksessa haluamasi äänen siirtymällä päävalikosta kohtaan Asetukset ja valitsemalla asetuksen \"Puhe\".";
+"help.config.voices.content" = "Soundscape voi käyttää mitä tahansa iOS-asetukset-sovelluksesta lataamiasi puheen ääniä paitsi Siri-puheen ääniä, jotka eivät ole Soundscapen käytettävissä. Suosittelemme valitsemaan jonkin \"Parannellusta\" puheen äänistä, koska niiden äänenlaatu on paljon parempi, mutta jotta voit tehdä niin, sinun on ensin ladattava parannettu ääni. Voit ladata ääniä iOS-asetukset-sovelluksessa siirtymällä kohtaan Esteettömyys > Puhuttu sisältö > Puheen äänet ja napauttamalla puheen ääntä. Soundscape-sovelluksessa voit valita käytettävän puheen äänen napauttamalla päävalikosta \"Asetukset\" ja valitsemalla sitten \"Yleiset asetukset\" -kohdasta \"Puheen ääni\".";
 
 
 /*  */
@@ -3615,11 +3615,11 @@
 
 
 /*  */
-"first_launch.prompt.title" = "Kaikki on valmista.";
+"first_launch.prompt.title" = "Kaikki on valmista!";
 
 
 /*  */
-"first_launch.prompt.message" = "Olet valmis ensimmäiselle kävelyllesi Soundscapen kanssa. Jos haluat kokeilla sitä nyt, sinun tarvitsee vain valita sijainti lähelläsi ja käynnistää äänimajakka niin kuulet sen määränpääsi suunnalta.";
+"first_launch.prompt.message" = "Olet valmis ensimmäiselle kävelylle Soundscapen kanssa. Voit kokeilla sitä nyt valitsemalla lähiympäristön määränpään, käynnistämällä äänimajakan, niin kuulet sen määränpääsi suunnassa.";
 
 
 /*  */
@@ -3631,23 +3631,23 @@
 
 
 /*  */
-"help.text.destination_beacons.what" = "Majakan asettaminen lähiympäristön kohteeseen mahdollistaa sen, että Soundscape voi pitää sinut ajan tasalla toistamalla äänimajakan ääntä, joka tulee kyseisen kohteen suunnasta. Tämä majakka voidaan hiljentää tai sen hiljentäminen poistaa aloitusnäytöllä. Lisäksi Soundscape näyttää tietoja sijainnista aloitusnäytöllä, mukaan lukien etäisyyden siihen ja sen katuosoitteen, jos se on tiedossa.";
+"help.text.destination_beacons.what" = "Majakan asettaminen lähiympäristön sijaintiin mahdollistaa sen, että Soundscape voi pitää sinut ajan tasalla toistamalla äänimajakan ääntä, joka tulee kyseisen kohteen suunnasta. Tämä majakka voidaan mykistää tai sen mykistäminen poistaa kotinäytöllä. Lisäksi Soundscape näyttää tietoja sijainnista kotinäytöllä, mukaan lukien etäisyyden siihen ja sen katuosoitteen, jos se on tiedossa.";
 
 
 /*  */
-"help.text.destination_beacons.when" = "Majakan määrittäminen on hyödyllistä, kun haluat seurata tuttua maamerkkiä samalla, kun tutustut uuteen alueeseen tai kun olet menossa jonnekin ja haluat tietoja ympäristöstäsi matkalla sinne. Majakkatoiminto ei anna käännösohjeita, vaan se antaa sinulle jatkuvasti kuuluvan äänen, joka kertoo sinulle majakan sijainnin suhteessa nykyiseen sijaintiisi. Äänimajakan, suunnistustaitojesi ja jopa suosikkinavigointisovelluksesi avulla voit itse valita, kuinka haluat päästä lähiympäristön kohteisiin.";
+"help.text.destination_beacons.when" = "Majakan määrittäminen on hyödyllistä, kun haluat seurata tuttua maamerkkiä samalla, kun tutustut uuteen alueeseen tai kun olet menossa jonnekin ja haluat tietoja ympäristöstäsi matkalla sinne. Majakkatoiminto ei anna käännösohjeita, vaan se antaa sinulle jatkuvasti kuuluvan äänen, joka kertoo sinulle majakan sijainnin suhteessa nykyiseen sijaintiisi. Äänimajakan, suunnistustaitojesi ja jopa suosikkinavigointisovelluksesi avulla voit itse valita, kuinka haluat päästä lähiympäristön sijainteihin.";
 
 
 /*  */
-"help.text.destination_beacons.how.1" = "<b>Majakan määrittäminen tapahtuu seuraavasti</b>:<br/> Tarkastele ensin sijainnin tietoja joko etsimällä paikka hakupalkin avulla tai napauttamalla yhtä painikkeista \"Lähiympäristön paikat\", \"Tallennetut merkinnät\" ja \"Nykyinen sijainti\" ja valitsemalla sijainti. Voit valita sijainnin tietonäytöltä \"Käynnistä äänimajakka\" -painikkeen. Tämän napauttaminen palauttaa sinut aloitusnäytölle ja ottaa käyttöön äänimajakan, joka tulee valitun paikan suunnasta. Valitun paikan nimi ja sen etäisyys sekä fyysinen osoite, jos saatavilla, näkyy nyt sovelluksen päänäytössä.";
+"help.text.destination_beacons.how.1" = "<b>Asettaaksesi majakan</b>:<br/> Katso ensin \"Sijainnin yksityiskohdat\" joko käyttämällä hakupalkkia paikan etsimiseen tai napauttamalla jotakin Lähiympäristön paikat-, Merkitsimet ja reitit- tai Nykyinen sijainti -painikkeista ja valitsemalla sijainnin. Sijainnin yksityiskohdat -näytöstä voit valita \"Käynnistä äänimajakka\" -painikkeen. Napauttamalla tätä palaat kotinäyttöön ja valitsemasi paikan suunnasta tuleva äänimerkki. Valitsemasi paikan nimi sekä sen etäisyys ja fyysinen osoite, jos saatavilla, näkyvät nyt sovelluksen päänäytössä.";
 
 
 /*  */
-"help.text.destination_beacons.how.2" = "<b>Voit poistaa nykyisen majakan seuraavasti</b>:<br/> Paina \"Poista majakka\"-painiketta aloitusnäytöllä.";
+"help.text.destination_beacons.how.2" = "<b>Poistaaksesi nykyisen majakan</b>:<br/> paina vain \"Poista majakka\" -painiketta kotinäytöllä.";
 
 
 /*  */
-"help.text.destination_beacons.how.3" = "<b>Voit hiljentää äänimajakan seuraavasti</b>:<br/> Napauta aloitusnäytöllä \"Hiljennä majakka\" -painiketta \"Poista majakka\" -painikkeen alla.";
+"help.text.destination_beacons.how.3" = "<b>Voit mykistää äänimajakan seuraavasti</b>:<br/> Napauta kotinäytöllä \"Mykistä majakka\" -painiketta \"Poista majakka\" -painikkeen alla.";
 
 
 /*  */
@@ -3663,19 +3663,19 @@
 
 
 /*  */
-"help.text.automatic_callouts.when.3" = "<b>Kun tarvitset hiljaisuutta</b>:<br/> Kun olet aikeissa ylittää tien tai sinun tarvitsee muusta syystä hiljentää sovellus, voit ottaa ilmoitukset pois käytöstä. Kun ilmoitukset ovat pois käytöstä, sovellus kertoo sinulle tietoja ainoastaan, jos valitset manuaalisesti jonkin seuraavista painikkeista: <em>\"Oma sijaintini\"</em>, <em>\"Merkinnät\"</em>, <em>\"Lähiympäristö\"</em> tai <em>\"Edessäpäin\"</em>.";
+"help.text.automatic_callouts.when.3" = "<b>Kun tarvitset hiljaisuutta</b>:<br/> Kun olet ylittämässä tietä tai haluat vain sovelluksen olla hiljaa, voit poistaa huomiotekstit käytöstä. Kun huomiotekstit ovat pois päältä, sovellus kertoo sinulle tietoja vain, jos kosketat manuaalisesti jotakin <em>Oma sijainti</em>-, <em>Lähiympäristön merkitsimet-,</em>-, <em>Ympärilläni</em>- tai <em>Edessäni</em>-painikkeista.";
 
 
 /*  */
-"help.text.automatic_callouts.how.1" = "<b>Ilmoitusten asettaminen käyttöön ja pois käytöstä</b>:<br/> Ilmoitusten asettaminen pois käytöstä hiljentää sovelluksen. Ilmoitukset voidaan ottaa käyttöön tai poistaa käytöstä \"Hallitse ilmoituksia\" -osassa \"Asetukset\" -ruudulla, jossa voit napauttaa \"Salli ilmoitukset\" -vaihtopainiketta ilmoitusten ottamiseksi käyttöön tai poistamiseksi käytöstä. Voit myös ottaa ilmoitukset käyttöön tai poistaa ne käytöstä \"hyppää eteenpäin\" -komentoa käyttäen (kaksoisnapauta ja pidä), jos kuulokkeissasi on mediaohjauspainikkeet. Vaihtoehtoisesti voit käyttää \"Siirry lepotilaan\" -painiketta aloitusnäytön oikeassa yläkulmassa estääksesi Soundscapea suorittamasta ilmoituksia, kunnes haluat herättää sen uudelleen.";
+"help.text.automatic_callouts.how.1" = "<b>Huomiotekstien ottaminen käyttöön tai poistaminen käytöstä</b>:<br/> Huomiotekstien poistaminen käytöstä mykistää sovelluksen. Huomiotekstit voidaan ottaa käyttöön tai poistaa käytöstä \"Asetukset\"-näytön \"Hallitse huomiotekstejä\" -osiossa, jossa voit ottaa ne käyttöön tai poistaa ne käytöstä napauttamalla \"Salli huomiotekstit\" -kytkintä. Voit myös ottaa huomiotekstit käyttöön tai poistaa ne käytöstä käyttämällä \"Skip forward\" -komentoa (kaksoisnapauta ja pidä painettuna), jos kuulokkeissasi on mediaohjauspainikkeet. Vaihtoehtoisesti voit käyttää kotinäytön oikeassa yläkulmassa olevaa Lepopainiketta estääksesi Soundscapea tekemästä huomiotekstejä, kunnes herätät sen.";
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Kuultavien ilmoitusten valinta</b>:<br/> Voit valita, minkä tyyppisten asioiden ilmoitukset Soundscape kertoo automaattisesti siirtymällä \"Asetukset\"-sivulle \"Aloitus\"-näytöllä olevaa valikkoa käyttäen. \"Hallitse ilmoituksia\" -osa \"Asetukset\"-näytöllä sisältää luettelon sovelluksen käytettävissä olevista ilmoitustyypeistä. Kullakin kohteella on vaihtopainike, joka voidaan ottaa käyttöön tai pois käytöstä. Jos haluat ottaa kaikki ilmoitukset pois käytöstä, napauta \"Salli ilmoitukset\" -kytkintä luettelon yläpuolella.";
+"help.text.automatic_callouts.how.2" = "<b>Kuulamiesi huomiotekstien hallinta</b>:<br/> Voit valita, minkä tyyppisiä asioita Soundscape soittaa automaattisesti, siirtymällä päävalikon Asetukset-näyttöön. \"Asetukset-näyttö\":n \"Hallitse huomiotekstejä\" -osio sisältää luettelon asioista, joita sovellus voi kutsua esiin. Jokaisessa kohteessa on vaihtopainike, jonka voit ottaa käyttöön tai poistaa käytöstä. Jos haluat poistaa kaikki huomiotekstit käytöstä, napauta \"Salli huomiotekstit\" -kytkintä luettelon yläosassa.";
 
 
 /*  */
-"help.text.my_location.what" = "<em>\"Oma sijaintini\"</em>painike antaa sinulle nopeasti tietoja, jotka auttavat sinua tunnistamaan, missä olet sillä hetkellä. <em>\"Oma sijaintini\"</em> kertoo sinulle nykyisestä sijainnistasi, mukaan lukien, mihin suuntaan olet kääntyneenä, missä lähiympäristön tiet ja risteykset sijaitsevat, ja missä lähiympäristön kohteet ovat.";
+"help.text.my_location.what" = "<em>\"Oma sijaintini\"</em> -painike antaa sinulle nopeasti tietoja, jotka auttavat sinua tunnistamaan, missä olet sillä hetkellä. <em>\"Oma sijaintini\"</em> kertoo sinulle nykyisestä sijainnistasi, mukaan lukien, mihin suuntaan olet kääntyneenä, missä lähiympäristön tiet ja risteykset sijaitsevat, ja missä lähiympäristön kohteet ovat.";
 
 
 /*  */
@@ -3683,19 +3683,19 @@
 
 
 /*  */
-"help.text.my_location.how" = "Kuten kaikkien aloitusnäytön alaosassa olevien painikkeiden tapauksessa, pidä puhelintasi näyttö vaakatasossa (osoittaen taivasta kohti) ja puhelimen yläosa kohti sitä suuntaa, johon olet kääntyneenä, ennen kuin painat <em>\"Oma sijaintini\"</em> -painiketta. Tämä toimii kompassin tapaan kertoen sovellukselle, mihin suuntaan olet kääntynyt. Napauta yksinkertaisesti <em>\"Oma sijaintini\"</em> -painiketta ja kuuntele.";
+"help.text.my_location.how" = "Kuten kaikki neljä kotinäytön alareunassa olevaa painiketta, pidä puhelintasi niin, että näyttö on litteä (taivasta kohti) ja puhelimen yläosa osoittaa päin olevaan suuntaan, ennen kuin painat <em>Oma sijaintini</em> -painiketta. Tämä toimii kuin kompassi, joka kertoo sovellukselle, mihin suuntaan olet menossa. Napauta vain <em>Oma sijaintini</em> -painiketta ja kuuntele.";
 
 
 /*  */
-"help.text.nearby_markers.what" = "<em>\"Merkinnät\"</em> -painike kertoo sinulle enintään neljästä merkistä, jotka ovat sinua lähinnä. <em>\"Merkinnät\"</em> on tarkoitettu auttamaan sinua perehtymään ympäristöösi käyttäen paikkoja, jotka jo tunnet.";
+"help.text.nearby_markers.what" = "<em>Lähiympäristön merkitsimet</em> -painike kertoo enintään neljästä sinua lähinnä olevasta merkitsimestä. <em>\"Lähiympäristön merkitsimet\"</em> on tarkoitettu auttamaan sinua suuntautumaan paikoissa, joista jo tiedät.";
 
 
 /*  */
-"help.text.nearby_markers.when" = "Kun haluat päästä jyvälle siitä, missä olet, ja perehtyä ympäristöösi, käytä <em>\"Merkinnät\"</em>-toimintoa kuullaksesi tuntemistasi paikoista.";
+"help.text.nearby_markers.when" = "Kun haluat päästä jyvälle siitä, missä olet, ja perehtyä ympäristöösi, käytä <em>\"Lähiympäristön merkitsimet\"</em> kuullaksesi tuntemistasi paikoista.";
 
 
 /*  */
-"help.text.nearby_markers.how" = "Kuten kaikkien aloitusnäytön alaosassa olevien painikkeiden tapauksessa, pidä puhelintasi näyttö vaakatasossa (osoittaen taivasta kohti) ja puhelimen yläosa kohti sitä suuntaa, johon olet kääntyneenä, ennen kuin painat <em>\"Merkinnät\"</em>-painiketta. Tämä toimii kompassin tapaan kertoen sovellukselle, mihin suuntaan olet kääntynyt. Napauta yksinkertaisesti <em>\"Merkinnät\"</em> -painiketta ja kuulet useita kiinnostavia kohteita, jotka ovat suunnilleen edessäsi.";
+"help.text.nearby_markers.how" = "Kuten kaikki neljä kotinäytön alareunassa olevaa painiketta, pidä puhelintasi niin, että näyttö on litteä (taivasta kohti) ja puhelimen yläreuna osoittaa päin olevaan suuntaan, ennen kuin painat <em>Lähiympäristön merkitsimet</em> -painiketta. Tämä toimii kuin kompassi, joka kertoo sovellukselle, mihin suuntaan olet menossa. Napauta vain <em>\"Lähiympäristön merkitsimet\"</em> -painiketta, niin kuulet jopa neljä merkitsintä lähelläsi.";
 
 
 /*  */
@@ -3707,7 +3707,7 @@
 
 
 /*  */
-"help.text.around_me.how" = "Kuten kaikkien aloitusnäytön alaosassa olevien painikkeiden tapauksessa, pidä puhelintasi näyttö vaakatasossa (osoittaen taivasta kohti) ja puhelimen yläosa kohti sitä suuntaa, johon olet kääntyneenä, ennen kuin painat <em>\"Lähiympäristössä\"</em>-painiketta. Tämä toimii kompassin tapaan kertoen sovellukselle, mihin suuntaan olet kääntynyt. Napauta yksinkertaisesti <em>\"Lähiympäristössä\"</em>-painiketta ja kuulet neljä kiinnostavaa kohdetta sijoiteltuina ympärillesi.";
+"help.text.around_me.how" = "Kuten kaikkien neljän kotinäytön alareunan painikkeen kohdalla, pidä puhelintasi niin, että näyttö on litteä (taivasta kohti) ja puhelimen yläosa osoittaa päin olevaan suuntaan, ennen kuin painat <em>\"Ympärilläni\"</em> -painiketta. Tämä toimii kuin kompassi, joka kertoo sovellukselle, mihin suuntaan olet menossa. Napauta vain <em>\"Ympärilläni\"</em> -painiketta, niin kuulet neljä kiinnostavaa kohdetta ympärilläsi.";
 
 
 /*  */
@@ -3719,7 +3719,7 @@
 
 
 /*  */
-"help.text.ahead_of_me.how" = "Kuten kaikkien aloitusnäytön alaosassa olevien painikkeiden tapauksessa, pidä puhelintasi näyttö vaakatasossa (osoittaen taivasta kohti) ja puhelimen yläosa kohti sitä suuntaa, johon olet kääntyneenä, ennen kuin painat <em>\"Edessäpäin\"</em>-painiketta. Tämä toimii kompassin tapaan kertoen sovellukselle, mihin suuntaan olet kääntynyt. Napauta yksinkertaisesti <em>\"Edessäpäin\"</em>-painiketta ja kuulet useita kiinnostavia kohteita, jotka ovat suunnilleen edessäsi.";
+"help.text.ahead_of_me.how" = "Kuten kaikkien neljän kotinäytön alareunan painikkeen kohdalla, pidä puhelintasi niin, että näyttö on litteä (taivasta kohti) ja puhelimen yläreuna osoittaa päin olevaan suuntaan, ennen kuin painat <em>\"Edessäni\"</em> -painiketta. Tämä toimii kuin kompassi, joka kertoo sovellukselle, mihin suuntaan olet menossa. Napauta vain <em>\"Edessäni\"</em> -painiketta, niin kuulet useita kiinnostavia kohteita, jotka kaikki ovat suunnilleen edessäsi.";
 
 
 /*  */
@@ -3743,11 +3743,11 @@
 
 
 /*  */
-"help.text.markers.content.3" = "Soundscape ilmoittaa automaattisesti merkityt paikat luodakseen niistä kokemuksen, kun kävelet niiden ohi tai lähestyt niitä. Voit myös käyttää Merkinnät -painiketta Soundscapen aloitusnäytön alaosassa kuullaksesi tilaääni-ilmoitukset ympärilläsi olevista merkityistä paikoista. LIsäksi on mahdollista määrittää äänimajakka mihin tahansa merkittyyn paikkaan. Kun teet tämän, Soundscapen äänimajakka, jonka tunnet, kuuluu ja voit käyttää sitä tavalliseen tapaan.";
+"help.text.markers.content.3" = "Jos haluat kokea merkityt paikat, Soundscape kutsuu automaattisesti merkityt paikat, kun kävelet ohi tai lähestyt niitä, tai voit myös käyttää Soundscapen kotinäytön alareunassa olevaa Lähiympäristön merkitsimet -painiketta kuullaksesi tilakuvauksen merkityistä paikoista ympärilläsi. Lisäksi sinulla on mahdollisuus asettaa äänimajakan mihin tahansa merkittyyn paikkaan. Kun teet tämän, sinulle tuttu Soundscape-äänimajakka kuuluu ja voit käyttää sitä tavalliseen tapaan.";
 
 
 /*  */
-"help.text.creating_markers.content.1" = "Voit luoda merkintöjä kolmella tapaa: etsimällä hakupalkin avulla paikkaa, jonka haluat tallentaa, etsimällä paikan \"Lähiympäristön paikat\" -painikkeen avulla, tai käyttämällä \"Käytä nykyistä sijaintia\" -painiketta, joista kaikki sijaitsevat Soundscapen aloitusnäytöllä. Kun olet löytänyt haluamasi paikan, sen valitseminen vie sinut \"Sijainnin tiedot\" -sivulle. Valitse tällä sivulla painike \"Tallenna merkintä\".";
+"help.text.creating_markers.content.1" = "Voit luoda merkitsimiä kolmella tavalla: etsimällä paikkaa, jonka haluat tallentaa hakupalkin avulla, löytää paikan käyttämällä \"Lähiympäristön paikat\" -painiketta tai käyttämällä \"Nykyinen sijainti\" -painiketta, jotka kaikki löytyvät Soundscapen kotinäytöstä. Kun olet löytänyt haluamasi paikan, sen valitseminen vie sinut \"Sijainnin yksityiskohdat\" -sivulle. Valitse tällä sivulla painike \"Tallenna merkitsimenä\".";
 
 
 /*  */
@@ -4095,7 +4095,7 @@
 
 
 /*  */
-"push.local.home.body" = "Sinun tarvitsee vain valita lähellä oleva määränpää ja käynnistää majakka, niin kuulet sen määränpääsi suunnalta.";
+"push.local.home.body" = "Sinun tarvitsee vain valita lähiympäristön määränpää ja käynnistää majakka, niin kuulet sen määränpääsi suunnassa.";
 
 
 /*  */
@@ -4107,7 +4107,7 @@
 
 
 /*  */
-"whats_new.3_2_0.2.description" = "Lisää ääniä, mukaan lukien parempilaatuisia ääniä, on ladattavissa iOS-käyttöapuasetusten Puhuttu sisältö -asetuksissa.";
+"whats_new.3_2_0.2.description" = "Lisää puheen ääniä, mukaan lukien parempilaatuisia puheen ääniä, on ladattavissa iOSin saavutettavuusasetusten Puhuttu sisältö -osiossa.";
 
 
 /*  */
@@ -4139,7 +4139,7 @@
 
 
 /*  */
-"faq.markers_function.answer" = "Merkinnät ovat paikkoja, jotka olet säilyttänyt. Ne voivat olla paikkoja, jotka sovellus voi löytää, tai täysin uusia paikkoja, jotka olet lisännyt itse. Voit tallentaa nykyisen sijaintisi merkintänä valitsemalla \"Käytä nykyistä sijaintia\" -painikkeen aloitusnäytöllä ja valitsemalla sitten \"Tallenna merkintänä\". Voit tallentaa muita sijainteja merkintöinä etsimällä hakupalkin avulla paikkaa, jonka haluat tallentaa tai etsimällä paikan käyttämällä \"Lähiympäristön paikat\" -painiketta, jotka ovat molemmat Soundscapen aloitusnäytöllä. Kun olet löytänyt haluamasi paikan, sen valitseminen vie sinut \"Sijainnin tiedot\" -sivulle. Valitse tällä sivulla painike nimeltä \"Tallenna merkintänä\".";
+"faq.markers_function.answer" = "Merkitsimet ovat paikkoja, jotka olet tallentanut. Ne voivat olla paikkoja, jotka ovat löydettävissä sovelluksesta, tai ne voivat olla täysin uusia paikkoja, jotka olet lisännyt itse. Voit tallentaa nykyisen sijaintisi merkitsimeksi valitsemalla kotinäytöllä \"Nykyinen sijainti\" -painikkeen ja valitsemalla sitten \"Tallenna merkitsimeksi\". Voit tallentaa muita sijainteja merkitsimiksi etsimällä paikkaa, jonka haluat tallentaa hakupalkin avulla tai etsimällä paikan \"Lähiympäristön paikat\" -painikkeella, jotka molemmat löytyvät Soundscapen kotinäytöstä. Kun olet löytänyt haluamasi paikan, sen valitseminen vie sinut \"Sijainnin yksityiskohdat\" -sivulle. Valitse tällä sivulla painike \"Tallenna merkitsimenä\".";
 
 
 /*  */
@@ -4151,7 +4151,7 @@
 
 
 /*  */
-"faq.what_can_I_set.answer" = "Voit määrittää äänimajakan mihin tahansa yritykseen, paikkaan, mielenkiintoiseen kohteeseen, osoitteeseen tai risteykseen, kunhan se on Bingin tiedoissa tai olet lisännyt sen merkintänä. Sijainti voidaan lisätä merkintänä usein eri tavoin. Tarkastele ensin sijainnin tietoja joko etsimällä paikkaa hakupalkin avulla tai napauttamalla jotakin seuraavista painikkeista: \"Lähiympäristön paikat\", \"Tallennetut merkinnät\" tai \"Nykyinen sijainti\" ja valitsemalla sijainti. Voit valita sijainnin tiedot -näytöltä \"Käynnistä äänimajakka\" -painikkeen. Tämän napauttaminen palauttaa sinut aloitusnäytölle ja käynnistää äänimajakan, joka kuuluu valitsemasi paikan suunnasta. Valitsemasi paikan nimi, sen etäisyys ja fyysinen osoite, jos saatavilla, näytetään nyt sovelluksen päänäytöllä.";
+"faq.what_can_I_set.answer" = "Voit asettaa äänimajakan mihin tahansa yritykseen, paikkaan, kiinnostavaan kohteeseen, osoitteeseen tai risteykseen. Voit määrittää sijainnin majakaksi muutamalla tavalla. Tarkastele ensin sijainnin tietoja joko käyttämällä hakupalkkia paikan etsimiseen tai napauttamalla jotakin Lähiympäristön paikat-, Merkitsimet ja reitit- tai Nykyinen sijainti -painikkeista ja valitsemalla sijainnin. Sijainnin yksityiskohdat -näytöstä voit valita \"Käynnistä äänimajakka\" -painikkeen. Napauttamalla tätä palaat kotinäyttöön ja valitsemasi paikan suunnasta tuleva äänimerkki. Valitsemasi paikan nimi sekä sen etäisyys ja fyysinen osoite, jos saatavilla, näkyvät nyt sovelluksen päänäytössä.";
 
 
 /*  */
@@ -4175,7 +4175,7 @@
 
 
 /*  */
-"faq.beacon_on_address.answer" = "Kyllä voit. Osoitteita ei ole luettelossa oletusarvoisesti, mutta ne ovat löydettävissä hakukentän avulla. Jos haluat tallentaa tämän osoitteen, jotta sinun ei tarvitse hakea sitä uudelleen, voit lisätä sen merkiksi aloitusnäytöltä valitsemalla \"lisää merkintöihin\" -painikkeen tai käyttämällä VoiceOver-toimintoja aloitussivun majakassa.";
+"faq.beacon_on_address.answer" = "Kyllä voit. Osoitteita ei ole oletuksena listattu, mutta ne löytyvät hakukentän avulla. Tallentaaksesi tämän osoitteen, joten sinun ei tarvitse etsiä sitä uudelleen, voit lisätä sen merkitsimeksi kotinäytöltä valitsemalla \"lisää merkitsimiin\" -painikkeen tai käyttämällä Puheen äänen ohitus -toimintoja kotinäytön majakassa.";
 
 
 /*  */
@@ -4183,7 +4183,7 @@
 
 
 /*  */
-"faq.beacon_on_home.answer" = "Soundscape tukee majakoiden määrittämistä osoitteisiin. Voit määrittää majakan kotiisi tai mihin tahansa muuhun osoitteeseen etsimällä sijaintia Soundscapen päänäytöltä. Napauta \"Sijainnin tiedot\" -näytöllä \"Käynnistä äänimajakka\" -painiketta.";
+"faq.beacon_on_home.answer" = "Soundscape tukee majakoiden asettamista osoitteisiin. Aseta majakka kotiisi tai mihin tahansa muuhun osoitteeseen päänäytöstä napauttamalla hakupalkkia ja kirjoittamalla sitten osoite. Napauta \"Sijainnin yksityiskohdat\" -näytöllä \"Käynnistä äänimajakka\" -painiketta.";
 
 
 /*  */
@@ -4191,7 +4191,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape voi tunnistaa määränpääsi paikan muutamien metrien etäisyydellä, mutta ei sitä lähempänä. Kun Soundscape päättelee, että olet lähellä määränpäätäsi, kuulet viimeisen ilmoituksen siitä, että määränpääsi on lähellä, ja majakka poistuu käytöstä.";
+"faq.how_close_to_destination.answer" = "Soundscape voi määrittää määränpääsi sijainnin useiden metrien tarkkuudella, mutta ei vähemmän. Kun Soundscape määrittää, että olet lähellä määränpäätäsi, kuulet viimeisen huomautuksen, että määränpääsi on lähellä, ja majakka sammuu. Voit säätää, milloin majakka vaimenee siirtymällä kohtaan \"Äänimajakka\" \"Asetukset\"-näytöstä ja siirtämällä sitten \"Äänen mykistyksen etäisyys\" -liukusäädintä ylös tai alas.";
 
 
 /*  */
@@ -4215,7 +4215,7 @@
 
 
 /*  */
-"faq.why_not_every_business.answer" = "Soundscape on suunniteltu olemaan puhumatta liikaa. Se käyttää myös Open Street Map -karttapalvelua taustatietolähteenään. Open Street Map (OSM, https://www.openstreetmap.org/) on yhteisön kehittämä ja muokkaama maailmankartta, joka on riippuvainen yksilöistä, jotka syöttävät ja valikoivat tietoja. Jos Soundscape ei ilmoita yritystä tai kiinnostavaa kohdetta, todennäköisin syy siihen on, että OSM-yhteisön jäsen ei ole lisännyt, tai joissakin tapauksissa päivittänyt, yritystä.";
+"faq.why_not_every_business.answer" = "Soundscape on suunniteltu olemaan liian puhelias. Lisäksi se käyttää Open Street Mapia taustatietolähteenä. Avoin katukartta (Open Street Map (OSM)) (ttps://www.openstreetmap.org/) on yhteisön kehittämä ja muokattu maailmankartta, joka luottaa siihen, että henkilöt syöttävät ja kuratoivat tietoja. Jos Soundscape ei julkista yritystä tai kiinnostavaa kohdetta, todennäköisin syy on se, että OSM-yhteisön jäsen ei ole vielä lisännyt tai joissain tapauksissa päivittänyt yritystä.";
 
 
 /*  */
@@ -4231,7 +4231,7 @@
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Soundscapella on luettelo viimeisimmistä ilmoituksistasi, jotta voit palata ilmoituksiin, jotka olet saattanut jättää huomiotta. Löydät tämän napauttamalla Soundscapen aloitusnäytön hakupalkkia. Tämän sivun alareunassa on osa \"Viimeaikaiset ilmoitukset\", jonka luettelossa ohittamasi ilmoitus on.";
+"faq.miss_a_callout.answer" = "Soundscapessa on luettelo viimeisimmistä huomioteksteistäsi, jotta voit tarkastella uudelleen huomiotekstejä, jotka olet ehkä unohtanut. Löytääksesi tämän, napauta Soundscapen kotinäytön hakupalkkia. Tämän sivun alareunassa on \"Viimeaikaiset huomiotekstit\" -osio, jossa huomaamatta jääneet huomiotekstit näkyvät. Vaihtoehtoisesti voit toistaa viimeisen huomiotekstin ravistamalla puhelintasi. Ota \"Toista huomiotekstit\" käyttöön, \"Asetukset\"-näytön \"Hallitse huomiotekstejä\" -osiosta.";
 
 
 /*  */
@@ -4323,7 +4323,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.answer" = "Soundscape tarjoaa useita tapoja hallita, mitä kuulet ja milloin:\n\n1. Pysäytä kaikki äänet välittömästi: Kaksoisnapauta näyttöä kahdella sormella pysäyttääksesi kaikki äänet välittömästi, mukaan lukien sillä hetkellä toistettavat ilmoitukset ja majakka, jos se on päällä. Ilmoitukset kuuluvat jälleen, kun lähestyt seuraavaa risteystä tai mielenkiintoista kohdetta, mutta äänimajakka ei. Valitse \"poista majakan hiljennys -painike\" aloitusnäytöltä kuullaksesi majakan jälleen.\n2. Pysäytä automaattiset ilmoitukset: Kun et ole matkalla tai olet saavuttanut määränpääsi, et luultavasti tarvitse Soundscapen jatkuvia ilmoituksia ympäristösi asioista. Sovelluksesta poistumisen sijaan voit asettaa Soundscapen odotustilaan, ja se herää uudelleen, kun lähdet, tai voit asettaa Soundscapen lepotilaan ja se pysyy pois päältä, kunnes päätät laittaa sen jälleen päälle. Vaihtoehtoisesti voit valita \"Asetukset\" valikosta ja ottaa kaikki ilmoitukset pois päältä \"Hallitse ilmoituksia\" -osassa.\n3. Pysäytä majakka: On useita skenaarioita, joissa saatat asettaa määränpään, mutta et tarvitse äänimajakkaa. Saatat esimerkiksi tietää täsmälleen, kuinka päästä määränpäähäsi, mutta haluat automaattisia päivityksiä siitä, kuinka kaukana määränpäästäsi olet. Vaihtoehtoisesti saatat tietää osapuilleen, kuinka päästä määränpäähäsi, ja tarvitset äänimajakkaa vain lähestyessäsi määränpäätäsi. Joka tapauksessa voit valita, milloin kuulet majakan käyttämällä \"hiljennä majakka\"/\"poista majakan hiljennys\" -painiketta aloitusnäytöllä.";
+"faq.controlling_what_you_hear.answer" = "Soundscape tarjoaa useita tapoja hallita, mitä kuulet ja milloin:\n\n1. Lopeta kaikki ääni välittömästi: Kaksoisnapauta näyttöä kahdella sormella sammuttaaksesi välittömästi kaikki äänet, mukaan lukien kaikki parhaillaan toistettavat huomiotekstit ja majakka, jos se on päällä. Huomiotekstit jatkuvat automaattisesti, kun lähestyt seuraavaa risteystä tai kiinnostavaa kohdetta, mutta merkkivalo ei pala. Jatka majakan kuulemista valitsemalla kotinäytössä \"kumoa majakan mykistys\" -painike.\n2. Lopeta automaattiset huomiotekstit: Kun et ole matkustamassa tai olet saapunut määränpäähän, et todennäköisesti tarvitse Soundscapea ilmoittamaan sinulle ympärilläsi olevista asioista. Sovelluksesta poistumisen sijaan voit laittaa Soundscapen Torkku-tilaan, jolloin se herää uudelleen, kun lähdet, tai voit laittaa Soundscapen lepotilaan, jolloin se pysyy pois päältä, kunnes herätät sen. Vaihtoehtoisesti voit valita valikosta \"Asetukset\" ja poistaa kaikki huomiotekstit käytöstä \"Hallitse huomiotekstejä\" -osiossa.\n3. Pysäytä majakka: On olemassa useita tilanteita, joissa voit asettaa määränpään, mutta et tarvitse merkkivaloa. Saatat esimerkiksi tietää tarkalleen, kuinka pääset määränpäähäsi, mutta haluat saada automaattisia päivityksiä siitä, kuinka kaukana olet määränpäästäsi. Tai saatat tietää suunnilleen kuinka päästä määränpäähäsi, ja tarvitset vain äänimajakan, kun olet lähellä määränpäätä. Joka tapauksessa voit valita, milloin majakka kuullaan vaihtamalla \"mykistä majakka\"/\"kumoa majakan mykistys\" -painiketta kotinäytöllä.";
 
 
 /*  */
@@ -4339,15 +4339,15 @@
 
 
 /*  */
-"faq.personalize_experience.answer" = "Soundscape antaa mahdollisen mukauttaa kolmea kävellessä kuultavien ilmoitusten ominaisuutta:\n\n1. Puhe: Voit valita, mitä iOS:in tarjoamia puheääniä haluat Soundscapen käyttävän, samoin kuin ilmoitusten puhenopeuden. Valitse valikosta Asetukset ja sen jälkeen Puhe mukauttaaksesi Puhenopeus- ja Puhe-asetuksia. Lisää puheääniä ja parempia puheääniä, joiden laatu on parempi, on ladattavissa iOS:in Asetukset-sovelluksen kohdassa at Asetukset > Käyttöapu > Puhuttu sisältö > Puheäänet. \n2. Etäisyyden yksikkö: Soundscape mahdollistaa etäisyyksien kuulemisen jalkoina tai metreinä. Valitse valikosta Asetukset. Mittayksiköt-osa mahdollistaa vaihtamisen kahden asetuksen välillä: Imperiaalinen (jalkaa) ja Metrinen (metriä).\n3. Merkinnät: Voit merkitä maailmaasi mitä tahansa sinulle tärkeää. Voit merkitä henkilökohtaisesti tärkeitä asioita, kuten toimistosi ja lempiruokakauppasi. Soundscape ilmoittaa silloin automaattisesti merkityt paikat, kun kävelet niiden ohi tai lähestyt niitä, tai voit myös käyttää Merkinnät-painiketta Soundscapen aloitusnäytöllä kuullaksesi tila-ilmoituksen lähiympäristösi paikoista. Nämä merkinnät ovat henkilökohtaisia, eikä niitä kerrota muille.\n\nEdellisten lisäksi seuraavat VoiceOver-asetukset voivat vaikuttaa siihen, kuinka Soundscape käyttäytyy:\n\n1. VoiceOver-vihjeet: Kun VoiceOver-vihjeet ovat PÄÄLLÄ, kuulet lisätietoja kaikista painikkeista Soundscapen päänäytössä. Voit ottaa VoiceOver-vihjeet käyttöön siirtymällä iOS:in Asetukset-sovellukseen ja siellä kohtaan Käyttöapu > VoiceOver- > Monisanaisuus, ja ottamalla käyttöön asetuksen Puhevihjeet.\n2. Äänen vaimennus: Soundscape on suunniteltu toimimaan Äänen vaimennus -asetus POIS. Kun Äänen vaimennus on käytössä, automaattisia ilmoituksia voi olla vaikea kuulla, jos VoiceOver-toimintoa käytetään samaan aikaan. Suosittelemme Äänen vaimennuksen poistamista käytöstä, jotta automaattiset ilmoitukset olisi helpompi kuulla, kun vuorovaikutat puhelimen kanssa. Äänen vaimennuksen voi ottaa pois käytöstä VoiceOver-asetuksissa VoiceOver-kääntöasetuksen avulla.\n3. Touch ID tai Face ID lukituksen poistamiseksi: Puhelimen määrittäminen käyttämään Touch ID:tä tai Face ID:tä lukituksen poistamiseksi tekee lukituksen poistamisesta nopeaa ja helppoa ja mahdollistaa Oma sijaintini -, Lähiympäristö- ja Edessäpäin-painikkeiden mahdollisimman nopean käytön matkallasi. Määritä lukituksen poisto Touch ID:n tai Face ID:n avulla iOS:in Asetukset-sovelluksesta.";
+"faq.personalize_experience.answer" = "Soundscapen avulla voit mukauttaa kävellessäsi kuulemiesi huomiotekstien kolmea avainkohtaa:\n\n1. Puheen ääni: Voit valita, mitä iOS:ssä käytettävissä olevista puheen äänistä haluat Soundscapen käyttävän, sekä nopeuden, jolla huomiotekstit puhutaan. Valitse valikosta \"Asetukset\" ja sitten \"Yleiset asetukset\" -kohdasta Puheen ääni säätääksesi puhenopeus- ja puheen ääni -asetuksia. Lisää puheen ääniä ja parempia puheen ääniä voi ladata iOS-asetukset-sovelluksesta kohdasta Asetukset > Esteettömyys > Puhuttu sisältö > Puheen äänet.\n2. Etäisyysmetriikka: Soundscapen avulla voit kuulla kaikki etäisyydet joko jalkoina tai metreinä. Valitse valikosta \"Asetukset\" ja sitten \"Yleiset asetukset\" -kohdasta \"Kieli ja alue\". Mittayksiköt-osiossa voit vaihtaa kahden vaihtoehdon välillä: Imperial (jalka) ja Metric (metri).\n3. Merkitsin: Voit merkitä maailmaasi kaikella, mistä välität. Voit merkitä asioita, jotka ovat henkilökohtaisia ja sinulle tärkeitä, kuten kotisi, toimistosi ja haluamasi ruokakauppa. Sitten Soundscape kutsuu automaattisesti merkityt paikat, kun kävelet ohi tai lähestyt niitä, tai voit myös käyttää Soundscapen kotinäytön alareunassa olevaa Lähiympäristön merkitsimet -painiketta kuullaksesi tilaviitteen merkityistä paikoista ympärilläsi. Nämä merkit pysyvät sinulle henkilökohtaisina, eivätkä ne ole kenenkään muun saatavilla.\n\nYllä olevien lisäksi seuraavat Puheen aänen ohitus -asetukset voivat vaikuttaa Soundscapen toimintaan:\n\n1. Puheen aänen ohitus -vinkit: Kun Puheen aänen ohitus -vinkit on otettu käyttöön, kuulet lisätietoja kaikista ensisijaisen Soundscape-näytön painikkeista. Voit ottaa Puheen aänen ohitus -vinkit käyttöön siirtymällä iOS-asetukset-sovellukseen ja valitsemalla Esteettömyys > Puheen aänen ohitus > Monisanaisuus ja ottamalla Puhumisen vihjeet -asetuksen päälle.\n2. Äänen vaimennus: Soundscape on suunniteltu toimimaan, kun 'Äänen vaimennus' on kytketty pois päältä. Kun 'Äänen vaimennus' on käytössä, automaattisia huomiotekstejä voi olla vaikea kuulla, jos Puheen aänen ohitusta käytetään samanaikaisesti. Suosittelemme, että poistat Äänen vaimennus 'toiminnon käytöstä, jotta kuulet helpommin kaikki automaattiset huomiotekstit, joita esiintyy ollessasi vuorovaikutuksessa puhelimen kanssa. Äänen vaimennus voidaan kytkeä pois päältä Puheen äänen ohitus -asetuksista tai Puheen aänen ohitus -roottorin kautta.\n3. Lukituksen avaaminen Kosketus- tai Kasvot-tunnuksella: Puhelimen lukituksen avaaminen Kosketus- tai Kasvot-tunnuksella tekee puhelimen lukituksen avaamisesta nopeaa ja helppoa, ja puolestaan voit käyttää 'Oma sijaintini'-, 'Ympärilläni'- ja 'Edessäni'-painikkeita mahdollisimman nopeasti liikkeellä ollessasi. Ota Kosketus- tai Kasvot-tunnus-lukituksen avaus käyttöön iOS-asetukset-sovelluksessa.";
 
 
 /*  */
-"faq.what_is_osm.question" = "Mikä on Open Street Map ja miksi käytämme sitä Soundscapessa?";
+"faq.what_is_osm.question" = "Mikä on Avoin katukartta (Open Street Map (OSM)) ja miksi käytämme sitä Soundscapessa?";
 
 
 /*  */
-"faq.what_is_osm.answer" = "Soundscape käyttää maantieteellisiä karttatietoja antaakseen tietoja sovelluksen ilmoituksissa. Tärkein käyttämämme lähde on Open Street Map (www.openstreetmap.org), joka on rikas yhteisön luoma kartta-alusta, joka antaa organisaatioille ja yksilöille mahdollisuuden parantaa annettujen tietojen laatua ja tarkkuutta sekä tilojen saavutettavuutta Open Street Map -karttojen luontityökalujen avulla.";
+"faq.what_is_osm.answer" = "Soundscape käyttää maantieteellisiä karttatietoja antaakseen tietoja sovelluksen ilmoituksissa. Tärkein käyttämämme lähde on avoin katukartta (Open Street Map (OSM)) (www.openstreetmap.org), joka on rikas yhteisön luoma kartta-alusta, joka antaa organisaatioille ja yksilöille mahdollisuuden parantaa annettujen tietojen laatua ja tarkkuutta sekä tilojen saavutettavuutta Open Street Map -karttojen luontityökalujen avulla.";
 
 
 /*  */
@@ -4355,7 +4355,7 @@
 
 
 /*  */
-"faq.tip.setting_beacon_on_address" = "Voit määrittää majakan mihin tahansa osoitteeseen. Hae osoitetta Soundscapen päänäytöllä. Kun olet valinnut osoitteen hakutuloksista, \"Sijainnin tiedot\" -näyttö ilmestyy, ja siinä on mahdollista valita osoitteelle \"Käynnistä äänimajakka\". Näin voit määrittää majakan yrityksiin, paikkoihin, mielenkiintoisiin kohteisiin ja asuinpaikkoihin, jotka eivät ole Open Street Maps -kartassa.";
+"faq.tip.setting_beacon_on_address" = "Voit asettaa majakan mihin tahansa osoitteeseen. Napauta kotinäytöllä hakupalkkia ja kirjoita sitten osoite. Kun olet valinnut osoitteen hakutuloksista, näkyviin tulee \"Sijainnin yksityiskohdat\" -näyttö, jossa on vaihtoehto \"Käynnistä äänimajakka\" osoitteessa. Tällä tavalla voit asettaa majakan yrityksiin, paikkoihin, kiinnostaviin kohteisiin ja asuntoihin, jotka eivät ole Avoimessa katukartassa.(Open Street Map (OSM)).";
 
 
 /*  */
@@ -4363,11 +4363,11 @@
 
 
 /*  */
-"faq.tip.turning_beacon_off" = "Voit asettaa majakan rytmikkään äänen käyttöön ja pois käytöstä käyttämällä aloitusnäytön hiljennyspainiketta. Jos majakka on hiljennetty, saat silti päivityksiä etäisyydestäsi määränpäähän aina noin 50 metrin välein.";
+"faq.tip.turning_beacon_off" = "Voit kytkeä majakan rytmisen äänen päälle ja pois päältä kotinäytön mykistyspainikkeella. Jos majakka on mykistetty, saat silti päivitykset määränpäähän etäisyydestä noin 50 metrin välein.";
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "Jos haluat jatkaa vuorovaikutusta Soundscapen kanssa, mutta et halua kuulla automaattisia ilmoituksia, voit ottaa ilmoitukset pois käytöstä siirtymällä valikosta \"Hallitse ilmoituksia\" -osaan sivulla \"Asetukset\". Vaihtoehtoisesti, jos et aio käyttää Soundscapea, voit asettaa sen lepo- tai odotustilaan aloitusnäytön \"Siirry lepotilaan\"-painikkeen avulla.";
+"faq.tip.turning_off_auto_callouts" = "Jos haluat silti olla vuorovaikutuksessa Soundscapen kanssa, mutta et halua kuulla automaattisia huomiotekstejä, voit poistaa ne käytöstä siirtymällä valikosta \"Asetukset\"-näytön \"Hallinnoi huomiotekstejä\" -osioon ja poistamalla sitten \"Salli huomiotekstit\" käytöstä. Tai jos et aio käyttää Soundscapea, voit laittaa sen joko lepotilaan tai torkkutilaan käyttämällä \"Lepo\"-painiketta kotinäytöllä.";
 
 
 /*  */
@@ -4380,9 +4380,5 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Näytön napauttaminen kahdesti kahdella sormella hiljentää mahdolliset aktiiviset ilmoitukset.";
-
-
-
-
-
-
+"whats_new.1_2_0.2.title" = "Luokat 'Lähiympäristön paikat':ssa";
+"whats_new.1_2_0.2.description" = "Voit nyt suodattaa lähistöllä olevia paikkoja luokkien mukaan, kuten joukkoliikenne, ruoka ja juoma jne.";

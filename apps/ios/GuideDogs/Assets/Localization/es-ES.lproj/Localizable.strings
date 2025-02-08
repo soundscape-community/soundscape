@@ -635,7 +635,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.explanation" = "Pulse en este botón para oír sobre el estado de los auriculares que usa con Soundscape.";
+"troubleshooting.check_audio.explanation" = "Pulsa en este botón para conocer el estado de los auriculares que usas con Soundscape.";
 
 
 /*  */
@@ -1331,7 +1331,7 @@
 
 
 /*  */
-"route_detail.edit.delete.title" = "¿Seguro que desea eliminar esta ruta?";
+"route_detail.edit.delete.title" = "¿Seguro que deseas eliminar esta ruta?";
 
 
 /*  */
@@ -1343,7 +1343,7 @@
 
 
 /*  */
-"route_detail.edit.cancel.message" = "¿Seguro que desea descartar los cambios?";
+"route_detail.edit.cancel.message" = "¿Seguro que deseas descartar los cambios?";
 
 
 /*  */
@@ -1483,11 +1483,11 @@
 
 
 /*  */
-"universal_links.marker.alert.title" = "Ha recibido un marcador: \"%@\"";
+"universal_links.marker.alert.title" = "Has recibido un marcador: \"%@\"";
 
 
 /*  */
-"universal_links.marker.alert.message" = "Solo debe usar marcadores de alguien en quien confíe.";
+"universal_links.marker.alert.message" = "Solo debes usar marcadores de alguien en quien confíes.";
 
 
 /*  */
@@ -1495,7 +1495,7 @@
 
 
 /*  */
-"universal_links.marker_existing.alert.message" = "Ya existe un marcador en esta ubicación. ¿Desea reemplazarlo?";
+"universal_links.marker_existing.alert.message" = "Ya existe un marcador en esta ubicación. ¿Deseas reemplazarlo?";
 
 
 /*  */
@@ -1547,7 +1547,7 @@
 
 
 /*  */
-"url_resource.alert.route.import.title" = "Ha recibido una ruta: \"%@\"";
+"url_resource.alert.route.import.title" = "Has recibido una ruta: \"%@\"";
 
 
 /*  */
@@ -1559,7 +1559,7 @@
 
 
 /*  */
-"url_resource.alert.route.import_existing.message" = "¿Desea reemplazarla? Al sustituir esta ruta también se reemplazarán los marcadores usados en esta ruta.";
+"url_resource.alert.route.import_existing.message" = "¿Deseas reemplazarla? Al sustituir esta ruta también se reemplazarán los marcadores usados en esta ruta.";
 
 
 /*  */
@@ -1635,7 +1635,7 @@
 
 
 /*  */
-"routes.import.alert.message" = "Faltan datos de punto de ruta para una o más de sus rutas. Revise las siguientes rutas y vuelva a agregar puntos de ruta si es necesario.";
+"routes.import.alert.message" = "Faltan datos de punto de ruta para una o más de tus rutas. Revisa las siguientes rutas y vuelve a agregar puntos de ruta si es necesario.";
 
 
 /*  */
@@ -1739,7 +1739,7 @@
 
 
 /*  */
-"markers.destructive_delete_message" = "¿Seguro que desea eliminar este marcador?";
+"markers.destructive_delete_message" = "¿Seguro que deseas eliminar este marcador?";
 
 
 /*  */
@@ -1835,7 +1835,7 @@
 
 
 /*  */
-"filter.double_tap_places_category" = "Pulse dos veces para filtrar lugares por categoría.";
+"filter.double_tap_places_category" = "Pulsa dos veces para filtrar lugares por categoría.";
 
 
 /*  */
@@ -1867,7 +1867,7 @@
 
 
 /*  */
-"filter.not_available" = "Algunos filtros de categoría no están disponibles. Todavía puede buscar lugares cercanos seleccionando \"%@\".";
+"filter.not_available" = "Algunos filtros de categoría no están disponibles. Todavía puedes buscar lugares cercanos seleccionando \"%@\".";
 
 
 /*  */
@@ -2651,7 +2651,7 @@
 
 
 /*  */
-"poi_screen.loading_title.no_places_matching" = "No hay lugares que coincidan con %@. Pruebe un filtro diferente";
+"poi_screen.loading_title.no_places_matching" = "No hay lugares que coincidan con %@. Prueba un filtro diferente";
 
 
 /*  */
@@ -2907,7 +2907,7 @@
 
 
 /*  */
-"behavior.experience.delete.explanation" = "Si elimina esta experiencia, se quitará del teléfono.";
+"behavior.experience.delete.explanation" = "Si eliminas esta actividad, se eliminará de tu teléfono.";
 
 
 /*  */
@@ -3035,7 +3035,7 @@
 
 
 /*  */
-"icloud.kv_store.quota_violation_alert.message" = "El almacenamiento de iCloud para esta aplicación está completo. Para crear un nuevo marcador, necesitará liberar espacio quitando algunos de sus marcadores existentes.";
+"icloud.kv_store.quota_violation_alert.message" = "El almacenamiento de iCloud para esta aplicación está completo. Para crear un nuevo marcador, necesitarás liberar espacio quitando algunos de tus marcadores existentes.";
 
 
 /*  */
@@ -3175,7 +3175,7 @@
 
 
 /*  */
-"tutorial.beacons.text.IntroPart2" = "Presione el botón \"Iniciar señal de audio\" a continuación para abrir una lista de lugares cercanos. Elija una ubicación en la lista y el tutorial comenzará.";
+"tutorial.beacons.text.IntroPart2" = "Presiona el botón \"Iniciar señal de audio\" a continuación para abrir una lista de lugares cercanos. Elije una ubicación en la lista y el tutorial comenzará.";
 
 
 /*  */
@@ -3235,11 +3235,11 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Intente ahora alejarse lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándole donde se encuentra @!destination!!. Inténtalo ahora.";
+"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote dónde se encuentra tu @!destination!! Inténtalo ahora.";
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRepeat" = "Aléjase lentamente de la dirección de la señal.";
+"tutorial.beacons.text.BeaconInBoundsRepeat" = "Aléjate lentamente de la dirección de la señal.";
 
 
 /*  */
@@ -3259,7 +3259,7 @@
 
 
 /*  */
-"tutorial.beacons.text.MuteRepeat" = "Pulse dos veces con dos dedos en cualquier lugar de la pantalla";
+"tutorial.beacons.text.MuteRepeat" = "Pulsa dos veces con dos dedos en cualquier lugar de la pantalla";
 
 
 /*  */
@@ -3287,11 +3287,11 @@
 
 
 /*  */
-"settings.help.section.home_screen_buttons" = "Escuchar mi entorno";
+"settings.help.section.home_screen_buttons" = "Botones \"Escuchar mi entorno\"";
 
 
 /*  */
-"help.config.voices.content" = "Soundscape puede usar cualquiera de las voces que has descargado en la aplicación de configuración de iOS, salvo las voces de Siri, que no están disponibles en Soundscape. Te recomendamos que elijas una de las voces \"Mejoradas\" ya que su calidad de voz es mucho mejor. Sin embargo, para usarla primero tendrás que descargar una voz mejorada. Para descargar voces en la aplicación de configuración de iOS tienes que ir a Accesibilidad > Contenido leído > Voces y pulsar en una voz. En la aplicación Soundscape, puedes seleccionar la voz que desees de la forma siguiente: pulsa el botón \"Ajustes Generales\" desde la pantalla \"Ajustes\" y selecciona \"Voz\".";
+"help.config.voices.content" = "Soundscape puede usar cualquiera de las voces que has descargado en la aplicación de configuración de iOS, salvo las voces de Siri, que no están disponibles en Soundscape. Te recomendamos que elijas una de las voces \"Mejoradas\" ya que su calidad de voz es mucho mejor. Sin embargo, para usarla primero tendrás que descargar una voz mejorada. Para descargar voces en la aplicación de configuración de iOS tienes que ir a Accesibilidad > Contenido leído > Voces y pulsar en una voz. En la aplicación Soundscape, puedes seleccionar la voz que desees de la forma siguiente: pulsa \"Ajustes\" desde el menú principal y, a continuación, en \"Ajustes Generales\", selecciona \"Voz\".";
 
 
 /*  */
@@ -3411,15 +3411,15 @@
 
 
 /*  */
-"first_launch.get_started_button.off.acc_hint" = "Debe marcar la casilla \"aceptar los términos de uso\" antes de poder pulsar este botón.";
+"first_launch.get_started_button.off.acc_hint" = "Debes marcar la casilla \"aceptar los términos de uso\" antes de poder pulsar este botón.";
 
 
 /*  */
-"first_launch.welcome_text" = "¡Bienvenido/-a! Antes de comenzar, tenemos que pasar por algunos ajustes y aceptar varios permisos. Presione el botón Siguiente para iniciar.";
+"first_launch.welcome_text" = "¡Bienvenido/-a! Antes de comenzar, tenemos que pasar por algunos ajustes y aceptar varios permisos. Presiona el botón Siguiente para iniciar.";
 
 
 /*  */
-"first_launch.welcome_audio_text" = "¡Bienvenido/-a! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, intersecciones y lugares cuando te acercas. Pulse el botón Siguiente para comenzar.";
+"first_launch.welcome_audio_text" = "¡Bienvenido/-a! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, intersecciones y lugares cuando te acercas. Pulsa el botón Siguiente para comenzar.";
 
 
 /*  */
@@ -3451,23 +3451,23 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound" = "Iluminando su camino con sonido";
+"first_launch.lighting_way_with_sound" = "Iluminando tu camino con sonido";
 
 
 /*  */
-"first_launch.lighting_way_with_sound.text_alt" = "Soundscape usa sonido 3D para indicarte qué hay a tu alrededor. Por ejemplo, si tu destino está a tu derecha, oirá un sonido procedente de esa dirección, o si hay una cafetería a tu izquierda, oirá un aviso procedente de esa dirección.";
+"first_launch.lighting_way_with_sound.text_alt" = "Soundscape usa sonido 3D para indicarte qué hay a tu alrededor. Por ejemplo, si tu destino está a tu derecha, oirás un sonido procedente de esa dirección, o si hay una cafetería a tu izquierda, oirás un aviso procedente de esa dirección.";
 
 
 /*  */
-"first_launch.heading_somewhere" = "¿Se dirige a algún lugar?";
+"first_launch.heading_somewhere" = "¿Te diriges a algún lugar?";
 
 
 /*  */
-"first_launch.heading_somewhere.text" = "Coloque una señal de audio en el destino y Soundscape le mantendrá informado de su ubicación y su entorno en el trayecto. Use Soundscape junto con sus habilidades de orientación e incluso su aplicación de navegación favorita para encontrar el camino a su destino.";
+"first_launch.heading_somewhere.text" = "Coloca una señal de audio en el destino y Soundscape te mantendrá informado de tu ubicación y tu entorno en el trayecto. Usa Soundscape junto con tus habilidades de orientación e incluso tu aplicación de navegación favorita para encontrar el camino a tu destino.";
 
 
 /*  */
-"first_launch.setting_off_way" = "¿Va a empezar el trayecto?";
+"first_launch.setting_off_way" = "¿Vas a empezar el trayecto?";
 
 
 /*  */
@@ -3475,7 +3475,7 @@
 
 
 /*  */
-"first_launch.find_things_nearby" = "¿Desea encontrar más cosas cerca?";
+"first_launch.find_things_nearby" = "¿Deseas encontrar más cosas cerca?";
 
 
 /*  */
@@ -3491,7 +3491,7 @@
 
 
 /*  */
-"first_launch.welcome.description" = "Navegue con confianza utilizando el audio espacial de Soundscape";
+"first_launch.welcome.description" = "Navegación segura con sonido envolvente de Soundscape";
 
 
 /*  */
@@ -3503,11 +3503,11 @@
 
 
 /*  */
-"first_launch.headphones.message.1" = "Soundscape funciona muy bien con cualquier tipo de auriculares. Si desea usar auriculares, tómelos ahora.";
+"first_launch.headphones.message.1" = "Soundscape funciona muy bien con cualquier tipo de auriculares. Si deseas usar auriculares, tómalos ahora.";
 
 
 /*  */
-"first_launch.headphones.message.2" = "Si no tiene auriculares o prefiere no usarlos, Soundscape seguirá funcionando con los altavoces del teléfono.";
+"first_launch.headphones.message.2" = "Si no tienes auriculares o prefieres no usarlos, Soundscape seguirá funcionando con los altavoces del teléfono.";
 
 
 /*  */
@@ -3567,11 +3567,11 @@
 
 
 /*  */
-"first_launch.beacon.message.1" = "Al navegar con Soundscape, oirá la señal de audio en la dirección de su destino. Siguiendo su sonido, siempre sabrá qué camino tomar.";
+"first_launch.beacon.message.1" = "Al navegar con Soundscape, oirás la señal de audio en la dirección de tu destino. Siguiendo su sonido, siempre sabrás qué camino tomar.";
 
 
 /*  */
-"first_launch.beacon.message.2" = "Escuche las señales de audio disponibles y seleccione su preferencia.";
+"first_launch.beacon.message.2" = "Escucha las señales de audio disponibles y selecciona tu preferencia.";
 
 
 /*  */
@@ -3587,7 +3587,7 @@
 
 
 /*  */
-"first_launch.beacon.audio.message" = "La señal sigue el movimiento del teléfono y usa audio espacial para que siempre esté al tanto de su ubicación.";
+"first_launch.beacon.audio.message" = "La señal sigue el movimiento del teléfono y usa audio espacial para que siempre estés al tanto de tu ubicación.";
 
 
 /*  */
@@ -3615,11 +3615,11 @@
 
 
 /*  */
-"first_launch.prompt.title" = "¡Ya está todo listo!";
+"first_launch.prompt.title" = "¡Ya estás preparado!";
 
 
 /*  */
-"first_launch.prompt.message" = "Está listo para su primer paseo con Soundscape. Para probarlo ahora, simplemente elija un destino cercano, inicie la señal de audio y lo escuchará en la dirección de su destino.";
+"first_launch.prompt.message" = "Estás listo para tu primer paseo con Soundscape. Para probarlo ahora, simplemente elige un destino cercano, inicia la señal de audio y lo escucharás en la dirección de tu destino.";
 
 
 /*  */
@@ -3671,7 +3671,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Administrar los avisos que escuchas:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, ve a la pantalla \"Ajustes\" desde el menú principal y luego pulsa \"Administrar Avisos\". Esta sección contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si deseas desactivar todos los avisos, toca el botón \"Permitir Avisos\" en la parte superior de la lista.";
+"help.text.automatic_callouts.how.2" = "<b>Administrar los avisos que escuchas:</b><br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, ve a la pantalla \"Ajustes\" desde el menú principal. La sección \"Administrar Avisos\" de la pantalla \"Ajustes\" contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si deseas desactivar todos los avisos, toca el botón \"Permitir Avisos\" en la parte superior de la lista.";
 
 
 /*  */
@@ -4067,7 +4067,7 @@
 
 
 /*  */
-"banner.offline_search.message" = "Soundscape está funcionando sin conexión. Las ubicaciones se limitan a lugares por los que ha caminado antes o que ya ha marcado. Más información";
+"banner.offline_search.message" = "Soundscape está funcionando sin conexión. Las ubicaciones se limitan a lugares por los que has caminado antes o que ya has marcado. Más información";
 
 
 /*  */
@@ -4095,7 +4095,7 @@
 
 
 /*  */
-"push.local.home.body" = "Solo tiene que elegir un destino cercano e iniciar la señal; la oirá en la dirección de su destino.";
+"push.local.home.body" = "Solo tienes que elegir un destino cercano e iniciar la señal; la oirás en la dirección de tu destino.";
 
 
 /*  */
@@ -4191,7 +4191,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que está cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se apaga la señal seleccionando el botón \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Introducir distancia de proximidad\" hacia arriba o hacia abajo.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que estás cerca de tu destino, oirás un último aviso de que tu destino está cerca y la baliza se apagará. Puedes ajustar cuándo se apaga la baliza yendo a \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Distancia de Silenciar el audio\" hacia arriba o hacia abajo.";
 
 
 /*  */
@@ -4396,7 +4396,7 @@
 "callouts.shake_callouts" = "Repetir avisos";
 "callouts.shake_callouts.info" = "Agita el dispositivo para repetir el último aviso";
 "mail.dispatch" = "Dispatch";
-"beacon.settings.vicinity" = "Introduzca la distancia de proximidad";
+"beacon.settings.vicinity" = "Distancia de silenciar el audio";
 "osm.tag.landmark" = "Marca";
 "osm.tag.pub" = "Pub";
 "osm.tag.coffee_shop" = "Cafetería";
@@ -4413,7 +4413,7 @@
 "osm.tag.green_space" = "zona verde";
 "osm.tag.recreation_area" = "área recreativa";
 "whats_new.1_2_0.0.title" = "Agitar para repetir el último aviso";
-"whats_new.1_2_0.1.title" = "Configuración de la distancia de proximidad de la señal";
+"whats_new.1_2_0.1.title" = "Configuración de la distancia de silenciar la señal";
 "whats_new.1_2_0.2.title" = "Categorías en lugares próximos";
 "whats_new.1_2_0.2.description" = "Ahora puedes filtrar la lista de lugares cercanos por categorías como transporte público, comida y bebida, etc.";
 "osm.tag.bar" = "Bar";
