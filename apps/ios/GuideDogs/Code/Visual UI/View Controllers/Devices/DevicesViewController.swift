@@ -165,7 +165,7 @@ class DevicesViewController: UIViewController {
                     case .ready:
                         return GDLocalizedString("settings.bluetooth.forget")
                     default:
-                        return "What should we put here? What can the device state be when View.state is .paired"
+                        return GDLocalizationUnnecessary("")
                     }
                 default:
                     return ""

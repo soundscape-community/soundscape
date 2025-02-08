@@ -29,27 +29,6 @@ class BoseSensorDataProcessor {
         default:
             GDLogHeadphoneMotionInfo("EventProcessor received data for an unsupported sensor type: \(valueAsArr[0])")
             return nil
-    /*
-        case self.currentSensorConfig?.accelerometerId:
-            GDLogBLEInfo("Got an accellerometer data update, read 10 bytes: \(valueAsArr)")
-            processVectorData(vectorByteArray: valueAsArr)
-            return
-            
-        case self.currentSensorConfig?.gyroscopeId:
-            GDLogBLEInfo("Got an gyroscope data update, read 10 bytes: \(valueAsArr)")
-            processVectorData(vectorByteArray: valueAsArr)
-            return
-            
-            
-        case self.currentSensorConfig?.gamerotationId:
-            GDLogBLEInfo("Got an gameRotation data update, read 11(!) bytes: \(valueAsArr)")
-            processQuaternionData(quaternionByteArray: valueAsArr, hasAccuracy: false)
-            return
-            
-        default:
-            GDLogBLEError("READ: Unknown sensor!")
-            return
-     */
         }
     }
 
@@ -234,12 +213,6 @@ fileprivate struct CorrectionMatrix {
             0, 0, 0, 1
         ])
 
-        // Extract basis
-//      I think this one was wrong...
- /*       var vecX: [Int16] = [_matrix.elements[0], _matrix.elements[4], _matrix.elements[8]]
-        var vecY: [Int16] = [_matrix.elements[1], _matrix.elements[5], _matrix.elements[9]]
-        var vecZ: [Int16] = [_matrix.elements[2], _matrix.elements[6], _matrix.elements[10]]
-  */
         
         var vecX: [Double] = [_matrix.elements[0], _matrix.elements[1], _matrix.elements[2]]
         var vecY: [Double] = [_matrix.elements[4], _matrix.elements[5], _matrix.elements[6]]

@@ -2836,6 +2836,14 @@
 /*  */
 "devices.callouts.check_audio.airpods.disconnected" = "Soundscape söker efter dina AirPods. Kontrollera att de är anslutna till telefonen.";
 
+/*  */
+"devices.callouts.check_audio.bose_frames" = "Bose Frames har anslutits.";
+
+
+/*  */
+"devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape söker efter dina Bose Frames. Kontrollera att de är anslutna till telefonen.";
+
+
 
 /*  */
 "devices.troubleshoot.reconnect" = "Återanslut";
