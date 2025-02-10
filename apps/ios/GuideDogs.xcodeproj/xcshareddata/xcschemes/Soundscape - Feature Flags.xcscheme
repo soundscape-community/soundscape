@@ -15,7 +15,7 @@
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Soundscape-EARS.app"
+                     BuildableName = "Soundscape.app"
                      BlueprintName = "Soundscape"
                      ReferencedContainer = "container:GuideDogs.xcodeproj">
                   </BuildableReference>
@@ -31,7 +31,7 @@
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Soundscape-EARS.app"
+                     BuildableName = "Soundscape.app"
                      BlueprintName = "Soundscape"
                      ReferencedContainer = "container:GuideDogs.xcodeproj">
                   </BuildableReference>
@@ -49,7 +49,7 @@
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-                     BuildableName = "Soundscape-EARS.app"
+                     BuildableName = "Soundscape.app"
                      BlueprintName = "Soundscape"
                      ReferencedContainer = "container:GuideDogs.xcodeproj">
                   </BuildableReference>
@@ -67,7 +67,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-               BuildableName = "Soundscape-EARS.app"
+               BuildableName = "Soundscape.app"
                BlueprintName = "Soundscape"
                ReferencedContainer = "container:GuideDogs.xcodeproj">
             </BuildableReference>
@@ -97,7 +97,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Soundscape-EARS.app"
+            BuildableName = "Soundscape.app"
             BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
@@ -187,7 +187,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Soundscape-EARS.app"
+            BuildableName = "Soundscape.app"
             BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
@@ -215,7 +215,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D3D7CFC71B3D96460020B5E9"
-            BuildableName = "Soundscape-EARS.app"
+            BuildableName = "Soundscape.app"
             BlueprintName = "Soundscape"
             ReferencedContainer = "container:GuideDogs.xcodeproj">
          </BuildableReference>
