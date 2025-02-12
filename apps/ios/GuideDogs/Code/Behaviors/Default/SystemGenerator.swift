@@ -109,9 +109,9 @@ class SystemGenerator: ManualGenerator {
             case let boseDevice as BoseFramesMotionManager:
                 if(boseDevice.isConnected) {
                     callouts.append(GlyphCallout(.arHeadset, .connectionSuccess))
-                    callouts.append(StringCallout(.arHeadset, "Bose frames are connected (TODO: Add localized string for this!)"))
+                    callouts.append(StringCallout(.arHeadset, GDLocalizedString("devices.callouts.check_audio.bose_frames")))
                 } else {
-                    callouts.append(StringCallout(.arHeadset, "Bose frames are not connected (TODO: Add localized string for this!")) //"devices.callouts.check_audio.airpods.disconnected")))
+                    callouts.append(StringCallout(.arHeadset, GDLocalizedString("devices.callouts.check_audio.bose_frames.disconnected"))) //"devices.callouts.check_audio.airpods.disconnected")))
                 }
                 
             default:

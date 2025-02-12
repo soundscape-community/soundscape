@@ -175,7 +175,7 @@
 
 
 /*  */
-"general.loading.start" = "Getting things ready...";
+"general.loading.start" = "Getting things ready…";
 
 
 /*  */
@@ -2843,6 +2843,14 @@
 
 /*  */
 "devices.callouts.check_audio.airpods.disconnected" = "Soundscape is searching for your AirPods. Ensure they are connected to your phone.";
+
+/*  */
+"devices.callouts.check_audio.bose_frames" = "Bose Frames connected.";
+
+
+/*  */
+"devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape is searching for your Bose Frames. Ensure they are connected to your phone.";
+
 
 
 /*  */

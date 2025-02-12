@@ -59,7 +59,7 @@ class BoseFramesMotionManager: NSObject {
     
     // MARK: CalibratableDevice
     /// Threshold for accuracy estimation. Value above this indicates uncalibrated device
-    private let accuracy_calibration_required_threshold: Double = 28.0
+    private let accuracy_calibration_required_threshold: Double = 38.0
     private var accuracyRingBuffer = [Double](repeating: 100.0, count: 10) // Collect 10 latest values for averaging accuracy
     private var accuracyRingBufferPosition: Int = 0
     private var _calibrationOverridden: Bool

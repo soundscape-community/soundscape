@@ -240,39 +240,6 @@ class BoseFramesBLEDevice: BaseBLEDevice {
         
         self.boseCharacteristicSensorData = dataCharacteristic
         self.peripheral.setNotifyValue(true, for: dataCharacteristic)
-
-        // Now, await notification of reading the config value and set new state from there
-        
-        
-        /*
-        for service in services {
-            if (service.uuid == BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_SERVICE) {
-                for c in service.characteristics! {
-                    switch c.uuid {
-                    case  BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_CONFIG_CHARACTERISTIC:
-                        GDLogBLEInfo("Found Bose Config Characteristic")
-                        self.boseCharacteristicSensorConfig = c
-                        self.peripheral.readValue(for: c)
-                        
-                    case BOSE_FRAMES_SERVICE_CONSTANTS.CBUUID_HEADTRACKING_DATA_CHARACTERISTIC:
-                        GDLogBLEInfo("Found Bose Data Characteristic")
-                        self.boseCharacteristicSensorData = c
-                        self.peripheral.setNotifyValue(true, for: c)
-                        continue
-
-                    default:
-                        () // Noop
-                    }
-                }
-            }
-        }
-        
-        guard boseCharacteristicSensorData != nil && boseCharacteristicSensorConfig != nil else {
-            GDLogBLEError("Bose: onConnectionComplete ERROR. Did not find both Config and Data Characteristic. This will not work...")
-            return 
-        }
-        */
-        // Now, await response from the config charateristic and continue the flow in peripheral (_:didUpdateValue:_) when getting config data
     }
     
     /// Called from Peripheral (_:didReadCharacteristic:_)
