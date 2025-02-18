@@ -4421,3 +4421,7 @@
 "osm.tag.ice_cream" = "Heladería";
 "whats_new.1_2_0.0.description" = "Ahora puede sacudir su dispositivo para repetir el último aviso. Para habilitar esta función, activa el botón 'Repetir Avisos' en los ajustes.";
 "whats_new.1_2_0.1.description" = "Ahora puedes ajustar la distancia a la que la señal se silencia automáticamente cuando te acercas. Puedes ajustar esta opción en la configuración de la señal de audio.\n\nNos gustaría conocer tu experiencia con la desactivación de la señal de audio a diferentes distancias (0,5 y 10 metros). En nuestras pruebas internas estamos observando algunas incoherencias en el comportamiento y nos gustaría conocer la opinión de una base más amplia de usuarios.";
+"donation.body" = "Por favor, apoye el desarrollo continuo de la aplicación Soundscape Community para donaar en nuestra página de recaudación de fondos. Cada donación nos acerca un paso más a nuestra visión de ayudar a crear un mundo donde TODOS tengan acceso igualitario a la información sobre su entorno con nuestra tecnología que mejora la vida.";
+"menu.donate" = "Donar";
+"donation.title" = "Donar a Soundscape Community";
+"donation.link" = "Ir a la Página de Recaudación de Fondos";
