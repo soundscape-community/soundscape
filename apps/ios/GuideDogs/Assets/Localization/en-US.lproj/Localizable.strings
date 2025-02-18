@@ -3643,7 +3643,7 @@
 "donation.title" = "Donate to Soundscape Community";
 
 /* text for donation screen */
-donation.body = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to to information on their surroundings through  our life-enhancing technology.";
+"donation.body" = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to information on their surroundings through  our life-enhancing technology.";
 
 /* Donation link title */
 "donation.link" = "Go to Fundraising Page";
