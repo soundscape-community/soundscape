@@ -1565,19 +1565,8 @@
 		DCAAD87E2BC1E95F0018D135 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Assets/PropertyLists/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		DC207E742D4AAB1E00124E8A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Authored Activities/AuthoredActivitiesList.swift",
-				Waypoint/Audio/WaypointAudioButton.swift,
-			);
-			target = 914DEBCC2A3CE6B9007B161C /* UnitTests */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DC207DED2D4AAB1E00124E8A /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (DC207E742D4AAB1E00124E8A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); name = Views; path = "Code/Visual UI/Views"; sourceTree = "<group>"; };
+		DC207DED2D4AAB1E00124E8A /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); name = Views; path = "Code/Visual UI/Views"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
