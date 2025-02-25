@@ -2144,6 +2144,9 @@
 /* Button, Continue */
 "ui.continue" = "Continue";
 
+/* Title, Donate */
+"menu.donate" = "Donate";
+
 /* Title, Activities, In this context, "Recreational Activity" is referring to outdoor activities like hiking, kayaking, snoeshoeing, etc. */
 "menu.events" = "Recreational Activities";
 
@@ -3648,3 +3651,12 @@
 
 /* Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. */
 "faq.tip.two_finger_double_tap" = "Tapping the screen twice with two fingers will silence any active callouts.";
+
+/* Title for donation screen */
+"donation.title" = "Donate to Soundscape Community";
+
+/* text for donation screen */
+"donation.body" = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to information on their surroundings through  our life-enhancing technology.";
+
+/* Donation link title */
+"donation.link" = "Go to Fundraising Page";
