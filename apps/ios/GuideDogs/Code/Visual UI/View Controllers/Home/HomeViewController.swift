@@ -687,6 +687,14 @@ extension HomeViewController: LocationActionDelegate {
                         
                         self.present(firstUseAlert, animated: true, completion: nil)
                     }
+                case .navilens:
+                    // FIXME launch NaviLens app
+                    let navilensUrl = URL(string: "https://www.navilens.com/en/")!
+                    UIApplication.shared.open(navilensUrl) { success in
+                        if !success {
+                            UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/navilens/id1273704914")!)
+                        }
+                    }
                 }
             } catch let error as LocationActionError {
                 let alert = LocationActionAlert.alert(for: error)
