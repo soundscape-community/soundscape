@@ -2253,6 +2253,7 @@
 /* Message indicating that the app has successfully been connected to a head tracking headset, {NumberedPlaceholder="AirPods","Soundscape"} */
 "devices.explain_ar.connected.airpods" = "Your AirPods are ready for use, so you can put your phone in your pocket and go! Soundscape is tracking the direction of your head so you do not need to hold the phone in your hand.";
 
+/* Message indicating that the app has successfully been connected to Bose Frames */
 "devices.explain_ar.connected.boseframes" = "Your Bose Frames are ready for use, so you can put your phone in your pocket and go! Soundscape is tracking the direction of your head so you do not need to hold the phone in your hand.";
 
 /* Message indicating that the app has successfully been paired to head tracking headphones but is not connected, %@ headset name, "Soundscape is not currently connected to your AirPods Pro. Please ensure your headset is turned on and near your phone." {NumberedPlaceholder="%@"} */
