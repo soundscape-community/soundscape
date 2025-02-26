@@ -604,7 +604,7 @@
 "settings.new_feature.num_of_num" = "%1$@ of %2$@";
 
 /* Settings new feature, instruction to double tap to close announcements */
-"settings.new_feature.accept_button.acc_label" = "Double tap to close announcements";
+"settings.new_feature.accept_button.acc_label" = "Double tap to close announcements.";
 
 /* Settings new feature, instruction to double tap to view next update announcement */
 "settings.new_feature.accept_button.acc_hint" = "Double tap to view next update announcement.";
@@ -750,7 +750,7 @@
 "preview.go_back.title" = "Previous";
 
 /* Accessibility hint for button to go back */
-"preview.go_back.accessibility_text" = "Double tap to go back to your previous intersection";
+"preview.go_back.accessibility_text" = "Double tap to go back to your previous intersection.";
 
 /* Text for the "Search" button */
 "preview.search.label" = "Explore Nearby";
@@ -2532,7 +2532,7 @@
 "text.cleaning_things" = "Cleaning things up…";
 
 /* Notification, Double tap to repeat */
-"action.double_tap_to_repeat" = "Double tap to repeat";
+"action.double_tap_to_repeat" = "Double tap to repeat.";
 
 /* Title, Location. Used as screen title for a location detail page. Also used as the default name for markers when a more specific default cannot be generated. */
 "location" = "Location";
@@ -2702,7 +2702,7 @@
 "tutorial.beacons.text.Mute" = "If you need the app to be quiet for any reason, you can either use the mute beacon button or the sleep button on the home screen, or you can double tap with two fingers anywhere on the screen. A double tap with two fingers will stop any current callouts and will mute the audio beacon. Give it a try now.";
 
 /* Tutorial, Mute Beacon Repeat */
-"tutorial.beacons.text.MuteRepeat" = "Double tap with two fingers anywhere on the screen";
+"tutorial.beacons.text.MuteRepeat" = "Double tap with two fingers anywhere on the screen.";
 
 /* Tutorial, Beacon Wrap Up */
 "tutorial.beacons.text.WrapUp" = "It looks like you have got it! If you want to repeat this tutorial, you can access it at any time on the Help and Tutorials screen. The beacon you set for this tutorial will now be cleared and you will be returned to the previous screen.";

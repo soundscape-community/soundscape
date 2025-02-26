@@ -673,7 +673,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_label" = "Double tap to close announcements";
+"settings.new_feature.accept_button.acc_label" = "Double tap to close announcements.";
 
 
 /*  */
@@ -857,7 +857,7 @@
 
 
 /*  */
-"preview.go_back.accessibility_text" = "Double tap to go back to your previous intersection";
+"preview.go_back.accessibility_text" = "Double tap to go back to your previous intersection.";
 
 
 /*  */
@@ -3069,7 +3069,7 @@
 
 
 /*  */
-"action.double_tap_to_repeat" = "Double tap to repeat";
+"action.double_tap_to_repeat" = "Double tap to repeat.";
 
 
 /*  */
@@ -3269,7 +3269,7 @@
 
 
 /*  */
-"tutorial.beacons.text.MuteRepeat" = "Double tap with two fingers anywhere on the screen";
+"tutorial.beacons.text.MuteRepeat" = "Double tap with two fingers anywhere on the screen.";
 
 
 /*  */
