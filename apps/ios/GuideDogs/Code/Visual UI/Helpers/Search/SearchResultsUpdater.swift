@@ -209,13 +209,7 @@ extension SearchResultsUpdater: UISearchBarDelegate {
         }
         
         if let currentLocation = self.location {
-            // Storing the poi with its distance from current location
-            let poisWithDistance = pois.map { poi in
-                (poi: poi, distance: currentLocation.distance(from: CLLocation(latitude: poi.centroidLatitude, longitude: poi.centroidLongitude)))
-            }
-            // Sort the array based on the distance, then extract the POIs in sorted order
-            let sortedPoisWithDistance = poisWithDistance.sorted { $0.distance < $1.distance }
-            pois = sortedPoisWithDistance.map { $0.poi }
+            pois = pois.sorted(byDistanceFrom: currentLocation)
         }
         
         delegate?.searchResultsDidUpdate(pois, searchLocation: self.location)
