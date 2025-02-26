@@ -57,6 +57,7 @@ class GDASpatialDataResultEntity: Object {
     @objc dynamic var longitude: CLLocationDegrees = 0.0
     @objc dynamic var centroidLatitude: CLLocationDegrees = 0.0
     @objc dynamic var centroidLongitude: CLLocationDegrees = 0.0
+    @objc dynamic var navilensEnabled: Bool = false
     
     // MARK: - Computed & Non-Realm Properties
     
@@ -202,6 +203,8 @@ class GDASpatialDataResultEntity: Object {
         // Road specific metadata
         
         roundabout = feature.isRoundabout
+        
+        navilensEnabled = feature.navilensEnabled
         
         // Set additional meta data
         

@@ -36,8 +36,11 @@ struct LocationDetail {
         
         /// Determines whether the "Launch NaviLens" action should be shown
         var hasNaviLens: Bool {
-            //FXIME matches all "mobility" items, which includes bus stops
-            return entity?.superCategory == "mobility"
+            // Only locations that came from GeoJSON data can have this property
+            guard let geojsonPoi = entity as? GDASpatialDataResultEntity else {
+                return false
+            }
+            return geojsonPoi.navilensEnabled
         }
         
         var address: String? {

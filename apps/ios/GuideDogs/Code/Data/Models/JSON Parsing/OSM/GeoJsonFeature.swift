@@ -83,6 +83,8 @@ class GeoJsonFeature {
     
     var isRoundabout = false
     
+    var navilensEnabled = false
+    
     // MARK: Initializers
     
     init?(json: [String: Any], superCategories: SuperCategories) {
@@ -135,6 +137,13 @@ class GeoJsonFeature {
         
         if let junction = properties["junction"], junction == "roundabout" || junction == "circular" {
             isRoundabout = true
+        }
+        
+        //FIXME for testing, set navilens enabled whenever highway=bus_stop
+        if let highway = properties["highway"], highway == "bus_stop" {
+        // Check if navilens=true is in feature properties
+        //if let navilens = properties["navilens"], navilens == "true" {
+            navilensEnabled = true
         }
         
         // Ensure we have a valid geometry or return nil otherwise
