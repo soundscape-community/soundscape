@@ -207,6 +207,15 @@ extension SearchResultsUpdater: UISearchBarDelegate {
                 pois.append(GenericLocation(lat: lat!, lon: long!, name: result.name!, address: address))
             }
         }
+        
+        if let currentLocation = self.location {
+            pois.sort(by: { (lhs, rhs) -> Bool in
+                let loc1 = CLLocation(latitude: lhs.centroidLatitude, longitude: lhs.centroidLongitude)
+                let loc2 = CLLocation(latitude: rhs.centroidLatitude, longitude: rhs.centroidLongitude)
+                return currentLocation.distance(from: loc1) < currentLocation.distance(from: loc2)
+            })
+        }
+        
         delegate?.searchResultsDidUpdate(pois, searchLocation: self.location)
     }
     
