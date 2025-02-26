@@ -247,7 +247,7 @@
 
 
 /*  */
-"general.error.location_services.authorize.instructions" = "1. Abre la aplicación Ajustes a continuación\n2. Selecciona \"Ubicación\"\n3. Selecciona \"Siempre\" o \"Mientras uso la aplicación\"";
+"general.error.location_services.authorize.instructions" = "1. Abre la aplicación Ajustes a continuación\n2. Selecciona \"Ubicación\"\n3. Selecciona \"Siempre\" o \"Al usar la app\"";
 
 
 /*  */
@@ -671,7 +671,7 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_label" = "Pulsa dos veces para cerrar anuncios";
+"settings.new_feature.accept_button.acc_label" = "Pulsa dos veces para cerrar anuncios.";
 
 
 /*  */
@@ -855,7 +855,7 @@
 
 
 /*  */
-"preview.go_back.accessibility_text" = "Pulse dos veces para volver a su cruce anterior";
+"preview.go_back.accessibility_text" = "Pulsa dos veces para volver a tu cruce anterior.";
 
 
 /*  */
@@ -1979,11 +1979,11 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salga de su ubicación actual, Soundscape se volverá a reactivar automáticamente. Usa Servicios de localización, pero en un modo de bajo consumo para conservar la batería del teléfono. Pulse en el botón siguiente para reactivar ahora.";
+"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Usa Servicios de localización, pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa en el botón siguiente para reactivar ahora.";
 
 
 /*  */
-"sleep.sleeping.message" = "Soundscape se encuentra actualmente en el modo de suspensión. Evita que Soundscape use Servicios de localización o descargue datos y ahorra energía de la batería cuando no se usa Soundscape. Pulse en el botón a continuación para reactivar Soundscape.";
+"sleep.sleeping.message" = "Soundscape se encuentra actualmente en el modo de suspensión. Evita que Soundscape use Servicios de localización o descargue datos y ahorra energía de la batería cuando no se usa Soundscape. Pulsa en el botón siguiente para reactivar Soundscape.";
 
 
 /*  */
@@ -3059,7 +3059,7 @@
 
 
 /*  */
-"action.double_tap_to_repeat" = "Pulsar dos veces para repetir";
+"action.double_tap_to_repeat" = "Pulsa dos veces para repetir.";
 
 
 /*  */
@@ -3259,7 +3259,7 @@
 
 
 /*  */
-"tutorial.beacons.text.MuteRepeat" = "Pulsa dos veces con dos dedos en cualquier lugar de la pantalla";
+"tutorial.beacons.text.MuteRepeat" = "Pulsa dos veces con dos dedos en cualquier lugar de la pantalla.";
 
 
 /*  */
@@ -4323,7 +4323,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.answer" = "Soundscape ofrece varias formas de controlar lo que escuchas y cuándo:\n\n1. Detener inmediatamente todo el audio: Toca dos veces la pantalla con dos dedos para apagar inmediatamente todo el audio, incluyendo cualquier aviso que se esté reproduciendo en ese momento y la señal si está encendida. Los avisos se reanudarán automáticamente cuando te acerques a la siguiente intersección o punto de interés, pero la señal de audio no. Selecciona el botón \"Reactivar señal\" en la pantalla de inicio para reanudar la audición de la señal.\n2. Detener los avisos automáticos: Cuando no estés viajando o hayas llegado a un destino, probablemente no necesitarás que Soundscape siga avisándote de las cosas que te rodean. En lugar de salir de la aplicación, puedes poner Soundscape en el modo de aplazamiento y se despertará de nuevo cuando salgas, o puedes poner Soundscape en el modo de reposo y permanecerá apagado hasta que lo despiertes. Alternativamente, puedes seleccionar \"Ajustes\" en el menú y elegir desactivar todos los avisos en la sección \"Administrar Avisos\".\n3. Detener la señal: Hay varios escenarios para los que podrías establecer un destino, pero no necesitar la señal audible encendida. Por ejemplo, puede que sepas exactamente cómo llegar a tu destino pero quieras recibir actualizaciones automáticas sobre la distancia a la que te encuentras de tu destino. O puede que sepas más o menos cómo llegar a su destino y sólo necesites la señal de audio cuando te acerques a él. En cualquier caso, puedes elegir cuándo escuchar la señal pulsando el botón \"Silenciar señal\"/\"Reactivar señal\" en la pantalla de inicio.";
+"faq.controlling_what_you_hear.answer" = "Soundscape ofrece varias formas de controlar lo que escuchas y cuándo:\n\n1. Detener inmediatamente todo el audio: Toca dos veces la pantalla con dos dedos para apagar inmediatamente todo el audio, incluyendo cualquier aviso que se esté reproduciendo en ese momento y la señal si está encendida. Los avisos se reanudarán automáticamente cuando te acerques a la siguiente intersección o punto de interés, pero la señal de audio no. Selecciona el botón \"Reactivar señal\" en la pantalla de inicio para reanudar la audición de la señal.\n2. Detener los avisos automáticos: Cuando no estés viajando o hayas llegado a un destino, probablemente no necesitarás que Soundscape siga avisándote de las cosas que te rodean. En lugar de salir de la aplicación, puedes poner Soundscape en el modo de aplazamiento y se despertará de nuevo cuando salgas, o puedes poner Soundscape en el modo de reposo y permanecerá apagado hasta que lo despiertes. Alternativamente, puedes seleccionar \"Ajustes\" en el menú y elegir desactivar todos los avisos en la sección \"Administrar Avisos\".\n3. Detener la señal: Hay varios escenarios para los que podrías establecer un destino, pero no necesitar la señal audible encendida. Por ejemplo, puede que sepas exactamente cómo llegar a tu destino pero quieras recibir actualizaciones automáticas sobre la distancia a la que te encuentras de tu destino. O puede que sepas más o menos cómo llegar a tu destino y sólo necesites la señal de audio cuando te acerques a él. En cualquier caso, puedes elegir cuándo escuchar la señal pulsando el botón \"Silenciar señal\"/\"Reactivar señal\" en la pantalla de inicio.";
 
 
 /*  */
