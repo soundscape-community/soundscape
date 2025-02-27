@@ -36,11 +36,7 @@ struct LocationDetail {
         
         /// Determines whether the "Launch NaviLens" action should be shown
         var hasNaviLens: Bool {
-            // Only locations that came from GeoJSON data can have this property
-            guard let geojsonPoi = entity as? GDASpatialDataResultEntity else {
-                return false
-            }
-            return geojsonPoi.navilensEnabled
+            return entity?.superCategory == "navilens"
         }
         
         var address: String? {

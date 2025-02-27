@@ -29,7 +29,7 @@ class RealmHelper {
         var databaseConfig = Realm.Configuration.defaultConfiguration
         
         databaseConfig.fileURL = databaseConfig.fileURL?.deletingLastPathComponent().appendingPathComponent("database").appendingPathExtension("realm")
-        databaseConfig.schemaVersion = 1
+        databaseConfig.schemaVersion = 2
         databaseConfig.objectTypes = [ReferenceEntity.self, Route.self, RouteWaypoint.self]
         
         self.databaseConfig = databaseConfig
@@ -68,7 +68,7 @@ extension RealmHelper {
         
         // Initialize schema version and expected object
         // classes
-        cacheConfig.schemaVersion = 1
+        cacheConfig.schemaVersion = 2
         cacheConfig.objectTypes = [Intersection.self, IntersectionRoadId.self, TileData.self, GDASpatialDataResultEntity.self, LocalizedString.self, Address.self, RealmString.self]
         
         guard let directoryURL = cacheConfig.fileURL?.deletingLastPathComponent() else {
