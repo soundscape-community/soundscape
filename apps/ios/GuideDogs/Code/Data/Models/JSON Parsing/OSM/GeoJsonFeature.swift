@@ -83,6 +83,8 @@ class GeoJsonFeature {
     
     var isRoundabout = false
     
+    var navilensEnabled = false
+    
     // MARK: Initializers
     
     init?(json: [String: Any], superCategories: SuperCategories) {
@@ -195,9 +197,18 @@ class GeoJsonFeature {
             return
         }
         
+        //if let highway = properties["highway"], highway == "bus_stop" {
+        // Check if navilens=true is in feature properties
+        //if let navilens = properties["navilens"], navilens == "true" {
+        //    //...
+        //}
+
         // Case: bus stops
         if value == "bus_stop" {
-            superCategory = SuperCategory.mobility
+            //FIXME for testing, set navilens enabled whenever highway=bus_stop
+            //superCategory = SuperCategory.mobility
+            superCategory = SuperCategory.navilens
+            navilensEnabled = true
             return
         }
         
@@ -430,6 +441,7 @@ extension GeoJsonFeature {
     
     /// Prioritized categories for handeling features with unknown categories
     static let prioritizedCategories = [SuperCategory.safety,
+                                        SuperCategory.navilens,
                                         SuperCategory.mobility,
                                         SuperCategory.landmarks,
                                         SuperCategory.places,

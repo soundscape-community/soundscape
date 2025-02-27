@@ -44,7 +44,7 @@ extension GDASpatialDataResultEntity: Typeable {
         guard let category = SuperCategory(rawValue: superCategory) else {
             return false
         }
-        let isTransitLocation = category == .mobility && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
+        let isTransitLocation = [.mobility, .navilens].contains(category) && localizedName.lowercased().contains(GDLocalizedString("osm.tag.bus_stop").lowercased())
 
         return isTransitLocation
     }

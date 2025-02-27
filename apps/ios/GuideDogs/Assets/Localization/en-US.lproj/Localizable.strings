@@ -900,6 +900,12 @@
 /* Text displayed when street preview is disabled */
 "location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active.";
 
+/* Text label for the action to launch NaviLens */
+"navilens.title" = "Launch NaviLens";
+
+/* Voiceover hint for the action to launch NaviLens */
+"location_detail.action.navilens.hint" = "Double tap to launch NaviLens.";
+
 /* Voiceover hint for the action to get directions */
 "location_detail.action.directions.hint" = "Double tap to open this location in an external maps app.";
 
