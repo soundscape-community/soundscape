@@ -7,11 +7,12 @@
 //
 
 func launchNaviLens() {
-    // FIXME launch NaviLens app
-    let navilensUrl = URL(string: "https://www.navilens.com/en/")!
-    UIApplication.shared.open(navilensUrl) { success in
-        if !success {
-            UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/navilens/id1273704914")!)
-        }
+    // Launch NaviLens app, or open App Store listing if not installed
+    let navilensUrl = URL(string: "navilens://")!
+    let appStoreUrl = URL(string: "https://apps.apple.com/us/app/navilens/id1273704914")!
+    if UIApplication.shared.canOpenURL(navilensUrl) {
+        UIApplication.shared.open(navilensUrl)
+    } else {
+        UIApplication.shared.open(appStoreUrl)
     }
 }
