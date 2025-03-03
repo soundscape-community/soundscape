@@ -4139,7 +4139,7 @@
 
 
 /*  */
-"faq.markers_function.answer" = "Los marcadores son lugares que has guardado. Pueden ser lugares descubiertos por la aplicación o lugares totalmente nuevos que hayas añadido tú mismo. Puedes guardar tu ubicación actual como marcador seleccionando el botón \"Ubicación actual\" en la pantalla de inicio y, a continuación, \"Guardar como marcador\". Puedes guardar otras ubicaciones como marcador buscando el lugar que te gustaría guardar utilizando la barra de búsqueda, o encontrando algún lugar utilizando el botón \"Lugares cercanos\", ambos en la pantalla de inicio de Soundscape. Una vez que haya encontrado el lugar que deseas, al seleccionarlo accederás a la página \"Detalles de la ubicación\". En esta página, selecciona el botón \"Guardar como marcador\".";
+"faq.markers_function.answer" = "Los marcadores son lugares que has guardado. Pueden ser lugares descubiertos por la aplicación o lugares totalmente nuevos que hayas añadido tú mismo. Puedes guardar tu ubicación actual como marcador seleccionando el botón \"Ubicación actual\" en la pantalla de inicio y, a continuación, \"Guardar como marcador\". Puedes guardar otras ubicaciones como marcador buscando el lugar que te gustaría guardar utilizando la barra de búsqueda, o encontrando algún lugar utilizando el botón \"Lugares cercanos\", ambos en la pantalla de inicio de Soundscape. Una vez que hayas encontrado el lugar que deseas, al seleccionarlo accederás a la página \"Detalles de la ubicación\". En esta página, selecciona el botón \"Guardar como marcador\".";
 
 
 /*  */
@@ -4151,7 +4151,7 @@
 
 
 /*  */
-"faq.what_can_I_set.answer" = "Puedes establecer una señal de audio en cualquier negocio, lugar, punto de interés, dirección o intersección. Hay varias formas de establecer una ubicación como baliza. En primer lugar, consulta los detalles de una ubicación utilizando la barra de búsqueda o pulsando uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. En la pantalla de detalles de la ubicación puedes seleccionar el botón \"Iniciar señal de audio\". Al pulsarlo, volverá a la pantalla de inicio y se encenderá una baliza acústica procedente del lugar que hayas seleccionado. El nombre del lugar que has seleccionado junto con su distancia y dirección física, si está disponible, se mostrará ahora en la pantalla principal de la aplicación.";
+"faq.what_can_I_set.answer" = "Puedes establecer una señal de audio en cualquier negocio, lugar, punto de interés, dirección o intersección. Hay varias formas de establecer una ubicación como baliza. En primer lugar, consulta los detalles de una ubicación utilizando la barra de búsqueda o pulsando uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. En la pantalla de detalles de la ubicación puedes seleccionar el botón \"Iniciar señal de audio\". Al pulsarlo, volverás a la pantalla de inicio y se encenderá una baliza acústica procedente del lugar que hayas seleccionado. El nombre del lugar que has seleccionado junto con su distancia y dirección física, si está disponible, se mostrará ahora en la pantalla principal de la aplicación.";
 
 
 /*  */
