@@ -543,6 +543,11 @@
 		91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */; };
 		91C82ABE2A6B08500086D126 /* RouteGuidanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */; };
 		91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */; };
+		9A6990742D5BDB8900D37B7D /* BoseSensorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A69906F2D5BDB8900D37B7D /* BoseSensorConfiguration.swift */; };
+		9A6990752D5BDB8900D37B7D /* BoseSensorDataProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6990702D5BDB8900D37B7D /* BoseSensorDataProcessor.swift */; };
+		9A6990762D5BDB8900D37B7D /* BoseFramesBLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A69906E2D5BDB8900D37B7D /* BoseFramesBLEDevice.swift */; };
+		9A6990782D5BDC1D00D37B7D /* BoseFramesMotionManagerReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6990772D5BDC1D00D37B7D /* BoseFramesMotionManagerReachability.swift */; };
+		9A69907B2D5BDC5E00D37B7D /* BoseFramesMotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A69907A2D5BDC5E00D37B7D /* BoseFramesMotionManager.swift */; };
 		AC3A3EE22C40C9080061EEB8 /* NearbyTableFilterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3A3EE12C40C9080061EEB8 /* NearbyTableFilterTest.swift */; };
 		B90C27D61EAF81D600007368 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C27D51EAF81D600007368 /* Sound.swift */; };
 		B918EE9825100FFF00A5354A /* CalloutRangeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */; };
@@ -1332,6 +1337,11 @@
 		915FF9F42ADE3F91002B3690 /* AuthoredActivityContentTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthoredActivityContentTest.swift; sourceTree = "<group>"; };
 		91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = " GeolocationManagerTest.swift"; path = "UnitTests/Sensors/Geolocation/Geolocation Manager/ GeolocationManagerTest.swift"; sourceTree = SOURCE_ROOT; };
 		91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteGuidanceTest.swift; path = "UnitTests/Behaviors/Route Guidance/RouteGuidanceTest.swift"; sourceTree = SOURCE_ROOT; };
+		9A69906E2D5BDB8900D37B7D /* BoseFramesBLEDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseFramesBLEDevice.swift; path = Code/Devices/BLE/BoseFramesBLEDevice.swift; sourceTree = "<group>"; };
+		9A69906F2D5BDB8900D37B7D /* BoseSensorConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseSensorConfiguration.swift; path = Code/Devices/BLE/BoseSensorConfiguration.swift; sourceTree = "<group>"; };
+		9A6990702D5BDB8900D37B7D /* BoseSensorDataProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseSensorDataProcessor.swift; path = Code/Devices/BLE/BoseSensorDataProcessor.swift; sourceTree = "<group>"; };
+		9A6990772D5BDC1D00D37B7D /* BoseFramesMotionManagerReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseFramesMotionManagerReachability.swift; path = "Code/Sensors/Motion/Headphone Motion/BoseFramesMotionManagerReachability.swift"; sourceTree = "<group>"; };
+		9A69907A2D5BDC5E00D37B7D /* BoseFramesMotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseFramesMotionManager.swift; path = "Code/Sensors/Motion/Headphone Motion/BoseFramesMotionManager.swift"; sourceTree = "<group>"; };
 		AC3A3EE12C40C9080061EEB8 /* NearbyTableFilterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyTableFilterTest.swift; sourceTree = "<group>"; };
 		B90C27D51EAF81D600007368 /* Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Sound.swift; path = Code/Audio/Protocols/Sound.swift; sourceTree = "<group>"; };
 		B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalloutRangeContext.swift; sourceTree = "<group>"; };
@@ -1966,6 +1976,7 @@
 		286A2AE4225541A300A74724 /* BLE */ = {
 			isa = PBXGroup;
 			children = (
+				3DD63B5D2B9906CC00E4A159 /* Bose Frames */,
 				286A2AE22252B8A300A74724 /* BLEManager.swift */,
 				286A2AE62255432500A74724 /* BLEDevice.swift */,
 				289E2EFA234FE39F00357444 /* BaseBLEDevice.swift */,
@@ -2652,6 +2663,16 @@
 			path = Assets/Localization;
 			sourceTree = "<group>";
 		};
+		3DD63B5D2B9906CC00E4A159 /* Bose Frames */ = {
+			isa = PBXGroup;
+			children = (
+				9A69906E2D5BDB8900D37B7D /* BoseFramesBLEDevice.swift */,
+				9A69906F2D5BDB8900D37B7D /* BoseSensorConfiguration.swift */,
+				9A6990702D5BDB8900D37B7D /* BoseSensorDataProcessor.swift */,
+			);
+			name = "Bose Frames";
+			sourceTree = "<group>";
+		};
 		4AD48659F673FA58D2DF2C07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -3102,6 +3123,7 @@
 			children = (
 				627004E326055A4300FBF5E5 /* HeadphoneMotionManagerReachability.swift */,
 				627004EB26055A5500FBF5E5 /* HeadphoneMotionReachabilityWrapper.swift */,
+				9A6990772D5BDC1D00D37B7D /* BoseFramesMotionManagerReachability.swift */,
 			);
 			name = Reachability;
 			sourceTree = "<group>";
@@ -3321,6 +3343,7 @@
 				627004E226055A2900FBF5E5 /* Reachability */,
 				620BC33425F2A9F1007DBA29 /* Calibration */,
 				62B455632583FF8900665131 /* HeadphoneMotionManager.swift */,
+				9A69907A2D5BDC5E00D37B7D /* BoseFramesMotionManager.swift */,
 				620BC32F25F2A94C007DBA29 /* HeadphoneMotionManagerWrapper.swift */,
 				620BC33E25F2CC98007DBA29 /* HeadphoneMotionManagerStatus.swift */,
 			);
@@ -4893,6 +4916,9 @@
 				28E60D441FE4905F00EAB5C0 /* CompassDirection.swift in Sources */,
 				319A3C152257C94C0098E94E /* StringDebug.swift in Sources */,
 				28F94F5E2485AE0A0010D2B3 /* BehaviorBase.swift in Sources */,
+				9A6990742D5BDB8900D37B7D /* BoseSensorConfiguration.swift in Sources */,
+				9A6990752D5BDB8900D37B7D /* BoseSensorDataProcessor.swift in Sources */,
+				9A6990762D5BDB8900D37B7D /* BoseFramesBLEDevice.swift in Sources */,
 				28A16134283D86E70081CFA4 /* TourWaypointDetail.swift in Sources */,
 				288941B1207815FB00CAA6D4 /* AdjustableLabel.swift in Sources */,
 				62E92B3626546361001C5AC2 /* URLResourceIdentifier.swift in Sources */,
@@ -4951,6 +4977,7 @@
 				62403FEE24CA3F75005CB80D /* PreviewViewController.swift in Sources */,
 				62494FFC26FAAFD1008D842B /* ShareRouteAlertObserver.swift in Sources */,
 				286C825A20C99CD800BB17B0 /* TableViewCellAccessibilityAction.swift in Sources */,
+				9A69907B2D5BDC5E00D37B7D /* BoseFramesMotionManager.swift in Sources */,
 				283C057E23DB6D990086C01F /* DynamicSound.swift in Sources */,
 				281D59D31F4765880090F23A /* FirstLaunchTermsStepViewController.swift in Sources */,
 				284C9AFB23886DD000CBA392 /* DynamicAudioEngineAsset.swift in Sources */,
@@ -5017,6 +5044,7 @@
 				C3E9B80F224948B700E1E0E0 /* LargeBannerContainerView.swift in Sources */,
 				28F1B48F1F683D37008A4F3B /* HelpPageViewController.swift in Sources */,
 				623557A024DCDB3400266D9D /* PreviewActivityIndicatorViewController.swift in Sources */,
+				9A6990782D5BDC1D00D37B7D /* BoseFramesMotionManagerReachability.swift in Sources */,
 				281CB8812016B4650059B8C4 /* LocationCallout.swift in Sources */,
 				B921CE622559EB9F00F777CE /* PushNotificationManager.swift in Sources */,
 				28162B9C24CB50A300B05CCC /* SensorProvider.swift in Sources */,
