@@ -2144,6 +2144,9 @@
 /* Button, Continue */
 "ui.continue" = "Continue";
 
+/* Title, Donate */
+"menu.donate" = "Donate";
+
 /* Title, Activities, In this context, "Recreational Activity" is referring to outdoor activities like hiking, kayaking, snoeshoeing, etc. */
 "menu.events" = "Recreational Activities";
 
@@ -2250,6 +2253,7 @@
 /* Message indicating that the app has successfully been connected to a head tracking headset, {NumberedPlaceholder="AirPods","Soundscape"} */
 "devices.explain_ar.connected.airpods" = "Your AirPods are ready for use, so you can put your phone in your pocket and go! Soundscape is tracking the direction of your head so you do not need to hold the phone in your hand.";
 
+/* Message indicating that the app has successfully been connected to Bose Frames */
 "devices.explain_ar.connected.boseframes" = "Your Bose Frames are ready for use, so you can put your phone in your pocket and go! Soundscape is tracking the direction of your head so you do not need to hold the phone in your hand.";
 
 /* Message indicating that the app has successfully been paired to head tracking headphones but is not connected, %@ headset name, "Soundscape is not currently connected to your AirPods Pro. Please ensure your headset is turned on and near your phone." {NumberedPlaceholder="%@"} */
@@ -3648,3 +3652,12 @@
 
 /* Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. */
 "faq.tip.two_finger_double_tap" = "Tapping the screen twice with two fingers will silence any active callouts.";
+
+/* Title for donation screen */
+"donation.title" = "Donate to Soundscape Community";
+
+/* text for donation screen */
+"donation.body" = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to information on their surroundings through  our life-enhancing technology.";
+
+/* Donation link title */
+"donation.link" = "Go to Fundraising Page";
