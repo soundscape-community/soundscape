@@ -4425,3 +4425,7 @@
 "menu.donate" = "Donar";
 "donation.title" = "Donar a Soundscape Community";
 "donation.link" = "Ir a la Página de Recaudación de Fondos";
+"devices.connect_headset.completed.boseframes" = "¡Enhorabuena! Tus Bose Frames están listas para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape seguirá ahora la orientación de tu cabeza para que no tengas que sostener el teléfono en la mano.";
+"devices.callouts.check_audio.bose_frames" = "Bose Frames conectadas.";
+"devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape está buscando tus Bose Frames. Asegúrate de que están conectadas al teléfono.";
+"devices.explain_ar.connected.boseframes" = "Tus Bose Frames están listas para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape está siguiendo la orientación de tu cabeza para que no tengas que sostener el teléfono en la mano.";
