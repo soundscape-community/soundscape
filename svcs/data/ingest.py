@@ -186,8 +186,9 @@ async def provision_non_osm_data_async(osm_dsn):
 
 async def import_non_osm_data_async(csv_dir, osm_dsn):
     # The client expects OSM IDs for every point, but this is not OSM data.
-    # Assign large negative OSM IDs, which will not conflict with real values.
-    osm_id = -1e9
+    # Assign large positive OSM IDs, which will not conflict with real values.
+    # Discussion: https://github.com/soundscape-community/soundscape/pull/135#issuecomment-2665868581
+    osm_id = 1e17
 
     async with aiopg.connect(dsn=osm_dsn) as conn:
         cursor = await conn.cursor()
@@ -197,7 +198,7 @@ async def import_non_osm_data_async(csv_dir, osm_dsn):
                 rowcount = 0
                 for row in csv.DictReader(f):
                     rowcount += 1
-                    osm_id -= 1  # count down to lower negative values
+                    osm_id += 1
 
                     # After removing required columns, the remaining fields in
                     # the row will be stored in the item's properties field.
