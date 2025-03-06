@@ -979,7 +979,7 @@
 
 
 /*  */
-"preview.tutorial.title.1" = "¡Bienvenid@s a la vista previa de calle de Soundscape!";
+"preview.tutorial.title.1" = "¡Bienvenido a la vista previa de calle de Soundscape!";
 
 
 /*  */
@@ -3415,11 +3415,11 @@
 
 
 /*  */
-"first_launch.welcome_text" = "¡Bienvenido/-a! Antes de comenzar, tenemos que pasar por algunos ajustes y aceptar varios permisos. Presiona el botón Siguiente para iniciar.";
+"first_launch.welcome_text" = "¡Bienvenido! Antes de comenzar, tenemos que pasar por algunos ajustes y aceptar varios permisos. Presiona el botón Siguiente para iniciar.";
 
 
 /*  */
-"first_launch.welcome_audio_text" = "¡Bienvenido/-a! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, intersecciones y lugares cuando te acercas. Pulsa el botón Siguiente para comenzar.";
+"first_launch.welcome_audio_text" = "¡Bienvenido! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, intersecciones y lugares cuando te acercas. Pulsa el botón Siguiente para comenzar.";
 
 
 /*  */
@@ -3467,7 +3467,7 @@
 
 
 /*  */
-"first_launch.setting_off_way" = "¿Vas a empezar el trayecto?";
+"first_launch.setting_off_way" = "¿Te pones en camino?";
 
 
 /*  */
@@ -3483,19 +3483,19 @@
 
 
 /*  */
-"first_launch.welcome.title" = "¡Bienvenid@!";
+"first_launch.welcome.title" = "¡Bienvenido!";
 
 
 /*  */
-"first_launch.welcome.title.accessibility_label" = "¡Bienvenid@ a Soundscape!";
+"first_launch.welcome.title.accessibility_label" = "¡Bienvenido a Soundscape!";
 
 
 /*  */
-"first_launch.welcome.description" = "Navegación segura con sonido envolvente de Soundscape";
+"first_launch.welcome.description" = "Navega con confianza utilizando el audio espacial de Soundscape";
 
 
 /*  */
-"first_launch.welcome.button" = "Comenzar";
+"first_launch.welcome.button" = "Empezar";
 
 
 /*  */
