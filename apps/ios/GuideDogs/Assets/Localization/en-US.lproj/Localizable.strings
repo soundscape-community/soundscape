@@ -3128,7 +3128,7 @@
 "help.text.routes.content.how.3" = "<b>Sharing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select the option to \"Share\" using all of the usual share options available to you.";
 
 /* Help content describing how Apple AirPods work with Soundscape and which versions are supported {NumberedPlaceholder="Soundscape","AirPods"} */
-"help.using_headsets.airpods.what" = "Soundscape supports spatial audio with dynamic head tracking when using compatible AirPods. When connected to Soundscape, sensors in the AirPods tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience making it more natural as you move around in the world. When you use Soundscape with AirPods connected, you do not need to hold your phone for Soundscape to work correctly.";
+"help.using_headsets.airpods.what" = "Soundscape supports spatial audio with dynamic head tracking when using compatible AirPods. When connected to Soundscape, sensors in the AirPods tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with AirPods connected, you do not need to hold your phone for Soundscape to work correctly.";
 
 /* Information on when users can use Apple AirPods headphones with Soundscape, {NumberedPlaceholder="Soundscape","AirPods"} */
 "help.using_headsets.airpods.when" = "You can use AirPods with Soundscape anytime you would normally use Soundscape. Using AirPods provides you with high quality audio and allows you to have a more hands-free experience with Soundscape.";
