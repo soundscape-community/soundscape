@@ -65,8 +65,7 @@ enum SuperCategory: String {
         case .mobility: return StaticAudioEngineAsset.mobilitySense
         case .safety: return StaticAudioEngineAsset.safetySense
         case .authoredActivity: return StaticAudioEngineAsset.tourPoiSense
-        //TODO add new sound effect for NaviLens-enabled POIs
-        case .navilens: return StaticAudioEngineAsset.safetySense
+        case .navilens: return StaticAudioEngineAsset.navilensSense
         default: return StaticAudioEngineAsset.poiSense
         }
     }

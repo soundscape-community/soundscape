@@ -196,12 +196,6 @@ class GeoJsonFeature {
             superCategory = SuperCategory.entranceLists
             return
         }
-        
-        //if let highway = properties["highway"], highway == "bus_stop" {
-        // Check if navilens=true is in feature properties
-        //if let navilens = properties["navilens"], navilens == "true" {
-        //    //...
-        //}
 
         // NaviLens-enabled bus stops
         if GeoJsonFeature.hasTag("navilens=true", props: properties) {

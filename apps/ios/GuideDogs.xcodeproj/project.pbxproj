@@ -595,6 +595,7 @@
 		B9F0F96B1E10A40700F32F70 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F0F96A1E10A40700F32F70 /* BaseTableViewController.swift */; };
 		B9F749A21F16153900DC10C6 /* CoreLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F749A11F16153900DC10C6 /* CoreLocation+Extensions.swift */; };
 		BD2726862D6EA01C0022654B /* Integrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2726852D6EA0110022654B /* Integrations.swift */; };
+		BDB661182D7BA8BB00D80302 /* sense_navilens.wav in Resources */ = {isa = PBXBuildFile; fileRef = BDB661172D7BA8BB00D80302 /* sense_navilens.wav */; };
 		C3060705205C544E00C39489 /* AddressGeocoderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3060704205C544E00C39489 /* AddressGeocoderProtocol.swift */; };
 		C306DF8522F0D71300248E9F /* CompoundFilterPredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C306DF8422F0D71300248E9F /* CompoundFilterPredicate.swift */; };
 		C30DBD2023A2C19400082B27 /* SearchResultsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DBD1F23A2C19400082B27 /* SearchResultsUpdater.swift */; };
@@ -1394,6 +1395,7 @@
 		B9F0F96A1E10A40700F32F70 /* BaseTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BaseTableViewController.swift; path = "Code/Visual UI/View Controllers/BaseTableViewController.swift"; sourceTree = "<group>"; };
 		B9F749A11F16153900DC10C6 /* CoreLocation+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CoreLocation+Extensions.swift"; path = "Code/App/Framework Extensions/Geo Extensions/CoreLocation+Extensions.swift"; sourceTree = "<group>"; };
 		BD2726852D6EA0110022654B /* Integrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Integrations.swift; sourceTree = "<group>"; };
+		BDB661172D7BA8BB00D80302 /* sense_navilens.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sense_navilens.wav; path = Assets/Sounds/sense_navilens.wav; sourceTree = "<group>"; };
 		C3060704205C544E00C39489 /* AddressGeocoderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddressGeocoderProtocol.swift; path = Code/Generators/Geocoding/Protocols/AddressGeocoderProtocol.swift; sourceTree = "<group>"; };
 		C306DF8422F0D71300248E9F /* CompoundFilterPredicate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CompoundFilterPredicate.swift; path = Code/Data/Models/Helpers/Filter/CompoundFilterPredicate.swift; sourceTree = "<group>"; };
 		C30DBD1F23A2C19400082B27 /* SearchResultsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsUpdater.swift; sourceTree = "<group>"; };
@@ -2206,6 +2208,7 @@
 		28952D43228F6A9200FC91B4 /* Effects */ = {
 			isa = PBXGroup;
 			children = (
+				BDB661172D7BA8BB00D80302 /* sense_navilens.wav */,
 				2809B80F2379E9C700F6C9AC /* low_confidence.wav */,
 				2809B80D2379E9A000F6C9AC /* connection_success.wav */,
 				2809B80B2379E95B00F6C9AC /* calibration_success.wav */,
@@ -4691,6 +4694,7 @@
 				2872D14226D80C7D000BE465 /* Mallet_Very_Slow_A+.wav in Resources */,
 				282B62F124EC4FA6007E5F8A /* SS_logo4_48k.wav in Resources */,
 				2872D12D26D80B6C000BE465 /* Signal_Slow_Behind.wav in Resources */,
+				BDB661182D7BA8BB00D80302 /* sense_navilens.wav in Resources */,
 				28467F08264365B700FB4C9F /* Proximity_Close.wav in Resources */,
 				2F4433001D36B5A300CA437D /* licenses.html in Resources */,
 				2872D13526D80BC6000BE465 /* Signal_Very_Slow_Behind.wav in Resources */,
