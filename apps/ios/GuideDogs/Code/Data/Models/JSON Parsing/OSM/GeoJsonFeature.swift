@@ -203,12 +203,16 @@ class GeoJsonFeature {
         //    //...
         //}
 
-        // Case: bus stops
-        if value == "bus_stop" {
-            //FIXME for testing, set navilens enabled whenever highway=bus_stop
-            //superCategory = SuperCategory.mobility
+        // NaviLens-enabled bus stops
+        if GeoJsonFeature.hasTag("navilens=true", props: properties) {
             superCategory = SuperCategory.navilens
             navilensEnabled = true
+            return
+        }
+
+        // Case: bus stops
+        if value == "bus_stop" {
+            superCategory = SuperCategory.mobility
             return
         }
         
