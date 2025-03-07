@@ -262,10 +262,6 @@ def execute_kube_updatemodel_provision_and_import(config, updated):
                 dsn_init = d['dsn2'].replace('dbname=osm', 'dbname=postgres')
                 logger.info(dsn)
                 provision_database(dsn_init, dsn)
-                if config.extradatadir:
-                    logger.info('Importing non-OSM data: START')
-                    import_non_osm_data(config.extradatadir, dsn)
-                    logger.info('Importing non-OSM data: DONE')
                 kube.set_database_status(d['name'], 'PROVISIONED')
                 logger.info('Provisioning database "{0}": DONE'.format(d['name']))
             except Exception as e:
@@ -293,6 +289,10 @@ def execute_kube_updatemodel_provision_and_import(config, updated):
             args.dsn = kube.get_url_dsn(d['dsn2']) #+ '?sslmode=require'
             import_write(config, False)
             import_rotate(config, False)
+            if config.extradatadir:
+                logger.info('Importing non-OSM data: START')
+                import_non_osm_data(config.extradatadir, d['dsn2'])
+                logger.info('Importing non-OSM data: DONE')
             provision_database_soundscape(d['dsn2'])
             # kubernetes connection may have expired
             retry_count = 5
