@@ -3796,7 +3796,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.what" = "Soundscape supports spatial audio with dynamic head tracking when using compatible AirPods. When connected to Soundscape, sensors in the AirPods tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience making it more natural as you move around in the world. When you use Soundscape with AirPods connected, you do not need to hold your phone for Soundscape to work correctly.";
+"help.using_headsets.airpods.what" = "Soundscape supports spatial audio with dynamic head tracking when using compatible AirPods. When connected to Soundscape, sensors in the AirPods tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with AirPods connected, you do not need to hold your phone for Soundscape to work correctly.";
 
 
 /*  */
