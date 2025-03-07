@@ -110,13 +110,24 @@ class HelpViewController: BaseTableViewController {
                                 GDLocalizedString("help.using_headsets.airpods.how.2")],
                           index: IndexPath(row: 1, section: Section.configuration),
                           telemetryLabel: "help.ar_headsets.airpods"),
+
+        // Audio AR Headsets - Bose Frames
+        SectionedHelpPage(title: GDLocalizedString("help.using_headsets.bose_frames.title"),
+                          what: [GDLocalizedString("help.using_headsets.bose_frames.what")],
+                          when: [GDLocalizedString("help.using_headsets.bose_frames.when")],
+                          how: [GDLocalizedString("help.using_headsets.bose_frames.how.1"),
+                                GDLocalizedString("help.using_headsets.bose_frames.how.2"),
+                                GDLocalizedString("help.using_headsets.bose_frames.how.3"),
+                                GDLocalizedString("help.using_headsets.bose_frames.how.4")],
+                          index: IndexPath(row: 2, section: Section.configuration),
+                          telemetryLabel: "help.ar_headsets.bose_frames"),
         
         // Using Media Controls
         SectionedHelpPage(title: GDLocalizedString("help.remote.page_title"),
                           what: [GDLocalizedString("help.text.remote_control.what")],
                           when: [GDLocalizedString("help.text.remote_control.when")],
                           how: [GDLocalizedString("help.text.remote_control.how")],
-                          index: IndexPath(row: 2, section: Section.configuration),
+                          index: IndexPath(row: 3, section: Section.configuration),
                           telemetryLabel: "help.media_controls"),
         
         // Destination Beacons
@@ -278,7 +289,7 @@ class HelpViewController: BaseTableViewController {
         static let destinations = 0
         static let markers = 1
         static let offline = 2
-        static let onboarding = 3
+        static let onboarding = 4
     }
     
     private var currentIndex: IndexPath?
@@ -305,7 +316,7 @@ class HelpViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case Section.configuration: return 4
+        case Section.configuration: return 5
         case Section.moreHelp: return 1
         case Section.tutorials: return 2
         default:

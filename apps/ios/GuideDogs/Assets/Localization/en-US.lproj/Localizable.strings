@@ -2734,6 +2734,9 @@
 /* Help title, Links to a help page that describes how to use Apple AirPods headphones with Soundscape, {NumberedPlaceholder="Apple AirPods"} */
 "help.using_headsets.airpods.title" = "Using Apple AirPods";
 
+/* Help title, Links to a help page that describes how to use Bose Frames headphones with Soundscape, {NumberedPlaceholder="Bose Frames"} */
+"help.using_headsets.bose_frames.title" = "Using Bose Frames";
+
 /* Help section title. This section contains help articles on the audio beacon and the automatic callout features. */
 "settings.help.section.beacons_and_pois" = "Beacons and Callouts";
 
@@ -3135,6 +3138,24 @@
 
 /* Information on how to use the media buttons on Apple AirPods with Soundscape (e.g. clicking the pressure sensor on one of the AirPods for play/pause), Quotes written as \", "Using Media Controls" should be translated the same as string with key "help.remote.page_title", {NumberedPlaceholder="Soundscape","AirPods"} */
 "help.using_headsets.airpods.how.2" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your AirPods to mute or unmute the beacon, call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
+
+/* Help content describing how Bose Frames work with Soundscape and which versions are supported {NumberedPlaceholder="Soundscape","Bose Frames"} */
+"help.using_headsets.bose_frames.what" = "Soundscape Community supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. When connected to Soundscape, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly.";
+
+/* Information on when users can use Bose Frames headphones with Soundscape, {NumberedPlaceholder="Soundscape","Bose Frames"} */
+"help.using_headsets.bose_frames.when" = "You can use Bose Frames with Soundscape anytime you would normally use Soundscape. Using Bose Frames provides you with high quality audio that does not occlude environmental audio and allows you to have a more hands-free experience with Soundscape.";
+
+/* Information on how to connect Bose Frames with Soundscape, "Head Tracking Headphones" should be translated the same as the string with key "menu.devices", {NumberedPlaceholder="Soundscape","Bose Frames"} */
+"help.using_headsets.bose_frames.how.1" = "<b>Connecting a Device</b>:<br/> Go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your Bose Frames and follow the instructions on screen. Note that you will need to pair your Bose Frames to your phone in the Bluetooth settings before connecting them in Soundscape.";
+
+/* information on how to calibrate Bose Frames with Soundscape, Quotes written as \", {NumberedPlaceholder="Soundscape","Bose Frames"} */
+"help.using_headsets.bose_frames.how.2" = "<b>Calibrating your Headphones</b>:<br/> Your Bose Frames will need to be calibrated to accurately know which way you are facing. Each time you connect them to Soundscape you will be informed that calibration is needed by an audio chime. To calibrate your Bose Frames, follow the instructions provided on the screen. When the calibration chime stops playing, Your Bose Frames are calibrated, and Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. You can also repeat this calibration at any time, even if the chime isn't playing, if you think the accuracy of your spatial audio is poor.";
+
+/* Information on how to use the media buttons on Bose Frames  */
+"help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
+
+/* Trouble shooting information for Bose Frames */
+"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models in Soundscape - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>Support for the Bose Frames is new and we would love to hear your feedback. You can contact us by choosing the \"Send Feedback\" Option in the menu.";
 
 //------------------------------------------------------------------------------
 // MARK: - OSM Tags
