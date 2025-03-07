@@ -27,7 +27,7 @@ jobs:
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace
-                -scheme Soundscape -destination "platform=iOS Simulator,OS=18.1,name=iPhone 15"
+                -scheme Soundscape -destination "platform=iOS Simulator,OS=18.1,name=iPhone 16"
                 CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
                 | tee xcodebuild.log | xcpretty && exit ${PIPESTATUS[0]}
             - name: uploadlog
@@ -38,4 +38,4 @@ jobs:
             - name: Test
               run: >
                 xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace
-                -scheme Soundscape -destination "platform=iOS Simulator,OS=18.1,name=iPhone 15"
+                -scheme Soundscape -destination "platform=iOS Simulator,OS=18.1,name=iPhone 16"
