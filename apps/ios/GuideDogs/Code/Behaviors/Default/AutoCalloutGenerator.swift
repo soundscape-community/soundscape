@@ -542,6 +542,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
         categoryStates[.places] = settings.placeSenseEnabled
         categoryStates[.information] = settings.informationSenseEnabled
         categoryStates[.mobility] = settings.mobilitySenseEnabled
+        categoryStates[.navilens] = settings.mobilitySenseEnabled
         categoryStates[.safety] = settings.safetySenseEnabled
         categoryStates[.landmarks] = settings.landmarkSenseEnabled
         categoryStates[.authoredActivity] = true

@@ -34,6 +34,11 @@ struct LocationDetail {
             return entity?.localizedName
         }
         
+        /// Determines whether the "Launch NaviLens" action should be shown
+        var hasNaviLens: Bool {
+            return entity?.superCategory == "navilens"
+        }
+        
         var address: String? {
             if case let .designData(_, address) = self {
                 return address

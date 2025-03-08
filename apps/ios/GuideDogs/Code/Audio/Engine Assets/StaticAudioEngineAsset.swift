@@ -21,6 +21,7 @@ enum StaticAudioEngineAsset: String, AudioEngineAsset {
     case stopJourney        = "callouts_off"
     case locationSense      = "sense_location"
     case mobilitySense      = "sense_mobility"
+    case navilensSense      = "sense_navilens"
     case poiSense           = "sense_poi"
     case safetySense        = "sense_safety"
     case appLaunch          = "app_launch"

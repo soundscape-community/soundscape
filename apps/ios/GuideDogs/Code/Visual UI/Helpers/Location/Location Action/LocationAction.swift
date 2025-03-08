@@ -15,12 +15,13 @@ enum LocationAction {
     case beacon
     case preview
     case share(isEnabled: Bool)
+    case navilens
     
     var isEnabled: Bool {
         switch self {
         case .save(let isEnabled): return isEnabled
         case .share(let isEnabled): return isEnabled
-        case .beacon, .preview, .edit:
+        case .beacon, .preview, .edit, .navilens:
             if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance {
                 return false
             } else {
@@ -30,15 +31,20 @@ enum LocationAction {
     }
     
     static func actions(for detail: LocationDetail) -> [LocationAction] {
+        var result: [LocationAction]
         if detail.isMarker {
-            return [.beacon, .edit, .preview, .share(isEnabled: true)]
+            result = [.beacon, .edit, .preview, .share(isEnabled: true)]
         } else {
             // If the location does not have a backup coordinate
             // disable the save and share actions
             let isEnabled = detail.source.isCachingEnabled
             
-            return [.beacon, .save(isEnabled: isEnabled), .preview, .share(isEnabled: isEnabled)]
+            result =  [.beacon, .save(isEnabled: isEnabled), .preview, .share(isEnabled: isEnabled)]
         }
+        if detail.source.hasNaviLens {
+            result += [.navilens]
+        }
+        return result
     }
     
     // MARK: Accessibility Custom Actions
@@ -69,6 +75,7 @@ enum LocationAction {
         case .beacon: return GDLocalizedString("location_detail.action.beacon")
         case .preview: return GDLocalizedString("preview.title")
         case .share: return GDLocalizedString("share.title")
+        case .navilens: return GDLocalizedString("navilens.title")
         }
     }
     
@@ -79,6 +86,7 @@ enum LocationAction {
         case .beacon: return isEnabled ? GDLocalizedString("location_detail.action.beacon.hint") : GDLocalizedString("location_detail.action.beacon.hint.disabled")
         case .preview: return isEnabled ? GDLocalizedString("location_detail.action.preview.hint") : GDLocalizedString("location_detail.action.preview.hint.disabled")
         case .share(let isEnabled): return isEnabled ? GDLocalizedString("location_detail.action.share.hint") : GDLocalizedString("location_detail.disabled.share")
+        case .navilens: return GDLocalizedString("location_detail.action.navilens.hint")
         }
     }
     
@@ -89,6 +97,7 @@ enum LocationAction {
         case .beacon: return GDLocalizationUnnecessary("action.beacon")
         case .preview: return GDLocalizationUnnecessary("action.preview")
         case .share: return GDLocalizationUnnecessary("action.share")
+        case .navilens: return GDLocalizationUnnecessary("action.navilens")
         }
     }
     
@@ -99,6 +108,7 @@ enum LocationAction {
         case .beacon: return UIImage(named: "Location_iconW")
         case .preview: return UIImage(named: "Preview_locationW")
         case .share: return UIImage(named: "Share_iconW")
+        case .navilens: return UIImage(named: "navilens")
         }
     }
     
@@ -111,6 +121,7 @@ enum LocationAction {
         case .beacon: return "location_action.beacon"
         case .preview: return "location_action.preview"
         case .share: return "location_action.share"
+        case .navilens: return "location_action.navilens"
         }
     }
 }
