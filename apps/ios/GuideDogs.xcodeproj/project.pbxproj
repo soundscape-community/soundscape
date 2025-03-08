@@ -117,7 +117,6 @@
 		286D18AA206AC31E006D1925 /* NewFeaturesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286D18A9206AC31E006D1925 /* NewFeaturesViewController.swift */; };
 		286D18AE206B1A48006D1925 /* FeaturePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286D18AC206B1A48006D1925 /* FeaturePageViewController.swift */; };
 		286D18AF206B1A48006D1925 /* FeaturePageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 286D18AD206B1A48006D1925 /* FeaturePageView.xib */; };
-		286D18B5206C03FE006D1925 /* NewFeatures.plist in Resources */ = {isa = PBXBuildFile; fileRef = 286D18B4206C03FE006D1925 /* NewFeatures.plist */; };
 		286D18B7206C0F55006D1925 /* NewFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286D18B6206C0F55006D1925 /* NewFeatures.swift */; };
 		286DA3A81F9E6B3100C34C9C /* BorderedIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286DA3A71F9E6B3100C34C9C /* BorderedIcon.swift */; };
 		286DC69821E6811A001CD88A /* AuthoredActivityContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286DC69721E6811A001CD88A /* AuthoredActivityContent.swift */; };
@@ -757,6 +756,7 @@
 		D30355D31B61401D00E1DDED /* GDAJSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D30355D21B61401D00E1DDED /* GDAJSONObject.m */; };
 		D395B0F71B41DA15005A6407 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D395B0F61B41DA15005A6407 /* Images.xcassets */; };
 		DCAAD87F2BC1E95F0018D135 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DCAAD87E2BC1E95F0018D135 /* PrivacyInfo.xcprivacy */; };
+		DCE4D2AD2D7CE40F00B5DA4B /* NewFeatures.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE4D2AC2D7CE40F00B5DA4B /* NewFeatures.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -887,7 +887,6 @@
 		286D18A9206AC31E006D1925 /* NewFeaturesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewFeaturesViewController.swift; path = "Code/Visual UI/Controls/New Feature Announcement/NewFeaturesViewController.swift"; sourceTree = "<group>"; };
 		286D18AC206B1A48006D1925 /* FeaturePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FeaturePageViewController.swift; path = "Code/Visual UI/Controls/New Feature Announcement/FeaturePageViewController.swift"; sourceTree = "<group>"; };
 		286D18AD206B1A48006D1925 /* FeaturePageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FeaturePageView.xib; path = "Code/Visual UI/Controls/New Feature Announcement/FeaturePageView.xib"; sourceTree = "<group>"; };
-		286D18B4206C03FE006D1925 /* NewFeatures.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = NewFeatures.plist; path = Assets/PropertyLists/NewFeatures.plist; sourceTree = "<group>"; };
 		286D18B6206C0F55006D1925 /* NewFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewFeatures.swift; path = Code/App/Settings/NewFeatures.swift; sourceTree = "<group>"; };
 		286DA3A71F9E6B3100C34C9C /* BorderedIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BorderedIcon.swift; path = "Code/Visual UI/Controls/BorderedIcon.swift"; sourceTree = "<group>"; };
 		286DC69721E6811A001CD88A /* AuthoredActivityContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthoredActivityContent.swift; sourceTree = "<group>"; };
@@ -1573,6 +1572,7 @@
 		D3D7CFC81B3D96470020B5E9 /* Soundscape.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soundscape.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3E2A6361CAD5CA100A5192A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		DCAAD87E2BC1E95F0018D135 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Assets/PropertyLists/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		DCE4D2AC2D7CE40F00B5DA4B /* NewFeatures.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = NewFeatures.json; path = Assets/NewFeatures.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -4345,6 +4345,7 @@
 		D378E0EB1B3D98D800909E29 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				DCE4D2AC2D7CE40F00B5DA4B /* NewFeatures.json */,
 				62E2B87925AE5BD50008AF5D /* Configurations */,
 				6238E1732508468100124167 /* Animations */,
 				28BBFE8B2433BD2F00A01F15 /* Colors */,
@@ -4397,7 +4398,6 @@
 			children = (
 				B9546B211E54AB36002776D4 /* Soundscape.entitlements */,
 				D395B0FE1B431E08005A6407 /* Info.plist */,
-				286D18B4206C03FE006D1925 /* NewFeatures.plist */,
 				3150EC4221FA731800F6EB3A /* StreetSuffixAbbreviations_en.plist */,
 				31F12C4122569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist */,
 				DCAAD87E2BC1E95F0018D135 /* PrivacyInfo.xcprivacy */,
@@ -4637,7 +4637,6 @@
 				2839B5E926E98051003B6AC6 /* Symbols.xcassets in Resources */,
 				2872D12F26D80B6C000BE465 /* Signal_Slow_A.wav in Resources */,
 				2872D13326D80BC6000BE465 /* Signal_Very_Slow_A.wav in Resources */,
-				286D18B5206C03FE006D1925 /* NewFeatures.plist in Resources */,
 				28CD232D275ABFD2006C9901 /* sense_safety.wav in Resources */,
 				28952D36228DBC6500FC91B4 /* hush.wav in Resources */,
 				28467F04264365B700FB4C9F /* Proximity_Far.wav in Resources */,
@@ -4705,6 +4704,7 @@
 				2896376F26D6E39D001694C0 /* Tactile_OffAxis.wav in Resources */,
 				C3BF661F2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib in Resources */,
 				316B3F6C2283924E0025526D /* InfoPlist.strings in Resources */,
+				DCE4D2AD2D7CE40F00B5DA4B /* NewFeatures.json in Resources */,
 				280AFCD72295C77000012BEA /* online.wav in Resources */,
 				2809B80C2379E95B00F6C9AC /* calibration_success.wav in Resources */,
 				6238E178250846C300124167 /* Welcome2.gif in Resources */,
@@ -5523,7 +5523,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/SoundscapeDF.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5554,7 +5554,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DADHOC";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-adhoc";
@@ -5812,7 +5812,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
@@ -5844,7 +5844,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-debug";
@@ -5872,7 +5872,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5902,7 +5902,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = services.soundscape;

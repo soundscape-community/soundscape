@@ -12,7 +12,7 @@ struct FeatureInfo {
     
     private let titleKey: String
     private let descriptionKey: String
-    private let accessibilityDescriptionKey: String
+    private let accessibilityDescriptionKey: String?
     private let imageFilename: String?
     private let buttonLabelKey: String?
     private let buttonAccessibilityHintKey: String?
@@ -34,7 +34,7 @@ struct FeatureInfo {
     }
     
     var localizedAccessibilityDescription: String {
-        return GDLocalizedString(accessibilityDescriptionKey)
+        return GDLocalizedString(accessibilityDescriptionKey ?? descriptionKey ?? "")
     }
     
     var localizedImage: UIImage? {
@@ -69,7 +69,7 @@ struct FeatureInfo {
     init(version: VersionString, properties: [String: String]) {
         titleKey = properties["Title"] ?? ""
         descriptionKey = properties["Description"] ?? ""
-        accessibilityDescriptionKey = properties["AccessibilityDescription"] ?? ""
+        accessibilityDescriptionKey = properties["AccessibilityDescription"]
         hyperlinkStart = Int(properties["HyperlinkStart"] ?? "")
         hyperlinkLength = Int(properties["HyperlinkLength"] ?? "")
         hyperlinkURL = properties["HyperlinkURL"]
@@ -112,8 +112,9 @@ class NewFeatures {
     }
     
     static func allFeaturesHistory() -> [VersionString: [FeatureInfo]]? {
-        guard let path = Bundle.main.path(forResource: "NewFeatures", ofType: "plist"),
-            let dict = NSDictionary(contentsOfFile: path) as? [String: [[String: String]]] else {
+        guard let path = Bundle.main.path(forResource: "NewFeatures", ofType: "json"),
+              let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: [[String: String]]] else {
                 return nil
         }
         
