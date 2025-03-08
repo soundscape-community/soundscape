@@ -3457,8 +3457,11 @@
 /* Description of the categories in places nearby feature */
 "whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc.";
 
-/* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settings app. {NumberedPlaceholder="iOS"} */
-"whats_new.3_2_0.2.description" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
+/* Title of the Bose Frames support feature */
+"whats_new.1_3_0.0.title" = "Bose Frames Support";
+
+/* Description of the Bose Frames support feature */
+"whats_new.1_3_0.0.description" = "Soundscape now supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. When connected to Soundscape, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly.<br/><br/>To get started, go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your Bose Frames and follow the instructions on screen. Note that you will need to pair your Bose Frames to your phone in the Bluetooth settings before connecting them in Soundscape.";
 
 // MARK: - FAQs
 
