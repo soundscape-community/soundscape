@@ -3127,7 +3127,7 @@
 
 
 /*  */
-"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás frente a tu marcador, @¡marker_name!\n¡Parece que ya lo tienes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La señal que configuraste para este tutorial se borrará y volverás a la pantalla anterior.";
+"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás frente a tu marcador, @¡marker_name!!.\n¡Parece que ya lo tienes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La señal que configuraste para este tutorial se borrará y volverás a la pantalla anterior.";
 
 
 /*  */
@@ -3227,7 +3227,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBounds" = "Si escuchas atentamente oirás que se está reproduciendo desde la derecha delante de ti y que hay un sonido de campana además del sonido de señal normal. Eso significa que te encuentras orientado directamente hacia tu @!destination!!";
+"tutorial.beacons.text.BeaconInBounds" = "Si escuchas atentamente oirás que se está reproduciendo desde la derecha delante de ti y que hay un sonido de campana además del sonido de señal normal. Eso significa que te encuentras orientado directamente hacia @!destination!!.";
 
 
 /*  */
@@ -3235,7 +3235,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote dónde se encuentra tu @!destination!! Inténtalo ahora.";
+"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote dónde se encuentra @!destination!!. Inténtalo ahora.";
 
 
 /*  */
@@ -3263,7 +3263,7 @@
 
 
 /*  */
-"tutorial.beacons.text.WrapUp" = "Parece que lo has entendido. Si deseas repetir este tutorial, puedes obtener acceso a él en cualquier momento en la pantalla Ayuda y tutoriales. La señal que ha establecido para este tutorial se borrará ahora y regresará a la pantalla anterior.";
+"tutorial.beacons.text.WrapUp" = "Parece que lo has entendido. Si deseas repetir este tutorial, puedes obtener acceso a él en cualquier momento en la pantalla Ayuda y tutoriales. La señal que ha establecido para este tutorial se borrará ahora y regresarás a la pantalla anterior.";
 
 
 /*  */

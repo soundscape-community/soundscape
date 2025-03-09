@@ -2692,7 +2692,7 @@
 "tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "Perfect, you are now facing in the direction of @!destination!!.";
 
 /* Tutorial, Beacon in bounds sound. {NumberedPlaceholder="@!destination!!"} */
-"tutorial.beacons.text.BeaconInBounds" = "If you listen carefully you will hear that it is playing from right in front of you and that there is a bell sound in addition to the normal beacon sound. That is because you are facing directly towards @!destination!!";
+"tutorial.beacons.text.BeaconInBounds" = "If you listen carefully you will hear that it is playing from right in front of you and that there is a bell sound in addition to the normal beacon sound. That is because you are facing directly towards @!destination!!.";
 
 /* Tutorial, Beacon in of Bounds sound change when phone is rotated. {NumberedPlaceholder="@!destination!!"} */
 "tutorial.beacons.text.BeaconInBoundsRotate" = "Now try to slowly turn away from the direction of the beacon, while still holding your phone flat. The bell sound will stop and the beacon continues to show you where @!destination!! is. Give it a try now.";
