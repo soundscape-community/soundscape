@@ -188,7 +188,7 @@ async def import_non_osm_data_async(csv_dir, osm_dsn):
     # The client expects OSM IDs for every point, but this is not OSM data.
     # Assign large positive OSM IDs, which will not conflict with real values.
     # Discussion: https://github.com/soundscape-community/soundscape/pull/135#issuecomment-2665868581
-    osm_id = 1e17
+    osm_id = 10**17
 
     async with aiopg.connect(dsn=osm_dsn) as conn:
         cursor = await conn.cursor()
