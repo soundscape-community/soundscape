@@ -2707,7 +2707,7 @@
 
 
 /*  */
-"devices.explain_ar.disconnected" = "Los auriculares con seguimiento de cabeza son auriculares Bluetooth con sensores que indican a Soundscape el lugar frente al cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio, lo que hace que su desplazamiento por el mundo sea más natural.\n\nPulsa en el botón siguiente para conectar un dispositivo.";
+"devices.explain_ar.disconnected" = "Los auriculares con seguimiento de cabeza son auriculares Bluetooth con sensores que indican a Soundscape el lugar frente al cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio, lo que hace que tu desplazamiento por el mundo sea más natural.\n\nPulsa en el botón siguiente para conectar un dispositivo.";
 
 
 /*  */
@@ -3127,7 +3127,7 @@
 
 
 /*  */
-"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás frente a tu marcador, @¡marker_name!\n¡Parece que ya lo tienes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La señal que configuraste para este tutorial se borrará y volverás a la pantalla anterior.";
+"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás frente a tu marcador, @¡marker_name!!.\n¡Parece que ya lo tienes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La señal que configuraste para este tutorial se borrará y volverás a la pantalla anterior.";
 
 
 /*  */
@@ -3227,7 +3227,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBounds" = "Si escuchas atentamente oirás que se está reproduciendo desde la derecha delante de ti y que hay un sonido de campana además del sonido de señal normal. Eso significa que te encuentras orientado directamente hacia tu @!destination!!";
+"tutorial.beacons.text.BeaconInBounds" = "Si escuchas atentamente oirás que se está reproduciendo desde la derecha delante de ti y que hay un sonido de campana además del sonido de señal normal. Eso significa que te encuentras orientado directamente hacia @!destination!!.";
 
 
 /*  */
@@ -3235,7 +3235,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote dónde se encuentra tu @!destination!! Inténtalo ahora.";
+"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote dónde se encuentra @!destination!!. Inténtalo ahora.";
 
 
 /*  */
@@ -3263,7 +3263,7 @@
 
 
 /*  */
-"tutorial.beacons.text.WrapUp" = "Parece que lo has entendido. Si deseas repetir este tutorial, puedes obtener acceso a él en cualquier momento en la pantalla Ayuda y tutoriales. La señal que ha establecido para este tutorial se borrará ahora y regresará a la pantalla anterior.";
+"tutorial.beacons.text.WrapUp" = "Parece que lo has entendido. Si deseas repetir este tutorial, puedes obtener acceso a él en cualquier momento en la pantalla Ayuda y tutoriales. La señal que ha establecido para este tutorial se borrará ahora y regresarás a la pantalla anterior.";
 
 
 /*  */
@@ -3783,7 +3783,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza cuando se utilizan AirPods compatibles. Cuando se conectan a Soundscape, los sensores del indicador de los AirPods indican a Soundscape la dirección frente a la cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio haciendo que sea más natural a medida que te mueves por el mundo. Cuando uses Soundscape con los AirPods conectados, no es necesario sostener el teléfono para que Soundscape funcione correctamente.";
+"help.using_headsets.airpods.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza cuando se utilizan AirPods compatibles. Cuando se conectan a Soundscape, los sensores de los AirPods indican a Soundscape la dirección frente a la cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio haciendo que sea más natural a medida que te mueves por el mundo. Cuando uses Soundscape con los AirPods conectados, no es necesario sostener el teléfono para que Soundscape funcione correctamente.";
 
 
 /*  */
@@ -3943,7 +3943,7 @@
 
 
 /*  */
-"osm.tag.waste_basket" = "Cubo de la basura";
+"osm.tag.waste_basket" = "Cubo de basura";
 
 
 /*  */
@@ -4015,11 +4015,11 @@
 
 
 /*  */
-"osm.tag.car_wash" = "Lavado de automóviles";
+"osm.tag.car_wash" = "Lavado de coches";
 
 
 /*  */
-"osm.tag.vending_machine" = "Expendedor automático";
+"osm.tag.vending_machine" = "Máquina expendedora";
 
 
 /*  */
@@ -4104,10 +4104,6 @@
 
 /*  */
 "push.local.walk.body" = "Simplemente inicie la aplicación y disfrute de la experiencia. Ni siquiera tiene que elegir un destino.";
-
-
-/*  */
-"whats_new.3_2_0.2.description" = "Se pueden descargar voces adicionales, incluidas las de calidad mejorada, en la sección Contenido hablado de la configuración de accesibilidad de iOS.";
 
 
 /*  */
@@ -4435,4 +4431,6 @@
 "help.using_headsets.bose_frames.how.1" = "<b>Conexión de un dispositivo</b>:<br/> ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
 "help.using_headsets.bose_frames.how.4" = "<b>Solución de problemas de los auriculares</b>:<br/> Si tienes problemas para conectar las Bose Frames a Soundscape, asegúrate de que son de uno de los modelos compatibles en Soundscape: Altos o Rondos. Si son uno de estos modelos, asegúrate de que las Frames aparecen en la aplicación de Bose Connect. Si se muestran y sigues teniendo problemas con la conexión, intenta desemparejar y volver a emparejar los auriculares a través del menú Bluetooth del teléfono.<br>La compatibilidad con las Bose Frames es nueva y nos encantaría escuchar tus comentarios. Puedes contactarnos eligiendo la opción \"Enviar comentarios\" en el menú.";
 "help.using_headsets.bose_frames.how.2" = "<b>Calibración de los auriculares</b>:<br/> tus Bose Frames tendrán que calibrarse para saber con precisión frente a que dirección te encuentras. cada vez que las conectes a Soundscape, se te informará que se las necesitan calibrar mediante un timbre de audio. Para calibrar las Bose Frames, sigue las instrucciones que aparecen en la pantalla. Cuando el timbre de calibración deje de sonar, las Bose Frames estarán calibradas. Soundscape seguirá ahora la direccion de tu cabeza para que no tengas que llevar el teléfono en la mano. También puedes repetir esta calibración, en cualquier momento, incluso si no está sonando el timbre, si crees que la precisión del audio espacial no es buena.";
-"help.using_headsets.bose_frames.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza cuando se utilizan las versiones Alto o Rondo de Bose Frames. Cuando se conectan a Soundscape, los sensores del indicador de las Bose Frames indican a Soundscape la dirección frente a la cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio haciendo que sea más natural a medida que te mueves por el mundo. Cuando uses Soundscape con las Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione correctamente.";
+"help.using_headsets.bose_frames.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza cuando se utilizan las versiones Alto o Rondo de Bose Frames. Cuando se conectan a Soundscape, los sensores de las Bose Frames indican a Soundscape la dirección frente a la cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio haciendo que sea más natural a medida que te mueves por el mundo. Cuando uses Soundscape con las Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione correctamente.";
+"whats_new.1_3_0.0.title" = "Compatibilidad con Bose Frames";
+"whats_new.1_3_0.0.description" = "Ahora Soundscape admite audio espacial con seguimiento dinámico de la cabeza cuando se utilizan las versiones Alto o Rondo de Bose Frames. Cuando se conectan a Soundscape, los sensores de las Bose Frames indican a Soundscape la dirección frente a la cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio haciendo que sea más natural a medida que te mueves por el mundo. Cuando uses Soundscape con los Bose Frames conectados, no es necesario sostener el teléfono para que Soundscape funcione correctamente.<br/><br/>Para empezar, ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";

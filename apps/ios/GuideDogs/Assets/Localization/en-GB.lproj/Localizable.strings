@@ -3244,7 +3244,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBounds" = "If you listen carefully you will hear that it is playing from right in front of you and that there is a bell sound in addition to the normal beacon sound. That is because you are facing directly towards @!destination!!";
+"tutorial.beacons.text.BeaconInBounds" = "If you listen carefully you will hear that it is playing from right in front of you and that there is a bell sound in addition to the normal beacon sound. That is because you are facing directly towards @!destination!!.";
 
 
 /*  */
@@ -4120,10 +4120,6 @@
 
 
 /*  */
-"whats_new.3_2_0.2.description" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
-
-
-/*  */
 "faq.title" = "Frequently Asked Questions";
 
 
@@ -4442,3 +4438,5 @@
 "help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
 "help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models in Soundscape - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>Support for the Bose Frames is new and we would love to hear your feedback. You can contact us by choosing the \"Send Feedback\" Option in the menu.";
 "help.using_headsets.bose_frames.what" = "Soundscape supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. When connected to Soundscape, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly.";
+"whats_new.1_3_0.0.title" = "Bose Frames Support";
+"whats_new.1_3_0.0.description" = "Soundscape now supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. When connected to Soundscape, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly.<br/><br/>To get started, go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your Bose Frames and follow the instructions on screen. Note that you will need to pair your Bose Frames to your phone in the Bluetooth settings before connecting them in Soundscape.";
