@@ -12,13 +12,16 @@ import CocoaLumberjackSwift
 class StatusTableViewController: BaseTableViewController {
 
     private struct Section {
-        static let gps = 0
-        static let audio = 1
-        static let cache = 2
+        static let url = 0
+        static let gps = 1
+        static let audio = 2
+        static let cache = 3
     }
     
     private struct CellIdentifier {
         static let gps = "GPSStatus"
+        //FIXME adding a new cell identifier requires modifying a storyboard?
+        //static let url = "TileServerURL"
     }
     
     private struct Segue {
@@ -72,11 +75,12 @@ class StatusTableViewController: BaseTableViewController {
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
+        case Section.url:     return 1
         case Section.gps:     return 1
         case Section.audio:   return 1
         case Section.cache:   return 1
@@ -86,6 +90,7 @@ class StatusTableViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
+        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url")
         case Section.gps:     return GDLocalizedString("troubleshooting.gps_status")
         case Section.audio:   return GDLocalizedString("troubleshooting.check_audio")
         case Section.cache:   return GDLocalizedString("troubleshooting.cache")
@@ -95,6 +100,7 @@ class StatusTableViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
+        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url.explanation")
         case Section.gps:
             if SettingsContext.shared.metricUnits {
                 return GDLocalizedString("troubleshooting.gps_status.explanation.meters")
@@ -109,6 +115,11 @@ class StatusTableViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
+        case Section.url:
+            let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.gps, for: indexPath)
+            cell.textLabel?.text = ServiceModel.servicesHostName
+            return cell
+            
         case Section.gps:
             let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.gps, for: indexPath)
             
