@@ -116,8 +116,18 @@ class StatusTableViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case Section.url:
-            let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.gps, for: indexPath)
-            cell.textLabel?.text = SettingsContext.shared.servicesHostName
+            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+            
+            cell.backgroundColor = Colors.Background.quaternary
+            cell.button.removeTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
+            cell.button.removeTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
+            cell.button.addTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
+            cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.tile_server_url")
+            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.tile_server_url.explanation")
+            cell.button.backgroundColor = Colors.Background.primary
+            cell.label.text = SettingsContext.shared.servicesHostName
+            cell.label.textAlignment = .left
+
             return cell
             
         case Section.gps:
@@ -140,6 +150,7 @@ class StatusTableViewController: BaseTableViewController {
             let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
             
             cell.backgroundColor = Colors.Background.quaternary
+            cell.button.removeTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
             cell.button.removeTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
             cell.button.addTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
             cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.check_audio")
@@ -153,6 +164,7 @@ class StatusTableViewController: BaseTableViewController {
             let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
             
             cell.backgroundColor = Colors.Background.quaternary
+            cell.button.removeTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
             cell.button.removeTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
             cell.button.addTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
             cell.button.accessibilityLabel = GDLocalizedString("settings.clear_data")
@@ -171,6 +183,29 @@ class StatusTableViewController: BaseTableViewController {
 }
 
 extension StatusTableViewController {
+    @objc func urlTouchUpInside() {
+        let alertController = UIAlertController(title: GDLocalizedString("troubleshooting.tile_server_url"), message: nil, preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.placeholder = SettingsContext.shared.servicesHostName
+        }
+        
+        let submitAction = UIAlertAction(title: GDLocalizedString("general.alert.done"), style: .default) { [unowned alertController] _ in
+            if let textField = alertController.textFields?.first {
+                if let userInput = textField.text, !userInput.isEmpty {
+                    SettingsContext.shared.servicesHostName = userInput
+                    // Update url button label
+                    self.tableView.reloadData()                }
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel)
+        
+        alertController.addAction(submitAction)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true)
+    }
+    
     
     @objc func crosscheckTouchUpInside() {
         GDLogAppInfo("Play crosscheck audio")
