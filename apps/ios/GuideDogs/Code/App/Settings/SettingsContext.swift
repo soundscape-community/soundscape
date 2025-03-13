@@ -31,6 +31,7 @@ class SettingsContext {
         fileprivate static let appUseCount               = "GDAAppUseCount"
         fileprivate static let newFeaturesLastDisplayedVersion = "GDANewFeaturesLastDisplayedVersion"
         fileprivate static let clientIdentifier          = "GDAUserDefaultClientIdentifier"
+        fileprivate static let servicesHostName          = "GDAServicesHostName"
         fileprivate static let metricUnits               = "GDASettingsMetric"
         fileprivate static let locale                    = "GDASettingsLocaleIdentifier"
         fileprivate static let voiceID                   = "GDAAppleSynthVoice"
@@ -85,6 +86,7 @@ class SettingsContext {
         userDefaults.register(defaults: [
             Keys.appUseCount: 0,
             Keys.newFeaturesLastDisplayedVersion: "0.0.0",
+            Keys.servicesHostName: "https://tiles.soundscape.services",
             Keys.metricUnits: Locale.current.usesMetricSystem,
             Keys.speakingRate: 0.55,
             Keys.beaconVolume: 0.75,
@@ -160,6 +162,15 @@ class SettingsContext {
         }
         set(newValue) {
             userDefaults.set(newValue, forKey: Keys.clientIdentifier)
+        }
+    }
+    
+    var servicesHostName: String {
+        get {
+            return userDefaults.string(forKey: Keys.servicesHostName)!
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.servicesHostName)
         }
     }
     

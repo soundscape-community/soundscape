@@ -117,7 +117,7 @@ class StatusTableViewController: BaseTableViewController {
         switch indexPath.section {
         case Section.url:
             let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.gps, for: indexPath)
-            cell.textLabel?.text = ServiceModel.servicesHostName
+            cell.textLabel?.text = SettingsContext.shared.servicesHostName
             return cell
             
         case Section.gps:
