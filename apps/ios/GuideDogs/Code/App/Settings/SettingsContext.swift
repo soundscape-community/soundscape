@@ -86,7 +86,6 @@ class SettingsContext {
         userDefaults.register(defaults: [
             Keys.appUseCount: 0,
             Keys.newFeaturesLastDisplayedVersion: "0.0.0",
-            Keys.servicesHostName: "https://tiles.soundscape.services",
             Keys.metricUnits: Locale.current.usesMetricSystem,
             Keys.speakingRate: 0.55,
             Keys.beaconVolume: 0.75,
@@ -167,7 +166,14 @@ class SettingsContext {
     
     var servicesHostName: String {
         get {
-            return userDefaults.string(forKey: Keys.servicesHostName)!
+            // Allow URL to be reset to default when it is cleared
+            if let servicesHostName = userDefaults.string(forKey: Keys.servicesHostName), !servicesHostName.isEmpty {
+                return servicesHostName
+            } else {
+                let servicesHostName = "https://tiles.soundscape.services"
+                userDefaults.set(servicesHostName, forKey: Keys.servicesHostName)
+                return servicesHostName
+            }
         }
         set(newValue) {
             userDefaults.set(newValue, forKey: Keys.servicesHostName)

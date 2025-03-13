@@ -194,13 +194,22 @@ extension StatusTableViewController {
                 if let userInput = textField.text, !userInput.isEmpty {
                     SettingsContext.shared.servicesHostName = userInput
                     // Update url button label
-                    self.tableView.reloadData()                }
+                    self.tableView.reloadData()
+                }
             }
+        }
+        
+        let resetAction = UIAlertAction(title: GDLocalizedString("general.alert.reset"), style: .destructive) { [] _ in
+            // reset SettingsContext.shared.servicesHostName to default value
+            SettingsContext.shared.servicesHostName = ""
+            // Update url button label
+            self.tableView.reloadData()
         }
         
         let cancelAction = UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel)
         
         alertController.addAction(submitAction)
+        alertController.addAction(resetAction)
         alertController.addAction(cancelAction)
 
         present(alertController, animated: true)
