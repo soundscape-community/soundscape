@@ -12,9 +12,9 @@ import CocoaLumberjackSwift
 class StatusTableViewController: BaseTableViewController {
 
     private struct Section {
-        static let url = 0
-        static let gps = 1
-        static let audio = 2
+        static let gps = 0
+        static let audio = 1
+        static let url = 2
         static let cache = 3
     }
     
@@ -80,9 +80,9 @@ class StatusTableViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case Section.url:     return 1
         case Section.gps:     return 1
         case Section.audio:   return 1
+        case Section.url:     return 1
         case Section.cache:   return 1
         default:              return 0
         }
@@ -90,9 +90,9 @@ class StatusTableViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url")
         case Section.gps:     return GDLocalizedString("troubleshooting.gps_status")
         case Section.audio:   return GDLocalizedString("troubleshooting.check_audio")
+        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url")
         case Section.cache:   return GDLocalizedString("troubleshooting.cache")
         default:              return nil
         }
@@ -100,7 +100,6 @@ class StatusTableViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
-        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url.explanation")
         case Section.gps:
             if SettingsContext.shared.metricUnits {
                 return GDLocalizedString("troubleshooting.gps_status.explanation.meters")
@@ -108,6 +107,7 @@ class StatusTableViewController: BaseTableViewController {
                 return GDLocalizedString("troubleshooting.gps_status.explanation.feet")
             }
         case Section.audio: return GDLocalizedString("troubleshooting.check_audio.explanation")
+        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url.explanation")
         case Section.cache: return GDLocalizedString("troubleshooting.cache.explanation")
         default: return nil
         }
@@ -115,21 +115,6 @@ class StatusTableViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
-        case Section.url:
-            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-            
-            cell.backgroundColor = Colors.Background.quaternary
-            cell.button.removeTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
-            cell.button.removeTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
-            cell.button.addTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
-            cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.tile_server_url")
-            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.tile_server_url.explanation")
-            cell.button.backgroundColor = Colors.Background.primary
-            cell.label.text = SettingsContext.shared.servicesHostName
-            cell.label.textAlignment = .left
-
-            return cell
-            
         case Section.gps:
             let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.gps, for: indexPath)
             
@@ -158,6 +143,21 @@ class StatusTableViewController: BaseTableViewController {
             cell.button.backgroundColor = Colors.Background.primary
             cell.label.text = GDLocalizedString("troubleshooting.check_audio")
             
+            return cell
+            
+        case Section.url:
+            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+            
+            cell.backgroundColor = Colors.Background.quaternary
+            cell.button.removeTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
+            cell.button.removeTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
+            cell.button.addTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
+            cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.tile_server_url")
+            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.tile_server_url.explanation")
+            cell.button.backgroundColor = Colors.Background.primary
+            cell.label.text = SettingsContext.shared.servicesHostName
+            cell.label.textAlignment = .left
+
             return cell
             
         case Section.cache:
