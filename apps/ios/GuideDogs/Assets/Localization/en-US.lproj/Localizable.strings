@@ -544,6 +544,12 @@
 // MARK: Settings (Troubleshooting)
 //------------------------------------------------------------------------------
 
+/* Title of the table section that allows user to set the tile server URL. */
+"troubleshooting.tile_server_url" = "Tile Server URL";
+
+/* Explanation of the tile server URL setting. {NumberedPlaceholder="Soundscape"} */
+"troubleshooting.tile_server_url.explanation" = "This is the server from which Soundscape retrieves map data. You normally should not need to change this unless you are developing or testing Soundscape.";
+
 /* Title of the table section that contains info about the current accuracy of the phone's GPS signal provided by Apple's Location Services feature. */
 "troubleshooting.gps_status" = "Location Accuracy";
 

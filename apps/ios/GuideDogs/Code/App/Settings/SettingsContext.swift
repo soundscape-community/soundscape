@@ -31,6 +31,7 @@ class SettingsContext {
         fileprivate static let appUseCount               = "GDAAppUseCount"
         fileprivate static let newFeaturesLastDisplayedVersion = "GDANewFeaturesLastDisplayedVersion"
         fileprivate static let clientIdentifier          = "GDAUserDefaultClientIdentifier"
+        fileprivate static let servicesHostName          = "GDAServicesHostName"
         fileprivate static let metricUnits               = "GDASettingsMetric"
         fileprivate static let locale                    = "GDASettingsLocaleIdentifier"
         fileprivate static let voiceID                   = "GDAAppleSynthVoice"
@@ -160,6 +161,22 @@ class SettingsContext {
         }
         set(newValue) {
             userDefaults.set(newValue, forKey: Keys.clientIdentifier)
+        }
+    }
+    
+    var servicesHostName: String {
+        get {
+            // Allow URL to be reset to default when it is cleared
+            if let servicesHostName = userDefaults.string(forKey: Keys.servicesHostName), !servicesHostName.isEmpty {
+                return servicesHostName
+            } else {
+                let servicesHostName = "https://tiles.soundscape.services"
+                userDefaults.set(servicesHostName, forKey: Keys.servicesHostName)
+                return servicesHostName
+            }
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.servicesHostName)
         }
     }
     
