@@ -687,6 +687,8 @@ extension HomeViewController: LocationActionDelegate {
                         
                         self.present(firstUseAlert, animated: true, completion: nil)
                     }
+                case .navilens:
+                    launchNaviLens()
                 }
             } catch let error as LocationActionError {
                 let alert = LocationActionAlert.alert(for: error)

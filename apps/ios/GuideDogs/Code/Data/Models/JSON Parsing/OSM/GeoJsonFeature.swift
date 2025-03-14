@@ -83,6 +83,8 @@ class GeoJsonFeature {
     
     var isRoundabout = false
     
+    var navilensEnabled = false
+    
     // MARK: Initializers
     
     init?(json: [String: Any], superCategories: SuperCategories) {
@@ -194,7 +196,14 @@ class GeoJsonFeature {
             superCategory = SuperCategory.entranceLists
             return
         }
-        
+
+        // NaviLens-enabled bus stops
+        if GeoJsonFeature.hasTag("qr_code:navilens=yes", props: properties) {
+            superCategory = SuperCategory.navilens
+            navilensEnabled = true
+            return
+        }
+
         // Case: bus stops
         if value == "bus_stop" {
             superCategory = SuperCategory.mobility
@@ -430,6 +439,7 @@ extension GeoJsonFeature {
     
     /// Prioritized categories for handeling features with unknown categories
     static let prioritizedCategories = [SuperCategory.safety,
+                                        SuperCategory.navilens,
                                         SuperCategory.mobility,
                                         SuperCategory.landmarks,
                                         SuperCategory.places,
