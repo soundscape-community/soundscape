@@ -198,7 +198,7 @@ class GeoJsonFeature {
         }
 
         // NaviLens-enabled bus stops
-        if GeoJsonFeature.hasTag("navilens=true", props: properties) {
+        if GeoJsonFeature.hasTag("qr_code:navilens=yes", props: properties) {
             superCategory = SuperCategory.navilens
             navilensEnabled = true
             return

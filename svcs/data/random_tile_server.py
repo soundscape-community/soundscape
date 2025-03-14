@@ -1,10 +1,16 @@
 # Copyright (c) Soundscape Community.
 # Licensed under the MIT License.
 """
-This serves synthetic randomized features as map tiles. Useful for testing the app
-with new feature types without adjusting the map location.
+This is a fake tile server. It serves collections of synthetic randomized
+features as map tiles. Each feature is guaranteed to have coordinates that
+place it within its tile.
 
-To use:
+As written, each tile served will contain 1,000 random bus stops, half of
+which are marked as NaviLens-enabled. This is useful for testing the app
+for support of this new feature type when such features don't exist yet in
+the database.
+
+To use as a backend for the app:
 1. Run this file:
     python3 random_tile_server.py
 2. Update Code/Data/Services/Helpers/ServiceModel.swift:
@@ -38,7 +44,7 @@ def random_feature(lat, lon, osm_id):
     properties = {"name": "Normal",}
     if random.choice([True, False]):
         properties["name"] = "Navilens-enabled"
-        properties["navilens"] = "true"
+        properties["qr_code:navilens"] = "yes"
 
     # Return a bus stop at the given latitude + longitude
     return {
