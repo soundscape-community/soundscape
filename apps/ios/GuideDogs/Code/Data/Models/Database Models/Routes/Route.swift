@@ -138,3 +138,23 @@ class Route: Object, ObjectKeyIdentifiable {
     }
     
 }
+
+extension Route {
+    /// Creates a new Route instance with the order of waypoints reversed.
+    /// The new route’s name is set to "Reverse of <original name>".
+    func reversedRoute() -> Route? {
+        // Ensure there is at least one waypoint.
+        guard !waypoints.isEmpty else { return nil }
+        
+        // Reverse the waypoints and update their index accordingly.
+        let reversedWaypoints = waypoints.ordered.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
+            // Use the existing initializer; force unwrap is safe if marker exists.
+            return RouteWaypoint(index: index, markerId: waypoint.markerId)
+        }
+        
+        // Create a new route with the reversed waypoints.
+        let reversedName = "Reverse of \(self.name)"
+        let newRoute = Route(name: reversedName, description: self.routeDescription, waypoints: reversedWaypoints)
+        return newRoute
+    }
+}

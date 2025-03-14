@@ -250,6 +250,27 @@ extension RouteDetailsView {
                                             motion: AppContext.shared.motionActivityContext))
             }
             
+        case .startRouteReverse:  // <-- NEW: Handle reverse route action
+            // Ensure the route comes from the database so we can fetch it.
+            if case .database = route.detail.source,
+               let existingRoute = Route.object(forPrimaryKey: route.detail.id),
+               let reversedRoute = existingRoute.reversedRoute() {
+                do {
+                    // Persist the reversed route in the database.
+                    try Route.add(reversedRoute)
+                    
+                    // Create a new RouteDetail for the reversed route.
+                    let reversedDetail = RouteDetail(source: .cache(route: reversedRoute))
+                    
+                    // Start guidance with the reversed route.
+                    startGuidance(RouteGuidance(reversedDetail,
+                                                spatialData: AppContext.shared.spatialDataContext,
+                                                motion: AppContext.shared.motionActivityContext))
+                } catch {
+                    GDATelemetry.track("route.reverse.error", with: ["error": error.localizedDescription])
+                }
+            }
+            
         case .stopRoute, .stopTrailActivity:
             stopGuidance()
             
