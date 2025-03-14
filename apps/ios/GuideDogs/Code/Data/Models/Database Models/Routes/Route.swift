@@ -146,15 +146,27 @@ extension Route {
         // Ensure there is at least one waypoint.
         guard !waypoints.isEmpty else { return nil }
         
-        // Reverse the waypoints and update their index accordingly.
-        let reversedWaypoints = waypoints.ordered.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
-            // Use the existing initializer; force unwrap is safe if marker exists.
+        let orderedWaypoints = waypoints.ordered
+        let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
             return RouteWaypoint(index: index, markerId: waypoint.markerId)
         }
         
-        // Create a new route with the reversed waypoints.
-        let reversedName = "Reverse of \(self.name)"
-        let newRoute = Route(name: reversedName, description: self.routeDescription, waypoints: reversedWaypoints)
+        let prefix = "Reverse of "
+        let newName: String
+        if self.name.hasPrefix(prefix) {
+            // If already reversed, remove the prefix to get the normal name.
+            newName = String(self.name.dropFirst(prefix.count))
+        } else {
+            newName = "\(prefix)\(self.name)"
+        }
+        
+        let newRoute = Route(name: newName, description: self.routeDescription, waypoints: reversedWaypoints)
         return newRoute
+    }
+    
+    /// Finds an existing route with the specified name.
+    static func routeWithName(_ name: String) -> Route? {
+        guard let realm = try? Realm() else { return nil }
+        return realm.objects(Route.self).filter("name == %@", name).first
     }
 }

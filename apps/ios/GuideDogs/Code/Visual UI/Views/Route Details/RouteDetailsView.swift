@@ -250,24 +250,31 @@ extension RouteDetailsView {
                                             motion: AppContext.shared.motionActivityContext))
             }
             
-        case .startRouteReverse:  // <-- NEW: Handle reverse route action
-            // Ensure the route comes from the database so we can fetch it.
-            if case .database = route.detail.source,
-               let existingRoute = Route.object(forPrimaryKey: route.detail.id),
-               let reversedRoute = existingRoute.reversedRoute() {
-                do {
-                    // Persist the reversed route in the database.
-                    try Route.add(reversedRoute)
-                    
-                    // Create a new RouteDetail for the reversed route.
-                    let reversedDetail = RouteDetail(source: .cache(route: reversedRoute))
-                    
-                    // Start guidance with the reversed route.
-                    startGuidance(RouteGuidance(reversedDetail,
+        case .startRouteReverse:
+            // Make sure the current route is from the database.
+            guard case .database = route.detail.source,
+                  let existingRoute = Route.object(forPrimaryKey: route.detail.id) else { return }
+            
+            let prefix = "Reverse of "
+            let targetName: String = existingRoute.name.hasPrefix(prefix)
+                ? String(existingRoute.name.dropFirst(prefix.count))
+                : "\(prefix)\(existingRoute.name)"
+            
+            // Looking for a route with that name.
+            if let targetRoute = Route.routeWithName(targetName) {
+                // If found, start guidance with the existing route.
+                let targetDetail = RouteDetail(source: .cache(route: targetRoute))
+                startGuidance(RouteGuidance(targetDetail,
+                                            spatialData: AppContext.shared.spatialDataContext,
+                                            motion: AppContext.shared.motionActivityContext))
+            } else {
+                // Otherwise, create a new route by reversing the current route.
+                if let newRoute = existingRoute.reversedRoute() {
+                    try Route.add(newRoute)
+                    let targetDetail = RouteDetail(source: .cache(route: newRoute))
+                    startGuidance(RouteGuidance(targetDetail,
                                                 spatialData: AppContext.shared.spatialDataContext,
                                                 motion: AppContext.shared.motionActivityContext))
-                } catch {
-                    GDATelemetry.track("route.reverse.error", with: ["error": error.localizedDescription])
                 }
             }
             
