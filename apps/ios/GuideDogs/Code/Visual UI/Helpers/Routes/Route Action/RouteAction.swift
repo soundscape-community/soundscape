@@ -39,7 +39,7 @@ struct RouteActionState: ActionState {
         case .startRoute:
             return GDLocalizedString("route_detail.action.start_route")
         case .startRouteReverse:
-            return GDLocalizedString("route_detail.action.start_route_reverse")
+            return GDLocalizedString("route_detail.action.start_reversed_route")
         case .stopRoute:
             return GDLocalizedString("route_detail.action.stop_route")
         case .startTrailActivity:
@@ -107,7 +107,7 @@ struct RouteActionState: ActionState {
         case .startRoute:
             return "route_action.start_route"
         case .startRouteReverse:
-            return "route_action.start_route_reverse"
+            return "route_action.start_reversed_route"
         case .stopRoute:
             return "route_action.stop_route"
         case .startTrailActivity:

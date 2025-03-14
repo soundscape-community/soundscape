@@ -1009,6 +1009,9 @@
 /* Title for the action to pause the recreational activity. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
 "route_detail.action.stop_event" = "Stop Activity";
 
+/* Title for the action to start playing the audio for a reversed route */
+"route_detail.action.start_reversed_route" = "Start Reversed Route";
+
 /* Accessibility hint for the edit button on the Route Detail screen */
 "route_detail.action.edit" = "Edit Route";
 

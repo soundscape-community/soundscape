@@ -251,30 +251,64 @@ extension RouteDetailsView {
             }
             
         case .startRouteReverse:
-            // Make sure the current route is from the database.
+            // Ensure the current route is from the database.
             guard case .database = route.detail.source,
                   let existingRoute = Route.object(forPrimaryKey: route.detail.id) else { return }
             
-            let prefix = "Reverse of "
-            let targetName: String = existingRoute.name.hasPrefix(prefix)
-                ? String(existingRoute.name.dropFirst(prefix.count))
-                : "\(prefix)\(existingRoute.name)"
+            // Compute the reversed route.
+            guard let computedReversedRoute = existingRoute.reversedRoute() else { return }
+            // The computed reversed route's name is our target name.
+            var targetName = computedReversedRoute.name
             
-            // Looking for a route with that name.
-            if let targetRoute = Route.routeWithName(targetName) {
-                // If found, start guidance with the existing route.
-                let targetDetail = RouteDetail(source: .cache(route: targetRoute))
-                startGuidance(RouteGuidance(targetDetail,
-                                            spatialData: AppContext.shared.spatialDataContext,
-                                            motion: AppContext.shared.motionActivityContext))
-            } else {
-                // Otherwise, create a new route by reversing the current route.
-                if let newRoute = existingRoute.reversedRoute() {
-                    try Route.add(newRoute)
-                    let targetDetail = RouteDetail(source: .cache(route: newRoute))
+            // Check if a route with the target name already exists.
+            if let existingTarget = Route.routeWithName(targetName) {
+                // Compare the waypoints.
+                if computedReversedRoute.isWaypointsEqual(to: existingTarget) {
+                    // They match, so start guidance with the existing route.
+                    let targetDetail = RouteDetail(source: .cache(route: existingTarget))
                     startGuidance(RouteGuidance(targetDetail,
                                                 spatialData: AppContext.shared.spatialDataContext,
                                                 motion: AppContext.shared.motionActivityContext))
+                } else {
+                    // A route with that name exists but with different waypoints.
+                    // Generate a unique name by appending a suffix.
+                    var index = 2
+                    var candidateName = "\(targetName) (\(index))"
+                    while let candidateRoute = Route.routeWithName(candidateName) {
+                        if computedReversedRoute.isWaypointsEqual(to: candidateRoute) {
+                            // Found a route with the candidate name that matches; use it.
+                            let targetDetail = RouteDetail(source: .cache(route: candidateRoute))
+                            startGuidance(RouteGuidance(targetDetail,
+                                                        spatialData: AppContext.shared.spatialDataContext,
+                                                        motion: AppContext.shared.motionActivityContext))
+                            return
+                        }
+                        index += 1
+                        candidateName = "\(targetName) (\(index))"
+                    }
+                    // No matching candidate exists, so update the computed reversed route's name.
+                    computedReversedRoute.name = candidateName
+                    targetName = candidateName
+                    do {
+                        try Route.add(computedReversedRoute)
+                        let targetDetail = RouteDetail(source: .cache(route: computedReversedRoute))
+                        startGuidance(RouteGuidance(targetDetail,
+                                                    spatialData: AppContext.shared.spatialDataContext,
+                                                    motion: AppContext.shared.motionActivityContext))
+                    } catch {
+                        GDATelemetry.track("route.reverse.error", with: ["error": error.localizedDescription])
+                    }
+                }
+            } else {
+                // No route exists with the target name, so create the new reversed route.
+                do {
+                    try Route.add(computedReversedRoute)
+                    let targetDetail = RouteDetail(source: .cache(route: computedReversedRoute))
+                    startGuidance(RouteGuidance(targetDetail,
+                                                spatialData: AppContext.shared.spatialDataContext,
+                                                motion: AppContext.shared.motionActivityContext))
+                } catch {
+                    GDATelemetry.track("route.reverse.error", with: ["error": error.localizedDescription])
                 }
             }
             

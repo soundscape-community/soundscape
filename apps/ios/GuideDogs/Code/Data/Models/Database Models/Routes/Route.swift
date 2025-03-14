@@ -164,9 +164,10 @@ extension Route {
         return newRoute
     }
     
-    /// Finds an existing route with the specified name.
-    static func routeWithName(_ name: String) -> Route? {
-        guard let realm = try? Realm() else { return nil }
-        return realm.objects(Route.self).filter("name == %@", name).first
+    /// Checks whether this route's ordered waypoints (by markerId) are equal to another route's.
+    func isWaypointsEqual(to other: Route) -> Bool {
+        let selfIDs = self.waypoints.ordered.map { $0.markerId }
+        let otherIDs = other.waypoints.ordered.map { $0.markerId }
+        return selfIDs == otherIDs
     }
 }

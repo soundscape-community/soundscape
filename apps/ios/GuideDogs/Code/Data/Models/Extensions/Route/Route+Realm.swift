@@ -53,6 +53,19 @@ extension Route {
         }
     }
     
+    /// Finds a route by name in the Realm database
+    static func routeWithName(_ name: String) -> Route? {
+        return autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                return nil
+            }
+            
+            return database.objects(Route.self)
+                .filter("name == %@", name)
+                .first
+        }
+    }
+    
     // MARK: Add or Delete Routes
     
     static func add(_ route: Route, context: String? = nil) throws {
