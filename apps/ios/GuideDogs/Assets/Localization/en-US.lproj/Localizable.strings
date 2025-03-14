@@ -1012,6 +1012,9 @@
 /* Accessibility hint for the edit button on the Route Detail screen */
 "route_detail.action.edit" = "Edit Route";
 
+/* Accessibility hint for the reversed route button on the Route Detail screen */
+"route_detail.action.start_reversed_route.hint" = "Start Reversed Route";
+
 /* Voiceover hint for the action to start the route */
 "route_detail.action.start_route.hint" = "Double tap to start this route.";
 

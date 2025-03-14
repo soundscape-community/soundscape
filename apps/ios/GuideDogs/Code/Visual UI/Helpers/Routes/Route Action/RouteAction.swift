@@ -63,10 +63,7 @@ struct RouteActionState: ActionState {
             }
             return GDLocalizedString("route_detail.action.start_route.hint")
         case .startRouteReverse:
-            guard isEnabled else {
-                return GDLocalizedString("route_detail.action.start_route_reverse.disabled.hint")
-            }
-            return GDLocalizedString("route_detail.action.start_route_reverse.hint")
+            return GDLocalizedString("route_detail.action.start_reversed_route.hint")
         case .stopRoute:
             return GDLocalizedString("route_detail.action.stop_route.hint")
         case .startTrailActivity:
