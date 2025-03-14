@@ -20,8 +20,6 @@ class StatusTableViewController: BaseTableViewController {
     
     private struct CellIdentifier {
         static let gps = "GPSStatus"
-        //FIXME adding a new cell identifier requires modifying a storyboard?
-        //static let url = "TileServerURL"
     }
     
     private struct Segue {
