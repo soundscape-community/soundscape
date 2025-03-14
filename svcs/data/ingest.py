@@ -1,6 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+import csv
 import os
 import subprocess
 import argparse
@@ -39,6 +40,7 @@ parser.add_argument('--cachedir', type=str, help='imposm temp directory', defaul
 parser.add_argument('--diffdir', type=str, help='imposm diff directory', default='/tmp/imposm3_diffdir')
 parser.add_argument('--pbfdir', type=str, help='pbf directory', default='.')
 parser.add_argument('--expiredir', type=str, help='expired tiles directory', default='/tmp/imposm3_expiredir')
+parser.add_argument('--extradatadir', type=str, help='CSV containing extra data to import')
 parser.add_argument('--config', type=str, help='config file', default='config.json')
 parser.add_argument('--provision', help='provision the database', action='store_true', default=False)
 parser.add_argument('--dsn_init', type=str, help='postgres dsn init', default=dsn_init_default)
@@ -160,6 +162,68 @@ async def provision_database_async(postgres_dsn, osm_dsn):
         await cursor.execute('CREATE EXTENSION IF NOT EXISTS postgis')
         await cursor.execute('CREATE EXTENSION IF NOT EXISTS hstore')
 
+        # The non_osm_data table needs to exist regardless of whether we
+        # have extra data to load, because the soundscape_tile query expects
+        # it to exist.
+        await provision_non_osm_data_async(osm_dsn)
+
+async def provision_non_osm_data_async(osm_dsn):
+    # Create a table into which we can load extra (non-OSM) data from CSV.
+    async with aiopg.connect(dsn=osm_dsn) as conn:
+        cursor = await conn.cursor()
+        await cursor.execute(
+            """CREATE TABLE IF NOT EXISTS non_osm_data (
+                id BIGSERIAL PRIMARY KEY,
+                osm_id BIGINT,
+                feature_type TEXT,
+                feature_value TEXT,
+                properties HSTORE,
+                geom GEOMETRY(Point, 4326)
+            )"""
+        )
+        # Remove any existing data
+        await cursor.execute("TRUNCATE non_osm_data")
+
+async def import_non_osm_data_async(csv_dir, osm_dsn):
+    # The client expects OSM IDs for every point, but this is not OSM data.
+    # Assign large positive OSM IDs, which will not conflict with real values.
+    # Discussion: https://github.com/soundscape-community/soundscape/pull/135#issuecomment-2665868581
+    osm_id = 10**17
+
+    async with aiopg.connect(dsn=osm_dsn) as conn:
+        cursor = await conn.cursor()
+
+        for csv_path in os.listdir(csv_dir):
+            with open(os.path.join(csv_dir, csv_path)) as f:
+                rowcount = 0
+                for row in csv.DictReader(f):
+                    rowcount += 1
+                    osm_id += 1
+
+                    # After removing required columns, the remaining fields in
+                    # the row will be stored in the item's properties field.
+                    feat_type = row.pop("feature_type")
+                    feat_value = row.pop('feature_value')
+                    long = float(row.pop("longitude"))
+                    lat = float(row.pop("latitude"))
+                    props = row
+
+                    await cursor.execute(
+                        """INSERT INTO non_osm_data
+                        (osm_id, feature_type, feature_value, properties, geom)
+                        VALUES
+                        (%s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))""", (
+                            osm_id, feat_type, feat_value, props, long, lat
+                        )
+                    )
+
+                logger.info(
+                    "Loaded {0} rows from {1}".format(rowcount, csv_path))
+
+def import_non_osm_data(config, osm_dsn):
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(import_non_osm_data_async(config, osm_dsn))
+
 async def provision_database_soundscape_async(osm_dsn):
     ingest_path = os.environ['INGEST']
     async with aiopg.connect(dsn=osm_dsn) as conn:
@@ -225,6 +289,10 @@ def execute_kube_updatemodel_provision_and_import(config, updated):
             args.dsn = kube.get_url_dsn(d['dsn2']) #+ '?sslmode=require'
             import_write(config, False)
             import_rotate(config, False)
+            if config.extradatadir:
+                logger.info('Importing non-OSM data: START')
+                import_non_osm_data(config.extradatadir, d['dsn2'])
+                logger.info('Importing non-OSM data: DONE')
             provision_database_soundscape(d['dsn2'])
             # kubernetes connection may have expired
             retry_count = 5
