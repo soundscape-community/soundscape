@@ -33,8 +33,6 @@ class ServiceModel {
     /// String for identifying errors that originate from Realm
     static let errorRealm = "GDAHTTPErrorRealm"
     
-    /// Domain name to resolve for production services
-    private static let productionServicesHostName = "https://tiles.soundscape.services"
     /// Domain part of the URL for learning resources
     private static let productionAssestsHostName = "https://soundscape.services"
     // Do not change `productionVoicesHostName`!
@@ -42,14 +40,6 @@ class ServiceModel {
     
     static var learningResourcesWebpage: URL {
         return URL(string: productionAssestsHostName + "/learning_resources.html")!
-    }
-
-    static var servicesHostName: String {
-        if FeatureFlag.isEnabled(.developerTools), let debugHostName = DebugSettingsContext.shared.servicesHostName, debugHostName.isEmpty == false {
-            return debugHostName
-        }
-        
-        return productionServicesHostName
     }
     
     static var assetsHostName: String {
