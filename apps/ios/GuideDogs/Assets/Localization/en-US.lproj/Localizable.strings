@@ -1016,7 +1016,10 @@
 "route_detail.action.edit" = "Edit Route";
 
 /* Accessibility hint for the reversed route button on the Route Detail screen */
-"route_detail.action.start_reversed_route.hint" = "Start Reversed Route";
+"route_detail.action.start_reversed_route.hint" = "Double tap to start this route in reverse.";
+
+/* Voiceover hint for the action to start the route in reverse when the action is disabled. This action is only disabled when no waypoints have been added to a route yet. */
+"route_detail.action.start_reversed_route.disabled.hint" = "Add waypoints before starting the route in reverse.";
 
 /* Voiceover hint for the action to start the route */
 "route_detail.action.start_route.hint" = "Double tap to start this route.";
