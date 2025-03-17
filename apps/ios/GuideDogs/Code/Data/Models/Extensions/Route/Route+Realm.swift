@@ -268,4 +268,66 @@ extension Route {
         })
     }
     
+    // MARK: Reverse a route
+    
+    /// Creates a new Route instance with the order of waypoints reversed.
+    static func reversedRoute(from route: Route) -> Route? {
+        // Ensure there is at least one waypoint.
+        guard !route.waypoints.isEmpty else { return nil }
+
+        let orderedWaypoints = route.waypoints.ordered
+        let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
+            return RouteWaypoint(index: index, markerId: waypoint.markerId)
+        }
+
+        let prefix = "Reverse of "
+        let newName: String
+        if route.name.hasPrefix(prefix) {
+            // If already reversed, remove the prefix to get the normal name.
+            newName = String(route.name.dropFirst(prefix.count))
+        } else {
+            newName = "\(prefix)\(route.name)"
+        }
+
+        let newRoute = Route(name: newName, description: route.routeDescription, waypoints: reversedWaypoints)
+        return newRoute
+    }
+
+    /// Checks whether two routes have the same ordered waypoints.
+    static func isWaypointsEqual(_ route1: Route, _ route2: Route) -> Bool {
+        let route1IDs = route1.waypoints.ordered.map { $0.markerId }
+        let route2IDs = route2.waypoints.ordered.map { $0.markerId }
+        return route1IDs == route2IDs
+    }
+    
+    /// Generates and adds a reversed version of the route, handling duplicate name conflicts.
+    static func createReversedRoute(from route: Route) throws -> Route? {
+        guard let computedReversedRoute = reversedRoute(from: route) else { return nil }
+
+        var targetName = computedReversedRoute.name
+            
+        // Check if a route with the target name already exists.
+        if let existingTarget = Route.routeWithName(targetName) {
+            // If the waypoints match, return the existing route instead of adding a duplicate.
+            if isWaypointsEqual(computedReversedRoute, existingTarget) {
+                return existingTarget
+            }
+
+            // If a conflicting name exists, append a numeric suffix.
+            var index = 2
+            var candidateName = "\(targetName) (\(index))"
+            while let candidateRoute = Route.routeWithName(candidateName) {
+                if isWaypointsEqual(computedReversedRoute, candidateRoute) {
+                    return candidateRoute
+                }
+                index += 1
+                candidateName = "\(targetName) (\(index))"
+            }
+            computedReversedRoute.name = candidateName
+        }
+
+        // Add the reversed route to Realm
+        try Route.add(computedReversedRoute)
+        return computedReversedRoute
+    }
 }

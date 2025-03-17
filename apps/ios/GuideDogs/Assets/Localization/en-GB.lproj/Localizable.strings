@@ -1367,6 +1367,14 @@
 "route_detail.beacon.stop" = "End Route";
 
 
+/* */
+"route_detail.reverse.error.title" = "Route Reversal Failed";
+
+
+/* */
+"route_detail.reverse.error.message" = "An error occurred while attempting to reverse the route. Please try again.";
+
+
 /*  */
 "route.update.success.title" = "Update Complete!";
 

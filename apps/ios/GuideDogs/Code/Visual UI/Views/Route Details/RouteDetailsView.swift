@@ -35,6 +35,10 @@ struct RouteActionView: View {
 }
 
 struct RouteDetailsView: View {
+    private enum RouteDetailedViewAlert {
+        case reverseRouteError
+    }
+    
     enum ActionType {
         case reset, update
     }
@@ -54,6 +58,8 @@ struct RouteDetailsView: View {
     @State private var activeSheet: ActionType = .reset
     @State private var indexWidth: CGFloat?
     @State private var isPresentingFirstUseShareAlert = false
+    @State private var alert: RouteDetailedViewAlert?
+    @State private var showAlert: Bool = false
     
     let isTrailActivity: Bool
     let deleteAction: NavigationAction?
@@ -232,10 +238,27 @@ struct RouteDetailsView: View {
                 presentShareActivityViewController()
             }
         })
+        .alert(isPresented: $showAlert, content: { alertView })
     }
 }
 
 extension RouteDetailsView {
+    private var alertView: Alert {
+        switch alert {
+        case .reverseRouteError:
+            return Alert(
+                title: GDLocalizedTextView("route_detail.reverse.error.title"),
+                message: GDLocalizedTextView("route_detail.reverse.error.message"),
+                dismissButton: .default(GDLocalizedTextView("general.alert.dismiss"))
+            )
+
+        default:
+            return Alert(title: GDLocalizedTextView("universal_links.alert.error.title"),
+                         message: GDLocalizedTextView("general.alert.error.message"),
+                         dismissButton: .default(GDLocalizedTextView("general.alert.dismiss")))
+        }
+    }
+
     private func handleRouteAction(_ action: RouteAction) {
         switch action {
         case .startRoute, .startTrailActivity:
@@ -251,65 +274,19 @@ extension RouteDetailsView {
             }
             
         case .startRouteReverse:
-            // Ensure the current route is from the database.
             guard case .database = route.detail.source,
-                  let existingRoute = Route.object(forPrimaryKey: route.detail.id) else { return }
-            
-            // Compute the reversed route.
-            guard let computedReversedRoute = existingRoute.reversedRoute() else { return }
-            // The computed reversed route's name is our target name.
-            var targetName = computedReversedRoute.name
-            
-            // Check if a route with the target name already exists.
-            if let existingTarget = Route.routeWithName(targetName) {
-                // Compare the waypoints.
-                if computedReversedRoute.isWaypointsEqual(to: existingTarget) {
-                    // They match, so start guidance with the existing route.
-                    let targetDetail = RouteDetail(source: .cache(route: existingTarget))
+                      let existingRoute = Route.object(forPrimaryKey: route.detail.id) else { return }
+
+            do {
+                if let reversedRoute = try Route.createReversedRoute(from: existingRoute) {
+                    let targetDetail = RouteDetail(source: .cache(route: reversedRoute))
                     startGuidance(RouteGuidance(targetDetail,
                                                 spatialData: AppContext.shared.spatialDataContext,
                                                 motion: AppContext.shared.motionActivityContext))
-                } else {
-                    // A route with that name exists but with different waypoints.
-                    // Generate a unique name by appending a suffix.
-                    var index = 2
-                    var candidateName = "\(targetName) (\(index))"
-                    while let candidateRoute = Route.routeWithName(candidateName) {
-                        if computedReversedRoute.isWaypointsEqual(to: candidateRoute) {
-                            // Found a route with the candidate name that matches; use it.
-                            let targetDetail = RouteDetail(source: .cache(route: candidateRoute))
-                            startGuidance(RouteGuidance(targetDetail,
-                                                        spatialData: AppContext.shared.spatialDataContext,
-                                                        motion: AppContext.shared.motionActivityContext))
-                            return
-                        }
-                        index += 1
-                        candidateName = "\(targetName) (\(index))"
-                    }
-                    // No matching candidate exists, so update the computed reversed route's name.
-                    computedReversedRoute.name = candidateName
-                    targetName = candidateName
-                    do {
-                        try Route.add(computedReversedRoute)
-                        let targetDetail = RouteDetail(source: .cache(route: computedReversedRoute))
-                        startGuidance(RouteGuidance(targetDetail,
-                                                    spatialData: AppContext.shared.spatialDataContext,
-                                                    motion: AppContext.shared.motionActivityContext))
-                    } catch {
-                        GDATelemetry.track("route.reverse.error", with: ["error": error.localizedDescription])
-                    }
                 }
-            } else {
-                // No route exists with the target name, so create the new reversed route.
-                do {
-                    try Route.add(computedReversedRoute)
-                    let targetDetail = RouteDetail(source: .cache(route: computedReversedRoute))
-                    startGuidance(RouteGuidance(targetDetail,
-                                                spatialData: AppContext.shared.spatialDataContext,
-                                                motion: AppContext.shared.motionActivityContext))
-                } catch {
-                    GDATelemetry.track("route.reverse.error", with: ["error": error.localizedDescription])
-                }
+            } catch {
+                alert = .reverseRouteError
+                showAlert = true
             }
             
         case .stopRoute, .stopTrailActivity:

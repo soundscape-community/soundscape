@@ -138,36 +138,3 @@ class Route: Object, ObjectKeyIdentifiable {
     }
     
 }
-
-extension Route {
-    /// Creates a new Route instance with the order of waypoints reversed.
-    /// The new route’s name is set to "Reverse of <original name>".
-    func reversedRoute() -> Route? {
-        // Ensure there is at least one waypoint.
-        guard !waypoints.isEmpty else { return nil }
-        
-        let orderedWaypoints = waypoints.ordered
-        let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
-            return RouteWaypoint(index: index, markerId: waypoint.markerId)
-        }
-        
-        let prefix = "Reverse of "
-        let newName: String
-        if self.name.hasPrefix(prefix) {
-            // If already reversed, remove the prefix to get the normal name.
-            newName = String(self.name.dropFirst(prefix.count))
-        } else {
-            newName = "\(prefix)\(self.name)"
-        }
-        
-        let newRoute = Route(name: newName, description: self.routeDescription, waypoints: reversedWaypoints)
-        return newRoute
-    }
-    
-    /// Checks whether this route's ordered waypoints (by markerId) are equal to another route's.
-    func isWaypointsEqual(to other: Route) -> Bool {
-        let selfIDs = self.waypoints.ordered.map { $0.markerId }
-        let otherIDs = other.waypoints.ordered.map { $0.markerId }
-        return selfIDs == otherIDs
-    }
-}
