@@ -327,7 +327,7 @@
 "settings.clear_cache.alert_title" = "Delete Stored Data?";
 
 /* Message, Soundscape stores map data to reduce device data and battery consumption {NumberedPlaceholder="Soundscape"} */
-"settings.clear_cache.alert_message" = "Soundscape stores map data to reduce data and battery consumption. Deleting stored data will require Soundscape to re-download the data.";
+"settings.clear_cache.alert_message" = "Soundscape stores map data to reduce data and battery consumption. Deleting stored data will require Soundscape to reload the data.";
 
 /* Alert, would you like to keep saved markers */
 "settings.clear_cache.markers.alert_title" = "Keep Markers and Routes?";
@@ -578,7 +578,7 @@
 "troubleshooting.cache" = "Map Data";
 
 /* VoiceOver hint that explains the action of the "Delete Stored Map Data" button */
-"troubleshooting.cache.hint" = "Double tap to delete and redownload stored map data.";
+"troubleshooting.cache.hint" = "Double tap to delete and reload stored map data.";
 
 /* Explanation of what the "Delete Stored Map Data" button does, displayed below the button */
 "troubleshooting.cache.explanation" = "Soundscape downloads map data as you walk around so that it can tell you about the things and places around you. If you are having issues with Soundscape or it is using too much memory, you can clear the stored map data and Soundscape will only redownload the map data near your current location.";
@@ -683,7 +683,7 @@
 "beacon.action.remove_beacon" = "Remove Beacon";
 
 /* Notification, Double tap this button to remove current audio beacon */
-"beacon.action.remove_beacon.double_tap.acc_hint" = "Double tap this button to remove the current audio beacon.";
+"beacon.action.remove_beacon.double_tap.acc_hint" = "Double tap to remove the current audio beacon.";
 
 /* Button, Mute Beacon */
 "beacon.action.mute_beacon" = "Mute Beacon";
@@ -864,7 +864,7 @@
 "preview.tutorial.title.3" = "Continuing your exploration";
 
 /* Third set of tutorial content Quotes written as \" */
-"preview.tutorial.content.3" = "At each intersection, you can use the phone again to choose which road to go down, or you can explore your immediate surroundings using the familiar Soundscape buttons at the bottom of the screen. You can tap \"Search\" to start the audio beacon at any point of interest, change your location, or to just explore the area in more detail.";
+"preview.tutorial.content.3" = "At each intersection, you can use the phone again to choose which road to go down, or you can explore your immediate surroundings using the familiar Soundscape buttons at the bottom of the screen. You can tap \"Explore Nearby\" to start the audio beacon at any point of interest, to change your location, or to just explore the area in more detail.";
 
 /* Fourth set of tutorial content */
 "preview.tutorial.content.4" = "Enjoy and have fun!";
@@ -1520,7 +1520,7 @@
 "search.view_markers" = "Markers & Routes";
 
 /* Accessibility hint when the user selects the markers button on the home screen */
-"search.button.markers.accessibility_hint" = "Double tap to select or edit markers you have saved.";
+"search.button.markers.accessibility_hint" = "Double tap to select or edit your saved markers and routes.";
 
 /* Accessibility hint when the user selects the nearby places button on the home screen */
 "search.button.nearby.accessibility_hint" = "Double tap to explore nearby restaurants, transit stops and more.";
@@ -3134,7 +3134,7 @@
 "help.text.routes.content.how.1" = "<b>Creating a route</b>:<br/> First, go to \"Markers & Routes\", select the \"Routes\" tab, and then select the \"New Route\" button. Give the route a name and an optional description, then add waypoints as you go or pick them from your list of Markers. You can rearrange the order of the waypoints along a route at any time by editing the route.";
 
 /* Help content explaining how a user can edit a route. Quotes written as \" */
-"help.text.routes.content.how.2" = "<b>Editing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select \"Edit Route\". From here you can add and remove waypoints, as well as editing the name and description of the route.";
+"help.text.routes.content.how.2" = "<b>Editing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select \"Edit Route\". From here you can add and remove waypoints, as well as edit the name and description of the route.";
 
 /* Help content explaining how a user can share a route. "Share" should be translated in the same way as it is for the key `share.title`. Quotes written as \" */
 "help.text.routes.content.how.3" = "<b>Sharing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select the option to \"Share\" using all of the usual share options available to you.";
@@ -3255,7 +3255,7 @@
 "osm.tag.turnstile" = "Turnstile";
 
 /* Open Street Map term. Used to describe a hole in the road surface which is covered with a series of bars that allow wheeled vehicles but not animals to cross. */
-"osm.tag.cattle_grid" = "Cattle Grid";
+"osm.tag.cattle_grid" = "Cattle Guard";
 
 /* Open Street Map term. A gate is a section in a wall or fence which can be opened to allow or restrict access. They are usually made of wood or metal. */
 "osm.tag.gate" = "Gate";
@@ -3660,7 +3660,7 @@
 "faq.personalize_experience.question" = "In what ways can I personalize my Soundscape experience?";
 
 /* All of the terms in the string "Settings > Accessibility > Spoken Content > Voices" should be translated such that they are consistant with those in the iOS Settings app. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. 'Nearby Markers' is the name of one of the buttons in the app. 'Voiceover' is an iPhone feature to help people who are visually impaired use the iPhone. 'Audio Ducking' is the name of an accessibility feature on the iPhone which reduces the volume of an app while 'Voiceover' is speaking. 'Touch ID' is the name of the iPhone feature for unlocking your phone using your finger print. 'Face ID' is the name of the iPhone feature for unlocking your phone using your face. 'Passcode' and 'iPhone Unlock' are all names of sections in the iPhone 'Settings' app. 'My Location', 'Around Me' and 'Ahead of Me' are buttons in the Soundscape app. {NumberedPlaceholder="Soundscape", "VoiceOver","Touch ID", "Face ID","iOS"} */
-"faq.personalize_experience.answer" = "Soundscape allows you to customize three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from \"General Settings\" select Voice to adjust the Speaking Rate and Voice settings. Additional voices and enhanced voices with a higher quality can be downloaded in the iOS Settings app at Settings > Accessibility > Spoken Content > Voices. \n2. Distance Metric: Soundscape allows you to hear all distances in either feet or meters. From the Menu, select \"Settings\" and then from \"General Settings\" select \"Language & Region\". The Units of Measure section allows you to toggle between two options: Imperial (feet) and Metric (meters).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby Markers button at the bottom of the Soundscape home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following VoiceOver settings can influence how Soundscape behaves:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the primary Soundscape screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts that occur as you are interacting with the phone. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the My Location, Around Me, and Ahead of Me buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
+"faq.personalize_experience.answer" = "Soundscape allows you to customize three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from \"General Settings\" select Voice to adjust the Speaking Rate and Voice settings. Additional voices and enhanced voices with a higher quality can be downloaded in the iOS Settings app at Settings > Accessibility > Spoken Content > Voices.\n2. Distance Metric: Soundscape allows you to hear all distances in either feet or meters. From the Menu, select \"Settings\" and then from \"General Settings\" select \"Language & Region\". The Units of Measure section allows you to toggle between two options: Imperial (feet) and Metric (meters).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby Markers button at the bottom of the Soundscape home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following VoiceOver settings can influence how Soundscape behaves:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the primary Soundscape screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts that occur as you are interacting with the phone. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the My Location, Around Me, and Ahead of Me buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape","Open Street Map"} */
 "faq.what_is_osm.question" = "What is Open Street Map and why do we use it for Soundscape?";
