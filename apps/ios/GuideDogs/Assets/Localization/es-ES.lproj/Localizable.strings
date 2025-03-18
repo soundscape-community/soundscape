@@ -171,7 +171,7 @@
 
 
 /*  */
-"general.alert.error.message" = "Por favor, inténtalo de nuevo más tarde.";
+"general.alert.error.message" = "Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -279,11 +279,11 @@
 
 
 /*  */
-"general.error.heading" = "Soundscape no está seguro de qué dirección estás mirando. Por favor, mantén tu teléfono plano o empieza a caminar y vuelve a intentarlo.";
+"general.error.heading" = "Soundscape no está seguro de qué dirección estás mirando. Por favor, mantén tu teléfono plano o empieza a caminar e inténtalo de nuevo.";
 
 
 /*  */
-"general.error.location_services_find_location_error.try_again" = "Estamos teniendo problemas para encontrar tu ubicación actual. Inténtalo de nuevo más tarde.";
+"general.error.location_services_find_location_error.try_again" = "Estamos teniendo problemas para encontrar tu ubicación actual. Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -2743,11 +2743,11 @@
 
 
 /*  */
-"devices.connect_headset.failed" = "Soundscape no pudo conectarse a los auriculares. Inténtalo de nuevo más tarde.";
+"devices.connect_headset.failed" = "Soundscape no pudo conectarse a los auriculares. Vuelve a intentarlo más tarde.";
 
 
 /*  */
-"devices.connect_headset.unavailable" = "El dispositivo que has seleccionado no está disponible actualmente para conectarlo. Inténtalo de nuevo más tarde.";
+"devices.connect_headset.unavailable" = "El dispositivo que has seleccionado no está disponible actualmente para conectarlo. Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -2871,7 +2871,7 @@
 
 
 /*  */
-"behavior.experiences.download_failed.error" = "Error al intentar descargar la actividad. Inténtalo de nuevo más tarde. Utiliza la característica \"Enviar comentarios\" o pónte en contacto con el creador de la actividad si este problema persiste.";
+"behavior.experiences.download_failed.error" = "Error al intentar descargar la actividad. Vuelve a intentarlo más tarde. Utiliza la característica \"Enviar comentarios\" o contacta con el creador de la actividad si este problema persiste.";
 
 
 /*  */
