@@ -14,8 +14,22 @@ import logging
 
 import aiopg
 import psycopg2
+from prometheus_client import start_http_server,  Histogram, Gauge
 
 from kubescape import SoundscapeKube
+
+# Prometheus metric for event durations
+event_duration = Histogram(
+    "event_duration_seconds",
+    "Duration of events",
+    ["event_name"]
+)
+# Prometheus metric for last event occurrence
+last_event_time = Gauge(
+    "event_last_time",
+    "Timestamp of last event occurrence",
+    ["event_name"]
+)
 
 dsn_default_base = 'host=localhost '
 dsn_init_default = dsn_default_base + 'dbname=postgres'
@@ -382,11 +396,9 @@ def execute_kube_updatemodel(config):
 
 def telemetry_log(event_name, start, end, extra=None):
     if args.telemetry:
-        if extra == None:
-            extra = {}
-        extra['start'] = start.isoformat()
-        extra['end'] = end.isoformat()
-        pass
+        duration = end - start
+        event_duration.labels(event_name).observe(duration.total_seconds())
+        last_event_time.labels(event_name).set(end.timestamp())
 
 args = parser.parse_args()
 
@@ -407,7 +419,8 @@ logging.basicConfig(level=loglevel,
 logger = logging.getLogger()
 
 if args.telemetry:
-    pass
+    # Start a Prometheus metrics server
+    start_http_server(8000)
 
 try:
     execute_kube_updatemodel(args)
