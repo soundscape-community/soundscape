@@ -19,7 +19,7 @@ RUN tdnf -y update \
 
 FROM mcr.microsoft.com/cbl-mariner/distroless/base:2.0 as final
 
-ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/extra_data TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute
+ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute
 
 COPY --from=imposm /ingest/ $INGEST/
 COPY --from=installer /staging/ /

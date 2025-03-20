@@ -1,4 +1,5 @@
 aiohttp==3.9.1
 aiopg==1.4.0
+gpxpy==1.6.2
 prometheus-client==0.21.1
 psycopg2-binary==2.9.9

@@ -4,7 +4,7 @@
 Convert CSV into expected format for non-OSM data ingestion.
 
 Example usage:
-    python convert_extra_data_csv.py input.csv output.csv
+    python convert_csv.py input.csv output.csv
 """
 
 import argparse
