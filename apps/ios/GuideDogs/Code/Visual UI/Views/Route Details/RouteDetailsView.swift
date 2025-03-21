@@ -35,6 +35,10 @@ struct RouteActionView: View {
 }
 
 struct RouteDetailsView: View {
+    private enum RouteDetailedViewAlert {
+        case reverseRouteError
+    }
+    
     enum ActionType {
         case reset, update
     }
@@ -54,6 +58,8 @@ struct RouteDetailsView: View {
     @State private var activeSheet: ActionType = .reset
     @State private var indexWidth: CGFloat?
     @State private var isPresentingFirstUseShareAlert = false
+    @State private var alert: RouteDetailedViewAlert?
+    @State private var showAlert: Bool = false
     
     let isTrailActivity: Bool
     let deleteAction: NavigationAction?
@@ -232,10 +238,27 @@ struct RouteDetailsView: View {
                 presentShareActivityViewController()
             }
         })
+        .alert(isPresented: $showAlert, content: { alertView })
     }
 }
 
 extension RouteDetailsView {
+    private var alertView: Alert {
+        switch alert {
+        case .reverseRouteError:
+            return Alert(
+                title: GDLocalizedTextView("route_detail.reverse.error.title"),
+                message: GDLocalizedTextView("route_detail.reverse.error.message"),
+                dismissButton: .default(GDLocalizedTextView("general.alert.dismiss"))
+            )
+
+        default:
+            return Alert(title: GDLocalizedTextView("universal_links.alert.error.title"),
+                         message: GDLocalizedTextView("general.alert.error.message"),
+                         dismissButton: .default(GDLocalizedTextView("general.alert.dismiss")))
+        }
+    }
+
     private func handleRouteAction(_ action: RouteAction) {
         switch action {
         case .startRoute, .startTrailActivity:
@@ -248,6 +271,22 @@ extension RouteDetailsView {
                 startGuidance(RouteGuidance(route.detail,
                                             spatialData: AppContext.shared.spatialDataContext,
                                             motion: AppContext.shared.motionActivityContext))
+            }
+            
+        case .startRouteReverse:
+            guard case .database = route.detail.source,
+                      let existingRoute = Route.object(forPrimaryKey: route.detail.id) else { return }
+
+            do {
+                if let reversedRoute = try Route.createReversedRoute(from: existingRoute) {
+                    let targetDetail = RouteDetail(source: .cache(route: reversedRoute))
+                    startGuidance(RouteGuidance(targetDetail,
+                                                spatialData: AppContext.shared.spatialDataContext,
+                                                motion: AppContext.shared.motionActivityContext))
+                }
+            } catch {
+                alert = .reverseRouteError
+                showAlert = true
             }
             
         case .stopRoute, .stopTrailActivity:
