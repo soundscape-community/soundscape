@@ -24,7 +24,7 @@ ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MA
 COPY --from=imposm /ingest/ $INGEST/
 COPY --from=installer /staging/ /
 
-COPY requirements.txt requirements_kubernetes.txt ingest.py kubescape.py extracts.json tilefunc.sql $INGEST/
+COPY requirements.txt requirements_kubernetes.txt ingest.py ingest_non_osm.py kubescape.py extracts.json tilefunc.sql $INGEST/
 COPY soundscape/other/mapping.yml $MAPPING/mapping.yml
 RUN wget -q -O $INGEST/postgis-vt-util.sql https://raw.githubusercontent.com/mapbox/postgis-vt-util/master/postgis-vt-util.sql
 

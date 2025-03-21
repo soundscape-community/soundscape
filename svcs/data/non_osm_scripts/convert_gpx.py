@@ -10,8 +10,7 @@ Example usage:
 
 import argparse
 import csv
-
-import gpxpy
+import xml.etree.ElementTree as ET
 
 
 if __name__ == "__main__":
@@ -20,8 +19,10 @@ if __name__ == "__main__":
     parser.add_argument("output_csv")
     args = parser.parse_args()
 
+    namespace = {'gpx': 'http://www.topografix.com/GPX/1/1'}
+
     with open(args.input_gpx, newline="") as gpx_file:
-        gpx = gpxpy.parse(gpx_file)
+        root = ET.fromstring(gpx_file.read())
 
         with open(args.output_csv, "w", newline="") as f:
             outcsv = csv.DictWriter(f, fieldnames=[
@@ -38,30 +39,32 @@ if __name__ == "__main__":
                 "blind:description",
             ])
             outcsv.writeheader()
-            for route in gpx.routes:
-                for point in route.points:
-                    outcsv.writerow({
-                        "latitude": point.latitude,
-                        "longitude": point.longitude,
+            for wpt in root.findall('gpx:wpt', namespace):
+                name_elem = wpt.find('gpx:name', namespace)
+                name = name_elem.text if name_elem is not None else None
 
-                        #TODO Generalize beyond bus stops
-                        "name": "NaviLens available: " + point.name,
+                outcsv.writerow({
+                    "latitude": wpt.get('lat'),
+                    "longitude": wpt.get('lon'),
 
-                        # Soundscape app expects these as top-level GeoJSON properties
-                        "feature_type": "highway",
-                        "feature_value": "bus_stop",
+                    #TODO Generalize beyond bus stops
+                    "name": "NaviLens available: " + name,
 
-                        # properites observed on bus stops in OSM
-                        "bus": "yes",
-                        "highway": "bus_stop",
-                        "public_transport": "platform",
+                    # Soundscape app expects these as top-level GeoJSON properties
+                    "feature_type": "highway",
+                    "feature_value": "bus_stop",
 
-                        # proposed additional tags for OSM compatibility
-                        # discussion: https://www.openstreetmap.org/user/John%20Joseph%20A%20Gatchalian/diary/406296
-                        "qr_code:navilens": "yes",
-                        "blind": "yes",
-                        "blind:description": "Has NaviLens code",
+                    # properites observed on bus stops in OSM
+                    "bus": "yes",
+                    "highway": "bus_stop",
+                    "public_transport": "platform",
 
-                        # optionally include all other columns from input CSV
-                        #**row,
-                    })
+                    # proposed additional tags for OSM compatibility
+                    # discussion: https://www.openstreetmap.org/user/John%20Joseph%20A%20Gatchalian/diary/406296
+                    "qr_code:navilens": "yes",
+                    "blind": "yes",
+                    "blind:description": "Has NaviLens code",
+
+                    # optionally include all other columns from input CSV
+                    #**row,
+                })

@@ -1,0 +1,2 @@
+non_osm_data/*
+!non_osm_data/test_data.csv
