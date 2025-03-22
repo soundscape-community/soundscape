@@ -1400,6 +1400,9 @@
 /* Message of an alert for imporing routes */
 "routes.import.alert.message" = "Waypoint data is missing for one or more of your routes. Please review the following routes, and re-add waypoints if necessary.";
 
+/* The reversed Route name format  */
+"routes.reverse_name_format" = "Reverse of %@";
+
 //------------------------------------------------------------------------------
 // MARK: - Markers
 //------------------------------------------------------------------------------

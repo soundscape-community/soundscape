@@ -270,6 +270,25 @@ extension Route {
     
     // MARK: Reverse a route
     
+    /// Extracts base name and tells if it's already a reversed name
+    static func extractBaseNameAndReversalStatus(from name: String) -> (baseName: String, isReversed: Bool) {
+        let reverseFormat = GDLocalizedString("routes.reverse_name_format", "%@")
+        let pattern = NSRegularExpression.escapedPattern(for: reverseFormat).replacingOccurrences(of: "%@", with: "(.+)")
+        
+        if let regex = try? NSRegularExpression(pattern: "^" + pattern + "$", options: [.caseInsensitive]) {
+            let range = NSRange(location: 0, length: name.utf16.count)
+            if let match = regex.firstMatch(in: name, options: [], range: range),
+               let matchRange = Range(match.range(at: 1), in: name) {
+                let extractedName = String(name[matchRange]).trimmingCharacters(in: .whitespacesAndNewlines)
+                return (baseName: extractedName, isReversed: true)
+            }
+        }
+
+        return (baseName: name, isReversed: false)
+    }
+
+
+    
     /// Creates a new Route instance with the order of waypoints reversed.
     static func reversedRoute(from route: Route) -> Route? {
         // Ensure there is at least one waypoint.
@@ -279,15 +298,10 @@ extension Route {
         let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
             return RouteWaypoint(index: index, markerId: waypoint.markerId)
         }
-
-        let prefix = "Reverse of "
-        let newName: String
-        if route.name.hasPrefix(prefix) {
-            // If already reversed, remove the prefix to get the normal name.
-            newName = String(route.name.dropFirst(prefix.count))
-        } else {
-            newName = "\(prefix)\(route.name)"
-        }
+        
+        // Use original name if route is already reversed
+        let (baseName, isReversed) = extractBaseNameAndReversalStatus(from: route.name)
+        let newName = isReversed ? baseName : GDLocalizedString("routes.reverse_name_format", baseName)
 
         let newRoute = Route(name: newName, description: route.routeDescription, waypoints: reversedWaypoints)
         return newRoute

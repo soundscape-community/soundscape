@@ -1655,6 +1655,10 @@
 "routes.import.alert.message" = "Waypoint data is missing for one or more of your routes. Please review the following routes, and re-add waypoints if necessary.";
 
 
+/* */
+"routes.reverse_name_format" = "Reverse of %@";
+
+
 /*  */
 "markers.title" = "Markers";
 
