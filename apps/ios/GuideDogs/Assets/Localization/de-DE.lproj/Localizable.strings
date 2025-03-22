@@ -4376,3 +4376,11 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Wenn Sie mit zwei Fingern zweimal auf den Bildschirm tippen, werden alle aktiven Hinweise stummgeschaltet.";
+"mail.yahoo" = "Yahoo Mail";
+"mail.fastmail" = "Fastmail";
+"mail.protonmail" = "Proton Mail";
+"mail.spark" = "Spark";
+"mail.airmail" = "Airmail";
+"mail.default" = "Standard";
+"mail.gmail" = "Gmail";
+"mail.msoutlook" = "Microsoft Outlook";
