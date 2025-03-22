@@ -48,7 +48,7 @@ if __name__ == "__main__":
                     "longitude": wpt.get('lon'),
 
                     #TODO Generalize beyond bus stops
-                    "name": "NaviLens available: " + name,
+                    "name": name,
 
                     # Soundscape app expects these as top-level GeoJSON properties
                     "feature_type": "highway",

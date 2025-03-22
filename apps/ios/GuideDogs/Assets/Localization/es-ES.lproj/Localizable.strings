@@ -2497,6 +2497,9 @@
 /*  */
 "directions.name_distance" = "%1$@, %2$@";
 
+/*  */
+"directions.navilens_available" = "NaviLens disponible";
+
 
 /*  */
 "distance.format.m" = "%@ m";

@@ -41,9 +41,7 @@ if __name__ == "__main__":
                     "longitude": row.pop("stop_lon"),
 
                     #TODO Generalize beyond bus stops
-                    "name": "NaviLens available: " + (
-                        row.pop("stop_desc") or row.pop("stop_name")
-                    ),
+                    "name": row.pop("stop_desc") or row.pop("stop_name"),
 
                     # Soundscape app expects these as top-level GeoJSON properties
                     "feature_type": "highway",
