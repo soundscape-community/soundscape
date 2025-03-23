@@ -116,6 +116,14 @@ extension Route {
                 throw RouteRealmError.doesNotExist
             }
             
+            // Unlink reversed route if it exists
+            if let reversedId = route.reversedRouteId,
+               let reversedRoute = database.object(ofType: Route.self, forPrimaryKey: reversedId) {
+                try database.write {
+                    reversedRoute.reversedRouteId = nil
+                }
+            }
+            
             // `delete` should never be called when a route is active, but just in case it is,
             // deactive the route behavior to prevent unknown consequences of deleting active route
             if route.isActive {
@@ -184,6 +192,16 @@ extension Route {
             }
             
             try database.write {
+                // Unlink reversed route if waypoints have changed
+                if let existingReversedId = route.reversedRouteId,
+                   let reversedRoute = database.object(ofType: Route.self, forPrimaryKey: existingReversedId),
+                   !isWaypointsEqual(route, reversedRoute) {
+
+                    // Unlink both routes
+                    route.reversedRouteId = nil
+                    reversedRoute.reversedRouteId = nil
+                }
+                
                 route.name = name
                 route.routeDescription = description
                 route.waypoints = waypoints
@@ -270,25 +288,6 @@ extension Route {
     
     // MARK: Reverse a route
     
-    /// Extracts base name and tells if it's already a reversed name
-    static func extractBaseNameAndReversalStatus(from name: String) -> (baseName: String, isReversed: Bool) {
-        let reverseFormat = GDLocalizedString("routes.reverse_name_format", "%@")
-        let pattern = NSRegularExpression.escapedPattern(for: reverseFormat).replacingOccurrences(of: "%@", with: "(.+)")
-        
-        if let regex = try? NSRegularExpression(pattern: "^" + pattern + "$", options: [.caseInsensitive]) {
-            let range = NSRange(location: 0, length: name.utf16.count)
-            if let match = regex.firstMatch(in: name, options: [], range: range),
-               let matchRange = Range(match.range(at: 1), in: name) {
-                let extractedName = String(name[matchRange]).trimmingCharacters(in: .whitespacesAndNewlines)
-                return (baseName: extractedName, isReversed: true)
-            }
-        }
-
-        return (baseName: name, isReversed: false)
-    }
-
-
-    
     /// Creates a new Route instance with the order of waypoints reversed.
     static func reversedRoute(from route: Route) -> Route? {
         // Ensure there is at least one waypoint.
@@ -299,9 +298,7 @@ extension Route {
             return RouteWaypoint(index: index, markerId: waypoint.markerId)
         }
         
-        // Use original name if route is already reversed
-        let (baseName, isReversed) = extractBaseNameAndReversalStatus(from: route.name)
-        let newName = isReversed ? baseName : GDLocalizedString("routes.reverse_name_format", baseName)
+        let newName = GDLocalizedString("routes.reverse_name_format", route.name)
 
         let newRoute = Route(name: newName, description: route.routeDescription, waypoints: reversedWaypoints)
         return newRoute
@@ -316,32 +313,38 @@ extension Route {
     
     /// Generates and adds a reversed version of the route, handling duplicate name conflicts.
     static func createReversedRoute(from route: Route) throws -> Route? {
-        guard let computedReversedRoute = reversedRoute(from: route) else { return nil }
-
-        var targetName = computedReversedRoute.name
-            
-        // Check if a route with the target name already exists.
-        if let existingTarget = Route.routeWithName(targetName) {
-            // If the waypoints match, return the existing route instead of adding a duplicate.
-            if isWaypointsEqual(computedReversedRoute, existingTarget) {
-                return existingTarget
-            }
-
-            // If a conflicting name exists, append a numeric suffix.
-            var index = 2
-            var candidateName = "\(targetName) (\(index))"
-            while let candidateRoute = Route.routeWithName(candidateName) {
-                if isWaypointsEqual(computedReversedRoute, candidateRoute) {
-                    return candidateRoute
-                }
-                index += 1
-                candidateName = "\(targetName) (\(index))"
-            }
-            computedReversedRoute.name = candidateName
+        // If route already has a reversedRouteId, return that route
+        if let reversedId = route.reversedRouteId,
+           let existing = Route.object(forPrimaryKey: reversedId) {
+            return existing
         }
 
-        // Add the reversed route to Realm
-        try Route.add(computedReversedRoute)
-        return computedReversedRoute
+        guard let reversed = reversedRoute(from: route) else { return nil }
+
+        // Resolve naming conflicts
+        var finalName = reversed.name
+        var index = 2
+        while let existing = Route.routeWithName(finalName) {
+            if isWaypointsEqual(existing, reversed) {
+                return existing
+            }
+            finalName = "\(reversed.name) (\(index))"
+            index += 1
+        }
+        reversed.name = finalName
+
+        // Add and link reversed route
+        try Route.add(reversed)
+        try autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                throw RouteRealmError.databaseError
+            }
+            try database.write {
+                route.reversedRouteId = reversed.id
+                reversed.reversedRouteId = route.id
+            }
+        }
+
+        return reversed
     }
 }

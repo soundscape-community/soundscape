@@ -29,7 +29,15 @@ class RealmHelper {
         var databaseConfig = Realm.Configuration.defaultConfiguration
         
         databaseConfig.fileURL = databaseConfig.fileURL?.deletingLastPathComponent().appendingPathComponent("database").appendingPathExtension("realm")
-        databaseConfig.schemaVersion = 0
+        databaseConfig.schemaVersion = 1
+
+        // migration block to version 1
+        databaseConfig.migrationBlock = { migration, oldSchemaVersion in
+            if oldSchemaVersion < 1 {
+                // No manual migration needed because `reversedRouteId` is optional
+            }
+        }
+
         databaseConfig.objectTypes = [ReferenceEntity.self, Route.self, RouteWaypoint.self]
         
         self.databaseConfig = databaseConfig
