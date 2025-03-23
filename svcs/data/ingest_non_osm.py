@@ -23,6 +23,24 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger()
 
 
+async def provision_non_osm_data_async(osm_dsn):
+    # Create a table into which we can load extra (non-OSM) data from CSV.
+    async with aiopg.connect(dsn=osm_dsn) as conn:
+        cursor = await conn.cursor()
+        await cursor.execute(
+            """CREATE TABLE IF NOT EXISTS non_osm_data (
+                id BIGSERIAL PRIMARY KEY,
+                osm_id BIGINT,
+                feature_type TEXT,
+                feature_value TEXT,
+                properties HSTORE,
+                geom GEOMETRY(Point, 4326)
+            )"""
+        )
+        # Remove any existing data
+        await cursor.execute("TRUNCATE non_osm_data")
+
+
 async def import_non_osm_data_async(csv_dir, osm_dsn, logger):
     # The client expects OSM IDs for every point, but this is not OSM data.
     # Assign large positive OSM IDs, which will not conflict with real values.

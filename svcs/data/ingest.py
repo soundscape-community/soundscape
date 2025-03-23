@@ -17,7 +17,7 @@ import psycopg2
 from prometheus_client import start_http_server,  Histogram, Gauge
 
 from kubescape import SoundscapeKube
-from ingest_non_osm import import_non_osm_data
+from ingest_non_osm import import_non_osm_data, provision_non_osm_data_async
 
 # Prometheus metric for event durations
 event_duration = Histogram(
@@ -181,23 +181,6 @@ async def provision_database_async(postgres_dsn, osm_dsn):
         # have extra data to load, because the soundscape_tile query expects
         # it to exist.
         await provision_non_osm_data_async(osm_dsn)
-
-async def provision_non_osm_data_async(osm_dsn):
-    # Create a table into which we can load extra (non-OSM) data from CSV.
-    async with aiopg.connect(dsn=osm_dsn) as conn:
-        cursor = await conn.cursor()
-        await cursor.execute(
-            """CREATE TABLE IF NOT EXISTS non_osm_data (
-                id BIGSERIAL PRIMARY KEY,
-                osm_id BIGINT,
-                feature_type TEXT,
-                feature_value TEXT,
-                properties HSTORE,
-                geom GEOMETRY(Point, 4326)
-            )"""
-        )
-        # Remove any existing data
-        await cursor.execute("TRUNCATE non_osm_data")
 
 async def provision_database_soundscape_async(osm_dsn):
     ingest_path = os.environ['INGEST']
