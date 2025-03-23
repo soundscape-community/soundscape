@@ -43,7 +43,7 @@ def random_feature(lat, lon, osm_id):
     # Create a mixture of normal and Navilens-enabled bus stops
     properties = {"name": "Normal",}
     if random.choice([True, False]):
-        properties["name"] = "Navilens-enabled"
+        properties["name"] = "Navilens"
         properties["qr_code:navilens"] = "yes"
 
     # Return a bus stop at the given latitude + longitude

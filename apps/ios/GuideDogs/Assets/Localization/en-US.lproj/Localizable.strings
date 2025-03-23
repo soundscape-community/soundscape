@@ -1869,6 +1869,9 @@
 /* Notification, %1$@ is a point of interest and %2$@ is a physical address, "<Some Place>. Street address is <Some Address>. Distance unknown." {NumberedPlaceholder="%1$@", "%2$@"} */
 "directions.name_street_address" = "%1$@. Street address is %2$@. Distance unknown.";
 
+/* Notification at locations with NaviLens codes */
+"directions.navilens_available" = "NaviLens available";
+
 //------------------------------------------------------------------------------
 // MARK: Directions (Traveling with Cardinal Directions)
 //------------------------------------------------------------------------------
