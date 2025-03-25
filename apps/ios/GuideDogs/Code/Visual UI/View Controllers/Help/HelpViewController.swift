@@ -197,7 +197,8 @@ class HelpViewController: BaseTableViewController {
                           when: [GDLocalizedString("help.text.routes.content.when")],
                           how: [
                             GDLocalizedString("help.text.routes.content.how.1"),
-                            GDLocalizedString("help.text.routes.content.how.2"),
+                            GDLocalizedString("help.text.routes.content.how.1a"),
+                           GDLocalizedString("help.text.routes.content.how.2"),
                             GDLocalizedString("help.text.routes.content.how.3")
                           ],
                           index: IndexPath(row: 1, section: Section.markersAndRoutes),
@@ -261,7 +262,8 @@ class HelpViewController: BaseTableViewController {
                             GDLocalizedString("faq.tip.turning_off_auto_callouts"),
                             GDLocalizedString("faq.tip.hold_phone_flat"),
                             GDLocalizedString("faq.tip.create_marker_at_bus_stop"),
-                            GDLocalizedString("faq.tip.two_finger_double_tap")],
+                            GDLocalizedString("faq.tip.two_finger_double_tap"),
+                            GDLocalizedString("faq.tip.reverse_route")],
                      index: IndexPath(row: 1, section: Section.faq),
                      telemetryLabel: "help.tips")
     ]

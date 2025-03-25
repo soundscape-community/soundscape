@@ -3154,6 +3154,9 @@
 /* Help content explaining how a user can create a route. Quotes written as \" */
 "help.text.routes.content.how.1" = "<b>Creating a route</b>:<br/> First, go to \"Markers & Routes\", select the \"Routes\" tab, and then select the \"New Route\" button. Give the route a name and an optional description, then add waypoints as you go or pick them from your list of Markers. You can rearrange the order of the waypoints along a route at any time by editing the route.";
 
+/* Help content explaining how a user can follow a route. Quotes written as \" */
+"help.text.routes.content.how.1a" = "<b>Following a route</b>:<br/> Select your route from the \"Markers & Routes\" page and then select Start Route. You will return to the home screen and Soundscape will set a beacon on the first waypoint. As you make your way through your route, the beacon advances to the next waypoint until the route is completed. If at any time you want to skip forward or back a waypoint, press \"Next Waypoint\" or \"Previous Waypoint\".";
+
 /* Help content explaining how a user can edit a route. Quotes written as \" */
 "help.text.routes.content.how.2" = "<b>Editing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select \"Edit Route\". From here you can add and remove waypoints, as well as edit the name and description of the route.";
 
@@ -3714,6 +3717,9 @@
 
 /* Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. */
 "faq.tip.two_finger_double_tap" = "Tapping the screen twice with two fingers will silence any active callouts.";
+
+/* Describe feature for automatically reversing a route. Quotes written as \" */
+"faq.tip.reverse_route" = "Selecting \"Start Reversed Route\" from the \"Route Details\" screen allows you to take a route in reverse, and it saves a copy of the route with the waypoints in reverse order. Note that \"Start Reversed Route\" will not save another copy if there is already a reversed route in your list.";
 
 /* Title for donation screen */
 "donation.title" = "Donate to Soundscape Community";
