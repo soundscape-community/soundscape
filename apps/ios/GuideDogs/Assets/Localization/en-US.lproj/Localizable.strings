@@ -3504,6 +3504,10 @@
 
 /* Description of the request for testing in Texas */
 "whats_new.1_3_0.1.description" = "If you live in the Austin or San Antonio areas in Texas and would like to help us test a feature we are working on with NaviLens, please get in touch via the Send Feedback button from the main menu.";
+
+/* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settin gs app. {NumberedPlaceholder="iOS"} */
+"voice.apple.additional" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
+
 // MARK: - FAQs
 
 /* Title of the Frequently Asked Questions page */

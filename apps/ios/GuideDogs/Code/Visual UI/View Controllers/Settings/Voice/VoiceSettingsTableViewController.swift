@@ -161,7 +161,7 @@ class VoiceSettingsTableViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
         case Section.instructions:
-            return "\(GDLocalizedString("whats_new.3_2_0.2.description")) \(GDLocalizedString("voice.apple.no_siri"))"
+            return "\(GDLocalizedString("voice.apple.additional")) \(GDLocalizedString("voice.apple.no_siri"))"
             
         default:
             return nil

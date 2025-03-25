@@ -4107,6 +4107,10 @@
 
 
 /*  */
+"voice.apple.additional" = "Lisää puheen ääniä, mukaan lukien parempilaatuisia puheen ääniä, on ladattavissa iOSin saavutettavuusasetusten Puhuttu sisältö -osiossa.";
+
+
+/*  */
 "faq.title" = "Usein kysytyt kysymykset";
 
 
