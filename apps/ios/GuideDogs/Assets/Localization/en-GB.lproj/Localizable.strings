@@ -1183,10 +1183,17 @@
 /*  */
 "route_detail.action.stop_event" = "Stop Activity";
 
+/* */
+"route_detail.action.start_reversed_route" = "Start Reversed Route";
 
 /*  */
 "route_detail.action.edit" = "Edit Route";
 
+/* */
+"route_detail.action.start_reversed_route.hint" = "Double tap to start this route in reverse.";
+
+/* */
+"route_detail.action.start_reversed_route.disabled.hint" = "Add waypoints before starting the route in reverse.";
 
 /*  */
 "route_detail.action.start_route.hint" = "Double tap to start this route.";
@@ -1358,6 +1365,14 @@
 
 /*  */
 "route_detail.beacon.stop" = "End Route";
+
+
+/* */
+"route_detail.reverse.error.title" = "Route Reversal Failed";
+
+
+/* */
+"route_detail.reverse.error.message" = "An error occurred while attempting to reverse the route. Please try again.";
 
 
 /*  */
@@ -1638,6 +1653,10 @@
 
 /*  */
 "routes.import.alert.message" = "Waypoint data is missing for one or more of your routes. Please review the following routes, and re-add waypoints if necessary.";
+
+
+/* */
+"routes.reverse_name_format" = "Reverse of %@";
 
 
 /*  */

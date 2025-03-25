@@ -1015,8 +1015,17 @@
 /* Title for the action to pause the recreational activity. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
 "route_detail.action.stop_event" = "Stop Activity";
 
+/* Title for the action to start playing the audio for a reversed route */
+"route_detail.action.start_reversed_route" = "Start Reversed Route";
+
 /* Accessibility hint for the edit button on the Route Detail screen */
 "route_detail.action.edit" = "Edit Route";
+
+/* Accessibility hint for the reversed route button on the Route Detail screen */
+"route_detail.action.start_reversed_route.hint" = "Double tap to start this route in reverse.";
+
+/* Voiceover hint for the action to start the route in reverse when the action is disabled. This action is only disabled when no waypoints have been added to a route yet. */
+"route_detail.action.start_reversed_route.disabled.hint" = "Add waypoints before starting the route in reverse.";
 
 /* Voiceover hint for the action to start the route */
 "route_detail.action.start_route.hint" = "Double tap to start this route.";
@@ -1146,6 +1155,12 @@
 
 /* Title of button to end a route */
 "route_detail.beacon.stop" = "End Route";
+
+/* Title for the alert when reversing a route fails */
+"route_detail.reverse.error.title" = "Route Reversal Failed";
+
+/* Message for the alert when reversing a route fails */
+"route_detail.reverse.error.message" = "An error occurred while attempting to reverse the route. Please try again.";
 
 /* Title for the alert displayed when a route or tour is updated */
 "route.update.success.title" = "Update Complete!";
@@ -1384,6 +1399,9 @@
 
 /* Message of an alert for imporing routes */
 "routes.import.alert.message" = "Waypoint data is missing for one or more of your routes. Please review the following routes, and re-add waypoints if necessary.";
+
+/* The reversed Route name format  */
+"routes.reverse_name_format" = "Reverse of %@";
 
 //------------------------------------------------------------------------------
 // MARK: - Markers
