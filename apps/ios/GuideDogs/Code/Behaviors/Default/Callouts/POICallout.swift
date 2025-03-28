@@ -171,6 +171,11 @@ struct POICallout: POICalloutProtocol {
             sounds.append(TTSSound(formattedName, at: soundLocation))
         }
         
+        // Announce "NaviLens available" for NaviLens-enabled locations
+        if poi.superCategory == "navilens" {
+            sounds.append(TTSSound(GDLocalizedString("directions.navilens_available"), at: soundLocation))
+        }
+        
         if let annotation = marker?.annotation, annotation.isEmpty == false {
             sounds.append(TTSSound(annotation, at: soundLocation))
         }

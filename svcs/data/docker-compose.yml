@@ -66,6 +66,12 @@ services:
       - POSTGIS_DBNAME=osm
     volumes:
       - tiles:/tiles
+      - ./non_osm_data:/non_osm_data
+    # You only need to expose the port from this container if you want to
+    # view the Prometheus metrics endpoint from your browser, accessible at
+    # http://localhsot:8083/
+    #ports:
+    #  - "127.0.0.1:8083:8000"
     depends_on:
       postgis:
         condition: service_healthy

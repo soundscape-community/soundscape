@@ -11,6 +11,7 @@ on:
             - main
         paths:
             - 'apps/ios/**'
+    workflow_dispatch:
 jobs:
     unit-tests:
         runs-on: macos-14
@@ -18,12 +19,15 @@ jobs:
             - uses: actions/checkout@v4
             - name: setup
               run: |
-                sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
+                # when updating, see https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md for supported versions
+                xcode_path=/Applications/Xcode_16.1.app
+                sudo xcode-select -s "${xcode_path}/Contents/Developer"
+                xcodebuild -version
                 gem install xcpretty
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace
-                -scheme Soundscape -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.0'
+                -scheme Soundscape -destination "platform=iOS Simulator,OS=18.1,name=iPhone 16"
                 CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
                 | tee xcodebuild.log | xcpretty && exit ${PIPESTATUS[0]}
             - name: uploadlog
@@ -34,4 +38,4 @@ jobs:
             - name: Test
               run: >
                 xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace
-                -scheme Soundscape -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.0'
+                -scheme Soundscape -destination "platform=iOS Simulator,OS=18.1,name=iPhone 16"

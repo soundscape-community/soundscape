@@ -48,6 +48,7 @@ class Route: Object, ObjectKeyIdentifiable {
     // `lastSelectedDate` is updated when the user selects an action
     // (`RouteAction` - start, share, etc.) for the route
     @Persisted var lastSelectedDate: Date = Date()
+    @Persisted var reversedRouteId: String?
     
     var firstWaypointLocation: CLLocation? {
         guard let latitude = firstWaypointLatitude, let longitude = firstWaypointLongitude else {

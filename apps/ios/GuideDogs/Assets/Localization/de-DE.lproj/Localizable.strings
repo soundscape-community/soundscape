@@ -4107,7 +4107,7 @@
 
 
 /*  */
-"whats_new.3_2_0.2.description" = "Zusätzliche Stimmen, einschließlich Stimmen in verbesserter Qualität, können im Abschnitt „Gesprochene Inhalte“ der iOS-Bedienungshilfen-Einstellungen heruntergeladen werden.";
+"voice.apple.additional" = "Zusätzliche Stimmen, einschließlich Stimmen in verbesserter Qualität, können im Abschnitt „Gesprochene Inhalte“ der iOS-Bedienungshilfen-Einstellungen heruntergeladen werden.";
 
 
 /*  */
@@ -4380,8 +4380,11 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Wenn Sie mit zwei Fingern zweimal auf den Bildschirm tippen, werden alle aktiven Hinweise stummgeschaltet.";
-
-
-
-
-
+"mail.yahoo" = "Yahoo Mail";
+"mail.fastmail" = "Fastmail";
+"mail.protonmail" = "Proton Mail";
+"mail.spark" = "Spark";
+"mail.airmail" = "Airmail";
+"mail.default" = "Standard";
+"mail.gmail" = "Gmail";
+"mail.msoutlook" = "Microsoft Outlook";

@@ -26,6 +26,7 @@ enum SuperCategory: String {
     case safety = "safety"
     case beacons = "beacons"
     case authoredActivity = "authoredActivity"
+    case navilens = "navilens"
     
     // MARK: Static Methods
     
@@ -64,6 +65,7 @@ enum SuperCategory: String {
         case .mobility: return StaticAudioEngineAsset.mobilitySense
         case .safety: return StaticAudioEngineAsset.safetySense
         case .authoredActivity: return StaticAudioEngineAsset.tourPoiSense
+        case .navilens: return StaticAudioEngineAsset.navilensSense
         default: return StaticAudioEngineAsset.poiSense
         }
     }

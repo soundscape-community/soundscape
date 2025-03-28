@@ -4107,7 +4107,7 @@
 
 
 /*  */
-"whats_new.3_2_0.2.description" = "Des voix supplémentaires, notamment des voix de qualité améliorée, peuvent être téléchargées dans la section Contenu énoncé des réglages d’accessibilité d’iOS.";
+"voice.apple.additional" = "Des voix supplémentaires, notamment des voix de qualité améliorée, peuvent être téléchargées dans la section Contenu énoncé des réglages d’accessibilité d’iOS.";
 
 
 /*  */
@@ -4380,8 +4380,3 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Appuyer sur l’écran à deux reprises avec deux doigts désactive le son de toutes les notifications actives.";
-
-
-
-
-

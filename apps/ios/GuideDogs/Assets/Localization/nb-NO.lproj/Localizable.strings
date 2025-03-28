@@ -4107,7 +4107,7 @@
 
 
 /*  */
-"whats_new.3_2_0.2.description" = "Flere stemmer, deriblant stemmer i høyere kvalitet, kan lastes ned i delen Opplest innhold i tilgjengelighetsinnstillingene i iOS.";
+"voice.apple.additional" = "Flere stemmer, deriblant stemmer i høyere kvalitet, kan lastes ned i delen Opplest innhold i tilgjengelighetsinnstillingene i iOS.";
 
 
 /*  */
@@ -4380,10 +4380,3 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Hvis du trykker på skjermen to ganger med to fingre, slås lyden av for alle aktive meldinger.";
-
-
-
-
-
-
-

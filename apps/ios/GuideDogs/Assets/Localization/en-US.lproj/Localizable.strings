@@ -212,16 +212,16 @@
 "general.error.location_services_enable_description" = "Location Services are currently disabled. Soundscape cannot work when Location Services are turned off.";
 
 /* Error message to turn on location services in Soundscape to continue with instructions on how to do so on device. Keep newlines (\n) between sentences. "Location Services" is an iOS term that can be found in the Privacy section in the iPhone Settings app. {NumberedPlaceholder="\n"} */
-"general.error.location_services_enable_instructions.2" = "Turn Location Services On in the Settings app to continue.\n\n1. Press the back button (titled Settings)\n2. Select Privacy\n3. Select Location Services\n4. Turn On Location Services";
+"general.error.location_services_enable_instructions.2" = "Turn Location Services On in the Settings app to continue.\n\n1. Press the back button (titled Settings)\n2. Select Privacy & Security\n3. Select Location Services\n4. Turn On Location Services";
 
 /* Error message to turn on location services in Soundscape to continue with instructions on how to do so on device. Keep newlines (\n) between sentences. "Location Services" is an iOS term that can be found in the Privacy section in the iPhone Settings app. {NumberedPlaceholder="\n"} */
-"general.error.location_services_enable_instructions.3" = "Turn Location Services On in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the back button (titled Settings)\n3. Select Privacy\n4. Select Location Services\n5. Turn On Location Services";
+"general.error.location_services_enable_instructions.3" = "Turn Location Services On in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the back button (titled Settings)\n3. Select Privacy & Security\n4. Select Location Services\n5. Turn On Location Services";
 
 /* Error message Sounscape is haveing trouble determining current location */
 "general.error.location_services_find_location_error" = "We are having trouble finding your current location.";
 
 /* Error message when Soundscape does not know the user's heading */
-"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again";
+"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again.";
 
 /* Error message Soundscape is having trouble determining current location. Try again later */
 "general.error.location_services_find_location_error.try_again" = "We are having trouble finding your current location. Try again later.";
@@ -279,7 +279,7 @@
 "device_motion.enable.description" = "Motion & Fitness tracking is currently disabled. Soundscape cannot work when Motion & Fitness tracking is turned off.";
 
 /* Notification to enable motion and fitness activity on the device. Keep newlines (\n) between sentences. Ensure that "Motion & Fitness" is translated the same as `device_motion.title`. {NumberedPlaceholder="Soundscape"} */
-"device_motion.enable.instructions" = "Turn On Fitness Tracking in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the Back button (titled Settings)\n3. Select Privacy\n4. Select Motion & Fitness\n5. Turn on Fitness Tracking\n6. Restart Soundscape";
+"device_motion.enable.instructions" = "Turn On Fitness Tracking in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the Back button (titled Settings)\n3. Select Privacy & Security\n4. Select Motion & Fitness\n5. Turn on Fitness Tracking\n6. Restart Soundscape";
 
 //------------------------------------------------------------------------------
 // MARK: Motion & Fitness (Authorize)
@@ -289,7 +289,7 @@
 "device_motion.authorize.title" = "Authorize Motion & Fitness Tracking";
 
 /* Notification to authorize motion and fitness activity on the device. Ensure that "Motion & Fitness" is translated the same as `device_motion.title`. {NumberedPlaceholder="Soundscape"} */
-"device_motion.authorize.description" = "This allows Soundscape to improve your experience based on whether you are walking, in a vehicle, or standing still. The app needs your permission to use Motion & Fitness. Before you authorize Soundscape to use this permission, you may need to enable Fitness Tracking under Settings → Privacy → Motion & Fitness.";
+"device_motion.authorize.description" = "This allows Soundscape to improve your experience based on whether you are walking, in a vehicle, or standing still. The app needs your permission to use Motion & Fitness. Before you authorize Soundscape to use this permission, you may need to enable Fitness Tracking under Settings → Privacy & Security → Motion & Fitness.";
 
 /* Notification to authorize motion and fitness activity on the device. Keep newlines (\n) between sentences. Ensure that "Motion & Fitness" is translated the same as `device_motion.title`. {NumberedPlaceholder="\n"} */
 "device_motion.authorize.instructions" = "1. Open the Settings app below\n2. Turn on Motion & Fitness Tracking";
@@ -327,7 +327,7 @@
 "settings.clear_cache.alert_title" = "Delete Stored Data?";
 
 /* Message, Soundscape stores map data to reduce device data and battery consumption {NumberedPlaceholder="Soundscape"} */
-"settings.clear_cache.alert_message" = "Soundscape stores map data to reduce data and battery consumption. Deleting stored data will require Soundscape to re-download the data.";
+"settings.clear_cache.alert_message" = "Soundscape stores map data to reduce data and battery consumption. Deleting stored data will require Soundscape to reload the data.";
 
 /* Alert, would you like to keep saved markers */
 "settings.clear_cache.markers.alert_title" = "Keep Markers and Routes?";
@@ -513,7 +513,7 @@
 
 
 /* Title of a section in the beacon settings page where the user can select the distance threshold when a beacon automatically stops playing. */
-"beacon.settings.vicinity" = "Enter Vicinity Distance";
+"beacon.settings.vicinity" = "Audio Mute Distance";
 
 /* Title of a section in the beacon settings page where the user can select a style for their beacon. The various styles mainly differ in the sounds that are played for the beacon, though there are two styles that include some haptics as well. */
 "beacon.settings.style" = "Audio Styles";
@@ -531,7 +531,7 @@
 "beacon.settings.melodies" = "Enable Departure and Arrival Cues";
 
 /* This text explains to users what they should be listening for when they are choosing a new beacon audio style */
-"beacon.settings.explanation" = "In choosing a beacon style, select a style that is comfortable to listen to and is easily heard outdoors and in noisy surroundings. Make sure you can easily determine its direction through your preferred listening device (headphones or phone speaker).";
+"beacon.settings.explanation" = "Select a beacon style that is comfortable to listen to and is easily heard outdoors and in noisy surroundings. Make sure you can easily determine its direction through your preferred listening device (headphones or phone speaker).";
 
 //------------------------------------------------------------------------------
 // MARK: Settings (Bluetooth Peripherals)
@@ -543,6 +543,12 @@
 //------------------------------------------------------------------------------
 // MARK: Settings (Troubleshooting)
 //------------------------------------------------------------------------------
+
+/* Title of the table section that allows user to set the tile server URL. */
+"troubleshooting.tile_server_url" = "Tile Server URL";
+
+/* Explanation of the tile server URL setting. {NumberedPlaceholder="Soundscape"} */
+"troubleshooting.tile_server_url.explanation" = "This is the server from which Soundscape retrieves map data. You normally should not need to change this unless you are developing or testing Soundscape.";
 
 /* Title of the table section that contains info about the current accuracy of the phone's GPS signal provided by Apple's Location Services feature. */
 "troubleshooting.gps_status" = "Location Accuracy";
@@ -572,7 +578,7 @@
 "troubleshooting.cache" = "Map Data";
 
 /* VoiceOver hint that explains the action of the "Delete Stored Map Data" button */
-"troubleshooting.cache.hint" = "Double tap to delete and redownload stored map data.";
+"troubleshooting.cache.hint" = "Double tap to delete and reload stored map data.";
 
 /* Explanation of what the "Delete Stored Map Data" button does, displayed below the button */
 "troubleshooting.cache.explanation" = "Soundscape downloads map data as you walk around so that it can tell you about the things and places around you. If you are having issues with Soundscape or it is using too much memory, you can clear the stored map data and Soundscape will only redownload the map data near your current location.";
@@ -604,10 +610,10 @@
 "settings.new_feature.num_of_num" = "%1$@ of %2$@";
 
 /* Settings new feature, instruction to double tap to close announcements */
-"settings.new_feature.accept_button.acc_label" = "Double tap to close announcements";
+"settings.new_feature.accept_button.acc_label" = "Double tap to close announcements.";
 
 /* Settings new feature, instruction to double tap to view next update announcement */
-"settings.new_feature.accept_button.acc_hint" = "Double tap to view next update announcement";
+"settings.new_feature.accept_button.acc_hint" = "Double tap to view next update announcement.";
 
 /* Settings New Feature, title Recent Updates */
 "settings.new_feature.recent_updates" = "Recent Updates";
@@ -677,7 +683,7 @@
 "beacon.action.remove_beacon" = "Remove Beacon";
 
 /* Notification, Double tap this button to remove current audio beacon */
-"beacon.action.remove_beacon.double_tap.acc_hint" = "Double tap this button to remove the current audio beacon";
+"beacon.action.remove_beacon.double_tap.acc_hint" = "Double tap to remove the current audio beacon.";
 
 /* Button, Mute Beacon */
 "beacon.action.mute_beacon" = "Mute Beacon";
@@ -698,13 +704,13 @@
 "beacon.action.callout_beacon" = "Call out Beacon";
 
 /* Notification, Double tap to unmute or mute the audio beacon */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Double tap to mute or unmute the audio beacon";
+"beacon.action.mute_unmute_beacon.acc_hint" = "Double tap to mute or unmute the audio beacon.";
 
 /* Title text of the button used to view the detail view */
 "beacon.action.view_details" = "View Details";
 
 /* Hint text of the button used to view the detail view */
-"beacon.action.view_details.acc_hint.details" = "Double tap to view additional details";
+"beacon.action.view_details.acc_hint.details" = "Double tap to view additional details.";
 
 /* Button, Beacon Distance Update */
 "beacon.distance_update" = "Beacon Distance Update";
@@ -713,7 +719,7 @@
 "beacon.beacon_location_within" = "Beacon within %@";
 
 /* Notification, Beacon location nearby. Audio beacon has been muted. */
-"beacon.beacon_location_within_audio_beacon_muted" = "Beacon within %@. Audio beacon has been muted";
+"beacon.beacon_location_within_audio_beacon_muted" = "Beacon within %@. Audio beacon has been muted.";
 
 //------------------------------------------------------------------------------
 // MARK: - Preview
@@ -741,7 +747,7 @@
 "preview.content.edge.text" = "%1$@ on %2$@";
 
 /* Accessibility hint for the button to select a direction of travel */
-"preview.content.edge.text.accessibility_hint" = "Double tap to move to the next intersection";
+"preview.content.edge.text.accessibility_hint" = "Double tap to move to the next intersection.";
 
 /* Title for button to go to the next intersection */
 "preview.go.title" = "Go";
@@ -750,13 +756,13 @@
 "preview.go_back.title" = "Previous";
 
 /* Accessibility hint for button to go back */
-"preview.go_back.accessibility_text" = "Double tap to go back to your previous intersection";
+"preview.go_back.accessibility_text" = "Double tap to go back to your previous intersection.";
 
 /* Text for the "Search" button */
 "preview.search.label" = "Explore Nearby";
 
 /* Accessibility hint for the "Explore" button */
-"preview.search.accessibility_hint" = "Double tap to search or browse nearby places";
+"preview.search.accessibility_hint" = "Double tap to search or browse nearby places.";
 
 /* Title for the alert displayed when ther user tries to restart the preview experience at a new location */
 "preview.alert.restart.title" = "Preview Already in Progress";
@@ -812,7 +818,7 @@
 /* Callout that occurs when the user selects a road that requires a left hand turn, %@ is the name of the street that the user is turning on {NumberedPlaceholder="%@"} */
 "preview.callout.turn.left" = "Turned left. Now along %@";
 
-/* Callout that occurs when the user selects a road that requires a right hand turn, %@ is the name of the street that the user is turning on {NumberedPlaceholder="%@"} */
+/* Callout that occurs when the user selects a road that requires a right-hand turn, %@ is the name of the street that the user is turning on {NumberedPlaceholder="%@"} */
 "preview.callout.turn.right" = "Turned right. Now along %@";
 
 /* Callout that occurs when the user selects to continue down the same road, %@ is the name of the street that the user is continuing along {NumberedPlaceholder="%@"} */
@@ -834,13 +840,13 @@
 "preview.include_unnamed_roads.label.on" = "Disable Unnamed Roads";
 
 /* Voiceover hint for a button to turn on a setting to include unnamed roads. {NumberedPlaceholder="Soundscape Street Preview"} */
-"preview.include_unnamed_roads.hint.off" = "Double tap to include unnamed roads during Soundscape Street Preview";
+"preview.include_unnamed_roads.hint.off" = "Double tap to include unnamed roads during Soundscape Street Preview.";
 
 /* Voiceover hint for a button to turn off a setting to include unnamed roads. {NumberedPlaceholder="Soundscape Street Preview"} */
-"preview.include_unnamed_roads.hint.on" = "Double tap to exclude unnamed roads during Soundscape Street Preview";
+"preview.include_unnamed_roads.hint.on" = "Double tap to exclude unnamed roads during Soundscape Street Preview.";
 
 /* Accessibility hint for the button to end the preview tutorial */
-"preview.tutorial.done.hint" = "Double tap to exit the tutorial";
+"preview.tutorial.done.hint" = "Double tap to exit the tutorial.";
 
 /* Title for the first set of tutorial content. {NumberedPlaceholder="Soundscape Street Preview"} */
 "preview.tutorial.title.1" = "Welcome to Soundscape Street Preview!";
@@ -852,13 +858,13 @@
 "preview.tutorial.title.2" = "What’s about to happen";
 
 /* Second set of tutorial content, %@ is the name of the location where the preview experience is starting, Quotes written as \" */
-"preview.tutorial.content.2" = "You have been transported to the middle of the street near the location you selected. Using the phone as a pointer, slowly turn, and the street names will be called out as you turn. When you are facing the street you want to go down, tap \"Go\" and you will advance to the next intersection.";
+"preview.tutorial.content.2" = "You have been transported to the middle of the street near the location you've selected. Using the phone as a pointer, slowly turn, and the street names will be called out as you turn. When you are facing the street you want to go down, tap \"Go\" and you will advance to the next intersection.";
 
 /* Title for the third set of tutorial content */
 "preview.tutorial.title.3" = "Continuing your exploration";
 
 /* Third set of tutorial content Quotes written as \" */
-"preview.tutorial.content.3" = "At each intersection, you can use the phone again to choose which road to go down, or you can explore your immediate surroundings using the familiar Soundscape buttons at the bottom of the screen. You can tap \"Search\" to start the audio beacon at any point of interest, change your location, or to just explore the area in more detail.";
+"preview.tutorial.content.3" = "At each intersection, you can use the phone again to choose which road to go down, or you can explore your immediate surroundings using the familiar Soundscape buttons at the bottom of the screen. You can tap \"Explore Nearby\" to start the audio beacon at any point of interest, to change your location, or to just explore the area in more detail.";
 
 /* Fourth set of tutorial content */
 "preview.tutorial.content.4" = "Enjoy and have fun!";
@@ -880,28 +886,34 @@
 "location_detail.action.beacon" = "Start Audio Beacon";
 
 /* Voiceover hint for the action to set a beacon */
-"location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location";
+"location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location.";
 
 /* Text displayed when audio beacon action is disabled */
-"location_detail.action.beacon.hint.disabled" = "Setting a new audio beacon is disabled while route guidance is active";
+"location_detail.action.beacon.hint.disabled" = "Setting a new audio beacon is disabled while route guidance is active.";
 
 /* Voiceover hint for the action to save marker */
-"location_detail.action.save.hint" = "Double tap to save this location as a marker";
+"location_detail.action.save.hint" = "Double tap to save this location as a marker.";
 
 /* Voiceover hint for the action to edit marker */
-"location_detail.action.edit.hint" = "Double tap to edit marker";
+"location_detail.action.edit.hint" = "Double tap to edit marker.";
 
 /* Voiceover hint for the action to share */
-"location_detail.action.share.hint" = "Double tap to share this location";
+"location_detail.action.share.hint" = "Double tap to share this location.";
 
 /* Voiceover hint for the action to preview */
-"location_detail.action.preview.hint" = "Double tap to start previewing at this location";
+"location_detail.action.preview.hint" = "Double tap to start previewing at this location.";
 
 /* Text displayed when street preview is disabled */
-"location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active";
+"location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active.";
+
+/* Text label for the action to launch NaviLens */
+"navilens.title" = "Launch NaviLens";
+
+/* Voiceover hint for the action to launch NaviLens */
+"location_detail.action.navilens.hint" = "Double tap to launch NaviLens.";
 
 /* Voiceover hint for the action to get directions */
-"location_detail.action.directions.hint" = "Double tap to open this location in an external maps app";
+"location_detail.action.directions.hint" = "Double tap to open this location in an external maps app.";
 
 /* Default address for a location */
 "location_detail.default.address" = "Address unknown";
@@ -910,7 +922,7 @@
 "location_detail.default.annotation" = "No marker annotation";
 
 /* Accessibility hint to select a location */
-"location.select.hint" = "Double tap to select this location";
+"location.select.hint" = "Double tap to select this location.";
 
 /* Text displayed when the location cannot be saved as a marker */
 "location_detail.disabled.save" = "Saving a marker at this location is currently unavailable";
@@ -925,13 +937,13 @@
 "location_detail.map.view.title" = "Selected Location";
 
 /* Hint text displayed when the user is viewing the expanded map view */
-"location_detail.map.view.hint" = "Edit to select a new location";
+"location_detail.map.view.hint" = "Edit to select a new location.";
 
 /* Title text displayed when the user is selecting a location via the expanded map view */
 "location_detail.map.edit.title" = "Edit Location";
 
 /* Hint text displayed when the user is selecting a location via the expanded map view */
-"location_detail.map.edit.hint" = "Move the map to the correct location";
+"location_detail.map.edit.hint" = "Move the map to the correct location.";
 
 /* Accessibility label used when the user is moving the marker location via custom Voiceover experience, Here, "nudge" means moving a small distance. */
 "location_detail.map.edit.accessibility_label" = "Nudge Marker";
@@ -985,7 +997,7 @@
 "location_detail.add_waypoint.new.hint" = "Double tap to add this marker to your route.";
 
 /* Accessibility hint for markers in a list that can be created abd added to a list */
-"location_detail.add_waypoint.marker.hint" = "Double tap to create a marker and add it as a waypoint";
+"location_detail.add_waypoint.marker.hint" = "Double tap to create a marker and add it as a waypoint.";
 
 //------------------------------------------------------------------------------
 // MARK: - Route Detail
@@ -1003,38 +1015,47 @@
 /* Title for the action to pause the recreational activity. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
 "route_detail.action.stop_event" = "Stop Activity";
 
+/* Title for the action to start playing the audio for a reversed route */
+"route_detail.action.start_reversed_route" = "Start Reversed Route";
+
 /* Accessibility hint for the edit button on the Route Detail screen */
 "route_detail.action.edit" = "Edit Route";
 
+/* Accessibility hint for the reversed route button on the Route Detail screen */
+"route_detail.action.start_reversed_route.hint" = "Double tap to start this route in reverse.";
+
+/* Voiceover hint for the action to start the route in reverse when the action is disabled. This action is only disabled when no waypoints have been added to a route yet. */
+"route_detail.action.start_reversed_route.disabled.hint" = "Add waypoints before starting the route in reverse.";
+
 /* Voiceover hint for the action to start the route */
-"route_detail.action.start_route.hint" = "Double tap to start this route";
+"route_detail.action.start_route.hint" = "Double tap to start this route.";
 
 /* Voiceover hint for the action to start the route when the action is disabled. This action is only disabled when no waypoints have been added to a route yet. */
-"route_detail.action.start_route.disabled.hint" = "Add waypoints before starting the route";
+"route_detail.action.start_route.disabled.hint" = "Add waypoints before starting the route.";
 
 /* Voiceover hint for the action to stop the route */
-"route_detail.action.stop_route.hint" = "Double tap to stop this route";
+"route_detail.action.stop_route.hint" = "Double tap to stop this route.";
 
 /* Voiceover hint for the action to start the recreational activity. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
-"route_detail.action.start_event.hint" = "Double tap to start this activity";
+"route_detail.action.start_event.hint" = "Double tap to start this activity.";
 
 /* Voiceover hint for the action to pause the recreational activity. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
-"route_detail.action.stop_event.hint" = "Double tap to stop this activity and save your progress";
+"route_detail.action.stop_event.hint" = "Double tap to stop this activity and save your progress.";
 
 /* Voiceover hint for the action to reset the recreational activity so that the user can try it again. In this context, "activity" is referring to outdoor recreational activities like hiking, kayaking, snoeshoeing, etc. */
-"route_detail.action.reset.hint" = "Double tap to reset this activity and download any available updates";
+"route_detail.action.reset.hint" = "Double tap to reset this activity and download any available updates.";
 
 /* Voiceover hint for the action to share */
-"route_detail.action.share.hint" = "Double tap to share this route";
+"route_detail.action.share.hint" = "Double tap to share this route.";
 
 /* Accessibility hint for the edit button on the Route Detail screen */
-"route_detail.action.edit.hint" = "Double tap to edit this route";
+"route_detail.action.edit.hint" = "Double tap to edit this route.";
 
 /* Add button on the Route list screen */
 "route_detail.action.create" = "New Route";
 
 /* VoiceOver hint for the add button on the Route list screen */
-"route_detail.action.create.hint" = "Double tap to create a new route";
+"route_detail.action.create.hint" = "Double tap to create a new route.";
 
 /* Accessbility label for the index of a waypoint in a route and an indication that the audio beacon is currently playing on this waypoint's location, %@ is the index, "Waypoint 2. Current beacon." {NumberedPlaceholder="%@"} */
 "route_detail.waypoint.current_beacon" = "Waypoint %@. Current beacon.";
@@ -1088,13 +1109,13 @@
 "route_detail.action.previous" = "Previous Waypoint";
 
 /* Hint text of the button used to move to the previous waypoint */
-"route_detail.action.previous.hint" = "Double tap to set the beacon on the previous waypoint";
+"route_detail.action.previous.hint" = "Double tap to set the beacon on the previous waypoint.";
 
 /* Title text of the button used to move to the next waypoint */
 "route_detail.action.next" = "Next Waypoint";
 
 /* Hint text of the button used to move to the next waypoint */
-"route_detail.action.next.hint" = "Double tap to set the beacon on the next waypoint";
+"route_detail.action.next.hint" = "Double tap to set the beacon on the next waypoint.";
 
 /* Text displayed in cluster annotations on the map. %@ is the index of the first clustered annotation and the +... indicates that there are additional annotations in that cluster {NumberedPlaceholder="%@"} */
 "waypoint_detail.annotation.cluster.title" = "%@,...";
@@ -1134,6 +1155,12 @@
 
 /* Title of button to end a route */
 "route_detail.beacon.stop" = "End Route";
+
+/* Title for the alert when reversing a route fails */
+"route_detail.reverse.error.title" = "Route Reversal Failed";
+
+/* Message for the alert when reversing a route fails */
+"route_detail.reverse.error.message" = "An error occurred while attempting to reverse the route. Please try again.";
 
 /* Title for the alert displayed when a route or tour is updated */
 "route.update.success.title" = "Update Complete!";
@@ -1206,7 +1233,7 @@
 "waypoint.callout.button.title" = "Call out waypoint";
 
 /* Voiceover hint to callout the current waypoint */
-"waypoint.callout.button.hint" = "Double tap to hear additional details";
+"waypoint.callout.button.hint" = "Double tap to hear additional details.";
 
 //------------------------------------------------------------------------------
 // MARK: - Recommender
@@ -1359,19 +1386,22 @@
 "routes.sort.by_name" = "Sort by Name";
 
 /* VoiceOver hint for a button that will cause the list of routes to be sorted by their names */
-"routes.sort.by_name.hint" = "Double tap to sort by name";
+"routes.sort.by_name.hint" = "Double tap to sort by name.";
 
 /* Text for a button that will cause the list of routes to be sorted by their distance from the user */
 "routes.sort.by_distance" = "Sort by Distance";
 
 /* VoiceOver hint for a button that will cause the list of routes to be sorted by their distance from the user */
-"routes.sort.by_distance.hint" = "Double tap to sort by distance";
+"routes.sort.by_distance.hint" = "Double tap to sort by distance.";
 
 /* Title of an alert for imporing routes */
 "routes.import.alert.title" = "Route Error";
 
 /* Message of an alert for imporing routes */
 "routes.import.alert.message" = "Waypoint data is missing for one or more of your routes. Please review the following routes, and re-add waypoints if necessary.";
+
+/* The reversed Route name format  */
+"routes.reverse_name_format" = "Reverse of %@";
 
 //------------------------------------------------------------------------------
 // MARK: - Markers
@@ -1423,7 +1453,7 @@
 "markers.edit_screen.title.edit" = "Edit Marker";
 
 /* Notification, Double tap to save this marker */
-"markers.edit_screen.done_button.acc_hint" = "Double tap to save this marker";
+"markers.edit_screen.done_button.acc_hint" = "Double tap to save this marker.";
 
 /* This is a label that is displayed on the Save Marker screen when the user is saving a new marker and adding it to a route. %@ is the name of the route. Example: "Saving to Route: Home to Grocery Store" (where "Home to Grocery Store" is the name of a route the user created {NumberedPlaceholder="%@"} */
 "markers.edit_screen.route" = "Saving to Route: %@";
@@ -1508,13 +1538,13 @@
 "search.view_markers" = "Markers & Routes";
 
 /* Accessibility hint when the user selects the markers button on the home screen */
-"search.button.markers.accessibility_hint" = "Double tap to select or edit markers you have saved";
+"search.button.markers.accessibility_hint" = "Double tap to select or edit your saved markers and routes.";
 
 /* Accessibility hint when the user selects the nearby places button on the home screen */
-"search.button.nearby.accessibility_hint" = "Double tap to explore nearby restaurants, transit stops and more";
+"search.button.nearby.accessibility_hint" = "Double tap to explore nearby restaurants, transit stops and more.";
 
 /* Accessibility hint when the user selects the current location button on the home screen */
-"search.button.current_location.accessibility_hint" = "Double tap to preview, mark, or share your current location with a friend";
+"search.button.current_location.accessibility_hint" = "Double tap to preview, mark, or share your current location with a friend.";
 
 /* Search filter alert title */
 "filter.alert_title" = "Filter places by category";
@@ -1526,7 +1556,7 @@
 "filter.clear.capital" = "Clear Filter";
 
 /* Accessibility hint for the "Clear Filter" button */
-"filter.clear.hint" = "Double tap to clear selected filter";
+"filter.clear.hint" = "Double tap to clear selected filter.";
 
 /* Search filter button description */
 "filter.double_tap_places_category" = "Double tap to filter places by category.";
@@ -1557,7 +1587,7 @@
 "filter.selected" = "%@ (selected)";
 
 /* Message displayed when category filters are not available, %@ is a placeholder for the value of the `filter.all` translated string, Quotes written as \" {NumberedPlaceholder="%@"} */
-"filter.not_available" = "Some category filters are not available. You can still browse nearby places by selecting \"%@\"";
+"filter.not_available" = "Some category filters are not available. You can still browse nearby places by selecting \"%@\".";
 
 //------------------------------------------------------------------------------
 // MARK: - Callouts
@@ -1618,7 +1648,7 @@
 "callouts.marked_points" = "Marked Points";
 
 /* Callouts notification, There is nothing to call out right now */
-"callouts.nothing_to_call_out_now" = "There is nothing to call out right now";
+"callouts.nothing_to_call_out_now" = "There is nothing to call out right now.";
 
 /* Callouts Title, Nearby Markers */
 "callouts.nearby_markers" = "Nearby Markers";
@@ -1661,7 +1691,7 @@
 "sleep.sleeping.message" = "Soundscape is currently sleeping. This prevents Soundscape from using Location Services or downloading data. This conserves battery when you are not using Soundscape. Tap the button below to wake up Soundscape.";
 
 /* Sleep Notification, Double tap to put Soundscape to sleep. Putting the app in an idle state for a period of time. {NumberedPlaceholder="Soundscape"} */
-"sleep.sleep.acc_hint" = "Double tap to put Soundscape to sleep";
+"sleep.sleep.acc_hint" = "Double tap to put Soundscape to sleep.";
 
 /* Sleep Button, restore the app from a sleep (idle) state when a user leaves his location. */
 "sleep.wake_up_when_i_leave" = "Wake Up When I Leave";
@@ -1856,6 +1886,9 @@
 
 /* Notification, %1$@ is a point of interest and %2$@ is a physical address, "<Some Place>. Street address is <Some Address>. Distance unknown." {NumberedPlaceholder="%1$@", "%2$@"} */
 "directions.name_street_address" = "%1$@. Street address is %2$@. Distance unknown.";
+
+/* Notification at locations with NaviLens codes */
+"directions.navilens_available" = "NaviLens available";
 
 //------------------------------------------------------------------------------
 // MARK: Directions (Traveling with Cardinal Directions)
@@ -2112,37 +2145,40 @@
 "ui.action_button.my_location" = "My\nLocation";
 
 /* Accessibility Notification, Double tap to hear about your current location. */
-"ui.action_button.my_location.acc_hint" = "Double tap to hear about your current location";
+"ui.action_button.my_location.acc_hint" = "Double tap to hear about your current location.";
 
 /* Similar to `callouts.nearby_markers`. Text that is shown in a small square button. It should be constrained to two lines with up to 8 characters each. Use "\n" to represent a new line character. {NumberedPlaceholder="\n"} */
 "ui.action_button.nearby_markers" = "Nearby\nMarkers";
 
 /* Accessibility Notification, Double tap to hear about nearby places that you have marked */
-"ui.action_button.nearby_markers.acc_hint" = "Double tap to hear about nearby places that you have marked";
+"ui.action_button.nearby_markers.acc_hint" = "Double tap to hear about nearby places that you have marked.";
 
 /* Similar to `help.orient.page_title`. Text that is shown in a small square button. It should be constrained to two lines with up to 8 characters each. Use "\n" to represent a new line character. {NumberedPlaceholder="\n"} */
 "ui.action_button.around_me" = "Around\nMe";
 
 /* Accessibility Notification, Double tap to hear about places in the four quadrants around you */
-"ui.action_button.around_me.acc_hint" = "Double tap to hear about places in the four quadrants around you";
+"ui.action_button.around_me.acc_hint" = "Double tap to hear about places in the four quadrants around you.";
 
 /* Similar to `help.explore.page_title`. Text that is shown in a small square button. It should be constrained to two lines with up to 8 characters each. Use "\n" to represent a new line character. {NumberedPlaceholder="\n"} */
 "ui.action_button.ahead_of_me" = "Ahead\nof Me";
 
 /* Accessibility Notification, Double tap to hear about places in front of you */
-"ui.action_button.ahead_of_me.acc_hint" = "Double tap to hear about places in front of you";
+"ui.action_button.ahead_of_me.acc_hint" = "Double tap to hear about places in front of you.";
 
 /* Title, Menu */
 "ui.menu" = "Menu";
 
 /* VoiceOver hint for the menu button */
-"ui.menu.hint" = "Double tap to open the menu";
+"ui.menu.hint" = "Double tap to open the menu.";
 
 /* Button title, Close Menu */
 "ui.menu.close" = "Close Menu";
 
 /* Button, Continue */
 "ui.continue" = "Continue";
+
+/* Title, Donate */
+"menu.donate" = "Donate";
 
 /* Title, Activities, In this context, "Recreational Activity" is referring to outdoor activities like hiking, kayaking, snoeshoeing, etc. */
 "menu.events" = "Recreational Activities";
@@ -2204,7 +2240,7 @@
 "poi_cell.accessibility_label.suggested_search" = "Suggested search: %@";
 
 /* Accessibility hint for a search result that is a suggested search query, %@ suggested search query, "Double tap to search for: <Some Search String>" {NumberedPlaceholder="%@"} */
-"poi_cell.accessibility_hint.suggested_search" = "Double tap to search for: %@";
+"poi_cell.accessibility_hint.suggested_search" = "Double tap to search for: %@.";
 
 /* Header for recent callouts section */
 "poi_screen.header.recent.callouts" = "Recent Callouts";
@@ -2250,6 +2286,9 @@
 /* Message indicating that the app has successfully been connected to a head tracking headset, {NumberedPlaceholder="AirPods","Soundscape"} */
 "devices.explain_ar.connected.airpods" = "Your AirPods are ready for use, so you can put your phone in your pocket and go! Soundscape is tracking the direction of your head so you do not need to hold the phone in your hand.";
 
+/* Message indicating that the app has successfully been connected to Bose Frames */
+"devices.explain_ar.connected.boseframes" = "Your Bose Frames are ready for use, so you can put your phone in your pocket and go! Soundscape is tracking the direction of your head so you do not need to hold the phone in your hand.";
+
 /* Message indicating that the app has successfully been paired to head tracking headphones but is not connected, %@ headset name, "Soundscape is not currently connected to your AirPods Pro. Please ensure your headset is turned on and near your phone." {NumberedPlaceholder="%@"} */
 "devices.explain_ar.paired" = "Soundscape is not currently connected to your %@. Please ensure your headphones are turned on and near your phone.";
 
@@ -2292,11 +2331,14 @@
 /* Message displayed to the user after they successfully connect Soundscape to their AR headset. {NumberedPlaceholder="AirPods", "Soundscape"} */
 "devices.connect_headset.completed.airpods" = "Congratulations! Your AirPods are ready for use, so you can put your phone in your pocket and go! Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. A single click on the headphones button will mute or unmute the beacon, double click will call out your location, and a triple click will repeat the last callout.";
 
+/* D.o for Bose Frame (Rondo) */
+"devices.connect_headset.completed.boseframes" = "Congratulations! Your Bose Frames are ready for use, so you can put your phone in your pocket and go! Soundscape will now track the direction of your head so you do not need to hold the phone in your hand.";
+
 /* Button label for a button that allows users to test their newly connected headset */
 "devices.connect_headset.completed.test" = "Check Your Headphones";
 
 /* VoiceOver hint for the button that allows users to test their newly connected headset, %@ is the type of headset, "Double tap to check your AirPods Pro". {NumberedPlaceholder="%@"} */
-"devices.connect_headset.completed.test.hint" = "Double tap to check your %@";
+"devices.connect_headset.completed.test.hint" = "Double tap to check your %@.";
 
 /* Title of the Check Headset screen */
 "devices.test_headset.title" = "Headphones Check";
@@ -2339,6 +2381,14 @@
 
 /* Status announcement when Soundscape is trying to listen to heading updates from AirPods but they are not currently connected. {NumberedPlaceholder="AirPods", "Soundscape"} */
 "devices.callouts.check_audio.airpods.disconnected" = "Soundscape is searching for your AirPods. Ensure they are connected to your phone.";
+
+/*  */
+"devices.callouts.check_audio.bose_frames" = "Bose Frames connected.";
+
+
+/*  */
+"devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape is searching for your Bose Frames. Ensure they are connected to your phone.";
+
 
 /* Label of a button that allows users to force Soundscape to reconnect to their AirPods Pro device if it isn't connecting automatically */
 "devices.troubleshoot.reconnect" = "Reconnect";
@@ -2529,7 +2579,7 @@
 "text.cleaning_things" = "Cleaning things up…";
 
 /* Notification, Double tap to repeat */
-"action.double_tap_to_repeat" = "Double tap to repeat";
+"action.double_tap_to_repeat" = "Double tap to repeat.";
 
 /* Title, Location. Used as screen title for a location detail page. Also used as the default name for markers when a more specific default cannot be generated. */
 "location" = "Location";
@@ -2573,7 +2623,7 @@
 "tutorial.markers.your_marker" = "your marker";
 
 /* Tutorial notification, Double tap to mark this location */
-"tutorial.markers.mark_location.acc_hint" = "Double tap to mark this location";
+"tutorial.markers.mark_location.acc_hint" = "Double tap to mark this location.";
 
 //------------------------------------------------------------------------------
 // MARK: Tutorials (Markers Texts)
@@ -2586,13 +2636,13 @@
 "tutorial.markers.text.EditMarker" = "Great! You have selected @!marker_name!! as a marker. You will hear it called out by Soundscape when you are close by.\nOn the next screen you can change it's name if you'd like to.";
 
 /* Tutorial, Nearby Markers. {NumberedPlaceholder="@!marker_name!!", "\n"} */
-"tutorial.markers.text.NearbyMarkers" = "Excellent! You have a new marker named @!marker_name!!.\nNow, to hear where your marker is, press the Nearby Markers button. This button can be found at the bottom of the home screen.\nTry it out now.";
+"tutorial.markers.text.NearbyMarkers" = "Excellent! You have a new marker named @!marker_name!!.\nNow, to hear where your marker is, press the Nearby Markers button. This button can be found at the bottom of the main screen.\nTry it out now.";
 
 /* Tutorial, set Audio Beacon from Marker. {NumberedPlaceholder="@!marker_name!!", "\n"} */
 "tutorial.markers.text.AudioBeacon" = "You can also set an audio beacon on your marker.\nLet's try it out. Here is the beacon on @!marker_name!!.\nListen carefully where it is, and holding your phone flat, turn towards it.";
 
 /* Tutorial, Marker Wrap Up. {NumberedPlaceholder="@!marker_name!!", "\n"} */
-"tutorial.markers.text.WrapUp" = "Perfect, you are now facing your marker, @!marker_name!!.\nIt looks like you've got it!\nYou can manage your list of markers by selecting Markers & Routes from the home screen.\nAnd you can always visit the Help & Tutorials pages to go through this tutorial again or to read a comprehensive guide on everything you can do with markers. The beacon you set for this tutorial will now be cleared and you will be returned to the previous screen.";
+"tutorial.markers.text.WrapUp" = "Perfect, you are now facing your marker, @!marker_name!!.\nIt looks like you've got it!\nYou can manage your list of markers by selecting Markers & Routes from the home screen.\nAnd you can always visit the Help & Tutorials pages to go through this tutorial again or to read a comprehensive guide on everything you can do with markers. The beacon you've set for this tutorial will now be cleared and you will be returned to the previous screen.";
 
 //------------------------------------------------------------------------------
 // MARK: Tutorials (Beacon)
@@ -2611,16 +2661,16 @@
 "tutorial.beacon.your_destination" = "your destination";
 
 /* Tutorial notification, Double tap to use location selected for the beacon tutorial */
-"tutorial.beacon.mark_location.acc_hint" = "Double tap to use this location for the beacon tutorial";
+"tutorial.beacon.mark_location.acc_hint" = "Double tap to use this location for the beacon tutorial.";
 
 /* Tutorial notification, %@ is a location, "You selected <Starbucks> as the location for the beacon." {NumberedPlaceholder="%@"} */
-"tutorial.beacon.poi_selected" = "You selected %@ as the location for the beacon.";
+"tutorial.beacon.poi_selected" = "You have selected %@ as the location for the beacon.";
 
 /* Tutorial title, The Audio Beacon */
 "tutorial.beacon.the_audio_beacon" = "The Audio Beacon";
 
 /* Tutorial notification, %@ is the destination, "You selected <Starbucks> as the location of your audio beacon." {NumberedPlaceholder="%@"} */
-"tutorial.beacon.the_audio_beacon.text" = "You selected %@ as the location of your audio beacon.";
+"tutorial.beacon.the_audio_beacon.text" = "You have selected %@ as the location of your audio beacon.";
 
 /* Tutorial notification, Great! You Found Your Beacon! */
 "tutorial.beacon.found_the_beacon" = "Great! You Found Your Beacon!";
@@ -2645,7 +2695,7 @@
 "tutorial.beacons.text.OrientationIsNotFlat" = "To get started, hold your phone flat in your hand with the screen facing up towards the sky and with the top of the phone pointing straight ahead of you.";
 
 /* Tutorial, Phone orientation doesn't matter because the user is wearing AirPods Pro {NumberedPlaceholder="Soundscape","AirPods"} */
-"tutorial.beacons.text.OrientationAirPods" = "Your AirPods are connected to Soundscape. When your AirPods are connected to Soundscape, it doesn't matter how you hold your phone. It can even go in your pocket or bag.";
+"tutorial.beacons.text.OrientationAirPods" = "Your AirPods are connected to Soundscape. Once they're connected, it doesn't matter how you hold your phone. It can even go in your pocket or bag.";
 
 /* Tutorial, Beacon phone orientation repeat */
 "tutorial.beacons.text.OrientationRepeat" = "To continue, hold your phone flat in your hand so that the screen is facing up towards the sky";
@@ -2675,7 +2725,7 @@
 "tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "Perfect, you are now facing in the direction of @!destination!!.";
 
 /* Tutorial, Beacon in bounds sound. {NumberedPlaceholder="@!destination!!"} */
-"tutorial.beacons.text.BeaconInBounds" = "If you listen carefully you will hear that it is playing from right in front of you and that there is a bell sound in addition to the normal beacon sound. That is because you are facing directly towards @!destination!!";
+"tutorial.beacons.text.BeaconInBounds" = "If you listen carefully you will hear that it is playing from right in front of you and that there is a bell sound in addition to the normal beacon sound. That is because you are facing directly towards @!destination!!.";
 
 /* Tutorial, Beacon in of Bounds sound change when phone is rotated. {NumberedPlaceholder="@!destination!!"} */
 "tutorial.beacons.text.BeaconInBoundsRotate" = "Now try to slowly turn away from the direction of the beacon, while still holding your phone flat. The bell sound will stop and the beacon continues to show you where @!destination!! is. Give it a try now.";
@@ -2699,10 +2749,10 @@
 "tutorial.beacons.text.Mute" = "If you need the app to be quiet for any reason, you can either use the mute beacon button or the sleep button on the home screen, or you can double tap with two fingers anywhere on the screen. A double tap with two fingers will stop any current callouts and will mute the audio beacon. Give it a try now.";
 
 /* Tutorial, Mute Beacon Repeat */
-"tutorial.beacons.text.MuteRepeat" = "Double tap with two fingers anywhere on the screen";
+"tutorial.beacons.text.MuteRepeat" = "Double tap with two fingers anywhere on the screen.";
 
 /* Tutorial, Beacon Wrap Up */
-"tutorial.beacons.text.WrapUp" = "It looks like you have got it! If you want to repeat this tutorial, you can access it at any time on the Help and Tutorials screen. The beacon you set for this tutorial will now be cleared and you will be returned to the previous screen.";
+"tutorial.beacons.text.WrapUp" = "It looks like you've got it! If you want to repeat this tutorial, you can access it at any time on the Help and Tutorials screen. The beacon you've set for this tutorial will now be cleared and you will be returned to the previous screen.";
 
 //------------------------------------------------------------------------------
 // MARK: - Help
@@ -2717,6 +2767,9 @@
 /* Help title, Links to a help page that describes how to use Apple AirPods headphones with Soundscape, {NumberedPlaceholder="Apple AirPods"} */
 "help.using_headsets.airpods.title" = "Using Apple AirPods";
 
+/* Help title, Links to a help page that describes how to use Bose Frames headphones with Soundscape, {NumberedPlaceholder="Bose Frames"} */
+"help.using_headsets.bose_frames.title" = "Using Bose Frames";
+
 /* Help section title. This section contains help articles on the audio beacon and the automatic callout features. */
 "settings.help.section.beacons_and_pois" = "Beacons and Callouts";
 
@@ -2724,10 +2777,10 @@
 "help.offline.section_title" = "Using Soundscape Offline";
 
 /* Help section title */
-"settings.help.section.home_screen_buttons" = "Hear My Surroundings";
+"settings.help.section.home_screen_buttons" = "\"Hear My Surroundings\" Buttons";
 
 /* Help content describing how user can choose a voice and download additional voices */
-"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape app, you can select the voice you want to use by going to Settings from the main menu and then selecting \"Voice\".";
+"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape App, you can select the voice you want to use by tapping \"Settings\" on the main menu and then from \"General Settings\" selecting \"Voice\".";
 
 /* Help Page Title, Offline */
 "help.offline.page_title" = "Why is Soundscape working offline?";
@@ -2739,7 +2792,7 @@
 "help.offline.limitations_heading" = "Limitations";
 
 /* Help Limitations Description, Offline */
-"help.offline.limitations_description" = "Callouts will continue to work if you are in an area that you have walked by before and that has been stored in your callout history. Similarly, you can place an audio beacon or create a marker on places that have been stored in your callout history";
+"help.offline.limitations_description" = "Callouts will continue to work if you are in an area that you have walked by before and that has been stored in your callout history. Similarly, you can place an audio beacon or create a marker on places that have been stored in your callout history.";
 
 /* Help Troubleshooting Title, Offline */
 "help.offline.troubleshooting_heading" = "What can you do?";
@@ -2800,10 +2853,10 @@
 "terms_of_use.accept_checkbox.acc_label" = "Accept Terms of Use";
 
 /* Double tap to check the accept terms of use checkbox. Quotes written as \" */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Double tap to check the \"accept the terms of use\" checkbox";
+"terms_of_use.accept_checkbox.on.acc_hint" = "Double tap to check the \"accept the terms of use\" checkbox.";
 
 /* Double tap to uncheck the accept terms of use checkbox. Quotes written as \" */
-"terms_of_use.accept_checkbox.off.acc_hint" = "Double tap to uncheck the \"accept the terms of use\" checkbox";
+"terms_of_use.accept_checkbox.off.acc_hint" = "Double tap to uncheck the \"accept the terms of use\" checkbox.";
 
 /* Terms of use accept checkbox has been checked */
 "terms_of_use.accept_checkbox.on.acc_value" = "Checked";
@@ -2818,14 +2871,14 @@
 "terms_of_use.accept.new_features" = "Accept";
 
 /* Accessibility hint for the accept button that will be displayed as a new feature annoucement to existing users */
-"terms_of_use.accept.new_features.accessibility_hint" = "Double tap to accept and close annoucements";
+"terms_of_use.accept.new_features.accessibility_hint" = "Double tap to accept and close announcements.";
 
 //------------------------------------------------------------------------------
 // MARK: - First Launch
 //------------------------------------------------------------------------------
 
 /* Button title accessibility hint. Quotes written as \" */
-"first_launch.get_started_button.off.acc_hint" = "You must check the \"accept the terms of use\" checkbox before you can press this button";
+"first_launch.get_started_button.off.acc_hint" = "You must check the \"accept the terms of use\" checkbox before you can press this button.";
 
 /* Notification, Welcome message */
 "first_launch.welcome_text" = "Welcome! Before we get started, we need to go through some setup and ask for several permissions. Press the Next button to start.";
@@ -2912,7 +2965,7 @@
 "first_launch.callouts.listen.accessibility_label" = "Listen";
 
 /* Accessibility hint for button that plays example callouts {NumberedPlaceholder="Soundscape"} */
-"first_launch.callouts.listen.accessibility_hint" = "Double tap to listen to an example of what Soundscape might call out on your next walk";
+"first_launch.callouts.listen.accessibility_hint" = "Double tap to listen to an example of what Soundscape might call out on your next walk.";
 
 /* Example callout for a coffee shop / cafe */
 "first_launch.callouts.example.1" = "Cafe";
@@ -2936,7 +2989,7 @@
 "first_launch.permissions.motion" = "Motion & Fitness";
 
 /* Text to indicate that a permission is required */
-"first_launch.permissions.required" = "This permission is required";
+"first_launch.permissions.required" = "This permission is required.";
 
 /* Title text for screen to choose an audio beacon */
 "first_launch.beacon.title" = "Choose an Audio Beacon";
@@ -2994,13 +3047,13 @@
 //------------------------------------------------------------------------------
 
 /* Notification, Information on what a beacon is used for {NumberedPlaceholder="Soundscape"} */
-"help.text.destination_beacons.what" = "Setting a beacon on a nearby location allows Soundscape to keep you informed by playing an audible beacon sound coming from the direction of that location. This beacon can be muted or unmuted on the home screen. Additionally, Soundscape displays information about the location on the home screen including the distance to it and its street address if it is known.";
+"help.text.destination_beacons.what" = "Setting a beacon on a nearby location allows Soundscape to keep you informed by playing a sound coming from the direction of that location. This beacon can be muted or unmuted on the home screen. Additionally, Soundscape displays information about the location on the home screen including the distance to it and its street address if it is known.";
 
 /* Notification, Information on when to use a beacon */
 "help.text.destination_beacons.when" = "Setting a beacon is useful when you want to keep track of a familiar landmark as you explore a new area or when you are going somewhere and want to be informed about your surroundings along the way. The beacon feature does not give you turn-by-turn directions, but it does give you a continuous audible sound that tells you the direction to the beacon, relative to where you are currently located. Using the audio beacon, your existing wayfinding skills, and even your favorite navigation app, you can choose how you want to get to nearby locations yourself.";
 
 /* Notification, Information how to set a beacon. Ensure that "Set a Beacon" is translated the same as `universal_links.alert.action.beacon`. Quotes written as \" {NumberedPlaceholder="<b>","</b>","<br/>"} */
-"help.text.destination_beacons.how.1" = "<b>To set a beacon</b>:<br/> First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. From the location details screen you can select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you selected. The name of the place you have selected along with its distance and physical address, if available, will now be displayed on the main app screen.";
+"help.text.destination_beacons.how.1" = "<b>To set a beacon</b>:<br/> First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. From the location details screen you can select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you've selected. The name of the place along with its distance and physical address, if available, will now be displayed on the main screen.";
 
 /* Notification, Information how to set a beacon continued. Ensure that "Remove Beacon" is translated the same as `beacon.action.remove_beacon`. Quotes written as \" {NumberedPlaceholder="<b>","</b>","<br/>"} */
 "help.text.destination_beacons.how.2" = "<b>To remove the current beacon</b>:<br/> Simply press the \"Remove Beacon\" button on the home screen.";
@@ -3021,10 +3074,10 @@
 "help.text.automatic_callouts.when.3" = "<b>When you need silence</b>:<br/> When you are about to cross a road or just need the app to be quiet, you can turn callouts off. When callouts are off, the app will only tell you information if you manually tap one of the <em>\"My Location\"</em>, <em>\"Nearby Markers\"</em>, <em>\"Around Me\"</em>, or <em>\"Ahead of Me\"</em> buttons.";
 
 /* Notification, Information how to turn on callouts. Ensure that "Manage Callouts" is translated the same as `menu.manage_callouts` and "Callouts Off" is translated the same as `callouts.callouts_off` and "Allow callouts" is translated the same as `callouts.allow_callouts`. Quotes written as \" {NumberedPlaceholder="<b>","</b>","<br/>"} */
-"help.text.automatic_callouts.how.1" = "<b>Turning callouts on or off</b>:<br/> Turning callouts off will silence the app. Callouts can be turned on or off in the \"Manage Callouts\" section of the \"Settings\" screen where you can tap the \"Allow Callouts\" toggle to turn them on or off. You can also turn callouts on or off by using the \"skip forward\" command (double tap and hold) if your headphones have media control buttons. Alternatively, you can use the \"Sleep\" button in the upper right hand corner of the home screen to stop Soundscape from making callouts until you wake it up.";
+"help.text.automatic_callouts.how.1" = "<b>Turning callouts on or off</b>:<br/> Turning callouts off will silence the app. Callouts can be turned on or off in the \"Manage Callouts\" section of the \"Settings\" screen where you can tap the \"Allow Callouts\" toggle to turn them on or off. You can also turn callouts on or off by using the \"skip forward\" command (double tap and hold) if your headphones have media control buttons. Alternatively, you can use the \"Sleep\" button in the upper right-hand corner of the home screen to stop Soundscape from making callouts until you wake it up.";
 
 /* Notification, Information how to turn on callouts continued. Ensure that "Manage Callouts" is translated the same as `menu.manage_callouts` and "Allow callouts" is translated the same as `callouts.allow_callouts`. Quotes written as \" {NumberedPlaceholder="<b>","</b>","<br/>"} */
-"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen using the menu on the home screen. The \"Manage Callouts\" section of the \"Settings\" screen contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
+"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen within the main menu. The \"Manage Callouts\" section of the \"Settings Screen\" contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
 
 /* Notification, Information about what My Location does. Ensure that "My Location" is translated the same as `directions.my_location`. Quotes written as \" {NumberedPlaceholder="<em>","</em>"} */
 "help.text.my_location.what" = "The <em>\"My Location\"</em> button quickly gives you information that helps you figure out where you currently are. <em>\"My Location\"</em> tells you about your current location including things like the direction you are facing, where nearby roads or intersections are, and where nearby points of interest are.";
@@ -3078,16 +3131,16 @@
 "help.text.markers.content.2" = "You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. You can mark any place or address, but you can also mark things that might traditionally not be available in maps, for example, entrances to buildings or parks, push-to-walk buttons, pedestrian crossings or bridges, bus stops or even your dog’s favorite tree and use these as references along your walk.";
 
 /* Notification, Markers content continued {NumberedPlaceholder="Soundscape"} */
-"help.text.markers.content.3" = "To experience marked places, Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby markers button at the bottom of the Soundscape home screen to hear a spatial callout of marked places around you. In addition, you have the ability to set an audio beacon on any marked place. When you do this, the Soundscape audio beacon you are familiar with, will be heard and you can operate it as usual.";
+"help.text.markers.content.3" = "To experience marked places, Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby markers button at the bottom of the home screen to hear a spatial callout of marked places around you. In addition, you have the ability to set an audio beacon on any marked place. When you do this, the Soundscape audio beacon you are familiar with, will be heard and you can operate it as usual.";
 
 /* Notification, Creating Markers help content, Quotation marks are written as \" */
 "help.text.creating_markers.content.1" = "You can create markers in three ways: searching for the place you would like to save using the search bar, finding somewhere using the \"Places Nearby\" button, or using the \"Current Location\" button, all of which can be found on the Soundscape home screen. Once you have found the place you would like, selecting it will take you to the \"Location Details\" page. On this page, select the button called \"Save as Marker\".";
 
 /* Notification, Creating Markers help content continued, Quotation marks are written as \" */
-"help.text.creating_markers.content.2" = "You will now have the option to customize this marker. This step is optional. If you want to, you can change the name of the marker and also add an annotation that will be called out along with the marker to provide some extra information. Once you are done, select the \"Done\" button to save your Marker. ";
+"help.text.creating_markers.content.2" = "You will now have the option to customize this marker. This step is optional. If you want to, you can change the name of the marker and also add an annotation that will be called out along with the marker to provide some extra information. Once you are done, select the \"Done\" button to save your Marker.";
 
 /* Notification, Customizing Markers help content. "Markers & Routes" should be translated the same as the string with key 'search.view_markers'. Quotes written as \" */
-"help.text.customizing_markers.content.1" = "If you want to rename a marker you previously created, or add an annotation to it, then you can do so by selecting the marker from the \"Markers\" tab of the \"Markers & Routes\" page, then selecting the \"Edit Marker\" button. You can use this to give markers descriptive or useful nicknames, as well as giving them a longer description using the annotation field.";
+"help.text.customizing_markers.content.1" = "If you want to rename a marker you previously created, or add an annotation to it, then you can do so by selecting the marker from the \"Markers\" tab of the \"Markers & Routes\" page, then selecting the \"Edit Marker\" button. You can use this to give markers descriptive or useful nicknames, as well as give them a longer description using the annotation field.";
 
 /* Notification, Customizing Markers help content continued */
 "help.text.customizing_markers.content.2" = "From this Edit screen, you can also delete a marker if you no longer need it.";
@@ -3101,23 +3154,44 @@
 /* Help content explaining how a user can create a route. Quotes written as \" */
 "help.text.routes.content.how.1" = "<b>Creating a route</b>:<br/> First, go to \"Markers & Routes\", select the \"Routes\" tab, and then select the \"New Route\" button. Give the route a name and an optional description, then add waypoints as you go or pick them from your list of Markers. You can rearrange the order of the waypoints along a route at any time by editing the route.";
 
+/* Help content explaining how a user can follow a route. Quotes written as \" */
+"help.text.routes.content.how.1a" = "<b>Following a route</b>:<br/> Select your route from the \"Markers & Routes\" page and then select Start Route. You will return to the home screen and Soundscape will set a beacon on the first waypoint. As you make your way through your route, the beacon advances to the next waypoint until the route is completed. If at any time you want to skip forward or back a waypoint, press \"Next Waypoint\" or \"Previous Waypoint\".";
+
 /* Help content explaining how a user can edit a route. Quotes written as \" */
-"help.text.routes.content.how.2" = "<b>Editing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select \"Edit Route\". From here you can add and remove waypoints, as well as editing the name and description of the route.";
+"help.text.routes.content.how.2" = "<b>Editing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select \"Edit Route\". From here you can add and remove waypoints, as well as edit the name and description of the route.";
 
 /* Help content explaining how a user can share a route. "Share" should be translated in the same way as it is for the key `share.title`. Quotes written as \" */
 "help.text.routes.content.how.3" = "<b>Sharing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select the option to \"Share\" using all of the usual share options available to you.";
 
 /* Help content describing how Apple AirPods work with Soundscape and which versions are supported {NumberedPlaceholder="Soundscape","AirPods"} */
-"help.using_headsets.airpods.what" = "Soundscape supports spatial audio with dynamic head tracking when using compatible AirPods. When connected to Soundscape, sensors in the AirPods tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience making it more natural as you move around in the world. When you use Soundscape with AirPods connected, you do not need to hold your phone for Soundscape to work correctly.";
+"help.using_headsets.airpods.what" = "Soundscape supports spatial audio with dynamic head tracking when using compatible AirPods. Once they're connected, sensors in the AirPods tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with AirPods connected, you do not need to hold your phone for Soundscape to work correctly.";
 
 /* Information on when users can use Apple AirPods headphones with Soundscape, {NumberedPlaceholder="Soundscape","AirPods"} */
-"help.using_headsets.airpods.when" = "You can use AirPods with Soundscape anytime you would normally use Soundscape. Using AirPods provides you with high quality audio and allows you to have a more hands-free experience with Soundscape.";
+"help.using_headsets.airpods.when" = "You can use AirPods with Soundscape anytime you would normally use Soundscape. Using AirPods provides you with high quality audio and allows you to have a more hands-free experience.";
 
 /* Information on how to connect Apple AirPods with Soundscape, "Head Tracking Headphones" should be translated the same as the string with key "menu.devices", {NumberedPlaceholder="Soundscape","AirPods"} */
 "help.using_headsets.airpods.how.1" = "<b>Connecting a Device</b>:<br/> Go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your AirPods and follow the instructions on screen. Note that you will need to pair your AirPods to your phone in the Bluetooth settings before connecting them in Soundscape.";
 
 /* Information on how to use the media buttons on Apple AirPods with Soundscape (e.g. clicking the pressure sensor on one of the AirPods for play/pause), Quotes written as \", "Using Media Controls" should be translated the same as string with key "help.remote.page_title", {NumberedPlaceholder="Soundscape","AirPods"} */
-"help.using_headsets.airpods.how.2" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your AirPods to mute or unmute the beacon, call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
+"help.using_headsets.airpods.how.2" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your AirPods to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
+
+/* Help content describing how Bose Frames work with Soundscape and which versions are supported {NumberedPlaceholder="Soundscape","Bose Frames"} */
+"help.using_headsets.bose_frames.what" = "Soundscape supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. Once they're connected, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly.";
+
+/* Information on when users can use Bose Frames headphones with Soundscape, {NumberedPlaceholder="Soundscape","Bose Frames"} */
+"help.using_headsets.bose_frames.when" = "You can use Bose Frames with Soundscape anytime you would normally use Soundscape. Using Bose Frames provides you with high quality audio that does not occlude environmental audio and allows you to have a more hands-free experience.";
+
+/* Information on how to connect Bose Frames with Soundscape, "Head Tracking Headphones" should be translated the same as the string with key "menu.devices", {NumberedPlaceholder="Soundscape","Bose Frames"} */
+"help.using_headsets.bose_frames.how.1" = "<b>Connecting a Device</b>:<br/> Go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your Bose Frames and follow the instructions on screen. Note that you will need to pair your Bose Frames to your phone in the Bluetooth settings before connecting them in Soundscape.";
+
+/* information on how to calibrate Bose Frames with Soundscape, Quotes written as \", {NumberedPlaceholder="Soundscape","Bose Frames"} */
+"help.using_headsets.bose_frames.how.2" = "<b>Calibrating your Headphones</b>:<br/> Your Bose Frames will need to be calibrated to accurately know which way you are facing. Each time you connect them to Soundscape, you will be informed that calibration is needed by an audio chime. To calibrate your Bose Frames, follow the instructions provided on the screen. When the chime stops playing, Your Bose Frames are calibrated, and Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. You can also repeat this calibration at any time, even if the chime isn't playing, if you think the accuracy of your spatial audio is poor.";
+
+/* Information on how to use the media buttons on Bose Frames  */
+"help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
+
+/* Trouble shooting information for Bose Frames */
+"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>Support for the Bose Frames is new and we would love to hear your feedback. You can contact us by choosing the \"Send Feedback\" Option in the menu.";
 
 //------------------------------------------------------------------------------
 // MARK: - OSM Tags
@@ -3205,7 +3279,7 @@
 "osm.tag.turnstile" = "Turnstile";
 
 /* Open Street Map term. Used to describe a hole in the road surface which is covered with a series of bars that allow wheeled vehicles but not animals to cross. */
-"osm.tag.cattle_grid" = "Cattle Grid";
+"osm.tag.cattle_grid" = "Cattle Guard";
 
 /* Open Street Map term. A gate is a section in a wall or fence which can be opened to allow or restrict access. They are usually made of wood or metal. */
 "osm.tag.gate" = "Gate";
@@ -3408,7 +3482,7 @@
 "whats_new.1_2_0.0.description" = "You can now shake your device to repeat the last callout. To enable this feature, switch on the 'Repeat Callouts' toggle in settings.";
 
 /* Title of the beacon vicinity distance feature */
-"whats_new.1_2_0.1.title" = "Beacon Vicinity Distance Setting";
+"whats_new.1_2_0.1.title" = "Beacon Mute Distance Setting";
 
 /* Description of the beacon vicinity distance feature */
 "whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. You can adjust this setting in Audio Beacon settings.\n\nWe would particularly welcome feedback on your experience with setting different distances (0, 5, and 10 metres), for the Audio Beacon to switch off. In our internal testing we are seeing some inconsistencies in behaviour and are keen to get feedback from a wider base of users.";
@@ -3417,10 +3491,22 @@
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
 
 /* Description of the categories in places nearby feature */
-"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc";
+"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc.";
 
-/* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settings app. {NumberedPlaceholder="iOS"} */
-"whats_new.3_2_0.2.description" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
+/* Title of the Bose Frames support feature */
+"whats_new.1_3_0.0.title" = "Bose Frames Support";
+
+/* Description of the Bose Frames support feature */
+"whats_new.1_3_0.0.description" = "Soundscape now supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. Once they're connected, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly. To get started, go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your Bose Frames and follow the instructions on screen. Note that you will need to pair your Bose Frames to your phone in the Bluetooth settings before connecting them in Soundscape.";
+
+/* Title of the request for testing in Texas */
+"whats_new.1_3_0.1.title" = "Testing in Texas";
+
+/* Description of the request for testing in Texas */
+"whats_new.1_3_0.1.description" = "If you live in the Austin or San Antonio areas in Texas and would like to help us test a feature we are working on with NaviLens, please get in touch via the Send Feedback button from the main menu.";
+
+/* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settin gs app. {NumberedPlaceholder="iOS"} */
+"voice.apple.additional" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
 
 // MARK: - FAQs
 
@@ -3459,13 +3545,13 @@
 "faq.what_can_I_set.question" = "What can I set as a beacon?";
 
 /* An 'audio beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Intersection - A junction where two or more roads meet or cross., Marker - A location that has been marked as important by the user or application. This can be an address, a business or a custom place such as an entrance, a bus stop or a bench. Point of interest - A specific location that someone may find useful or interesting. Quotation marks are written as \" */
-"faq.what_can_I_set.answer" = "You can set an audio beacon on any business, place, point of interest, address, or intersection. There are a few ways you can set a location as a beacon. First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. From the location details screen you can select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you selected. The name of the place you have selected along with its distance and physical address, if available, will now be displayed on the main app screen.";
+"faq.what_can_I_set.answer" = "You can set an audio beacon on any business, place, point of interest, address, or intersection. There are a few ways you can set a location as a beacon. First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. From the location details screen you can select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you've selected. The name of the place along with its distance and physical address, if available, will now be displayed on the main screen.";
 
 /* A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. */
 "faq.how_to_use_beacon.question" = "How do I use a beacon like a pro?";
 
 /* A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. 'As the crow flies' is as expression which means roughly 'in a straight line'.'Spatilized' is referring to 'spatial audio' or '3D audio' which is where the audio through your headphones sounds as though it is coming from a given direction, as if it was actually coming from a speaker. 'Sweep the phone' is referring to rotating the phone around to point it in different directions. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. Quotes written as \" {NumberedPlaceholder="Soundscape"} */
-"faq.how_to_use_beacon.answer" = "You can think of the audible beacon as a \"lighthouse for the ears\", notifying you of where your destination is relative to your location, as the crow flies. Like a lighthouse, it does not tell you how to get there – you may need to make many navigation choices along the way, just as a sailboat will have to make many strategic \"tacks\" to get closer to the lighthouse. The continuous rhythmic sound of the audible beacon is spatialized from the direction of the destination, and helps you stay aware of the location of the destination relative to you as you walk. When you are walking directly toward the destination, or you point the phone toward the destination, a higher pitched \"ring\" sound will be heard. This feature allows you to pinpoint the direction of the destination since the direction of the rhythmic sound can sometimes be difficult to perceive in loud environments. When searching for the higher pitched \"ring\", hold the phone flat and sweep the phone slowly; turning your head to point in the same direction of the phone will ensure that you have the best spatial audio experience.\n\nThe lighthouse metaphor for the beacon’s design has several natural implications:\n\n1. There is no \"correct\" direction to travel when using the beacon, instead, with Soundscape you choose how to get there;\n2. The higher pitched \"ring\" helps you pinpoint the direction of the destination only – it is not an indication of how you should get there;\n3. If you generally know how to get to your destination, you may wish to mute the beacon for the majority of your trip and turn it on only as you get closer to your destination.";
+"faq.how_to_use_beacon.answer" = "You can think of the audible beacon as a \"lighthouse for the ears\", notifying you of where your destination is relative to your location, as the crow flies. Like a lighthouse, it does not tell you how to get there – you may need to make many navigation choices along the way, just as a sailboat will have to make many strategic \"tacks\" to get closer to the lighthouse. The continuous rhythmic sound of the audible beacon is spatialized from the direction of the destination, and helps you stay aware of the location of the destination relative to you as you walk. When you are walking directly toward the destination, or you point the phone toward the destination, a higher pitched \"ring\" sound will be heard. This feature allows you to pinpoint the direction of the destination since the direction of the rhythmic sound can sometimes be difficult to perceive in loud environments. When searching for the higher pitched \"ring\", hold the phone flat and sweep the phone slowly; turning your head to point in the same direction as the phone will ensure that you have the best spatial audio experience.\n\nThe lighthouse metaphor for the beacon’s design has several natural implications:\n\n1. There is no \"correct\" direction to travel when using the beacon, instead, with Soundscape you choose how to get there;\n2. The higher pitched \"ring\" helps you pinpoint the direction of the destination only – it is not an indication of how you should get there;\n3. If you generally know how to get to your destination, you may wish to mute the beacon for the majority of your trip and turn it on only as you get closer to your destination.";
 
 /* A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. */
 "faq.why_does_beacon_disappear.question" = "Why does the audible beacon disappear sometimes?";
@@ -3486,10 +3572,10 @@
 "faq.beacon_on_home.answer" = "Soundscape supports setting beacons on addresses. To set a beacon on your home, or any other address, from the main screen, tap on the search bar and then type the address. On the \"Location Details\" screen, tap the \"Start Audio Beacon\" button.";
 
 /* A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
-"faq.how_close_to_destination.question" = "When I set a beacon on a destination, how close will Soundscape get me to the destination? ";
+"faq.how_close_to_destination.question" = "When I set a beacon on a destination, how close will Soundscape get me there?";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. {NumberedPlaceholder="Soundscape"} */
-"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several meters, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by selecting the \"Audio Beacon\" button from the \"Settings\" screen and then moving the \"Enter Vicinity Distance\" slider up or down.";
+"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several meters, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by going to \"Audio Beacon\" from the \"Settings\" screen and then moving the \"Audio Mute Distance\" slider up or down.";
 
 /* A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. */
 "faq.turn_beacon_back_on.question" = "Can I turn the beacon back on when I am close to my destination?";
@@ -3519,7 +3605,7 @@
 "faq.miss_a_callout.question" = "What if I don't understand a callout or miss it because of ambient noise?";
 
 /* Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Quotes written as \". {NumberedPlaceholder="Soundscape"} */
-"faq.miss_a_callout.answer" = "Soundscape has a list of your recent callouts so that you can revisit callouts that you might have missed. To find this, tap on the search bar on the Soundscape home screen. At the bottom of this page, there is a section for \"Recent Callouts\" where the callout you missed will be listed. Alternatively, you can shake your phone to repeat the last callout. From the \"Manage Callouts\" section of the \"Settings\" screen , turn on \"Repeat Callouts\".";
+"faq.miss_a_callout.answer" = "Soundscape has a list of your recent callouts so that you can revisit callouts that you might have missed. To find this, tap on the search bar on the Soundscape home screen. At the bottom of this page, there is a section for \"Recent Callouts\" where the callout you missed will be listed. Alternatively, you can shake your phone to repeat the last callout. From the \"Manage Callouts\" section of the \"Settings\" screen, turn on \"Repeat Callouts\".";
 
 // MARK: How Soundscape Works
 
@@ -3542,31 +3628,31 @@
 "faq.battery_impact.question" = "How does Soundscape impact my iPhone’s battery?";
 
 /* Sleep - To put the app in an idle state for a period of time. Snooze - To put the app in an idle state that is interrupted by user movement. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape","iPhone"} */
-"faq.battery_impact.answer" = "Battery life varies significantly depending on which iPhone you own and how old it is. The biggest drain on your battery is having the screen on, so to maximize the battery life of your phone you should keep the screen locked whenever possible. To help minimize the impact on your iPhone battery Soundscape now has a Sleep Mode and a Snooze Mode. To further reduce the amount of battery you use, when you aren’t using Soundscape, you should force close it via your iPhone’s App Switcher. ";
+"faq.battery_impact.answer" = "Battery life varies significantly depending on which iPhone you own and how old it is. The biggest drain on your battery is having the screen on, so to maximize the battery life of your phone you should keep the screen locked whenever possible. To help minimize the impact on your iPhone battery Soundscape now has a Sleep Mode and a Snooze Mode. To further reduce the amount of battery you use, when you aren’t using Soundscape, you should force close it via your iPhone’s App Switcher.";
 
 /* Sleep - To put the app in an idle state for a period of time. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
 "faq.sleep_mode_battery.question" = "How do I use Sleep Mode to minimize Soundscape’s impact on my phone battery?";
 
 /* Sleep - To put the app in an idle state for a period of time. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. "Location Services" refers to the feature of the same name in iOS. It should be translated in the same manner that it is in the Settings app under Settings > Privacy > Location Services. Quotes written as \" {NumberedPlaceholder="Soundscape"} */
-"faq.sleep_mode_battery.answer" = "To put Soundscape in Sleep Mode, select the \"Sleep\" button in the top right hand corner of the home screen. When you select this, Soundscape will stop using Location Services and mobile data until you wake it up.";
+"faq.sleep_mode_battery.answer" = "To put Soundscape in Sleep Mode, select the \"Sleep\" button in the top right-hand corner of the home screen. When you select this, Soundscape will stop using Location Services and mobile data until you wake it up.";
 
 /* Snooze - To put the app in an idle state that is interrupted by user movement. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
 "faq.snooze_mode_battery.question" = "How do I use Snooze mode to minimize Soundscape’s impact on my phone battery?";
 
 /* Snooze - To put the app in an idle state that is interrupted by user movement. Sleep - To put the app in an idle state for a period of time. Wake Up - To restore the app from a sleep (idle) state. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. Quotes written as \" {NumberedPlaceholder="Soundscape"} */
-"faq.snooze_mode_battery.answer" = "To put Soundscape in Snooze Mode, select the \"Sleep\" button in the top right hand corner of the home screen. Once Soundscape’s in Sleep mode, select the \"Wake up when I leave\" button and Soundscape will go in to a low power state until you leave your current location.";
+"faq.snooze_mode_battery.answer" = "To put Soundscape in Snooze Mode, select the \"Sleep\" button in the top right-hand corner of the home screen. Once Soundscape’s in Sleep mode, select the \"Wake up when I leave\" button and Soundscape will go in to a low power state until you leave your current location.";
 
 /* A question about how different headsets affect the phone's battery consumption */
-"faq.headset_battery_impact.question" = "How does my choice of headphones affect the battery life of my phone?";
+"faq.headset_battery_impact.question" = "How does my choice of headphones affect my phone's battery life?";
 
 /* An answer to the question about how different headsets affect the phone's battery consumption. */
 "faq.headset_battery_impact.answer" = "In our tests, the battery consumption of Bluetooth headphones is comparable to wired headphones and should not be a significant factor to consider when selecting headphones. That said, both earbud and bone-conducting headphones have wired and wireless model options.";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
-"faq.background_battery_impact.question" = "How does running Soundscape in the background impact battery life of my phone?";
+"faq.background_battery_impact.question" = "How does running Soundscape in the background impact my phone's battery life?";
 
 /* 'Location Services' in the name of the iPhone feature that gives an app the iPhones location. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
-"faq.background_battery_impact.answer" = "Soundscape is a location-based app and uses Location Services to determine your location. In our tests, Soundscape does not consume any more battery than the average map application; but if you are concerned about battery consumption when using your phone, the following are a few tips which will help lower usage:\n\n1. Turn the screen display off as much as possible when you are not interacting with the app.\n2. When not using the app, close it down. Soundscape uses location services continually when it is running so that it always knows your location, even when you are not moving. Don’t forget to restart the app when you resume your journey.\n3. In cold weather, keep your phone warm as batteries perform more poorly in colder temperatures.";
+"faq.background_battery_impact.answer" = "Soundscape uses Location Services to determine your location. In our tests, Soundscape does not consume any more battery than the average map application; but if you are concerned about your phone's battery consumption, the following are a few tips which will help lower usage:\n\n1. Turn the screen display off as much as possible when you are not interacting with the app.\n2. When not using the app, close it down. Soundscape uses location services continually when it is running so that it always knows your location, even when you are not moving. Don’t forget to restart the app when you resume your journey.\n3. In cold weather, keep your phone warm as batteries perform more poorly in colder temperatures.";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
 "faq.mobile_data_use.question" = "How much mobile data does Soundscape use?";
@@ -3584,7 +3670,7 @@
 "faq.use_with_wayfinding_apps.question" = "How do I use Soundscape with a wayfinding app?";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Intersection - A junction where two or more roads meet or cross. {NumberedPlaceholder="Soundscape"} */
-"faq.use_with_wayfinding_apps.answer" = "Soundscape is designed as an awareness app to help fill in details about your environment that you may not be aware of otherwise. While it is not designed as a turn-by-turn navigation app, it can be used alongside such apps to provide complementary information. To use Soundscape with these apps, start your navigation app first. Then, move over to Soundscape and set a beacon on the same destination as in the navigation app. At this point, both apps will be running and you will hear walking directions from your navigation app, while getting updates on points of interest, intersections, and your distance to your destination from Soundscape.";
+"faq.use_with_wayfinding_apps.answer" = "Soundscape is designed to help fill in details about your environment that you may not be aware of otherwise. While it is not designed as a turn-by-turn navigation app, it can be used alongside such apps to provide complementary information. To use Soundscape with these apps, start your navigation app first. Then, move over to Soundscape and set a beacon on the same destination as in the navigation app. At this point, both apps will be running and you will hear walking directions from your navigation app, while getting updates on points of interest, intersections, and your distance to your destination from Soundscape.";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape"} */
 "faq.controlling_what_you_hear.question" = "How do I control what I hear and when I hear it in Soundscape?";
@@ -3602,7 +3688,7 @@
 "faq.personalize_experience.question" = "In what ways can I personalize my Soundscape experience?";
 
 /* All of the terms in the string "Settings > Accessibility > Spoken Content > Voices" should be translated such that they are consistant with those in the iOS Settings app. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. 'Nearby Markers' is the name of one of the buttons in the app. 'Voiceover' is an iPhone feature to help people who are visually impaired use the iPhone. 'Audio Ducking' is the name of an accessibility feature on the iPhone which reduces the volume of an app while 'Voiceover' is speaking. 'Touch ID' is the name of the iPhone feature for unlocking your phone using your finger print. 'Face ID' is the name of the iPhone feature for unlocking your phone using your face. 'Passcode' and 'iPhone Unlock' are all names of sections in the iPhone 'Settings' app. 'My Location', 'Around Me' and 'Ahead of Me' are buttons in the Soundscape app. {NumberedPlaceholder="Soundscape", "VoiceOver","Touch ID", "Face ID","iOS"} */
-"faq.personalize_experience.answer" = "Soundscape allows you to customize three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\", then Voice to adjust the Speaking Rate and Voice settings. Additional voices and enhanced voices with a higher quality can be downloaded in the iOS Settings app at Settings > Accessibility > Spoken Content > Voices. \n2. Distance Metric: Soundscape allows you to hear all distances in either feet or meters. From the Menu, select \"Settings\" and then \"Language & Region\". The Units of Measure section allows you to toggle between two options: Imperial (feet) and Metric (meters).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby Markers button at the bottom of the Soundscape home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following VoiceOver settings can influence how Soundscape behaves:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the primary Soundscape screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts that occur as you are interacting with the phone. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the My Location, Around Me, and Ahead of Me buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
+"faq.personalize_experience.answer" = "Soundscape allows you to customize three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from \"General Settings\" select Voice to adjust the Speaking Rate and Voice settings. Additional voices and enhanced voices with a higher quality can be downloaded in the iOS Settings app at Settings > Accessibility > Spoken Content > Voices.\n2. Distance Metric: Soundscape allows you to hear all distances in either feet or meters. From the Menu, select \"Settings\" and then from \"General Settings\" select \"Language & Region\". The Units of Measure section allows you to toggle between two options: Imperial (feet) and Metric (meters).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby Markers button at the bottom of the home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following VoiceOver settings can influence how Soundscape behaves:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the primary Soundscape screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts that occur as you are interacting with the phone. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the My Location, Around Me, and Ahead of Me buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape","Open Street Map"} */
 "faq.what_is_osm.question" = "What is Open Street Map and why do we use it for Soundscape?";
@@ -3635,3 +3721,15 @@
 
 /* Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. */
 "faq.tip.two_finger_double_tap" = "Tapping the screen twice with two fingers will silence any active callouts.";
+
+/* Describe feature for automatically reversing a route. Quotes written as \" */
+"faq.tip.reverse_route" = "Selecting \"Start Reversed Route\" from the \"Route Details\" screen allows you to take a route in reverse, and it saves a copy of the route with the waypoints in reverse order. Note that \"Start Reversed Route\" will not save another copy if there is already a reversed route in your list.";
+
+/* Title for donation screen */
+"donation.title" = "Donate to Soundscape Community";
+
+/* text for donation screen */
+"donation.body" = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to information on their surroundings through  our life-enhancing technology.";
+
+/* Donation link title */
+"donation.link" = "Go to Fundraising Page";

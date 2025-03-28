@@ -14,7 +14,8 @@ class StatusTableViewController: BaseTableViewController {
     private struct Section {
         static let gps = 0
         static let audio = 1
-        static let cache = 2
+        static let url = 2
+        static let cache = 3
     }
     
     private struct CellIdentifier {
@@ -72,13 +73,14 @@ class StatusTableViewController: BaseTableViewController {
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case Section.gps:     return 1
         case Section.audio:   return 1
+        case Section.url:     return 1
         case Section.cache:   return 1
         default:              return 0
         }
@@ -88,6 +90,7 @@ class StatusTableViewController: BaseTableViewController {
         switch section {
         case Section.gps:     return GDLocalizedString("troubleshooting.gps_status")
         case Section.audio:   return GDLocalizedString("troubleshooting.check_audio")
+        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url")
         case Section.cache:   return GDLocalizedString("troubleshooting.cache")
         default:              return nil
         }
@@ -102,6 +105,7 @@ class StatusTableViewController: BaseTableViewController {
                 return GDLocalizedString("troubleshooting.gps_status.explanation.feet")
             }
         case Section.audio: return GDLocalizedString("troubleshooting.check_audio.explanation")
+        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url.explanation")
         case Section.cache: return GDLocalizedString("troubleshooting.cache.explanation")
         default: return nil
         }
@@ -129,6 +133,7 @@ class StatusTableViewController: BaseTableViewController {
             let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
             
             cell.backgroundColor = Colors.Background.quaternary
+            cell.button.removeTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
             cell.button.removeTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
             cell.button.addTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
             cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.check_audio")
@@ -138,10 +143,26 @@ class StatusTableViewController: BaseTableViewController {
             
             return cell
             
+        case Section.url:
+            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+            
+            cell.backgroundColor = Colors.Background.quaternary
+            cell.button.removeTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
+            cell.button.removeTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
+            cell.button.addTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
+            cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.tile_server_url")
+            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.tile_server_url.explanation")
+            cell.button.backgroundColor = Colors.Background.primary
+            cell.label.text = SettingsContext.shared.servicesHostName
+            cell.label.textAlignment = .left
+
+            return cell
+            
         case Section.cache:
             let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
             
             cell.backgroundColor = Colors.Background.quaternary
+            cell.button.removeTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
             cell.button.removeTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
             cell.button.addTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
             cell.button.accessibilityLabel = GDLocalizedString("settings.clear_data")
@@ -160,6 +181,38 @@ class StatusTableViewController: BaseTableViewController {
 }
 
 extension StatusTableViewController {
+    @objc func urlTouchUpInside() {
+        let alertController = UIAlertController(title: GDLocalizedString("troubleshooting.tile_server_url"), message: nil, preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.placeholder = SettingsContext.shared.servicesHostName
+        }
+        
+        let submitAction = UIAlertAction(title: GDLocalizedString("general.alert.done"), style: .default) { [unowned alertController] _ in
+            if let textField = alertController.textFields?.first {
+                if let userInput = textField.text, !userInput.isEmpty {
+                    SettingsContext.shared.servicesHostName = userInput
+                    // Update url button label
+                    self.tableView.reloadData()
+                }
+            }
+        }
+        
+        let resetAction = UIAlertAction(title: GDLocalizedString("general.alert.reset"), style: .destructive) { [] _ in
+            // reset SettingsContext.shared.servicesHostName to default value
+            SettingsContext.shared.servicesHostName = ""
+            // Update url button label
+            self.tableView.reloadData()
+        }
+        
+        let cancelAction = UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel)
+        
+        alertController.addAction(submitAction)
+        alertController.addAction(resetAction)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true)
+    }
+    
     
     @objc func crosscheckTouchUpInside() {
         GDLogAppInfo("Play crosscheck audio")
@@ -191,14 +244,26 @@ extension StatusTableViewController {
             if SettingsContext.shared.automaticCalloutsEnabled {
                 self.reenableCalloutsAfterReload = true
                 SettingsContext.shared.automaticCalloutsEnabled = false
-            }
+            }    
+            self.performSegue(withIdentifier: Segue.showLoadingModal, sender: self)
             
-            self.displayMarkersPrompt()
+            // Check that tiles can be downloaded before we attempt to delete the cache
+            AppContext.shared.spatialDataContext.checkServiceConnection { [weak self] (success) in
+                guard success else {
+                    self?.displayUnableToClearCacheWarning()
+                    return
+                }
+                
+                // Clear the cache and keep the markers
+                self?.clearCache(false)
+            }
         }))
         
         present(alert, animated: true, completion: nil)
     }
     
+    /// ask the user if they want to keep the markers.
+    /// This is not used, but could be reenabled for debug builds in the future.
     private func displayMarkersPrompt() {
         let alert = UIAlertController(title: GDLocalizedString("settings.clear_cache.markers.alert_title"),
                                       message: GDLocalizedString("settings.clear_cache.markers.alert_message"),

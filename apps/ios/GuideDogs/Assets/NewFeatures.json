@@ -1,0 +1,31 @@
+{
+  "1.2.0": [
+    {
+      "Order": "0",
+      "Title": "whats_new.1_2_0.0.title",
+      "Description": "whats_new.1_2_0.0.description"
+    },
+    {
+      "Order": "1",
+      "Title": "whats_new.1_2_0.1.title",
+      "Description": "whats_new.1_2_0.1.description"
+    },
+    {
+      "Order": "2",
+      "Title": "whats_new.1_2_0.2.title",
+      "Description": "whats_new.1_2_0.2.description"
+    }
+  ],
+  "1.3.0": [
+    {
+      "Order": "0",
+      "Title": "whats_new.1_3_0.0.title",
+      "Description": "whats_new.1_3_0.0.description"
+    },
+    {
+      "Order": "1",
+      "Title": "whats_new.1_3_0.1.title",
+      "Description": "whats_new.1_3_0.1.description"
+    }
+    ]
+}

@@ -1,6 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+import csv
 import os
 import subprocess
 import argparse
@@ -13,8 +14,23 @@ import logging
 
 import aiopg
 import psycopg2
+from prometheus_client import start_http_server,  Histogram, Gauge
 
 from kubescape import SoundscapeKube
+from ingest_non_osm import import_non_osm_data, provision_non_osm_data_async
+
+# Prometheus metric for event durations
+event_duration = Histogram(
+    "event_duration_seconds",
+    "Duration of events",
+    ["event_name"]
+)
+# Prometheus metric for last event occurrence
+last_event_time = Gauge(
+    "event_last_time",
+    "Timestamp of last event occurrence",
+    ["event_name"]
+)
 
 dsn_default_base = 'host=localhost '
 dsn_init_default = dsn_default_base + 'dbname=postgres'
@@ -39,6 +55,7 @@ parser.add_argument('--cachedir', type=str, help='imposm temp directory', defaul
 parser.add_argument('--diffdir', type=str, help='imposm diff directory', default='/tmp/imposm3_diffdir')
 parser.add_argument('--pbfdir', type=str, help='pbf directory', default='.')
 parser.add_argument('--expiredir', type=str, help='expired tiles directory', default='/tmp/imposm3_expiredir')
+parser.add_argument('--extradatadir', type=str, help='CSV containing extra data to import')
 parser.add_argument('--config', type=str, help='config file', default='config.json')
 parser.add_argument('--provision', help='provision the database', action='store_true', default=False)
 parser.add_argument('--dsn_init', type=str, help='postgres dsn init', default=dsn_init_default)
@@ -160,6 +177,11 @@ async def provision_database_async(postgres_dsn, osm_dsn):
         await cursor.execute('CREATE EXTENSION IF NOT EXISTS postgis')
         await cursor.execute('CREATE EXTENSION IF NOT EXISTS hstore')
 
+        # The non_osm_data table needs to exist regardless of whether we
+        # have extra data to load, because the soundscape_tile query expects
+        # it to exist.
+        await provision_non_osm_data_async(osm_dsn)
+
 async def provision_database_soundscape_async(osm_dsn):
     ingest_path = os.environ['INGEST']
     async with aiopg.connect(dsn=osm_dsn) as conn:
@@ -225,6 +247,10 @@ def execute_kube_updatemodel_provision_and_import(config, updated):
             args.dsn = kube.get_url_dsn(d['dsn2']) #+ '?sslmode=require'
             import_write(config, False)
             import_rotate(config, False)
+            if config.extradatadir:
+                logger.info('Importing non-OSM data: START')
+                import_non_osm_data(config.extradatadir, d['dsn2'], logger)
+                logger.info('Importing non-OSM data: DONE')
             provision_database_soundscape(d['dsn2'])
             # kubernetes connection may have expired
             retry_count = 5
@@ -314,11 +340,9 @@ def execute_kube_updatemodel(config):
 
 def telemetry_log(event_name, start, end, extra=None):
     if args.telemetry:
-        if extra == None:
-            extra = {}
-        extra['start'] = start.isoformat()
-        extra['end'] = end.isoformat()
-        pass
+        duration = end - start
+        event_duration.labels(event_name).observe(duration.total_seconds())
+        last_event_time.labels(event_name).set(end.timestamp())
 
 args = parser.parse_args()
 
@@ -339,7 +363,8 @@ logging.basicConfig(level=loglevel,
 logger = logging.getLogger()
 
 if args.telemetry:
-    pass
+    # Start a Prometheus metrics server
+    start_http_server(8000)
 
 try:
     execute_kube_updatemodel(args)

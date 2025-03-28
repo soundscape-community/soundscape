@@ -53,6 +53,19 @@ extension Route {
         }
     }
     
+    /// Finds a route by name in the Realm database
+    static func routeWithName(_ name: String) -> Route? {
+        return autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                return nil
+            }
+            
+            return database.objects(Route.self)
+                .filter("name == %@", name)
+                .first
+        }
+    }
+    
     // MARK: Add or Delete Routes
     
     static func add(_ route: Route, context: String? = nil) throws {
@@ -101,6 +114,14 @@ extension Route {
             
             guard let route = database.object(ofType: Route.self, forPrimaryKey: id) else {
                 throw RouteRealmError.doesNotExist
+            }
+            
+            // Unlink reversed route if it exists
+            if let reversedId = route.reversedRouteId,
+               let reversedRoute = database.object(ofType: Route.self, forPrimaryKey: reversedId) {
+                try database.write {
+                    reversedRoute.reversedRouteId = nil
+                }
             }
             
             // `delete` should never be called when a route is active, but just in case it is,
@@ -171,6 +192,16 @@ extension Route {
             }
             
             try database.write {
+                // Unlink reversed route if waypoints have changed
+                if let existingReversedId = route.reversedRouteId,
+                   let reversedRoute = database.object(ofType: Route.self, forPrimaryKey: existingReversedId),
+                   !isWaypointsEqual(route, reversedRoute) {
+
+                    // Unlink both routes
+                    route.reversedRouteId = nil
+                    reversedRoute.reversedRouteId = nil
+                }
+                
                 route.name = name
                 route.routeDescription = description
                 route.waypoints = waypoints
@@ -255,4 +286,65 @@ extension Route {
         })
     }
     
+    // MARK: Reverse a route
+    
+    /// Creates a new Route instance with the order of waypoints reversed.
+    static func reversedRoute(from route: Route) -> Route? {
+        // Ensure there is at least one waypoint.
+        guard !route.waypoints.isEmpty else { return nil }
+
+        let orderedWaypoints = route.waypoints.ordered
+        let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
+            return RouteWaypoint(index: index, markerId: waypoint.markerId)
+        }
+        
+        let newName = GDLocalizedString("routes.reverse_name_format", route.name)
+
+        let newRoute = Route(name: newName, description: route.routeDescription, waypoints: reversedWaypoints)
+        return newRoute
+    }
+
+    /// Checks whether two routes have the same ordered waypoints.
+    static func isWaypointsEqual(_ route1: Route, _ route2: Route) -> Bool {
+        let route1IDs = route1.waypoints.ordered.map { $0.markerId }
+        let route2IDs = route2.waypoints.ordered.map { $0.markerId }
+        return route1IDs == route2IDs
+    }
+    
+    /// Generates and adds a reversed version of the route, handling duplicate name conflicts.
+    static func createReversedRoute(from route: Route) throws -> Route? {
+        // If route already has a reversedRouteId, return that route
+        if let reversedId = route.reversedRouteId,
+           let existing = Route.object(forPrimaryKey: reversedId) {
+            return existing
+        }
+
+        guard let reversed = reversedRoute(from: route) else { return nil }
+
+        // Resolve naming conflicts
+        var finalName = reversed.name
+        var index = 2
+        while let existing = Route.routeWithName(finalName) {
+            if isWaypointsEqual(existing, reversed) {
+                return existing
+            }
+            finalName = "\(reversed.name) (\(index))"
+            index += 1
+        }
+        reversed.name = finalName
+
+        // Add and link reversed route
+        try Route.add(reversed)
+        try autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                throw RouteRealmError.databaseError
+            }
+            try database.write {
+                route.reversedRouteId = reversed.id
+                reversed.reversedRouteId = route.id
+            }
+        }
+
+        return reversed
+    }
 }

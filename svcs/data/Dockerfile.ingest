@@ -19,16 +19,30 @@ RUN tdnf -y update \
 
 FROM mcr.microsoft.com/cbl-mariner/distroless/base:2.0 as final
 
-ENV PYTHONUNBUFFERED=true INGEST=/ingest TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute
+ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute
 
 COPY --from=imposm /ingest/ $INGEST/
 COPY --from=installer /staging/ /
 
-COPY requirements.txt requirements_kubernetes.txt ingest.py kubescape.py extracts.json tilefunc.sql $INGEST/
+COPY requirements.txt requirements_kubernetes.txt ingest.py ingest_non_osm.py kubescape.py extracts.json tilefunc.sql $INGEST/
 COPY soundscape/other/mapping.yml $MAPPING/mapping.yml
 RUN wget -q -O $INGEST/postgis-vt-util.sql https://raw.githubusercontent.com/mapbox/postgis-vt-util/master/postgis-vt-util.sql
 
 RUN /usr/bin/pip3 install -r $INGEST/requirements.txt -r $INGEST/requirements_kubernetes.txt
 
 CMD  rm -f $TILES/*.pbf && rm -rf $TILES/imposm_cache $TILES/imposm_expired $TILES/imposm_diff && \
-    python3 $INGEST/ingest.py --imposm $INGEST/imposm3/imposm --mapping $MAPPING/mapping.yml --where $GEN_REGIONS --extracts $INGEST/extracts.json --cachedir $TILES/imposm_cache  --diffdir $TILES/imposm_diff --pbfdir $TILES --expiredir $TILES/imposm_expired --verbose --updatemodel importloop --delay $LOOP_TIME --telemetry $INGEST_FLAGS
+    python3 $INGEST/ingest.py \
+        --imposm $INGEST/imposm3/imposm \
+        --mapping $MAPPING/mapping.yml \
+        --where $GEN_REGIONS \
+        --extracts $INGEST/extracts.json \
+        --cachedir $TILES/imposm_cache  \
+        --diffdir $TILES/imposm_diff \
+        --pbfdir $TILES \
+        --expiredir $TILES/imposm_expired \
+        --verbose \
+        --updatemodel importloop \
+        --delay $LOOP_TIME \
+        --telemetry \
+        --extradatadir $EXTRADATA \
+        $INGEST_FLAGS

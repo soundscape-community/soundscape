@@ -41,7 +41,7 @@ enum CalloutRangeContext {
         switch category {
         case .objects, .safety:
             triggerRange = 10.0
-        case .places, .information, .mobility, .authoredActivity:
+        case .places, .information, .mobility, .navilens, .authoredActivity:
             triggerRange = 20.0
         case .landmarks:
             triggerRange = 50.0

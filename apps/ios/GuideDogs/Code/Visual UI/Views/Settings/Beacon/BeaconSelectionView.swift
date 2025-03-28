@@ -34,15 +34,6 @@ struct BeaconSelectionView: View {
             
             ScrollView {
                 VStack(spacing: 0) {
-                    HStack(spacing: 0) {
-                        GDLocalizedTextView("beacon.settings.explanation")
-                            .font(.caption)
-                            .foregroundColor(.primaryForeground)
-                            .padding([.leading, .trailing, .top])
-                        
-                        Spacer()
-                    }
-                    
                     TableHeaderCell(text: GDLocalizedString("beacon.settings.cues"))
                         .accessibility(hidden: true)
                     
@@ -69,6 +60,15 @@ struct BeaconSelectionView: View {
                     })
 
                     TableHeaderCell(text: GDLocalizedString("beacon.settings.style"))
+
+                    HStack(spacing: 0) {
+                        GDLocalizedTextView("beacon.settings.explanation")
+                            .font(.caption)
+                            .foregroundColor(.primaryForeground)
+                            .padding()
+                        
+                        Spacer()
+                    }
                     
                     ForEach(BeaconOption.allAvailableCases(for: .standard)) { details in
                         BeaconOptionCell(type: details.id,

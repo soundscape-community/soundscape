@@ -20,6 +20,16 @@ extension Array where Element == POI {
         return queue.pois
     }
     
+    func sorted(byDistanceFrom location: CLLocation) -> [POI] {
+         // Storing the poi with its distance from current location
+        let poisWithDistance = self.map { poi in
+            (poi: poi, distance: location.distance(from: CLLocation(latitude: poi.centroidLatitude, longitude: poi.centroidLongitude)))
+        }
+        // Sort the array based on the distance, then extract the POIs in sorted order
+        let sortedPoisWithDistance = poisWithDistance.sorted { $0.distance < $1.distance }
+        return sortedPoisWithDistance.map { $0.poi }
+    }
+    
     func filtered(by filterPredicate: FilterPredicate, maxLength: Int? = nil) -> [POI] {
         var pois: [POI] = []
         

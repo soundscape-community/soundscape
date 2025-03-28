@@ -4107,7 +4107,7 @@
 
 
 /*  */
-"whats_new.3_2_0.2.description" = "Você pode baixar vozes adicionais, incluindo vozes com qualidade aprimorada na seção Conteúdo Falado nos ajustes de acessibilidade do iOS.";
+"voice.apple.additional" = "Você pode baixar vozes adicionais, incluindo vozes com qualidade aprimorada na seção Conteúdo Falado nos ajustes de acessibilidade do iOS.";
 
 
 /*  */
@@ -4380,8 +4380,3 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Tocar na tela duas vezes com dois dedos silenciará todas as notificações ativas.";
-
-
-
-
-
