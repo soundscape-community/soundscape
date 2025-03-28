@@ -25,6 +25,8 @@ from psycopg2.extras import NamedTupleCursor
 
 from aiohttp import web
 
+import random
+
 class StatCounter(object):
     def __init__(self, name, help):
         self.name = name
@@ -217,11 +219,19 @@ def osm_deg2num(lat_deg, lon_deg, zoom):
     return (xtile, ytile)
 
 # This returns the NW-corner of the square. Use the function with xtile+1 and/or ytile+1 to get the other corners. With xtile+0.5 & ytile+0.5 it will return the center of the tile.
-def num2deg(xtile, ytile, zoom):
+def num2deg(xtile, ytile, zoom, blur_meters=True):
     n = 2.0 ** zoom
     lon_deg = xtile / n * 360.0 - 180.0
     lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
     lat_deg = math.degrees(lat_rad)
+    
+# When blur_meters=True (default), the returned latitude and longitude are randomly offset by approximately 500 to 1000 meters. This is used to reduce the precision of tile-derived coordinates for privacy purposes.
+    if blur_meters:
+        noise_lat = random.uniform(-0.009, -0.0045) if random.random() < 0.5 else random.uniform(0.0045, 0.009)
+        noise_lon = random.uniform(-0.009, -0.0045) if random.random() < 0.5 else random.uniform(0.0045, 0.009)
+        lat_deg += noise_lat
+        lon_deg += noise_lon
+
     return (lat_deg, lon_deg)
 
 def tile_bbox_from_coords(zoom, coord_bbox):
