@@ -2779,7 +2779,7 @@
 
 
 /*  */
-"devices.connect_headset.unavailable" = "The device you selected is currently unavailable for connection. Please try again later.";
+"devices.connect_headset.unavailable" = "The device you've selected is currently unavailable for connection. Please try again later.";
 
 
 /*  */
@@ -3282,7 +3282,7 @@
 
 
 /*  */
-"tutorial.beacons.text.MobilitySkills" = "The beacon always points directly towards the location you selected. It does not tell you the paths to follow or give you directions to get to that location. Use this beacon as a tool to decide how you want to get there.";
+"tutorial.beacons.text.MobilitySkills" = "The beacon always points directly towards the location you've selected. It does not tell you the paths to follow or give you directions to get to that location. Use this beacon as a tool to decide how you want to get there.";
 
 
 /*  */
@@ -3330,7 +3330,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the \"Enhanced\" voices as they have a much higher voice quality, but in order to do so, you will first need to download an enhanced voice. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape App, you can select the voice you want to use by tapping \"Settings\" on the main menu and then from \"General Settings\" selecting \"Voice\".";
+"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the higher quality \"Enhanced\" voices, but you will need to download it first. You can download voices in the iOS Settings app by going to Accessibility > Spoken Content > Voices and tapping on a voice. Within the Soundscape App, you can select the voice you want to use by tapping \"Settings\" on the main menu and then from \"General Settings\" selecting \"Voice\".";
 
 
 /*  */
@@ -3778,7 +3778,7 @@
 
 
 /*  */
-"help.text.markers.content.3" = "To experience marked places, Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby markers button at the bottom of the home screen to hear a spatial callout of marked places around you. In addition, you have the ability to set an audio beacon on any marked place. When you do this, the Soundscape audio beacon you are familiar with, will be heard and you can operate it as usual.";
+"help.text.markers.content.3" = "To experience marked places, Soundscape will automatically call out marked places as you walk by or approach them, or you can use the Nearby markers button at the bottom of the home screen to hear a spatial callout of marked places around you. You can even set an audio beacon on any marked place. When you do this, the Soundscape audio beacon you are familiar with, will be heard and you can operate it as usual.";
 
 
 /*  */
@@ -3810,7 +3810,7 @@
 
 
 /*  */
-"help.text.routes.content.how.1a" = "<b>Following a route</b>:<br/> Select your route from the \"Markers & Routes\" page and then select Start Route. You will return to the home screen and Soundscape will set a beacon on the first waypoint. As you make your way through your route, the beacon advances to the next waypoint until the route is completed. If at any time you want to skip forward or back a waypoint, press \"Next Waypoint\" or \"Previous Waypoint\".";
+"help.text.routes.content.how.1a" = "<b>Following a route</b>:<br/> Select your route from the \"Markers & Routes\" page and then select Start Route. You will return to the home screen and Soundscape will set a beacon on the first waypoint. As you make your way through the route, the beacon advances to the next waypoint until the route is completed. If at any time you want to skip ahead or back a waypoint, press \"Next Waypoint\" or \"Previous Waypoint\".";
 
 
 /*  */
@@ -4190,7 +4190,7 @@
 
 
 /*  */
-"faq.what_can_I_set.answer" = "You can set an audio beacon on any business, place, point of interest, address, or intersection. There are a few ways you can set a location as a beacon. First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. From the location details screen you can select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you've selected. The name of the place along with its distance and physical address, if available, will now be displayed on the main screen.";
+"faq.what_can_I_set.answer" = "You can set an audio beacon on any business, place, point of interest, address, or intersection. There are a few ways to set a location as a beacon. First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. From the location details screen you can select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you've selected. The name of the place along with its distance and physical address, if available, will now be displayed on the main screen.";
 
 
 /*  */
@@ -4198,7 +4198,7 @@
 
 
 /*  */
-"faq.how_to_use_beacon.answer" = "You can think of the audible beacon as a \"lighthouse for the ears\", notifying you of where your destination is relative to your location, as the crow flies. Like a lighthouse, it does not tell you how to get there – you may need to make many navigation choices along the way, just as a sailboat will have to make many strategic \"tacks\" to get closer to the lighthouse. The continuous rhythmic sound of the audible beacon is spatialised from the direction of the destination, and helps you stay aware of the location of the destination relative to you as you walk. When you are walking directly toward the destination, or you point the phone toward the destination, a higher pitched \"ring\" sound will be heard. This feature allows you to pinpoint the direction of the destination since the direction of the rhythmic sound can sometimes be difficult to perceive in loud environments. When searching for the higher pitched \"ring\", hold the phone flat and sweep the phone slowly; turning your head to point in the same direction as the phone will ensure that you have the best spatial audio experience.\n\nThe lighthouse metaphor for the beacon’s design has several natural implications:\n\n1. There is no \"correct\" direction to travel when using the beacon, instead, with Soundscape you choose how to get there;\n2. The higher pitched \"ring\" helps you pinpoint the direction of the destination only – it is not an indication of how you should get there;\n3. If you generally know how to get to your destination, you may wish to mute the beacon for the majority of your trip and turn it on only as you get closer to your destination.";
+"faq.how_to_use_beacon.answer" = "You can think of the audible beacon as a \"lighthouse for the ears\", notifying you of where your destination is relative to your location, as the crow flies. Like a lighthouse, it does not tell you how to get there – you may need to make many navigation choices along the way, just as a sailboat will have to make many strategic \"tacks\" to get closer to the lighthouse. The continuous rhythmic sound of the beacon is spatialised from the direction of the destination, and helps you stay aware of its location relative to you as you walk. When you are walking directly toward the destination, or you point the phone in that direction, a higher pitched \"ring\" sound will be heard. This feature allows you to pinpoint the direction of the destination since the direction of the rhythmic sound can sometimes be difficult to perceive in loud environments. When searching for the higher pitched \"ring\", hold the phone flat and sweep the phone slowly; turning your head to point in the same direction as the phone will ensure that you have the best spatial audio experience.\n\nThe lighthouse metaphor for the beacon’s design has several natural implications:\n\n1. There is no \"correct\" direction to travel when using the beacon, instead, with Soundscape you choose how to get there;\n2. The higher pitched \"ring\" helps you pinpoint the direction of the destination only – it is not an indication of how you should get there;\n3. If you generally know how to get to your destination, you may wish to mute the beacon for the majority of your trip and turn it on only as you get closer.";
 
 
 /*  */
@@ -4246,7 +4246,7 @@
 
 
 /*  */
-"faq.road_names.answer" = "To accommodate a variety of intersection configurations, Soundscape describes intersections as segments of roadways that depart from a common point. Soundscape uses spatial audio to indicate the name of the road that goes to the left, the name of the road that continues straight ahead, and the name of the road that goes to the right, in that order. If the description of the intersection begins with the road you are on rather than one to the left, then the intersection is a T with the road you are on continuing ahead and a road intersecting from the right. Similarly, if the description only includes a road to the left and to the right, you will know that the road you are on ends at a T ahead of you. This method of describing intersections also supports the case when a road changes name at an intersection.";
+"faq.road_names.answer" = "To accommodate a variety of intersection layouts, Soundscape describes intersections as segments of roadways that depart from a common point. Soundscape uses spatial audio to indicate the name of the road that goes to the left, the name of the road that continues straight ahead, and the name of the road that goes to the right, in that order. If the description of the intersection begins with the road you are on rather than one to the left, then the intersection is a T with the road you are on continuing ahead and a road intersecting from the right. Similarly, if the description only includes a road to the left and to the right, you will know that the road you are on ends at a T ahead of you. This method of describing intersections also supports the case when a road changes name at an intersection.";
 
 
 /*  */
@@ -4262,7 +4262,7 @@
 
 
 /*  */
-"faq.callouts_stopping_in_vehicle.answer" = "In order to stop the number of callouts becoming overwhelming, some categories, such as intersections, are not announced automatically when you’re travelling in a vehicle.";
+"faq.callouts_stopping_in_vehicle.answer" = "To keep the number of callouts from becoming overwhelming, some categories, such as intersections, are not announced automatically when you’re travelling in a vehicle.";
 
 
 /*  */
@@ -4298,7 +4298,7 @@
 
 
 /*  */
-"faq.battery_impact.answer" = "Battery life varies significantly depending on which iPhone you own and how old it is. The biggest drain on your battery is having the screen on, so to maximise the battery life of your phone you should keep the screen locked whenever possible. To help minimise the impact on your iPhone battery Soundscape now has a Sleep Mode and a Snooze Mode. To further reduce the amount of battery you use, when you aren’t using Soundscape, you should force close it via your iPhone’s App Switcher.";
+"faq.battery_impact.answer" = "Battery life varies significantly depending on which iPhone you own and how old it is. The biggest drain on your battery is having the screen on, so to maximise your phone's battery life you should keep the screen locked whenever possible. To help minimise the impact on your iPhone battery Soundscape now has a Sleep Mode and a Snooze Mode. To further reduce the amount of battery you use, when you aren’t using Soundscape, you should force close it via your iPhone’s App Switcher.";
 
 
 /*  */
@@ -4362,7 +4362,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.answer" = "Soundscape provides several ways to control what you hear and when:\n\n1. Immediately stop all audio: Double tap the screen with two fingers to immediately turn off all audio, including any callout that is currently playing and the beacon if it is on. Callouts will resume automatically when you approach the next intersection or point of interest, but the audible beacon will not. Select the \"unmute beacon button\" on the home screen to resume hearing the beacon.\n2. Stop automatic callouts: When you are not traveling or have reached a destination, you probably will not need Soundscape to continue to notify you of things around you. Instead of exiting the app, you can put Soundscape in Snooze mode and it will wake up again when you leave, or you can put Soundscape in Sleep mode and it will stay off until you wake it up. Alternatively, you can select \"Settings\" from the menu and choose to turn all callouts off in the \"Manage Callouts\" section.\n3. Stop the beacon: There are several scenarios for which you might set a destination, but not need the audible beacon on. For example, you may know exactly how to get to your destination but want to get automatic updates about how far away you are from your destination. Or, you may know roughly how to get to your destination, and only need the audio beacon as you near your destination. Whatever the case, you can choose when to hear the beacon by toggling the \"mute beacon\"/\"unmute beacon\" button on the home screen.";
+"faq.controlling_what_you_hear.answer" = "Soundscape provides several ways to control what you hear and when:\n\n1. Immediately stop all audio: Double tap the screen with two fingers to immediately turn off all audio, including any callout that is currently playing and the beacon if it is on. Callouts will resume automatically when you approach the next intersection or point of interest, but the audible beacon will not. Select the \"unmute beacon button\" on the home screen to resume hearing the beacon.\n2. Stop automatic callouts: When you are not traveling or have reached a destination, you probably will not need Soundscape to continue to notify you of things around you. Instead of exiting the app, you can put Soundscape in Snooze mode and it will wake up again when you leave, or you can put Soundscape in Sleep mode and it will stay off until you wake it up. Alternatively, you can select \"Settings\" from the menu and choose to turn all callouts off in the \"Manage Callouts\" section.\n3. Stop the beacon: There are several scenarios for which you might set a destination, but not need the audible beacon on. For example, you may know exactly how to get to your destination, but you just want to get automatic updates about how far away you are. Or, you may know roughly how to get to your destination, and you only need the audio beacon when you're almost there. Whatever the case, you can choose when to hear the beacon by toggling the \"mute beacon\"/\"unmute beacon\" button on the home screen.";
 
 
 /*  */
@@ -4378,7 +4378,7 @@
 
 
 /*  */
-"faq.personalize_experience.answer" = "Soundscape allows you to customise three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from \"General Settings\" select Voice to adjust the Speaking Rate and Voice settings. Additional voices and enhanced voices with a higher quality can be downloaded in the iOS Settings app at Settings > Accessibility > Spoken Content > Voices.\n2. Distance Metric: Soundscape allows you to hear all distances in either feet or metres. From the Menu, select \"Settings\" and then from \"General Settings\" select \"Language & Region\". The Units of Measure section allows you to toggle between two options: Imperial (feet) and Metric (metres).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby Markers button at the bottom of the home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following VoiceOver settings can influence how Soundscape behaves:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the primary Soundscape screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts that occur as you are interacting with the phone. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the My Location, Around Me, and Ahead of Me buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
+"faq.personalize_experience.answer" = "Soundscape allows you to customise three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from \"General Settings\" select Voice to adjust the Speaking Rate and Voice settings. Additional voices, including enhanced quality voices, can be downloaded in the iOS Settings app at Settings > Accessibility > Spoken Content > Voices.\n2. Distance Metric: Soundscape allows you to hear all distances in either feet or metres. From the Menu, select \"Settings\" and then from \"General Settings\" select \"Language & Region\". The Units of Measure section allows you to toggle between two options: Imperial (feet) and Metric (metres).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby Markers button at the bottom of the home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following VoiceOver settings can influence how Soundscape behaves:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the primary Soundscape screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts that occur as you are interacting with the phone. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the My Location, Around Me, and Ahead of Me buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
 
 
 /*  */
@@ -4422,7 +4422,7 @@
 
 
 /*  */
-"faq.tip.reverse_route" = "Selecting \"Start Reversed Route\" from the \"Route Details\" screen allows you to take a route in reverse, and it saves a copy of the route with the waypoints in reverse order. Note that \"Start Reversed Route\" will not save another copy if there is already a reversed route in your list.";
+"faq.tip.reverse_route" = "Selecting \"Start Reversed Route\" from the \"Route Details\" screen allows you to take a route in reverse, and it saves a copy of the route with the waypoints in reverse order. Note that \"Start Reversed Route\" will not save another copy of the same route if it's already saved.";
 
 
 
