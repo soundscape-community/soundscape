@@ -95,6 +95,7 @@
 		<string>ymail</string>
 		<string>fastmail</string>
 		<string>x-dispatch</string>
+		<string>navilens</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
