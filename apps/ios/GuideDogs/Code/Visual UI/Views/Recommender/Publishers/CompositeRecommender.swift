@@ -25,10 +25,12 @@ class CompositeRecommender: Recommender {
     private enum Component: Int, CaseIterable {
         // `rawValue` represents the recommender's
         // priority
+        case navilens
         case route
         
         var recommender: Recommender {
             switch self {
+            case .navilens: return NavilensRecommender()
             case .route: return RouteRecommender()
             }
         }

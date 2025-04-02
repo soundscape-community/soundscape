@@ -23,11 +23,13 @@ import math
 import random
 
 from aiohttp import web
+from faker import Faker
 
+fake = Faker()
 # Upper bound for fake OpenStreetMap node IDs
 MAX_OSM_ID = 1 << 40
 # Number of random features per tile (1/4 sq. mi.)
-FEATURE_DENSITY = 1000
+FEATURE_DENSITY = 200
 
 
 # This returns the NW-corner of the square. Use the function with xtile+1 and/or ytile+1 to get the other corners. With xtile+0.5 & ytile+0.5 it will return the center of the tile.
@@ -41,9 +43,8 @@ def num2deg(xtile, ytile, zoom):
 
 def random_feature(lat, lon, osm_id):
     # Create a mixture of normal and Navilens-enabled bus stops
-    properties = {"name": "Normal",}
+    properties = {}
     if random.choice([True, False]):
-        properties["name"] = "Navilens"
         properties["qr_code:navilens"] = "yes"
 
     # Return a bus stop at the given latitude + longitude
@@ -59,6 +60,7 @@ def random_feature(lat, lon, osm_id):
             "bus": "yes",
             "highway": "bus_stop",
             "public_transport": "platform",
+            "name": fake.street_name() + " " + fake.street_suffix(),
             **properties,
         },
         "type": "Feature",
