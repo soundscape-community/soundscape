@@ -48,7 +48,9 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: 0, section: Section.streetPreview.rawValue): "streetPreview",
         IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
         IndexPath(row: 0, section: Section.about.rawValue): "about",
-        IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
+        IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry",
+        IndexPath(row: 6, section: Section.general.rawValue): "autoUnmute"
+
     ]
     
     private static let collapsibleCalloutIndexPaths: [IndexPath] = [
@@ -96,7 +98,7 @@ class SettingsViewController: BaseTableViewController {
         guard let sectionType = Section(rawValue: section) else { return 0 }
         
         switch sectionType {
-        case .general: return expandedSections.contains(section) ? 6 : 0
+        case .general: return expandedSections.contains(section) ? 7 : 0
         case .audio: return expandedSections.contains(section) ? 1 : 0
         case .callouts:
             return SettingsContext.shared.automaticCalloutsEnabled && expandedSections.contains(section) ? 5 : 0
@@ -127,9 +129,26 @@ class SettingsViewController: BaseTableViewController {
         default:
             break
         }
+        if identifier == "autoUnmute" {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "autoUnmute", for: indexPath)
+            cell.textLabel?.text = GDLocalizedString("settings.beacon.auto_unmute")
+            
+            let toggle = UISwitch()
+            toggle.isOn = SettingsContext.shared.autoUnmuteEnabled
+            toggle.addTarget(self, action: #selector(autoUnmuteToggled(_:)), for: .valueChanged)
+            cell.accessoryView = toggle
+            cell.selectionStyle = .none
+            return cell
+        }
         
         return cell
     }
+    
+    @objc private func autoUnmuteToggled(_ sender: UISwitch) {
+        SettingsContext.shared.autoUnmuteEnabled = sender.isOn
+        GDATelemetry.track("settings.auto_unmute_changed", with: ["enabled": "\(sender.isOn)"])
+    }
+
     
     private func configureCalloutCell(_ cell: CalloutSettingsCellView, at indexPath: IndexPath) {
         cell.delegate = self
