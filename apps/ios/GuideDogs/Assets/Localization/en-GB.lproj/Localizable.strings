@@ -3702,7 +3702,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.1" = "<b>Turning callouts on or off</b>:<br/> Turning callouts off will silence the app. Callouts can be turned on or off in the \"Manage Callouts\" section of the \"Settings\" screen where you can tap the \"Allow Callouts\" toggle to turn them on or off. You can also turn callouts on or off by using the \"skip forward\" command (double tap and hold) if your headphones have media control buttons. Alternatively, you can use the \"Sleep\" button in the upper right-hand corner of the home screen to stop Soundscape from making callouts until you wake it up.";
+"help.text.automatic_callouts.how.1" = "<b>Turning callouts on or off</b>:<br/> Turning callouts off will silence the app. Callouts can be turned on or off by going to the \"Manage Callouts\" section of the \"Settings\" screen and then toggling the \"Allow Callouts\" button. You can also turn callouts on or off by using the \"skip forward\" command (double tap and hold) if your headphones have media control buttons. Alternatively, you can use the \"Sleep\" button in the upper right-hand corner of the home screen to stop Soundscape from making callouts until you wake it up.";
 
 
 /*  */
@@ -3718,7 +3718,7 @@
 
 
 /*  */
-"help.text.my_location.how" = "As with all four of the buttons at the bottom of the home screen, hold your phone with the screen flat (facing towards the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"My Location\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"My Location\"</em> button and listen.";
+"help.text.my_location.how" = "As with each of the four buttons at the bottom of the home screen, hold your phone with the screen flat (facing towards the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"My Location\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"My Location\"</em> button and listen.";
 
 
 /*  */
@@ -3730,7 +3730,7 @@
 
 
 /*  */
-"help.text.nearby_markers.how" = "As with all four of the buttons at the bottom of the home screen, hold your phone with the screen flat (facing towards the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"Nearby Markers\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"Nearby Markers\"</em> button and you will hear up to four markers near you.";
+"help.text.nearby_markers.how" = "As with each of the four buttons at the bottom of the home screen, hold your phone with the screen flat (facing towards the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"Nearby Markers\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"Nearby Markers\"</em> button and you will hear up to four markers near you.";
 
 
 /*  */
@@ -3742,7 +3742,7 @@
 
 
 /*  */
-"help.text.around_me.how" = "As with all four of the buttons at the bottom of the home screen, hold your phone with the screen flat (facing towards the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"Around Me\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"Around Me\"</em> button and you will hear four points of interest arranged around you.";
+"help.text.around_me.how" = "As with each of the four buttons at the bottom of the home screen, hold your phone with the screen flat (facing towards the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"Around Me\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"Around Me\"</em> button and you will hear four points of interest arranged around you.";
 
 
 /*  */
@@ -3754,11 +3754,11 @@
 
 
 /*  */
-"help.text.ahead_of_me.how" = "As with all four of the buttons at the bottom of the home screen, hold your phone with the screen flat (facing towards the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"Ahead of Me\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"Ahead of Me\"</em> button and you will hear several points of interest all roughly ahead of you.";
+"help.text.ahead_of_me.how" = "As with each of the four buttons at the bottom of the home screen, hold your phone with the screen flat (facing towards the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"Ahead of Me\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"Ahead of Me\"</em> button and you will hear several points of interest all roughly ahead of you.";
 
 
 /*  */
-"help.text.remote_control.what" = "You can access certain features in Soundscape with the help of the media control buttons on your headphones. This functionality works with any wired or Bluetooth headphones that have media control buttons like Play, Pause, Next, Previous and others. Different headphones may include different buttons so please refer to the list of actions below to determine which ones are available to you.<br>Also note that this feature only works with headphones that support Apple's media controls (such as play and pause).";
+"help.text.remote_control.what" = "You can access certain features in Soundscape with the media control buttons on your headphones. This functionality works with any wired or Bluetooth headphones that have media control buttons like Play, Pause, Next, Previous and others. Different headphones may include different buttons so please refer to the list of actions below to determine which ones are available to you.<br>Note that this feature only works with headphones that support Apple's media controls (such as play and pause).";
 
 
 /*  */
@@ -3774,7 +3774,7 @@
 
 
 /*  */
-"help.text.markers.content.2" = "You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. You can mark any place or address, but you can also mark things that might traditionally not be available in maps, for example, entrances to buildings or parks, push-to-walk buttons, pedestrian crossings or bridges, bus stops or even your dog’s favourite tree and use these as references along your walk.";
+"help.text.markers.content.2" = "You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. You can mark any place or address, but you can also mark things that aren't usually on maps, for example, entrances to buildings or parks, push-to-walk buttons, pedestrian crossings or bridges, bus stops or even your dog’s favourite tree and use these as references along your walk.";
 
 
 /*  */
@@ -4314,7 +4314,7 @@
 
 
 /*  */
-"faq.snooze_mode_battery.answer" = "To put Soundscape in Snooze Mode, select the \"Sleep\" button in the top right-hand corner of the home screen. Once Soundscape’s in Sleep mode, select the \"Wake up when I leave\" button and Soundscape will go in to a low power state until you leave your current location.";
+"faq.snooze_mode_battery.answer" = "To put Soundscape in Snooze Mode, select the \"Sleep\" button in the top right-hand corner of the home screen. Once Soundscape’s in Sleep mode, select the \"Wake up when I leave\" button and Soundscape will go into a low power state until you leave your current location.";
 
 
 /*  */
@@ -4330,7 +4330,7 @@
 
 
 /*  */
-"faq.background_battery_impact.answer" = "Soundscape uses Location Services to determine your location. In our tests, Soundscape does not consume any more battery than the average map application; but if you are concerned about your phone's battery consumption, the following are a few tips which will help lower usage:\n\n1. Turn the screen display off as much as possible when you are not interacting with the app.\n2. When not using the app, close it down. Soundscape uses location services continually when it is running so that it always knows your location, even when you are not moving. Don’t forget to restart the app when you resume your journey.\n3. In cold weather, keep your phone warm as batteries perform more poorly in colder temperatures.";
+"faq.background_battery_impact.answer" = "Soundscape uses Location Services to determine where you are. In our tests, Soundscape does not consume any more battery than the average map application; but if you are concerned about your phone's battery consumption, the following are a few tips which will help lower usage:\n\n1. Turn the screen display off as much as possible when you are not interacting with the app.\n2. When not using the app, close it down. Soundscape uses location services continually when it is running so that it always knows your location, even when you are not moving. Don’t forget to restart the app when you resume your journey.\n3. In cold weather, keep your phone warm as batteries perform more poorly in colder temperatures.";
 
 
 /*  */
@@ -4378,7 +4378,7 @@
 
 
 /*  */
-"faq.personalize_experience.answer" = "Soundscape allows you to customise three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from \"General Settings\" select Voice to adjust the Speaking Rate and Voice settings. Additional voices, including enhanced quality voices, can be downloaded in the iOS Settings app at Settings > Accessibility > Spoken Content > Voices.\n2. Distance Metric: Soundscape allows you to hear all distances in either feet or metres. From the Menu, select \"Settings\" and then from \"General Settings\" select \"Language & Region\". The Units of Measure section allows you to toggle between two options: Imperial (feet) and Metric (metres).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby Markers button at the bottom of the home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following VoiceOver settings can influence how Soundscape behaves:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the primary Soundscape screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts that occur as you are interacting with the phone. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the My Location, Around Me, and Ahead of Me buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
+"faq.personalize_experience.answer" = "Soundscape allows you to customise three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from \"General Settings\" select Voice to adjust the Speaking Rate and Voice settings. Additional voices, including enhanced quality voices, can be downloaded in the iOS Settings app at Settings > Accessibility > Spoken Content > Voices.\n2. Distance Metric: Soundscape allows you to hear all distances in either feet or metres. From the Menu, select \"Settings\" and then from \"General Settings\" select \"Language & Region\". The Units of Measure section allows you to toggle between two options: Imperial (feet) and Metric (metres).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the Nearby Markers button at the bottom of the home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following VoiceOver settings can influence how Soundscape behaves:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the main screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the My Location, Around Me, and Ahead of Me buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
 
 
 /*  */
@@ -4468,7 +4468,7 @@
 "help.using_headsets.bose_frames.how.1" = "<b>Connecting a Device</b>:<br/> Go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your Bose Frames and follow the instructions on screen. Note that you will need to pair your Bose Frames to your phone in the Bluetooth settings before connecting them in Soundscape.";
 "help.using_headsets.bose_frames.when" = "You can use Bose Frames with Soundscape anytime you would normally use Soundscape. Using Bose Frames provides you with high quality audio that does not occlude environmental audio and allows you to have a more hands-free experience.";
 "help.using_headsets.bose_frames.title" = "Using Bose Frames";
-"help.using_headsets.bose_frames.how.2" = "<b>Calibrating your Headphones</b>:<br/> Your Bose Frames will need to be calibrated to accurately know which way you are facing. Each time you connect them to Soundscape, you will be informed that calibration is needed by an audio chime. To calibrate your Bose Frames, follow the instructions provided on the screen. When the chime stops playing, Your Bose Frames are calibrated, and Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. You can also repeat this calibration at any time, even if the chime isn't playing, if you think the accuracy of your spatial audio is poor.";
+"help.using_headsets.bose_frames.how.2" = "<b>Calibrating your Headphones</b>:<br/> Your Bose Frames will need to be calibrated to accurately know which way you are facing. Each time you connect them to Soundscape, you will be informed that calibration is needed by an audio chime. To calibrate your Bose Frames, follow the instructions provided on the screen. When the chime stops playing, Your Bose Frames are calibrated, and Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. You can repeat this calibration at any time, even if the chime isn't playing, if you think the accuracy of your spatial audio is poor.";
 "help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
 "help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>Support for the Bose Frames is new and we would love to hear your feedback. You can contact us by choosing the \"Send Feedback\" Option in the menu.";
 "help.using_headsets.bose_frames.what" = "Soundscape supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. Once they're connected, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly.";
