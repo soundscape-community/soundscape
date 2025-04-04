@@ -54,7 +54,7 @@ async def import_non_osm_data_async(csv_dir, osm_dsn, logger):
         await cursor.execute("TRUNCATE non_osm_data")
 
         for csv_path in os.listdir(csv_dir):
-            with open(os.path.join(csv_dir, csv_path)) as f:
+            with open(os.path.join(csv_dir, csv_path), encoding="utf8") as f:
                 rowcount = 0
                 for row in csv.DictReader(f):
                     rowcount += 1

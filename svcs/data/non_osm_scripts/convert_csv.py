@@ -17,10 +17,10 @@ if __name__ == "__main__":
     parser.add_argument("output_csv")
     args = parser.parse_args()
 
-    with open(args.input_csv, newline="") as f:
+    with open(args.input_csv, encoding="utf8", newline="") as f:
         incsv = csv.DictReader(f)
 
-        with open(args.output_csv, "w", newline="") as f:
+        with open(args.output_csv, "w", encoding="utf8", newline="") as f:
             outcsv = csv.DictWriter(f, fieldnames=[
                 "feature_type",
                 "feature_value",
