@@ -59,7 +59,7 @@ enum CalloutRangeContext {
         switch category {
         case .objects, .safety:
             proximityRange = 20.0
-        case .places, .information, .mobility, .authoredActivity:
+        case .places, .information, .mobility, .navilens, .authoredActivity:
             proximityRange = 30.0
         case .landmarks:
             proximityRange = 100.0

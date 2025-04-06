@@ -479,8 +479,8 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
                            return false
                        }
                        
-                       // Don't do regular automatic callouts for POIs with the audio beacon set on them
-                       if spatialData.destinationManager.isDestination(key: poi.key) {
+                       // Don't do regular automatic callouts for POIs with the audio beacon set on them, unless it's a NaviLens target
+                       if spatialData.destinationManager.isDestination(key: poi.key) && poi.superCategory != "navilens" {
                            return false
                        }
                        

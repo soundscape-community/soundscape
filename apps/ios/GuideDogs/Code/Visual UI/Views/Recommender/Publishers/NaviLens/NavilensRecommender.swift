@@ -83,7 +83,7 @@ class NavilensRecommender: Recommender {
             return
         }
 
-        GDLogAppInfo(String(format: "Nearest NaviLens POI is %fm away", location.distance(from: first.centroidLocation)))
+        GDLogVerbose(.spatialData, String(format: "Nearest NaviLens POI is %fm away", location.distance(from: first.centroidLocation)))
 
         // Update the current value
         currentValue = {
