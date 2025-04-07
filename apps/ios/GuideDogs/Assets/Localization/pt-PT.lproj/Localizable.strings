@@ -1049,6 +1049,9 @@
 /*  */
 "location_detail.action.preview.hint.disabled" = "O Street Preview está desativado enquanto a orientação de rotas está ativa";
 
+/*  */
+"navilens.title" = "Iniciar NaviLens";
+
 
 /*  */
 "location_detail.action.directions.hint" = "Faça duplo toque para abrir esta localização numa aplicação de mapas externa";
@@ -2496,6 +2499,9 @@
 
 /*  */
 "directions.name_distance" = "%1$@, a %2$@";
+
+/*  */
+"directions.navilens_available" = "NaviLens disponível";
 
 
 /*  */

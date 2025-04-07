@@ -1051,6 +1051,10 @@
 
 
 /*  */
+"navilens.title" = "Iniciar NaviLens";
+
+
+/*  */
 "location_detail.action.directions.hint" = "Dê um toque duplo para abrir esta localização em um aplicativo de mapas externo";
 
 
@@ -2496,6 +2500,9 @@
 
 /*  */
 "directions.name_distance" = "%1$@, %2$@";
+
+/*  */
+"directions.navilens_available" = "NaviLens disponível";
 
 
 /*  */
