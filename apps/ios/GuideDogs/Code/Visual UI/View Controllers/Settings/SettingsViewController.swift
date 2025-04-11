@@ -1,4 +1,4 @@
-
+//
 //  SettingsViewController.swift
 //  Soundscape
 //
@@ -48,9 +48,7 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: 0, section: Section.streetPreview.rawValue): "streetPreview",
         IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
         IndexPath(row: 0, section: Section.about.rawValue): "about",
-        IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry",
-        IndexPath(row: 6, section: Section.general.rawValue): "autoUnmute"
-
+        IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
     ]
     
     private static let collapsibleCalloutIndexPaths: [IndexPath] = [
@@ -87,7 +85,7 @@ class SettingsViewController: BaseTableViewController {
         GDATelemetry.trackScreenView("settings")
 
         self.title = GDLocalizedString("settings.screen_title")
-        expandedSections = [] 
+        expandedSections = [] // Initialize or reset expanded sections
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -98,7 +96,7 @@ class SettingsViewController: BaseTableViewController {
         guard let sectionType = Section(rawValue: section) else { return 0 }
         
         switch sectionType {
-        case .general: return expandedSections.contains(section) ? 7 : 0
+        case .general: return expandedSections.contains(section) ? 6 : 0
         case .audio: return expandedSections.contains(section) ? 1 : 0
         case .callouts:
             return SettingsContext.shared.automaticCalloutsEnabled && expandedSections.contains(section) ? 5 : 0
@@ -113,7 +111,7 @@ class SettingsViewController: BaseTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard expandedSections.contains(indexPath.section) else {
-            return UITableViewCell()
+            return UITableViewCell() // Return an empty cell if the section is not expanded
         }
         
         let identifier = SettingsViewController.cellIdentifiers[indexPath]
@@ -129,41 +127,24 @@ class SettingsViewController: BaseTableViewController {
         default:
             break
         }
-        if identifier == "autoUnmute" {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "autoUnmute", for: indexPath)
-            cell.textLabel?.text = GDLocalizedString("settings.beacon.auto_unmute")
-            
-            let toggle = UISwitch()
-            toggle.isOn = SettingsContext.shared.autoUnmuteEnabled
-            toggle.addTarget(self, action: #selector(autoUnmuteToggled(_:)), for: .valueChanged)
-            cell.accessoryView = toggle
-            cell.selectionStyle = .none
-            return cell
-        }
         
         return cell
     }
-    
-    @objc private func autoUnmuteToggled(_ sender: UISwitch) {
-        SettingsContext.shared.autoUnmuteEnabled = sender.isOn
-        GDATelemetry.track("settings.auto_unmute_changed", with: ["enabled": "\(sender.isOn)"])
-    }
-
     
     private func configureCalloutCell(_ cell: CalloutSettingsCellView, at indexPath: IndexPath) {
         cell.delegate = self
         if let rowType = CalloutsRow(rawValue: indexPath.row) {
             switch rowType {
             case .all:
-                cell.type = .all
+                cell.type = .all // Ensure this matches with your CalloutSettingCellType
             case .poi:
-                cell.type = .poi
+                cell.type = .poi // Ensure this matches with your CalloutSettingCellType
             case .mobility:
-                cell.type = .mobility
+                cell.type = .mobility // Ensure this matches with your CalloutSettingCellType
             case .beacon:
-                cell.type = .beacon
+                cell.type = .beacon // Ensure this matches with your CalloutSettingCellType
             case .shake:
-                cell.type = .shake
+                cell.type = .shake // Ensure this matches with your CalloutSettingCellType
             }
         }
     }
@@ -186,7 +167,7 @@ class SettingsViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         guard let sectionType = Section(rawValue: section) else { return nil }
 
-        
+        // Return description for expanded sections
         if expandedSections.contains(section) {
             return SettingsViewController.sectionDescriptions[sectionType]
         }
@@ -202,38 +183,37 @@ class SettingsViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let header = view as? UITableViewHeaderFooterView else { return }
         header.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleHeaderTap(_:))))
-        header.tag = section
+        header.tag = section // Set the tag to identify the section
 
-       
-        header.textLabel?.textColor = .white
-        header.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        // Customize header title
+        header.textLabel?.textColor = .white // Change header text color to white for contrast
+        header.textLabel?.font = UIFont.boldSystemFont(ofSize: 18) // Make the text bold
 
-       
-        header.contentView.backgroundColor = UIColor(named: "HeaderBackgroundColor")
-        header.layer.borderColor = UIColor.clear.cgColor
-        header.layer.borderWidth = 0.0
-        header.layer.cornerRadius = 8.0
-        header.layer.masksToBounds = true
+        // Customize header appearance
+        header.contentView.backgroundColor = UIColor(named: "HeaderBackgroundColor") // Set a custom darker color
+        header.layer.borderColor = UIColor.clear.cgColor // Optional: set border color
+        header.layer.borderWidth = 0.0 // Optional: border width
+        header.layer.cornerRadius = 8.0 // Set rounded corners
+        header.layer.masksToBounds = true // Clip content to rounded corners
         
-      
+        // Optional: Add some padding
         header.contentView.layoutMargins = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
         
-        /*
-        let chevronImageView = UIImageView(image: UIImage(systemName: "chevron.right"))
-        chevronImageView.tintColor = .white
+        // Add chevron icon
+        let chevronImageView = UIImageView(image: UIImage(systemName: "chevron.right")) // Use system image
+        chevronImageView.tintColor = .white // Set the color for the arrow
         chevronImageView.translatesAutoresizingMaskIntoConstraints = false
         
-       
+        // Add chevron to header
         header.contentView.addSubview(chevronImageView)
 
-        
+        // Set up constraints for chevron
         NSLayoutConstraint.activate([
             chevronImageView.trailingAnchor.constraint(equalTo: header.contentView.trailingAnchor, constant: -15),
             chevronImageView.centerYAnchor.constraint(equalTo: header.contentView.centerYAnchor),
             chevronImageView.widthAnchor.constraint(equalToConstant: 20),
             chevronImageView.heightAnchor.constraint(equalToConstant: 20)
         ])
-         */
     }
 
     @objc private func handleHeaderTap(_ gesture: UITapGestureRecognizer) {
