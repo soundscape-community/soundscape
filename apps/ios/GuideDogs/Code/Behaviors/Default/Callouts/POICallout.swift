@@ -171,8 +171,9 @@ struct POICallout: POICalloutProtocol {
             sounds.append(TTSSound(formattedName, at: soundLocation))
         }
         
-        // Announce "NaviLens available" for NaviLens-enabled locations
-        if poi.superCategory == "navilens" {
+        // Announce "NaviLens available" for NaviLens-enabled locations,
+        // unless NaviLens is already in the name
+        if poi.superCategory == "navilens" && !name.lowercased().contains("navilens") {
             sounds.append(TTSSound(GDLocalizedString("directions.navilens_available"), at: soundLocation))
         }
         
