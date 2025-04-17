@@ -39,7 +39,7 @@ struct RecommenderContainerView<Content: View>: View {
         .padding(.horizontal, 18.0)
         .padding(.vertical, 12.0)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .linearGradientBackground(.purple)
+        .linearGradientBackground(.blue)
         .accessibilityElement(children: .combine)
     }
     
