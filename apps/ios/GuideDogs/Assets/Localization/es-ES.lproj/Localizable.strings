@@ -4444,7 +4444,6 @@
 "whats_new.1_3_0.1.description" = "Si vives en las áreas de Austin o San Antonio en Texas y deseas ayudarnos a probar una función en la que estamos trabajando con NaviLens, comuníquate con nosotros a través del botón Enviar comentarios del menú principal.";
 "whats_new.1_3_0.1.title" = "Prueba en Texas";
 "location_detail.action.navilens.hint" = "Pulsa dos veces para iniciar NaviLens.";
-"navilens.title" = "Iniciar NaviLens";
 "troubleshooting.tile_server_url" = "URL del servidor de teselas";
 "troubleshooting.tile_server_url.explanation" = "Este es el servidor desde el que Soundscape obtiene los datos de mapas. Normalmente no debes cambiar este a menos que estés desarrollando o probando Soundscape.";
 "route_detail.action.start_reversed_route.hint" = "Pulsa dos veces para iniciar esta ruta de regreso.";

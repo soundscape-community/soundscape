@@ -19,10 +19,10 @@ struct NavilensRecommenderView: View {
     // MARK: Body
     
     var body: some View {
-        Button(action: launchNaviLens, label: {
+        Button(action: { safeGuideToNaviLens(poi: poi) }, label: {
             RecommenderContainerView {
                 VStack(alignment: .leading, spacing: 4.0) {
-                    GDLocalizedTextView("navilens.title")
+                    GDLocalizedTextView("location_detail.action.beacon_or_navilens")
                         .font(.body)
 
                     Text(poi.localizedName)

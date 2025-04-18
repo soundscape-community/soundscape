@@ -348,7 +348,10 @@ extension SearchTableViewController: LocationActionDelegate {
                         self.present(firstUseAlert, animated: true, completion: nil)
                     }
                 case .navilens:
-                    launchNaviLens()
+                    // Set a beacon on the given location
+                    // and segue to the home view
+                    try guideToNaviLens(detail: detail)
+                    self.navigationController?.popToRootViewController(animated: true)
                 }
             } catch let error as LocationActionError {
                 let alert = LocationActionAlert.alert(for: error)

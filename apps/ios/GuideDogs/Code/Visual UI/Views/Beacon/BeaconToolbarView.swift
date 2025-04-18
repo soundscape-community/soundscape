@@ -135,7 +135,9 @@ struct BeaconToolbarView: View {
 
             // Launch NaviLens (applies to both beacon and route waypoint)
             if beacon.locationDetail.source.hasNaviLens {
-                Button(action: launchNaviLens, label: {
+                Button(action: {
+                        launchNaviLens(detail: beacon.locationDetail)
+                    }, label: {
                     Image("navilens")
                         .renderingMode(.template)
                         .resizable()
@@ -145,7 +147,7 @@ struct BeaconToolbarView: View {
 
                 })
                 .foregroundColor(.white)
-                .accessibilityLabel(GDLocalizedTextView("navilens.title"))
+                .accessibilityLabel(GDLocalizedTextView("location_detail.action.navilens.hint"))
             }
             
             Spacer()

@@ -885,8 +885,14 @@
 /* Title for the action to set a beacon */
 "location_detail.action.beacon" = "Start Audio Beacon";
 
+/* Text label for the action to start audio beacon at a NaviLens-enabled location */
+"location_detail.action.beacon_or_navilens" = "Start NaviLens or Audio Beacon";
+
 /* Voiceover hint for the action to set a beacon */
 "location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location.";
+
+/* Voiceover hint for the action to set a beacon or launch NaviLens */
+"location_detail.action.beacon_or_navilens.hint" = "Double tap to launch NaviLens or set an audio beacon, based on how close this location is.";
 
 /* Text displayed when audio beacon action is disabled */
 "location_detail.action.beacon.hint.disabled" = "Setting a new audio beacon is disabled while route guidance is active.";
@@ -905,9 +911,6 @@
 
 /* Text displayed when street preview is disabled */
 "location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active.";
-
-/* Text label for the action to launch NaviLens */
-"navilens.title" = "Launch NaviLens";
 
 /* Voiceover hint for the action to launch NaviLens */
 "location_detail.action.navilens.hint" = "Double tap to launch NaviLens.";
