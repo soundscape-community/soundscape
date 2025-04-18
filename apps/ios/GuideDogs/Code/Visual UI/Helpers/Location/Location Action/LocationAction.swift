@@ -31,18 +31,19 @@ enum LocationAction {
     }
     
     static func actions(for detail: LocationDetail) -> [LocationAction] {
-        var result: [LocationAction]
+        var result: [LocationAction] = [.beacon]
+        if detail.source.hasNaviLens {
+            // NaviLens action replaces beacon action
+            result = [.navilens]
+        }
         if detail.isMarker {
-            result = [.beacon, .edit, .preview, .share(isEnabled: true)]
+            result += [.edit, .preview, .share(isEnabled: true)]
         } else {
             // If the location does not have a backup coordinate
             // disable the save and share actions
             let isEnabled = detail.source.isCachingEnabled
             
-            result =  [.beacon, .save(isEnabled: isEnabled), .preview, .share(isEnabled: isEnabled)]
-        }
-        if detail.source.hasNaviLens {
-            result += [.navilens]
+            result +=  [.save(isEnabled: isEnabled), .preview, .share(isEnabled: isEnabled)]
         }
         return result
     }
@@ -75,7 +76,7 @@ enum LocationAction {
         case .beacon: return GDLocalizedString("location_detail.action.beacon")
         case .preview: return GDLocalizedString("preview.title")
         case .share: return GDLocalizedString("share.title")
-        case .navilens: return GDLocalizedString("navilens.title")
+        case .navilens: return GDLocalizedString("location_detail.action.beacon_or_navilens")
         }
     }
     
@@ -86,7 +87,7 @@ enum LocationAction {
         case .beacon: return isEnabled ? GDLocalizedString("location_detail.action.beacon.hint") : GDLocalizedString("location_detail.action.beacon.hint.disabled")
         case .preview: return isEnabled ? GDLocalizedString("location_detail.action.preview.hint") : GDLocalizedString("location_detail.action.preview.hint.disabled")
         case .share(let isEnabled): return isEnabled ? GDLocalizedString("location_detail.action.share.hint") : GDLocalizedString("location_detail.disabled.share")
-        case .navilens: return GDLocalizedString("location_detail.action.navilens.hint")
+        case .navilens: return GDLocalizedString("location_detail.action.beacon_or_navilens.hint")
         }
     }
     

@@ -817,6 +817,10 @@
 
 
 /*  */
+"beacon.suggest_navilens" = "Launch NaviLens for additional guidance.";
+
+
+/*  */
 "preview.title" = "Soundscape Street Preview";
 
 
@@ -1023,6 +1027,8 @@
 /*  */
 "location_detail.action.beacon" = "Start Audio Beacon";
 
+/*  */
+"location_detail.action.beacon_or_navilens" = "Start NaviLens or Audio Beacon";
 
 /*  */
 "location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location.";
@@ -4477,6 +4483,6 @@
 "whats_new.1_3_0.1.title" = "Testing in Texas";
 "whats_new.1_3_0.1.description" = "If you live in the Austin or San Antonio areas in Texas and would like to help us test a feature we are working on with NaviLens, please get in touch via the Send Feedback button from the main menu.";
 "location_detail.action.navilens.hint" = "Double tap to launch NaviLens.";
-"navilens.title" = "Launch NaviLens";
+"location_detail.action.beacon_or_navilens.hint" = "Double tap to launch NaviLens or set an audio beacon, based on how close this location is.";
 "troubleshooting.tile_server_url.explanation" = "This is the server from which Soundscape retrieves map data. You normally should not need to change this unless you are developing or testing Soundscape.";
 "troubleshooting.tile_server_url" = "Tile Server URL";

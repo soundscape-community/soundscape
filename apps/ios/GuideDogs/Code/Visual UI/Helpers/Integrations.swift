@@ -6,7 +6,7 @@
 //  Copyright © 2025 Soundscape community. All rights reserved.
 //
 
-func launchNaviLens() {
+func launchNaviLens(detail: LocationDetail) {
     // Launch NaviLens app, or open App Store listing if not installed
     let navilensUrl = URL(string: "navilens://")!
     let appStoreUrl = URL(string: "https://apps.apple.com/us/app/navilens/id1273704914")!
@@ -14,5 +14,30 @@ func launchNaviLens() {
         UIApplication.shared.open(navilensUrl)
     } else {
         UIApplication.shared.open(appStoreUrl)
+    }
+}
+
+func guideToNaviLens(detail: LocationDetail) throws {
+    // Launch NaviLens if close enough, otherwise start beacon
+    guard let location = AppContext.shared.geolocationManager.location else {
+        // Location is unknown
+        return launchNaviLens(detail: detail)
+    }
+
+    // If our GPS is more precise than we are close, use a beacon
+    if location.distance(from: detail.location) > location.horizontalAccuracy {
+        try LocationActionHandler.beacon(locationDetail: detail)
+    } else {
+        launchNaviLens(detail: detail)
+    }
+}
+
+func safeGuideToNaviLens(poi: POI) {
+    // Launch NaviLens if starting a beacon throws an error
+    let detail = LocationDetail(entity: poi)
+    do {
+        try guideToNaviLens(detail: detail)
+    } catch {
+        launchNaviLens(detail: detail)
     }
 }
