@@ -91,7 +91,12 @@ struct DestinationCallout: POICalloutProtocol {
             // Inform the user why the audio beacon has stopped
             if causedAudioDisabled {
                 let earcon = GlyphSound(.beaconFound)
-                let tts = TTSSound(GDLocalizedString("beacon.beacon_location_within_audio_beacon_muted", formattedDistance), at: markerLocation)
+                var text = GDLocalizedString("beacon.beacon_location_within_audio_beacon_muted", formattedDistance)
+                // Append suggestion to launch NaviLens if available at location
+                if (poi != nil) && LocationDetail(entity: poi!).source.hasNaviLens {
+                    text += " " + GDLocalizedString("beacon.suggest_navilens")
+                }
+                let tts = TTSSound(text, at: markerLocation)
                 
                 guard let layered = LayeredSound(earcon, tts) else {
                     return Sounds([earcon, tts])

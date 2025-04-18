@@ -817,6 +817,10 @@
 
 
 /*  */
+"beacon.suggest_navilens" = "Launch NaviLens for additional guidance.";
+
+
+/*  */
 "preview.title" = "Soundscape Street Preview";
 
 

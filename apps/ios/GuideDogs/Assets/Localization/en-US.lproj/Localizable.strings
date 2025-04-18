@@ -721,6 +721,9 @@
 /* Notification, Beacon location nearby. Audio beacon has been muted. */
 "beacon.beacon_location_within_audio_beacon_muted" = "Beacon within %@. Audio beacon has been muted.";
 
+/* Suggest the user launch NaviLens for the remaining distance. Appended to beacon.beacon_location_within_audio_beacon_muted. */
+"beacon.suggest_navilens" = "Launch NaviLens for additional guidance.";
+
 //------------------------------------------------------------------------------
 // MARK: - Preview
 //------------------------------------------------------------------------------
