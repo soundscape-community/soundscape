@@ -1,3 +1,15 @@
+# Usage:
+#   python visualize_tiles_map_v2.py tiles.log.json
+#
+# Options:
+#   output        (optional) Output HTML filename, default: tiles_map_v2.html
+#   min_radius    (optional) Minimum circle radius, default: 3
+#   max_radius    (optional) Maximum circle radius, default: 15
+#
+# Example:
+#   python visualize_tiles_map_v2.py tiles.log.json output mymap.html min_radius 4 max_radius 10
+
+
 import json
 import math
 import pandas as pd
@@ -15,9 +27,9 @@ def num2deg(xtile, ytile, zoom):
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Visualize tile request log as interactive map.")
 parser.add_argument("json_file", help="Path to tile log JSON file")
-parser.add_argument("--output", default="tiles_map_v2.html", help="Output HTML map file name")
-parser.add_argument("--min_radius", type=int, default=3, help="Minimum marker radius")
-parser.add_argument("--max_radius", type=int, default=15, help="Maximum marker radius")
+parser.add_argument("output", default="tiles_map_v2.html", help="Output HTML map file name")
+parser.add_argument("min_radius", type=int, default=3, help="Minimum marker radius")
+parser.add_argument("max_radius", type=int, default=15, help="Maximum marker radius")
 args = parser.parse_args()
 
 # Read and parse JSON file
