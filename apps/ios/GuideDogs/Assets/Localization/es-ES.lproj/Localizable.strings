@@ -163,7 +163,7 @@
 
 
 /*  */
-"general.alert.offline_search.message" = "Cuando Soundscape funciona sin conexión, la búsqueda está desactivada. Descartar para volver a la pantalla anterior";
+"general.alert.offline_search.message" = "Cuando Soundscape funciona sin conexión, la búsqueda está deshabilitada. Descartar para volver a la pantalla anterior";
 
 
 /*  */
@@ -179,7 +179,7 @@
 
 
 /*  */
-"general.loading.end" = "Limpiando…";
+"general.loading.end" = "Poniendo todo en orden…";
 
 
 /*  */
@@ -231,19 +231,19 @@
 
 
 /*  */
-"general.error.location_services" = "Activar los servicios de localización para utilizar Soundscape";
+"general.error.location_services" = "Activar Localización para usar Soundscape";
 
 
 /*  */
-"general.error.precise_location" = "Activar la ubicación precisa para utilizar Soundscape";
+"general.error.precise_location" = "Activar Ubicación exacta para usar Soundscape";
 
 
 /*  */
-"general.error.location_services.authorize.title" = "Permitir servicios de localización";
+"general.error.location_services.authorize.title" = "Autorizar Localización";
 
 
 /*  */
-"general.error.location_services.authorize.description" = "Soundscape usa tu ubicación para encontrar e informarte sobre los lugares y cosas que te rodean. La aplicación debe tener tu permiso para utilizar los servicios de localización.";
+"general.error.location_services.authorize.description" = "Soundscape usa tu ubicación para encontrar e informarte sobre los lugares y cosas de tu entorno. La aplicación necesita tu permiso para usar la localización.";
 
 
 /*  */
@@ -255,23 +255,23 @@
 
 
 /*  */
-"general.error.location_services_resume" = "Abre Soundscape para reanudar servicios de localización";
+"general.error.location_services_resume" = "Abre Soundscape para reanudar la localización";
 
 
 /*  */
-"general.error.location_services_enable" = "Activar servicios de localización";
+"general.error.location_services_enable" = "Habilitar Localización";
 
 
 /*  */
-"general.error.location_services_enable_description" = "Los servicios de localización están desactivados actualmente. Soundscape no puede funcionar cuando Localización está desactivada.";
+"general.error.location_services_enable_description" = "La localización está deshabilitada actualmente. Soundscape no puede funcionar cuando la localización está desactivada.";
 
 
 /*  */
-"general.error.location_services_enable_instructions.2" = "Activa los servicios de localización en la aplicación Ajustes para continuar.\n\n1. Presiona el botón Atrás (en Ajustes)\n2. Selecciona Privacidad y seguridad\n3. Selecciona Localización \n4. Activa Localización";
+"general.error.location_services_enable_instructions.2" = "Activa Localización en la aplicación Ajustes para continuar.\n\n1. Presiona el botón Atrás (en Ajustes)\n2. Selecciona Privacidad y seguridad\n3. Selecciona Localización \n4. Activa Localización";
 
 
 /*  */
-"general.error.location_services_enable_instructions.3" = "Activa los servicios de localización en la aplicación Ajustes para continuar.\n\n1. Presiona Abrir Ajustes\n2. Presiona el botón atrás (con el título Ajustes)\n3. Selecciona Privacidad y seguridad\n4. Selecciona Localización\n5. Activa Localización";
+"general.error.location_services_enable_instructions.3" = "Activa Localización en la aplicación Ajustes para continuar.\n\n1. Presiona Abrir Ajustes\n2. Presiona el botón atrás (con el título Ajustes)\n3. Selecciona Privacidad y seguridad\n4. Selecciona Localización\n5. Activa Localización";
 
 
 /*  */
@@ -283,7 +283,7 @@
 
 
 /*  */
-"general.error.location_services_find_location_error.try_again" = "Estamos teniendo problemas para encontrar tu ubicación actual. Vuelve a intentarlo más tarde.";
+"general.error.location_services_find_location_error.try_again" = "Tenemos problemas para encontrar tu ubicación actual. Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -327,11 +327,11 @@
 
 
 /*  */
-"device_motion.enable.title" = "Activar el seguimiento de Actividad física";
+"device_motion.enable.title" = "Habilitar el seguimiento de Actividad física";
 
 
 /*  */
-"device_motion.enable.description" = "El seguimiento de Actividad física está desactivado actualmente. Soundscape no puede funcionar cuando el seguimiento de Actividad física está desactivado.";
+"device_motion.enable.description" = "El seguimiento de Actividad física está deshabilitado actualmente. Soundscape no puede funcionar cuando el seguimiento de Actividad física está desactivado.";
 
 
 /*  */
@@ -359,7 +359,7 @@
 
 
 /*  */
-"settings.clear_cache.alert_message" = "Soundscape almacena datos de mapas para reducir los datos y el consumo de la batería. La eliminación de los datos almacenados requerirá que Soundscape vuelva a cargar los datos.";
+"settings.clear_cache.alert_message" = "Soundscape almacena datos de mapas para reducir el uso de datos móviles y el consumo de la batería. La eliminación de los datos almacenados requerirá que Soundscape vuelva a cargar los datos.";
 
 
 /*  */
@@ -367,7 +367,7 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Selecciona \"Eliminar\" para eliminar los marcadores, señales y rutas, o \"Mantener\" para eliminar únicamente los datos del mapa.¡ \"Eliminar\" restablecerá la aplicación a su estado original y no se puede deshacer!";
+"settings.clear_cache.markers.alert_message" = "Selecciona \"Eliminar\" para eliminar los marcadores, señales y rutas, o \"Mantener\" para eliminar únicamente los datos del mapa. ¡\"Eliminar\" restablecerá la aplicación a su estado original y no se puede deshacer!";
 
 
 /*  */
@@ -375,11 +375,11 @@
 
 
 /*  */
-"settings.clear_cache.no_service.message" = "Soundscape no puede conectarse a internet. Se requiere una conexión a Internet para borrar los datos del mapa almacenados, para que los datos del mapa puedan actualizarse.";
+"settings.clear_cache.no_service.message" = "Soundscape actualmente no puede conectarse a internet. Se requiere una conexión a Internet para borrar los datos del mapa almacenados, para que los datos puedan actualizarse.";
 
 
 /*  */
-"settings.telemetry.optout.alert_title" = "Desactivar telemetría";
+"settings.telemetry.optout.alert_title" = "Rechazo de telemetría";
 
 
 /*  */
@@ -483,11 +483,11 @@
 
 
 /*  */
-"settings.audio.mix_with_others.title" = "Activar controles multimedia";
+"settings.audio.mix_with_others.title" = "Habilitar controles multimedia";
 
 
 /*  */
-"settings.audio.mix_with_others.description" = "Usa esta opción para activar el control de Soundscape con los botones de los auriculares y los botones de reproducción multimedia de la pantalla de bloqueo. Ten en cuenta que cuando está activada, no se puede usar Soundscape mientras se reproducen otros medios como podcasts o música.";
+"settings.audio.mix_with_others.description" = "Usa esta opción para habilitar el control de Soundscape con los botones de los auriculares y los botones de reproducción multimedia de la pantalla de bloqueo. Ten en cuenta que cuando está activada, no se puede usar Soundscape mientras se reproducen otros medios como podcasts o música.";
 
 
 /*  */
@@ -595,11 +595,11 @@
 
 
 /*  */
-"beacon.settings.melodies" = "Activar indicaciones de salida y llegada";
+"beacon.settings.melodies" = "Habilitar indicaciones de salida y llegada";
 
 
 /*  */
-"beacon.settings.explanation" = "Selecciona un estilo de señal que resulte cómodo en los oídos y que se escuche fácilmente al aire libre y en entornos ruidosos. Asegúrate de que puedes determinar con facilidad tu dirección a través de tu dispositivo de escucha preferido (auriculares o altavoz del teléfono).";
+"beacon.settings.explanation" = "Selecciona un estilo de señal que sea cómodo de escuchar y que se oiga fácilmente al aire libre y en entornos ruidosos. Asegúrate de que puedes determinar con facilidad su dirección a través de tu dispositivo de escucha preferido (auriculares o altavoz del teléfono).";
 
 
 /*  */
@@ -611,11 +611,11 @@
 
 
 /*  */
-"troubleshooting.gps_status.explanation.meters" = "Este valor es una estimación de la precisión con la que Soundscape sabe dónde te encuentras. Menos de ±10 metros es una buena distancia. Menos de ±20 metros es una distancia satisfactoria. Todas las distancias que sean superiores serán insuficientes. Los datos de ubicación tienen la máxima precisión cuando el usuario se encuentra en el exterior y no debajo de estructuras.";
+"troubleshooting.gps_status.explanation.meters" = "Este valor es una estimación de la precisión con la que Soundscape sabe dónde te encuentras. Menos de ±10 metros es una buena distancia. Menos de ±20 metros es una distancia aceptable. Más de ±20 metros necesita ser recalculado. Los datos de ubicación son más precisos cuando estás afuera y no debajo de ninguna estructura.";
 
 
 /*  */
-"troubleshooting.gps_status.explanation.feet" = "Este valor es una estimación de la precisión con la que Soundscape sabe dónde te encuentras. Menos de ±30 pies es una buena distancia. Menos de ±60 pies es una distancia satisfactoria. Todas las distancias que sean superiores serán insuficientes. Los datos de ubicación tienen la máxima precisión cuando el usuario se encuentra en el exterior y no debajo de estructuras.";
+"troubleshooting.gps_status.explanation.feet" = "Este valor es una estimación de la precisión con la que Soundscape sabe dónde te encuentras. Menos de ±30 pies es una buena distancia. Menos de ±60 pies es una distancia aceptable. Más de ±60 pies necesita ser recalculado. Los datos de ubicación son más precisos cuando estás afuera y no debajo de ninguna estructura.";
 
 
 /*  */
@@ -631,7 +631,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.hint" = "Pulsa dos veces para comprobar el estado de los auriculares que usas con Soundscape.";
+"troubleshooting.check_audio.hint" = "Pulsa dos veces para comprobar el estado de los auriculares.";
 
 
 /*  */
@@ -647,7 +647,7 @@
 
 
 /*  */
-"troubleshooting.cache.explanation" = "Soundscape descarga datos de mapas conforme camina para poder indicarte los elementos y lugares que tienes a tu alrededor. Si tienes problemas con Soundscape o consume demasiada memoria, puedes borrar los datos de mapas almacenados y Soundscape solo volverá a descargar los datos de mapas que se encuentran cerca de tu ubicación actual.";
+"troubleshooting.cache.explanation" = "Soundscape descarga datos de mapas conforme caminas para poder indicarte los elementos y lugares a tu alrededor. Si tienes problemas con Soundscape o consume demasiada memoria, puedes borrar los datos de mapas almacenados y Soundscape solo volverá a descargar los datos de mapas que se encuentran cerca de tu ubicación actual.";
 
 
 /*  */
@@ -1027,7 +1027,7 @@
 
 
 /*  */
-"location_detail.action.beacon.hint.disabled" = "El ajuste de una nueva señal de audio está desactivado mientras la guía de ruta está activa.";
+"location_detail.action.beacon.hint.disabled" = "Establecer una nueva señal de audio está deshabilitado mientras la guía de ruta está activa.";
 
 
 /*  */
@@ -1067,11 +1067,11 @@
 
 
 /*  */
-"location_detail.disabled.save" = "La operación de guardar un marcador en esta ubicación no está actualmente disponible";
+"location_detail.disabled.save" = "Guardar un marcador en esta ubicación no está actualmente disponible";
 
 
 /*  */
-"location_detail.disabled.share" = "La operación de compartir esta ubicación no está actualmente disponible";
+"location_detail.disabled.share" = "Compartir esta ubicación no está actualmente disponible";
 
 
 /*  */
@@ -1255,11 +1255,11 @@
 
 
 /*  */
-"route.end.completed" = "Ruta completada.・%@";
+"route.end.completed" = "¡Ruta completada!・%@";
 
 
 /*  */
-"route.end.completed.accessibility" = "Ruta completada. %@";
+"route.end.completed.accessibility" = "¡Ruta completada! %@";
 
 
 /*  */
@@ -1367,7 +1367,7 @@
 
 
 /*  */
-"route.update.fail.title" = "Error al actualizar";
+"route.update.fail.title" = "Falla de actualizar";
 
 
 /*  */
@@ -1499,7 +1499,7 @@
 
 
 /*  */
-"universal_links.marker.share.message" = "He compartido un marcador de Soundscape contigo. \"%@\"";
+"universal_links.marker.share.message" = "¡He compartido un marcador de Soundscape contigo! \"%@\"";
 
 
 /*  */
@@ -1543,7 +1543,7 @@
 
 
 /*  */
-"url_resource.alert.route.share.message" = "He compartido una ruta de Soundscape contigo. \"%@\"";
+"url_resource.alert.route.share.message" = "¡He compartido una ruta de Soundscape contigo! \"%@\"";
 
 
 /*  */
@@ -1607,7 +1607,7 @@
 
 
 /*  */
-"routes.tutorial.details" = "Ahora volverás a la página de inicio de Soundscape y se colocará una señal de audio en tu primer punto de ruta. Cuando llegues al primer punto de ruta, la señal avanzará al siguiente punto de ruta.";
+"routes.tutorial.details" = "Ahora volverás a la pantalla de inicio de Soundscape y se colocará una señal de audio en tu primer punto de ruta. Cuando llegues al primer punto de ruta, la señal avanzará al siguiente punto de ruta.";
 
 
 /*  */
@@ -1815,7 +1815,7 @@
 
 
 /*  */
-"search.button.current_location.accessibility_hint" = "Pulsa dos veces para previsualizar, marcar o compartir tu ubicación actual con un amigo.";
+"search.button.current_location.accessibility_hint" = "Pulsa dos veces para obtener una vista previa, marcar o compartir tu ubicación actual con un amigo.";
 
 
 /*  */
@@ -1867,7 +1867,7 @@
 
 
 /*  */
-"filter.not_available" = "Algunos filtros de categoría no están disponibles. Todavía puedes buscar lugares cercanos seleccionando \"%@\".";
+"filter.not_available" = "Algunos filtros de categoría no están disponibles. Todavía puedes examinar lugares cercanos seleccionando \"%@\".";
 
 
 /*  */
@@ -1979,11 +1979,11 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Usa Servicios de localización, pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa en el botón siguiente para reactivar ahora.";
+"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Esto usa Localización pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa en el botón siguiente para reactivar ahora.";
 
 
 /*  */
-"sleep.sleeping.message" = "Soundscape se encuentra actualmente en el modo de suspensión. Evita que Soundscape use Servicios de localización o descargue datos y ahorra energía de la batería cuando no se usa Soundscape. Pulsa en el botón siguiente para reactivar Soundscape.";
+"sleep.sleeping.message" = "Soundscape se encuentra actualmente en modo de suspensión. Esto evita que Soundscape use Localización o descargue datos. Esto ahorra batería cuando no se usa Soundscape. Pulsa en el botón siguiente para reactivar Soundscape.";
 
 
 /*  */
@@ -2083,7 +2083,7 @@
 
 
 /*  */
-"directions.nearest_road_name_is_distance" = "La carretera más cercana, %1$@, está a %2$@ de distancia";
+"directions.nearest_road_name_is_distance" = "Carretera más cercana, %1$@, está a %2$@ de distancia";
 
 
 /*  */
@@ -2570,7 +2570,7 @@
 
 
 /*  */
-"ui.action_button.around_me.acc_hint" = "Pulsa dos veces para oír hablar de los lugares de los cuatro cuadrantes que te rodean.";
+"ui.action_button.around_me.acc_hint" = "Pulsa dos veces para oír hablar de los lugares en los cuatro cuadrantes que te rodean.";
 
 
 /*  */
@@ -2578,7 +2578,7 @@
 
 
 /*  */
-"ui.action_button.ahead_of_me.acc_hint" = "Pulsa dos veces para oír hablar de los lugares delante de ti.";
+"ui.action_button.ahead_of_me.acc_hint" = "Pulsa dos veces para oír hablar de los lugares que se encuentran delante.";
 
 
 /*  */
@@ -2650,7 +2650,7 @@
 
 
 /*  */
-"poi_screen.loading_title.finding_error" = "Tenemos problemas para encontrar los lugares cercanos. Vuelve a intentarlo más tarde.";
+"poi_screen.loading_title.finding_error" = "¡Ay! Tenemos problemas para encontrar los lugares cercanos. Vuelve a intentarlo más tarde.";
 
 
 /*  */
@@ -2710,7 +2710,7 @@
 
 
 /*  */
-"devices.explain_ar.disconnected" = "Los auriculares con seguimiento de cabeza son auriculares Bluetooth con sensores que indican a Soundscape el lugar frente al cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio, lo que hace que tu desplazamiento por el mundo sea más natural.\n\nPulsa en el botón siguiente para conectar un dispositivo.";
+"devices.explain_ar.disconnected" = "Los auriculares con seguimiento de cabeza son auriculares Bluetooth con sensores que indican a Soundscape hacia dónde estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo.\n\nPulsa en el botón siguiente para conectar un dispositivo.";
 
 
 /*  */
@@ -2762,15 +2762,15 @@
 
 
 /*  */
-"devices.connect_headset.calibrate" = "Los auriculares deben estar calibrados. Quítate los de la cabeza, agítalos suavemente en todas direcciones durante unos 10 segundos y colócalos de nuevo sobre tu cabeza. Se debe repetir si el timbre de calibración sigue sonando.";
+"devices.connect_headset.calibrate" = "Los auriculares tienen que calibrarse. Quítate los de la cabeza, agítalos suavemente en todas direcciones durante unos 10 segundos y colócalos de nuevo sobre tu cabeza. Se debe repetir si el timbre de calibración sigue sonando.";
 
 
 /*  */
-"devices.connect_headset.calibrate.in_ear" = "Los auriculares deben estar calibrados. Agita suavemente la cabeza en todas las direcciones durante unos 10 segundos. Se debe repetir si el timbre de calibración sigue sonando.";
+"devices.connect_headset.calibrate.in_ear" = "Los auriculares tienen que calibrarse. Agita suavemente la cabeza en todas las direcciones durante unos 10 segundos. Se debe repetir si el timbre de calibración sigue sonando.";
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "¡Enhorabuena! Tus AirPods están listos para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape seguirá ahora la orientación de tu cabeza para que no tengas que sostener el teléfono en la mano. Un solo clic en el botón de los auriculares silenciará o desactivará la señal, un doble clic indicará tu ubicación y un triple clic repetirá la última indicación.";
+"devices.connect_headset.completed.airpods" = "¡Enhorabuena! Tus AirPods están listos para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape seguirá ahora la orientación de tu cabeza para que no tengas que sostener el teléfono en la mano. Un solo clic en el botón de los auriculares silenciará o desactivará la señal, un doble clic avisará de tu ubicación y un triple clic repetirá el último aviso.";
 
 
 /*  */
@@ -2794,7 +2794,7 @@
 
 
 /*  */
-"devices.test_headset.callout" = "Hemos colocado una señal de audio a tu derecha. Escucha dónde se encuentra y gira la cabeza hacia ella… Observa cómo puedes hacer esto incluso con el teléfono en el bolsillo.";
+"devices.test_headset.callout" = "Hemos colocado una señal de audio a tu derecha. Escucha dónde se encuentra y gira la cabeza hacia ella. Observa cómo puedes hacer esto incluso con el teléfono en el bolsillo.";
 
 
 /*  */
@@ -2850,7 +2850,7 @@
 
 
 /*  */
-"devices.reachability.alert.description" = "Tu %@ puede indicarte a Soundscape frente a qué dirección te encuentras actualmente, y esto ayudará a Soundscape a mejorar tu experiencia de audio. Puedes habilitar el seguimiento de cabezas en los ajustes de Auriculares con seguimiento de cabeza.";
+"devices.reachability.alert.description" = "Tu %@ puede indicarle a Soundscape en qué dirección estás mirando, y esto ayudará a Soundscape a mejorar tu experiencia de audio. Puedes activar el seguimiento de cabezas en los ajustes de Auriculares con seguimiento de cabeza.";
 
 
 /*  */
@@ -2890,7 +2890,7 @@
 
 
 /*  */
-"behavior.experiences.reset.prompt" = "Al restablecer esta actividad se eliminará tu progreso actual y te permitirá iniciarla de nuevo. Además de restablecerla, también puedes elegir buscar actualizaciones. De esta manera, se descargará información actualizada para esta actividad si hay actualizaciones disponibles.";
+"behavior.experiences.reset.prompt" = "Al restablecer esta actividad se eliminará tu progreso actual y te permitirá iniciarla de nuevo. También puedes buscar actualizaciones. De esta manera, se descargará información actualizada para esta actividad si hay actualizaciones disponibles.";
 
 
 /*  */
@@ -3118,11 +3118,11 @@
 
 
 /*  */
-"tutorial.markers.text.EditMarker" = "Excelente. Has seleccionado @!marker_name!! como marcador. Oirás como lo avisa Soundscape cuando pases cerca.\nEn la siguiente pantalla, puedes cambiar su nombre si lo deseas.";
+"tutorial.markers.text.EditMarker" = "¡Excelente! Has seleccionado @!marker_name!! como marcador. Oirás como lo avisa Soundscape cuando pases cerca.\nEn la siguiente pantalla, puedes cambiar su nombre si lo deseas.";
 
 
 /*  */
-"tutorial.markers.text.NearbyMarkers" = "Excelente. Tienes un nuevo marcador llamado @!marker_name!!.\nAhora, para oír dónde está tu marcador, presiona el botón Marcadores cercanos. Este botón se encuentra en la parte inferior de la pantalla principal.\nPruébalo ahora.";
+"tutorial.markers.text.NearbyMarkers" = "¡Excelente! Tienes un nuevo marcador llamado @!marker_name!!.\nAhora, para oír dónde está tu marcador, presiona el botón Marcadores cercanos. Este botón se encuentra en la parte inferior de la pantalla principal.\nPruébalo ahora.";
 
 
 /*  */
@@ -3130,7 +3130,7 @@
 
 
 /*  */
-"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás frente a tu marcador, @!marker_name!!.\n¡Parece que ya lo entiendes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La señal que has establecido para este tutorial se borrará y volverás a la pantalla anterior.";
+"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás mirando hacia tu marcador, @!marker_name!!.\n¡Parece que ya lo entiendes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La señal que has establecido para este tutorial se borrará y volverás a la pantalla anterior.";
 
 
 /*  */
@@ -3202,7 +3202,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HoldingPhone.great" = "Mantener el teléfono en posición horizontal de esta manera solo es necesario cuando no te mueves. Mientras camines, puedes colocar el teléfono en un bolso o un bolsillo al que puedas tener fácil acceso.";
+"tutorial.beacons.text.HoldingPhone.great" = "¡Excelente! Mantener el teléfono en posición horizontal de esta manera solo es necesario cuando no te mueves. Mientras camines, puedes colocar el teléfono en un bolso o un bolsillo al que puedas tener fácil acceso.";
 
 
 /*  */
@@ -3214,23 +3214,23 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsRotate" = "Ahora, manteniendo todavía el teléfono en posición horizontal, gira lentamente hacia la dirección de la señal. Oirás el sonido de un timbre cuando estés orientado directamente hacia ella.";
+"tutorial.beacons.text.BeaconOutOfBoundsRotate" = "Ahora, manteniendo todavía el teléfono en posición horizontal, gira lentamente hacia la dirección de la señal. Oirás el sonido de un timbre cuando estás mirando directamente en su dirección.";
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsRotate.ar_headset" = "Ahora, gira lentamente hacia la dirección de la señal. Oirás el sonido de un timbre cuando te encuentres directamente frente a ella.";
+"tutorial.beacons.text.BeaconOutOfBoundsRotate.ar_headset" = "Ahora, gira lentamente hacia la dirección de la señal. Oirás el sonido de un timbre cuando estás mirando directamente en su dirección.";
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsRepeat" = "Gira lentamente hasta que oigas el timbre que indica que está orientado en la dirección de la señal.";
+"tutorial.beacons.text.BeaconOutOfBoundsRepeat" = "Gira lentamente hasta que oigas el timbre que indica que estás mirando en la dirección de la señal.";
 
 
 /*  */
-"tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "¡Perfecto, ahora estás orientado en la dirección de @!destination!!.";
+"tutorial.beacons.text.BeaconOutOfBoundsConfirmation" = "Perfecto, ahora estás mirando en dirección a @!destination!!.";
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBounds" = "Si escuchas atentamente oirás que se está reproduciendo desde justo delante de ti y que hay un sonido de timbre además del sonido de señal normal. Eso significa que te encuentras orientado directamente hacia @!destination!!.";
+"tutorial.beacons.text.BeaconInBounds" = "Si escuchas atentamente oirás que se está reproduciendo desde justo delante de ti y que hay un sonido de timbre además del sonido normal de la señal. Eso significa que estás mirando directamente hacia @!destination!!.";
 
 
 /*  */
@@ -3238,7 +3238,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido de la campana se detendrá y la señal continuará mostrándote dónde se encuentra @!destination!!. Inténtalo ahora.";
+"tutorial.beacons.text.BeaconInBoundsRotate.ar_headset" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido del timbre se detendrá y la señal continuará mostrándote dónde se encuentra @!destination!!. Inténtalo ahora.";
 
 
 /*  */
@@ -3246,11 +3246,11 @@
 
 
 /*  */
-"tutorial.beacons.text.MobilitySkills" = "La señal siempre señala directamente hacia la ubicación que has seleccionado. No te indica las rutas que debes seguir ni le proporciona indicaciones para llegar a esa ubicación. Usa esta señal como herramienta para decidir cómo deseas llegar allí.";
+"tutorial.beacons.text.MobilitySkills" = "La señal siempre apunta directamente hacia la ubicación que has seleccionado. No te indica las rutas que debes seguir ni te proporciona indicaciones para llegar a esa ubicación. Usa esta señal como herramienta para decidir cómo deseas llegar allí.";
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "A medida que avances en su viaje, Soundscape te informará ocasionalmente de la distancia hasta el lugar marcado por la señal con un aviso como éste.";
+"tutorial.beacons.text.AutomaticCallout" = "A medida que avances en tu viaje, Soundscape te informará ocasionalmente de la distancia hasta el lugar marcado por la señal con un aviso como éste.";
 
 
 /*  */
@@ -3266,7 +3266,7 @@
 
 
 /*  */
-"tutorial.beacons.text.WrapUp" = "Parece que lo entiendes. Si deseas repetir este tutorial, puedes obtener acceso a él en cualquier momento en la pantalla Ayuda y tutoriales. La señal que ha establecido para este tutorial se borrará ahora y regresarás a la pantalla anterior.";
+"tutorial.beacons.text.WrapUp" = "¡Parece que lo entiendes! Si deseas repetir este tutorial, puedes obtener acceso a él en cualquier momento en la pantalla Ayuda y tutoriales. La señal que ha establecido para este tutorial se borrará ahora y regresarás a la pantalla anterior.";
 
 
 /*  */
@@ -3342,7 +3342,7 @@
 
 
 /*  */
-"help.tutorial.footer.disabled" = "Los tutoriales están deshabilitados mientras la guía de la ruta esté activa";
+"help.tutorial.footer.disabled" = "Los tutoriales están deshabilitados mientras la guía de la ruta está activa";
 
 
 /*  */
@@ -3434,15 +3434,15 @@
 
 
 /*  */
-"first_launch.soundscape_language.text" = "Selecciona el idioma que deseas usar en Soundscape. Siempre podrás cambiar tu elección en los ajustes de la aplicación.";
+"first_launch.soundscape_language.text" = "Selecciona el idioma que deseas usar en Soundscape. Siempre puedes cambiar tu selección en los ajustes de la aplicación.";
 
 
 /*  */
-"first_launch.location.text" = "Soundscape es una aplicación basada en la ubicación. Utilizamos tu ubicación para encontrar y avisar de las cosas que te rodean.";
+"first_launch.location.text" = "Soundscape es una aplicación basada en la ubicación. Utilizamos tu ubicación para encontrar y avisar de las cosas de tu entorno.";
 
 
 /*  */
-"first_launch.location.enable_location" = "Habilitar ubicación";
+"first_launch.location.enable_location" = "Habilitar localización";
 
 
 /*  */
@@ -3450,7 +3450,7 @@
 
 
 /*  */
-"first_launch.device_motion.text" = "Esto le permite a Soundscape mejorar tu experiencia en función de si va a pie, se desplaza en un vehículo o no se mueve.";
+"first_launch.device_motion.text" = "Esto permite a Soundscape mejorar tu experiencia en función de si caminas, te desplazas en un vehículo o permaneces quieto.";
 
 
 /*  */
@@ -3458,7 +3458,7 @@
 
 
 /*  */
-"first_launch.lighting_way_with_sound.text_alt" = "Soundscape usa sonido 3D para indicarte qué hay a tu alrededor. Por ejemplo, si tu destino está a tu derecha, oirás un sonido procedente de esa dirección, o si hay una cafetería a tu izquierda, oirás un aviso procedente de esa dirección.";
+"first_launch.lighting_way_with_sound.text_alt" = "Soundscape usa sonido 3D para informarte de lo que hay a tu alrededor. Por ejemplo, si tu destino está a tu derecha, oirás un sonido procedente de esa dirección, o si hay una cafetería a tu izquierda, oirás un aviso procedente de esa dirección.";
 
 
 /*  */
@@ -3466,7 +3466,7 @@
 
 
 /*  */
-"first_launch.heading_somewhere.text" = "Coloca una señal de audio en el destino y Soundscape te mantendrá informado de tu ubicación y tu entorno en el trayecto. Usa Soundscape junto con tus habilidades de orientación e incluso tu aplicación de navegación favorita para encontrar el camino a tu destino.";
+"first_launch.heading_somewhere.text" = "Coloca una señal de audio en el destino y Soundscape te mantendrá informado de su ubicación y tu entorno en el trayecto. Usa Soundscape junto con tus habilidades de orientación e incluso tu aplicación de navegación favorita para encontrar el camino a tu destino.";
 
 
 /*  */
@@ -3510,7 +3510,7 @@
 
 
 /*  */
-"first_launch.headphones.message.2" = "Si no tienes auriculares o prefieres no usarlos, Soundscape seguirá funcionando con los altavoces del teléfono.";
+"first_launch.headphones.message.2" = "Si no tienes auriculares o prefieres no usarlos, no te preocupes. Soundscape seguirá funcionando con los altavoces del teléfono.";
 
 
 /*  */
@@ -3518,7 +3518,7 @@
 
 
 /*  */
-"first_launch.callouts.message" = "Soundscape te ayuda a saber dónde te encuentras y hacia dónde vas avisando de carreteras, cruces y puntos de interés a medida que te acerques a ellos.";
+"first_launch.callouts.message" = "Soundscape te ayuda a estar informado de dónde te encuentras y hacia dónde vas avisando de carreteras, cruces y puntos de interés a medida que te acerques a ellos.";
 
 
 /*  */
@@ -3554,7 +3554,7 @@
 
 
 /*  */
-"first_launch.permissions.location" = "Servicios de localización con Ubicación exacta";
+"first_launch.permissions.location" = "Localización con Ubicación exacta";
 
 
 /*  */
@@ -3634,27 +3634,27 @@
 
 
 /*  */
-"help.text.destination_beacons.what" = "Establecer una señal en una ubicación cercana permite a Soundscape mantenerte informado reproduciendo un sonido procedente de la dirección de esa ubicación. Esta señal se puede silenciar o reactivar en la pantalla principal. Además, Soundscape muestra información sobre la ubicación de la pantalla principal incluyendo la distancia hasta ella y la dirección si se conoce.";
+"help.text.destination_beacons.what" = "Establecer una señal en una ubicación cercana permite a Soundscape mantenerte informado reproduciendo un sonido procedente de la dirección de esa ubicación. Esta señal se puede silenciar o reactivar en la pantalla principal. Además, Soundscape muestra información sobre la ubicación en la pantalla principal incluyendo la distancia hasta ella y la dirección si se conoce.";
 
 
 /*  */
-"help.text.destination_beacons.when" = "Establecer una señal es útil cuando deseas realizar un seguimiento de un punto de referencia familiar cuando exploras una zona nueva o cuando vas a algún lugar y deseas estar informado de tu entorno por el camino. La característica de señal no te ofrece indicaciones paso a paso, sino que te proporciona un sonido audible continuo que te indica la dirección hasta la señal, en relación con el lugar en que te encuentras actualmente. Con la señal de audio, tus capacidades de orientación existentes, e incluso tu aplicación de navegación favorita, puedes elegir cómo deseas llegar a las ubicaciones cercanas a ti.";
+"help.text.destination_beacons.when" = "Establecer una señal es útil cuando deseas realizar un seguimiento de un punto de referencia conocido mientras exploras una zona nueva o cuando vas a algún lugar y deseas estar informado de tu entorno por el camino. La característica de señal no te ofrece indicaciones paso a paso, sino que te proporciona un sonido audible continuo que te indica la dirección hasta la señal, en relación con el lugar donde te encuentras actualmente. Con la señal de audio, tus capacidades de orientación existentes, e incluso tu aplicación de navegación favorita, puedes elegir cómo deseas llegar a las ubicaciones cercanas.";
 
 
 /*  */
-"help.text.destination_beacons.how.1" = "<b>Para establecer una señal</b>:<br/> Primero, ve los detalles de una ubicación usando la barra de búsqueda para buscar un lugar, o tocando uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. En la pantalla \"Detalles de la Ubicación\" puedes seleccionar el botón \"Iniciar Señal de Audio\". Al pulsarlo, volverás a la pantalla de inicio y se encenderá una señal audible proveniente de la dirección del lugar que has seleccionado. El nombre del lugar junto con su distancia y dirección física, si está disponible, ahora se mostrará en la pantalla principal.";
+"help.text.destination_beacons.how.1" = "<b>Para establecer una señal</b>:<br/> Primero, ve los detalles de una ubicación usando la barra de búsqueda para buscar un lugar, o pulsando en uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. A continuación, en la pantalla \"Detalles de la Ubicación\", selecciona el botón \"Iniciar Señal de Audio\". Al pulsarlo, volverás a la pantalla de inicio y se encenderá una señal audible proveniente de la dirección del lugar que has seleccionado. El nombre del lugar junto con su distancia y dirección física, si está disponible, aparecerán ahora en la pantalla principal.";
 
 
 /*  */
-"help.text.destination_beacons.how.2" = "<b>Para quitar la señal actual</b>:<br/> solo tienes que presionar el botón \"Quitar señal\" de la pantalla principal.";
+"help.text.destination_beacons.how.2" = "<b>Para quitar la señal actual</b>:<br/> solo tienes que presionar el botón \"Quitar señal\" en la pantalla principal.";
 
 
 /*  */
-"help.text.destination_beacons.how.3" = "<b>Para silenciar la señal de audio</b>:<br/> pulsa el botón \"Silenciar señal\" que se encuentra debajo del botón \"Quitar señal\" de la pantalla principal.";
+"help.text.destination_beacons.how.3" = "<b>Para silenciar la señal de audio</b>:<br/> pulsa el botón \"Silenciar señal\" debajo del botón \"Quitar señal\" en la pantalla principal.";
 
 
 /*  */
-"help.text.automatic_callouts.what" = "Soundscape puede indicarte los elementos que tienes a tu alrededor conforme te acercas ellos llamándolos por su nombre desde la dirección en la que se encuentran. La aplicación hará esto automáticamente para todo tipo de elementos, como negocios, paradas de autobuses e incluso cruces. Puedes configurar de qué avisa la aplicación automáticamente en la sección \"Administrar avisos\" de la pantalla \"Ajustes\" y podrás desactivar todos los avisos cuando desees que la aplicación esté en silencio.";
+"help.text.automatic_callouts.what" = "Soundscape puede indicarte los elementos que se encuentran a tu alrededor conforme te acercas a ellos llamándolos por su nombre desde la dirección en la que se encuentran. La aplicación hará esto automáticamente para todo tipo de elementos, como negocios, paradas de autobús e incluso cruces. Puedes configurar de qué avisa la aplicación automáticamente en la sección \"Administrar avisos\" de la pantalla \"Ajustes\" y podrás desactivar todos los avisos cuando desees que la aplicación esté en silencio.";
 
 
 /*  */
@@ -3670,23 +3670,23 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.1" = "<b>Activar o desactivar los avisos</b>:<br/> Al desactivar los avisos, se silenciará la aplicación. Los avisos se pueden activar o desactivar en la sección \"Administrar Avisos\" de la pantalla \"Ajustes\", donde puedes tocar el botón \"Permitir Avisos\" para activarlos o desactivarlos. También puedes activar o desactivar los avisos mediante el comando \"saltar hacia adelante\" (toca dos veces y mantén presionado) si tus auriculares tienen botones de control de medios. Alternativamente, puedes usar el botón \"Suspender\" en la esquina superior derecha de la pantalla de inicio para evitar que Soundscape haga avisos hasta que lo reactives.";
+"help.text.automatic_callouts.how.1" = "<b>Activación o desactivación de avisos</b>:<br/> Al desactivar los avisos, se silenciará la aplicación. Los avisos se pueden activar o desactivar yendo a la sección \"Administrar Avisos\" de la pantalla \"Ajustes\", y, a continuación, pulsando en el botón \"Permitir Avisos\". También puedes activar o desactivar los avisos con el comando \"saltar adelante\" (pulsa dos veces y mantén pulsado) si tus auriculares tienen botones de control multimedia. Alternativamente, puedes usar el botón \"Suspender\" en la esquina superior derecha de la pantalla principal para evitar que Soundscape haga avisos hasta que lo reactives.";
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Administrar los avisos que oyes</b>:<br/> Para elegir los tipos de cosas que Soundscape llamará automáticamente, ve a la pantalla \"Ajustes\" desde el menú principal. La sección \"Administrar Avisos\" de la pantalla \"Ajustes\" contiene una lista de tipos de cosas que la app puede llamar. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si deseas desactivar todos los avisos, toca el botón \"Permitir Avisos\" en la parte superior de la lista.";
+"help.text.automatic_callouts.how.2" = "<b>Administración de los avisos que oyes</b>:<br/> Para elegir los tipos de elementos de los que Soundscape avisará automáticamente, ve a la pantalla \"Ajustes\" desde el menú principal. La sección \"Administrar Avisos\" de la pantalla \"Ajustes\" contiene una lista de tipos de elementos de los que puede avisar la aplicación. Cada elemento tiene un botón de alternancia que se puede activar o desactivar. Si deseas desactivar todos los avisos, pulsa en el botón \"Permitir Avisos\" en la parte superior de la lista.";
 
 
 /*  */
-"help.text.my_location.what" = "El botón <em>\"Mi ubicación\"</em> te ofrece información rápidamente que te ayuda a averiguar dónde te encuentras actualmente. <em>\"Mi ubicación\"</em> te informa sobre tu ubicación actual, incluidas cosas como la dirección hacia la que estás orientado, dónde se encuentran cruces o carreteras cercanas, y dónde hay puntos de interés cercanos.";
+"help.text.my_location.what" = "El botón <em>\"Mi ubicación\"</em> te ofrece información rápidamente que te ayuda a averiguar dónde te encuentras actualmente. <em>\"Mi ubicación\"</em> te informa sobre tu ubicación actual, incluidas cosas como la dirección en la que estás mirando, dónde se encuentran cruces o carreteras cercanas, y dónde hay puntos de interés cercanos.";
 
 
 /*  */
-"help.text.my_location.when" = "<em>\"Mi ubicación\"</em> es útil cuando necesitas averiguar dónde te encuentras o hacia qué dirección cardinal estás orientado.";
+"help.text.my_location.when" = "<em>\"Mi ubicación\"</em> es útil cuando necesitas averiguar dónde te encuentras o hacia qué dirección cardinal estás mirando.";
 
 
 /*  */
-"help.text.my_location.how" = "Como con los cuatro botones de la parte inferior de la pantalla principal, mantén el teléfono con la pantalla en posición horizontal (hacia arriba) y la parte superior del teléfono apuntando en la dirección hacia la que estás orientado antes de presionar el botón <em>\"Mi ubicación\"</em>. Esto actúa como una brújula que le indica a la aplicación hacia qué dirección estás orientado. Solo tienes que pulsar el botón <em>\"Mi ubicación\"</em> y escuchar.";
+"help.text.my_location.how" = "Como con los cuatro botones de la parte inferior de la pantalla principal, mantén el teléfono con la pantalla en posición horizontal (hacia arriba) y la parte superior del teléfono apuntando en la dirección en la que estás mirando antes de presionar el botón <em>\"Mi ubicación\"</em>. Esto actúa como una brújula que le indica a la aplicación hacia dónde estás mirando. Solo tienes que pulsar el botón <em>\"Mi ubicación\"</em> y escuchar.";
 
 
 /*  */
@@ -3698,23 +3698,23 @@
 
 
 /*  */
-"help.text.nearby_markers.how" = "Como con los cuatro botones de la parte inferior de la pantalla principal, mantén el teléfono con la pantalla en posición horizontal (hacia arriba) y la parte superior del teléfono apuntando en la dirección hacia la que estás orientado antes de presionar el botón <em>\"Marcadores cercanos\"</em>. Esto actúa como una brújula que le indica a la aplicación hacia qué dirección estás orientado. Solo tienes que pulsar el botón <em>\"Marcadores cercanos\"</em> y escuchar hasta cuatro marcadores cerca de ti.";
+"help.text.nearby_markers.how" = "Como con los cuatro botones de la parte inferior de la pantalla principal, mantén el teléfono con la pantalla en posición horizontal (hacia arriba) y la parte superior del teléfono apuntando en la dirección en la que estás mirando antes de presionar el botón <em>\"Marcadores cercanos\"</em>. Esto actúa como una brújula que le indica a la aplicación hacia dónde estás mirando. Solo tienes que pulsar el botón <em>\"Marcadores cercanos\"</em> y escuchar hasta cuatro marcadores cerca de ti.";
 
 
 /*  */
-"help.text.around_me.what" = "El botón <em>\"Alrededor de mí\"</em> te informa sobre una cosa en cada uno de los cuatro cuadrantes que te rodean (adelante, a la derecha, detrás y a la izquierda). <em>\"Alrededor de mí\"</em> tiene la intención de ayudarte a orientarte en tu entorno.";
+"help.text.around_me.what" = "El botón <em>\"Alrededor de mí\"</em> te informa sobre una cosa en cada uno de los cuatro cuadrantes que se encuentran a tu alrededor (adelante, a la derecha, detrás y a la izquierda). <em>\"Alrededor de mí\"</em> tiene la intención de ayudarte a orientarte en tu entorno.";
 
 
 /*  */
-"help.text.around_me.when" = "Cuando intentes orientarte en tu entorno, usa <em>\"Alrededor de mí\"</em> para escuchar sobre las cosas que te rodean.";
+"help.text.around_me.when" = "Cuando intentes orientarte en tu entorno, usa <em>\"Alrededor de mí\"</em> para escuchar sobre las cosas que hay a tu alrededor.";
 
 
 /*  */
-"help.text.around_me.how" = "Como con los cuatro botones de la parte inferior de la pantalla principal, mantén el teléfono con la pantalla en posición horizontal (hacia arriba) y la parte superior del teléfono apuntando en la dirección hacia la que estás orientado antes de presionar el botón <em>\"Alrededor de mí\"</em>. Esto actúa como una brújula que le indica a la aplicación hacia qué dirección estás orientado. Solo tienes que pulsar el botón <em>\"Alrededor de mí\"</em> y oirás los cuatro puntos de interés situados a tu alrededor.";
+"help.text.around_me.how" = "Como con los cuatro botones de la parte inferior de la pantalla principal, mantén el teléfono con la pantalla en posición horizontal (hacia arriba) y la parte superior del teléfono apuntando en la dirección en la que estás mirando antes de presionar el botón <em>\"Alrededor de mí\"</em>. Esto actúa como una brújula que le indica a la aplicación hacia dónde estás mirando. Solo tienes que pulsar el botón <em>\"Alrededor de mí\"</em> y oirás cuatro puntos de interés situados a tu alrededor.";
 
 
 /*  */
-"help.text.ahead_of_me.what" = "El botón <em>\"Delante de mí\"</em> te indica qué se encuentra delante de ti. <em>\"Delante de mí\"</em> está pensado para explorar lo que se encuentra delante de ti cuando estás conociendo una zona nueva.";
+"help.text.ahead_of_me.what" = "El botón <em>\"Delante de mí\"</em> te informa de hasta cinco elementos que se encuentran delante de ti. <em>\"Delante de mí\"</em> está pensado para explorar el camino por delante de ti cuando estás conociendo una zona nueva.";
 
 
 /*  */
@@ -3722,11 +3722,11 @@
 
 
 /*  */
-"help.text.ahead_of_me.how" = "Como con los cuatro botones de la parte inferior de la pantalla principal, mantén el teléfono con la pantalla en posición horizontal (hacia arriba) y la parte superior del teléfono apuntando en la dirección hacia la que estás orientado antes de presionar el botón <em>\"Delante de mí\"</em>. Esto actúa como brújula que le indica a la aplicación hacia qué dirección estás orientado. Solo tienes que pulsar el botón <em>\"Delante de mí\"</em> y oirás varios puntos de interés que estén más o menos delante de ti.";
+"help.text.ahead_of_me.how" = "Como con los cuatro botones de la parte inferior de la pantalla principal, mantén el teléfono con la pantalla en posición horizontal (hacia arriba) y la parte superior del teléfono apuntando en la dirección en la que estás mirando antes de presionar el botón <em>\"Delante de mí\"</em>. Esto actúa como una brújula que le indica a la aplicación hacia dónde estás mirando. Solo tienes que pulsar el botón <em>\"Delante de mí\"</em> y oirás varios puntos de interés que estén más o menos delante de ti.";
 
 
 /*  */
-"help.text.remote_control.what" = "Puedes obtener acceso a determinadas características de Soundscape con la ayuda de los botones de control multimedia de sus auriculares. Esta funcionalidad funciona con auriculares Bluetooth o por cable que tenga botones de control multimedia, como Reproducir, Pausa, Siguiente, Anterior y otros. Distintos modelos de auriculares con micrófono pueden incluir diferentes botones; consulta la lista de acciones a continuación para determinar cuáles están disponibles para ti.<br>Ten en cuenta que esta característica solo funciona con auriculares con micrófono que admitan controles multimedia de Apple (como reproducir y pausa).";
+"help.text.remote_control.what" = "Puedes obtener acceso a determinadas características de Soundscape con los botones de control multimedia de tus auriculares. Esta funcionalidad funciona con auriculares Bluetooth o por cable que tengan botones de control multimedia, como Reproducir, Pausa, Siguiente, Anterior y otros. Distintos modelos de auriculares con micrófono pueden incluir diferentes botones; consulta la lista de acciones a continuación para determinar cuáles están disponibles para ti.<br>Ten en cuenta que esta característica solo funciona con auriculares con micrófono que admitan controles multimedia de Apple (como reproducir y pausa).";
 
 
 /*  */
@@ -3734,7 +3734,7 @@
 
 
 /*  */
-"help.text.remote_control.how" = "<p>Puedes acceder a las siguientes funciones de Soundscape utilizando los botones de control multimedia de los auriculares:<p><br>&#x23EF Reproducir/Pausar: Silencie los avisos actuales y, si la señal de audio está establecida, active o desactive el audio. </p><p>&#x23ED siguiente: Llame <em>\"Mi ubicación\".</em></p><p>&#x23EE Anterior: Repita el último aviso.</p><p>&#x23E9 Saltar hacia adelante: Activa y desactiva los avisos.</p><p>&#x23EA Saltar hacia atrás: Gritar <em>\"Alrededor de mí\".</em></p>";
+"help.text.remote_control.how" = "<p>Puedes obtener acceso a las siguientes funciones de Soundscape con los botones de control multimedia de los auriculares:<p><br>&#x23EF Reproducir/Pausa: Silenciar los avisos actuales y, si la señal de audio está establecida, activar o desactivar el audio. </p><p>&#x23ED Siguiente: Aviso <em>\"Mi ubicación\".</em></p><p>&#x23EE Anterior: Repetir el último aviso.</p><p>&#x23E9 Saltar adelante: Activar y desactivar los avisos.</p><p>&#x23EA Saltar atrás: Aviso <em>\"Alrededor de mí\".</em></p>";
 
 
 /*  */
@@ -3742,7 +3742,7 @@
 
 
 /*  */
-"help.text.markers.content.2" = "Puedes marcar las cosas que son personales y relevantes para ti, como tu casa, tu oficina y tu tienda de comestibles preferida. Puedes marcar cualquier lugar o dirección, pero también cosas que podrían no estar disponible tradicionalmente en mapas, por ejemplos, entradas a edificios o parques, lugares con pulsador para cruzar la calle, pasos de peatones o puentes, paradas de autobús o incluso el árbol favorito de tu perro y usarlos como referencia durante tu paseo.";
+"help.text.markers.content.2" = "Puedes marcar las cosas que son personales y relevantes para ti, como tu casa, tu oficina y tu tienda de comestibles preferida. Puedes marcar cualquier lugar o dirección, pero también cosas que normalmente no aparecen en los mapas, por ejemplo, entradas a edificios o parques, lugares con pulsador para cruzar la calle, pasos de peatones o puentes, paradas de autobús o incluso el árbol favorito de tu perro y usarlos como referencia durante tu paseo.";
 
 
 /*  */
@@ -3750,15 +3750,15 @@
 
 
 /*  */
-"help.text.creating_markers.content.1" = "Puedes crear marcadores de tres formas: buscando el lugar que te gustaría guardar mediante la barra de búsqueda, encontrando algún lugar mediante el botón \"Lugares cercanos\" o utilizando el botón \"Ubicación actual\", todos ellos en la pantalla de inicio de Soundscape. Una vez que hayas encontrado el lugar que deseas, al seleccionarlo accederás a la página \"Detalles de la ubicación\". En esta página, selecciona el botón \"Guardar como marcador\".";
+"help.text.creating_markers.content.1" = "Puedes crear marcadores de tres formas: buscando el lugar que deseas guardar con la barra de búsqueda, encontrando algún lugar mediante el botón \"Lugares cercanos\" o usando el botón \"Ubicación actual\", todos ellos en la pantalla principal de Soundscape. Una vez que hayas encontrado el lugar que deseas, al seleccionarlo, irás a la página \"Detalles de la ubicación\". En esta página, selecciona el botón \"Guardar como marcador\".";
 
 
 /*  */
-"help.text.creating_markers.content.2" = "Tendrás la opción de personalizar este marcador. Este paso es opcional. Si lo deseas, puedes cambiar el nombre del marcador y también agregar una anotación que se oirá con el marcador para proporcionar información adicional. Una vez que hayas acabado, selecciona el botón \"Listo\" para guardar el marcador.";
+"help.text.creating_markers.content.2" = "Tendrás la opción de personalizar este marcador. Puedes cambiar su nombre y también agregar una anotación que se oirá con el marcador para proporcionar información adicional. A continuación, selecciona el botón \"Listo\" para guardar el marcador.";
 
 
 /*  */
-"help.text.customizing_markers.content.1" = "Si deseas cambiar el nombre de un marcador que has creado anteriormente, o agregarle una anotación, puedes hacerlo seleccionando el marcador en la pestaña \"Marcadores\" de la página \"Marcadores y rutas\" y, a continuación, \"Editar marcador\" . Puedes usarlo para asignar a los marcadores sobrenombres útiles o descriptivos, así como para proporcionarles una descripción más larga con el campo de anotación.";
+"help.text.customizing_markers.content.1" = "Si deseas cambiar el nombre de un marcador que has creado anteriormente, o agregarle una anotación, selecciona el marcador en la pestaña \"Marcadores\" de la página \"Marcadores y rutas\" y, a continuación, \"Editar marcador\" . Puedes usarlo para asignar a los marcadores sobrenombres útiles o descriptivos, así como para proporcionarles una descripción más larga con el campo de anotación.";
 
 
 /*  */
@@ -3766,7 +3766,7 @@
 
 
 /*  */
-"help.text.routes.content.what" = "Las rutas son una serie de puntos de ruta. Se te informará a la llegada a cada uno de ellos y la señal de audio avanzará automáticamente hasta el siguiente.";
+"help.text.routes.content.what" = "Las rutas son una serie de puntos de referencia. Se te informará a la llegada a cada uno de ellos y la señal de audio avanzará automáticamente hasta el siguiente.";
 
 
 /*  */
@@ -3786,7 +3786,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza cuando se utilizan AirPods compatibles. Cuando se conecten, los sensores de los AirPods indican a Soundscape la dirección frente a la cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio haciendo que sea más natural a medida que te mueves por el mundo. Cuando uses Soundscape con los AirPods conectados, no es necesario sostener el teléfono para que Soundscape funcione bien.";
+"help.using_headsets.airpods.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar AirPods compatibles. Cuando se conecten, los sensores de los AirPods indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con los AirPods conectados, no es necesario sostener el teléfono para que Soundscape funcione bien.";
 
 
 /*  */
@@ -3798,7 +3798,7 @@
 
 
 /*  */
-"help.using_headsets.airpods.how.2" = "<b>Uso de los controles multimedia en los auriculares</b>:<br/> cuando los controles multimedia estén activados en la configuración de Soundscape, podrás usarlos en los AirPods para silenciar o reactivar la señal, avisar de tu ubicación o repetir el último aviso de llamada. Para obtener más información, ve la sección de ayuda \"Uso de controles multimedia\".";
+"help.using_headsets.airpods.how.2" = "<b>Uso de los controles multimedia en los auriculares</b>:<br/> cuando los controles multimedia estén habilitados en la configuración de Soundscape, podrás usarlos en los AirPods para silenciar o reactivar la señal, avisar de tu ubicación o repetir el último aviso de llamada. Para obtener más información, ve la sección de ayuda \"Uso de controles multimedia\".";
 
 
 /*  */
@@ -4110,7 +4110,7 @@
 
 
 /*  */
-"voice.apple.additional" = "Se pueden descargar voces adicionales, incluidas las de calidad mejorada, en la sección Contenido leído de la configuración de accesibilidad de iOS.";
+"voice.apple.additional" = "Se pueden descargar voces adicionales, incluidas las de calidad mejorada, en la sección Contenido leído de los ajustes de accesibilidad de iOS.";
 
 
 /*  */
@@ -4142,7 +4142,7 @@
 
 
 /*  */
-"faq.markers_function.answer" = "Los marcadores son lugares que has guardado. Pueden ser lugares descubiertos por la aplicación o lugares totalmente nuevos que hayas añadido tú mismo. Puedes guardar tu ubicación actual como marcador seleccionando el botón \"Ubicación actual\" en la pantalla de inicio y, a continuación, \"Guardar como marcador\". Puedes guardar otras ubicaciones como marcador buscando el lugar que te gustaría guardar utilizando la barra de búsqueda, o encontrando algún lugar utilizando el botón \"Lugares cercanos\", ambos en la pantalla de inicio de Soundscape. Una vez que hayas encontrado el lugar que deseas, al seleccionarlo accederás a la página \"Detalles de la ubicación\". En esta página, selecciona el botón \"Guardar como marcador\".";
+"faq.markers_function.answer" = "Los marcadores son lugares que has guardado. Pueden ser lugares descubiertos por la aplicación o lugares totalmente nuevos que hayas añadido tú mismo. Puedes guardar tu ubicación actual como marcador seleccionando el botón \"Ubicación actual\" en la pantalla principal y, a continuación, \"Guardar como marcador\". Puedes guardar otras ubicaciones como marcador buscando el lugar que deseas guardar con la barra de búsqueda, o encontrando algún lugar mediante el botón \"Lugares cercanos\", ambos en la pantalla principal de Soundscape. Una vez que hayas encontrado el lugar que deseas, al seleccionarlo, irás a la página \"Detalles de la ubicación\". En esta página, selecciona el botón \"Guardar como marcador\".";
 
 
 /*  */
@@ -4154,7 +4154,7 @@
 
 
 /*  */
-"faq.what_can_I_set.answer" = "Puedes establecer una señal de audio en cualquier negocio, lugar, punto de interés, dirección o cruce. Hay varias formas de establecer una ubicación como baliza. Primero, ve los detalles de una ubicación usando la barra de búsqueda para buscar un lugar, o tocando uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. En la pantalla ddetalles de la ubicación puedes seleccionar el botón \"Iniciar señal de audio\". Al pulsarlo, volverás a la pantalla de inicio y se encenderá una señal audible proveniente de la dirección del lugar que has seleccionado. El nombre del lugar junto con su distancia y dirección física, si está disponible, ahora se mostrará en la pantalla principal.";
+"faq.what_can_I_set.answer" = "Puedes establecer una señal de audio en cualquier negocio, lugar, punto de interés, dirección o cruce. Hay varias formas de establecer una ubicación como baliza. Primero, ve los detalles de una ubicación usando la barra de búsqueda para buscar un lugar, o pulsando en uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. A continuación, en la pantalla \"Ddetalles de la ubicación\", selecciona el botón \"Iniciar señal de audio\". Al pulsarlo, volverás a la pantalla de inicio y se encenderá una señal audible proveniente de la dirección del lugar que has seleccionado. El nombre del lugar junto con su distancia y dirección física, si está disponible, aparecerá ahora en la pantalla principal.";
 
 
 /*  */
@@ -4170,7 +4170,7 @@
 
 
 /*  */
-"faq.why_does_beacon_disappear.answer" = "La señal de audio de Soundscape es básicamente una indicación de dirección, que te informa de dónde se encuentra tu destino en relación con la dirección hacia la que estás orientado. Cuando Soundscape no está seguro de hacia qué dirección estás orientado, baja el volumen de la señal. Muy a menudo esto sucede si has estado caminando con el teléfono guardado en el bolsillo o en el bolso y dejas de moverte, como para cruzar la calle. El sonido de la señal será más alto una vez que empieces a moverte de nuevo o si mantienes el teléfono en posición horizontal y lo apunta en la dirección hacia la que estás orientado.";
+"faq.why_does_beacon_disappear.answer" = "La señal de audio de Soundscape es básicamente una indicación de dirección, que te informa de dónde se encuentra tu destino en relación con la dirección en la que estás mirando. Cuando Soundscape no está seguro de hacia donde estás mirando, baja el volumen de la señal. Muy a menudo esto sucede si has estado caminando con el teléfono guardado en el bolsillo o en el bolso y dejas de moverte, como para cruzar la calle. El sonido de la señal será más alto una vez que empieces a moverte de nuevo o si mantienes el teléfono en posición horizontal y lo apunta en dirección contraria a ti.";
 
 
 /*  */
@@ -4194,7 +4194,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que estás cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se apaga la señal yendo a \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Distancia de Silenciar el audio\" hacia arriba o hacia abajo.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que estás cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se silencia la señal yendo a \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Distancia de Silenciar el audio\" hacia arriba o hacia abajo.";
 
 
 /*  */
@@ -4230,11 +4230,11 @@
 
 
 /*  */
-"faq.miss_a_callout.question" = "¿Qué ocurre si no comprendo un aviso o si no lo oigo por el ruido?";
+"faq.miss_a_callout.question" = "¿Qué ocurre si no entiendo un aviso o si no lo oigo por el ruido?";
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Soundscape tiene una lista de tus avisoss recientes para que puedas volver a visitar los avisos que te hayas perdido. Para ello, pulsa en la barra de búsqueda de la pantalla de inicio de Soundscape. En la parte inferior de esta página, hay una sección de \"Avisos recientes\" donde aparecerá el aviso que te perdiste. También puedes agitar el teléfono para repetir el último aviso. En la sección \"Administrar Avisos\" de la pantalla \"Ajustes\", activa la opción \"Repetir Avisos\".";
+"faq.miss_a_callout.answer" = "Soundscape tiene una lista de tus avisoss recientes para que puedas volver a visitar los avisos que te hayas perdido. Para ello, pulsa en la barra de búsqueda de la pantalla principal de Soundscape. En la parte inferior de esta página, hay una sección de \"Avisos recientes\" donde aparecerá el aviso que te perdiste. También puedes agitar el teléfono para repetir el último aviso. En la sección \"Administrar Avisos\" de la pantalla \"Ajustes\", activa la opción \"Repetir Avisos\".";
 
 
 /*  */
@@ -4254,7 +4254,7 @@
 
 
 /*  */
-"faq.supported_headsets.answer" = "Los auriculares que uses con Soundscape es una cuestión de preferencia personal y cada opción tiene sus ventajas e inconvenientes. El requisito específico es usar auriculares estéreos para beneficiarte de los avisos acústicos espaciales 3D de Soundscape.";
+"faq.supported_headsets.answer" = "Los auriculares que uses con Soundscape es una cuestión de preferencia personal y cada opción tiene sus ventajas y desventajas. El único requisito es usar auriculares estéreos para beneficiarte de los avisos acústicos espaciales 3D de Soundscape.";
 
 
 /*  */
@@ -4262,15 +4262,15 @@
 
 
 /*  */
-"faq.battery_impact.answer" = "La duración de la batería varía en gran medida en función del iPhone que tengas y de su antigüedad. El mayor consumo de la batería se produce al tener la pantalla encendida, por lo que para maximizar su duración, debes mantener la pantalla bloqueada siempre que sea posible. Para ayudar a minimizar el impacto en la batería de iPhone, Soundscape ahora tiene un modo de reposo y un modo de aplazamiento. Para reducir aún más el uso de la batería, cuando no uses Soundscape, debes forzar cerrar la aplicación con el Selector de aplicación de iPhone.";
+"faq.battery_impact.answer" = "La duración de la batería varía en gran medida en función del modelo y la antigüedad de tu iPhone. El mayor consumo de la batería se produce al tener la pantalla encendida, por lo que para maximizar su duración, debes mantener la pantalla bloqueada siempre que sea posible. Para ayudar a minimizar el impacto en la batería de iPhone, Soundscape tiene un modo de suspensión y un modo de aplazamiento. Para reducir aún más el uso de la batería, cuando no uses Soundscape, debes forzar cerrar la aplicación con el Selector de app de iPhone.";
 
 
 /*  */
-"faq.sleep_mode_battery.question" = "¿Cómo uso el modo de reposo para minimizar el impacto de Soundscape en la batería del teléfono?";
+"faq.sleep_mode_battery.question" = "¿Cómo uso el modo de suspensión para minimizar el impacto de Soundscape en la batería del teléfono?";
 
 
 /*  */
-"faq.sleep_mode_battery.answer" = "Para poner Soundscape en el modo de reposo, selecciona el botón \"Suspender\" en la esquina superior derecha de la pantalla de inicio. Cuando lo selecciones, Soundscape dejará de utilizar los servicios de localización y los datos móviles hasta que lo reactives.";
+"faq.sleep_mode_battery.answer" = "Para poner Soundscape en el modo de suspensión, selecciona el botón \"Suspender\" en la esquina superior derecha de la pantalla de inicio. Cuando lo selecciones, Soundscape dejará de usar la localización y los datos móviles hasta que lo reactives.";
 
 
 /*  */
@@ -4278,7 +4278,7 @@
 
 
 /*  */
-"faq.snooze_mode_battery.answer" = "Para poner Soundscape en el modo de aplazamiento, selecciona el botón \"Suspender\" en la esquina superior derecha de la pantalla de inicio. Cuando Soundscape esté en el modo de reposo, selecciona el botón \"Reactivar cuando Salga\" y Soundscape pasará a un estado de bajo consumo hasta que te vayas de la ubicación actual.";
+"faq.snooze_mode_battery.answer" = "Para poner Soundscape en el modo de aplazamiento, selecciona el botón \"Suspender\" en la esquina superior derecha de la pantalla de inicio. Cuando Soundscape esté en el modo de suspensión, selecciona el botón \"Reactivar cuando Salga\" y Soundscape entrará en un estado de bajo consumo hasta que te vayas de la ubicación actual.";
 
 
 /*  */
@@ -4294,7 +4294,7 @@
 
 
 /*  */
-"faq.background_battery_impact.answer" = "Soundscape usa Localización para determinar tu ubicación. En nuestras pruebas, Soundscape no consume más batería que la aplicación media de mapas, pero si te preocupas el consumo de la batería del teléfono, las siguientes son algunas sugerencias que ayudarán a reducir el uso:\n\n1. Desactiva la pantalla lo máximo posible cuando no interactúes con la aplicación.\n2. Cuando no uses la aplicación, ciérrala. Soundscape usa servicios de localización continuamente mientras se ejecuta por lo que siempre conoce tu ubicación, incluso cuando no estás en movimiento. No te olvides de reiniciar la aplicación al reanudar el trayecto.\n3. Con tiempo frío, mantén el teléfono en una temperatura cálida ya que el rendimiento de las baterías empeora con temperaturas bajas.";
+"faq.background_battery_impact.answer" = "Soundscape usa Localización para determinar dónde te encuentras. En nuestras pruebas, Soundscape no consume más batería que la aplicación media de mapas, pero si te preocupas el consumo de la batería del teléfono, las siguientes son algunas sugerencias que ayudarán a reducir el uso:\n\n1. Desactiva la pantalla lo máximo posible cuando no interactúes con la aplicación.\n2. Cuando no uses la aplicación, ciérrala. Soundscape usa la localización continuamente mientras se ejecuta por lo que siempre conoce tu ubicación, incluso cuando no estás en movimiento. No te olvides de reiniciar la aplicación al reanudar el trayecto.\n3. Con tiempo frío, mantén el teléfono en una temperatura cálida ya que el rendimiento de las baterías empeora con temperaturas bajas.";
 
 
 /*  */
@@ -4318,7 +4318,7 @@
 
 
 /*  */
-"faq.use_with_wayfinding_apps.answer" = "Soundscape se ha diseñado para ayudar a completar la información de tu entorno que es posible que no conozcas de otra manera. Aunque no se ha diseñado como una aplicación de navegación paso a paso, se puede usar junto con esas aplicaciones para proporcionar información complementaria. Para usar Soundscape con estas aplicaciones, inicia tu aplicación de navegación primero. A continuación, pasa a Soundscape y establece una señal en el mismo destino que la aplicación de navegación. En este punto, ambas aplicaciones se estarán ejecutando y oirás indicaciones de ruta a pie de tu aplicación de navegación, a la vez que recibirás de Soundscape actualizaciones sobre puntos de interés, cruces y la distancia a la que se encuentras de tu destino.";
+"faq.use_with_wayfinding_apps.answer" = "Soundscape se ha diseñado para ayudar a completar la información de tu entorno que es posible que no conozcas de otra manera. Aunque no se ha diseñado como una aplicación de navegación paso a paso, se puede usar junto con esas aplicaciones para proporcionar información complementaria. Para usar Soundscape con estas aplicaciones, inicia tu aplicación de navegación primero. A continuación, pasa a Soundscape y establece una señal en el mismo destino que la aplicación de navegación. En este punto, ambas aplicaciones se estarán ejecutando y oirás indicaciones de ruta a pie de tu aplicación de navegación, a la vez que recibirás de Soundscape actualizaciones sobre puntos de interés, cruces y la distancia a la que te encuentras de tu destino.";
 
 
 /*  */
@@ -4326,7 +4326,7 @@
 
 
 /*  */
-"faq.controlling_what_you_hear.answer" = "Soundscape ofrece varias formas de controlar lo que oyes y cuándo:\n\n1. Detener inmediatamente todo el audio: Toca dos veces la pantalla con dos dedos para desactivar inmediatamente todo el audio, incluido cualquier aviso que se esté reproduciendo en ese momento y la señal si está activada. Los avisos se reanudarán automáticamente cuando te acerques al siguiente cruce o punto de interés, pero la señal de audio no. Selecciona el botón \"Reactivar señal\" en la pantalla de inicio para reanudar la audición de la señal.\n2. Detener los avisos automáticos: Cuando no estés viajando o hayas llegado a un destino, probablemente no necesitarás que Soundscape siga avisándote de las cosas que te rodean. En lugar de salir de la aplicación, puedes poner Soundscape en el modo de aplazamiento y se reactivará de nuevo cuando salgas, o puedes poner Soundscape en el modo de reposo y permanecerá desactivado hasta que lo reactives. Alternativamente, puedes seleccionar \"Ajustes\" en el menú y elegir desactivar todos los avisos en la sección \"Administrar Avisos\".\n3. Detener la señal: Hay varios escenarios para los que podrías establecer un destino, pero no necesitar la señal audible activada. Por ejemplo, puede que sepas exactamente cómo llegar a tu destino, pero solo quieras recibir actualizaciones automáticas sobre la distancia. O puede que sepas más o menos cómo llegar a tu destino, y sólo necesites la señal de audio cuando casi hayas llegado. En cualquier caso, puedes elegir cuándo oír la señal alternando el botón \"Silenciar señal\"/\"Reactivar señal\" en la pantalla de inicio.";
+"faq.controlling_what_you_hear.answer" = "Soundscape ofrece varias formas de controlar lo que oyes y cuándo:\n\n1. Detener inmediatamente todo el audio: Pulsa dos veces en la pantalla con dos dedos para desactivar inmediatamente todo el audio, incluido cualquier aviso que se esté reproduciendo en ese momento y la señal si está activada. Los avisos se reanudarán automáticamente cuando te acerques al siguiente cruce o punto de interés, pero la señal de audio no. Selecciona el botón \"Reactivar señal\" en la pantalla principal para volver a oír la señal.\n2. Detener los avisos automáticos: Cuando no estés viajando o hayas llegado a un destino, probablemente no necesitarás que Soundscape siga notificándote elementos de tu entorno. En lugar de salir de la aplicación, puedes poner Soundscape en el modo de aplazamiento y se reactivará cuando salgas o bien, puedes poner Soundscape en el modo de suspensión y permanecerá desactivado hasta que lo reactives. Alternativamente, puedes seleccionar \"Ajustes\" en el menú y desactivar todos los avisos en la sección \"Administrar Avisos\".\n3. Detener la señal: Hay varios escenarios para los que podrías establecer un destino, pero no necesitar la señal audible activada. Por ejemplo, puede que sepas exactamente cómo llegar a tu destino, pero solo quieras recibir actualizaciones automáticas sobre la distancia. O puede que sepas más o menos cómo llegar a tu destino, y sólo necesites la señal de audio cuando casi hayas llegado. En cualquier caso, puedes elegir cuándo oír la señal alternando el botón \"Silenciar señal\"/\"Reactivar señal\" en la pantalla principal.";
 
 
 /*  */
@@ -4334,7 +4334,7 @@
 
 
 /*  */
-"faq.holding_phone_flat.answer" = "¡No, no! Mientras caminas puedes guardar el teléfono en una bolsa o bolsillo o donde sea conveniente. El paisaje sonoro usará la dirección que estás caminando para averiguar qué avisos anunciar a tu izquierda y a tu derecha. Cuando dejas de moverte, Soundscape no sabe hacia qué dirección te diriges. Si la señal de audio está activada, notarás que se calla hasta que comiences a moverte de nuevo. Puedes sacar el teléfono para tocar los botones \"Escuchar mi entorno\" en la parte inferior de la pantalla de inicio en cualquier momento, pero asegúrate de sujetarlo con la parte superior apuntando hacia la dirección en la que estás mirando y con la pantalla hacia el cielo. En esta posición \"plana\", Soundscape utilizará la brújula del teléfono para determinar hacia qué dirección te estás mirando y proporcionar avisos espaciales precisos. Si la señal está activada, también te darás cuenta de que vuelve a todo su volumen.";
+"faq.holding_phone_flat.answer" = "¡No, no! Mientras caminas puedes guardar el teléfono en una bolsa o bolsillo o donde sea conveniente. Soundscape usará la dirección hacia la que estás caminando para averiguar qué avisos anunciar a tu izquierda y a tu derecha. Cuando dejas de moverte, Soundscape no sabrá hacia dónde estás mirando. Si la señal de audio está activada, observarás que se calla hasta que vuelvas a moverte. Puedes sacar el teléfono para presionar los botones \"Escuchar mi entorno\" en la parte inferior de la pantalla principal en cualquier momento, pero asegúrate de sujetarlo con la parte superior apuntando en la dirección en la que estás mirando y con la pantalla hacia arriba. En esta posición \"plana\", Soundscape usará la brújula del teléfono para determinar hacia dónde estás mirando y proporcionar avisos espaciales precisos. Si la señal está activada, también observarás que vuelve a todo su volumen.";
 
 
 /*  */
@@ -4342,7 +4342,7 @@
 
 
 /*  */
-"faq.personalize_experience.answer" = "Soundscape te permite personalizar tres aspectos clave de los avisos que oyes mientras caminas:\n\n1. Voz: puedes elegir cuál de las voces disponibles en iOS quieres que use Soundscape , así como la velocidad a la que se pronuncian los mensajes. En el menú, selecciona \" Ajustes \" y, a continuación, en \" Ajustes Generales\", selecciona Voz para ajustar la velocidad de habla y la configuración de voz . Se pueden descargar voces adicionales, incluidas las voces de calidad mejorada, en la aplicación Ajustes de iOS en Ajustes > Accesibilidad > Contenido leído > Voces.\n2. Distancia métrica: Soundscape te permite escuchar todas las distancias en pies o metros. En el menú, selecciona \" Ajustes \" y, a continuación, en \" Ajustes Generales\", selecciona \"Idioma y región\". La sección Unidades de medida te permite alternar entre dos opciones: Imperial (pies) y Métrico (metros).\n3. Marcadores: puedes marcar tu mundo con cualquier cosa que te interese. Puedes marcar cosas que sean personales y relevantes para ti, como tu casa, tu oficina y tu supermercado preferido. Luego, Soundscape te indicará automáticamente los lugares marcados a medida que pases por ellos o te acerques a ellos, o también puedes usar el botón Marcadores cercanos en la parte inferior de la pantalla de inicio para oír un aviso espacial de los lugares marcados a tu alrededor. Estos marcadores seguirán siendo personales para ti y no estarán disponibles para nadie más.\n\nAdemás de lo anterior, las siguientes configuraciones de VoiceOver pueden influir en el comportamiento de Soundscape :\n\n1. Sugerencias de VoiceOver: cuando las sugerencias de VoiceOver están activadas, escucharás más información sobre todos los botones en la pantalla principal de Soundscape . Puedes activar las sugerencias de VoiceOver navegando a la aplicación Ajustes de iOS y yendo a Accesibilidad > VoiceOver > Verbosidad, y activando la configuración Leer indicaciones.\n2. Atenuación de audio: Soundscape está diseñado para funcionar con la atenuación de audio desactivada. Cuando la atenuación de audio está activada, los avisos automáticos pueden resultar difíciles de oír si se utiliza VoiceOver simultáneamente. Recomendamos desactivar la atenuación de audio para que sea más fácil oír todos los avisos automáticos que se producen mientras interactúas con el teléfono. La atenuación de audio se puede desactivar en la configuración de VoiceOver o a través del rotor de VoiceOver.\n3. Desbloqueo con Touch ID o Face ID: configurar el teléfono para que se desbloquee con Touch ID o Face ID hará que desbloquear el teléfono sea rápido y fácil y, a su vez, te permitirá acceder a los botones Mi ubicación , Alrededor de mí y Delante de mí lo más rápido posible cuando estés en movimiento. Configura el desbloqueo con Touch ID o Face ID en la aplicación Configuración de iOS .";
+"faq.personalize_experience.answer" = "Soundscape te permite personalizar tres aspectos clave de los avisos que oyes cuando caminas:\n\n1. Voz: puedes elegir cuál de las voces disponibles en iOS quieres que use Soundscape , así como la velocidad a la que se pronuncian los mensajes. En el menú, selecciona \" Ajustes \" y, a continuación, en \" Ajustes Generales\", selecciona Voz para ajustar la velocidad de habla y la configuración de voz . Se pueden descargar voces adicionales, incluidas las voces de calidad mejorada, en la aplicación Ajustes de iOS en Ajustes > Accesibilidad > Contenido leído > Voces.\n2. Medida de la distancia: Soundscape te permite escuchar todas las distancias en pies o metros. En el menú, selecciona \" Ajustes \" y, a continuación, en \" Ajustes Generales\", selecciona \"Idioma y región\". La sección Unidades de medida te permite alternar entre dos opciones: Imperial (pies) y Métrica (metros).\n3. Marcadores: puedes marcar tu mundo con cualquier cosa que te interese. Puedes marcar cosas que sean personales y relevantes para ti, como tu casa, tu oficina y tu tienda de comestibles preferida. Luego, Soundscape te avisará automáticamente de los lugares marcados al pasar o acercarte a ellos, o también puedes usar el botón Marcadores cercanos en la parte inferior de la pantalla de inicio para oír un aviso espacial de los lugares marcados a tu alrededor. Estos marcadores seguirán siendo personales para ti y no estarán disponibles para nadie más.\n\nAdemás de estas posibilidades, los siguientes ajustes pueden influir en el comportamiento de Soundscape:\n\n1. Consejos de VoiceOver: cuando los consejos de VoiceOver están activados, escucharás más información sobre todos los botones en la pantalla principal. Puedes activar los consejos de VoiceOver navegando a la aplicación Ajustes de iOS y yendo a Accesibilidad > VoiceOver > Verbosidad, y activando la configuración Leer indicaciones.\n2. Atenuación de audio: Soundscape está diseñado para funcionar con la atenuación de audio desactivada. Cuando la atenuación de audio está activada, los avisos automáticos pueden resultar difíciles de oír si se usa VoiceOver a la vez. Recomendamos desactivar la atenuación de audio para que sea más fácil oír todos los avisos automáticos. La atenuación de audio se puede desactivar en los avisos de VoiceOver o a través del rotor de VoiceOver.\n3. Desbloqueo con Touch ID o Face ID: configurar el teléfono para que se desbloquee con Touch ID o Face ID hará que desbloquear el teléfono sea rápido y fácil y, a su vez, te permitirá acceder a los botones Mi ubicación , Alrededor de mí y Delante de mí lo más rápido posible cuando estés en movimiento. Configura el desbloqueo con Touch ID o Face ID en la aplicación Ajustes de iOS .";
 
 
 /*  */
@@ -4354,23 +4354,23 @@
 
 
 /*  */
-"faq.tip.beacon_quiet" = "Si te metes el teléfono en el bolsillo y dejas de moverte, bajará el volumen del sonido de la señal porque Soundscape no sabrá hacia qué dirección estás orientado. Para solucionar esto, empieza a andar de nuevo o saca el teléfono y mantenlo en posición horizontal.";
+"faq.tip.beacon_quiet" = "Si te metes el teléfono en el bolsillo y dejas de moverte, bajará el volumen del sonido de la señal porque Soundscape no sabrá hacia dónde estás mirando. Para solucionar esto, empieza a andar de nuevo o saca el teléfono y mantenlo en posición horizontal.";
 
 
 /*  */
-"faq.tip.setting_beacon_on_address" = "Puedes establecer una señal en cualquier dirección. En la pantalla de inicio, pulsa sobre la barra de búsqueda y escribe la dirección. Tras seleccionar la dirección en los resultados de la búsqueda, se mostrará una pantalla de \"Detalles de la ubicación\" con una opción para \"Iniciar señal de audio\" en la dirección. De este modo, puedes establecer una señal en negocios, lugares, puntos de interés y residencias que no estén en Open Street Map.";
+"faq.tip.setting_beacon_on_address" = "Puedes establecer una señal en cualquier dirección. En la pantalla de inicio, pulsa sobre la barra de búsqueda y escribe la dirección. Tras seleccionar la dirección en los resultados de la búsqueda, aparecerá una pantalla de \"Detalles de la ubicación\" con la opción para \"Iniciar señal de audio\" en la dirección. De este modo, puedes establecer una señal en negocios, lugares, puntos de interés y residencias que no estén en Open Street Map.";
 
 
 /*  */
-"faq.tip.finding_bus_stops" = "Para encontrar paradas de autobuses cercanos, selecciona el filtro \"Transporte público\" en la lista Lugares cercanos.";
+"faq.tip.finding_bus_stops" = "Para encontrar paradas de autobús cercanos, selecciona el filtro \"Transporte público\" en la lista Lugares cercanos.";
 
 
 /*  */
-"faq.tip.turning_beacon_off" = "Puedes activar y desactivar el sonido rítmico de la señal con el botón de silencio de la pantalla de inicio. Si la señal está silenciada, seguirás recibiendo actualizaciones sobre la distancia a tu destino cada 50 metros aproximadamente.";
+"faq.tip.turning_beacon_off" = "Puedes activar y desactivar el sonido rítmico de la señal con el botón de silencio en la pantalla principal. Si la señal está silenciada, seguirás recibiendo actualizaciones sobre la distancia a tu destino cada 50 metros aproximadamente.";
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "Si quieres seguir interactuando con Soundscape pero no quieres oír los avisos automáticos, puedes desactivarlos yendo a la sección \"Administrar Avisos\" de la pantalla \"Ajustes\" del menú y desactivando \"Permitir Avisos\". O, si no vas a utilizar Soundscape, puedes ponerlo en modo de reposo o de aplazamiento utilizando el botón \"Suspender\" de la pantalla de inicio.";
+"faq.tip.turning_off_auto_callouts" = "Si quieres seguir interactuando con Soundscape pero no quieres oír los avisos automáticos, puedes desactivarlos yendo a la sección\"Administrar Avisos\" de la pantalla \"Ajustes\" del menú y desactivando \"Permitir Avisos\". O bien, si no vas a usar Soundscape, puedes ponerlo en el modo de suspensión o de aplazamiento con el botón \"Suspender\" en la pantalla principal.";
 
 
 /*  */
@@ -4378,7 +4378,7 @@
 
 
 /*  */
-"faq.tip.create_marker_at_bus_stop" = "Si hay una ruta de autobús que tomas regularmente, establece tus paradas de recogida y salida como Marcadores. De esta forma se guardarán para que puedas encontrarlas fácilmente, sólo tienes que ir a \"Marcadores y Rutas\" desde la pantalla de inicio y encontrarlas en la página \"Marcadores\". Puedes establecer una señal en ellos y recibirás actualizaciones periódicas sobre lo cerca que estás de tu parada de salida. Nota: puedes desactivar el sonido rítmico y seguirás recibiendo actualizaciones de la distancia a lo largo del camino.";
+"faq.tip.create_marker_at_bus_stop" = "Si hay una ruta de autobús que tomas regularmente, establece tus paradas de recogida y salida como Marcadores. De esta forma se guardarán para que puedas volver a encontrarlas fácilmente, sólo tienes que ir a \"Marcadores y Rutas\" desde la pantalla principal y encontrarlas en la página \"Marcadores\". Puedes establecer una señal en ellas y obtendrás actualizaciones periódicas sobre lo cerca que estás a tu parada de salida. Nota: puedes desactivar el sonido rítmico y seguirás recibiendo actualizaciones de la distancia por el camino.";
 
 
 /*  */
@@ -4434,13 +4434,13 @@
 "devices.explain_ar.connected.boseframes" = "Tus Bose Frames están listas para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape está siguiendo la orientación de tu cabeza para que no tengas que sostener el teléfono en la mano.";
 "help.using_headsets.bose_frames.title" = "Uso de Bose Frames";
 "help.using_headsets.bose_frames.when" = "Puedes usar Bose Frames en cualquier momento con Soundscape. El uso de Bose Frames te proporciona un audio de alta calidad que no dificulta la audición ambiental y te permite tener una experiencia mayor de manos libres.";
-"help.using_headsets.bose_frames.how.3" = "<b>Uso de los controles multimedia en los auriculares</b>:<br/> cuando los controles multimedia estén activados en la configuración de Soundscape, podrás usarlos en las Bose Frames para silenciar o reactivar la señal, avisar de tu ubicación o repetir el último aviso de llamada. Para obtener más información, ve la sección de ayuda \"Uso de controles multimedia\".";
+"help.using_headsets.bose_frames.how.3" = "<b>Uso de los controles multimedia en los auriculares</b>:<br/> cuando los controles multimedia estén habilitados en la configuración de Soundscape, podrás usarlos en las Bose Frames para silenciar o reactivar la señal, avisar de tu ubicación o repetir el último aviso de llamada. Para obtener más información, ve la sección de ayuda \"Uso de controles multimedia\".";
 "help.using_headsets.bose_frames.how.1" = "<b>Conexión de un dispositivo</b>:<br/> ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
 "help.using_headsets.bose_frames.how.4" = "<b>Solución de problemas de los auriculares</b>:<br/> Si tienes problemas para conectar las Bose Frames a Soundscape, asegúrate de que son de uno de los modelos compatibles: Altos o Rondos. Si son uno de estos modelos, asegúrate de que las Frames aparecen en la aplicación de Bose Connect. Si se muestran y sigues teniendo problemas con la conexión, intenta desemparejar y volver a emparejar los auriculares a través del menú Bluetooth del teléfono.<br>La compatibilidad con las Bose Frames es nueva y nos encantaría escuchar tus comentarios. Puedes contactarnos eligiendo la opción \"Enviar comentarios\" en el menú.";
-"help.using_headsets.bose_frames.how.2" = "<b>Calibración de los auriculares</b>:<br/> tus Bose Frames tendrán que calibrarse para saber con precisión frente a que dirección te encuentras. cada vez que las conectes a Soundscape, se te informará que se las necesitan calibrar mediante un timbre de audio. Para calibrar las Bose Frames, sigue las instrucciones que aparecen en la pantalla. Cuando el timbre deje de sonar, las Bose Frames estarán calibradas. Soundscape seguirá ahora la dirección de tu cabeza para que no tengas que llevar el teléfono en la mano. También puedes repetir esta calibración, en cualquier momento, incluso si no está sonando el timbre, si crees que la precisión del audio espacial no es buena.";
-"help.using_headsets.bose_frames.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza cuando se utilizan las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames indican a Soundscape la dirección frente a la cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio haciendo que sea más natural a medida que te mueves por el mundo. Cuando uses Soundscape con las Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione bien.";
+"help.using_headsets.bose_frames.how.2" = "<b>Calibración de los auriculares</b>:<br/> tus Bose Frames tendrán que calibrarse para saber con precisión hacia dónde estás mirando. cada vez que las conectes a Soundscape, se te informará que se las necesitan calibrar mediante un timbre de audio. Para calibrar las Bose Frames, sigue las instrucciones que aparecen en la pantalla. Cuando el timbre deje de sonar, las Bose Frames estarán calibradas. Soundscape seguirá ahora la dirección de tu cabeza para que no tengas que llevar el teléfono en la mano. Puedes repetir esta calibración, en cualquier momento, incluso si no está sonando el timbre, si crees que la precisión del audio espacial no es buena.";
+"help.using_headsets.bose_frames.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con las Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione bien.";
 "whats_new.1_3_0.0.title" = "Compatibilidad con Bose Frames";
-"whats_new.1_3_0.0.description" = "Ahora Soundscape admite audio espacial con seguimiento dinámico de la cabeza cuando se utilizan las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames indican a Soundscape la dirección frente a la cual te encuentras. Esto ayuda a Soundscape a mejorar tu experiencia de audio haciendo que sea más natural a medida que te mueves por el mundo. Cuando uses Soundscape con los Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione bien. Para empezar, ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
+"whats_new.1_3_0.0.description" = "Ahora Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con los Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione bien. Para empezar, ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
 "whats_new.1_3_0.1.description" = "Si vives en las áreas de Austin o San Antonio en Texas y deseas ayudarnos a probar una función en la que estamos trabajando con NaviLens, comuníquate con nosotros a través del botón Enviar comentarios del menú principal.";
 "whats_new.1_3_0.1.title" = "Prueba en Texas";
 "location_detail.action.navilens.hint" = "Pulsa dos veces para iniciar NaviLens.";
@@ -4454,3 +4454,6 @@
 "route_detail.action.start_reversed_route" = "Iniciar ruta de regreso";
 "faq.tip.reverse_route" = "Cuando seleccionas \"Iniciar ruta de regreso\" en la pantalla \"Detalles de la ruta\", será más fácil tomar una ruta de regreso, y se guardará una copia de la ruta con los puntos en orden de regreso. Ten en cuenta que \"Iniciar ruta de regreso\" no guardará otra copia de la ruta ya guardada.";
 "help.text.routes.content.how.1a" = "<b>Seguimiento de una ruta</b>:<br/> selecciona tu ruta en la página \"Marcadores y Rutas\" y, a continuación, \"Iniciar Ruta\". Volverás a la pantalla de inicio y Soundscape establecerá una señal en el primer punto de ruta. A medida que vas por la ruta, la señal avanzará al siguiente punto hasta completar la ruta. Si en cualquier momento deseas saltar hacia delante o hacia atrás un punto de ruta, pulsa en \"Siguiente punto de ruta\" o \"Punto de ruta anterior.";
+"location_detail.action.beacon_or_navilens.hint" = "Pulsa dos veces para iniciar NaviLens o iniciar una Señal de audio según qué tan cerca esté esta ubicación.";
+"beacon.suggest_navilens" = "Inicia NaviLens para obtener más información.";
+"location_detail.action.beacon_or_navilens" = "Iniciar NaviLens o señal de audio";
