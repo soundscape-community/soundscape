@@ -2079,15 +2079,15 @@
 
 
 /*  */
-"directions.nearest_road_name_is_distance_direction" = "Carretera más cercana, %1$@, está a %2$@ %3$@";
+"directions.nearest_road_name_is_distance_direction" = "La carretera más cercana, %1$@, está a %2$@ %3$@";
 
 
 /*  */
-"directions.nearest_road_name_is_distance" = "Carretera más cercana, %1$@, está a %2$@ de distancia";
+"directions.nearest_road_name_is_distance" = "La carretera más cercana, %1$@, está a %2$@ de distancia";
 
 
 /*  */
-"directions.nearest_road_name_was_distance_direction" = "Carretera más cercana, %1$@, estaba a %2$@ %3$@";
+"directions.nearest_road_name_was_distance_direction" = "La carretera más cercana, %1$@, estaba a %2$@ %3$@";
 
 
 /*  */
@@ -2850,7 +2850,7 @@
 
 
 /*  */
-"devices.reachability.alert.description" = "Tu %@ puede indicarle a Soundscape en qué dirección estás mirando, y esto ayudará a Soundscape a mejorar tu experiencia de audio. Puedes activar el seguimiento de cabezas en los ajustes de Auriculares con seguimiento de cabeza.";
+"devices.reachability.alert.description" = "Tu %@ puede indicarle a Soundscape en qué dirección estás mirando, y esto ayudará a Soundscape a mejorar tu experiencia de audio. Puedes activar el seguimiento de cabeza en los ajustes de Auriculares con seguimiento de cabeza.";
 
 
 /*  */
@@ -3174,7 +3174,7 @@
 
 
 /*  */
-"tutorial.beacons.text.IntroPart1" = "Al establecer una señal en una ubicación, Soundscape reproducirá un sonido proveniente de la dirección de esta ubicación. Este tutorial te guiará por el establecimiento de una señal y cómo usarla.";
+"tutorial.beacons.text.IntroPart1" = "Cuando estableces una señal en una ubicación, Soundscape reproducirá un sonido procedente de la dirección de esa ubicación. Este tutorial te guiará por el proceso de establecimiento de una señal y cómo usarla.";
 
 
 /*  */
@@ -3234,7 +3234,7 @@
 
 
 /*  */
-"tutorial.beacons.text.BeaconInBoundsRotate" = "Ahora intenta alejarte lentamente de la dirección de la señal, mientras sigues manteniendo el teléfono en posición horizontal. El sonido del timbre se detendrá y la señal te mostrará dónde se encuentra @!destination!!. Pruébalo ahora.";
+"tutorial.beacons.text.BeaconInBoundsRotate" = "Ahora intenta alejarte lentamente de la dirección de la señal. El sonido del timbre se detendrá y la señal continuará mostrándote dónde se encuentra @!destination!!. Inténtalo ahora.";
 
 
 /*  */
@@ -3382,15 +3382,15 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.acc_label" = "Aceptar las condiciones de uso";
+"terms_of_use.accept_checkbox.acc_label" = "Aceptar los términos de uso";
 
 
 /*  */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Pulsa dos veces para activar la casilla \"aceptar las condiciones de uso\".";
+"terms_of_use.accept_checkbox.on.acc_hint" = "Pulsa dos veces para activar la casilla \"aceptar los términos de uso\".";
 
 
 /*  */
-"terms_of_use.accept_checkbox.off.acc_hint" = "Pulsa dos veces para desactivar la casilla \"aceptar las condiciones de uso\".";
+"terms_of_use.accept_checkbox.off.acc_hint" = "Pulsa dos veces para desactivar la casilla \"aceptar los términos de uso\".";
 
 
 /*  */
@@ -3418,7 +3418,7 @@
 
 
 /*  */
-"first_launch.welcome_text" = "¡Bienvenido! Antes de comenzar, tenemos que pasar por algunos ajustes y aceptar varios permisos. Presiona el botón Siguiente para iniciar.";
+"first_launch.welcome_text" = "¡Bienvenido! Antes de comenzar, tenemos que hacer algunos ajustes y pedir varios permisos. Presiona el botón Siguiente para iniciar.";
 
 
 /*  */
@@ -4457,3 +4457,4 @@
 "location_detail.action.beacon_or_navilens.hint" = "Pulsa dos veces para iniciar NaviLens o iniciar una Señal de audio según qué tan cerca esté esta ubicación.";
 "beacon.suggest_navilens" = "Inicia NaviLens para obtener más información.";
 "location_detail.action.beacon_or_navilens" = "Iniciar NaviLens o señal de audio";
+"filter.navilens" = "Códigos NaviLens";
