@@ -1588,6 +1588,9 @@
 /* Filters, Banks & ATMs */
 "filter.banks" = "Banks & ATMs";
 
+/* Filters, NaviLens Codes */
+"filter.navilens" = "NaviLens Codes";
+
 
 /* Displayed next to the name of the filter to indicate that the filter is currently selected. %@ is the name of a filter */
 "filter.selected" = "%@ (selected)";

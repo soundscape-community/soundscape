@@ -15,6 +15,7 @@ enum PrimaryType: String, CaseIterable, Type {
     case park
     case bank
     case grocery
+    case navilens
     
     func matches(poi: POI) -> Bool {
         guard let typeable = poi as? Typeable else {

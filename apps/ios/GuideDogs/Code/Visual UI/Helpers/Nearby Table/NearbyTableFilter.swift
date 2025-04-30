@@ -24,6 +24,7 @@ struct NearbyTableFilter: Equatable {
             NearbyTableFilter(type: .park),
             NearbyTableFilter(type: .grocery),
             NearbyTableFilter(type: .bank),
+            NearbyTableFilter(type: .navilens),
         ]
     }
     
@@ -70,6 +71,9 @@ struct NearbyTableFilter: Equatable {
             case .grocery:
                 self.localizedString = GDLocalizedString("filter.groceries")
                 self.image = UIImage(named: "Groceries & Convenience Stores")
+            case .navilens:
+                self.localizedString = GDLocalizedString("filter.navilens")
+                self.image = UIImage(named: "navilens")
             }
         } else {
             // There is no `PrimaryType` filter selected

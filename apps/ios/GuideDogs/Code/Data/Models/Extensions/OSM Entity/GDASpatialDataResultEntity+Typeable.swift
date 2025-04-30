@@ -22,6 +22,8 @@ extension GDASpatialDataResultEntity: Typeable {
             return isBank()
         case .grocery:
             return isGrocery()
+        case .navilens:
+            return isNaviLens()
         }
     }
     
@@ -74,5 +76,9 @@ extension GDASpatialDataResultEntity: Typeable {
 
     private func isGrocery() -> Bool {
         return isAnyOf(tags: ["convenience", "supermarket"]);
+    }
+    
+    private func isNaviLens() -> Bool {
+        return superCategory == "navilens"
     }
 }

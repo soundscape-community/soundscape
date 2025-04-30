@@ -48,6 +48,9 @@ final class NearbyTableFilterTest: XCTestCase {
             case .grocery:
                 XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.groceries"))
                 XCTAssertEqual(filter.image, UIImage(named: "Groceries & Convenience Stores "))
+            case .navilens:
+                XCTAssertEqual(filter.localizedString, GDLocalizedString("filter.navilens"))
+                XCTAssertEqual(filter.image, UIImage(named: "navilens"))
             }
         }
     }

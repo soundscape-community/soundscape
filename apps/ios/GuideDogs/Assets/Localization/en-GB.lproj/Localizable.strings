@@ -1876,6 +1876,9 @@
 /*  */
 "filter.food_drink" = "Food & Drink";
 
+/*  */
+"filter.navilens" = "NaviLens Codes";
+
 /* Filter, Parks */
 "filter.parks" = "Parks";
 
