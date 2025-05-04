@@ -1,13 +1,16 @@
 name: "build and submit to testflight"
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'apps/ios/**'
-      - '.github/workflows/build-for-testflight.yml'
+  workflow_run:
+    workflows:
+      - "ios-tests"
+    types:
+      - completed
+    branches:
+      - main
   workflow_dispatch:
 jobs:
   build-and-upload:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: macos-14
 
     steps:
