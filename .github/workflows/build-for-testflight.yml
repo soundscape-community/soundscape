@@ -7,25 +7,22 @@ on:
       - '.github/workflows/build-for-testflight.yml'
   workflow_dispatch:
 jobs:
-      runs-on: macos-14
-    env:
-      APP_SCHEME: Soundscape
-      APP_PROJECT: apps/ios/GuideDogs.xcodeproj
-      ARCHIVE_PATH: build/GuideDogs.xcarchive
-      EXPORT_PLIST: build/ExportOptions.plist
+  build-and-upload:
+    runs-on: macos-14
 
     steps:
-    # 1  Check out code with push permissions (needed for commit)
+    # Check out code with push permissions (needed for commit)
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         persist-credentials: true
 
-    # 2  Increment the build number 
     - name: Bump build number
-      run: agvtool bump 
+      run: |
+        cd apps/ios
+        agvtool bump 
 
-    # 3  Commit and push the version change (avoid loop with [skip ci])
+    # Commit and push the version change (avoid loop with [skip ci])
     - name: Commit bump
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,61 +38,18 @@ jobs:
       with:
         xcode-version: "latest-stable"
 
-    # 5  Archive with the same automatic-signing settings Xcode’s Organiser uses
-    - name: Archive project
-      run: |
-        xcodebuild \
-          -project "$APP_PROJECT" \
-          -scheme "$APP_SCHEME" \
-          -configuration Release \
-          -destination 'generic/platform=iOS' \
-          -allowProvisioningUpdates \
-          -apiKey    ${{ secrets.APPSTORE_API_KEY_ID }} \
-          -apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }} \
-          -archivePath "$ARCHIVE_PATH" \
-          archive
-
-    # 6  Generate the export options plist that “Distribute App → App Store” would create
-    - name: Create export options
-      run: |
-        mkdir -p build
-        cat > "$EXPORT_PLIST" <<'EOF'
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>method</key><string>app-store</string>
-          <key>destination</key><string>upload</string>   <!-- Xcode 15+ uploads directly -->
-          <key>signingStyle</key><string>automatic</string>
-          <key>manageAppVersionAndBuildNumber</key><false/>
-          <key>stripSwiftSymbols</key><true/>
-          <key>uploadSymbols</key><true/>
-        </dict>
-        </plist>
-        EOF
-
-    # 7  Export and upload in one step (same as the Organiser “Upload” button)
-    - name: Export & upload
-      run: |
-        xcodebuild -exportArchive \
-          -archivePath "$ARCHIVE_PATH" \
-          -exportOptionsPlist "$EXPORT_PLIST" \
-          -allowProvisioningUpdates \
-          -apiKey    ${{ secrets.APPSTORE_API_KEY_ID }} \
-          -apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
-
-    - name: Export IPA
-      run: |
-        xcodebuild -exportArchive \
-          -archivePath $PWD/build/MyApp.xcarchive \
-          -exportOptionsPlist ExportOptions.plist \
-          -exportPath $PWD/build
-
-    - name: Upload to TestFlight
-      uses: apple-actions/upload-testflight-build@v3
+    # install the developer certificate in the signing_temp keychain
+    - name: install certificate
+      id: install-certificates
+      uses: apple-actions/import-codesign-certs@v3
       with:
-        app-path: build/MyApp.ipa
-        api-key-id:     ${{ vars.APPSTORE_API_KEY_ID }}
-        issuer-id:      ${{ vars.APPSTORE_ISSUER_ID }}
-        api-private-key:${{ secrets.APPSTORE_API_PRIVATE_KEY }}
-        
+        p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
+        p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
+
+    - name: build and upload to testflight
+      env:
+        APPSTORE_CONNECT_API_KEY: ${{ secrets.APPSTORE_CONNECT_API_KEY }}
+        APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
+        APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
+        KEYCHAIN_PASSWORD: ${{ steps.install-certificates.outputs.keychain-password }}
+      run: "apps/ios/Scripts/ci/archive-upload.sh | xcpretty && exit ${PIPESTATUS[0]}"
