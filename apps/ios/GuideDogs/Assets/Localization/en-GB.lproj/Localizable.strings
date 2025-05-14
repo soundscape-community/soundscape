@@ -555,7 +555,7 @@
 
 
 /*  */
-"voice.apple.preview_hint" = "Double tap to select and play a preview.";
+"voice.apple.preview_hint" = "Double tap to select and play a preview";
 
 
 /*  */
@@ -633,7 +633,7 @@
 
 
 /*  */
-"troubleshooting.check_audio.hint" = "Double tap to check the status of your headphones.";
+"troubleshooting.check_audio.hint" = "Double tap to check the status of your headphones";
 
 
 /*  */
@@ -645,7 +645,7 @@
 
 
 /*  */
-"troubleshooting.cache.hint" = "Double tap to delete and reload stored map data.";
+"troubleshooting.cache.hint" = "Double tap to delete and reload stored map data";
 
 
 /*  */
@@ -673,11 +673,11 @@
 
 
 /*  */
-"settings.new_feature.accept_button.acc_label" = "Double tap to close announcements.";
+"settings.new_feature.accept_button.acc_label" = "Double tap to close announcements";
 
 
 /*  */
-"settings.new_feature.accept_button.acc_hint" = "Double tap to view next update announcement.";
+"settings.new_feature.accept_button.acc_hint" = "Double tap to view next update announcement";
 
 
 /*  */
@@ -765,7 +765,7 @@
 
 
 /*  */
-"beacon.action.remove_beacon.double_tap.acc_hint" = "Double tap to remove the current audio beacon.";
+"beacon.action.remove_beacon.double_tap.acc_hint" = "Double tap to remove the current audio beacon";
 
 
 /*  */
@@ -773,7 +773,7 @@
 
 
 /*  */
-"beacon.action.mute_beacon.acc_hint" = "Double tap to mute the audio beacon.";
+"beacon.action.mute_beacon.acc_hint" = "Double tap to mute the audio beacon";
 
 
 /*  */
@@ -781,7 +781,7 @@
 
 
 /*  */
-"beacon.action.unmute_beacon.acc_hint" = "Double tap to unmute the audio beacon.";
+"beacon.action.unmute_beacon.acc_hint" = "Double tap to unmute the audio beacon";
 
 
 /*  */
@@ -793,7 +793,7 @@
 
 
 /*  */
-"beacon.action.mute_unmute_beacon.acc_hint" = "Double tap to mute or unmute the audio beacon.";
+"beacon.action.mute_unmute_beacon.acc_hint" = "Double tap to mute or unmute the audio beacon";
 
 
 /*  */
@@ -801,7 +801,7 @@
 
 
 /*  */
-"beacon.action.view_details.acc_hint.details" = "Double tap to view additional details.";
+"beacon.action.view_details.acc_hint.details" = "Double tap to view additional details";
 
 
 /*  */
@@ -849,7 +849,7 @@
 
 
 /*  */
-"preview.content.edge.text.accessibility_hint" = "Double tap to move to the next intersection.";
+"preview.content.edge.text.accessibility_hint" = "Double tap to move to the next intersection";
 
 
 /*  */
@@ -861,7 +861,7 @@
 
 
 /*  */
-"preview.go_back.accessibility_text" = "Double tap to go back to your previous intersection.";
+"preview.go_back.accessibility_text" = "Double tap to go back to your previous intersection";
 
 
 /*  */
@@ -869,7 +869,7 @@
 
 
 /*  */
-"preview.search.accessibility_hint" = "Double tap to search or browse nearby places.";
+"preview.search.accessibility_hint" = "Double tap to search or browse nearby places";
 
 
 /*  */
@@ -973,15 +973,15 @@
 
 
 /*  */
-"preview.include_unnamed_roads.hint.off" = "Double tap to include unnamed roads during Soundscape Street Preview.";
+"preview.include_unnamed_roads.hint.off" = "Double tap to include unnamed roads during Soundscape Street Preview";
 
 
 /*  */
-"preview.include_unnamed_roads.hint.on" = "Double tap to exclude unnamed roads during Soundscape Street Preview.";
+"preview.include_unnamed_roads.hint.on" = "Double tap to exclude unnamed roads during Soundscape Street Preview";
 
 
 /*  */
-"preview.tutorial.done.hint" = "Double tap to exit the tutorial.";
+"preview.tutorial.done.hint" = "Double tap to exit the tutorial";
 
 
 /*  */
@@ -1031,35 +1031,35 @@
 "location_detail.action.beacon_or_navilens" = "Start NaviLens or Audio Beacon";
 
 /*  */
-"location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location.";
+"location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location";
 
 
 /*  */
-"location_detail.action.beacon.hint.disabled" = "Setting a new audio beacon is disabled while route guidance is active.";
+"location_detail.action.beacon.hint.disabled" = "Setting a new audio beacon is disabled while route guidance is active";
 
 
 /*  */
-"location_detail.action.save.hint" = "Double tap to save this location as a marker.";
+"location_detail.action.save.hint" = "Double tap to save this location as a marker";
 
 
 /*  */
-"location_detail.action.edit.hint" = "Double tap to edit marker.";
+"location_detail.action.edit.hint" = "Double tap to edit marker";
 
 
 /*  */
-"location_detail.action.share.hint" = "Double tap to share this location.";
+"location_detail.action.share.hint" = "Double tap to share this location";
 
 
 /*  */
-"location_detail.action.preview.hint" = "Double tap to start previewing at this location.";
+"location_detail.action.preview.hint" = "Double tap to start previewing at this location";
 
 
 /*  */
-"location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active.";
+"location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active";
 
 
 /*  */
-"location_detail.action.directions.hint" = "Double tap to open this location in an external maps app.";
+"location_detail.action.directions.hint" = "Double tap to open this location in an external maps app";
 
 
 /*  */
@@ -1071,7 +1071,7 @@
 
 
 /*  */
-"location.select.hint" = "Double tap to select this location.";
+"location.select.hint" = "Double tap to select this location";
 
 
 /*  */
@@ -1091,7 +1091,7 @@
 
 
 /*  */
-"location_detail.map.view.hint" = "Edit to select a new location.";
+"location_detail.map.view.hint" = "Edit to select a new location";
 
 
 /*  */
@@ -1099,7 +1099,7 @@
 
 
 /*  */
-"location_detail.map.edit.hint" = "Move the map to the correct location.";
+"location_detail.map.edit.hint" = "Move the map to the correct location";
 
 
 /*  */
@@ -1155,7 +1155,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility.beacon.callout" = "Starting beacon to track marker location. Nudging, %@ of original location.";
+"location_detail.map.edit.accessibility.beacon.callout" = "Starting beacon to track marker location. Nudging, %@ of original location";
 
 
 /*  */
@@ -1163,15 +1163,15 @@
 
 
 /*  */
-"location_detail.add_waypoint.existing.hint" = "Double tap to remove this marker from your route.";
+"location_detail.add_waypoint.existing.hint" = "Double tap to remove this marker from your route";
 
 
 /*  */
-"location_detail.add_waypoint.new.hint" = "Double tap to add this marker to your route.";
+"location_detail.add_waypoint.new.hint" = "Double tap to add this marker to your route";
 
 
 /*  */
-"location_detail.add_waypoint.marker.hint" = "Double tap to create a marker and add it as a waypoint.";
+"location_detail.add_waypoint.marker.hint" = "Double tap to create a marker and add it as a waypoint";
 
 
 /*  */
@@ -1196,41 +1196,41 @@
 "route_detail.action.edit" = "Edit Route";
 
 /* */
-"route_detail.action.start_reversed_route.hint" = "Double tap to start this route in reverse.";
+"route_detail.action.start_reversed_route.hint" = "Double tap to start this route in reverse";
 
 /* */
-"route_detail.action.start_reversed_route.disabled.hint" = "Add waypoints before starting the route in reverse.";
+"route_detail.action.start_reversed_route.disabled.hint" = "Add waypoints before starting the route in reverse";
 
 /*  */
-"route_detail.action.start_route.hint" = "Double tap to start this route.";
-
-
-/*  */
-"route_detail.action.start_route.disabled.hint" = "Add waypoints before starting the route.";
+"route_detail.action.start_route.hint" = "Double tap to start this route";
 
 
 /*  */
-"route_detail.action.stop_route.hint" = "Double tap to stop this route.";
+"route_detail.action.start_route.disabled.hint" = "Add waypoints before starting the route";
 
 
 /*  */
-"route_detail.action.start_event.hint" = "Double tap to start this activity.";
+"route_detail.action.stop_route.hint" = "Double tap to stop this route";
 
 
 /*  */
-"route_detail.action.stop_event.hint" = "Double tap to stop this activity and save your progress.";
+"route_detail.action.start_event.hint" = "Double tap to start this activity";
 
 
 /*  */
-"route_detail.action.reset.hint" = "Double tap to reset this activity and download any available updates.";
+"route_detail.action.stop_event.hint" = "Double tap to stop this activity and save your progress";
 
 
 /*  */
-"route_detail.action.share.hint" = "Double tap to share this route.";
+"route_detail.action.reset.hint" = "Double tap to reset this activity and download any available updates";
 
 
 /*  */
-"route_detail.action.edit.hint" = "Double tap to edit this route.";
+"route_detail.action.share.hint" = "Double tap to share this route";
+
+
+/*  */
+"route_detail.action.edit.hint" = "Double tap to edit this route";
 
 
 /*  */
@@ -1238,7 +1238,7 @@
 
 
 /*  */
-"route_detail.action.create.hint" = "Double tap to create a new route.";
+"route_detail.action.create.hint" = "Double tap to create a new route";
 
 
 /*  */
@@ -1310,7 +1310,7 @@
 
 
 /*  */
-"route_detail.action.previous.hint" = "Double tap to set the beacon on the previous waypoint.";
+"route_detail.action.previous.hint" = "Double tap to set the beacon on the previous waypoint";
 
 
 /*  */
@@ -1318,7 +1318,7 @@
 
 
 /*  */
-"route_detail.action.next.hint" = "Double tap to set the beacon on the next waypoint.";
+"route_detail.action.next.hint" = "Double tap to set the beacon on the next waypoint";
 
 
 /*  */
@@ -1426,7 +1426,7 @@
 
 
 /*  */
-"tour.progress.distance.accessibility" = "Beacon set on %1$@, %2$@, %3$@ waypoints remaining";
+"tour.progress.distance.accessibility" = "Beacon set on %1$@. %2$@. %3$@ waypoints remaining";
 
 
 /*  */
@@ -1442,7 +1442,7 @@
 
 
 /*  */
-"tour.progress.distance.accessibility.singular" = "Beacon set on %1$@, %2$@, 1 waypoint remaining";
+"tour.progress.distance.accessibility.singular" = "Beacon set on %1$@. %2$@. 1 waypoint remaining";
 
 
 /*  */
@@ -1470,7 +1470,7 @@
 
 
 /*  */
-"waypoint.callout.button.hint" = "Double tap to hear additional details.";
+"waypoint.callout.button.hint" = "Double tap to hear additional details";
 
 
 /*  */
@@ -1642,7 +1642,7 @@
 
 
 /*  */
-"routes.sort.by_name.hint" = "Double tap to sort by name.";
+"routes.sort.by_name.hint" = "Double tap to sort by name";
 
 
 /*  */
@@ -1650,7 +1650,7 @@
 
 
 /*  */
-"routes.sort.by_distance.hint" = "Double tap to sort by distance.";
+"routes.sort.by_distance.hint" = "Double tap to sort by distance";
 
 
 /*  */
@@ -1726,7 +1726,7 @@
 
 
 /*  */
-"markers.edit_screen.done_button.acc_hint" = "Double tap to save this marker.";
+"markers.edit_screen.done_button.acc_hint" = "Double tap to save this marker";
 
 
 /*  */
@@ -1834,15 +1834,15 @@
 
 
 /*  */
-"search.button.markers.accessibility_hint" = "Double tap to select or edit your saved markers and routes.";
+"search.button.markers.accessibility_hint" = "Double tap to select or edit your saved markers and routes";
 
 
 /*  */
-"search.button.nearby.accessibility_hint" = "Double tap to explore nearby restaurants, public transport and more.";
+"search.button.nearby.accessibility_hint" = "Double tap to explore nearby restaurants, public transport and more";
 
 
 /*  */
-"search.button.current_location.accessibility_hint" = "Double tap to preview, mark, or share your current location with a friend.";
+"search.button.current_location.accessibility_hint" = "Double tap to preview, mark, or share your current location with a friend";
 
 
 /*  */
@@ -1858,11 +1858,11 @@
 
 
 /*  */
-"filter.clear.hint" = "Double tap to clear selected filter.";
+"filter.clear.hint" = "Double tap to clear selected filter";
 
 
 /*  */
-"filter.double_tap_places_category" = "Double tap to filter places by category.";
+"filter.double_tap_places_category" = "Double tap to filter places by category";
 
 
 /*  */
@@ -1993,7 +1993,7 @@
 
 
 /*  */
-"callouts.hardware.low_battery" = "%1$@ only has %2$@ percent battery remaining.";
+"callouts.hardware.low_battery" = "%1$@ only has %2$@ percent battery remaining";
 
 
 /*  */
@@ -2025,7 +2025,7 @@
 
 
 /*  */
-"sleep.sleep.acc_hint" = "Double tap to put Soundscape to sleep.";
+"sleep.sleep.acc_hint" = "Double tap to put Soundscape to sleep";
 
 
 /*  */
@@ -2592,7 +2592,7 @@
 
 
 /*  */
-"ui.action_button.my_location.acc_hint" = "Double tap to hear about your current location.";
+"ui.action_button.my_location.acc_hint" = "Double tap to hear about your current location";
 
 
 /*  */
@@ -2600,7 +2600,7 @@
 
 
 /*  */
-"ui.action_button.nearby_markers.acc_hint" = "Double tap to hear about nearby places that you have marked.";
+"ui.action_button.nearby_markers.acc_hint" = "Double tap to hear about nearby places that you have marked";
 
 
 /*  */
@@ -2608,7 +2608,7 @@
 
 
 /*  */
-"ui.action_button.around_me.acc_hint" = "Double tap to hear about places in the four quadrants around you.";
+"ui.action_button.around_me.acc_hint" = "Double tap to hear about places in the four quadrants around you";
 
 
 /*  */
@@ -2616,7 +2616,7 @@
 
 
 /*  */
-"ui.action_button.ahead_of_me.acc_hint" = "Double tap to hear about places in front of you.";
+"ui.action_button.ahead_of_me.acc_hint" = "Double tap to hear about places in front of you";
 
 
 /*  */
@@ -2624,7 +2624,7 @@
 
 
 /*  */
-"ui.menu.hint" = "Double tap to open the menu.";
+"ui.menu.hint" = "Double tap to open the menu";
 
 
 /*  */
@@ -2704,7 +2704,7 @@
 
 
 /*  */
-"poi_cell.accessibility_hint.suggested_search" = "Double tap to search for: %@.";
+"poi_cell.accessibility_hint.suggested_search" = "Double tap to search for: %@";
 
 
 /*  */
@@ -2716,7 +2716,7 @@
 
 
 /*  */
-"location_callout_cell.nearest_road" = "Nearest road, %@.";
+"location_callout_cell.nearest_road" = "Nearest road, %@";
 
 
 /*  */
@@ -2815,7 +2815,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.test.hint" = "Double tap to check your %@.";
+"devices.connect_headset.completed.test.hint" = "Double tap to check your %@";
 
 
 /*  */
@@ -3107,7 +3107,7 @@
 
 
 /*  */
-"action.double_tap_to_repeat" = "Double tap to repeat.";
+"action.double_tap_to_repeat" = "Double tap to repeat";
 
 
 /*  */
@@ -3155,7 +3155,7 @@
 
 
 /*  */
-"tutorial.markers.mark_location.acc_hint" = "Double tap to mark this location.";
+"tutorial.markers.mark_location.acc_hint" = "Double tap to mark this location";
 
 
 /*  */
@@ -3195,7 +3195,7 @@
 
 
 /*  */
-"tutorial.beacon.mark_location.acc_hint" = "Double tap to use this location for the beacon tutorial.";
+"tutorial.beacon.mark_location.acc_hint" = "Double tap to use this location for the beacon tutorial";
 
 
 /*  */
@@ -3307,7 +3307,7 @@
 
 
 /*  */
-"tutorial.beacons.text.MuteRepeat" = "Double tap with two fingers anywhere on the screen.";
+"tutorial.beacons.text.MuteRepeat" = "Double tap with two fingers anywhere on the screen";
 
 
 /*  */
@@ -3431,11 +3431,11 @@
 
 
 /*  */
-"terms_of_use.accept_checkbox.on.acc_hint" = "Double tap to tick the \"accept the terms of use\" checkbox.";
+"terms_of_use.accept_checkbox.on.acc_hint" = "Double tap to tick the \"accept the terms of use\" checkbox";
 
 
 /*  */
-"terms_of_use.accept_checkbox.off.acc_hint" = "Double tap to untick the \"accept the terms of use\" checkbox.";
+"terms_of_use.accept_checkbox.off.acc_hint" = "Double tap to untick the \"accept the terms of use\" checkbox";
 
 
 /*  */
@@ -3455,11 +3455,11 @@
 
 
 /*  */
-"terms_of_use.accept.new_features.accessibility_hint" = "Double tap to accept and close announcements.";
+"terms_of_use.accept.new_features.accessibility_hint" = "Double tap to accept and close announcements";
 
 
 /*  */
-"first_launch.get_started_button.off.acc_hint" = "You must tick the \"accept the terms of use\" checkbox before you can press this button.";
+"first_launch.get_started_button.off.acc_hint" = "You must tick the \"accept the terms of use\" checkbox before you can press this button";
 
 
 /*  */
@@ -3471,7 +3471,7 @@
 
 
 /*  */
-"first_launch.permission_required" = "This permission is required.";
+"first_launch.permission_required" = "This permission is required";
 
 
 /*  */
@@ -3575,7 +3575,7 @@
 
 
 /*  */
-"first_launch.callouts.listen.accessibility_hint" = "Double tap to listen to an example of what Soundscape might call out on your next walk.";
+"first_launch.callouts.listen.accessibility_hint" = "Double tap to listen to an example of what Soundscape might call out on your next walk";
 
 
 /*  */
@@ -3603,7 +3603,7 @@
 
 
 /*  */
-"first_launch.permissions.required" = "This permission is required.";
+"first_launch.permissions.required" = "This permission is required";
 
 
 /*  */
@@ -4103,7 +4103,7 @@
 
 
 /*  */
-"banner.custom_behavior.scavenger_hunt.hint" = "Double tap to read about or pause the scavenger hunt.";
+"banner.custom_behavior.scavenger_hunt.hint" = "Double tap to read about or pause the scavenger hunt";
 
 
 /*  */
@@ -4457,7 +4457,7 @@
 "whats_new.1_2_0.0.description" = "You can now shake your device to repeat the last callout. To enable this feature, switch on the 'Repeat Callouts' toggle in settings.";
 "whats_new.1_2_0.1.title" = "Beacon Mute Distance Setting";
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
-"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as public transport, Food & Drink, etc.";
+"whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as Public Transport, Food & Drink, etc.";
 "settings.about.title.copyright" = "Copyright Notices";
 "first_launch.permissions.motion" = "Motion & Fitness";
 "osm.tag.bar" = "Bar";
