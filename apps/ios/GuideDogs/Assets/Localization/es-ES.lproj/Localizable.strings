@@ -4443,7 +4443,7 @@
 "whats_new.1_3_0.0.description" = "Ahora Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con los Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione bien. Para empezar, ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
 "whats_new.1_3_0.1.description" = "Si vives en las áreas de Austin o San Antonio en Texas y deseas ayudarnos a probar una función en la que estamos trabajando con NaviLens, comuníquate con nosotros a través del botón Enviar comentarios del menú principal.";
 "whats_new.1_3_0.1.title" = "Prueba en Texas";
-"location_detail.action.navilens.hint" = "Pulsa dos veces para iniciar NaviLens.";
+"beacon.action.navilens" = "Iniciar NaviLens";
 "troubleshooting.tile_server_url" = "URL del servidor de teselas";
 "troubleshooting.tile_server_url.explanation" = "Este es el servidor desde el que Soundscape obtiene los datos de mapas. Normalmente no debes cambiar este a menos que estés desarrollando o probando Soundscape.";
 "route_detail.action.start_reversed_route.hint" = "Pulsa dos veces para iniciar esta ruta de regreso.";
