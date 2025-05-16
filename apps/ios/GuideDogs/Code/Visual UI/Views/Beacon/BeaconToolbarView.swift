@@ -147,7 +147,7 @@ struct BeaconToolbarView: View {
 
                 })
                 .foregroundColor(.white)
-                .accessibilityLabel(GDLocalizedTextView("location_detail.action.navilens.hint"))
+                .accessibilityLabel(GDLocalizedTextView("beacon.action.navilens"))
             }
             
             Spacer()
