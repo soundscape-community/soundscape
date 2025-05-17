@@ -703,9 +703,6 @@
 /* Button, Call out Beacon */
 "beacon.action.callout_beacon" = "Call out Beacon";
 
-/* Button, Launch NaviLens */
-"beacon.action.navilens" = "Launch NaviLens";
-
 /* Notification, Double tap to unmute or mute the audio beacon */
 "beacon.action.mute_unmute_beacon.acc_hint" = "Double tap to mute or unmute the audio beacon.";
 
@@ -725,7 +722,7 @@
 "beacon.beacon_location_within_audio_beacon_muted" = "Beacon within %@. Audio beacon has been muted.";
 
 /* Suggest the user launch NaviLens for the remaining distance. Appended to beacon.beacon_location_within_audio_beacon_muted. */
-"beacon.suggest_navilens" = "Use the NaviLens button to take you to your destination.";
+"beacon.suggest_navilens" = "Launch NaviLens for additional guidance.";
 
 //------------------------------------------------------------------------------
 // MARK: - Preview
@@ -917,6 +914,9 @@
 
 /* Text displayed when street preview is disabled */
 "location_detail.action.preview.hint.disabled" = "Street Preview is disabled while route guidance is active.";
+
+/* Voiceover hint for the action to launch NaviLens */
+"location_detail.action.navilens.hint" = "Double tap to launch NaviLens.";
 
 /* Voiceover hint for the action to get directions */
 "location_detail.action.directions.hint" = "Double tap to open this location in an external maps app.";
