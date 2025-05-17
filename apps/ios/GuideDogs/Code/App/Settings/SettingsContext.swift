@@ -31,7 +31,6 @@ class SettingsContext {
         fileprivate static let appUseCount               = "GDAAppUseCount"
         fileprivate static let newFeaturesLastDisplayedVersion = "GDANewFeaturesLastDisplayedVersion"
         fileprivate static let clientIdentifier          = "GDAUserDefaultClientIdentifier"
-        fileprivate static let servicesHostName          = "GDAServicesHostName"
         fileprivate static let metricUnits               = "GDASettingsMetric"
         fileprivate static let locale                    = "GDASettingsLocaleIdentifier"
         fileprivate static let voiceID                   = "GDAAppleSynthVoice"
@@ -63,6 +62,8 @@ class SettingsContext {
         fileprivate static let ttsGain = "GDATTSAudioGain"
         fileprivate static let beaconGain = "GDABeaconAudioGain"
         fileprivate static let afxGain = "GDAAFXAudioGain"
+        fileprivate static let autoUnmuteEnabled = "GDAAutoUnmuteEnabled"
+
         
         // MARK: Notification Keys
         
@@ -111,7 +112,9 @@ class SettingsContext {
             Keys.audioSessionMixesWithOthers: true,
             Keys.markerSortStyle: SortStyle.distance.rawValue,
             Keys.leaveImmediateVicinityDistance: 30.0,
-            Keys.enterImmediateVicinityDistance: 15.0
+            Keys.enterImmediateVicinityDistance: 15.0,
+            Keys.autoUnmuteEnabled: false
+
         ])
         
         resetLocaleIfNeeded()
@@ -161,22 +164,6 @@ class SettingsContext {
         }
         set(newValue) {
             userDefaults.set(newValue, forKey: Keys.clientIdentifier)
-        }
-    }
-    
-    var servicesHostName: String {
-        get {
-            // Allow URL to be reset to default when it is cleared
-            if let servicesHostName = userDefaults.string(forKey: Keys.servicesHostName), !servicesHostName.isEmpty {
-                return servicesHostName
-            } else {
-                let servicesHostName = "https://tiles.soundscape.services"
-                userDefaults.set(servicesHostName, forKey: Keys.servicesHostName)
-                return servicesHostName
-            }
-        }
-        set(newValue) {
-            userDefaults.set(newValue, forKey: Keys.servicesHostName)
         }
     }
     
@@ -339,6 +326,16 @@ class SettingsContext {
         }
     }
     
+    var autoUnmuteEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.autoUnmuteEnabled)
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.autoUnmuteEnabled)
+        }
+    }
+
+    
     // MARK: Push Notifications
     
     var apnsDeviceToken: Data? {
@@ -397,8 +394,6 @@ class SettingsContext {
         }
         set {
             userDefaults.set(newValue, forKey: Keys.leaveImmediateVicinityDistance)
-            // Ensure leave is always 15m greater than enter
-            userDefaults.set(max(newValue - 15.0, 0.0), forKey: Keys.enterImmediateVicinityDistance)
         }
     }
     
@@ -408,8 +403,6 @@ class SettingsContext {
         }
         set {
             userDefaults.set(newValue, forKey: Keys.enterImmediateVicinityDistance)
-            // Ensure leave is always 15m greater than enter
-            userDefaults.set(newValue + 15.0, forKey: Keys.leaveImmediateVicinityDistance)
         }
     }
 }
@@ -504,3 +497,4 @@ extension SettingsContext: AutoCalloutSettingsProvider {
         }
     }
 }
+
