@@ -1423,7 +1423,7 @@
 
 
 /*  */
-"tour.progress.elapsed.accessibility.singular" = ";Señal establecida en %1$@. Han transcurrido %2$@. 1 punto de ruta restante";
+"tour.progress.elapsed.accessibility.singular" = "Señal establecida en %1$@. Han transcurrido %2$@. 1 punto de ruta restante";
 
 
 /*  */
@@ -2059,7 +2059,7 @@
 
 
 /*  */
-"directions.unknown_address" = "Dirección desconocida";
+"directions.unknown_address" = "La dirección es desconocida";
 
 
 /*  */
@@ -3130,7 +3130,7 @@
 
 
 /*  */
-"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás mirando hacia tu marcador, @!marker_name!!.\n¡Parece que ya lo entiendes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La señal que has establecido para este tutorial se borrará ahora y volverás a la pantalla anterior.";
+"tutorial.markers.text.WrapUp" = "Perfecto, ahora estás mirando hacia tu marcador, @!marker_name!!.\n¡Parece que ya lo entiendes!\nPuedes gestionar tu lista de marcadores seleccionando Marcadores y Rutas en la pantalla de inicio.\nY siempre puedes visitar las páginas de Ayuda y Tutoriales para repasar este tutorial o para leer una guía completa sobre todo lo que puedes hacer con los marcadores. La señal que has establecido para este tutorial se borrará ahora y regresarás a la pantalla anterior.";
 
 
 /*  */
@@ -3266,7 +3266,7 @@
 
 
 /*  */
-"tutorial.beacons.text.WrapUp" = "¡Parece que ya lo entiendes! Si deseas repetir este tutorial, puedes obtener acceso a él en cualquier momento en la pantalla Ayuda y tutoriales. La señal que ha establecido para este tutorial se borrará ahora y regresarás a la pantalla anterior.";
+"tutorial.beacons.text.WrapUp" = "¡Parece que ya lo entiendes! Si deseas repetir este tutorial, puedes obtener acceso a él en cualquier momento en la pantalla Ayuda y tutoriales. La señal que has establecido para este tutorial se borrará ahora y regresarás a la pantalla anterior.";
 
 
 /*  */
@@ -4282,7 +4282,7 @@
 
 
 /*  */
-"faq.headset_battery_impact.question" = "¿¿Cómo afectan los auriculares que elijo a la duración de la batería del teléfono?";
+"faq.headset_battery_impact.question" = "¿Cómo afectan los auriculares que elijo a la duración de la batería del teléfono?";
 
 
 /*  */
@@ -4455,6 +4455,6 @@
 "faq.tip.reverse_route" = "Cuando seleccionas \"Iniciar ruta de regreso\" en la pantalla \"Detalles de la ruta\", será más fácil tomar una ruta de regreso, y se guardará una copia de la ruta con los puntos en orden de regreso. Ten en cuenta que \"Iniciar ruta de regreso\" no guardará otra copia de la ruta ya guardada.";
 "help.text.routes.content.how.1a" = "<b>Seguimiento de una ruta</b>:<br/> selecciona tu ruta en la página \"Marcadores y Rutas\" y, a continuación, \"Iniciar Ruta\". Volverás a la pantalla de inicio y Soundscape establecerá una señal en el primer punto de ruta. A medida que vayas por la ruta, la señal avanzará al siguiente punto hasta completar la ruta. Si en cualquier momento deseas saltar hacia delante o hacia atrás un punto de ruta, pulsa en \"Siguiente punto de ruta\" o \"Punto de ruta anterior.";
 "location_detail.action.beacon_or_navilens.hint" = "Pulsa dos veces para iniciar NaviLens o iniciar una Señal de audio según qué tan cerca esté esta ubicación";
-"beacon.suggest_navilens" = "Inicia NaviLens para obtener más ayuda.";
+"beacon.suggest_navilens" = "Usa el botón NaviLens para llegar a tu destino.";
 "location_detail.action.beacon_or_navilens" = "Iniciar NaviLens o señal de audio";
 "filter.navilens" = "Códigos NaviLens";
