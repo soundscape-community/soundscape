@@ -12,6 +12,9 @@ on:
         paths:
             - 'apps/ios/**'
     workflow_dispatch:
+concurrency:
+    group: ${{ github.ref }}
+    cancel-in-progress: true
 jobs:
     unit-tests:
         runs-on: macos-14
