@@ -3494,7 +3494,7 @@
 "whats_new.1_2_0.1.title" = "Beacon Mute Distance Setting";
 
 /* Description of the beacon vicinity distance feature */
-"whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. You can adjust this setting in Audio Beacon settings.\n\nWe would particularly welcome feedback on your experience with setting different distances (0, 5, and 10 metres), for the Audio Beacon to switch off. In our internal testing we are seeing some inconsistencies in behaviour and are keen to get feedback from a wider base of users.";
+"whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. Just go to the Audio Beacon settings and move the \"Audio Mute Distance\" slider.";
 
 /* Title of the  categories in places nearby feature */
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
