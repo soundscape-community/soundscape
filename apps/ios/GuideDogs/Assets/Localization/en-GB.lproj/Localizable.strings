@@ -4462,7 +4462,7 @@
 "first_launch.permissions.motion" = "Motion & Fitness";
 "osm.tag.bar" = "Bar";
 "osm.tag.ice_cream" = "Ice Cream";
-"whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. You can adjust this setting in Audio Beacon settings.\n\nWe would particularly welcome feedback on your experience with setting different distances (0, 5, and 10 metres), for the Audio Beacon to switch off. In our internal testing we are seeing some inconsistencies in behaviour and are keen to get feedback from a wider base of users.";
+"whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. Just go to the Audio Beacon settings and move the \"Audio Mute Distance\" slider.";
 "osm.tag.pub" = "Pub";
 "mail.default" = "Default";
 "mail.msoutlook" = "Microsoft Outlook";
