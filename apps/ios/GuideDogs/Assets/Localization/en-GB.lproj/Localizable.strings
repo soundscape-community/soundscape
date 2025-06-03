@@ -363,12 +363,10 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_title" = "Keep Markers and Routes?";
-
+"settings.clear_cache.markers.alert_title" = "Delete Markers and Routes?";
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Choose \"Delete\" to remove markers, beacons and routes, or \"Keep\" to only remove map data. \"Delete\" will reset the app back to a freshly installed state and cannot be undone!";
-
+"settings.clear_cache.markers.alert_message" = "Are you sure you want to delete all markers and routes? Choosing \"Delete\" will reset the app back to a freshly installed state and cannot be undone!";
 
 /*  */
 "settings.clear_cache.no_service.title" = "Unable to Clear Stored Map Data";
