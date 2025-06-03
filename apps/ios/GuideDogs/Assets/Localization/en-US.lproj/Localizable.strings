@@ -330,10 +330,10 @@
 "settings.clear_cache.alert_message" = "Soundscape stores map data to reduce cellular data and battery consumption. Deleting stored data will require Soundscape to reload the data.";
 
 /* Alert, would you like to keep saved markers */
-"settings.clear_cache.markers.alert_title" = "Keep Markers and Routes?";
+"settings.clear_cache.markers.alert_title" = "Delete Markers and Routes?";
 
-/* Message, chose delete or keep. Quotes written as \" Delete removes markers and beacons resetting the app to a new installation build and cannot be undone. Keep only removes map data. */
-"settings.clear_cache.markers.alert_message" = "Choose \"Delete\" to remove markers, beacons and routes, or \"Keep\" to only remove map data. \"Delete\" will reset the app back to a freshly installed state and cannot be undone!";
+/* Quotes written as \" Delete removes markers and beacons resetting the app to a new installation build and cannot be undone. */
+"settings.clear_cache.markers.alert_message" = "Are you sure you want to delete all markers and routes? Choosing \"Delete\" will reset the app back to a freshly installed state and cannot be undone!";
 
 /* Alert title, the stored data wasn't deleted */
 "settings.clear_cache.no_service.title" = "Unable to Clear Stored Map Data";
@@ -582,6 +582,15 @@
 
 /* Explanation of what the "Delete Stored Map Data" button does, displayed below the button */
 "troubleshooting.cache.explanation" = "Soundscape downloads map data as you walk around so that it can tell you about the things and places around you. If you are having issues with Soundscape or it is using too much memory, you can clear the stored map data and Soundscape will only redownload the map data near your current location.";
+
+/* Title for the user data section in troubleshooting */
+"troubleshooting.user_data" = "User Data";
+
+/* Label for the button that allows user to delete all map data, including saved markers and routes */
+"troubleshooting.user_data.button" = "Delete All markers and routes";
+
+/* Explanation for the user data section in troubleshooting */
+"troubleshooting.user_data.explanation" = "Delete all map data, including saved markers and routes. This action cannot be undone.";
 
 //------------------------------------------------------------------------------
 // MARK: Settings (About)

@@ -16,6 +16,7 @@ class StatusTableViewController: BaseTableViewController {
         static let audio = 1
         static let url = 2
         static let cache = 3
+        static let userData = 4 
     }
     
     private struct CellIdentifier {
@@ -73,7 +74,7 @@ class StatusTableViewController: BaseTableViewController {
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5 
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -82,6 +83,7 @@ class StatusTableViewController: BaseTableViewController {
         case Section.audio:   return 1
         case Section.url:     return 1
         case Section.cache:   return 1
+        case Section.userData: return 1 
         default:              return 0
         }
     }
@@ -92,6 +94,7 @@ class StatusTableViewController: BaseTableViewController {
         case Section.audio:   return GDLocalizedString("troubleshooting.check_audio")
         case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url")
         case Section.cache:   return GDLocalizedString("troubleshooting.cache")
+        case Section.userData: return GDLocalizedString("troubleshooting.user_data") 
         default:              return nil
         }
     }
@@ -107,6 +110,7 @@ class StatusTableViewController: BaseTableViewController {
         case Section.audio: return GDLocalizedString("troubleshooting.check_audio.explanation")
         case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url.explanation")
         case Section.cache: return GDLocalizedString("troubleshooting.cache.explanation")
+        case Section.userData: return GDLocalizedString("troubleshooting.user_data.explanation") 
         default: return nil
         }
     }
@@ -133,8 +137,7 @@ class StatusTableViewController: BaseTableViewController {
             let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
             
             cell.backgroundColor = Colors.Background.quaternary
-            cell.button.removeTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
-            cell.button.removeTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
+            cell.button.removeTarget(nil, action: nil, for: .touchUpInside)
             cell.button.addTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
             cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.check_audio")
             cell.button.accessibilityHint = GDLocalizedString("troubleshooting.check_audio.hint")
@@ -147,8 +150,7 @@ class StatusTableViewController: BaseTableViewController {
             let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
             
             cell.backgroundColor = Colors.Background.quaternary
-            cell.button.removeTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
-            cell.button.removeTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
+            cell.button.removeTarget(nil, action: nil, for: .touchUpInside)
             cell.button.addTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
             cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.tile_server_url")
             cell.button.accessibilityHint = GDLocalizedString("troubleshooting.tile_server_url.explanation")
@@ -162,14 +164,24 @@ class StatusTableViewController: BaseTableViewController {
             let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
             
             cell.backgroundColor = Colors.Background.quaternary
-            cell.button.removeTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
-            cell.button.removeTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
+            cell.button.removeTarget(nil, action: nil, for: .touchUpInside)
             cell.button.addTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
             cell.button.accessibilityLabel = GDLocalizedString("settings.clear_data")
             cell.button.accessibilityHint = GDLocalizedString("troubleshooting.cache.hint")
             cell.button.backgroundColor = Colors.Background.error
             cell.label.text = GDLocalizedString("settings.clear_data")
             
+            return cell
+            
+        case Section.userData:
+            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+            cell.backgroundColor = Colors.Background.quaternary
+            cell.button.removeTarget(nil, action: nil, for: .touchUpInside)
+            cell.button.addTarget(self, action: #selector(deleteUserDataTouchUpInside), for: .touchUpInside)
+            cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.user_data.button")
+            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.user_data.explanation")
+            cell.button.backgroundColor = Colors.Background.error
+            cell.label.text = GDLocalizedString("troubleshooting.user_data.button")
             return cell
             
         default:
@@ -262,9 +274,20 @@ extension StatusTableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    /// ask the user if they want to keep the markers.
-    /// This is not used, but could be reenabled for debug builds in the future.
-    private func displayMarkersPrompt() {
+    @objc func deleteUserDataTouchUpInside() {
+        // Only allow the cache to be deleted if we have a network connection to reload the cache
+        guard AppContext.shared.offlineContext.state != .offline else {
+            let alert = UIAlertController(title: GDLocalizedString("general.error.network_connection_required"),
+                                          message: GDLocalizedString("general.error.network_connection_required.deleting_data"),
+                                          preferredStyle: UIAlertController.Style.alert)
+            
+            alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.dismiss"), style: .cancel, handler: nil))
+            
+            present(alert, animated: true, completion: nil)
+            
+            return
+        }
+        
         let alert = UIAlertController(title: GDLocalizedString("settings.clear_cache.markers.alert_title"),
                                       message: GDLocalizedString("settings.clear_cache.markers.alert_message"),
                                       preferredStyle: UIAlertController.Style.actionSheet)
@@ -275,22 +298,13 @@ extension StatusTableViewController {
             }
         }))
         
-        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.keep"), style: .default, handler: { _ in
-            self.performSegue(withIdentifier: Segue.showLoadingModal, sender: self)
-            
-            // Check that tiles can be downloaded before we attempt to delete the cache
-            AppContext.shared.spatialDataContext.checkServiceConnection { [weak self] (success) in
-                guard success else {
-                    self?.displayUnableToClearCacheWarning()
-                    return
-                }
-                
-                // Clear the cache and keep the markers
-                self?.clearCache(false)
-            }
-        }))
-        
         alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive, handler: { _ in
+            AppContext.shared.eventProcessor.hush(playSound: false)
+            
+            if SettingsContext.shared.automaticCalloutsEnabled {
+                self.reenableCalloutsAfterReload = true
+                SettingsContext.shared.automaticCalloutsEnabled = false
+            }    
             self.performSegue(withIdentifier: Segue.showLoadingModal, sender: self)
             
             // Check that tiles can be downloaded before we attempt to delete the cache
