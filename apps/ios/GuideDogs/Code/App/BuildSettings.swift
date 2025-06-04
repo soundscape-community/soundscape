@@ -20,9 +20,9 @@ class BuildSettings {
     
     enum Source: String {
         case local
-        case appCenter
         case testFlight
         case appStore
+        case adhoc
     }
     
     // MARK: Properties
@@ -41,8 +41,6 @@ class BuildSettings {
         switch configuration {
         case .debug:
             return .local
-        case .adhoc:
-            return .appCenter
         case .release:
             // TestFlight builds contain an App Store receipt file named "sandboxReceipt"
             // Other sources have a receipt file named "receipt"
@@ -52,6 +50,8 @@ class BuildSettings {
             } else {
                 return .appStore
             }
+        case .adhoc:
+            return .adhoc
         }
     }
     
