@@ -724,9 +724,12 @@ printLog("Analyzing \(codeFiles.count) code files…")
 
 var allUsedKeys: Set<String> = []
 
+var hasMissingKeys = false
+
 codeFiles.forEach { (codeFile) in
     codeFile.missingKeys(from: baseLanguageFile).forEach({ (key) in
-        printWarning("Missing translation: '\(codeFile.filename)' uses a localization key which is not found in the base language file (or the key format is invalid): \"\(key)\"")
+        printError("Missing translation: '\(codeFile.filename)' uses a localization key which is not found in the base language file (or the key format is invalid): \"\(key)\"")
+        hasMissingKeys = true
     })
     
     codeFile.checkDynamicKeys(from: baseLanguageFile).forEach { issue in
@@ -748,6 +751,11 @@ codeFiles.forEach { (codeFile) in
     allUsedKeys = allUsedKeys.union(codeFile.keys)
     allUsedKeys = allUsedKeys.union(codeFile.dynamicKeys)
 }
+
+if hasMissingKeys {
+    exit(1)
+}
+
 
 if CommandLine.arguments.contains("unused") {
     // openscape has several keys that are constructed and will therefore be detected as unused
