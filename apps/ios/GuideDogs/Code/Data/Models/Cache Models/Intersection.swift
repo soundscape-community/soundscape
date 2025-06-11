@@ -380,7 +380,7 @@ class Intersection: Object, Locatable, Localizable {
             // Check roads that intersect with their vertices (first or last coordinates).
             // This represents the vertical section of the T.
             guard let roadCoordinates = road.coordinates else { return false }
-            guard intersectionCoordinate == roadCoordinates.first || intersectionCoordinate == roadCoordinates.last else { return false }
+            guard intersectionCoordinate.isNear(to: roadCoordinates.first) || intersectionCoordinate.isNear(to: roadCoordinates.last) else { return false }
             
             // Find a similar road that intersect with it's edge (not the first or last coordinates).
             // This represents the horizontal section of the T.
@@ -388,7 +388,7 @@ class Intersection: Object, Locatable, Localizable {
                 guard otherRoad.key != road.key && otherRoad.name == road.name else { return false }
                 guard let otherRoadCoordinates = otherRoad.coordinates else { return false }
                 
-                return intersectionCoordinate != otherRoadCoordinates.first && intersectionCoordinate != otherRoadCoordinates.last
+                return !intersectionCoordinate.isNear(to: otherRoadCoordinates.first) && !intersectionCoordinate.isNear(to: otherRoadCoordinates.last)
             }
         }
     }
@@ -520,7 +520,7 @@ extension Intersection {
             return intersection
         }
         
-        let similarIntersections = intersections.filter { $0.coordinate == intersection.coordinate }
+        let similarIntersections = intersections.filter { $0.coordinate.isNear(to: intersection.coordinate) }
         guard similarIntersections.count > 1 else {
             return intersection
         }
@@ -611,14 +611,14 @@ extension Intersection {
         let intersectionCoordinate = self.coordinate
         
         // 1. Road start
-        if intersectionCoordinate == roadCoordinates.first! {
+        if intersectionCoordinate.isNear(to: roadCoordinates.first) {
             guard let bearing = road.bearing() else { return nil }
             let direction = Direction(from: heading, to: bearing, type: .leftRight)
             
             return [RoadDirection(road, bearing, direction)]
         }
         // 2. Road end
-        else if intersectionCoordinate == roadCoordinates.last! {
+        else if intersectionCoordinate.isNear(to: roadCoordinates.last) {
             guard let bearing = road.bearing(reversedDirection: true) else { return nil }
             let direction = Direction(from: heading, to: bearing, type: .leftRight)
             
@@ -627,7 +627,7 @@ extension Intersection {
         // 3. Along the road
         else {
             // Find the intersection coordinate along the road
-            guard let intersectionCoordinateIndex = roadCoordinates.firstIndex(of: intersectionCoordinate) else {
+            guard let intersectionCoordinateIndex = roadCoordinates.firstIndex(where: {$0.isNear(to: intersectionCoordinate) }) else {
                 // We did not find a match for the intersection coordinate
                 // The road does not contain the intersection coordinate
                 DDLogDebug("Could not find an intersection coordinate for road: \(road.name)")

@@ -346,7 +346,7 @@ class SpatialDataCache: NSObject {
     
     /// Returns all the intersections that connect to a given road
     static func intersection(forRoadKey roadKey: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
-        return intersections(forRoadKey: roadKey)?.first(where: { $0.coordinate == coordinate })
+        return intersections(forRoadKey: roadKey)?.first(where: { $0.coordinate.isNear(to: coordinate) })
     }
     
     /// Returns all the intersections that connect to a given road, within a region.

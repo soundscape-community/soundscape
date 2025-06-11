@@ -405,7 +405,7 @@ extension ActivityPOI: POI {
     }
     
     func contains(location: CLLocationCoordinate2D) -> Bool {
-        return coordinate == location
+        return coordinate.isNear(to: location)
     }
     
     func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {

@@ -70,7 +70,7 @@ class GeometryUtils {
         }
         
         // Check if we need to add a coordinate for a closed path
-        if coordinates.last! != coordinates.first! {
+        if !coordinates.last!.isNear(to: coordinates.first! ){
             (pixelX, pixelY) = VectorTile.getPixelXY(latitude: coordinates.first!.latitude, longitude: coordinates.first!.longitude, zoom: 16)
         }
         path.move(to: CGPoint(x: pixelX, y: pixelY))
@@ -125,7 +125,7 @@ class GeometryUtils {
     static func split(path: [CLLocationCoordinate2D],
                       atCoordinate coordinate: CLLocationCoordinate2D,
                       reversedDirection: Bool = false) -> [CLLocationCoordinate2D] {
-        guard let coordinateIndex = path.firstIndex(of: coordinate) else {
+        guard let coordinateIndex = path.firstIndex(where: {coordinate.isNear(to: $0)}) else {
             return []
         }
         
@@ -147,7 +147,8 @@ class GeometryUtils {
     static func rotate(circularPath path: [CLLocationCoordinate2D],
                        atCoordinate coordinate: CLLocationCoordinate2D,
                        reversedDirection: Bool = false) -> [CLLocationCoordinate2D] {
-        guard pathIsCircular(path), let coordinateIndex = path.firstIndex(of: coordinate) else {
+        guard pathIsCircular(path),
+              let coordinateIndex = path.firstIndex(where: {coordinate.isNear(to: $0)}) else {
             return []
         }
         
@@ -176,7 +177,7 @@ class GeometryUtils {
             return false
         }
         
-        return first == last
+        return first.isNear(to: last)
     }
     
     ///  Returns the distance of a coordinate path
