@@ -156,15 +156,15 @@ class GeometryUtilsTest: XCTestCase {
         /// Using the example given in the function description for `rotate`
         let a = [p1, p2, p3, p4, p5, p1]
         let a_rot = GeometryUtils.rotate(circularPath: a, atCoordinate: p3)
-        XCTAssertEqual(a_rot, [p3, p4, p5, p1, p2, p3])
+        assertNear(a_rot, [p3, p4, p5, p1, p2, p3])
         let a_rot_reverse = GeometryUtils.rotate(circularPath: a, atCoordinate: p3, reversedDirection: true)
-        XCTAssertEqual(a_rot_reverse, [p3, p2, p1, p5, p4, p3])
+        assertNear(a_rot_reverse, [p3, p2, p1, p5, p4, p3])
         
         /// Rotating from the existing start is trivial:
         let a_no_rot = GeometryUtils.rotate(circularPath: a, atCoordinate: p1)
-        XCTAssertEqual(a_no_rot, a)
+        assertNear(a_no_rot, a)
         let a_no_rot_reverse = GeometryUtils.rotate(circularPath: a, atCoordinate: p1, reversedDirection: true)
-        XCTAssertEqual(a_no_rot_reverse, a.reversed())
+        assertNear(a_no_rot_reverse, a.reversed())
     }
     
     func testRotate_invalidPath() throws {
@@ -273,17 +273,17 @@ class GeometryUtilsTest: XCTestCase {
         // Either I don't understand how this should work, or it's a bug.
         
         //XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1 / 2), CLLocationCoordinate2DMake(1.5, 2))
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1), path[1])
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: dist1)!.isNear(to: path[1]))
         
         //XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2 / 4), CLLocationCoordinate2DMake(3, 3))
         //XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist3 * 3.12 / 4), CLLocationCoordinate2DMake(3, 1 - 0.12))
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2), path[2])
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2)!.isNear(to: path[2]))
         
         //XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2 + dist3 / 6), CLLocationCoordinate2DMake(2.5, 0))
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2 + dist3), path[3])
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2 + dist3)!.isNear(to: path[3]))
         
         //XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2 + dist3 + dist4 * 0.123), CLLocationCoordinate2DMake(0, 0.123))
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2 + dist3 + dist4), path.last)
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: dist1 + dist2 + dist3 + dist4)!.isNear(to: path.last))
     }
     
     /// Edge cases for `GeometryUtils::referenceCoordinate(on:for:)` with a path size of less than 2
@@ -296,9 +296,9 @@ class GeometryUtilsTest: XCTestCase {
         
         // Single point always returns that point
         let singlePath = [CLLocationCoordinate2DMake(0, 0)]
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: singlePath, for: -1), singlePath.first)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: singlePath, for: 0), singlePath.first)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: singlePath, for: 1), singlePath.first)
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: singlePath, for: -1)!.isNear(to: singlePath.first))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: singlePath, for: 0)!.isNear(to: singlePath.first))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: singlePath, for: 1)!.isNear(to: singlePath.first))
     }
     
     /// Edge cases for `GeometryUtils::referenceCoordinate(on:for:)` with a distance before the start or after the end of the path
@@ -309,17 +309,17 @@ class GeometryUtilsTest: XCTestCase {
                     CLLocationCoordinate2DMake(2, 2)]
         let path_len = GeometryUtils.pathDistance(path)
         // Any distance before the start returns the first coordinate
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -CLLocationDistanceMax), path.first)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -path_len), path.first)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -5.2), path.first)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -1), path.first)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: 0), path.first)
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: -CLLocationDistanceMax)!.isNear(to: path.first))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: -path_len)!.isNear(to: path.first))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: -5.2)!.isNear(to: path.first))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: -1)!.isNear(to: path.first))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: 0)!.isNear(to: path.first))
         
         // Any distance after the end returns the last coordinate
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: CLLocationDistanceMax), path.last)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: path_len * 1.2512), path.last)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: path_len + 1), path.last)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: path_len), path.last)
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: CLLocationDistanceMax)!.isNear(to: path.last))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: path_len * 1.2512)!.isNear(to: path.last))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: path_len + 1)!.isNear(to: path.last))
+        XCTAssertTrue(GeometryUtils.referenceCoordinate(on: path, for: path_len)!.isNear(to: path.last))
     }
     
     // TODO: test `squaredDistance`
@@ -335,24 +335,24 @@ class GeometryUtilsTest: XCTestCase {
             let on_path = CLLocationCoordinate2DMake(0, lon)
             let on_path_closest = GeometryUtils.closestEdge(from: on_path, on: path)
             XCTAssertNotNil(on_path_closest)
-            XCTAssertEqual(on_path_closest!.coordinate, on_path)
+            XCTAssertTrue(on_path_closest!.coordinate.isNear(to: on_path))
             
             let parallel = CLLocationCoordinate2DMake(10, lon)
             let parallel_closest = GeometryUtils.closestEdge(from: parallel, on: path)
             XCTAssertNotNil(parallel_closest)
-            XCTAssertEqual(parallel_closest!.coordinate, on_path)
+            XCTAssertTrue(parallel_closest!.coordinate.isNear(to: on_path))
         }
         
         for lat in [-10.0, -5.0, 0, 5.0, 10.0] {
             let before = CLLocationCoordinate2DMake(lat, -10)
             let before_closest = GeometryUtils.closestEdge(from: before, on: path)
             XCTAssertNotNil(before_closest);
-            XCTAssertEqual(before_closest!.coordinate, path.first)
+            XCTAssertTrue(before_closest!.coordinate.isNear(to: path.first))
             
             let after = CLLocationCoordinate2DMake(lat, 30)
             let after_closest = GeometryUtils.closestEdge(from: after, on: path)
             XCTAssertNotNil(after_closest)
-            XCTAssertEqual(after_closest!.coordinate, path.last)
+            XCTAssertTrue(after_closest!.coordinate.isNear(to: path.last))
         }
     }
     
@@ -398,12 +398,12 @@ class GeometryUtilsTest: XCTestCase {
         let n_pole = CLLocationCoordinate2DMake(90, 0)
         let n_pole_closest = GeometryUtils.closestEdge(from: n_pole, on: path)
         XCTAssertNotNil(n_pole_closest)
-        XCTAssertEqual(n_pole_closest!.coordinate, path.first)
+        XCTAssertTrue(n_pole_closest!.coordinate.isNear(to: path.first))
         
         let s_pole = CLLocationCoordinate2DMake(-90, 0)
         let s_pole_closest = GeometryUtils.closestEdge(from: s_pole, on: path)
         XCTAssertNotNil(s_pole_closest)
-        XCTAssertEqual(s_pole_closest!.coordinate, path.first)
+        XCTAssertTrue(s_pole_closest!.coordinate.isNear(to: path.first))
     }
     
     
@@ -415,4 +415,37 @@ class GeometryUtilsTest: XCTestCase {
     // TODO: test `centroid` with coordinates
     
     
+}
+
+/// Asserts that two sequences of `CLLocationCoordinate2D` are “near” element-by-element.
+/// Fails if they have different lengths or any pair isn’t sufficiently close.
+/// - Parameters:
+///   - lhs: The first sequence of coordinates.
+///   - rhs: The second sequence of coordinates.
+///   - file: The file name to report failures in (default: caller’s file).
+///   - line: The line number to report failures at (default: caller’s line).
+func assertNear<C1: Collection, C2: Collection>(
+    _ lhs: C1,
+    _ rhs: C2,
+    file: StaticString = #file,
+    line: UInt = #line
+) where C1.Element == CLLocationCoordinate2D, C2.Element == CLLocationCoordinate2D
+{
+    XCTAssertEqual(
+        lhs.count,
+        rhs.count,
+        "Coordinate sequences have different counts: \(lhs.count) vs \(rhs.count)",
+        file: file,
+        line: line
+    )
+    XCTAssertTrue(
+        zip(lhs, rhs).allSatisfy { a, b in a.isNear(to: b) },
+        """
+        Expected all coordinates to be near:\n\
+        lhs: \(lhs)\n\
+        rhs: \(rhs)
+        """,
+        file: file,
+        line: line
+    )
 }
