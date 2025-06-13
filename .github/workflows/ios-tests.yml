@@ -24,6 +24,9 @@ jobs:
                 sudo xcode-select -s "${xcode_path}/Contents/Developer"
                 xcodebuild -version
                 gem install xcpretty
+            - name: Run LocalizationLinter
+            - run: |
+                swift Scripts/LocalizationLinter/main.swift
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace
