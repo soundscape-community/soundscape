@@ -26,7 +26,7 @@ jobs:
                 gem install xcpretty
             - name: Run LocalizationLinter
               run: |
-                swift Scripts/LocalizationLinter/main.swift
+                swift GuideDogs/Scripts/LocalizationLinter/main.swift
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace
