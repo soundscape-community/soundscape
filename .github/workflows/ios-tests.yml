@@ -25,7 +25,7 @@ jobs:
                 xcodebuild -version
                 gem install xcpretty
             - name: Run LocalizationLinter
-            - run: |
+              run: |
                 swift Scripts/LocalizationLinter/main.swift
             - name: Build
               run: >
