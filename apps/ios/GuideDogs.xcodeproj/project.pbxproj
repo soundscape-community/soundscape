@@ -762,6 +762,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		15F733FC2DF72DCF006477A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15F732B32DF35EF5006477A8 /* Scripts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 28CD233827602209006C9901;
+			remoteInfo = LocalizationLinter;
+		};
 		91DC0CD12A423B2200244CC8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D3D7CFC01B3D96460020B5E9 /* Project object */;
@@ -784,6 +791,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		15F732B32DF35EF5006477A8 /* Scripts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Scripts.xcodeproj; path = Scripts/Scripts.xcodeproj; sourceTree = "<group>"; };
 		2809B80B2379E95B00F6C9AC /* calibration_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = calibration_success.wav; path = Assets/Sounds/calibration_success.wav; sourceTree = "<group>"; };
 		2809B80D2379E9A000F6C9AC /* connection_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = connection_success.wav; path = Assets/Sounds/connection_success.wav; sourceTree = "<group>"; };
 		2809B80F2379E9C700F6C9AC /* low_confidence.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = low_confidence.wav; path = Assets/Sounds/low_confidence.wav; sourceTree = "<group>"; };
@@ -1612,6 +1620,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		15F733F92DF72DCF006477A8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				15F733FD2DF72DCF006477A8 /* LocalizationLinter */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		2809B80A2379E8F100F6C9AC /* Calibration */ = {
 			isa = PBXGroup;
 			children = (
@@ -4436,6 +4452,7 @@
 		D3D7CFBF1B3D96460020B5E9 = {
 			isa = PBXGroup;
 			children = (
+				15F732B32DF35EF5006477A8 /* Scripts.xcodeproj */,
 				D3D7CFCA1B3D96470020B5E9 /* Soundscape */,
 				B9E5F4CE2891DBAC0019DEED /* Packages */,
 				914DEBCE2A3CE6B9007B161C /* UnitTests */,
@@ -4595,6 +4612,12 @@
 			);
 			productRefGroup = D3D7CFC91B3D96470020B5E9 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 15F733F92DF72DCF006477A8 /* Products */;
+					ProjectRef = 15F732B32DF35EF5006477A8 /* Scripts.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				D3D7CFC71B3D96460020B5E9 /* Soundscape */,
@@ -4602,6 +4625,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		15F733FD2DF72DCF006477A8 /* LocalizationLinter */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = LocalizationLinter;
+			remoteRef = 15F733FC2DF72DCF006477A8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		914DEBCB2A3CE6B9007B161C /* Resources */ = {
