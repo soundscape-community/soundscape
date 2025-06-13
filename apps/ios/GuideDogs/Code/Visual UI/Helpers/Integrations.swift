@@ -7,6 +7,12 @@
 //
 
 func launchNaviLens(detail: LocationDetail) {
+    // Silence Soundscape before launching NaviLens
+    // Find the home screen in the view stack and trigger the sleep button
+    let rootVc = AppContext.rootViewController as? UINavigationController;
+    let homeVc = rootVc?.viewControllers.first as? HomeViewController;
+    homeVc?.onSleepTouchUpInside();
+    
     // Launch NaviLens app, or open App Store listing if not installed
     let navilensUrl = URL(string: "navilens://")!
     let appStoreUrl = URL(string: "https://apps.apple.com/us/app/navilens/id1273704914")!
