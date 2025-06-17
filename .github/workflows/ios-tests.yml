@@ -36,8 +36,9 @@ jobs:
                 name: xcodebuild-log
                 path: xcodebuild.log
             - name: Run LocalizationLinter
+              working-directory: apps/ios
               run: |
-                swift apps/ios/Scripts/LocalizationLinter/main.swift
+                swift /Scripts/LocalizationLinter/main.swift
             - name: Test
               run: >
                 xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace
