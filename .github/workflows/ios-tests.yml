@@ -38,7 +38,7 @@ jobs:
             - name: Run LocalizationLinter
               working-directory: apps/ios
               run: |
-                swift /Scripts/LocalizationLinter/main.swift
+                swift Scripts/LocalizationLinter/main.swift
             - name: Test
               run: >
                 xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace
