@@ -34,7 +34,7 @@ else
     EXTRA_ARGS=(
         -authenticationKeyPath "$authenticationKeyPath"
         -authenticationKeyID "$APPSTORE_CONNECT_KEY_ID"
-        -authenticationIssuerID "$APPSTORE_CONNECT_ISSUER_ID"
+        -authenticationKeyIssuerID "$APPSTORE_CONNECT_ISSUER_ID"
     )
 fi
 
