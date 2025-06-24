@@ -1,26 +1,59 @@
 name: "build and submit to testflight"
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'apps/ios/**'
-      - '.github/workflows/build-for-testflight.yml'
+  workflow_run:
+    workflows:
+      - "ios-tests"
+    types:
+      - completed
+    branches:
+      - main
   workflow_dispatch:
 jobs:
-  build:
-    runs-on: macos-13
+  build-and-upload:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: macos-14
+    environment: Development
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup ssh agent and deploy key(s)
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Install gems
-        working-directory: apps/ios
-        run: bundle install
-      - name: setup and build with fastlane
-        working-directory: apps/ios
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-        run: bundle exec fastlane beta
+    # Check out code with push permissions (needed for commit)
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: true
+
+    - name: Bump build number
+      run: |
+        cd apps/ios
+        agvtool bump 
+
+    # Commit and push the version change (avoid loop with [skip ci])
+    - name: Commit bump
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config user.name  "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add -A
+        git commit -m "chore(ci): bump build number [skip ci]" || echo "Nothing to commit"
+        git push
+
+    # 4  Select the latest stable Xcode version 
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: "latest-stable"
+
+    # install the developer certificate in the signing_temp keychain
+    - name: install certificate
+      id: install-certificates
+      uses: apple-actions/import-codesign-certs@v3
+      with:
+        p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
+        p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
+
+    - name: build and upload to testflight
+      env:
+        APPSTORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_P8_BASE64 }}
+        APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
+        APPSTORE_CONNECT_KEY_ID: ${{ secrets.APP_store_KEY_ID }}
+        KEYCHAIN_PASSWORD: ${{ steps.install-certificates.outputs.keychain-password }}
+      run: "apps/ios/Scripts/ci/archive-upload.sh | xcpretty && exit ${PIPESTATUS[0]}"
