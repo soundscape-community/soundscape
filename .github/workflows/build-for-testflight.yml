@@ -1,19 +1,19 @@
 name: "build and submit to testflight"
 on:
-  workflow_run:
-    workflows:
-      - "ios-tests"
-    types:
-      - completed
-    branches:
-      - main
+  # workflow_run:
+    # workflows:
+      # - "ios-tests"
+    # types:
+      # - completed
+    # branches:
+      # - main
   workflow_dispatch:
 permissions: 
   contents: write
 jobs:
   build-and-upload:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
-    runs-on: macos-14
+    # if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: macos-latest
     environment: Production
 
     steps:
@@ -58,4 +58,5 @@ jobs:
         APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
         APPSTORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
         KEYCHAIN_PASSWORD: ${{ steps.install-certificates.outputs.keychain-password }}
-      run: "apps/ios/Scripts/ci/archive-upload.sh | xcpretty && exit ${PIPESTATUS[0]}"
+      # run: "apps/ios/Scripts/ci/archive-upload.sh | xcpretty && exit ${PIPESTATUS[0]}"
+      run: "apps/ios/Scripts/ci/archive-upload.sh"

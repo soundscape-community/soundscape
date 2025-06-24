@@ -44,6 +44,7 @@ xcodebuild archive  \
     -configuration Release \
     -destination 'generic/platform=iOS' \
     -allowProvisioningUpdates \
+    -verbose \
     -archivePath "$APP_ARCHIVE_PATH" \
     "${EXTRA_ARGS[@]}" 
 
@@ -55,5 +56,6 @@ xcodebuild \
     -exportOptionsPlist "$SCRIPTDIR/ExportOptions.plist" \
     -exportPath "$SCRIPTDIR/build" \
     -allowProvisioningUpdates \
+    -verbose \
     "${EXTRA_ARGS[@]}"
 
