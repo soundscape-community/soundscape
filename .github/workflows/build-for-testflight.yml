@@ -8,6 +8,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+permissions: 
+  contents: write
 jobs:
   build-and-upload:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
