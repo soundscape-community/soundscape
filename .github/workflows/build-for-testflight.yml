@@ -1,5 +1,8 @@
 name: "build and submit to testflight"
 on:
+  push: 
+    branches: 
+      - actionsDev
   # workflow_run:
     # workflows:
       # - "ios-tests"
