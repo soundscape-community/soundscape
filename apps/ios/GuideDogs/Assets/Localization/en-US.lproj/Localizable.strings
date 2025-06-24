@@ -3511,6 +3511,9 @@
 /* Description of the categories in places nearby feature */
 "whats_new.1_2_0.2.description" = "You can now filter the places nearby list by categories such as Public Transit, Food & Drink, etc.";
 
+/* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settings app. {NumberedPlaceholder="iOS"} */
+"whats_new.3_2_0.2.description" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";"whats_new.3_2_0.2.description" = "Additional voices, including enhanced quality voices, can be downloaded in the Spoken Content section of the iOS accessibility settings.";
+
 /* Title of the Bose Frames support feature */
 "whats_new.1_3_0.0.title" = "Bose Frames Support";
 
