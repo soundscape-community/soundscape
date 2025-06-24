@@ -330,10 +330,10 @@
 "settings.clear_cache.alert_message" = "Soundscape stores map data to reduce cellular data and battery consumption. Deleting stored data will require Soundscape to reload the data.";
 
 /* Alert, would you like to keep saved markers */
-"settings.clear_cache.markers.alert_title" = "Keep Markers and Routes?";
+"settings.clear_cache.markers.alert_title" = "Delete Markers and Routes?";
 
-/* Message, chose delete or keep. Quotes written as \" Delete removes markers and beacons resetting the app to a new installation build and cannot be undone. Keep only removes map data. */
-"settings.clear_cache.markers.alert_message" = "Choose \"Delete\" to remove markers, beacons and routes, or \"Keep\" to only remove map data. \"Delete\" will reset the app back to a freshly installed state and cannot be undone!";
+/* Quotes written as \" Delete removes markers and beacons resetting the app to a new installation build and cannot be undone. */
+"settings.clear_cache.markers.alert_message" = "Are you sure you want to delete all markers and routes? Choosing \"Delete\" will reset the app back to a freshly installed state and cannot be undone!";
 
 /* Alert title, the stored data wasn't deleted */
 "settings.clear_cache.no_service.title" = "Unable to Clear Stored Map Data";
@@ -511,6 +511,7 @@
 /* Title of the settings screen for beacons. This screen allows users to configure the way the audio beacon sounds. See Terms for the definition of "beacon". */
 "beacon.settings_title" = "Beacon Settings";
 
+
 /* Title of a section in the beacon settings page where the user can select the distance threshold when a beacon automatically stops playing. */
 "beacon.settings.vicinity" = "Audio Mute Distance";
 
@@ -581,6 +582,15 @@
 
 /* Explanation of what the "Delete Stored Map Data" button does, displayed below the button */
 "troubleshooting.cache.explanation" = "Soundscape downloads map data as you walk around so that it can tell you about the things and places around you. If you are having issues with Soundscape or it is using too much memory, you can clear the stored map data and Soundscape will only redownload the map data near your current location.";
+
+/* Title for the user data section in troubleshooting */
+"troubleshooting.user_data" = "User Data";
+
+/* Label for the button that allows user to delete all map data, including saved markers and routes */
+"troubleshooting.user_data.button" = "Delete All markers and routes";
+
+/* Explanation for the user data section in troubleshooting */
+"troubleshooting.user_data.explanation" = "Delete all map data, including saved markers and routes. This action cannot be undone.";
 
 //------------------------------------------------------------------------------
 // MARK: Settings (About)
@@ -1405,7 +1415,7 @@
 /* Message of an alert for imporing routes */
 "routes.import.alert.message" = "Waypoint data is missing for one or more of your routes. Please review the following routes, and re-add waypoints if necessary.";
 
-/* The reversed Route name format */
+/* The reversed Route name format  */
 "routes.reverse_name_format" = "Reverse of %@";
 
 //------------------------------------------------------------------------------
@@ -1590,6 +1600,7 @@
 /* Filters, NaviLens Codes */
 "filter.navilens" = "NaviLens Codes";
 
+
 /* Displayed next to the name of the filter to indicate that the filter is currently selected. %@ is the name of a filter */
 "filter.selected" = "%@ (selected)";
 
@@ -1636,7 +1647,7 @@
 /* Shake callouts */
 "callouts.shake_callouts" = "Repeat Callouts";
 
-/* Shake callouts info */
+/*  Shake callouts info */
 "callouts.shake_callouts.info" = "Shake the device to repeat the last callout";
 
 /* Callouts Title, Automatic Callouts */
@@ -2389,13 +2400,13 @@
 /* Status announcement when Soundscape is trying to listen to heading updates from AirPods but they are not currently connected. {NumberedPlaceholder="AirPods", "Soundscape"} */
 "devices.callouts.check_audio.airpods.disconnected" = "Soundscape is searching for your AirPods. Ensure they are connected to your phone.";
 
-/* Status announcement when Soundscape is connected to a Bose Frames {NumberedPlaceholder="Bose Frames"} */
+/*  */
 "devices.callouts.check_audio.bose_frames" = "Bose Frames connected.";
 
-/* Status announcement when Soundscape is trying to listen to heading updates from
-    Bose Frames but they are not currently connected. {NumberedPlaceholder="Bose
-    Frames", "Soundscape"} */
+
+/*  */
 "devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape is searching for your Bose Frames. Ensure they are connected to your phone.";
+
 
 /* Label of a button that allows users to force Soundscape to reconnect to their AirPods Pro device if it isn't connecting automatically */
 "devices.troubleshoot.reconnect" = "Reconnect";
@@ -3194,7 +3205,7 @@
 /* information on how to calibrate Bose Frames with Soundscape, Quotes written as \", {NumberedPlaceholder="Soundscape","Bose Frames"} */
 "help.using_headsets.bose_frames.how.2" = "<b>Calibrating your Headphones</b>:<br/> Your Bose Frames will need to be calibrated to accurately know which way you are facing. Each time you connect them to Soundscape, you will be informed that calibration is needed by an audio chime. To calibrate your Bose Frames, follow the instructions provided on the screen. When the chime stops playing, Your Bose Frames are calibrated, and Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. You can repeat this calibration at any time, even if the chime isn't playing, if you think the accuracy of your spatial audio is poor.";
 
-/* Information on how to use the media buttons on Bose Frames */
+/* Information on how to use the media buttons on Bose Frames  */
 "help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
 
 /* Trouble shooting information for Bose Frames */
