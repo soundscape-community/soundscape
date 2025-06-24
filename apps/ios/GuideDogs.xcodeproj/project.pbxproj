@@ -103,8 +103,6 @@
 		285C8B83230496D900E466DF /* GlyphCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285C8B82230496D900E466DF /* GlyphCallout.swift */; };
 		286145EB2625099F000E5525 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 286145EA2625099F000E5525 /* SDWebImage */; };
 		2866A7C12625013400EBA2D8 /* DZNEmptyDataSet in Frameworks */ = {isa = PBXBuildFile; productRef = 2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */; };
-		2866A7C72625020600EBA2D8 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 2866A7C62625020600EBA2D8 /* AppCenterAnalytics */; };
-		2866A7C92625020600EBA2D8 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 2866A7C82625020600EBA2D8 /* AppCenterCrashes */; };
 		2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 2866A7CE2625028600EBA2D8 /* Reachability */; };
 		2866A7D5262502D500EBA2D8 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2866A7D4262502D500EBA2D8 /* CocoaLumberjackSwift */; };
 		286708D125005912002F962B /* street_non_1c.wav in Resources */ = {isa = PBXBuildFile; fileRef = 286708D025005912002F962B /* street_non_1c.wav */; };
@@ -1604,9 +1602,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				283B0307264B03920092F74F /* SDWebImageSwiftUI in Frameworks */,
-				2866A7C72625020600EBA2D8 /* AppCenterAnalytics in Frameworks */,
 				2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
-				2866A7C92625020600EBA2D8 /* AppCenterCrashes in Frameworks */,
 				286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */,
 				2866A7D5262502D500EBA2D8 /* CocoaLumberjackSwift in Frameworks */,
 				91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */,
@@ -4522,8 +4518,6 @@
 			packageProductDependencies = (
 				286F409C2624FF6000C3F80B /* NVActivityIndicatorView */,
 				2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
-				2866A7C62625020600EBA2D8 /* AppCenterAnalytics */,
-				2866A7C82625020600EBA2D8 /* AppCenterCrashes */,
 				2866A7CE2625028600EBA2D8 /* Reachability */,
 				2866A7D4262502D500EBA2D8 /* CocoaLumberjackSwift */,
 				28F1ECE1262505DC00E964C0 /* Realm */,
@@ -4602,7 +4596,6 @@
 			packageReferences = (
 				286F409B2624FF6000C3F80B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */,
 				2866A7BF2625013400EBA2D8 /* XCRemoteSwiftPackageReference "DZNEmptyDataSet" */,
-				2866A7C52625020600EBA2D8 /* XCRemoteSwiftPackageReference "AppCenter-SDK-Apple" */,
 				2866A7CD2625028600EBA2D8 /* XCRemoteSwiftPackageReference "Reachability" */,
 				2866A7D3262502D500EBA2D8 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
@@ -5564,7 +5557,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/SoundscapeDF.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = "";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5595,7 +5588,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.3.3;
+				MARKETING_VERSION = 1.7.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DADHOC";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-adhoc";
@@ -5623,7 +5616,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -5659,7 +5652,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -5691,7 +5684,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -5853,7 +5846,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
@@ -5885,7 +5878,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.3.3;
+				MARKETING_VERSION = 1.7.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-debug";
@@ -5913,7 +5906,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5943,7 +5936,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.3.3;
+				MARKETING_VERSION = 1.7.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = services.soundscape;
@@ -6020,14 +6013,6 @@
 				revision = 9bffa69a83a9fa58a14b3cf43cb6dd8a63774179;
 			};
 		};
-		2866A7C52625020600EBA2D8 /* XCRemoteSwiftPackageReference "AppCenter-SDK-Apple" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Microsoft/AppCenter-SDK-Apple";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.4.3;
-			};
-		};
 		2866A7CD2625028600EBA2D8 /* XCRemoteSwiftPackageReference "Reachability" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ashleymills/Reachability.swift";
@@ -6090,16 +6075,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2866A7BF2625013400EBA2D8 /* XCRemoteSwiftPackageReference "DZNEmptyDataSet" */;
 			productName = DZNEmptyDataSet;
-		};
-		2866A7C62625020600EBA2D8 /* AppCenterAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2866A7C52625020600EBA2D8 /* XCRemoteSwiftPackageReference "AppCenter-SDK-Apple" */;
-			productName = AppCenterAnalytics;
-		};
-		2866A7C82625020600EBA2D8 /* AppCenterCrashes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2866A7C52625020600EBA2D8 /* XCRemoteSwiftPackageReference "AppCenter-SDK-Apple" */;
-			productName = AppCenterCrashes;
 		};
 		2866A7CE2625028600EBA2D8 /* Reachability */ = {
 			isa = XCSwiftPackageProductDependency;

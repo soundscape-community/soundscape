@@ -5,9 +5,9 @@
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
 //
+// This is just a stub, MS used AppCenter which is being depricated.
 
 import Foundation
-import AppCenterAnalytics
 
 public class GDATelemetry {
     
@@ -21,8 +21,7 @@ public class GDATelemetry {
         }
         set {
             SettingsContext.shared.telemetryOptout = !newValue
-            Analytics.enabled = newValue
-        }
+                    }
     }
     
     class func trackScreenView(_ screenName: String, with properties: [String: String]? = nil) {
@@ -48,8 +47,6 @@ public class GDATelemetry {
         if debugLog {
             print("[TEL] Event tracked: \(eventName)" + (propertiesToSend.isEmpty ? "" : " \(propertiesToSend)"))
         }
-        
-        Analytics.trackEvent(eventName, withProperties: propertiesToSend)
     }
     
 }
