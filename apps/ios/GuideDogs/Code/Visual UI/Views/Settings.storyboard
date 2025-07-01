@@ -315,6 +315,76 @@
                                     <outlet property="accessoryView" destination="LEO-Ou-dfU" id="MEf-JX-bUu"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="transportationCallouts" editingAccessoryType="checkmark" textLabel="transportationLabel" detailTextLabel="transportationDetail" style="IBUITableViewCellStyleSubtitle" id="transportationCell" userLabel="Transportation" customClass="CalloutSettingsCellView" customModule="Soundscape" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="transportationCell" id="transportationContentView">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label text="Transportation" id="transportationLabel">
+                                            <rect key="frame" x="20" y="5" width="150" height="20"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.transportation"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <label text="Transit stop and vehicle callouts" id="transportationDetail">
+                                            <rect key="frame" x="20" y="25" width="250" height="14"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                            <color key="textColor" red="0.6705882353" green="0.9607843137" blue="0.9607843137" alpha="1" colorSpace="calibratedRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.transportation.info"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <switch id="transportationSwitch">
+                                            <rect key="frame" x="318" y="6" width="59" height="31"/>
+                                            <connections>
+                                                <action selector="onSettingValueChanged:" destination="transportationCell" eventType="valueChanged" id="transportationSwitchAction"/>
+                                            </connections>
+                                        </switch>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="accessoryView" destination="transportationSwitch" id="transportationAccessory"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="intersectionCallouts" editingAccessoryType="checkmark" textLabel="intersectionLabel" detailTextLabel="intersectionDetail" style="IBUITableViewCellStyleSubtitle" id="intersectionCell" userLabel="Intersections" customClass="CalloutSettingsCellView" customModule="Soundscape" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="intersectionCell" id="intersectionContentView">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label text="Intersections" id="intersectionLabel">
+                                            <rect key="frame" x="20" y="5" width="150" height="20"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.intersection"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <label text="Crosswalk and intersection alerts" id="intersectionDetail">
+                                            <rect key="frame" x="20" y="25" width="250" height="14"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                            <color key="textColor" red="0.6705882353" green="0.9607843137" blue="0.9607843137" alpha="1" colorSpace="calibratedRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.intersection.info"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <switch id="intersectionSwitch">
+                                            <rect key="frame" x="318" y="6" width="59" height="31"/>
+                                            <connections>
+                                                <action selector="onSettingValueChanged:" destination="intersectionCell" eventType="valueChanged" id="intersectionSwitchAction"/>
+                                            </connections>
+                                        </switch>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="accessoryView" destination="intersectionSwitch" id="intersectionAccessory"/>
+                                </connections>
+                            </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="beaconCallouts" editingAccessoryType="checkmark" textLabel="ExI-qt-25c" detailTextLabel="sNf-y6-Ghm" style="IBUITableViewCellStyleSubtitle" id="Pjb-ed-VL9" userLabel="Beacons" customClass="CalloutSettingsCellView" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="363.33333206176758" width="393" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
