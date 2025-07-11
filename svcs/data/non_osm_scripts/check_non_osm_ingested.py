@@ -10,6 +10,7 @@ import math
 from pathlib import Path
 import random
 import sys
+from urllib.parse import urljoin
 
 import requests
 
@@ -41,7 +42,7 @@ if __name__ == "__main__":
         # Determine tile that would contain feature
         x, y = osm_deg2num(
             float(some_row['latitude']), float(some_row["longitude"]), args.zoom)
-        url = f"{args.tile_server}/{args.zoom}/{x}/{y}.json"
+        url = urljoin(args.tile_server, f"{args.zoom}/{x}/{y}.json")
         print(f"Fetching {url}...")
         response = requests.get(url)
         features = response.json()["features"]
