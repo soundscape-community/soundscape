@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1501CB3B2E0F15BF00D634F3 /* AppFeedbackHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1501CB3A2E0F15B100D634F3 /* AppFeedbackHelper.swift */; };
 		2809B80C2379E95B00F6C9AC /* calibration_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80B2379E95B00F6C9AC /* calibration_success.wav */; };
 		2809B80E2379E9A000F6C9AC /* connection_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80D2379E9A000F6C9AC /* connection_success.wav */; };
 		2809B8102379E9C700F6C9AC /* low_confidence.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80F2379E9C700F6C9AC /* low_confidence.wav */; };
@@ -789,6 +790,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1501CB3A2E0F15B100D634F3 /* AppFeedbackHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFeedbackHelper.swift; sourceTree = "<group>"; };
 		15F732B32DF35EF5006477A8 /* Scripts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Scripts.xcodeproj; path = Scripts/Scripts.xcodeproj; sourceTree = "<group>"; };
 		2809B80B2379E95B00F6C9AC /* calibration_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = calibration_success.wav; path = Assets/Sounds/calibration_success.wav; sourceTree = "<group>"; };
 		2809B80D2379E9A000F6C9AC /* connection_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = connection_success.wav; path = Assets/Sounds/connection_success.wav; sourceTree = "<group>"; };
@@ -3313,6 +3315,7 @@
 		62B14C2127B722F200D24EA1 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
+				1501CB3A2E0F15B100D634F3 /* AppFeedbackHelper.swift */,
 				B927206925DC6F2D0045E2BE /* AppReviewHelper.swift */,
 				B926C67327024B7000BBC1DE /* AppShareHelper.swift */,
 			);
@@ -5193,6 +5196,7 @@
 				C3FA2EFB236A3A3700ADB8BC /* NotificationContainer.swift in Sources */,
 				289E2EFB234FE39F00357444 /* BaseBLEDevice.swift in Sources */,
 				28CC609A254B5F5800A2ED18 /* FilterBandParameters.swift in Sources */,
+				1501CB3B2E0F15BF00D634F3 /* AppFeedbackHelper.swift in Sources */,
 				623D3C2D264C59150005F405 /* Route.swift in Sources */,
 				6254922F243BE0A900DC49E5 /* UniversalLinkManager.swift in Sources */,
 				C36E562522A6E1B900E89C6D /* PrimaryType.swift in Sources */,
