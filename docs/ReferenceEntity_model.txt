@@ -1,0 +1,71 @@
+Soundscape Data Model: Markers, Waypoints, and Reference Entities
+
+
+This document clarifies the internal data model used for saved locations in Soundscape, including the relationship between Markers, Waypoints, and the underlying class, ReferenceEntity.
+
+It also addresses terminology discrepancies between the user interface and the underlying codebase, with the goal of guiding future development, feature planning, and documentation.
+
+
+- Terminology Mapping
+
+| Concept (UI)       | Class Name (Code)     | Stored in Realm? | Shown in UI? | Notes |
+|--------------------|-----------------------|------------------|--------------|-------|
+| Marker  	     | `ReferenceEntity`     | Yes              | Yes	       | User-created location with name, coordinates, etc.|
+| Waypoint 	     | `RouteWaypoint`       | Yes              | No           | Points in a route; references a `ReferenceEntity`|
+| **Temporary Point**| `ReferenceEntity`with`isTemp = true` 	|Yes| No       | Used for beacons or ephemeral navigation targets |
+| **ReferenceEntity**| `ReferenceEntity`     | Yes       	| Indirect     |Base class for all saved locations (internal term only) |
+
+
+- Marker
+
+- A Marker is a saved location the user explicitly creates.
+- Implemented via the `ReferenceEntity` class.
+- May include:
+  - `nickname` (name),
+  - `estimatedAddress`,
+  - `annotation`,
+  - and GPS coordinates.
+- `isTemp = false` for all standard markers.
+- Sorted/displayed in the UI under the “Markers” section.
+
+
+- Waypoint
+
+- A Waypoint is a point used in a user-defined route.
+- Represented by the `RouteWaypoint` class.
+- Each waypoint includes:
+  - A reference to a marker (`markerId`)
+  - Its position in the route (`index`)
+- Two types:
+  1. Linked Waypoint: Uses an existing `ReferenceEntity` (marker)
+  2. Ephemeral Waypoint: Created during route editing, never saved as a marker
+
+
+
+-Temporary ReferenceEntity
+
+- Created for beacons or during navigation.
+- Not intended to persist in the UI or user’s list of markers.
+- `isTemp = true`
+- May share location with a real marker, but behaviorally distinct.
+
+
+
+-Terminology Note
+
+The class `ReferenceEntity` is a legacy name from early versions of Soundscape (circa pre-2020), when the UI used the term "reference point." In modern versions:
+
+- `ReferenceEntity` = Marker (in the UI)
+- The term “marker” should be preferred in all user-facing documentation and settings
+- For developer clarity, we may alias or clarify this term in comments
+
+
+
+-Marker-Waypoint Relationship Rules 
+
+- Waypoints created from markers retain a link to the original marker.
+- Waypoints created on the fly for a route are not shown in the markers list.
+- Deleting a waypoint does not delete its linked marker.
+- Deleting a marker does not delete waypoints that reference it (but audio/data logic must handle this safely).
+- Allow the user to "Save Waypoint as Marker" explicitly if desired.
+
