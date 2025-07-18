@@ -10,10 +10,10 @@ It also addresses terminology discrepancies between the user interface and the u
 
 | Concept (UI)        | Class Name (Code)        | Stored in Realm? | Where Shown in UI | Notes |
 |---------------------|--------------------------|------------------|-------------------|-------|
-| **Marker**          | `ReferenceEntity`        | ✅ Yes           | Global Marker List | User-created location with name, coordinates, etc. |
-| **Waypoint**        | `RouteWaypoint`          | ✅ Yes           | Route Editor only  | Used in a route; references a `ReferenceEntity` |
-| **Temporary Point** | `ReferenceEntity` with `isTemp = true` | ✅ Yes | Hidden (used for beacons/navigation only) | Not persisted; used dynamically |
-| **ReferenceEntity** | `ReferenceEntity`        | ✅ Yes           | Indirectly (via usage) | Base class for all saved locations |
+| **Marker**          | `ReferenceEntity`        | Yes           | Global Marker List | User-created location with name, coordinates, etc. |
+| **Waypoint**        | `RouteWaypoint`          | Yes           | Route Editor only  | Used in a route; references a `ReferenceEntity` |
+| **Temporary Point** | `ReferenceEntity` with `isTemp = true` | Yes | Hidden (used for beacons/navigation only) | Not persisted; used dynamically |
+| **ReferenceEntity** | `ReferenceEntity`        | Yes           | Indirectly (via usage) | Base class for all saved locations |
 
 
 
