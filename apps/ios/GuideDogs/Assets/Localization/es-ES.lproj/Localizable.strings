@@ -363,11 +363,11 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_title" = "¿Deseas mantener marcadores y rutas?";
+"settings.clear_cache.markers.alert_title" = "¿Deseas eliminar marcadores y rutas?";
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Selecciona \"Eliminar\" para eliminar los marcadores, señales y rutas, o \"Mantener\" para eliminar únicamente los datos del mapa. ¡\"Eliminar\" restablecerá la aplicación a su estado original y no se puede deshacer!";
+"settings.clear_cache.markers.alert_message" = "¿Seguro que deseas eliminar todos los marcadores y rutas? ¡Elegir \"Eliminar\" restablecerá la aplicación a su estado original y no se puede deshacer!";
 
 
 /*  */
@@ -1147,7 +1147,7 @@
 
 
 /*  */
-"location_detail.map.edit.accessibility.beacon.callout" = "Iniciando señal para realizar el seguimiento de la ubicación del marcador. Posicionando, %@ de la ubicación original";
+"location_detail.map.edit.accessibility.beacon.callout" = "Iniciando señal para realizar el seguimiento de la ubicación del marcador. Posicionando, %@ de la ubicación original.";
 
 
 /*  */
@@ -1955,7 +1955,7 @@
 
 
 /*  */
-"callouts.hardware.low_battery" = "%1$@ solo tiene un %2$@ por ciento restante";
+"callouts.hardware.low_battery" = "%1$@ solo tiene un %2$@ por ciento restante.";
 
 
 /*  */
@@ -2678,7 +2678,7 @@
 
 
 /*  */
-"location_callout_cell.nearest_road" = "Carretera más cercana, %@";
+"location_callout_cell.nearest_road" = "Carretera más cercana, %@.";
 
 
 /*  */
@@ -4194,7 +4194,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que estás cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se silencia la señal yendo a \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Distancia de Silenciar el audio\" hacia arriba o hacia abajo.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que estás cerca de tu destino, oirás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar cuándo se silencia la señal yendo a \"Señal de audio\" en la pantalla \"Ajustes\" y moviendo el control deslizante \"Distancia de silenciar el audio\" hacia arriba o hacia abajo.";
 
 
 /*  */
@@ -4392,7 +4392,7 @@
 "mail.msoutlook" = "Microsoft Outlook";
 "mail.default" = "Por defecto";
 "mail.fastmail" = "Fastmail";
-"mail.yahoo" = "Correo Yahoo";
+"mail.yahoo" = "Yahoo Mail";
 "mail.protonmail" = "Proton Mail";
 "mail.spark" = "Spark";
 "filter.parks" = "Parques";
@@ -4416,14 +4416,14 @@
 "osm.tag.green_space" = "zona verde";
 "osm.tag.recreation_area" = "área recreativa";
 "whats_new.1_2_0.0.title" = "Agitar para repetir el último aviso";
-"whats_new.1_2_0.1.title" = "Configuración de la distancia de silenciar la señal";
+"whats_new.1_2_0.1.title" = "Configuración de la distancia de silencio de la señal";
 "whats_new.1_2_0.2.title" = "Categorías en lugares cercanos";
 "whats_new.1_2_0.2.description" = "Ahora puedes filtrar la lista de lugares cercanos por categorías como Transporte público, Comida y bebida, etc.";
 "osm.tag.bar" = "Bar";
 "osm.tag.fast_food" = "Comida rápida";
 "osm.tag.ice_cream" = "Heladería";
 "whats_new.1_2_0.0.description" = "Ahora puedes agitar tu dispositivo para repetir el último aviso. Para habilitar esta función, activa el botón 'Repetir Avisos' en los ajustes.";
-"whats_new.1_2_0.1.description" = "Ahora puedes ajustar la distancia a la que la señal se silencia automáticamente cuando te acercas. Puedes ajustar esta opción en la configuración de la señal de audio.\n\nNos gustaría conocer tu experiencia con la desactivación de la señal de audio a diferentes distancias (0,5 y 10 metros). En nuestras pruebas internas estamos observando algunas incoherencias en el comportamiento y nos gustaría conocer la opinión de una base más amplia de usuarios.";
+"whats_new.1_2_0.1.description" = "Ahora puedes ajustar la distancia a la que la señal se silencia automáticamente cuando te acercas. Simplemente ve a la configuración de la señal de audio y mueve el control deslizante \"Distancia de silenciar el audio\".";
 "donation.body" = "Por favor, apoya el desarrollo continuo de la aplicación Soundscape Community donando en nuestra página de recaudación de fondos. Cada donación nos acerca un paso más a nuestra visión de ayudar a crear un mundo donde TODOS tengan el mismo acceso a la información sobre su entorno a través de nuestra tecnología que mejora la vida.";
 "menu.donate" = "Donar";
 "donation.title" = "Donar a Soundscape Community";
@@ -4458,3 +4458,6 @@
 "beacon.suggest_navilens" = "Usa el botón NaviLens para llegar a tu destino.";
 "location_detail.action.beacon_or_navilens" = "Iniciar NaviLens o señal de audio";
 "filter.navilens" = "Códigos NaviLens";
+"troubleshooting.user_data" = "Datos del usuario";
+"troubleshooting.user_data.button" = "Eliminar todos los marcadores y rutas";
+"troubleshooting.user_data.explanation" = "Borra todos los datos del mapa, incluidos los marcadores y rutas guardados. Esta acción no se puede deshacer.";
