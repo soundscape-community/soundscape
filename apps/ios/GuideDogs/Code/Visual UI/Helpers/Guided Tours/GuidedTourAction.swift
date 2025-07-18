@@ -64,7 +64,7 @@ enum GuidedTourAction: String, Action {
         if detail.isGuidanceActive {
             return [GuidedTourActionState(.stopTour)]
         } else {
-            return [GuidedTourActionState(.startTour, isEnabled: isDefaultBehaviorActive), GuidedTourActionState(.checkForUpdates)]
+            return [GuidedTourActionState(.startTour, isEnabled: (isDefaultBehaviorActive && !detail.isExpired)), GuidedTourActionState(.checkForUpdates)]
         }
     }
 }
