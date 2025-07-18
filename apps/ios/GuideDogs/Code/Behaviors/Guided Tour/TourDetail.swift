@@ -41,6 +41,10 @@ class TourDetail: RouteDetailProtocol {
     var id: String {
         return event.id
     }
+
+    var isExpired: Bool {
+        return event.isExpired
+    }
     
     var displayName: String {
         if let name = name, name.isEmpty == false {
