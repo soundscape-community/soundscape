@@ -675,6 +675,7 @@ for languageFile in languageFiles {
     if CommandLine.arguments.contains("missing") {
         for missingKey in expectedKeys.subtracting(languageFile.keys) {
             printError("Missing translation for [\(missingKey)]")
+            exit(1)
         }
     }
 }
@@ -726,13 +727,15 @@ var allUsedKeys: Set<String> = []
 
 codeFiles.forEach { (codeFile) in
     codeFile.missingKeys(from: baseLanguageFile).forEach({ (key) in
-        printWarning("Missing translation: '\(codeFile.filename)' uses a localization key which is not found in the base language file (or the key format is invalid): \"\(key)\"")
+        printError("Missing translation: '\(codeFile.filename)' uses a localization key which is not found in the base language file (or the key format is invalid): \"\(key)\"")
+        exit(1)
     })
     
     codeFile.checkDynamicKeys(from: baseLanguageFile).forEach { issue in
         switch issue {
         case .noTranslations(let key):
-            printWarning("Missing translation: '\(codeFile.filename)' uses a dynamic localization key which has no matching keys base language file (or the key format is invalid): \"\(key)\"")
+            printError("Missing translation: '\(codeFile.filename)' uses a dynamic localization key which has no matching keys base language file (or the key format is invalid): \"\(key)\"")
+            exit(1)
             
         case .oneTranslation(let key):
             printWarning("Unnecessary dynamic key: '\(codeFile.filename)' uses a dynamic localization key which only has one matching key in the base language file. Consider replacing with a non-dynamic key: \"\(key)\"")
