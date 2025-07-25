@@ -13,32 +13,29 @@ protocol CalloutSettingsCellViewDelegate: AnyObject {
 }
 
 internal enum CalloutSettingCellType {
-    case all, poi, mobility, beacon, shake
+    case all, poi, beacon, shake
     case transportation
     case intersection
     case safety
 }
 
-
 class CalloutSettingsCellView: UITableViewCell {
-    
-    weak var delegate: CalloutSettingsCellViewDelegate?
-    
-    var type: CalloutSettingCellType! {
-    didSet {
-        guard let type = type, let settingSwitch = self.accessoryView as? UISwitch else {
-            return
-        }
 
-        settingSwitch.isEnabled = type == .all || SettingsContext.shared.automaticCalloutsEnabled
+    weak var delegate: CalloutSettingsCellViewDelegate?
+
+    var type: CalloutSettingCellType! {
+        didSet {
+            guard let type = type, let settingSwitch = self.accessoryView as? UISwitch else {
+                return
+            }
+
+            settingSwitch.isEnabled = type == .all || SettingsContext.shared.automaticCalloutsEnabled
 
             switch type {
             case .all:
                 settingSwitch.isOn = SettingsContext.shared.automaticCalloutsEnabled
             case .poi:
                 settingSwitch.isOn = SettingsContext.shared.placeSenseEnabled
-            case .mobility:
-                settingSwitch.isOn = SettingsContext.shared.mobilitySenseEnabled
             case .beacon:
                 settingSwitch.isOn = SettingsContext.shared.destinationSenseEnabled
             case .shake:
@@ -52,7 +49,7 @@ class CalloutSettingsCellView: UITableViewCell {
             }
         }
     }
-    
+
     @IBAction func onSettingValueChanged(_ sender: Any) {
         guard let type = type, let settingSwitch = self.accessoryView as? UISwitch else {
             return
@@ -78,11 +75,6 @@ class CalloutSettingsCellView: UITableViewCell {
             SettingsContext.shared.landmarkSenseEnabled = isOn
             SettingsContext.shared.informationSenseEnabled = isOn
             log(["places", "landmarks", "info"])
-        case .mobility:
-            SettingsContext.shared.mobilitySenseEnabled = isOn
-            SettingsContext.shared.safetySenseEnabled = isOn
-            SettingsContext.shared.intersectionSenseEnabled = isOn
-            log(["mobility", "safety", "intersections"])
         case .beacon:
             SettingsContext.shared.destinationSenseEnabled = isOn
             log(["destination"])
@@ -100,5 +92,4 @@ class CalloutSettingsCellView: UITableViewCell {
             log(["safety"])
         }
     }
-
 }
