@@ -59,6 +59,10 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: 0, section: Section.about.rawValue): "about",
         // IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
     ]
+    
+    // MARK: Properties
+
+    @IBOutlet weak var largeBannerContainerView: UIView!
 
     // MARK: View Life Cycle
 
