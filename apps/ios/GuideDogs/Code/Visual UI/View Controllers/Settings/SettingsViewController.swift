@@ -146,7 +146,7 @@ class SettingsViewController: BaseTableViewController {
             switch rowType {
             case .all:          cell.type = .all
             case .poi:          cell.type = .poi
-            case .mobility:     cell.type = .mobility
+            case .mobility:     cell.type = .transportation
             case .safety:       cell.type = .safety
             case .intersection: cell.type = .intersection
             case .beacon:       cell.type = .beacon
