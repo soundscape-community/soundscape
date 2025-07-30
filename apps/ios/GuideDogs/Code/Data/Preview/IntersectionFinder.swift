@@ -34,7 +34,7 @@ struct IntersectionFinder {
           road: Road,
           preferMainIntersections: Bool = false,
           secondaryRoadsContext: SecondaryRoadsContext = .standard) {
-        guard let roadCoordinates = road.coordinates, roadCoordinates.contains(rootCoordinate) else {
+        guard let roadCoordinates = road.coordinates, roadCoordinates.contains(where: {rootCoordinate.isNear(to: $0)}) else {
             return nil
         }
         
@@ -195,10 +195,10 @@ struct IntersectionFinder {
             coordinatesFromRoot :
             (trailingCoordinates + coordinatesFromRoot.dropFirst())
         
-        guard let endpointIntersection = intersections.first(where: { $0.coordinate == lastCoordinate }) else {
+        guard let endpointIntersection = intersections.first(where: { $0.coordinate.isNear(to: lastCoordinate) }) else {
             // Reached the end of the road
             
-            if road.intersections.contains(where: { $0.coordinate == lastCoordinate }) {
+            if road.intersections.contains(where: { $0.coordinate.isNear(to: lastCoordinate) }) {
                 // Don't synthesize an intersection here since we already filtered this intersection out
                 return nil
             }
@@ -300,7 +300,7 @@ struct IntersectionFinder {
         // If so, reverse the direction of calculation
         // note: We want the first adjacent road coordinate to be the same as the last coordinate of the root road
         guard let lastAdjacentRoadCoordinate = nextRoadSegmentCoordinates.last else { return nil }
-        let reversedDirection = (rootCoordinate == lastAdjacentRoadCoordinate)
+        let reversedDirection = rootCoordinate.isNear(to: lastAdjacentRoadCoordinate)
         
         if let adjacentRoadClosestIntersection = closestIntersection(fromCoordinate: rootCoordinate,
                                                                      onRoad: nextRoadSegment,
@@ -336,7 +336,7 @@ struct IntersectionFinder {
         }
         
         for (i, coordinate) in roadCoordinates.enumerated() {
-            if let intersection = intersections.first(where: { $0.coordinate == coordinate }) {
+            if let intersection = intersections.first(where: { $0.coordinate.isNear(to: coordinate) }) {
                 let similarIntersectionWithMaxRoads = Intersection.similarIntersectionWithMaxRoads(intersection: intersection, intersections: intersections)
                 return (similarIntersectionWithMaxRoads, i)
             }
@@ -395,7 +395,7 @@ struct IntersectionFinder {
          }
         
         if IntersectionFinder.roadContainsCycle(road: nextRoadSegment, to: trailingCoordinates) {
-            if intersection.coordinate == self.rootCoordinate {
+            if intersection.coordinate.isNear(to: self.rootCoordinate) {
                 // If the road loops back to the root coordinate, no need to return an intersection.
                 return nil
             } else {
@@ -412,7 +412,7 @@ struct IntersectionFinder {
         // If so, reverse the direction of calculation
         // note: We want the first adjacent road coordinate to be the same as the last coordinate of the root road
         guard let lastAdjacentRoadCoordinate = nextRoadSegmentCoordinates.last else { return nil }
-        let reversedDirection = (lastCoordinate == lastAdjacentRoadCoordinate)
+        let reversedDirection = lastCoordinate .isNear(to: lastAdjacentRoadCoordinate)
         
         return lastIntersection(fromCoordinate: lastCoordinate,
                                 onRoad: nextRoadSegment,
@@ -429,7 +429,8 @@ struct IntersectionFinder {
         guard let roadCoordinates = road.coordinates else { return false }
         guard let lastCoordinate = coordinates.last else { return false }
         
-        if roadCoordinates.first == lastCoordinate && roadCoordinates.last == lastCoordinate {
+        if lastCoordinate.isNear(to: roadCoordinates.first) &&
+            lastCoordinate.isNear(to: roadCoordinates.last) {
             // The road starts and ends at the same coordinate (loops back)
             return true
         }
@@ -439,15 +440,17 @@ struct IntersectionFinder {
         var coordinatesExcludingRoot: [CLLocationCoordinate2D]
         
         // Because of road segments direction, we check if the root coordinate is the first or last.
-        if roadCoordinates.first == lastCoordinate {
+        if lastCoordinate.isNear(to: roadCoordinates.first) {
             coordinatesExcludingRoot = Array(roadCoordinates.dropFirst())
-        } else if roadCoordinates.last == lastCoordinate {
+        } else if lastCoordinate.isNear(to: roadCoordinates.last) {
             coordinatesExcludingRoot = roadCoordinates.dropLast()
         } else {
             return false
         }
         
-        if coordinatesExcludingRoot.contains(where: { coordinates.contains($0) }) {
+        if coordinatesExcludingRoot.contains(where: {coordinate in
+            coordinates.contains(where: {coordinate.isNear(to: $0)})
+        }) {
             return true
         }
         
