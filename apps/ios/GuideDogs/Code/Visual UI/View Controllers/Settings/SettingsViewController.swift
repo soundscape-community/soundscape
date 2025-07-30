@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class SettingsViewController: BaseTableViewController {
     
     private enum Section: Int, CaseIterable {
@@ -20,20 +21,17 @@ class SettingsViewController: BaseTableViewController {
         // case telemetry = 6
     }
     
-    /// 7 rows in the Callouts section: All, Places, Mobility, Safety, Intersections, Beacon, Shake
     private enum CalloutsRow: Int, CaseIterable {
-        case all = 0
-        case poi = 1
-        case mobility = 2
-        case safety = 3
-        case intersection = 4
-        case beacon = 5
-        case shake = 6
+            case all = 0
+            case poi = 1
+            case mobility = 2
+            case safety = 3
+            case intersection = 4
+            case beacon = 5
+            case shake = 6
     }
     
-    /// Map each indexPath to its storyboard reuseIdentifier
     private static let cellIdentifiers: [IndexPath: String] = [
-        // General
         IndexPath(row: 0, section: Section.general.rawValue): "languageAndRegion",
         IndexPath(row: 1, section: Section.general.rawValue): "voice",
         IndexPath(row: 2, section: Section.general.rawValue): "beaconSettings",
@@ -41,7 +39,6 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: 4, section: Section.general.rawValue): "manageDevices",
         IndexPath(row: 5, section: Section.general.rawValue): "siriShortcuts",
         
-        // Audio
         IndexPath(row: 0, section: Section.audio.rawValue): "mixAudio",
 
         // Callouts
@@ -52,13 +49,22 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: CalloutsRow.intersection.rawValue,section: Section.callouts.rawValue): "intersectionCallouts",
         IndexPath(row: CalloutsRow.beacon.rawValue,     section: Section.callouts.rawValue): "beaconCallouts",
         IndexPath(row: CalloutsRow.shake.rawValue,      section: Section.callouts.rawValue): "shakeCallouts",
-
-        // Other
+        
         IndexPath(row: 0, section: Section.streetPreview.rawValue): "streetPreview",
         IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
         IndexPath(row: 0, section: Section.about.rawValue): "about",
         // IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
     ]
+    
+    private static let collapsibleCalloutIndexPaths: [IndexPath] = [
+      IndexPath(row: CalloutsRow.poi.rawValue,        section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.mobility.rawValue,   section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.safety.rawValue,     section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.intersection.rawValue,section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.beacon.rawValue,     section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.shake.rawValue,      section: Section.callouts.rawValue)
+    ]
+
     
     // MARK: Properties
 
@@ -68,142 +74,160 @@ class SettingsViewController: BaseTableViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         GDLogActionInfo("Opened 'Settings'")
+
         GDATelemetry.trackScreenView("settings")
+
         self.title = GDLocalizedString("settings.screen_title")
     }
     
-    // MARK: Sections & Rows
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         return Section.allCases.count
     }
     
-    override func tableView(_ tableView: UITableView,
-                            numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let sectionType = Section(rawValue: section) else { return 0 }
+        
         switch sectionType {
-        case .general:
-            return 6
-        case .audio:
-            return 1
+        case .general: return 6
+        case .audio: return 1
         case .callouts:
             return SettingsContext.shared.automaticCalloutsEnabled
                 ? CalloutsRow.allCases.count
                 : 1
-        case .streetPreview, .troubleshooting, .about:
-            return 1
+        case .streetPreview: return 1
+        case .troubleshooting: return 1
+        case .about: return 1
+        // case .telemetry: return 1
         }
     }
-
-    override func tableView(_ tableView: UITableView,
-                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = SettingsViewController.cellIdentifiers[indexPath] ?? "default"
-        let cell = tableView.dequeueReusableCell(withIdentifier: identifier,
-                                                 for: indexPath)
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let identifier = SettingsViewController.cellIdentifiers[indexPath]
         
-        if let sectionType = Section(rawValue: indexPath.section) {
-            switch sectionType {
-            case .callouts:
-                configureCalloutCell(cell as! CalloutSettingsCellView, at: indexPath)
-            case .audio:
-                (cell as! MixAudioSettingCell).delegate = self
-            default:
-                break
+        guard let sectionType = Section(rawValue: indexPath.section) else {
+            return tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
+        }
+
+        switch sectionType {
+        case .callouts:
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: identifier ?? "default",
+                for: indexPath) as! CalloutSettingsCellView
+
+            configureCalloutCell(cell, at: indexPath)
+            
+            return cell
+
+            
+        // case .telemetry:
+        //     let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! TelemetrySettingsTableViewCell
+        //     cell.parent = self
+            
+        //     return cell
+            
+        case .audio:
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! MixAudioSettingCell
+            cell.delegate = self
+            return cell
+            
+        default:
+            return tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
+        }
+        
+    }
+    
+    // MARK: UITableViewDataSource
+    private func configureCalloutCell(_ cell: CalloutSettingsCellView,
+                                          at indexPath: IndexPath) {
+            cell.delegate = self
+            guard let rowType = CalloutsRow(rawValue: indexPath.row) else { return }
+            switch rowType {
+            case .all:          cell.type = .all
+            case .poi:          cell.type = .poi
+            case .mobility:     cell.type = .mobility
+            case .safety:       cell.type = .safety
+            case .intersection: cell.type = .intersection
+            case .beacon:       cell.type = .beacon
+            case .shake:        cell.type = .shake
             }
         }
-        return cell
-    }
-    
-    private func configureCalloutCell(_ cell: CalloutSettingsCellView,
-                                      at indexPath: IndexPath) {
-        cell.delegate = self
-        guard let rowType = CalloutsRow(rawValue: indexPath.row) else { return }
-        switch rowType {
-        case .all:          cell.type = .all
-        case .poi:          cell.type = .poi
-        case .mobility:     cell.type = .transportation
-        case .safety:       cell.type = .safety
-        case .intersection: cell.type = .intersection
-        case .beacon:       cell.type = .beacon
-        case .shake:        cell.type = .shake
-        }
-    }
 
-    // MARK: Headers & Footers
-
-    override func tableView(_ tableView: UITableView,
-                            titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let sectionType = Section(rawValue: section) else { return nil }
+
         switch sectionType {
-        case .general:       return GDLocalizedString("settings.section.general")
-        case .audio:         return GDLocalizedString("settings.audio.media_controls")
-        case .callouts:      return GDLocalizedString("menu.manage_callouts")
-        case .about:         return GDLocalizedString("settings.section.about")
+        case .general: return GDLocalizedString("settings.section.general")
+        case .audio: return GDLocalizedString("settings.audio.media_controls")
+        case .callouts: return GDLocalizedString("menu.manage_callouts")
+        case .about: return GDLocalizedString("settings.section.about")
         case .streetPreview: return GDLocalizedString("preview.title")
-        case .troubleshooting:
-                             return GDLocalizedString("settings.section.troubleshooting")
+        case .troubleshooting: return GDLocalizedString("settings.section.troubleshooting")
+        // case .telemetry: return GDLocalizedString("settings.section.telemetry")
         }
     }
     
-    override func tableView(_ tableView: UITableView,
-                            titleForFooterInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         guard let sectionType = Section(rawValue: section) else { return nil }
+
         switch sectionType {
-        case .general:
-            return GDLocalizedString("settings.section.general.footer")
-        case .audio:
-            return GDLocalizedString("settings.audio.mix_with_others.description")
-        case .callouts:
-            return GDLocalizedString("settings.callouts.footer")
-        case .streetPreview:
-            return GDLocalizedString("preview.include_unnamed_roads.subtitle")
-        case .troubleshooting:
-            return GDLocalizedString("settings.section.troubleshooting.footer")
-        case .about:
-            return GDLocalizedString("settings.section.about.footer")
+        case .audio: return GDLocalizedString("settings.audio.mix_with_others.description")
+        case .streetPreview: return GDLocalizedString("preview.include_unnamed_roads.subtitle")
+        // case .telemetry: return GDLocalizedString("settings.section.telemetry.footer")
+        default: return nil
         }
     }
 }
 
 extension SettingsViewController: MixAudioSettingCellDelegate {
-    func onSettingValueChanged(_ cell: MixAudioSettingCell,
-                               settingSwitch: UISwitch) {
+    func onSettingValueChanged(_ cell: MixAudioSettingCell, settingSwitch: UISwitch) {
+        // Note: The UI for this setting is "Enable Media Controls" but the setting is stored as
+        //       "Mixes with Others" (the inverse of "Enable Media Controls")
+        
         guard settingSwitch.isOn else {
+            // If the setting switch is now off, the user disabled media controls. This doesn't
+            // require a warning alert, so just set mixesWithOthers to true and return.
             updateSetting(true)
             return
         }
-        let alert = UIAlertController(
-            title:   GDLocalizedString("general.alert.confirmation_title"),
-            message: GDLocalizedString("setting.audio.mix_with_others.confirmation"),
-            preferredStyle: .alert
-        )
-        let mixAction = UIAlertAction(
-            title: GDLocalizedString("settings.audio.mix_with_others.title"),
-            style: .default
-        ) { [weak self] _ in
+        
+        // Otherwise, the user is turning on media controls, so we need to show a warning to make sure
+        // they understand what this change means in terms of how other audio apps will stop Soundscape
+        // from playing. This warning was added based on bug bash feedback on 12/3/20.
+        // Show an alert indicating that the user can download an enhanced version of the voice in Settings
+        let alert = UIAlertController(title: GDLocalizedString("general.alert.confirmation_title"),
+                                      message: GDLocalizedString("setting.audio.mix_with_others.confirmation"),
+                                      preferredStyle: .alert)
+        
+        let mixAction = UIAlertAction(title: GDLocalizedString("settings.audio.mix_with_others.title"), style: .default) { [weak self] (_) in
+            // Make the setting switch - turn off mixesWithOthers
             self?.updateSetting(false)
             self?.focusOnCell(cell)
         }
         alert.addAction(mixAction)
         alert.preferredAction = mixAction
-        alert.addAction(UIAlertAction(
-            title: GDLocalizedString("general.alert.cancel"),
-            style: .cancel
-        ) { [weak self] _ in
+        
+        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: { [weak self] (_) in
+            // Toggle the setting back off
             settingSwitch.isOn = false
-            GDATelemetry.track("settings.mix_audio.cancel",
-                               with: ["context": "app_settings"])
+            
+            // Track that the user decided not to enable media controls
+            GDATelemetry.track("settings.mix_audio.cancel", with: ["context": "app_settings"])
+            
             self?.focusOnCell(cell)
-        })
+        }))
+        
         present(alert, animated: true)
     }
-    
+
     private func updateSetting(_ newValue: Bool) {
         SettingsContext.shared.audioSessionMixesWithOthers = newValue
         AppContext.shared.audioEngine.mixWithOthers = newValue
+        
         GDATelemetry.track("settings.mix_audio",
-                           with: ["value": "\(newValue)", "context": "app_settings"])
+                           with: ["value": "\(SettingsContext.shared.audioSessionMixesWithOthers)",
+                                  "context": "app_settings"])
     }
     
     private func focusOnCell(_ cell: MixAudioSettingCell) {
@@ -215,20 +239,25 @@ extension SettingsViewController: MixAudioSettingCellDelegate {
 
 extension SettingsViewController: CalloutSettingsCellViewDelegate {
     func onCalloutSettingChanged(_ type: CalloutSettingCellType) {
-        guard type == .all else { return }
-        let paths = SettingsViewController.collapsibleCalloutIndexPaths
-        if SettingsContext.shared.automaticCalloutsEnabled {
-            tableView.insertRows(at: paths, with: .automatic)
-        } else {
-            tableView.deleteRows(at: paths, with: .automatic)
+        guard type == .all else {
+            return
+        }
+        
+        let indexPaths = SettingsViewController.collapsibleCalloutIndexPaths
+        
+        if SettingsContext.shared.automaticCalloutsEnabled && !tableView.contains(indexPaths: indexPaths) {
+            tableView.insertRows(at: indexPaths, with: .automatic)
+        } else if !SettingsContext.shared.automaticCalloutsEnabled && tableView.contains(indexPaths: indexPaths) {
+            tableView.deleteRows(at: indexPaths, with: .automatic)
         }
     }
 }
 
 extension SettingsViewController: LargeBannerContainerView {
+    
     func setLargeBannerHeight(_ height: CGFloat) {
         largeBannerContainerView.setHeight(height)
         tableView.reloadData()
     }
+    
 }
-
