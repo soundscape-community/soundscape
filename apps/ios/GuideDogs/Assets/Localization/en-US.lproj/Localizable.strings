@@ -416,6 +416,25 @@
 /* Language display name. %1$@ is a language name, %2$@ is the country name. e.g. "English (United Kingdom)" {NumberedPlaceholder="%1$@", "%2$@"} */
 "settings.language.language_name" = "%1$@ (%2$@)";
 
+/* Footer under “General” */
+"settings.section.general.footer" = "General settings for the app";
+
+/* Footer under “Audio” (already existed): */
+"settings.audio.mix_with_others.description" = "Control how audio interacts with other media";
+
+/* Footer under “Callouts” */
+"settings.callouts.footer" = "Manage the callouts that help navigate";
+
+/* Footer under “Street Preview” (already existed): */
+"preview.include_unnamed_roads.subtitle" = "Settings for including unnamed roads";
+
+/* Footer under “Troubleshooting” */
+"settings.section.troubleshooting.footer" = "Options for troubleshooting the app";
+
+/* Footer under “About” */
+"settings.section.about.footer" = "Information about the app";
+
+
 //------------------------------------------------------------------------------
 // MARK: Settings (Audio)
 //------------------------------------------------------------------------------
@@ -1634,18 +1653,18 @@
 
 /* Mobility callout */
 "callouts.mobility" = "Mobility";
-"callouts.mobility.info" = "Practical features like crosswalks and bus stops.";
+"callouts.mobility.info" = "Practical features like crosswalks and bus stops";
 
 /* Safety callout */
 "callouts.safety" = "Safety";
-"callouts.safety.info" = "Potential hazards like steps and construction areas.";
+"callouts.safety.info" = "Potential hazards like steps and construction areas";
 
 /* Intersections callout */
 "callouts.intersection" = "Intersections";
-"callouts.intersection.info" = "Announce street names and their directions.";
+"callouts.intersection.info" = "Announce street names and their directions";
 
 
-/* Title for a toggle under the Manage Callouts settings section. This toggle enables or disables periodic callouts that inform the user about their distance from the location of the audio beacon. */
+/* Title for a toggle under the Manage Callouts settings section. This toggle enables or disables periodic callouts that inform the user about their distance from the location of the audio beacon */
 "callouts.audio_beacon" = "Distance to the Audio Beacon";
 
 /* Callouts Information, Updates about didtance to the audio beacon when it's set */
