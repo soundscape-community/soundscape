@@ -633,6 +633,7 @@ class CodeFile: File {
 //---------------------------------------------------------------------//
 
 printLog("Starting localization analysis")
+var didFail = false
 
 let fileManager = FileManager.default
 let currentDirectoryURL = URL(string: fileManager.currentDirectoryPath)!
@@ -642,13 +643,20 @@ printLog("Loading language files…")
 
 var languageFiles = fileManager.stringFiles(atPath: languageFilesDirectoryURL.path)
 
-guard !languageFiles.isEmpty else {
+if languageFiles.isEmpty {
     printError("Could not locate language files")
-    exit(1)
+    didFail = true
 }
 
-guard let baseLanguageFile = languageFiles.first(where: { $0.languageID == Configuration.baseLanguageID }) else {
+var baseLanguageFile: StringsFile?
+if let file = languageFiles.first(where: { $0.languageID == Configuration.baseLanguageID }) {
+    baseLanguageFile = file
+} else {
     printError("Could not locate base language file at URL: \(languageFilesDirectoryURL)")
+    didFail = true
+}
+
+guard let baseLanguageFile = baseLanguageFile else {
     exit(1)
 }
 
@@ -675,7 +683,7 @@ for languageFile in languageFiles {
     if CommandLine.arguments.contains("missing") {
         for missingKey in expectedKeys.subtracting(languageFile.keys) {
             printError("Missing translation for [\(missingKey)]")
-            exit(1)
+            didFail = true
         }
     }
 }
@@ -701,7 +709,7 @@ matches.forEach { (match) in
     let lineNumber = baseLanguageFile.content.lineNumber(forTextCheckingResult: match)
     let location = PrintLocation(filePath: baseLanguageFile.path, lineNumber: lineNumber, columnNumber: 0)
     printError("Invalid character: Hexadecimal 201C or 201D. Replace these characters with a standard quotation mark that is escaped", location: location)
-    exit(1)
+    didFail = true
 }
 
 //
@@ -728,14 +736,14 @@ var allUsedKeys: Set<String> = []
 codeFiles.forEach { (codeFile) in
     codeFile.missingKeys(from: baseLanguageFile).forEach({ (key) in
         printError("Missing translation: '\(codeFile.filename)' uses a localization key which is not found in the base language file (or the key format is invalid): \"\(key)\"")
-        exit(1)
+        didFail = true
     })
     
     codeFile.checkDynamicKeys(from: baseLanguageFile).forEach { issue in
         switch issue {
         case .noTranslations(let key):
             printError("Missing translation: '\(codeFile.filename)' uses a dynamic localization key which has no matching keys base language file (or the key format is invalid): \"\(key)\"")
-            exit(1)
+            didFail = true
             
         case .oneTranslation(let key):
             printWarning("Unnecessary dynamic key: '\(codeFile.filename)' uses a dynamic localization key which only has one matching key in the base language file. Consider replacing with a non-dynamic key: \"\(key)\"")
@@ -805,4 +813,8 @@ if CommandLine.arguments.contains("duplicates") {
     }
 } else {
     printLog("Skipping duplicate string check")
+}
+
+if didFail {
+    exit(1)
 }
