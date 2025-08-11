@@ -4596,7 +4596,6 @@
 		};
 /* End PBXProject section */
 
-
 /* Begin PBXResourcesBuildPhase section */
 		914DEBCB2A3CE6B9007B161C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
