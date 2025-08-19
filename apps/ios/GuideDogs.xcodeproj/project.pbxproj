@@ -1574,6 +1574,8 @@
 		D3D7CFC81B3D96470020B5E9 /* Soundscape.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soundscape.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3E2A6361CAD5CA100A5192A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		DCAAD87E2BC1E95F0018D135 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Assets/PropertyLists/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		DCE09DD62E54AC9500B66BDF /* fa-IR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fa-IR"; path = "fa-IR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		DCE09DD72E54AE7400B66BDF /* fa-IR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fa-IR"; path = "fa-IR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		DCE4D2AC2D7CE40F00B5DA4B /* NewFeatures.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = NewFeatures.json; path = Assets/NewFeatures.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -4574,6 +4576,7 @@
 				"nb-NO",
 				"nl-NL",
 				"pt-PT",
+				"fa-IR",
 			);
 			mainGroup = D3D7CFBF1B3D96460020B5E9;
 			packageReferences = (
@@ -5420,6 +5423,7 @@
 				62CFAC6528E3A7AA00BE504D /* nb-NO */,
 				62CFAC6628E3A7B300BE504D /* nl-NL */,
 				62CFAC6728E3A7BE00BE504D /* pt-PT */,
+				DCE09DD72E54AE7400B66BDF /* fa-IR */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -5443,6 +5447,7 @@
 				62CFAC6028E3A74500BE504D /* nb-NO */,
 				62CFAC6128E3A75200BE504D /* nl-NL */,
 				62CFAC6228E3A76D00BE504D /* pt-PT */,
+				DCE09DD62E54AC9500B66BDF /* fa-IR */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
