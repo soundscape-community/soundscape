@@ -1000,7 +1000,7 @@
 "location_detail.map.edit.accessibility_action.current_location" = "Move to current location";
 
 /* Callout made when starting the audio beacon while the user is moving a marker via custom Voiceover experience, %@ is a localized distance / direction string, "Nudging, 15 meters northwest of original location", Here, "nudge" means moving a small distance, {NumberedPlaceholder="%@"} */
-"location_detail.map.edit.accessibility.beacon.callout" = "Starting beacon to track marker location. Nudging, %@ of original location";
+"location_detail.map.edit.accessibility.beacon.callout" = "Starting beacon to track marker location. Nudging, %@ of original location.";
 
 /* Accessibility label for the icon which displays the number of the waypoint. %@ is the index of the waypoint. (e.g., "Waypoint 1") {NumberedPlaceholder="%@"} */
 "location_detail.waypoint" = "Waypoint %@";
@@ -1681,7 +1681,7 @@
 "callouts.action.more_info" = "More Info";
 
 /* Callouts notification, A hardware device only has a certain amount of battery remaining, %1$@ name of device %2$@ percent of battery remaining, "Soundscape remote only has 20 percent battery remaining." {NumberedPlaceholder="%1$@", "%2$@"} */
-"callouts.hardware.low_battery" = "%1$@ only has %2$@ percent battery remaining";
+"callouts.hardware.low_battery" = "%1$@ only has %2$@ percent battery remaining.";
 
 /* Title for callouts that happen when departing a location */
 "callouts.departure" = "Departure Callout";
@@ -2271,7 +2271,7 @@
 "location_callout_cell.marked_location" = "Marked Location";
 
 /* Location Callout Cell for the nearest road, %@ road name, "Nearest road, <27th Avenue West>" {NumberedPlaceholder="%@"} */
-"location_callout_cell.nearest_road" = "Nearest road, %@";
+"location_callout_cell.nearest_road" = "Nearest road, %@.";
 
 /* Location Callout Cell, Nearest road and beacon set on, %1$@ road name %2$@ location, "Nearest road, <27th Avenue West>. Beacon was set on <Woodland Park Zoo>." {NumberedPlaceholder="%1$@", "%2$@"} */
 "location_callout_cell.nearest_road.beacon_set_on" = "Nearest road, %1$@. Beacon was set on %2$@.";
@@ -3209,7 +3209,7 @@
 "help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
 
 /* Trouble shooting information for Bose Frames */
-"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>Support for the Bose Frames is new and we would love to hear your feedback. You can contact us by choosing the \"Send Feedback\" Option in the menu.";
+"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>Support for the Bose Frames is new and we would love to hear your feedback. You can contact us by choosing the \"Send Feedback\" option in the menu.";
 
 //------------------------------------------------------------------------------
 // MARK: - OSM Tags
@@ -3503,7 +3503,7 @@
 "whats_new.1_2_0.1.title" = "Beacon Mute Distance Setting";
 
 /* Description of the beacon vicinity distance feature */
-"whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. You can adjust this setting in Audio Beacon settings.\n\nWe would particularly welcome feedback on your experience with setting different distances (0, 5, and 10 metres), for the Audio Beacon to switch off. In our internal testing we are seeing some inconsistencies in behaviour and are keen to get feedback from a wider base of users.";
+"whats_new.1_2_0.1.description" = "You can now adjust the distance at which the beacon is automatically muted when you approach. Just go to the Audio Beacon settings and move the \"Audio Mute Distance\" slider.";
 
 /* Title of the  categories in places nearby feature */
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
