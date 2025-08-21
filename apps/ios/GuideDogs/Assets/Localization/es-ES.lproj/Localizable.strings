@@ -4102,7 +4102,7 @@
 
 
 /*  */
-"push.local.walk.title" = "Probar Soundscape en tu propio paseo";
+"push.local.walk.title" = "Probar Soundscape en tu próximo paseo";
 
 
 /*  */
@@ -4427,7 +4427,7 @@
 "donation.body" = "Por favor, apoya el desarrollo continuo de la aplicación Soundscape Community donando en nuestra página de recaudación de fondos. Cada donación nos acerca un paso más a nuestra visión de ayudar a crear un mundo donde TODOS tengan el mismo acceso a la información sobre su entorno a través de nuestra tecnología que mejora la vida.";
 "menu.donate" = "Donar";
 "donation.title" = "Donar a Soundscape Community";
-"donation.link" = "Ir a la Página de Recaudación de Fondos";
+"donation.link" = "Ir a la página de recaudación de fondos";
 "devices.connect_headset.completed.boseframes" = "¡Enhorabuena! Tus Bose Frames están listas para usar, ¡así que puedes guardar tu teléfono en el bolsillo y ponerte en marcha! Soundscape seguirá ahora la orientación de tu cabeza para que no tengas que sostener el teléfono en la mano.";
 "devices.callouts.check_audio.bose_frames" = "Bose Frames conectadas.";
 "devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape está buscando tus Bose Frames. Asegúrate de que están conectadas al teléfono.";
