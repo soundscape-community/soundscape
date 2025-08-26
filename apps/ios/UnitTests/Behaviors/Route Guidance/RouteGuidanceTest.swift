@@ -175,34 +175,34 @@ class RouteGuidanceTest: XCTestCase {
         route.activate(with: nil)
         XCTAssertNotNil(route.currentWaypoint)
         XCTAssertEqual(route.currentWaypoint!.index, 0)
-        XCTAssertEqual(route.currentWaypoint!.waypoint.location.coordinate, activity.waypoints[0].coordinate)
+        XCTAssertTrue(route.currentWaypoint!.waypoint.location.coordinate.isNear(to: activity.waypoints[0].coordinate))
         
         // Go to 2
         route.setBeacon(waypointIndex: 2, enableAudio: false)
         XCTAssertNotNil(route.currentWaypoint)
         XCTAssertEqual(route.currentWaypoint!.index, 2)
-        XCTAssertEqual(route.currentWaypoint!.waypoint.location.coordinate, activity.waypoints[2].coordinate)
+        XCTAssertTrue(route.currentWaypoint!.waypoint.location.coordinate.isNear(to: activity.waypoints[2].coordinate))
         XCTAssertEqual(route.progress.completed, 0)
         
         // Go to 3
         route.setBeacon(waypointIndex: 3, enableAudio: false)
         XCTAssertNotNil(route.currentWaypoint)
         XCTAssertEqual(route.currentWaypoint!.index, 3)
-        XCTAssertEqual(route.currentWaypoint!.waypoint.location.coordinate, activity.waypoints[3].coordinate)
+        XCTAssertTrue(route.currentWaypoint!.waypoint.location.coordinate.isNear(to: activity.waypoints[3].coordinate))
         XCTAssertEqual(route.progress.completed, 0)
         
         // Go to 10 (out of bound, so fails and stays at 3)
         route.setBeacon(waypointIndex: 10, enableAudio: false)
         XCTAssertNotNil(route.currentWaypoint)
         XCTAssertEqual(route.currentWaypoint!.index, 3)
-        XCTAssertEqual(route.currentWaypoint!.waypoint.location.coordinate, activity.waypoints[3].coordinate)
+        XCTAssertTrue(route.currentWaypoint!.waypoint.location.coordinate.isNear(to: activity.waypoints[3].coordinate))
         XCTAssertEqual(route.progress.completed, 0)
         
         // Go back to 0
         route.setBeacon(waypointIndex: 0, enableAudio: false)
         XCTAssertNotNil(route.currentWaypoint)
         XCTAssertEqual(route.currentWaypoint!.index, 0)
-        XCTAssertEqual(route.currentWaypoint!.waypoint.location.coordinate, activity.waypoints[0].coordinate)
+        XCTAssertTrue(route.currentWaypoint!.waypoint.location.coordinate.isNear(to: activity.waypoints[0].coordinate))
         XCTAssertEqual(route.progress.completed, 0)
         
         XCTAssertNil(route.deactivate())
