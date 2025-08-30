@@ -67,7 +67,7 @@
                                             <color key="textColor" name="Foreground 1"/>
                                             <nil key="highlightedColor"/>
                                             <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="whats_new.3_2_0.2.description"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="voice.apple.additional"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                     </subviews>
