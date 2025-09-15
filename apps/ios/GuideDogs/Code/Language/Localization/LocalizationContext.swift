@@ -160,6 +160,16 @@ class LocalizationContext {
                 break
             }
         }
+        // Fallback: match only on language part if no exact match found
+        if _firstSupportedLocale == nil {
+            for preferredLocale in Locale.preferredLocales {
+                if let languageCode = preferredLocale.languageCode,
+                   let locale = supportedLocales.first(where: { $0.languageCode == languageCode }) {
+                    _firstSupportedLocale = locale
+                    break
+                }
+            }
+        }
         
         return _firstSupportedLocale
     }
