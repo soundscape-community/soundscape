@@ -964,7 +964,7 @@ class AudioEngine: AudioEngineProtocol {
             
             guard self.state != .stopped else {
                 GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                callback?(false)
+                Task { @MainActor in callback?(false) }
                 return
             }
             
@@ -991,6 +991,10 @@ class AudioEngine: AudioEngineProtocol {
             }
             
             self.currentSounds = sounds
+            print("RD play self.currentSoundCompletion: \(String(describing: self.currentSoundCompletion))")
+            if(self.currentSoundCompletion != nil ) {
+                print("about to crash")
+            }
             self.currentSoundCompletion = callback
             self.playNextSound()
         }
@@ -1099,7 +1103,10 @@ class AudioEngine: AudioEngineProtocol {
             self.play(nextSounds, completion: completion)
         }
         
-        callback?(success)
+        Task{@MainActor in callback?(success)
+            print("maybe going to crash here in finishdiscrete?")
+        print(String(describing: callback))}
+
     }
     
     // MARK: 3D Audio Environment
