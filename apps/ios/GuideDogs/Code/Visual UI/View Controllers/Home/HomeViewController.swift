@@ -115,6 +115,21 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Setup accessible layout
+        setupAccessibleLayout()
+
+        // Register for accessibility notifications
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(voiceOverStatusChanged),
+            name: UIAccessibility.voiceOverStatusDidChangeNotification,
+            object: nil
+        )
+
+        // Apply VoiceOver-specific adjustments if enabled
+        if UIAccessibility.isVoiceOverRunning {
+            applyVoiceOverOptimizations()
+        }
         
         // Initialize the search controller
         self.searchController = UISearchController(delegate: self)

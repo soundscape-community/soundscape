@@ -598,6 +598,7 @@
 		B9F749A21F16153900DC10C6 /* CoreLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F749A11F16153900DC10C6 /* CoreLocation+Extensions.swift */; };
 		BD2726862D6EA01C0022654B /* Integrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2726852D6EA0110022654B /* Integrations.swift */; };
 		BDB661182D7BA8BB00D80302 /* sense_navilens.wav in Resources */ = {isa = PBXBuildFile; fileRef = BDB661172D7BA8BB00D80302 /* sense_navilens.wav */; };
+		C2FC76922E8C794B002AFFBD /* HomeViewController+AccessibleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FC76912E8C794B002AFFBD /* HomeViewController+AccessibleLayout.swift */; };
 		C3060705205C544E00C39489 /* AddressGeocoderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3060704205C544E00C39489 /* AddressGeocoderProtocol.swift */; };
 		C306DF8522F0D71300248E9F /* CompoundFilterPredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C306DF8422F0D71300248E9F /* CompoundFilterPredicate.swift */; };
 		C30DBD2023A2C19400082B27 /* SearchResultsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DBD1F23A2C19400082B27 /* SearchResultsUpdater.swift */; };
@@ -1403,6 +1404,7 @@
 		B9F749A11F16153900DC10C6 /* CoreLocation+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CoreLocation+Extensions.swift"; path = "Code/App/Framework Extensions/Geo Extensions/CoreLocation+Extensions.swift"; sourceTree = "<group>"; };
 		BD2726852D6EA0110022654B /* Integrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Integrations.swift; sourceTree = "<group>"; };
 		BDB661172D7BA8BB00D80302 /* sense_navilens.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sense_navilens.wav; path = Assets/Sounds/sense_navilens.wav; sourceTree = "<group>"; };
+		C2FC76912E8C794B002AFFBD /* HomeViewController+AccessibleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeViewController+AccessibleLayout.swift"; sourceTree = "<group>"; };
 		C3060704205C544E00C39489 /* AddressGeocoderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddressGeocoderProtocol.swift; path = Code/Generators/Geocoding/Protocols/AddressGeocoderProtocol.swift; sourceTree = "<group>"; };
 		C306DF8422F0D71300248E9F /* CompoundFilterPredicate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CompoundFilterPredicate.swift; path = Code/Data/Models/Helpers/Filter/CompoundFilterPredicate.swift; sourceTree = "<group>"; };
 		C30DBD1F23A2C19400082B27 /* SearchResultsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsUpdater.swift; sourceTree = "<group>"; };
@@ -2904,6 +2906,7 @@
 		62403FE324C64655005CB80D /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				C2FC76912E8C794B002AFFBD /* HomeViewController+AccessibleLayout.swift */,
 				568480901CBC9C94004B4227 /* HomeViewController.swift */,
 				31013A6420D9ACBE00205D1F /* HomeViewController+RemoteControl.swift */,
 				62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */,
@@ -5086,6 +5089,7 @@
 				6279177F248EB836001D72F3 /* RoadAdjacentDataView.swift in Sources */,
 				624C96B828529854001F84F8 /* NavigationBarStyle.swift in Sources */,
 				289249151FE19FAE005E6740 /* CalloutStateMachine.swift in Sources */,
+				C2FC76922E8C794B002AFFBD /* HomeViewController+AccessibleLayout.swift in Sources */,
 				62B455642583FF8900665131 /* HeadphoneMotionManager.swift in Sources */,
 				C365E643220BB83C00049216 /* BannerViewController.swift in Sources */,
 				28467EEB264206A300FB4C9F /* RouteActionDelegate.swift in Sources */,
