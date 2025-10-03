@@ -4433,6 +4433,7 @@
 
 
 
+
 "mail.yahoo" = "Yahoo Mail";
 "mail.protonmail" = "Proton Mail";
 "mail.dispatch" = "Dispatch";
@@ -4490,3 +4491,14 @@
 "troubleshooting.user_data" = "User Data";
 "troubleshooting.user_data.button" = "Delete All Markers and Routes";
 "troubleshooting.user_data.explanation" = "Delete all map data, including saved markers and routes. This action cannot be undone.";
+
+// MARK: GPS Accuracy Announcement
+"gps.accuracy.announce.feet" = "GPS accuracy is ±{value} feet.";
+"gps.accuracy.announce.meters" = "GPS accuracy is ±{value} metres.";
+"gps.accuracy.improved.feet" = "GPS accuracy has improved to ±{value} feet.";
+"gps.accuracy.improved.meters" = "GPS accuracy has improved to ±{value} metres.";
+"gps.accuracy.unavailable" = "GPS accuracy is unavailable.";
+
+// MARK: GPS Accuracy Button Accessibility
+"gps.accuracy.check" = "Check GPS Accuracy";
+"gps.accuracy.check.hint" = "Plays an announcement with the current GPS accuracy.";

@@ -87,6 +87,37 @@ class MenuView: DynamicView {
         return button
     }()
     
+    lazy var gpsAccuracyButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = Colors.Background.primary
+        button.layer.cornerRadius = 5.0
+        button.showsTouchWhenHighlighted = true
+        button.accessibilityLabel = GDLocalizedString("gps.accuracy.check")
+        button.accessibilityHint  = GDLocalizedString("gps.accuracy.check.hint")
+
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = GDLocalizedString("gps.accuracy.check")
+        label.textColor = Colors.Foreground.primary
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: .headline)
+        label.adjustsFontForContentSizeCategory = true
+        label.adjustsFontSizeToFitWidth = true
+
+        button.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: button.topAnchor, constant: 12.0),
+            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 12.0),
+            label.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -12.0),
+            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -12.0),
+            button.heightAnchor.constraint(greaterThanOrEqualToConstant: 80.0)
+        ])
+
+        return button
+    }()
+    
+
     private(set) var items: [DynamicMenuItemView] = []
     
     private var bottomConstraint: NSLayoutConstraint!
@@ -109,6 +140,7 @@ class MenuView: DynamicView {
         
         scrollView.addSubview(topView)
         menuBackdrop.addSubview(scrollView)
+        menuBackdrop.addSubview(gpsAccuracyButton)
         menuBackdrop.addSubview(crosscheckButton)
         addSubview(menuBackdrop)
         addSubview(backgroundOverlay)
@@ -130,7 +162,10 @@ class MenuView: DynamicView {
             scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: menuBackdrop.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: menuBackdrop.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: crosscheckButton.topAnchor, constant: -12.0),
+            scrollView.bottomAnchor.constraint(equalTo: gpsAccuracyButton.topAnchor, constant: -12.0),
+            gpsAccuracyButton.leadingAnchor.constraint(equalTo: menuBackdrop.leadingAnchor, constant: 12.0),
+            gpsAccuracyButton.trailingAnchor.constraint(equalTo: menuBackdrop.trailingAnchor, constant: -12.0),
+            gpsAccuracyButton.bottomAnchor.constraint(equalTo: crosscheckButton.topAnchor, constant: -24.0),
             crosscheckButton.bottomAnchor.constraint(equalTo: menuBackdrop.bottomAnchor, constant: -24.0),
             crosscheckButton.leadingAnchor.constraint(equalTo: menuBackdrop.leadingAnchor, constant: 12.0),
             crosscheckButton.trailingAnchor.constraint(equalTo: menuBackdrop.trailingAnchor, constant: -12.0),

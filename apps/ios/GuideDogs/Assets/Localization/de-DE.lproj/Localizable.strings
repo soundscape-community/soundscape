@@ -4388,3 +4388,16 @@
 "mail.default" = "Standard";
 "mail.gmail" = "Gmail";
 "mail.msoutlook" = "Microsoft Outlook";
+
+
+//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
+// MARK: GPS Accuracy Announcement
+"gps.accuracy.announce.feet" = "Die GPS-Genauigkeit beträgt ±{value} Fuß.";
+"gps.accuracy.announce.meters" = "Die GPS-Genauigkeit beträgt ±{value} Meter.";
+"gps.accuracy.improved.feet" = "Die GPS-Genauigkeit hat sich auf ±{value} Fuß verbessert.";
+"gps.accuracy.improved.meters" = "Die GPS-Genauigkeit hat sich auf ±{value} Meter verbessert.";
+"gps.accuracy.unavailable" = "Die GPS-Genauigkeit ist nicht verfügbar.";
+
+// MARK: GPS Accuracy Button Accessibility
+"gps.accuracy.check" = "GPS-Genauigkeit prüfen";
+"gps.accuracy.check.hint" = "Spielt eine Ansage mit der aktuellen GPS-Genauigkeit ab.";

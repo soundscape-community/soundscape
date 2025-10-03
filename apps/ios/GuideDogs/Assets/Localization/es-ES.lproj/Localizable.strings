@@ -4461,3 +4461,15 @@
 "troubleshooting.user_data" = "Datos del usuario";
 "troubleshooting.user_data.button" = "Eliminar todos los marcadores y rutas";
 "troubleshooting.user_data.explanation" = "Borra todos los datos del mapa, incluidos los marcadores y rutas guardados. Esta acción no se puede deshacer.";
+
+//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
+// MARK: GPS Accuracy Announcement
+"gps.accuracy.announce.feet" = "La precisión del GPS es de ±{value} pies.";
+"gps.accuracy.announce.meters" = "La precisión del GPS es de ±{value} metros.";
+"gps.accuracy.improved.feet" = "La precisión del GPS ha mejorado a ±{value} pies.";
+"gps.accuracy.improved.meters" = "La precisión del GPS ha mejorado a ±{value} metros.";
+"gps.accuracy.unavailable" = "La precisión del GPS no está disponible.";
+
+// MARK: GPS Accuracy Button Accessibility
+"gps.accuracy.check" = "Comprobar precisión GPS";
+"gps.accuracy.check.hint" = "Reproduce un anuncio con la precisión actual del GPS.";

@@ -10,6 +10,8 @@ import CoreLocation
 
 class CheckAudioEvent: UserInitiatedEvent { }
 
+class AnnounceGPSAccuracyEvent: UserInitiatedEvent { }
+
 class TTSVoicePreviewEvent: UserInitiatedEvent {
     var voiceName: String
     
@@ -73,7 +75,8 @@ class SystemGenerator: ManualGenerator {
         CheckAudioEvent.self,
         TTSVoicePreviewEvent.self,
         GenericAnnouncementEvent.self,
-        RepeatCalloutEvent.self
+        RepeatCalloutEvent.self,
+        AnnounceGPSAccuracyEvent.self
     ]
     
     private unowned let geo: GeolocationManagerProtocol
@@ -151,7 +154,49 @@ class SystemGenerator: ManualGenerator {
             }
             
             return .playCallouts(CalloutGroup([event.callout], repeatingFromLocation: location, action: .interruptAndClear, logContext: "repeat_callout"))
-            
+        case is AnnounceGPSAccuracyEvent:
+            guard let loc = geo.location else {
+                let msg = GDLocalizedString("gps.accuracy.unavailable", "GPS accuracy unavailable.")
+                let callout = StringCallout(.system, msg)
+                return .playCallouts(CalloutGroup([callout],
+                                                  action: .interruptAndClear,
+                                                  logContext: "gps-accuracy.manual"))
+            }
+
+            // Validate coordinates
+            guard CLLocationCoordinate2DIsValid(loc.coordinate) else {
+                let msg = GDLocalizedString("gps.accuracy.unavailable", "GPS accuracy unavailable.")
+                let callout = StringCallout(.system, msg)
+                return .playCallouts(CalloutGroup([callout],
+                                                  action: .interruptAndClear,
+                                                  logContext: "gps-accuracy.manual"))
+            }
+
+            // Validate accuracy
+            let acc = loc.horizontalAccuracy
+            guard acc.isFinite, acc >= 0 else {  
+                let msg = GDLocalizedString("gps.accuracy.unavailable", "GPS accuracy unavailable.")
+                let callout = StringCallout(.system, msg)
+                return .playCallouts(CalloutGroup([callout],
+                                                  action: .interruptAndClear,
+                                                  logContext: "gps-accuracy.manual"))
+            }
+
+             let localeIdentifier = Locale.current.identifier
+             let message: String
+             if localeIdentifier == "en_US" {
+                 let feet = 10
+                 let template = GDLocalizedString("gps.accuracy.announce.feet", "GPS accuracy is ±{value} feet.")
+                 message = template.replacingOccurrences(of: "{value}", with: "\(feet)")
+             } else {
+                let meters = Int(acc.rounded())
+                let template = GDLocalizedString("gps.accuracy.announce.meters", "GPS accuracy is ±%d meters.")
+                message = String(format: template, meters)
+             }
+
+
+             let callout = StringCallout(.system, message, position: 180.0)
+             return .playCallouts(CalloutGroup([callout], action: .interruptAndClear, logContext: "gps-accuracy.manual"))
         default:
             return nil
         }

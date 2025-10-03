@@ -4380,3 +4380,15 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Hvis du trykker på skjermen to ganger med to fingre, slås lyden av for alle aktive meldinger.";
+
+//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
+// MARK: GPS Accuracy Announcement
+"gps.accuracy.announce.feet" = "GPS-nøyaktigheten er ±{value} fot.";
+"gps.accuracy.announce.meters" = "GPS-nøyaktigheten er ±{value} meter.";
+"gps.accuracy.improved.feet" = "GPS-nøyaktigheten har forbedret seg til ±{value} fot.";
+"gps.accuracy.improved.meters" = "GPS-nøyaktigheten har forbedret seg til ±{value} meter.";
+"gps.accuracy.unavailable" = "GPS-nøyaktigheten er ikke tilgjengelig.";
+
+// MARK: GPS Accuracy Button Accessibility
+"gps.accuracy.check" = "Sjekk GPS-nøyaktighet";
+"gps.accuracy.check.hint" = "Spiller av en kunngjøring med den nåværende GPS-nøyaktigheten.";

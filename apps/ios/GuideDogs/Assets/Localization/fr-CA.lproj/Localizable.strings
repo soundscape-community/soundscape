@@ -4380,3 +4380,15 @@
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Appuyer sur l’écran à deux reprises avec deux doigts désactive le son de toutes les notifications actives.";
+
+//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
+// MARK: GPS Accuracy Announcement
+"gps.accuracy.announce.feet" = "La précision GPS est de ±{value} pieds.";
+"gps.accuracy.announce.meters" = "La précision GPS est de ±%d{value} mètres.";
+"gps.accuracy.improved.feet" = "La précision GPS s’est améliorée à ±%{value} pieds.";
+"gps.accuracy.improved.meters" = "La précision GPS s’est améliorée à ±{value} mètres.";
+"gps.accuracy.unavailable" = "La précision GPS n’est pas disponible.";
+
+// MARK: GPS Accuracy Button Accessibility
+"gps.accuracy.check" = "Vérifier la précision GPS";
+"gps.accuracy.check.hint" = "Annonce la précision GPS actuelle.";

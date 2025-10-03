@@ -2,7 +2,7 @@
 //  GPSAccuracyAnnouncementGenerator.swift
 //  GuideDogs
 //
-//  Created by no clue what to put here on 9/23/25.
+//  Created by Ajitesh Bankula on 9/23/25.
 //  Copyright © 2025 Soundscape community. All rights reserved.
 //
 
@@ -15,8 +15,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     
     private unowned let settings: SettingsContext
     private unowned let motion: MotionActivityProtocol
-    
-    //set once said so we dont repeat anouncements
+    private let localeIdentifier: String = Locale.current.identifier
     private var hasAnnouncedStartup = false
     private var hasAnnouncedWake = false
     private var hasAnnouncedAccurate = false
@@ -32,7 +31,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     private var pending: Pending?
     
     //threadhold for acuracy
-    static let poorAccuracyThreashold: CLLocationAccuracy = 25.0
+    static let poorAccuracyThreashold: CLLocationAccuracy = 10.0
 
     private let eventTypes: [StateChangedEvent.Type] = [
         GlyphEvent.self,
@@ -144,12 +143,24 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
 
 
         if acc > Self.poorAccuracyThreashold {
-            message = "GPS accuracy is poor (±\(Int(acc)) m). Move around for better accuracy."
-            pending = .accurate
+            if localeIdentifier == "en_US" {
+                message = "GPS accuracy is poor (±\(Int(acc * 3.28084)) feet). Move around for better accuracy."
+                pending = .accurate
+            }else{
+                message = "GPS accuracy is poor (±\(Int(acc)) meters). Move around for better accuracy."
+                pending = .accurate
+            }
         } else {
-            message = "GPS accuracy is good (±\(Int(acc)) m)."
-            markDone(for: reason)
-            pending = nil
+            if localeIdentifier == "en_US" {
+                message = "GPS accuracy is good (±\(Int(acc*3.28084)) feet)."
+                markDone(for: reason)
+                pending = nil
+            }else{
+                message = "GPS accuracy is good (±\(Int(acc)) meters)."
+                markDone(for: reason)
+                pending = nil
+            }
+
         }
 
         let callout = StringCallout(.system, message)
@@ -164,9 +175,15 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         guard acc <= Self.poorAccuracyThreashold, !hasAnnouncedAccurate else {
             return .noAction
         }
+        var message: String
+        if localeIdentifier == "en_US" {
+            message = "GPS accuracy has improved to \(Int(acc*3.28084)) feet."
+            
+        }else{
+            message = "GPS accuracy has improved to ±\(Int(acc)) meters."
+        }
+        let callout = StringCallout(.system, message, position: 180.0)
 
-        let message = "GPS accuracy has improved to ±\(Int(acc)) meters."
-        let callout = StringCallout(.system, message)
 
         markDone(for: .accurate)
         pending = nil

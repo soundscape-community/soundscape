@@ -4382,3 +4382,15 @@
 "faq.tip.two_finger_double_tap" = "Näytön napauttaminen kahdesti kahdella sormella hiljentää mahdolliset aktiiviset ilmoitukset.";
 "whats_new.1_2_0.2.title" = "Luokat 'Lähiympäristön paikat':ssa";
 "whats_new.1_2_0.2.description" = "Voit nyt suodattaa lähistöllä olevia paikkoja luokkien mukaan, kuten joukkoliikenne, ruoka ja juoma jne.";
+
+//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
+// MARK: GPS Accuracy Announcement
+"gps.accuracy.announce.feet" = "GPS-tarkkuus on ±{value} jalkaa.";
+"gps.accuracy.announce.meters" = "GPS-tarkkuus on ±{value} metriä.";
+"gps.accuracy.improved.feet" = "GPS-tarkkuus on parantunut ±{value} jalkaan.";
+"gps.accuracy.improved.meters" = "GPS-tarkkuus on parantunut ±{value} metriin.";
+"gps.accuracy.unavailable" = "GPS-tarkkuus ei ole saatavilla.";
+
+// MARK: GPS Accuracy Button Accessibility
+"gps.accuracy.check" = "Tarkista GPS-tarkkuus";
+"gps.accuracy.check.hint" = "Lukee nykyisen GPS-tarkkuuden.";

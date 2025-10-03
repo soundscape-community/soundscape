@@ -3751,3 +3751,35 @@
 
 /* Donation link title */
 "donation.link" = "Go to Fundraising Page";
+
+
+// MARK: GPS Accuracy Announcement
+
+/* Announce GPS accuracy in feet (for en_US locale).
+   {NumberedPlaceholder="%d"} represents the accuracy value in feet. */
+"gps.accuracy.announce.feet" = "GPS accuracy is ±{value} feet.";
+
+/* Announce GPS accuracy in meters (for non-US locales).
+   {NumberedPlaceholder="%d"} represents the accuracy value in meters. */
+"gps.accuracy.announce.meters" = "GPS accuracy is ±{value} meters.";
+
+/* Announce improved GPS accuracy in feet (for en_US locale).
+   {NumberedPlaceholder="%d"} represents the improved accuracy in feet. */
+"gps.accuracy.improved.feet" = "GPS accuracy has improved to ±{value} feet.";
+
+/* Announce improved GPS accuracy in meters (for non-US locales).
+   {NumberedPlaceholder="%d"} represents the improved accuracy in meters. */
+"gps.accuracy.improved.meters" = "GPS accuracy has improved to ±{value} meters.";
+
+/* Announce when GPS accuracy information is unavailable. */
+"gps.accuracy.unavailable" = "GPS accuracy is unavailable.";
+
+// MARK: GPS Accuracy Button Accessibility
+
+/* Accessibility label for the GPS Accuracy button.
+   This is the short name read by VoiceOver when the button is focused. */
+"gps.accuracy.check" = "Check GPS Accuracy";
+
+/* Accessibility hint for the GPS Accuracy button.
+   This describes the action that occurs when the user activates the button. */
+"gps.accuracy.check.hint" = "Plays an announcement with the current GPS accuracy.";

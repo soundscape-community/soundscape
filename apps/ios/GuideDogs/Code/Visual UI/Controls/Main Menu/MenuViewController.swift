@@ -85,6 +85,7 @@ class MenuViewController: UIViewController {
         
         menuView.backgroundOverlay.addTarget(self, action: #selector(onCloseMenuTouchUpInside), for: .touchUpInside)
         menuView.crosscheckButton.addTarget(self, action: #selector(onCrosscheckTouchUpInside), for: .touchUpInside)
+        menuView.gpsAccuracyButton.addTarget(self, action: #selector(onGPSAccuracyTouchUpInside), for: .touchUpInside)
         
         // Set the view
         view = menuView
@@ -155,4 +156,8 @@ class MenuViewController: UIViewController {
         GDLogAppInfo("Play crosscheck audio")
         AppContext.process(CheckAudioEvent())
     }
-}
+    
+    @objc func onGPSAccuracyTouchUpInside() {
+        GDLogAppInfo("Announce GPS accuracy (manual)")
+        AppContext.process(AnnounceGPSAccuracyEvent())
+    }}
