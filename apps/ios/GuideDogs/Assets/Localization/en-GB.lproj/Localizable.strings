@@ -4502,3 +4502,7 @@
 // MARK: GPS Accuracy Button Accessibility
 "gps.accuracy.check" = "Check GPS Accuracy";
 "gps.accuracy.check.hint" = "Plays an announcement with the current GPS accuracy.";
+
+"settings.callouts.gps_announcements.title" = "GPS Accuracy Announcements";
+"settings.callouts.gps_announcements.info" = "Toggles GPS accuracy announcements on or off.";
+

@@ -4401,3 +4401,6 @@
 // MARK: GPS Accuracy Button Accessibility
 "gps.accuracy.check" = "Kontrollera GPS-noggrannhet";
 "gps.accuracy.check.hint" = "Spelar upp ett meddelande med den aktuella GPS-noggrannheten.";
+
+"settings.callouts.gps_announcements.title" = "GPS-noggrannhetsmeddelanden";
+"settings.callouts.gps_announcements.info" = "Slår på eller av meddelanden om GPS-noggrannhet.";

@@ -46,12 +46,9 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     //init and Deinit
     
     init(settings: SettingsContext, motionActivity: MotionActivityProtocol){
-        //set vars
         self.settings = settings
         self.motion = motionActivity
-        //listen to state changes in app to see next .appLaunch glyph
         
-        //*look into logic of this* to see if it makes sense
         NotificationCenter.default.publisher(for: .appOperationStateDidChange)
             .receive(on: RunLoop.main)
             .sink { [weak self] note in
@@ -61,7 +58,25 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
                 self.currentOpState = newState
                 GDLogInfo(.eventProcessor, "GPSAcc: opState changed: \(String(describing: self.previousOpState)) -> \(String(describing: self.currentOpState))")
             }
-            .store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: .gpsAnnouncementsEnabledChanged)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] note in
+                guard let self = self else { return }
+                let enabled = (note.userInfo?[SettingsContext.Keys.enabled] as? Bool) ?? self.settings.gpsAnnouncementsEnabled
+                GDLogInfo(.eventProcessor, "GPSAccAnn: setting changed -> \(enabled)")
+                if !enabled {
+                    self.pending = nil
+                    self.hasAnnouncedStartup = true
+                    self.hasAnnouncedWake = true
+                    self.hasAnnouncedAccurate = true
+                } else {
+                    self.hasAnnouncedStartup = false
+                    self.hasAnnouncedWake = false
+                    self.hasAnnouncedAccurate = false
+                }
+            }
+        .store(in: &cancellables)
         
     }
     deinit{
@@ -78,14 +93,20 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     // this tells us what type of events we repsond to
     // specificaly for us we are doign when we see a StateChagnedEvent
     func respondsTo(_ event: StateChangedEvent) -> Bool {
-        eventTypes.contains { $0 == type(of: event) }
+        if settings.gpsAnnouncementsEnabled == false{
+            return false
+        }
+        return eventTypes.contains { $0 == type(of: event) }
     }
     
     
     //handels the state changed event and maps into its cases:
     func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
+        if settings.gpsAnnouncementsEnabled == false{
+            return .noAction
+        }
         switch event {
-
+            
         // in case we started the GPX simulation we make sure we dont do any anouncement and set to has anounced so we wont
         case is GPXSimulationStartedEvent:
             GDLogInfo(.eventProcessor, "GPX simulation started so n announcements for GPS Accuracy")
@@ -135,7 +156,9 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     // if its first time anounceing gps acurac use this
     private func handleFirstGPSAnnouncement(_ event: LocationUpdatedEvent) -> HandledEventAction? {
         guard let reason = pending else { return .noAction }
-
+        if settings.gpsAnnouncementsEnabled == false{
+            return .noAction
+        }
         let acc = event.location.horizontalAccuracy
         guard acc.isFinite else { return .noAction }
 
@@ -171,7 +194,9 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     private func handleImprovedGPSAnnouncement(_ event: LocationUpdatedEvent) -> HandledEventAction? {
         let acc = event.location.horizontalAccuracy
         guard acc.isFinite else { return .noAction }
-
+        if settings.gpsAnnouncementsEnabled == false{
+            return .noAction
+        }
         guard acc <= Self.poorAccuracyThreashold, !hasAnnouncedAccurate else {
             return .noAction
         }

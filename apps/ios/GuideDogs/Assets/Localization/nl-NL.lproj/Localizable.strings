@@ -4433,3 +4433,6 @@
 // MARK: GPS Accuracy Button Accessibility
 "gps.accuracy.check" = "Controleer GPS-nauwkeurigheid";
 "gps.accuracy.check.hint" = "Speelt een melding met de huidige GPS-nauwkeurigheid af.";
+
+"settings.callouts.gps_announcements.title" = "GPS-nauwkeurigheidsmeldingen";
+"settings.callouts.gps_announcements.info" = "Schakelt meldingen over GPS-nauwkeurigheid in of uit.";

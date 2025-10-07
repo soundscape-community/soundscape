@@ -4392,3 +4392,6 @@
 // MARK: GPS Accuracy Button Accessibility
 "gps.accuracy.check" = "GPS精度を確認";
 "gps.accuracy.check.hint" = "現在のGPS精度を読み上げます。";
+
+"settings.callouts.gps_announcements.title" = "GPS 精度のアナウンス";
+"settings.callouts.gps_announcements.info" = "GPS 精度のアナウンスをオン／オフします。";

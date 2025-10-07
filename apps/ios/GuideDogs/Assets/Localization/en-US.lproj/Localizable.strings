@@ -3783,3 +3783,6 @@
 /* Accessibility hint for the GPS Accuracy button.
    This describes the action that occurs when the user activates the button. */
 "gps.accuracy.check.hint" = "Plays an announcement with the current GPS accuracy.";
+
+"settings.callouts.gps_announcements.title" = "GPS Accuracy Announcements";
+"settings.callouts.gps_announcements.info" = "toggles on and off GPS Accuracy Anncouncements";

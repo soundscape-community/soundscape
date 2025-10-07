@@ -2481,7 +2481,7 @@
 "gps.accuracy.check" = "بررسی دقت GPS";
 "gps.accuracy.check.hint" = "اعلام دقت فعلی GPS را پخش می‌کند.";
 
-
-
+"settings.callouts.gps_announcements.title" = "اعلان‌های دقت GPS";
+"settings.callouts.gps_announcements.info" = "اعلان‌های دقت GPS را روشن یا خاموش می‌کند.";
 
 

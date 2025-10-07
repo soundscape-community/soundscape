@@ -4473,3 +4473,6 @@
 // MARK: GPS Accuracy Button Accessibility
 "gps.accuracy.check" = "Comprobar precisión GPS";
 "gps.accuracy.check.hint" = "Reproduce un anuncio con la precisión actual del GPS.";
+
+"settings.callouts.gps_announcements.title" = "Anuncios de precisión del GPS";
+"settings.callouts.gps_announcements.info" = "Activa o desactiva los anuncios de precisión del GPS.";

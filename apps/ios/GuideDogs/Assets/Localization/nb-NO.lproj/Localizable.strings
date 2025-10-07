@@ -4392,3 +4392,5 @@
 // MARK: GPS Accuracy Button Accessibility
 "gps.accuracy.check" = "Sjekk GPS-nøyaktighet";
 "gps.accuracy.check.hint" = "Spiller av en kunngjøring med den nåværende GPS-nøyaktigheten.";
+"settings.callouts.gps_announcements.title" = "Varsler om GPS-nøyaktighet";
+"settings.callouts.gps_announcements.info" = "Slår varsler om GPS-nøyaktighet av eller på.";

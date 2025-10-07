@@ -4392,3 +4392,6 @@
 // MARK: GPS Accuracy Button Accessibility
 "gps.accuracy.check" = "Έλεγχος ακρίβειας GPS";
 "gps.accuracy.check.hint" = "Ανακοινώνει την τρέχουσα ακρίβεια GPS.";
+
+"settings.callouts.gps_announcements.title" = "Ανακοινώσεις ακρίβειας GPS";
+"settings.callouts.gps_announcements.info" = "Ενεργοποιεί ή απενεργοποιεί τις ανακοινώσεις ακρίβειας GPS.";

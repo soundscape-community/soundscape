@@ -4394,3 +4394,6 @@
 // MARK: GPS Accuracy Button Accessibility
 "gps.accuracy.check" = "Tarkista GPS-tarkkuus";
 "gps.accuracy.check.hint" = "Lukee nykyisen GPS-tarkkuuden.";
+
+"settings.callouts.gps_announcements.title" = "GPS-tarkkuusilmoitukset";
+"settings.callouts.gps_announcements.info" = "Ottaa käyttöön tai poistaa käytöstä GPS-tarkkuusilmoitukset.";

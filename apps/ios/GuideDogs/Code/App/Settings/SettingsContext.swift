@@ -18,8 +18,8 @@ extension Notification.Name {
     static let ttsVolumeChanged = Notification.Name("GDATTSVolumeChanged")
     static let otherVolumeChanged = Notification.Name("GDAOtherVolumeChanged")
     static let beaconGainChanged = Notification.Name("GDABeaconGainChanged")
-    
     static let previewIntersectionsIncludeUnnamedRoadsDidChange = Notification.Name("PreviewIntersectionsIncludeUnnamedRoadsDidChange")
+    static let gpsAnnouncementsEnabledChanged = Notification.Name("GDAGPSAnnouncementsEnabledChanged")
 }
 
 class SettingsContext {
@@ -59,7 +59,7 @@ class SettingsContext {
         fileprivate static let markerSortStyle           = "GDAMarkerSortStyle"
         fileprivate static let leaveImmediateVicinityDistance = "GDALeaveImmediateVicinityDistance"
         fileprivate static let enterImmediateVicinityDistance = "GDAEnterImmediateVicinityDistance"
-        
+        fileprivate static let gpsAnnouncementsEnabled   = "GDASettingsGPSAnnouncementsEnabled"
         fileprivate static let ttsGain = "GDATTSAudioGain"
         fileprivate static let beaconGain = "GDABeaconAudioGain"
         fileprivate static let afxGain = "GDAAFXAudioGain"
@@ -111,7 +111,8 @@ class SettingsContext {
             Keys.audioSessionMixesWithOthers: true,
             Keys.markerSortStyle: SortStyle.distance.rawValue,
             Keys.leaveImmediateVicinityDistance: 30.0,
-            Keys.enterImmediateVicinityDistance: 15.0
+            Keys.enterImmediateVicinityDistance: 15.0,
+            Keys.gpsAnnouncementsEnabled: false,
         ])
         
         resetLocaleIfNeeded()
@@ -501,6 +502,16 @@ extension SettingsContext: AutoCalloutSettingsProvider {
         }
         set(newValue) {
             userDefaults.set(newValue, forKey: Keys.senseDestination)
+        }
+    }
+    var gpsAnnouncementsEnabled: Bool {
+        get {
+            userDefaults.bool(forKey: Keys.gpsAnnouncementsEnabled)
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.gpsAnnouncementsEnabled)
+            NotificationCenter.default.post(name: .gpsAnnouncementsEnabledChanged,object: self, userInfo: [Keys.enabled: newValue]
+            )
         }
     }
 }
