@@ -5,14 +5,20 @@
 //  Created by Ajitesh Bankula on 9/23/25.
 //  Copyright © 2025 Soundscape community. All rights reserved.
 //
+//  Description: Generates spoken GPS accuracy announcements based on
+//  location updates and app state changes (startup, wake, improved accuracy).
+//
+
+
 
 import CoreLocation
 import Foundation
 import Combine
 
+
 final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     
-    
+    //MARK: Dependencies
     private unowned let settings: SettingsContext
     private unowned let motion: MotionActivityProtocol
     private let localeIdentifier: String = Locale.current.identifier
@@ -30,7 +36,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     
     private var pending: Pending?
     
-    //threadhold for acuracy
+    //threadhold for acuracy (meters)
     static let poorAccuracyThreashold: CLLocationAccuracy = 10.0
 
     private let eventTypes: [StateChangedEvent.Type] = [
@@ -43,12 +49,14 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     private var previousOpState: OperationState?
     private var cancellables: Set<AnyCancellable> = []
     
-    //init and Deinit
+    //MARK: initialization
     
+    //setus up the listenders and handels settings changes
     init(settings: SettingsContext, motionActivity: MotionActivityProtocol){
         self.settings = settings
         self.motion = motionActivity
         
+        //observer for app state changes
         NotificationCenter.default.publisher(for: .appOperationStateDidChange)
             .receive(on: RunLoop.main)
             .sink { [weak self] note in
@@ -58,7 +66,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
                 self.currentOpState = newState
                 GDLogInfo(.eventProcessor, "GPSAcc: opState changed: \(String(describing: self.previousOpState)) -> \(String(describing: self.currentOpState))")
             }
-        
+        //observer for when user enables GPS Accuracy announcemnents
         NotificationCenter.default.publisher(for: .gpsAnnouncementsEnabledChanged)
             .receive(on: RunLoop.main)
             .sink { [weak self] note in
@@ -79,19 +87,21 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         .store(in: &cancellables)
         
     }
+    //MARK: Deinit
     deinit{
         cancellables.forEach{
             $0.cancel()
         }
     }
     
-    // bellow is stuff for Atuomatic Generator Protocal
+    // MARK: Atuomatic Generator Protocal Functions needed
+    
+    //cancels any pending callouts(not used)
     func cancelCalloutsForEntity(id:String){
         
     }
     
-    // this tells us what type of events we repsond to
-    // specificaly for us we are doign when we see a StateChagnedEvent
+    // this tells us if we shoudl respond to a certain event
     func respondsTo(_ event: StateChangedEvent) -> Bool {
         if settings.gpsAnnouncementsEnabled == false{
             return false
@@ -100,7 +110,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     }
     
     
-    //handels the state changed event and maps into its cases:
+    //handels the valid event types and routes into its cases:
     func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
         if settings.gpsAnnouncementsEnabled == false{
             return .noAction
@@ -153,7 +163,9 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         }
     }
     
-    // if its first time anounceing gps acurac use this
+    //MARK: HELPER Methods/Functions
+    
+    // Handels the first Acuracy announcment once starteup or on wake
     private func handleFirstGPSAnnouncement(_ event: LocationUpdatedEvent) -> HandledEventAction? {
         guard let reason = pending else { return .noAction }
         if settings.gpsAnnouncementsEnabled == false{
@@ -190,7 +202,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         return .playCallouts(CalloutGroup([callout], action: .enqueue, logContext: "gps-accuracy"))
     }
 
-    // if its second or more time in case we had low gps acuracy use this
+    // If it isnot the first time after wake or startup we will use this to handel the annocuncemnt
     private func handleImprovedGPSAnnouncement(_ event: LocationUpdatedEvent) -> HandledEventAction? {
         let acc = event.location.horizontalAccuracy
         guard acc.isFinite else { return .noAction }
@@ -216,6 +228,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         return .playCallouts(CalloutGroup([callout], action: .enqueue, logContext: "gps-accuracy"))
     }
 
+    //marks the appropirate flags once a announcement is made
     private func markDone(for reason: Pending) {
         switch reason {
         case .startup: hasAnnouncedStartup = true
