@@ -1092,7 +1092,10 @@ class AudioEngine: AudioEngineProtocol {
     /// are any more `Sounds` objects in the queue and starts the next one if there are.
     ///
     /// - Parameter success: Indicates if the sounds finished playing successfully
+    var finishDiscreteCounter = 0
     private func finishDiscrete(success: Bool) {
+        print("RD finishDiscrete called \(finishDiscreteCounter) times")
+        finishDiscreteCounter += 1
         let callback = self.currentSoundCompletion
         
         self.currentSounds = nil
@@ -1106,6 +1109,7 @@ class AudioEngine: AudioEngineProtocol {
         Task{@MainActor in callback?(success)
             print("maybe going to crash here in finishdiscrete?")
         print(String(describing: callback))}
+        finishDiscreteCounter -= 1
 
     }
     
