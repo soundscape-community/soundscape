@@ -545,8 +545,8 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter activateAudioSession: True if this method should also activate the audio session
     func start(isRestarting: Bool, activateAudioSession: Bool = true) {
         // Don't try to start when the app is inactive, such as when Siri is invoked,
-        // as it will generate the error "cannot interrupt other".
-        guard AppContext.appState != .inactive else {
+        // as it will generate the error "cannot interrupt other". also don't start if a call is in progress as it causes an infinite loop
+        guard shouldStart() else {
             return
         }
         
@@ -565,15 +565,13 @@ class AudioEngine: AudioEngineProtocol {
             isSessionInterrupted = false
         }
         
-        guard shouldStart() else {
-            // If the audio engine has started, make sure all the paused players are resumed if needed.
-            if state == .started {
-                if !resume() {
-                    // If resuming wasn't successful because one of the players could not be resumed,
-                    // that player will be marked as done. If this was the case, try to play the
-                    // next sound, which will either play or report finished.
-                    playNextSound()
-                }
+        // If the audio engine has started, make sure all the paused players are resumed if needed.
+        if state == .started {
+            if !resume() {
+                // If resuming wasn't successful because one of the players could not be resumed,
+                // that player will be marked as done. If this was the case, try to play the
+                // next sound, which will either play or report finished.
+                playNextSound()
             }
             return
         }
