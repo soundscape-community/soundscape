@@ -44,7 +44,7 @@ final class AudioEngineTest: XCTestCase {
     
     /// Ensures the initial state is correct
     func testInit() throws {
-        audioEngine = envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
+        audioEngine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
         let eng = audioEngine!
         XCTAssertNil(eng.delegate)
         XCTAssertFalse(eng.isInMonoMode) // currently always true as it is not implemented
