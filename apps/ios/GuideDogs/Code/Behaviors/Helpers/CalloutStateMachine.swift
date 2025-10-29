@@ -67,7 +67,6 @@ class CalloutStateMachine {
          geo: GeolocationManagerProtocol,
          motionActivityContext motion: MotionActivityProtocol,
          history calloutHistory: CalloutHistory) {
-        print("🏗️ [CalloutStateMachine] init")
         history = calloutHistory
         audioEngine = engine
         motionActivityContext = motion
@@ -79,7 +78,6 @@ class CalloutStateMachine {
     // MARK: Methods
     
     func start(_ callouts: CalloutGroup) {
-        print("▶️ [CalloutStateMachine] start(_:) - id: \(callouts.id), state: \(state)")
         guard !isPlaying else {
             GDLogVerbose(.stateMachine, "Unable to start callout group. State machine is currently in state: \(String(describing: state))")
             return
@@ -93,7 +91,6 @@ class CalloutStateMachine {
     }
     
     func hush(playSound: Bool = false) {
-        print("🤫 [CalloutStateMachine] hush(playSound: \(playSound)) - state: \(state)")
         hushed = true
         
         if playSound {
@@ -102,14 +99,12 @@ class CalloutStateMachine {
     }
 
     func stop() {
-        print("⏹️ [CalloutStateMachine] stop() - state: \(state)")
         eventStop()
     }
     
     // MARK: state machine events
 
     private func eventStart() {
-        print("🎬 [CalloutStateMachine.event] eventStart() - state: \(state)")
         switch state {
             case .off:
                 stateStart()
@@ -119,7 +114,6 @@ class CalloutStateMachine {
     }
 
     private func eventStarted() {
-        print("🎬 [CalloutStateMachine.event] eventStarted() - state: \(state)")
         switch state {
             case .starting:
                 stateAnnounceCallout()
@@ -129,7 +123,6 @@ class CalloutStateMachine {
     }
 
     private func eventHush() {
-        print("🎬 [CalloutStateMachine.event] eventHush() - state: \(state)")
         switch state{
             case .off, .stop, .complete, .failed, .stopping, .starting, .start, .announceCallout, .announcingCallout, .delayingCalloutAnnounced:
                 stateStop()
@@ -137,7 +130,6 @@ class CalloutStateMachine {
     }
     
     private func eventStop() {
-        print("🎬 [CalloutStateMachine.event] eventStop() - state: \(state)")
         switch state {
             case .starting, .announcingCallout:
                 stateStop()
@@ -149,7 +141,6 @@ class CalloutStateMachine {
     }
     
     private func eventStopped() {
-        print("🎬 [CalloutStateMachine.event] eventStopped() - state: \(state)")
         switch state {
             case .stopping:
                 stateComplete()
@@ -159,7 +150,6 @@ class CalloutStateMachine {
     }
 
     private func eventFailed() {
-        print("🎬 [CalloutStateMachine.event] eventFailed() - state: \(state)")
         switch state {
             case .announceCallout, .announcingCallout, .complete, .delayingCalloutAnnounced, .failed, .off, .start, .starting, .stop, .stopping:
                 stateFailed()
@@ -167,7 +157,6 @@ class CalloutStateMachine {
     }
 
     private func eventDelayCalloutAnnounced() {
-        print("🎬 [CalloutStateMachine.event] eventDelayCalloutAnnounced() - state: \(state)")
         switch state {
             case .announcingCallout:
                 stateDelayingCalloutAnnounced()
@@ -181,7 +170,6 @@ class CalloutStateMachine {
     }
 
     private func eventCalloutAnnounced() {
-        print("🎬 [CalloutStateMachine.event] eventCalloutAnnounced() - state: \(state)")
         switch state{
             case .announcingCallout:
                 stateAnnounceCallout()
@@ -197,7 +185,6 @@ class CalloutStateMachine {
     }
 
     private func eventCompleted() {
-        print("🎬 [CalloutStateMachine.event] eventCompleted() - state: \(state)")
         switch state {
             case .complete:
                 stateOff()
@@ -276,7 +263,6 @@ class CalloutStateMachine {
 extension CalloutStateMachine {
     
     private func stateOff() {
-        print("🔴 [CalloutStateMachine.state] stateOff()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.off)")
         state = .off
         if let lastGroupID = self.lastGroupID {
@@ -288,7 +274,6 @@ extension CalloutStateMachine {
     }
     
     private func stateStart(){
-        print("🟢 [CalloutStateMachine.state] stateStart()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.start)")
         state = .start
         guard let calloutGroup = self.calloutGroup else {
@@ -349,13 +334,11 @@ extension CalloutStateMachine {
     }
     
     private func stateStarting() {
-        print("🟡 [CalloutStateMachine.state] stateStarting()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.starting)")
         state = .starting
     }
     
     private func stateStop() {
-        print("🛑 [CalloutStateMachine.state] stateStop()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.stop)")
         state = .stop
         
@@ -376,13 +359,11 @@ extension CalloutStateMachine {
     }
     
     private func stateStopping() {
-        print("🟠 [CalloutStateMachine.state] stateStopping()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.stopping)")
         state = .stopping
     }
     
     private func stateAnnounceCallout() {
-        print("📢 [CalloutStateMachine.state] stateAnnounceCallout()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.announceCallout)")
         state = .announceCallout
         
@@ -449,13 +430,11 @@ extension CalloutStateMachine {
     }
     
     private func stateAnnouncingCallout() {
-        print("🔊 [CalloutStateMachine.state] stateAnnouncingCallout()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.announcingCallout)")
         state = .announcingCallout
     }
     
     private func stateDelayingCalloutAnnounced() {
-        print("⏳ [CalloutStateMachine.state] stateDelayingCalloutAnnounced()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.delayingCalloutAnnounced)")
         state = .delayingCalloutAnnounced
         
@@ -474,7 +453,6 @@ extension CalloutStateMachine {
     }
     
     private func stateComplete() {
-        print("✅ [CalloutStateMachine.state] stateComplete()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.complete)")
         state = .complete
         
@@ -498,7 +476,6 @@ extension CalloutStateMachine {
     
     /// This is the same as COMPLETE except no additional sounds may be played
     private func stateFailed() {
-        print("❌ [CalloutStateMachine.state] stateFailed()")
         GDLogVerbose(.stateMachine, "Entering state: \(State.failed)")
         state = .failed
         
@@ -514,7 +491,6 @@ extension CalloutStateMachine {
 
 private class CalloutStateMachineLogger {
     class func log(callout: CalloutProtocol, context: String?) {
-        print("📝 [CalloutStateMachineLogger] log(callout:context:) - type: \(callout.logCategory)")
         var properties = ["type": callout.logCategory,
                           "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
                           "audio.output": AppContext.shared.audioEngine.outputType]

@@ -178,7 +178,6 @@ class AudioEngine: AudioEngineProtocol {
     // MARK: - Initialization
     
     init(envSettings: EnvironmentSettingsProvider, mixWithOthers: Bool) {
-        print("🏗️ [AudioEngine] init(envSettings:mixWithOthers:)")
         self.envSettings = envSettings
         
         // Create the engine (all nodes are dynamically generated, so none are created in this initializer)
@@ -244,7 +243,6 @@ class AudioEngine: AudioEngineProtocol {
     }
     
     deinit {
-        print("💥 [AudioEngine] deinit")
         if let observer = engineConfigObserver {
             NotificationCenter.default.removeObserver(observer)
         }
@@ -261,7 +259,6 @@ class AudioEngine: AudioEngineProtocol {
     // MARK: Engine Configuration
     
     private func resetConfiguration() {
-        print("🔧 [AudioEngine] resetConfiguration()")
         GDLogAudioVerbose("Resetting configuration")
         
         // Track the state of connections of player nodes to the audio graph
@@ -302,7 +299,6 @@ class AudioEngine: AudioEngineProtocol {
     /// audio route changes) since the configuration change may require audio format changes to occur in
     /// the node connections in the audio engine's node graph.
     private func connectNodes() {
-        print("🔧 [AudioEngine] connectNodes()")
         // Update mono mode property
         isInMonoMode = engine.outputNode.outputFormat(forBus: 0).channelCount == 1 || UIAccessibility.isMonoAudioEnabled
         GDLogAudioVerbose("Connecting audio graph in \(isInMonoMode ? "2D" : "3D") mode (from \(Thread.current.threadName))")
@@ -350,7 +346,6 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter player: The player to connect to the audio engine
     private func connectNodes(for player: AudioPlayer) {
-        print("🔧 [AudioEngine] connectNodes(for:) - player: \(player.id)")
         // Only prepared players can be connected to the audio graph (guarantees the node is attached to the engine)
         guard player.state == .prepared else {
             return
@@ -367,7 +362,6 @@ class AudioEngine: AudioEngineProtocol {
     }
     
     private func connectLayer(_ layer: PreparableAudioLayer, for player: AudioPlayer) {
-        print("🔧 [AudioEngine] connectLayer(_:for:) - player: \(player.id)")
         guard layer.isAttached else {
             GDLogAudioError("Tried to connect layer within engine, but layer has not yet been attached. This condition should not be possible")
             return
@@ -440,7 +434,6 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Returns: An environment node that can play audio of with the specified format
     private func environmentNode(for format: AVAudioFormat?) -> AVAudioEnvironmentNode? {
-        print("🔧 [AudioEngine] environmentNode(for:)")
         guard let format = format else {
             return environmentNodes.first
         }
@@ -463,7 +456,6 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Returns: An `AVAudioFormat` object
     private class func outputFormat(for engine: AVAudioEngine, sampleRate rate: Double? = nil) -> AVAudioFormat {
-        print("🔧 [AudioEngine] outputFormat(for:sampleRate:)")
         let channels = engine.outputNode.outputFormat(forBus: 0).channelCount
         let sampleRate = rate ?? engine.outputNode.outputFormat(forBus: 0).sampleRate
 
@@ -507,7 +499,6 @@ class AudioEngine: AudioEngineProtocol {
     /// 2. Audio session interruption ended
     /// 3. Application state active
     private func shouldStart() -> Bool {
-        print("🚦 [AudioEngine] shouldStart()")
         if state == .starting {
             GDLogAudioVerbose("Audio engine does not need to be started (it is already being started)")
             return false
@@ -540,7 +531,6 @@ class AudioEngine: AudioEngineProtocol {
     /// For example: invoking and dismissing Siri while in foreground.
     /// This makes sure we restart the audio engine if needed.
     private func startEngineIfNeeded() {
-        print("🚦 [AudioEngine] startEngineIfNeeded()")
         guard AppContext.appState == .active && shouldStart() else {
             return
         }
@@ -554,7 +544,6 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter isRestarting: True if this method is being called from within the playNextSound chain
     /// - Parameter activateAudioSession: True if this method should also activate the audio session
     func start(isRestarting: Bool, activateAudioSession: Bool = true) {
-        print("▶️ [AudioEngine] start(isRestarting: \(isRestarting), activateAudioSession: \(activateAudioSession))")
         // Don't try to start when the app is inactive, such as when Siri is invoked,
         // as it will generate the error "cannot interrupt other".
         guard AppContext.appState != .inactive else {
@@ -563,7 +552,6 @@ class AudioEngine: AudioEngineProtocol {
         
         // Check if we should start before activating the session
         guard shouldStart() else {
-            print("▶️ [AudioEngine] start() called but shouldStart() returned false - not starting")
             return
         }
         
@@ -639,7 +627,6 @@ class AudioEngine: AudioEngineProtocol {
     /// In cases of external interruptions like audio engine configuration changes or audio session interruptions, iOS stops nodes.
     /// When manually changing the audio session category we need to do this ourselves to resume the audio engine and players properly.
     private func pause() {
-        print("⏸️ [AudioEngine] pause()")
         for player in players {
             for layer in player.layers {
                 layer.player.stop()
@@ -649,7 +636,6 @@ class AudioEngine: AudioEngineProtocol {
     
     /// Stops the audio engine and stops listening to user orientation updates
     func stop() {
-        print("⏹️ [AudioEngine] stop()")
         userHeading = nil
         engine.stop()
         state = .stopped
@@ -663,7 +649,6 @@ class AudioEngine: AudioEngineProtocol {
     
     @discardableResult
     private func resume() -> Bool {
-        print("▶️ [AudioEngine] resume()")
         GDLogAudioVerbose("Resuming \(players.count) players")
         
         // Resume players as need be
@@ -703,7 +688,6 @@ class AudioEngine: AudioEngineProtocol {
     }
     
     private func startPlayerIfPending(_ player: AudioPlayer) -> Bool {
-        print("▶️ [AudioEngine] startPlayerIfPending(_:) - player: \(player.id)")
         guard player.state == .prepared, !player.isPlaying else {
             return false
         }
@@ -726,7 +710,6 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
     private func play(_ player: AudioPlayer, heading: Heading? = nil) -> AudioPlayerIdentifier? {
-        print("🎵 [AudioEngine] play(_:heading:) - player: \(player.id)")
         players.append(player)
         player.prepare(engine: engine) { [weak self] (success) in
             guard success else {
@@ -760,7 +743,6 @@ class AudioEngine: AudioEngineProtocol {
     ///   - player: The audio player to start
     ///   - heading: The heading required by the audio player to render it's audio. This is only required by some audio players.
     private func startPreparedPlayer(_ player: AudioPlayer, heading: Heading? = nil) {
-        print("🎵 [AudioEngine] startPreparedPlayer(_:heading:) - player: \(player.id)")
         queue.async { [unowned self] in
             guard !player.isPlaying else {
                 GDLogAudioError("No need to start an audio player that is already playing.")
@@ -821,7 +803,6 @@ class AudioEngine: AudioEngineProtocol {
     }
     
     private func logPlayer(_ player: AudioPlayer) {
-        print("📝 [AudioEngine] logPlayer(_:) - player: \(player.id)")
         let playerType = player is DiscreteAudioPlayer ? "Discrete" : "Continuous"
         let monoMode = self.isInMonoMode ? " <MONO MODE>" : ""
         GDLogAudioInfo("Play \(playerType): \(player.sound.formattedLog)\(monoMode) at \(Int(player.volume * 100))% (\(player.id))")
@@ -833,7 +814,6 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter dynamicPlayerId: ID of a dynamic audio player
     func finish(dynamicPlayerId: AudioPlayerIdentifier) {
-        print("🏁 [AudioEngine] finish(dynamicPlayerId:) - id: \(dynamicPlayerId)")
         guard let player = players.first(where: { $0.id == dynamicPlayerId }) as? FinishableAudioPlayer else {
             return
         }
@@ -847,7 +827,6 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter playerId: The identifier of the audio player to stop
     func stop(_ playerId: AudioPlayerIdentifier) {
-        print("⏹️ [AudioEngine] stop(_:) - id: \(playerId)")
         queue.async { [unowned self] in
             guard let index = self.players.firstIndex(where: { $0.id == playerId }) else {
                 return
@@ -880,7 +859,6 @@ class AudioEngine: AudioEngineProtocol {
     /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
     @discardableResult
     func play<T: DynamicSound>(_ sound: T, heading: Heading? = nil) -> AudioPlayerIdentifier? {
-        print("🎵 [AudioEngine] play<DynamicSound>(_:heading:)")
         return queue.sync {
             self.startEngineIfNeeded()
             
@@ -909,7 +887,6 @@ class AudioEngine: AudioEngineProtocol {
     /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
     @discardableResult
     func play(looped: SynchronouslyGeneratedSound) -> AudioPlayerIdentifier? {
-        print("🎵 [AudioEngine] play(looped:)")
         return queue.sync {
             self.startEngineIfNeeded()
             
@@ -933,7 +910,6 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter sound: Sound to play
     /// - Returns: Player ID
     func play(_ sound: SynchronouslyGeneratedSound) -> AudioPlayerIdentifier? {
-        print("🎵 [AudioEngine] play(_:SynchronouslyGeneratedSound)")
         return queue.sync {
             self.startEngineIfNeeded()
             
@@ -966,7 +942,6 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter sounds: Sound to play
     /// - Parameter callback: Completion callback
     func play(_ sound: Sound, completion callback: CompletionCallback? = nil) {
-        print("🎵 [AudioEngine] play(_:Sound, completion:)")
         play(Sounds(sound), completion: callback)
     }
     
@@ -976,7 +951,6 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter sounds: Sounds to play
     /// - Parameter callback: Completion callback
     func play(_ sounds: Sounds, completion callback: CompletionCallback? = nil) {
-        print("🎵 [AudioEngine] play(_:Sounds, completion:)")
         queue.async { [unowned self] in
             self.startEngineIfNeeded()
             
@@ -1009,9 +983,7 @@ class AudioEngine: AudioEngineProtocol {
             }
             
             self.currentSounds = sounds
-            print("RD play self.currentSoundCompletion: \(String(describing: self.currentSoundCompletion))")
             if(self.currentSoundCompletion != nil ) {
-                print("about to crash")
             }
             self.currentSoundCompletion = callback
             self.playNextSound()
@@ -1023,7 +995,6 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter with: Sound that should be played when the current sounds are stopped. This
     ///                   should be used for earcons that indicate audio is stopping.
     func stopDiscrete(with: Sound?) {
-        print("⏹️ [AudioEngine] stopDiscrete(with:)")
         queue.async { [unowned self] in
             if !self.soundsQueue.isEmpty {
                 GDLogAudioInfo("Clearing sounds queue (\(self.soundsQueue.count) items)")
@@ -1050,7 +1021,6 @@ class AudioEngine: AudioEngineProtocol {
     }
     
     private func stopAndRemoveDiscretePlayer(_ id: AudioPlayerIdentifier) {
-        print("⏹️ [AudioEngine] stopAndRemoveDiscretePlayer(_:) - id: \(id)")
         guard discretePlayerIds.contains(id) else {
             return
         }
@@ -1077,7 +1047,6 @@ class AudioEngine: AudioEngineProtocol {
     /// `Sound` object. If there are no sounds left to play, then `finishDiscrete(:)` is
     /// called so that the next `Sounds` object in the queue can be played.
     private func playNextSound() {
-        print("▶️ [AudioEngine] playNextSound()")
         guard !isAwaitingRouteOverride else {
             return
         }
@@ -1115,8 +1084,6 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter success: Indicates if the sounds finished playing successfully
     var finishDiscreteCounter = 0
     private func finishDiscrete(success: Bool) {
-        print("🏁 [AudioEngine] finishDiscrete(success: \(success))")
-        print("RD finishDiscrete called \(finishDiscreteCounter) times")
         finishDiscreteCounter += 1
         let callback = self.currentSoundCompletion
         
@@ -1129,8 +1096,6 @@ class AudioEngine: AudioEngineProtocol {
         }
         
         Task{@MainActor in callback?(success)
-            print("maybe going to crash here in finishdiscrete?")
-        print(String(describing: callback))}
         finishDiscreteCounter -= 1
 
     }
@@ -1142,7 +1107,6 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter heading: Updated presentation heading
     private func updateUserHeading(_ heading: CLLocationDirection) {
-        print("🧭 [AudioEngine] updateUserHeading(_:) - heading: \(heading)")
         queue.async { [unowned self] in
             for environment in self.environmentNodes {
                 environment.listenerAngularOrientation = AVAudio3DAngularOrientation(yaw: Float(heading), pitch: 0.0, roll: 0.0)
@@ -1155,14 +1119,12 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter location: User's updated location
     func updateUserLocation(_ location: CLLocation) {
-        print("📍 [AudioEngine] updateUserLocation(_:)")
         userLocation = location
     }
     
     // MARK: Recording Output
     
     func startRecording() {
-        print("🔴 [AudioEngine] startRecording()")
         self.startEngineIfNeeded()
         
         guard self.state != .stopped else {
@@ -1211,7 +1173,6 @@ class AudioEngine: AudioEngineProtocol {
     }
     
     func stopRecording() {
-        print("⏹️ [AudioEngine] stopRecording()")
         engine.mainMixerNode.removeTap(onBus: 0)
         recordingFile = nil
         isRecording = false
@@ -1220,7 +1181,6 @@ class AudioEngine: AudioEngineProtocol {
     // MARK: Speakerphone Mode
     
     func enableSpeakerMode(_ handler: ((AVAudioSession.PortOverride) -> Void)? = nil) {
-        print("🔊 [AudioEngine] enableSpeakerMode(_:)")
         routeOverrideCompletionHandler = handler
         isAwaitingRouteOverride = sessionManager.enableSpeakerMode()
         
@@ -1230,7 +1190,6 @@ class AudioEngine: AudioEngineProtocol {
     }
     
     func disableSpeakerMode(_ handler: ((AVAudioSession.PortOverride) -> Void)? = nil) {
-        print("🔇 [AudioEngine] disableSpeakerMode(_:)")
         routeOverrideCompletionHandler = handler
         isAwaitingRouteOverride = sessionManager.disableSpeakerMode()
         
@@ -1245,7 +1204,6 @@ class AudioEngine: AudioEngineProtocol {
 extension AudioEngine: DiscreteAudioPlayerDelegate {
     /// Delegate method that is called when a `Sound` object finishes playing all of its audio
     func onDataPlayedBack(_ playerId: AudioPlayerIdentifier) {
-        print("🎵 [AudioEngine.Delegate] onDataPlayedBack(_:) - id: \(playerId)")
         guard discretePlayerIds.contains(playerId) else {
             return
         }
@@ -1265,7 +1223,6 @@ extension AudioEngine: DiscreteAudioPlayerDelegate {
     }
     
     func onLayerFormatChanged(_ playerId: AudioPlayerIdentifier, layer: Int) {
-        print("🎵 [AudioEngine.Delegate] onLayerFormatChanged(_:layer:) - id: \(playerId), layer: \(layer)")
         guard let player = players.first(where: { $0.id == playerId }) else {
             return
         }
@@ -1279,7 +1236,6 @@ extension AudioEngine: DiscreteAudioPlayerDelegate {
 
 extension AudioEngine: FinishableAudioPlayerDelegate {
     func onPlayerFinished(_ playerId: AudioPlayerIdentifier) {
-        print("🏁 [AudioEngine.Delegate] onPlayerFinished(_:) - id: \(playerId)")
         stop(playerId)
         
         NotificationCenter.default.post(name: Notification.Name.dynamicPlayerFinished, object: nil, userInfo: [Keys.playerId: playerId])
@@ -1291,7 +1247,6 @@ extension AudioEngine: FinishableAudioPlayerDelegate {
 extension AudioEngine: AudioSessionManagerDelegate {
     
     func sessionDidActivate() {
-        print("🔊 [AudioEngine.SessionDelegate] sessionDidActivate()")
         // Not all `interruptionBegan()` will be followed by `interruptionEnded()`.
         // Make sure the interruption flag is cleared if the audio session is re-activated.
         isSessionInterrupted = false
@@ -1310,7 +1265,6 @@ extension AudioEngine: AudioSessionManagerDelegate {
     /// When the audio session mixes with others, interruptions will only be
     /// received for actual interruptions, such as Siri and phone calls.
     func interruptionBegan() {
-        print("⚠️ [AudioEngine.SessionDelegate] interruptionBegan()")
         guard !mixWithOthers else {
             // If we mix with others, we don't want to stop the audio engine.
             return
@@ -1330,7 +1284,6 @@ extension AudioEngine: AudioSessionManagerDelegate {
     /// Apple: "Apps that don't require user input to begin audio playback (such as games)
     /// can ignore the `shouldResume` flag and resume playback when an interruption ends."
     func interruptionEnded(shouldResume: Bool) {
-        print("✅ [AudioEngine.SessionDelegate] interruptionEnded(shouldResume: \(shouldResume))")
         isSessionInterrupted = false
         
         guard shouldResume || mixWithOthers else {
@@ -1347,7 +1300,6 @@ extension AudioEngine: AudioSessionManagerDelegate {
     }
     
     func mediaServicesWereReset() {
-        print("🔄 [AudioEngine.SessionDelegate] mediaServicesWereReset()")
         GDLogAudioVerbose("Media services were reset. Reconnecting nodes and restarting engine.")
         
         engine = AVAudioEngine()
@@ -1377,7 +1329,6 @@ extension AudioEngine: AudioSessionManagerDelegate {
     }
     
     func onOutputRouteOverriden(_ override: AVAudioSession.PortOverride) {
-        print("🔊 [AudioEngine.SessionDelegate] onOutputRouteOverriden(_:) - override: \(override.rawValue)")
         guard isAwaitingRouteOverride else {
             return
         }

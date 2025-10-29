@@ -75,7 +75,6 @@ class AudioSessionManager {
     // MARK: Initialization
     
     init(mixWithOthers: Bool) {
-        print("🏗️ [AudioSessionManager] init(mixWithOthers: \(mixWithOthers))")
         self.mixWithOthers = mixWithOthers
         
         registerObservers()
@@ -83,14 +82,12 @@ class AudioSessionManager {
     }
     
     deinit {
-        print("💥 [AudioSessionManager] deinit")
         removeObservers()
     }
     
     // MARK: Observers
 
     private func registerObservers() {
-        print("🔔 [AudioSessionManager] registerObservers()")
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleMediaServicesWereReset(_:)),
                                                name: AVAudioSession.mediaServicesWereResetNotification,
@@ -113,7 +110,6 @@ class AudioSessionManager {
     }
     
     private func removeObservers() {
-        print("🔕 [AudioSessionManager] removeObservers()")
         NotificationCenter.default.removeObserver(self,
                                                   name: AVAudioSession.mediaServicesWereResetNotification,
                                                   object: session)
@@ -136,7 +132,6 @@ class AudioSessionManager {
     /// - Returns: `true` if audio session configuration was successful, `false` otherwise.
     @discardableResult
     private func configureAudioSession() -> Bool {
-        print("⚙️ [AudioSessionManager] configureAudioSession() - mixWithOthers: \(mixWithOthers)")
         do {
             try session.setCategory(.playback,
                                     mode: .default,
@@ -160,7 +155,6 @@ class AudioSessionManager {
     }
     
     private func shouldActivate() -> Bool {
-        print("🚦 [AudioSessionManager] shouldActivate() - needsActivation: \(needsActivation), mixWithOthers: \(mixWithOthers), isOtherAudioPlaying: \(isOtherAudioPlaying)")
         // If we are not mixing with others and there is another app playing audio, only allow activating when we are in the foreground.
         // - note: the audio engine trys to activate the audio session when it trys to output audio.
         // If we allow for this to happen anytime, other apps that play audio (Music, Podcasts) will be deactivated even if they are in the foreground.
@@ -176,7 +170,6 @@ class AudioSessionManager {
     /// - Returns: `true` if audio session activation was successful, `false` otherwise.
     @discardableResult
     func activate(force: Bool = false) -> Bool {
-        print("▶️ [AudioSessionManager] activate(force: \(force))")
         guard force || shouldActivate() else {
             GDLogAudioSessionWarn("Audio session does not currently need activation. Skipping...")
             return false
@@ -223,7 +216,6 @@ class AudioSessionManager {
     /// - Returns: `true` if audio session deactivation was successful, `false` otherwise.
     @discardableResult
     func deactivate() -> Bool {
-        print("⏹️ [AudioSessionManager] deactivate()")
         do {
             try session.setActive(false, options: [])
         } catch let error as NSError {
@@ -248,7 +240,6 @@ class AudioSessionManager {
     }
     
     private func becomeNowPlayingApp() {
-        print("🎵 [AudioSessionManager] becomeNowPlayingApp()")
         guard MPNowPlayingInfoCenter.default().nowPlayingInfo == nil else {
             return
         }
@@ -259,13 +250,11 @@ class AudioSessionManager {
     // MARK: Notification Callbacks
     
     @objc func handleMediaServicesWereReset(_ notification: NSNotification) {
-        print("🔄 [AudioSessionManager] handleMediaServicesWereReset(_:)")
         configureAudioSession()
         delegate?.mediaServicesWereReset()
     }
     
     @objc func handleAudioSessionInterruption(_ notification: NSNotification) {
-        print("⚠️ [AudioSessionManager] handleAudioSessionInterruption(_:)")
         guard let userInfo = notification.userInfo,
               let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
               let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
@@ -313,7 +302,6 @@ class AudioSessionManager {
     }
     
     @objc func handleAudioSessionRouteChange(_ notification: NSNotification) {
-        print("🔀 [AudioSessionManager] handleAudioSessionRouteChange(_:)")
         guard let userInfo = notification.userInfo else {
             GDLogAudioSessionInfo("Route change occurred. Could not parse user info.")
             return
@@ -352,7 +340,6 @@ class AudioSessionManager {
     }
     
     @objc func handleAudioSessionSilenceSecondaryAudioHint(_ notification: NSNotification) {
-        print("🔇 [AudioSessionManager] handleAudioSessionSilenceSecondaryAudioHint(_:)")
         guard let userInfo = notification.userInfo,
             let typeValue = userInfo[AVAudioSessionSilenceSecondaryAudioHintTypeKey] as? UInt,
             let type = AVAudioSession.SilenceSecondaryAudioHintType(rawValue: typeValue) else {
@@ -364,7 +351,6 @@ class AudioSessionManager {
     }
     
     func enableSpeakerMode() -> Bool {
-        print("🔊 [AudioSessionManager] enableSpeakerMode()")
         guard !isInSpeakerMode else {
             return false
         }
@@ -383,7 +369,6 @@ class AudioSessionManager {
     }
     
     func disableSpeakerMode() -> Bool {
-        print("🔇 [AudioSessionManager] disableSpeakerMode()")
         guard isInSpeakerMode else {
             return false
         }
@@ -417,7 +402,6 @@ extension AudioSessionManager {
     /// | "Subtitle"                      |
     /// +---------------------------------+
     class func setNowPlayingInfo(title: String, subtitle: String? = nil, secondarySubtitle: String? = nil) {
-        print("🎵 [AudioSessionManager.static] setNowPlayingInfo(title: \"\(title)\", subtitle: \(subtitle ?? "nil"), secondarySubtitle: \(secondarySubtitle ?? "nil"))")
         var info: [String: Any] = [
             MPNowPlayingInfoPropertyMediaType: MPNowPlayingInfoMediaType.audio.rawValue,
             MPMediaItemPropertyTitle: title
@@ -435,7 +419,6 @@ extension AudioSessionManager {
     }
     
     class func removeNowPlayingInfo() {
-        print("🎵 [AudioSessionManager.static] removeNowPlayingInfo()")
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
     
