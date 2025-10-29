@@ -568,7 +568,6 @@
 		B9533FF924B4DB2400605B07 /* IntersectionFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9533FF824B4DB2400605B07 /* IntersectionFinder.swift */; };
 		B9533FFB24B4DCC100605B07 /* IntersectionSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9533FFA24B4DCC100605B07 /* IntersectionSearchResult.swift */; };
 		B954678A24EB2B02006866EF /* SecondaryRoadsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B954678924EB2B02006866EF /* SecondaryRoadsContext.swift */; };
-		B962DD792914E39A00CED854 /* GDAStateMachine.m in Sources */ = {isa = PBXBuildFile; fileRef = B962DD772914E39900CED854 /* GDAStateMachine.m */; };
 		B96755A3251D21AF00B366F6 /* TintedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96755A2251D21AF00B366F6 /* TintedImageView.swift */; };
 		B97140DA204835BC00B15BD0 /* Roundabout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97140D9204835BB00B15BD0 /* Roundabout.swift */; };
 		B97140DE2048896800B15BD0 /* RoadDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97140DD2048896800B15BD0 /* RoadDirection.swift */; };
@@ -1365,9 +1364,6 @@
 		B954678924EB2B02006866EF /* SecondaryRoadsContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SecondaryRoadsContext.swift; path = "Code/Data/Spatial Data/SecondaryRoadsContext.swift"; sourceTree = "<group>"; };
 		B9546B211E54AB36002776D4 /* Soundscape.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Soundscape.entitlements; path = Assets/PropertyLists/Soundscape.entitlements; sourceTree = "<group>"; };
 		B958961125536F01005B1AE8 /* MixAudioSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MixAudioSettingCell.swift; path = "Code/Visual UI/Controls/Settings/MixAudioSettingCell.swift"; sourceTree = "<group>"; };
-		B962DD732914E39900CED854 /* GDAStateMachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDAStateMachine.h; sourceTree = "<group>"; };
-		B962DD762914E39900CED854 /* GDAStateMachineDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDAStateMachineDelegate.h; sourceTree = "<group>"; };
-		B962DD772914E39900CED854 /* GDAStateMachine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GDAStateMachine.m; sourceTree = "<group>"; };
 		B96755A2251D21AF00B366F6 /* TintedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TintedImageView.swift; path = "Code/Visual UI/Controls/TintedImageView.swift"; sourceTree = "<group>"; };
 		B97140D9204835BB00B15BD0 /* Roundabout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Roundabout.swift; path = Code/Data/Models/Helpers/Roundabout.swift; sourceTree = "<group>"; };
 		B97140DD2048896800B15BD0 /* RoadDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RoadDirection.swift; path = Code/Data/Models/Helpers/RoadDirection.swift; sourceTree = "<group>"; };
@@ -2028,7 +2024,6 @@
 		286DC6AC21E6B5F9001CD88A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				B962DD722914E39900CED854 /* GDAStateMachine */,
 				28F94F5D2485AE0A0010D2B3 /* BehaviorBase.swift */,
 				286DC6AA21E6857D001CD88A /* Events.swift */,
 				286DC6AD21E6B61B001CD88A /* Verbosity.swift */,
@@ -3627,16 +3622,6 @@
 			);
 			name = "GPX Simulator";
 			path = "Code/Sensors/Geolocation/GPX Simulator";
-			sourceTree = "<group>";
-		};
-		B962DD722914E39900CED854 /* GDAStateMachine */ = {
-			isa = PBXGroup;
-			children = (
-				B962DD732914E39900CED854 /* GDAStateMachine.h */,
-				B962DD772914E39900CED854 /* GDAStateMachine.m */,
-				B962DD762914E39900CED854 /* GDAStateMachineDelegate.h */,
-			);
-			path = GDAStateMachine;
 			sourceTree = "<group>";
 		};
 		B998914920305A34000E2220 /* Motion */ = {
@@ -5281,7 +5266,6 @@
 				6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */,
 				623E0104244767BB0081CA5B /* LocationParameters.swift in Sources */,
 				622AB2F6263767A8006BB729 /* MKMapViewDelegate+Extensions.swift in Sources */,
-				B962DD792914E39A00CED854 /* GDAStateMachine.m in Sources */,
 				6258B38A2469DB220051F60B /* UniversalLinkVersion.swift in Sources */,
 				628855462656F98B00EFFB91 /* Route+Realm.swift in Sources */,
 				62B3FE3225A8D5D300FCCA4B /* FeatureFlag.swift in Sources */,
