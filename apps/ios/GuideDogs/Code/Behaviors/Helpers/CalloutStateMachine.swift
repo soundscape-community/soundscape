@@ -11,10 +11,6 @@
 
 import CoreLocation
 
-fileprivate func assertionFailure(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) {
-    GDLogError(.stateMachine, "Assertion failure: \(message())")
-}
-
 protocol CalloutStateMachineDelegate: AnyObject {
     func calloutsDidFinish(id: UUID)
 }
@@ -109,7 +105,7 @@ class CalloutStateMachine {
             case .off:
                 stateStart()
             case .start, .starting, .stop, .stopping, .announceCallout, .announcingCallout, .delayingCalloutAnnounced, .complete, .failed:
-                assertionFailure("Attempted an invalid state transition: \(#file), line \(#line)")
+                GDLogError(.stateMachine, "Invalid state transition: eventStart() called from state .\(state)")
         }
     }
 
@@ -118,7 +114,7 @@ class CalloutStateMachine {
             case .starting:
                 stateAnnounceCallout()
             case .off, .start, .stop, .stopping, .announceCallout, .announcingCallout, .delayingCalloutAnnounced, .complete, .failed:
-                assertionFailure("Attempted an invalid state transition: \(#file), line \(#line)")
+                GDLogError(.stateMachine, "Invalid state transition: eventStarted() called from state .\(state)")
         }
     }
 
@@ -145,7 +141,7 @@ class CalloutStateMachine {
             case .stopping:
                 stateComplete()
             case .announceCallout, .announcingCallout, .complete, .delayingCalloutAnnounced, .failed, .off, .start, .starting, .stop:
-                assertionFailure("Attempted an invalid state transition: \(#file), line \(#line)")
+                GDLogError(.stateMachine, "Invalid state transition: eventStopped() called from state .\(state)")
         }
     }
 
@@ -165,7 +161,7 @@ class CalloutStateMachine {
             case .off:
                 stateOff()
             case .announceCallout, .delayingCalloutAnnounced, .failed, .start, .starting, .stop, .stopping:
-                assertionFailure("Attempted an invalid state transition: \(#file), line \(#line)")
+                GDLogError(.stateMachine, "Invalid state transition: eventDelayCalloutAnnounced() called from state .\(state)")
         }
     }
 
@@ -180,7 +176,7 @@ class CalloutStateMachine {
             case .off:
                 stateOff()
             case .announceCallout, .failed, .start, .starting, .stop, .stopping:
-                assertionFailure("Attempted an invalid state transition: \(#file), line \(#line)")
+                GDLogError(.stateMachine, "Invalid state transition: eventCalloutAnnounced() called from state .\(state)")
         }
     }
 
@@ -189,7 +185,7 @@ class CalloutStateMachine {
             case .complete:
                 stateOff()
             case .off, .start, .starting, .stop, .stopping, .announceCallout, .announcingCallout, .delayingCalloutAnnounced, .failed:
-                assertionFailure("Attempted an invalid state transition: \(#file), line \(#line)")
+                GDLogError(.stateMachine, "Invalid state transition: eventCompleted() called from state .\(state)")
         }
     }
 }
