@@ -5513,7 +5513,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/SoundscapeDF.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = "";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5544,7 +5544,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DADHOC";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-adhoc";
@@ -5552,6 +5552,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "GuideDogs/Code/App/Soundscape-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -5802,7 +5805,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
@@ -5834,7 +5837,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-debug";
@@ -5842,6 +5845,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "GuideDogs/Code/App/Soundscape-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -5862,7 +5868,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5892,7 +5898,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = services.soundscape;
@@ -5900,6 +5906,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "GuideDogs/Code/App/Soundscape-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
