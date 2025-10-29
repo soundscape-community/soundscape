@@ -983,8 +983,6 @@ class AudioEngine: AudioEngineProtocol {
             }
             
             self.currentSounds = sounds
-            if(self.currentSoundCompletion != nil ) {
-            }
             self.currentSoundCompletion = callback
             self.playNextSound()
         }
@@ -1082,9 +1080,7 @@ class AudioEngine: AudioEngineProtocol {
     /// are any more `Sounds` objects in the queue and starts the next one if there are.
     ///
     /// - Parameter success: Indicates if the sounds finished playing successfully
-    var finishDiscreteCounter = 0
     private func finishDiscrete(success: Bool) {
-        finishDiscreteCounter += 1
         let callback = self.currentSoundCompletion
         
         self.currentSounds = nil
@@ -1095,9 +1091,9 @@ class AudioEngine: AudioEngineProtocol {
             self.play(nextSounds, completion: completion)
         }
         
-        Task{@MainActor in callback?(success)
-        finishDiscreteCounter -= 1
-
+        Task { @MainActor in
+            callback?(success)
+        }
     }
     
     // MARK: 3D Audio Environment

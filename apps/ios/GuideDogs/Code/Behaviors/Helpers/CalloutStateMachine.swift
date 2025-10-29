@@ -192,72 +192,6 @@ class CalloutStateMachine {
                 assertionFailure("Attempted an invalid state transition: \(#file), line \(#line)")
         }
     }
-
-    /* private func buildStateMachine() -> GDAStateMachine {
-        let states: [GDAStateMachineState] = [
-            stateOff(),
-            stateStart(),
-            stateStarting(),
-            stateStop(),
-            stateStopping(),
-            stateAnnounceCallout(),
-            stateAnnouncingCallout(),
-            stateDelayingCalloutAnnounced(),
-            stateComplete(),
-            stateFailed()
-        ]
-        
-        let events: [GDAStateMachineEvent] = [
-            // START
-            GDAStateMachine.event(name: .start,
-            
-                                  transitions: [.off: .start]),
-            
-            // STARTING
-            GDAStateMachine.event(name: .started, transitions: [.starting: .announceCallout]),
-            
-            // HUSH
-            GDAStateMachine.event(name: .hush,
-                                  transitions: [.wildcard: .stop]),
-            
-            // DELAY CALLOUT ANNOUNCED
-            GDAStateMachine.event(name: .delayCalloutAnnounced,
-                                  transitions: [.announcingCallout: .delayingCalloutAnnounced,
-                                                .complete: .complete,
-                                                .off: .off
-                                  ]),
-            
-            // EXPLORE QUADRANT RESULT ANNOUNCED
-            GDAStateMachine.event(name: .calloutAnnounced,
-                                  transitions: [.announcingCallout: .announceCallout,
-                                                .delayingCalloutAnnounced: .announceCallout,
-                                                .complete: .complete,
-                                                .off: .off]),
-            
-            // STOP
-            GDAStateMachine.event(name: .stop, transitions: [
-                .starting: .stop,
-                .announcingCallout: .stop,
-                .complete: .off,
-                .off: .off,
-                .wildcard: .complete
-            ]),
-            
-            // STOPPING
-            GDAStateMachine.event(name: .stopped, transitions: [.stopping: .complete]),
-            
-            // COMPLETE
-            GDAStateMachine.event(name: .complete, transitions: [.wildcard: .complete]),
-            
-            // COMPLETED
-            GDAStateMachine.event(name: .completed, transitions: [.complete: .off]),
-            
-            // FAILED
-            GDAStateMachine.event(name: .failed, transitions: [.wildcard: .failed])
-        ]
-        
-        return GDAStateMachine(name: "CalloutMachine", states: states, events: events)
-    }*/
 }
 
 extension CalloutStateMachine {
@@ -400,7 +334,7 @@ extension CalloutStateMachine {
         self.audioEngine.play(sounds) { (success) in
             calloutGroup.delegate?.calloutFinished(callout, completed: success)
             
-            guard self.state != . stopping else {
+            guard self.state != .stopping else {
                 GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
                 self.eventStopped()
                 calloutGroup.onComplete?(false)
