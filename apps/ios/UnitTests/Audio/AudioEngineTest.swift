@@ -33,9 +33,19 @@ final class AudioEngineTest: XCTestCase {
         var finish_count = 0
     }
     
+    var audioEngine: AudioEngine?
+    
+    override func tearDown() {
+        super.tearDown()
+        // Stop and clean up the audio engine to prevent multiple engines running simultaneously
+        audioEngine?.stop()
+        audioEngine = nil
+    }
+    
     /// Ensures the initial state is correct
     func testInit() throws {
-        let eng = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
+        audioEngine = envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
+        let eng = audioEngine!
         XCTAssertNil(eng.delegate)
         XCTAssertFalse(eng.isInMonoMode) // currently always true as it is not implemented
         XCTAssertFalse(eng.isDiscreteAudioPlaying)
@@ -49,7 +59,8 @@ final class AudioEngineTest: XCTestCase {
     
     /// Just playing a single `Sound`
     func testDiscreteAudio2DSimple() throws {
-        let eng = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
+        audioEngine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
+        let eng = audioEngine!
         let delegate = TestAudioEngineDelegate()
         eng.delegate = delegate
         let expectation = XCTestExpectation()
@@ -68,7 +79,8 @@ final class AudioEngineTest: XCTestCase {
     
     /// Play a series of queued sounds in sequence
     func testDiscreteAudio2DSeveral() throws {
-        let eng = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
+        audioEngine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
+        let eng = audioEngine!
         let delegate = TestAudioEngineDelegate()
         eng.delegate = delegate
         let expectations = [XCTestExpectation(description: "one"),
