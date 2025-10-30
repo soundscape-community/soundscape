@@ -132,7 +132,7 @@ class CalloutStateMachine {
                 stateStop()
             case .complete, .off:
                 stateOff()
-        case .start, .stop, .stopping, .announceCallout , .delayingCalloutAnnounced, .failed:
+        case .start, .stop, .stopping, .announceCallout, .delayingCalloutAnnounced, .failed:
             stateComplete()
         }
     }
