@@ -92,6 +92,7 @@ class CalloutStateMachine {
         if playSound {
             playHushedSound = true
         }
+        eventHush()
     }
 
     func stop() {
