@@ -370,8 +370,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Shake to Repeat" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="30I-6C-zV0" userLabel="GPS Announcements">
-                                            <rect key="frame" x="19.999999999999993" y="5" width="124.33333333333333" height="20.333333333333332"/>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="GPS Accuracy" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="30I-6C-zV0" userLabel="GPS Announcements">
+                                            <rect key="frame" x="20.000000000000007" y="5" width="108.66666666666667" height="20.333333333333332"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -380,8 +380,8 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.callouts.gps_announcements.title"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Allow callouts to be repeated by shaking the device" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="PhT-JS-wWU">
-                                            <rect key="frame" x="20" y="25.333333333333332" width="290.33333333333331" height="14.333333333333334"/>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Hear announcements about GPS accuracy" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="PhT-JS-wWU">
+                                            <rect key="frame" x="20" y="25.333333333333332" width="239" height="14.333333333333334"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                             <color key="textColor" red="0.6705882353" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -710,8 +710,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Mix with Other Apps" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="VSq-h5-uRj">
-                                            <rect key="frame" x="59" y="0.0" width="314" height="44"/>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" ambiguous="YES" text="Mix with Other Apps" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="VSq-h5-uRj">
+                                            <rect key="frame" x="47" y="0.0" width="338" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -720,7 +720,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.audio.mix_with_others.title"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xAo-Ds-vYv">
+                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xAo-Ds-vYv">
                                             <rect key="frame" x="221" y="6" width="56" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <accessibility key="accessibilityConfiguration" label="Streets and Places"/>
@@ -730,8 +730,8 @@
                                                 <action selector="onSettingValueChanged:" destination="lEG-3Q-zvI" eventType="valueChanged" id="cbr-pf-xAk"/>
                                             </connections>
                                         </switch>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="play.circle" catalog="system" id="43Y-tn-4fp" customClass="TintedImageView" customModule="Soundscape" customModuleProvider="target">
-                                            <rect key="frame" x="22.166666666666668" y="12.333333333333336" width="19.666666666666664" height="19"/>
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" image="play.circle" catalog="system" id="43Y-tn-4fp" customClass="TintedImageView" customModule="Soundscape" customModuleProvider="target">
+                                            <rect key="frame" x="10.166666666666668" y="12.333333333333336" width="19.666666666666664" height="19"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
@@ -775,7 +775,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="30" y="-244"/>
+            <point key="canvasLocation" x="29.770992366412212" y="-244.36619718309859"/>
         </scene>
         <!--Loading Modal View Controller-->
         <scene sceneID="YDZ-Pz-eIS">

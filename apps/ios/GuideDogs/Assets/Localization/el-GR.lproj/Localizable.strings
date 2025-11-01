@@ -4381,17 +4381,3 @@
 /*  */
 "faq.tip.two_finger_double_tap" = "Πατώντας την οθόνη δύο φορές με δύο δάχτυλα θα σιωπήσει τυχόν ενεργές επεξηγήσεις.";
 
-//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
-// MARK: GPS Accuracy Announcement
-"gps.accuracy.announce.feet" = "Η ακρίβεια GPS είναι ±{value} πόδια.";
-"gps.accuracy.announce.meters" = "Η ακρίβεια GPS είναι ±{value} μέτρα.";
-"gps.accuracy.improved.feet" = "Η ακρίβεια GPS βελτιώθηκε σε ±{value} πόδια.";
-"gps.accuracy.improved.meters" = "Η ακρίβεια GPS βελτιώθηκε σε ±{value} μέτρα.";
-"gps.accuracy.unavailable" = "Η ακρίβεια GPS δεν είναι διαθέσιμη.";
-
-// MARK: GPS Accuracy Button Accessibility
-"gps.accuracy.check" = "Έλεγχος ακρίβειας GPS";
-"gps.accuracy.check.hint" = "Ανακοινώνει την τρέχουσα ακρίβεια GPS.";
-
-"settings.callouts.gps_announcements.title" = "Ανακοινώσεις ακρίβειας GPS";
-"settings.callouts.gps_announcements.info" = "Ενεργοποιεί ή απενεργοποιεί τις ανακοινώσεις ακρίβειας GPS.";

@@ -2469,19 +2469,3 @@
 /* Donation link title */
 "donation.link" = "رفتن به صفحه جمع‌آوری کمک‌های مالی";
 
-//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
-// MARK: GPS Accuracy Announcement
-"gps.accuracy.announce.feet" = "دقت GPS برابر با ±{value} فوت است.";
-"gps.accuracy.announce.meters" = "دقت GPS برابر با ±{value} متر است.";
-"gps.accuracy.improved.feet" = "دقت GPS به ±{value} فوت بهبود یافته است.";
-"gps.accuracy.improved.meters" = "دقت GPS به ±{value} متر بهبود یافته است.";
-"gps.accuracy.unavailable" = "دقت GPS در دسترس نیست.";
-
-// MARK: GPS Accuracy Button Accessibility
-"gps.accuracy.check" = "بررسی دقت GPS";
-"gps.accuracy.check.hint" = "اعلام دقت فعلی GPS را پخش می‌کند.";
-
-"settings.callouts.gps_announcements.title" = "اعلان‌های دقت GPS";
-"settings.callouts.gps_announcements.info" = "اعلان‌های دقت GPS را روشن یا خاموش می‌کند.";
-
-

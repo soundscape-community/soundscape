@@ -4383,17 +4383,3 @@
 /*  */
 "faq.tip.two_finger_double_tap" = "Tocar no ecrã duas vezes com dois dedos irá silenciar todos os avisos ativos.";
 
-//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
-// MARK: GPS Accuracy Announcement
-"gps.accuracy.announce.feet" = "A precisão do GPS é de ±{value} pés.";
-"gps.accuracy.announce.meters" = "A precisão do GPS é de ±{value} metros.";
-"gps.accuracy.improved.feet" = "A precisão do GPS melhorou para ±{value} pés.";
-"gps.accuracy.improved.meters" = "A precisão do GPS melhorou para ±{value} metros.";
-"gps.accuracy.unavailable" = "A precisão do GPS não está disponível.";
-
-// MARK: GPS Accuracy Button Accessibility
-"gps.accuracy.check" = "Verificar precisão do GPS";
-"gps.accuracy.check.hint" = "Reproduz um anúncio com a precisão atual do GPS.";
-
-"settings.callouts.gps_announcements.title" = "Anúncios de precisão do GPS";
-"settings.callouts.gps_announcements.info" = "Ativa ou desativa os anúncios de precisão do GPS.";

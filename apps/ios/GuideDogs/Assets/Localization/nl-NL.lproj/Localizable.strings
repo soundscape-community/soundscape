@@ -4422,17 +4422,3 @@
 "mail.protonmail" = "Proton Mail";
 "mail.spark" = "Spark";
 
-//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
-// MARK: GPS Accuracy Announcement
-"gps.accuracy.announce.feet" = "De GPS-nauwkeurigheid is ±{value} voet.";
-"gps.accuracy.announce.meters" = "De GPS-nauwkeurigheid is ±{value} meter.";
-"gps.accuracy.improved.feet" = "De GPS-nauwkeurigheid is verbeterd tot ±{value} voet.";
-"gps.accuracy.improved.meters" = "De GPS-nauwkeurigheid is verbeterd tot ±{value} meter.";
-"gps.accuracy.unavailable" = "De GPS-nauwkeurigheid is niet beschikbaar.";
-
-// MARK: GPS Accuracy Button Accessibility
-"gps.accuracy.check" = "Controleer GPS-nauwkeurigheid";
-"gps.accuracy.check.hint" = "Speelt een melding met de huidige GPS-nauwkeurigheid af.";
-
-"settings.callouts.gps_announcements.title" = "GPS-nauwkeurigheidsmeldingen";
-"settings.callouts.gps_announcements.info" = "Schakelt meldingen over GPS-nauwkeurigheid in of uit.";

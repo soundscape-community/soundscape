@@ -4390,17 +4390,3 @@
 /*  */
 "faq.tip.two_finger_double_tap" = "Tryck på skärmen med två fingrar om du vill tysta alla aktiva informationsljud.";
 
-//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
-// MARK: GPS Accuracy Announcement
-"gps.accuracy.announce.feet" = "GPS-noggrannheten är ±{value} fot.";
-"gps.accuracy.announce.meters" = "GPS-noggrannheten är ±{value} meter.";
-"gps.accuracy.improved.feet" = "GPS-noggrannheten har förbättrats till ±{value} fot.";
-"gps.accuracy.improved.meters" = "GPS-noggrannheten har förbättrats till ±{value} meter.";
-"gps.accuracy.unavailable" = "GPS-noggrannheten är inte tillgänglig.";
-
-// MARK: GPS Accuracy Button Accessibility
-"gps.accuracy.check" = "Kontrollera GPS-noggrannhet";
-"gps.accuracy.check.hint" = "Spelar upp ett meddelande med den aktuella GPS-noggrannheten.";
-
-"settings.callouts.gps_announcements.title" = "GPS-noggrannhetsmeddelanden";
-"settings.callouts.gps_announcements.info" = "Slår på eller av meddelanden om GPS-noggrannhet.";

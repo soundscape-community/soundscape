@@ -8,9 +8,6 @@
 //  Description: Generates spoken GPS accuracy announcements based on
 //  location updates and app state changes (startup, wake, improved accuracy).
 //
-
-
-
 import CoreLocation
 import Foundation
 import Combine
@@ -57,15 +54,23 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         self.motion = motionActivity
         
         //observer for app state changes
+
         NotificationCenter.default.publisher(for: .appOperationStateDidChange)
+            // Safely extract OperationState from userInfo
+            .compactMap { notification -> OperationState? in
+                // Ensure your userInfo key is AnyHashable (String works well)
+                notification.userInfo?[AppContext.Keys.operationState] as? OperationState
+            }
             .receive(on: RunLoop.main)
-            .sink { [weak self] note in
+            .sink { [weak self] newState in
                 guard let self = self else { return }
-                let newState = note.userInfo?[AppContext.Keys.operationState] as? OperationState
                 self.previousOpState = self.currentOpState
                 self.currentOpState = newState
-                GDLogInfo(.eventProcessor, "GPSAcc: opState changed: \(String(describing: self.previousOpState)) -> \(String(describing: self.currentOpState))")
+                GDLogInfo(.eventProcessor,
+                          "GPSAcc: opState changed: \(String(describing: self.previousOpState)) -> \(String(describing: self.currentOpState))")
             }
+            .store(in: &cancellables)
+        
         //observer for when user enables GPS Accuracy announcemnents
         NotificationCenter.default.publisher(for: .gpsAnnouncementsEnabledChanged)
             .receive(on: RunLoop.main)
@@ -164,63 +169,104 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     }
     
     //MARK: HELPER Methods/Functions
-    
-    // Handels the first Acuracy announcment once starteup or on wake
+
+    private func usesImperialUnits(_ localeIdentifier: String) -> Bool {
+        // Keep your existing check; adjust if you later want GB/CA logic etc.
+        // Updated to rely on system measurement settings rather than localeIdentifier.
+        // (localeIdentifier retained to avoid signature changes)
+        _ = localeIdentifier
+        let locale = Locale.autoupdatingCurrent
+        if #available(iOS 16.0, *) {
+            let ms = locale.measurementSystem
+            if ms == .us { return true }
+            if ms == .uk { return false }      // change to `true` if you want UK treated as imperial
+            if ms == .metric { return false }
+            // Future/unknown cases: fallback to legacy heuristic
+            return !locale.usesMetricSystem
+        } else {
+            if let region = locale.regionCode, ["US", "LR", "MM"].contains(region) {
+                return true
+            }
+            return !locale.usesMetricSystem
+        }
+    }
+
+    private func accuracyValue(forMeters acc: CLLocationAccuracy, localeIdentifier: String) -> Int {
+        if usesImperialUnits(localeIdentifier) {
+            return Int((acc * 3.28084).rounded()) // feet
+        } else {
+            return Int(acc.rounded()) // meters
+        }
+    }
+
+    // MARK: - First announcement (startup / wake)
+
     private func handleFirstGPSAnnouncement(_ event: LocationUpdatedEvent) -> HandledEventAction? {
         guard let reason = pending else { return .noAction }
-        if settings.gpsAnnouncementsEnabled == false{
-            return .noAction
-        }
+        guard settings.gpsAnnouncementsEnabled else { return .noAction }
+
         let acc = event.location.horizontalAccuracy
         guard acc.isFinite else { return .noAction }
 
-        var message: String
+        let value = accuracyValue(forMeters: acc, localeIdentifier: localeIdentifier)
+        let isImperial = usesImperialUnits(localeIdentifier)
 
-
+        let message: String
         if acc > Self.poorAccuracyThreashold {
-            if localeIdentifier == "en_US" {
-                message = "GPS accuracy is poor (±\(Int(acc * 3.28084)) feet). Move around for better accuracy."
-                pending = .accurate
-            }else{
-                message = "GPS accuracy is poor (±\(Int(acc)) meters). Move around for better accuracy."
-                pending = .accurate
+            // POOR accuracy
+            if isImperial {
+                let tmpl = GDLocalizedString("gps.accuracy.poor.feet",
+                                             "GPS accuracy is poor (±%d feet). Move around for better accuracy.")
+                message = String(format: tmpl, value)
+            } else {
+                let tmpl = GDLocalizedString("gps.accuracy.poor.meters",
+                                             "GPS accuracy is poor (±%d meters). Move around for better accuracy.")
+                message = String(format: tmpl, value)
             }
+            // Keep your original state behavior
+            pending = .accurate
         } else {
-            if localeIdentifier == "en_US" {
-                message = "GPS accuracy is good (±\(Int(acc*3.28084)) feet)."
-                markDone(for: reason)
-                pending = nil
-            }else{
-                message = "GPS accuracy is good (±\(Int(acc)) meters)."
-                markDone(for: reason)
-                pending = nil
+            // GOOD accuracy
+            if isImperial {
+                let tmpl = GDLocalizedString("gps.accuracy.good.feet",
+                                             "GPS accuracy is good (±%d feet).")
+                message = String(format: tmpl, value)
+            } else {
+                let tmpl = GDLocalizedString("gps.accuracy.good.meters",
+                                             "GPS accuracy is good (±%d meters).")
+                message = String(format: tmpl, value)
             }
-
+            markDone(for: reason)
+            pending = nil
         }
 
         let callout = StringCallout(.system, message)
         return .playCallouts(CalloutGroup([callout], action: .enqueue, logContext: "gps-accuracy"))
     }
 
-    // If it isnot the first time after wake or startup we will use this to handel the annocuncemnt
+    // MARK: -  improvements GPS annoucnement
+
     private func handleImprovedGPSAnnouncement(_ event: LocationUpdatedEvent) -> HandledEventAction? {
         let acc = event.location.horizontalAccuracy
         guard acc.isFinite else { return .noAction }
-        if settings.gpsAnnouncementsEnabled == false{
-            return .noAction
-        }
-        guard acc <= Self.poorAccuracyThreashold, !hasAnnouncedAccurate else {
-            return .noAction
-        }
-        var message: String
-        if localeIdentifier == "en_US" {
-            message = "GPS accuracy has improved to \(Int(acc*3.28084)) feet."
-            
-        }else{
-            message = "GPS accuracy has improved to ±\(Int(acc)) meters."
-        }
-        let callout = StringCallout(.system, message, position: 180.0)
+        guard settings.gpsAnnouncementsEnabled else { return .noAction }
+        guard acc <= Self.poorAccuracyThreashold, !hasAnnouncedAccurate else { return .noAction }
 
+        let value = accuracyValue(forMeters: acc, localeIdentifier: localeIdentifier)
+        let isImperial = usesImperialUnits(localeIdentifier)
+
+        let message: String
+        if isImperial {
+            let tmpl = GDLocalizedString("gps.accuracy.improved.feet",
+                                         "GPS accuracy has improved to ±%d feet.")
+            message = String(format: tmpl, value)
+        } else {
+            let tmpl = GDLocalizedString("gps.accuracy.improved.meters",
+                                         "GPS accuracy has improved to ±%d meters.")
+            message = String(format: tmpl, value)
+        }
+
+        let callout = StringCallout(.system, message, position: 180.0)
 
         markDone(for: .accurate)
         pending = nil
@@ -239,6 +285,3 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
 
     
 }
-
-
-

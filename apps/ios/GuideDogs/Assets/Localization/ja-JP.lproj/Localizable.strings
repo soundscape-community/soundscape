@@ -4381,17 +4381,3 @@
 /*  */
 "faq.tip.two_finger_double_tap" = "画面を 2 本指で 2 回タップすると、アクティブなコールアウトがすべて停止されます。";
 
-//MARK: NOTE THESE ARE NOT HUMAN TRANSLATED (FOR THE GPS ACCURACY SECTIONS) THEY ARE MACHINE TRANSLATED
-// MARK: GPS Accuracy Announcement
-"gps.accuracy.announce.feet" = "GPSの精度は±{value}フィートです。";
-"gps.accuracy.announce.meters" = "GPSの精度は±{value}メートルです。";
-"gps.accuracy.improved.feet" = "GPSの精度が±{value}フィートに改善されました。";
-"gps.accuracy.improved.meters" = "GPSの精度が±{value}メートルに改善されました。";
-"gps.accuracy.unavailable" = "GPSの精度は利用できません。";
-
-// MARK: GPS Accuracy Button Accessibility
-"gps.accuracy.check" = "GPS精度を確認";
-"gps.accuracy.check.hint" = "現在のGPS精度を読み上げます。";
-
-"settings.callouts.gps_announcements.title" = "GPS 精度のアナウンス";
-"settings.callouts.gps_announcements.info" = "GPS 精度のアナウンスをオン／オフします。";
