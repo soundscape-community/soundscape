@@ -259,11 +259,11 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         let message: String
         if isImperial {
             let tmpl = GDLocalizedString("gps.accuracy.improved.feet",
-                                         "GPS accuracy has improved to ±%d feet.")
+                                         "GPS accuracy has improved to about %d feet.")
             message = String(format: tmpl, value)
         } else {
             let tmpl = GDLocalizedString("gps.accuracy.improved.meters",
-                                         "GPS accuracy has improved to ±%d meters.")
+                                         "GPS accuracy has improved to about %d meters.")
             message = String(format: tmpl, value)
         }
 

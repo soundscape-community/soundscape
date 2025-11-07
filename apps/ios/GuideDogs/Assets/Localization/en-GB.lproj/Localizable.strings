@@ -4528,11 +4528,11 @@
 "settings.callouts.gps_announcements.info" = "Announces GPS accuracy when the app is launched";
 
 /* Announcements: poor / good (first announcement flow) */
-"gps.accuracy.good.feet" = "GPS accuracy is good about %d feet";
-"gps.accuracy.poor.feet" = "GPS accuracy is poor and above 60 feet, move for better accuracy";
+"gps.accuracy.good.feet" = "GPS accuracy is good, about %d feet";
+"gps.accuracy.poor.feet" = "GPS accuracy is poor and above 30 feet, move for better accuracy";
 "gps.accuracy.ok.feet" = "GPS accuracy is ok %d feet";
-"gps.accuracy.good.meters" = "GPS accuracy is good about %d meters";
-"gps.accuracy.poor.meters" = "GPS accuracy is poor and above 10 meters, move for better accuracy";
-"gps.accuracy.ok.meters" = "GPS accuracy is ok %d meters";
+"gps.accuracy.good.meters" = "GPS accuracy is good, about %d metres";
+"gps.accuracy.poor.meters" = "GPS accuracy is poor and above 10 metres, move for better accuracy";
+"gps.accuracy.ok.meters" = "GPS accuracy is ok %d metres";
 
 
