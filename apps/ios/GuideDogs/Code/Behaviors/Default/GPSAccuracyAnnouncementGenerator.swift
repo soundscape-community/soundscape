@@ -56,9 +56,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         //observer for app state changes
 
         NotificationCenter.default.publisher(for: .appOperationStateDidChange)
-            // Safely extract OperationState from userInfo
-            .compactMap { notification -> OperationState? in
-                // Ensure your userInfo key is AnyHashable (String works well)
+             .compactMap { notification -> OperationState? in
                 notification.userInfo?[AppContext.Keys.operationState] as? OperationState
             }
             .receive(on: RunLoop.main)
@@ -171,25 +169,22 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     //MARK: HELPER Methods/Functions
 
     private func usesImperialUnits(_ localeIdentifier: String) -> Bool {
-        // Keep your existing check; adjust if you later want GB/CA logic etc.
-        // Updated to rely on system measurement settings rather than localeIdentifier.
-        // (localeIdentifier retained to avoid signature changes)
-        _ = localeIdentifier
         let locale = Locale.autoupdatingCurrent
         if #available(iOS 16.0, *) {
-            let ms = locale.measurementSystem
-            if ms == .us { return true }
-            if ms == .uk { return false }      // change to `true` if you want UK treated as imperial
-            if ms == .metric { return false }
-            // Future/unknown cases: fallback to legacy heuristic
-            return !locale.usesMetricSystem
-        } else {
-            if let region = locale.regionCode, ["US", "LR", "MM"].contains(region) {
+            switch locale.measurementSystem {
+            case .metric:
+                return false
+            case .us, .uk:
                 return true
+            default:
+                return !locale.usesMetricSystem
             }
+        } else {
+            // Pre iOS 16 best way to check
             return !locale.usesMetricSystem
         }
     }
+
 
     private func accuracyValue(forMeters acc: CLLocationAccuracy, localeIdentifier: String) -> Int {
         if usesImperialUnits(localeIdentifier) {
@@ -212,28 +207,34 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         let isImperial = usesImperialUnits(localeIdentifier)
 
         let message: String
-        if acc > Self.poorAccuracyThreashold {
-            // POOR accuracy
+        if (acc >= 10.0) && (acc <= 20.0) {
             if isImperial {
-                let tmpl = GDLocalizedString("gps.accuracy.poor.feet",
-                                             "GPS accuracy is poor (±%d feet). Move around for better accuracy.")
+                let tmpl = GDLocalizedString("gps.accuracy.ok.feet")
                 message = String(format: tmpl, value)
             } else {
-                let tmpl = GDLocalizedString("gps.accuracy.poor.meters",
-                                             "GPS accuracy is poor (±%d meters). Move around for better accuracy.")
+                let tmpl = GDLocalizedString("gps.accuracy.ok.meters")
                 message = String(format: tmpl, value)
             }
-            // Keep your original state behavior
+            markDone(for: reason)
+            pending = nil
+            
+        }else if acc > Self.poorAccuracyThreashold {
+            // POOR accuracy
+            if isImperial {
+                let tmpl = GDLocalizedString("gps.accuracy.poor.feet")
+                message = String(format: tmpl, value)
+            } else {
+                let tmpl = GDLocalizedString("gps.accuracy.poor.meters")
+                message = String(format: tmpl, value)
+            }
             pending = .accurate
         } else {
             // GOOD accuracy
             if isImperial {
-                let tmpl = GDLocalizedString("gps.accuracy.good.feet",
-                                             "GPS accuracy is good (±%d feet).")
+                let tmpl = GDLocalizedString("gps.accuracy.good.feet")
                 message = String(format: tmpl, value)
             } else {
-                let tmpl = GDLocalizedString("gps.accuracy.good.meters",
-                                             "GPS accuracy is good (±%d meters).")
+                let tmpl = GDLocalizedString("gps.accuracy.good.meters")
                 message = String(format: tmpl, value)
             }
             markDone(for: reason)

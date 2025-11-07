@@ -4497,19 +4497,19 @@
 
 /* Announce GPS accuracy in feet (for en_US locale).
    {NumberedPlaceholder="%d"} represents the accuracy value in feet. */
-"gps.accuracy.announce.feet" = "GPS accuracy is ±%@ feet";
+"gps.accuracy.announce.feet" = "GPS accuracy is about %@ feet";
 
 /* Announce GPS accuracy in meters (for non-US locales).
    {NumberedPlaceholder="%d"} represents the accuracy value in meters. */
-"gps.accuracy.announce.meters" = "GPS accuracy is ±%@ meters";
+"gps.accuracy.announce.meters" = "GPS accuracy is about %@ meters";
 
 /* Announce improved GPS accuracy in feet (for en_US locale).
    {NumberedPlaceholder="%d"} represents the improved accuracy in feet. */
-"gps.accuracy.improved.feet" = "GPS accuracy has improved to ±%@ feet";
+"gps.accuracy.improved.feet" = "GPS accuracy has improved to about %@ feet";
 
 /* Announce improved GPS accuracy in meters (for non-US locales).
    {NumberedPlaceholder="%d"} represents the improved accuracy in meters. */
-"gps.accuracy.improved.meters" = "GPS accuracy has improved to ±%@ meters";
+"gps.accuracy.improved.meters" = "GPS accuracy has improved to about %@ meters";
 
 /* Announce when GPS accuracy information is unavailable. */
 "gps.accuracy.unavailable" = "GPS accuracy is unavailable.";
@@ -4527,12 +4527,12 @@
 "settings.callouts.gps_announcements.title" = "GPS Accuracy";
 "settings.callouts.gps_announcements.info" = "Announces GPS accuracy when the app is launched";
 
-
 /* Announcements: poor / good (first announcement flow) */
-"gps.accuracy.poor.feet"   = "GPS accuracy is poor ±%@ feet Move around for better accuracy";
-"gps.accuracy.poor.meters" = "GPS accuracy is poor ±%@ meters Move around for better accuracy";
-
-"gps.accuracy.good.feet"   = "GPS accuracy is good ±%@ feet";
-"gps.accuracy.good.meters" = "GPS accuracy is good ±%@ meters";
+"gps.accuracy.good.feet" = "GPS accuracy is good about %d feet";
+"gps.accuracy.poor.feet" = "GPS accuracy is poor and above 60 feet, move for better accuracy";
+"gps.accuracy.ok.feet" = "GPS accuracy is ok %d feet";
+"gps.accuracy.good.meters" = "GPS accuracy is good about %d meters";
+"gps.accuracy.poor.meters" = "GPS accuracy is poor and above 10 meters, move for better accuracy";
+"gps.accuracy.ok.meters" = "GPS accuracy is ok %d meters";
 
 

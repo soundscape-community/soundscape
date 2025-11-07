@@ -153,71 +153,9 @@ class SystemGenerator: ManualGenerator {
             }
             
             return .playCallouts(CalloutGroup([event.callout], repeatingFromLocation: location, action: .interruptAndClear, logContext: "repeat_callout"))
-        case is AnnounceGPSAccuracyEvent:
-            guard let loc = geo.location else {
-                let msg = GDLocalizedString("gps.accuracy.unavailable", "GPS accuracy unavailable.")
-                let callout = StringCallout(.system, msg)
-                return .playCallouts(CalloutGroup([callout],
-                                                  action: .interruptAndClear,
-                                                  logContext: "gps-accuracy.manual"))
-            }
-            
-            // Validate coordinates
-            guard CLLocationCoordinate2DIsValid(loc.coordinate) else {
-                let msg = GDLocalizedString("gps.accuracy.unavailable", "GPS accuracy unavailable.")
-                let callout = StringCallout(.system, msg)
-                return .playCallouts(CalloutGroup([callout],
-                                                  action: .interruptAndClear,
-                                                  logContext: "gps-accuracy.manual"))
-            }
-            
-            // Validate accuracy
-            let acc = loc.horizontalAccuracy
-            guard acc.isFinite, acc >= 0 else {
-                let msg = GDLocalizedString("gps.accuracy.unavailable", "GPS accuracy unavailable.")
-                let callout = StringCallout(.system, msg)
-                return .playCallouts(CalloutGroup([callout],action: .interruptAndClear,logContext: "gps-accuracy.manual"))
-            }
-            
-            let localeIdentifier = Locale.current.identifier
-            let message: String
-            if usesImperialUnits(localeIdentifier) {
-                let feet = Int(acc.rounded()*3.28084)
-                let template = GDLocalizedString("gps.accuracy.announce.feet", "GPS accuracy is ±{value} feet.")
-                message = template.replacingOccurrences(of: "%@", with: "\(feet)")
-            } else {
-                let meters = Int(acc.rounded())
-                let template = GDLocalizedString("gps.accuracy.announce.meters", "GPS accuracy is ±%d meters.")
-                message = String(format: template, meters)
-            }
-            
-            
-            let callout = StringCallout(.system, message, position: 180.0)
-            return .playCallouts(CalloutGroup([callout], action: .interruptAndClear, logContext: "gps-accuracy.manual"))
         default:
             return nil
         }
     }
-    
-    // --- Only new code below (helper mirrors previous file’s approach) ---
-    
-    private func usesImperialUnits(_ localeIdentifier: String) -> Bool {
-        // Updated to rely on system measurement settings rather than localeIdentifier.
-        // (localeIdentifier retained to avoid signature changes)
-        _ = localeIdentifier
-        let locale = Locale.autoupdatingCurrent
-        if #available(iOS 16.0, *) {
-            let ms = locale.measurementSystem
-            if ms == .us { return true }
-            if ms == .uk { return false }      // change to `true` if you want UK treated as imperial
-            if ms == .metric { return false }
-            // Future/unknown cases: fallback to legacy heuristic
-            return !locale.usesMetricSystem
-        } else {
-            if let region = locale.regionCode, ["US", "LR", "MM"].contains(region) {
-                return true
-            }
-            return !locale.usesMetricSystem
-        }
-    }
+        
 }
