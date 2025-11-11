@@ -34,7 +34,7 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
     private var pending: Pending?
     
     //threadhold for acuracy (meters)
-    static let poorAccuracyThreashold: CLLocationAccuracy = 10.0
+    static let poorAccuracyThreashold: CLLocationAccuracy = 20.0
 
     private let eventTypes: [StateChangedEvent.Type] = [
         GlyphEvent.self,
