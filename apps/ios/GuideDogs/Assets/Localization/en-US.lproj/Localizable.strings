@@ -3779,7 +3779,7 @@
 /* Announcements: poor / good (first announcement flow) */
 "gps.accuracy.good.feet" = "GPS accuracy is good, about %d feet";
 "gps.accuracy.poor.feet" = "GPS accuracy is poor and above 60 feet, move for better accuracy";
-"gps.accuracy.ok.feet" = "GPS accuracy is ok,about %d feet";
+"gps.accuracy.ok.feet" = "GPS accuracy is ok, about %d feet";
 "gps.accuracy.good.meters" = "GPS accuracy is good, about %d meters";
 "gps.accuracy.poor.meters" = "GPS accuracy is poor and above 20 meters, move for better accuracy";
 "gps.accuracy.ok.meters" = "GPS accuracy is ok, about %d meters";
