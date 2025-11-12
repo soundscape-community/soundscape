@@ -4529,10 +4529,10 @@
 
 /* Announcements: poor / good (first announcement flow) */
 "gps.accuracy.good.feet" = "GPS accuracy is good, about %d feet";
-"gps.accuracy.poor.feet" = "GPS accuracy is poor and above 30 feet, move for better accuracy";
+"gps.accuracy.poor.feet" = "GPS accuracy is poor and above 60 feet, move for better accuracy";
 "gps.accuracy.ok.feet" = "GPS accuracy is ok, %d feet";
 "gps.accuracy.good.meters" = "GPS accuracy is good, about %d metres";
-"gps.accuracy.poor.meters" = "GPS accuracy is poor and above 10 metres, move for better accuracy";
+"gps.accuracy.poor.meters" = "GPS accuracy is poor and above 20 metres, move for better accuracy";
 "gps.accuracy.ok.meters" = "GPS accuracy is ok, %d metres";
 
 
