@@ -187,8 +187,10 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
 
 
     private func accuracyValue(forMeters acc: CLLocationAccuracy, localeIdentifier: String) -> Int {
+        //converts to feet
+        let feet = Measurement(value: acc, unit: UnitLength.meters).converted(to: UnitLength.feet).value
         if usesImperialUnits(localeIdentifier) {
-            return Int((acc * 3.28084).rounded()) // feet
+            return Int(feet.rounded()) // feet
         } else {
             return Int(acc.rounded()) // meters
         }
