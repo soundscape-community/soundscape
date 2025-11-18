@@ -550,6 +550,11 @@ class AudioEngine: AudioEngineProtocol {
             return
         }
         
+        // Check if we should start before activating the session
+        guard shouldStart() else {
+            return
+        }
+        
         if activateAudioSession {
             // We try to forcibly activate the audio session, even if we believe it's not needed (`needsActivation == false`).
             // This is because of the following issue:
@@ -563,19 +568,6 @@ class AudioEngine: AudioEngineProtocol {
             
             // If the audio session was interrupted, but we successfully reactivated it, make sure to revert to `false`.
             isSessionInterrupted = false
-        }
-        
-        guard shouldStart() else {
-            // If the audio engine has started, make sure all the paused players are resumed if needed.
-            if state == .started {
-                if !resume() {
-                    // If resuming wasn't successful because one of the players could not be resumed,
-                    // that player will be marked as done. If this was the case, try to play the
-                    // next sound, which will either play or report finished.
-                    playNextSound()
-                }
-            }
-            return
         }
         
         if isConfigChangePending {
@@ -964,7 +956,7 @@ class AudioEngine: AudioEngineProtocol {
             
             guard self.state != .stopped else {
                 GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                callback?(false)
+                Task { @MainActor in callback?(false) }
                 return
             }
             
@@ -1099,7 +1091,9 @@ class AudioEngine: AudioEngineProtocol {
             self.play(nextSounds, completion: completion)
         }
         
-        callback?(success)
+        Task { @MainActor in
+            callback?(success)
+        }
     }
     
     // MARK: 3D Audio Environment
@@ -1252,6 +1246,14 @@ extension AudioEngine: AudioSessionManagerDelegate {
         // Not all `interruptionBegan()` will be followed by `interruptionEnded()`.
         // Make sure the interruption flag is cleared if the audio session is re-activated.
         isSessionInterrupted = false
+        
+        // Don't try to start the engine if there's a call in progress and we're not active.
+        // The session might be activated by the system or remain active during interruptions,
+        // but we shouldn't start audio playback until the app is actually ready.
+        guard shouldStart() else {
+            GDLogAudioVerbose("Audio session activated but engine should not start yet")
+            return
+        }
         
         start(activateAudioSession: false)
     }

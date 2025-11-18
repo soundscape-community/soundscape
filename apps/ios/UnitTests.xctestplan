@@ -28,7 +28,8 @@
       "identifier" : "D3D7CFC71B3D96460020B5E9",
       "name" : "Soundscape"
     },
-    "testExecutionOrdering" : "random"
+    "testExecutionOrdering" : "random",
+    "threadSanitizerEnabled" : true
   },
   "testTargets" : [
     {

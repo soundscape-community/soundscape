@@ -251,43 +251,48 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
                 guard let `self` = self else {
                     return
                 }
-                
-                guard self.layerStates[layer].bufferQueue.isEmpty else {
-                    self.wasPaused = true
-                    return
-                }
+                // Serialize all state access on the player's queue to avoid races
+                self.queue.async {
+                    if !self.layerStates[layer].bufferQueue.isEmpty {
+                        self.wasPaused = true
+                        return
+                    }
 
-                guard self.layerStates[layer].playbackDispatchGroupWasEntered else {
-                    GDLogAudioVerbose("Silent buffer played back, but dispatch group was never entered!")
-                    return
+                    guard self.layerStates[layer].playbackDispatchGroupWasEntered else {
+                        GDLogAudioVerbose("Silent buffer played back, but dispatch group was never entered!")
+                        return
+                    }
+
+                    guard !self.layerStates[layer].playbackDispatchGroupWasLeft else {
+                        GDLogAudioVerbose("Silent buffer played back, but dispatch group was already left!")
+                        return
+                    }
+
+                    self.layerStates[layer].playbackDispatchGroupWasLeft = true
+                    self.channelPlayedBackDispatchGroup.leave()
                 }
-                
-                guard !self.layerStates[layer].playbackDispatchGroupWasLeft else {
-                    GDLogAudioVerbose("Silent buffer played back, but dispatch group was already left!")
-                    return
-                }
-                
-                self.layerStates[layer].playbackDispatchGroupWasLeft = true
-                self.channelPlayedBackDispatchGroup.leave()
             }
             
             return
         }
         
         // Schedule this buffer (and use the dispatch group to know when it is done playing)
-        layerStates[layer].bufferQueue.enqueue(buffer)
-        layerStates[layer].bufferCount += 1
+        // Serialize mutations to layer state on the queue
+        queue.async { [weak self] in
+            guard let self = self else { return }
+            self.layerStates[layer].bufferQueue.enqueue(buffer)
+            self.layerStates[layer].bufferCount += 1
+        }
         layers[layer].player.scheduleBuffer(buffer, completionCallbackType: .dataRendered) { [weak self] (_) in
             guard let `self` = self else {
                 return
             }
-            
-            // Only log completion and remove from the buffer queue if the audio actually played back
-            guard !self.wasPaused else {
-                return
-            }
-            
+            // Ensure reads/writes occur on the queue to avoid races
             self.queue.async {
+                // Only log completion and remove from the buffer queue if the audio actually played back
+                if self.wasPaused {
+                    return
+                }
                 _ = self.layerStates[layer].bufferQueue.dequeue()
             }
         }
