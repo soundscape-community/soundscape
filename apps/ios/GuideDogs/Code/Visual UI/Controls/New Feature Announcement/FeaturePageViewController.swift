@@ -55,7 +55,7 @@ class FeaturePageViewController: UIViewController {
         headerLabel.text = header
         headerLabel.accessibilityLabel = header.accessibilityString()
         bodyTextView.attributedText = attributedBody
-        bodyTextView.attributedText.accessibilityLabel = bodyAccessibilityLabel
+        bodyTextView.accessibilityLabel = bodyAccessibilityLabel
         
         bodyTextView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         bodyTextView.textContainer.lineFragmentPadding = 0

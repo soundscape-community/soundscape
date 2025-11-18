@@ -133,7 +133,7 @@ extension String {
     }
 
     func accessibilityString() -> String {
-        return self.lowercased().replacingOccurrences(of: "callout", with: "call out")
+        return self.replacingOccurrences(of: "callout", with: "call out", options: .caseInsensitive)
     }
     
     public func urlEncoded(plusForSpace: Bool = true) -> String? {
