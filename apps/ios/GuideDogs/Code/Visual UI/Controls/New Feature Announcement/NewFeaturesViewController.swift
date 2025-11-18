@@ -113,7 +113,7 @@ class NewFeaturesViewController: UIViewController {
                 UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: vc.headerLabel)
             } else {
                 let total = self?.featurePages.count ?? index + 1
-                UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: "\(index + 1) of \(total). \(vc.header.accessibilityString()). \(vc.bodyAccessibilityLabel ?? "")")
+                UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: "\(index + 1) of \(total). \(vc.header ?? "")")
             }
             
             self?.refreshControls()

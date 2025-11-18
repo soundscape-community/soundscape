@@ -19,7 +19,6 @@ class FeaturePageViewController: UIViewController {
     var image: UIImage?
     var header: String!
     var attributedBody: NSMutableAttributedString!
-    var bodyAccessibilityLabel: String!
     var contentView: UIView!
     var buttonLabel: String?
     var buttonAccessibilityHint: String?
@@ -29,7 +28,6 @@ class FeaturePageViewController: UIViewController {
         
         vc.image = feature.localizedImage
         vc.header = feature.localizedTitle
-        vc.bodyAccessibilityLabel = feature.localizedAccessibilityDescription.accessibilityString()
         
         let description = feature.localizedDescription
         vc.attributedBody = NSMutableAttributedString(string: description)
@@ -53,9 +51,7 @@ class FeaturePageViewController: UIViewController {
         // Do any additional setup after loading the view.
         featureImageView.image = image
         headerLabel.text = header
-        headerLabel.accessibilityLabel = header.accessibilityString()
         bodyTextView.attributedText = attributedBody
-        bodyTextView.accessibilityLabel = bodyAccessibilityLabel
         
         bodyTextView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         bodyTextView.textContainer.lineFragmentPadding = 0
