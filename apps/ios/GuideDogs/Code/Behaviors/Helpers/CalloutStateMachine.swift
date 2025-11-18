@@ -22,14 +22,12 @@ class CalloutStateMachine {
     private enum State {
         case off
         case start
-        case starting
+        case playingPrefixSounds
         case stop
         case stopping
-        case announceCallout
         case announcingCallout
         case delayingCalloutAnnounced
         case complete
-        case failed
     }
     
     // MARK: Properties
@@ -83,7 +81,56 @@ class CalloutStateMachine {
         playHushedSound = false
         
         callouts.onStart?()
-        eventStart()
+        
+        GDLogVerbose(.stateMachine, "Entering state: \(State.start)")
+        state = .start
+        // Stop current sounds if needed
+        if callouts.stopSoundsBeforePlaying {
+            self.audioEngine.stopDiscrete()
+        }
+        
+        callouts.delegate?.calloutsStarted(for: callouts)
+        
+        // Prepare the iterator for the callouts
+        self.calloutIterator = callouts.callouts.makeIterator()
+        
+        // Play the sounds indicating that the mode has started
+        var sounds: [Sound] = callouts.playModeSounds ? [GlyphSound(.enterMode)] : []
+        
+        if let prefixSounds = callouts.prefixCallout?.sounds(for: self.geo?.location) {
+            sounds.append(contentsOf: prefixSounds.soundArray)
+        }
+        
+        if sounds.count > 0 {
+            self.audioEngine.play(Sounds(sounds)) { (success) in
+                if self.state == .stopping {
+                    GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
+                    self.complete()
+                    callouts.onComplete?(false)
+                    return
+                }
+
+                if self.state == .off {
+                    GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
+                    callouts.onComplete?(false)
+                    return
+                }
+                
+                guard success else {
+                    GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
+                    self.complete(failed: true)
+                    return
+                }
+                
+                GDLogVerbose(.stateMachine, "Enter mode sound played")
+                self.announceCallout()
+            }
+            
+            // Transition to the state to allow mode sounds and prefix sounds to play
+            self.state = .playingPrefixSounds
+        } else {
+            announceCallout()
+        }
     }
     
     func hush(playSound: Bool = false) {
@@ -92,76 +139,29 @@ class CalloutStateMachine {
         if playSound {
             playHushedSound = true
         }
-        eventHush()
+        stateStop()
     }
 
     func stop() {
-        eventStop()
-    }
-    
-    // MARK: state machine events
-
-    private func eventStart() {
         switch state {
-            case .off:
-                stateStart()
-            case .start, .starting, .stop, .stopping, .announceCallout, .announcingCallout, .delayingCalloutAnnounced, .complete, .failed:
-                GDLogError(.stateMachine, "Invalid state transition: eventStart() called from state .\(state)")
-        }
-    }
-
-    private func eventStarted() {
-        switch state {
-            case .starting:
-                stateAnnounceCallout()
-            case .off, .start, .stop, .stopping, .announceCallout, .announcingCallout, .delayingCalloutAnnounced, .complete, .failed:
-                GDLogError(.stateMachine, "Invalid state transition: eventStarted() called from state .\(state)")
-        }
-    }
-
-    private func eventHush() {
-        switch state{
-            case .off, .stop, .complete, .failed, .stopping, .starting, .start, .announceCallout, .announcingCallout, .delayingCalloutAnnounced:
-                stateStop()
-        }
-    }
-    
-    private func eventStop() {
-        switch state {
-            case .starting, .announcingCallout:
+            case .playingPrefixSounds, .announcingCallout:
                 stateStop()
             case .complete, .off:
-                stateOff()
-        case .start, .stop, .stopping, .announceCallout, .delayingCalloutAnnounced, .failed:
-            stateComplete()
+                calloutsDidFinish()
+        case .start, .stop, .stopping, .delayingCalloutAnnounced:
+            complete()
         }
     }
     
-    private func eventStopped() {
-        switch state {
-            case .stopping:
-                stateComplete()
-            case .announceCallout, .announcingCallout, .complete, .delayingCalloutAnnounced, .failed, .off, .start, .starting, .stop:
-                GDLogError(.stateMachine, "Invalid state transition: eventStopped() called from state .\(state)")
-        }
-    }
-
-    private func eventFailed() {
-        switch state {
-            case .announceCallout, .announcingCallout, .complete, .delayingCalloutAnnounced, .failed, .off, .start, .starting, .stop, .stopping:
-                stateFailed()
-        }
-    }
-
     private func eventDelayCalloutAnnounced() {
         switch state {
             case .announcingCallout:
                 stateDelayingCalloutAnnounced()
             case .complete:
-                stateComplete()
+                complete()
             case .off:
-                stateOff()
-            case .announceCallout, .delayingCalloutAnnounced, .failed, .start, .starting, .stop, .stopping:
+                calloutsDidFinish()
+            case .delayingCalloutAnnounced, .start, .playingPrefixSounds, .stop, .stopping:
                 GDLogError(.stateMachine, "Invalid state transition: eventDelayCalloutAnnounced() called from state .\(state)")
         }
     }
@@ -169,31 +169,19 @@ class CalloutStateMachine {
     private func eventCalloutAnnounced() {
         switch state{
             case .announcingCallout:
-                stateAnnounceCallout()
+                announceCallout()
             case .delayingCalloutAnnounced:
-                stateAnnounceCallout()      
+                announceCallout()      
             case .complete:
-                stateComplete()
+                complete()
             case .off:
-                stateOff()
-            case .announceCallout, .failed, .start, .starting, .stop, .stopping:
+                calloutsDidFinish()
+            case .start, .playingPrefixSounds, .stop, .stopping:
                 GDLogError(.stateMachine, "Invalid state transition: eventCalloutAnnounced() called from state .\(state)")
         }
     }
 
-    private func eventCompleted() {
-        switch state {
-            case .complete:
-                stateOff()
-            case .off, .start, .starting, .stop, .stopping, .announceCallout, .announcingCallout, .delayingCalloutAnnounced, .failed:
-                GDLogError(.stateMachine, "Invalid state transition: eventCompleted() called from state .\(state)")
-        }
-    }
-}
-
-extension CalloutStateMachine {
-    
-    private func stateOff() {
+    private func calloutsDidFinish() {
         GDLogVerbose(.stateMachine, "Entering state: \(State.off)")
         state = .off
         if let lastGroupID = self.lastGroupID {
@@ -202,71 +190,6 @@ extension CalloutStateMachine {
                 self.delegate?.calloutsDidFinish(id: lastGroupID)
             }
         }
-    }
-    
-    private func stateStart(){
-        GDLogVerbose(.stateMachine, "Entering state: \(State.start)")
-        state = .start
-        guard let calloutGroup = self.calloutGroup else {
-            self.eventFailed()
-            return
-        }
-        
-        // Stop current sounds if needed
-        if calloutGroup.stopSoundsBeforePlaying {
-            self.audioEngine.stopDiscrete()
-        }
-        
-        calloutGroup.delegate?.calloutsStarted(for: calloutGroup)
-        
-        // Prepare the iterator for the callouts
-        self.calloutIterator = calloutGroup.callouts.makeIterator()
-        
-        // Play the sounds indicating that the mode has started
-        var sounds: [Sound] = calloutGroup.playModeSounds ? [GlyphSound(.enterMode)] : []
-        
-        if let prefixSounds = calloutGroup.prefixCallout?.sounds(for: self.geo?.location) {
-            sounds.append(contentsOf: prefixSounds.soundArray)
-        }
-        
-        if sounds.count > 0 {
-            self.audioEngine.play(Sounds(sounds)) { (success) in
-                guard self.state != .stopping else {
-                    GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
-                    self.eventStopped()
-                    calloutGroup.onComplete?(false)
-                    return
-                }
-                
-                guard self.state != .off else {
-                    GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
-                    calloutGroup.onComplete?(false)
-                    return
-                }
-                
-                guard success else {
-                    GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
-                    self.eventFailed()
-                    return
-                }
-                
-                GDLogVerbose(.stateMachine, "Enter mode sound played")
-                self.eventStarted()
-            }
-            
-            // Transition to the state to allow mode sounds and prefix sounds to play
-            // fixme: this should use events to transition state but copying original behaviour exactly for now
-            self.stateStarting()
-        } else {
-            // Transition to the state to announce callouts
-            // fixme: this should use events to transition state but copying original behaviour exactly for now
-            stateAnnounceCallout()
-        }
-    }
-    
-    private func stateStarting() {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.starting)")
-        state = .starting
     }
     
     private func stateStop() {
@@ -278,43 +201,31 @@ extension CalloutStateMachine {
             // until the sound is actually stopped (see the completion handlers passed to audioEngine.play() in the .start
             // and .announceCallout states).
             self.audioEngine.stopDiscrete(with: self.hushed && self.playHushedSound ? GlyphSound(.hush) : nil)
-            // fixme
-            stateStopping()
+            state = .stopping
         } else {
             // In this case, discrete audio isn't currently playing, but we might be between sounds, so still call stopDiscrete in
             // order to clear the sounds queue in the audio engine before moving to the complete state
             self.audioEngine.stopDiscrete(with: self.hushed && self.playHushedSound ? GlyphSound(.hush) : nil)
-            //fixme
-            stateComplete()
+            complete()
         }
     }
     
-    private func stateStopping() {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.stopping)")
-        state = .stopping
-    }
-    
-    private func stateAnnounceCallout() {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.announceCallout)")
-        state = .announceCallout
-        
+    private func announceCallout() {
         guard let calloutGroup = self.calloutGroup else {
-            eventFailed()
+            complete(failed: true)
             return
         }
         
         guard let callout = self.calloutIterator?.next() else {
             calloutGroup.onComplete?(true)
-            //fixme
-            stateComplete()
+            complete()
             return
         }
         
         // If this callout is not within the region to live, skip to the next callout
         if let delegate = calloutGroup.delegate, !delegate.isCalloutWithinRegionToLive(callout) {
             calloutGroup.delegate?.calloutSkipped(callout)
-            //fixme
-            stateAnnounceCallout()
+            announceCallout()
             return
         }
         
@@ -331,14 +242,14 @@ extension CalloutStateMachine {
         self.audioEngine.play(sounds) { (success) in
             calloutGroup.delegate?.calloutFinished(callout, completed: success)
             
-            guard self.state != .stopping else {
+            if self.state == .stopping {
                 GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
-                self.eventStopped()
+                self.complete()
                 calloutGroup.onComplete?(false)
                 return
             }
             
-            guard self.state != .off else {
+            if self.state == .off {
                 GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
                 calloutGroup.onComplete?(false)
                 return
@@ -347,21 +258,15 @@ extension CalloutStateMachine {
             guard success else {
                 GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
                 calloutGroup.onComplete?(false)
-                self.eventFailed()
+                self.complete(failed: true)
                 return
             }
             
             self.eventDelayCalloutAnnounced()
         }
         
-        CalloutStateMachineLogger.log(callout: callout, context: self.calloutGroup?.logContext)
+        CalloutStateMachine.log(callout: callout, context: self.calloutGroup?.logContext)
         
-        //fixme
-        stateAnnouncingCallout()
-    }
-    
-    private func stateAnnouncingCallout() {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.announcingCallout)")
         state = .announcingCallout
     }
     
@@ -378,49 +283,31 @@ extension CalloutStateMachine {
                 strongSelf.eventCalloutAnnounced()
             }
         } else {
-            //fixme
-            stateAnnounceCallout()
+            announceCallout()
         }
     }
     
-    private func stateComplete() {
+    private func complete(failed: Bool = false) {
         GDLogVerbose(.stateMachine, "Entering state: \(State.complete)")
         state = .complete
         
-        if !self.hushed && self.calloutGroup?.playModeSounds ?? false {
+        if !failed && !self.hushed && self.calloutGroup?.playModeSounds == true {
             self.audioEngine.play(GlyphSound(.exitMode)) { (_) in
                 GDLogVerbose(.stateMachine, "Exit mode sound played")
                 
                 self.lastGroupID = self.calloutGroup?.id
                 self.calloutIterator = nil
                 self.calloutGroup = nil
-                self.eventCompleted()
+                self.calloutsDidFinish()
             }
         } else {
             self.lastGroupID = self.calloutGroup?.id
             self.calloutIterator = nil
             self.calloutGroup = nil
-            //fixme
-            stateOff()
+            calloutsDidFinish()
         }
     }
     
-    /// This is the same as COMPLETE except no additional sounds may be played
-    private func stateFailed() {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.failed)")
-        state = .failed
-        
-        
-        self.lastGroupID = self.calloutGroup?.id
-        self.calloutIterator = nil
-        self.calloutGroup = nil
-        //fixme
-        stateOff()
-    }
-    
-}
-
-private class CalloutStateMachineLogger {
     class func log(callout: CalloutProtocol, context: String?) {
         var properties = ["type": callout.logCategory,
                           "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
