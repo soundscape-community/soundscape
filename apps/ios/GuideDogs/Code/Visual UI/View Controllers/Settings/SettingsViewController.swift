@@ -22,11 +22,13 @@ class SettingsViewController: BaseTableViewController {
     }
     
     private enum CalloutsRow: Int, CaseIterable {
-        case all = 0
-        case poi = 1
-        case mobility = 2
-        case beacon = 3
-        case shake = 4
+            case all = 0
+            case poi = 1
+            case mobility = 2
+            case safety = 3
+            case intersection = 4
+            case beacon = 5
+            case shake = 6
     }
     
     private static let cellIdentifiers: [IndexPath: String] = [
@@ -39,11 +41,14 @@ class SettingsViewController: BaseTableViewController {
         
         IndexPath(row: 0, section: Section.audio.rawValue): "mixAudio",
 
-        IndexPath(row: CalloutsRow.all.rawValue, section: Section.callouts.rawValue): "allCallouts",
-        IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue): "poiCallouts",
-        IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue): "mobilityCallouts",
-        IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue): "beaconCallouts",
-        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue): "shakeCallouts",
+        // Callouts
+        IndexPath(row: CalloutsRow.all.rawValue,        section: Section.callouts.rawValue): "allCallouts",
+        IndexPath(row: CalloutsRow.poi.rawValue,        section: Section.callouts.rawValue): "poiCallouts",
+        IndexPath(row: CalloutsRow.mobility.rawValue,   section: Section.callouts.rawValue): "mobilityCallouts",
+        IndexPath(row: CalloutsRow.safety.rawValue,     section: Section.callouts.rawValue): "safetyCallouts",
+        IndexPath(row: CalloutsRow.intersection.rawValue,section: Section.callouts.rawValue): "intersectionCallouts",
+        IndexPath(row: CalloutsRow.beacon.rawValue,     section: Section.callouts.rawValue): "beaconCallouts",
+        IndexPath(row: CalloutsRow.shake.rawValue,      section: Section.callouts.rawValue): "shakeCallouts",
         
         IndexPath(row: 0, section: Section.streetPreview.rawValue): "streetPreview",
         IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
@@ -52,11 +57,14 @@ class SettingsViewController: BaseTableViewController {
     ]
     
     private static let collapsibleCalloutIndexPaths: [IndexPath] = [
-        IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue)
+      IndexPath(row: CalloutsRow.poi.rawValue,        section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.mobility.rawValue,   section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.safety.rawValue,     section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.intersection.rawValue,section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.beacon.rawValue,     section: Section.callouts.rawValue),
+      IndexPath(row: CalloutsRow.shake.rawValue,      section: Section.callouts.rawValue)
     ]
+
     
     // MARK: Properties
 
@@ -84,7 +92,10 @@ class SettingsViewController: BaseTableViewController {
         switch sectionType {
         case .general: return 6
         case .audio: return 1
-        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 5 : 1
+        case .callouts:
+            return SettingsContext.shared.automaticCalloutsEnabled
+                ? CalloutsRow.allCases.count
+                : 1
         case .streetPreview: return 1
         case .troubleshooting: return 1
         case .about: return 1
@@ -101,20 +112,14 @@ class SettingsViewController: BaseTableViewController {
 
         switch sectionType {
         case .callouts:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! CalloutSettingsCellView
-            cell.delegate = self
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: identifier ?? "default",
+                for: indexPath) as! CalloutSettingsCellView
 
-            if let rowType = CalloutsRow(rawValue: indexPath.row) {
-                switch rowType {
-                case .all: cell.type = .all
-                case .poi: cell.type = .poi
-                case .mobility: cell.type = .mobility
-                case .beacon: cell.type = .beacon
-                case .shake: cell.type = .shake
-                }
-            }
+            configureCalloutCell(cell, at: indexPath)
             
             return cell
+
             
         // case .telemetry:
         //     let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! TelemetrySettingsTableViewCell
@@ -134,6 +139,20 @@ class SettingsViewController: BaseTableViewController {
     }
     
     // MARK: UITableViewDataSource
+    private func configureCalloutCell(_ cell: CalloutSettingsCellView,
+                                          at indexPath: IndexPath) {
+            cell.delegate = self
+            guard let rowType = CalloutsRow(rawValue: indexPath.row) else { return }
+            switch rowType {
+            case .all:          cell.type = .all
+            case .poi:          cell.type = .poi
+            case .mobility:     cell.type = .transportation
+            case .safety:       cell.type = .safety
+            case .intersection: cell.type = .intersection
+            case .beacon:       cell.type = .beacon
+            case .shake:        cell.type = .shake
+            }
+        }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let sectionType = Section(rawValue: section) else { return nil }
