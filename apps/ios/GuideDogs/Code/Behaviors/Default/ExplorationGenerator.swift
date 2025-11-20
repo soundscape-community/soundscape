@@ -136,7 +136,7 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
             // By interrupting and clearing the queue, we will terminate the callouts for the current
             // mode. This state will be updated `calloutsCompleted(for:finished:)` below
             log(event, toggledOn: false)
-            return .interruptAndClearQueue
+            return .interruptAndClearQueue(playHush: true, clearPending: false)
         }
         
         if let errorMessage = locationServicesErrorMessage() {
@@ -152,6 +152,7 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
         }
         
         log(event, toggledOn: true)
+        let shouldPlayHush = currentMode != nil
         
         // Get the appropriate callouts
         var callouts: [CalloutProtocol]
@@ -201,6 +202,7 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
         let group = CalloutGroup(callouts, action: .interruptAndClear, playModeSounds: true, logContext: event.logContext)
         group.delegate = self
         group.onComplete = event.completionHandler
+        group.playHushOnInterrupt = shouldPlayHush
         
         currentGroupId = group.id
         currentMode = event.mode

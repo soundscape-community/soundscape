@@ -10,313 +10,413 @@
 //
 
 import CoreLocation
+import Foundation
 
 protocol CalloutStateMachineDelegate: AnyObject {
     func calloutsDidFinish(id: UUID)
 }
 
-class CalloutStateMachine {
+final class CalloutStateMachine {
 
-    // MARK: State Machine
-
-    private enum State {
-        case off
-        case start
-        case playingPrefixSounds
-        case stop
-        case stopping
-        case announcingCallout
-        case delayingCalloutAnnounced
-        case complete
-    }
-    
     // MARK: Properties
-    
-    weak var delegate: CalloutStateMachineDelegate?
-    
-    private weak var geo: GeolocationManagerProtocol!
-    private weak var history: CalloutHistory!
-    private weak var motionActivityContext: MotionActivityProtocol!
-    private weak var audioEngine: AudioEngineProtocol!
-    
-    private var state: State = .off
-    private var hushed = false
-    private var playHushedSound = false
-    private var calloutGroup: CalloutGroup?
-    private var calloutIterator: IndexingIterator<[CalloutProtocol]>?
-    
-    private var lastGroupID: UUID?
-    
-    var currentState: String {
-        return String(describing: state)
+
+    private let runnerTask: Task<Runner, Never>
+    private weak var delegateReference: CalloutStateMachineDelegate?
+
+    weak var delegate: CalloutStateMachineDelegate? {
+        get { delegateReference }
+        set {
+            delegateReference = newValue
+            Task {
+                let runner = await runnerTask.value
+                await runner.setDelegate(newValue)
+            }
+        }
     }
-    
-    var isPlaying: Bool {
-        return state != .off
-    }
-    
-    // MARK: Initialization
-    
+
     init(audioEngine engine: AudioEngineProtocol,
          geo: GeolocationManagerProtocol,
          motionActivityContext motion: MotionActivityProtocol,
          history calloutHistory: CalloutHistory) {
-        history = calloutHistory
-        audioEngine = engine
-        motionActivityContext = motion
-        self.geo = geo
-        
-        state = .off
+        runnerTask = Task { @MainActor in
+            Runner(audioEngine: engine,
+                   geo: geo,
+                   motionActivityContext: motion,
+                   history: calloutHistory)
+        }
     }
-    
+
     // MARK: Methods
-    
-    func start(_ callouts: CalloutGroup) {
-        guard !isPlaying else {
-            GDLogVerbose(.stateMachine, "Unable to start callout group. State machine is currently in state: \(String(describing: state))")
-            return
-        }
-        calloutGroup = callouts
-        hushed = false
-        playHushedSound = false
-        
-        callouts.onStart?()
-        
-        GDLogVerbose(.stateMachine, "Entering state: \(State.start)")
-        state = .start
-        // Stop current sounds if needed
-        if callouts.stopSoundsBeforePlaying {
-            self.audioEngine.stopDiscrete()
-        }
-        
-        callouts.delegate?.calloutsStarted(for: callouts)
-        
-        // Prepare the iterator for the callouts
-        self.calloutIterator = callouts.callouts.makeIterator()
-        
-        // Play the sounds indicating that the mode has started
-        var sounds: [Sound] = callouts.playModeSounds ? [GlyphSound(.enterMode)] : []
-        
-        if let prefixSounds = callouts.prefixCallout?.sounds(for: self.geo?.location) {
-            sounds.append(contentsOf: prefixSounds.soundArray)
-        }
-        
-        if sounds.count > 0 {
-            self.audioEngine.play(Sounds(sounds)) { (success) in
-                if self.state == .stopping {
-                    GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
-                    self.complete()
-                    callouts.onComplete?(false)
-                    return
-                }
 
-                if self.state == .off {
-                    GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
-                    callouts.onComplete?(false)
-                    return
-                }
-                
-                guard success else {
-                    GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
-                    self.complete(failed: true)
-                    return
-                }
-                
-                GDLogVerbose(.stateMachine, "Enter mode sound played")
-                self.announceCallout()
-            }
-            
-            // Transition to the state to allow mode sounds and prefix sounds to play
-            self.state = .playingPrefixSounds
-        } else {
-            announceCallout()
-        }
-    }
-    
-    func hush(playSound: Bool = false) {
-        hushed = true
-        
-        if playSound {
-            playHushedSound = true
-        }
-        stateStop()
-    }
-
-    func stop() {
-        switch state {
-            case .playingPrefixSounds, .announcingCallout:
-                stateStop()
-            case .complete, .off:
-                calloutsDidFinish()
-        case .start, .stop, .stopping, .delayingCalloutAnnounced:
-            complete()
-        }
-    }
-    
-    private func eventDelayCalloutAnnounced() {
-        switch state {
-            case .announcingCallout:
-                stateDelayingCalloutAnnounced()
-            case .complete:
-                complete()
-            case .off:
-                calloutsDidFinish()
-            case .delayingCalloutAnnounced, .start, .playingPrefixSounds, .stop, .stopping:
-                GDLogError(.stateMachine, "Invalid state transition: eventDelayCalloutAnnounced() called from state .\(state)")
+    @discardableResult
+    func start(_ callouts: CalloutGroup) -> Task<Void, Never> {
+        withRunner { runner in
+            await runner.start(callouts)
         }
     }
 
-    private func eventCalloutAnnounced() {
-        switch state{
-            case .announcingCallout:
-                announceCallout()
-            case .delayingCalloutAnnounced:
-                announceCallout()      
-            case .complete:
-                complete()
-            case .off:
-                calloutsDidFinish()
-            case .start, .playingPrefixSounds, .stop, .stopping:
-                GDLogError(.stateMachine, "Invalid state transition: eventCalloutAnnounced() called from state .\(state)")
+    @discardableResult
+    func hush(playSound: Bool = false) -> Task<Void, Never> {
+        withRunner { runner in
+            await runner.hush(playSound: playSound)
         }
     }
 
-    private func calloutsDidFinish() {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.off)")
-        state = .off
-        if let lastGroupID = self.lastGroupID {
-            self.lastGroupID = nil
-            Task { @MainActor in
-                self.delegate?.calloutsDidFinish(id: lastGroupID)
-            }
+    @discardableResult
+    func stop() -> Task<Void, Never> {
+        withRunner { runner in
+            await runner.stop()
         }
     }
-    
-    private func stateStop() {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.stop)")
-        state = .stop
-        
-        if self.audioEngine.isDiscreteAudioPlaying {
-            // The audio engine is currently playing a discrete sound. Stop it and then move to the .stopping state and wait
-            // until the sound is actually stopped (see the completion handlers passed to audioEngine.play() in the .start
-            // and .announceCallout states).
-            self.audioEngine.stopDiscrete(with: self.hushed && self.playHushedSound ? GlyphSound(.hush) : nil)
-            state = .stopping
-        } else {
-            // In this case, discrete audio isn't currently playing, but we might be between sounds, so still call stopDiscrete in
-            // order to clear the sounds queue in the audio engine before moving to the complete state
-            self.audioEngine.stopDiscrete(with: self.hushed && self.playHushedSound ? GlyphSound(.hush) : nil)
-            complete()
-        }
-    }
-    
-    private func announceCallout() {
-        guard let calloutGroup = self.calloutGroup else {
-            complete(failed: true)
-            return
-        }
-        
-        guard let callout = self.calloutIterator?.next() else {
-            calloutGroup.onComplete?(true)
-            complete()
-            return
-        }
-        
-        // If this callout is not within the region to live, skip to the next callout
-        if let delegate = calloutGroup.delegate, !delegate.isCalloutWithinRegionToLive(callout) {
-            calloutGroup.delegate?.calloutSkipped(callout)
-            announceCallout()
-            return
-        }
-        
-        calloutGroup.delegate?.calloutStarting(callout)
-        self.history?.insert(callout)
-        
-        let sounds: Sounds
-        if let repeatLocation = calloutGroup.repeatingFromLocation {
-            sounds = callout.sounds(for: repeatLocation, isRepeat: true)
-        } else {
-            sounds = callout.sounds(for: self.geo?.location, automotive: self.motionActivityContext.isInVehicle)
-        }
-        
-        self.audioEngine.play(sounds) { (success) in
-            calloutGroup.delegate?.calloutFinished(callout, completed: success)
-            
-            if self.state == .stopping {
-                GDLogVerbose(.stateMachine, "Callout interrupted. Stopping...")
-                self.complete()
-                calloutGroup.onComplete?(false)
-                return
-            }
-            
-            if self.state == .off {
-                GDLogVerbose(.stateMachine, "Callouts immediately interrupted. Cleaning up...")
-                calloutGroup.onComplete?(false)
-                return
-            }
-            
-            guard success else {
-                GDLogVerbose(.stateMachine, "Callout did not finish playing successfully. Terminating state machine...")
-                calloutGroup.onComplete?(false)
-                self.complete(failed: true)
-                return
-            }
-            
-            self.eventDelayCalloutAnnounced()
-        }
-        
-        CalloutStateMachine.log(callout: callout, context: self.calloutGroup?.logContext)
-        
-        state = .announcingCallout
-    }
-    
-    private func stateDelayingCalloutAnnounced() {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.delayingCalloutAnnounced)")
-        state = .delayingCalloutAnnounced
-        
-        if let delay = self.calloutGroup?.calloutDelay, delay >= 0.0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-                guard let strongSelf = self, strongSelf.state == .delayingCalloutAnnounced else {
-                    return
-                }
-                
-                strongSelf.eventCalloutAnnounced()
-            }
-        } else {
-            announceCallout()
-        }
-    }
-    
-    private func complete(failed: Bool = false) {
-        GDLogVerbose(.stateMachine, "Entering state: \(State.complete)")
-        state = .complete
-        
-        if !failed && !self.hushed && self.calloutGroup?.playModeSounds == true {
-            self.audioEngine.play(GlyphSound(.exitMode)) { (_) in
-                GDLogVerbose(.stateMachine, "Exit mode sound played")
-                
-                self.lastGroupID = self.calloutGroup?.id
-                self.calloutIterator = nil
-                self.calloutGroup = nil
-                self.calloutsDidFinish()
-            }
-        } else {
-            self.lastGroupID = self.calloutGroup?.id
-            self.calloutIterator = nil
-            self.calloutGroup = nil
-            calloutsDidFinish()
-        }
-    }
-    
+
     class func log(callout: CalloutProtocol, context: String?) {
         var properties = ["type": callout.logCategory,
                           "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
                           "audio.output": AppContext.shared.audioEngine.outputType]
-        
+
         if let context =  context {
             properties["context"] = context
         }
-        
+
         GDATelemetry.track("callout", with: properties)
     }
+
+    private func withRunner(_ body: @MainActor @escaping (Runner) async -> Void) -> Task<Void, Never> {
+        Task {
+            let runner = await runnerTask.value
+            await body(runner)
+        }
+    }
 }
+
+@MainActor
+private final class Runner {
+
+    // MARK: Simplified State
+
+    private enum State: CustomStringConvertible {
+        case off
+        case running
+        case stopping
+        case completed
+        case failed
+
+        var description: String {
+            switch self {
+            case .off: return "off"
+            case .running: return "running"
+            case .stopping: return "stopping"
+            case .completed: return "completed"
+            case .failed: return "failed"
+            }
+        }
+    }
+
+    // MARK: Properties
+
+    private weak var delegate: CalloutStateMachineDelegate?
+
+    private weak var geo: GeolocationManagerProtocol?
+    private weak var history: CalloutHistory?
+    private weak var motionActivityContext: MotionActivityProtocol?
+    private weak var audioEngine: AudioEngineProtocol?
+
+    private var state: State = .off
+    private var hushed = false
+    private var pendingHushSound: Sound?
+    private var calloutGroup: CalloutGroup?
+    private var calloutIterator: IndexingIterator<[CalloutProtocol]>?
+    private var calloutTask: Task<Void, Never>?
+    private var didNotifyCompletion = false
+    private let idleSignal = IdleSignal()
+    private static let silencePollInterval: UInt64 = 20_000_000
+
+    // MARK: Initialization
+
+    init(audioEngine engine: AudioEngineProtocol,
+         geo: GeolocationManagerProtocol,
+         motionActivityContext motion: MotionActivityProtocol,
+         history calloutHistory: CalloutHistory) {
+        audioEngine = engine
+        history = calloutHistory
+        motionActivityContext = motion
+        self.geo = geo
+    }
+
+    // MARK: Runner Lifecycle
+
+    func setDelegate(_ delegate: CalloutStateMachineDelegate?) {
+        self.delegate = delegate
+    }
+
+    func start(_ callouts: CalloutGroup) async {
+        if state != .off {
+            await waitUntilIdle()
+        }
+
+        guard state == .off else {
+            GDLogVerbose(.stateMachine, "Unable to start callout group. State machine is currently in state: \(state)")
+            return
+        }
+
+        calloutGroup = callouts
+        calloutIterator = callouts.callouts.makeIterator()
+        hushed = false
+        didNotifyCompletion = false
+        state = .running
+
+        calloutTask = Task {
+            await self.execute(callouts)
+        }
+    }
+
+    func hush(playSound: Bool) async {
+        await cancelCurrentCallouts(markHushed: true, hushSound: playSound ? GlyphSound(.exitMode) : nil)
+    }
+
+    func stop() async {
+        await cancelCurrentCallouts(markHushed: false, hushSound: nil)
+    }
+
+    // MARK: Execution
+
+    private func execute(_ group: CalloutGroup) async {
+        group.onStart?()
+        group.delegate?.calloutsStarted(for: group)
+
+        if group.stopSoundsBeforePlaying {
+            await stopDiscreteAudio(play: nil)
+        }
+
+        guard await playPrelude(for: group) else {
+            notifyCompletion(false)
+            await finish(failed: true)
+            return
+        }
+
+        await runCallouts(in: group)
+    }
+
+    private func playPrelude(for group: CalloutGroup) async -> Bool {
+        guard let audioEngine = audioEngine else { return false }
+
+        var prelude: [Sound] = group.playModeSounds ? [GlyphSound(.enterMode)] : []
+        if let prefix = group.prefixCallout?.sounds(for: geo?.location) {
+            prelude.append(contentsOf: prefix.soundArray)
+        }
+
+        guard !prelude.isEmpty else {
+            return true
+        }
+
+        guard state == .running else { return false }
+
+        let success = await audioEngine.playAsync(Sounds(prelude))
+        if !success {
+            GDLogVerbose(.stateMachine, "Prelude failed. Terminating callouts.")
+        }
+        return success && state == .running
+    }
+
+    private func runCallouts(in group: CalloutGroup) async {
+        guard state == .running, calloutGroup?.id == group.id else { return }
+
+        while state == .running, calloutGroup?.id == group.id {
+            guard let callout = calloutIterator?.next() else {
+                notifyCompletion(true)
+                await finish(failed: false)
+                return
+            }
+
+            if let delegate = group.delegate, !delegate.isCalloutWithinRegionToLive(callout) {
+                group.delegate?.calloutSkipped(callout)
+                continue
+            }
+
+            group.delegate?.calloutStarting(callout)
+            history?.insert(callout)
+
+            let sounds: Sounds = {
+                if let repeatLocation = group.repeatingFromLocation {
+                    return callout.sounds(for: repeatLocation, isRepeat: true)
+                } else {
+                    return callout.sounds(for: geo?.location, automotive: motionActivityContext?.isInVehicle ?? false)
+                }
+            }()
+
+            CalloutStateMachine.log(callout: callout, context: group.logContext)
+
+            guard let audioEngine = audioEngine else {
+                notifyCompletion(false)
+                await finish(failed: true)
+                return
+            }
+
+            let success = await audioEngine.playAsync(sounds)
+            group.delegate?.calloutFinished(callout, completed: success)
+
+            guard state == .running else { return }
+            guard success else {
+                notifyCompletion(false)
+                await finish(failed: true)
+                return
+            }
+
+            if let delay = group.calloutDelay, delay > 0 {
+                do {
+                    try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                } catch {
+                    return
+                }
+            }
+        }
+    }
+
+    // MARK: Shutdown
+
+    private func cancelCurrentCallouts(markHushed: Bool, hushSound: Sound?) async {
+        if let hushSound {
+            pendingHushSound = hushSound
+        }
+
+        if state == .off {
+            let soundToPlay = pendingHushSound
+            pendingHushSound = nil
+            await stopDiscreteAudio(play: soundToPlay)
+            return
+        }
+
+        if state == .stopping {
+            hushed = hushed || markHushed
+            return
+        }
+
+        hushed = markHushed
+        state = .stopping
+        calloutTask?.cancel()
+        calloutTask = nil
+
+        let soundToPlay = pendingHushSound
+        pendingHushSound = nil
+        await stopDiscreteAudio(play: soundToPlay)
+        notifyCompletion(false)
+
+        await finish(failed: true)
+    }
+
+    private func finish(failed: Bool) async {
+        guard state != .off else { return }
+
+        state = failed ? .failed : .completed
+
+        let id = calloutGroup?.id
+        let shouldPlayExit = (!failed) && (!hushed) && (calloutGroup?.playModeSounds ?? false)
+
+        calloutIterator = nil
+        calloutTask = nil
+
+        if shouldPlayExit, let audioEngine = audioEngine {
+            _ = await audioEngine.playAsync(GlyphSound(.exitMode))
+        }
+
+        calloutGroup = nil
+        didNotifyCompletion = false
+        pendingHushSound = nil
+        hushed = false
+        state = .off
+        await idleSignal.signal()
+
+        if let id = id {
+            let delegate = self.delegate
+            await MainActor.run {
+                delegate?.calloutsDidFinish(id: id)
+            }
+        }
+    }
+
+    private func notifyCompletion(_ success: Bool) {
+        guard !didNotifyCompletion, let group = calloutGroup else { return }
+        didNotifyCompletion = true
+        group.onComplete?(success)
+    }
+
+    private func waitUntilIdle() async {
+        while state != .off {
+            await idleSignal.wait()
+        }
+    }
+
+    /// Stops any currently playing discrete audio and optionally plays the exit earcon before allowing
+    /// the next callout sequence to start. This prevents new callouts from racing ahead while the audio
+    /// engine is still tearing down interrupted sounds.
+    private func stopDiscreteAudio(play hushSound: Sound?) async {
+        guard let audioEngine = audioEngine else { return }
+
+        if let hushSound = hushSound {
+            await stopWithHush(hushSound, on: audioEngine)
+            return
+        }
+
+        await drainDiscreteAudio(on: audioEngine)
+    }
+
+    private func stopWithHush(_ hushSound: Sound, on audioEngine: AudioEngineProtocol) async {
+        await drainDiscreteAudio(on: audioEngine)
+        _ = await audioEngine.playAsync(hushSound)
+        await waitForDiscreteAudioSilence(on: audioEngine)
+    }
+
+    private func drainDiscreteAudio(on audioEngine: AudioEngineProtocol) async {
+        audioEngine.stopDiscrete()
+        await waitForDiscreteAudioSilence(on: audioEngine)
+    }
+
+    private func waitForDiscreteAudioSilence(on audioEngine: AudioEngineProtocol,
+                                             timeout: TimeInterval = 1.0) async {
+        if #available(iOS 16.0, *) {
+            let clock = ContinuousClock()
+            let deadline = clock.now + Duration.seconds(timeout)
+
+            while audioEngine.isDiscreteAudioPlaying && clock.now < deadline {
+                try? await Task.sleep(nanoseconds: Self.silencePollInterval)
+            }
+        } else {
+            let end = Date().addingTimeInterval(timeout)
+
+            while audioEngine.isDiscreteAudioPlaying && Date() < end {
+                try? await Task.sleep(nanoseconds: Self.silencePollInterval)
+            }
+        }
+
+        // Give the audio engine a brief moment to finish any remaining stop work even if there
+        // were no active players when we entered this helper.
+        try? await Task.sleep(nanoseconds: Self.silencePollInterval)
+    }
+}
+
+    private actor IdleSignal {
+        private var waiters: [CheckedContinuation<Void, Never>] = []
+        private var pendingSignals = 0
+
+        func wait() async {
+            if pendingSignals > 0 {
+                pendingSignals -= 1
+                return
+            }
+
+            await withCheckedContinuation { continuation in
+                waiters.append(continuation)
+            }
+        }
+
+        func signal() {
+            guard !waiters.isEmpty else {
+                pendingSignals += 1
+                return
+            }
+
+            let current = waiters
+            waiters.removeAll()
+            current.forEach { $0.resume() }
+        }
+    }

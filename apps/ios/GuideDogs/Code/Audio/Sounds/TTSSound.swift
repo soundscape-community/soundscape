@@ -108,7 +108,10 @@ class TTSSound: Sound {
         
     /// Stops rendering text-to-speech if buffers are still being generated
     func stopRendering() {
-        cancellable?.cancel()
+        queue.sync {
+            cancellable?.cancel()
+            cancellable = nil
+        }
     }
     
     /// Takes a buffer and either adds it to the list of prepared buffers or sends it to
@@ -139,50 +142,71 @@ class TTSSound: Sound {
             return Promise<AVAudioPCMBuffer?> { $0(nil) }
         }
         
-        // If we haven't already started rendering the audio, do so now
-        if cancellable == nil && completion == nil {
-            guard let ttsAudioBufferPublisher = TTSAudioBufferPublisher(self.text) else {
-                return Promise { $0(nil) }
-            }
-            
-            cancellable = ttsAudioBufferPublisher.receive(on: queue).sink(receiveCompletion: { [weak self] (result) in
-                switch result {
-                case .failure(let error): GDLogAudioError(error.description)
-                default: break
+        return Promise { resolve in
+            var bufferedValue: AVAudioPCMBuffer?
+            var isComplete = false
+            var awaitingBuffer = false
+
+            self.queue.sync {
+                self.startRenderingLocked()
+                
+                if !self.buffers.isEmpty {
+                    bufferedValue = self.buffers.removeFirst()
+                    return
                 }
                 
-                self?.completion = result
-                self?.cancellable = nil
-                self?.resolveBuffer(nil)
-            }, receiveValue: { [weak self] (buffer) in
-                self?.resolveBuffer(buffer)
-            })
-        }
-        
-        let nextBuffer: AVAudioPCMBuffer? = queue.sync {
-            if buffers.count > 0 {
-                return buffers.removeFirst()
-            }
-            
-            return nil
-        }
-        
-        // If we have a buffer, we can resolve immediately
-        if let buff = nextBuffer {
-            return Promise { $0(buff) }
-        }
-        
-        // If we don't have any buffers and we are done generating, then resolve immediately with nil
-        guard completion == nil else {
-            return Promise { $0(nil) }
-        }
-        
-        // Otherwise, create a new promise that will resolve as soon as the next buffer is rendered
-        return Promise { resolve in
-            self.queue.sync {
+                if self.completion != nil {
+                    isComplete = true
+                    return
+                }
+                
+                awaitingBuffer = true
                 self.resolvers.append(resolve)
             }
+            
+            if awaitingBuffer {
+                return
+            }
+            
+            if let buff = bufferedValue {
+                resolve(buff)
+            } else if isComplete {
+                resolve(nil)
+            } else {
+                resolve(nil)
+            }
         }
+    }
+}
+
+// MARK: - Private Helpers
+
+private extension TTSSound {
+    func startRenderingLocked() {
+        guard cancellable == nil && completion == nil else {
+            return
+        }
+        
+        guard let ttsAudioBufferPublisher = TTSAudioBufferPublisher(text) else {
+            completion = .finished
+            resolveBuffer(nil)
+            return
+        }
+        
+        cancellable = ttsAudioBufferPublisher.receive(on: queue).sink(receiveCompletion: { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .failure(let error): GDLogAudioError(error.description)
+            default: break
+            }
+            
+            self.completion = result
+            self.cancellable = nil
+            self.resolveBuffer(nil)
+        }, receiveValue: { [weak self] buffer in
+            self?.resolveBuffer(buffer)
+        })
     }
 }
 

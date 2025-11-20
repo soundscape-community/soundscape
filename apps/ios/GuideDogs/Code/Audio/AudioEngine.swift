@@ -996,7 +996,7 @@ class AudioEngine: AudioEngineProtocol {
         queue.async { [unowned self] in
             if !self.soundsQueue.isEmpty {
                 GDLogAudioInfo("Clearing sounds queue (\(self.soundsQueue.count) items)")
-                self.soundsQueue.clear()
+                self.drainQueuedSounds(success: false)
             }
             
             guard self.currentSounds != nil else {
@@ -1015,6 +1015,14 @@ class AudioEngine: AudioEngineProtocol {
             self.currentQueuePlayerID = nil
             
             self.finishDiscrete(success: false)
+        }
+    }
+
+    private func drainQueuedSounds(success: Bool) {
+        while let (_, completion) = self.soundsQueue.dequeue() {
+            Task { @MainActor in
+                completion?(success)
+            }
         }
     }
     

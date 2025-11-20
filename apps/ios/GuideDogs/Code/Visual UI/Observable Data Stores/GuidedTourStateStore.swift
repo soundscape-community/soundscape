@@ -9,6 +9,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 class GuidedTourStateStore: ObservableObject {
     let id: String
     

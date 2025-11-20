@@ -15,8 +15,11 @@ enum HandledEventAction {
     /// The associated events should be processed
     case processEvents([Event])
     
-    /// The event processor should interrupt any current callouts and clear the queue
-    case interruptAndClearQueue
+    /// The event processor should interrupt any current callouts and optionally clear the queue
+    /// - Parameters:
+    ///   - playHush: When true, play the exit earcon while stopping current callouts
+    ///   - clearPending: When true, pending callout groups should be dropped as well
+    case interruptAndClearQueue(playHush: Bool, clearPending: Bool)
     
     /// The event was handled and no further actions are required
     case noAction

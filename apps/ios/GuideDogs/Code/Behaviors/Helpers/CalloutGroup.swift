@@ -64,6 +64,7 @@ class CalloutGroup: Equatable {
     
     var onStart: (() -> Void)?
     var onComplete: ((Bool) -> Void)?
+    var playHushOnInterrupt = false
     
     weak var delegate: CalloutGroupDelegate?
     

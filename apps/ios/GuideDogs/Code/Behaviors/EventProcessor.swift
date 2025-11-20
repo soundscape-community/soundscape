@@ -22,6 +22,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     
     private var calloutQueue = Queue<CalloutGroup>()
     private var currentCallouts: CalloutGroup?
+    private var isInterruptingCurrentCallouts = false
     
     private let stateMachine: CalloutStateMachine
     private unowned let audioEngine: AudioEngineProtocol
@@ -185,16 +186,16 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
             // The completion callback is executing in the context of the active behavior's
             // dispatch queue, so we should move back to the main queue before continuing...
             DispatchQueue.main.async {
-                let interrupt = actions.contains {
-                    if case .interruptAndClearQueue = $0 {
-                        return true
+                let hushRequest = actions.compactMap { action -> (playHush: Bool, clearPending: Bool)? in
+                    if case let .interruptAndClearQueue(playHush, clearPending) = action {
+                        return (playHush, clearPending)
                     }
                     
-                    return false
-                }
+                    return nil
+                }.first
                 
-                if interrupt {
-                    self.interruptCurrent(clearQueue: true, playHush: false)
+                if let hushRequest = hushRequest {
+                    self.interruptCurrent(clearQueue: hushRequest.clearPending, playHush: hushRequest.playHush)
                     return
                 }
                 
@@ -239,11 +240,10 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         
         switch callouts.action {
         case .interruptAndClear:
-            if currentCallouts != nil && stateMachine.isPlaying {
+            if currentCallouts != nil {
+                interruptCurrent(clearQueue: true, playHush: callouts.playHushOnInterrupt)
+            } else if !calloutQueue.isEmpty {
                 clearQueue()
-                calloutQueue.enqueue(callouts)
-                stateMachine.stop()
-                return
             }
             
         case .clear:
@@ -287,8 +287,8 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     // MARK: Callout State Machine
     
     private func tryStartCallouts() {
-        guard !stateMachine.isPlaying else {
-            GDLogEventProcessorInfo("Can't start callouts - state machine is playing (current state: \(stateMachine.currentState))")
+        guard currentCallouts == nil else {
+            GDLogEventProcessorInfo("Can't start callouts - state machine is already playing")
             return
         }
         
@@ -299,6 +299,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
             return
         }
         
+        isInterruptingCurrentCallouts = false
         GDLogEventProcessorInfo("Starting callouts")
         
         stateMachine.start(currentCallouts)
@@ -308,8 +309,11 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         GDLogEventProcessorInfo("Callouts finished (\(id))")
         
         if let current = currentCallouts, current.id == id {
-            current.delegate?.calloutsCompleted(for: current, finished: true)
+            if !isInterruptingCurrentCallouts {
+                current.delegate?.calloutsCompleted(for: current, finished: true)
+            }
             currentCallouts = nil
+            isInterruptingCurrentCallouts = false
         }
         
         if !calloutQueue.isEmpty {
@@ -328,11 +332,10 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
             stateMachine.stop()
         }
         
-        if let currentCallouts = currentCallouts {
+        if let currentCallouts = currentCallouts, !isInterruptingCurrentCallouts {
             currentCallouts.delegate?.calloutsCompleted(for: currentCallouts, finished: false)
+            isInterruptingCurrentCallouts = true
         }
-        
-        currentCallouts = nil
         
         if clear {
             clearQueue()
