@@ -10,30 +10,33 @@ import Combine
 
 @MainActor
 class MarkerLoader: ObservableObject {
-    nonisolated let queue = DispatchQueue(label: "services.soundscape.markerloader")
-    
     @Published var loadingComplete = false
     @Published var markerIDs: [String] = []
     
     private var currentSort: SortStyle = .alphanumeric
     private var tokens: [AnyCancellable] = []
+    private var loadTask: Task<Void, Never>?
     
     deinit {
         tokens.cancelAndRemoveAll()
+        loadTask?.cancel()
     }
     
     func load(sort: SortStyle) {
         currentSort = sort
         
-        queue.async {
-            let sortedKeys = ReferenceEntity.objectKeys(sortedBy: sort)
+        // Cancel any existing load operation
+        loadTask?.cancel()
+        
+        loadTask = Task {
+            let sortedKeys = await ReferenceEntity.asyncObjectKeys(sortedBy: sort)
             
-            Task { @MainActor in
-                // Initialize markers sorted by the given predicate (e.g. alphanumeric or distance)
-                self.markerIDs = sortedKeys
-                self.loadingComplete = true
-                self.listenForChanges()
-            }
+            guard !Task.isCancelled else { return }
+            
+            // Initialize markers sorted by the given predicate (e.g. alphanumeric or distance)
+            self.markerIDs = sortedKeys
+            self.loadingComplete = true
+            self.listenForChanges()
         }
     }
     

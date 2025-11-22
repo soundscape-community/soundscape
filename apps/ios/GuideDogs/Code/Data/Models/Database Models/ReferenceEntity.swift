@@ -712,6 +712,15 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         }
     }
     
+    /// Async version of objectKeys for background sorting/filtering without blocking main actor
+    static func asyncObjectKeys(sortedBy: SortStyle) async -> [String] {
+        return await Task.detached(priority: .utility) {
+            await MainActor.run {
+                objectKeys(sortedBy: sortedBy)
+            }
+        }.value
+    }
+    
     static func cleanCorruptEntities() throws {
         try autoreleasepool {
             let entities = try RealmHelper.getDatabaseRealm().objects(ReferenceEntity.self).filter("isTemp == false")

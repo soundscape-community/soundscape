@@ -54,6 +54,15 @@ extension Route {
         }
     }
     
+    /// Async version of objectKeys for background sorting/filtering without blocking main actor
+    static func asyncObjectKeys(sortedBy: SortStyle) async -> [String] {
+        return await Task.detached(priority: .utility) {
+            await MainActor.run {
+                objectKeys(sortedBy: sortedBy)
+            }
+        }.value
+    }
+    
     /// Finds a route by name in the Realm database
     static func routeWithName(_ name: String) -> Route? {
         return autoreleasepool {

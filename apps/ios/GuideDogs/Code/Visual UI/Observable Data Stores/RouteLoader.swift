@@ -12,30 +12,33 @@ import CoreLocation
 
 @MainActor
 class RouteLoader: ObservableObject {
-    nonisolated let queue = DispatchQueue(label: "services.soundscape.routeloader")
-    
     @Published var loadingComplete = false
     @Published var routeIDs: [String] = []
     
     private var currentSort: SortStyle = .alphanumeric
     private var tokens: [AnyCancellable] = []
+    private var loadTask: Task<Void, Never>?
     
     deinit {
         tokens.cancelAndRemoveAll()
+        loadTask?.cancel()
     }
     
     func load(sort: SortStyle) {
         currentSort = sort
         
-        queue.async {
-            let keys = Route.objectKeys(sortedBy: sort)
+        // Cancel any existing load operation
+        loadTask?.cancel()
+        
+        loadTask = Task {
+            let keys = await Route.asyncObjectKeys(sortedBy: sort)
             
-            Task { @MainActor in
-                // Initialize routes given the sorted keys (e.g. alphanumeric or distance)
-                self.routeIDs = keys
-                self.loadingComplete = true
-                self.listenForNewRoutes()
-            }
+            guard !Task.isCancelled else { return }
+            
+            // Initialize routes given the sorted keys (e.g. alphanumeric or distance)
+            self.routeIDs = keys
+            self.loadingComplete = true
+            self.listenForNewRoutes()
         }
     }
     
