@@ -113,25 +113,13 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     }
     
     var loadedSpatialData: Bool {
-        var loadedSpatialData = false
-        
-        dispatchQueue.sync {
-            loadedSpatialData = !fetchingTiles && superCategories != nil && tiles.count > 0
-        }
-        
-        return loadedSpatialData
+        // Trivial read of actor-isolated state; dispatchQueue synchronization no longer required
+        !fetchingTiles && superCategories != nil && !tiles.isEmpty
     }
     
     var currentTiles: [VectorTile] {
-        var currentTiles: [VectorTile] = []
-        
-        dispatchQueue.sync {
-            for tile in tiles {
-                currentTiles.append(tile)
-            }
-        }
-        
-        return currentTiles
+        // Direct snapshot; Set iteration is cheap and confined to main actor
+        Array(tiles)
     }
     
     // MARK: - Initialization
@@ -271,9 +259,8 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             GDLogSpatialDataVerbose("Cache deleted!")
         }
         
-        dispatchQueue.sync(flags: .barrier) {
-            tiles.removeAll()
-        }
+        // Safe synchronous mutation on main actor; barrier no longer needed
+        tiles.removeAll()
         
         AppContext.shared.calloutHistory.clear()
         
@@ -287,23 +274,16 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     func getDataView(for location: CLLocation, searchDistance: CLLocationDistance = SpatialDataContext.initialPOISearchDistance) -> SpatialDataViewProtocol? {
         var results: SpatialDataView?
         
-        dispatchQueue.sync {
-            let tile = VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)
-            
-            // Ensure we at least have the current tile and the user's current location
-            guard SpatialDataContext.isCached(tile: tile) else {
-                return
-            }
-            
-            // TODO: If tiles to load haven't changed, and we are still on the same thread, return the previous view
-            
-            results = SpatialDataView(location: location,
-                                      range: searchDistance,
-                                      zoom: SpatialDataContext.zoomLevel,
-                                      geolocation: geolocationManager,
-                                      motionActivity: motionActivityContext,
-                                      destinationManager: destinationManager)
+        let tile = VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)
+        guard SpatialDataContext.isCached(tile: tile) else {
+            return nil
         }
+        results = SpatialDataView(location: location,
+                                  range: searchDistance,
+                                  zoom: SpatialDataContext.zoomLevel,
+                                  geolocation: geolocationManager,
+                                  motionActivity: motionActivityContext,
+                                  destinationManager: destinationManager)
         
         return results
     }
