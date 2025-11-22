@@ -870,7 +870,7 @@ class AudioEngine: AudioEngineProtocol {
             return nil
         }
         
-        guard let player = ContinuousAudioPlayer(looped, queue: playerQueue) else {
+        guard let player = ContinuousAudioPlayer(looped) else {
             GDLogAudioError("Unable to play continuous audio track. Unable to load audio assets.")
             return nil
         }

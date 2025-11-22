@@ -13,8 +13,10 @@ class ContinuousAudioPlayer: BaseAudioPlayer {
     
     private(set) var buffers: [AVAudioPCMBuffer] = []
     
-    required init?(_ sound: SynchronouslyGeneratedSound, queue: DispatchQueue) {
-        super.init(sound: sound, queue: queue)
+    // Queue parameter removed (Phase 7 Step 2). Continuous sounds are generated synchronously
+    // so they do not require the injected scheduling queue used by discrete/dynamic players.
+    required init?(_ sound: SynchronouslyGeneratedSound) {
+        super.init(sound: sound, queue: DispatchQueue.main)
     }
     
     override func prepare(engine: AVAudioEngine, completion: ((_ success: Bool) -> Void)?) {
