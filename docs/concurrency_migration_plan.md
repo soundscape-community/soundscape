@@ -424,5 +424,28 @@ No additional redundant dispatches identified; further removals would risk viola
 - 2025-11-22: Added warning classification & AudioEngine isolation strategy; queued first remediation patch (wrap queue closures in `Task { @MainActor }`).
 
 - 2025-11-22: Classification of remaining 22 dispatch usages completed; all deemed necessary (network/service completions, sensor/motion callbacks, timers, behavior event closures). Total removals unchanged at 108.
+- 2025-11-22: **Task 5 Phase 2: AudioEngine Queue Removal** – Eliminated redundant DispatchQueue from AudioEngine:
+  - **Problem:** AudioEngine is `@MainActor` isolated, providing serial execution guarantee. The private `queue = DispatchQueue(label: "services.soundscape.audioengine")` was redundant—every queue.sync/async call added unnecessary context switch between background queue and main actor executor.
+  - **Analysis:** All queue.sync blocks (3 play methods) contained only synchronous operations (player init, state checks, engine start). All queue.async blocks (7 occurrences) were already wrapped in `Task { @MainActor }` from prior remediation.
+  - **Changes:**
+    - Renamed `queue` → `playerQueue` (retained only for passing to player initializers; players use it internally for async buffer scheduling)
+    - Removed all `queue.sync` wrappers from 3 `play()` methods—methods remain synchronous, execute directly on main actor
+    - Removed all `queue.async` wrappers from notification observers (engineConfigObserver, applicationStateObserver, callStateObserver), interruption handlers (interruptionBegan, interruptionEnded), and helper methods (stop, playNextSound, updateUserHeading)
+    - Direct `Task { @MainActor }` invocation eliminates intermediate queue hop
+  - **Benefits:**
+    - Eliminates redundant context switch (queue dispatch → main actor executor)
+    - Cleaner API: play methods remain synchronous as verified (no async work inside former queue.sync blocks)
+    - Simplified threading model: single @MainActor serialization replaces dual-layer queue+actor pattern
+    - Maintains player async buffer scheduling via `playerQueue` parameter
+  - **Verification:** All 47 tests passing after queue removal
+  - **Commits:** 
+    - `26c6ca5`: "refactor(audio): eliminate AudioEngine isolation warnings" (delegate annotations, queue closure bridging, explicit self captures)
+    - `2621d16`: "refactor(audio): remove redundant DispatchQueue from AudioEngine" (queue removal, sync block inlining, direct Task invocation)
+  - **Status:** AudioEngine queue refactor complete; player classes still use playerQueue for internal async buffer operations (separate future task to refactor player queue usage to structured concurrency)
+
+**Next Steps:**
+- Continue Task 5 cleanup: review other types with similar queue-inside-@MainActor patterns (SpatialDataContext, loaders, etc.)
+- Address player class queue usage (DynamicAudioPlayer, DiscreteAudioPlayer, ContinuousAudioPlayer internal queue.async for buffer scheduling)
+- Tackle remaining non-Sendable capture warnings (player, heading, sounds types—requires Sendable conformance or value-type refactor)
 
 
