@@ -844,7 +844,7 @@ class AudioEngine: AudioEngineProtocol {
             return nil
         }
         
-        guard let player = DynamicAudioPlayer(sound: sound, queue: playerQueue) else {
+        guard let player = DynamicAudioPlayer(sound: sound) else {
             GDLogAudioError("Unable to play dynamic audio asset. Unable to load audio assets.")
             return nil
         }

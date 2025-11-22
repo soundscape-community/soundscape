@@ -54,9 +54,8 @@ class DynamicAudioPlayer<T: DynamicSound>: AudioPlayer {
     
     private(set) var connectionState: AudioPlayerConnectionState = .notConnected
     
-    // MARK: Queue
-    
-    private weak var queue: DispatchQueue!
+    // MARK: Concurrency
+    // Queue removed (Phase 7 Step 3). Asynchronous work now uses Tasks.
     
     // MARK: 3D Audio Properties
     
@@ -78,8 +77,7 @@ class DynamicAudioPlayer<T: DynamicSound>: AudioPlayer {
     
     private var isFinishing: Bool = false
         
-    init?(sound: T, queue: DispatchQueue) {
-        self.queue = queue
+    init?(sound: T) {
         self.sound = sound
         layer = PreparableAudioLayer(eqParameters: sound.equalizerParams(for: 0))
         layer.format = sound.commonFormat
@@ -214,22 +212,13 @@ class DynamicAudioPlayer<T: DynamicSound>: AudioPlayer {
             observer = nil
         }
         
-        queue.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard self.isPlaying else {
-                return
-            }
-            
+        Task { [weak self] in
+            guard let self = self else { return }
+            guard self.isPlaying else { return }
             self.layer.stop()
-            
             self.state = .notPrepared
-            
             self.layer.disconnect()
             self.layer.detach()
-            
             self.isPlaying = false
             self.currentAsset = nil
         }
@@ -413,12 +402,9 @@ extension DynamicAudioPlayer: FinishableAudioPlayer {
                 return
             }
             
-            self.queue.async { [weak self] in
+            Task { @MainActor [weak self] in
                 guard let self = self else { return }
-                Task { @MainActor [weak self] in
-                    guard let self = self else { return }
-                    self.delegate?.onPlayerFinished(self.id)
-                }
+                self.delegate?.onPlayerFinished(self.id)
             }
         }
     }
