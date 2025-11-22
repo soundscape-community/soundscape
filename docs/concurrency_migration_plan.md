@@ -546,7 +546,11 @@ No additional redundant dispatches identified; further removals would risk viola
     - Reduced reliance on `DispatchGroup` & manual queue juggling.
     - Preparation time instrumentation easier via async timings.
   - **Next Action:** Begin with utility bridging + continuous player refactor (Phase 7 Implementation Step 1 & 2).
-  - **Status:** Planning complete; ready to execute incremental refactor.
+  - **Status:** Step 1 & 2 implemented.
+    - Added `Promise.awaitValue()` async bridging extension (file: `Promise+Async.swift`).
+    - Removed `queue` parameter from `ContinuousAudioPlayer` initializer; engine now calls `ContinuousAudioPlayer(looped)`.
+    - AudioEngine continuous play path updated; no functional behavioral change (still synchronous, reduced API surface).
+    - Tests: 47/47 passing after refactor (`dd7728b`).
 
 
 - 2025-11-22: **Task 5 Phase 6: DispatchQueue.main.async Audit** – Completed comprehensive search for redundant main thread hops:
