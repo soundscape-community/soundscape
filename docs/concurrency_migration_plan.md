@@ -492,6 +492,62 @@ No additional redundant dispatches identified; further removals would risk viola
 - Address non-Sendable capture warnings
 - (Deferred) SpatialDataContext barrier sync refactor to dedicated actor
 
+- 2025-11-22: **Task 5 Phase 7: Player Queue Refactor Plan** – Planned migration of internal DispatchQueue usage in audio players to structured concurrency.
+  - **Current Pattern:**
+    - `AudioEngine` retains `playerQueue` and passes it to player initializers.
+    - `BaseAudioPlayer`/`DiscreteAudioPlayer`/`DynamicAudioPlayer` hold a weak `queue` used for:
+      - Buffer generation promises (`DiscreteAudioPlayer.LayerState.bufferPromise`)
+      - Scheduling buffer preparation and playback (`queue.async` blocks)
+      - `DispatchGroup.notify(queue: queue)` for layer preparation & playback completion.
+  - **Issues:**
+    - Manual synchronization via `DispatchGroup` & weak queue adds complexity.
+    - Harder cancellation semantics (no structured propagation; uses `isCancelled` flags).
+    - Weak queue reference risks silent no-ops if deallocated (unlikely but brittle).
+    - Mixed execution model (Tasks already used in `AudioEngine` for engine events) increases cognitive load.
+  - **Refactor Objectives:**
+    1. Eliminate per-player dependence on injected `DispatchQueue`.
+    2. Use `Task` & `AsyncStream` / `AsyncChannel` style producers for buffer generation.
+    3. Replace `DispatchGroup` with `await` on child tasks or `TaskGroup` aggregation.
+    4. Introduce cancellable buffer pipeline (cancel on `stop()` or deinit).
+    5. Preserve ordering guarantees for discrete buffers; minimize latency.
+  - **Proposed Architecture:**
+    - Add `AudioBufferScheduler` actor (per player) responsible for serial buffer scheduling & state.
+      - APIs: `func prepareLayers() async throws`, `func nextBuffer(for layer:) async -> AVAudioPCMBuffer?`, `func markFinished(layer:)`.
+    - Discrete Player:
+      - On `prepare`: launch `Task` per layer in a `TaskGroup` to request next buffer using existing `Sound.nextBuffer(forLayer:)` promise bridged to `async` (wrapper function `await promise.value`).
+      - Convert `Promise<AVAudioPCMBuffer?>` to `async` helper: `extension Promise { func awaitValue() async -> T }` using continuation.
+      - Replace `channelPrepareDispatchGroup` with `try await withThrowingTaskGroup` collecting layer results; early cancellation on failure.
+      - Replace `channelPlayedBackDispatchGroup.notify` with an `AsyncStream` emitting playback completions; consumer `for await` loop triggers delegate callback on main actor.
+    - Dynamic Player:
+      - Intro asset scheduling becomes `Task` launched during `play`; subsequent updates triggered by heading/location callbacks hop to main actor only for engine interactions.
+    - Continuous Player:
+      - Already synchronous; simply drop queue reference & schedule directly on main actor.
+    - Engine:
+      - Remove `playerQueue`; player initializers drop `queue:` parameter.
+  - **Cancellation Strategy:**
+    - Store `prepareTask` & `playbackTasks` handles; cancel in `stop()` / deinit.
+    - Ensure buffer pipelines check `Task.isCancelled` before attaching/playing.
+  - **Threading:**
+    - All AVAudioEngine node attachment & playback stays `@MainActor` (engine actor).
+    - Buffer generation allowed off-main via detached tasks if CPU-heavy; results marshalled back through actor.
+  - **Incremental Implementation Plan:**
+    1. Introduce Promise → async bridging utility & lightweight `AudioBufferScheduler` actor (no adoption yet).
+    2. Refactor `ContinuousAudioPlayer` (lowest complexity) to drop queue argument.
+    3. Refactor `DynamicAudioPlayer` to remove `queue` & replace any async scheduling with Task.
+    4. Refactor `DiscreteAudioPlayer.prepare` using `TaskGroup`; handle delegate callback via `AsyncStream`.
+    5. Remove `playerQueue` from `AudioEngine`; adjust initializers & tests.
+    6. Add cancellation hooks & verify no regressions (run full 47 tests each step).
+  - **Risk Mitigation:**
+    - Keep original queue-backed implementation in branch until discrete refactor passes tests.
+    - Use feature flag (temporary) `SettingsContext.shared.useStructuredAudio` if staged rollout needed.
+  - **Expected Benefits:**
+    - Clearer ownership & lifecycle of async work.
+    - Automatic cancellation & less manual state flags.
+    - Reduced reliance on `DispatchGroup` & manual queue juggling.
+    - Preparation time instrumentation easier via async timings.
+  - **Next Action:** Begin with utility bridging + continuous player refactor (Phase 7 Implementation Step 1 & 2).
+  - **Status:** Planning complete; ready to execute incremental refactor.
+
 
 - 2025-11-22: **Task 5 Phase 6: DispatchQueue.main.async Audit** – Completed comprehensive search for redundant main thread hops:
   - **Searched:** All Swift files in GuideDogs directory for `DispatchQueue.main.async` (22 occurrences found)
