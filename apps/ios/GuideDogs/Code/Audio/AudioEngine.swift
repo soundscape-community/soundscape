@@ -891,7 +891,7 @@ class AudioEngine: AudioEngineProtocol {
             return nil
         }
         
-        guard let player = DiscreteAudioPlayer(sound, queue: self.playerQueue) else {
+        guard let player = DiscreteAudioPlayer(sound) else {
             GDLogAudioError("Unable to play audio track. Unable to load audio assets.")
             return nil
         }
@@ -1020,7 +1020,7 @@ class AudioEngine: AudioEngineProtocol {
                 self.finishDiscrete(success: true)
                 return
             }
-            guard let player = DiscreteAudioPlayer(sound, queue: self.playerQueue) else { return }
+            guard let player = DiscreteAudioPlayer(sound) else { return }
             player.delegate = self
             if let id = self.play(player) {
                 self.discretePlayerIds.append(id)
