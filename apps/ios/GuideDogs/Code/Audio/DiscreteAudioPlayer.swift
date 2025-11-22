@@ -61,6 +61,26 @@ actor DiscretePlayerStateActor {
     // Pause state
     func getWasPaused() -> Bool { wasPaused }
     func setWasPaused(_ paused: Bool) { wasPaused = paused }
+
+    // Centralized playback group completion logic for a layer finishing naturally.
+    // Returns true if the caller should leave the external DispatchGroup.
+    func attemptLeaveIfFinished(layer: Int) -> Bool {
+        if !layerStates[layer].bufferQueue.isEmpty {
+            wasPaused = true
+            return false
+        }
+        guard layerStates[layer].playbackDispatchGroupWasEntered else { return false }
+        guard !layerStates[layer].playbackDispatchGroupWasLeft else { return false }
+        layerStates[layer].playbackDispatchGroupWasLeft = true
+        return true
+    }
+
+    // Force a leave (error recovery path). Returns true if group should be left.
+    func attemptForceLeave(layer: Int) -> Bool {
+        guard !layerStates[layer].playbackDispatchGroupWasLeft else { return false }
+        layerStates[layer].playbackDispatchGroupWasLeft = true
+        return true
+    }
 }
 
 @MainActor protocol DiscreteAudioPlayerDelegate: AnyObject {
@@ -185,14 +205,13 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
                         do {
                             try self.layers[layer].play()
                         } catch {
-                            GDLogAudioError("Unable to restart the player after audio buffer format change in layer \(layer)")
-                            Task { [weak self] in
-                                guard let self = self else { return }
-                                if !(await self.stateActor.playbackLeft(layer: layer)) {
-                                    await self.stateActor.markPlaybackLeft(layer: layer)
-                                    self.channelPlayedBackDispatchGroup.leave()
+                                GDLogAudioError("Unable to restart the player after audio buffer format change in layer \(layer)")
+                                Task { [weak self] in
+                                    guard let self = self else { return }
+                                    if await self.stateActor.attemptForceLeave(layer: layer) {
+                                        self.channelPlayedBackDispatchGroup.leave()
+                                    }
                                 }
-                            }
                         }
                     }
                     return
@@ -238,20 +257,13 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
                 guard let self = self else { return }
                 Task { [weak self] in
                     guard let self = self else { return }
-                    if !(await self.stateActor.bufferQueueIsEmpty(layer: layer)) {
-                        await self.stateActor.setWasPaused(true)
-                        return
-                    }
-                    if !(await self.stateActor.playbackEntered(layer: layer)) {
-                        GDLogAudioVerbose("Silent buffer played back, but dispatch group was never entered!")
-                        return
-                    }
-                    if await self.stateActor.playbackLeft(layer: layer) {
+                    if await self.stateActor.attemptLeaveIfFinished(layer: layer) {
+                        self.channelPlayedBackDispatchGroup.leave()
+                    } else if await self.stateActor.playbackLeft(layer: layer) {
                         GDLogAudioVerbose("Silent buffer played back, but dispatch group was already left!")
-                        return
+                    } else if !(await self.stateActor.playbackEntered(layer: layer)) {
+                        GDLogAudioVerbose("Silent buffer played back, but dispatch group was never entered!")
                     }
-                    await self.stateActor.markPlaybackLeft(layer: layer)
-                    self.channelPlayedBackDispatchGroup.leave()
                 }
             }
             return

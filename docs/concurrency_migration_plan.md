@@ -420,6 +420,22 @@ Next Steps (Audio Engine / Phase 7):
 - Evaluate migrating remaining discrete scheduling logic (e.g., dispatch groups) into actor for further simplification.
 - Consider similar actor approach for dynamic player state if future race surfaces.
 - Continue removal of remaining legitimate main-thread hops only if they become redundant after actor adoption.
+
+### 2025-11-22: Phase 7 Step 4a – Centralize DispatchGroup Flag Logic in Actor
+Refinement applied after initial actor migration:
+- Added `attemptLeaveIfFinished(layer:)` and `attemptForceLeave(layer:)` to `DiscretePlayerStateActor` encapsulating all completion flag checks and pause-state logic.
+- Replaced silent buffer completion handler logic with single actor call; reduces duplicated conditional branches and future race surface area.
+- Error recovery on format change now uses `attemptForceLeave(layer:)` for clarity.
+- Test suite re-run: 47/47 tests passing (`** TEST SUCCEEDED **`); no regressions observed.
+
+Dynamic Player Evaluation (Phase 7 Suggestion Review):
+- `DynamicAudioPlayer` currently schedules intro and dynamic assets synchronously on main actor; state mutations (`currentAsset`, `isPlaying`, `isFinishing`) occur in main-thread context or in Tasks that immediately hop back to `@MainActor` for delegate callbacks.
+- No concurrent mutation pattern analogous to discrete player's multi-layer buffer pipeline; ThreadSanitizer previously showed no races here.
+- Decision: Defer actor introduction for dynamic player until a measurable contention or race surfaces (keeps complexity lower). Documented as "No actor required at this stage".
+
+Plan Adjustments:
+- Phase 7 Step 5 updated: Instead of full TaskGroup refactor for discrete scheduling immediately, incremental actor centralization accepted; future conversion of `DispatchGroup` to async/await remains optional backlog item.
+- Add backlog entry: "Evaluate converting discrete playback DispatchGroups to async sequence / task group once audio behavior verified under load." (Not blocking current migration.)
   - HeadphoneMotionManagerReachability (1): Motion manager start + timeout timer; CoreMotion updates + Timer scheduled on main.
 
 No additional redundant dispatches identified; further removals would risk violating required thread expectations of underlying frameworks (CoreBluetooth, URLSession, CoreMotion, Timer) or delegate/UI contracts.
