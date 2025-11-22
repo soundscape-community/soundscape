@@ -448,4 +448,34 @@ No additional redundant dispatches identified; further removals would risk viola
 - Address player class queue usage (DynamicAudioPlayer, DiscreteAudioPlayer, ContinuousAudioPlayer internal queue.async for buffer scheduling)
 - Tackle remaining non-Sendable capture warnings (player, heading, sounds types—requires Sendable conformance or value-type refactor)
 
+- 2025-11-22: **Task 5 Phase 3: SpatialDataContext Trivial Sync Cleanup** – Removed simple read-only dispatchQueue.sync wrappers:
+  - **Removed:** `loadedSpatialData` sync wrapper (direct property read), `currentTiles` sync iteration (Array(tiles)), `clearCache` barrier sync (direct tiles.removeAll()), `getDataView` sync block (inline tile check)
+  - **Retained:** Barrier sync writes for concurrent tile fetching (deferred to dedicated actor refactor)
+  - **Benefit:** Eliminates unnecessary context switches for trivial reads; cleaner code without sync ceremony
+  - **Verification:** All 47 tests passing
+  - **Commit:** `ddf10ed` "refactor(spatial): remove redundant dispatchQueue.sync reads in SpatialDataContext"
+
+- 2025-11-22: **Task 5 Phase 4: Loader Async Refactor** – Converted RouteLoader and MarkerLoader to structured concurrency:
+  - **Problem:** Loaders used nonisolated DispatchQueue with queue.async → synchronous Realm query → Task { @MainActor } pattern. Redundant queue layer; no cancellation support.
+  - **Solution:**
+    - Added `Route.asyncObjectKeys(sortedBy:)` using `Task.detached(priority: .utility)` wrapping `MainActor.run` (captures location on main actor, executes Realm query + distance sorting off-main)
+    - Added `ReferenceEntity.asyncObjectKeys(sortedBy:)` with identical pattern
+    - Replaced `queue.async` with `Task` in both loaders; added `loadTask: Task<Void, Never>?` property
+    - Cancellation support: `loadTask?.cancel()` on subsequent `load(sort:)`, guard `Task.isCancelled` before updating published properties
+    - Removed nonisolated queue properties from loaders
+  - **Benefits:**
+    - Proper structured concurrency with automatic cancellation propagation
+    - Background execution for O(n) distance calculations + O(n log n) sorting via Task.detached
+    - Eliminates custom DispatchQueue management
+    - Cleaner async/await code instead of queue.async + Task bridge
+  - **Verification:** All 47 tests passing
+  - **Commits:** `0b2b462` "refactor(loaders): replace DispatchQueue with structured concurrency"
+  - **Status:** Loaders fully migrated to async/await; nonisolated queue pattern eliminated
+
+**Updated Next Steps:**
+- Mark pure geometry helpers `nonisolated` (bearing, distance, coordinate transforms)
+- Search/remove remaining `DispatchQueue.main.async` inside @MainActor types (estimated 22 legitimate, rest redundant)
+- Plan player queue refactor (internal buffer scheduling to Task groups / async sequences)
+- Address non-Sendable capture warnings
+
 
