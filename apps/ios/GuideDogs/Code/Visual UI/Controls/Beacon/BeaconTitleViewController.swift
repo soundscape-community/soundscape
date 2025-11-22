@@ -155,9 +155,7 @@ class BeaconTitleViewController: UIViewController {
                     return
                 }
                 
-                DispatchQueue.main.async {
-                    self.configureView()
-                }
+                self.configureView()
             }
         } else {
             // Reset timer
@@ -319,10 +317,8 @@ class BeaconTitleViewController: UIViewController {
 extension BeaconTitleViewController: BeaconTitleContentViewDelegate {
     
     func onAccessibilityElementDidLoseFocus() {
-        DispatchQueue.main.async {
-            self.configureView()
-            self.configureAccessibilityActions()
-        }
+        self.configureView()
+        self.configureAccessibilityActions()
     }
     
     func onAccessibilityActivate() {

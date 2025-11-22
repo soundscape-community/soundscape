@@ -400,26 +400,20 @@ extension ExpandableMapViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard let annotation = view.annotation as? WaypointDetailAnnotation else {
-                return
-            }
-            
-            let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-            
-            guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
-                return
-            }
-            
-            viewController.waypointDetail = annotation.detail
-            viewController.deleteAction = nil
-            
-            self.navigationController?.pushViewController(viewController, animated: true)
+        guard let annotation = view.annotation as? WaypointDetailAnnotation else {
+            return
         }
+        
+        let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
+        
+        guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
+            return
+        }
+        
+        viewController.waypointDetail = annotation.detail
+        viewController.deleteAction = nil
+        
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
 }

@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class LocationDetailStore: ObservableObject {
     
     // MARK: Properties

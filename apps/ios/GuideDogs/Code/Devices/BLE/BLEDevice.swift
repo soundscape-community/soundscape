@@ -110,6 +110,7 @@ protocol BatteryLevelAnnounceable: AnyObject {
 }
 
 extension BatteryLevelAnnounceable where Self: BLEDevice {
+    @MainActor
     func updateBatteryLevel(_ level: Int, name: String, logPrefix: String) {
         batteryLevel = level
         

@@ -31,6 +31,7 @@ extension Notification.Name {
 
 // MARK: -
 
+@MainActor
 class SpatialDataContext: NSObject, SpatialDataProtocol {
     
     // MARK: Constants
@@ -83,7 +84,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     // MARK: Error Recovery Properties
     
     private let errorRecoveryDelay = 60.0
-    private var errorRecoveryTask: DispatchWorkItem?
+    private var errorRecoveryTask: Task<Void, Never>?
     
     // MARK: Observed Properties
     
@@ -97,9 +98,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                 scheduleErrorRecovery()
             }
             
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: Notification.Name.spatialDataStateChanged, object: self, userInfo: [SpatialDataContext.Keys.state: self.state])
-            }
+            NotificationCenter.default.post(name: Notification.Name.spatialDataStateChanged, object: self, userInfo: [SpatialDataContext.Keys.state: self.state])
         }
     }
     
@@ -180,6 +179,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                                                object: nil)
     }
     
+    @MainActor
     @objc private func onAppDidInitialize() {
         // Run the initial spatial data update
         
@@ -214,6 +214,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         updateSpatialDataAsync(location: location)
     }
     
+    @MainActor
     func start() {
         geolocationManager?.updateDelegate = self
         
@@ -237,6 +238,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     
     // MARK: - Instance Methods
     
+    @MainActor
     func clearCache() -> Bool {
         let manager = FileManager.default
         let config = RealmHelper.cacheConfig
@@ -314,6 +316,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         return getDataView(for: location, searchDistance: searchDistance)
     }
     
+    @MainActor
     func getCurrentDataView(initialSearchDistance: CLLocationDistance = SpatialDataContext.initialPOISearchDistance, shouldExpandDataView: (SpatialDataViewProtocol) -> Bool) -> SpatialDataViewProtocol? {
         // Fetch cached data
         var expansions = 0
@@ -367,20 +370,22 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     private func scheduleErrorRecovery() {
         GDATelemetry.track("services.error.scheduling_retry")
         
-        errorRecoveryTask = DispatchWorkItem { [weak self] in
-            guard let `self` = self else { return }
-            
-            guard let location = self.currentLocation, self.deviceContext.isNetworkConnectionAvailable else {
-                self.scheduleErrorRecovery()
-                return
+        errorRecoveryTask?.cancel()
+        errorRecoveryTask = Task { [weak self] in
+            // Sleep for configured recovery delay
+            try? await Task.sleep(nanoseconds: UInt64(errorRecoveryDelay * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                guard let self = self else { return }
+                guard let location = self.currentLocation, self.deviceContext.isNetworkConnectionAvailable else {
+                    // Retry scheduling if prerequisites not met
+                    self.scheduleErrorRecovery()
+                    return
+                }
+                GDLogAppVerbose("RECOVERY: Running network error recovery. Attempting to download data.")
+                self.updateSpatialDataAsync(location: location)
             }
-            
-            GDLogAppVerbose("RECOVERY: Running network error recovery. Attempting to download data.")
-            
-            self.updateSpatialDataAsync(location: location)
         }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + errorRecoveryDelay, execute: errorRecoveryTask!)
     }
     
     func updateSpatialData(at location: CLLocation, completion: @escaping () -> Void) -> Progress? {
@@ -579,19 +584,18 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     }
     
     fileprivate func notifyLocationUpdated(_ location: CLLocation, tilesChanged: Bool = false) {
-        DispatchQueue.main.async {
-            AppContext.process(LocationUpdatedEvent(location))
-            
-            NotificationCenter.default.post(name: Notification.Name.locationUpdated,
-                                            object: self,
-                                            userInfo: [SpatialDataContext.Keys.location: location])
-            
-            if tilesChanged {
-                NotificationCenter.default.post(name: Notification.Name.tilesDidUpdate, object: self, userInfo: nil)
-            }
+        AppContext.process(LocationUpdatedEvent(location))
+        
+        NotificationCenter.default.post(name: Notification.Name.locationUpdated,
+                                        object: self,
+                                        userInfo: [SpatialDataContext.Keys.location: location])
+        
+        if tilesChanged {
+            NotificationCenter.default.post(name: Notification.Name.tilesDidUpdate, object: self, userInfo: nil)
         }
     }
     
+    @MainActor
     @objc private func onNetworkConnectionDidChange(_ notification: NSNotification) {
         guard AppContext.shared.state == .normal else {
             return
@@ -809,6 +813,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
 
 extension SpatialDataContext: GeolocationManagerUpdateDelegate {
     
+    @MainActor
     func didUpdateLocation(_ location: CLLocation) {
         currentLocation = location
         
@@ -871,9 +876,7 @@ extension SpatialDataContext {
                                                 preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: GDLocalizationUnnecessary("Dismiss"), style: .cancel, handler: nil))
         
-        DispatchQueue.main.async {
-            rootViewController.present(alertController, animated: true, completion: nil)
-        }
+        rootViewController.present(alertController, animated: true, completion: nil)
     }
     
 }

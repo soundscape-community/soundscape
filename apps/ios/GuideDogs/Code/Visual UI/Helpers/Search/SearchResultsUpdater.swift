@@ -23,6 +23,7 @@ protocol SearchResultsUpdaterDelegate: AnyObject {
     var isCachingRequired: Bool { get }
 }
 
+@MainActor
 class SearchResultsUpdater: NSObject {
     
     enum Context {

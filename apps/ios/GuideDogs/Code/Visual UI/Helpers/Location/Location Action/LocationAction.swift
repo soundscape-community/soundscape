@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 enum LocationAction {
     
     case save(isEnabled: Bool)

@@ -8,6 +8,7 @@
 
 import CoreLocation
 
+@MainActor
 protocol Behavior: AnyObject, CustomStringConvertible {
     var id: UUID { get }
     var isActive: Bool { get }

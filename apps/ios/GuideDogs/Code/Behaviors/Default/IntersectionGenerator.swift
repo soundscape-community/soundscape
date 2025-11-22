@@ -11,6 +11,7 @@ import CoreLocation
 
 // MARK: Events
 
+@MainActor
 class IntersectionArrivalEvent: StateChangedEvent {
     let key: String
     let isRoundabout: Bool
@@ -42,6 +43,7 @@ extension Notification.Name {
     static let intersectionDeparture = Notification.Name("GDAIntersectionDeparture")
 }
 
+@MainActor
 class IntersectionGenerator: AutomaticGenerator {
     
     // MARK: - Constants
@@ -245,9 +247,7 @@ class IntersectionGenerator: AutomaticGenerator {
         
         GDLogIntersectionInfo("Generating intersection departure event")
         
-        DispatchQueue.main.async {[weak self] in
-            self?.owner.delegate?.process(IntersectionDepartureEvent(result))
-        }
+        owner.delegate?.process(IntersectionDepartureEvent(result))
     }
     
     /// We currently support only one primary intersection. When we finish the callout for the
@@ -320,13 +320,7 @@ class IntersectionGenerator: AutomaticGenerator {
                                         object: self,
                                         userInfo: [IntersectionGenerator.Keys.intersectionKey: intersection.key])
         
-        DispatchQueue.main.async {[weak self] in
-            guard let currentIntersectionKey = self?.currentIntersectionKey else {
-                return
-            }
-
-            self?.owner.delegate?.process(IntersectionArrivalEvent(currentIntersectionKey, isRoundabout: isRoundabout, heading: heading))
-        }
+        owner.delegate?.process(IntersectionArrivalEvent(intersection.key, isRoundabout: isRoundabout, heading: heading))
     }
     
     private func hasCalledOut(_ intersection: Intersection, within timeInterval: TimeInterval) -> Bool {

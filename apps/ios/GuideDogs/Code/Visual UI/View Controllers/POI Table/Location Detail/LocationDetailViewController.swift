@@ -189,29 +189,23 @@ class LocationDetailViewController: UIViewController {
     }
     
     private func reloadView() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            // Update view title
-            if self.waypointDetail != nil {
-                self.title = GDLocalizedString("location_detail.title.waypoint")
-            } else if let detail = self.locationDetail, detail.isMarker {
-                self.title = GDLocalizedString("location_detail.title.marker")
-            } else {
-                self.title = GDLocalizedString("location_detail.title.default")
-            }
-            
-            // Update child view controllers
-            self.detailViewController?.locationDetail = self.locationDetail
-            self.actionViewController?.locationDetail = self.locationDetail
-            
-            if let detail = self.waypointDetail {
-                self.detailMapViewController?.style = .waypoint(detail: detail)
-            } else if let detail = self.locationDetail {
-                self.detailMapViewController?.style = .location(detail: detail)
-            }
+        // Update view title
+        if self.waypointDetail != nil {
+            self.title = GDLocalizedString("location_detail.title.waypoint")
+        } else if let detail = self.locationDetail, detail.isMarker {
+            self.title = GDLocalizedString("location_detail.title.marker")
+        } else {
+            self.title = GDLocalizedString("location_detail.title.default")
+        }
+        
+        // Update child view controllers
+        self.detailViewController?.locationDetail = self.locationDetail
+        self.actionViewController?.locationDetail = self.locationDetail
+        
+        if let detail = self.waypointDetail {
+            self.detailMapViewController?.style = .waypoint(detail: detail)
+        } else if let detail = self.locationDetail {
+            self.detailMapViewController?.style = .location(detail: detail)
         }
     }
     
@@ -256,23 +250,18 @@ extension LocationDetailViewController: LocationActionDelegate {
     func didSelectLocationAction(_ action: LocationAction, detail: LocationDetail) {
         GDATelemetry.track(action.telemetryEvent, with: ["context": detail.telemetryContext ?? "", "source": "location_detail_view"])
         
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard action.isEnabled else {
-                // Do nothing if the action is disabled
-                return
-            }
-            
-            do {
-                switch action {
-                case .save:
-                    // Save the marker at the given location
-                    let config = EditMarkerConfig(detail: detail,
-                                                  route: nil,
-                                                  context: detail.telemetryContext ?? "",
+        guard action.isEnabled else {
+            // Do nothing if the action is disabled
+            return
+        }
+        
+        do {
+            switch action {
+            case .save:
+                // Save the marker at the given location
+                let config = EditMarkerConfig(detail: detail,
+                                              route: nil,
+                                              context: detail.telemetryContext ?? "",
                                                   addOrUpdateAction: .popViewController,
                                                   deleteAction: nil,
                                                   leftBarButtonItemIsHidden: false) { [weak self] newValue in
@@ -366,7 +355,6 @@ extension LocationDetailViewController: LocationActionDelegate {
                 let alert = LocationActionAlert.alert(for: error)
                 self.present(alert, animated: true, completion: nil)
             }
-        }
     }
     
 }

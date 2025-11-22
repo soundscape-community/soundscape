@@ -85,14 +85,12 @@ class PreviewActivityIndicatorViewController: UIViewController {
             progressView.isHidden = false
             
             // Start observing progress updates
-            token = progress.observe(\.completedUnitCount, changeHandler: { (progress, _) in
-                DispatchQueue.main.async { [weak self] in
-                    guard let `self` = self else {
-                        return
-                    }
-                    
-                    self.progressView.progress = Float(progress.fractionCompleted)
+            token = progress.observe(\.completedUnitCount, changeHandler: { [weak self] (progress, _) in
+                guard let self else {
+                    return
                 }
+                
+                self.progressView.progress = Float(progress.fractionCompleted)
             })
         } else {
             // Stop observing updates

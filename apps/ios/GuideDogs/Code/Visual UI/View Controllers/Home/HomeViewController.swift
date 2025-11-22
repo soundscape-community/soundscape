@@ -561,15 +561,11 @@ extension HomeViewController {
                     } else {
                         // We add the indicator to the current bar button items
                         rightBarButtonItems.append(externalGPSBarButtonItem)
-                        DispatchQueue.main.async { [weak self] in
-                            self?.navigationItem.rightBarButtonItems = rightBarButtonItems
-                        }
+                        self.navigationItem.rightBarButtonItems = rightBarButtonItems
                 }
             } else {
                 // No other current bar button items. show only the indicator.
-                DispatchQueue.main.async { [weak self] in
-                    self?.navigationItem.rightBarButtonItem = self?.externalGPSBarButtonItem
-                }
+                self.navigationItem.rightBarButtonItem = self.externalGPSBarButtonItem
             }
         } else {
             // Hide the external hardware indicator if needed
@@ -632,20 +628,15 @@ extension HomeViewController: SearchResultsTableViewControllerDelegate {
 extension HomeViewController: LocationActionDelegate {
     
     func didSelectLocationAction(_ action: LocationAction, detail: LocationDetail) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
+        guard action.isEnabled else {
+            // Do nothing if the action is disabled
+            return
+        }
             
-            guard action.isEnabled else {
-                // Do nothing if the action is disabled
-                return
-            }
+        self.searchController?.isActive = false
             
-            self.searchController?.isActive = false
-            
-            do {
-                switch action {
+        do {
+            switch action {
                 case .save, .edit:
                     // Edit the marker at the given location
                     // Segue to the edit marker view
@@ -701,7 +692,6 @@ extension HomeViewController: LocationActionDelegate {
                 self.present(alert, animated: true, completion: nil)
             }
         }
-    }
     
 }
 

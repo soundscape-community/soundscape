@@ -11,6 +11,7 @@ import Foundation
 /*
  Supports serialization of the Realm `Route` object
  */
+@MainActor
 struct RouteParameters: Codable {
     
     enum Context {

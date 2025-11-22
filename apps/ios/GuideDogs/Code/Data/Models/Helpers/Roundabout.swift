@@ -11,6 +11,7 @@ import MapKit
 import CocoaLumberjackSwift
 
 /// Roundabouts are synthesized objects we calculate from specific intersections
+@MainActor
 struct Roundabout {
     
     // MARK: Constants

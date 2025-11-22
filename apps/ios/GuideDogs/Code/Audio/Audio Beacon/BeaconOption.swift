@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 enum BeaconOption: String, CaseIterable, Identifiable {
     case original
     case current

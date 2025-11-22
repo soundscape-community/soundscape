@@ -38,9 +38,10 @@ class MPEditNameTableViewCell: UITableViewCell, UITextFieldDelegate {
     @IBAction func onNameEditingDidBegin(_ sender: Any) {
         // Ensures that the name is selected when the user starts editing allowing
         // them to either overwrite or append to the name easily.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-            self.nameField.selectAll(nil)
-        })
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            self?.nameField.selectAll(nil)
+        }
     }
     
     @IBAction func onNameValueChanged(_ sender: Any) {

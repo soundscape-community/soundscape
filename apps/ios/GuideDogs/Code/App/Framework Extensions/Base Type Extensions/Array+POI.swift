@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 extension Array where Element == POI {
     
     typealias Quadrant = [CompassDirection: [POI]]

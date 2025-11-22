@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 protocol NotificationObserver: AnyObject {
     var delegate: NotificationObserverDelegate? { get set }
     var didDismiss: Bool { get }

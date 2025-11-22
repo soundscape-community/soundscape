@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 protocol LocationAccessibilityActionDelegate: AnyObject {
     func didSelectLocationAction(_ action: LocationAction, entity: POI)
 }

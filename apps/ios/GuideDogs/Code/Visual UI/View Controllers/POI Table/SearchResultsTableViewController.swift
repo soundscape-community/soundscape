@@ -173,44 +173,42 @@ class SearchResultsTableViewController: UITableViewController {
     // MARK: `UITableView`
     
     private func updateTableView(dataSource: UITableViewDataSource, delegate: UITableViewDelegate, voiceoverAnnoucement: String?, isDefaultResults: Bool) {
-        DispatchQueue.main.async {
-            // Cancel previous request to make a Voiceover annoucement
-            NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.annouce(annoucement:)), object: self.currentVoiceoverAnnoucement)
-            
-            self.isPresentingDefaultResults = isDefaultResults
-            
-            // Reset `currentVoiceoverAnnoucement`
-            self.currentVoiceoverAnnoucement = nil
-            
-            // Save reference to `tableViewDataSource` and `tableViewDelegate`
-            self.tableViewDataSource = dataSource
-            self.tableViewDelegate = delegate
-            
-            // Update `tableView` and reload
-            self.tableView.dataSource = self.tableViewDataSource
-            self.tableView.delegate = self.tableViewDelegate
-            self.tableView.reloadData()
-            
-            self.updateNoResultsView()
-            
-            // If the search was cancelled, don't send any accessibility notifications...
-            guard !self.wasSearchCancelled else {
-                return
-            }
-            
-            if let searchController = self.searchController, searchController.searchBar.searchTextField.isEditing == false {
-                // When the keyboard is hidden, move Voiceover focus to `tableView`
-                UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: self.tableView)
-            }
-            
-            guard let voiceoverAnnoucement = voiceoverAnnoucement else {
-                return
-            }
-            
-            self.currentVoiceoverAnnoucement = voiceoverAnnoucement
-            
-            self.perform(#selector(self.annouce(annoucement:)), with: self.currentVoiceoverAnnoucement, afterDelay: 1.0)
+        // Cancel previous request to make a Voiceover annoucement
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.annouce(annoucement:)), object: self.currentVoiceoverAnnoucement)
+        
+        self.isPresentingDefaultResults = isDefaultResults
+        
+        // Reset `currentVoiceoverAnnoucement`
+        self.currentVoiceoverAnnoucement = nil
+        
+        // Save reference to `tableViewDataSource` and `tableViewDelegate`
+        self.tableViewDataSource = dataSource
+        self.tableViewDelegate = delegate
+        
+        // Update `tableView` and reload
+        self.tableView.dataSource = self.tableViewDataSource
+        self.tableView.delegate = self.tableViewDelegate
+        self.tableView.reloadData()
+        
+        self.updateNoResultsView()
+        
+        // If the search was cancelled, don't send any accessibility notifications...
+        guard !self.wasSearchCancelled else {
+            return
         }
+        
+        if let searchController = self.searchController, searchController.searchBar.searchTextField.isEditing == false {
+            // When the keyboard is hidden, move Voiceover focus to `tableView`
+            UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: self.tableView)
+        }
+        
+        guard let voiceoverAnnoucement = voiceoverAnnoucement else {
+            return
+        }
+        
+        self.currentVoiceoverAnnoucement = voiceoverAnnoucement
+        
+        self.perform(#selector(self.annouce(annoucement:)), with: self.currentVoiceoverAnnoucement, afterDelay: 1.0)
     }
     
     private func updateTableView(searchForMore: String?) {
@@ -269,46 +267,32 @@ class SearchResultsTableViewController: UITableViewController {
     // MARK: Error Handling
     
     private func presentErrorAlert(completion: (() -> Void)? = nil) {
-        DispatchQueue.main.async { [weak self] in
-            // Failed to save selected entity
-            let title = GDLocalizedString("universal_links.alert.error.title")
-            let message = GDLocalizedString("location_detail.disabled.generic")
-            let alert = ErrorAlerts.buildGeneric(title: title, message: message, dismissHandler: { [weak self] _ in
-                self?.dismissActivityIndicator()
-            })
-            
-            // Display error alert
-            self?.present(alert, animated: true, completion: completion)
-        }
+        // Failed to save selected entity
+        let title = GDLocalizedString("universal_links.alert.error.title")
+        let message = GDLocalizedString("location_detail.disabled.generic")
+        let alert = ErrorAlerts.buildGeneric(title: title, message: message, dismissHandler: { [weak self] _ in
+            self?.dismissActivityIndicator()
+        })
+        
+        // Display error alert
+        self.present(alert, animated: true, completion: completion)
     }
     
     // MARK: Activity Indicator
     
     private func presentActivityIndicator() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            // Show activity indicator
-            self.view.addSubview(self.activityIndicatorView)
-            // Update size and constraints
-            self.activityIndicatorView.frame = self.view.bounds
-            self.activityIndicatorView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-            self.activityIndicatorView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-            self.activityIndicatorView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-            self.activityIndicatorView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        }
+        // Show activity indicator
+        view.addSubview(activityIndicatorView)
+        // Update size and constraints
+        activityIndicatorView.frame = view.bounds
+        activityIndicatorView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        activityIndicatorView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        activityIndicatorView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        activityIndicatorView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
     }
     
     private func dismissActivityIndicator() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            self.activityIndicatorView.removeFromSuperview()
-        }
+        activityIndicatorView.removeFromSuperview()
     }
     
     // MARK: Helpers

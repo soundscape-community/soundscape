@@ -13,6 +13,7 @@ import UIKit
 
 /// Each route entity is stored in the cloud key value store as it's own top-level object.
 /// This should minimize risk of data loss when using a top level array that contain all objects.
+@MainActor
 extension CloudKeyValueStore {
     
     private static var errorAlert: UIAlertController?
@@ -74,7 +75,9 @@ extension CloudKeyValueStore {
             set(object: data, forKey: CloudKeyValueStore.key(forRoute: route))
         } else {
             GDLogCloudInfo("Failed to initialize route")
-            GDATelemetry.track("route_backup.error.parameters_failed_to_initialize")
+            Task { @MainActor in
+                GDATelemetry.track("route_backup.error.parameters_failed_to_initialize")
+            }
         }
     }
     
@@ -173,6 +176,7 @@ extension CloudKeyValueStore {
 
 // MARK: Helpers
 
+@MainActor
 extension CloudKeyValueStore {
     
     func notifyOfInvalidRoutesIfNeeded(routeParametersObjects: [RouteParameters]) {
@@ -207,11 +211,11 @@ extension CloudKeyValueStore {
                   return
               }
         
-        DispatchQueue.main.async {
-            rootViewController.present(alert, animated: true, completion: nil)
-        }
+        rootViewController.present(alert, animated: true, completion: nil)
         
-        GDATelemetry.track("route_backup.error.marker_deleted")
+        Task { @MainActor in
+            GDATelemetry.track("route_backup.error.marker_deleted")
+        }
     }
     
     /// Check if there are markers in the imported route that does not exist in as reference entities

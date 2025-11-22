@@ -45,7 +45,9 @@ class UniversalLinkManager {
     func onLaunchWithUniversalLink(with url: URL) -> Bool {
         guard let components = UniversalLinkComponents(url: url) else {
             // Failed to parse URL for universal link
-            GDATelemetry.track("deeplink.unsupported")
+            Task { @MainActor in
+                GDATelemetry.track("deeplink.unsupported")
+            }
             // Notify iOS that the link was not handled by
             // the app
             return false
@@ -81,10 +83,14 @@ class UniversalLinkManager {
         
         switch path {
         case .experience:
-            GDATelemetry.track("deeplink.experiences")
+            Task { @MainActor in
+                GDATelemetry.track("deeplink.experiences")
+            }
             handler = recreationalActivityLinkHandler
         case .shareMarker:
-            GDATelemetry.track("deeplink.share_marker")
+            Task { @MainActor in
+                GDATelemetry.track("deeplink.share_marker")
+            }
             handler = shareMarkerLinkHandler
         }
         
@@ -97,6 +103,7 @@ class UniversalLinkManager {
 
 extension UniversalLinkManager {
     
+    @MainActor
     static func shareMarker(_ marker: ReferenceEntity) -> URL? {
         guard let parameters = MarkerParameters(marker: marker) else {
             return nil
@@ -105,6 +112,7 @@ extension UniversalLinkManager {
         return UniversalLinkComponents(path: .shareMarker, parameters: parameters).url
     }
     
+    @MainActor
     static func shareEntity(_ entity: POI) -> URL? {
         guard let parameters = MarkerParameters(entity: entity) else {
             return nil
@@ -113,6 +121,7 @@ extension UniversalLinkManager {
         return UniversalLinkComponents(path: .shareMarker, parameters: parameters).url
     }
     
+    @MainActor
     static func shareLocation(_ detail: LocationDetail) -> URL? {
         guard let parameters = MarkerParameters(location: detail) else {
             return nil
@@ -121,6 +130,7 @@ extension UniversalLinkManager {
         return UniversalLinkComponents(path: .shareMarker, parameters: parameters).url
     }
     
+    @MainActor
     static func shareLocation(name: String, latitude: Double, longitude: Double) -> URL? {
         let parameters = MarkerParameters(name: name, latitude: latitude, longitude: longitude)
         return UniversalLinkComponents(path: .shareMarker, parameters: parameters).url

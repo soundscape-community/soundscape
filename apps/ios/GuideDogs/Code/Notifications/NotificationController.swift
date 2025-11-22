@@ -19,6 +19,7 @@ class NotificationController: NSObject {
     
     // MARK: Properties
     
+    @MainActor
     static let shared = NotificationController()
     
     private let alertContainerManager: NotificationContainerManager<AlertType>
@@ -28,6 +29,7 @@ class NotificationController: NSObject {
     
     // MARK: Initialization
 
+    @MainActor
     private override init() {
         self.alertContainerManager = NotificationContainerManager(AlertType.allCases)
         self.largeBannerContainerManager = NotificationContainerManager(LargeBanner.allCases)

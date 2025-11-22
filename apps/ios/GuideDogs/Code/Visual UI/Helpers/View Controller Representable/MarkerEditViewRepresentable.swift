@@ -17,6 +17,7 @@ class MarkerEditViewRepresentable: ViewControllerRepresentable {
     
     // MARK: Initialization
     
+    @MainActor
     init(entity: POI, nickname: String?, annotation: String?, telemetryContext: String) {
         let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
         let locationDetail = LocationDetail(entity: entity, imported: importedDetail)
@@ -29,6 +30,7 @@ class MarkerEditViewRepresentable: ViewControllerRepresentable {
                                   leftBarButtonItemIsHidden: false)
     }
     
+    @MainActor
     init(marker: ReferenceEntity, nickname: String?, annotation: String?, telemetryContext: String) {
         let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
         let locationDetail = LocationDetail(marker: marker, imported: importedDetail)

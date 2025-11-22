@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import Combine
 
+@MainActor
 class NearbyDataContext {
     
     enum NearbyError: Error {
@@ -24,7 +25,7 @@ class NearbyDataContext {
     
     private(set) var location: CLLocation?
     private var initialNearbyRequestToken: RequestToken?
-    private let queue = DispatchQueue(label: "services.soundscape.nearbytable")
+    nonisolated private let queue = DispatchQueue(label: "services.soundscape.nearbytable")
     private var pois: [POI] = []
     private(set) var data: CurrentValueSubject<NearbyData, NearbyError>
     private(set) var isLoading = false
@@ -32,8 +33,8 @@ class NearbyDataContext {
     
     // MARK: Initialization
     
-    init(location: CLLocation? = AppContext.shared.geolocationManager.location) {
-        self.location = location
+    init(location: CLLocation? = nil) {
+        self.location = location ?? AppContext.shared.geolocationManager.location
         
         let initialDataValue = NearbyData(pois: [], filters: NearbyTableFilter.primaryTypeFilters)
         data = .init(initialDataValue)

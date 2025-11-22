@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 struct LocationDetailLocalizedLabel {
     
     // MARK: Properties

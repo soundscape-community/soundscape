@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
-protocol AudioSessionManagerDelegate: AnyObject {
+@MainActor protocol AudioSessionManagerDelegate: AnyObject {
     func sessionDidActivate()
     func interruptionBegan()
     func interruptionEnded(shouldResume: Bool)
@@ -19,6 +19,7 @@ protocol AudioSessionManagerDelegate: AnyObject {
 }
 
 /// A class that manages the app's audio session (`AVAudioSession`) for audio output.
+@MainActor
 class AudioSessionManager {
 
     weak var delegate: AudioSessionManagerDelegate?
@@ -81,6 +82,7 @@ class AudioSessionManager {
         configureAudioSession()
     }
     
+    @MainActor
     deinit {
         removeObservers()
     }

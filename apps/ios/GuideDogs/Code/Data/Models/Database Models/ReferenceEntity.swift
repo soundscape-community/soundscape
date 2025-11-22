@@ -23,6 +23,7 @@ extension Notification.Name {
     static let markerUpdated = Notification.Name("GDAMarkerUpdated")
 }
 
+@MainActor
 class ReferenceEntity: Object, ObjectKeyIdentifiable {
     // MARK: Constants
     
@@ -555,23 +556,16 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     }
     
     private static func notifyEntityAdded(_ id: String) {
-        DispatchQueue.main.async {
-            AppContext.process(MarkerAddedEvent(id))
-            
-            NotificationCenter.default.post(name: Notification.Name.markerAdded, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
-        }
+        AppContext.process(MarkerAddedEvent(id))
+        NotificationCenter.default.post(name: Notification.Name.markerAdded, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
     }
     
     private static func notifyEntityUpdated(_ id: String) {
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .markerUpdated, object: self, userInfo: [Keys.entityId: id])
-        }
+        NotificationCenter.default.post(name: .markerUpdated, object: self, userInfo: [Keys.entityId: id])
     }
     
     private static func notifyEntityRemoved(_ id: String) {
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .markerRemoved, object: self, userInfo: [Keys.entityId: id])
-        }
+        NotificationCenter.default.post(name: .markerRemoved, object: self, userInfo: [Keys.entityId: id])
     }
     
     /// Removes the reference entity with the corresponding ID. If the reference entity is currently set as the

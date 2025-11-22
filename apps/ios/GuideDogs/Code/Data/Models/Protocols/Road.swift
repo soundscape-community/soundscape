@@ -49,6 +49,7 @@ private enum RoadDirectionAtIntersection {
 
 // MARK: - Bearing
 
+@MainActor
 extension Road {
     
     /// Calculates the road bearing.
@@ -79,6 +80,7 @@ extension Road {
 
 // MARK: - Road Helper
 
+@MainActor
 extension Road {
     
     /// Road type (via openscape custom tag), such as "walking_path", "service_road", "road", etc.

@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 class OnboardingGenerator: ManualGenerator {
     
     private let beaconDemo = BeaconDemoHelper()

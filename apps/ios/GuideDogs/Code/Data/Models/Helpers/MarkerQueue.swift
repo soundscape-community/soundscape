@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 class MarkerQueue {
     
     private typealias SortedMarker = (distance: CLLocationDistance, marker: ReferenceEntity)

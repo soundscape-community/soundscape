@@ -80,11 +80,9 @@ class MotionActivityContext {
             updateMotionState()
             
             // UI and Audio updates should be done on main thread
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: Notification.Name.motionActivityDidChange,
-                                                object: self,
-                                                userInfo: [NotificationKeys.activityType: self.activityType])
-            }
+            NotificationCenter.default.post(name: Notification.Name.motionActivityDidChange,
+                                            object: self,
+                                            userInfo: [NotificationKeys.activityType: self.activityType])
         }
     }
     
@@ -154,11 +152,9 @@ class MotionActivityContext {
         
         GDLogMotionVerbose("Motion state changed. Is in motion: \(isInMotion)")
         
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: Notification.Name.isInMotionDidChange,
-                                            object: self,
-                                            userInfo: [NotificationKeys.isInMotion: isInMotion])
-        }
+        NotificationCenter.default.post(name: Notification.Name.isInMotionDidChange,
+                                        object: self,
+                                        userInfo: [NotificationKeys.isInMotion: isInMotion])
     }
     
 }

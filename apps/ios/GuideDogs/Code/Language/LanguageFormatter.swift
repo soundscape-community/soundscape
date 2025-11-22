@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 class LanguageFormatter: NSObject {
 
     // MARK: Distance & Name Formatter
@@ -72,13 +73,19 @@ class LanguageFormatter: NSObject {
     // MARK: Distance Only Formatter
 
     static func string(from distance: CLLocationDistance,
-                       rounded: Bool = LanguageFormatter.defaultOptions.rounding,
-                       spellOut: Bool = LanguageFormatter.defaultOptions.spellOut,
-                       abbreviated: Bool = LanguageFormatter.defaultOptions.abbreviated) -> String {
+                       rounded: Bool? = nil,
+                       spellOut: Bool? = nil,
+                       abbreviated: Bool? = nil) -> String {
         var options = self.defaultOptions
-        options.rounding = rounded
-        options.spellOut = spellOut
-        options.abbreviated = abbreviated
+        if let rounded {
+            options.rounding = rounded
+        }
+        if let spellOut {
+            options.spellOut = spellOut
+        }
+        if let abbreviated {
+            options.abbreviated = abbreviated
+        }
 
         return LanguageFormatter.formattedDistance(from: distance, options: options)
     }

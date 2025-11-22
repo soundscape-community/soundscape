@@ -216,9 +216,11 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
             }
             
             if !FirstUseExperience.didComplete(.previewRoadFinder) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)) { [weak self] in
-                    self?.delegate?.process(PreviewInstructionsEvent { _ in
-                        self?.didActivate()
+                Task { @MainActor [weak self] in
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    guard let self = self, !Task.isCancelled else { return }
+                    self.delegate?.process(PreviewInstructionsEvent { _ in
+                        self.didActivate()
                     })
                 }
             } else {

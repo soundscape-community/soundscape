@@ -10,6 +10,7 @@ import XCTest
 import CoreLocation
 @testable import Soundscape
 
+@MainActor
 final class DestinationManagerTest: XCTestCase {
     
     let basic_audio_engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true)

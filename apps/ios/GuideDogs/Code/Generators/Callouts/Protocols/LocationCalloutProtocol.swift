@@ -14,6 +14,7 @@ protocol LocationCalloutProtocol: CalloutProtocol {
     var defaultMarkerName: String { get }
 }
 
+@MainActor
 extension LocationCalloutProtocol {
     var prefixSound: Sound? {
         return GlyphSound(.locationSense)

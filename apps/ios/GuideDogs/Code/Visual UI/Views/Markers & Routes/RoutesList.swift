@@ -52,9 +52,7 @@ struct RoutesList: View {
         let detail = RouteDetail(source: .database(id: id))
         let context = ShareRouteActivityViewRepresentable(route: detail)
         
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .presentAnyModalViewController, object: self, userInfo: [AnyModalViewObserver.Keys.context: context])
-        }
+        NotificationCenter.default.post(name: .presentAnyModalViewController, object: self, userInfo: [AnyModalViewObserver.Keys.context: context])
     }
     
     @ViewBuilder var selectedDetailView: some View {

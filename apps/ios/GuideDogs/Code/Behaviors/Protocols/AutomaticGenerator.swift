@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 protocol AutomaticGenerator {
     /// Indicates if this automatic callout generator is allowed to interrupt other callouts
     /// that are already playing when it generates callouts. This should be used for

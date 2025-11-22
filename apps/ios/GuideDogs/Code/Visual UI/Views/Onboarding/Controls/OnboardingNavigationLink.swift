@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@MainActor
 struct OnboardingNavigationLink<Destination: View>: View {
     
     // MARK: Properties

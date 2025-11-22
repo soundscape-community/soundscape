@@ -8,6 +8,7 @@
 
 import UIKit
 
+@MainActor
 protocol Action {
     associatedtype State: ActionState
     associatedtype Detail
@@ -15,6 +16,7 @@ protocol Action {
     static func actions(for detail: Detail) -> [State]
 }
 
+@MainActor
 protocol ActionState {
     var isEnabled: Bool { get }
     var text: String { get }
@@ -124,6 +126,7 @@ struct RouteActionState: ActionState {
     }
 }
 
+@MainActor
 enum RouteAction: String, Action {
     
     case startRoute

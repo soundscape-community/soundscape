@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 class RouteGuidanceBannerObserver: PersistentNotificationObserver {
     
     // MARK: Properties
@@ -52,6 +53,7 @@ class RouteGuidanceBannerObserver: PersistentNotificationObserver {
     
 }
 
+@MainActor
 extension RouteGuidanceBannerObserver: BannerViewControllerDelegate {
     
     func didSelect(_ bannerViewController: BannerViewController) {

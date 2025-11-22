@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 struct EstimatedLocationDetail {
     
     // MARK: Properties

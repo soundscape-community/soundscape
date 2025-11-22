@@ -35,6 +35,7 @@ class RouteWaypoint: EmbeddedObject {
     private var importedLocationDetail: LocationDetail?
     
     // This value should never be `nil`
+    @MainActor
     var asLocationDetail: LocationDetail? {
         // If there is imported data, return it
         // Otherwise, return Realm data
@@ -50,6 +51,7 @@ class RouteWaypoint: EmbeddedObject {
      *     - index: Index of the waypoint
      *     - markerId: ID for a marker that exists in Realm database
      */
+    @MainActor
     convenience init?(index: Int, markerId: String) {
         self.init()
         
@@ -70,6 +72,7 @@ class RouteWaypoint: EmbeddedObject {
      *     - index: Index of the waypoint
      *     - locationDetail: Data for a marker that exists in Realm database
      */
+    @MainActor
     convenience init?(index: Int, locationDetail: LocationDetail) {
         self.init()
         
@@ -125,6 +128,7 @@ extension Array where Element == RouteWaypoint {
         return self.sorted(by: { return $0.index < $1.index })
     }
     
+    @MainActor
     var asLocationDetail: [LocationDetail] {
         return self.compactMap({ return $0.asLocationDetail })
     }

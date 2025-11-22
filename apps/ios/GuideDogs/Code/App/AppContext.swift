@@ -27,6 +27,7 @@ extension Notification.Name {
     static let appOperationStateDidChange = Notification.Name("GDAAppOperationStateDidChange")
 }
 
+@MainActor
 class AppContext {
 
     // MARK: Keys

@@ -10,6 +10,7 @@ import Foundation
 import RealmSwift
 import CoreLocation
 
+@MainActor
 extension Route {
     
     // MARK: Query All Routes

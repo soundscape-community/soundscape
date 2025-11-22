@@ -6,6 +6,7 @@
 //  Licensed under the MIT License.
 //
 
+@MainActor
 struct TourWaypointDetail {
     
     // MARK: Properties

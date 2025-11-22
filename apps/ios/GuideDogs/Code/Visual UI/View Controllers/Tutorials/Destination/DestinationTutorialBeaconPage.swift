@@ -206,8 +206,9 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
         
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.beaconInBoundsDidChange, object: nil)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-            self?.delegate?.pageComplete()
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            delegate?.pageComplete()
         }
     }
     
@@ -232,8 +233,9 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
                     }
                     
                     if UIDeviceManager.isSimulator || !self.isBeaconInBounds() {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                            self?.delegate?.pageComplete()
+                        Task { @MainActor in
+                            try? await Task.sleep(nanoseconds: 1_000_000_000)
+                            self.delegate?.pageComplete()
                         }
                     } else {
                         NotificationCenter.default.addObserver(self, selector: #selector(self.checkBeaconOff), name: NSNotification.Name.beaconInBoundsDidChange, object: nil)

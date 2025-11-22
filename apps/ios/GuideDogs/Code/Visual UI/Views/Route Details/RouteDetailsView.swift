@@ -180,22 +180,20 @@ struct RouteDetailsView: View {
                         .accessibilityElement(children: .combine)
                         .accessibilityAddTraits(.isButton)
                         .onTapGesture {
-                            DispatchQueue.main.async {
-                                // Block users from loading waypoint details if the activity is expired
-                                guard !route.detail.isExpiredTrailActivity else {
-                                    return
-                                }
-                                
-                                let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-                                
-                                guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
-                                    return
-                                }
-                                
-                                viewController.waypointDetail = WaypointDetail(index: index, routeDetail: route.detail)
-                                
-                                navHelper.pushViewController(viewController, animated: true)
+                            // Block users from loading waypoint details if the activity is expired
+                            guard !route.detail.isExpiredTrailActivity else {
+                                return
                             }
+                            
+                            let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
+                            
+                            guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
+                                return
+                            }
+                            
+                            viewController.waypointDetail = WaypointDetail(index: index, routeDetail: route.detail)
+                            
+                            navHelper.pushViewController(viewController, animated: true)
                         }
                 }
                 .accessibilitySortPriority(0)
@@ -363,9 +361,7 @@ extension RouteDetailsView {
     private func presentShareActivityViewController() {
         let context = ShareRouteActivityViewRepresentable(route: route.detail)
         
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .presentAnyModalViewController, object: self, userInfo: [AnyModalViewObserver.Keys.context: context])
-        }
+        NotificationCenter.default.post(name: .presentAnyModalViewController, object: self, userInfo: [AnyModalViewObserver.Keys.context: context])
     }
 }
 

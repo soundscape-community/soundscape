@@ -8,6 +8,7 @@
 
 import Combine
 
+@MainActor
 struct ActivityModel {
     enum State {
         case active
@@ -57,6 +58,7 @@ struct ActivityModel {
     }
 }
 
+@MainActor
 final class AuthoredActivityStorage: ObservableObject {
     @Published var activities: [ActivityModel]
     
@@ -155,7 +157,8 @@ final class AuthoredActivityStorage: ObservableObject {
         loader?.remove(id)
         activities.remove(at: index)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 500_000_000)
             UIAccessibility.post(notification: .announcement, argument: GDLocalizedString("behavior.experiences.delete.confirmation"))
         }
     }

@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 struct OnboardingWelcomeView: View {
     
     // MARK: Properties

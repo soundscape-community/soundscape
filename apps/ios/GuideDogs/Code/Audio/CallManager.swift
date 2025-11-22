@@ -21,6 +21,7 @@ extension Notification.Name {
     static let callStatusChanged = Notification.Name("GDACallStatusChanged")
 }
 
+@MainActor
 class CallManager: NSObject, CXCallObserverDelegate {
     
     // MARK: Keys

@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import SwiftUI
 
+@MainActor
 struct BeaconActionHandler {
     
     ///

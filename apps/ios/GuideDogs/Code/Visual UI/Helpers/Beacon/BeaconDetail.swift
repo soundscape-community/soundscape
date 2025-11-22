@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 struct BeaconDetail {
     
     // MARK: Parameters

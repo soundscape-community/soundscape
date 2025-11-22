@@ -13,7 +13,8 @@ class SpeakingRateTableViewCell: UITableViewCell {
     // MARK: Properties
     
     @IBOutlet weak var speakingRateSlider: UISlider!
-    fileprivate var previousWorkItem: DispatchWorkItem?
+    // Replace legacy DispatchWorkItem + asyncAfter with structured concurrency Task for cancellation semantics
+    fileprivate var previousTask: Task<Void, Never>?
     
     func initialize() {
         // We only want to receive the valueChanged event when the user stops moving the slider.
@@ -44,13 +45,15 @@ class SpeakingRateTableViewCell: UITableViewCell {
         if !UIAccessibility.isVoiceOverRunning {
             test()
         } else {
-            previousWorkItem?.cancel()
-            
-            previousWorkItem = DispatchWorkItem {
+            previousTask?.cancel()
+            previousTask = Task { @MainActor [weak self] in
+                // Sleep for 1.5s (1500ms) before announcing, mimicking previous asyncAfter delay
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                guard !Task.isCancelled else { return }
+                // Ensure cell still alive (weak self not strictly needed for static calls, but keep parity)
+                _ = self
                 test()
             }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1500), execute: previousWorkItem!)
         }
     }
     

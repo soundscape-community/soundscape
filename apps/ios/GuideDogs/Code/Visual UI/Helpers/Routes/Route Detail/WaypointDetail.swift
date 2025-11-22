@@ -8,12 +8,14 @@
 
 import Foundation
 
+@MainActor
 protocol RouteDetailProtocol {
     var id: String { get }
     var waypoints: [LocationDetail] { get }
     var isGuidanceActive: Bool { get }
 }
 
+@MainActor
 struct WaypointDetail {
     
     // MARK: Properties

@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 class DeviceReachabilityAlertObserver: NotificationObserver {
     
     // MARK: Properties
@@ -15,8 +16,8 @@ class DeviceReachabilityAlertObserver: NotificationObserver {
     weak var delegate: NotificationObserverDelegate?
     private(set) var didDismiss = false
     private var alert: UIAlertController?
-    private let dispatchQueue = DispatchQueue(label: "services.soundscape.device_reachability", qos: .background, attributes: .concurrent)
-    private let dispatchGroup = DispatchGroup()
+    nonisolated private let dispatchQueue = DispatchQueue(label: "services.soundscape.device_reachability", qos: .background, attributes: .concurrent)
+    nonisolated private let dispatchGroup = DispatchGroup()
     private var active: [DeviceReachability] = []
     
     // MARK: Initialization

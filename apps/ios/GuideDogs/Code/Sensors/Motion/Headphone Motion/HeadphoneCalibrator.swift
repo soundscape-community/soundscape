@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class HeadphoneCalibrator: ComponentHeadphoneCalibrator {
     
     private struct Sample: CustomStringConvertible {

@@ -15,6 +15,7 @@ extension Notification.Name {
     static let continueUserAction = Notification.Name("GDAContinueUserAction")
 }
 
+@MainActor
 class UserActionManager {
     
     // MARK: Notification Keys

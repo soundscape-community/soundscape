@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 extension GDASpatialDataResultEntity: Typeable {
     
     func isOfType(_ type: PrimaryType) -> Bool {

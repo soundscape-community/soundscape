@@ -64,13 +64,7 @@ class PreviewControlViewController: UIViewController {
                 return
             }
             
-            DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else {
-                    return
-                }
-                
-                self.configureView(for: newValue)
-            }
+            self.configureView(for: newValue)
         }
     }
     
@@ -112,24 +106,19 @@ class PreviewControlViewController: UIViewController {
     }
     
     private func configureView() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
+        // Reset the current view
+        self.resetView()
+        
+        switch self.currentState {
+        case .orientation:
+            // Initialize image view
+            self.button.imageView?.image = UIImage(named: "preview_arrow")!
             
-            // Reset the current view
-            self.resetView()
-            
-            switch self.currentState {
-            case .orientation:
-                // Initialize image view
-                self.button.imageView?.image = UIImage(named: "preview_arrow")!
-                
-                // Configure initial view
-                self.configureView(for: self.headingSubscriber?.value ?? 0.0)
-            case .edge(let edge):
-                // Initialize image view
-                self.button.imageView?.image = UIImage(named: "go_animation1")!
+            // Configure initial view
+            self.configureView(for: self.headingSubscriber?.value ?? 0.0)
+        case .edge(let edge):
+            // Initialize image view
+            self.button.imageView?.image = UIImage(named: "go_animation1")!
                 // Initialize image view animations
                 self.button.imageView?.animationDuration = 1.0
                 self.button.imageView?.animationImages = [
@@ -162,11 +151,11 @@ class PreviewControlViewController: UIViewController {
                 // Initialize accessibility label
                 let accessibilityLabel = "\(titleAccessibilityText)\n\(subtitleText)"
                 
-                // Show labels
-                self.configureLabelView(titleText: titleText, subtitleText: subtitleText, accessibilityLabel: accessibilityLabel)
-            case .transition:
-                // Initialize image view
-                self.button.imageView?.image = UIImage(named: "travel1")!
+            // Show labels
+            self.configureLabelView(titleText: titleText, subtitleText: subtitleText, accessibilityLabel: accessibilityLabel)
+        case .transition:
+            // Initialize image view
+            self.button.imageView?.image = UIImage(named: "travel1")!
                 // Initialize image view animations
                 self.button.imageView?.animationDuration = 1.0
                 self.button.imageView?.animationImages = [
@@ -176,12 +165,11 @@ class PreviewControlViewController: UIViewController {
                     UIImage(named: "travel5")!
                 ]
                 
-                // Start animations
-                self.button.imageView?.startAnimating()
-                
-                // Hide labels
-                self.configureLabelView(titleText: nil, subtitleText: nil, accessibilityLabel: nil)
-            }
+            // Start animations
+            self.button.imageView?.startAnimating()
+            
+            // Hide labels
+            self.configureLabelView(titleText: nil, subtitleText: nil, accessibilityLabel: nil)
         }
     }
     

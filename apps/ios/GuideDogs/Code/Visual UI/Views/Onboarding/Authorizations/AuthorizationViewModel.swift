@@ -11,6 +11,7 @@ import Foundation
 /**
  * `AuthorizationViewModel` is an observable wrapper for the given `AsyncAuthorizationProvider`
  */
+@MainActor
 class AuthorizationViewModel: ObservableObject, AuthorizationProvider {
     
     // MARK: Properties

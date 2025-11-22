@@ -66,9 +66,7 @@ class StatusTableViewController: BaseTableViewController {
     
     @objc
     private func onLocationUpdated(notification: Notification) {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadRows(at: [IndexPath(row: 0, section: Section.gps)], with: .none)
-        }
+        tableView.reloadRows(at: [IndexPath(row: 0, section: Section.gps)], with: .none)
     }
     
     // MARK: - Table view data source

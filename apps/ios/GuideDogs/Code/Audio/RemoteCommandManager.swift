@@ -23,6 +23,7 @@ protocol RemoteCommandManagerDeviceDelegate: AnyObject {
 }
 
 /// A class that handles the remote control actions of an audio playing app.
+@MainActor
 class RemoteCommandManager: NSObject {
     
     // MARK: Properties
@@ -184,6 +185,7 @@ class RemoteCommandManager: NSObject {
 
     // MARK: Handle Events
 
+    @MainActor
     private func handleEvent(_ event: RemoteCommand) -> Bool {
         // Disallow remote command events when in tutorial mode
         guard !AppContext.shared.isInTutorialMode else {

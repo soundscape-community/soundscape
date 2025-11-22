@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 struct ShareRouteActivityViewRepresentable: ViewControllerRepresentable {
     
     // MARK: Properties

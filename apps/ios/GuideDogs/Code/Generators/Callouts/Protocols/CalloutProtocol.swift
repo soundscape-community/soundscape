@@ -7,6 +7,7 @@
 
 import CoreLocation
 
+@MainActor
 protocol CalloutProtocol {
     var id: UUID { get }
     
@@ -62,6 +63,7 @@ extension CalloutProtocol {
         return id == rhs.id
     }
     
+    @MainActor
     func logHistoryAction(_ action: String) {
         // If this callout is displayed in the history, find its index
         guard let index = AppContext.shared.calloutHistory.visibleIndex(of: self) else {

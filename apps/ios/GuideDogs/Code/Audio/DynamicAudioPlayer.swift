@@ -11,7 +11,7 @@ import AVFoundation
 import CoreLocation
 import Combine
 
-protocol FinishableAudioPlayerDelegate: AnyObject {
+@MainActor protocol FinishableAudioPlayerDelegate: AnyObject {
     func onPlayerFinished(_ playerId: AudioPlayerIdentifier)
 }
 
@@ -169,10 +169,12 @@ class DynamicAudioPlayer<T: DynamicSound>: AudioPlayer {
                     try self.play()
                 } catch {
                     GDLogAudioError("Exception: \((error as NSError).localizedFailureReason ?? error.localizedDescription)")
-                    GDATelemetry.track("audio_engine.exception", with: [
-                        "description": error.localizedDescription,
-                        "location": "DynamicAudioPlayer.swift:onHeadingDidUpdate()"
-                    ])
+                    Task { @MainActor in
+                        GDATelemetry.track("audio_engine.exception", with: [
+                            "description": error.localizedDescription,
+                            "location": "DynamicAudioPlayer.swift:onHeadingDidUpdate()"
+                        ])
+                    }
                 }
             }
         }
@@ -372,7 +374,10 @@ extension DynamicAudioPlayer: FinishableAudioPlayer {
         isFinishing = true
         
         guard let sound = sound as? T, let outro = sound.outroAsset else {
-            delegate?.onPlayerFinished(id)
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.delegate?.onPlayerFinished(self.id)
+            }
             return
         }
         
@@ -380,13 +385,19 @@ extension DynamicAudioPlayer: FinishableAudioPlayer {
         
         guard T.AssetType.beatsInPhrase > 0, let lastRendered = layer.player.lastRenderTime, (lastRendered.isHostTimeValid || lastRendered.isSampleTimeValid) else {
             // If we don't have a last rendered time, just finish immediately without playing the outro
-            delegate?.onPlayerFinished(id)
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.delegate?.onPlayerFinished(self.id)
+            }
             return
         }
         
         guard let playerTime = layer.player.playerTime(forNodeTime: lastRendered) else {
             // If we can't get a player time, just finish immediately without playing the outro
-            delegate?.onPlayerFinished(id)
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.delegate?.onPlayerFinished(self.id)
+            }
             return
         }
         
@@ -402,8 +413,12 @@ extension DynamicAudioPlayer: FinishableAudioPlayer {
                 return
             }
             
-            self.queue.async {
-                self.delegate?.onPlayerFinished(self.id)
+            self.queue.async { [weak self] in
+                guard let self = self else { return }
+                Task { @MainActor [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.onPlayerFinished(self.id)
+                }
             }
         }
     }

@@ -31,6 +31,7 @@ extension Array where Element: Hashable {
     }
 }
 
+@MainActor
 extension Array where Element == ReferenceEntity {
     private struct SortedEntity {
         let entity: ReferenceEntity

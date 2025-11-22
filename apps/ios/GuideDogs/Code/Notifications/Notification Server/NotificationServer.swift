@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 class NotificationServer<T: NotificationProtocol> {
     
     // MARK: Properties

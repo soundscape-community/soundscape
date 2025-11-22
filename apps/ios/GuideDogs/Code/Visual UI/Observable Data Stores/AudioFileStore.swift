@@ -8,6 +8,7 @@
 
 import Combine
 
+@MainActor
 class AudioFileStore: ObservableObject {
     @Published var isDownloaded: Bool = false
     @Published var duration: TimeInterval = 0.0

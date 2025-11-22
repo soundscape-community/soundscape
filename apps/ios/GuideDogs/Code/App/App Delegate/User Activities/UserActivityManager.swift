@@ -9,6 +9,7 @@
 import Foundation
 import CocoaLumberjackSwift
 
+@MainActor
 class UserActivityManager {
     
     // MARK: Properties

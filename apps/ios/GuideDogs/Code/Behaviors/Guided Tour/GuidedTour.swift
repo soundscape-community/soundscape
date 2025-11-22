@@ -63,6 +63,7 @@ struct TourState: Codable, CustomStringConvertible {
     }
 }
 
+@MainActor
 class GuidedTour: BehaviorBase {
     
     struct PendingBeaconArgs {
@@ -112,9 +113,7 @@ class GuidedTour: BehaviorBase {
     
     var hasDepartedForCurrentWaypoint: Bool = true {
         didSet {
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .tourHasDepartedChanged, object: nil)
-            }
+            NotificationCenter.default.post(name: .tourHasDepartedChanged, object: nil)
         }
     }
     
@@ -228,25 +227,20 @@ class GuidedTour: BehaviorBase {
         super.activate(with: parent)
         GDATelemetry.track("tourguide.started", with: ["context": telemetryContext])
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-            guard let location = AppContext.shared.geolocationManager.location else {
-                return
-            }
-            
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            guard let self = self, let location = AppContext.shared.geolocationManager.location, !Task.isCancelled else { return }
             GDLogVerbose(.routeGuidance, "Registering \(self.content.event.pois.count) prioritized POIs for tour")
             if self.content.event.pois.count > 0 {
                 self.delegate?.process(RegisterPrioritizedPOIs(pois: self.content.event.pois))
             }
-            
             self.delegate?.process(TourReadyEvent())
             self.delegate?.process(BeginTourWaypointDistanceCalloutsEvent(user: location, waypoint: current.waypoint.location))
         }
     }
     
     override func deactivate() -> Behavior? {
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .tourWillEnd, object: nil)
-        }
+        NotificationCenter.default.post(name: .tourWillEnd, object: nil)
         
         beaconObserver?.cancel()
         beaconObserver = nil
@@ -259,9 +253,7 @@ class GuidedTour: BehaviorBase {
         
         GDATelemetry.track("tourguide.stopped", with: ["context": telemetryContext, "completed": String(state.isFinal)])
         
-        DispatchQueue.main.async {
-            AppContext.process(RemoveRegisteredPOIs())
-        }
+        AppContext.process(RemoveRegisteredPOIs())
         
         return super.deactivate()
     }
@@ -327,9 +319,7 @@ class GuidedTour: BehaviorBase {
                 isFinished = true
                 let event = TourWaypointArrivalEvent(self.progress)
                 
-                DispatchQueue.main.async {
-                    self.delegate?.process(event)
-                }
+                self.delegate?.process(event)
             }
             
             nearestIntersectionKey = nil
@@ -485,9 +475,7 @@ class GuidedTour: BehaviorBase {
                 event = TourWaypointDepartureEvent(progress)
             }
             
-            DispatchQueue.main.async {
-                self.delegate?.process(event)
-            }
+            self.delegate?.process(event)
             
             return
         }

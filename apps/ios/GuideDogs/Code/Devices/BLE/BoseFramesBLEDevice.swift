@@ -151,7 +151,9 @@ class BoseFramesBLEDevice: BaseBLEDevice {
 
         switch (oldState, newState) {
         case (.unknown, .disconnected):
-            AppContext.shared.bleManager.connect(self)
+            Task { @MainActor in
+                AppContext.shared.bleManager.connect(self)
+            }
 
         default:
             GDLogBLEInfo("Received an onWasDiscovered, but device did not transition from 'unknown to 'disconnected' perhaps already connecting? Current state: \(newState) (oldState: \(oldState))")

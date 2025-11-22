@@ -40,7 +40,8 @@ class DestinationTutorialMutePage: DestinationTutorialPage {
             NotificationCenter.default.post(name: NSNotification.Name.enableMagicTap, object: self)
             
             guard !UIDeviceManager.isSimulator else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                Task { @MainActor [weak self] in
+                    try? await Task.sleep(nanoseconds: 2_000_000_000)
                     AppContext.shared.eventProcessor.hush()
                     self?.onMagicTapOccurred()
                 }

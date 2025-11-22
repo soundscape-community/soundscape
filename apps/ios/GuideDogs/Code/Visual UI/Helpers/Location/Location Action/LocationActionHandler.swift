@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import MapKit
 
+@MainActor
 struct LocationActionHandler {
     
     // MARK: `typealias`

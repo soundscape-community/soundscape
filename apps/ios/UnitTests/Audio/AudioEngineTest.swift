@@ -24,6 +24,7 @@ class TestAudioEnvironmentSettings: EnvironmentSettingsProvider {
     var envReverbFilterGain: Float = 0
 }
 
+@MainActor
 final class AudioEngineTest: XCTestCase {
     class TestAudioEngineDelegate: AudioEngineDelegate {
         func didFinishPlaying() {

@@ -80,10 +80,7 @@ class SearchTableViewController: BaseTableViewController {
     
     private var saveCurrentLocationAction: UIAccessibilityCustomAction {
         return UIAccessibilityCustomAction(name: LocationAction.save(isEnabled: true).text) { [weak self] _ -> Bool in
-            DispatchQueue.main.async { [weak self] in
-                self?.saveCurrentLocation()
-            }
-            
+            self?.saveCurrentLocation()
             return true
         }
     }
@@ -164,26 +161,20 @@ class SearchTableViewController: BaseTableViewController {
     // `UITableView`
     
     private func updateTableView() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            // Save reference to `tableViewDataSource` and `tableViewDelegate`
-            if self.parent is HomeViewController {
-                // Only support custom action on "Current Location" from the HomeViewController
-                self.tableViewDataSource = SearchTableDataSource(header: nil, cells: self.moreLocations, currentLocationActions: [self.saveCurrentLocationAction])
-            } else {
-                self.tableViewDataSource = StaticTableViewDataSource(header: nil, cells: self.moreLocations)
-            }
-            
-            self.tableViewDelegate = GenericTableViewDelegate.make(selectDelegate: self)
-        
-            // Update `tableView` and reload
-            self.tableView.dataSource = self.tableViewDataSource
-            self.tableView.delegate = self.tableViewDelegate
-            self.tableView.reloadData()
+        // Save reference to `tableViewDataSource` and `tableViewDelegate`
+        if self.parent is HomeViewController {
+            // Only support custom action on "Current Location" from the HomeViewController
+            self.tableViewDataSource = SearchTableDataSource(header: nil, cells: self.moreLocations, currentLocationActions: [self.saveCurrentLocationAction])
+        } else {
+            self.tableViewDataSource = StaticTableViewDataSource(header: nil, cells: self.moreLocations)
         }
+        
+        self.tableViewDelegate = GenericTableViewDelegate.make(selectDelegate: self)
+        
+        // Update `tableView` and reload
+        self.tableView.dataSource = self.tableViewDataSource
+        self.tableView.delegate = self.tableViewDelegate
+        self.tableView.reloadData()
     }
     
     /// Private method used by a custom accessibility action that allows for jumping straight to saving
@@ -246,29 +237,23 @@ extension SearchTableViewController: SearchResultsTableViewControllerDelegate {
 extension SearchTableViewController: TableViewSelectDelegate {
     
     func didSelect(rowAtIndexPath indexPath: IndexPath) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
+        if self.tableView.cellForRow(at: indexPath)?.reuseIdentifier == MoreLocations.currentLocation.identifier {
+            GDATelemetry.track("poi_selected.current_location", with: ["context": self.delegate?.usageLog ?? ""])
+            
+            // Selected current location cell
+            guard let location = AppContext.shared.geolocationManager.location else {
+                self.present(ErrorAlerts.buildLocationAlert(), animated: true, completion: nil)
                 return
             }
             
-            if self.tableView.cellForRow(at: indexPath)?.reuseIdentifier == MoreLocations.currentLocation.identifier {
-                GDATelemetry.track("poi_selected.current_location", with: ["context": self.delegate?.usageLog ?? ""])
-                
-                // Selected current location cell
-                guard let location = AppContext.shared.geolocationManager.location else {
-                    self.present(ErrorAlerts.buildLocationAlert(), animated: true, completion: nil)
-                    return
-                }
-                
-                // Dismiss `UISearchResultsController`
-                self.searchController?.isActive = false
-                
-                if let delegate = self.delegate {
-                    delegate.didSelect(currentLocation: location)
-                } else {
-                    let detail = LocationDetail(location: location, telemetryContext: "current_location")
-                    self.performSegue(withIdentifier: "LocationDetailView", sender: detail)
-                }
+            // Dismiss `UISearchResultsController`
+            self.searchController?.isActive = false
+            
+            if let delegate = self.delegate {
+                delegate.didSelect(currentLocation: location)
+            } else {
+                let detail = LocationDetail(location: location, telemetryContext: "current_location")
+                self.performSegue(withIdentifier: "LocationDetailView", sender: detail)
             }
         }
     }
@@ -278,40 +263,35 @@ extension SearchTableViewController: TableViewSelectDelegate {
 extension SearchTableViewController: LocationActionDelegate {
     
     func didSelectLocationAction(_ action: LocationAction, detail: LocationDetail) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard action.isEnabled else {
-                // Do nothing if the action is disabled
-                return
-            }
-            
-            do {
-                switch action {
-                case .save, .edit:
-                    // Hide activity indicator if necessary
-                    if let dataSource = self.tableViewDataSource as? SearchTableDataSource,
-                       dataSource.showCurrentLocationActivityIndicator == true {
-                        dataSource.showCurrentLocationActivityIndicator = false
-                        self.tableView.reloadData()
-                    }
-                    
-                    // Edit the marker at the given location
-                    // Segue to the edit marker view
-                    let config = EditMarkerConfig(detail: detail,
-                                                  route: nil,
-                                                  context: self.telemetryContext,
-                                                  addOrUpdateAction: .popViewController,
-                                                  deleteAction: .popViewController,
-                                                  leftBarButtonItemIsHidden: false)
-                    
-                    if let vc = MarkerEditViewRepresentable(config: config).makeViewController() {
-                        self.navigationController?.pushViewController(vc, animated: true)
-                    }
-                    
-                case .beacon:
+        guard action.isEnabled else {
+            // Do nothing if the action is disabled
+            return
+        }
+        
+        do {
+            switch action {
+            case .save, .edit:
+                // Hide activity indicator if necessary
+                if let dataSource = self.tableViewDataSource as? SearchTableDataSource,
+                   dataSource.showCurrentLocationActivityIndicator == true {
+                    dataSource.showCurrentLocationActivityIndicator = false
+                    self.tableView.reloadData()
+                }
+                
+                // Edit the marker at the given location
+                // Segue to the edit marker view
+                let config = EditMarkerConfig(detail: detail,
+                                              route: nil,
+                                              context: self.telemetryContext,
+                                              addOrUpdateAction: .popViewController,
+                                              deleteAction: .popViewController,
+                                              leftBarButtonItemIsHidden: false)
+                
+                if let vc = MarkerEditViewRepresentable(config: config).makeViewController() {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                
+            case .beacon:
                     // Set a beacon on the given location
                     // and segue to the home view
                     try LocationActionHandler.beacon(locationDetail: detail)
@@ -360,7 +340,6 @@ extension SearchTableViewController: LocationActionDelegate {
                 let alert = LocationActionAlert.alert(for: error)
                 self.present(alert, animated: true, completion: nil)
             }
-        }
     }
     
 }

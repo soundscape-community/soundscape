@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@MainActor
 class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccessibilityActionDelegate {
     var onDismissPreviewHandler: (() -> Void)? {
         guard let host = host as? MarkersAndRoutesListHostViewController else {
@@ -32,21 +33,16 @@ class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccess
     }
     
     private func didSelectLocationAction(_ action: LocationAction, detail: LocationDetail) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard action.isEnabled else {
-                // Do nothing if the action is disabled
-                return
-            }
-            
-            do {
-                switch action {
-                case .save, .edit:
-                    // No-op. Navigating the the save/edit marker screen is handled directly in `MarkersList` and `RoutesList`
-                    break
+        guard action.isEnabled else {
+            // Do nothing if the action is disabled
+            return
+        }
+        
+        do {
+            switch action {
+            case .save, .edit:
+                // No-op. Navigating the the save/edit marker screen is handled directly in `MarkersList` and `RoutesList`
+                break
                     
                 case .beacon:
                     // Set a beacon on the given location
@@ -100,6 +96,5 @@ class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccess
                 let alert = LocationActionAlert.alert(for: error)
                 self.host?.present(alert, animated: true, completion: nil)
             }
-        }
     }
 }

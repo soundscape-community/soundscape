@@ -8,6 +8,7 @@
 
 import CoreLocation
 
+@MainActor
 class SpatialDataView: SpatialDataViewProtocol {
     
     // MARK: Private Properties
@@ -225,6 +226,7 @@ class SpatialDataView: SpatialDataViewProtocol {
     ///
     /// - Parameter heading: The device's current heading or course
     /// - Returns: Quadrants realigned to the provided heading. Always four quadrants in the order [.north, .east, .south, .west]
+    @MainActor
     class func getQuadrants(heading: CLLocationDirection) -> [Quadrant] {
         // Find the quadrant the heading is currently in
         let quadrantIndex = Int((heading + 45.0).truncatingRemainder(dividingBy: 360.0)) / 90
@@ -246,6 +248,7 @@ class SpatialDataView: SpatialDataViewProtocol {
     ///
     /// - Parameter heading: The user's heading vector
     /// - Returns: The `CompassDirection` the provided vector falls in
+    @MainActor
     class func getHeadingDirection(heading: CLLocationDirection) -> CompassDirection {
         let quadrants = SpatialDataView.getQuadrants(heading: heading)
         

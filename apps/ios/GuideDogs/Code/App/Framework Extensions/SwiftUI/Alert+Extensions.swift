@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@MainActor
 extension Alert {
     
     static func deleteMarkerAlert(markerId: String,

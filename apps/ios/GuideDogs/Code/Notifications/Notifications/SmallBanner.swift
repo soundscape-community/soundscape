@@ -19,6 +19,7 @@ enum SmallBanner: Int, NotificationProtocol {
         return BannerContainer(type: .small)
     }
     
+    @MainActor
     var observer: NotificationObserver {
         switch self {
         case .routeGuidance: return RouteGuidanceBannerObserver()

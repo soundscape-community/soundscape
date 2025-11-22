@@ -286,20 +286,15 @@ class VoiceSettingsTableViewController: BaseTableViewController {
         AppContext.shared.eventProcessor.hush()
         
         refreshCells(previous: currentVoiceIndex, new: indexPath)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard self?.previewingVoiceIdentifier == voice.identifier else {
-                return
-            }
-            
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            guard let self, self.previewingVoiceIdentifier == voice.identifier else { return }
             GDATelemetry.track("settings.voice.preview", with: ["voice": voice.name])
             AppContext.process(TTSVoicePreviewEvent(name: voice.name) { [weak self] _ in
-                guard self?.previewingVoiceIdentifier == voice.identifier else {
-                    return
-                }
-                
-                self?.previewingVoiceIdentifier = nil
-                self?.refreshCells(previous: nil, new: indexPath)
-                self?.updateVoiceOverFocus(on: indexPath)
+                guard let self, self.previewingVoiceIdentifier == voice.identifier else { return }
+                self.previewingVoiceIdentifier = nil
+                self.refreshCells(previous: nil, new: indexPath)
+                self.updateVoiceOverFocus(on: indexPath)
             })
         }
         
@@ -308,24 +303,20 @@ class VoiceSettingsTableViewController: BaseTableViewController {
     }
     
     private func refreshCells(previous: IndexPath?, new: IndexPath) {
-        DispatchQueue.main.async { [weak self] in
-            if let previous = previous {
-                self?.tableView.reloadRows(at: [previous, new], with: .none)
-            } else {
-                self?.tableView.reloadRows(at: [new], with: .none)
-            }
+        if let previous = previous {
+            tableView.reloadRows(at: [previous, new], with: .none)
+        } else {
+            tableView.reloadRows(at: [new], with: .none)
         }
     }
     
     private func updateVoiceOverFocus(on indexPath: IndexPath) {
-        DispatchQueue.main.async { [weak self] in
-            guard let updated = self?.tableView.cellForRow(at: indexPath) else {
-                return
-            }
-            
-            UIAccessibility.post(notification: .layoutChanged, argument: updated)
-            GDLogAppVerbose("Updated VO focus on selected voice")
+        guard let updated = tableView.cellForRow(at: indexPath) else {
+            return
         }
+        
+        UIAccessibility.post(notification: .layoutChanged, argument: updated)
+        GDLogAppVerbose("Updated VO focus on selected voice")
     }
 }
 

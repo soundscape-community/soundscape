@@ -9,6 +9,7 @@
 import CoreLocation
 import CocoaLumberjackSwift
 
+@MainActor
 extension GDASpatialDataResultEntity: SelectablePOI {
     
     func distanceToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDistance {

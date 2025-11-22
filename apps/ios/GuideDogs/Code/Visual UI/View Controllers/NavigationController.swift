@@ -46,13 +46,7 @@ extension NavigationController {
             return
         }
         
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            self.pushViewController(viewController, animated: true)
-        }
+        self.pushViewController(viewController, animated: true)
     }
     
 }

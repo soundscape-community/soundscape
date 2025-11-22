@@ -8,6 +8,7 @@
 
 import CoreLocation
 
+@MainActor
 struct IntersectionDecisionPoint: RootedPreviewGraph {
     
     // MARK: Properties

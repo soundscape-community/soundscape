@@ -124,17 +124,11 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard let annotation = view.annotation else {
-                return
-            }
-            
-            self.delegate?.didSelectAnnotation(annotation)
+        guard let annotation = view.annotation else {
+            return
         }
+        
+        self.delegate?.didSelectAnnotation(annotation)
     }
     
 }

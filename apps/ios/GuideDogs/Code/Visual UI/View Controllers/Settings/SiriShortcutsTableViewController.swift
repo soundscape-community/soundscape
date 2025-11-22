@@ -93,9 +93,7 @@ class SiriShortcutsTableViewController: BaseTableViewController {
     
     @objc private func reloadShortcuts() {
         updateVoiceShortcuts {
-            DispatchQueue.main.async {
-                self.reloadData()
-            }
+            self.reloadData()
         }
     }
     

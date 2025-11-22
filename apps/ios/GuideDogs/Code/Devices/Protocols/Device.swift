@@ -19,6 +19,7 @@ enum DeviceError: Error {
     case userCancelled
 }
 
+@MainActor
 protocol DeviceDelegate: AnyObject {
     func didConnectDevice(_ device: Device)
     func didFailToConnectDevice(_ device: Device, error: DeviceError)

@@ -19,6 +19,7 @@ import CocoaLumberjackSwift
 // iOS 14.4+
 @available(iOS 14.4, *)
 // `NSObject` required for `CMHeadphoneMotionManagerDelegate`
+@MainActor
 class HeadphoneMotionManager: NSObject, UserHeadingProvider, Device {
     
     // MARK: Properties

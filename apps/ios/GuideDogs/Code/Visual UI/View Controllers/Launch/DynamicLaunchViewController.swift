@@ -102,15 +102,17 @@ class DynamicLaunchViewController: UIViewController {
 
 extension DynamicLaunchViewController: ExperimentManagerDelegate {
     func onExperimentManagerReady() {
-        // Log experiment state
-        if let helper = GDATelemetry.helper {
-            GDATelemetry.track("experiment_snapshot", with: helper.experimentSnapshot)
-        }
-        
-        DispatchQueue.main.async {
+        // This delegate method is called from a background thread (NSURLSession completion handler),
+        // but we need to configure UI on main thread
+        DispatchQueue.main.async { [weak self] in
+            // Log experiment state
+            if let helper = GDATelemetry.helper {
+                GDATelemetry.track("experiment_snapshot", with: helper.experimentSnapshot)
+            }
+            
             AppContext.shared.experimentManager.delegate = nil
             
-            self.configureInitialAppView()
+            self?.configureInitialAppView()
         }
     }
     

@@ -9,6 +9,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 struct BeaconPickerView: View {
     
     // MARK: Properties
@@ -19,7 +20,7 @@ struct BeaconPickerView: View {
     
     // MARK: Initialization
     
-    init(selectedBeacon: Binding<BeaconOption?>, allBeacons: [BeaconOption] = BeaconOption.allAvailablePickerCases) {
+    init(selectedBeacon: Binding<BeaconOption?>, allBeacons: [BeaconOption]) {
         _selectedBeacon = selectedBeacon
         self.allBeacons = allBeacons
     }
@@ -73,9 +74,9 @@ struct BeaconPickerView_Previews: PreviewProvider {
     
 }
 
-private extension BeaconOption {
+extension BeaconOption {
     
-    static var allPickerCases: [BeaconOption] {
+    fileprivate static var allPickerCases: [BeaconOption] {
         return [
             .original,
             .tacticle,

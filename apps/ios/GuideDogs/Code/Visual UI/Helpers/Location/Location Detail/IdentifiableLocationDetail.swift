@@ -12,6 +12,7 @@ import Foundation
  * Wraps `LocationDetail` such that it can be used in a SwiftUI
  * `List` view
  */
+@MainActor
 class IdentifiableLocationDetail: Identifiable {
     
     // MARK: Properties

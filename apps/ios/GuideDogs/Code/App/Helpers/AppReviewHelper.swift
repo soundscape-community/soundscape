@@ -54,7 +54,9 @@ class AppReviewHelper {
         
         LaunchActivity.logAttempt(.reviewApp)
         
-        GDATelemetry.track("app.rate.prompt_rate")
+        Task { @MainActor in
+            GDATelemetry.track("app.rate.prompt_rate")
+        }
         
         return true
     }
@@ -69,7 +71,9 @@ class AppReviewHelper {
         
         UIApplication.shared.open(writeReviewURL)
         
-        GDATelemetry.track("app.rate.write_review")
+        Task { @MainActor in
+            GDATelemetry.track("app.rate.write_review")
+        }
         
         return true
     }

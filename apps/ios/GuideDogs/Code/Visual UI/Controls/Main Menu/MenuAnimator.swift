@@ -8,6 +8,7 @@
 
 import UIKit
 
+@MainActor
 class MenuAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     let style: AnimationStyle
     let completedCallback: ((_ finished: Bool) -> Void)?

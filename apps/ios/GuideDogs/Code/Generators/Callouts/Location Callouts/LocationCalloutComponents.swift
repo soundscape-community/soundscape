@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 struct LocationCalloutComponents {
     let name: String
     let location: CLLocation

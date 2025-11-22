@@ -139,7 +139,7 @@ extension CLLocationCoordinate2D {
         return CLLocationCoordinate2DIsValid(self) && self != CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
     }
     
-    func distance(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
+    nonisolated func distance(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
         return CLLocation(latitude: self.latitude, longitude: self.longitude)
             .distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
     }
@@ -158,7 +158,7 @@ extension CLLocationCoordinate2D {
     /// //   ↘︎    - bearing
     /// //     x  - other coordinate
     /// ```
-    func bearing(to coordinate: CLLocationCoordinate2D) -> CLLocationDirection {
+    nonisolated func bearing(to coordinate: CLLocationCoordinate2D) -> CLLocationDirection {
         // Check that the coordinates are valid
         guard self.isValidLocationCoordinate, coordinate.isValidLocationCoordinate else {
             return -1
@@ -191,7 +191,7 @@ extension CLLocationCoordinate2D {
     ///   - bearing: Initial bearing in degrees from north.
     /// - Returns: Destination point.
     /// - note: Source: http://www.movable-type.co.uk/scripts/latlong.html
-    func destination(distance: CLLocationDistance, bearing: CLLocationDirection) -> CLLocationCoordinate2D {
+    nonisolated func destination(distance: CLLocationDistance, bearing: CLLocationDirection) -> CLLocationCoordinate2D {
         let δ = distance / GeometryUtils.earthRadius
         let θ = bearing.degreesToRadians
         
@@ -215,7 +215,7 @@ extension CLLocationCoordinate2D {
     ///   - coordinate: The reference coordinate.
     ///   - distance: The reference distance.
     /// - Returns: Destination coordinate.
-    func coordinateBetween(coordinate: CLLocationCoordinate2D, distance: CLLocationDistance) -> CLLocationCoordinate2D {
+    nonisolated func coordinateBetween(coordinate: CLLocationCoordinate2D, distance: CLLocationDistance) -> CLLocationCoordinate2D {
         return self.destination(distance: distance, bearing: self.bearing(to: coordinate))
     }
     

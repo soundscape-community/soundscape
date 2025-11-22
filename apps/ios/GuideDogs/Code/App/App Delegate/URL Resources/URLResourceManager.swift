@@ -14,6 +14,7 @@ import Combine
  
  Supported resource types are defined in the Info.plist (`Imported Type Identifiers` and `Exported Type Identifiers`) and the expected identifier is additionally defined in `URLResourceIdentifier`
  */
+@MainActor
 class URLResourceManager {
     
     private struct URLResource {
@@ -26,7 +27,7 @@ class URLResourceManager {
     private var listeners: [AnyCancellable] = []
     private var pendingURLResources: [URLResource] = []
     private var homeViewControllerDidLoad = false
-    private var queue = DispatchQueue(label: "services.soundscape.urlresourcemanager")
+    nonisolated private let queue = DispatchQueue(label: "services.soundscape.urlresourcemanager")
     // Handlers
     private let gpxHandler = GPXResourceHandler()
     private let routeHandler = RouteResourceHandler()

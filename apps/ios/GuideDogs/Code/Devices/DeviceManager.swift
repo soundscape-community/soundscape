@@ -27,6 +27,7 @@ protocol DeviceManagerProtocol: AnyObject {
     var devices: [Device] { get }
 }
 
+@MainActor
 class DeviceManager: DeviceManagerProtocol {
 
     weak var delegate: DeviceManagerDelegate?

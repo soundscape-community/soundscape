@@ -36,6 +36,7 @@ struct GPXIndex {
 
 // MARK: -
 
+@MainActor
 class GPXSimulator {
     
     // MARK: Types

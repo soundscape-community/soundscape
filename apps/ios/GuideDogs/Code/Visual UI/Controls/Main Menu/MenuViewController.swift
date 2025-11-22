@@ -58,6 +58,7 @@ enum MenuItem {
     }
 }
 
+@MainActor
 class MenuViewController: UIViewController {
     
     private(set) var selected: MenuItem = .home

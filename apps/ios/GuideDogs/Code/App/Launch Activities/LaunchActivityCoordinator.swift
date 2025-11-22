@@ -11,6 +11,7 @@ import UIKit
 
 struct LaunchActivityCoordinator {
     
+    @MainActor
     static func coordinateActivitiesOnAppLaunch(from viewController: UIViewController) {
         for activity in LaunchActivity.allCases where attemptActivity(activity, from: viewController) {
             // Launch activity was presented to the user
@@ -28,6 +29,7 @@ struct LaunchActivityCoordinator {
      *
      * - Returns: true if attempt is successful, false if attempt fails or is deferred
      */
+    @MainActor
     private static func attemptActivity(_ activity: LaunchActivity, from viewController: UIViewController) -> Bool {
         switch activity {
         case .shareApp: return AppShareHelper.promptShareIfNeeded(fromViewController: viewController)

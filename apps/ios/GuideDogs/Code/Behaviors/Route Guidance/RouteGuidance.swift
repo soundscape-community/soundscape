@@ -30,6 +30,7 @@ extension Notification.Name {
     static let routeGuidanceTransitionStateChanged = Notification.Name("GDARouteGuidanceTransitionStateChanged")
 }
 
+@MainActor
 class RouteGuidance: BehaviorBase {
     
     struct PendingBeaconArgs {
@@ -221,11 +222,9 @@ class RouteGuidance: BehaviorBase {
         super.activate(with: parent)
         GDATelemetry.track("routeguidance.started", with: ["context": telemetryContext])
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-            guard let location = AppContext.shared.geolocationManager.location else {
-                return
-            }
-            
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            guard let self = self, let location = AppContext.shared.geolocationManager.location, !Task.isCancelled else { return }
             self.delegate?.process(RouteGuidanceReadyEvent())
             self.delegate?.process(BeginWaypointDistanceCalloutsEvent(user: location, waypoint: current.waypoint.location))
         }
@@ -235,9 +234,7 @@ class RouteGuidance: BehaviorBase {
         // When the route ends, display the `RouteCompleteView`
         let context = RouteCompleteViewRepresentable(route: self)
         
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .presentAnyModalViewController, object: self, userInfo: [AnyModalViewObserver.Keys.context: context])
-        }
+        NotificationCenter.default.post(name: .presentAnyModalViewController, object: self, userInfo: [AnyModalViewObserver.Keys.context: context])
         
         beaconObserver?.cancel()
         beaconObserver = nil
@@ -315,9 +312,7 @@ class RouteGuidance: BehaviorBase {
                 isFinished = true
                 let event = WaypointArrivalEvent(self.progress)
                 
-                DispatchQueue.main.async {
-                    self.delegate?.process(event)
-                }
+                self.delegate?.process(event)
             }
             
             nearestIntersectionKey = nil
@@ -458,9 +453,7 @@ class RouteGuidance: BehaviorBase {
                 event = WaypointDepartureEvent(progress)
             }
             
-            DispatchQueue.main.async {
-                self.delegate?.process(event)
-            }
+            self.delegate?.process(event)
             
             return
         }

@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 protocol NotificationObserverDelegate: AnyObject {
     func stateDidChange(_ observer: NotificationObserver)
     func performSegue(_ observer: NotificationObserver, destination: ViewControllerRepresentable)

@@ -12,87 +12,13 @@
 import CoreLocation
 import Foundation
 
+@MainActor
 protocol CalloutStateMachineDelegate: AnyObject {
     func calloutsDidFinish(id: UUID)
 }
 
-final class CalloutStateMachine {
-
-    // MARK: Properties
-
-    private let runnerTask: Task<Runner, Never>
-    private weak var delegateReference: CalloutStateMachineDelegate?
-
-    weak var delegate: CalloutStateMachineDelegate? {
-        get { delegateReference }
-        set {
-            delegateReference = newValue
-            Task {
-                let runner = await runnerTask.value
-                await runner.setDelegate(newValue)
-            }
-        }
-    }
-
-    init(audioEngine engine: AudioEngineProtocol,
-         geo: GeolocationManagerProtocol,
-         motionActivityContext motion: MotionActivityProtocol,
-         history calloutHistory: CalloutHistory) {
-        runnerTask = Task { @MainActor in
-            Runner(audioEngine: engine,
-                   geo: geo,
-                   motionActivityContext: motion,
-                   history: calloutHistory)
-        }
-    }
-
-    // MARK: Methods
-
-    @discardableResult
-    func start(_ callouts: CalloutGroup) -> Task<Void, Never> {
-        withRunner { runner in
-            await runner.start(callouts)
-        }
-    }
-
-    @discardableResult
-    func hush(playSound: Bool = false) -> Task<Void, Never> {
-        withRunner { runner in
-            await runner.hush(playSound: playSound)
-        }
-    }
-
-    @discardableResult
-    func stop() -> Task<Void, Never> {
-        withRunner { runner in
-            await runner.stop()
-        }
-    }
-
-    class func log(callout: CalloutProtocol, context: String?) {
-        var properties = ["type": callout.logCategory,
-                          "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
-                          "audio.output": AppContext.shared.audioEngine.outputType]
-
-        if let context =  context {
-            properties["context"] = context
-        }
-
-        GDATelemetry.track("callout", with: properties)
-    }
-
-    private func withRunner(_ body: @MainActor @escaping (Runner) async -> Void) -> Task<Void, Never> {
-        Task {
-            let runner = await runnerTask.value
-            await body(runner)
-        }
-    }
-}
-
 @MainActor
-private final class Runner {
-
-    // MARK: Simplified State
+final class CalloutStateMachine {
 
     private enum State: CustomStringConvertible {
         case off
@@ -114,7 +40,7 @@ private final class Runner {
 
     // MARK: Properties
 
-    private weak var delegate: CalloutStateMachineDelegate?
+    weak var delegate: CalloutStateMachineDelegate?
 
     private weak var geo: GeolocationManagerProtocol?
     private weak var history: CalloutHistory?
@@ -131,25 +57,52 @@ private final class Runner {
     private let idleSignal = IdleSignal()
     private static let silencePollInterval: UInt64 = 20_000_000
 
-    // MARK: Initialization
-
     init(audioEngine engine: AudioEngineProtocol,
          geo: GeolocationManagerProtocol,
          motionActivityContext motion: MotionActivityProtocol,
          history calloutHistory: CalloutHistory) {
         audioEngine = engine
-        history = calloutHistory
-        motionActivityContext = motion
         self.geo = geo
+        motionActivityContext = motion
+        history = calloutHistory
     }
 
-    // MARK: Runner Lifecycle
+    // MARK: Methods
 
-    func setDelegate(_ delegate: CalloutStateMachineDelegate?) {
-        self.delegate = delegate
+    @discardableResult
+    func start(_ callouts: CalloutGroup) -> Task<Void, Never> {
+        Task { @MainActor in
+            await startCallouts(callouts)
+        }
     }
 
-    func start(_ callouts: CalloutGroup) async {
+    @discardableResult
+    func hush(playSound: Bool = false) -> Task<Void, Never> {
+        Task { @MainActor in
+            await hushCallouts(playSound: playSound)
+        }
+    }
+
+    @discardableResult
+    func stop() -> Task<Void, Never> {
+        Task { @MainActor in
+            await stopCallouts()
+        }
+    }
+
+    class func log(callout: CalloutProtocol, context: String?) {
+        var properties = ["type": callout.logCategory,
+                          "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
+                          "audio.output": AppContext.shared.audioEngine.outputType]
+
+        if let context =  context {
+            properties["context"] = context
+        }
+
+        GDATelemetry.track("callout", with: properties)
+    }
+
+    private func startCallouts(_ callouts: CalloutGroup) async {
         if state != .off {
             await waitUntilIdle()
         }
@@ -165,16 +118,16 @@ private final class Runner {
         didNotifyCompletion = false
         state = .running
 
-        calloutTask = Task {
+        calloutTask = Task { @MainActor in
             await self.execute(callouts)
         }
     }
 
-    func hush(playSound: Bool) async {
+    private func hushCallouts(playSound: Bool) async {
         await cancelCurrentCallouts(markHushed: true, hushSound: playSound ? GlyphSound(.exitMode) : nil)
     }
 
-    func stop() async {
+    private func stopCallouts() async {
         await cancelCurrentCallouts(markHushed: false, hushSound: nil)
     }
 
@@ -394,29 +347,29 @@ private final class Runner {
     }
 }
 
-    private actor IdleSignal {
-        private var waiters: [CheckedContinuation<Void, Never>] = []
-        private var pendingSignals = 0
+private actor IdleSignal {
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+    private var pendingSignals = 0
 
-        func wait() async {
-            if pendingSignals > 0 {
-                pendingSignals -= 1
-                return
-            }
-
-            await withCheckedContinuation { continuation in
-                waiters.append(continuation)
-            }
+    func wait() async {
+        if pendingSignals > 0 {
+            pendingSignals -= 1
+            return
         }
 
-        func signal() {
-            guard !waiters.isEmpty else {
-                pendingSignals += 1
-                return
-            }
-
-            let current = waiters
-            waiters.removeAll()
-            current.forEach { $0.resume() }
+        await withCheckedContinuation { continuation in
+            waiters.append(continuation)
         }
     }
+
+    func signal() {
+        guard !waiters.isEmpty else {
+            pendingSignals += 1
+            return
+        }
+
+        let current = waiters
+        waiters.removeAll()
+        current.forEach { $0.resume() }
+    }
+}

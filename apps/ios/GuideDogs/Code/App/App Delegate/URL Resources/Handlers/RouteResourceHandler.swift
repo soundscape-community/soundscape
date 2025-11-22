@@ -13,6 +13,7 @@ extension Notification.Name {
     static let didFailToImportRoute = Notification.Name("DidFailToImportRoute")
 }
 
+@MainActor
 class RouteResourceHandler: URLResourceHandler {
     
     // MARK: Keys
@@ -45,15 +46,11 @@ class RouteResourceHandler: URLResourceHandler {
     private func didImportRoute(route: Route) {
         let userInfo: [String: Any] = [ Keys.route: route ]
         
-        DispatchQueue.main.async { [weak self] in
-            NotificationCenter.default.post(name: .didImportRoute, object: self, userInfo: userInfo)
-        }
+        NotificationCenter.default.post(name: .didImportRoute, object: self, userInfo: userInfo)
     }
     
     private func didFailToImportRoute() {
-        DispatchQueue.main.async { [weak self] in
-            NotificationCenter.default.post(name: .didFailToImportRoute, object: self)
-        }
+        NotificationCenter.default.post(name: .didFailToImportRoute, object: self)
     }
     
 }

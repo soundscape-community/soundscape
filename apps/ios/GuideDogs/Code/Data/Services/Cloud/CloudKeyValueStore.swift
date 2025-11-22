@@ -194,7 +194,9 @@ extension CloudKeyValueStore {
                                         object: self,
                                         userInfo: forwardNotificationUserInfo)
         
-        GDATelemetry.track("cloud_sync.store_did_change", value: reason.description)
+        Task { @MainActor in
+            GDATelemetry.track("cloud_sync.store_did_change", value: reason.description)
+        }
     }
     
     @objc private func appDidBecomeActive(_ notification: Notification) {
@@ -206,7 +208,9 @@ extension CloudKeyValueStore {
             return
         }
         
-        notifyOfInvalidRoutesIfNeeded(routeParametersObjects: pendingRouteErrorNotifications)
+        Task { @MainActor in
+            notifyOfInvalidRoutesIfNeeded(routeParametersObjects: pendingRouteErrorNotifications)
+        }
         pendingRouteErrorNotifications.removeAll()
     }
 }

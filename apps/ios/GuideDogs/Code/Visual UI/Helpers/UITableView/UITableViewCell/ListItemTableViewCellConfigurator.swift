@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import CoreLocation
 
+@MainActor
 class ListItemTableViewCellConfigurator: TableViewCellConfigurator {
     
     typealias TableViewCell = POITableViewCell

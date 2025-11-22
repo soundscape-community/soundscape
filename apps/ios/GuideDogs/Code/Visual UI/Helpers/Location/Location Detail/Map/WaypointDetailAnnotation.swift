@@ -9,6 +9,7 @@
 import Foundation
 import MapKit
 
+@MainActor
 class WaypointDetailAnnotation: NSObject, MKAnnotation {
     
     // MARK: Parameters

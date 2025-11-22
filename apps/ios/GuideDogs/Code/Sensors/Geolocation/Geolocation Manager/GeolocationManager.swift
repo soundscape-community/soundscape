@@ -13,6 +13,7 @@ extension Notification.Name {
     static let headingTypeDidUpdate = Notification.Name("HeadingTypeDidUpdate")
 }
 
+@MainActor
 @objc
 class GeolocationManager: NSObject, GeolocationManagerProtocol {
     

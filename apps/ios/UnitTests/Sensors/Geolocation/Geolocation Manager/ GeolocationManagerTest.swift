@@ -87,6 +87,7 @@ class TestCLLocationManager: CLLocationManager {
     
 }
 
+@MainActor
 class GeolocationManagerTest: XCTestCase {
     private var manager: GeolocationManager!
     private var locProvider = TestLocationProvider()

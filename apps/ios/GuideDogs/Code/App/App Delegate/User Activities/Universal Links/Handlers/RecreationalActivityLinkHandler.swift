@@ -27,18 +27,14 @@ class RecreationalActivityLinkHandler: UniversalLinkHandler {
     func handleUniversalLink(with queryItems: [URLQueryItem]?, version: UniversalLinkVersion) {
         guard let parameters = parseQueryItems(queryItems) else {
             // Failed to parse the expected parameters
-            DispatchQueue.main.async { [weak self] in
-                NotificationCenter.default.post(name: Notification.Name.activityDownloadDidFail, object: self)
-            }
+            NotificationCenter.default.post(name: Notification.Name.activityDownloadDidFail, object: self)
             return
         }
 
         if AuthoredActivityLoader.shared.activityExists(parameters.id) {
             // If we have already downloaded the recreational activity,
             // transition to the UI to the list of downloaded activities
-            DispatchQueue.main.async { [weak self] in
-                NotificationCenter.default.post(name: Notification.Name.processedActivityDeepLink, object: self)
-            }
+            NotificationCenter.default.post(name: Notification.Name.processedActivityDeepLink, object: self)
         } else {
             // Download the recreational activity
             downloadRecreationalActivity(with: parameters.id, version: version)

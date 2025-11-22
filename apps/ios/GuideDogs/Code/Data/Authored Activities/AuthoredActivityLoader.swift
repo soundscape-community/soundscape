@@ -145,12 +145,16 @@ class AuthoredActivityLoader {
         
         do {
             _ = try await downloadContentAsync(for: AuthoredActivityMetadata(id: activityID, linkVersion: linkVersion))
-            GDATelemetry.track("asevents.added")
+            Task { @MainActor in
+                GDATelemetry.track("asevents.added")
+            }
         } catch {
             // TODO: Differentiate between the various errors that can be thrown
             
             GDLogError(.network, "Unable to save downloaded experience data (id: \(activityID)")
-            GDATelemetry.track("asevents.update.failure", with: ["reason": "fileError"])
+            Task { @MainActor in
+                GDATelemetry.track("asevents.update.failure", with: ["reason": "fileError"])
+            }
             
             throw ActivityLoaderError.unableToSaveExperience
         }
@@ -198,7 +202,9 @@ class AuthoredActivityLoader {
                 try FileManager.default.removeItem(at: contentURL)
             }
             
-            GDATelemetry.track("asevents.removed")
+            Task { @MainActor in
+                GDATelemetry.track("asevents.removed")
+            }
         } catch {
             GDLogAppError("Unable to save known experiences file or remove content/state files!")
         }
@@ -218,7 +224,9 @@ class AuthoredActivityLoader {
         do {
             try FileManager.default.removeItem(at: url)
             NotificationCenter.default.post(name: .activityStateReset, object: nil, userInfo: [Keys.activityId: activityID])
-            GDATelemetry.track("asevents.reset")
+            Task { @MainActor in
+                GDATelemetry.track("asevents.reset")
+            }
         } catch {
             GDLogAppError("Unable to reset state file!")
         }
@@ -237,7 +245,9 @@ class AuthoredActivityLoader {
         let id = metadata.id
         
         guard let url = metadata.downloadPath else {
-            GDATelemetry.track("asevents.update.failure", with: ["reason": "urlUnavailable"])
+            Task { @MainActor in
+                GDATelemetry.track("asevents.update.failure", with: ["reason": "urlUnavailable"])
+            }
             
             NotificationCenter.default.post(name: .didTryActivityUpdate, object: self, userInfo: [
                 Keys.updateSuccess: false,
@@ -261,7 +271,9 @@ class AuthoredActivityLoader {
         // If it wasn't modified, then return the current content
         if response.statusCode == .notModified, let content = loadContent(id) {
             GDLogInfo(.routeGuidance, "Activity data has not been modified since it was last downloaded.")
-            GDATelemetry.track("asevents.update.success", with: ["modified": "false"])
+            Task { @MainActor in
+                GDATelemetry.track("asevents.update.success", with: ["modified": "false"])
+            }
             
             // Start downloading the audio clips and images in case any still need to be cached
             Task {
@@ -281,7 +293,9 @@ class AuthoredActivityLoader {
         // If the we received any other response code, then an error occurred
         guard response.statusCode == .success else {
             GDLogWarn(.routeGuidance, "HTTP response does not indicate success. Unable to load content.")
-            GDATelemetry.track("asevents.update.failure", with: ["reason": "badStatusCode"])
+            Task { @MainActor in
+                GDATelemetry.track("asevents.update.failure", with: ["reason": "badStatusCode"])
+            }
             
             NotificationCenter.default.post(name: .didTryActivityUpdate, object: self, userInfo: [
                 Keys.updateSuccess: false,
@@ -316,7 +330,9 @@ class AuthoredActivityLoader {
         
         // Save the downloaded data
         guard let contentURL = contentURL(activityID: id) else {
-            GDATelemetry.track("asevents.update.failure", with: ["reason": "urlUnavailable"])
+            Task { @MainActor in
+                GDATelemetry.track("asevents.update.failure", with: ["reason": "urlUnavailable"])
+            }
             
             NotificationCenter.default.post(name: .didTryActivityUpdate, object: self, userInfo: [
                 Keys.updateSuccess: false,
@@ -327,7 +343,9 @@ class AuthoredActivityLoader {
         }
         
         try data.write(to: contentURL)
-        GDATelemetry.track("asevents.update.success", with: ["modified": "true"])
+        Task { @MainActor in
+            GDATelemetry.track("asevents.update.success", with: ["modified": "true"])
+        }
         GDLogInfo(.routeGuidance, "Activity downloaded successfully!")
         
         // Update the metadata and store it

@@ -9,6 +9,7 @@
 import Combine
 import CoreLocation
 
+@MainActor
 class BeaconDemoHelper {
     private enum BeaconType {
         case location(loc: GenericLocation, address: String?)

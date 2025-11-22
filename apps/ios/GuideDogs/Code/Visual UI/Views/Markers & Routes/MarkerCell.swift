@@ -11,6 +11,7 @@ import Combine
 import RealmSwift
 import CoreLocation
 
+@MainActor
 class MarkerModel: ObservableObject {
     let id: String
     

@@ -10,6 +10,7 @@ import SwiftUI
 import CoreLocation
 import RealmSwift
 
+@MainActor
 struct RouteEditView: View {
     private enum EditViewAlert {
         case delete, error, cancel
@@ -20,6 +21,7 @@ struct RouteEditView: View {
         case edit(detail: RouteDetail)
         case `import`(route: Route)
         
+        @MainActor
         var detail: RouteDetail? {
             switch self {
             case .add: return nil
@@ -28,6 +30,7 @@ struct RouteEditView: View {
             }
         }
         
+        @MainActor
         var title: String {
             switch self {
             case .add: return GDLocalizedString("route_detail.action.create")

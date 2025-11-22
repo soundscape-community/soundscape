@@ -97,7 +97,9 @@ class RealmMigrationTools {
             // but to do so, we had to remove the Realm and start fresh... This means that users may have
             // lost data.
             
-            GDATelemetry.track("data_migration_failed", with: ["realm_name": realmName])
+            Task { @MainActor in
+                GDATelemetry.track("data_migration_failed", with: ["realm_name": realmName])
+            }
             return false
         }
     }

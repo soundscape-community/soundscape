@@ -15,6 +15,7 @@ enum ImportMarkerError: Error {
     case failedToFetchMarker
 }
 
+@MainActor
 struct MarkerParameters: Codable {
     
     // MARK: Properties
@@ -109,6 +110,7 @@ struct MarkerParameters: Codable {
         }
     }
     
+    @MainActor
     init?(location detail: LocationDetail) {
         let entity: POI
         
@@ -218,13 +220,15 @@ extension MarkerParameters {
         //
         // For OSM entities, add or update the entity in the cache
         location.fetchEntity { (result) in
-            switch result {
-            case .success(let entity):
-                let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
-                let locationDetail = LocationDetail(entity: entity, imported: importedDetail, telemetryContext: nil)
-                completion(.success(locationDetail))
-            case .failure(let error):
-                completion(.failure(error))
+            Task { @MainActor in
+                switch result {
+                case .success(let entity):
+                    let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
+                    let locationDetail = LocationDetail(entity: entity, imported: importedDetail, telemetryContext: nil)
+                    completion(.success(locationDetail))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
             }
         }
     }

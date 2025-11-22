@@ -11,6 +11,7 @@ import Foundation
 /*
  Supports serialization of the Realm `RouteWaypoint` object
  */
+@MainActor
 struct RouteWaypointParameters: Codable {
     
     // MARK: Properties

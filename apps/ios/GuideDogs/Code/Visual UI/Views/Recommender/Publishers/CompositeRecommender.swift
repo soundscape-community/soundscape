@@ -18,6 +18,7 @@ import Combine
  * Recommender priority is represented by the `rawValue` of the `Component` enum.
  *
  */
+@MainActor
 class CompositeRecommender: Recommender {
     
     // MARK: Enum
@@ -28,6 +29,7 @@ class CompositeRecommender: Recommender {
         case navilens
         case route
         
+        @MainActor
         var recommender: Recommender {
             switch self {
             case .navilens: return NavilensRecommender()
@@ -35,6 +37,7 @@ class CompositeRecommender: Recommender {
             }
         }
         
+        @MainActor
         static var allSortedRecommenders: [Recommender] {
             // Return an array of all recommenders that is sorted
             // by the recommender's priority

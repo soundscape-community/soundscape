@@ -8,6 +8,7 @@
 
 import CoreLocation
 
+@MainActor
 enum CompassDirection: Int {
     case north = 0
     case east = 1
@@ -23,7 +24,7 @@ enum CompassDirection: Int {
     ///   - bearing: Bearing to POI
     ///   - quadrants: Array of 4 quadrants
     /// - Returns: The CompassDirection of the bearing
-    static func from(bearing: CLLocationDirection, quadrants: [Quadrant] = SpatialDataView.getQuadrants(heading: 0.0)) -> CompassDirection {
+    static func from(bearing: CLLocationDirection, quadrants: [Quadrant]) -> CompassDirection {
         guard let index = quadrants.firstIndex(where: { $0.contains(bearing) }), index < 4 else {
             return .unknown
         }

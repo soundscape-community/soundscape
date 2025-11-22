@@ -27,6 +27,7 @@ extension POICalloutProtocol {
         return GlyphSound(category.glyph)
     }
     
+    @MainActor
     func distanceDescription(for location: CLLocation?, tts: Bool = false) -> String? {
         guard let location = location, let distance = poi?.distanceToClosestLocation(from: location) else {
             return nil

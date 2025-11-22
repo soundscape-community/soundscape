@@ -212,9 +212,7 @@ extension SettingsViewController: MixAudioSettingCellDelegate {
     }
     
     private func focusOnCell(_ cell: MixAudioSettingCell) {
-        DispatchQueue.main.async {
-            UIAccessibility.post(notification: .layoutChanged, argument: cell)
-        }
+        UIAccessibility.post(notification: .layoutChanged, argument: cell)
     }
 }
 

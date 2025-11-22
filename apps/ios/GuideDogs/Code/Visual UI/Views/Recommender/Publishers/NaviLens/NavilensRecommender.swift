@@ -17,6 +17,7 @@ import CoreLocation
  * `NavilensRecommenderView`, else the recommender publishes a `nil` value.
  *
  */
+@MainActor
 class NavilensRecommender: Recommender {
     
     // Properties

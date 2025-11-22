@@ -17,6 +17,7 @@ import CoreLocation
  * `RouteRecommenderView`, else the recommender publishes a `nil` value.
  *
  */
+@MainActor
 class RouteRecommender: Recommender {
     
     // Properties

@@ -13,6 +13,7 @@ import Combine
 //
 // This is a wrapper class which should be removed
 // once support for iOS < 14.4 is removed
+@MainActor
 class HeadphoneMotionManagerWrapper {
     
     typealias UserHeadingDevice = UserHeadingProvider & Device

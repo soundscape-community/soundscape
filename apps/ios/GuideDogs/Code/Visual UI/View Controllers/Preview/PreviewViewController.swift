@@ -248,28 +248,22 @@ class PreviewViewController: UIViewController {
     }
     
     private func onPreviewDidInitialize(_ result: Result<PreviewBehavior<IntersectionDecisionPoint>, LocationActionError>) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
+        switch result {
+        case .success(let behavior):
+            // Save behavior
+            self.behavior = behavior
+            // Start the preview experience
+            self.onPreviewDidInitialize(behavior)
+        case .failure(let error):
+            // Present the error alert and dismiss the current
+            // view and return home
+            let alert = LocationActionAlert.alert(for: error) { (_) in
+                self.dismiss(animated: true) { [weak self] in
+                    self?.onDismissHandler?()
+                }
             }
             
-            switch result {
-            case .success(let behavior):
-                // Save behavior
-                self.behavior = behavior
-                // Start the preview experience
-                self.onPreviewDidInitialize(behavior)
-            case .failure(let error):
-                // Present the error alert and dismiss the current
-                // view and return home
-                let alert = LocationActionAlert.alert(for: error) { (_) in
-                    self.dismiss(animated: true) { [weak self] in
-                        self?.onDismissHandler?()
-                    }
-                }
-                
-                self.present(alert, animated: true, completion: nil)
-            }
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
@@ -338,56 +332,44 @@ class PreviewViewController: UIViewController {
     }
     
     private func configureToggleButton() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            if SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads {
-                self.roadToggleButton.image = UIImage(named: "preview_toggle_on")
-                self.roadToggleButton.accessibilityLabel = GDLocalizedString("preview.include_unnamed_roads.label.on")
-                self.roadToggleButton.accessibilityHint = GDLocalizedString("preview.include_unnamed_roads.hint.on")
-            } else {
-                self.roadToggleButton.image = UIImage(named: "preview_toggle_off")
-                self.roadToggleButton.accessibilityLabel = GDLocalizedString("preview.include_unnamed_roads.label.off")
-                self.roadToggleButton.accessibilityHint = GDLocalizedString("preview.include_unnamed_roads.hint.off")
-            }
+        if SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads {
+            self.roadToggleButton.image = UIImage(named: "preview_toggle_on")
+            self.roadToggleButton.accessibilityLabel = GDLocalizedString("preview.include_unnamed_roads.label.on")
+            self.roadToggleButton.accessibilityHint = GDLocalizedString("preview.include_unnamed_roads.hint.on")
+        } else {
+            self.roadToggleButton.image = UIImage(named: "preview_toggle_off")
+            self.roadToggleButton.accessibilityLabel = GDLocalizedString("preview.include_unnamed_roads.label.off")
+            self.roadToggleButton.accessibilityHint = GDLocalizedString("preview.include_unnamed_roads.hint.off")
         }
     }
     
     private func configureContainerView(_ container: UIView, isHidden: Bool, navigationBarIsHidden: Bool, roadToggleItemIsHidden: Bool) {
-        DispatchQueue.main.async {
-            // Update the state of the activity indicator view
-            UIView.transition(with: self.view, duration: 1.0, options: .transitionCrossDissolve, animations: { [weak self] in
-                guard let `self` = self else {
-                    return
-                }
-                
-                // Hide sibling elements when a container view is presented
-                container.accessibilityViewIsModal = isHidden == false
-                
-                // Show view
-                container.isHidden = isHidden
-                
-                // Show or hide the road toggle button in the navigation item
-                if roadToggleItemIsHidden {
-                    self.navigationItem.remove(barButtonItem: self.roadToggleButton)
-                } else {
-                    self.navigationItem.setRightBarButton(self.roadToggleButton, animated: true)
-                }
-                
-                // Update navigation bar
-                self.navigationController?.setNavigationBarHidden(navigationBarIsHidden, animated: true)
-            }, completion: { [weak self] (_) in
-                guard let `self` = self else {
-                    return
-                }
-                
-                // Ensures that Voiceover is aware of new layout
-                let argument = isHidden ? self.exitBarButtonItem : container
-                UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: argument)
-            })
-        }
+        // Update the state of the activity indicator view
+        UIView.transition(with: self.view, duration: 1.0, options: .transitionCrossDissolve, animations: {
+            // Hide sibling elements when a container view is presented
+            container.accessibilityViewIsModal = isHidden == false
+            
+            // Show view
+            container.isHidden = isHidden
+            
+            // Show or hide the road toggle button in the navigation item
+            if roadToggleItemIsHidden {
+                self.navigationItem.remove(barButtonItem: self.roadToggleButton)
+            } else {
+                self.navigationItem.setRightBarButton(self.roadToggleButton, animated: true)
+            }
+            
+            // Update navigation bar
+            self.navigationController?.setNavigationBarHidden(navigationBarIsHidden, animated: true)
+        }, completion: { [weak self] (_) in
+            guard let `self` = self else {
+                return
+            }
+            
+            // Ensures that Voiceover is aware of new layout
+            let argument = isHidden ? self.exitBarButtonItem : container
+            UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: argument)
+        })
     }
     
     private func configureActivityIndicatorView(isHidden: Bool) {

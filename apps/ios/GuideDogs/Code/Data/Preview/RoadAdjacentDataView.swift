@@ -11,6 +11,7 @@ import CoreLocation
 import CocoaLumberjackSwift
 import CoreGPX
 
+@MainActor
 struct RoadAdjacentDataView: AdjacentDataView, Equatable {
     
     typealias ReferenceEntityID = String

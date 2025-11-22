@@ -8,6 +8,7 @@
 
 import CoreLocation
 
+@MainActor
 class BehaviorBase: Behavior {
     let id = UUID()
     

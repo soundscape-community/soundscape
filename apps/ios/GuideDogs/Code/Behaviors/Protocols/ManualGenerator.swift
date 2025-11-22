@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 protocol ManualGenerator {
     func respondsTo(_ event: UserInitiatedEvent) -> Bool
     

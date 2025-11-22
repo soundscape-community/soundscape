@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 extension Array where Element == LocationDetail {
     
     var asIdenfifiable: [IdentifiableLocationDetail] {
@@ -21,6 +22,7 @@ extension Array where Element == LocationDetail {
     
 }
 
+@MainActor
 extension Array where Element == IdentifiableLocationDetail {
     
     var asLocationDetail: [LocationDetail] {

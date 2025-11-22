@@ -19,6 +19,7 @@ extension Notification.Name {
  * view (`UIActivityViewController` is not currently supported in SwiftUI).
  *
  */
+@MainActor
 class AnyModalViewObserver: NotificationObserver {
     
     // MARK: Keys

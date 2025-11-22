@@ -18,10 +18,12 @@ protocol ReverseGeocoderResult {
     var heading: Heading { get }
     var time: Date { get }
     
+    @MainActor
     func buildCallout(origin: CalloutOrigin, sound playModeSound: Bool, useClosestRoadIfAvailable: Bool) -> CalloutProtocol
     func isSignificantlyDifferent(_ rhs: ReverseGeocoderResult) -> Bool
 }
 
+@MainActor
 struct GenericGeocoderResult: ReverseGeocoderResult {
     /// Location that was reverse geocoded
     let location: CLLocation
@@ -104,6 +106,7 @@ struct GenericGeocoderResult: ReverseGeocoderResult {
         return LocationCallout(origin, geocodedResult: self, sound: playModeSound, useClosest: useClosestRoadIfAvailable)
     }
     
+    @MainActor
     func getRoadCalloutComponents(fromLocation: CLLocation? = nil, useClosest useClosestRoadIfAvailable: Bool = false, useOriginalHeading: Bool = false) -> LocationCalloutComponents? {
         let location = fromLocation ?? self.location
         
@@ -126,6 +129,7 @@ struct GenericGeocoderResult: ReverseGeocoderResult {
                                          bearing: location.bearing(to: roadLocation))
     }
     
+    @MainActor
     func getPOICalloutComponents(fromLocation: CLLocation? = nil, useOriginalHeading: Bool = false) -> LocationCalloutComponents? {
         let location = fromLocation ?? self.location
         
@@ -155,6 +159,7 @@ struct GenericGeocoderResult: ReverseGeocoderResult {
     }
 }
 
+@MainActor
 struct InsideGeocoderResult: ReverseGeocoderResult {
     /// Location that was reverse geocoded
     let location: CLLocation
@@ -218,6 +223,7 @@ struct InsideGeocoderResult: ReverseGeocoderResult {
     }
 }
 
+@MainActor
 class AlongsideGeocoderResult: ReverseGeocoderResult {
     /// Location that was reverse geocoded
     let location: CLLocation
@@ -282,9 +288,17 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
         closestRoadLocation = closestLoc
         intersectionKey = intersection
         
-        SpatialDataCache.fetchEstimatedAddress(location: location) { (address) in
-            self.estimatedAddress = address
-            NotificationCenter.default.post(name: Notification.Name.estimatedAddressDidComplete, object: self)
+        Task { @MainActor [weak self] in
+            guard let self = self else {
+                return
+            }
+            SpatialDataCache.fetchEstimatedAddress(location: self.location) { [weak self] address in
+                guard let self = self else {
+                    return
+                }
+                self.estimatedAddress = address
+                NotificationCenter.default.post(name: Notification.Name.estimatedAddressDidComplete, object: self)
+            }
         }
     }
     
@@ -292,6 +306,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
         return AlongRoadLocationCallout(origin, geocodedResult: self, sound: playModeSound, useClosest: useClosestRoadIfAvailable)
     }
     
+    @MainActor
     func getRoadCalloutComponents(fromLocation: CLLocation? = nil, useClosest useClosestRoadIfAvailable: Bool = false, useOriginalHeading: Bool = false) -> LocationCalloutComponents? {
         let location = fromLocation ?? self.location
         
@@ -312,6 +327,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
                                          bearing: location.bearing(to: roadLocation))
     }
     
+    @MainActor
     func getIntersectionCalloutComponents(fromLocation: CLLocation? = nil, useClosest useClosestRoadIfAvailable: Bool = false, useOriginalHeading: Bool = false) -> LocationCalloutComponents? {
         let location = fromLocation ?? self.location
         

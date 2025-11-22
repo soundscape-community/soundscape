@@ -30,6 +30,7 @@ private struct UserDefaultKeys {
 
 // MARK: -
 
+@MainActor
 class TelemetryHelper {
     
     // MARK: Constants

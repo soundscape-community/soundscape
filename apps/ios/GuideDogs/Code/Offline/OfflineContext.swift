@@ -20,6 +20,7 @@ extension Notification.Name {
 /// This class tracks whether openscape is offline and notifies observers when a change in
 /// state occurs.
 ///
+@MainActor
 class OfflineContext {
     
     struct Keys {

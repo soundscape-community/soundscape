@@ -19,6 +19,7 @@ import Combine
  * view (`RecommenderView`).
  *
  */
+@MainActor
 class RecommenderViewModel: ObservableObject {
     
     // MARK: Properties
@@ -35,11 +36,12 @@ class RecommenderViewModel: ObservableObject {
     
     // MARK: Initialization
     
-    init(recommender: Recommender = CompositeRecommender()) {
-        self.recommender = recommender
+    init(recommender: Recommender? = nil) {
+        // Lazily create default recommender inside main actor context to avoid default arg evaluation outside actor
+        self.recommender = recommender ?? CompositeRecommender()
         
         // Listen for updates from the recommender
-        listeners.append(recommender.publisher.receive(on: RunLoop.main).sink(receiveValue: { [weak self] newValue in
+        listeners.append(self.recommender.publisher.receive(on: RunLoop.main).sink(receiveValue: { [weak self] newValue in
             guard let `self` = self else {
                 return
             }

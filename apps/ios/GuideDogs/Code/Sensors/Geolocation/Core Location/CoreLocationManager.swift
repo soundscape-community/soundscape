@@ -24,6 +24,7 @@ enum CoreLocationAuthorizationStatus {
     case denied
 }
 
+@MainActor
 class CoreLocationManager: NSObject {
     
     // MARK: Enums
@@ -34,6 +35,7 @@ class CoreLocationManager: NSObject {
         case significantChange(origin: SignificantChangeMonitoringOrigin)
         case none
         
+        @MainActor
         static func == (lhs: LocationUpdateActivity, rhs: LocationUpdateActivity) -> Bool {
             switch  (lhs, rhs) {
             case (.continuous, .continuous): return true
@@ -355,6 +357,7 @@ class CoreLocationManager: NSObject {
         locationManager.stopUpdatingHeading()
     }
     
+    @MainActor
     private func didUpdateLocation(_ location: CLLocation) {
         if case .significantChange(let origin) = locationUpdateActivity {
             // Do not propogate location update if there is no
@@ -561,6 +564,7 @@ extension CoreLocationManager: RawCourseProvider { }
 
 extension CoreLocationManager: LocationProvider {
     
+    @MainActor
     func startMonitoringSignificantLocationChanges() -> Bool {
         guard startCoreLocationUpdates(significantChange: true) else {
             // Failed to start CL location updates
@@ -585,6 +589,7 @@ extension CoreLocationManager: LocationProvider {
         locationManager.stopUpdatingLocation()
     }
     
+    @MainActor
     private func startMonitoringSignificantLocationChanges(_ location: CLLocation) {
         // `SignificantChangeMonitoringOrigin` will decide
         // when a significant change in location has occured

@@ -22,6 +22,7 @@ struct LocationDetailConfiguration {
     
     // MARK: Configuration
     
+    @MainActor
     var title: String {
         switch style {
         case .location(let detail): return detail.displayName
@@ -40,7 +41,7 @@ struct LocationDetailConfiguration {
         }
     }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     var detailView: some View {
         switch style {
         case .location, .route:
@@ -55,7 +56,7 @@ struct LocationDetailConfiguration {
         }
     }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     func annotationDetailView(for annotation: MKAnnotation?) -> some View {
         if let annotation = annotation as? WaypointDetailAnnotation {
             WaypointDetailView(waypoint: annotation.detail, userLocation: AppContext.shared.geolocationManager.location)

@@ -33,15 +33,18 @@ class ShareMarkerLinkHandler: UniversalLinkHandler {
             return
         }
         
-        guard let markerParameters = MarkerParameters(queryItems: queryItems) else {
-            GDLogUniversalLinkError("Universal link is invalid - Failed to parse a `MarkerParameters` object from query items")
-            self.didFailToImportMarker()
-            return
+        Task { @MainActor in
+            guard let markerParameters = MarkerParameters(queryItems: queryItems) else {
+                GDLogUniversalLinkError("Universal link is invalid - Failed to parse a `MarkerParameters` object from query items")
+                self.didFailToImportMarker()
+                return
+            }
+            
+            handle(markerParameters: markerParameters)
         }
-        
-        handle(markerParameters: markerParameters)
     }
     
+    @MainActor
     private func handle(markerParameters: MarkerParameters) {
         // Fetch the underlying entity
         //
@@ -72,19 +75,14 @@ class ShareMarkerLinkHandler: UniversalLinkHandler {
             userInfo[Keys.annotation] = annotation
         }
 
-        DispatchQueue.main.async { [weak self] in
-            NotificationCenter.default.post(name: Notification.Name.didImportMarker,
-                                            object: self,
-                                            userInfo: userInfo)
-        }
+        NotificationCenter.default.post(name: Notification.Name.didImportMarker,
+                                        object: self,
+                                        userInfo: userInfo)
     }
      
     private func didFailToImportMarker() {
         let name = Notification.Name.didFailToImportMarker
-        
-        DispatchQueue.main.async { [weak self] in
-            NotificationCenter.default.post(name: name, object: self)
-        }
+        NotificationCenter.default.post(name: name, object: self)
     }
     
 }

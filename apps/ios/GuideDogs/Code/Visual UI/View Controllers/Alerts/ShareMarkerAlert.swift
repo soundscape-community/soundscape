@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 struct ShareMarkerAlert: ShareAlertFactory {
     
     // MARK: Error Alerts
@@ -27,6 +28,7 @@ struct ShareMarkerAlert: ShareAlertFactory {
     
     // MARK: Import Alerts
     
+    @MainActor
     static func importMarker(name: String, markerHandler: ActionHandler? = nil, beaconHandler: ActionHandler? = nil, cancelHandler: ActionHandler? = nil) -> UIAlertController {
         // Initialize the alert controller
         let title = GDLocalizedString("universal_links.marker.alert.title", name)

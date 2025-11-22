@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 class CompositeHeadphoneCalibrator: ComponentHeadphoneCalibrator {
     
     // MARK: Properties

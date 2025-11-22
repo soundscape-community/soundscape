@@ -61,6 +61,7 @@ struct RemoveRegisteredPOIs: StateChangedEvent {
 /// appropriate proximity range of each other. This has the effect of reducing the number of
 /// identical callouts a user will hear for generic POIs (e.g. users should hear a single
 /// crosswalk callout at an intersection instead  of 4+).
+@MainActor
 private struct TrackedCallout {
     let callout: POICallout
     let category: SuperCategory
@@ -199,9 +200,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
                 didInterruptCallouts = false
             }
             
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .automaticCalloutsDidChangeWithAudioState, object: nil)
-            }
+            NotificationCenter.default.post(name: .automaticCalloutsDidChangeWithAudioState, object: nil)
         })
         
         settings.automaticCalloutsEnabled = true
@@ -614,6 +613,7 @@ extension AutoCalloutGenerator: CalloutGroupDelegate {
 
 // MARK: Private POI Extensions
 
+@MainActor
 private extension POI {
     var category: SuperCategory {
         return SuperCategory(rawValue: self.superCategory) ?? SuperCategory.undefined

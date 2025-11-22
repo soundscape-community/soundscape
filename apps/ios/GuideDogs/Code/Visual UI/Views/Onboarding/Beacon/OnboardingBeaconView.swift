@@ -46,7 +46,7 @@ struct OnboardingBeaconView: View {
             }
             .accessibilityElement(children: .combine)
             
-            BeaconPickerView(selectedBeacon: $selectedBeacon)
+            BeaconPickerView(selectedBeacon: $selectedBeacon, allBeacons: BeaconOption.allAvailablePickerCases)
                 .onChange(of: selectedBeacon) { _ in
                     guard let selectedBeacon = selectedBeacon else {
                         return

@@ -16,6 +16,7 @@ enum BeaconStyle {
 
 extension BeaconStyle {
     
+    @MainActor
     var mapStyle: MapStyle {
         switch self {
         case .location(let detail): return .location(detail: detail)

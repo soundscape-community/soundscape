@@ -14,6 +14,7 @@ protocol ReverseGeocoder: AnyObject {
     func reverseGeocode(_ location: CLLocation, data: SpatialDataViewProtocol, heading: Heading) -> ReverseGeocoderResult
 }
 
+@MainActor
 class ReverseGeocoderContext: ReverseGeocoder {
     // MARK: Static Properties
     

@@ -35,6 +35,7 @@ enum BoseFramesMotionManagerStatus: Int, Equatable, Comparable {
     }
 }
 
+@MainActor
 class BoseFramesMotionManager: NSObject {
 
     static let DEVICE_MODEL_NAME: String = GDLocalizationUnnecessary("Bose Frames (Rondo)")

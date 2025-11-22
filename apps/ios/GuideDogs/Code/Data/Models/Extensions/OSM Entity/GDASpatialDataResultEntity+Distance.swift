@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 extension GDASpatialDataResultEntity {
     
     func closestEntrance(from location: CLLocation) -> POI? {

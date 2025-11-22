@@ -75,10 +75,9 @@ struct InteractiveBeaconView: View {
             // Include a delay so that the callout does not interrupt VoiceOver
             let delay = UIAccessibility.isVoiceOverRunning ? 2.5 : 1.0
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                AppContext.process(SelectedBeaconCalloutEvent(completion: { (_) in
-                    // After the callout completes, enable callouts triggered by changes in
-                    // orientation
+            Task {
+                try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                AppContext.process(SelectedBeaconCalloutEvent(completion: { _ in
                     didFirstCalloutComplete = true
                 }))
             }

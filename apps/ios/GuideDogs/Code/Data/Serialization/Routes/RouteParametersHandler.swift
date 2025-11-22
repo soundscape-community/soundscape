@@ -13,6 +13,7 @@ enum RouteParametersHandlerError: Error {
     case resourcesNil
 }
 
+@MainActor
 class RouteParametersHandler {
     
     // MARK: Typealias

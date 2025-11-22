@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 protocol CalloutGroupDelegate: AnyObject {
     /// Used for checking if a callout should still be performed when the event processor finally gets around to playing it
     ///

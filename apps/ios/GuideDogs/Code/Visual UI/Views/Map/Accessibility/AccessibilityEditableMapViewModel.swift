@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class AccessibilityEditableMapViewModel: ObservableObject {
     
     enum Direction: String {
@@ -18,6 +19,7 @@ class AccessibilityEditableMapViewModel: ObservableObject {
         case west
         case compass
         
+        @MainActor
         var degrees: Double? {
             switch self {
             case .north: return 0.0

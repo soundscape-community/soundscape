@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class BeaconDetailStore: ObservableObject {
     
     // MARK: Properties

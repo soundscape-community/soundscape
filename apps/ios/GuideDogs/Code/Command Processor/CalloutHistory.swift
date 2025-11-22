@@ -39,6 +39,7 @@ class CalloutHistory {
         calloutStack = BoundedStack<CalloutProtocol>(bound: maxItems)
     }
     
+    @MainActor
     func insert(_ callout: CalloutProtocol) {
         guard callout.includeInHistory else {
             return
@@ -48,6 +49,7 @@ class CalloutHistory {
         delegate?.onCalloutInserted(callout)
     }
     
+    @MainActor
     func insert<T: CalloutProtocol>(contentsOf array: [T]) {
         let callouts = array.filter({ $0.includeInHistory })
         
@@ -62,6 +64,7 @@ class CalloutHistory {
         }
     }
     
+    @MainActor
     func visibleIndex(of callout: CalloutProtocol) -> Int? {
         guard callout.includeInHistory else {
             return nil

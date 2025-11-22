@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 class AppShareHelper {
     
     // MARK: Properties
@@ -44,7 +45,9 @@ class AppShareHelper {
                                       message: GDLocalizedString("share.prompt.message"),
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.not_now"), style: .cancel, handler: { (_) in
-            GDATelemetry.track("app.share.not_now")
+            Task { @MainActor in
+                GDATelemetry.track("app.share.not_now")
+            }
         }))
         
         let shareAction = UIAlertAction(title: GDLocalizedString("share.title"), style: .default, handler: { (_) in

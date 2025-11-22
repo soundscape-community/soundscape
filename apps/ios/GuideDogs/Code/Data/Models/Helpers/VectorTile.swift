@@ -139,7 +139,7 @@ class VectorTile: Hashable {
     ///   - location: The center of the region to search
     ///   - radius: The radius of the region to search
     /// - Returns: An array of tiles covering the searched region
-    static func tilesForRegion(_ location: CLLocation, radius: CLLocationDistance, zoom zoomLevel: UInt) -> [VectorTile] {
+    nonisolated static func tilesForRegion(_ location: CLLocation, radius: CLLocationDistance, zoom zoomLevel: UInt) -> [VectorTile] {
         let (pixelX, pixelY) = getPixelXY(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
         let radiusPixels = Int(radius / groundResolution(latitude: location.coordinate.latitude, zoom: zoomLevel))
         
@@ -168,7 +168,7 @@ class VectorTile: Hashable {
     ///   - location: The center of the region to search
     ///   - zoom: The zoom level of the tile
     /// - Returns: The tile containing the location
-    static func tileForLocation(_ location: CLLocation, zoom zoomLevel: UInt) -> VectorTile {
+    nonisolated static func tileForLocation(_ location: CLLocation, zoom zoomLevel: UInt) -> VectorTile {
         let (pixelX, pixelY) = getPixelXY(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
         
         let (x, y) = getTileXY(pixelX: pixelX, pixelY: pixelY)
@@ -183,7 +183,7 @@ class VectorTile: Hashable {
     ///   - minimum: Minimum value
     ///   - maximum: Maximum value
     /// - Returns: Clipped value
-    static func clip(_ value: Double, min minimum: Double, max maximum: Double) -> Double {
+    nonisolated static func clip(_ value: Double, min minimum: Double, max maximum: Double) -> Double {
         return min(max(value, minimum), maximum)
     }
     
@@ -215,7 +215,7 @@ class VectorTile: Hashable {
     ///   - longitude: Longitude value
     ///   - zoomLevel: Zoom level
     /// - Returns: Pixe coordinate (x,y)
-    static func getPixelXY(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> (x: Int, y: Int) {
+    nonisolated static func getPixelXY(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> (x: Int, y: Int) {
         let lat = clip(latitude, min: minLatitude, max: maxLatitude)
         let lon = clip(longitude, min: minLongitude, max: maxLongitude)
         
@@ -231,7 +231,7 @@ class VectorTile: Hashable {
         return (pixelX, pixelY)
     }
     
-    static func getPixelXYObjC(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> [String: Int] {
+    nonisolated static func getPixelXYObjC(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> [String: Int] {
         let (x, y) = getPixelXY(latitude: latitude, longitude: longitude, zoom: zoomLevel)
         return ["x": x, "y": y]
     }
@@ -243,7 +243,7 @@ class VectorTile: Hashable {
     ///   - pixelY: Y coordinate of the pixel
     ///   - zoomLevel: Zoom level of the pixel
     /// - Returns: Latitude and longitude of the pixel
-    static func getLatLong(pixelX: Int, pixelY: Int, zoom zoomLevel: UInt) -> (lat: Double, lon: Double) {
+    nonisolated static func getLatLong(pixelX: Int, pixelY: Int, zoom zoomLevel: UInt) -> (lat: Double, lon: Double) {
         let size = Double(mapSize(zoom: zoomLevel))
         
         let x = (clip(Double(pixelX), min: 0, max: Double(size - 1)) / size) - 0.5
@@ -261,7 +261,7 @@ class VectorTile: Hashable {
     ///   - pixelX: X coordinate of the pixel
     ///   - pixelY: Y coordinate of the pixel
     /// - Returns: Tile coordinate (x, y)
-    static func getTileXY(pixelX: Int, pixelY: Int) -> (x: Int, y: Int) {
+    nonisolated static func getTileXY(pixelX: Int, pixelY: Int) -> (x: Int, y: Int) {
         return (pixelX / 256, pixelY / 256)
     }
     
@@ -271,7 +271,7 @@ class VectorTile: Hashable {
     ///   - tileX: X coordinate of the tile
     ///   - tileY: Y coordinate of the tile
     /// - Returns: Pixel coordinate (x, y)
-    static func getPixelXY(tileX: Int, tileY: Int) -> (x: Int, y: Int) {
+    nonisolated static func getPixelXY(tileX: Int, tileY: Int) -> (x: Int, y: Int) {
         return (tileX * 256, tileY * 256)
     }
     
@@ -284,7 +284,7 @@ class VectorTile: Hashable {
     ///   - latitude: Latitude value to check
     ///   - longitude: Longitude value to check
     /// - Returns: True if the (lat, lon) values are valid
-    static func isValidLocation(latitude: Double, longitude: Double) -> Bool {
+    nonisolated static func isValidLocation(latitude: Double, longitude: Double) -> Bool {
         if latitude < -85.05112878 || latitude > 85.05112878 {
             return false
         }
@@ -303,7 +303,7 @@ class VectorTile: Hashable {
     ///   - tileY: Y coordinate of the tile
     ///   - zoomLevel: Zoom level of the tile
     /// - Returns: True if the (X, Y, Zoom) values specify a valid tile
-    static func isValidTile(x tileX: Int, y tileY: Int, zoom zoomLevel: UInt) -> Bool {
+    nonisolated static func isValidTile(x tileX: Int, y tileY: Int, zoom zoomLevel: UInt) -> Bool {
         let size = Int(mapSize(zoom: zoomLevel) / 256)
         
         let validX = tileX >= 0 && tileX < size
@@ -320,7 +320,7 @@ class VectorTile: Hashable {
     ///   - zoomLevel: Zoom level of the tile
     /// - Returns: A quadkey string
     /// - Throws: Throws a VectorTileError.ZoomValueOutOfRange error if the zoom level is less than 0 or greater than 23
-    static func getQuadKey(tileX: Int, tileY: Int, zoom zoomLevel: UInt) throws -> String {
+    nonisolated static func getQuadKey(tileX: Int, tileY: Int, zoom zoomLevel: UInt) throws -> String {
         guard zoomLevel > 0 && zoomLevel < 24 else {
             throw VectorTileError.zoomValueOutOfRange
         }
@@ -350,7 +350,7 @@ class VectorTile: Hashable {
     /// - Parameter quadkey: A string quadkey
     /// - Returns: A tuple containing the x, y, and zoom values
     /// - Throws: Throws a VectorTileError.InvalidQuadKeySequence error if the quadkey string is contains invalid characters
-    static func getTileXYZ(quadkey: String) throws -> (x: Int, y: Int, zoom: UInt) {
+    nonisolated static func getTileXYZ(quadkey: String) throws -> (x: Int, y: Int, zoom: UInt) {
         var x: Int = 0
         var y: Int = 0
         let zoom: Int = quadkey.count

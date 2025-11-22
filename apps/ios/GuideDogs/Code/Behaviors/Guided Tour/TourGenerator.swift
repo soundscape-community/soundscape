@@ -407,18 +407,14 @@ extension TourGenerator: CalloutGroupDelegate {
             if let pending = pendingIntersectionArrivalEvent {
                 pendingIntersectionArrivalEvent = nil
                 
-                DispatchQueue.main.async { [weak self] in
-                    self?.owner.delegate?.process(pending)
-                }
+                owner.delegate?.process(pending)
             }
             
         case currentIntersectionGroupID:
             if let pending = pendingWaypointArrivalEvent {
                 pendingWaypointArrivalEvent = nil
                 
-                DispatchQueue.main.async { [weak self] in
-                    self?.owner.delegate?.process(pending)
-                }
+                owner.delegate?.process(pending)
             }
             
         case currentDepartureGroupID:
@@ -435,9 +431,7 @@ extension TourGenerator: CalloutGroupDelegate {
             if let pending = pendingIntersectionArrivalEvent {
                 pendingIntersectionArrivalEvent = nil
                 
-                DispatchQueue.main.async { [weak self] in
-                    self?.owner.delegate?.process(pending)
-                }
+                owner.delegate?.process(pending)
             }
             
         case currentArrivalGroupID:
@@ -452,9 +446,7 @@ extension TourGenerator: CalloutGroupDelegate {
             
             // Do this off the main queue so that we don't attempt to process a departure event from within
             // the `calloutsCompleted(for:finished:)` callback for the arrival callout.
-            DispatchQueue.main.async { [weak self] in
-                self?.owner.finishTransitioningBeacon()
-            }
+            owner.finishTransitioningBeacon()
             
         default:
             break

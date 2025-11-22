@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 class POITableViewCellConfigurator: TableViewCellConfigurator {
     
     typealias TableViewCell = POITableViewCell

@@ -19,6 +19,7 @@ enum LargeBanner: Int, NotificationProtocol {
         return BannerContainer(type: .large)
     }
     
+    @MainActor
     var observer: NotificationObserver {
         switch self {
         case .offline: return OfflineBannerObserver()

@@ -11,8 +11,10 @@ import CoreLocation
 import CocoaLumberjackSwift
 import SwiftUI
 
+@MainActor
 struct LocationDetail {
     
+    @MainActor
     enum Source: Equatable {
         
         case entity(id: String)
@@ -331,22 +333,20 @@ struct LocationDetail {
     // MARK: Realm
     
     func updateLastSelectedDate() {
-        DispatchQueue.main.async {
-            do {
-                if let marker = self.marker {
-                    try marker.updateLastSelectedDate()
-                } else if var entity = self.source.entity as? SelectablePOI {
-                    try autoreleasepool {
-                        let cache = try RealmHelper.getCacheRealm()
-                         
-                        try cache.write {
-                            entity.lastSelectedDate = Date()
-                        }
+        do {
+            if let marker = self.marker {
+                try marker.updateLastSelectedDate()
+            } else if var entity = self.source.entity as? SelectablePOI {
+                try autoreleasepool {
+                    let cache = try RealmHelper.getCacheRealm()
+                     
+                    try cache.write {
+                        entity.lastSelectedDate = Date()
                     }
                 }
-            } catch {
-                DDLogError("Failed to update last selected date in Realm")
             }
+        } catch {
+            DDLogError("Failed to update last selected date in Realm")
         }
     }
     

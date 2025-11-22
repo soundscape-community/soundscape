@@ -12,6 +12,7 @@ import SceneKit.ModelIO
 import AVFoundation
 import Combine
 
+@MainActor
 class DevicesViewController: UIViewController {
 
     // MARK: - Types
@@ -73,6 +74,7 @@ class DevicesViewController: UIViewController {
             }
         }
         
+        @MainActor
         func text(for device: Device?) -> String? {
             switch self {
             case .unknown: return GDLocalizationUnnecessary("")
@@ -140,6 +142,7 @@ class DevicesViewController: UIViewController {
             }
         }
         
+        @MainActor
         func primaryBtnText(for device: Device?) -> String? {
             switch self {
             case .unknown: return GDLocalizationUnnecessary("")
@@ -205,7 +208,7 @@ class DevicesViewController: UIViewController {
     
     // MARK: - Properties
     
-    let queue = DispatchQueue(label: "services.soundscape.devicesui")
+    nonisolated let queue = DispatchQueue(label: "services.soundscape.devicesui")
     
     /// Flag set to true if the DevicesViewController was launched automatically (e.g. because the currently
     /// connected headset needs to be recalibrated) or false if it was launched because the user navigated to it
@@ -244,9 +247,7 @@ class DevicesViewController: UIViewController {
                         if oldValue == self.state {
                             // If `renderView` is not automatically called because
                             // of a new value for `state`, call it manually
-                            DispatchQueue.main.async { [weak self] in
-                                self?.renderView()
-                            }
+                            self.renderView()
                         }
                     })
                 // Note, parroting the above assuming Bose can follow the same flow
@@ -290,9 +291,7 @@ class DevicesViewController: UIViewController {
                         if oldViewState == self.state {
                             // If `renderView` is not automatically called because
                             // of a new value for `state`, call it manually
-                            DispatchQueue.main.async { [weak self] in
-                                self?.renderView()
-                            }
+                            self.renderView()
                         }
                     })
                 // Watch changes in calibration status for Bose frames, adjust View when calibration started
@@ -365,15 +364,13 @@ class DevicesViewController: UIViewController {
             
             if state == .calibrating && !launchedAutomatically {
                 GDLogHeadphoneMotionInfo("DeviceViewController ADDING CalibrationUpdateObserver")
-                calibrationUpdateObserver = NotificationCenter.default.addObserver(forName: Notification.Name.ARHeadsetCalibrationUpdated, object: nil, queue: OperationQueue.main) { [weak self] (_) in
-                    GDLogHeadphoneMotionInfo("DeviceViewController RECEIVED CalibrationUpdated")
-                    // Calibration state has updated so rerender the UI as it may have changed
-                    DispatchQueue.main.async { [weak self] in
-                        self?.renderView()
-                    }
-                }
-                
-                GDLogHeadphoneMotionInfo("DeviceViewController ADDING CalibrationFinishObserver")
+            calibrationUpdateObserver = NotificationCenter.default.addObserver(forName: Notification.Name.ARHeadsetCalibrationUpdated, object: nil, queue: OperationQueue.main) { [weak self] (_) in
+                GDLogHeadphoneMotionInfo("DeviceViewController RECEIVED CalibrationUpdated")
+                // Calibration state has updated so rerender the UI as it may have changed
+                self?.renderView()
+            }
+            
+            GDLogHeadphoneMotionInfo("DeviceViewController ADDING CalibrationFinishObserver")
                 calibrationObserver = NotificationCenter.default.addObserver(forName: Notification.Name.ARHeadsetCalibrationDidFinish, object: nil, queue: OperationQueue.main) { [weak self] (_) in
                     GDLogHeadphoneMotionInfo("DeviceViewController RECEIVED CalibrationFinished")
                     self?.state = .completedPairing
@@ -390,9 +387,7 @@ class DevicesViewController: UIViewController {
                 }
             }
             
-            DispatchQueue.main.async { [weak self] in
-                self?.renderView()
-            }
+            renderView()
         }
     }
     
@@ -654,9 +649,7 @@ class DevicesViewController: UIViewController {
                 return
             }
             
-            DispatchQueue.main.async {
-                self?.renderActiveScene(heading: heading)
-            }
+            self?.renderActiveScene(heading: heading)
         }
     }
     
@@ -822,9 +815,7 @@ class DevicesViewController: UIViewController {
                 }
             }))
             
-            DispatchQueue.main.async { [weak self] in
-                self?.present(alert, animated: true, completion: nil)
-            }
+            present(alert, animated: true, completion: nil)
         case .testHeadset:
             // Stop the test
             AppContext.process(HeadsetTestEvent(.end))
@@ -876,9 +867,7 @@ class DevicesViewController: UIViewController {
                         AppContext.shared.deviceManager.add(device: device)
      
                         self.state = (device.calibrationState == .calibrated ? .completedPairing : .calibrating)
-                        DispatchQueue.main.async { [weak self] in
-                            self?.renderView()
-                        }
+                        self.renderView()
                     }
                     NotificationCenter.default.addObserver(forName: Notification.Name.boseFramesDeviceConnectionFailed, object: nil, queue: OperationQueue.current) { (_) in
                         GDLogHeadphoneMotionError("Bose: Caught notification of connection ERROR!")
@@ -890,9 +879,7 @@ class DevicesViewController: UIViewController {
                         let alert = ErrorAlerts.buildGeneric(title: GDLocalizedString("devices.connect_headset.error_title"),
                                                              message: GDLocalizedString("devices.connect_headset.failed"),
                                                              dismissHandler: handler)
-                        DispatchQueue.main.async {
-                            self.present(alert, animated: true, completion: nil)
-                        }
+                        self.present(alert, animated: true, completion: nil)
                     }
                     
                 } else {
@@ -915,18 +902,14 @@ class DevicesViewController: UIViewController {
                                                          message: GDLocalizedString("devices.connect_headset.unsupported_firmware"),
                                                          dismissHandler: handler)
                     
-                    DispatchQueue.main.async {
-                        self.present(alert, animated: true, completion: nil)
-                    }
+                    self.present(alert, animated: true, completion: nil)
                     
                 case DeviceError.failedConnection:
                     let alert = ErrorAlerts.buildGeneric(title: GDLocalizedString("devices.connect_headset.error_title"),
                                                          message: GDLocalizedString("devices.connect_headset.failed"),
                                                          dismissHandler: handler)
                     
-                    DispatchQueue.main.async {
-                        self.present(alert, animated: true, completion: nil)
-                    }
+                    self.present(alert, animated: true, completion: nil)
                     
                 case DeviceError.unavailable:
                     var message = GDLocalizedString("devices.connect_headset.unavailable")
@@ -936,15 +919,11 @@ class DevicesViewController: UIViewController {
                         message = GDLocalizedString("devices.airpods_unavailable.alert.description")
                     }
                     
-                    let alert = ErrorAlerts.buildGeneric(title: GDLocalizedString("devices.connect_headset.error_title"),
-                                                         message: message,
-                                                         dismissHandler: handler)
-                    
-                    DispatchQueue.main.async {
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                    
-                default:
+                let alert = ErrorAlerts.buildGeneric(title: GDLocalizedString("devices.connect_headset.error_title"),
+                                                     message: message,
+                                                     dismissHandler: handler)
+                
+                self.present(alert, animated: true, completion: nil)                default:
                     self.state = .disconnected
                     self.connectedDevice = nil
                     return
@@ -1007,9 +986,7 @@ extension DevicesViewController: DeviceManagerDelegate {
                 
                 self?.calibrationUpdateObserver = NotificationCenter.default.addObserver(forName: Notification.Name.ARHeadsetCalibrationUpdated, object: nil, queue: OperationQueue.main) { [weak self] (_) in
                     // Calibration state has updated so rerender the UI as it may have changed
-                    DispatchQueue.main.async { [weak self] in
-                        self?.renderView()
-                    }
+                    self?.renderView()
                 }
             }
             
@@ -1039,9 +1016,7 @@ extension DevicesViewController: DeviceManagerDelegate {
             
             calibrationUpdateObserver = NotificationCenter.default.addObserver(forName: Notification.Name.ARHeadsetCalibrationUpdated, object: nil, queue: OperationQueue.main) { [weak self] (_) in
                 // Calibration state has updated so rerender the UI as it may have changed
-                DispatchQueue.main.async { [weak self] in
-                    self?.renderView()
-                }
+                self?.renderView()
             }
             
         case .calibrated:

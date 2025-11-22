@@ -9,6 +9,7 @@
 import Foundation
 import UserNotifications
 
+@MainActor
 /// Manages the scheduling of local push notifications
 class LocalPushNotificationManager {
     

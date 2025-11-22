@@ -9,6 +9,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 class RouteGuidanceStateStore: ObservableObject {
     let id: String
     

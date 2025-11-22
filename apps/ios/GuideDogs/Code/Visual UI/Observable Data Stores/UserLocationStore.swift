@@ -9,6 +9,7 @@
 import Combine
 import CoreLocation
 
+@MainActor
 class UserLocationStore: ObservableObject {
     @Published var location: CLLocation?
     

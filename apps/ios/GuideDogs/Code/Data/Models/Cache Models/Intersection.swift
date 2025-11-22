@@ -177,12 +177,14 @@ class Intersection: Object, Locatable, Localizable {
     // MARK: Non-Realm Properties
     
     /// The set of roads that participate in this intersection
+    @MainActor
     var roads: [Road] {
         roadIds.compactMap { SpatialDataCache.road(withKey: $0.id) }
     }
     
     // Some intersections can contain the same road more than once, for example if one road loops back to the intersection.
     // Example: https://www.openstreetmap.org/way/189315310
+    @MainActor
     var distinctRoads: [Road] {
         return roadIds
             .map { $0.id }
@@ -190,6 +192,7 @@ class Intersection: Object, Locatable, Localizable {
             .compactMap { SpatialDataCache.road(withKey: $0) }
     }
     
+    @MainActor
     var localizedRoadNames: [String] {
         return self.roads
             .map { $0.localizedName }
@@ -199,6 +202,7 @@ class Intersection: Object, Locatable, Localizable {
     
     /// Name of the intersection
     private var _localizedName = ""
+    @MainActor
     var localizedName: String {
         if _localizedName.isEmpty {
             _localizedName = localizedName()
@@ -273,6 +277,7 @@ class Intersection: Object, Locatable, Localizable {
     ///
     /// - Parameter excludedRoadName: A road name to exclude from the intersection name.
     /// - Returns: The localized name for the intersection.
+    @MainActor
     func localizedName(excluding excludedRoadName: String? = nil) -> String {
         var localizedRoadNames = self.localizedRoadNames
         
@@ -295,10 +300,12 @@ class Intersection: Object, Locatable, Localizable {
         return listFormatter.string(from: localizedRoadNames) ?? GDLocalizedString("osm.tag.intersection")
     }
     
+    @MainActor
     func includesRoad(withLocalizedName localizedName: String) -> Bool {
         return self.roads.contains { $0.localizedName == localizedName }
     }
     
+    @MainActor
     func isMainIntersection(context: SecondaryRoadsContext = .standard) -> Bool {
         return containAtLeastTwoDistinctMainRoads(context: context)
             || isMainIntersectionWithAClose(context: context)
@@ -307,6 +314,7 @@ class Intersection: Object, Locatable, Localizable {
             || isTIntersectionWithSameRoad()
     }
     
+    @MainActor
     func containAtLeastTwoDistinctMainRoads(context: SecondaryRoadsContext = .standard) -> Bool {
         return self.roads
             .filter { $0.isMainRoad(context: context) } // Main roads
@@ -322,6 +330,7 @@ class Intersection: Object, Locatable, Localizable {
     ///
     /// - Parameter context: Context that determines which roads should be considered main roads
     /// - Returns: True if this intersection is a main intersection with a close
+    @MainActor
     func isMainIntersectionWithAClose(context: SecondaryRoadsContext = .standard) -> Bool {
         let main = roads.filter { $0.isMainRoad(context: context) } // Main roads
         
@@ -343,6 +352,7 @@ class Intersection: Object, Locatable, Localizable {
     ///
     /// - Parameter context: Context that determines which roads should be considered main roads
     /// - Returns: True if the intersection is between a main road and a roundabout
+    @MainActor
     func isMainIntersectionOnRoundabout(context: SecondaryRoadsContext = .standard) -> Bool {
         guard isPartOfRoundabout else {
             return false
@@ -358,6 +368,7 @@ class Intersection: Object, Locatable, Localizable {
     ///
     /// - Example: "Bell Street" (service road) intersects with "Bell Street" (primary road).
     /// [OSM node](https://www.openstreetmap.org/node/420339377).
+    @MainActor
     func containRoadChangeToDifferentType() -> Bool {
         /// Filter all roads that are named
         let roads = self.roads.filter { !$0.name.isEmpty }
@@ -372,6 +383,7 @@ class Intersection: Object, Locatable, Localizable {
     ///
     /// - Example: "The Chase" intersects with "The Chase".
     /// [OSM node](https://www.openstreetmap.org/node/60371908).
+    @MainActor
     func isTIntersectionWithSameRoad() -> Bool {
         let roads = self.roads
         let intersectionCoordinate = self.coordinate
@@ -397,6 +409,7 @@ class Intersection: Object, Locatable, Localizable {
 
 // MARK: - Helper Methods
 
+@MainActor
 extension Intersection {
     
     /// Used to detect if a user is traveling towards a specific location
@@ -544,6 +557,7 @@ extension Intersection {
 
 // MARK: - Road Direction Calculations
 
+@MainActor
 extension Intersection {
     
     /**
@@ -663,6 +677,7 @@ extension Intersection {
 
 // MARK: - Roundabout Calculations
 
+@MainActor
 extension Intersection {
     
     /// Indicating if the intersection is a part of a roundabout.

@@ -64,6 +64,7 @@ class Route: Object, ObjectKeyIdentifiable {
         return CLLocation(coordinate)
     }
     
+    @MainActor
     var isActive: Bool {
         guard let routeGuidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
             return false
@@ -86,6 +87,7 @@ class Route: Object, ObjectKeyIdentifiable {
      *     - description: Description of the route, optional
      *     - waypoints: Array of waypoints - All waypoints are markers that exist in the Realm databse
      */
+    @MainActor
     convenience init(name: String, description: String?, waypoints: [RouteWaypoint]) {
         self.init()
         
@@ -105,6 +107,7 @@ class Route: Object, ObjectKeyIdentifiable {
      Only use this initializer when you made sure all the route waypoints (marker)
      were already imported to the database.
      */
+    @MainActor
     convenience init(from parameters: RouteParameters) {
         self.init()
         

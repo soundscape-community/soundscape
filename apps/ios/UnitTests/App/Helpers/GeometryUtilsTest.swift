@@ -10,6 +10,7 @@ import XCTest
 import CoreLocation
 @testable import Soundscape
 
+@MainActor
 class GeometryUtilsTest: XCTestCase {
     
     // TODO: `GeometryUtils::coordinates(geoJson:)` would be better if the `GeometryType` enum used associated values (coordinates), which would let us avoid the fact that it currently returns a vague `[Any]?` and instead just return a `GeometryType`. According to comments in `GeometryUtils`, the reason for this is compatibility with Objective-C. However, if we can move away from that, we could have much better code.

@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import UIKit
 
+@MainActor
 class MarkerTableViewCellConfigurator: TableViewCellConfigurator {
     
     typealias TableViewCell = POITableViewCell

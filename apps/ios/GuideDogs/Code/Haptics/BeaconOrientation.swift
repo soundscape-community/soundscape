@@ -10,6 +10,7 @@ import CoreLocation
 import Combine
 
 /// Private implementation of an orientable for building the beacon feedback
+@MainActor
 class BeaconOrientation: Orientable {
     var bearing: CLLocationDirection {
         return userLocation.bearing(to: beaconLocation)

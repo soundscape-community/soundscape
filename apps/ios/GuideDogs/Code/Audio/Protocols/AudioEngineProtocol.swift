@@ -16,6 +16,7 @@ protocol AudioEngineDelegate: AnyObject {
     func didFinishPlaying()
 }
 
+@MainActor
 protocol AudioEngineProtocol: AnyObject {
     
     typealias CompletionCallback = (Bool) -> Void

@@ -9,6 +9,7 @@
 import CoreLocation
 import Combine
 
+@MainActor
 class HapticWandBeacon: HapticBeacon {
     /// Haptic engine for rendering haptics for the physical UI at decision points
     private let engine = HapticEngine()

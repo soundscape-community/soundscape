@@ -9,6 +9,7 @@
 import Foundation
 import CoreMotion
 
+@MainActor
 class HeadphoneCalibrationManager {
     
     // MARK: Properties

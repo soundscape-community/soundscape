@@ -215,23 +215,17 @@ class CalloutButtonPanelViewController: UIViewController {
     // MARK: Button Animations
     
     fileprivate func updateAnimation(_ imageView: UIImageView, _ animationView: NVActivityIndicatorView, _ show: Bool) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard show != animationView.isAnimating else {
-                return
-            }
-            
-            self.stopButtonAnimations()
-            imageView.isHidden = show
-            
-            if show {
-                animationView.startAnimating()
-            } else {
-                animationView.stopAnimating()
-            }
+        guard show != animationView.isAnimating else {
+            return
+        }
+        
+        self.stopButtonAnimations()
+        imageView.isHidden = show
+        
+        if show {
+            animationView.startAnimating()
+        } else {
+            animationView.stopAnimating()
         }
     }
     

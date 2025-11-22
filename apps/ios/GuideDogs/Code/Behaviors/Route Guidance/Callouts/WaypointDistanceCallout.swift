@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+@MainActor
 class WaypointDistanceCallout: CalloutProtocol {
     let id = UUID()
     

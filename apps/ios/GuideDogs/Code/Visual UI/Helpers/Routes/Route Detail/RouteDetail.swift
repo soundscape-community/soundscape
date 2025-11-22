@@ -9,6 +9,7 @@
 import CoreLocation
 import Combine
 
+@MainActor
 class RouteDetail: RouteDetailProtocol {
     
     struct DesignData {

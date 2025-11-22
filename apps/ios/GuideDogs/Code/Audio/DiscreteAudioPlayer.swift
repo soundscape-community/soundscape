@@ -9,7 +9,7 @@
 import Foundation
 import AVFoundation
 
-protocol DiscreteAudioPlayerDelegate: AnyObject {
+@MainActor protocol DiscreteAudioPlayerDelegate: AnyObject {
     func onDataPlayedBack(_ playerId: AudioPlayerIdentifier)
     func onLayerFormatChanged(_ playerId: AudioPlayerIdentifier, layer: Int)
 }
@@ -113,11 +113,11 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
     private func setupPlaybackDispatchGroup() {
         // Action to take when all the channels finish playing back
         channelPlayedBackDispatchGroup.notify(queue: queue) { [weak self] in
-            guard let `self` = self else {
-                return
+            guard let self = self else { return }
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.delegate?.onDataPlayedBack(self.id)
             }
-            
-            self.delegate?.onDataPlayedBack(self.id)
         }
     }
     
@@ -173,7 +173,10 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
                     
                     self.layers[layer].stop()
                     self.layers[layer].format = buffer.format
-                    self.delegate?.onLayerFormatChanged(self.id, layer: layer)
+                    Task { @MainActor [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.onLayerFormatChanged(self.id, layer: layer)
+                    }
                     self.playBuffer(buffer, onChannel: layer)
                     
                     do {

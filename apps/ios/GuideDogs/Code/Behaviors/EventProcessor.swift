@@ -14,6 +14,7 @@ extension Notification.Name {
     static let behaviorDeactivated = Notification.Name("GDABehaviorDeactivated")
 }
 
+@MainActor
 class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     
     struct Keys {
@@ -106,9 +107,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         
         // Give the behavior a chance to respond to the fact that it is being deactivated...
         let event = BehaviorDeactivatedEvent { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.finishDeactivatingCustom()
-            }
+            self?.finishDeactivatingCustom()
         }
         
         if activeBehavior.manualGenerators.contains(where: { $0.respondsTo(event) }) {
@@ -178,39 +177,31 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         }
         
         // Handle normal events
-        activeBehavior.handleEvent(event) { actions in
-            guard let actions = actions else {
+        activeBehavior.handleEvent(event) { [weak self] actions in
+            guard let self = self else { return }
+            guard let actions = actions else { return }
+
+            let hushRequest = actions.compactMap { action -> (playHush: Bool, clearPending: Bool)? in
+                if case let .interruptAndClearQueue(playHush, clearPending) = action {
+                    return (playHush, clearPending)
+                }
+                return nil
+            }.first
+            if let hushRequest = hushRequest {
+                self.interruptCurrent(clearQueue: hushRequest.clearPending, playHush: hushRequest.playHush)
                 return
             }
-
-            // The completion callback is executing in the context of the active behavior's
-            // dispatch queue, so we should move back to the main queue before continuing...
-            DispatchQueue.main.async {
-                let hushRequest = actions.compactMap { action -> (playHush: Bool, clearPending: Bool)? in
-                    if case let .interruptAndClearQueue(playHush, clearPending) = action {
-                        return (playHush, clearPending)
-                    }
-                    
-                    return nil
-                }.first
-                
-                if let hushRequest = hushRequest {
-                    self.interruptCurrent(clearQueue: hushRequest.clearPending, playHush: hushRequest.playHush)
-                    return
-                }
-                
-                for case let .playCallouts(calloutGroup) in actions {
-                    self.enqueue(calloutGroup)
-                }
-                
-                for case let .processEvents(events) in actions {
-                    for event in events {
-                        self.process(event)
-                    }
+            for case let .playCallouts(calloutGroup) in actions {
+                self.enqueue(calloutGroup)
+            }
+            for case let .processEvents(events) in actions {
+                for event in events {
+                    self.process(event)
                 }
             }
         }
     }
+    
     
     // MARK: Callout Queueing
     

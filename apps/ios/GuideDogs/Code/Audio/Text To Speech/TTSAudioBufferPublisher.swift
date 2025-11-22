@@ -42,12 +42,16 @@ struct TTSAudioBufferPublisher: Publisher {
     }
     
     func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
-        let subscription = TTSSubscription(subscriber: subscriber, text: text, voiceIdentifier: voiceId)
-        subscriber.receive(subscription: subscription)
+        // Ensure subscription creation happens on main actor due to @MainActor TTSSubscription
+        Task { @MainActor in
+            let subscription = TTSSubscription(subscriber: subscriber, text: text, voiceIdentifier: voiceId)
+            subscriber.receive(subscription: subscription)
+        }
     }
 }
 
 private extension TTSAudioBufferPublisher {
+    @MainActor
     final class TTSSubscription<S: Subscriber>: NSObject, AVSpeechSynthesizerDelegate, Subscription where Output == S.Input, Failure == S.Failure {
         private var subscriber: S? {
             didSet {

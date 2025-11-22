@@ -13,6 +13,7 @@ import CoreLocation
 // Note that while these mocked systems allow for some testing, they still cover a limited number of cases, since some would require that more complex systems be mocked.
 
 
+@MainActor
 class RouteGuidanceTest: XCTestCase {
     class TestMotionActivity: MotionActivityProtocol {
         var isWalking: Bool = true

@@ -15,6 +15,7 @@ extension Notification.Name {
     static let magicTapOccurred = Notification.Name("GDAMagicTapOccurred")
 }
 
+@MainActor
 class LaunchHelper {
     
     enum LaunchStoryboard: String {

@@ -12,6 +12,7 @@ import Foundation
 /// `RawValue` determines which notification to display if multiple
 /// notificaitons can be displayed in the same container
 ///
+@MainActor
 enum ModalView: Int, NotificationProtocol {
     case headsetCalibration
     case anyModalView

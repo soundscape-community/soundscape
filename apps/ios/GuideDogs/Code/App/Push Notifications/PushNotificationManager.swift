@@ -13,6 +13,7 @@ extension Notification.Name {
     static let pushNotificationReceived = Notification.Name("GDAPushNotificationReceived")
 }
 
+@MainActor
 /// A class to handle actions related to remote push notifications
 class PushNotificationManager: NSObject {
     

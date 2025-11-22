@@ -6,6 +6,7 @@
 //  Copyright © 2025 Soundscape community. All rights reserved.
 //
 
+@MainActor
 func launchNaviLens(detail: LocationDetail) {
     // Silence Soundscape before launching NaviLens
     // Find the home screen in the view stack and trigger the sleep button
@@ -23,6 +24,7 @@ func launchNaviLens(detail: LocationDetail) {
     }
 }
 
+@MainActor
 func guideToNaviLens(detail: LocationDetail) throws {
     // Launch NaviLens if close enough, otherwise start beacon
     guard let location = AppContext.shared.geolocationManager.location else {
@@ -38,6 +40,7 @@ func guideToNaviLens(detail: LocationDetail) throws {
     }
 }
 
+@MainActor
 func safeGuideToNaviLens(poi: POI) {
     // Launch NaviLens if starting a beacon throws an error
     let detail = LocationDetail(entity: poi)

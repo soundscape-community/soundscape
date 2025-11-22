@@ -65,35 +65,44 @@ extension ReferenceEntity: Samplable {
 }
 
 extension RouteWaypoint: Samplable {
+    @MainActor
     static var samples: [RouteWaypoint] { [sample, sample2, sample3, sample4] }
     
+    @MainActor
     static var sample: RouteWaypoint {
         RouteWaypoint(index: 0, markerId: ReferenceEntity.sample.id)!
     }
     
+    @MainActor
     static var sample2: RouteWaypoint {
         RouteWaypoint(index: 1, markerId: ReferenceEntity.sample2.id)!
     }
     
+    @MainActor
     static var sample3: RouteWaypoint {
         RouteWaypoint(index: 2, markerId: ReferenceEntity.sample3.id)!
     }
     
+    @MainActor
     static var sample4: RouteWaypoint {
         RouteWaypoint(index: 3, markerId: ReferenceEntity.sample4.id)!
     }
 }
 
 extension Route: Samplable {
+    @MainActor
     static var samples: [Route] { [sample] }
     
+    @MainActor
     static var sample: Route {
         Route(name: "Seattle Sightseeing Tour", description: "This is a little walk through Seattle's South Lake Union neighborhood", waypoints: RouteWaypoint.samples)
     }
 }
 
 extension Realm: Samplable {
+    @MainActor
     static var samples: [Realm] { [sample] }
+    @MainActor
     static var sample: Realm {
         do {
             let realm = try Realm(configuration: RealmHelper.databaseConfig)
@@ -113,6 +122,7 @@ extension Realm: Samplable {
         }
     }
     
+    @MainActor
     static func bootstrap() {
         do {
             if let fileURL = RealmHelper.databaseConfig.fileURL, FileManager.default.fileExists(atPath: fileURL.path) {

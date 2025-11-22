@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import Contacts
 
+@MainActor
 class Geocoder {
     
     // MARK: Properties
@@ -86,18 +87,18 @@ class Geocoder {
             return
         }
         
-        let timeout = DispatchWorkItem { [weak self] in
-            self?.geocoder.cancelGeocode()
+        var timeoutTask: Task<Void, Never>? = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            guard let self = self, !Task.isCancelled else { return }
+            self.geocoder.cancelGeocode()
             completionHandler(nil)
         }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: timeout)
         
         // Call geocoding service
         // When input region is `nil` and location services are enabled,
         // the geocoder will use the user's location to pick the best results
         geocoder.reverseGeocodeLocation(location, preferredLocale: LocalizationContext.currentAppLocale, completionHandler: { [weak self] (results, error) in
-            timeout.cancel()
+            timeoutTask?.cancel()
             
             guard error == nil else {
                 if let error = error as? CLError, error.code == CLError.Code.network {

@@ -9,6 +9,7 @@
 import Foundation
 import MapKit
 
+@MainActor
 class LocationDetailAnnotation: NSObject, MKAnnotation {
     
     // MARK: Paramters

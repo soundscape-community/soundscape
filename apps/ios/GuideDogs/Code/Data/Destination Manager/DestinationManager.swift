@@ -23,6 +23,7 @@ enum DestinationManagerError: Error {
     case referenceEntityDoesNotExist
 }
 
+@MainActor
 class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Notification Keys
@@ -749,17 +750,12 @@ class DestinationManager: DestinationManagerProtocol {
                         DestinationManager.Keys.isAudioEnabled: isAudioEnabled]
         }
         
-        DispatchQueue.main.async {
-            AppContext.process(BeaconChangedEvent(id: id, audioEnabled: self.isAudioEnabled))
-            
-            NotificationCenter.default.post(name: Notification.Name.destinationChanged, object: self, userInfo: userInfo)
-        }
+        AppContext.process(BeaconChangedEvent(id: id, audioEnabled: self.isAudioEnabled))
+        NotificationCenter.default.post(name: Notification.Name.destinationChanged, object: self, userInfo: userInfo)
     }
     
     private func notifyDestinationAudioChanged() {
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: Notification.Name.destinationAudioChanged, object: self, userInfo: [DestinationManager.Keys.isAudioEnabled: self.isAudioEnabled])
-        }
+        NotificationCenter.default.post(name: Notification.Name.destinationAudioChanged, object: self, userInfo: [DestinationManager.Keys.isAudioEnabled: self.isAudioEnabled])
     }
     
 }

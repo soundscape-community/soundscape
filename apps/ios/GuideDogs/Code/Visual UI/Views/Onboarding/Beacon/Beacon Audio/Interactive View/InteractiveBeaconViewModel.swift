@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import Combine
 
+@MainActor
 class InteractiveBeaconViewModel: ObservableObject {
     
     enum Orientation {

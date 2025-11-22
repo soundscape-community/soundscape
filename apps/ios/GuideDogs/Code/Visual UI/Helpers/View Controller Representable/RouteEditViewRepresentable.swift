@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 struct RouteEditViewRepresentable: ViewControllerRepresentable {
     
     typealias Style = RouteEditView.Style

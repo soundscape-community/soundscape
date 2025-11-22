@@ -183,19 +183,17 @@ class NearbyTableViewController: BaseTableViewController, POITableViewController
     // MARK: `UITableView`
     
     private func updateTableView() {
-        DispatchQueue.main.async {
-            let header = self.currentFilter.localizedString
-            let action = self.currentFilter == NearbyTableFilter.defaultFilter ? FilterTableViewHeaderView.Action.set : FilterTableViewHeaderView.Action.clear
-            
-            // Save reference to `tableViewDataSource` and `tableViewDelegate`
-            self.tableViewDataSource = TableViewDataSource(header: header, models: self.filteredPOIs, cellConfigurator: self.cellConfigurator)
-            self.tableViewDelegate = GenericTableViewDelegate.make(selectDelegate: self, filterDelegate: self, filterAction: action)
+        let header = self.currentFilter.localizedString
+        let action = self.currentFilter == NearbyTableFilter.defaultFilter ? FilterTableViewHeaderView.Action.set : FilterTableViewHeaderView.Action.clear
         
-            // Update `tableView` and reload
-            self.tableView.dataSource = self.tableViewDataSource
-            self.tableView.delegate = self.tableViewDelegate
-            self.tableView.reloadData()
-        }
+        // Save reference to `tableViewDataSource` and `tableViewDelegate`
+        self.tableViewDataSource = TableViewDataSource(header: header, models: self.filteredPOIs, cellConfigurator: self.cellConfigurator)
+        self.tableViewDelegate = GenericTableViewDelegate.make(selectDelegate: self, filterDelegate: self, filterAction: action)
+    
+        // Update `tableView` and reload
+        self.tableView.dataSource = self.tableViewDataSource
+        self.tableView.delegate = self.tableViewDelegate
+        self.tableView.reloadData()
     }
     
 }
@@ -226,30 +224,17 @@ extension NearbyTableViewController: TableViewSelectDelegate {
     }
     
     private func presentActivityIndicatorView() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            // Show activity indicator
-            self.view.addSubview(self.activityIndicatorView)
-            // Update size and constraints
-            self.activityIndicatorView.frame = self.view.bounds
-            self.activityIndicatorView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-            self.activityIndicatorView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-            self.activityIndicatorView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-            self.activityIndicatorView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        }
+        self.view.addSubview(self.activityIndicatorView)
+        
+        self.activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        self.activityIndicatorView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        self.activityIndicatorView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.activityIndicatorView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.activityIndicatorView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
     
     private func dismissActivityIndicatorView() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            self.activityIndicatorView.removeFromSuperview()
-        }
+        self.activityIndicatorView.removeFromSuperview()
     }
     
 }
@@ -313,21 +298,16 @@ extension NearbyTableViewController: LocationAccessibilityActionDelegate {
     }
     
     private func didSelectLocationAction(_ action: LocationAction, detail: LocationDetail) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard action.isEnabled else {
-                // Do nothing if the action is disabled
-                return
-            }
-            
-            do {
-                switch action {
-                case .save, .edit:
-                    // Edit the marker at the given location
-                    // Segue to the edit marker view
+        guard action.isEnabled else {
+            // Do nothing if the action is disabled
+            return
+        }
+        
+        do {
+            switch action {
+            case .save, .edit:
+                // Edit the marker at the given location
+                // Segue to the edit marker view
                     let config = EditMarkerConfig(detail: detail,
                                                   route: nil,
                                                   context: self.telemetryContext,
@@ -389,7 +369,6 @@ extension NearbyTableViewController: LocationAccessibilityActionDelegate {
                 let alert = LocationActionAlert.alert(for: error)
                 self.present(alert, animated: true, completion: nil)
             }
-        }
     }
     
 }

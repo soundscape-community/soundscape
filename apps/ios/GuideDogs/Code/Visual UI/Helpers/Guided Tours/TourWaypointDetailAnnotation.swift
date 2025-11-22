@@ -19,6 +19,7 @@ class TourWaypointDetailAnnotation: NSObject, MKAnnotation {
     
     // MARK: Initialization
     
+    @MainActor
     init?(detail waypointDetail: TourWaypointDetail) {
         guard let locationDetail = waypointDetail.locationDetail else {
             return nil

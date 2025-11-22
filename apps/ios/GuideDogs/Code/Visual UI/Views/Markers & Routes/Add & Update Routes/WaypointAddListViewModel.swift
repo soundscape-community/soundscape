@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 
+@MainActor
 class WaypointAddListViewModel: ObservableObject {
     
     // MARK: Properties

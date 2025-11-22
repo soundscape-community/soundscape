@@ -14,6 +14,7 @@ class NotificationContainerManager<T: NotificationProtocol> {
     private let server: NotificationServer<T>
     private var container: NotificationContainer
     
+    @MainActor
     init(_ notifications: [T]) {
         self.server = NotificationServer(notifications)
         self.container = T.container
@@ -22,21 +23,21 @@ class NotificationContainerManager<T: NotificationProtocol> {
         server.delegate = self
     }
     
+    @MainActor
     func viewControllerWillChange(_ viewController: UIViewController) {
         self.currentViewController = viewController
         
         updateContainer(in: viewController)
     }
     
+    @MainActor
     private func updateContainer(in viewController: UIViewController) {
-        DispatchQueue.main.async { [weak self] in
-            self?.container.dismiss(animated: true) { [weak self] in
-                guard let notificationViewController = self?.server.requestNotification(in: viewController) else {
-                    return
-                }
-                
-                self?.container.present(notificationViewController, presentingViewController: viewController)
+        self.container.dismiss(animated: true) { [weak self] in
+            guard let notificationViewController = self?.server.requestNotification(in: viewController) else {
+                return
             }
+            
+            self?.container.present(notificationViewController, presentingViewController: viewController)
         }
     }
     
@@ -44,6 +45,7 @@ class NotificationContainerManager<T: NotificationProtocol> {
 
 extension NotificationContainerManager: NotificationServerDelegate {
     
+    @MainActor
     func stateDidChange<T>(_ server: NotificationServer<T>) where T: NotificationProtocol {
         guard let viewController = currentViewController else {
             return

@@ -38,16 +38,19 @@ extension SpatialDataCache {
     }
 }
 
+@MainActor
 class SpatialDataCache: NSObject {
     
     // MARK: Geocoders
     
     private static var geocoder: Geocoder?
     
+    @MainActor
     static func useDefaultGeocoder() {
         self.geocoder = Geocoder(geocoder: CLGeocoder())
     }
     
+    @MainActor
     static func register(geocoder: AddressGeocoderProtocol) {
         self.geocoder = Geocoder(geocoder: geocoder)
     }
@@ -367,6 +370,7 @@ class SpatialDataCache: NSObject {
     
     // MARK: VectorTile Tools
     
+    @MainActor
     static func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt) -> Set<VectorTile> {
         var tiles: Set<VectorTile> = []
         
@@ -419,6 +423,7 @@ class SpatialDataCache: NSObject {
         return SpatialDataCache.lastSelectedObjects().sorted(by: sortPredicate, maxLength: 5)
     }
     
+    @MainActor
     static func fetchEstimatedCoordinate(address: String, in region: CLRegion? = nil, completionHandler: @escaping (GeocodedAddress?) -> Void) {
         guard let geocoder = geocoder else {
             GDLogSpatialDataError("Geocode Coordinate Error - Geocoder has not been initialized")
@@ -441,6 +446,7 @@ class SpatialDataCache: NSObject {
         }
     }
     
+    @MainActor
     static func fetchEstimatedAddress(location: CLLocation, completionHandler: @escaping (GeocodedAddress?) -> Void) {
         guard let geocoder = geocoder else {
             GDLogSpatialDataError("Geocode Address Error - Geocoder has not been initialized")

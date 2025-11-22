@@ -86,6 +86,7 @@ class GDASpatialDataResultEntity: Object {
     }
 
     private var _entrances: [POI]?
+    @MainActor
     var entrances: [POI]? {
         if _entrances != nil {
             return _entrances
@@ -242,6 +243,7 @@ class GDASpatialDataResultEntity: Object {
     }
     
     // Adds the ability to show the location in Xcode's debug quick look (shown as a map with a marker)
+    @MainActor
     func debugQuickLookObject() -> AnyObject? {
         guard let userLocation = AppContext.shared.geolocationManager.location else {
             return nil

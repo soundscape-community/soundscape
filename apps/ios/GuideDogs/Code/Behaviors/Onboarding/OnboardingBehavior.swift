@@ -12,6 +12,7 @@ extension Notification.Name {
     static let onboardingDidComplete = Notification.Name("GDAOnboardingDidComplete")
 }
 
+@MainActor
 class OnboardingBehavior: BehaviorBase {
     
     // MARK: Enums

@@ -8,8 +8,9 @@
 
 import Combine
 
+@MainActor
 class MarkerLoader: ObservableObject {
-    let queue = DispatchQueue(label: "services.soundscape.markerloader")
+    nonisolated let queue = DispatchQueue(label: "services.soundscape.markerloader")
     
     @Published var loadingComplete = false
     @Published var markerIDs: [String] = []
@@ -27,11 +28,11 @@ class MarkerLoader: ObservableObject {
         queue.async {
             let sortedKeys = ReferenceEntity.objectKeys(sortedBy: sort)
             
-            DispatchQueue.main.async { [weak self] in
+            Task { @MainActor in
                 // Initialize markers sorted by the given predicate (e.g. alphanumeric or distance)
-                self?.markerIDs = sortedKeys
-                self?.loadingComplete = true
-                self?.listenForChanges()
+                self.markerIDs = sortedKeys
+                self.loadingComplete = true
+                self.listenForChanges()
             }
         }
     }

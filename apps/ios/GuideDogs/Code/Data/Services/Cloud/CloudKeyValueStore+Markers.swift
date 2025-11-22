@@ -12,6 +12,7 @@ import Foundation
 
 /// Each reference entity is stored in the cloud key value store as it's own top-level object.
 /// This should minimize risk of data loss when using a top level array that contain all objects.
+@MainActor
 extension CloudKeyValueStore {
     
     // Types
@@ -75,7 +76,9 @@ extension CloudKeyValueStore {
             set(object: data, forKey: CloudKeyValueStore.key(for: referenceEntity))
         } else {
             GDLogCloudInfo("Failed to initialize marker parameters")
-            GDATelemetry.track("marker_backup.error.parameters_failed_to_initialize")
+            Task { @MainActor in
+                GDATelemetry.track("marker_backup.error.parameters_failed_to_initialize")
+            }
         }
     }
     
@@ -201,6 +204,7 @@ extension CloudKeyValueStore {
 
 // MARK: Helpers
 
+@MainActor
 extension CloudKeyValueStore {
     
     private func shouldUpdateLocalReferenceEntity(withMarkerParameters markerParameters: MarkerParameters) -> Bool {

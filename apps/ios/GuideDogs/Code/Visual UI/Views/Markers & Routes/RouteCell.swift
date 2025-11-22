@@ -10,6 +10,7 @@ import SwiftUI
 import Combine
 import RealmSwift
 
+@MainActor
 class RouteModel: ObservableObject {
     let id: String
     

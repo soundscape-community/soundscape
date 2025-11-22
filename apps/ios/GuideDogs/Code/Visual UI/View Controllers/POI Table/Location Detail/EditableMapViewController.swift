@@ -166,18 +166,16 @@ extension EditableMapViewController: MKMapViewDelegate {
             return
         }
         
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.5) { [weak self] in
-                guard let `self` = self else {
-                    return
-                }
-                
-                // Configure text and buttons for editing a location
-                self.configureForEditLocation()
-                
-                // Update statue
-                self.isReconfiguringView = false
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            guard let `self` = self else {
+                return
             }
+            
+            // Configure text and buttons for editing a location
+            self.configureForEditLocation()
+            
+            // Update statue
+            self.isReconfiguringView = false
         }
     }
     

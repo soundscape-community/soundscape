@@ -112,11 +112,9 @@ class LocalizationContext {
             
             configureAccessibilityLanguage()
             
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: Notification.Name.appLocaleDidChange,
-                                                object: self,
-                                                userInfo: [NotificationKeys.locale: newLocale])
-            }
+            NotificationCenter.default.post(name: Notification.Name.appLocaleDidChange,
+                                            object: self,
+                                            userInfo: [NotificationKeys.locale: newLocale])
         }
     }
     

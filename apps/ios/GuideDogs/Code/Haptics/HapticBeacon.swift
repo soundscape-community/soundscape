@@ -8,6 +8,7 @@
 
 import CoreLocation
 
+@MainActor
 protocol HapticBeacon: WandDelegate {
     var beacon: AudioPlayerIdentifier? { get }
     

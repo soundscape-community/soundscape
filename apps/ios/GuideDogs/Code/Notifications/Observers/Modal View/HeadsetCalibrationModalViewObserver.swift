@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 class HeadsetCalibrationModalViewObserver: PersistentNotificationObserver {
     
     // MARK: Properties

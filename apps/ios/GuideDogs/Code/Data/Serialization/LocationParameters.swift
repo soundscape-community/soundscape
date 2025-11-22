@@ -24,6 +24,7 @@ extension LocationParameters {
     
     typealias Completion = (Result<POI, Error>) -> Void
     
+    @MainActor
     func fetchEntity(completion: @escaping Completion) {
         if let entity = entity {
             addOrUpdate(entity: entity, completion: completion)
@@ -38,35 +39,35 @@ extension LocationParameters {
         }
     }
     
+    @MainActor
     private func addOrUpdate(entity: EntityParameters, completion: @escaping Completion) {
         switch entity.source {
         case .osm: addOrUpdateOSMEntity(id: entity.lookupInformation, completion: completion)
         }
     }
     
+    @MainActor
     private func addOrUpdateOSMEntity(id: String, completion: @escaping Completion) {
-        DispatchQueue.main.async {
-            if let entity = SpatialDataCache.searchByKey(key: id) as? GDASpatialDataResultEntity {
-                // Data for the OSM entity has already been cached on the device
-                completion(.success(entity))
-            } else {
-                // Create a new OSM entity and cache on the device
-                let entity = GDASpatialDataResultEntity(id: id, parameters: self)
-                
-                do {
-                    try autoreleasepool {
-                        let cache = try RealmHelper.getCacheRealm()
-                        
-                        try cache.write {
-                            cache.add(entity, update: .modified)
-                        }
-                        
-                        completion(.success(entity))
+        if let entity = SpatialDataCache.searchByKey(key: id) as? GDASpatialDataResultEntity {
+            // Data for the OSM entity has already been cached on the device
+            completion(.success(entity))
+        } else {
+            // Create a new OSM entity and cache on the device
+            let entity = GDASpatialDataResultEntity(id: id, parameters: self)
+            
+            do {
+                try autoreleasepool {
+                    let cache = try RealmHelper.getCacheRealm()
+                    
+                    try cache.write {
+                        cache.add(entity, update: .modified)
                     }
-                } catch {
-                    // Failed to save the entity
-                    completion(.failure(error))
+                    
+                    completion(.success(entity))
                 }
+            } catch {
+                // Failed to save the entity
+                completion(.failure(error))
             }
         }
     }

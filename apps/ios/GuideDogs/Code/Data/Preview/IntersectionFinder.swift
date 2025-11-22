@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 
 /// A helper to find nearby intersections
+@MainActor
 struct IntersectionFinder {
     
     // MARK: Properties

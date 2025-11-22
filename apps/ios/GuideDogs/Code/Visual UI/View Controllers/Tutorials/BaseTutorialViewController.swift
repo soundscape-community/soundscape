@@ -61,19 +61,14 @@ class BaseTutorialViewController: UIViewController {
         }
         
         if delay > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                playInternal(text) { (success) in
-                    DispatchQueue.main.async {
-                        completion?(success)
-                    }
-                }
+            Task { @MainActor in
+                // Convert legacy asyncAfter delay to Task.sleep
+                try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                guard !Task.isCancelled else { return }
+                playInternal(text, completion)
             }
         } else {
-            playInternal(text) { (success) in
-                DispatchQueue.main.async {
-                    completion?(success)
-                }
-            }
+            playInternal(text, completion)
         }
     }
     
@@ -83,16 +78,15 @@ class BaseTutorialViewController: UIViewController {
             return
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+            guard !Task.isCancelled else { return }
             // Only repeat the instructions if the cancelation condition is still not met
             guard !shouldCancel() else {
                 return
             }
-            
-            self?.play(text: text) { (finished) in
+            self?.play(text: text) { finished in
                 completion?(finished)
-                
-                // Schedule the same instructions to repeat again if need be
                 self?.playRepeated(text, delay, shouldCancel, completion)
             }
         }
@@ -103,21 +97,15 @@ class BaseTutorialViewController: UIViewController {
     }
     
     internal func updatePageText(_ text: String) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard self.pageTextLabel.text != text else {
-                return
-            }
-            
-            let animations: (() -> Void) = { [weak self] in
-                self?.pageTextLabel.text = text
-            }
-            
-            UIView.transition(with: self.pageTextLabel, duration: 0.50, options: .transitionCrossDissolve, animations: animations, completion: nil)
+        guard pageTextLabel.text != text else {
+            return
         }
+        
+        let animations: (() -> Void) = { [weak self] in
+            self?.pageTextLabel.text = text
+        }
+        
+        UIView.transition(with: pageTextLabel, duration: 0.50, options: .transitionCrossDissolve, animations: animations, completion: nil)
     }
     
     // MARK: Handle other app audio

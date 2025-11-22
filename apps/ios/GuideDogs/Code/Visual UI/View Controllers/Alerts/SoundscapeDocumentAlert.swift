@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 struct SoundscapeDocumentAlert: ShareAlertFactory {
     
     // MARK: Error Alerts
@@ -73,7 +74,9 @@ struct SoundscapeDocumentAlert: ShareAlertFactory {
         
         // Remove the temporary file after the alert has been dismissed
         activity.completionWithItemsHandler = {(_, _, _, _) in
-            URLResourceManager.removeURLResource(at: url)
+            Task { @MainActor in
+                URLResourceManager.removeURLResource(at: url)
+            }
         }
         
         return activity

@@ -10,8 +10,9 @@ import SwiftUI
 import Combine
 import CoreLocation
 
+@MainActor
 class RouteLoader: ObservableObject {
-    let queue = DispatchQueue(label: "services.soundscape.routeloader")
+    nonisolated let queue = DispatchQueue(label: "services.soundscape.routeloader")
     
     @Published var loadingComplete = false
     @Published var routeIDs: [String] = []
@@ -29,11 +30,11 @@ class RouteLoader: ObservableObject {
         queue.async {
             let keys = Route.objectKeys(sortedBy: sort)
             
-            DispatchQueue.main.async { [weak self] in
+            Task { @MainActor in
                 // Initialize routes given the sorted keys (e.g. alphanumeric or distance)
-                self?.routeIDs = keys
-                self?.loadingComplete = true
-                self?.listenForNewRoutes()
+                self.routeIDs = keys
+                self.loadingComplete = true
+                self.listenForNewRoutes()
             }
         }
     }

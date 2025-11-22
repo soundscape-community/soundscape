@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 class OfflineBannerObserver: PersistentNotificationObserver {
     
     // MARK: Properties

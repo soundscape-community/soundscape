@@ -242,10 +242,8 @@ class MarkerTutorialViewController: BaseTutorialViewController {
             return
         }
         
-        DispatchQueue.main.async {
-            self.headTitle.text = page.title
-            self.imageView.image = page.image
-        }
+        headTitle.text = page.title
+        imageView.image = page.image
         changeActionButton(with: page.buttonTitle, action: page.buttonAction)
 
         if page.buttonTitle == nil {
@@ -379,7 +377,8 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         
         let entityKeyToInclude = selectedPOI?.key != nil ? [selectedPOI!.key] : []
         let event = ExplorationModeToggled(.nearbyMarkers, requiredMarkerKeys: entityKeyToInclude, logContext: "marker_tutorial") { [weak self] _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
                 self?.showNextPage()
             }
         }
@@ -520,11 +519,12 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.beaconInBoundsDidChange, object: nil)
         
         // Allow the "ting" sound to play for a few seconds, and then continue the next page
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
             try? AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tutorial.markers.clear_test_beacon")
             
-            self?.didSetAudioBeacon = true
-            self?.showNextPage()
+            didSetAudioBeacon = true
+            showNextPage()
         }
     }
     

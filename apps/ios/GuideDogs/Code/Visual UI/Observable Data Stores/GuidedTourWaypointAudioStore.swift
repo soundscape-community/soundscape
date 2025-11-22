@@ -9,6 +9,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 class GuidedTourWaypointAudioStore: ObservableObject {
     let id: String
     

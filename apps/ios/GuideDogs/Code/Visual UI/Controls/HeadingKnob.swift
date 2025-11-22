@@ -36,7 +36,7 @@ class HeadingKnob: UIControl {
     
     var maximumValue: Float = 360
     
-    private (set) var value: Float = 0
+    private(set) var value: Float = 0
     
     func setValue(_ newValue: Float, animated: Bool = false) {
         value = min(maximumValue, max(minimumValue, newValue))
@@ -138,7 +138,7 @@ private class HeadingKnobRenderer {
         }
     }
     
-    private (set) var pointerAngle: CGFloat = CGFloat(-Double.pi) / 2
+    private(set) var pointerAngle: CGFloat = CGFloat(-Double.pi) / 2
     
     func setPointerAngle(_ newPointerAngle: CGFloat, animated: Bool = false) {
         CATransaction.begin()

@@ -23,6 +23,7 @@ enum AlertType: Int, NotificationProtocol {
         return AlertContainer()
     }
     
+    @MainActor
     var observer: NotificationObserver {
         switch self {
         case .offline: return OfflineAlertObserver()

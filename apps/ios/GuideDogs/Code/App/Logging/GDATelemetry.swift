@@ -24,6 +24,7 @@ public class GDATelemetry {
                     }
     }
     
+    @MainActor
     class func trackScreenView(_ screenName: String, with properties: [String: String]? = nil) {
         var propertiesToSend = properties ?? [:]
         propertiesToSend["screen_name"] = screenName
@@ -31,10 +32,12 @@ public class GDATelemetry {
         track("screen_view", with: propertiesToSend)
     }
     
+    @MainActor
     class func track(_ eventName: String, value: String) {
         track(eventName, with: ["value": value])
     }
     
+    @MainActor
     class func track(_ eventName: String, with properties: [String: String]? = nil) {
         var propertiesToSend = properties ?? [:]
         propertiesToSend["user_id"] = SettingsContext.shared.clientId

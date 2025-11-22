@@ -33,6 +33,7 @@ struct RouteDetailLocalizedLabel {
     
     // MARK: `LocalizedLabel`
     
+    @MainActor
     var time: LocalizedLabel? {
         guard case .trailActivity = detail.source else {
             return nil

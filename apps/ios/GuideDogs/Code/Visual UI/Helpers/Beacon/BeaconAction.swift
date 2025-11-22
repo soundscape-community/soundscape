@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 enum BeaconAction {
     
     case createMarker
