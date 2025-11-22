@@ -139,7 +139,9 @@ class AudioEngine: AudioEngineProtocol {
     
     // MARK: Dispatch Queue
     
-    private let queue = DispatchQueue(label: "services.soundscape.audioengine")
+    // Queue is retained only for passing to player initializers
+    // Players use it internally for async buffer scheduling
+    private let playerQueue = DispatchQueue(label: "services.soundscape.audioengine.players")
     
     // MARK: Public State
     
@@ -200,10 +202,8 @@ class AudioEngine: AudioEngineProtocol {
             guard let self = self else { return }
 
             // QUEUE → MAIN ACTOR: ensure start() executes on main actor
-            self.queue.async { [weak self] in
-                Task { @MainActor [weak self] in
-                    self?.start()
-                }
+            Task { @MainActor [weak self] in
+                self?.start()
             }
         }
         
@@ -261,26 +261,24 @@ class AudioEngine: AudioEngineProtocol {
             GDLogAudioError("Output is not currenly enabled...")
         }
         
-        queue.async { [weak self] in
-            Task { @MainActor [weak self] in
-                guard let self = self else { return }
-                guard !self.isSessionInterrupted else {
-                    // Will reset configuration after audio session interruption ends
-                    self.isConfigChangePending = true
-                    GDLogAudioVerbose("Configuration change is pending audio interruption")
-                    return
-                }
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            guard !self.isSessionInterrupted else {
+                // Will reset configuration after audio session interruption ends
+                self.isConfigChangePending = true
+                GDLogAudioVerbose("Configuration change is pending audio interruption")
+                return
+            }
 
-                guard self.state != .stopped else {
-                    // Will reset configuration when audio engine starts
-                    self.isConfigChangePending = true
-                    GDLogAudioVerbose("Configuration change is pending audio engine start")
-                    return
-                }
+            guard self.state != .stopped else {
+                // Will reset configuration when audio engine starts
+                self.isConfigChangePending = true
+                GDLogAudioVerbose("Configuration change is pending audio engine start")
+                return
 
-                self.isConfigChangePending = false
-                self.connectNodes()
-                self.start()
+                        self.isConfigChangePending = false
+                        self.connectNodes()
+                        self.start()
             }
         }
     }
@@ -812,19 +810,17 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter playerId: The identifier of the audio player to stop
     func stop(_ playerId: AudioPlayerIdentifier) {
-        queue.async { [unowned self] in
-            Task { @MainActor [weak self] in
-                guard let self = self else { return }
-                guard let index = self.players.firstIndex(where: { $0.id == playerId }) else {
-                    return
-                }
-                let player = self.players.remove(at: index)
-                player.stop()
-                if let discrete = player as? DiscreteAudioPlayer, let ttsSound = discrete.sound as? TTSSound {
-                    ttsSound.stopRendering()
-                }
-                GDLogAudioVerbose("Stopping player \(player.id.uuidString)")
-                NotificationCenter.default.post(name: .discretePlayerDidStop, object: self, userInfo: [ Keys.playerId: playerId ])
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            guard let index = self.players.firstIndex(where: { $0.id == playerId }) else {
+                return
+            }
+            let player = self.players.remove(at: index)
+            player.stop()
+            if let discrete = player as? DiscreteAudioPlayer, let ttsSound = discrete.sound as? TTSSound {
+                ttsSound.stopRendering()
+                        GDLogAudioVerbose("Stopping player \(player.id.uuidString)")
+                        NotificationCenter.default.post(name: .discretePlayerDidStop, object: self, userInfo: [ Keys.playerId: playerId ])
             }
         }
     }
@@ -841,25 +837,23 @@ class AudioEngine: AudioEngineProtocol {
     /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
     @discardableResult
     func play<T: DynamicSound>(_ sound: T, heading: Heading? = nil) -> AudioPlayerIdentifier? {
-        return queue.sync {
-            self.startEngineIfNeeded()
-            
-            guard self.state != .stopped else {
-                GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                return nil
-            }
-            
-            guard let player = DynamicAudioPlayer(sound: sound, queue: queue) else {
-                GDLogAudioError("Unable to play dynamic audio asset. Unable to load audio assets.")
-                return nil
-            }
-            
-            player.delegate = self
-            
-            // Dynamic assets require a heading for selecting the component to play, so default to the presentation
-            // heading if no heading was provided
-            return play(player, heading: heading ?? AppContext.shared.geolocationManager.presentationHeading)
+        self.startEngineIfNeeded()
+        
+        guard self.state != .stopped else {
+            GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
+            return nil
         }
+        
+        guard let player = DynamicAudioPlayer(sound: sound, queue: playerQueue) else {
+            GDLogAudioError("Unable to play dynamic audio asset. Unable to load audio assets.")
+            return nil
+        }
+        
+        player.delegate = self
+        
+        // Dynamic assets require a heading for selecting the component to play, so default to the presentation
+        // heading if no heading was provided
+        return play(player, heading: heading ?? AppContext.shared.geolocationManager.presentationHeading)
     }
     
     /// Plays audio in a continuous loop.
@@ -869,21 +863,19 @@ class AudioEngine: AudioEngineProtocol {
     /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
     @discardableResult
     func play(looped: SynchronouslyGeneratedSound) -> AudioPlayerIdentifier? {
-        return queue.sync {
-            self.startEngineIfNeeded()
-            
-            guard self.state != .stopped else {
-                GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                return nil
-            }
-            
-            guard let player = ContinuousAudioPlayer(looped, queue: queue) else {
-                GDLogAudioError("Unable to play continuous audio track. Unable to load audio assets.")
-                return nil
-            }
-            
-            return play(player)
+        self.startEngineIfNeeded()
+        
+        guard self.state != .stopped else {
+            GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
+            return nil
         }
+        
+        guard let player = ContinuousAudioPlayer(looped, queue: playerQueue) else {
+            GDLogAudioError("Unable to play continuous audio track. Unable to load audio assets.")
+            return nil
+        }
+        
+        return play(player)
     }
     
     @discardableResult
@@ -892,28 +884,26 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter sound: Sound to play
     /// - Returns: Player ID
     func play(_ sound: SynchronouslyGeneratedSound) -> AudioPlayerIdentifier? {
-        return queue.sync {
-            self.startEngineIfNeeded()
-            
-            guard self.state != .stopped else {
-                GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                return nil
-            }
-            
-            guard let player = DiscreteAudioPlayer(sound, queue: self.queue) else {
-                GDLogAudioError("Unable to play audio track. Unable to load audio assets.")
-                return nil
-            }
-            
-            player.delegate = self
-            
-            if let id = self.play(player) {
-                self.discretePlayerIds.append(id)
-                return id
-            }
-            
+        self.startEngineIfNeeded()
+        
+        guard self.state != .stopped else {
+            GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
             return nil
         }
+        
+        guard let player = DiscreteAudioPlayer(sound, queue: self.playerQueue) else {
+            GDLogAudioError("Unable to play audio track. Unable to load audio assets.")
+            return nil
+        }
+        
+        player.delegate = self
+        
+        if let id = self.play(player) {
+            self.discretePlayerIds.append(id)
+            return id
+        }
+        
+        return nil
     }
     
     // MARK: Discrete Queued Audio
@@ -1019,25 +1009,23 @@ class AudioEngine: AudioEngineProtocol {
             return
         }
         
-        queue.async { [unowned self] in
-            Task { @MainActor [weak self] in
-                guard let self = self else { return }
-                guard self.currentQueuePlayerID == nil else {
-                    GDLogAudioError("Tried to play next sound when the current sound was still playing (\(String(describing: self.currentQueuePlayerID)))...")
-                    return
-                }
-                guard let sound = self.currentSounds?.next() else {
-                    self.delegate?.didFinishPlaying()
-                    self.finishDiscrete(success: true)
-                    return
-                }
-                guard let player = DiscreteAudioPlayer(sound, queue: self.queue) else { return }
-                player.delegate = self
-                if let id = self.play(player) {
-                    self.discretePlayerIds.append(id)
-                    self.currentQueuePlayerID = id
-                }
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            guard self.currentQueuePlayerID == nil else {
+                GDLogAudioError("Tried to play next sound when the current sound was still playing (\(String(describing: self.currentQueuePlayerID)))...")
+                return
             }
+            guard let sound = self.currentSounds?.next() else {
+                self.delegate?.didFinishPlaying()
+                self.finishDiscrete(success: true)
+                return
+            }
+            guard let player = DiscreteAudioPlayer(sound, queue: self.playerQueue) else { return }
+            player.delegate = self
+            if let id = self.play(player) {
+                self.discretePlayerIds.append(id)
+                self.currentQueuePlayerID = id
+                    }
         }
     }
     
@@ -1068,12 +1056,10 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter heading: Updated presentation heading
     private func updateUserHeading(_ heading: CLLocationDirection) {
-        queue.async { [unowned self] in
-            Task { @MainActor [weak self] in
-                guard let self = self else { return }
-                for environment in self.environmentNodes {
-                    environment.listenerAngularOrientation = AVAudio3DAngularOrientation(yaw: Float(heading), pitch: 0.0, roll: 0.0)
-                }
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            for environment in self.environmentNodes {
+                environment.listenerAngularOrientation = AVAudio3DAngularOrientation(yaw: Float(heading), pitch: 0.0, roll: 0.0)
             }
         }
     }
@@ -1236,14 +1222,12 @@ class AudioEngine: AudioEngineProtocol {
         
         isSessionInterrupted = true
         
-        self.queue.async { [weak self] in
-            Task { @MainActor [weak self] in
-                guard let self = self else { return }
-                // Stop discrete players
-                self.stopDiscrete()
-                // Stop audio engine
-                self.stop()
-            }
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            // Stop discrete players
+            self.stopDiscrete()
+            // Stop audio engine
+            self.stop()
         }
     }
     
@@ -1260,10 +1244,8 @@ class AudioEngine: AudioEngineProtocol {
         // For discrete audio it does not matter, as we discard them if they were interrupted, but for
         // continuous audio players we need to manually re-create them if needed.
         
-        self.queue.async { [weak self] in
-            Task { @MainActor [weak self] in
-                self?.start()
-            }
+        Task { @MainActor [weak self] in
+            self?.start()
         }
     }
     
