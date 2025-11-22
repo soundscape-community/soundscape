@@ -488,9 +488,28 @@ No additional redundant dispatches identified; further removals would risk viola
   - **Status:** Pure geometry helpers audit complete; 30+ methods verified/marked nonisolated
 
 **Updated Next Steps:**
-- Search/remove remaining `DispatchQueue.main.async` inside @MainActor types (estimated 22 legitimate, rest redundant)
 - Plan player queue refactor (internal buffer scheduling to Task groups / async sequences)
 - Address non-Sendable capture warnings
 - (Deferred) SpatialDataContext barrier sync refactor to dedicated actor
 
 
+- 2025-11-22: **Task 5 Phase 6: DispatchQueue.main.async Audit** – Completed comprehensive search for redundant main thread hops:
+  - **Searched:** All Swift files in GuideDogs directory for `DispatchQueue.main.async` (22 occurrences found)
+  - **Analyzed contexts:**
+    - ServiceModel (10 occurrences): URLSession completion handlers from background queue - **LEGITIMATE**
+    - BLEManager (1 occurrence): CoreBluetooth delegate callback - **LEGITIMATE**
+    - PreviewWand (2 occurrences): Timer scheduling and initial heading propagation - **LEGITIMATE**
+    - PreviewBehavior (5 occurrences): Async initialization from Task - **LEGITIMATE**
+    - OSMServiceModel (1 occurrence): URLSession completion handler - **LEGITIMATE**
+    - DynamicLaunchViewController (1 occurrence): ExperimentManager delegate from background thread - **LEGITIMATE**
+    - HeadphoneMotionManagerReachability (1 occurrence): Network reachability callback - **LEGITIMATE**
+    - GPXTracker (1 occurrence): File I/O completion - **LEGITIMATE**
+  - **Audited ObservableObject classes:** All 19 ObservableObject implementations checked - **NO REDUNDANT CALLS FOUND**
+  - **Result:** All 22 `DispatchQueue.main.async` calls are legitimate (bridging from non-main-actor contexts like network callbacks, CoreBluetooth, Timer, file I/O)
+  - **Conclusion:** No redundant main.async hops remain; all usages properly bridge from background threads/queues to main actor
+  - **Status:** Audit complete; no cleanup needed
+
+**Updated Next Steps:**
+- Plan player queue refactor (internal buffer scheduling to Task groups / async sequences)
+- Address non-Sendable capture warnings
+- (Deferred) SpatialDataContext barrier sync refactor to dedicated actor
