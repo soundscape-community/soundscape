@@ -9,49 +9,76 @@
 import Foundation
 import AVFoundation
 
+// Actor used to serialize all mutable state for discrete audio playback layers
+// Eliminates data races previously caused by ad hoc Task mutations.
+actor DiscretePlayerStateActor {
+    struct LayerState {
+        var bufferPromise: Promise<AVAudioPCMBuffer?>?
+        var bufferQueue: Queue<AVAudioPCMBuffer> = .init()
+        var bufferCount = 0
+        var playbackDispatchGroupWasEntered = false
+        var playbackDispatchGroupWasLeft = false
+    }
+    private(set) var layerStates: [LayerState]
+    private var wasPaused = false
+
+    init(layerCount: Int) {
+        layerStates = (0 ..< layerCount).map { _ in LayerState() }
+    }
+
+    // Buffer promise access
+    func setBufferPromise(_ promise: Promise<AVAudioPCMBuffer?>?, layer: Int) {
+        layerStates[layer].bufferPromise = promise
+    }
+    func getBufferPromise(layer: Int) -> Promise<AVAudioPCMBuffer?>? {
+        layerStates[layer].bufferPromise
+    }
+
+    // Queue operations
+    func enqueueBuffer(_ buffer: AVAudioPCMBuffer, layer: Int) {
+        layerStates[layer].bufferQueue.enqueue(buffer)
+        layerStates[layer].bufferCount += 1
+    }
+    func dequeuePlayedBuffer(layer: Int) {
+        _ = layerStates[layer].bufferQueue.dequeue()
+    }
+    func bufferQueueIsEmpty(layer: Int) -> Bool { layerStates[layer].bufferQueue.isEmpty }
+    func replaceBufferQueue(layer: Int) -> Queue<AVAudioPCMBuffer> {
+        let old = layerStates[layer].bufferQueue
+        layerStates[layer].bufferQueue = .init()
+        return old
+    }
+    func restoreQueue(layer: Int, queue: Queue<AVAudioPCMBuffer>) {
+        layerStates[layer].bufferQueue = queue
+    }
+
+    // Playback dispatch flags
+    func markPlaybackEntered(layer: Int) { layerStates[layer].playbackDispatchGroupWasEntered = true }
+    func playbackEntered(layer: Int) -> Bool { layerStates[layer].playbackDispatchGroupWasEntered }
+    func playbackLeft(layer: Int) -> Bool { layerStates[layer].playbackDispatchGroupWasLeft }
+    func markPlaybackLeft(layer: Int) { layerStates[layer].playbackDispatchGroupWasLeft = true }
+
+    // Pause state
+    func getWasPaused() -> Bool { wasPaused }
+    func setWasPaused(_ paused: Bool) { wasPaused = paused }
+}
+
 @MainActor protocol DiscreteAudioPlayerDelegate: AnyObject {
     func onDataPlayedBack(_ playerId: AudioPlayerIdentifier)
     func onLayerFormatChanged(_ playerId: AudioPlayerIdentifier, layer: Int)
 }
 
 class DiscreteAudioPlayer: BaseAudioPlayer {
-    
-    /// Encapsulates all state related to an audio channel except for the node itself
-    private struct LayerState {
-        /// A promise that is fulfilled when the next buffer is finished being generated
-        var bufferPromise: Promise<AVAudioPCMBuffer?>?
-        
-        /// A queue used for tracking which buffers have been scheduled to play but have not finished
-        /// playing yet. This allows us to reschedule the pending buffers if the player is paused for
-        /// any reason (e.g. an audio route change)
-        var bufferQueue: Queue<AVAudioPCMBuffer> = .init()
-        
-        /// Counts the number of buffers played in this channel
-        var bufferCount = 0
-        
-        /// Tracks if the playback dispatch group was entered or not for this layer
-        var playbackDispatchGroupWasEntered = false
-        
-        /// Tracks if the playback dispatch group was left or not for this layer
-        var playbackDispatchGroupWasLeft = false
-    }
-    
     weak var delegate: DiscreteAudioPlayerDelegate?
-    
-    private var layerStates: [LayerState]
-    
+    // Serialized mutable state handled by actor
+    private let stateActor: DiscretePlayerStateActor
     private var channelPrepareDispatchGroup = DispatchGroup()
-    
     private var channelPlayedBackDispatchGroup = DispatchGroup()
-    
     private var isCancelled = false
-    
-    private var wasPaused = false
-    
-    required init?(_ sound: Sound, queue: DispatchQueue) {
-        layerStates = (0 ..< sound.layerCount).map { _ in LayerState() }
-        
-        super.init(sound: sound, queue: queue)
+    // Queue removed (Phase 7 Step 4); now using actor for serialization.
+    required init?(_ sound: Sound) {
+        stateActor = DiscretePlayerStateActor(layerCount: sound.layerCount)
+        super.init(sound: sound, queue: DispatchQueue.main)
     }
     
     override func prepare(engine: AVAudioEngine, completion: ((_ success: Bool) -> Void)?) {
@@ -62,35 +89,27 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
             return
         }
         
-        guard layerStates.count == layers.count else {
+        // Validate expected layer count matches sound configuration
+        guard layers.count == sound.layerCount else {
             completion?(false)
             return
         }
         
         for index in 0 ..< layers.count {
             channelPrepareDispatchGroup.enter()
-            
-            // Load the sound buffers
-            layerStates[index].bufferPromise = sound.nextBuffer(forLayer: index)
-            
-            layerStates[index].bufferPromise?.then { [weak self] buffer in
-                self?.queue.async { [weak self] in
-                    guard let `self` = self else {
-                        return
-                    }
-                    
-                    // Make sure we have a buffer
+            let promise = sound.nextBuffer(forLayer: index)
+            Task { await self.stateActor.setBufferPromise(promise, layer: index) }
+            promise.then { [weak self] buffer in
+                Task { [weak self] in
+                    guard let self = self else { return }
                     guard !self.isCancelled, let buffer = buffer else {
                         self.state = .notPrepared
                         self.channelPrepareDispatchGroup.leave()
                         return
                     }
-                    
-                    // TODO: What happens if the formats don't all agree...
                     self.layers[index].format = buffer.format
                     self.layers[index].attach(to: engine)
-                    
-                    self.layerStates[index].playbackDispatchGroupWasEntered = true
+                    await self.stateActor.markPlaybackEntered(layer: index)
                     self.channelPlayedBackDispatchGroup.enter()
                     self.channelPrepareDispatchGroup.leave()
                 }
@@ -98,7 +117,7 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
         }
         
         // Action to take when the channels all finish preparing
-        channelPrepareDispatchGroup.notify(queue: queue) { [weak self] in
+        channelPrepareDispatchGroup.notify(queue: .main) { [weak self] in
             guard self?.state == .preparing else {
                 completion?(false)
                 return
@@ -145,103 +164,68 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
     }
     
     override func scheduleBuffer(forLayer layer: Int) {
-        guard layerStates.count > layer else {
-            return
-        }
-        
-        guard let bufferPromise = layerStates[layer].bufferPromise else {
-            return
-        }
-        
-        // Schedule the buffer to be played as soon as it is available
-        bufferPromise.then { [weak self] (buffer) in
-            guard let `self` = self else {
-                return
-            }
-            
-            let format = self.layers[layer].format
-            if let buffer = buffer, buffer.format != format {
-                GDLogAudioVerbose("Format needs to be updated (Old: \(format?.description ?? "Nil"), New: \(buffer.format))")
-                
-                // Schedule a silent buffer and wait for it to finish playing before reconnecting to the audio engine with the appropriate format...
-                self.awaitSilentBuffer(for: layer) { [weak self] in
-                    guard let `self` = self else {
-                        return
-                    }
-                    
-                    GDLogAudioVerbose("Reconnecting for new format")
-                    
-                    self.layers[layer].stop()
-                    self.layers[layer].format = buffer.format
-                    Task { @MainActor [weak self] in
+        Task { [weak self] in
+            guard let self = self else { return }
+            guard let bufferPromise = await self.stateActor.getBufferPromise(layer: layer) else { return }
+            bufferPromise.then { [weak self] (buffer) in
+                guard let self = self else { return }
+                let format = self.layers[layer].format
+                if let buffer = buffer, buffer.format != format {
+                    GDLogAudioVerbose("Format needs to be updated (Old: \(format?.description ?? "Nil"), New: \(buffer.format))")
+                    self.awaitSilentBuffer(for: layer) { [weak self] in
                         guard let self = self else { return }
-                        self.delegate?.onLayerFormatChanged(self.id, layer: layer)
-                    }
-                    self.playBuffer(buffer, onChannel: layer)
-                    
-                    do {
-                        try self.layers[layer].play()
-                    } catch {
-                        GDLogAudioError("Unable to restart the player after audio buffer format change in layer \(layer)")
-                        
-                        guard !self.layerStates[layer].playbackDispatchGroupWasLeft else {
-                            return
+                        GDLogAudioVerbose("Reconnecting for new format")
+                        self.layers[layer].stop()
+                        self.layers[layer].format = buffer.format
+                        Task { @MainActor [weak self] in
+                            guard let self = self else { return }
+                            self.delegate?.onLayerFormatChanged(self.id, layer: layer)
                         }
-                        
-                        // Try to recover by indicating that this layer is done
-                        self.layerStates[layer].playbackDispatchGroupWasLeft = true
-                        self.channelPlayedBackDispatchGroup.leave()
+                        self.playBuffer(buffer, onChannel: layer)
+                        do {
+                            try self.layers[layer].play()
+                        } catch {
+                            GDLogAudioError("Unable to restart the player after audio buffer format change in layer \(layer)")
+                            Task { [weak self] in
+                                guard let self = self else { return }
+                                if !(await self.stateActor.playbackLeft(layer: layer)) {
+                                    await self.stateActor.markPlaybackLeft(layer: layer)
+                                    self.channelPlayedBackDispatchGroup.leave()
+                                }
+                            }
+                        }
                     }
+                    return
                 }
-                
-                return
-            }
-            
-            self.queue.async {
                 self.playBuffer(buffer, onChannel: layer)
             }
         }
     }
     
     private func schedulePendingBuffers(forChannel layer: Int) {
-        guard layerStates.count > layer, layers.count > layer else {
-            return
-        }
-        
-        // Reset `wasPaused` so it will notify properly moving forward
-        wasPaused = false
-        
-        // Schedule all the buffers in the pending buffer queue
-        var oldQueue = layerStates[layer].bufferQueue
-        var newQueue: Queue<AVAudioPCMBuffer> = .init()
-        layerStates[layer].bufferQueue = newQueue
-        
-        while let buffer = oldQueue.dequeue() {
-            newQueue.enqueue(buffer)
-            layers[layer].player.scheduleBuffer(buffer, completionCallbackType: .dataRendered) { [weak self] (_) in
-                guard let `self` = self else {
-                    return
-                }
-                
-                // Only log completion and remove from the buffer queue if the audio actually played back
-                guard !self.wasPaused else {
-                    return
-                }
-                
-                self.queue.async {
-                    _ = self.layerStates[layer].bufferQueue.dequeue()
+        guard layers.count > layer else { return }
+        Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateActor.setWasPaused(false)
+            let oldQueue = await self.stateActor.replaceBufferQueue(layer: layer)
+            var tempQueue = oldQueue
+            while let buffer = tempQueue.dequeue() {
+                await self.stateActor.enqueueBuffer(buffer, layer: layer)
+                self.layers[layer].player.scheduleBuffer(buffer, completionCallbackType: .dataRendered) { [weak self] _ in
+                    guard let self = self else { return }
+                    Task { [weak self] in
+                        guard let self = self else { return }
+                        if await self.stateActor.getWasPaused() { return }
+                        await self.stateActor.dequeuePlayedBuffer(layer: layer)
+                    }
                 }
             }
-        }
-        
-        // Call the regular `scheduleBuffer` function to continue scheduling any future buffers.
-        queue.async {
             self.scheduleBuffer(forLayer: layer)
         }
     }
     
     private func playBuffer(_ buffer: AVAudioPCMBuffer?, onChannel layer: Int) {
-        guard layerStates.count > layer, layers.count > layer, layers[layer].isAttached else {
+        guard layers.count > layer, layers[layer].isAttached else {
             GDLogAudioError("Node is no longer connected to the audio engine. Buffer cannot be played!")
             return
         }
@@ -250,53 +234,41 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
         // wait for all buffers that were scheduled to play to finish playing by having the
         // dispatch group notify us.
         guard let buffer = buffer else {
-            layers[layer].player.scheduleBuffer(layers[layer].silentBuffer(), completionCallbackType: .dataPlayedBack) { [weak self] (_) in
-                guard let `self` = self else {
-                    return
-                }
-                // Serialize all state access on the player's queue to avoid races
-                self.queue.async {
-                    if !self.layerStates[layer].bufferQueue.isEmpty {
-                        self.wasPaused = true
+            layers[layer].player.scheduleBuffer(layers[layer].silentBuffer(), completionCallbackType: .dataPlayedBack) { [weak self] _ in
+                guard let self = self else { return }
+                Task { [weak self] in
+                    guard let self = self else { return }
+                    if !(await self.stateActor.bufferQueueIsEmpty(layer: layer)) {
+                        await self.stateActor.setWasPaused(true)
                         return
                     }
-
-                    guard self.layerStates[layer].playbackDispatchGroupWasEntered else {
+                    if !(await self.stateActor.playbackEntered(layer: layer)) {
                         GDLogAudioVerbose("Silent buffer played back, but dispatch group was never entered!")
                         return
                     }
-
-                    guard !self.layerStates[layer].playbackDispatchGroupWasLeft else {
+                    if await self.stateActor.playbackLeft(layer: layer) {
                         GDLogAudioVerbose("Silent buffer played back, but dispatch group was already left!")
                         return
                     }
-
-                    self.layerStates[layer].playbackDispatchGroupWasLeft = true
+                    await self.stateActor.markPlaybackLeft(layer: layer)
                     self.channelPlayedBackDispatchGroup.leave()
                 }
             }
-            
             return
         }
         
         // Schedule this buffer (and use the dispatch group to know when it is done playing)
         // Serialize mutations to layer state on the queue
-        queue.async { [weak self] in
+        Task { [weak self] in
             guard let self = self else { return }
-            self.layerStates[layer].bufferQueue.enqueue(buffer)
-            self.layerStates[layer].bufferCount += 1
+            await self.stateActor.enqueueBuffer(buffer, layer: layer)
         }
         layers[layer].player.scheduleBuffer(buffer, completionCallbackType: .dataRendered) { [weak self] (_) in
-            guard let `self` = self else {
-                return
-            }
-            // Ensure reads/writes occur on the queue to avoid races
-            self.queue.async {
-                // Only log completion and remove from the buffer queue if the audio actually played back
-                if self.wasPaused {
-                    return
-                }
-                _ = self.layerStates[layer].bufferQueue.dequeue()
+            guard let self = self else { return }
+            Task { [weak self] in
+                guard let self = self else { return }
+                if await self.stateActor.getWasPaused() { return }
+                await self.stateActor.dequeuePlayedBuffer(layer: layer)
             }
         }
         
@@ -305,22 +277,21 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
             return
         }
         
-        layerStates[layer].bufferPromise = sound.nextBuffer(forLayer: layer)
+        let promise = sound.nextBuffer(forLayer: layer)
+        Task { await self.stateActor.setBufferPromise(promise, layer: layer) }
         scheduleBuffer(forLayer: layer)
     }
     
     private func awaitSilentBuffer(for layer: Int, callback: @escaping () -> Void) {
-        guard layerStates.count > layer, layers.count > layer, layers[layer].isAttached else {
+        guard layers.count > layer, layers[layer].isAttached else {
             GDLogAudioError("Node is no longer connected to the audio engine. Buffer cannot be played!")
             return
         }
         
         let silentBuffer = layers[layer].silentBuffer()
         
-        layers[layer].player.scheduleBuffer(silentBuffer, completionCallbackType: .dataPlayedBack) { [weak self] (_) in
-            self?.queue.async {
-                callback()
-            }
+        layers[layer].player.scheduleBuffer(silentBuffer, completionCallbackType: .dataPlayedBack) { _ in
+            Task { @MainActor in callback() }
         }
     }
     

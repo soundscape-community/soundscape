@@ -398,6 +398,28 @@ Files cleaned (cumulative):
   - GPXTracker (1): Post-save reset after background file I/O; ensures UI/state observers see consistent values.
   - PreviewWand (2): Initial heading propagation & long-focus timer (Timer requires main run loop).
   - PreviewBehavior (5): Event processor closures without guaranteed main-thread origin performing UI/haptic/state updates.
+
+### 2025-11-22: Phase 7 Step 4 – DiscreteAudioPlayer Concurrency Refactor
+Refactored `DiscreteAudioPlayer` to replace ad hoc `Task` mutations (introduced when removing its injected `DispatchQueue`) with a dedicated `actor` (`DiscretePlayerStateActor`). Actor now serializes access to:
+- Per-layer `bufferPromise`, `bufferQueue`, `bufferCount`
+- Playback dispatch flags (`playbackDispatchGroupWasEntered/WasLeft`)
+- Pause state (`wasPaused`)
+
+Implementation Highlights:
+- Added `DiscretePlayerStateActor` encapsulating `LayerState` array and accessor/mutation methods.
+- Rewrote `prepare`, `scheduleBuffer`, `schedulePendingBuffers`, `playBuffer`, and completion handlers to interact via actor methods instead of directly mutating shared arrays.
+- Eliminated data races previously reported by ThreadSanitizer in `playBuffer` / `scheduleBuffer` (no TSan warnings in post-refactor test run).
+- Preserved existing playback semantics (format change path, silent buffer scheduling, dispatch group coordination) by moving group leave decision logic out of actor while flag mutations happen inside.
+- Replaced unsafe closure mutations with `Task { await ... }` calls invoking actor APIs; avoided introducing blocking waits on the main actor.
+
+Verification:
+- Build succeeded after minor fixes (removed illegal `await` in non-async `prepare`, corrected optional chaining on non-optional `Promise`).
+- Full test suite (47 tests) passed with `** TEST SUCCEEDED **`, confirming no regressions and race elimination.
+
+Next Steps (Audio Engine / Phase 7):
+- Evaluate migrating remaining discrete scheduling logic (e.g., dispatch groups) into actor for further simplification.
+- Consider similar actor approach for dynamic player state if future race surfaces.
+- Continue removal of remaining legitimate main-thread hops only if they become redundant after actor adoption.
   - HeadphoneMotionManagerReachability (1): Motion manager start + timeout timer; CoreMotion updates + Timer scheduled on main.
 
 No additional redundant dispatches identified; further removals would risk violating required thread expectations of underlying frameworks (CoreBluetooth, URLSession, CoreMotion, Timer) or delegate/UI contracts.
