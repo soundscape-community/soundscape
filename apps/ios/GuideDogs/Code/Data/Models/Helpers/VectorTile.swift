@@ -191,7 +191,7 @@ class VectorTile: Hashable {
     ///
     /// - Parameter zoom: A zoom level (between 0 and 23)
     /// - Returns: Side length of the map in pixels
-    static func mapSize(zoom: UInt) -> UInt {
+    nonisolated static func mapSize(zoom: UInt) -> UInt {
         let base: UInt = 256
         return base << zoom
     }
@@ -203,7 +203,7 @@ class VectorTile: Hashable {
     ///   - latitude: Latitude (in degrees) at which to measure the ground resolution.
     ///   - zoom: Level of detail, from 1 (lowest detail) to 23 (highest detail).
     /// - Returns: The ground resolution, in meters per pixel.
-    static func groundResolution(latitude: Double, zoom: UInt) -> Double {
+    nonisolated static func groundResolution(latitude: Double, zoom: UInt) -> Double {
         let clippedLat = clip(latitude, min: minLatitude, max: maxLatitude)
         return cos(clippedLat * .pi / 180.0) * 2 * .pi * Double(earthRadius) / Double(mapSize(zoom: zoom))
     }
