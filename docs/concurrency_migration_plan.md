@@ -472,10 +472,25 @@ No additional redundant dispatches identified; further removals would risk viola
   - **Commits:** `0b2b462` "refactor(loaders): replace DispatchQueue with structured concurrency"
   - **Status:** Loaders fully migrated to async/await; nonisolated queue pattern eliminated
 
+- 2025-11-22: **Task 5 Phase 5: Geometry Helpers Nonisolated** – Marked pure mathematical functions nonisolated for safe background usage:
+  - **VectorTile updates:** Marked `mapSize(zoom:)` (pure bit shift) and `groundResolution(latitude:zoom:)` (pure trigonometry) as nonisolated
+  - **Already nonisolated (verified):**
+    - GeometryUtils: All 16 static methods (coordinates, geometryContainsLocation, pathBearing, split, rotate, pathDistance, closestEdge variants, interpolateToEqualDistance, centroid variants)
+    - CLLocationCoordinate2D extensions: distance, bearing, destination, coordinateBetween
+    - VectorTile coordinate transforms: getPixelXY (4 overloads), getLatLong, getTileXY, tilesForRegion, tileForLocation, clip, isValidLocation
+  - **Unable to mark:** Road.bearing extension (accesses protocol property 'coordinates' which may be actor-isolated in Realm conformers)
+  - **Benefits:**
+    - Enables safe background usage of geometry calculations without main-actor hops
+    - Clarifies stateless nature of utility functions
+    - Improves performance for distance sorting and path computations
+  - **Verification:** All 47 tests passing
+  - **Commit:** `340032d` "refactor(geometry): mark VectorTile helper methods nonisolated"
+  - **Status:** Pure geometry helpers audit complete; 30+ methods verified/marked nonisolated
+
 **Updated Next Steps:**
-- Mark pure geometry helpers `nonisolated` (bearing, distance, coordinate transforms)
 - Search/remove remaining `DispatchQueue.main.async` inside @MainActor types (estimated 22 legitimate, rest redundant)
 - Plan player queue refactor (internal buffer scheduling to Task groups / async sequences)
 - Address non-Sendable capture warnings
+- (Deferred) SpatialDataContext barrier sync refactor to dedicated actor
 
 
