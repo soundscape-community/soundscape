@@ -11,6 +11,7 @@ import AVFoundation
 import CoreLocation
 import Combine
 
+@MainActor
 class BaseAudioPlayer: AudioPlayer {
     
     let id = AudioPlayerIdentifier()
@@ -68,20 +69,15 @@ class BaseAudioPlayer: AudioPlayer {
     
     private(set) var userLocation: CLLocation?
     
-    // MARK: Queue
-    
-    private(set) weak var queue: DispatchQueue!
-    
     /// An observer object for listening for location update notifications so that localized 3D
     /// sounds can be properly updated.
     var observer: NSObjectProtocol?
     
     private var cancellable: AnyCancellable?
        
-    init?(sound: SoundBase, queue: DispatchQueue) {
+    init?(sound: SoundBase) {
         self.layers = (0 ..< sound.layerCount).map { PreparableAudioLayer(eqParameters: sound.equalizerParams(for: $0)) }
         self.sound = sound
-        self.queue = queue
         
         if sound is TTSSound {
             cancellable = NotificationCenter.default.publisher(for: .ttsVolumeChanged).sink { [weak self] _ in
@@ -197,30 +193,24 @@ class BaseAudioPlayer: AudioPlayer {
     }
     
     func stop() {
-        queue.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard self.isPlaying else {
-                return
-            }
-                        
-            self.state = .notPrepared
-            
-            for layer in self.layers {
-                layer.stop()
-                layer.disconnect()
-                layer.detach()
-            }
-            
-            if let observer = self.observer {
-                NotificationCenter.default.removeObserver(observer)
-            }
-            
-            self.isPlaying = false
-            self.userHeading = nil
+        guard isPlaying else {
+            return
         }
+                    
+        state = .notPrepared
+        
+        for layer in layers {
+            layer.stop()
+            layer.disconnect()
+            layer.detach()
+        }
+        
+        if let observer = observer {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        
+        isPlaying = false
+        userHeading = nil
     }
     
     /// Updates the node's 3D properties. This version of the method is intended for updating 3D properties that

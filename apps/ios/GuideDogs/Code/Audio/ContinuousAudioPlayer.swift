@@ -9,14 +9,14 @@
 import Foundation
 import AVFoundation
 
+@MainActor
 class ContinuousAudioPlayer: BaseAudioPlayer {
     
     private(set) var buffers: [AVAudioPCMBuffer] = []
     
-    // Queue parameter removed (Phase 7 Step 2). Continuous sounds are generated synchronously
-    // so they do not require the injected scheduling queue used by discrete/dynamic players.
+    // Queue dependency removed; continuous sounds schedule buffers synchronously on the main actor.
     required init?(_ sound: SynchronouslyGeneratedSound) {
-        super.init(sound: sound, queue: DispatchQueue.main)
+        super.init(sound: sound)
     }
     
     override func prepare(engine: AVAudioEngine, completion: ((_ success: Bool) -> Void)?) {

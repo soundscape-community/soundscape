@@ -546,17 +546,15 @@ No additional redundant dispatches identified; further removals would risk viola
   - **Status:** Pure geometry helpers audit complete; 30+ methods verified/marked nonisolated
 
 **Updated Next Steps:**
-- Plan player queue refactor (internal buffer scheduling to Task groups / async sequences)
-- Address non-Sendable capture warnings
-- (Deferred) SpatialDataContext barrier sync refactor to dedicated actor
+- Continue Task 5 Phase 7 by replacing `DiscreteAudioPlayer` dispatch groups with structured concurrency (`TaskGroup`/`AsyncStream`) and wiring cancellation into buffer scheduling.
+- Address non-Sendable capture warnings flagged by Swift 6 (audio delegates, sound promises, etc.).
+- (Deferred) SpatialDataContext barrier sync refactor to dedicated actor once audio stack stabilizes.
 
 - 2025-11-22: **Task 5 Phase 7: Player Queue Refactor Plan** – Planned migration of internal DispatchQueue usage in audio players to structured concurrency.
   - **Current Pattern:**
-    - `AudioEngine` retains `playerQueue` and passes it to player initializers.
-    - `BaseAudioPlayer`/`DiscreteAudioPlayer`/`DynamicAudioPlayer` hold a weak `queue` used for:
-      - Buffer generation promises (`DiscreteAudioPlayer.LayerState.bufferPromise`)
-      - Scheduling buffer preparation and playback (`queue.async` blocks)
-      - `DispatchGroup.notify(queue: queue)` for layer preparation & playback completion.
+    - `BaseAudioPlayer`, `ContinuousAudioPlayer`, and `DiscreteAudioPlayer` now execute entirely on the main actor (no injected queues).
+    - `DiscreteAudioPlayer` still relies on `DispatchGroup` coordination plus promise callbacks for buffer lifecycles.
+    - `DynamicAudioPlayer` manages intro/loop scheduling directly and already uses `Task` for async work.
   - **Issues:**
     - Manual synchronization via `DispatchGroup` & weak queue adds complexity.
     - Harder cancellation semantics (no structured propagation; uses `isCancelled` flags).
@@ -593,7 +591,7 @@ No additional redundant dispatches identified; further removals would risk viola
     2. Refactor `ContinuousAudioPlayer` (lowest complexity) to drop queue argument.
     3. Refactor `DynamicAudioPlayer` to remove `queue` & replace any async scheduling with Task.
     4. Refactor `DiscreteAudioPlayer.prepare` using `TaskGroup`; handle delegate callback via `AsyncStream`.
-    5. Remove `playerQueue` from `AudioEngine`; adjust initializers & tests.
+    5. Remove `playerQueue` from `AudioEngine`; adjust initializers & tests. ✅ (2025-11-23)
     6. Add cancellation hooks & verify no regressions (run full 47 tests each step).
   - **Risk Mitigation:**
     - Keep original queue-backed implementation in branch until discrete refactor passes tests.
@@ -609,6 +607,13 @@ No additional redundant dispatches identified; further removals would risk viola
     - Removed `queue` parameter from `ContinuousAudioPlayer` initializer; engine now calls `ContinuousAudioPlayer(looped)`.
     - AudioEngine continuous play path updated; no functional behavioral change (still synchronous, reduced API surface).
     - Tests: 47/47 passing after refactor (`dd7728b`).
+
+- 2025-11-23: **Task 5 Phase 7 Step 3 – BaseAudioPlayer queue removal**
+  - Annotated `BaseAudioPlayer`, `ContinuousAudioPlayer`, and `DiscreteAudioPlayer` with `@MainActor`, eliminating the injected DispatchQueue dependency.
+  - Simplified `BaseAudioPlayer.stop()` to tear down layers synchronously; discrete playback notifications now fire on `.main`.
+  - Removed the unused `playerQueue` field from `AudioEngine` and updated player initializers accordingly.
+  - **Benefits:** Reduces threading surface (single actor instead of queue + actor), clarifies ownership of AVAudioEngine mutations, and sets the stage for TaskGroup-based buffer scheduling.
+  - **Verification:** `xcodebuild test -workspace apps/ios/GuideDogs.xcworkspace -scheme Soundscape -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:UnitTests` (47 tests) passes after the refactor.
 
 
 - 2025-11-22: **Task 5 Phase 6: DispatchQueue.main.async Audit** – Completed comprehensive search for redundant main thread hops:
@@ -628,6 +633,6 @@ No additional redundant dispatches identified; further removals would risk viola
   - **Status:** Audit complete; no cleanup needed
 
 **Updated Next Steps:**
-- Plan player queue refactor (internal buffer scheduling to Task groups / async sequences)
-- Address non-Sendable capture warnings
-- (Deferred) SpatialDataContext barrier sync refactor to dedicated actor
+- Continue Task 5 Phase 7 discrete/audio buffer refactor (TaskGroup + AsyncStream) with cancellation hooks.
+- Address non-Sendable capture warnings.
+- (Deferred) SpatialDataContext barrier sync refactor to dedicated actor.

@@ -137,12 +137,6 @@ class AudioEngine: AudioEngineProtocol {
     private var applicationStateObserver: NSObjectProtocol?
     private var callStateObserver: NSObjectProtocol?
     
-    // MARK: Dispatch Queue
-    
-    // Queue is retained only for passing to player initializers
-    // Players use it internally for async buffer scheduling
-    private let playerQueue = DispatchQueue(label: "services.soundscape.audioengine.players")
-    
     // MARK: Public State
     
     /// This property is `true` when the output format of the engine only has one channel (e.g.
