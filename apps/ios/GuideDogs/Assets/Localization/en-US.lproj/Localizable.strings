@@ -2398,10 +2398,10 @@
 /* Status announcement when Soundscape is trying to listen to heading updates from AirPods but they are not currently connected. {NumberedPlaceholder="AirPods", "Soundscape"} */
 "devices.callouts.check_audio.airpods.disconnected" = "Soundscape is searching for your AirPods. Ensure they are connected to your phone.";
 
-/* */
+/* Status announcement when Soundscape is connected to Bose Frames {NumberedPlaceholder="Bose Frames"} */
 "devices.callouts.check_audio.bose_frames" = "Bose Frames connected.";
 
-/* */
+/* Status announcement when Soundscape is trying to listen to heading updates from Bose Frames but they are not currently connected. {NumberedPlaceholder="Bose Frames", "Soundscape"} */
 "devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape is searching for your Bose Frames. Ensure they are connected to your phone.";
 
 /* Label of a button that allows users to force Soundscape to reconnect to their AirPods Pro device if it isn't connecting automatically */

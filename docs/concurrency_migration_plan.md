@@ -337,8 +337,18 @@ Step D: Add comment markers tagging migrated closures for later actor extraction
   - **Verification:** Test build succeeds (`** TEST BUILD SUCCEEDED **`)
   - **Impact:** Tests can now properly invoke `@MainActor`-isolated initializers and methods without actor isolation errors. Test suite is ready for incremental verification of migration work.
 
+-- 2025-11-23: Task 5 (AudioEngine focus) - Audited every `Task { @MainActor }` in `AudioEngine.swift`, removed redundant hops via inline execution, and documented remaining legitimate bridges (notification callbacks, delegate entry points, player-prepare completion). Discrete queue logic (`play(Sounds)`, `stopDiscrete`, `playNextSound`, `finishDiscrete`) now executes synchronously on the main actor, and `updateUserHeading` only hops when callbacks originate off-main. All 47 unit tests still pass locally.
+
+- 2025-11-23: Task 8 (SpatialDataContext focus) - Removed the legacy `dispatchQueue` barrier in `SpatialDataContext`, relying on actor isolation for tile state while keeping heavy Realm writes on the background queue. All network callbacks now hop back to the main actor via `Task`/`MainActor.run` before mutating `tiles`, `fetchingTiles`, or `state`, preventing off-actor mutations and ensuring dispatch groups/progress objects are balanced even if the context deallocates mid-fetch.
+- 2025-11-23: Task 8 (DeviceReachability focus) - Added explicit `Task { @MainActor }` hops for the reachability sweep, ensuring the background delay/dispatch group only gathers results while all actor state (`active`, `didDismiss`, delegate notifications) stays on the main actor. Extracted helper methods to reread dismissal flags after the delay and to build/present alerts without leaving the actor.
+- 2025-11-23: Task 8 (URLResourceManager focus) - Removed the redundant resource queue, keeping serialization via `@MainActor` isolation. Pending resources now live entirely on the main actor; once the home view loads we snapshot the queue and synchronously call into the existing handlers (which manage their own background work), eliminating off-actor mutations of `pendingURLResources`/`homeViewControllerDidLoad`.
+
 ---
-Last updated: 2025-11-22 (Task 5 in progress: 108 redundant dispatches removed; all 47 tests passing)
+Last updated: 2025-11-23 (Tasks 5 & 8 in progress: AudioEngine hops trimmed; SpatialDataContext, DeviceReachability, and URLResourceManager audits complete; 47/47 tests passing)
+
+### Upcoming Focus (Next 2 Steps)
+1. Extend Task 8 to the data loaders (`RouteLoader`, `MarkerLoader`) by ensuring their private queues only operate on value copies and all `@MainActor` state stays on the actor.
+2. Re-run the full test suite once loaders are patched, then prioritize Task 5 mop-up (remaining legitimate dispatches) and Task 7 sorting actor extraction.
 
 ### Task 5 Progress: Redundant Main Queue Hop Removal
 **Total removed: 108 redundant main-queue dispatches (`DispatchQueue.main.async` / `DispatchQueue.main.asyncAfter`)**

@@ -27,7 +27,6 @@ class URLResourceManager {
     private var listeners: [AnyCancellable] = []
     private var pendingURLResources: [URLResource] = []
     private var homeViewControllerDidLoad = false
-    nonisolated private let queue = DispatchQueue(label: "services.soundscape.urlresourcemanager")
     // Handlers
     private let gpxHandler = GPXResourceHandler()
     private let routeHandler = RouteResourceHandler()
@@ -38,19 +37,7 @@ class URLResourceManager {
         listeners.append(NotificationCenter.default.publisher(for: .homeViewControllerDidLoad)
                             .receive(on: RunLoop.main)
                             .sink(receiveValue: { [weak self] _ in
-                                guard let `self` = self else {
-                                    return
-                                }
-                                
-                                self.queue.async {
-                                    self.homeViewControllerDidLoad = true
-                                    
-                                    for resource in self.pendingURLResources {
-                                        self.openResource(resource)
-                                    }
-                                    
-                                    self.pendingURLResources = []
-                                }
+                                self?.handleHomeViewControllerDidLoad()
                             }))
     }
     
@@ -71,21 +58,29 @@ class URLResourceManager {
             return false
         }
         
-        queue.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            let resource = URLResource(identifier: identifier, url: url)
-            
-            if self.homeViewControllerDidLoad {
-                self.openResource(resource)
-            } else {
-                self.pendingURLResources.append(resource)
-            }
+        let resource = URLResource(identifier: identifier, url: url)
+        
+        if homeViewControllerDidLoad {
+            openResource(resource)
+        } else {
+            pendingURLResources.append(resource)
         }
         
         return true
+    }
+    
+    private func handleHomeViewControllerDidLoad() {
+        guard !homeViewControllerDidLoad else {
+            return
+        }
+        
+        homeViewControllerDidLoad = true
+        let resources = pendingURLResources
+        pendingURLResources.removeAll()
+        
+        for resource in resources {
+            openResource(resource)
+        }
     }
     
     private func openResource(_ resource: URLResource) {

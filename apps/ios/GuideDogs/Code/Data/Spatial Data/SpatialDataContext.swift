@@ -75,7 +75,6 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     // MARK: Synchronized Properties
     
     private let networkQueue = DispatchQueue(label: "services.soundscape.spatialdata.network", qos: .utility)
-    private var dispatchQueue = DispatchQueue(label: "services.soundscape.spatialdata", qos: .utility, attributes: .concurrent)
     private var fetchingTiles = false
     
     /// Set of tiles the spatial data context is currently using to generate the list of spatial data result entities around the user
@@ -113,7 +112,6 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     }
     
     var loadedSpatialData: Bool {
-        // Trivial read of actor-isolated state; dispatchQueue synchronization no longer required
         !fetchingTiles && superCategories != nil && !tiles.isEmpty
     }
     
@@ -398,27 +396,26 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             prioritize = !currentCached && !reloadPORs
         }
         
-        let checked = dispatchQueue.sync(flags: .barrier) { () -> Bool in
-            guard !self.fetchingTiles else {
-                return false
-            }
-            
+        let checked: Bool
+        if fetchingTiles {
+            checked = false
+        } else {
             // Update the time/location filter
-            self.updateFilter.update(location: location)
+            updateFilter.update(location: location)
             
             // Figure out which tiles we need to fetch
-            (self.tiles, self.toFetch) = SpatialDataContext.checkForTiles(location: location,
-                                                                          tiles: self.tiles,
-                                                                          includePORs: reloadPORs,
-                                                                          prioritizeCurrent: prioritize)
+            (tiles, toFetch) = SpatialDataContext.checkForTiles(location: location,
+                                                               tiles: tiles,
+                                                               includePORs: reloadPORs,
+                                                               prioritizeCurrent: prioritize)
             
             // Update tile fetching state
-            self.fetchingTiles = true
-            self.canceledTilesCount = 0
-            self.expectedTilesCount = self.tiles.count + self.toFetch.count
-            self.originalRequestLocation = location
+            fetchingTiles = true
+            canceledTilesCount = 0
+            expectedTilesCount = tiles.count + toFetch.count
+            originalRequestLocation = location
             
-            return true
+            checked = true
         }
         
         // Only allow one update to occur at a time
@@ -436,9 +433,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         guard toFetch.count > 0 else {
             GDLogSpatialDataVerbose("No new tiles to fetch")
             
-            dispatchQueue.sync(flags: .barrier) {
-                fetchingTiles = false
-            }
+            fetchingTiles = false
             
             state = .ready
             notifyLocationUpdated(location)
@@ -479,25 +474,38 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             return
         }
         
-        serviceModel.getTileData(tile: tile, categories: categories, queue: networkQueue) { (statusCode, data, error) in
+        serviceModel.getTileData(tile: tile, categories: categories, queue: networkQueue) { [weak self] (statusCode, data, error) in
+            let deliverResult: (Error?) -> Void = { maybeError in
+                Task { [weak self] in
+                    await MainActor.run {
+                        guard let self = self else {
+                            progress?.completedUnitCount += 1
+                            dispatchGroup?.leave()
+                            return
+                        }
+                        self.processFetchedTile(tile, retryCount: retryCount, error: maybeError, dispatchGroup: dispatchGroup, progress: progress)
+                    }
+                }
+            }
+            
             guard error == nil else {
-                self.processFetchedTile(tile, retryCount: retryCount, error: error, dispatchGroup: dispatchGroup, progress: progress)
+                deliverResult(error)
                 return
             }
             
             guard statusCode == .success else {
                 SpatialDataContext.extendTileExpiration(tile)
-                self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
+                deliverResult(nil)
                 return
             }
             
             guard let tileData = data else {
-                self.processFetchedTile(tile, retryCount: retryCount, error: SpatialDataContextError.missingData, dispatchGroup: dispatchGroup, progress: progress)
+                deliverResult(SpatialDataContextError.missingData)
                 return
             }
             
             SpatialDataContext.storeTile(tile, data: tileData)
-            self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
+            deliverResult(nil)
         }
     }
     
@@ -522,9 +530,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             }
         } else {
             // We got the tile
-            dispatchQueue.sync(flags: .barrier) {
-                _ = self.tiles.insert(tile)
-            }
+            _ = tiles.insert(tile)
             
             // If the tile we just fetched is the current tile (the tile the user is
             // currently in), immediately pass on the location update...
@@ -533,16 +539,11 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             }
         }
         
-        var tilesCount = 0
-        dispatchQueue.sync(flags: .barrier) {
-            tilesCount = self.tiles.count
-        }
+        let tilesCount = tiles.count
         
         // If we have fetched all of the tiles (minus the ones we had to cancel), then we are ready to finish up
         if expectedTilesCount == tilesCount + canceledTilesCount {
-            dispatchQueue.sync(flags: .barrier) {
-                fetchingTiles = false
-            }
+            fetchingTiles = false
             
             GDLogSpatialDataVerbose("Requested \(toFetch.count) tiles; Canceled \(canceledTilesCount); \(tilesCount) tiles ready.")
             

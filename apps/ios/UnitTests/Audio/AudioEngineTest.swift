@@ -29,6 +29,7 @@ final class AudioEngineTest: XCTestCase {
     class TestAudioEngineDelegate: AudioEngineDelegate {
         func didFinishPlaying() {
             finish_count += 1
+            print("didFinishPlaying count=\(finish_count)")
         }
         
         var finish_count = 0
