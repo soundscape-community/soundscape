@@ -261,26 +261,23 @@ class AudioEngine: AudioEngineProtocol {
             GDLogAudioError("Output is not currenly enabled...")
         }
         
-        Task { @MainActor [weak self] in
-            guard let self = self else { return }
-            guard !self.isSessionInterrupted else {
-                // Will reset configuration after audio session interruption ends
-                self.isConfigChangePending = true
-                GDLogAudioVerbose("Configuration change is pending audio interruption")
-                return
-            }
-
-            guard self.state != .stopped else {
-                // Will reset configuration when audio engine starts
-                self.isConfigChangePending = true
-                GDLogAudioVerbose("Configuration change is pending audio engine start")
-                return
-
-                        self.isConfigChangePending = false
-                        self.connectNodes()
-                        self.start()
-            }
+        guard !isSessionInterrupted else {
+            // Will reset configuration after audio session interruption ends
+            isConfigChangePending = true
+            GDLogAudioVerbose("Configuration change is pending audio interruption")
+            return
         }
+
+        guard state != .stopped else {
+            // Will reset configuration when audio engine starts
+            isConfigChangePending = true
+            GDLogAudioVerbose("Configuration change is pending audio engine start")
+            return
+        }
+
+        isConfigChangePending = false
+        connectNodes()
+        start()
     }
     
     /// Updates the value of `isInMonoMode` by checking the audio engine's current output configuration
@@ -598,17 +595,19 @@ class AudioEngine: AudioEngineProtocol {
             self.updateUserHeading(heading)
         }
         
-        userHeading?.onHeadingDidUpdate { [weak self] (heading) in
-            guard let `self` = self, let heading = heading else {
+        userHeading?.onHeadingDidUpdate { heading in
+            guard let heading = heading else {
                 return
             }
-            
-            self.updateUserHeading(heading.value)
+
+            Task { @MainActor [weak self] in
+                self?.updateUserHeading(heading.value)
+            }
         }
         
         // Check if there are any discrete audio players to resume. If there are none (or none that need resumed),
         // then try to play the next sound in case there are other sounds in the queue.
-        if !isRestarting && !resume() {
+            if !isRestarting && !resume() && currentSounds != nil {
             playNextSound()
         }
     }
@@ -701,26 +700,31 @@ class AudioEngine: AudioEngineProtocol {
     /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
     private func play(_ player: AudioPlayer, heading: Heading? = nil) -> AudioPlayerIdentifier? {
         players.append(player)
-        player.prepare(engine: engine) { [weak self] (success) in
+        player.prepare(engine: engine) { [weak self] success in
+            guard let self = self else { return }
             guard success else {
                 GDLogAudioError("Unable to play audio track. Preparing the player failed.")
-                
+
                 // Automatically remove the player here since it couldn't be prepared
-                self?.players.removeAll(where: { $0.id == player.id })
-                
+                self.players.removeAll(where: { $0.id == player.id })
+
                 if player is DiscreteAudioPlayer {
-                    self?.discretePlayerIds.removeAll { $0 == player.id }
-                    
-                    if player.id == self?.currentQueuePlayerID {
-                        self?.currentQueuePlayerID = nil
-                        self?.playNextSound()
+                    self.discretePlayerIds.removeAll { $0 == player.id }
+
+                    if player.id == self.currentQueuePlayerID {
+                        self.currentQueuePlayerID = nil
+                        self.playNextSound()
                     }
                 }
-                
+
                 return
             }
 
-            self?.startPreparedPlayer(player, heading: heading)
+            // PLAYER QUEUE → MAIN ACTOR: preparation callback may run off-main
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.startPreparedPlayer(player, heading: heading)
+            }
         }
         
         return player.id
@@ -733,54 +737,50 @@ class AudioEngine: AudioEngineProtocol {
     ///   - player: The audio player to start
     ///   - heading: The heading required by the audio player to render it's audio. This is only required by some audio players.
     private func startPreparedPlayer(_ player: AudioPlayer, heading: Heading? = nil) {
-        // QUEUE → MAIN ACTOR BRIDGE: mutate main-actor state & interact with AVAudioEngine on main
-        Task { @MainActor [weak self] in
-            guard let self = self else { return }
-            guard !player.isPlaying else {
-                GDLogAudioError("No need to start an audio player that is already playing.")
-                return
-            }
-            guard player.state == .prepared else {
-                GDLogAudioError("Cannot start an audio player that is not ready. Make sure to call prepare()!")
-                return
-            }
-            guard !self.isConfigChangePending else {
-                GDLogAudioError("Unable to play audio track. Config change is pending")
-                return
-            }
-            if !self.engine.isRunning {
-                self.start(isRestarting: true)
-            }
-            guard self.engine.isRunning else {
-                GDLogAudioError("Unable to play audio track. Audio engine is not currently running.")
-                return
-            }
-            self.connectNodes(for: player)
-            self.logPlayer(player)
+        guard !player.isPlaying else {
+            GDLogAudioError("No need to start an audio player that is already playing.")
+            return
+        }
+        guard player.state == .prepared else {
+            GDLogAudioError("Cannot start an audio player that is not ready. Make sure to call prepare()!")
+            return
+        }
+        guard !isConfigChangePending else {
+            GDLogAudioError("Unable to play audio track. Config change is pending")
+            return
+        }
+        if !engine.isRunning {
+            start(isRestarting: true)
+        }
+        guard engine.isRunning else {
+            GDLogAudioError("Unable to play audio track. Audio engine is not currently running.")
+            return
+        }
+        connectNodes(for: player)
+        logPlayer(player)
+        do {
+            try player.play(heading ?? AppContext.shared.geolocationManager.presentationHeading, userLocation)
+        } catch {
+            let exceptionString = (error as NSError).localizedFailureReason ?? error.localizedDescription
+            GDLogAudioError("Exception: \(exceptionString)")
+            GDATelemetry.track("audio_engine.exception", with: [
+                "description": error.localizedDescription,
+                "location": "AudioEngine.swift:startPreparedPlayer(_:heading:).1"
+            ])
+            // Restart the engine
+            stop()
+            start(isRestarting: true)
+            // Connect nodes and retry one time
+            connectNodes()
+            logPlayer(player)
             do {
-                try player.play(heading ?? AppContext.shared.geolocationManager.presentationHeading, self.userLocation)
+                try player.play(heading ?? AppContext.shared.geolocationManager.presentationHeading, userLocation)
             } catch {
-                let exceptionString = (error as NSError).localizedFailureReason ?? error.localizedDescription
-                GDLogAudioError("Exception: \(exceptionString)")
+                GDLogAudioError("Exception (final try): \((error as NSError).localizedFailureReason ?? error.localizedDescription)")
                 GDATelemetry.track("audio_engine.exception", with: [
                     "description": error.localizedDescription,
-                    "location": "AudioEngine.swift:startPreparedPlayer(_:heading:).1"
+                    "location": "AudioEngine.swift:startPreparedPlayer(_:heading:).2"
                 ])
-                // Restart the engine
-                self.stop()
-                self.start(isRestarting: true)
-                // Connect nodes and retry one time
-                self.connectNodes()
-                self.logPlayer(player)
-                do {
-                    try player.play(heading ?? AppContext.shared.geolocationManager.presentationHeading, self.userLocation)
-                } catch {
-                    GDLogAudioError("Exception (final try): \((error as NSError).localizedFailureReason ?? error.localizedDescription)")
-                    GDATelemetry.track("audio_engine.exception", with: [
-                        "description": error.localizedDescription,
-                        "location": "AudioEngine.swift:startPreparedPlayer(_:heading:).2"
-                    ])
-                }
             }
         }
     }
@@ -810,18 +810,15 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter playerId: The identifier of the audio player to stop
     func stop(_ playerId: AudioPlayerIdentifier) {
-        Task { @MainActor [weak self] in
-            guard let self = self else { return }
-            guard let index = self.players.firstIndex(where: { $0.id == playerId }) else {
-                return
-            }
-            let player = self.players.remove(at: index)
-            player.stop()
-            if let discrete = player as? DiscreteAudioPlayer, let ttsSound = discrete.sound as? TTSSound {
-                ttsSound.stopRendering()
-                        GDLogAudioVerbose("Stopping player \(player.id.uuidString)")
-                        NotificationCenter.default.post(name: .discretePlayerDidStop, object: self, userInfo: [ Keys.playerId: playerId ])
-            }
+        guard let index = players.firstIndex(where: { $0.id == playerId }) else {
+            return
+        }
+        let player = players.remove(at: index)
+        player.stop()
+        if let discrete = player as? DiscreteAudioPlayer, let ttsSound = discrete.sound as? TTSSound {
+            ttsSound.stopRendering()
+            GDLogAudioVerbose("Stopping player \(player.id.uuidString)")
+            NotificationCenter.default.post(name: .discretePlayerDidStop, object: self, userInfo: [Keys.playerId: playerId])
         }
     }
     
@@ -923,30 +920,28 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter sounds: Sounds to play
     /// - Parameter callback: Completion callback
     func play(_ sounds: Sounds, completion callback: CompletionCallback? = nil) {
-        Task { @MainActor [weak self] in
-            guard let self = self else { return }
-            self.startEngineIfNeeded()
-            guard self.state != .stopped else {
-                GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                callback?(false)
-                return
-            }
-            if !self.engine.isRunning { self.start() }
-            guard self.engine.isRunning else {
-                self.soundsQueue.enqueue((sounds, callback))
-                GDLogAudioError("Unable to play sounds. Audio engine is not currently running. Sounds enqueued. Total queued items: \(self.soundsQueue.count)")
-                return
-            }
-            if let currentSounds = self.currentSounds, currentSounds.isEmpty { self.currentSounds = nil }
-            guard self.currentSounds == nil else {
-                self.soundsQueue.enqueue((sounds, callback))
-                GDLogAudioError("Unable to play sounds. There are current sounds playing. Sounds enqueued. Total queued items: \(self.soundsQueue.count)")
-                return
-            }
-            self.currentSounds = sounds
-            self.currentSoundCompletion = callback
-            self.playNextSound()
+        startEngineIfNeeded()
+        guard state != .stopped else {
+            GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
+            callback?(false)
+            return
         }
+        if !engine.isRunning {
+            start()
+        }
+        guard engine.isRunning else {
+            soundsQueue.enqueue((sounds, callback))
+            GDLogAudioError("Unable to play sounds. Audio engine is not currently running. Sounds enqueued. Total queued items: \(soundsQueue.count)")
+            return
+        }
+        guard currentSounds == nil else {
+            soundsQueue.enqueue((sounds, callback))
+            GDLogAudioError("Unable to play sounds. There are current sounds playing. Sounds enqueued. Total queued items: \(soundsQueue.count)")
+            return
+        }
+        currentSounds = sounds
+        currentSoundCompletion = callback
+        playNextSound()
     }
     
     /// Stops any discrete sounds that are currently playing
@@ -954,27 +949,24 @@ class AudioEngine: AudioEngineProtocol {
     /// - Parameter with: Sound that should be played when the current sounds are stopped. This
     ///                   should be used for earcons that indicate audio is stopping.
     func stopDiscrete(with: Sound?) {
-        Task { @MainActor [weak self] in
-            guard let self = self else { return }
-            if !self.soundsQueue.isEmpty {
-                GDLogAudioInfo("Clearing sounds queue (\(self.soundsQueue.count) items)")
-                self.drainQueuedSounds(success: false)
-            }
-            guard self.currentSounds != nil else { return }
-            GDLogAudioInfo("Stopping discrete sounds")
-            if let stoppingSound = with { self.soundsQueue.enqueue((Sounds(stoppingSound), nil)) }
-            self.discretePlayerIds.forEach { self.stop($0) }
-            self.discretePlayerIds.removeAll()
-            self.currentQueuePlayerID = nil
-            self.finishDiscrete(success: false)
+        if !soundsQueue.isEmpty {
+            GDLogAudioInfo("Clearing sounds queue (\(soundsQueue.count) items)")
+            drainQueuedSounds(success: false)
         }
+        guard currentSounds != nil else { return }
+        GDLogAudioInfo("Stopping discrete sounds")
+        if let stoppingSound = with {
+            soundsQueue.enqueue((Sounds(stoppingSound), nil))
+        }
+        discretePlayerIds.forEach { stop($0) }
+        discretePlayerIds.removeAll()
+        currentQueuePlayerID = nil
+        finishDiscrete(success: false)
     }
 
     private func drainQueuedSounds(success: Bool) {
-        while let (_, completion) = self.soundsQueue.dequeue() {
-            Task { @MainActor in
-                completion?(success)
-            }
+        while let (_, completion) = soundsQueue.dequeue() {
+            completion?(success)
         }
     }
     
@@ -1009,23 +1001,20 @@ class AudioEngine: AudioEngineProtocol {
             return
         }
         
-        Task { @MainActor [weak self] in
-            guard let self = self else { return }
-            guard self.currentQueuePlayerID == nil else {
-                GDLogAudioError("Tried to play next sound when the current sound was still playing (\(String(describing: self.currentQueuePlayerID)))...")
-                return
-            }
-            guard let sound = self.currentSounds?.next() else {
-                self.delegate?.didFinishPlaying()
-                self.finishDiscrete(success: true)
-                return
-            }
-            guard let player = DiscreteAudioPlayer(sound) else { return }
-            player.delegate = self
-            if let id = self.play(player) {
-                self.discretePlayerIds.append(id)
-                self.currentQueuePlayerID = id
-                    }
+        guard currentQueuePlayerID == nil else {
+            GDLogAudioError("Tried to play next sound when the current sound was still playing (\(String(describing: currentQueuePlayerID)))...")
+            return
+        }
+        guard let sound = currentSounds?.next() else {
+            delegate?.didFinishPlaying()
+            finishDiscrete(success: true)
+            return
+        }
+        guard let player = DiscreteAudioPlayer(sound) else { return }
+        player.delegate = self
+        if let id = play(player) {
+            discretePlayerIds.append(id)
+            currentQueuePlayerID = id
         }
     }
     
@@ -1044,9 +1033,7 @@ class AudioEngine: AudioEngineProtocol {
             self.play(nextSounds, completion: completion)
         }
         
-        Task { @MainActor in
-            callback?(success)
-        }
+        callback?(success)
     }
     
     // MARK: 3D Audio Environment
@@ -1056,11 +1043,8 @@ class AudioEngine: AudioEngineProtocol {
     ///
     /// - Parameter heading: Updated presentation heading
     private func updateUserHeading(_ heading: CLLocationDirection) {
-        Task { @MainActor [weak self] in
-            guard let self = self else { return }
-            for environment in self.environmentNodes {
-                environment.listenerAngularOrientation = AVAudio3DAngularOrientation(yaw: Float(heading), pitch: 0.0, roll: 0.0)
-            }
+        for environment in environmentNodes {
+            environment.listenerAngularOrientation = AVAudio3DAngularOrientation(yaw: Float(heading), pitch: 0.0, roll: 0.0)
         }
     }
     
@@ -1158,9 +1142,8 @@ class AudioEngine: AudioEngineProtocol {
             return
         }
         
-        GDLogAudioVerbose("Player done (\(playerId.uuidString))")
-        
         let shouldPlayNextSound = currentQueuePlayerID == playerId
+        GDLogAudioVerbose("Player done (\(playerId.uuidString)) shouldPlayNext=\(shouldPlayNextSound) currentQueue=\(String(describing: currentQueuePlayerID))")
         
         // Stop the player and remove it's id from tracking (we must check the currentQueuePlayerID against the playerId before doing this)
         stopAndRemoveDiscretePlayer(playerId)
