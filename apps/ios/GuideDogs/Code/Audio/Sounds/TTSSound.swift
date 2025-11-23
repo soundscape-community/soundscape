@@ -113,8 +113,8 @@ class TTSSound: Sound {
         }
     }
     
-    /// Takes a buffer and either adds it to the list of prepared buffers or sends it to
-    /// a promise that is currently pending waiting for a buffer.
+    /// Takes a buffer and either adds it to the list of prepared buffers or resumes
+    /// a pending continuation that is waiting for a buffer.
     ///
     /// - Parameter buffer: Buffer to resolve
     private func resolveBuffer(_ buffer: AVAudioPCMBuffer?) {
@@ -131,11 +131,11 @@ class TTSSound: Sound {
     }
     
     /// Starts generating audio buffers for the text-to-speech (if they aren't already being generated)
-    /// and returns a promise that will be fulfilled as soon as a buffer is ready. When all buffers have
-    /// been generated, the returned promise will be fulfilled with a value of `nil`.
+    /// and suspends until the next buffer is available. When all buffers have been generated, this
+    /// method returns `nil` to indicate completion.
     ///
     /// - Parameter index: Layer to generate buffers for. `TTSSounds` only have a single layer, so this should only be 0.
-    /// - Returns: A promise that will be fulfilled with the next available buffer
+    /// - Returns: The next available buffer or `nil` when generation is complete.
     func nextBuffer(forLayer index: Int) async -> AVAudioPCMBuffer? {
         guard index == 0 else { return nil }
 

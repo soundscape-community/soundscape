@@ -138,7 +138,7 @@ After each completed task, append a short changelog entry to this file under a n
 | services.soundscape.universallinkmanager | UniversalLinkManager | Partially (specific methods) | Pending link list mgmt & dispatch | Low | Only specific tasks use `MainActor`; queue safe.
 | services.soundscape.queue | Queue<T> | No | Thread-safe generic FIFO | Low | Internal synchronization only.
 | services.soundscape.threadsafevalue | ThreadSafeValue<T> | No | Concurrent value wrapper (barrier writes) | Low | Pure synchronization primitive.
-| services.soundscape.promise | Promise<Value> | No | Async callback resolution | Low | Internal async fan-out.
+| services.soundscape.promise | (removed) | No | Replaced with async/await | Low | Previously used for buffer delivery; removed during migration.
 | services.soundscape.fadeableaudioplayer | FadeableAudioPlayer | No | Timed fade in/out scheduling | Low | Uses asyncAfter; no actor state.
 | services.soundscape.threadsafecalibrator | ThreadSafeHeadphoneCalibrator | No | Barrier mutations & synchronous reads | Low | Pure wrapper.
 | services.soundscape.gpxtracker | GPXTracker | No | File save & tracking arrays | Low | Background save then main reset.
@@ -411,7 +411,7 @@ Files cleaned (cumulative):
 
 ### 2025-11-22: Phase 7 Step 4 – DiscreteAudioPlayer Concurrency Refactor
 Refactored `DiscreteAudioPlayer` to replace ad hoc `Task` mutations (introduced when removing its injected `DispatchQueue`) with a dedicated `actor` (`DiscretePlayerStateActor`). Actor now serializes access to:
-- Per-layer `bufferPromise`, `bufferQueue`, `bufferCount`
+- Per-layer `bufferTask`, `bufferQueue`, `bufferCount`
 - Playback dispatch flags (`playbackDispatchGroupWasEntered/WasLeft`)
 - Pause state (`wasPaused`)
 
@@ -423,7 +423,7 @@ Implementation Highlights:
 - Replaced unsafe closure mutations with `Task { await ... }` calls invoking actor APIs; avoided introducing blocking waits on the main actor.
 
 Verification:
-- Build succeeded after minor fixes (removed illegal `await` in non-async `prepare`, corrected optional chaining on non-optional `Promise`).
+ - Build succeeded after minor fixes (removed illegal `await` in non-async `prepare`, corrected various legacy Promise handling). Promise bridging utilities were later removed after full migration to async/await.
 - Full test suite (47 tests) passed with `** TEST SUCCEEDED **`, confirming no regressions and race elimination.
 
 Next Steps (Audio Engine / Phase 7):
@@ -452,7 +452,7 @@ Attempted manual stress test for `DiscreteAudioPlayer` with 4 layers × 200 buff
 - **Approach:** Created `MockStressSound` generating buffers on serial queue; scheduled via player actor.
 - **Issues encountered:**
   - Initial AVAudioEngine setup required actual hardware nodes (input/output); mock approach failed without full audio session.
-  - Test hung indefinitely during buffer generation promise chain (likely due to interaction between Promise queue.async callback scheduling and test expectations).
+  - Test hung indefinitely during legacy async chain (previous Promise-based callback scheduling) — this was resolved after migrating buffer producers to async/await and streamlining actor/task ordering.
   - Simplified polling-based verification also stalled.
 - **Decision:** Removed standalone stress test; existing 47-test suite (including AudioEngineTest with real discrete player usage) already validates actor correctness under ThreadSanitizer with zero race reports.
 - **Validation confidence:** Full test suite passed repeatedly post-actor refactor with TSan enabled; no data races detected. Actor serialization confirmed working for production use cases.
@@ -548,13 +548,13 @@ No additional redundant dispatches identified; further removals would risk viola
 **Updated Next Steps:**
 - Continue Task 5 Phase 7 by replacing `DiscreteAudioPlayer` dispatch groups with structured concurrency (`TaskGroup`/`AsyncStream`) and wiring cancellation into buffer scheduling.
   - 2025-11-23: **Phase 7 Step 5 – DiscreteAudioPlayer TaskGroup + AsyncStream** – Replaced `DispatchGroup` and ad-hoc queueing in `DiscreteAudioPlayer` with a TaskGroup-based prepare flow and an `AsyncStream` watcher for playback completions. Added cancellation hooks on prepare/playback tasks and consolidated buffer state into `DiscretePlayerStateActor`. All AudioEngine/UnitTests pass (47/47) after the change.
-- Address non-Sendable capture warnings flagged by Swift 6 (audio delegates, sound promises, etc.).
+- Address non-Sendable capture warnings flagged by Swift 6 (audio delegates, prior Promise-based handlers / continuations, etc.).
 - (Deferred) SpatialDataContext barrier sync refactor to dedicated actor once audio stack stabilizes.
 
 - 2025-11-22: **Task 5 Phase 7: Player Queue Refactor Plan** – Planned migration of internal DispatchQueue usage in audio players to structured concurrency.
   - **Current Pattern:**
     - `BaseAudioPlayer`, `ContinuousAudioPlayer`, and `DiscreteAudioPlayer` now execute entirely on the main actor (no injected queues).
-    - `DiscreteAudioPlayer` still relies on `DispatchGroup` coordination plus promise callbacks for buffer lifecycles.
+    - `DiscreteAudioPlayer` previously relied on `DispatchGroup` coordination plus Promise callbacks for buffer lifecycles; this path has since been migrated to Task/actor-based coordination.
     - `DynamicAudioPlayer` manages intro/loop scheduling directly and already uses `Task` for async work.
   - **Issues:**
     - Manual synchronization via `DispatchGroup` & weak queue adds complexity.
@@ -571,8 +571,8 @@ No additional redundant dispatches identified; further removals would risk viola
     - Add `AudioBufferScheduler` actor (per player) responsible for serial buffer scheduling & state.
       - APIs: `func prepareLayers() async throws`, `func nextBuffer(for layer:) async -> AVAudioPCMBuffer?`, `func markFinished(layer:)`.
     - Discrete Player:
-      - On `prepare`: launch `Task` per layer in a `TaskGroup` to request next buffer using existing `Sound.nextBuffer(forLayer:)` promise bridged to `async` (wrapper function `await promise.value`).
-      - Convert `Promise<AVAudioPCMBuffer?>` to `async` helper: `extension Promise { func awaitValue() async -> T }` using continuation.
+      - On `prepare`: launch `Task` per layer in a `TaskGroup` to request next buffer using the `async` `Sound.nextBuffer(forLayer:)` API (no Promise bridging required after migration).
+      - Convert any remaining Promise-based buffer delivery to native async/await and continuations where needed. Temporary bridging helpers were used during incremental refactors and later removed.
       - Replace `channelPrepareDispatchGroup` with `try await withThrowingTaskGroup` collecting layer results; early cancellation on failure.
       - Replace `channelPlayedBackDispatchGroup.notify` with an `AsyncStream` emitting playback completions; consumer `for await` loop triggers delegate callback on main actor.
     - Dynamic Player:
@@ -588,7 +588,7 @@ No additional redundant dispatches identified; further removals would risk viola
     - All AVAudioEngine node attachment & playback stays `@MainActor` (engine actor).
     - Buffer generation allowed off-main via detached tasks if CPU-heavy; results marshalled back through actor.
   - **Incremental Implementation Plan:**
-    1. Introduce Promise → async bridging utility & lightweight `AudioBufferScheduler` actor (no adoption yet).
+    1. Introduce a temporary Promise → async bridging utility to ease incremental migration; ultimately removed when the codebase fully adopted async/await and Task-based flows.
     2. Refactor `ContinuousAudioPlayer` (lowest complexity) to drop queue argument.
     3. Refactor `DynamicAudioPlayer` to remove `queue` & replace any async scheduling with Task.
     4. Refactor `DiscreteAudioPlayer.prepare` using `TaskGroup`; handle delegate callback via `AsyncStream`.
@@ -604,7 +604,7 @@ No additional redundant dispatches identified; further removals would risk viola
     - Preparation time instrumentation easier via async timings.
   - **Next Action:** Begin with utility bridging + continuous player refactor (Phase 7 Implementation Step 1 & 2).
   - **Status:** Step 1 & 2 implemented.
-    - Added `Promise.awaitValue()` async bridging extension (file: `Promise+Async.swift`).
+    - A temporary `Promise.awaitValue()` async bridging extension (file: `Promise+Async.swift`) was added early in migration. After migrating Sound implementations and DiscreteAudioPlayer to async/await and Task, the bridging helper and Promise files were removed.
     - Removed `queue` parameter from `ContinuousAudioPlayer` initializer; engine now calls `ContinuousAudioPlayer(looped)`.
     - AudioEngine continuous play path updated; no functional behavioral change (still synchronous, reduced API surface).
     - Tests: 47/47 passing after refactor (`dd7728b`).

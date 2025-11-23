@@ -26,7 +26,7 @@ actor DiscretePlayerStateActor {
         layerStates = (0 ..< layerCount).map { _ in LayerState() }
     }
 
-    // Buffer promise access
+    // Buffer task access
     func setBufferTask(_ task: Task<AVAudioPCMBuffer?, Never>?, layer: Int) {
         layerStates[layer].bufferTask = task
     }
