@@ -57,12 +57,12 @@ class LayeredSound: Sound {
         }
     }
     
-    func nextBuffer(forLayer index: Int) -> Promise<AVAudioPCMBuffer?> {
+    func nextBuffer(forLayer index: Int) async -> AVAudioPCMBuffer? {
         guard index < layerCount else {
-            return Promise<AVAudioPCMBuffer?> { $0(nil) }
+            return nil
         }
-        
-        return layeredSounds[index].nextBuffer(forLayer: 0)
+
+        return await layeredSounds[index].nextBuffer(forLayer: 0)
     }
 }
 

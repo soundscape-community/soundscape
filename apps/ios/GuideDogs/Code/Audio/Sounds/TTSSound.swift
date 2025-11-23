@@ -29,9 +29,8 @@ class TTSSound: Sound {
     
     // MARK: Rendered Audio
     
-    private typealias Resolver = (AVAudioPCMBuffer?) -> Void
     private var buffers: [AVAudioPCMBuffer] = []
-    private var resolvers: [Resolver] = []
+    private var resolvers: [CheckedContinuation<AVAudioPCMBuffer?, Never>] = []
     
     // MARK: Rendering State
     
@@ -123,12 +122,12 @@ class TTSSound: Sound {
             if let buffer = buffer {
                 buffers.append(buffer)
             }
-            
+
             return
         }
-        
-        let resolver = resolvers.removeFirst()
-        resolver(buffer)
+
+        let continuation = resolvers.removeFirst()
+        continuation.resume(returning: buffer)
     }
     
     /// Starts generating audio buffers for the text-to-speech (if they aren't already being generated)
@@ -137,43 +136,42 @@ class TTSSound: Sound {
     ///
     /// - Parameter index: Layer to generate buffers for. `TTSSounds` only have a single layer, so this should only be 0.
     /// - Returns: A promise that will be fulfilled with the next available buffer
-    func nextBuffer(forLayer index: Int) -> Promise<AVAudioPCMBuffer?> {
-        guard index == 0 else {
-            return Promise<AVAudioPCMBuffer?> { $0(nil) }
-        }
-        
-        return Promise { resolve in
+    func nextBuffer(forLayer index: Int) async -> AVAudioPCMBuffer? {
+        guard index == 0 else { return nil }
+
+        return await withCheckedContinuation { (continuation: CheckedContinuation<AVAudioPCMBuffer?, Never>) in
             var bufferedValue: AVAudioPCMBuffer?
             var isComplete = false
             var awaitingBuffer = false
 
             self.queue.sync {
                 self.startRenderingLocked()
-                
+
                 if !self.buffers.isEmpty {
                     bufferedValue = self.buffers.removeFirst()
                     return
                 }
-                
+
                 if self.completion != nil {
                     isComplete = true
                     return
                 }
-                
+
                 awaitingBuffer = true
-                self.resolvers.append(resolve)
+                self.resolvers.append(continuation)
             }
-            
+
             if awaitingBuffer {
+                // continuation will be resumed by resolveBuffer when a buffer arrives
                 return
             }
-            
+
             if let buff = bufferedValue {
-                resolve(buff)
+                continuation.resume(returning: buff)
             } else if isComplete {
-                resolve(nil)
+                continuation.resume(returning: nil)
             } else {
-                resolve(nil)
+                continuation.resume(returning: nil)
             }
         }
     }

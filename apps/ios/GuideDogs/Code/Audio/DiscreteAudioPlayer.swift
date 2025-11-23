@@ -13,7 +13,7 @@ import AVFoundation
 // Eliminates data races previously caused by ad hoc Task mutations.
 actor DiscretePlayerStateActor {
     struct LayerState {
-        var bufferPromise: Promise<AVAudioPCMBuffer?>?
+        var bufferTask: Task<AVAudioPCMBuffer?, Never>?
         var bufferQueue: Queue<AVAudioPCMBuffer> = .init()
         var bufferCount = 0
         var playbackDispatchGroupWasEntered = false
@@ -27,11 +27,11 @@ actor DiscretePlayerStateActor {
     }
 
     // Buffer promise access
-    func setBufferPromise(_ promise: Promise<AVAudioPCMBuffer?>?, layer: Int) {
-        layerStates[layer].bufferPromise = promise
+    func setBufferTask(_ task: Task<AVAudioPCMBuffer?, Never>?, layer: Int) {
+        layerStates[layer].bufferTask = task
     }
-    func getBufferPromise(layer: Int) -> Promise<AVAudioPCMBuffer?>? {
-        layerStates[layer].bufferPromise
+    func getBufferTask(layer: Int) -> Task<AVAudioPCMBuffer?, Never>? {
+        layerStates[layer].bufferTask
     }
 
     // Queue operations
@@ -167,9 +167,9 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
     private func prepareLayer(at index: Int, engine: AVAudioEngine, sound: Sound) async throws {
         try Task.checkCancellation()
         guard !isCancelled else { throw CancellationError() }
-        let promise = sound.nextBuffer(forLayer: index)
-        await stateActor.setBufferPromise(promise, layer: index)
-        let buffer = await awaitPromiseValue(promise)
+        let bufferTask = Task { await sound.nextBuffer(forLayer: index) }
+        await stateActor.setBufferTask(bufferTask, layer: index)
+        let buffer = await bufferTask.value
         try Task.checkCancellation()
         guard !isCancelled, let buffer = buffer else {
             throw DiscreteAudioPlayerError.missingInitialBuffer
@@ -249,9 +249,8 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
     override func scheduleBuffer(forLayer layer: Int) {
         Task { @MainActor [weak self] in
             guard let self = self else { return }
-            guard let bufferPromise = await self.stateActor.getBufferPromise(layer: layer) else { return }
-            let buffer = await awaitPromiseValue(bufferPromise)
-            guard let self = self else { return }
+            guard let bufferTask = await self.stateActor.getBufferTask(layer: layer) else { return }
+            let buffer = await bufferTask.value
             let format = self.layers[layer].format
             if let buffer = buffer, buffer.format != format {
                 GDLogAudioVerbose("Format needs to be updated (Old: \(format?.description ?? "Nil"), New: \(buffer.format))")
@@ -283,21 +282,7 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
         }
     }
 
-    // Helper to bridge existing Promise-based producers to async/await locally
-    private func awaitPromiseValue<T>(_ promise: Promise<T>) async -> T {
-        // Fast path - if the promise already resolved, `then` will call immediately,
-        // but test the state to avoid scheduling the continuation unnecessarily.
-        switch promise.state {
-        case .resolved(let v):
-            return v
-        case .pending:
-            return await withCheckedContinuation { (continuation: CheckedContinuation<T, Never>) in
-                promise.then { v in
-                    continuation.resume(returning: v)
-                }
-            }
-        }
-    }
+    
     
     private func schedulePendingBuffers(forChannel layer: Int) {
         guard layers.count > layer else { return }
@@ -332,7 +317,7 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
         guard let buffer = buffer else {
             layers[layer].player.scheduleBuffer(layers[layer].silentBuffer(), completionCallbackType: .dataPlayedBack) { [weak self] _ in
                 guard let self = self else { return }
-                Task { [weak self] in
+                Task { @MainActor [weak self] in
                     guard let self = self else { return }
                     if await self.stateActor.attemptLeaveIfFinished(layer: layer) {
                         self.signalLayerCompletion(for: layer)
@@ -365,9 +350,16 @@ class DiscreteAudioPlayer: BaseAudioPlayer {
             return
         }
         
-        let promise = sound.nextBuffer(forLayer: layer)
-        Task { await self.stateActor.setBufferPromise(promise, layer: layer) }
-        scheduleBuffer(forLayer: layer)
+        let bufferTask = Task { await sound.nextBuffer(forLayer: layer) }
+
+        // Ensure the actor state is updated with the new task before we try to schedule
+        // the next buffer — avoids a race where `scheduleBuffer` reads `nil` if the
+        // set call races with the scheduler.
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            await self.stateActor.setBufferTask(bufferTask, layer: layer)
+            self.scheduleBuffer(forLayer: layer)
+        }
     }
     
     private func awaitSilentBuffer(for layer: Int, callback: @escaping () -> Void) {

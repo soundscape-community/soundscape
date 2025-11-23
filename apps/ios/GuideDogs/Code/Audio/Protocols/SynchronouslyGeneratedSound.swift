@@ -19,9 +19,9 @@ protocol SynchronouslyGeneratedSound: Sound {
 extension SynchronouslyGeneratedSound {
     
     /// Default implementation of `nextBuffer()` for sounds that synchronously generate only a single buffer.
-    func nextBuffer(forLayer channel: Int) -> Promise<AVAudioPCMBuffer?> {
-        // Generate the buffer and immediately resolve the promise.
-        return Promise { $0(generateBuffer(forLayer: channel)) }
+    func nextBuffer(forLayer channel: Int) async -> AVAudioPCMBuffer? {
+        // Generate the buffer synchronously and return.
+        return generateBuffer(forLayer: channel)
     }
     
 }

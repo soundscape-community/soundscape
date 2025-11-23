@@ -17,7 +17,6 @@ class ConcatenatedSound: Sound {
     
     let layerCount: Int = 1
     
-    private var currentBufferPromise: Promise<AVAudioPCMBuffer?>?
     private var currentSoundIndex = 0
     
     init?(_ sounds: Sound...) {
@@ -59,42 +58,21 @@ class ConcatenatedSound: Sound {
         }
     }
     
-    func nextBuffer(forLayer index: Int) -> Promise<AVAudioPCMBuffer?> {
-        guard index == 0 else {
-            return Promise<AVAudioPCMBuffer?> { $0(nil) }
-        }
-        
-        return Promise<AVAudioPCMBuffer?>.init { [weak self] (resolver) in
-            guard let `self` = self else {
-                resolver(nil)
-                return
+    func nextBuffer(forLayer index: Int) async -> AVAudioPCMBuffer? {
+        guard index == 0 else { return nil }
+
+        // Iterate current sound index until we produce a buffer or exhaust the list.
+        while currentSoundIndex < concatenatedSounds.count {
+            if let buffer = await concatenatedSounds[currentSoundIndex].nextBuffer(forLayer: 0) {
+                return buffer
             }
-            
-            self.nextBufferForCurrentIndex(resolver)
+            currentSoundIndex += 1
         }
+
+        return nil
     }
     
-    private func nextBufferForCurrentIndex(_ resolver: @escaping Promise<AVAudioPCMBuffer?>.Resolver) {
-        currentBufferPromise = concatenatedSounds[currentSoundIndex].nextBuffer(forLayer: 0)
-        currentBufferPromise?.then(onResolved: { [weak self] (buffer) in
-            if let buffer = buffer {
-                resolver(buffer)
-                return
-            }
-            
-            guard let `self` = self, self.currentSoundIndex < self.concatenatedSounds.count - 1 else {
-                resolver(nil)
-                return
-            }
-            
-            // Increment the current sound index and get the first buffer of that sound
-            self.currentSoundIndex += 1
-            self.currentBufferPromise = self.concatenatedSounds[self.currentSoundIndex].nextBuffer(forLayer: 0)
-            self.currentBufferPromise?.then(onResolved: { (nextBuffer) in
-                resolver(nextBuffer)
-            })
-        })
-    }
+    // old Promise-backed helper removed; logic replaced by async loop in `nextBuffer`.
 }
 
 extension ConcatenatedSound: SoundBase {

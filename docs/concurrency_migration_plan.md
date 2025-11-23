@@ -547,6 +547,7 @@ No additional redundant dispatches identified; further removals would risk viola
 
 **Updated Next Steps:**
 - Continue Task 5 Phase 7 by replacing `DiscreteAudioPlayer` dispatch groups with structured concurrency (`TaskGroup`/`AsyncStream`) and wiring cancellation into buffer scheduling.
+  - 2025-11-23: **Phase 7 Step 5 – DiscreteAudioPlayer TaskGroup + AsyncStream** – Replaced `DispatchGroup` and ad-hoc queueing in `DiscreteAudioPlayer` with a TaskGroup-based prepare flow and an `AsyncStream` watcher for playback completions. Added cancellation hooks on prepare/playback tasks and consolidated buffer state into `DiscretePlayerStateActor`. All AudioEngine/UnitTests pass (47/47) after the change.
 - Address non-Sendable capture warnings flagged by Swift 6 (audio delegates, sound promises, etc.).
 - (Deferred) SpatialDataContext barrier sync refactor to dedicated actor once audio stack stabilizes.
 

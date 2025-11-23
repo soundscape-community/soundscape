@@ -13,7 +13,7 @@ import AVFoundation
 protocol Sound: SoundBase {
     
     /// A method for generating the next PCM audio buffer for this sound. This method allows for
-    /// asynchronous buffer generation.
-    func nextBuffer(forLayer: Int) -> Promise<AVAudioPCMBuffer?>
+    /// asynchronous buffer generation using Swift concurrency.
+    func nextBuffer(forLayer: Int) async -> AVAudioPCMBuffer?
     
 }

@@ -21,6 +21,7 @@ protocol FinishableAudioPlayer {
     func finish()
 }
 
+@MainActor
 class DynamicAudioPlayer<T: DynamicSound>: AudioPlayer {
     
     // MARK: AudioPlayer Protocol
@@ -212,16 +213,13 @@ class DynamicAudioPlayer<T: DynamicSound>: AudioPlayer {
             observer = nil
         }
         
-        Task { [weak self] in
-            guard let self = self else { return }
-            guard self.isPlaying else { return }
-            self.layer.stop()
-            self.state = .notPrepared
-            self.layer.disconnect()
-            self.layer.detach()
-            self.isPlaying = false
-            self.currentAsset = nil
-        }
+        guard isPlaying else { return }
+        layer.stop()
+        state = .notPrepared
+        layer.disconnect()
+        layer.detach()
+        isPlaying = false
+        currentAsset = nil
     }
     
     private func update(_ userLocation: CLLocation) {
