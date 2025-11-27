@@ -330,17 +330,11 @@ final class CalloutStateMachine {
         guard let audioEngine = audioEngine else { return }
 
         if let hushSound = hushSound {
-            await stopWithHush(hushSound, on: audioEngine)
+            audioEngine.stopDiscrete(with: hushSound)
             return
         }
 
         await drainDiscreteAudio(on: audioEngine)
-    }
-
-    private func stopWithHush(_ hushSound: Sound, on audioEngine: AudioEngineProtocol) async {
-        await drainDiscreteAudio(on: audioEngine)
-        _ = await audioEngine.playAsync(hushSound)
-        await waitForDiscreteAudioSilence(on: audioEngine)
     }
 
     private func drainDiscreteAudio(on audioEngine: AudioEngineProtocol) async {
@@ -369,6 +363,7 @@ final class CalloutStateMachine {
         // were no active players when we entered this helper.
         try? await Task.sleep(nanoseconds: Self.silencePollInterval)
     }
+
 }
 
 private actor IdleSignal {
