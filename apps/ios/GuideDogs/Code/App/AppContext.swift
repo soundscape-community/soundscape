@@ -40,13 +40,13 @@ class AppContext {
     
     static let shared = AppContext()
     
-    static let appDisplayName = "Soundscape"
-    static let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-    static let appBuild = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as! String
-    static let appStoreId = "6449701760"
+    nonisolated(unsafe) static let appDisplayName = "Soundscape"
+    nonisolated(unsafe) static let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+    nonisolated(unsafe) static let appBuild = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as! String
+    nonisolated(unsafe) static let appStoreId = "6449701760"
 
     static var appState: UIApplication.State = .inactive
-    static let appLaunchedInBackground: Bool = UIApplication.shared.applicationState == .background
+    nonisolated(unsafe) static let appLaunchedInBackground: Bool = UIApplication.shared.applicationState == .background
     
     // MARK: Properties
     

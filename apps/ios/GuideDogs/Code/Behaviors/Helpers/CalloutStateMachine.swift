@@ -14,7 +14,7 @@ import Foundation
 
 @MainActor
 protocol CalloutStateMachineDelegate: AnyObject {
-    func calloutsDidFinish(id: UUID)
+    func calloutsDidFinish(id: UUID, finished: Bool)
 }
 
 @MainActor
@@ -54,6 +54,7 @@ final class CalloutStateMachine {
     private var calloutIterator: IndexingIterator<[CalloutProtocol]>?
     private var calloutTask: Task<Void, Never>?
     private var didNotifyCompletion = false
+    private var completionResult: Bool?
     private let idleSignal = IdleSignal()
     private static let silencePollInterval: UInt64 = 20_000_000
 
@@ -104,7 +105,13 @@ final class CalloutStateMachine {
 
     private func startCallouts(_ callouts: CalloutGroup) async {
         if state != .off {
+            GDLogVerbose(.stateMachine, "CALL_OUT_TRACE waiting for idle before starting new group \(callouts.id)")
             await waitUntilIdle()
+        }
+
+        if let audioEngine = audioEngine {
+            GDLogVerbose(.stateMachine, "CALL_OUT_TRACE ensuring discrete audio silence before starting group \(callouts.id)")
+            await waitForDiscreteAudioSilence(on: audioEngine)
         }
 
         guard state == .off else {
@@ -112,10 +119,12 @@ final class CalloutStateMachine {
             return
         }
 
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE startCallouts group=\(callouts.id) logContext=\(callouts.logContext)")
         calloutGroup = callouts
         calloutIterator = callouts.callouts.makeIterator()
         hushed = false
         didNotifyCompletion = false
+        completionResult = nil
         state = .running
 
         calloutTask = Task { @MainActor in
@@ -124,16 +133,19 @@ final class CalloutStateMachine {
     }
 
     private func hushCallouts(playSound: Bool) async {
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE hushCallouts playSound=\(playSound) state=\(state)")
         await cancelCurrentCallouts(markHushed: true, hushSound: playSound ? GlyphSound(.exitMode) : nil)
     }
 
     private func stopCallouts() async {
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE stopCallouts state=\(state)")
         await cancelCurrentCallouts(markHushed: false, hushSound: nil)
     }
 
     // MARK: Execution
 
     private func execute(_ group: CalloutGroup) async {
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE execute group=\(group.id)")
         group.onStart?()
         group.delegate?.calloutsStarted(for: group)
 
@@ -176,6 +188,7 @@ final class CalloutStateMachine {
 
         while state == .running, calloutGroup?.id == group.id {
             guard let callout = calloutIterator?.next() else {
+                GDLogVerbose(.stateMachine, "CALL_OUT_TRACE group=\(group.id) completed all callouts")
                 notifyCompletion(true)
                 await finish(failed: false)
                 return
@@ -200,12 +213,14 @@ final class CalloutStateMachine {
             CalloutStateMachine.log(callout: callout, context: group.logContext)
 
             guard let audioEngine = audioEngine else {
+                    GDLogVerbose(.stateMachine, "CALL_OUT_TRACE audio engine missing during group=\(group.id)")
                 notifyCompletion(false)
                 await finish(failed: true)
                 return
             }
 
             let success = await audioEngine.playAsync(sounds)
+                GDLogVerbose(.stateMachine, "CALL_OUT_TRACE callout finished group=\(group.id) callout=\(callout.logCategory) success=\(success)")
             group.delegate?.calloutFinished(callout, completed: success)
 
             guard state == .running else { return }
@@ -228,11 +243,13 @@ final class CalloutStateMachine {
     // MARK: Shutdown
 
     private func cancelCurrentCallouts(markHushed: Bool, hushSound: Sound?) async {
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent markHushed=\(markHushed) hushSound=\(String(describing: hushSound != nil)) state=\(state)")
         if let hushSound {
             pendingHushSound = hushSound
         }
 
         if state == .off {
+            GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent no-op state off")
             let soundToPlay = pendingHushSound
             pendingHushSound = nil
             await stopDiscreteAudio(play: soundToPlay)
@@ -240,12 +257,14 @@ final class CalloutStateMachine {
         }
 
         if state == .stopping {
+            GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent already stopping")
             hushed = hushed || markHushed
             return
         }
 
         hushed = markHushed
         state = .stopping
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelling task for group=\(String(describing: calloutGroup?.id))")
         calloutTask?.cancel()
         calloutTask = nil
 
@@ -263,6 +282,7 @@ final class CalloutStateMachine {
         state = failed ? .failed : .completed
 
         let id = calloutGroup?.id
+        let finishedSuccessfully = completionResult ?? false
         let shouldPlayExit = (!failed) && (!hushed) && (calloutGroup?.playModeSounds ?? false)
 
         calloutIterator = nil
@@ -276,13 +296,15 @@ final class CalloutStateMachine {
         didNotifyCompletion = false
         pendingHushSound = nil
         hushed = false
+        completionResult = nil
         state = .off
         await idleSignal.signal()
 
         if let id = id {
             let delegate = self.delegate
             await MainActor.run {
-                delegate?.calloutsDidFinish(id: id)
+                GDLogVerbose(.stateMachine, "CALL_OUT_TRACE finish notifying delegate group=\(id) finished=\(finishedSuccessfully)")
+                delegate?.calloutsDidFinish(id: id, finished: finishedSuccessfully)
             }
         }
     }
@@ -290,6 +312,8 @@ final class CalloutStateMachine {
     private func notifyCompletion(_ success: Bool) {
         guard !didNotifyCompletion, let group = calloutGroup else { return }
         didNotifyCompletion = true
+        completionResult = success
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE notifyCompletion group=\(group.id) success=\(success)")
         group.onComplete?(success)
     }
 

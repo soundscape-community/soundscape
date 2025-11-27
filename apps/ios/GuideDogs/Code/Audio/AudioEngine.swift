@@ -303,7 +303,7 @@ class AudioEngine: AudioEngineProtocol {
         
         // Connect the environment nodes to the main mixer
         do {
-            try ObjC.catchException {
+            try GDAExceptionCatcher.catchException {
                 // Connect the audio players
                 for player in self.players {
                     self.connectNodes(for: player)
@@ -350,7 +350,7 @@ class AudioEngine: AudioEngineProtocol {
         
         // Disconnect any existing connections
         do {
-            try ObjC.catchException { layer.disconnect() }
+            try GDAExceptionCatcher.catchException { layer.disconnect() }
         } catch {
             GDLogAudioError(error.localizedDescription)
             GDATelemetry.track("audio_engine.exception", with: [

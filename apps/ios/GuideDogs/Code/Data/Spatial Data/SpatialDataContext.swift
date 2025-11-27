@@ -44,12 +44,12 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     
     // MARK: - Properties
     
-    static let zoomLevel: UInt = 16
-    static let cacheDistance: CLLocationDistance = 1000
-    static let initialPOISearchDistance: CLLocationDistance = 200
-    static let expansionPOISearchDistance: CLLocationDistance = 200
-    static let refreshTimeInterval: TimeInterval = 5.0
-    static let refreshDistanceInterval: CLLocationDistance = 5.0
+    nonisolated(unsafe) static let zoomLevel: UInt = 16
+    nonisolated(unsafe) static let cacheDistance: CLLocationDistance = 1000
+    nonisolated(unsafe) static let initialPOISearchDistance: CLLocationDistance = 200
+    nonisolated(unsafe) static let expansionPOISearchDistance: CLLocationDistance = 200
+    nonisolated(unsafe) static let refreshTimeInterval: TimeInterval = 5.0
+    nonisolated(unsafe) static let refreshDistanceInterval: CLLocationDistance = 5.0
 
     private(set) weak var geolocationManager: GeolocationManagerProtocol?
     private(set) var motionActivityContext: MotionActivityProtocol

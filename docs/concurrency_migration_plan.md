@@ -342,13 +342,15 @@ Step D: Add comment markers tagging migrated closures for later actor extraction
 - 2025-11-23: Task 8 (SpatialDataContext focus) - Removed the legacy `dispatchQueue` barrier in `SpatialDataContext`, relying on actor isolation for tile state while keeping heavy Realm writes on the background queue. All network callbacks now hop back to the main actor via `Task`/`MainActor.run` before mutating `tiles`, `fetchingTiles`, or `state`, preventing off-actor mutations and ensuring dispatch groups/progress objects are balanced even if the context deallocates mid-fetch.
 - 2025-11-23: Task 8 (DeviceReachability focus) - Added explicit `Task { @MainActor }` hops for the reachability sweep, ensuring the background delay/dispatch group only gathers results while all actor state (`active`, `didDismiss`, delegate notifications) stays on the main actor. Extracted helper methods to reread dismissal flags after the delay and to build/present alerts without leaving the actor.
 - 2025-11-23: Task 8 (URLResourceManager focus) - Removed the redundant resource queue, keeping serialization via `@MainActor` isolation. Pending resources now live entirely on the main actor; once the home view loads we snapshot the queue and synchronously call into the existing handlers (which manage their own background work), eliminating off-actor mutations of `pendingURLResources`/`homeViewControllerDidLoad`.
+- 2025-11-27: Warning Classification P2 (Static constant access) - Marked read-only `AppContext` and `SpatialDataContext` static constants as `nonisolated(unsafe)` so they can be referenced from background/default-argument contexts without tripping Swift 6 errors. Annotated `AppReviewHelper` with `@MainActor` to keep review prompts/UI work on the main actor. Simulator build succeeds; next warnings to address live primarily in `BoseFramesMotionManager`.
+- 2025-11-27: Low-hanging warnings (BoseFramesMotionManager) - Resolved the optional string interpolation warning in `onHeadingUpdate` by logging a concrete `Double` snapshot accuracy, removing one of the easiest Swift 6 diagnostics before tackling the remaining actor-isolation issues in that file.
 
 ---
-Last updated: 2025-11-23 (Tasks 5 & 8 in progress: AudioEngine hops trimmed; SpatialDataContext, DeviceReachability, and URLResourceManager audits complete; 47/47 tests passing)
+Last updated: 2025-11-27 (Tasks 5 & 8 in progress: AudioEngine hops trimmed; SpatialDataContext/DeviceReachability/URLResourceManager audits complete; static constant warnings removed; 47/47 tests passing)
 
 ### Upcoming Focus (Next 2 Steps)
-1. Extend Task 8 to the data loaders (`RouteLoader`, `MarkerLoader`) by ensuring their private queues only operate on value copies and all `@MainActor` state stays on the actor.
-2. Re-run the full test suite once loaders are patched, then prioritize Task 5 mop-up (remaining legitimate dispatches) and Task 7 sorting actor extraction.
+1. Finish Task 8 queue audits for the data loaders (`RouteLoader`, `MarkerLoader`) and then tackle the newly highlighted `BoseFramesMotionManager` delegate conformances/warnings by isolating the extensions on the main actor.
+2. Re-run the full test suite once the loader and BoseFrames fixes land, then resume Task 5 mop-up (remaining `DispatchQueue.main.async` cases) and Task 7 sorting actor extraction.
 
 ### Task 5 Progress: Redundant Main Queue Hop Removal
 **Total removed: 108 redundant main-queue dispatches (`DispatchQueue.main.async` / `DispatchQueue.main.asyncAfter`)**

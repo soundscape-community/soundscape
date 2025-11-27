@@ -11,7 +11,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ObjC : NSObject
+@interface GDAExceptionCatcher : NSObject
 
 + (BOOL)catchException:(void(^)(void))tryBlock error:(__autoreleasing NSError **) error;
 

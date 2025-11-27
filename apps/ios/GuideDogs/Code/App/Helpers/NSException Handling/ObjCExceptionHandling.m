@@ -8,7 +8,7 @@
 
 #import "ObjCExceptionHandling.h"
 
-@implementation ObjC
+@implementation GDAExceptionCatcher
 
 + (BOOL)catchException:(void(^)(void))tryBlock error:(__autoreleasing NSError **) error {
     @try {

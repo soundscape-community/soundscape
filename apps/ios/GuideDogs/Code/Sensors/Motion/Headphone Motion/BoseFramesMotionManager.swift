@@ -251,11 +251,12 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
         let previousCalibrationState = calibrationState
         
         // Calculate a rolling average of accuracy to avoid jitters in the UI
-        accuracyRingBuffer[accuracyRingBufferPosition] = newHeading.accuracy ?? 100.0 // If missing, just default to something higher than "calibrated"
+        let snapshotAccuracy = newHeading.accuracy ?? 100.0 // If missing, default above calibrated threshold
+        accuracyRingBuffer[accuracyRingBufferPosition] = snapshotAccuracy
         accuracyRingBufferPosition = (accuracyRingBufferPosition + 1) % 10
         let averageAccuracy = accuracyRingBuffer.mean()!
         self._accuracy = averageAccuracy
-        GDLogHeadphoneMotionVerbose("Bose: Received heading update: \(newHeading.value), snapshot accuracy: \(newHeading.accuracy), calculated accuracy: \(_accuracy) | \(accuracyRingBuffer)")
+        GDLogHeadphoneMotionVerbose("Bose: Received heading update: \(newHeading.value), snapshot accuracy: \(snapshotAccuracy), calculated accuracy: \(_accuracy) | \(accuracyRingBuffer)")
 
         // Needs calibration?
         if averageAccuracy < self.accuracy_calibration_required_threshold {

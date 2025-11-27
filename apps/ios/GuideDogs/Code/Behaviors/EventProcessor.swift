@@ -23,7 +23,6 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     
     private var calloutQueue = Queue<CalloutGroup>()
     private var currentCallouts: CalloutGroup?
-    private var isInterruptingCurrentCallouts = false
     
     private let stateMachine: CalloutStateMachine
     private unowned let audioEngine: AudioEngineProtocol
@@ -128,8 +127,8 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         
         activeBehavior = parent
         
-        calloutQueue.clear()
-        stateMachine.hush(playSound: true)
+            calloutQueue.clear()
+            stateMachine.hush(playSound: true)
         
         NotificationCenter.default.post(name: Notification.Name.behaviorDeactivated, object: self)
     }
@@ -183,6 +182,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
 
             let hushRequest = actions.compactMap { action -> (playHush: Bool, clearPending: Bool)? in
                 if case let .interruptAndClearQueue(playHush, clearPending) = action {
+                    GDLogEventProcessorInfo("CALL_OUT_TRACE interrupt action received playHush=\(playHush) clearPending=\(clearPending) for event \(event.name)")
                     return (playHush, clearPending)
                 }
                 return nil
@@ -227,7 +227,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     }
     
     private func enqueue(_ callouts: CalloutGroup) {
-        GDLogEventProcessorInfo("Enqueueing \(callouts.callouts.count) callouts with style \(callouts.action)")
+        GDLogEventProcessorInfo("CALL_OUT_TRACE enqueue group=\(callouts.id) action=\(callouts.action) hushOnInterrupt=\(callouts.playHushOnInterrupt)")
         
         switch callouts.action {
         case .interruptAndClear:
@@ -279,33 +279,30 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     
     private func tryStartCallouts() {
         guard currentCallouts == nil else {
-            GDLogEventProcessorInfo("Can't start callouts - state machine is already playing")
+            GDLogEventProcessorInfo("CALL_OUT_TRACE tryStartCallouts skipped state machine busy current=\(String(describing: currentCallouts?.id))")
             return
         }
         
         currentCallouts = nextValidCalloutGroup()
         
         guard let currentCallouts = currentCallouts else {
-            GDLogEventProcessorInfo("Can't start callouts - no callouts to start")
+            GDLogEventProcessorInfo("CALL_OUT_TRACE tryStartCallouts found no valid groups")
             return
         }
         
-        isInterruptingCurrentCallouts = false
-        GDLogEventProcessorInfo("Starting callouts")
+        GDLogEventProcessorInfo("CALL_OUT_TRACE starting callouts group=\(currentCallouts.id) logContext=\(currentCallouts.logContext)")
         
         stateMachine.start(currentCallouts)
     }
     
-    func calloutsDidFinish(id: UUID) {
-        GDLogEventProcessorInfo("Callouts finished (\(id))")
+    func calloutsDidFinish(id: UUID, finished: Bool) {
+        GDLogEventProcessorInfo("CALL_OUT_TRACE calloutsDidFinish id=\(id) finished=\(finished)")
         
         if let current = currentCallouts, current.id == id {
-            if !isInterruptingCurrentCallouts {
-                current.delegate?.calloutsCompleted(for: current, finished: true)
+            GDLogEventProcessorInfo("CALL_OUT_TRACE notifying delegate completion group=\(id) finished=\(finished)")
+            current.delegate?.calloutsCompleted(for: current, finished: finished)
+                currentCallouts = nil
             }
-            currentCallouts = nil
-            isInterruptingCurrentCallouts = false
-        }
         
         if !calloutQueue.isEmpty {
             tryStartCallouts()
@@ -315,7 +312,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     // MARK: - General Controls
     
     func interruptCurrent(clearQueue clear: Bool = true, playHush: Bool = false) {
-        GDLogVerbose(.eventProcessor, "Interrupting current callouts")
+        GDLogEventProcessorInfo("CALL_OUT_TRACE interruptCurrent playHush=\(playHush) clearQueue=\(clear)")
         
         if playHush {
             stateMachine.hush(playSound: playHush)
@@ -323,10 +320,6 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
             stateMachine.stop()
         }
         
-        if let currentCallouts = currentCallouts, !isInterruptingCurrentCallouts {
-            currentCallouts.delegate?.calloutsCompleted(for: currentCallouts, finished: false)
-            isInterruptingCurrentCallouts = true
-        }
         
         if clear {
             clearQueue()
@@ -342,6 +335,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
             }
         }
         
+        GDLogEventProcessorInfo("CALL_OUT_TRACE hush invoked playSound=\(playSound) hushBeacon=\(hushBeacon)")
         interruptCurrent(playHush: playSound)
     }
     

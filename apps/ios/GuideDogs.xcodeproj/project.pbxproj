@@ -91,7 +91,6 @@
 		284C9AF623886D3E00CBA392 /* StaticAudioEngineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284C9AF523886D3E00CBA392 /* StaticAudioEngineAsset.swift */; };
 		284C9AF923886DA600CBA392 /* AudioEngineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284C9AF823886DA600CBA392 /* AudioEngineAsset.swift */; };
 		284C9AFB23886DD000CBA392 /* DynamicAudioEngineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284C9AFA23886DD000CBA392 /* DynamicAudioEngineAsset.swift */; };
-
 		284D48552656F2D4009001AB /* RouteGuidanceStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284D48542656F2D4009001AB /* RouteGuidanceStateStore.swift */; };
 		284D78FC2550C02000E8C72E /* voiceFilters.json in Resources */ = {isa = PBXBuildFile; fileRef = 284D78FB2550C02000E8C72E /* voiceFilters.json */; };
 		284D7950255B2F3200E8C72E /* EnvironmentSettingsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284D794F255B2F3200E8C72E /* EnvironmentSettingsProvider.swift */; };
@@ -859,7 +858,6 @@
 		284C9AF523886D3E00CBA392 /* StaticAudioEngineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StaticAudioEngineAsset.swift; path = "Code/Audio/Engine Assets/StaticAudioEngineAsset.swift"; sourceTree = "<group>"; };
 		284C9AF823886DA600CBA392 /* AudioEngineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioEngineAsset.swift; path = Code/Audio/Protocols/AudioEngineAsset.swift; sourceTree = "<group>"; };
 		284C9AFA23886DD000CBA392 /* DynamicAudioEngineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DynamicAudioEngineAsset.swift; path = Code/Audio/Protocols/DynamicAudioEngineAsset.swift; sourceTree = "<group>"; };
-        
 		284D48542656F2D4009001AB /* RouteGuidanceStateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteGuidanceStateStore.swift; sourceTree = "<group>"; };
 		284D78FB2550C02000E8C72E /* voiceFilters.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = voiceFilters.json; path = Assets/Voices/voiceFilters.json; sourceTree = "<group>"; };
 		284D794F255B2F3200E8C72E /* EnvironmentSettingsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EnvironmentSettingsProvider.swift; path = Code/App/Settings/EnvironmentSettingsProvider.swift; sourceTree = "<group>"; };
@@ -1661,7 +1659,6 @@
 				28246D1921ED372A004C8F09 /* LinkedList.swift */,
 				28246D1B21ED373D004C8F09 /* Queue.swift */,
 				C3F6A58F226F8DD300C922F7 /* Token.swift */,
-                
 				62CE155425D1D1D0001CBC0B /* CircularQuantity.swift */,
 				62E095A8260AA5A200AB973B /* ThreadSafeValue.swift */,
 			);
@@ -5216,7 +5213,6 @@
 				286A2AE72255432500A74724 /* BLEDevice.swift in Sources */,
 				3146F0CD2177AC1B001279E4 /* AVAudioPlayer+Extensions.swift in Sources */,
 				286A2AF02256813400A74724 /* Data+Extensions.swift in Sources */,
-                
 				282C03EC1F8D26CE00D9D7F5 /* CustomPageViewController.swift in Sources */,
 				2870DA7F2044872300971F75 /* UICollectionView+Extensions.swift in Sources */,
 				288785A41FA7C95200FAACBA /* CalloutSettingsCellView.swift in Sources */,

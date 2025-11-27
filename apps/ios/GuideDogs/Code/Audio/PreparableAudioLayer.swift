@@ -135,7 +135,7 @@ class PreparableAudioLayer {
             return
         }
         
-        try ObjC.catchException { self.player.play() }
+        try GDAExceptionCatcher.catchException { self.player.play() }
     }
     
     func stop() {

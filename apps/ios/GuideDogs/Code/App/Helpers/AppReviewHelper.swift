@@ -9,6 +9,7 @@
 import Foundation
 import StoreKit
 
+@MainActor
 class AppReviewHelper {
     
     // MARK: Properties
