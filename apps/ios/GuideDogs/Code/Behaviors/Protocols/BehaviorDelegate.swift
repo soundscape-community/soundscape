@@ -10,4 +10,5 @@
 protocol BehaviorDelegate: AnyObject {
     func interruptCurrent(clearQueue: Bool, playHush: Bool)
     func process(_ event: Event)
+    func playCallouts(_ group: CalloutGroup) async -> Bool
 }

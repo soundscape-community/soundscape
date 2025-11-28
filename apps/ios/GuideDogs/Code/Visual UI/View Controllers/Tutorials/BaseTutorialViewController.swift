@@ -38,37 +38,30 @@ class BaseTutorialViewController: UIViewController {
     @IBOutlet weak var pageTextLabel: UILabel!
     
     var pageFinished = false
+    internal let tutorialCalloutPlayer = TutorialCalloutPlayer()
     
     // MARK: Playing Content
 
     internal func play(delay: TimeInterval = 0.0, text: String, _ completion: ((Bool) -> Void)? = nil) {
-        let playInternal = { [weak self] (_ text: String, _ completion: ((Bool) -> Void)?) in
-            guard let `self` = self else {
+        Task { @MainActor [weak self] in
+            guard let self = self else {
                 completion?(false)
                 return
+            }
+
+            if delay > 0 {
+                try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                guard !Task.isCancelled else { return }
             }
 
             guard !self.pageFinished else {
                 completion?(false)
                 return
             }
-            
-            // Update UI
+
             self.updatePageText(text)
-            
-            // Play audio
-            AppContext.process(GenericAnnouncementEvent(text, completionHandler: completion))
-        }
-        
-        if delay > 0 {
-            Task { @MainActor in
-                // Convert legacy asyncAfter delay to Task.sleep
-                try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-                guard !Task.isCancelled else { return }
-                playInternal(text, completion)
-            }
-        } else {
-            playInternal(text, completion)
+            let finished = await self.tutorialCalloutPlayer.play(text: text)
+            completion?(finished)
         }
     }
     

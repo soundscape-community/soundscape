@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 extension Notification.Name {
     static let onboardingDidComplete = Notification.Name("GDAOnboardingDidComplete")
@@ -25,6 +26,8 @@ class OnboardingBehavior: BehaviorBase {
     // MARK: Properties
     
     let context: Context
+    private let beaconDemo = BeaconDemoHelper()
+    private let calloutGenerator = OnboardingCalloutGenerator()
     
     // MARK: Initialization
     
@@ -33,8 +36,17 @@ class OnboardingBehavior: BehaviorBase {
         
         super.init(blockedAutoGenerators: [AutoCalloutGenerator.self, BeaconCalloutGenerator.self, IntersectionGenerator.self],
                    blockedManualGenerators: [AutoCalloutGenerator.self, BeaconCalloutGenerator.self] )
-        
-        manualGenerators.append(OnboardingGenerator())
+
+        manualGenerators.append(calloutGenerator)
+    }
+
+    override func handleEvent(_ event: Event, blockedAuto: [AutomaticGenerator.Type] = [], blockedManual: [ManualGenerator.Type] = [], completion: @escaping ([HandledEventAction]?) -> Void) {
+        if handleLocalEvent(event) {
+            completion(nil)
+            return
+        }
+
+        super.handleEvent(event, blockedAuto: blockedAuto, blockedManual: blockedManual, completion: completion)
     }
     
     override func activate(with parent: Behavior?) {
@@ -90,4 +102,57 @@ struct SelectedBeaconCalloutEvent: UserInitiatedEvent {
 
 struct SelectedBeaconOrientationCalloutEvent: UserInitiatedEvent {
     var isAhead: Bool
+}
+
+// MARK: - Private helpers
+
+private extension OnboardingBehavior {
+    func handleLocalEvent(_ event: Event) -> Bool {
+        guard let userEvent = event as? UserInitiatedEvent else {
+            return false
+        }
+
+        switch userEvent {
+        case is StartSelectedBeaconAudioEvent:
+            _ = startSelectedBeaconAudio()
+            return true
+
+        case is StopSelectedBeaconAudioEvent:
+            beaconDemo.restoreState(logContext: "onboarding")
+            return true
+
+        default:
+            return false
+        }
+    }
+
+    func startSelectedBeaconAudio() -> Bool {
+        guard let userLocation = AppContext.shared.geolocationManager.location else {
+            return false
+        }
+
+        guard let heading = AppContext.shared.geolocationManager.presentationHeading.value else {
+            return false
+        }
+
+        guard let beacon = BeaconOption(id: SettingsContext.shared.selectedBeacon) else {
+            return false
+        }
+
+        beaconDemo.prepare()
+
+        let location = CLLocation(userLocation.coordinate.destination(distance: 100.0,
+                                                                      bearing: heading.add(degrees: beacon.style.defaultBearing)))
+        beaconDemo.play(shouldTimeOut: false, newBeaconLocation: location, logContext: "onboarding")
+        return true
+    }
+}
+
+private extension BeaconOption.Style {
+    var defaultBearing: Double {
+        switch self {
+        case .standard: return 45.0
+        case .haptic: return 0.0
+        }
+    }
 }

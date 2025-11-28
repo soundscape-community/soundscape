@@ -45,7 +45,7 @@ final class CalloutStateMachine {
     private weak var geo: GeolocationManagerProtocol?
     private weak var history: CalloutHistory?
     private weak var motionActivityContext: MotionActivityProtocol?
-    private weak var audioEngine: AudioEngineProtocol?
+    private let audioPlayback: AudioPlaybackControlling
 
     private var state: State = .off
     private var hushed = false
@@ -56,16 +56,26 @@ final class CalloutStateMachine {
     private var didNotifyCompletion = false
     private var completionResult: Bool?
     private let idleSignal = IdleSignal()
-    private static let silencePollInterval: UInt64 = 20_000_000
 
-    init(audioEngine engine: AudioEngineProtocol,
+    init(audioPlayback: AudioPlaybackControlling,
          geo: GeolocationManagerProtocol,
          motionActivityContext motion: MotionActivityProtocol,
          history calloutHistory: CalloutHistory) {
-        audioEngine = engine
+        self.audioPlayback = audioPlayback
         self.geo = geo
         motionActivityContext = motion
         history = calloutHistory
+    }
+
+    convenience init(audioEngine engine: AudioEngineProtocol,
+                     geo: GeolocationManagerProtocol,
+                     motionActivityContext motion: MotionActivityProtocol,
+                     history calloutHistory: CalloutHistory) {
+        let playbackActor = AudioPlaybackActor(audioEngine: engine)
+        self.init(audioPlayback: playbackActor,
+                  geo: geo,
+                  motionActivityContext: motion,
+                  history: calloutHistory)
     }
 
     // MARK: Methods
@@ -109,10 +119,8 @@ final class CalloutStateMachine {
             await waitUntilIdle()
         }
 
-        if let audioEngine = audioEngine {
-            GDLogVerbose(.stateMachine, "CALL_OUT_TRACE ensuring discrete audio silence before starting group \(callouts.id)")
-            await waitForDiscreteAudioSilence(on: audioEngine)
-        }
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE ensuring discrete audio silence before starting group \(callouts.id)")
+        await audioPlayback.waitForDiscreteAudioSilence()
 
         guard state == .off else {
             GDLogVerbose(.stateMachine, "Unable to start callout group. State machine is currently in state: \(state)")
@@ -163,8 +171,6 @@ final class CalloutStateMachine {
     }
 
     private func playPrelude(for group: CalloutGroup) async -> Bool {
-        guard let audioEngine = audioEngine else { return false }
-
         var prelude: [Sound] = group.playModeSounds ? [GlyphSound(.enterMode)] : []
         if let prefix = group.prefixCallout?.sounds(for: geo?.location) {
             prelude.append(contentsOf: prefix.soundArray)
@@ -176,7 +182,7 @@ final class CalloutStateMachine {
 
         guard state == .running else { return false }
 
-        let success = await audioEngine.playAsync(Sounds(prelude))
+        let success = await audioPlayback.play(Sounds(prelude))
         if !success {
             GDLogVerbose(.stateMachine, "Prelude failed. Terminating callouts.")
         }
@@ -212,14 +218,7 @@ final class CalloutStateMachine {
 
             CalloutStateMachine.log(callout: callout, context: group.logContext)
 
-            guard let audioEngine = audioEngine else {
-                    GDLogVerbose(.stateMachine, "CALL_OUT_TRACE audio engine missing during group=\(group.id)")
-                notifyCompletion(false)
-                await finish(failed: true)
-                return
-            }
-
-            let success = await audioEngine.playAsync(sounds)
+            let success = await audioPlayback.play(sounds)
                 GDLogVerbose(.stateMachine, "CALL_OUT_TRACE callout finished group=\(group.id) callout=\(callout.logCategory) success=\(success)")
             group.delegate?.calloutFinished(callout, completed: success)
 
@@ -288,8 +287,8 @@ final class CalloutStateMachine {
         calloutIterator = nil
         calloutTask = nil
 
-        if shouldPlayExit, let audioEngine = audioEngine {
-            _ = await audioEngine.playAsync(GlyphSound(.exitMode))
+        if shouldPlayExit {
+            _ = await audioPlayback.play(GlyphSound(.exitMode))
         }
 
         calloutGroup = nil
@@ -327,41 +326,7 @@ final class CalloutStateMachine {
     /// the next callout sequence to start. This prevents new callouts from racing ahead while the audio
     /// engine is still tearing down interrupted sounds.
     private func stopDiscreteAudio(play hushSound: Sound?) async {
-        guard let audioEngine = audioEngine else { return }
-
-        if let hushSound = hushSound {
-            audioEngine.stopDiscrete(with: hushSound)
-            return
-        }
-
-        await drainDiscreteAudio(on: audioEngine)
-    }
-
-    private func drainDiscreteAudio(on audioEngine: AudioEngineProtocol) async {
-        audioEngine.stopDiscrete()
-        await waitForDiscreteAudioSilence(on: audioEngine)
-    }
-
-    private func waitForDiscreteAudioSilence(on audioEngine: AudioEngineProtocol,
-                                             timeout: TimeInterval = 1.0) async {
-        if #available(iOS 16.0, *) {
-            let clock = ContinuousClock()
-            let deadline = clock.now + Duration.seconds(timeout)
-
-            while audioEngine.isDiscreteAudioPlaying && clock.now < deadline {
-                try? await Task.sleep(nanoseconds: Self.silencePollInterval)
-            }
-        } else {
-            let end = Date().addingTimeInterval(timeout)
-
-            while audioEngine.isDiscreteAudioPlaying && Date() < end {
-                try? await Task.sleep(nanoseconds: Self.silencePollInterval)
-            }
-        }
-
-        // Give the audio engine a brief moment to finish any remaining stop work even if there
-        // were no active players when we entered this helper.
-        try? await Task.sleep(nanoseconds: Self.silencePollInterval)
+        await audioPlayback.stopDiscreteAudio(hushSound: hushSound)
     }
 
 }

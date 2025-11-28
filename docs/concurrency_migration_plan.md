@@ -344,9 +344,10 @@ Step D: Add comment markers tagging migrated closures for later actor extraction
 - 2025-11-23: Task 8 (URLResourceManager focus) - Removed the redundant resource queue, keeping serialization via `@MainActor` isolation. Pending resources now live entirely on the main actor; once the home view loads we snapshot the queue and synchronously call into the existing handlers (which manage their own background work), eliminating off-actor mutations of `pendingURLResources`/`homeViewControllerDidLoad`.
 - 2025-11-27: Warning Classification P2 (Static constant access) - Marked read-only `AppContext` and `SpatialDataContext` static constants as `nonisolated(unsafe)` so they can be referenced from background/default-argument contexts without tripping Swift 6 errors. Annotated `AppReviewHelper` with `@MainActor` to keep review prompts/UI work on the main actor. Simulator build succeeds; next warnings to address live primarily in `BoseFramesMotionManager`.
 - 2025-11-27: Low-hanging warnings (BoseFramesMotionManager) - Resolved the optional string interpolation warning in `onHeadingUpdate` by logging a concrete `Double` snapshot accuracy, removing one of the easiest Swift 6 diagnostics before tackling the remaining actor-isolation issues in that file.
+- 2025-11-27: Callout coordinator scaffolding - Introduced a dedicated `CalloutCoordinator` wrapper around `CalloutStateMachine` (new file `CalloutCoordinator.swift`) and reworked `EventProcessor` to delegate queueing/interrupt logic to it. This removes the ad-hoc queue stored inside `EventProcessor`, centralizes hush handling, and prepares the pipeline for future async `await`-based callout requests without rewriting behaviors yet.
 
 ---
-Last updated: 2025-11-27 (Tasks 5 & 8 in progress: AudioEngine hops trimmed; SpatialDataContext/DeviceReachability/URLResourceManager audits complete; static constant warnings removed; 47/47 tests passing)
+Last updated: 2025-11-27 (Tasks 5 & 8 in progress: AudioEngine hops trimmed; SpatialDataContext/DeviceReachability/URLResourceManager audits complete; static constant warnings removed; CalloutCoordinator scaffolding landed; 47/47 tests passing)
 
 ### Upcoming Focus (Next 2 Steps)
 1. Finish Task 8 queue audits for the data loaders (`RouteLoader`, `MarkerLoader`) and then tackle the newly highlighted `BoseFramesMotionManager` delegate conformances/warnings by isolating the extensions on the main actor.
@@ -617,6 +618,13 @@ No additional redundant dispatches identified; further removals would risk viola
   - Removed the unused `playerQueue` field from `AudioEngine` and updated player initializers accordingly.
   - **Benefits:** Reduces threading surface (single actor instead of queue + actor), clarifies ownership of AVAudioEngine mutations, and sets the stage for TaskGroup-based buffer scheduling.
   - **Verification:** `xcodebuild test -workspace apps/ios/GuideDogs.xcworkspace -scheme Soundscape -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:UnitTests` (47 tests) passes after the refactor.
+
+- 2025-11-27: **Callout Coordinator Pilot – OnboardingBehavior async path**
+  - Added `BehaviorDelegate.playCallouts(_:) async -> Bool`, wired `EventProcessor` continuations so behaviors can await coordinator/state-machine completions while preserving hush/skip semantics.
+  - Introduced `CalloutGroup.onSkip` so the coordinator can fail fast when clearing/invalidating groups.
+  - Refactored `OnboardingBehavior` to inline the former `OnboardingGenerator` logic temporarily and issue onboarding callouts via `await delegate.playCallouts(...)`; retained beacon demo helpers and completion callbacks.
+  - Updated `docs/callout_architecture_plan.md` to note the temporary inlining (pilot) and planned async generator protocol.
+  - **Verification:** `xcodebuild -workspace apps/ios/GuideDogs.xcworkspace -scheme Soundscape -configuration Debug -sdk iphonesimulator build` (Simulator) succeeds with existing localization-warning noise only.
 
 
 - 2025-11-22: **Task 5 Phase 6: DispatchQueue.main.async Audit** – Completed comprehensive search for redundant main thread hops:

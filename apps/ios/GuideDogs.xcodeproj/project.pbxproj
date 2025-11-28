@@ -41,6 +41,7 @@
 		28246D1A21ED372A004C8F09 /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28246D1921ED372A004C8F09 /* LinkedList.swift */; };
 		28246D1C21ED373D004C8F09 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28246D1B21ED373D004C8F09 /* Queue.swift */; };
 		28246D2021ED53C7004C8F09 /* CalloutGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28246D1F21ED53C7004C8F09 /* CalloutGroup.swift */; };
+		5F5BEECC2B07024F00A88A3E /* CalloutCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5BEECB2B07024F00A88A3E /* CalloutCoordinator.swift */; };
 		28246D2521EF9508004C8F09 /* AuthoredActivityMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28246D2421EF9508004C8F09 /* AuthoredActivityMetadata.swift */; };
 		2827765B24AA65CC00C43A9F /* Wand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2827765A24AA65CC00C43A9F /* Wand.swift */; };
 		282914FB1F6F236200992226 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282914FA1F6F236200992226 /* UIView+Extensions.swift */; };
@@ -240,6 +241,7 @@
 		28A16136283D870D0081CFA4 /* GuidedTourAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A16135283D870D0081CFA4 /* GuidedTourAction.swift */; };
 		28A16139283D8FDA0081CFA4 /* TourWaypointDetailAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A16138283D8FDA0081CFA4 /* TourWaypointDetailAnnotation.swift */; };
 		28A32E4321BB310C005322D6 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A32E4221BB310C005322D6 /* AudioEngine.swift */; };
+		D1B48D7B2C1E4F2D00D5CF3E /* AudioPlaybackActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B48D7A2C1E4F2D00D5CF3E /* AudioPlaybackActor.swift */; };
 		28A37E892208F73F007DCD31 /* WaypointArrivalCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A37E882208F73F007DCD31 /* WaypointArrivalCallout.swift */; };
 		28A37E8B2208FC15007DCD31 /* WaypointDistanceCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A37E8A2208FC15007DCD31 /* WaypointDistanceCallout.swift */; };
 		28A7AB0820F7CC1D00DF41D8 /* MarkerQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A7AB0720F7CC1D00DF41D8 /* MarkerQueue.swift */; };
@@ -297,6 +299,7 @@
 		28F0F92C1F86AE4F00B6A64F /* DestinationTutorialInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F92B1F86AE4F00B6A64F /* DestinationTutorialInfoPage.swift */; };
 		28F0F9301F86C38400B6A64F /* DestinationTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F92F1F86C38400B6A64F /* DestinationTutorialViewController.swift */; };
 		28F0F9321F86CD0600B6A64F /* DestinationTutorialPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F9311F86CD0600B6A64F /* DestinationTutorialPage.swift */; };
+		2A9A0CE02BC1234500F0CDEF /* TutorialCalloutPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A9A0CDF2BC1234500F0CDEF /* TutorialCalloutPlayer.swift */; };
 		28F0F9341F86D43B00B6A64F /* GDASpatialDataResult+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F9331F86D43B00B6A64F /* GDASpatialDataResult+Extensions.swift */; };
 		28F1B48F1F683D37008A4F3B /* HelpPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F1B48E1F683D37008A4F3B /* HelpPageViewController.swift */; };
 		28F1ECE2262505DC00E964C0 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 28F1ECE1262505DC00E964C0 /* Realm */; };
@@ -443,7 +446,7 @@
 		6258B38A2469DB220051F60B /* UniversalLinkVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6258B3892469DB220051F60B /* UniversalLinkVersion.swift */; };
 		625F8524243BDAD10085AE05 /* UserActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625F8523243BDAD10085AE05 /* UserActivityManager.swift */; };
 		6266D10827B60EEE00D9E566 /* OnboardingBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6266D10727B60EEE00D9E566 /* OnboardingBehavior.swift */; };
-		6266D10A27B60EFB00D9E566 /* OnboardingGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6266D10927B60EFB00D9E566 /* OnboardingGenerator.swift */; };
+		2A9A0CF22BC1256500F0CDEF /* OnboardingCalloutGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A9A0CF12BC1256500F0CDEF /* OnboardingCalloutGenerator.swift */; };
 		6267898D26EBE4070007E566 /* SearchWaypointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6267898C26EBE4070007E566 /* SearchWaypointViewController.swift */; };
 		626789B026F540CF0007E566 /* RouteDetailLocalizedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626789AF26F540CF0007E566 /* RouteDetailLocalizedLabel.swift */; };
 		626789B626FA58570007E566 /* RouteCompleteViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626789B526FA58570007E566 /* RouteCompleteViewRepresentable.swift */; };
@@ -512,6 +515,7 @@
 		62CE14D325C0DEE0001CBC0B /* ComponentHeadphoneCalibrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CE14D225C0DEE0001CBC0B /* ComponentHeadphoneCalibrator.swift */; };
 		62CE155525D1D1D0001CBC0B /* CircularQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CE155425D1D1D0001CBC0B /* CircularQuantity.swift */; };
 		62CE156625D1D895001CBC0B /* Array+CircularQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CE156525D1D895001CBC0B /* Array+CircularQuantity.swift */; };
+		2A9A0CF42BC1297B00F0CDEF /* AsyncManualGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A9A0CF32BC1297B00F0CDEF /* AsyncManualGenerator.swift */; };
 		62D736DD2492C29000BA0A6D /* EntityParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D736DC2492C29000BA0A6D /* EntityParameters.swift */; };
 		62D73709249A935D00BA0A6D /* LocationDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D73708249A935D00BA0A6D /* LocationDetail.swift */; };
 		62E095A9260AA5A200AB973B /* ThreadSafeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E095A8260AA5A200AB973B /* ThreadSafeValue.swift */; };
@@ -806,6 +810,7 @@
 		28246D1921ED372A004C8F09 /* LinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LinkedList.swift; path = "Code/App/Data Structures/LinkedList.swift"; sourceTree = "<group>"; };
 		28246D1B21ED373D004C8F09 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Queue.swift; path = "Code/App/Data Structures/Queue.swift"; sourceTree = "<group>"; };
 		28246D1F21ED53C7004C8F09 /* CalloutGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalloutGroup.swift; sourceTree = "<group>"; };
+		5F5BEECB2B07024F00A88A3E /* CalloutCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalloutCoordinator.swift; sourceTree = "<group>"; };
 		28246D2421EF9508004C8F09 /* AuthoredActivityMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthoredActivityMetadata.swift; sourceTree = "<group>"; };
 		2827765A24AA65CC00C43A9F /* Wand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wand.swift; sourceTree = "<group>"; };
 		282914FA1F6F236200992226 /* UIView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIView+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UIView+Extensions.swift"; sourceTree = "<group>"; };
@@ -1003,6 +1008,7 @@
 		28A16135283D870D0081CFA4 /* GuidedTourAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidedTourAction.swift; sourceTree = "<group>"; };
 		28A16138283D8FDA0081CFA4 /* TourWaypointDetailAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourWaypointDetailAnnotation.swift; sourceTree = "<group>"; };
 		28A32E4221BB310C005322D6 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioEngine.swift; path = Code/Audio/AudioEngine.swift; sourceTree = "<group>"; };
+		D1B48D7A2C1E4F2D00D5CF3E /* AudioPlaybackActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioPlaybackActor.swift; path = Code/Audio/AudioPlaybackActor.swift; sourceTree = "<group>"; };
 		28A37E882208F73F007DCD31 /* WaypointArrivalCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointArrivalCallout.swift; sourceTree = "<group>"; };
 		28A37E8A2208FC15007DCD31 /* WaypointDistanceCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointDistanceCallout.swift; sourceTree = "<group>"; };
 		28A7AB0720F7CC1D00DF41D8 /* MarkerQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MarkerQueue.swift; path = Code/Data/Models/Helpers/MarkerQueue.swift; sourceTree = "<group>"; };
@@ -1068,6 +1074,7 @@
 		28F93A8D211A56B300994402 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UITextField+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UITextField+Extensions.swift"; sourceTree = "<group>"; };
 		28F94F5B2485AD6A0010D2B3 /* PreviewBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewBehavior.swift; sourceTree = "<group>"; };
 		28F94F5D2485AE0A0010D2B3 /* BehaviorBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorBase.swift; sourceTree = "<group>"; };
+		2A9A0CF32BC1297B00F0CDEF /* AsyncManualGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncManualGenerator.swift; sourceTree = "<group>"; };
 		28F94F612486AE980010D2B3 /* BehaviorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorDelegate.swift; sourceTree = "<group>"; };
 		28F94F65248845690010D2B3 /* CustomDisclosureTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CustomDisclosureTableViewCell.swift; path = "Code/Visual UI/Controls/CustomDisclosureTableViewCell.swift"; sourceTree = "<group>"; };
 		28F94F67248EB2F40010D2B3 /* CalibratableDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CalibratableDevice.swift; path = Code/Devices/Protocols/CalibratableDevice.swift; sourceTree = "<group>"; };
@@ -1096,6 +1103,7 @@
 		3153765B22013CDA008445AD /* DistanceUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DistanceUnit.swift; path = Code/Language/DistanceUnit.swift; sourceTree = "<group>"; };
 		31569D2A20EBF6CA00FD7B35 /* MarkerTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MarkerTutorialViewController.swift; path = "Code/Visual UI/View Controllers/Tutorials/Markers/MarkerTutorialViewController.swift"; sourceTree = "<group>"; };
 		31656ADC20EE8A7C00059AFA /* BaseTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BaseTutorialViewController.swift; path = "Code/Visual UI/View Controllers/Tutorials/BaseTutorialViewController.swift"; sourceTree = "<group>"; };
+		2A9A0CDF2BC1234500F0CDEF /* TutorialCalloutPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TutorialCalloutPlayer.swift; path = "Code/Visual UI/View Controllers/Tutorials/TutorialCalloutPlayer.swift"; sourceTree = "<group>"; };
 		316B3F6D2283924E0025526D /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		316B3F6F228392690025526D /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		316B3F70228392850025526D /* fr-CA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fr-CA"; path = "fr-CA.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -1215,7 +1223,7 @@
 		6258B39624732D8D0051F60B /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		625F8523243BDAD10085AE05 /* UserActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserActivityManager.swift; path = "Code/App/App Delegate/User Activities/UserActivityManager.swift"; sourceTree = "<group>"; };
 		6266D10727B60EEE00D9E566 /* OnboardingBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingBehavior.swift; sourceTree = "<group>"; };
-		6266D10927B60EFB00D9E566 /* OnboardingGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingGenerator.swift; sourceTree = "<group>"; };
+		2A9A0CF12BC1256500F0CDEF /* OnboardingCalloutGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCalloutGenerator.swift; sourceTree = "<group>"; };
 		6267898C26EBE4070007E566 /* SearchWaypointViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SearchWaypointViewController.swift; path = "Code/Visual UI/View Controllers/POI Table/SearchWaypointViewController.swift"; sourceTree = "<group>"; };
 		626789AF26F540CF0007E566 /* RouteDetailLocalizedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDetailLocalizedLabel.swift; sourceTree = "<group>"; };
 		626789B526FA58570007E566 /* RouteCompleteViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteCompleteViewRepresentable.swift; sourceTree = "<group>"; };
@@ -2009,10 +2017,12 @@
 			isa = PBXGroup;
 			children = (
 				28F94F5D2485AE0A0010D2B3 /* BehaviorBase.swift */,
+				2A9A0CF32BC1297B00F0CDEF /* AsyncManualGenerator.swift */,
 				286DC6AA21E6857D001CD88A /* Events.swift */,
 				286DC6AD21E6B61B001CD88A /* Verbosity.swift */,
 				286DC6B321E94FFB001CD88A /* QueueAction.swift */,
 				28246D1F21ED53C7004C8F09 /* CalloutGroup.swift */,
+				5F5BEECB2B07024F00A88A3E /* CalloutCoordinator.swift */,
 				28B59F4C21FA1BCD0040B68F /* GeneratorUpdateFilter.swift */,
 				282C794F26828A2400669555 /* BeaconUpdateFilter.swift */,
 				288E5FDD268A55BC00F7D4CD /* FilterUpdateSnapshot.swift */,
@@ -2576,6 +2586,7 @@
 				28362E85211E4C83005CFBF8 /* Markers */,
 				28362E84211E4C77005CFBF8 /* Destination */,
 				31656ADC20EE8A7C00059AFA /* BaseTutorialViewController.swift */,
+				2A9A0CDF2BC1234500F0CDEF /* TutorialCalloutPlayer.swift */,
 			);
 			name = Tutorials;
 			sourceTree = "<group>";
@@ -3048,7 +3059,7 @@
 			isa = PBXGroup;
 			children = (
 				6266D10727B60EEE00D9E566 /* OnboardingBehavior.swift */,
-				6266D10927B60EFB00D9E566 /* OnboardingGenerator.swift */,
+				2A9A0CF12BC1256500F0CDEF /* OnboardingCalloutGenerator.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -4251,6 +4262,7 @@
 				C3265D261FB271C1001D82EA /* Helpers */,
 				C3DC32C21F3BAB4A004D29EF /* Sounds */,
 				28A32E4221BB310C005322D6 /* AudioEngine.swift */,
+				D1B48D7A2C1E4F2D00D5CF3E /* AudioPlaybackActor.swift */,
 				28F3AC1F23D7640C00C705AF /* BaseAudioPlayer.swift */,
 				2837E8DC23C94B9B00CDF11E /* ContinuousAudioPlayer.swift */,
 				28710E402398697F004DEE7F /* DiscreteAudioPlayer.swift */,
@@ -4644,6 +4656,7 @@
 				B97140DA204835BC00B15BD0 /* Roundabout.swift in Sources */,
 				C36E562E22A8871A00E89C6D /* LocationPredicate.swift in Sources */,
 				28246D2021ED53C7004C8F09 /* CalloutGroup.swift in Sources */,
+				5F5BEECC2B07024F00A88A3E /* CalloutCoordinator.swift in Sources */,
 				62CCED4E26E2D27900A91E5A /* AlertFactory.swift in Sources */,
 				B9533FF924B4DB2400605B07 /* IntersectionFinder.swift in Sources */,
 				284C9AEC23871DA600CBA392 /* AVAudio3DPoint+Extensions.swift in Sources */,
@@ -4695,6 +4708,7 @@
 				62549231243BE2D700DC49E5 /* UniversalLinkComponents.swift in Sources */,
 				B96755A3251D21AF00B366F6 /* TintedImageView.swift in Sources */,
 				28850CC220AE2305000F5DE7 /* UITableView+Extensions.swift in Sources */,
+				2A9A0CE02BC1234500F0CDEF /* TutorialCalloutPlayer.swift in Sources */,
 				28710E4123986980004DEE7F /* DiscreteAudioPlayer.swift in Sources */,
 				284D48552656F2D4009001AB /* RouteGuidanceStateStore.swift in Sources */,
 				C3A5847C22BAF91B0014C55E /* UserHeadingProvider.swift in Sources */,
@@ -4783,6 +4797,7 @@
 				28E60D441FE4905F00EAB5C0 /* CompassDirection.swift in Sources */,
 				319A3C152257C94C0098E94E /* StringDebug.swift in Sources */,
 				28F94F5E2485AE0A0010D2B3 /* BehaviorBase.swift in Sources */,
+				2A9A0CF42BC1297B00F0CDEF /* AsyncManualGenerator.swift in Sources */,
 				9A6990742D5BDB8900D37B7D /* BoseSensorConfiguration.swift in Sources */,
 				9A6990752D5BDB8900D37B7D /* BoseSensorDataProcessor.swift in Sources */,
 				9A6990762D5BDB8900D37B7D /* BoseFramesBLEDevice.swift in Sources */,
@@ -5167,7 +5182,6 @@
 				31656ADD20EE8A7C00059AFA /* BaseTutorialViewController.swift in Sources */,
 				28467EE72642065900FB4C9F /* RouteDetail.swift in Sources */,
 				C3A5848922BAFA570014C55E /* DeviceManager.swift in Sources */,
-				6266D10A27B60EFB00D9E566 /* OnboardingGenerator.swift in Sources */,
 				623E0108244767D50081CA5B /* UniversalLinkParameters.swift in Sources */,
 				62B9B410268A5B55007F9DB9 /* BeaconDetailLocalizedLabel.swift in Sources */,
 				C3A326281DDA41E400E770B6 /* DebugSettingsContext.swift in Sources */,
@@ -5199,6 +5213,7 @@
 				624DF68727BED7CE000A634C /* AuthorizationProvider.swift in Sources */,
 				283C058023DB6DBF0086C01F /* SynchronouslyGeneratedSound.swift in Sources */,
 				28A32E4321BB310C005322D6 /* AudioEngine.swift in Sources */,
+				D1B48D7B2C1E4F2D00D5CF3E /* AudioPlaybackActor.swift in Sources */,
 				288A3AAB255F04B4007F1A57 /* TTSVoiceValidator.swift in Sources */,
 				C31021B121127613008163F8 /* POITableViewCellEmpty.swift in Sources */,
 				C3F6A58C226F746C00C922F7 /* TableViewDataSourcePrefetching.swift in Sources */,
@@ -5251,6 +5266,7 @@
 				284EED93237DCC7900EE8331 /* Flight.swift in Sources */,
 				31BC2555219CE41500F1DFE0 /* DirectoryObserver.swift in Sources */,
 				6266D10827B60EEE00D9E566 /* OnboardingBehavior.swift in Sources */,
+				2A9A0CF22BC1256500F0CDEF /* OnboardingCalloutGenerator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

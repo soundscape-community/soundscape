@@ -15,16 +15,14 @@ extension Notification.Name {
 }
 
 @MainActor
-class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
+class EventProcessor: BehaviorDelegate {
     
     struct Keys {
         static let behavior = "GDABehaviorKey"
     }
     
-    private var calloutQueue = Queue<CalloutGroup>()
-    private var currentCallouts: CalloutGroup?
-    
     private let stateMachine: CalloutStateMachine
+    private let calloutCoordinator: CalloutCoordinator
     private unowned let audioEngine: AudioEngineProtocol
     private unowned let data: SpatialDataProtocol
     
@@ -37,18 +35,18 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     }
     
     private var beaconId: String?
-    
+
     // MARK: Setup and Initialization
     
     init(activeBehavior: Behavior, stateMachine: CalloutStateMachine, audioEngine: AudioEngineProtocol, data: SpatialDataProtocol) {
         self.activeBehavior = activeBehavior
         self.stateMachine = stateMachine
+        self.calloutCoordinator = CalloutCoordinator(stateMachine: stateMachine)
         self.audioEngine = audioEngine
         self.data = data
         
         // Setup the delegate for the base openscape behavior
         activeBehavior.delegate = self
-        stateMachine.delegate = self
     }
     
     /// Starts the event processor by activating the default openscape behavior. This method
@@ -127,8 +125,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         
         activeBehavior = parent
         
-            calloutQueue.clear()
-            stateMachine.hush(playSound: true)
+        calloutCoordinator.interruptCurrent(clearQueue: true, playHush: true)
         
         NotificationCenter.default.post(name: Notification.Name.behaviorDeactivated, object: self)
     }
@@ -226,104 +223,43 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         callouts.forEach({ enqueue($0) })
     }
     
-    private func enqueue(_ callouts: CalloutGroup) {
+    private func enqueue(_ callouts: CalloutGroup, continuation: CheckedContinuation<Bool, Never>? = nil) {
         GDLogEventProcessorInfo("CALL_OUT_TRACE enqueue group=\(callouts.id) action=\(callouts.action) hushOnInterrupt=\(callouts.playHushOnInterrupt)")
         
         switch callouts.action {
         case .interruptAndClear:
-            if currentCallouts != nil {
+            if calloutCoordinator.hasActiveCallouts {
                 interruptCurrent(clearQueue: true, playHush: callouts.playHushOnInterrupt)
-            } else if !calloutQueue.isEmpty {
-                clearQueue()
+            } else if calloutCoordinator.hasPendingCallouts {
+                calloutCoordinator.clearPending()
             }
             
         case .clear:
-            clearQueue()
+            calloutCoordinator.clearPending()
             
         default:
             break
         }
         
-        calloutQueue.enqueue(callouts)
-        
-        tryStartCallouts()
-    }
-    
-    private func clearQueue() {
-        while !calloutQueue.isEmpty {
-            if let group = calloutQueue.dequeue() {
-                group.delegate?.calloutsSkipped(for: group)
-            }
+        if let continuation {
+            calloutCoordinator.enqueue(callouts, continuation: continuation)
+        } else {
+            calloutCoordinator.enqueue(callouts)
         }
     }
-    
-    private func nextValidCalloutGroup() -> CalloutGroup? {
-        while !calloutQueue.isEmpty {
-            guard let calloutGroup = calloutQueue.dequeue() else {
-                return nil
-            }
-            
-            if calloutGroup.isValid() {
-                return calloutGroup
-            }
-            
-            // Discard invalid callout group
-            GDLogEventProcessorInfo("Discarding invalid callout group with id: \(calloutGroup.id), context: \(calloutGroup.logContext)")
-            calloutGroup.delegate?.calloutsSkipped(for: calloutGroup)
-        }
-        
-        return nil
-    }
-    
-    // MARK: Callout State Machine
-    
-    private func tryStartCallouts() {
-        guard currentCallouts == nil else {
-            GDLogEventProcessorInfo("CALL_OUT_TRACE tryStartCallouts skipped state machine busy current=\(String(describing: currentCallouts?.id))")
-            return
-        }
-        
-        currentCallouts = nextValidCalloutGroup()
-        
-        guard let currentCallouts = currentCallouts else {
-            GDLogEventProcessorInfo("CALL_OUT_TRACE tryStartCallouts found no valid groups")
-            return
-        }
-        
-        GDLogEventProcessorInfo("CALL_OUT_TRACE starting callouts group=\(currentCallouts.id) logContext=\(currentCallouts.logContext)")
-        
-        stateMachine.start(currentCallouts)
-    }
-    
-    func calloutsDidFinish(id: UUID, finished: Bool) {
-        GDLogEventProcessorInfo("CALL_OUT_TRACE calloutsDidFinish id=\(id) finished=\(finished)")
-        
-        if let current = currentCallouts, current.id == id {
-            GDLogEventProcessorInfo("CALL_OUT_TRACE notifying delegate completion group=\(id) finished=\(finished)")
-            current.delegate?.calloutsCompleted(for: current, finished: finished)
-                currentCallouts = nil
-            }
-        
-        if !calloutQueue.isEmpty {
-            tryStartCallouts()
+
+    func playCallouts(_ group: CalloutGroup) async -> Bool {
+        await withCheckedContinuation { continuation in
+            enqueue(group, continuation: continuation)
         }
     }
-    
+
     // MARK: - General Controls
     
     func interruptCurrent(clearQueue clear: Bool = true, playHush: Bool = false) {
         GDLogEventProcessorInfo("CALL_OUT_TRACE interruptCurrent playHush=\(playHush) clearQueue=\(clear)")
         
-        if playHush {
-            stateMachine.hush(playSound: playHush)
-        } else {
-            stateMachine.stop()
-        }
-        
-        
-        if clear {
-            clearQueue()
-        }
+        calloutCoordinator.interruptCurrent(clearQueue: clear, playHush: playHush)
     }
     
     func hush(playSound: Bool = true, hushBeacon: Bool = true) {

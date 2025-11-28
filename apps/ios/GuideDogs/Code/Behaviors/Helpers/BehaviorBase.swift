@@ -193,6 +193,17 @@ class BehaviorBase: Behavior {
             return
         }
         
+        if let asyncGenerator = generator as? AsyncManualGenerator, let delegate = delegate {
+            let currentVerbosity = verbosity
+            Task { @MainActor in
+                let actions = await asyncGenerator.handleAsync(event: event,
+                                                               verbosity: currentVerbosity,
+                                                               delegate: delegate)
+                completion(actions)
+            }
+            return
+        }
+        
         guard let action = generator.handle(event: event, verbosity: verbosity) else {
             completion(nil)
             return

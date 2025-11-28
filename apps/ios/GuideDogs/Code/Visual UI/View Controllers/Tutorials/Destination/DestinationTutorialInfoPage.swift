@@ -63,14 +63,19 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
                                                accuracy: location.horizontalAccuracy,
                                                name: GDLocalizedString("beacon.generic_name"))
         
-        AppContext.process(GenericAnnouncementEvent(callout, glyph: .poiSense, location: loc) { [weak self] (finished) in
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            let finished = await self.tutorialCalloutPlayer.play(text: callout,
+                                                                 glyph: StaticAudioEngineAsset.poiSense,
+                                                                 location: loc,
+                                                                 logContext: "tutorial.destination.distance")
             guard finished else {
                 return
             }
-            
-            self?.delegate?.resumeBackgroundTrack()
-            self?.calloutCompleted()
-        })
+
+            self.delegate?.resumeBackgroundTrack()
+            self.calloutCompleted()
+        }
     }
     
     private func calloutCompleted() {
