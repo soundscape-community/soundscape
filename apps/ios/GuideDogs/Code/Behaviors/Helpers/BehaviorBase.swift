@@ -8,6 +8,11 @@
 
 import CoreLocation
 
+typealias BehaviorEventForwarder = (_ event: Event,
+                                   _ blockedAuto: [AutomaticGenerator.Type],
+                                   _ blockedManual: [ManualGenerator.Type],
+                                   _ completion: @escaping ([HandledEventAction]?) -> Void) -> Void
+
 @MainActor
 class BehaviorBase: Behavior {
     let id = UUID()
@@ -55,6 +60,7 @@ class BehaviorBase: Behavior {
     /// the degree to which the parent behaviors still function when they are the active behavior.
     /// Important: This must be a strong reference.
     private(set) var parent: Behavior?
+    private var parentEventForwarder: BehaviorEventForwarder?
     
     /// Initializes a behavior by setting the parent generator types that this behavior will not delegate events to.
     ///
@@ -94,6 +100,7 @@ class BehaviorBase: Behavior {
     func deactivate() -> Behavior? {
         let tempParent = parent
         parent = nil
+        parentEventForwarder = nil
         
         isActive = false
         GDATelemetry.track("\(description.lowercased()).deactivate")
@@ -189,27 +196,22 @@ class BehaviorBase: Behavior {
         guard let generator = generators.first else {
             // None of the manual generators respond to this type of event, pass it onto the parent
             // behavior's manual generators if a parent behavior exists.
-            parent?.handleEvent(event, blockedAuto: blockedAutoGenerators, blockedManual: blockedManualGenerators, completion: completion)
+            forwardEventToParent(event, completion: completion)
             return
         }
         
-        if let asyncGenerator = generator as? AsyncManualGenerator, let delegate = delegate {
-            let currentVerbosity = verbosity
-            Task { @MainActor in
-                let actions = await asyncGenerator.handleAsync(event: event,
-                                                               verbosity: currentVerbosity,
-                                                               delegate: delegate)
-                completion(actions)
-            }
-            return
-        }
-        
-        guard let action = generator.handle(event: event, verbosity: verbosity) else {
+        guard let delegate = delegate else {
             completion(nil)
             return
         }
-        
-        completion([action])
+
+        let currentVerbosity = verbosity
+        Task { @MainActor in
+            let actions = await generator.handle(event: event,
+                                                 verbosity: currentVerbosity,
+                                                 delegate: delegate)
+            completion(actions)
+        }
     }
     
     /// Checks if any auto generators can handle the event and if so, attempts to generate callouts
@@ -228,16 +230,16 @@ class BehaviorBase: Behavior {
                 generator.handle(event: event, verbosity: verbosity)
             })
             
-            if let parent = parent {
-                parent.handleEvent(event, blockedAuto: blockedAutoGenerators, blockedManual: blockedManualGenerators) { parentActions in
+            if let parentEventForwarder = parentEventForwarder {
+                parentEventForwarder(event, blockedAutoGenerators, blockedManualGenerators) { parentActions in
                     guard let parentActions = parentActions else {
                         completion(actions)
                         return
                     }
-                    
+
                     completion(actions + parentActions)
                 }
-                
+
                 return
             }
             
@@ -256,7 +258,7 @@ class BehaviorBase: Behavior {
             // This behavior didn't generate any callouts, so check if the parent behavior can if this is a broadcast event
             // of there were no other generators that consumed the event
             if generators.count == 0 {
-                parent?.handleEvent(event, blockedAuto: blockedAutoGenerators, blockedManual: blockedManualGenerators, completion: completion)
+                forwardEventToParent(event, completion: completion)
                 return
             }
             
@@ -265,5 +267,17 @@ class BehaviorBase: Behavior {
         }
         
         completion(actions)
+    }
+    private func forwardEventToParent(_ event: Event, completion: @escaping ([HandledEventAction]?) -> Void) {
+        guard let parentEventForwarder = parentEventForwarder else {
+            completion(nil)
+            return
+        }
+
+        parentEventForwarder(event, blockedAutoGenerators, blockedManualGenerators, completion)
+    }
+
+    func setParentEventForwarder(_ forwarder: BehaviorEventForwarder?) {
+        parentEventForwarder = forwarder
     }
 }

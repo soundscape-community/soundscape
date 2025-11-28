@@ -18,7 +18,7 @@ final class EventProcessorTest: XCTestCase {
     var mockAudioEngine: MockAudioEngine?
     var mockData: MockSpatialData?
     var mockBehavior: MockBehavior?
-    var stateMachine: CalloutStateMachine?
+    var calloutCoordinator: CalloutCoordinator?
     
     override func setUp() {
         super.setUp()
@@ -28,7 +28,7 @@ final class EventProcessorTest: XCTestCase {
         mockData = MockSpatialData()
         let mockGeo = MockGeolocationManager()
         let mockMotion = MockMotionActivity()
-        stateMachine = CalloutStateMachine(
+        calloutCoordinator = CalloutCoordinator(
             audioEngine: mockAudioEngine!,
             geo: mockGeo,
             motionActivityContext: mockMotion,
@@ -39,7 +39,7 @@ final class EventProcessorTest: XCTestCase {
         // Create event processor
         eventProcessor = EventProcessor(
             activeBehavior: mockBehavior!,
-            stateMachine: stateMachine!,
+            calloutCoordinator: calloutCoordinator!,
             audioEngine: mockAudioEngine!,
             data: mockData!
         )
@@ -50,7 +50,7 @@ final class EventProcessorTest: XCTestCase {
         mockAudioEngine = nil
         mockData = nil
         mockBehavior = nil
-        stateMachine = nil
+        calloutCoordinator = nil
         super.tearDown()
     }
     
@@ -130,6 +130,47 @@ final class EventProcessorTest: XCTestCase {
         processor.wake()
         XCTAssertTrue(behavior.isActive)
     }
+    
+    func testProcessDispatchesEventsViaQueue() {
+        let processExpectation = expectation(description: "Event delivered to behavior")
+        mockBehavior?.handleEventHandler = { event, completion in
+            if event is BehaviorActivatedEvent {
+                processExpectation.fulfill()
+            }
+            completion(nil)
+        }
+        
+        eventProcessor?.process(BehaviorActivatedEvent())
+        wait(for: [processExpectation], timeout: 1.0)
+    }
+
+    func testEventsProcessSequentiallyPerBehavior() {
+        let firstEventHandled = expectation(description: "First event handled")
+        let secondEventHandled = expectation(description: "Second event handled after first completes")
+        var firstCompletion: (([HandledEventAction]?) -> Void)?
+        var secondEventTriggered = false
+        
+        mockBehavior?.handleEventHandler = { event, completion in
+            if firstCompletion == nil {
+                firstCompletion = completion
+                firstEventHandled.fulfill()
+            } else {
+                secondEventTriggered = true
+                completion(nil)
+                secondEventHandled.fulfill()
+            }
+        }
+        
+        eventProcessor?.process(BehaviorActivatedEvent())
+        eventProcessor?.process(BehaviorActivatedEvent())
+        
+        wait(for: [firstEventHandled], timeout: 1.0)
+        XCTAssertFalse(secondEventTriggered, "Second event should wait until the first completion runs")
+        XCTAssertNotNil(firstCompletion)
+        
+        firstCompletion?(nil)
+        wait(for: [secondEventHandled], timeout: 1.0)
+    }
 }
 
 // MARK: - Mock Classes
@@ -175,8 +216,14 @@ class MockBehavior: Behavior {
     func addBlocked(manual gen: ManualGenerator.Type) {}
     func removeBlocked(manual gen: ManualGenerator.Type) {}
     
+    var handleEventHandler: ((Event, @escaping ([HandledEventAction]?) -> Void) -> Void)?
+    
     func handleEvent(_ event: Event, blockedAuto: [AutomaticGenerator.Type], blockedManual: [ManualGenerator.Type], completion: @escaping ([HandledEventAction]?) -> Void) {
-        completion(nil)
+        if let handleEventHandler {
+            handleEventHandler(event, completion)
+        } else {
+            completion(nil)
+        }
     }
 }
 

@@ -21,13 +21,17 @@ class EventProcessor: BehaviorDelegate {
         static let behavior = "GDABehaviorKey"
     }
     
-    private let stateMachine: CalloutStateMachine
     private let calloutCoordinator: CalloutCoordinator
     private unowned let audioEngine: AudioEngineProtocol
     private unowned let data: SpatialDataProtocol
+    private let eventQueue = EventQueue()
+    private var eventLoopTask: Task<Void, Never>?
+    private var behaviorStackTop: BehaviorNode
     
     /// Current top level behavior in the behavior stack
-    private(set) var activeBehavior: Behavior
+    var activeBehavior: Behavior {
+        behaviorStackTop.behavior
+    }
     
     /// Indicates if there is currently an active behavior running
     var isCustomBehaviorActive: Bool {
@@ -38,15 +42,26 @@ class EventProcessor: BehaviorDelegate {
 
     // MARK: Setup and Initialization
     
-    init(activeBehavior: Behavior, stateMachine: CalloutStateMachine, audioEngine: AudioEngineProtocol, data: SpatialDataProtocol) {
-        self.activeBehavior = activeBehavior
-        self.stateMachine = stateMachine
-        self.calloutCoordinator = CalloutCoordinator(stateMachine: stateMachine)
+    init(activeBehavior: Behavior, calloutCoordinator: CalloutCoordinator, audioEngine: AudioEngineProtocol, data: SpatialDataProtocol) {
+        self.calloutCoordinator = calloutCoordinator
         self.audioEngine = audioEngine
         self.data = data
+        self.behaviorStackTop = BehaviorNode(behavior: activeBehavior, parent: nil)
         
         // Setup the delegate for the base openscape behavior
-        activeBehavior.delegate = self
+        self.behaviorStackTop.behavior.delegate = self
+
+        startEventLoop()
+    }
+
+    deinit {
+        eventLoopTask?.cancel()
+        let queue = eventQueue
+        let behaviorNode = behaviorStackTop
+        Task { @MainActor in
+            queue.finish()
+            behaviorNode.finishChain()
+        }
     }
     
     /// Starts the event processor by activating the default openscape behavior. This method
@@ -72,12 +87,13 @@ class EventProcessor: BehaviorDelegate {
         }
         
         GDLogEventProcessorInfo("Activating the \(behavior) behavior")
-        
-        let parent = activeBehavior
-        activeBehavior = behavior
-        
+
+        let parentNode = behaviorStackTop
+        let parentBehavior = parentNode.behavior
+        behaviorStackTop = BehaviorNode(behavior: behavior, parent: parentNode)
+
         behavior.delegate = self
-        behavior.activate(with: parent)
+        behavior.activate(with: parentBehavior)
         
         NotificationCenter.default.post(name: Notification.Name.behaviorActivated, object: self, userInfo: [Keys.behavior: behavior])
         
@@ -118,12 +134,20 @@ class EventProcessor: BehaviorDelegate {
         guard isCustomBehaviorActive else {
             return
         }
-        
-        guard let parent = activeBehavior.deactivate() else {
+
+        let currentNode = behaviorStackTop
+        guard let parentBehavior = currentNode.behavior.deactivate() else {
             return
         }
-        
-        activeBehavior = parent
+
+        currentNode.finish()
+        guard let parentNode = currentNode.parent else {
+            GDLogEventProcessorError("Missing parent node during behavior deactivation")
+            return
+        }
+
+        assert(parentNode.behavior === parentBehavior, "Behavior stack parent mismatch during deactivation")
+        behaviorStackTop = parentNode
         
         calloutCoordinator.interruptCurrent(clearQueue: true, playHush: true)
         
@@ -163,38 +187,65 @@ class EventProcessor: BehaviorDelegate {
     ///
     /// - Parameter event: The event to process
     func process(_ event: Event) {
-        // Log events
+        eventQueue.enqueue(event)
+    }
+
+    private func startEventLoop() {
+        eventLoopTask = Task { [weak self] in
+            await self?.runEventLoop()
+        }
+    }
+
+    @MainActor
+    private func runEventLoop() async {
+        for await event in eventQueue.stream {
+            await handleEventFromQueue(event)
+        }
+    }
+
+    @MainActor
+    private func handleEventFromQueue(_ event: Event) async {
+        log(event)
+
+        guard let actions = await performBehaviorHandle(event) else {
+            return
+        }
+
+        handle(actions, for: event)
+    }
+
+    private func log(_ event: Event) {
         switch event {
         case let locEvent as LocationUpdatedEvent:
             GDLogEventProcessorInfo("Processing \(event.name): \(locEvent.location)")
-            
         default:
             GDLogEventProcessorInfo("Processing \(event.name)")
         }
-        
-        // Handle normal events
-        activeBehavior.handleEvent(event) { [weak self] actions in
-            guard let self = self else { return }
-            guard let actions = actions else { return }
+    }
 
-            let hushRequest = actions.compactMap { action -> (playHush: Bool, clearPending: Bool)? in
-                if case let .interruptAndClearQueue(playHush, clearPending) = action {
-                    GDLogEventProcessorInfo("CALL_OUT_TRACE interrupt action received playHush=\(playHush) clearPending=\(clearPending) for event \(event.name)")
-                    return (playHush, clearPending)
-                }
-                return nil
-            }.first
-            if let hushRequest = hushRequest {
-                self.interruptCurrent(clearQueue: hushRequest.clearPending, playHush: hushRequest.playHush)
-                return
+    private func performBehaviorHandle(_ event: Event) async -> [HandledEventAction]? {
+        await behaviorStackTop.dispatch(event)
+    }
+
+    private func handle(_ actions: [HandledEventAction], for event: Event) {
+        if let hushRequest = actions.compactMap({ action -> (playHush: Bool, clearPending: Bool)? in
+            if case let .interruptAndClearQueue(playHush, clearPending) = action {
+                GDLogEventProcessorInfo("CALL_OUT_TRACE interrupt action received playHush=\(playHush) clearPending=\(clearPending) for event \(event.name)")
+                return (playHush, clearPending)
             }
-            for case let .playCallouts(calloutGroup) in actions {
-                self.enqueue(calloutGroup)
-            }
-            for case let .processEvents(events) in actions {
-                for event in events {
-                    self.process(event)
-                }
+            return nil
+        }).first {
+            interruptCurrent(clearQueue: hushRequest.clearPending, playHush: hushRequest.playHush)
+            return
+        }
+
+        for case let .playCallouts(calloutGroup) in actions {
+            enqueue(calloutGroup)
+        }
+
+        for case let .processEvents(events) in actions {
+            for event in events {
+                process(event)
             }
         }
     }
@@ -309,5 +360,168 @@ class EventProcessor: BehaviorDelegate {
         }
         
         return true
+    }
+}
+
+// MARK: - EventQueue
+
+@MainActor
+private final class EventQueue {
+    private var continuation: AsyncStream<Event>.Continuation?
+    private var buffer: [Event] = []
+
+    lazy var stream: AsyncStream<Event> = AsyncStream(Event.self, bufferingPolicy: .unbounded) { continuation in
+        self.continuation = continuation
+
+        if !self.buffer.isEmpty {
+            self.buffer.forEach { continuation.yield($0) }
+            self.buffer.removeAll()
+        }
+
+        continuation.onTermination = { [weak self] _ in
+            Task { @MainActor in
+                self?.continuation = nil
+            }
+        }
+    }
+
+    func enqueue(_ event: Event) {
+        if let continuation {
+            continuation.yield(event)
+        } else {
+            buffer.append(event)
+        }
+    }
+
+    func finish() {
+        continuation?.finish()
+        continuation = nil
+        buffer.removeAll()
+    }
+}
+
+// MARK: - Behavior Dispatchers
+
+@MainActor
+private final class BehaviorNode {
+    let behavior: Behavior
+    fileprivate let dispatcher: BehaviorEventDispatcher
+    let parent: BehaviorNode?
+    
+    init(behavior: Behavior, parent: BehaviorNode?) {
+        self.behavior = behavior
+        self.parent = parent
+        self.dispatcher = BehaviorEventDispatcher(behavior: behavior, parentDispatcher: parent?.dispatcher)
+    }
+    
+    func dispatch(_ event: Event) async -> [HandledEventAction]? {
+        await dispatcher.dispatch(event)
+    }
+    
+    func finish() {
+        dispatcher.finish()
+    }
+    
+    func finishChain() {
+        dispatcher.finish()
+        parent?.finishChain()
+    }
+}
+
+@MainActor
+private final class BehaviorEventDispatcher {
+    private struct Request {
+        let event: Event
+        let blockedAuto: [AutomaticGenerator.Type]
+        let blockedManual: [ManualGenerator.Type]
+        let completion: ([HandledEventAction]?) -> Void
+    }
+    
+    private let behavior: Behavior
+    private var continuation: AsyncStream<Request>.Continuation?
+    private var buffer: [Request] = []
+    private lazy var stream: AsyncStream<Request> = makeStream()
+    private var task: Task<Void, Never>?
+    
+    init(behavior: Behavior, parentDispatcher: BehaviorEventDispatcher?) {
+        self.behavior = behavior
+        
+        if let base = behavior as? BehaviorBase {
+            base.setParentEventForwarder(parentDispatcher?.makeForwarder())
+        }
+        
+        task = Task { @MainActor in
+            for await request in stream {
+                await self.process(request)
+            }
+        }
+    }
+    
+    func dispatch(_ event: Event) async -> [HandledEventAction]? {
+        await withCheckedContinuation { continuation in
+            forward(event: event, blockedAuto: [], blockedManual: []) { actions in
+                continuation.resume(returning: actions)
+            }
+        }
+    }
+    
+    func forward(event: Event,
+                 blockedAuto: [AutomaticGenerator.Type],
+                 blockedManual: [ManualGenerator.Type],
+                 completion: @escaping ([HandledEventAction]?) -> Void) {
+        let request = Request(event: event, blockedAuto: blockedAuto, blockedManual: blockedManual, completion: completion)
+        if let continuation {
+            continuation.yield(request)
+        } else {
+            buffer.append(request)
+        }
+    }
+    
+    fileprivate func makeForwarder() -> BehaviorEventForwarder {
+        { [weak self] event, blockedAuto, blockedManual, completion in
+            guard let self else {
+                completion(nil)
+                return
+            }
+            
+            self.forward(event: event, blockedAuto: blockedAuto, blockedManual: blockedManual, completion: completion)
+        }
+    }
+    
+    func finish() {
+        task?.cancel()
+        continuation?.finish()
+        continuation = nil
+        buffer.removeAll()
+        
+        if let base = behavior as? BehaviorBase {
+            base.setParentEventForwarder(nil)
+        }
+    }
+    
+    private func process(_ request: Request) async {
+        await withCheckedContinuation { continuation in
+            behavior.handleEvent(request.event, blockedAuto: request.blockedAuto, blockedManual: request.blockedManual) { actions in
+                request.completion(actions)
+                continuation.resume()
+            }
+        }
+    }
+    
+    private func makeStream() -> AsyncStream<Request> {
+        AsyncStream(Request.self, bufferingPolicy: .unbounded) { continuation in
+            self.continuation = continuation
+            
+            if !self.buffer.isEmpty {
+                self.buffer.forEach { continuation.yield($0) }
+                self.buffer.removeAll()
+            }
+            
+            continuation.onTermination = { [weak self] _ in
+                Task { @MainActor in
+                    self?.continuation = nil
+                }
+            }
+        }
     }
 }

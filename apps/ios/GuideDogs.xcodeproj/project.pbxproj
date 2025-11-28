@@ -197,7 +197,6 @@
 		28906BE823E4B31A00F729E6 /* Current_B.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28906BE423E4B31700F729E6 /* Current_B.wav */; };
 		28906BE923E4B31A00F729E6 /* Current_A.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28906BE523E4B31900F729E6 /* Current_A.wav */; };
 		2891CCF520582AB1003448EF /* LoadingModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2891CCF420582AB1003448EF /* LoadingModalViewController.swift */; };
-		289249151FE19FAE005E6740 /* CalloutStateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289249141FE19FAE005E6740 /* CalloutStateMachine.swift */; };
 		28952D26228DBC1200FC91B4 /* app_launch.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28952D15228DBC0E00FC91B4 /* app_launch.wav */; };
 		28952D27228DBC1200FC91B4 /* information_alert.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28952D16228DBC1000FC91B4 /* information_alert.wav */; };
 		28952D28228DBC1200FC91B4 /* hunt_complete.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28952D17228DBC1000FC91B4 /* hunt_complete.wav */; };
@@ -964,7 +963,6 @@
 		28906BE423E4B31700F729E6 /* Current_B.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Current_B.wav; sourceTree = "<group>"; };
 		28906BE523E4B31900F729E6 /* Current_A.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Current_A.wav; sourceTree = "<group>"; };
 		2891CCF420582AB1003448EF /* LoadingModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoadingModalViewController.swift; path = "Code/Visual UI/Controls/LoadingModalViewController.swift"; sourceTree = "<group>"; };
-		289249141FE19FAE005E6740 /* CalloutStateMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalloutStateMachine.swift; sourceTree = "<group>"; };
 		28952D15228DBC0E00FC91B4 /* app_launch.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = app_launch.wav; path = Assets/Sounds/app_launch.wav; sourceTree = "<group>"; };
 		28952D16228DBC1000FC91B4 /* information_alert.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = information_alert.wav; path = Assets/Sounds/information_alert.wav; sourceTree = "<group>"; };
 		28952D17228DBC1000FC91B4 /* hunt_complete.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = hunt_complete.wav; path = Assets/Sounds/hunt_complete.wav; sourceTree = "<group>"; };
@@ -2026,7 +2024,6 @@
 				28B59F4C21FA1BCD0040B68F /* GeneratorUpdateFilter.swift */,
 				282C794F26828A2400669555 /* BeaconUpdateFilter.swift */,
 				288E5FDD268A55BC00F7D4CD /* FilterUpdateSnapshot.swift */,
-				289249141FE19FAE005E6740 /* CalloutStateMachine.swift */,
 				28FCD314281C93F0007CEFE7 /* HandledEventAction.swift */,
 			);
 			path = Helpers;
@@ -4963,7 +4960,6 @@
 				62B9B40B268A5016007F9DB9 /* BeaconAction.swift in Sources */,
 				6279177F248EB836001D72F3 /* RoadAdjacentDataView.swift in Sources */,
 				624C96B828529854001F84F8 /* NavigationBarStyle.swift in Sources */,
-				289249151FE19FAE005E6740 /* CalloutStateMachine.swift in Sources */,
 				62B455642583FF8900665131 /* HeadphoneMotionManager.swift in Sources */,
 				C365E643220BB83C00049216 /* BannerViewController.swift in Sources */,
 				28467EEB264206A300FB4C9F /* RouteActionDelegate.swift in Sources */,
