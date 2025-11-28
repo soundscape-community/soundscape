@@ -43,7 +43,8 @@ struct BeaconGeofenceTriggeredEvent: StateChangedEvent {
     }
 }
 
-class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
+@MainActor
+class BeaconCalloutGenerator: AutomaticGenerator, AsyncManualGenerator {
     
     // MARK: - Events
     
@@ -98,25 +99,22 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     }
     
     func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
-        switch event {
-        case let event as BeaconCalloutEvent:
-            return .playCallouts(CalloutGroup([DestinationCallout(.auto, event.beaconId)], action: .interruptAndClear, logContext: event.logContext))
-            
-        case let event as BeaconChangedEvent:
-            guard settings.automaticCalloutsEnabled else {
-                GDLogAutoCalloutError("Skipping beacon auto callouts. Callouts not enabled.")
-                return .noAction
-            }
-            
-            guard let callouts = beaconChanged(event) else {
-                return .noAction
-            }
-            
-            return .playCallouts(callouts)
-            
-        default:
+        guard let group = manualCalloutGroup(for: event) else {
             return nil
         }
+        
+        return .playCallouts(group)
+    }
+    
+    func handleAsync(event: UserInitiatedEvent,
+                     verbosity: Verbosity,
+                     delegate: BehaviorDelegate) async -> [HandledEventAction]? {
+        guard let group = manualCalloutGroup(for: event) else {
+            return nil
+        }
+        
+        _ = await delegate.playCallouts(group)
+        return nil
     }
     
     func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
@@ -148,6 +146,24 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     /// - Parameter id: ID of the POI
     func cancelCalloutsForEntity(id: String) {
         // No-op: This generator does not support callout cancellation
+    }
+    
+    private func manualCalloutGroup(for event: UserInitiatedEvent) -> CalloutGroup? {
+        switch event {
+        case let event as BeaconCalloutEvent:
+            return CalloutGroup([DestinationCallout(.auto, event.beaconId)], action: .interruptAndClear, logContext: event.logContext)
+            
+        case let event as BeaconChangedEvent:
+            guard settings.automaticCalloutsEnabled else {
+                GDLogAutoCalloutError("Skipping beacon auto callouts. Callouts not enabled.")
+                return nil
+            }
+            
+            return beaconChanged(event)
+            
+        default:
+            return nil
+        }
     }
     
     // MARK: - Event Processing Methods

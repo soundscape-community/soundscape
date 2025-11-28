@@ -73,6 +73,7 @@ Introduce a small set of actors with clear responsibilities and async APIs:
 - **Auto callout toggles await glyphs:** `AutoCalloutGenerator` conforms to `AsyncManualGenerator`, so manual interactions like enabling/disabling automatic callouts or announcing saved markers route through `delegate.playCallouts` instead of returning actions, ensuring those user-facing glyphs complete before subsequent UI state changes run.
 - **Route guidance activation async:** `RouteGuidanceGenerator` now conforms to `AsyncManualGenerator`, so behavior activation events execute through the async path and keep auto-callout blocking aligned with the rest of the modernization work.
 - **Guided tour activation async:** `TourGenerator` also adopts `AsyncManualGenerator`, moving its activation block logic into `handleAsync` so onboarding-style tour flows follow the same awaitable pattern.
+- **Beacon generator aligns with async manual path:** `BeaconCalloutGenerator` now conforms to `AsyncManualGenerator`, so manual beacon requests and destination toggles reuse the same delegate-backed playback pipeline as other behaviors.
 - Next up: extend `AsyncManualGenerator` beyond onboarding so other manual behaviors (preview, beacon training, tutorials) can adopt the same awaitable flow while we continue peeling away legacy callback-based generators.
 
 _Last updated: 2025-11-28_
