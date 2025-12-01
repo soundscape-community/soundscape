@@ -25,7 +25,8 @@ extension CalloutOrigin {
     static let arHeadsetTest = CalloutOrigin(rawValue: "ar_headset_test", localizedString: GDLocalizationUnnecessary("AR HEADSET TEST"))!
 }
 
-class HeadsetTestGenerator: ManualGenerator {
+@MainActor
+final class HeadsetTestGenerator: ManualGenerator {
     
     private var beaconPlayerId: AudioPlayerIdentifier?
     
@@ -33,24 +34,36 @@ class HeadsetTestGenerator: ManualGenerator {
         return event is HeadsetTestEvent
     }
     
-    func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
+    func handle(event: UserInitiatedEvent,
+                verbosity: Verbosity,
+                delegate: BehaviorDelegate) async -> [HandledEventAction]? {
         guard let event = event as? HeadsetTestEvent else {
             return nil
         }
         
         switch event.state {
         case .start:
-            
-            // Play the instruction callout and then start the beacon
-            let callouts = CalloutGroup([StringCallout(.arHeadsetTest, GDLocalizedString("devices.test_headset.callout"))], action: .interruptAndClear, logContext: "ar_headset")
-            callouts.onStart = self.setBeacon
-            
-            return .playCallouts(callouts)
+            let callouts = makeInstructionCallouts()
+            _ = await delegate.playCallouts(callouts)
+            return nil
             
         case .end:
             clearBeacon()
-            return .noAction
+            return [.noAction]
         }
+    }
+    
+    private func makeInstructionCallouts() -> CalloutGroup {
+        let group = CalloutGroup([
+            StringCallout(.arHeadsetTest, GDLocalizedString("devices.test_headset.callout"))
+        ], action: .interruptAndClear, logContext: "ar_headset")
+        group.onStart = { [weak self] in
+            guard let self else { return }
+            Task { @MainActor in
+                self.setBeacon()
+            }
+        }
+        return group
     }
     
     private func setBeacon() {
@@ -110,5 +123,4 @@ class HeadsetTestGenerator: ManualGenerator {
         AppContext.shared.audioEngine.stop(id)
         beaconPlayerId = nil
     }
-    
 }

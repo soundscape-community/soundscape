@@ -96,11 +96,11 @@ class TelemetryHelper {
     // MARK: Methods
 
     private func registerForAppStateNotifications() {
-        NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: OperationQueue.current) { (_) in
+        NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main) { (_) in
             GDATelemetry.track("app.state", value: UIApplication.shared.applicationState.description)
         }
         
-        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: OperationQueue.current) { (_) in
+        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { (_) in
             GDATelemetry.track("app.state", value: UIApplication.shared.applicationState.description)
         }
     }
@@ -378,7 +378,7 @@ extension TelemetryHelper {
     }
     
     private func registerForAccessibilityNotifications() {
-        let queue = OperationQueue.current
+        let queue = OperationQueue.main
         
         // Audio
         

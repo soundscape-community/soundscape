@@ -38,7 +38,7 @@ class TourWaypointDepartureEvent: StateChangedEvent {
 }
 
 @MainActor
-class TourGenerator: AutomaticGenerator, AsyncManualGenerator {
+class TourGenerator: AutomaticGenerator, ManualGenerator {
     
     struct Key {
         static let markerId = "markerId"
@@ -102,9 +102,9 @@ class TourGenerator: AutomaticGenerator, AsyncManualGenerator {
         return eventTypes.contains { $0 == type(of: event) }
     }
     
-    func handleAsync(event: UserInitiatedEvent,
-                     verbosity: Verbosity,
-                     delegate: BehaviorDelegate) async -> [HandledEventAction]? {
+    func handle(event: UserInitiatedEvent,
+                verbosity: Verbosity,
+                delegate: BehaviorDelegate) async -> [HandledEventAction]? {
         guard event is BehaviorActivatedEvent else {
             return nil
         }

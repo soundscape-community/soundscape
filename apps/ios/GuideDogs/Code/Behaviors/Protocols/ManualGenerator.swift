@@ -11,6 +11,8 @@ import Foundation
 @MainActor
 protocol ManualGenerator {
     func respondsTo(_ event: UserInitiatedEvent) -> Bool
-    
-    func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction?
+
+    func handle(event: UserInitiatedEvent,
+                verbosity: Verbosity,
+                delegate: BehaviorDelegate) async -> [HandledEventAction]?
 }

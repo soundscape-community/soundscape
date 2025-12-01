@@ -44,7 +44,7 @@ struct BeaconGeofenceTriggeredEvent: StateChangedEvent {
 }
 
 @MainActor
-class BeaconCalloutGenerator: AutomaticGenerator, AsyncManualGenerator {
+class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     
     // MARK: - Events
     
@@ -98,17 +98,9 @@ class BeaconCalloutGenerator: AutomaticGenerator, AsyncManualGenerator {
         return eventTypes.contains { $0 == type(of: event) }
     }
     
-    func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
-        guard let group = manualCalloutGroup(for: event) else {
-            return nil
-        }
-        
-        return .playCallouts(group)
-    }
-    
-    func handleAsync(event: UserInitiatedEvent,
-                     verbosity: Verbosity,
-                     delegate: BehaviorDelegate) async -> [HandledEventAction]? {
+    func handle(event: UserInitiatedEvent,
+                verbosity: Verbosity,
+                delegate: BehaviorDelegate) async -> [HandledEventAction]? {
         guard let group = manualCalloutGroup(for: event) else {
             return nil
         }

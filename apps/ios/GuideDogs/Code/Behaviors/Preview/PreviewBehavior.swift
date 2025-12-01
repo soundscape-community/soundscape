@@ -215,36 +215,33 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         
         Task { @MainActor [weak self] in
             guard let self = self else { return }
-            _ = await self.playPreviewCallouts(for: PreviewStartedEvent(at: self.currentDecisionPoint.value, from: self.initialLocation))
+            await self.playPreviewCallouts(for: PreviewStartedEvent(at: self.currentDecisionPoint.value, from: self.initialLocation))
 
             guard !self.isDeactivating else { return }
 
             if !FirstUseExperience.didComplete(.previewRoadFinder) {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
                 guard !Task.isCancelled else { return }
-                _ = await self.playPreviewCallouts(for: PreviewInstructionsEvent())
+                await self.playPreviewCallouts(for: PreviewInstructionsEvent())
             }
 
             self.didActivate()
         }
     }
 
-    private func playPreviewCallouts(for event: UserInitiatedEvent) async -> Bool {
-        guard let action = previewCalloutGenerator.handle(event: event, verbosity: verbosity) else {
-            GDLogPreviewInfo("No preview callout action for event: \(type(of: event))")
-            return false
-        }
-
-        guard case let .playCallouts(group) = action else {
-            GDLogPreviewInfo("Preview event does not produce callouts: \(type(of: event))")
-            return false
+    private func playPreviewCallouts(for event: UserInitiatedEvent) async {
+        guard previewCalloutGenerator.respondsTo(event) else {
+            GDLogPreviewInfo("Preview generator does not respond to event: \(type(of: event))")
+            return
         }
 
         guard let delegate = delegate else {
-            return false
+            return
         }
 
-        return await delegate.playCallouts(group)
+        await previewCalloutGenerator.handle(event: event,
+                             verbosity: verbosity,
+                             delegate: delegate)
     }
     
     private func didActivate() {
@@ -392,7 +389,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
             guard let self = self else { return }
 
             let event = PreviewNodeChangedEvent(from: from, to: to, along: along, previousEdgeData: previousEdgeData, isUndo: isUndo)
-            _ = await self.playPreviewCallouts(for: event)
+            await self.playPreviewCallouts(for: event)
             guard !Task.isCancelled else { return }
 
             if let context = beaconContext {
@@ -414,7 +411,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
             destinationManager.toggleDestinationAudio(true)
         }
 
-        _ = await playPreviewCallouts(for: PreviewBeaconUpdatedEvent(location: location, distance: distance, arrived: arrived))
+        await playPreviewCallouts(for: PreviewBeaconUpdatedEvent(location: location, distance: distance, arrived: arrived))
         guard !Task.isCancelled else { return }
 
         isTransitioningSubject.value = false
@@ -455,7 +452,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         
         Task { @MainActor [weak self] in
             guard let self = self else { return }
-            _ = await self.playPreviewCallouts(for: PreviewResumedEvent(at: self.currentDecisionPoint.value))
+            await self.playPreviewCallouts(for: PreviewResumedEvent(at: self.currentDecisionPoint.value))
             guard !Task.isCancelled else { return }
             self.onResumed()
         }
@@ -598,7 +595,7 @@ extension PreviewBehavior: WandDelegate {
 
         Task { @MainActor [weak self] in
             guard let self = self else { return }
-            _ = await self.playPreviewCallouts(for: PreviewFoundRoadEvent(dataView))
+            await self.playPreviewCallouts(for: PreviewFoundRoadEvent(dataView))
             guard !Task.isCancelled else { return }
             wand.enableLongFocusForCurrentTarget()
         }
@@ -632,7 +629,7 @@ extension PreviewBehavior: WandDelegate {
 
             Task { @MainActor [weak self] in
                 guard let self = self else { return }
-                _ = await self.playPreviewCallouts(for: PreviewFoundRoadEvent(dataView))
+                await self.playPreviewCallouts(for: PreviewFoundRoadEvent(dataView))
                 guard !Task.isCancelled else { return }
                 wand.enableLongFocusForCurrentTarget()
             }

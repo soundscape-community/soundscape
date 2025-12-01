@@ -42,7 +42,7 @@ extension Notification.Name {
 }
 
 @MainActor
-class RouteGuidanceGenerator: AutomaticGenerator, AsyncManualGenerator {
+class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
     
     struct Key {
         static let markerId = "markerId"
@@ -106,9 +106,9 @@ class RouteGuidanceGenerator: AutomaticGenerator, AsyncManualGenerator {
         }
     }
     
-    func handleAsync(event: UserInitiatedEvent,
-                     verbosity: Verbosity,
-                     delegate: BehaviorDelegate) async -> [HandledEventAction]? {
+    func handle(event: UserInitiatedEvent,
+                verbosity: Verbosity,
+                delegate: BehaviorDelegate) async -> [HandledEventAction]? {
         guard event is BehaviorActivatedEvent else {
             return nil
         }

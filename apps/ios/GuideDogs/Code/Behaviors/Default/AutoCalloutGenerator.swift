@@ -98,6 +98,7 @@ private struct TrackedCallout {
     }
 }
 
+@MainActor
 class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
     
     // MARK: - Events
@@ -221,38 +222,15 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
         return eventTypes.contains { $0 == type(of: event) }
     }
     
-    func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
-        switch event {
-        case let event as ToggleAutoCalloutsEvent:
-            if settings.automaticCalloutsEnabled == true {
-                // Disable automatic callouts
-                settings.automaticCalloutsEnabled = false
-                let callouts = CalloutGroup([GlyphCallout(.auto, .stopJourney)], action: .interruptAndClear, logContext: "automatic_callouts")
-                return event.playSound ? .playCallouts(callouts) : nil
-            }
-            
-            // Enable automatic callouts
-            settings.automaticCalloutsEnabled = true
-            let callouts = CalloutGroup([GlyphCallout(.auto, .startJourney)], action: .interruptAndClear, logContext: "automatic_callouts")
-            return event.playSound ? .playCallouts(callouts) : nil
-            
-        case let event as MarkerAddedEvent:
-            guard let id = event.markerId, let marker = SpatialDataCache.referenceEntityByKey(id) else {
-                return nil
-            }
-        
-            self.cancelCalloutsForEntity(id: marker.getPOI().key)
-            
-            guard !marker.isTemp else {
-                return nil
-            }
-            
-            let callout = StringCallout(.system, GDLocalizedString("markers.marker_created"))
-            return .playCallouts(CalloutGroup([callout], logContext: "marker_added"))
-            
-        default:
+    func handle(event: UserInitiatedEvent,
+                verbosity: Verbosity,
+                delegate: BehaviorDelegate) async -> [HandledEventAction]? {
+        guard let group = manualCalloutGroup(for: event) else {
             return nil
         }
+        
+        _ = await delegate.playCallouts(group)
+        return nil
     }
     
     func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
@@ -295,6 +273,38 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
         }
         
         history.append(TrackedCallout(POICallout(.auto, key: id, location: geo.location)))
+    }
+    
+    private func manualCalloutGroup(for event: UserInitiatedEvent) -> CalloutGroup? {
+        switch event {
+        case let event as ToggleAutoCalloutsEvent:
+            if settings.automaticCalloutsEnabled == true {
+                settings.automaticCalloutsEnabled = false
+                let callouts = CalloutGroup([GlyphCallout(.auto, .stopJourney)], action: .interruptAndClear, logContext: "automatic_callouts")
+                return event.playSound ? callouts : nil
+            }
+            
+            settings.automaticCalloutsEnabled = true
+            let callouts = CalloutGroup([GlyphCallout(.auto, .startJourney)], action: .interruptAndClear, logContext: "automatic_callouts")
+            return event.playSound ? callouts : nil
+            
+        case let event as MarkerAddedEvent:
+            guard let id = event.markerId, let marker = SpatialDataCache.referenceEntityByKey(id) else {
+                return nil
+            }
+            
+            cancelCalloutsForEntity(id: marker.getPOI().key)
+            
+            guard !marker.isTemp else {
+                return nil
+            }
+            
+            let callout = StringCallout(.system, GDLocalizedString("markers.marker_created"))
+            return CalloutGroup([callout], logContext: "marker_added")
+            
+        default:
+            return nil
+        }
     }
     
     // MARK: - Event Processing Methods

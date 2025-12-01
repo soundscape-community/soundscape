@@ -9,17 +9,5 @@
 //  Licensed under the MIT License.
 //
 
-@MainActor
-protocol AsyncManualGenerator: ManualGenerator {
-    func handleAsync(event: UserInitiatedEvent,
-                     verbosity: Verbosity,
-                     delegate: BehaviorDelegate) async -> [HandledEventAction]?
-}
-
-extension AsyncManualGenerator {
-    func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
-        // Async generators are invoked through handleAsync; synchronous handling
-        // is intentionally unsupported.
-        return nil
-    }
-}
+@available(*, deprecated, message: "AsyncManualGenerator has been folded into ManualGenerator. Conform directly to ManualGenerator instead.")
+typealias AsyncManualGenerator = ManualGenerator

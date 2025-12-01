@@ -12,7 +12,7 @@
 import CoreLocation
 
 @MainActor
-final class OnboardingCalloutGenerator: AsyncManualGenerator {
+final class OnboardingCalloutGenerator: ManualGenerator {
 
     private let handledEvents: [UserInitiatedEvent.Type] = [
         OnboardingExampleCalloutEvent.self,
@@ -24,9 +24,9 @@ final class OnboardingCalloutGenerator: AsyncManualGenerator {
         handledEvents.contains { $0 == type(of: event) }
     }
 
-    func handleAsync(event: UserInitiatedEvent,
-                     verbosity: Verbosity,
-                     delegate: BehaviorDelegate) async -> [HandledEventAction]? {
+    func handle(event: UserInitiatedEvent,
+                verbosity: Verbosity,
+                delegate: BehaviorDelegate) async -> [HandledEventAction]? {
         switch event {
         case let example as OnboardingExampleCalloutEvent:
             let group = makeExampleCallouts(completion: example.completion)

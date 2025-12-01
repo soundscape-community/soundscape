@@ -37,7 +37,8 @@ struct ExplorationModeToggled: UserInitiatedEvent {
     }
 }
 
-class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
+@MainActor
+final class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
     
     enum Mode: String {
         case locate
@@ -125,89 +126,47 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
         }
     }
     
-    func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
-        guard let event = event as? ExplorationModeToggled else {
+    func handle(event: UserInitiatedEvent,
+                verbosity: Verbosity,
+                delegate: BehaviorDelegate) async -> [HandledEventAction]? {
+        guard let toggle = event as? ExplorationModeToggled else {
             return nil
         }
         
-        guard event.mode != currentMode else {
-            event.completionHandler?(false)
-            
-            // By interrupting and clearing the queue, we will terminate the callouts for the current
-            // mode. This state will be updated `calloutsCompleted(for:finished:)` below
-            log(event, toggledOn: false)
-            return .interruptAndClearQueue(playHush: true, clearPending: false)
+        if let duplicateActions = handleDuplicateToggle(toggle) {
+            return duplicateActions
         }
         
         if let errorMessage = locationServicesErrorMessage() {
-            event.completionHandler?(false)
-            let error = RelativeStringCallout(event.mode.origin, errorMessage, position: 0.0)
-            return .playCallouts(CalloutGroup([error], action: .interruptAndClear, logContext: event.logContext))
+            toggle.completionHandler?(false)
+            await playError(message: errorMessage, for: toggle, delegate: delegate)
+            return nil
         }
         
-        guard let loc = geo.location else {
-            event.completionHandler?(false)
-            let error = RelativeStringCallout(event.mode.origin, noLocationMessage, position: 0.0)
-            return .playCallouts(CalloutGroup([error], action: .interruptAndClear, logContext: event.logContext))
+        guard let location = geo.location else {
+            toggle.completionHandler?(false)
+            await playError(message: noLocationMessage, for: toggle, delegate: delegate)
+            return nil
         }
         
-        log(event, toggledOn: true)
+        log(toggle, toggledOn: true)
         let shouldPlayHush = currentMode != nil
-        
-        // Get the appropriate callouts
-        var callouts: [CalloutProtocol]
-        switch event.mode {
-        case .locate:
-            if let dataView = data.getDataView(for: loc, searchDistance: SpatialDataContext.initialPOISearchDistance) {
-                GDLogGeocoderInfo("Reverse Geocode - from Locate command (\(loc.description))")
-                let result = geocoder.reverseGeocode(loc, data: dataView, heading: geo.collectionHeading)
-                callouts = [result.buildCallout(origin: .auto, sound: false, useClosestRoadIfAvailable: false)]
-            } else {
-                callouts = []
-            }
-            
-            if event.sender is UserActivityManager {
-                NSUserActivity(userAction: .myLocation).becomeCurrent()
-            }
-            
-        case .aroundMe:
-            let heading = geo.collectionHeading.value ?? Heading.defaultValue
-            callouts = findCalloutsFor(location: loc, heading: heading, origin: event.mode.origin)
-            
-            if event.sender is UserActivityManager {
-                NSUserActivity(userAction: .aroundMe).becomeCurrent()
-            }
-            
-        case .aheadOfMe:
-            let heading = geo.heading(orderedBy: [.user, .device, .course]).value ?? Heading.defaultValue
-            let direction = SpatialDataView.getHeadingDirection(heading: heading)
-            callouts = findCalloutsFor(direction, maxItems: maxAheadOfMeCallouts, location: loc, heading: heading, origin: event.mode.origin)
-            
-            if event.sender is UserActivityManager {
-                NSUserActivity(userAction: .aheadOfMe).becomeCurrent()
-            }
-            
-        case .nearbyMarkers:
-            callouts = getCalloutsForMarkers(location: loc, requiredMarkerKeys: event.requiredMarkerKeys)
-
-            if event.sender is UserActivityManager {
-                NSUserActivity(userAction: .nearbyMarkers).becomeCurrent()
-            }
-        }
+        var callouts = makeCallouts(for: toggle, location: location)
         
         if callouts.isEmpty {
-            callouts.append(RelativeStringCallout(event.mode.origin, event.mode.noCalloutsMessage, position: 0.0))
+            callouts.append(RelativeStringCallout(toggle.mode.origin, toggle.mode.noCalloutsMessage, position: 0.0))
         }
         
-        let group = CalloutGroup(callouts, action: .interruptAndClear, playModeSounds: true, logContext: event.logContext)
+        let group = CalloutGroup(callouts, action: .interruptAndClear, playModeSounds: true, logContext: toggle.logContext)
         group.delegate = self
-        group.onComplete = event.completionHandler
+        group.onComplete = toggle.completionHandler
         group.playHushOnInterrupt = shouldPlayHush
         
         currentGroupId = group.id
-        currentMode = event.mode
+        currentMode = toggle.mode
         
-        return .playCallouts(group)
+        _ = await delegate.playCallouts(group)
+        return nil
     }
     
     private func locationServicesErrorMessage() -> String? {
@@ -413,6 +372,80 @@ extension ExplorationGenerator: CalloutGroupDelegate {
         if group.id == currentGroupId {
             currentGroupId = nil
             currentMode = nil
+        }
+    }
+}
+
+// MARK: - Manual handling helpers
+
+private extension ExplorationGenerator {
+    func handleDuplicateToggle(_ event: ExplorationModeToggled) -> [HandledEventAction]? {
+        guard event.mode == currentMode else {
+            return nil
+        }
+        
+        event.completionHandler?(false)
+        log(event, toggledOn: false)
+        
+        return [.interruptAndClearQueue(playHush: true, clearPending: false)]
+    }
+    
+    func playError(message: String,
+                   for event: ExplorationModeToggled,
+                   delegate: BehaviorDelegate) async {
+        let callout = RelativeStringCallout(event.mode.origin, message, position: 0.0)
+        let group = CalloutGroup([callout], action: .interruptAndClear, logContext: event.logContext)
+        _ = await delegate.playCallouts(group)
+    }
+    
+    func makeCallouts(for event: ExplorationModeToggled, location loc: CLLocation) -> [CalloutProtocol] {
+        switch event.mode {
+        case .locate:
+            if let dataView = data.getDataView(for: loc, searchDistance: SpatialDataContext.initialPOISearchDistance) {
+                GDLogGeocoderInfo("Reverse Geocode - from Locate command (\(loc.description))")
+                let result = geocoder.reverseGeocode(loc, data: dataView, heading: geo.collectionHeading)
+                setUserActivityIfNeeded(for: event)
+                return [result.buildCallout(origin: .auto, sound: false, useClosestRoadIfAvailable: false)]
+            }
+            
+            setUserActivityIfNeeded(for: event)
+            return []
+            
+        case .aroundMe:
+            let heading = geo.collectionHeading.value ?? Heading.defaultValue
+            setUserActivityIfNeeded(for: event)
+            return findCalloutsFor(location: loc, heading: heading, origin: event.mode.origin)
+            
+        case .aheadOfMe:
+            let heading = geo.heading(orderedBy: [.user, .device, .course]).value ?? Heading.defaultValue
+            let direction = SpatialDataView.getHeadingDirection(heading: heading)
+            setUserActivityIfNeeded(for: event)
+            return findCalloutsFor(direction,
+                                   maxItems: maxAheadOfMeCallouts,
+                                   location: loc,
+                                   heading: heading,
+                                   origin: event.mode.origin)
+            
+        case .nearbyMarkers:
+            setUserActivityIfNeeded(for: event)
+            return getCalloutsForMarkers(location: loc, requiredMarkerKeys: event.requiredMarkerKeys)
+        }
+    }
+    
+    func setUserActivityIfNeeded(for event: ExplorationModeToggled) {
+        guard event.sender is UserActivityManager else {
+            return
+        }
+        
+        switch event.mode {
+        case .locate:
+            NSUserActivity(userAction: .myLocation).becomeCurrent()
+        case .aroundMe:
+            NSUserActivity(userAction: .aroundMe).becomeCurrent()
+        case .aheadOfMe:
+            NSUserActivity(userAction: .aheadOfMe).becomeCurrent()
+        case .nearbyMarkers:
+            NSUserActivity(userAction: .nearbyMarkers).becomeCurrent()
         }
     }
 }

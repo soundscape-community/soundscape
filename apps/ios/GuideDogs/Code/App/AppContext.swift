@@ -185,15 +185,15 @@ class AppContext {
                                                  motionActivity: motionActivityContext,
                                                  deviceMotion: DeviceMotionManager.shared)
         
-        let stateMachine = CalloutStateMachine(audioEngine: audioEngine,
-                                               geo: geolocationManager,
-                                               motionActivityContext: motionActivityContext,
-                                               history: calloutHistory)
-        
+        let calloutCoordinator = CalloutCoordinator(audioEngine: audioEngine,
+                                geo: geolocationManager,
+                                motionActivityContext: motionActivityContext,
+                                history: calloutHistory)
+
         eventProcessor = EventProcessor(activeBehavior: defaultBehavior,
-                                        stateMachine: stateMachine,
-                                        audioEngine: audioEngine,
-                                        data: spatialDataContext)
+                        calloutCoordinator: calloutCoordinator,
+                        audioEngine: audioEngine,
+                        data: spatialDataContext)
         
         offlineContext = OfflineContext(isNetworkConnectionAvailable: device.isNetworkConnectionAvailable,
                                         dataState: spatialDataContext.state)
