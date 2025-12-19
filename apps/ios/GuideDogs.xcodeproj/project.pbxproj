@@ -289,7 +289,6 @@
 		28E60D461FE490D900EAB5C0 /* POICallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D451FE490D900EAB5C0 /* POICallout.swift */; };
 		28E60D551FE9816500EAB5C0 /* POI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D541FE9816500EAB5C0 /* POI.swift */; };
 		28E60D5A1FE99BBE00EAB5C0 /* RealmMigrationTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D591FE99BBE00EAB5C0 /* RealmMigrationTools.swift */; };
-		28EB441426B4A16700D5BBE4 /* DeleteModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EB441326B4A16700D5BBE4 /* DeleteModifier.swift */; };
 		28EB9C75237CBA3A0064E7EF /* ExperimentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EB9C74237CBA3A0064E7EF /* ExperimentConfiguration.swift */; };
 		28EB9C79237CC7D90064E7EF /* ExperimentServiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EB9C78237CC7D90064E7EF /* ExperimentServiceModel.swift */; };
 		28F0F9251F85A39D00B6A64F /* DestinationTutorialIntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F9241F85A39C00B6A64F /* DestinationTutorialIntroViewController.swift */; };
@@ -1060,7 +1059,6 @@
 		28E60D451FE490D900EAB5C0 /* POICallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POICallout.swift; sourceTree = "<group>"; };
 		28E60D541FE9816500EAB5C0 /* POI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = POI.swift; path = Code/Data/Models/Protocols/POI.swift; sourceTree = "<group>"; };
 		28E60D591FE99BBE00EAB5C0 /* RealmMigrationTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RealmMigrationTools.swift; path = Code/Data/Models/Helpers/RealmMigrationTools.swift; sourceTree = "<group>"; };
-		28EB441326B4A16700D5BBE4 /* DeleteModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteModifier.swift; sourceTree = "<group>"; };
 		28EB9C74237CBA3A0064E7EF /* ExperimentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExperimentConfiguration.swift; path = "Code/App/Feature Flags/Experiment Flighting/ExperimentConfiguration.swift"; sourceTree = "<group>"; };
 		28EB9C78237CC7D90064E7EF /* ExperimentServiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExperimentServiceModel.swift; path = "Code/App/Feature Flags/Experiment Flighting/ExperimentServiceModel.swift"; sourceTree = "<group>"; };
 		28F0F9241F85A39C00B6A64F /* DestinationTutorialIntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DestinationTutorialIntroViewController.swift; path = "Code/Visual UI/View Controllers/Tutorials/Destination/DestinationTutorialIntroViewController.swift"; sourceTree = "<group>"; };
@@ -1133,6 +1131,8 @@
 		31F12C4122569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = StreetSuffixAbbreviations_fr.plist; path = Assets/PropertyLists/StreetSuffixAbbreviations_fr.plist; sourceTree = "<group>"; };
 		31F1370322B867B800FC1860 /* GeolocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeolocationManager.swift; path = "Code/Sensors/Geolocation/Geolocation Manager/GeolocationManager.swift"; sourceTree = "<group>"; };
 		31FE6C77233A7B760098D8C5 /* TelemetryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TelemetryHelper.swift; path = Code/App/Logging/TelemetryHelper.swift; sourceTree = "<group>"; };
+		3247AF49E74F47A3BC0C066E /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4BB00625C9264FD5ACF0ED5F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5684808F1CBC975E004B4227 /* Soundscape-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = "Soundscape-Bridging-Header.h"; path = "Code/App/Soundscape-Bridging-Header.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		568480901CBC9C94004B4227 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = HomeViewController.swift; path = "Code/Visual UI/View Controllers/Home/HomeViewController.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		568480921CBC9CEE004B4227 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = SettingsViewController.swift; path = "Code/Visual UI/View Controllers/Settings/SettingsViewController.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1572,8 +1572,6 @@
 		DCAAD87E2BC1E95F0018D135 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Assets/PropertyLists/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DCE09DD62E54AC9500B66BDF /* fa-IR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fa-IR"; path = "fa-IR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		DCE09DD72E54AE7400B66BDF /* fa-IR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fa-IR"; path = "fa-IR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		4BB00625C9264FD5ACF0ED5F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = "ru.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		3247AF49E74F47A3BC0C066E /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = "ru.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		DCE4D2AC2D7CE40F00B5DA4B /* NewFeatures.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = NewFeatures.json; path = Assets/NewFeatures.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -3210,7 +3208,7 @@
 				629F53E326CB28F400796B23 /* List */,
 				629F53BE26BDEDA200796B23 /* Text */,
 				624C96B62852983C001F84F8 /* Navigation */,
-				28EB441326B4A16700D5BBE4 /* DeleteModifier.swift */,
+				
 				288E5FE1269FA78400F7D4CD /* GeometryPreferenceReader.swift */,
 				288E5FDF269504D500F7D4CD /* ConditionalAccessibilityAction.swift */,
 			);
@@ -4564,7 +4562,7 @@
 				"nl-NL",
 				"pt-PT",
 				"fa-IR",
-				"ru",
+				ru,
 			);
 			mainGroup = D3D7CFBF1B3D96460020B5E9;
 			packageReferences = (
@@ -5119,7 +5117,6 @@
 				C34333B0221E2C1800D9CECD /* TableViewHeaderFooterViewConfigurator.swift in Sources */,
 				C30EF62320894AD400BEA785 /* VoiceTableViewCell.swift in Sources */,
 				626789B026F540CF0007E566 /* RouteDetailLocalizedLabel.swift in Sources */,
-				28EB441426B4A16700D5BBE4 /* DeleteModifier.swift in Sources */,
 				622CAFA226AB815300F804D6 /* BeaconTitleContentView.swift in Sources */,
 				B97791511E8ED1B100498320 /* UINavigationBar+Extentions.swift in Sources */,
 				623E0103244767BB0081CA5B /* MarkerParameters.swift in Sources */,
@@ -5540,7 +5537,7 @@
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5833,7 +5830,7 @@
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5894,7 +5891,7 @@
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

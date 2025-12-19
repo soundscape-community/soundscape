@@ -54,8 +54,9 @@ struct MarkersList: View {
                     GDATelemetry.trackScreenView("markers_list.empty")
                 }
         } else {
-            VStack(spacing: 0) {
+            List {
                 SortStyleCell(listName: GDLocalizedString("markers.title"), sort: _sort)
+                    .plainListRowBackground(Color.quaternaryBackground)
                 
                 ForEach(loader.markerIDs, id: \.self) { id in
                     MarkerCell(model: MarkerModel(id: id))
@@ -69,10 +70,6 @@ struct MarkersList: View {
                             selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
                             goToNavDestination = true
                         }
-                        .conditionalAccessibilityAction(routeIsActive == false, named: GDLocalizedTextView("general.alert.delete")) {
-                            alert = confirmationAlert(for: id)
-                            showAlert = true
-                        }
                         .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.preview.text)) {
                             if let poi = entity(for: id) {
                                 navHelper.didSelectLocationAction(.preview, entity: poi)
@@ -84,10 +81,15 @@ struct MarkersList: View {
                             }
                         })
                         .if(routeIsActive == false, transform: {
-                            $0.onDelete {
-                                delete(id)
+                            $0.swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    delete(id)
+                                } label: {
+                                    Label(GDLocalizedString("general.alert.delete"), systemImage: "trash")
+                                }
                             }
                         })
+                        .plainListRowBackground(Color.quaternaryBackground)
                         .onTapGesture {
                             selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
                             
@@ -105,6 +107,7 @@ struct MarkersList: View {
                         }
                 }
             }
+            .listStyle(PlainListStyle())
             .background(Color.quaternaryBackground)
             .alert(isPresented: $showAlert, content: { alert ?? errorAlert() })
             

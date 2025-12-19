@@ -80,8 +80,9 @@ struct RoutesList: View {
                     GDATelemetry.trackScreenView("routes_list.empty")
                 }
         } else {
-            VStack(spacing: 0) {
+            List {
                 SortStyleCell(listName: GDLocalizedString("routes.title"), sort: _sort)
+                    .plainListRowBackground(Color.quaternaryBackground)
                 
                 ForEach(loader.routeIDs, id: \.self) { id in
                     RouteCell(model: RouteModel(id: id))
@@ -107,12 +108,6 @@ struct RoutesList: View {
                             showEditView = true
                             goToNavDestination = true
                         }
-                        .conditionalAccessibilityAction(id != activeRouteID, named: GDLocalizedTextView("general.alert.delete")) {
-                            GDATelemetry.track("routes.delete", with: ["source": "accessibility_action"])
-                            
-                            alert = confirmationAlert(for: id)
-                            showAlert = true
-                        }
                         .accessibilityAction(named: Text(RouteActionState(.share).text), {
                             GDATelemetry.track("routes.share", with: ["source": "accessibility_action"])
                             
@@ -124,9 +119,16 @@ struct RoutesList: View {
                                 isPresentingFirstUseShareAlert = true
                             }
                         })
-                        .onDelete {
-                            delete(id)
-                        }
+                        .if(id != activeRouteID, transform: {
+                            $0.swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    delete(id)
+                                } label: {
+                                    Label(GDLocalizedString("general.alert.delete"), systemImage: "trash")
+                                }
+                            }
+                        })
+                        .plainListRowBackground(Color.quaternaryBackground)
                         .onTapGesture {
                             selectedDetail = RouteDetail(source: .database(id: id))
                             showEditView = false
@@ -134,6 +136,7 @@ struct RoutesList: View {
                         }
                 }
             }
+            .listStyle(PlainListStyle())
             .background(Color.quaternaryBackground)
             .alert(isPresented: $showAlert, content: { alert ?? errorAlert() })
             
