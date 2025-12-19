@@ -51,7 +51,7 @@ struct Delete: ViewModifier {
                 }
             )
             .offset(x: offset.width, y: 0)
-            .gesture(
+            .simultaneousGesture(
                 DragGesture()
                     .onChanged { gesture in
                         if waitingForMinGesture && gesture.translation.width > minGetureWidth {
