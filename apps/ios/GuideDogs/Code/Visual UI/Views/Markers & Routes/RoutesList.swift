@@ -18,6 +18,7 @@ struct RoutesList: View {
     @State private var showAlert: Bool = false
     @State private var alert: Alert?
     @State private var selectedDetail: RouteDetail?
+    @State private var pendingDeleteIDs: [String] = []
     @State private var showEditView = false
     @State private var goToNavDestination: Bool = false {
         didSet {
@@ -83,58 +84,11 @@ struct RoutesList: View {
             List {
                 SortStyleCell(listName: GDLocalizedString("routes.title"), sort: _sort)
                     .plainListRowBackground(Color.quaternaryBackground)
-                
+
                 ForEach(loader.routeIDs, id: \.self) { id in
-                    RouteCell(model: RouteModel(id: id))
-                        .accessibilityAddTraits(.isButton)
-                        .conditionalAccessibilityAction(AppContext.shared.eventProcessor.activeBehavior is SoundscapeBehavior && activeRouteID == nil, named: Text(RouteActionState(.startRoute).text)) {
-                            GDATelemetry.track("routes.start", with: ["source": "accessibility_action"])
-                            
-                            let routeGuidance = RouteGuidance(.init(source: .database(id: id)),
-                                                              spatialData: AppContext.shared.spatialDataContext,
-                                                              motion: AppContext.shared.motionActivityContext)
-                            AppContext.shared.eventProcessor.activateCustom(behavior: routeGuidance)
-                            navHelper.popToRootViewController(animated: true)
-                        }
-                        .conditionalAccessibilityAction(id == activeRouteID, named: Text(RouteActionState(.stopRoute).text)) {
-                            GDATelemetry.track("routes.stop", with: ["source": "accessibility_action"])
-                            
-                            AppContext.shared.eventProcessor.deactivateCustom()
-                        }
-                        .conditionalAccessibilityAction(id != activeRouteID, named: Text(RouteActionState(.edit).text)) {
-                            GDATelemetry.track("routes.edit", with: ["source": "accessibility_action"])
-                            
-                            selectedDetail = RouteDetail(source: .database(id: id))
-                            showEditView = true
-                            goToNavDestination = true
-                        }
-                        .accessibilityAction(named: Text(RouteActionState(.share).text), {
-                            GDATelemetry.track("routes.share", with: ["source": "accessibility_action"])
-                            
-                            isPresentingForRouteId = id
-                            
-                            if FirstUseExperience.didComplete(.share) {
-                                presentShareActivityViewController()
-                            } else {
-                                isPresentingFirstUseShareAlert = true
-                            }
-                        })
-                        .if(id != activeRouteID, transform: {
-                            $0.swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    delete(id)
-                                } label: {
-                                    Label(GDLocalizedString("general.alert.delete"), systemImage: "trash")
-                                }
-                            }
-                        })
-                        .plainListRowBackground(Color.quaternaryBackground)
-                        .onTapGesture {
-                            selectedDetail = RouteDetail(source: .database(id: id))
-                            showEditView = false
-                            goToNavDestination = true
-                        }
+                    routeRow(id)
                 }
+                .onDelete(perform: delete)
             }
             .listStyle(PlainListStyle())
             .background(Color.quaternaryBackground)
@@ -160,10 +114,11 @@ struct RoutesList: View {
     private func confirmationAlert(for id: String) -> Alert {
         let confirm: Alert.Button = .destructive(GDLocalizedTextView("general.alert.delete")) {
             delete(id)
+            pendingDeleteIDs.removeAll()
         }
         
         let cancel: Alert.Button = .cancel(GDLocalizedTextView("general.alert.cancel")) {
-            selectedDetail = nil
+            pendingDeleteIDs.removeAll()
         }
         
         return Alert(title: GDLocalizedTextView("route_detail.edit.delete.title"),
@@ -185,6 +140,65 @@ struct RoutesList: View {
             alert = errorAlert()
             showAlert = true
         }
+    }
+
+    private func delete(at offsets: IndexSet) {
+        let ids = offsets.map { loader.routeIDs[$0] }.filter { $0 != activeRouteID }
+        guard let firstID = ids.first else {
+            return
+        }
+
+        // iOS swipe-to-delete typically provides a single index, but handle multiple safely.
+        pendingDeleteIDs = ids
+        alert = confirmationAlert(for: firstID)
+        showAlert = true
+    }
+
+    @ViewBuilder
+    private func routeRow(_ id: String) -> some View {
+        Button {
+            selectedDetail = RouteDetail(source: .database(id: id))
+            showEditView = false
+            goToNavDestination = true
+        } label: {
+            RouteCell(model: RouteModel(id: id))
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
+        .conditionalAccessibilityAction(AppContext.shared.eventProcessor.activeBehavior is SoundscapeBehavior && activeRouteID == nil, named: Text(RouteActionState(.startRoute).text)) {
+            GDATelemetry.track("routes.start", with: ["source": "accessibility_action"])
+
+            let routeGuidance = RouteGuidance(.init(source: .database(id: id)),
+                                              spatialData: AppContext.shared.spatialDataContext,
+                                              motion: AppContext.shared.motionActivityContext)
+            AppContext.shared.eventProcessor.activateCustom(behavior: routeGuidance)
+            navHelper.popToRootViewController(animated: true)
+        }
+        .conditionalAccessibilityAction(id == activeRouteID, named: Text(RouteActionState(.stopRoute).text)) {
+            GDATelemetry.track("routes.stop", with: ["source": "accessibility_action"])
+
+            AppContext.shared.eventProcessor.deactivateCustom()
+        }
+        .conditionalAccessibilityAction(id != activeRouteID, named: Text(RouteActionState(.edit).text)) {
+            GDATelemetry.track("routes.edit", with: ["source": "accessibility_action"])
+
+            selectedDetail = RouteDetail(source: .database(id: id))
+            showEditView = true
+            goToNavDestination = true
+        }
+        .accessibilityAction(named: Text(RouteActionState(.share).text), {
+            GDATelemetry.track("routes.share", with: ["source": "accessibility_action"])
+
+            isPresentingForRouteId = id
+
+            if FirstUseExperience.didComplete(.share) {
+                presentShareActivityViewController()
+            } else {
+                isPresentingFirstUseShareAlert = true
+            }
+        })
+        .deleteDisabled(id == activeRouteID)
+        .plainListRowBackground(Color.quaternaryBackground)
     }
 }
 

@@ -20,6 +20,7 @@ struct MarkersList: View {
     @State private var showAlert: Bool = false
     @State private var alert: Alert?
     @State private var selectedDetail: LocationDetail?
+    @State private var pendingDeleteIDs: [String] = []
     @State private var goToNavDestination: Bool = false {
         didSet {
             if goToNavDestination == false {
@@ -57,54 +58,16 @@ struct MarkersList: View {
             List {
                 SortStyleCell(listName: GDLocalizedString("markers.title"), sort: _sort)
                     .plainListRowBackground(Color.quaternaryBackground)
-                
-                ForEach(loader.markerIDs, id: \.self) { id in
-                    MarkerCell(model: MarkerModel(id: id))
-                        .accessibilityAddTraits(.isButton)
-                        .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.beacon.text)) {
-                            if let poi = entity(for: id) {
-                                navHelper.didSelectLocationAction(.beacon, entity: poi)
-                            }
-                        }
-                        .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.edit.text)) {
-                            selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
-                            goToNavDestination = true
-                        }
-                        .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.preview.text)) {
-                            if let poi = entity(for: id) {
-                                navHelper.didSelectLocationAction(.preview, entity: poi)
-                            }
-                        }
-                        .accessibilityAction(named: Text(LocationAction.share(isEnabled: true).text), {
-                            if let poi = entity(for: id) {
-                                navHelper.didSelectLocationAction(.share(isEnabled: true), entity: poi)
-                            }
-                        })
-                        .if(routeIsActive == false, transform: {
-                            $0.swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    delete(id)
-                                } label: {
-                                    Label(GDLocalizedString("general.alert.delete"), systemImage: "trash")
-                                }
-                            }
-                        })
-                        .plainListRowBackground(Color.quaternaryBackground)
-                        .onTapGesture {
-                            selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
-                            
-                            let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-                            
-                            guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
-                                return
-                            }
-                            
-                            viewController.locationDetail = selectedDetail
-                            viewController.deleteAction = .popToViewController(type: MarkersAndRoutesListHostViewController.self)
-                            viewController.onDismissPreviewHandler = navHelper.onDismissPreviewHandler
-                            
-                            navHelper.pushViewController(viewController, animated: true)
-                        }
+
+                if routeIsActive {
+                    ForEach(loader.markerIDs, id: \.self) { id in
+                        markerRow(id)
+                    }
+                } else {
+                    ForEach(loader.markerIDs, id: \.self) { id in
+                        markerRow(id)
+                    }
+                    .onDelete(perform: delete)
                 }
             }
             .listStyle(PlainListStyle())
@@ -127,8 +90,11 @@ struct MarkersList: View {
     
     private func confirmationAlert(for markerID: String) -> Alert {
         return Alert.deleteMarkerAlert(markerId: markerID,
-                                       deleteAction: { delete(markerID) },
-                                       cancelAction: { selectedDetail = nil })
+                                       deleteAction: {
+                                           delete(markerID)
+                                           pendingDeleteIDs.removeAll()
+                                       },
+                                       cancelAction: { pendingDeleteIDs.removeAll() })
     }
     
     private func errorAlert() -> Alert {
@@ -144,6 +110,61 @@ struct MarkersList: View {
             alert = errorAlert()
             showAlert = true
         }
+    }
+
+    private func delete(at offsets: IndexSet) {
+        let ids = offsets.map { loader.markerIDs[$0] }
+
+        // iOS swipe-to-delete typically provides a single index, but handle multiple safely.
+        pendingDeleteIDs = ids
+
+        if let id = ids.first {
+            alert = confirmationAlert(for: id)
+            showAlert = true
+        }
+    }
+
+    @ViewBuilder
+    private func markerRow(_ id: String) -> some View {
+        Button {
+            selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
+
+            let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
+
+            guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
+                return
+            }
+
+            viewController.locationDetail = selectedDetail
+            viewController.deleteAction = .popToViewController(type: MarkersAndRoutesListHostViewController.self)
+            viewController.onDismissPreviewHandler = navHelper.onDismissPreviewHandler
+
+            navHelper.pushViewController(viewController, animated: true)
+        } label: {
+            MarkerCell(model: MarkerModel(id: id))
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
+        .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.beacon.text)) {
+            if let poi = entity(for: id) {
+                navHelper.didSelectLocationAction(.beacon, entity: poi)
+            }
+        }
+        .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.edit.text)) {
+            selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
+            goToNavDestination = true
+        }
+        .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.preview.text)) {
+            if let poi = entity(for: id) {
+                navHelper.didSelectLocationAction(.preview, entity: poi)
+            }
+        }
+        .accessibilityAction(named: Text(LocationAction.share(isEnabled: true).text), {
+            if let poi = entity(for: id) {
+                navHelper.didSelectLocationAction(.share(isEnabled: true), entity: poi)
+            }
+        })
+        .plainListRowBackground(Color.quaternaryBackground)
     }
 }
 
