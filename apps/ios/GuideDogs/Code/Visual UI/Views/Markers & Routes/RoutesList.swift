@@ -18,7 +18,6 @@ struct RoutesList: View {
     @State private var showAlert: Bool = false
     @State private var alert: Alert?
     @State private var selectedDetail: RouteDetail?
-    @State private var pendingDeleteIDs: [String] = []
     @State private var showEditView = false
     @State private var goToNavDestination: Bool = false {
         didSet {
@@ -114,11 +113,10 @@ struct RoutesList: View {
     private func confirmationAlert(for id: String) -> Alert {
         let confirm: Alert.Button = .destructive(GDLocalizedTextView("general.alert.delete")) {
             delete(id)
-            pendingDeleteIDs.removeAll()
         }
         
         let cancel: Alert.Button = .cancel(GDLocalizedTextView("general.alert.cancel")) {
-            pendingDeleteIDs.removeAll()
+            // No-op
         }
         
         return Alert(title: GDLocalizedTextView("route_detail.edit.delete.title"),
@@ -143,14 +141,16 @@ struct RoutesList: View {
     }
 
     private func delete(at offsets: IndexSet) {
-        let ids = offsets.map { loader.routeIDs[$0] }.filter { $0 != activeRouteID }
-        guard let firstID = ids.first else {
+        guard let index = offsets.first else {
             return
         }
 
-        // iOS swipe-to-delete typically provides a single index, but handle multiple safely.
-        pendingDeleteIDs = ids
-        alert = confirmationAlert(for: firstID)
+        let id = loader.routeIDs[index]
+        guard id != activeRouteID else {
+            return
+        }
+
+        alert = confirmationAlert(for: id)
         showAlert = true
     }
 

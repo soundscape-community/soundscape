@@ -20,7 +20,6 @@ struct MarkersList: View {
     @State private var showAlert: Bool = false
     @State private var alert: Alert?
     @State private var selectedDetail: LocationDetail?
-    @State private var pendingDeleteIDs: [String] = []
     @State private var goToNavDestination: Bool = false {
         didSet {
             if goToNavDestination == false {
@@ -92,9 +91,8 @@ struct MarkersList: View {
         return Alert.deleteMarkerAlert(markerId: markerID,
                                        deleteAction: {
                                            delete(markerID)
-                                           pendingDeleteIDs.removeAll()
                                        },
-                                       cancelAction: { pendingDeleteIDs.removeAll() })
+                                       cancelAction: { })
     }
     
     private func errorAlert() -> Alert {
@@ -113,15 +111,13 @@ struct MarkersList: View {
     }
 
     private func delete(at offsets: IndexSet) {
-        let ids = offsets.map { loader.markerIDs[$0] }
-
-        // iOS swipe-to-delete typically provides a single index, but handle multiple safely.
-        pendingDeleteIDs = ids
-
-        if let id = ids.first {
-            alert = confirmationAlert(for: id)
-            showAlert = true
+        guard let index = offsets.first else {
+            return
         }
+
+        let id = loader.markerIDs[index]
+        alert = confirmationAlert(for: id)
+        showAlert = true
     }
 
     @ViewBuilder
