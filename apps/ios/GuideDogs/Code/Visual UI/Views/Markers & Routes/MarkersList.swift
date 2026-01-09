@@ -66,7 +66,15 @@ struct MarkersList: View {
                     ForEach(loader.markerIDs, id: \.self) { id in
                         markerRow(id)
                     }
-                    .onDelete(perform: delete)
+                    .onDelete { offsets in
+                        guard let index = offsets.first else {
+                            return
+                        }
+
+                        let id = loader.markerIDs[index]
+                        alert = confirmationAlert(for: id)
+                        showAlert = true
+                    }
                 }
             }
             .listStyle(PlainListStyle())
@@ -108,16 +116,6 @@ struct MarkersList: View {
             alert = errorAlert()
             showAlert = true
         }
-    }
-
-    private func delete(at offsets: IndexSet) {
-        guard let index = offsets.first else {
-            return
-        }
-
-        let id = loader.markerIDs[index]
-        alert = confirmationAlert(for: id)
-        showAlert = true
     }
 
     @ViewBuilder

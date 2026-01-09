@@ -87,7 +87,19 @@ struct RoutesList: View {
                 ForEach(loader.routeIDs, id: \.self) { id in
                     routeRow(id)
                 }
-                .onDelete(perform: delete)
+                .onDelete { offsets in
+                    guard let index = offsets.first else {
+                        return
+                    }
+
+                    let id = loader.routeIDs[index]
+                    guard id != activeRouteID else {
+                        return
+                    }
+
+                    alert = confirmationAlert(for: id)
+                    showAlert = true
+                }
             }
             .listStyle(PlainListStyle())
             .background(Color.quaternaryBackground)
@@ -138,20 +150,6 @@ struct RoutesList: View {
             alert = errorAlert()
             showAlert = true
         }
-    }
-
-    private func delete(at offsets: IndexSet) {
-        guard let index = offsets.first else {
-            return
-        }
-
-        let id = loader.routeIDs[index]
-        guard id != activeRouteID else {
-            return
-        }
-
-        alert = confirmationAlert(for: id)
-        showAlert = true
     }
 
     @ViewBuilder
