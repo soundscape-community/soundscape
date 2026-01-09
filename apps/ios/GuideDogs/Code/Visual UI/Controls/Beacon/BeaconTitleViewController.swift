@@ -97,7 +97,7 @@ class BeaconTitleViewController: UIViewController {
             
             // If the selected location on the underlying entity has changed, reconfigure the view
             // to show the new distance
-            let beaconCoordinateDidChange = newValue?.locationDetail.location.coordinate != oldValue?.locationDetail.location.coordinate
+                                let beaconCoordinateDidChange = !(newValue?.locationDetail.location.coordinate.isNear(to: oldValue?.locationDetail.location.coordinate) ?? false)
             
             // If the underlying entity has changed, reconfigure the view and the view's accessibility
             // actions
