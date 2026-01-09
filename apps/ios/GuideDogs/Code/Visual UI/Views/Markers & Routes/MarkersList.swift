@@ -58,23 +58,18 @@ struct MarkersList: View {
                 SortStyleCell(listName: GDLocalizedString("markers.title"), sort: _sort)
                     .plainListRowBackground(Color.quaternaryBackground)
 
-                if routeIsActive {
-                    ForEach(loader.markerIDs, id: \.self) { id in
-                        markerRow(id)
+                ForEach(loader.markerIDs, id: \.self) { id in
+                    markerRow(id)
+                        .deleteDisabled(routeIsActive)
+                }
+                .onDelete { offsets in
+                    guard let index = offsets.first else {
+                        return
                     }
-                } else {
-                    ForEach(loader.markerIDs, id: \.self) { id in
-                        markerRow(id)
-                    }
-                    .onDelete { offsets in
-                        guard let index = offsets.first else {
-                            return
-                        }
 
-                        let id = loader.markerIDs[index]
-                        alert = confirmationAlert(for: id)
-                        showAlert = true
-                    }
+                    let id = loader.markerIDs[index]
+                    alert = confirmationAlert(for: id)
+                    showAlert = true
                 }
             }
             .listStyle(PlainListStyle())
