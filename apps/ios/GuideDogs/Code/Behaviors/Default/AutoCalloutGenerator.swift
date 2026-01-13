@@ -99,7 +99,7 @@ private struct TrackedCallout {
 }
 
 @MainActor
-class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
+class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSubscribing {
     
     // MARK: - Events
     
@@ -213,6 +213,28 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
     }
     
     // MARK: - AutomaticGenerator & ManualGenerator Methods
+
+    func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                       stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                       delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
+        let task = Task { @MainActor in
+            for await event in stateChangedEvents {
+                switch event {
+                case let event as RegisterPrioritizedPOIs:
+                    GDLogInfo(.autoCallout, "Registered prioritized POIs for callout (count: \(event.pois.count))")
+                    prioritizedPOIs = event.pois
+
+                case is RemoveRegisteredPOIs:
+                    GDLogInfo(.autoCallout, "Removed registered prioritized POIs")
+                    prioritizedPOIs.removeAll()
+                default:
+                    break
+                }
+            }
+        }
+
+        return [task]
+    }
     
     func respondsTo(_ event: StateChangedEvent) -> Bool {
         return eventTypes.contains { $0 == type(of: event) }
@@ -242,21 +264,11 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
             
             return .playCallouts(callouts)
             
-        case let event as RegisterPrioritizedPOIs:
-            GDLogInfo(.autoCallout, "Registered prioritized POIs for callout (count: \(event.pois.count))")
-            prioritizedPOIs = event.pois
-            return .noAction
-            
-        case is RemoveRegisteredPOIs:
-            GDLogInfo(.autoCallout, "Removed registered prioritized POIs")
-            prioritizedPOIs.removeAll()
-            return .noAction
-            
         case is GPXSimulationStartedEvent:
             history.removeAll()
             poiUpdateFilter.reset()
             return .noAction
-            
+
         case let event as GlyphEvent:
             return .playCallouts(CalloutGroup([GlyphCallout(event.origin, event.glyph)], action: .enqueue, logContext: "glyphEvent"))
             

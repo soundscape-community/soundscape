@@ -6,12 +6,114 @@
 //  Licensed under the MIT License.
 //
 
+import Foundation
 import CoreLocation
 
 typealias BehaviorEventForwarder = (_ event: Event,
                                    _ blockedAuto: [AutomaticGenerator.Type],
                                    _ blockedManual: [ManualGenerator.Type],
                                    _ completion: @escaping ([HandledEventAction]?) -> Void) -> Void
+
+@MainActor
+final class BehaviorEventStreams {
+    private var allContinuation: AsyncStream<Event>.Continuation?
+    private var userContinuation: AsyncStream<UserInitiatedEvent>.Continuation?
+    private var stateContinuation: AsyncStream<StateChangedEvent>.Continuation?
+
+    private var allBuffer: [Event] = []
+    private var userBuffer: [UserInitiatedEvent] = []
+    private var stateBuffer: [StateChangedEvent] = []
+
+    lazy var all: AsyncStream<Event> = AsyncStream(Event.self, bufferingPolicy: .unbounded) { continuation in
+        self.allContinuation = continuation
+
+        if !self.allBuffer.isEmpty {
+            self.allBuffer.forEach { continuation.yield($0) }
+            self.allBuffer.removeAll()
+        }
+
+        continuation.onTermination = { [weak self] _ in
+            Task { @MainActor in
+                self?.allContinuation = nil
+            }
+        }
+    }
+
+    lazy var userInitiated: AsyncStream<UserInitiatedEvent> = AsyncStream(UserInitiatedEvent.self, bufferingPolicy: .unbounded) { continuation in
+        self.userContinuation = continuation
+
+        if !self.userBuffer.isEmpty {
+            self.userBuffer.forEach { continuation.yield($0) }
+            self.userBuffer.removeAll()
+        }
+
+        continuation.onTermination = { [weak self] _ in
+            Task { @MainActor in
+                self?.userContinuation = nil
+            }
+        }
+    }
+
+    lazy var stateChanged: AsyncStream<StateChangedEvent> = AsyncStream(StateChangedEvent.self, bufferingPolicy: .unbounded) { continuation in
+        self.stateContinuation = continuation
+
+        if !self.stateBuffer.isEmpty {
+            self.stateBuffer.forEach { continuation.yield($0) }
+            self.stateBuffer.removeAll()
+        }
+
+        continuation.onTermination = { [weak self] _ in
+            Task { @MainActor in
+                self?.stateContinuation = nil
+            }
+        }
+    }
+
+    func publish(_ event: Event) {
+        if let allContinuation {
+            allContinuation.yield(event)
+        } else {
+            allBuffer.append(event)
+        }
+
+        if let userEvent = event as? UserInitiatedEvent {
+            if let userContinuation {
+                userContinuation.yield(userEvent)
+            } else {
+                userBuffer.append(userEvent)
+            }
+        }
+
+        if let stateEvent = event as? StateChangedEvent {
+            if let stateContinuation {
+                stateContinuation.yield(stateEvent)
+            } else {
+                stateBuffer.append(stateEvent)
+            }
+        }
+    }
+
+    func finish() {
+        allContinuation?.finish()
+        userContinuation?.finish()
+        stateContinuation?.finish()
+
+        allContinuation = nil
+        userContinuation = nil
+        stateContinuation = nil
+
+        allBuffer.removeAll()
+        userBuffer.removeAll()
+        stateBuffer.removeAll()
+    }
+}
+
+@MainActor
+protocol BehaviorEventStreamSubscribing: AnyObject {
+    func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                       stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                       delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>]
+}
 
 @MainActor
 class BehaviorBase: Behavior {
@@ -35,6 +137,29 @@ class BehaviorBase: Behavior {
     /// Behaviors should keep track of the latest user location update events since generators
     /// may need that information to create callouts
     var userLocation: CLLocation?
+
+    /// Typed event streams that generators can subscribe to.
+    private let eventStreams = BehaviorEventStreams()
+
+    private var streamSubscriptionTasks: [Task<Void, Never>] = []
+
+    private final class StreamBox<T> {
+        var continuation: AsyncStream<T>.Continuation?
+    }
+
+    private struct SubscriberStreams {
+        let userStream: AsyncStream<UserInitiatedEvent>
+        let userBox: StreamBox<UserInitiatedEvent>?
+        let stateStream: AsyncStream<StateChangedEvent>
+        let stateBox: StreamBox<StateChangedEvent>?
+    }
+
+    private var manualSubscriberBoxes: [StreamBox<UserInitiatedEvent>?] = []
+    private var autoSubscriberBoxes: [StreamBox<StateChangedEvent>?] = []
+
+    var allEvents: AsyncStream<Event> { eventStreams.all }
+    var userInitiatedEvents: AsyncStream<UserInitiatedEvent> { eventStreams.userInitiated }
+    var stateChangedEvents: AsyncStream<StateChangedEvent> { eventStreams.stateChanged }
     
     /// The current verbosity level of the behavior. This property is not currently being
     /// utilized but will be when openscape supports mutiple verbosity levels.
@@ -85,6 +210,8 @@ class BehaviorBase: Behavior {
         self.parent = parent
         isActive = true
         GDATelemetry.track("\(description.lowercased()).activate")
+
+        startStreamSubscriptionsIfNeeded()
     }
     
     func willDeactivate() {
@@ -101,11 +228,161 @@ class BehaviorBase: Behavior {
         let tempParent = parent
         parent = nil
         parentEventForwarder = nil
+
+        stopStreamSubscriptions()
+        eventStreams.finish()
         
         isActive = false
         GDATelemetry.track("\(description.lowercased()).deactivate")
         
         return tempParent
+    }
+
+    private func startStreamSubscriptionsIfNeeded() {
+        stopStreamSubscriptions()
+
+        manualSubscriberBoxes = Array(repeating: nil, count: manualGenerators.count)
+        autoSubscriberBoxes = Array(repeating: nil, count: autoGenerators.count)
+
+        final class Holder {
+            let subscriber: BehaviorEventStreamSubscribing
+            let userBox: StreamBox<UserInitiatedEvent>?
+            let stateBox: StreamBox<StateChangedEvent>?
+            let streams: SubscriberStreams
+
+            init(subscriber: BehaviorEventStreamSubscribing, wantsUser: Bool, wantsState: Bool) {
+                self.subscriber = subscriber
+
+                let userBox: StreamBox<UserInitiatedEvent>? = wantsUser ? StreamBox<UserInitiatedEvent>() : nil
+                let stateBox: StreamBox<StateChangedEvent>? = wantsState ? StreamBox<StateChangedEvent>() : nil
+
+                self.userBox = userBox
+                self.stateBox = stateBox
+
+                let userStream: AsyncStream<UserInitiatedEvent>
+                if let userBox {
+                    userStream = AsyncStream(UserInitiatedEvent.self, bufferingPolicy: .unbounded) { continuation in
+                        userBox.continuation = continuation
+                        continuation.onTermination = { _ in
+                            Task { @MainActor in
+                                userBox.continuation = nil
+                            }
+                        }
+                    }
+                } else {
+                    userStream = AsyncStream(UserInitiatedEvent.self) { continuation in
+                        continuation.finish()
+                    }
+                }
+
+                let stateStream: AsyncStream<StateChangedEvent>
+                if let stateBox {
+                    stateStream = AsyncStream(StateChangedEvent.self, bufferingPolicy: .unbounded) { continuation in
+                        stateBox.continuation = continuation
+                        continuation.onTermination = { _ in
+                            Task { @MainActor in
+                                stateBox.continuation = nil
+                            }
+                        }
+                    }
+                } else {
+                    stateStream = AsyncStream(StateChangedEvent.self) { continuation in
+                        continuation.finish()
+                    }
+                }
+
+                self.streams = SubscriberStreams(userStream: userStream, userBox: userBox, stateStream: stateStream, stateBox: stateBox)
+            }
+        }
+
+        struct Requirements {
+            let subscriber: BehaviorEventStreamSubscribing
+            var wantsUser: Bool
+            var wantsState: Bool
+        }
+
+        var requirementsByObjectId: [ObjectIdentifier: Requirements] = [:]
+
+        for generator in manualGenerators {
+            guard let subscriber = generator as? BehaviorEventStreamSubscribing else { continue }
+            let key = ObjectIdentifier(subscriber)
+            if var existing = requirementsByObjectId[key] {
+                existing.wantsUser = true
+                requirementsByObjectId[key] = existing
+            } else {
+                requirementsByObjectId[key] = Requirements(subscriber: subscriber, wantsUser: true, wantsState: false)
+            }
+        }
+
+        for generator in autoGenerators {
+            guard let subscriber = generator as? BehaviorEventStreamSubscribing else { continue }
+            let key = ObjectIdentifier(subscriber)
+            if var existing = requirementsByObjectId[key] {
+                existing.wantsState = true
+                requirementsByObjectId[key] = existing
+            } else {
+                requirementsByObjectId[key] = Requirements(subscriber: subscriber, wantsUser: false, wantsState: true)
+            }
+        }
+
+        var holdersByObjectId: [ObjectIdentifier: Holder] = requirementsByObjectId.mapValues { req in
+            Holder(subscriber: req.subscriber, wantsUser: req.wantsUser, wantsState: req.wantsState)
+        }
+
+        for (index, generator) in manualGenerators.enumerated() {
+            guard let subscriber = generator as? BehaviorEventStreamSubscribing else { continue }
+            if let holder = holdersByObjectId[ObjectIdentifier(subscriber)] {
+                manualSubscriberBoxes[index] = holder.userBox
+            }
+        }
+
+        for (index, generator) in autoGenerators.enumerated() {
+            guard let subscriber = generator as? BehaviorEventStreamSubscribing else { continue }
+            if let holder = holdersByObjectId[ObjectIdentifier(subscriber)] {
+                autoSubscriberBoxes[index] = holder.stateBox
+            }
+        }
+
+        let delegateProvider: @MainActor () -> BehaviorDelegate? = { [weak self] in
+            self?.delegate
+        }
+
+        for holder in holdersByObjectId.values {
+            streamSubscriptionTasks.append(contentsOf: holder.subscriber.startEventStreamSubscriptions(
+                userInitiatedEvents: holder.streams.userStream,
+                stateChangedEvents: holder.streams.stateStream,
+                delegateProvider: delegateProvider
+            ))
+        }
+    }
+
+    private func stopStreamSubscriptions() {
+        finishSubscriberStreams()
+        streamSubscriptionTasks.forEach { $0.cancel() }
+        streamSubscriptionTasks.removeAll()
+    }
+
+    private func finishSubscriberStreams() {
+        var finished = Set<ObjectIdentifier>()
+
+        for box in manualSubscriberBoxes.compactMap({ $0 }) {
+            let id = ObjectIdentifier(box)
+            guard finished.insert(id).inserted else { continue }
+            box.continuation?.finish()
+            box.continuation = nil
+        }
+
+        finished.removeAll()
+
+        for box in autoSubscriberBoxes.compactMap({ $0 }) {
+            let id = ObjectIdentifier(box)
+            guard finished.insert(id).inserted else { continue }
+            box.continuation?.finish()
+            box.continuation = nil
+        }
+
+        manualSubscriberBoxes.removeAll()
+        autoSubscriberBoxes.removeAll()
     }
     
     func sleep() {
@@ -167,6 +444,10 @@ class BehaviorBase: Behavior {
         if let locEvent = event as? LocationUpdatedEvent {
             userLocation = locEvent.location
         }
+
+        eventStreams.publish(event)
+
+        deliverToStreamSubscribers(event, blockedAuto: blockedAuto, blockedManual: blockedManual)
         
         switch event {
         case let event as UserInitiatedEvent:
@@ -178,6 +459,54 @@ class BehaviorBase: Behavior {
         default:
             GDLogEventProcessorError("Unable to process event that implements neither UserInitiatedEvent nor StateChangeEvent")
             completion(nil)
+        }
+    }
+
+    private func deliverToStreamSubscribers(_ event: Event,
+                                           blockedAuto: [AutomaticGenerator.Type],
+                                           blockedManual: [ManualGenerator.Type]) {
+        if let userEvent = event as? UserInitiatedEvent {
+            for (index, generator) in manualGenerators.enumerated() {
+                let isBlocked = userEvent.blockable && blockedManual.contains { $0 == type(of: generator) }
+                guard !isBlocked else { continue }
+                guard generator.respondsTo(userEvent) else { continue }
+
+                if index < manualSubscriberBoxes.count {
+                    manualSubscriberBoxes[index]?.continuation?.yield(userEvent)
+                }
+                break
+            }
+
+            return
+        }
+
+        guard let stateEvent = event as? StateChangedEvent else {
+            return
+        }
+
+        if stateEvent.distribution == .broadcast {
+            for (index, generator) in autoGenerators.enumerated() {
+                let isBlocked = stateEvent.blockable && blockedAuto.contains { $0 == type(of: generator) }
+                guard !isBlocked else { continue }
+                guard generator.respondsTo(stateEvent) else { continue }
+
+                if index < autoSubscriberBoxes.count {
+                    autoSubscriberBoxes[index]?.continuation?.yield(stateEvent)
+                }
+            }
+
+            return
+        }
+
+        for (index, generator) in autoGenerators.enumerated() {
+            let isBlocked = stateEvent.blockable && blockedAuto.contains { $0 == type(of: generator) }
+            guard !isBlocked else { continue }
+            guard generator.respondsTo(stateEvent) else { continue }
+
+            if index < autoSubscriberBoxes.count {
+                autoSubscriberBoxes[index]?.continuation?.yield(stateEvent)
+            }
+            break
         }
     }
     
