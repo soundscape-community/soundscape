@@ -227,6 +227,10 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
                 case is RemoveRegisteredPOIs:
                     GDLogInfo(.autoCallout, "Removed registered prioritized POIs")
                     prioritizedPOIs.removeAll()
+
+                case is GPXSimulationStartedEvent:
+                    history.removeAll()
+                    poiUpdateFilter.reset()
                 default:
                     break
                 }
@@ -264,11 +268,6 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
             
             return .playCallouts(callouts)
             
-        case is GPXSimulationStartedEvent:
-            history.removeAll()
-            poiUpdateFilter.reset()
-            return .noAction
-
         case let event as GlyphEvent:
             return .playCallouts(CalloutGroup([GlyphCallout(event.origin, event.glyph)], action: .enqueue, logContext: "glyphEvent"))
             
