@@ -98,7 +98,7 @@ Practical acceptance checks:
 - **Next up:** expose typed `AsyncSequence`s (e.g., user-initiated vs state-changed) so generators can subscribe directly and we can shrink the central `BehaviorBase.handleEvent` switch.
 
 - **Typed event streams (started):** `BehaviorBase` now exposes typed `AsyncStream`s (`userInitiatedEvents`, `stateChangedEvents`, plus `allEvents`) and finishes them on deactivation so future generator subscriptions can be cancellation-safe.
-- **Pilot subscription:** `AutoCalloutGenerator` now subscribes to `stateChangedEvents` for non-blockable prioritized-POI registration events, exercising generator-owned event loops without changing `HandledEventAction` routing.
+- **Pilot subscription:** `AutoCalloutGenerator` and `ExplorationGenerator` now subscribe to `stateChangedEvents` for non-blockable prioritized-POI registration events, exercising generator-owned event loops without changing `HandledEventAction` routing.
 - **Subscription correctness:** subscriptions are deduped when a generator appears in both `manualGenerators` and `autoGenerators`, and per-subscriber streams are explicitly finished on deactivation to ensure subscriber tasks terminate cleanly.
 - **Non-goal (for now):** callout-producing events like `GlyphEvent` remain routed via `HandledEventAction` so the `EventProcessor` continues to own queue/interrupt semantics.
 

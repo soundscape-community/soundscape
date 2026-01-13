@@ -38,7 +38,7 @@ struct ExplorationModeToggled: UserInitiatedEvent {
 }
 
 @MainActor
-final class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
+final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorEventStreamSubscribing {
     
     enum Mode: String {
         case locate
@@ -110,20 +110,30 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
     func respondsTo(_ event: UserInitiatedEvent) -> Bool {
         return eventTypes.contains { $0 == type(of: event) }
     }
+
+    func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                       stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                       delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
+        let task = Task { @MainActor in
+            for await event in stateChangedEvents {
+                switch event {
+                case let event as RegisterPrioritizedPOIs:
+                    prioritizedPOIs = event.pois
+
+                case is RemoveRegisteredPOIs:
+                    prioritizedPOIs.removeAll()
+
+                default:
+                    break
+                }
+            }
+        }
+
+        return [task]
+    }
     
     func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
-        switch event {
-        case let event as RegisterPrioritizedPOIs:
-            prioritizedPOIs = event.pois
-            return .noAction
-            
-        case is RemoveRegisteredPOIs:
-            prioritizedPOIs.removeAll()
-            return .noAction
-            
-        default:
-            return nil
-        }
+        nil
     }
     
     func handle(event: UserInitiatedEvent,
