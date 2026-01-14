@@ -4,7 +4,7 @@
 //
 //  Created to migrate the legacy callout queue/delegate chain toward an async-friendly coordinator.
 //
-//  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community contributors.
 //  Licensed under the MIT License.
 //
 

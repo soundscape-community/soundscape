@@ -5,7 +5,7 @@
 //  Introduces an async variant of ManualGenerator so behaviors can
 //  await callout playback without inlining event handling logic.
 //
-//  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community contributors.
 //  Licensed under the MIT License.
 //
 

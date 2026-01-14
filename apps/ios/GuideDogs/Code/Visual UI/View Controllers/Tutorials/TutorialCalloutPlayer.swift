@@ -5,7 +5,7 @@
 //  Introduces an async helper for tutorial callouts so flows can await
 //  completion via the CalloutCoordinator instead of closure pyramids.
 //
-//  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community contributors.
 //  Licensed under the MIT License.
 //
 

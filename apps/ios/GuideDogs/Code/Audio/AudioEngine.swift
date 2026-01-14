@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community contributors.
 //  Licensed under the MIT License.
 //
 
@@ -196,8 +197,8 @@ class AudioEngine: AudioEngineProtocol {
             guard let self = self else { return }
 
             // QUEUE → MAIN ACTOR: ensure start() executes on main actor
-            Task { @MainActor [weak self] in
-                self?.start()
+            Task { @MainActor in
+                self.start()
             }
         }
         

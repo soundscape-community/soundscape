@@ -29,6 +29,7 @@
 - Rust helpers live in `svcs/data/misc` (`Cargo.toml`); keep their build separate from the iOS toolchain.
 
 ## Working Agreements
+- **Copyright notices:** Do not add, remove, or alter Microsoft copyright notices in existing files. All new changes and contributions made in this repository are copyright Soundscape Community contributors; Microsoft only owns copyright to the original code this project is based on.
 - Keep documentation current: whenever you add or migrate a generator, append a short bullet to `docs/callout_architecture_plan.md` summarizing the change and its rationale.
 - Tests: new callout behaviors should add coverage under `apps/ios/UnitTests/**` (see `PreviewGeneratorTests.swift` for async generator testing patterns).
 - Logging: prefer `GDLog*` macros over `print` for anything that surfaces in telemetry; choose the category matching the subsystem (e.g., `.autoCallout`, `.routeGuidance`).
