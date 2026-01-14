@@ -108,4 +108,87 @@ Practical acceptance checks:
 - **Subscription correctness:** subscriptions are deduped when a generator appears in both `manualGenerators` and `autoGenerators`, and per-subscriber streams are explicitly finished on deactivation to ensure subscriber tasks terminate cleanly.
 - **Non-goal (for now):** callout-producing events like `GlyphEvent` remain routed via `HandledEventAction` so the `EventProcessor` continues to own queue/interrupt semantics.
 
+## Deep-Dive: Are Typed Generator Streams the Right Direction?
+Yes — but with an important boundary: an `AsyncStream` subscription is *not* the same thing as synchronous event handling.
+
+### Key Insight: Ordering and “Same-Turn” Side Effects
+`BehaviorBase.handleEvent` currently does three things (in order):
+1. Publishes/yields the event into typed streams.
+2. Routes the event through the legacy generator path (`handleUserInteraction` / `handleStateChange`).
+3. Completes, then moves on to the next event.
+
+Typed stream subscriptions run in separate `Task`s. Even though they are `@MainActor`, they are *scheduled work*, not inline work. This means:
+- Any generator logic moved into a subscription may run **after** the legacy handling returns.
+- If that moved logic enqueues follow-on events (e.g., `IntersectionArrivalEvent`, `IntersectionDepartureEvent`) or updates state that the very next event depends on, we can unintentionally change behavior.
+
+Concrete example:
+- `IntersectionGenerator.locationUpdated` can synchronously call `owner.delegate?.process(...)` to enqueue intersection arrival/departure events.
+- If this moves to a subscription, those derived events can be delayed and interleave differently relative to other events.
+
+So the direction is right, but we must be explicit about which event categories can safely move.
+
+### What We Should Move vs Keep (Decision Framework)
+Classify candidate migrations into three buckets:
+
+**Bucket A — Safe to move into subscriptions (current approach)**
+- Local state resets/flags that do not need to be applied “same turn”.
+- No derived events (`delegate.process(...)`) and no dependency on immediate subsequent routing.
+- Examples: GPX simulation resets, simple filters/flags, cached registration lists.
+
+**Bucket B — Keep in legacy synchronous handling (for now)**
+- Any handling that enqueues follow-on events or must preserve same-turn ordering.
+- Any handling whose result affects the decision to generate callouts for the *same* incoming event.
+- Examples: `LocationUpdatedEvent` flows that may emit derived events or whose state updates are used immediately.
+
+**Bucket C — Requires a refactor of the pipeline**
+- We still want the conceptual clarity of “typed subscriptions”, but we need ordering guarantees.
+- This is where we should invest in a small framework change (below).
+
+## Next Steps Plan (Detailed)
+### Phase 1 — Lock the Boundary (Docs + Guardrails)
+1. **Codify the bucket framework** (A/B/C) and apply it consistently when choosing migrations.
+2. **Stop treating `return .noAction` as the migration signal.** The true signal is *ordering sensitivity*:
+	- Does it enqueue follow-on events?
+	- Does it mutate state that must be visible immediately?
+3. **Annotate each migrated event in the plan** with its bucket and rationale.
+
+### Phase 2 — Expand Bucket A Migrations Safely
+1. Continue migrating Bucket A cases generator-by-generator.
+2. Prefer subscription code paths that:
+	- only mutate local state,
+	- do not reference `delegateProvider()`,
+	- do not call `delegate.process(...)` or `AppContext.process(...)`.
+3. Add targeted tests only when semantics are subtle:
+	- broadcast vs consumed delivery (already covered),
+	- stream teardown on deactivation (already covered).
+
+### Phase 3 — Refactor Proposal: “Synchronous Typed Side-Effects”
+To migrate Bucket B/C logic without changing ordering, we need a synchronous hook that is still *typed* and generator-owned.
+
+Proposed small refactor:
+1. Introduce a new protocol for synchronous, ordering-sensitive state effects, e.g.
+	- `BehaviorStateSideEffectHandling`
+	- `func handleSideEffects(event: StateChangedEvent, delegate: BehaviorDelegate?)`
+2. `BehaviorBase.handleEvent` should invoke this hook **inline** (on the main actor) for matching generators *before* it runs the legacy `handleStateChange` callout routing.
+3. Keep the existing `AsyncStream` subscriptions for Bucket A (and for any work that benefits from being async/cancellable).
+
+Benefits:
+- Preserves current ordering semantics.
+- Still lets us “delete switch cases” and move logic into generator-owned typed handlers.
+- Gives us a clear stepping stone toward a future fully-async `handleEvent` pipeline.
+
+Costs / risks:
+- Slightly larger surface area in `BehaviorBase`.
+- Needs careful thought around consumed vs broadcast semantics (the synchronous hook should mirror the same distribution rules).
+
+Acceptance criteria for the refactor:
+- No change in the ordering of derived events vs the originating event.
+- No callouts play after deactivation.
+- Existing stream-delivery tests continue to pass.
+
+### Phase 4 — Bucket B/C Migrations Using the New Hook
+1. Migrate ordering-sensitive `LocationUpdatedEvent` state-handling (like intersection detection) into the synchronous typed hook.
+2. Keep callout production in `handle(event:)` until/unless we make the event processor pipeline fully async.
+3. Add 1–2 focused unit tests that assert ordering for a derived-event case (e.g., a location update producing an arrival event) so we don’t regress.
+
 _Last updated: 2026-01-14_
