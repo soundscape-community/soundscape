@@ -103,6 +103,7 @@ Practical acceptance checks:
 - **Intersection/Beacon reset via subscription:** `IntersectionGenerator` and `BeaconCalloutGenerator` now reset local state when `GPXSimulationStartedEvent` broadcasts arrive on the state stream, shrinking the legacy `handle(event:)` switches.
 - **AR headset override via subscription:** `ARHeadsetGenerator` now consumes `CalibrationOverrideEvent` via its state stream subscription so the legacy `handle(event:)` switch stays focused on callout-producing events.
 - **Route guidance distance callouts via subscription:** `RouteGuidanceGenerator` now consumes `BeginWaypointDistanceCalloutsEvent` via its state stream subscription to start its `BeaconUpdateFilter` and clear `awaitingNextWaypoint` without emitting actions.
+- **Tour distance callouts via subscription:** `TourGenerator` now consumes `BeginTourWaypointDistanceCalloutsEvent` via its state stream subscription to start its `BeaconUpdateFilter` and clear `awaitingNextWaypoint` without emitting actions.
 - **Subscription correctness:** subscriptions are deduped when a generator appears in both `manualGenerators` and `autoGenerators`, and per-subscriber streams are explicitly finished on deactivation to ensure subscriber tasks terminate cleanly.
 - **Non-goal (for now):** callout-producing events like `GlyphEvent` remain routed via `HandledEventAction` so the `EventProcessor` continues to own queue/interrupt semantics.
 
