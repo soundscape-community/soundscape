@@ -44,7 +44,7 @@ struct BeaconGeofenceTriggeredEvent: StateChangedEvent {
 }
 
 @MainActor
-class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
+class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSubscribing {
     
     // MARK: - Events
     
@@ -89,6 +89,20 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     }
     
     // MARK: - AutomaticGenerator & ManualGenerator Methods
+
+    func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                       stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                       delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
+        let task = Task { @MainActor in
+            for await event in stateChangedEvents {
+                if event is GPXSimulationStartedEvent {
+                    beaconUpdateFilter.reset()
+                }
+            }
+        }
+
+        return [task]
+    }
     
     func respondsTo(_ event: StateChangedEvent) -> Bool {
         return eventTypes.contains { $0 == type(of: event) }
@@ -117,10 +131,6 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
             }
             
             return .playCallouts(callouts)
-            
-        case is GPXSimulationStartedEvent:
-            beaconUpdateFilter.reset()
-            return .noAction
             
         case let event as BeaconGeofenceTriggeredEvent:
             guard let callouts = beaconGeofenceTriggered(event) else {

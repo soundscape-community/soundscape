@@ -44,7 +44,7 @@ extension Notification.Name {
 }
 
 @MainActor
-class IntersectionGenerator: AutomaticGenerator {
+class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
     
     // MARK: - Constants
     
@@ -122,6 +122,20 @@ class IntersectionGenerator: AutomaticGenerator {
         cancellationTokens.forEach { $0.cancel() }
         cancellationTokens.removeAll()
     }
+
+    func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                       stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                       delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
+        let task = Task { @MainActor in
+            for await event in stateChangedEvents {
+                if event is GPXSimulationStartedEvent {
+                    reset()
+                }
+            }
+        }
+
+        return [task]
+    }
     
     func respondsTo(_ event: StateChangedEvent) -> Bool {
         return eventTypes.contains { $0 == type(of: event) }
@@ -131,10 +145,6 @@ class IntersectionGenerator: AutomaticGenerator {
         switch event {
         case let event as LocationUpdatedEvent:
             locationUpdated(event)
-            return .noAction
-            
-        case is GPXSimulationStartedEvent:
-            reset()
             return .noAction
             
         case let event as IntersectionArrivalEvent:

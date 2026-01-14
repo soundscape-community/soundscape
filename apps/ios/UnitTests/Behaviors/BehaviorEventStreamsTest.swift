@@ -157,4 +157,69 @@ final class BehaviorEventStreamsTest: XCTestCase {
         await fulfillment(of: [didReceive], timeout: 1.0)
         _ = hooked.deactivate()
     }
+
+    func testBroadcastStateEventsDeliveredToAllAutoSubscribers() async {
+        @MainActor
+        final class AutoSubscribingGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
+            var onGPXSimulationStarted: (() -> Void)?
+
+            let canInterrupt: Bool = false
+
+            func respondsTo(_ event: StateChangedEvent) -> Bool {
+                event is GPXSimulationStartedEvent
+            }
+
+            func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
+                // No callout action; state is handled by the subscription.
+                .noAction
+            }
+
+            func cancelCalloutsForEntity(id: String) {
+                // No-op for this test.
+            }
+
+            func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                               stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                               delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
+                let task = Task { @MainActor in
+                    for await event in stateChangedEvents {
+                        if event is GPXSimulationStartedEvent {
+                            onGPXSimulationStarted?()
+                            break
+                        }
+                    }
+                }
+
+                return [task]
+            }
+        }
+
+        final class Hooked: BehaviorBase {
+            init(generators: [AutomaticGenerator]) {
+                super.init()
+                autoGenerators = generators
+            }
+        }
+
+        let gen1 = AutoSubscribingGenerator()
+        let gen2 = AutoSubscribingGenerator()
+
+        let received1 = expectation(description: "Subscriber 1 received GPXSimulationStartedEvent")
+        let received2 = expectation(description: "Subscriber 2 received GPXSimulationStartedEvent")
+
+        gen1.onGPXSimulationStarted = { received1.fulfill() }
+        gen2.onGPXSimulationStarted = { received2.fulfill() }
+
+        let hooked = Hooked(generators: [gen1, gen2])
+        hooked.activate(with: nil)
+
+        await withCheckedContinuation { continuation in
+            hooked.handleEvent(GPXSimulationStartedEvent()) { _ in
+                continuation.resume()
+            }
+        }
+
+        await fulfillment(of: [received1, received2], timeout: 1.0)
+        _ = hooked.deactivate()
+    }
 }
