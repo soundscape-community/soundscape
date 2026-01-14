@@ -222,4 +222,71 @@ final class BehaviorEventStreamsTest: XCTestCase {
         await fulfillment(of: [received1, received2], timeout: 1.0)
         _ = hooked.deactivate()
     }
+
+    func testConsumedStateEventsDeliveredToFirstAutoSubscriber() async {
+        @MainActor
+        final class ConsumedTestEvent: StateChangedEvent { }
+
+        @MainActor
+        final class AutoConsumingGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
+            var onEvent: (() -> Void)?
+
+            let canInterrupt: Bool = false
+
+            func respondsTo(_ event: StateChangedEvent) -> Bool {
+                event is ConsumedTestEvent
+            }
+
+            func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
+                nil
+            }
+
+            func cancelCalloutsForEntity(id: String) {
+                // No-op for this test.
+            }
+
+            func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                               stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                               delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
+                let task = Task { @MainActor in
+                    for await event in stateChangedEvents {
+                        if event is ConsumedTestEvent {
+                            onEvent?()
+                        }
+                    }
+                }
+
+                return [task]
+            }
+        }
+
+        final class Hooked: BehaviorBase {
+            init(generators: [AutomaticGenerator]) {
+                super.init()
+                autoGenerators = generators
+            }
+        }
+
+        let gen1 = AutoConsumingGenerator()
+        let gen2 = AutoConsumingGenerator()
+
+        let received1 = expectation(description: "Subscriber 1 received consumed event")
+        let notReceived2 = expectation(description: "Subscriber 2 should not receive consumed event")
+        notReceived2.isInverted = true
+
+        gen1.onEvent = { received1.fulfill() }
+        gen2.onEvent = { notReceived2.fulfill() }
+
+        let hooked = Hooked(generators: [gen1, gen2])
+        hooked.activate(with: nil)
+
+        await withCheckedContinuation { continuation in
+            hooked.handleEvent(ConsumedTestEvent()) { _ in
+                continuation.resume()
+            }
+        }
+
+        await fulfillment(of: [received1, notReceived2], timeout: 0.5)
+        _ = hooked.deactivate()
+    }
 }

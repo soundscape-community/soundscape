@@ -101,6 +101,7 @@ Practical acceptance checks:
 - **Pilot subscription:** `AutoCalloutGenerator` and `ExplorationGenerator` now subscribe to `stateChangedEvents` for non-blockable prioritized-POI registration events, exercising generator-owned event loops without changing `HandledEventAction` routing.
 - **Additional subscription:** `AutoCalloutGenerator` also consumes `GPXSimulationStartedEvent` via its subscription to reset internal state without emitting actions.
 - **Intersection/Beacon reset via subscription:** `IntersectionGenerator` and `BeaconCalloutGenerator` now reset local state when `GPXSimulationStartedEvent` broadcasts arrive on the state stream, shrinking the legacy `handle(event:)` switches.
+- **AR headset override via subscription:** `ARHeadsetGenerator` now consumes `CalibrationOverrideEvent` via its state stream subscription so the legacy `handle(event:)` switch stays focused on callout-producing events.
 - **Subscription correctness:** subscriptions are deduped when a generator appears in both `manualGenerators` and `autoGenerators`, and per-subscriber streams are explicitly finished on deactivation to ensure subscriber tasks terminate cleanly.
 - **Non-goal (for now):** callout-producing events like `GlyphEvent` remain routed via `HandledEventAction` so the `EventProcessor` continues to own queue/interrupt semantics.
 

@@ -49,7 +49,8 @@ extension CalloutOrigin {
     static let arHeadset = CalloutOrigin(rawValue: "ar_headset", localizedString: GDLocalizationUnnecessary("AR HEADSET"))!
 }
 
-class ARHeadsetGenerator: AutomaticGenerator {
+@MainActor
+class ARHeadsetGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
     private var calibrationPlayerId: AudioPlayerIdentifier?
     
     private var previousCalibrationState = DeviceCalibrationState.needsCalibrating
@@ -68,6 +69,21 @@ class ARHeadsetGenerator: AutomaticGenerator {
     
     func respondsTo(_ event: StateChangedEvent) -> Bool {
         return event is HeadsetConnectionEvent || event is HeadsetCalibrationEvent || event is CalibrationOverrideEvent
+    }
+
+    func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                       stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                       delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
+        let task = Task { @MainActor in
+            for await event in stateChangedEvents {
+                if event is CalibrationOverrideEvent {
+                    stopCalibrationTrack()
+                    calibrationOverriden = true
+                }
+            }
+        }
+
+        return [task]
     }
     
     func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
@@ -88,14 +104,6 @@ class ARHeadsetGenerator: AutomaticGenerator {
             }
             
             return .playCallouts(callouts)
-            
-        case is CalibrationOverrideEvent:
-            // Override the calibration
-            stopCalibrationTrack()
-            calibrationOverriden = true
-            
-            // Don't do any callouts when the calibration is overriden
-            return .noAction
             
         default:
             return nil
