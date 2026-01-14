@@ -128,8 +128,15 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
                                        delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
         let task = Task { @MainActor in
             for await event in stateChangedEvents {
-                if event is GPXSimulationStartedEvent {
+                switch event {
+                case let event as LocationUpdatedEvent:
+                    locationUpdated(event)
+
+                case is GPXSimulationStartedEvent:
                     reset()
+
+                default:
+                    break
                 }
             }
         }
@@ -143,10 +150,6 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
     
     func handle(event: StateChangedEvent, verbosity: Verbosity) -> HandledEventAction? {
         switch event {
-        case let event as LocationUpdatedEvent:
-            locationUpdated(event)
-            return .noAction
-            
         case let event as IntersectionArrivalEvent:
             let callout = IntersectionCallout(.intersection, event.key, event.isRoundabout, event.heading)
             
