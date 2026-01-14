@@ -227,6 +227,9 @@ We should keep tests focused and behavior-oriented:
 - **No overlap**:
   - after hush with earcon, next group waits for silence before starting
 
+Status:
+- Added focused `CalloutCoordinator` unit tests covering interrupt completion exactly-once and `clearPending` draining semantics.
+
 We can implement these using existing mocks in `EventProcessorTest` (MockAudioEngine + CalloutCoordinator), or add a dedicated coordinator test harness if needed.
 
 ## Acceptance Criteria
