@@ -14,6 +14,13 @@ import CoreLocation
 @MainActor
 final class CalloutCoordinator {
 
+    private enum Command {
+        case enqueue(QueuedGroup)
+        case clearPending
+        case interruptCurrent(clearQueue: Bool, playHush: Bool)
+        case startNext
+    }
+
     private final class GroupCompletionToken {
         private var continuation: CheckedContinuation<Bool, Never>?
         private var didResume = false
@@ -57,6 +64,10 @@ final class CalloutCoordinator {
     private var calloutQueue = Queue<QueuedGroup>()
     private var currentQueuedGroup: QueuedGroup?
 
+    private let commandStream: AsyncStream<Command>
+    private let commandContinuation: AsyncStream<Command>.Continuation
+    private var commandTask: Task<Void, Never>?
+
     private let audioPlayback: AudioPlaybackControlling
     private weak var geo: GeolocationManagerProtocol?
     private weak var motionActivityContext: MotionActivityProtocol?
@@ -75,10 +86,20 @@ final class CalloutCoordinator {
          geo: GeolocationManagerProtocol,
          motionActivityContext: MotionActivityProtocol,
          history: CalloutHistory) {
+        var continuation: AsyncStream<Command>.Continuation!
+        self.commandStream = AsyncStream<Command> { newContinuation in
+            continuation = newContinuation
+        }
+        self.commandContinuation = continuation
+
         self.audioPlayback = audioPlayback
         self.geo = geo
         self.motionActivityContext = motionActivityContext
         self.history = history
+
+        self.commandTask = Task { @MainActor [weak self] in
+            await self?.processCommands()
+        }
     }
 
     convenience init(audioEngine: AudioEngineProtocol,
@@ -104,9 +125,7 @@ final class CalloutCoordinator {
         GDLogEventProcessorInfo("CALL_OUT_TRACE coordinator enqueue group=\(callouts.id) action=\(callouts.action) hushOnInterrupt=\(callouts.playHushOnInterrupt)")
 
         let token = continuation.map { GroupCompletionToken(continuation: $0) }
-        calloutQueue.enqueue(QueuedGroup(group: callouts, completionToken: token))
-
-        tryStartCallouts()
+        commandContinuation.yield(.enqueue(QueuedGroup(group: callouts, completionToken: token)))
     }
 
     func playCallouts(_ callouts: CalloutGroup) async -> Bool {
@@ -116,19 +135,41 @@ final class CalloutCoordinator {
     }
 
     func clearPending() {
-        clearQueue()
+        commandContinuation.yield(.clearPending)
     }
 
     func interruptCurrent(clearQueue shouldClear: Bool, playHush: Bool) {
         GDLogEventProcessorInfo("CALL_OUT_TRACE coordinator interrupt playHush=\(playHush) clearQueue=\(shouldClear)")
 
-        let hushSound = playHush ? GlyphSound(.exitMode) : nil
-        Task { @MainActor in
-            await self.cancelCurrentCallouts(markHushed: playHush, hushSound: hushSound)
-        }
+        commandContinuation.yield(.interruptCurrent(clearQueue: shouldClear, playHush: playHush))
+    }
 
-        if shouldClear {
-            clearQueue()
+    // MARK: - Command processing
+
+    private func processCommands() async {
+        for await command in commandStream {
+            switch command {
+            case .enqueue(let queued):
+                calloutQueue.enqueue(queued)
+
+            case .clearPending:
+                clearQueue()
+
+            case .interruptCurrent(let shouldClearQueue, let playHush):
+                let hushSound = playHush ? GlyphSound(.exitMode) : nil
+                Task { @MainActor [weak self] in
+                    await self?.cancelCurrentCallouts(markHushed: playHush, hushSound: hushSound)
+                }
+
+                if shouldClearQueue {
+                    clearQueue()
+                }
+
+            case .startNext:
+                break
+            }
+
+            tryStartCallouts()
         }
     }
 
@@ -371,9 +412,7 @@ final class CalloutCoordinator {
             group.delegate?.calloutsCompleted(for: group, finished: finished)
         }
 
-        if !calloutQueue.isEmpty {
-            tryStartCallouts()
-        }
+        commandContinuation.yield(.startNext)
     }
 
     private func nextValidQueuedGroup() -> QueuedGroup? {

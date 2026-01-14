@@ -193,6 +193,12 @@ Acceptance check: existing tests pass; add a focused unit test that hush complet
 - Make `enqueue`, `clearPending`, `interruptCurrent` emit commands.
 - Move “tryStartCallouts / startCallouts / beginPlayback” logic into the linear runner.
 
+Status: Done (2026-01-14)
+
+Notes:
+- Added an internal command loop so queue mutations (`enqueue`, `clearPending`, `interruptCurrent`) are expressed as commands and `tryStartCallouts()` is driven from the command loop.
+- Playback completion now schedules queue advancement via a `.startNext` command.
+
 Acceptance check:
 - no deadlocks
 - no re-entrancy
