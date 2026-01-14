@@ -1,5 +1,7 @@
 # Callout Pipeline Modernization Plan
 
+> **Note (2026-01-14):** We are pausing further callout-pipeline modernization work. In particular, we explicitly decided to keep the remaining synchronous event handling for ordering-sensitive and/or callout-producing logic. Typed generator streams should remain limited to non-order-sensitive, state-only updates ("Bucket A"), and the later phases that propose new synchronous typed hooks or a fully-async pipeline are intentionally **out of scope for now**.
+
 ## Goal
 Evolve the current callout pipeline (behaviors → EventProcessor → CalloutCoordinator → AudioEngine) into a simpler, Swift-concurrency-first architecture that is easier to reason about, test, and extend.
 
