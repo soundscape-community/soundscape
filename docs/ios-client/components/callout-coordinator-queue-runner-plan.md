@@ -159,12 +159,18 @@ This is compatible with the runner loop: the coordinator doesn’t need to know 
 
 ## Step-by-step Refactor Plan (Low Risk)
 ### Step 0 — Write a small invariants doc (this file)
-Done.
+Done. (Committed)
 
 ### Step 1 — Centralize completion without changing concurrency
 - Add `QueuedGroup` wrapper and store the `CheckedContinuation` alongside each enqueued group.
 - Add `finishGroupOnce(...)` and route *all* current completion outcomes through it.
 - Keep current `Task` approach initially.
+
+Status: Done (2026-01-14)
+
+Notes:
+- Implemented `QueuedGroup` + a `GroupCompletionToken` so `playCallouts` continuations are stored with the queued group and resumed exactly once.
+- Removed the `pendingContinuations` dictionary and the closure-rewriting approach.
 
 Acceptance check: no behavior changes; existing tests pass.
 
