@@ -280,10 +280,37 @@ final class CalloutCoordinator {
         }
 
         if playbackState == .off {
-            GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent no-op state off")
+            guard currentQueuedGroup != nil else {
+                GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent no-op state off")
+                let soundToPlay = pendingHushSound
+                pendingHushSound = nil
+                await stopDiscreteAudio(play: soundToPlay)
+                return
+            }
+
+            GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent completing staged group")
+            hushed = markHushed
+
+            playbackTask?.cancel()
+            playbackTask = nil
+
             let soundToPlay = pendingHushSound
             pendingHushSound = nil
             await stopDiscreteAudio(play: soundToPlay)
+
+            notifyCompletion(false)
+
+            let group = currentQueuedGroup?.group
+            let id = group?.id
+            currentQueuedGroup = nil
+            didNotifyCompletion = false
+            completionResult = nil
+            hushed = false
+
+            if let group, let id {
+                handlePlaybackFinished(group: group, id: id, finished: false)
+            }
+
             return
         }
 

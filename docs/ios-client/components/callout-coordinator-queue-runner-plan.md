@@ -181,6 +181,11 @@ Acceptance check: no behavior changes; existing tests pass.
   - optionally clear pending
 - Delete duplicated “notify completion” sites by funneling them to `finishGroupOnce`.
 
+Status: Done (2026-01-14)
+
+Notes:
+- Fixed interrupt/hush when a group is staged (`playbackState == .off` but a `currentQueuedGroup` exists): we now cancel the pending playback task, stop discrete audio, complete the group (false), and advance the queue.
+
 Acceptance check: existing tests pass; add a focused unit test that hush completes exactly once.
 
 ### Step 3 — Replace per-group playback tasks with a single runner task
