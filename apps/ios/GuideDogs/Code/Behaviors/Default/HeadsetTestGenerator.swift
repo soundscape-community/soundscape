@@ -44,7 +44,10 @@ final class HeadsetTestGenerator: ManualGenerator {
         switch event.state {
         case .start:
             let callouts = makeInstructionCallouts()
-            _ = await delegate.playCallouts(callouts)
+            // Fire-and-forget so user actions can interrupt immediately.
+            Task { @MainActor in
+                _ = await delegate.playCallouts(callouts)
+            }
             return nil
             
         case .end:

@@ -39,7 +39,6 @@ actor AudioPlaybackActor: AudioPlaybackControlling {
         }
 
         guard hushSound == nil else { return }
-
         await waitForDiscreteAudioSilence(timeout: 1.0)
     }
 

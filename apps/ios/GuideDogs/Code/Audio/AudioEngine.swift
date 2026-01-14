@@ -947,15 +947,25 @@ class AudioEngine: AudioEngineProtocol {
             GDLogAudioInfo("Clearing sounds queue (\(soundsQueue.count) items)")
             drainQueuedSounds(success: false)
         }
-        guard currentSounds != nil else { return }
+
+        let hasQueuedSounds = (currentSounds != nil)
+
+        // Always stop any active discrete players, even if the queued-sounds state isn't set.
+        guard hasQueuedSounds || !discretePlayerIds.isEmpty else { return }
+
         GDLogAudioInfo("Stopping discrete sounds")
-        if let stoppingSound = with {
+
+        if hasQueuedSounds, let stoppingSound = with {
             soundsQueue.enqueue((Sounds(stoppingSound), nil))
         }
+
         discretePlayerIds.forEach { stop($0) }
         discretePlayerIds.removeAll()
         currentQueuePlayerID = nil
-        finishDiscrete(success: false)
+
+        if hasQueuedSounds {
+            finishDiscrete(success: false)
+        }
     }
 
     private func drainQueuedSounds(success: Bool) {

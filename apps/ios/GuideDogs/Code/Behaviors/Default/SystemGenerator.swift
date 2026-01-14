@@ -96,7 +96,10 @@ final class SystemGenerator: ManualGenerator {
             return nil
         }
 
-        _ = await delegate.playCallouts(group)
+        // Fire-and-forget so user actions can interrupt immediately.
+        Task { @MainActor in
+            _ = await delegate.playCallouts(group)
+        }
         return nil
     }
 

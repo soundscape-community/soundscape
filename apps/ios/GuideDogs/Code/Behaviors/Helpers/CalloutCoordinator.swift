@@ -344,6 +344,10 @@ final class CalloutCoordinator {
         if playbackPhase == .stopping {
             GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent already stopping")
             hushed = hushed || markHushed
+
+            let soundToPlay = pendingHushSound
+            pendingHushSound = nil
+            await stopDiscreteAudio(play: soundToPlay)
             return
         }
 

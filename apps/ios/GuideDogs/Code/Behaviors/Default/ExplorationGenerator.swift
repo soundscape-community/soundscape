@@ -174,8 +174,12 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
         
         currentGroupId = group.id
         currentMode = toggle.mode
-        
-        _ = await delegate.playCallouts(group)
+
+        // Don't block the event processing queue while callouts play.
+        // Users must be able to press the same button again to hush immediately.
+        Task { @MainActor in
+            _ = await delegate.playCallouts(group)
+        }
         return nil
     }
     
@@ -396,8 +400,8 @@ private extension ExplorationGenerator {
         
         event.completionHandler?(false)
         log(event, toggledOn: false)
-        
-        return [.interruptAndClearQueue(playHush: true, clearPending: false)]
+
+        return [.interruptAndClearQueue(playHush: true, clearPending: true)]
     }
     
     func playError(message: String,
@@ -405,7 +409,11 @@ private extension ExplorationGenerator {
                    delegate: BehaviorDelegate) async {
         let callout = RelativeStringCallout(event.mode.origin, message, position: 0.0)
         let group = CalloutGroup([callout], action: .interruptAndClear, logContext: event.logContext)
-        _ = await delegate.playCallouts(group)
+
+        // Same rationale as above: don't stall event processing.
+        Task { @MainActor in
+            _ = await delegate.playCallouts(group)
+        }
     }
     
     func makeCallouts(for event: ExplorationModeToggled, location loc: CLLocation) -> [CalloutProtocol] {
