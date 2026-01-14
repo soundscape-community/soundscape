@@ -82,7 +82,7 @@ extension HomeViewController: RemoteCommandManagerDelegate {
         GDATelemetry.track("settings.allow_callouts", value: String(SettingsContext.shared.automaticCalloutsEnabled))
         
         // Play announcement
-        AppContext.shared.audioEngine.stopDiscrete()
+        AppContext.shared.eventProcessor.hush(playSound: false, hushBeacon: false)
         let announcement = SettingsContext.shared.automaticCalloutsEnabled ? GDLocalizedString("callouts.callouts_on") : GDLocalizedString("callouts.callouts_off")
         AppContext.process(GenericAnnouncementEvent(announcement))
         return true

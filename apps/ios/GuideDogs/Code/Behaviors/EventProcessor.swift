@@ -329,28 +329,30 @@ class EventProcessor: BehaviorDelegate {
     @discardableResult
     func toggleAudio() -> Bool {
         let isDiscreteAudioPlaying = audioEngine.isDiscreteAudioPlaying
+        let hasCoordinatorAudio = calloutCoordinator.hasActiveCallouts || calloutCoordinator.hasPendingCallouts
+        let hasAnyCalloutAudio = isDiscreteAudioPlaying || hasCoordinatorAudio
         let isBeaconPlaying = data.destinationManager.isAudioEnabled
         let isDestinationSet = data.destinationManager.destinationKey != nil
         
         // Check if there is anything to toggle
-        guard isDiscreteAudioPlaying || isDestinationSet || isBeaconPlaying else {
+        guard hasAnyCalloutAudio || isDestinationSet || isBeaconPlaying else {
             return false
         }
         
         // Toggle beacon if needed
         // If audio is playing but the beacon is muted, we mute the audio and DO NOT un-mute the beacon
-        if isDestinationSet && !(isDiscreteAudioPlaying && !isBeaconPlaying) {
+        if isDestinationSet && !(hasAnyCalloutAudio && !isBeaconPlaying) {
             data.destinationManager.toggleDestinationAudio(automatic: false)
             
             // If audio was playing, the command processor's `hush` method will output the effect sound
             // If not, we force the hush effect sound when unmuting the beacon
-            if isBeaconPlaying && !isDiscreteAudioPlaying {
+            if isBeaconPlaying && !hasAnyCalloutAudio {
                 process(GlyphEvent(.hush))
             }
         }
         
         // Hush callouts if needed
-        if isDiscreteAudioPlaying {
+        if hasAnyCalloutAudio {
             guard !AppContext.shared.eventProcessor.isCustomBehaviorActive else {
                 interruptCurrent(clearQueue: true, playHush: true)
                 return true
