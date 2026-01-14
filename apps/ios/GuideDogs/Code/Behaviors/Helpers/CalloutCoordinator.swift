@@ -152,13 +152,11 @@ final class CalloutCoordinator {
 
             case .interruptCurrent(let shouldClearQueue, let playHush):
                 let hushSound = playHush ? GlyphSound(.exitMode) : nil
-                Task { @MainActor [weak self] in
-                    await self?.cancelCurrentCallouts(markHushed: playHush, hushSound: hushSound)
-                }
-
                 if shouldClearQueue {
                     clearQueue()
                 }
+
+                await cancelCurrentCallouts(markHushed: playHush, hushSound: hushSound)
 
             case .startNext:
                 break
