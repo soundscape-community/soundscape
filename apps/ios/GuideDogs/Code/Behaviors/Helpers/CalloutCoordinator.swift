@@ -30,7 +30,11 @@ final class CalloutCoordinator {
         }
 
         func resumeOnce(_ value: Bool) {
-            guard !didResume else { return }
+            guard !didResume else {
+                assertionFailure("GroupCompletionToken resumed more than once.")
+                GDLogError(.stateMachine, "CALL_OUT_TRACE completion token resumed more than once")
+                return
+            }
             didResume = true
 
             let continuation = continuation
