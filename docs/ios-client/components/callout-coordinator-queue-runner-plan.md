@@ -210,6 +210,12 @@ Once the runner is stable, remove:
 - `IdleSignal` (runner is the idle mechanism)
 - `pendingContinuations` dictionary and mutation of group closures (if Step 1 moved continuations into `QueuedGroup`)
 
+Status: Done (2026-01-14)
+
+Notes:
+- Reduced playback state to a minimal `PlaybackPhase` (idle/running/stopping) and removed the idle-wait signaling.
+- Removed the redundant `completionResult` plumbing; the finished result is now passed directly to the final completion path.
+
 ## Testing Strategy
 We should keep tests focused and behavior-oriented:
 - **Callout completion exactly once** under:

@@ -44,19 +44,16 @@ final class CalloutCoordinator {
         let completionToken: GroupCompletionToken?
     }
 
-    private enum PlaybackState: CustomStringConvertible {
-        case off
+    private enum PlaybackPhase: CustomStringConvertible {
+        case idle
         case running
         case stopping
-        case completed
-        case failed
+
         var description: String {
             switch self {
-            case .off: return "off"
+            case .idle: return "idle"
             case .running: return "running"
             case .stopping: return "stopping"
-            case .completed: return "completed"
-            case .failed: return "failed"
             }
         }
     }
@@ -73,14 +70,12 @@ final class CalloutCoordinator {
     private weak var motionActivityContext: MotionActivityProtocol?
     private weak var history: CalloutHistory?
 
-    private var playbackState: PlaybackState = .off
+    private var playbackPhase: PlaybackPhase = .idle
     private var hushed = false
     private var pendingHushSound: Sound?
     private var calloutIterator: IndexingIterator<[CalloutProtocol]>?
     private var playbackTask: Task<Void, Never>?
     private var didNotifyCompletion = false
-    private var completionResult: Bool?
-    private let idleSignal = IdleSignal()
 
     init(audioPlayback: AudioPlaybackControlling,
          geo: GeolocationManagerProtocol,
@@ -199,16 +194,11 @@ final class CalloutCoordinator {
     }
 
     private func beginPlayback(for group: CalloutGroup) async {
-        if playbackState != .off {
-            GDLogVerbose(.stateMachine, "CALL_OUT_TRACE waiting for idle before starting new group \(group.id)")
-            await waitUntilIdle()
-        }
-
         GDLogVerbose(.stateMachine, "CALL_OUT_TRACE ensuring discrete audio silence before starting group \(group.id)")
         await audioPlayback.waitForDiscreteAudioSilence()
 
-        guard playbackState == .off else {
-            GDLogVerbose(.stateMachine, "Unable to start callout group. Coordinator playback is currently in state: \(playbackState)")
+        guard playbackPhase == .idle else {
+            GDLogVerbose(.stateMachine, "Unable to start callout group. Coordinator playback is currently in phase: \(playbackPhase)")
             return
         }
 
@@ -219,14 +209,13 @@ final class CalloutCoordinator {
         calloutIterator = group.callouts.makeIterator()
         hushed = false
         didNotifyCompletion = false
-        completionResult = nil
-        playbackState = .running
+        playbackPhase = .running
 
         await execute(group)
     }
 
     private func execute(_ group: CalloutGroup) async {
-        guard playbackState == .running, currentQueuedGroup?.group.id == group.id else { return }
+        guard playbackPhase == .running, currentQueuedGroup?.group.id == group.id else { return }
 
         GDLogVerbose(.stateMachine, "CALL_OUT_TRACE execute group=\(group.id)")
         group.onStart?()
@@ -238,7 +227,7 @@ final class CalloutCoordinator {
 
         guard await playPrelude(for: group) else {
             notifyCompletion(false)
-            await finish(failed: true)
+            await finish(finished: false)
             return
         }
 
@@ -255,23 +244,23 @@ final class CalloutCoordinator {
             return true
         }
 
-        guard playbackState == .running else { return false }
+        guard playbackPhase == .running else { return false }
 
         let success = await audioPlayback.play(Sounds(prelude))
         if !success {
             GDLogVerbose(.stateMachine, "Prelude failed. Terminating callouts.")
         }
-        return success && playbackState == .running
+        return success && playbackPhase == .running
     }
 
     private func runCallouts(in group: CalloutGroup) async {
-        guard playbackState == .running, currentQueuedGroup?.group.id == group.id else { return }
+        guard playbackPhase == .running, currentQueuedGroup?.group.id == group.id else { return }
 
-        while playbackState == .running, currentQueuedGroup?.group.id == group.id {
+        while playbackPhase == .running, currentQueuedGroup?.group.id == group.id {
             guard let callout = calloutIterator?.next() else {
                 GDLogVerbose(.stateMachine, "CALL_OUT_TRACE group=\(group.id) completed all callouts")
                 notifyCompletion(true)
-                await finish(failed: false)
+                await finish(finished: true)
                 return
             }
 
@@ -297,10 +286,10 @@ final class CalloutCoordinator {
             GDLogVerbose(.stateMachine, "CALL_OUT_TRACE callout finished group=\(group.id) callout=\(callout.logCategory) success=\(success)")
             group.delegate?.calloutFinished(callout, completed: success)
 
-            guard playbackState == .running else { return }
+            guard playbackPhase == .running else { return }
             guard success else {
                 notifyCompletion(false)
-                await finish(failed: true)
+                await finish(finished: false)
                 return
             }
 
@@ -315,14 +304,14 @@ final class CalloutCoordinator {
     }
 
     private func cancelCurrentCallouts(markHushed: Bool, hushSound: Sound?) async {
-        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent markHushed=\(markHushed) hushSound=\(String(describing: hushSound != nil)) state=\(playbackState)")
+        GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent markHushed=\(markHushed) hushSound=\(String(describing: hushSound != nil)) phase=\(playbackPhase)")
         if let hushSound {
             pendingHushSound = hushSound
         }
 
-        if playbackState == .off {
+        if playbackPhase == .idle {
             guard currentQueuedGroup != nil else {
-                GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent no-op state off")
+                GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent no-op phase idle")
                 let soundToPlay = pendingHushSound
                 pendingHushSound = nil
                 await stopDiscreteAudio(play: soundToPlay)
@@ -345,7 +334,6 @@ final class CalloutCoordinator {
             let id = group?.id
             currentQueuedGroup = nil
             didNotifyCompletion = false
-            completionResult = nil
             hushed = false
 
             if let group, let id {
@@ -355,14 +343,14 @@ final class CalloutCoordinator {
             return
         }
 
-        if playbackState == .stopping {
+        if playbackPhase == .stopping {
             GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelCurrent already stopping")
             hushed = hushed || markHushed
             return
         }
 
         hushed = markHushed
-        playbackState = .stopping
+        playbackPhase = .stopping
         GDLogVerbose(.stateMachine, "CALL_OUT_TRACE cancelling task for group=\(String(describing: currentQueuedGroup?.group.id))")
         playbackTask?.cancel()
         playbackTask = nil
@@ -372,18 +360,17 @@ final class CalloutCoordinator {
         await stopDiscreteAudio(play: soundToPlay)
         notifyCompletion(false)
 
-        await finish(failed: true)
+        await finish(finished: false)
     }
 
-    private func finish(failed: Bool) async {
-        guard playbackState != .off else { return }
+    private func finish(finished: Bool) async {
+        guard playbackPhase != .idle else { return }
 
-        playbackState = failed ? .failed : .completed
+        playbackPhase = .stopping
 
         let group = currentQueuedGroup?.group
         let id = group?.id
-        let finishedSuccessfully = completionResult ?? false
-        let shouldPlayExit = (!failed) && (!hushed) && (group?.playModeSounds ?? false)
+        let shouldPlayExit = finished && (!hushed) && (group?.playModeSounds ?? false)
 
         calloutIterator = nil
         playbackTask = nil
@@ -396,12 +383,10 @@ final class CalloutCoordinator {
         didNotifyCompletion = false
         pendingHushSound = nil
         hushed = false
-        completionResult = nil
-        playbackState = .off
-        await idleSignal.signal()
+        playbackPhase = .idle
 
         if let id {
-            handlePlaybackFinished(group: group, id: id, finished: finishedSuccessfully)
+            handlePlaybackFinished(group: group, id: id, finished: finished)
         }
     }
 
@@ -447,7 +432,6 @@ final class CalloutCoordinator {
     private func notifyCompletion(_ success: Bool) {
         guard !didNotifyCompletion, let queued = currentQueuedGroup else { return }
         didNotifyCompletion = true
-        completionResult = success
         GDLogVerbose(.stateMachine, "CALL_OUT_TRACE notifyCompletion group=\(queued.group.id) success=\(success)")
         queued.group.onComplete?(success)
         queued.completionToken?.resumeOnce(success)
@@ -457,12 +441,6 @@ final class CalloutCoordinator {
         queued.group.delegate?.calloutsSkipped(for: queued.group)
         queued.group.onSkip?()
         queued.completionToken?.resumeOnce(false)
-    }
-
-    private func waitUntilIdle() async {
-        while playbackState != .off {
-            await idleSignal.wait()
-        }
     }
 
     private func stopDiscreteAudio(play hushSound: Sound?) async {
@@ -480,32 +458,4 @@ final class CalloutCoordinator {
 
         GDATelemetry.track("callout", with: properties)
     }
-
-
-private actor IdleSignal {
-    private var waiters: [CheckedContinuation<Void, Never>] = []
-    private var pendingSignals = 0
-
-    func wait() async {
-        if pendingSignals > 0 {
-            pendingSignals -= 1
-            return
-        }
-
-        await withCheckedContinuation { continuation in
-            waiters.append(continuation)
-        }
-    }
-
-    func signal() {
-        guard !waiters.isEmpty else {
-            pendingSignals += 1
-            return
-        }
-
-        let current = waiters
-        waiters.removeAll()
-        current.forEach { $0.resume() }
-    }
-}
 }
