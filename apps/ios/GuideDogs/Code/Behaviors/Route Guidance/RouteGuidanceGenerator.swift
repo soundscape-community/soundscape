@@ -42,7 +42,7 @@ extension Notification.Name {
 }
 
 @MainActor
-class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
+class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSubscribing {
     
     struct Key {
         static let markerId = "markerId"
@@ -85,6 +85,26 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
     
     func cancelCalloutsForEntity(id: String) {
         // Intentional No-Op
+    }
+
+    func startEventStreamSubscriptions(userInitiatedEvents: AsyncStream<UserInitiatedEvent>,
+                                       stateChangedEvents: AsyncStream<StateChangedEvent>,
+                                       delegateProvider: @escaping @MainActor () -> BehaviorDelegate?) -> [Task<Void, Never>] {
+        let task = Task { @MainActor in
+            for await event in stateChangedEvents {
+                switch event {
+                case let event as BeginWaypointDistanceCalloutsEvent:
+                    // Initialize the beacon callouts for the current beacon
+                    distanceCalloutFilter.start(beaconLocation: event.waypointLocation, shouldIgnoreFirstUpdate: true)
+                    awaitingNextWaypoint = false
+
+                default:
+                    break
+                }
+            }
+        }
+
+        return [task]
     }
     
     func respondsTo(_ event: UserInitiatedEvent) -> Bool {
@@ -171,12 +191,6 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
             group.delegate = self
             
             return .playCallouts(group)
-            
-        case let event as BeginWaypointDistanceCalloutsEvent:
-            // Initialize the beacon callouts for the current beacon
-            distanceCalloutFilter.start(beaconLocation: event.waypointLocation, shouldIgnoreFirstUpdate: true)
-            awaitingNextWaypoint = false
-            return .noAction
             
         case let event as WaypointArrivalEvent:
             guard currentIntersectionGroupID == nil else {
