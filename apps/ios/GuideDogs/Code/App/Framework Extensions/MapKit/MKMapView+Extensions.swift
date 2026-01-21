@@ -20,7 +20,7 @@ extension MKMapView {
     }
     
     private func showAnnotationAndCenter(_ annotation: MKAnnotation) {
-        guard centerCoordinate != annotation.coordinate else {
+        guard !centerCoordinate.isNear(to: annotation.coordinate )else {
             // no-op
             return
         }
