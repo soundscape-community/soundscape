@@ -45,7 +45,7 @@ class SearchWaypointViewController: UIViewController {
         self.navigationItem.searchController = self.searchController
         self.navigationItem.hidesSearchBarWhenScrolling = false
 
-        // Don't allow ios 26 to move the search to the bottom.
+        // Don't allow iOS 26 to move the search to the bottom.
         if #available(iOS 26.0, *) {
             self.navigationItem.searchBarPlacementAllowsToolbarIntegration = false
         }
