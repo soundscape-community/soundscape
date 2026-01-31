@@ -88,6 +88,11 @@ class SearchResultsTableViewController: UITableViewController {
         
         searchVC.navigationItem.searchController = searchController
         searchVC.navigationItem.hidesSearchBarWhenScrolling = false
+
+        // Don't allow iOS 26 to move the search to the bottom.
+        if #available(iOS 26.0, *) {
+            searchVC.navigationItem.searchBarPlacementAllowsToolbarIntegration = false
+        }
         
         let navigationVC = NavigationController(rootViewController: searchVC)
         return navigationVC
