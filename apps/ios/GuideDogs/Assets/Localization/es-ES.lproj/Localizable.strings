@@ -1979,11 +1979,11 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Esto usa Localización pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa el botón siguiente para reactivar ahora.";
+"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Usa Localización pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa el botón siguiente para reactivar ahora.";
 
 
 /*  */
-"sleep.sleeping.message" = "Soundscape se encuentra actualmente en modo de suspensión. Esto evita que Soundscape use Localización o descargue datos y ahorra batería cuando no se usa Soundscape. Pulsa el botón siguiente para reactivar Soundscape.";
+"sleep.sleeping.message" = "Soundscape se encuentra actualmente en el modo de suspensión. Evita que Soundscape use Localización o descargue datos y ahorra batería cuando no se usa Soundscape. Pulsa el botón siguiente para reactivar Soundscape.";
 
 
 /*  */
@@ -4310,7 +4310,7 @@
 
 
 /*  */
-"faq.difference_from_map_apps.answer" = "Soundscape ofrece una descripción de tu entorno mediante la exploración y la orientación. Usando el sonido espacial, Soundscape avisará de puntos de interés, parques, carreteras y cruces desde la dirección en la que se encuentran físicamente en tu entorno inmediato mientras caminas. Por ejemplo, si pasas por una tienda que se encuentre a tu derecha, oirás el nombre de la tienda sonando a tu derecha. Cuando te acerques a un cruce, oirás el sonido del nombre de cada carretera proveniente de la dirección a la que se dirige, comenzando por la izquierda, adelante y a la derecha.\n\nEn lugar de indicaciones paso a paso, a menudo proporcionadas por aplicaciones de mapas o GPS tradicionales, Soundscape reproducirá una señal de audio en la dirección de tu destino, lo que te permitirá llegar allí en tus condiciones con el mejor conocimiento posible de tu entorno y de la ubicación de tu destino. Soundscape se ha diseñado para ejecutarse en segundo plano, lo que te permite usar una aplicación de indicaciones paso a paso, y seguirá proporcionando todo el tiempo información del entorno mientras llegas a tu destino.";
+"faq.difference_from_map_apps.answer" = "Soundscape ofrece una descripción de tu entorno mediante la exploración y la orientación. Usando el sonido espacial, Soundscape avisará de puntos de interés, parques, carreteras y cruces desde la dirección en la que se encuentran físicamente en tu entorno inmediato mientras caminas. Por ejemplo, si pasas por una tienda que se encuentre a tu derecha, oirás el nombre de la tienda sonando a tu derecha. Cuando te acerques a un cruce, oirás el sonido del nombre de cada carretera proveniente de la dirección a la que se dirige, comenzando por la izquierda, adelante y a la derecha.\n\nEn lugar de indicaciones paso a paso, a menudo proporcionadas por otras aplicaciones de mapas, Soundscape reproducirá una señal de audio en la dirección de tu destino, lo que te permitirá llegar allí en tus condiciones con el mejor conocimiento posible de tu entorno y de la ubicación de tu destino. Soundscape se ha diseñado para ejecutarse en segundo plano, lo que te permite usar una aplicación de indicaciones paso a paso, y seguirá proporcionando todo el tiempo información del entorno mientras llegas a tu destino.";
 
 
 /*  */
