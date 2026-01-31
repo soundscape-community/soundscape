@@ -186,9 +186,9 @@ struct POICallout: POICalloutProtocol {
     
     func moreInfoDescription(for location: CLLocation?) -> String {
         guard let locationDescription = distanceDescription(for: location, tts: true) else {
-            return GDLocalizedString("announced_name.named", origin.localizedStringForAccessibility, timeDescription)
+            return GDLocalizedString("announced_name.named", origin.localizedString, timeDescription)
         }
         
-        return GDLocalizedString("announced_name_distance_away.named", origin.localizedStringForAccessibility, timeDescription, locationDescription)
+        return GDLocalizedString("announced_name_distance_away.named", origin.localizedString, timeDescription, locationDescription)
     }
 }
