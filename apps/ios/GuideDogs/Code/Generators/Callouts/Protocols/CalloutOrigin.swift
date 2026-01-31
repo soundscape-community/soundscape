@@ -16,9 +16,6 @@ struct CalloutOrigin: RawRepresentable, Equatable, Hashable {
     
     var localizedString: String
 
-    var localizedStringForAccessibility: String {
-        return localizedString.lowercasedWithAppLocale().replacingOccurrences(of: "callout", with: "call out")
-    }
     
     init?(rawValue: String) {
         self.rawValue = rawValue

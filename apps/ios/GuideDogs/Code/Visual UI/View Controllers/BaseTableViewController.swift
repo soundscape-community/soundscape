@@ -28,12 +28,6 @@ class BaseTableViewController: UITableViewController {
 
         view.textLabel?.textColor = Colors.Foreground.primary
         view.backgroundView?.backgroundColor = Colors.Background.quaternary
-        
-        if let text = view.textLabel?.text, text.lowercased().contains("callout") {
-            view.accessibilityLabel = text.lowercased().replacingOccurrences(of: "callout", with: "call out")
-        } else {
-            view.accessibilityLabel = view.textLabel?.text
-        }
     }
     
     override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
@@ -41,12 +35,6 @@ class BaseTableViewController: UITableViewController {
         
         view.textLabel?.textColor = Colors.Foreground.primary
         view.backgroundView?.backgroundColor = Colors.Background.quaternary
-        
-        if let text = view.textLabel?.text, text.lowercased().contains("callout") {
-            view.accessibilityLabel = text.lowercased().replacingOccurrences(of: "callout", with: "call out")
-        } else {
-            view.accessibilityLabel = view.textLabel?.text
-        }
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
