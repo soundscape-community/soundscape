@@ -5,12 +5,14 @@ on:
             - main
         paths:
             - 'apps/ios/**'
+            - 'apps/common/**'
             - '.github/workflows/ios-tests.yml'
     pull_request:
         branches:
             - main
         paths:
             - 'apps/ios/**'
+            - 'apps/common/**'
     workflow_dispatch:
 concurrency:
     group: ${{ github.ref }}
@@ -31,6 +33,12 @@ jobs:
               working-directory: apps/ios
               run: |
                 swift Scripts/LocalizationLinter/main.swift
+            - name: Check common package boundaries
+              run: |
+                bash apps/common/Scripts/check_forbidden_imports.sh
+            - name: Test common package
+              run: |
+                swift test --package-path apps/common
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace

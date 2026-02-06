@@ -7,8 +7,8 @@
 //
 
 public struct BoundedStack<T> {
-    private(set) var bound: UInt
-    private(set) var elements: [T] = []
+    public private(set) var bound: UInt
+    public private(set) var elements: [T] = []
     
     public init(bound: UInt) {
         if bound == 0 {

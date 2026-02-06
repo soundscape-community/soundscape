@@ -8,35 +8,38 @@
 
 import Foundation
 
-struct CircularQuantity {
+public struct CircularQuantity {
 
     // MARK: Properties
     
-    let valueInDegrees: Double
-    let valueInRadians: Double
+    public let valueInDegrees: Double
+    public let valueInRadians: Double
+
+    private static let degreesToRadiansFactor = Double.pi / 180.0
+    private static let radiansToDegreesFactor = 180.0 / Double.pi
     
     // MARK: Initialization
     
-    init(valueInDegrees: Double) {
+    public init(valueInDegrees: Double) {
         self.valueInDegrees = valueInDegrees
-        self.valueInRadians = valueInDegrees.degreesToRadians
+        self.valueInRadians = valueInDegrees * Self.degreesToRadiansFactor
     }
     
-    init(valueInRadians: Double) {
-        self.valueInDegrees = valueInRadians.radiansToDegrees
+    public init(valueInRadians: Double) {
+        self.valueInDegrees = valueInRadians * Self.radiansToDegreesFactor
         self.valueInRadians = valueInRadians
     }
     
     // MARK: -
     
-    func normalized() -> CircularQuantity {
+    public func normalized() -> CircularQuantity {
         var constant = 1.0
         
         if abs(valueInDegrees) > 360.0 {
-            constant = ceil( abs(valueInDegrees) / 360.0 )
+            constant = ceil(abs(valueInDegrees) / 360.0)
         }
         
-        let nValueInDegrees = fmod(valueInDegrees + ( constant * 360.0 ), 360.0)
+        let nValueInDegrees = fmod(valueInDegrees + (constant * 360.0), 360.0)
         return CircularQuantity(valueInDegrees: nValueInDegrees)
     }
     
@@ -44,29 +47,29 @@ struct CircularQuantity {
 
 extension CircularQuantity: Comparable {
     
-    static func == (lhs: CircularQuantity, rhs: CircularQuantity) -> Bool {
+    public static func == (lhs: CircularQuantity, rhs: CircularQuantity) -> Bool {
         return lhs.normalized().valueInDegrees == rhs.normalized().valueInDegrees
     }
     
-    static func > (lhs: CircularQuantity, rhs: CircularQuantity) -> Bool {
+    public static func > (lhs: CircularQuantity, rhs: CircularQuantity) -> Bool {
         return lhs.normalized().valueInDegrees > rhs.normalized().valueInDegrees
     }
     
-    static func < (lhs: CircularQuantity, rhs: CircularQuantity) -> Bool {
+    public static func < (lhs: CircularQuantity, rhs: CircularQuantity) -> Bool {
         return lhs.normalized().valueInDegrees < rhs.normalized().valueInDegrees
     }
     
-    static func + (lhs: CircularQuantity, rhs: CircularQuantity) -> CircularQuantity {
+    public static func + (lhs: CircularQuantity, rhs: CircularQuantity) -> CircularQuantity {
         let sum = lhs.normalized().valueInDegrees + rhs.normalized().valueInDegrees
         return CircularQuantity(valueInDegrees: sum).normalized()
     }
     
-    static func - (lhs: CircularQuantity, rhs: CircularQuantity) -> CircularQuantity {
+    public static func - (lhs: CircularQuantity, rhs: CircularQuantity) -> CircularQuantity {
         let difference = lhs.normalized().valueInDegrees - rhs.normalized().valueInDegrees
         return CircularQuantity(valueInDegrees: difference).normalized()
     }
     
-    prefix static func - (value: CircularQuantity) -> CircularQuantity {
+    public prefix static func - (value: CircularQuantity) -> CircularQuantity {
         let valueInDegrees = value.valueInDegrees
         return CircularQuantity(valueInDegrees: -valueInDegrees).normalized()
     }

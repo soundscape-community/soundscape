@@ -6,6 +6,8 @@
 //  Licensed under the MIT License.
 //
 
+import SoundscapeCoreDataStructures
+
 protocol CalloutHistoryDelegate: AnyObject {
     func onCalloutInserted(_ callout: CalloutProtocol)
     func onCalloutRemoved(_ callout: CalloutProtocol)

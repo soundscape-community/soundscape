@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import SoundscapeCoreDataStructures
 
 @MainActor
 class HeadphoneCalibrator: ComponentHeadphoneCalibrator {

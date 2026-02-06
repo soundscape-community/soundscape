@@ -10,6 +10,7 @@
 import Foundation
 import AVFoundation
 import CoreLocation
+import SoundscapeCoreDataStructures
 
 extension Notification.Name {
     static let audioEngineStateChanged = Notification.Name("GDAAudioEngineStateChanged")

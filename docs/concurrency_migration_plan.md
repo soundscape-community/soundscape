@@ -1,5 +1,7 @@
 # Concurrency Migration Plan
 
+> **Historical note (2026-02-06):** This document is maintained as a planning/progress log. Operational commands and local tooling expectations may drift over time. For current execution guidance, use `AGENTS.md` and `.github/workflows/ios-tests.yml`.
+
 ## Objectives
 - Preserve functionality while incrementally refining actor isolation.
 - Avoid accidental performance regressions from broad `@MainActor` usage.

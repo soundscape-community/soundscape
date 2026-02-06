@@ -1,5 +1,7 @@
 # Callout Pipeline Modernization Plan
 
+> **Historical note (2026-02-06):** This document is maintained as a planning/progress log. Operational commands and day-to-day workflow defaults may drift over time. For current execution guidance, use `AGENTS.md` and `.github/workflows/ios-tests.yml`.
+
 > **Note (2026-01-14):** We are pausing further callout-pipeline modernization work. In particular, we explicitly decided to keep the remaining synchronous event handling for ordering-sensitive and/or callout-producing logic. Typed generator streams should remain limited to non-order-sensitive, state-only updates ("Bucket A"), and the later phases that propose new synchronous typed hooks or a fully-async pipeline are intentionally **out of scope for now**.
 
 ## Goal

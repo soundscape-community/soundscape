@@ -1,41 +1,63 @@
 # Soundscape iOS App
 
-This document describes how to build and run the Soundscape iOS app.
+This document describes how to build and test the Soundscape iOS app in this repository.
 
-## Supported Tooling Versions
+## CI-Aligned Tooling Baseline
 
-As of Soundscape Community version 1.0.1 (October 2023):
+The `ios-tests` workflow (`.github/workflows/ios-tests.yml`) currently uses:
 
-* macOS 12.6.1
-* Xcode 13.4.1
-* iOS 14.1
+- Xcode 16.1
+- iOS Simulator destination: `platform=iOS Simulator,OS=18.1,name=iPhone 16`
 
-## Install Xcode
+Use this as the default baseline for local command-line builds when possible.
 
-The Soundscape iOS app is developed on the Xcode IDE.
+## Prerequisites
 
-Download Xcode from the [App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12) or the [Apple Developer website](http://developer.apple.com).
-
-## Install Xcode Command Line Tools
-
-Open Xcode and you should be prompted with installing the command line tools, or run this in a Terminal window:
+- Xcode with command line tools installed:
 
 ```sh
 xcode-select --install
 ```
 
-## Install Fastlane (optional)
+## Workspace
 
-Installing Fastlane requires a [Ruby](https://www.ruby-lang.org/) installation.
+The iOS project entry point is:
 
-> __Note:__ while macOS comes with a version of Ruby installed, you should install and use a non-system [Ruby](https://www.ruby-lang.org/) using a version manager like [RVM](https://rvm.io/)
+- `apps/ios/GuideDogs.xcworkspace`
 
-In the iOS project folder `apps/ios`, run the following command to install the dependencies from the `Gemfile`:
+## Local Build, Lint, and Test Commands
+
+From repository root:
 
 ```sh
-bundle install
+cd apps/ios
+swift Scripts/LocalizationLinter/main.swift
 ```
 
-## Opening the Project
+Build for testing:
 
-At this point, you can open the `GuideDogs.xcworkspace` file, which is the main entry point to the Xcode project.
+```sh
+xcodebuild build-for-testing -workspace GuideDogs.xcworkspace \
+  -scheme Soundscape \
+  -destination "platform=iOS Simulator,OS=18.1,name=iPhone 16" \
+  CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+```
+
+Run tests:
+
+```sh
+xcodebuild test-without-building -workspace GuideDogs.xcworkspace \
+  -scheme Soundscape \
+  -destination "platform=iOS Simulator,OS=18.1,name=iPhone 16"
+```
+
+## Fastlane (Optional)
+
+Fastlane lanes are in `apps/ios/fastlane`.
+
+If you use Fastlane locally:
+
+```sh
+cd apps/ios
+bundle install
+```

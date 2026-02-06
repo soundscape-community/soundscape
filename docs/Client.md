@@ -1,11 +1,11 @@
 # Soundscape iOS Client
 
-The Xcode project can be found in [this folder](../apps/ios/).
+The iOS workspace and code live in [`apps/ios`](../apps/ios/).
 
-Instructions on how to setup your development environment, build and
-run the Soundscape iOS app can be found in the iOS client
-[onboarding documentation](./ios-client/onboarding.md).
+Use these documents as your primary starting points:
 
-Additional useful instructions for development can be found in the
-[iOS client documents Folder](./ios-client).
-
+- [iOS onboarding](./ios-client/onboarding.md)
+- [iOS architecture overview](./ios-client/overview.md)
+- [iOS testing](./ios-client/build-and-test/testing.md)
+- [Documentation index](./README.md)
+- [Agent instructions (`AGENTS.md`)](../AGENTS.md)

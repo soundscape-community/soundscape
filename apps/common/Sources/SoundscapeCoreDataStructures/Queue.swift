@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Queue<T> {
+public struct Queue<T> {
     
     // MARK: Properties
     
@@ -16,13 +16,13 @@ struct Queue<T> {
     
     private let queue = DispatchQueue(label: "services.soundscape.queue")
     
-    var count: Int {
+    public var count: Int {
         return queue.sync {
             return list.count
         }
     }
     
-    var isEmpty: Bool {
+    public var isEmpty: Bool {
         return queue.sync {
             return list.isEmpty
         }
@@ -30,7 +30,7 @@ struct Queue<T> {
     
     // MARK: Initialization
     
-    init() {
+    public init() {
         list = LinkedList<T>()
     }
     

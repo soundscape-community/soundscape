@@ -1,14 +1,19 @@
 # Services
 
-The services for Soundscape consist of:
-* An ingester that ingests OSM data and injects into a PostGIS database
-* A tile service that constructs GeoJSON tiles on demand from the PostGIS database
-* Additional services which could not be released to open source.
+The open-source services in this repository are under [`svcs/data`](../svcs/data/).
 
-Kubernetes is used for installation/orchestration of these services.  A HELM chart for the service is (provided)[../svcs/data/soundscape].
+They include:
+- an ingestion pipeline that imports OSM and related datasets into PostGIS,
+- tooling to generate and serve GeoJSON tile data used by the iOS client,
+- supporting Docker, SQL, and utility scripts.
 
-# Ingester automation
+Some production services used by the community deployment are not part of this repository.
 
-Much of the automation for the OSM ingestion is missing from this
-release.  The released version used IMPOSM3 for injestion.  OSM2PGSQL
-was tested as an alternative.
+## Deployment Assets
+
+- Docker and compose assets: [`svcs/data/docker-compose.yml`](../svcs/data/docker-compose.yml)
+- Helm chart assets: [`svcs/data/soundscape`](../svcs/data/soundscape)
+
+## Ingester Notes
+
+Historically, the ingestion flow used IMPOSM3; OSM2PGSQL has also been evaluated as an alternative.

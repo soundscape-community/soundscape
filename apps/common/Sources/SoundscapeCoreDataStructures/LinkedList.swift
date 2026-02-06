@@ -8,7 +8,7 @@
 
 import Foundation
 
-class LinkedListNode<T> {
+final class LinkedListNode<T> {
     var value: T
     
     var next: LinkedListNode<T>?
@@ -20,7 +20,7 @@ class LinkedListNode<T> {
     }
 }
 
-class LinkedList<T> {
+final class LinkedList<T> {
     private(set) var count = 0
     
     var isEmpty: Bool {

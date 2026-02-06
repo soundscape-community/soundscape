@@ -13,7 +13,12 @@ For more technical details, see the [original README](https://github.com/microso
 
 ## Building Soundscape
 
-See the [iOS client build documentation](https://github.com/soundscape-community/soundscape/blob/main/docs/ios-client/onboarding.md) in the repo, along with the [build tips](https://github.com/soundscape-community/soundscape/wiki/build-tips) on the wiki.
+Use the in-repository documentation as the primary source of truth:
+
+- [Documentation Index](docs/README.md)
+- [iOS Client](docs/Client.md)
+- [Services](docs/Services.md)
+- [iOS Onboarding](docs/ios-client/onboarding.md)
 
 ## Getting involved
 

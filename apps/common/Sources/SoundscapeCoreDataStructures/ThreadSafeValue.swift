@@ -15,14 +15,14 @@ import Foundation
 // Read access is done synchronously
 // Write access is done asynchronously with a barrier
 //
-class ThreadSafeValue<T> {
+public final class ThreadSafeValue<T: Sendable>: @unchecked Sendable {
     
     // MARK: Properties
     
     private let queue: DispatchQueue
     private var _value: T?
     
-    var value: T? {
+    public var value: T? {
         get {
             var value: T?
             
@@ -48,7 +48,7 @@ class ThreadSafeValue<T> {
     
     // MARK: Initialization
     
-    init(_ value: T? = nil, qos: DispatchQoS) {
+    public init(_ value: T? = nil, qos: DispatchQoS) {
         // Save initial value
         _value = value
         

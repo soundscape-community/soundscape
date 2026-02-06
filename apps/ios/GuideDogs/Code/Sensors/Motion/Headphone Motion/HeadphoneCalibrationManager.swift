@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreMotion
+import SoundscapeCoreDataStructures
 
 @MainActor
 class HeadphoneCalibrationManager {

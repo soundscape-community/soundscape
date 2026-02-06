@@ -31,7 +31,7 @@ extension Array where Element == CircularQuantity {
     }
     
     // Source: https://en.wikipedia.org/wiki/Mean_of_circular_quantities
-    func mean() -> Element? {
+    public func mean() -> Element? {
         guard count > 0 else {
             return nil
         }
@@ -45,16 +45,16 @@ extension Array where Element == CircularQuantity {
         return CircularQuantity(valueInRadians: meanInRadians).normalized()
     }
     
-    func meanInDegrees() -> Double? {
+    public func meanInDegrees() -> Double? {
         return mean()?.valueInDegrees
     }
     
-    func meanInRadians() -> Double? {
+    public func meanInRadians() -> Double? {
         return mean()?.valueInRadians
     }
     
     // Source: https://en.wikipedia.org/wiki/Directional_statistics
-    func stdev() -> Element? {
+    public func stdev() -> Element? {
         guard count > 0 else {
             return nil
         }
@@ -68,11 +68,11 @@ extension Array where Element == CircularQuantity {
         return CircularQuantity(valueInRadians: stdevInRadians).normalized()
     }
     
-    func stdevInDegrees() -> Double? {
+    public func stdevInDegrees() -> Double? {
         return stdev()?.valueInDegrees
     }
     
-    func stdevInRadians() -> Double? {
+    public func stdevInRadians() -> Double? {
         return stdev()?.valueInRadians
     }
     
