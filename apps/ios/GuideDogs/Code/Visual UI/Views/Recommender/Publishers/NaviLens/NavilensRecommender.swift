@@ -73,18 +73,18 @@ class NavilensRecommender: Recommender {
 
         guard let first = dataView.pois.filtered(by: navilensOnly).sorted(by: {
             // Sort NaviLens-enabled POIs by distance
-            return location.distance(from: $0.centroidLocation) < location.distance(from: $1.centroidLocation)
+            return location.coordinate.distance(from: $0.centroidCoordinate) < location.coordinate.distance(from: $1.centroidCoordinate)
         }).first else {
             // There are no NaviLens-enabled POIs nearby
             return
         }
 
-        if location.distance(from: first.centroidLocation) > navilensInRangeDistance {
+        if location.coordinate.distance(from: first.centroidCoordinate) > navilensInRangeDistance {
             // Nearest NaviLens-enabled POI is >30m away
             return
         }
 
-        GDLogVerbose(.spatialData, String(format: "Nearest NaviLens POI is %fm away", location.distance(from: first.centroidLocation)))
+        GDLogVerbose(.spatialData, String(format: "Nearest NaviLens POI is %fm away", location.coordinate.distance(from: first.centroidCoordinate)))
 
         // Update the current value
         currentValue = {

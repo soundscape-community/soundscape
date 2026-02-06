@@ -50,6 +50,7 @@ Phase 1 complete:
 - 2026-02-06: Migrated `Data` intersection/roundabout/preview distance hot paths away from direct `CLLocation.distance(from:)` toward `SSGeoMath` or coordinate-based SSGeo-backed helpers, with new unit coverage for nearest-intersection selection.
 - 2026-02-06: Migrated `Behaviors` + `Generators` waypoint/intersection/filter/reverse-geocoder distance calls from direct `CLLocation.distance(from:)` to SSGeo-backed coordinate distance helpers, preserving existing callout thresholds and public APIs.
 - 2026-02-06: Migrated additional non-UI runtime distance paths in `Sensors` (`GPXSimulator`, geolocation filters), `Audio` (localized/proximity beacon distance), and core app extensions (`Array+POI`, `CoreLocation+Extensions`) to SSGeo-backed coordinate distance helpers.
+- 2026-02-06: Migrated concrete UI/runtime callers that still used direct `CLLocation.distance(from:)` (`LocationDetailLocalizedLabel`, NaviLens integrations, Route/NaviLens recommenders) to SSGeo-backed coordinate distance helpers while preserving existing label/output behavior.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

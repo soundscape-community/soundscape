@@ -42,7 +42,7 @@ struct LocationDetailLocalizedLabel {
         var accessibilityText: String?
         
         if let userLocation = userLocation {
-            let distance = detail.location.distance(from: userLocation)
+            let distance = detail.location.coordinate.distance(from: userLocation.coordinate)
             let bearing = userLocation.bearing(to: detail.location)
             
             if distance > 0, bearing >= 0, let direction = CardinalDirection(direction: bearing) {
