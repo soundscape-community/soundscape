@@ -7,6 +7,7 @@
 //
 
 import CoreLocation
+import SSGeo
 
 protocol LocationCalloutProtocol: CalloutProtocol {
     var generatedAt: CLLocation { get }
@@ -25,7 +26,7 @@ extension LocationCalloutProtocol {
             return nil
         }
         
-        let distance = location.coordinate.distance(from: generatedAt.coordinate)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: generatedAt.coordinate.ssGeoCoordinate)
         
         if tts {
             return LanguageFormatter.spellOutDistance(distance)

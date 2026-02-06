@@ -7,6 +7,7 @@
 //
 
 import CoreLocation
+import SSGeo
 
 struct POICallout: POICalloutProtocol {
     let id = UUID()
@@ -125,7 +126,7 @@ struct POICallout: POICalloutProtocol {
         
         if let marker = marker {
             soundLocation = marker.closestLocation(from: location)
-            distance = soundLocation.coordinate.distance(from: location.coordinate)
+            distance = soundLocation.coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
             category = SuperCategory(rawValue: marker.getPOI().superCategory) ?? .undefined
             
             if marker.name.isEmpty {
@@ -142,7 +143,7 @@ struct POICallout: POICalloutProtocol {
             }
         } else {
             soundLocation = poi.closestLocation(from: location)
-            distance = soundLocation.coordinate.distance(from: location.coordinate)
+            distance = soundLocation.coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
             
             if poi.localizedName.isEmpty {
                 // Use a default name

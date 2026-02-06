@@ -54,6 +54,7 @@ Phase 1 complete:
 - 2026-02-06: Migrated remaining hot-path coordinate distance calculations in `GeometryUtils`, `RoadAdjacentDataView`, and `AutoCalloutGenerator` to explicit `SSGeoCoordinate.distance(to:)` usage, reducing dependence on CoreLocation extension distance wrappers.
 - 2026-02-06: Added SSGeo-first label helpers in `LocationDetailLocalizedLabel` and `BeaconDetailLocalizedLabel` (`SSGeoLocation` inputs with `CLLocation` compatibility overloads) to keep UI geospatial formatting logic migration-friendly while preserving current caller APIs.
 - 2026-02-06: Migrated Route Guidance and Guided Tour waypoint/intersection distance checks to explicit `SSGeoCoordinate.distance(to:)` calls across callouts and generators, reducing direct CoreLocation distance coupling in high-frequency behavior paths.
+- 2026-02-06: Migrated default/preview behavior filters and callout distance logic (`BeaconUpdateFilter`, `GeneratorUpdateFilter`, `IntersectionGenerator`, `IntersectionCallout`, `POICallout`, preview and location callout helpers) to explicit `SSGeoCoordinate.distance(to:)` usage.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

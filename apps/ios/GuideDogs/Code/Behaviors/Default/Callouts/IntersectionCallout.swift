@@ -8,6 +8,7 @@
 
 import CoreLocation
 import CocoaLumberjackSwift
+import SSGeo
 
 struct IntersectionCallout: CalloutProtocol {
     
@@ -65,7 +66,7 @@ struct IntersectionCallout: CalloutProtocol {
             
             // If this is a repeat and the user isn't next to the intersection anymore, switch to using the
             // intersection's name instead of the road directions.
-            if location.coordinate.distance(from: intersection.coordinate) > IntersectionGenerator.arrivalDistance {
+            if location.coordinate.ssGeoCoordinate.distance(to: intersection.coordinate.ssGeoCoordinate) > IntersectionGenerator.arrivalDistance {
                 if isRoundabout, let roundabout = intersection.roundabout, !roundabout.isLarge {
                     // "Pike roundabout" ("Pike" is the roundabout name)
                     sounds.append(contentsOf: IntersectionCallout.roundaboutSounds(roundabout: roundabout,
@@ -99,7 +100,7 @@ struct IntersectionCallout: CalloutProtocol {
             return nil
         }
         
-        let distance = location.coordinate.distance(from: intersection.coordinate)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: intersection.coordinate.ssGeoCoordinate)
         
         if tts {
             return LanguageFormatter.spellOutDistance(distance)

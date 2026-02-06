@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 /// This class acts as a filter for throttling the frequency of beacon distance callouts
 /// on the basis of geolocation updates. This filter allows for beacon distance callouts
@@ -136,8 +137,8 @@ class BeaconUpdateFilter {
         
         let beaconDistanceRange = updateRange(for: .beacon, location: location)
         let updateDistanceRange = updateRange(for: .update, location: location)
-        let distanceToBeacon = location.coordinate.distance(from: beaconLocation.coordinate)
-        let distanceFromLastUpdate = location.coordinate.distance(from: lastUpdate.location.coordinate)
+        let distanceToBeacon = location.coordinate.ssGeoCoordinate.distance(to: beaconLocation.coordinate.ssGeoCoordinate)
+        let distanceFromLastUpdate = location.coordinate.ssGeoCoordinate.distance(to: lastUpdate.location.coordinate.ssGeoCoordinate)
         
         if distanceToBeacon >= beaconDistanceRange.upperBound {
             GDLogVerbose(.routeGuidance, "Checking should update... Distance to beacon greater than far range (\(beaconDistanceRange.upperBound.roundToDecimalPlaces(1))m), Distance from last update \(distanceFromLastUpdate.roundToDecimalPlaces(1))m")
@@ -202,7 +203,7 @@ class BeaconUpdateFilter {
         // If an update has been completed and the distance to the beacon is below the beacon distance
         // range, then the user has arrived, so we should clear the beacon location in order to stop
         // allowing updates
-        let distance = updateLocation.coordinate.distance(from: beacon.coordinate)
+        let distance = updateLocation.coordinate.ssGeoCoordinate.distance(to: beacon.coordinate.ssGeoCoordinate)
         let beaconDistanceRange = updateRange(for: .beacon, location: updateLocation)
         if distance < beaconDistanceRange.lowerBound {
             beaconLocation = nil
@@ -215,7 +216,11 @@ class BeaconUpdateFilter {
             return
         }
         
-        lastUpdate = FilterUpdateSnapshot(updateLocation, elapsed: Date().timeIntervalSince(previous.time), distance: previous.location.coordinate.distance(from: updateLocation.coordinate))
+        lastUpdate = FilterUpdateSnapshot(
+            updateLocation,
+            elapsed: Date().timeIntervalSince(previous.time),
+            distance: previous.location.coordinate.ssGeoCoordinate.distance(to: updateLocation.coordinate.ssGeoCoordinate)
+        )
     }
     
     /// Resets the filter (ensuring that the next call to `shouldUpdate(location:)` will return true

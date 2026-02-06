@@ -8,6 +8,7 @@
 
 import Combine
 import CoreLocation
+import SSGeo
 
 // MARK: Events
 
@@ -231,7 +232,7 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
         }
         
         // Check that the user has left the intersection's proximity
-        let distance = currentIntersection.coordinate.distance(from: location.coordinate)
+        let distance = currentIntersection.coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
         guard distance > IntersectionGenerator.departureDistance else {
             return
         }
@@ -319,7 +320,7 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
         }
  
         GDLogIntersectionInfo("Calling out intersection: \"\(intersection.localizedName)\", " +
-            "distance: \(String(format: "%.2f", location.coordinate.distance(from: intersection.coordinate)))m, " +
+            "distance: \(String(format: "%.2f", location.coordinate.ssGeoCoordinate.distance(to: intersection.coordinate.ssGeoCoordinate)))m, " +
             "bearing: \(String(format: "%.2f", location.bearing(to: intersection.location)))°, " +
             "presentationHeading: \(String(format: "%.2f", AppContext.shared.geolocationManager.presentationHeading.value ?? -1.0))°, " +
             "collectionHeading: \(String(format: "%.2f", AppContext.shared.geolocationManager.collectionHeading.value ?? -1.0))°, " +

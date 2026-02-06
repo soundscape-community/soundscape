@@ -6,6 +6,8 @@
 //  Licensed under the MIT License.
 //
 
+import SSGeo
+
 @MainActor
 struct PreviewGenerator<DecisionPoint: RootedPreviewGraph>: ManualGenerator {
     private let eventTypes: [UserInitiatedEvent.Type] = [
@@ -50,7 +52,9 @@ struct PreviewGenerator<DecisionPoint: RootedPreviewGraph>: ManualGenerator {
             ]
             callouts.append(contentsOf: event.node.makeInitialCallouts(resumed: false))
 
-            let distance = event.node.node.location.coordinate.distance(from: event.from.location.coordinate)
+            let distance = event.node.node.location.coordinate.ssGeoCoordinate.distance(
+                to: event.from.location.coordinate.ssGeoCoordinate
+            )
             if distance > 1.0, !event.from.displayName.isGeocoordinate() {
                 let formattedName = LanguageFormatter.string(from: distance, accuracy: 0.0, name: event.from.displayName)
                 callouts.append(StringCallout(.preview, formattedName, position: event.node.node.location.bearing(to: event.from.location)))

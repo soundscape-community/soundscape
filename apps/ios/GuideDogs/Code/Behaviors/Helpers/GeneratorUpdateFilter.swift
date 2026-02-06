@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 /// This class acts as a filter for throttling the frequency of computation which is
 /// initiated by various state change updates in openscape (e.g. geolocation updates).
@@ -125,7 +126,7 @@ class GeneratorUpdateFilter {
         
         // If the user has moved at least (updateDistanceInterval) meters, and at least (updateTimeInterval) seconds
         // have passed, then we should update
-        let distCheck = location.coordinate.distance(from: lastUpdate.location.coordinate) > minDistance * multiplier
+        let distCheck = location.coordinate.ssGeoCoordinate.distance(to: lastUpdate.location.coordinate.ssGeoCoordinate) > minDistance * multiplier
         let timeCheck = lastUpdate.time + minTime < Date()
         
         return distCheck && timeCheck
@@ -179,7 +180,11 @@ class GeneratorUpdateFilter {
             return
         }
         
-        lastUpdate = FilterUpdateSnapshot(updateLocation, elapsed: Date().timeIntervalSince(previous.time), distance: previous.location.coordinate.distance(from: updateLocation.coordinate))
+        lastUpdate = FilterUpdateSnapshot(
+            updateLocation,
+            elapsed: Date().timeIntervalSince(previous.time),
+            distance: previous.location.coordinate.ssGeoCoordinate.distance(to: updateLocation.coordinate.ssGeoCoordinate)
+        )
     }
     
     /// Resets the filter (ensuring that the next call to `shouldUpdate(location:)` will return true

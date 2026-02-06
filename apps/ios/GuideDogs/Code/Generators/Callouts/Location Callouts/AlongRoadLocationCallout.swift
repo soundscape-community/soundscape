@@ -8,6 +8,7 @@
 
 import CoreLocation
 import CocoaLumberjackSwift
+import SSGeo
 
 struct AlongRoadLocationCallout: LocationCalloutProtocol {
     
@@ -164,7 +165,7 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
             
             if useAutomotive,
                 let location = location,
-                location.coordinate.distance(from: intersection.location.coordinate) < AlongRoadLocationCallout.thresholdForIntersectionDistanceCallout {
+                location.coordinate.ssGeoCoordinate.distance(to: intersection.location.coordinate.ssGeoCoordinate) < AlongRoadLocationCallout.thresholdForIntersectionDistanceCallout {
                 distanceString = nil
             } else {
                 distanceString = intComponents.formattedDistance
