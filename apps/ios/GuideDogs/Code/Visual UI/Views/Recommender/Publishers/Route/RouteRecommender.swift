@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 /*
  * This recommender listens for location updates and queries for nearby routes.
@@ -73,7 +74,7 @@ class RouteRecommender: Recommender {
                     return nil
                 }
                 
-                return (route: route, distance: location.coordinate.distance(from: wLocation.coordinate), selected: route.lastSelectedDate, created: route.createdDate)
+                return (route: route, distance: location.coordinate.ssGeoCoordinate.distance(to: wLocation.coordinate.ssGeoCoordinate), selected: route.lastSelectedDate, created: route.createdDate)
             })
             .sorted(by: {
                 if $0.distance != $1.distance {

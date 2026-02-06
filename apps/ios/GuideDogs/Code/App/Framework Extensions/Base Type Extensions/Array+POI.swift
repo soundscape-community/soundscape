@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 @MainActor
 extension Array where Element == POI {
@@ -22,9 +23,9 @@ extension Array where Element == POI {
     }
     
     func sorted(byDistanceFrom location: CLLocation) -> [POI] {
-         // Storing the poi with its distance from current location
+        // Storing the poi with its distance from current location
         let poisWithDistance = self.map { poi in
-            (poi: poi, distance: location.coordinate.distance(from: poi.centroidCoordinate))
+            (poi: poi, distance: location.coordinate.ssGeoCoordinate.distance(to: poi.centroidCoordinate.ssGeoCoordinate))
         }
         // Sort the array based on the distance, then extract the POIs in sorted order
         let sortedPoisWithDistance = poisWithDistance.sorted { $0.distance < $1.distance }

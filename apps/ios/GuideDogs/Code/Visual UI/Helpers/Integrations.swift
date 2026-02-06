@@ -6,6 +6,8 @@
 //  Copyright © 2025 Soundscape community. All rights reserved.
 //
 
+import SSGeo
+
 @MainActor
 func launchNaviLens(detail: LocationDetail) {
     // Silence Soundscape before launching NaviLens
@@ -33,7 +35,7 @@ func guideToNaviLens(detail: LocationDetail) throws {
     }
 
     // If our GPS is more precise than we are close, use a beacon
-    if location.coordinate.distance(from: detail.location.coordinate) > location.horizontalAccuracy {
+    if location.coordinate.ssGeoCoordinate.distance(to: detail.location.coordinate.ssGeoCoordinate) > location.horizontalAccuracy {
         try LocationActionHandler.beacon(locationDetail: detail)
     } else {
         launchNaviLens(detail: detail)

@@ -55,6 +55,10 @@ Phase 1 complete:
 - 2026-02-06: Added SSGeo-first label helpers in `LocationDetailLocalizedLabel` and `BeaconDetailLocalizedLabel` (`SSGeoLocation` inputs with `CLLocation` compatibility overloads) to keep UI geospatial formatting logic migration-friendly while preserving current caller APIs.
 - 2026-02-06: Migrated Route Guidance and Guided Tour waypoint/intersection distance checks to explicit `SSGeoCoordinate.distance(to:)` calls across callouts and generators, reducing direct CoreLocation distance coupling in high-frequency behavior paths.
 - 2026-02-06: Migrated default/preview behavior filters and callout distance logic (`BeaconUpdateFilter`, `GeneratorUpdateFilter`, `IntersectionGenerator`, `IntersectionCallout`, `POICallout`, preview and location callout helpers) to explicit `SSGeoCoordinate.distance(to:)` usage.
+- 2026-02-06: Migrated geolocation sensor runtime distance checks (`GPXSimulator`, `LocationUpdateFilter`, `SignificantChangeMonitoringOrigin`) to explicit `SSGeoCoordinate.distance(to:)` usage to reduce remaining CoreLocation distance coupling in location update paths.
+- 2026-02-06: Migrated reverse-geocoder runtime distance checks/callout component distances (`ReverseGeocoderContext`, `ReverseGeocoderResultTypes`) to explicit `SSGeoCoordinate.distance(to:)` usage while preserving geocoder thresholds and callout outputs.
+- 2026-02-06: Migrated additional non-UI runtime distance paths (`Array+POI`, `CoreLocation+Extensions` transform helper, `RoadAdjacentDataView`, `AuthoredActivityContent`, `BaseAudioPlayer`, `DynamicAudioEngineAssets`, NaviLens integration helper) to explicit `SSGeoCoordinate.distance(to:)` calls.
+- 2026-02-06: Migrated recommender distance sorting/filtering in `RouteRecommender` and `NavilensRecommender` to explicit `SSGeoCoordinate.distance(to:)` usage to remove remaining direct coordinate distance math in recommender publishers.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

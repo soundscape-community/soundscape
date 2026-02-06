@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 extension Notification.Name {
     static let estimatedAddressDidComplete = Notification.Name("EstimatedAddressDidComplete")
@@ -124,7 +125,7 @@ struct GenericGeocoderResult: ReverseGeocoderResult {
         
         return LocationCalloutComponents(name: road.localizedName,
                                          location: roadLocation,
-                                         distance: location.coordinate.distance(from: roadLocation.coordinate),
+                                         distance: location.coordinate.ssGeoCoordinate.distance(to: roadLocation.coordinate.ssGeoCoordinate),
                                          encodedDirection: encoded,
                                          bearing: location.bearing(to: roadLocation))
     }
@@ -322,7 +323,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
         
         return LocationCalloutComponents(name: road.localizedName,
                                          location: roadLocation,
-                                         distance: location.coordinate.distance(from: roadLocation.coordinate),
+                                         distance: location.coordinate.ssGeoCoordinate.distance(to: roadLocation.coordinate.ssGeoCoordinate),
                                          encodedDirection: encoded,
                                          bearing: location.bearing(to: roadLocation))
     }
@@ -348,7 +349,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
         
         return LocationCalloutComponents(name: localizedName,
                                          location: intersection.location,
-                                         distance: location.coordinate.distance(from: intersection.location.coordinate),
+                                         distance: location.coordinate.ssGeoCoordinate.distance(to: intersection.location.coordinate.ssGeoCoordinate),
                                          encodedDirection: encoded,
                                          bearing: location.bearing(to: intersection.location))
     }

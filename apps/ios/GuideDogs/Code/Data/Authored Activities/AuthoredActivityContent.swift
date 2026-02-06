@@ -452,7 +452,7 @@ extension ActivityPOI: POI {
     }
     
     func distanceToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDistance {
-        return coordinate.distance(from: location.coordinate)
+        return coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
     }
     
     func bearingToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDirection {

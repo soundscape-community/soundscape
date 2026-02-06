@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import CoreGPX
+import SSGeo
 
 struct GPXIndex {
     static let zero = GPXIndex(track: 0, segment: 0, point: 0)
@@ -681,7 +682,7 @@ class GPXSimulator {
         let location = CLLocation(latitude: currentLatitude, longitude: currentLongitude)
         let prevLocation = CLLocation(latitude: prevLatitude, longitude: prevLongitude)
         
-        let distance = location.coordinate.distance(from: prevLocation.coordinate)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: prevLocation.coordinate.ssGeoCoordinate)
         let time = timeIntervalBetweenLocations
         
         return distance/time
@@ -719,7 +720,7 @@ class GPXSimulator {
         var closestDistance: CLLocationDistance = CLLocationDistanceMax
 
         for trackPoint in allTrackPoints {
-            let distance = location.coordinate.distance(from: trackPoint.gpxLocation().location.coordinate)
+            let distance = location.coordinate.ssGeoCoordinate.distance(to: trackPoint.gpxLocation().location.coordinate.ssGeoCoordinate)
             if distance > closestDistance {
                 continue
             }

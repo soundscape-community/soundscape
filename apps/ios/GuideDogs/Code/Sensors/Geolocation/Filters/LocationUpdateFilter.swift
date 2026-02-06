@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 /// This class acts as a filter for throttling the frequency of computation which is
 /// initiated by geolocation updates. With code that is dependent on location updates
@@ -79,7 +80,7 @@ class LocationUpdateFilter {
         }
         
         if let previousLocation = previousLocation {
-            self.previousDistance = previousLocation.coordinate.distance(from: location.coordinate)
+            self.previousDistance = previousLocation.coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
         }
         
         // Set the update time to now, and the location to the provided location
@@ -119,7 +120,7 @@ class LocationUpdateFilter {
         
         // If the user has moved at least (updateDistanceInterval) meters, and at least (updateTimeInterval) seconds
         // have passed, then we should update
-        let dist = location.coordinate.distance(from: previousLocation.coordinate)
+        let dist = location.coordinate.ssGeoCoordinate.distance(to: previousLocation.coordinate.ssGeoCoordinate)
         let time = previousTime + updateTimeInterval
                 
         if dist > updateDistanceInterval && time < Date() {

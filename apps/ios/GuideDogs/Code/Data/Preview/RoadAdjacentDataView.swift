@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import CocoaLumberjackSwift
 import CoreGPX
+import SSGeo
 
 @MainActor
 struct RoadAdjacentDataView: AdjacentDataView, Equatable {
@@ -174,7 +175,7 @@ struct RoadAdjacentDataView: AdjacentDataView, Equatable {
             }]
         }
 
-        let distance = endpoint.coordinate.distance(from: from.coordinate)
+        let distance = endpoint.coordinate.ssGeoCoordinate.distance(to: from.coordinate.ssGeoCoordinate)
         let formattedDistance = LanguageFormatter.formattedDistance(from: distance)
         let distanceCallout = StringCallout(.preview, formattedDistance, position: bearing)
         

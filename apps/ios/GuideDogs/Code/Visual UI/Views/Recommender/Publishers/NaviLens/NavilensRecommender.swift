@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 /*
  * This recommender listens for location updates and queries for nearby NaviLens-enabled POIs.
@@ -73,18 +74,18 @@ class NavilensRecommender: Recommender {
 
         guard let first = dataView.pois.filtered(by: navilensOnly).sorted(by: {
             // Sort NaviLens-enabled POIs by distance
-            return location.coordinate.distance(from: $0.centroidCoordinate) < location.coordinate.distance(from: $1.centroidCoordinate)
+            return location.coordinate.ssGeoCoordinate.distance(to: $0.centroidCoordinate.ssGeoCoordinate) < location.coordinate.ssGeoCoordinate.distance(to: $1.centroidCoordinate.ssGeoCoordinate)
         }).first else {
             // There are no NaviLens-enabled POIs nearby
             return
         }
 
-        if location.coordinate.distance(from: first.centroidCoordinate) > navilensInRangeDistance {
+        if location.coordinate.ssGeoCoordinate.distance(to: first.centroidCoordinate.ssGeoCoordinate) > navilensInRangeDistance {
             // Nearest NaviLens-enabled POI is >30m away
             return
         }
 
-        GDLogVerbose(.spatialData, String(format: "Nearest NaviLens POI is %fm away", location.coordinate.distance(from: first.centroidCoordinate)))
+        GDLogVerbose(.spatialData, String(format: "Nearest NaviLens POI is %fm away", location.coordinate.ssGeoCoordinate.distance(to: first.centroidCoordinate.ssGeoCoordinate)))
 
         // Update the current value
         currentValue = {

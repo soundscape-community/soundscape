@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SSGeo
 
 // MARK: Original Beacons
 
@@ -146,7 +147,7 @@ enum ProximityBeacon: String, DynamicAudioEngineAsset {
                 return (.far, 0.0)
             }
             
-            let distance = user.coordinate.distance(from: beacon.coordinate)
+            let distance = user.coordinate.ssGeoCoordinate.distance(to: beacon.coordinate.ssGeoCoordinate)
             
             if distance < 20.0 {
                 return (.near, 1.0)

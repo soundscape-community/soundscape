@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 @MainActor
 class SignificantChangeMonitoringOrigin {
@@ -46,7 +47,7 @@ class SignificantChangeMonitoringOrigin {
         } else if let origin = self.location {
             // Update the user's location after the user has moved
             // more than 40 meters
-            return location.coordinate.distance(from: origin.coordinate) > 40.0
+            return location.coordinate.ssGeoCoordinate.distance(to: origin.coordinate.ssGeoCoordinate) > 40.0
         }
         
         // `origin` is invalid

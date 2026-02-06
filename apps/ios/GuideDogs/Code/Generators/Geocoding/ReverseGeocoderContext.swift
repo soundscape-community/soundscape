@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 protocol ReverseGeocoder: AnyObject {
     func reverseGeocode(_ location: CLLocation) -> ReverseGeocoderResult?
@@ -194,7 +195,7 @@ class ReverseGeocoderContext: ReverseGeocoder {
         }
         
         // Sticky road logic should only apply when near an intersection
-        guard closestIntersection.coordinate.distance(from: location.coordinate) < ReverseGeocoderContext.nearIntersectionDistance else {
+        guard closestIntersection.coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate) < ReverseGeocoderContext.nearIntersectionDistance else {
             return false
         }
         
