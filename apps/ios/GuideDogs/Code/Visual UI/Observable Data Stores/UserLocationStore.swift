@@ -11,6 +11,13 @@ import CoreLocation
 import SSGeo
 
 @MainActor
+enum UserLocationStoreRuntime {
+    static var initialUserLocation: () -> SSGeoLocation? = {
+        AppContext.shared.geolocationManager.location?.ssGeoLocation
+    }
+}
+
+@MainActor
 class UserLocationStore: ObservableObject {
     @Published var ssGeoLocation: SSGeoLocation?
     
@@ -26,7 +33,7 @@ class UserLocationStore: ObservableObject {
         }
         
         // Save initial value
-        self.ssGeoLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
+        self.ssGeoLocation = UserLocationStoreRuntime.initialUserLocation()
     }
 
     init(designValue: SSGeoLocation) {
