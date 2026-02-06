@@ -86,7 +86,7 @@ swift build --package-path tools/SSIndexAnalyzer
 - Run against latest `GuideDogs` DerivedData index store (auto-discovery defaults):
 
 ```bash
-swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --top 40 --min-count 2
+swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --top 40 --min-count 2 --external-top 20
 ```
 
 - Typical explicit usage (if auto-discovery is not desired):
@@ -96,7 +96,9 @@ swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer \
   --store-path /Users/<user>/Library/Developer/Xcode/DerivedData/GuideDogs-<id>/Index.noindex/DataStore \
   --db-path /tmp/ss-index-analyzer-db \
   --source-root apps/ios/GuideDogs/Code \
-  --lib-indexstore /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libIndexStore.dylib
+  --lib-indexstore /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libIndexStore.dylib \
+  --file-top 30 \
+  --external-top 30
 ```
 
 ## Documentation Navigation

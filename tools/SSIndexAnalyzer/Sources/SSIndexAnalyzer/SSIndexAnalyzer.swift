@@ -13,6 +13,8 @@ private struct Options {
     let libIndexStorePath: String
     let top: Int
     let minCount: Int
+    let fileTop: Int
+    let externalTop: Int
 }
 
 private enum CLIError: LocalizedError {
@@ -30,6 +32,21 @@ private enum CLIError: LocalizedError {
             return "Path not found: \(path)"
         }
     }
+}
+
+private struct FileEdge: Hashable {
+    let fromFile: String
+    let toFile: String
+}
+
+private struct ExternalEdge: Hashable {
+    let from: String
+    let module: String
+}
+
+private struct USRResolution {
+    let localPaths: [String]
+    let externalModules: [String]
 }
 
 @main
@@ -64,9 +81,12 @@ struct SSIndexAnalyzer {
         let definitionRoles: SymbolRole = [.definition, .declaration, .canonical]
 
         var edgeCounts: [Edge: Int] = [:]
-        var definitionCache: [String: [String]] = [:]
+        var fileEdgeCounts: [FileEdge: Int] = [:]
+        var externalEdgeCounts: [ExternalEdge: Int] = [:]
+        var resolutionCache: [String: USRResolution] = [:]
         var referenceCount = 0
         var resolvedReferenceCount = 0
+        var externalReferenceCount = 0
 
         for file in swiftFiles {
             let fromSubsystem = subsystemName(filePath: file, sourceRoot: sourceRoot)
@@ -86,18 +106,34 @@ struct SSIndexAnalyzer {
                     continue
                 }
 
-                let definitionPaths: [String]
-                if let cached = definitionCache[usr] {
-                    definitionPaths = cached
+                let resolution: USRResolution
+                if let cached = resolutionCache[usr] {
+                    resolution = cached
                 } else {
                     let defs = db.occurrences(ofUSR: usr, roles: definitionRoles)
-                    let unique = Set(defs.map { normalizePath($0.location.path) })
-                    let localDefs = unique.filter { $0.hasPrefix(sourceRoot + "/") || $0 == sourceRoot }
-                    definitionPaths = Array(localDefs)
-                    definitionCache[usr] = definitionPaths
+                    var localPaths = Set<String>()
+                    var externalModules = Set<String>()
+
+                    for def in defs {
+                        let path = normalizePath(def.location.path)
+                        if path.hasPrefix(sourceRoot + "/") || path == sourceRoot {
+                            localPaths.insert(path)
+                        } else {
+                            let module = def.location.moduleName.trimmingCharacters(in: .whitespacesAndNewlines)
+                            if module.isEmpty == false {
+                                externalModules.insert(module)
+                            }
+                        }
+                    }
+
+                    resolution = USRResolution(
+                        localPaths: Array(localPaths),
+                        externalModules: Array(externalModules)
+                    )
+                    resolutionCache[usr] = resolution
                 }
 
-                for defPath in definitionPaths {
+                for defPath in resolution.localPaths {
                     let toSubsystem = subsystemName(filePath: defPath, sourceRoot: sourceRoot)
                     guard !toSubsystem.isEmpty else {
                         continue
@@ -108,7 +144,15 @@ struct SSIndexAnalyzer {
 
                     let edge = Edge(from: fromSubsystem, to: toSubsystem)
                     edgeCounts[edge, default: 0] += 1
+                    let fileEdge = FileEdge(fromFile: file, toFile: defPath)
+                    fileEdgeCounts[fileEdge, default: 0] += 1
                     resolvedReferenceCount += 1
+                }
+
+                for module in resolution.externalModules {
+                    let externalEdge = ExternalEdge(from: fromSubsystem, module: module)
+                    externalEdgeCounts[externalEdge, default: 0] += 1
+                    externalReferenceCount += 1
                 }
             }
         }
@@ -133,11 +177,54 @@ struct SSIndexAnalyzer {
         print("Swift files scanned: \(swiftFiles.count)")
         print("Reference occurrences: \(referenceCount)")
         print("Resolved cross-subsystem refs: \(resolvedReferenceCount)")
+        print("Resolved external refs: \(externalReferenceCount)")
         print("")
         print("Top cross-subsystem dependency edges:")
         for (index, item) in sortedEdges.prefix(options.top).enumerated() {
             let n = String(format: "%6d", item.value)
             print("\(String(format: "%3d", index + 1)). \(n)  \(item.key.from) -> \(item.key.to)")
+        }
+
+        let sortedFileEdges = fileEdgeCounts
+            .filter { $0.value >= options.minCount }
+            .sorted {
+                if $0.value != $1.value {
+                    return $0.value > $1.value
+                }
+                if $0.key.fromFile != $1.key.fromFile {
+                    return $0.key.fromFile < $1.key.fromFile
+                }
+                return $0.key.toFile < $1.key.toFile
+            }
+
+        if options.fileTop > 0 {
+            print("")
+            print("Top cross-file edges:")
+            for (index, item) in sortedFileEdges.prefix(options.fileTop).enumerated() {
+                let n = String(format: "%6d", item.value)
+                print("\(String(format: "%3d", index + 1)). \(n)  \(relativePath(item.key.fromFile, from: sourceRoot)) -> \(relativePath(item.key.toFile, from: sourceRoot))")
+            }
+        }
+
+        let sortedExternalEdges = externalEdgeCounts
+            .filter { $0.value >= options.minCount }
+            .sorted {
+                if $0.value != $1.value {
+                    return $0.value > $1.value
+                }
+                if $0.key.from != $1.key.from {
+                    return $0.key.from < $1.key.from
+                }
+                return $0.key.module < $1.key.module
+            }
+
+        if options.externalTop > 0 {
+            print("")
+            print("Top external module edges:")
+            for (index, item) in sortedExternalEdges.prefix(options.externalTop).enumerated() {
+                let n = String(format: "%6d", item.value)
+                print("\(String(format: "%3d", index + 1)). \(n)  \(item.key.from) -> \(item.key.module)")
+            }
         }
     }
 }
@@ -153,6 +240,8 @@ Options:
   --lib-indexstore <path>   Path to libIndexStore.dylib (default: autodetected from xcrun toolchain)
   --top <n>                 Number of edges to print (default: 40)
   --min-count <n>           Minimum edge count to include (default: 1)
+  --file-top <n>            Number of cross-file edges to print (default: 0)
+  --external-top <n>        Number of external module edges to print (default: 20)
 """
 
 private func parseOptions(arguments: [String]) throws -> Options {
@@ -162,6 +251,8 @@ private func parseOptions(arguments: [String]) throws -> Options {
     var libIndexStorePath = discoverLibIndexStorePath()
     var top = 40
     var minCount = 1
+    var fileTop = 0
+    var externalTop = 20
 
     var i = 0
     while i < arguments.count {
@@ -191,6 +282,14 @@ private func parseOptions(arguments: [String]) throws -> Options {
             i += 1
             guard i < arguments.count else { throw CLIError.missingValue(arg) }
             minCount = Int(arguments[i]) ?? minCount
+        case "--file-top":
+            i += 1
+            guard i < arguments.count else { throw CLIError.missingValue(arg) }
+            fileTop = Int(arguments[i]) ?? fileTop
+        case "--external-top":
+            i += 1
+            guard i < arguments.count else { throw CLIError.missingValue(arg) }
+            externalTop = Int(arguments[i]) ?? externalTop
         case "-h", "--help":
             throw CLIError.usage(usageText)
         default:
@@ -223,7 +322,9 @@ private func parseOptions(arguments: [String]) throws -> Options {
         sourceRoot: normalizePath(sourceRoot),
         libIndexStorePath: normalizePath(libIndexStorePath),
         top: top,
-        minCount: minCount
+        minCount: minCount,
+        fileTop: fileTop,
+        externalTop: externalTop
     )
 }
 
@@ -296,6 +397,13 @@ private func subsystemName(filePath: String, sourceRoot: String) -> String {
         relative.removeFirst()
     }
     return relative.split(separator: "/", maxSplits: 1).first.map(String.init) ?? ""
+}
+
+private func relativePath(_ path: String, from sourceRoot: String) -> String {
+    if path.hasPrefix(sourceRoot + "/") {
+        return String(path.dropFirst(sourceRoot.count + 1))
+    }
+    return path
 }
 
 private func runProcess(_ launchPath: String, arguments: [String]) -> String? {
