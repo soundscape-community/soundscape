@@ -17,7 +17,7 @@ struct LocationItemView: View {
     @ScaledMetric(relativeTo: .body) private var accessorySize: CGFloat = 28.0
     
     private let locationDetail: LocationDetail
-    private let userLocation: CLLocation?
+    private let userLocation: SSGeoLocation?
     
     // Style configuration
     private let configuration: AnyLocationItemStyleConfiguration
@@ -28,7 +28,7 @@ struct LocationItemView: View {
     
     // MARK: Initialization
     
-    init(locationDetail: LocationDetail, userLocation: CLLocation?) {
+    init(locationDetail: LocationDetail, userLocation: SSGeoLocation?) {
         self.locationDetail = locationDetail
         self.userLocation = userLocation
         // Use default style configuration
@@ -39,7 +39,11 @@ struct LocationItemView: View {
         }
     }
     
-    private init(locationDetail: LocationDetail, userLocation: CLLocation?, style: LocationItemStyle = .plain) {
+    init(locationDetail: LocationDetail, userLocation: CLLocation?) {
+        self.init(locationDetail: locationDetail, userLocation: userLocation?.ssGeoLocation)
+    }
+    
+    private init(locationDetail: LocationDetail, userLocation: SSGeoLocation?, style: LocationItemStyle = .plain) {
         self.locationDetail = locationDetail
         self.userLocation = userLocation
         self.configuration = style.configuration
@@ -62,7 +66,7 @@ struct LocationItemView: View {
                     .locationNameTextFormat()
                     .accessibilitySortPriority(accessibilitySortPriority.name)
                 
-                if let distance = locationDetail.labels.distance(from: userLocation?.ssGeoLocation) {
+                if let distance = locationDetail.labels.distance(from: userLocation) {
                     distance.accessibleTextView
                         .locationDistanceTextFormat()
                         .accessibilitySortPriority(accessibilitySortPriority.distance)

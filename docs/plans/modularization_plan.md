@@ -65,6 +65,7 @@ Phase 1 complete:
 - 2026-02-06: Removed unused `CLLocationCoordinate2D.distance(from:)` extension from app code and updated iOS unit tests (`GeometryUtilsTest`, `GDASpatialDataResultEntityDistanceTests`) to assert distances via explicit `SSGeoCoordinate.distance(to:)` calls.
 - 2026-02-06: Made `UserLocationStore` SSGeo-first (`@Published ssGeoLocation`) with a read-only `CLLocation` compatibility accessor, and updated route/tour UI distance callers to consume `ssGeoLocation` directly.
 - 2026-02-06: Updated `BeaconTitleViewController` state/subscriptions to store user position as `SSGeoLocation` directly, removing local `CLLocation` storage and additional conversion churn in beacon UI updates.
+- 2026-02-06: Made additional UI location state SSGeo-first (`BeaconTitleView`, `LocationItemView`, `LocationDetailLabelView`, `LocationDetailTableViewController`) while keeping targeted `CLLocation` initializer overloads where call-site compatibility is still needed.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

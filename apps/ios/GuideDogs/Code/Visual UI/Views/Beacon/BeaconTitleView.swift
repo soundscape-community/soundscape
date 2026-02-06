@@ -17,7 +17,16 @@ struct BeaconTitleView: View {
     @EnvironmentObject var navHelper: ViewNavigationHelper
     
     let beacon: BeaconDetail
-    let userLocation: CLLocation?
+    let userLocation: SSGeoLocation?
+    
+    init(beacon: BeaconDetail, userLocation: SSGeoLocation?) {
+        self.beacon = beacon
+        self.userLocation = userLocation
+    }
+    
+    init(beacon: BeaconDetail, userLocation: CLLocation?) {
+        self.init(beacon: beacon, userLocation: userLocation?.ssGeoLocation)
+    }
     
     // MARK: `Body`
     
@@ -35,7 +44,7 @@ struct BeaconTitleView: View {
             
             Group {
                 let nLabel = beacon.labels.name
-                let dLabel = beacon.labels.distance(from: userLocation?.ssGeoLocation)
+                let dLabel = beacon.labels.distance(from: userLocation)
                 let aLabel = nLabel.appending(dLabel, localizedSeparator: " ")
                 
                 Group {
@@ -83,7 +92,7 @@ struct BeaconTitleView: View {
         }
         .if(beacon.routeDetail == nil) { view in
             view.accessibilityAction(named: Text(BeaconAction.moreInformation.text), {
-                BeaconActionHandler.moreInformation(detail: beacon, userLocation: userLocation?.ssGeoLocation)
+                BeaconActionHandler.moreInformation(detail: beacon, userLocation: userLocation)
             })
         }
         .if(beacon.routeDetail == nil) { view in
@@ -130,7 +139,8 @@ struct BeaconTitleView_Previews: PreviewProvider {
             BeaconTitleView(beacon: BeaconDetail(locationDetail: locationDetail, isAudioEnabled: true), userLocation: userLocation)
                 .padding(10.0)
             
-            BeaconTitleView(beacon: BeaconDetail(from: adaptiveSportsBehavior, isAudioEnabled: true)!, userLocation: nil)
+            BeaconTitleView(beacon: BeaconDetail(from: adaptiveSportsBehavior, isAudioEnabled: true)!,
+                            userLocation: (nil as SSGeoLocation?))
                 .padding(10.0)
         }
         .background(Color.primaryBackground)

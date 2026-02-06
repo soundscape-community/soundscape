@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreLocation
 import SSGeo
 
 class LocationDetailTableViewController: UITableViewController {
@@ -26,7 +25,7 @@ class LocationDetailTableViewController: UITableViewController {
     // MARK: Properties
     
     private let defaultCell = UITableViewCell(style: .default, reuseIdentifier: "DefaultCell")
-    private var userLocation: CLLocation?
+    private var userLocation: SSGeoLocation?
     
     var locationDetail: LocationDetail? {
         didSet {
@@ -55,7 +54,7 @@ class LocationDetailTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.userLocation = AppContext.shared.geolocationManager.location
+        self.userLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
     }
     
     override func viewDidLayoutSubviews() {
@@ -111,7 +110,7 @@ class LocationDetailTableViewController: UITableViewController {
             cell.nameLabel.accessibilityLabel = labels.name().accessibilityText
             
             // Configure distance label
-            let distanceLabel = labels.distance(from: userLocation?.ssGeoLocation)
+            let distanceLabel = labels.distance(from: userLocation)
             cell.distanceLabel.text = distanceLabel?.text
             cell.distanceLabel.accessibilityLabel = distanceLabel?.accessibilityText
             

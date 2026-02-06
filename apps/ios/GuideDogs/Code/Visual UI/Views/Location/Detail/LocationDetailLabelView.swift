@@ -17,14 +17,14 @@ struct LocationDetailLabelView: View {
     
     @State private var location: LocationDetail
     
-    let userLocation: CLLocation?
+    let userLocation: SSGeoLocation?
     private let titleColor: Color?
     private let subtitleColor: Color?
     private let highlightColor: Color?
     
     // MARK: Initialization
     
-    init(location: LocationDetail, userLocation: CLLocation?) {
+    init(location: LocationDetail, userLocation: SSGeoLocation?) {
         self._location = State(initialValue: location)
         self.userLocation = userLocation
         // Use default values
@@ -33,7 +33,11 @@ struct LocationDetailLabelView: View {
         self.highlightColor = nil
     }
     
-    private init(location: LocationDetail, userLocation: CLLocation?, titleColor: Color?, subtitleColor: Color?, highlightColor: Color?) {
+    init(location: LocationDetail, userLocation: CLLocation?) {
+        self.init(location: location, userLocation: userLocation?.ssGeoLocation)
+    }
+    
+    private init(location: LocationDetail, userLocation: SSGeoLocation?, titleColor: Color?, subtitleColor: Color?, highlightColor: Color?) {
         self._location = State(initialValue: location)
         self.userLocation = userLocation
         self.titleColor = titleColor
@@ -51,7 +55,7 @@ struct LocationDetailLabelView: View {
                     .font(.largeTitle)
                 
                 VStack(alignment: .leading, spacing: 4.0) {
-                    if let distance = location.labels.distance(from: userLocation?.ssGeoLocation) {
+                    if let distance = location.labels.distance(from: userLocation) {
                         distance.accessibleTextView(leftAccessory: Image(systemName: "map"))
                             .font(.callout)
                             .foregroundColor(highlightColor)
