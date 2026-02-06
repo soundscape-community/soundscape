@@ -20,6 +20,11 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         var initialLocation: SSGeoLocation?
         var geofenceResult = false
         var receivedGeofenceInputs: [SSGeoLocation] = []
+        var routeGuidanceLookupCount = 0
+        var guidedTourLookupCount = 0
+        var playAudioResult: AudioPlayerIdentifier?
+        var playedAudioURLs: [URL] = []
+        var stoppedAudioIDs: [AudioPlayerIdentifier] = []
 
         func userLocationStoreInitialUserLocation() -> SSGeoLocation? {
             initialLocation
@@ -28,6 +33,34 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         func beaconDetailIsUserWithinDestinationGeofence(_ userLocation: SSGeoLocation) -> Bool {
             receivedGeofenceInputs.append(userLocation)
             return geofenceResult
+        }
+
+        func beaconStoreDestinationManager() -> DestinationManagerProtocol? {
+            nil
+        }
+
+        func beaconStoreActiveRouteGuidance() -> RouteGuidance? {
+            routeGuidanceLookupCount += 1
+            return nil
+        }
+
+        func routeGuidanceStateStoreActiveRouteGuidance() -> RouteGuidance? {
+            routeGuidanceLookupCount += 1
+            return nil
+        }
+
+        func guidedTourStateStoreActiveTour() -> GuidedTour? {
+            guidedTourLookupCount += 1
+            return nil
+        }
+
+        func audioFileStorePlay(_ url: URL) -> AudioPlayerIdentifier? {
+            playedAudioURLs.append(url)
+            return playAudioResult
+        }
+
+        func audioFileStoreStop(_ id: AudioPlayerIdentifier) {
+            stoppedAudioIDs.append(id)
         }
     }
 
@@ -68,5 +101,28 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
 
         XCTAssertNil(UserLocationStoreRuntime.initialUserLocation())
         XCTAssertFalse(BeaconDetailRuntime.isUserWithinDestinationGeofence(location(latitude: 47.62, longitude: -122.34)))
+    }
+
+    func testAdditionalVisualRuntimeHooksDispatchToConfiguredProvider() {
+        let provider = MockVisualRuntimeProviders()
+        let expectedPlayerID = UUID()
+        provider.playAudioResult = expectedPlayerID
+        VisualRuntimeProviderRegistry.configure(with: provider)
+
+        _ = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance()
+        _ = VisualRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour()
+        _ = VisualRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance()
+
+        let url = URL(fileURLWithPath: "/tmp/test-audio.mp3")
+        let playerID = VisualRuntimeProviderRegistry.providers.audioFileStorePlay(url)
+        if let playerID {
+            VisualRuntimeProviderRegistry.providers.audioFileStoreStop(playerID)
+        }
+
+        XCTAssertEqual(provider.routeGuidanceLookupCount, 2)
+        XCTAssertEqual(provider.guidedTourLookupCount, 1)
+        XCTAssertEqual(provider.playedAudioURLs, [url])
+        XCTAssertEqual(playerID, expectedPlayerID)
+        XCTAssertEqual(provider.stoppedAudioIDs, [expectedPlayerID])
     }
 }

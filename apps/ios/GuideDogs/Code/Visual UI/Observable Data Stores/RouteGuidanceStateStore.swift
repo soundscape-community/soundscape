@@ -48,7 +48,7 @@ class RouteGuidanceStateStore: ObservableObject {
     }
     
     private func updateState() {
-        guard let routeGuidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
+        guard let routeGuidance = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
             state = nil
             return
         }

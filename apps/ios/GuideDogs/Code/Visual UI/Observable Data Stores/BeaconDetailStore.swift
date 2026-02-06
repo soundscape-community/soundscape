@@ -23,14 +23,15 @@ class BeaconDetailStore: ObservableObject {
     // MARK: Initialization
     
     convenience init() {
-        let manager = AppContext.shared.spatialDataContext.destinationManager
+        let manager = VisualRuntimeProviderRegistry.providers.beaconStoreDestinationManager()
         
-        if let behavior = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance {
+        if let behavior = VisualRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance(),
+           let manager {
             let beacon = BeaconDetail(from: behavior, isAudioEnabled: manager.isAudioEnabled)
             
             // Active audio beacon is following a route
             self.init(beacon: beacon)
-        } else if let key = manager.destinationKey, let beacon = SpatialDataCache.referenceEntityByKey(key) {
+        } else if let manager, let key = manager.destinationKey, let beacon = SpatialDataCache.referenceEntityByKey(key) {
             let beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: manager.isAudioEnabled)
             
             // Active audio beacon is set on a location
@@ -127,7 +128,7 @@ class BeaconDetailStore: ObservableObject {
                 return
             }
             
-            guard let behavior = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
+            guard let behavior = VisualRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance() else {
                 return
             }
             

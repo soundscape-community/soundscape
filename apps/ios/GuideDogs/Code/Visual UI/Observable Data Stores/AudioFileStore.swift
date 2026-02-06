@@ -116,7 +116,7 @@ class AudioFileStore: ObservableObject {
             self.cleanupFinishedPlayer()
         }
         
-        playerID = AppContext.shared.audioEngine.play(GenericSound(url))
+        playerID = VisualRuntimeProviderRegistry.providers.audioFileStorePlay(url)
         
         let tickTock = Timer(timeInterval: 0.05, repeats: true, block: { _ in self.elapsed += 0.05 })
         RunLoop.main.add(tickTock, forMode: .default)
@@ -132,7 +132,7 @@ class AudioFileStore: ObservableObject {
             return
         }
         
-        AppContext.shared.audioEngine.stop(id)
+        VisualRuntimeProviderRegistry.providers.audioFileStoreStop(id)
         cleanupFinishedPlayer()
     }
     

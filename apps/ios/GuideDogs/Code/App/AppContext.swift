@@ -358,8 +358,34 @@ protocol BeaconDetailRuntimeProviding {
 }
 
 @MainActor
+protocol BeaconStoreRuntimeProviding {
+    func beaconStoreDestinationManager() -> DestinationManagerProtocol?
+    func beaconStoreActiveRouteGuidance() -> RouteGuidance?
+}
+
+@MainActor
+protocol RouteGuidanceStateStoreRuntimeProviding {
+    func routeGuidanceStateStoreActiveRouteGuidance() -> RouteGuidance?
+}
+
+@MainActor
+protocol GuidedTourStateStoreRuntimeProviding {
+    func guidedTourStateStoreActiveTour() -> GuidedTour?
+}
+
+@MainActor
+protocol AudioFileStoreRuntimeProviding {
+    func audioFileStorePlay(_ url: URL) -> AudioPlayerIdentifier?
+    func audioFileStoreStop(_ id: AudioPlayerIdentifier)
+}
+
+@MainActor
 protocol VisualRuntimeProviders: UserLocationStoreRuntimeProviding,
-                                 BeaconDetailRuntimeProviding {}
+                                 BeaconDetailRuntimeProviding,
+                                 BeaconStoreRuntimeProviding,
+                                 RouteGuidanceStateStoreRuntimeProviding,
+                                 GuidedTourStateStoreRuntimeProviding,
+                                 AudioFileStoreRuntimeProviding {}
 
 @MainActor
 enum VisualRuntimeProviderRegistry {
@@ -398,6 +424,35 @@ private final class UnconfiguredVisualRuntimeProviders: VisualRuntimeProviders {
         debugAssertUnconfigured(#function)
         return false
     }
+
+    func beaconStoreDestinationManager() -> DestinationManagerProtocol? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func beaconStoreActiveRouteGuidance() -> RouteGuidance? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func routeGuidanceStateStoreActiveRouteGuidance() -> RouteGuidance? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func guidedTourStateStoreActiveTour() -> GuidedTour? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func audioFileStorePlay(_ url: URL) -> AudioPlayerIdentifier? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func audioFileStoreStop(_ id: AudioPlayerIdentifier) {
+        debugAssertUnconfigured(#function)
+    }
 }
 
 @MainActor
@@ -414,6 +469,30 @@ final class AppContextVisualRuntimeProviders: VisualRuntimeProviders {
 
     func beaconDetailIsUserWithinDestinationGeofence(_ userLocation: SSGeoLocation) -> Bool {
         context.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation)
+    }
+
+    func beaconStoreDestinationManager() -> DestinationManagerProtocol? {
+        context.spatialDataContext.destinationManager
+    }
+
+    func beaconStoreActiveRouteGuidance() -> RouteGuidance? {
+        context.eventProcessor.activeBehavior as? RouteGuidance
+    }
+
+    func routeGuidanceStateStoreActiveRouteGuidance() -> RouteGuidance? {
+        context.eventProcessor.activeBehavior as? RouteGuidance
+    }
+
+    func guidedTourStateStoreActiveTour() -> GuidedTour? {
+        context.eventProcessor.activeBehavior as? GuidedTour
+    }
+
+    func audioFileStorePlay(_ url: URL) -> AudioPlayerIdentifier? {
+        context.audioEngine.play(GenericSound(url))
+    }
+
+    func audioFileStoreStop(_ id: AudioPlayerIdentifier) {
+        context.audioEngine.stop(id)
     }
 }
 
