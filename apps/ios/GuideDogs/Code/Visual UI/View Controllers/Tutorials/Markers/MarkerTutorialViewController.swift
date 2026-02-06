@@ -120,7 +120,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
         
-        AppContext.shared.isInTutorialMode = true
+        UIRuntimeProviderRegistry.providers.uiSetTutorialMode(true)
         
         setupAudioPlayer(with: "tutorial_background_music")
         
@@ -139,7 +139,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleAudioSessionInterruption(_:)),
                                                name: AVAudioSession.interruptionNotification,
-                                               object: AppContext.shared.audioEngine.session)
+                                               object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -251,10 +251,10 @@ class MarkerTutorialViewController: BaseTutorialViewController {
             UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: nil)
         } else if currentPageIndex! == PageIndexes.intro {
             // Clear destination if needed
-            try? AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tutorial.markers.start_tutorial")
+            try? UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.clearDestination(logContext: "tutorial.markers.start_tutorial")
             
             // Hush speech or beacon if playing
-            AppContext.shared.eventProcessor.hush(playSound: false)
+            UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
             
             hideActionButton(false)
             actionButton.showAnimated { [weak self] (_) in
@@ -383,7 +383,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
             }
         }
         
-        AppContext.process(event)
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(event)
     }
     
     @objc func audioBeaconAction() {
@@ -426,7 +426,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         self.pageFinished = true
         self.stop()
         FirstUseExperience.setDidComplete(for: .markerTutorial)
-        AppContext.shared.isInTutorialMode = false
+        UIRuntimeProviderRegistry.providers.uiSetTutorialMode(false)
 
         GDATelemetry.track("tutorial.markers." + (finished ? "finished" : "exit"))
         
@@ -439,7 +439,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         
         NotificationCenter.default.removeObserver(self,
                                                   name: AVAudioSession.interruptionNotification,
-                                                  object: AppContext.shared.audioEngine.session)
+                                                  object: nil)
         
         if self.navigationController?.presentingViewController != nil {
             self.dismiss(animated: true, completion: nil)
@@ -492,14 +492,14 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     
     private func setAudioBeacon() {
         guard let entityKey = referenceEntity?.entityKey else { return }
-        guard let manager = AppContext.shared.spatialDataContext.destinationManager as? DestinationManager else { return }
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else { return }
         
         player?.fadeOut({
-            _ = try? manager.setDestination(entityKey: entityKey, enableAudio: true, userLocation: AppContext.shared.geolocationManager.location, estimatedAddress: nil, logContext: "tutorial.markers")
+            _ = try? destinationManager.setDestination(entityKey: entityKey, enableAudio: true, userLocation: UIRuntimeProviderRegistry.providers.uiCurrentUserLocation(), estimatedAddress: nil, logContext: "tutorial.markers")
             
             // If a user is inside the selected marker, the audio will not turn on.
-            if !manager.isAudioEnabled {
-                manager.toggleDestinationAudio()
+            if !destinationManager.isAudioEnabled {
+                destinationManager.toggleDestinationAudio()
             }
             
             NotificationCenter.default.addObserver(self, selector: #selector(self.beaconInBounds), name: NSNotification.Name.beaconInBoundsDidChange, object: nil)
@@ -521,7 +521,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         // Allow the "ting" sound to play for a few seconds, and then continue the next page
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 3_000_000_000)
-            try? AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tutorial.markers.clear_test_beacon")
+            try? UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.clearDestination(logContext: "tutorial.markers.clear_test_beacon")
             
             didSetAudioBeacon = true
             showNextPage()

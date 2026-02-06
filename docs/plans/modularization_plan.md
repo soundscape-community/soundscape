@@ -120,7 +120,9 @@ Phase 1 complete:
 - 2026-02-06: Renamed UI runtime provider seam symbols from `Visual*` to `UI*` for semantic clarity (`UIRuntimeProviderRegistry`, `UIRuntimeProviders`, `UIRuntimeProviderDispatchTests`, `ui*` behavior/context hooks) with no behavior changes.
 - 2026-02-06: Extended `UIRuntimeProviders` with Home-screen hooks (`uiSetRemoteCommandDelegate`, `uiIsFirstLaunch`, `uiShouldShowNewFeatures`, `uiNewFeatures`, guided-tour/route checks, location-permission status, street-preview, destination-audio toggles) and migrated `HomeViewController` away from direct `AppContext.shared` / `AppContext.process` usage.
 - 2026-02-06: Extended `UIRuntimeProviderDispatchTests` to cover the new Home-screen UI runtime hook dispatch.
-- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 182`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-06: Extended `UIRuntimeProviders` with tutorial-mode toggling (`uiSetTutorialMode`) and migrated `MarkerTutorialViewController` away from direct `AppContext.shared` / `AppContext.process` usage for tutorial state, destination control, and event dispatch.
+- 2026-02-06: Extended `UIRuntimeProviderDispatchTests` to cover tutorial-mode runtime dispatch.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 173`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -247,7 +249,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 1 seam carving in remaining high-coupling UI view controllers under `Visual UI` (`DevicesViewController`, `MarkerTutorialViewController`) by introducing focused runtime-provider hooks rather than passing `AppContext` directly.
+1. Continue Milestone 1 seam carving in remaining high-coupling UI view controllers under `Visual UI` (`DevicesViewController`) by introducing focused runtime-provider hooks rather than passing `AppContext` directly.
 2. Continue the UI runtime-provider pass in remaining route/beacon surfaces (`BeaconTitleViewController`, `BeaconMapView`/`BeaconMapCard`) and then trim obsolete `AppContext` helper access from those flows.
 3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

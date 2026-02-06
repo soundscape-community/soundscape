@@ -409,6 +409,7 @@ protocol AudioFileStoreRuntimeProviding {
 @MainActor
 protocol UIRuntimeProviding {
     func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?)
+    func uiSetTutorialMode(_ isEnabled: Bool)
     func uiIsFirstLaunch() -> Bool
     func uiShouldShowNewFeatures() -> Bool
     func uiNewFeatures() -> NewFeatures
@@ -508,6 +509,10 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
     }
 
     func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiSetTutorialMode(_ isEnabled: Bool) {
         debugAssertUnconfigured(#function)
     }
 
@@ -649,6 +654,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?) {
         context.remoteCommandManager.delegate = delegate
+    }
+
+    func uiSetTutorialMode(_ isEnabled: Bool) {
+        context.isInTutorialMode = isEnabled
     }
 
     func uiIsFirstLaunch() -> Bool {

@@ -22,6 +22,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var geofenceResult = false
         var receivedGeofenceInputs: [SSGeoLocation] = []
         var setRemoteCommandDelegateCallCount = 0
+        var tutorialModeValues: [Bool] = []
         var isFirstLaunch = false
         var shouldShowNewFeatures = false
         var newFeatures = NewFeatures()
@@ -88,6 +89,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?) {
             setRemoteCommandDelegateCallCount += 1
+        }
+
+        func uiSetTutorialMode(_ isEnabled: Bool) {
+            tutorialModeValues.append(isEnabled)
         }
 
         func uiIsFirstLaunch() -> Bool {
@@ -237,6 +242,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         UIRuntimeProviderRegistry.configure(with: provider)
 
         UIRuntimeProviderRegistry.providers.uiSetRemoteCommandDelegate(MockRemoteCommandDelegate())
+        UIRuntimeProviderRegistry.providers.uiSetTutorialMode(true)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsFirstLaunch())
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiShouldShowNewFeatures())
         _ = UIRuntimeProviderRegistry.providers.uiNewFeatures()
@@ -277,6 +283,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(playerID, expectedPlayerID)
         XCTAssertEqual(provider.stoppedAudioIDs, [expectedPlayerID])
         XCTAssertEqual(provider.setRemoteCommandDelegateCallCount, 1)
+        XCTAssertEqual(provider.tutorialModeValues, [true])
         XCTAssertEqual(provider.activateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.toggleDestinationAudioCallCount, 1)
