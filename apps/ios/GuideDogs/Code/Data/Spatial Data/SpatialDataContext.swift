@@ -23,6 +23,32 @@ enum SpatialDataContextError: Error {
     case missingData
 }
 
+@MainActor
+enum SpatialDataContextRuntime {
+    static var currentUserLocation: () -> CLLocation? = {
+        AppContext.shared.geolocationManager.location
+    }
+
+    static var performInitialCloudSync: (_ completion: @escaping () -> Void) -> Void = { completion in
+        AppContext.shared.cloudKeyValueStore.syncReferenceEntities(reason: .initialSync) {
+            AppContext.shared.cloudKeyValueStore.syncRoutes(reason: .initialSync)
+            completion()
+        }
+    }
+
+    static var clearCalloutHistory: () -> Void = {
+        AppContext.shared.calloutHistory.clear()
+    }
+
+    static var isApplicationInNormalState: () -> Bool = {
+        AppContext.shared.state == .normal
+    }
+
+    static var updateAudioEngineUserLocation: (_ location: CLLocation) -> Void = { location in
+        AppContext.shared.audioEngine.updateUserLocation(location)
+    }
+}
+
 extension Notification.Name {
     static let spatialDataStateChanged = Notification.Name("GDASpatialDataStateChanged")
     static let tilesDidUpdate = Notification.Name("TilesDidUpdate")
@@ -169,7 +195,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     @objc private func onAppDidInitialize() {
         // Run the initial spatial data update
         
-        guard let location = AppContext.shared.geolocationManager.location else {
+        guard let location = SpatialDataContextRuntime.currentUserLocation() else {
             GDLogSpatialDataWarn("SpatialDataContext initialized, but no location data is available yet...")
             return
         }
@@ -209,8 +235,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         if !FirstUseExperience.didComplete(.iCloudBackup) {
             // Getting the `.initialSync` notification from iCloud is not reliable so we force sync
             GDLogCloudInfo("Performing initial cloud sync")
-            AppContext.shared.cloudKeyValueStore.syncReferenceEntities(reason: .initialSync) {
-                AppContext.shared.cloudKeyValueStore.syncRoutes(reason: .initialSync)
+            SpatialDataContextRuntime.performInitialCloudSync {
                 FirstUseExperience.setDidComplete(for: .iCloudBackup)
             }
         }
@@ -260,7 +285,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         // Safe synchronous mutation on main actor; barrier no longer needed
         tiles.removeAll()
         
-        AppContext.shared.calloutHistory.clear()
+        SpatialDataContextRuntime.clearCalloutHistory()
         
         if let loc = geolocationManager?.location {
             updateSpatialDataAsync(location: loc, reloadPORs: true)
@@ -299,7 +324,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         // Fetch cached data
         var expansions = 0
         var range = initialSearchDistance
-        var dataView = AppContext.shared.spatialDataContext.getCurrentDataView(searchDistance: range)
+        var dataView = getCurrentDataView(searchDistance: range)
         
         // Load Nearby
         //
@@ -311,7 +336,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             }
             
             // Get the spatial data view and filter POIs into quadrants
-            dataView = AppContext.shared.spatialDataContext.getCurrentDataView(searchDistance: range)
+            dataView = getCurrentDataView(searchDistance: range)
             
             guard let dataView = dataView else {
                 return nil
@@ -578,7 +603,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     
     @MainActor
     @objc private func onNetworkConnectionDidChange(_ notification: NSNotification) {
-        guard AppContext.shared.state == .normal else {
+        guard SpatialDataContextRuntime.isApplicationInNormalState() else {
             return
         }
         
@@ -798,7 +823,7 @@ extension SpatialDataContext: GeolocationManagerUpdateDelegate {
     func didUpdateLocation(_ location: CLLocation) {
         currentLocation = location
         
-        AppContext.shared.audioEngine.updateUserLocation(location)
+        SpatialDataContextRuntime.updateAudioEngineUserLocation(location)
         
         guard superCategories != nil else {
             GDLogSpatialDataVerbose("Location updated - Skipping data update (super categories nil)")
