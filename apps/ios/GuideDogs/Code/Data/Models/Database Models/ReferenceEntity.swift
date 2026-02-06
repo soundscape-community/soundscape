@@ -13,45 +13,32 @@ import SSGeo
 
 @MainActor
 enum ReferenceEntityRuntime {
-    static var currentUserLocation: () -> CLLocation? = {
-        AppContext.shared.geolocationManager.location
+    static func currentUserLocation() -> CLLocation? {
+        DataRuntimeProviderRegistry.providers.referenceCurrentUserLocation()
     }
 
-    static var storeReferenceInCloud: (ReferenceEntity) -> Void = { entity in
-        AppContext.shared.cloudKeyValueStore.store(referenceEntity: entity)
+    static func storeReferenceInCloud(_ entity: ReferenceEntity) {
+        DataRuntimeProviderRegistry.providers.referenceStoreInCloud(entity)
     }
 
-    static var updateReferenceInCloud: (ReferenceEntity) -> Void = { entity in
-        AppContext.shared.cloudKeyValueStore.update(referenceEntity: entity)
+    static func updateReferenceInCloud(_ entity: ReferenceEntity) {
+        DataRuntimeProviderRegistry.providers.referenceUpdateInCloud(entity)
     }
 
-    static var removeReferenceFromCloud: (ReferenceEntity) -> Void = { entity in
-        AppContext.shared.cloudKeyValueStore.remove(referenceEntity: entity)
+    static func removeReferenceFromCloud(_ entity: ReferenceEntity) {
+        DataRuntimeProviderRegistry.providers.referenceRemoveFromCloud(entity)
     }
 
-    static var setDestinationTemporaryIfMatchingID: (String) throws -> Bool = { id in
-        guard let destination = AppContext.shared.spatialDataContext.destinationManager.destination,
-              destination.id == id else {
-            return false
-        }
-
-        try destination.setTemporary(true)
-        return true
+    static func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
+        try DataRuntimeProviderRegistry.providers.referenceSetDestinationTemporaryIfMatchingID(id)
     }
 
-    static var clearDestinationForCacheReset: () throws -> Void = {
-        try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "settings.clear_cache")
+    static func clearDestinationForCacheReset() throws {
+        try DataRuntimeProviderRegistry.providers.referenceClearDestinationForCacheReset()
     }
 
-    static var removeCalloutHistoryForMarkerID: (String) -> Void = { markerID in
-        AppContext.shared.calloutHistory.remove { callout in
-            if let poiCallout = callout as? POICallout,
-               let calloutMarker = poiCallout.marker {
-                return calloutMarker.id == markerID
-            }
-
-            return false
-        }
+    static func removeCalloutHistoryForMarkerID(_ markerID: String) {
+        DataRuntimeProviderRegistry.providers.referenceRemoveCalloutHistoryForMarkerID(markerID)
     }
 }
 

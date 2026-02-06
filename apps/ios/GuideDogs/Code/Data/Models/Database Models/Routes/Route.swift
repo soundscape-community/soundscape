@@ -12,40 +12,32 @@ import CoreLocation
 
 @MainActor
 enum RouteRuntime {
-    static var currentUserLocation: () -> CLLocation? = {
-        AppContext.shared.geolocationManager.location
+    static func currentUserLocation() -> CLLocation? {
+        DataRuntimeProviderRegistry.providers.routeCurrentUserLocation()
     }
 
-    static var activeRouteDatabaseID: () -> String? = {
-        guard let routeGuidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
-            return nil
-        }
-
-        guard case let .database(activeID) = routeGuidance.content.source else {
-            return nil
-        }
-
-        return activeID
+    static func activeRouteDatabaseID() -> String? {
+        DataRuntimeProviderRegistry.providers.routeActiveRouteDatabaseID()
     }
 
-    static var deactivateActiveBehavior: () -> Void = {
-        AppContext.shared.eventProcessor.deactivateCustom()
+    static func deactivateActiveBehavior() {
+        DataRuntimeProviderRegistry.providers.routeDeactivateActiveBehavior()
     }
 
-    static var storeRouteInCloud: (Route) -> Void = { route in
-        AppContext.shared.cloudKeyValueStore.store(route: route)
+    static func storeRouteInCloud(_ route: Route) {
+        DataRuntimeProviderRegistry.providers.routeStoreInCloud(route)
     }
 
-    static var updateRouteInCloud: (Route) -> Void = { route in
-        AppContext.shared.cloudKeyValueStore.update(route: route)
+    static func updateRouteInCloud(_ route: Route) {
+        DataRuntimeProviderRegistry.providers.routeUpdateInCloud(route)
     }
 
-    static var removeRouteFromCloud: (Route) -> Void = { route in
-        AppContext.shared.cloudKeyValueStore.remove(route: route)
+    static func removeRouteFromCloud(_ route: Route) {
+        DataRuntimeProviderRegistry.providers.routeRemoveFromCloud(route)
     }
 
-    static var currentMotionActivityRawValue: () -> String = {
-        AppContext.shared.motionActivityContext.currentActivity.rawValue
+    static func currentMotionActivityRawValue() -> String {
+        DataRuntimeProviderRegistry.providers.routeCurrentMotionActivityRawValue()
     }
 }
 

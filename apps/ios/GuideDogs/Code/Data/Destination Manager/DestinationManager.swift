@@ -25,21 +25,20 @@ enum DestinationManagerError: Error {
 
 @MainActor
 enum DestinationManagerRuntime {
-    static var currentUserLocation: () -> CLLocation? = {
-        AppContext.shared.geolocationManager.location
+    static func currentUserLocation() -> CLLocation? {
+        DataRuntimeProviderRegistry.providers.destinationManagerCurrentUserLocation()
     }
 
-    static var isRouteGuidanceActive: () -> Bool = {
-        AppContext.shared.eventProcessor.activeBehavior is RouteGuidance
+    static func isRouteGuidanceActive() -> Bool {
+        DataRuntimeProviderRegistry.providers.destinationManagerIsRouteGuidanceActive()
     }
 
-    static var isRouteOrTourGuidanceActive: () -> Bool = {
-        AppContext.shared.eventProcessor.activeBehavior is RouteGuidance ||
-            AppContext.shared.eventProcessor.activeBehavior is GuidedTour
+    static func isRouteOrTourGuidanceActive() -> Bool {
+        DataRuntimeProviderRegistry.providers.destinationManagerIsRouteOrTourGuidanceActive()
     }
 
-    static var isBeaconCalloutGeneratorBlocked: () -> Bool = {
-        AppContext.shared.eventProcessor.activeBehavior.blockedAutoGenerators.contains(where: { $0 == BeaconCalloutGenerator.self })
+    static func isBeaconCalloutGeneratorBlocked() -> Bool {
+        DataRuntimeProviderRegistry.providers.destinationManagerIsBeaconCalloutGeneratorBlocked()
     }
 }
 

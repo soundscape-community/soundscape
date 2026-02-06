@@ -81,6 +81,9 @@ Phase 1 complete:
 - 2026-02-06: Removed `SpatialDataCache` destination lookup via `AppContext` by threading destination state through `SpatialDataContext.checkForTiles(...)` and `SpatialDataCache.tiles(...)`, making tile selection inputs explicit and reducing hidden global coupling in spatial cache decisions.
 - 2026-02-06: Added an `SSGeoLocation` geofence helper on `DestinationManagerProtocol` and replaced beacon label geofence checks with `BeaconDetailRuntime` so beacon UI labels no longer read destination geofence state directly from `AppContext`.
 - 2026-02-06: Added `UserLocationStoreRuntime` to source initial user location via an injectable hook, removing direct `AppContext` reads from `UserLocationStore` construction while preserving location-update notifications.
+- 2026-02-06: Replaced `Data` runtime-seam default closures with protocol-based registry providers (`RouteRuntimeProviding`, `ReferenceEntityRuntimeProviding`, `SpatialDataEntityRuntimeProviding`, `DestinationManagerRuntimeProviding`, `SpatialDataContextRuntimeProviding`) and wired `AppContextDataRuntimeProviders` during `AppContext` composition.
+- 2026-02-06: Added `DataRuntimeProviderDispatchTests` to verify runtime dispatch, throw/nil behavior propagation, and provider reset isolation; `rg \"AppContext.shared\" apps/ios/GuideDogs/Code/Data` now returns zero matches.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 260`, `Behaviors: 70`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -207,7 +210,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Complete remaining direct `CLLocation.distance(from:)` migrations in `Sensors`, `Data`, and selected `App` helpers where portable coordinate math can be used without API churn.
-2. Run a fresh `xcodebuild build-for-testing` and regenerate dependency analysis artifact for the branch head.
-3. Start Milestone 1 seam-carving by removing `AppContext` reads from `Data/Authored Activities` behind narrow injected protocols.
-4. Keep this document and `AGENTS.md` updated in every modularization PR with status and next action.
+1. Continue Milestone 1 seam carving outside `Data` by applying protocol registry DI to high-coupling `Visual UI` runtime seams (`UserLocationStoreRuntime`, `BeaconDetailRuntime`, and `Observable Data Stores`) so view-layer state no longer defaults to `AppContext.shared`.
+2. Carve `Behaviors` runtime dependencies behind narrow protocols, prioritizing callout-generation hotspots where `AppContext.shared` reads are currently direct.
+3. Run fresh iOS build/test and regenerate dependency analysis artifact for branch head to track post-`Data` seam-coupling trendlines.
+4. Keep this document and `AGENTS.md` updated in every modularization PR with status and immediate next action.

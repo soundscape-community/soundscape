@@ -28,6 +28,325 @@ extension Notification.Name {
 }
 
 @MainActor
+protocol RouteRuntimeProviding {
+    func routeCurrentUserLocation() -> CLLocation?
+    func routeActiveRouteDatabaseID() -> String?
+    func routeDeactivateActiveBehavior()
+    func routeStoreInCloud(_ route: Route)
+    func routeUpdateInCloud(_ route: Route)
+    func routeRemoveFromCloud(_ route: Route)
+    func routeCurrentMotionActivityRawValue() -> String
+}
+
+@MainActor
+protocol ReferenceEntityRuntimeProviding {
+    func referenceCurrentUserLocation() -> CLLocation?
+    func referenceStoreInCloud(_ entity: ReferenceEntity)
+    func referenceUpdateInCloud(_ entity: ReferenceEntity)
+    func referenceRemoveFromCloud(_ entity: ReferenceEntity)
+    func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool
+    func referenceClearDestinationForCacheReset() throws
+    func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String)
+}
+
+@MainActor
+protocol SpatialDataEntityRuntimeProviding {
+    func spatialDataEntityCurrentUserLocation() -> CLLocation?
+}
+
+@MainActor
+protocol DestinationManagerRuntimeProviding {
+    func destinationManagerCurrentUserLocation() -> CLLocation?
+    func destinationManagerIsRouteGuidanceActive() -> Bool
+    func destinationManagerIsRouteOrTourGuidanceActive() -> Bool
+    func destinationManagerIsBeaconCalloutGeneratorBlocked() -> Bool
+}
+
+@MainActor
+protocol SpatialDataContextRuntimeProviding {
+    func spatialDataContextCurrentUserLocation() -> CLLocation?
+    func spatialDataContextPerformInitialCloudSync(_ completion: @escaping () -> Void)
+    func spatialDataContextClearCalloutHistory()
+    func spatialDataContextIsApplicationInNormalState() -> Bool
+    func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation)
+}
+
+@MainActor
+protocol DataRuntimeProviders: RouteRuntimeProviding,
+                               ReferenceEntityRuntimeProviding,
+                               SpatialDataEntityRuntimeProviding,
+                               DestinationManagerRuntimeProviding,
+                               SpatialDataContextRuntimeProviding {}
+
+@MainActor
+enum DataRuntimeProviderRegistry {
+    private static let unconfiguredProviders = UnconfiguredDataRuntimeProviders()
+    private(set) static var providers: DataRuntimeProviders = unconfiguredProviders
+
+    static func configure(with providers: DataRuntimeProviders) {
+        self.providers = providers
+    }
+
+    static func resetForTesting() {
+        providers = unconfiguredProviders
+    }
+}
+
+@MainActor
+private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
+    private static var isRunningUnitTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
+    private func debugAssertUnconfigured(_ method: StaticString) {
+#if DEBUG
+        if !Self.isRunningUnitTests {
+            assertionFailure("DataRuntimeProviderRegistry is unconfigured when calling \(method)")
+        }
+#endif
+    }
+
+    func routeCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func routeActiveRouteDatabaseID() -> String? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func routeDeactivateActiveBehavior() {
+        debugAssertUnconfigured(#function)
+    }
+
+    func routeStoreInCloud(_ route: Route) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func routeUpdateInCloud(_ route: Route) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func routeRemoveFromCloud(_ route: Route) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func routeCurrentMotionActivityRawValue() -> String {
+        debugAssertUnconfigured(#function)
+        return "unknown"
+    }
+
+    func referenceCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func referenceStoreInCloud(_ entity: ReferenceEntity) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func referenceUpdateInCloud(_ entity: ReferenceEntity) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func referenceClearDestinationForCacheReset() throws {
+        debugAssertUnconfigured(#function)
+    }
+
+    func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func spatialDataEntityCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func destinationManagerCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func destinationManagerIsRouteGuidanceActive() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func destinationManagerIsRouteOrTourGuidanceActive() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func destinationManagerIsBeaconCalloutGeneratorBlocked() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func spatialDataContextCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func spatialDataContextPerformInitialCloudSync(_ completion: @escaping () -> Void) {
+        debugAssertUnconfigured(#function)
+        completion()
+    }
+
+    func spatialDataContextClearCalloutHistory() {
+        debugAssertUnconfigured(#function)
+    }
+
+    func spatialDataContextIsApplicationInNormalState() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation) {
+        debugAssertUnconfigured(#function)
+    }
+}
+
+@MainActor
+final class AppContextDataRuntimeProviders: DataRuntimeProviders {
+    private unowned let context: AppContext
+
+    init(context: AppContext) {
+        self.context = context
+    }
+
+    func routeCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func routeActiveRouteDatabaseID() -> String? {
+        guard let routeGuidance = context.eventProcessor.activeBehavior as? RouteGuidance else {
+            return nil
+        }
+
+        guard case let .database(activeID) = routeGuidance.content.source else {
+            return nil
+        }
+
+        return activeID
+    }
+
+    func routeDeactivateActiveBehavior() {
+        context.eventProcessor.deactivateCustom()
+    }
+
+    func routeStoreInCloud(_ route: Route) {
+        context.cloudKeyValueStore.store(route: route)
+    }
+
+    func routeUpdateInCloud(_ route: Route) {
+        context.cloudKeyValueStore.update(route: route)
+    }
+
+    func routeRemoveFromCloud(_ route: Route) {
+        context.cloudKeyValueStore.remove(route: route)
+    }
+
+    func routeCurrentMotionActivityRawValue() -> String {
+        context.motionActivityContext.currentActivity.rawValue
+    }
+
+    func referenceCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func referenceStoreInCloud(_ entity: ReferenceEntity) {
+        context.cloudKeyValueStore.store(referenceEntity: entity)
+    }
+
+    func referenceUpdateInCloud(_ entity: ReferenceEntity) {
+        context.cloudKeyValueStore.update(referenceEntity: entity)
+    }
+
+    func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
+        context.cloudKeyValueStore.remove(referenceEntity: entity)
+    }
+
+    func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
+        guard let destination = context.spatialDataContext.destinationManager.destination,
+              destination.id == id else {
+            return false
+        }
+
+        try destination.setTemporary(true)
+        return true
+    }
+
+    func referenceClearDestinationForCacheReset() throws {
+        try context.spatialDataContext.destinationManager.clearDestination(logContext: "settings.clear_cache")
+    }
+
+    func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {
+        context.calloutHistory.remove { callout in
+            if let poiCallout = callout as? POICallout,
+               let calloutMarker = poiCallout.marker {
+                return calloutMarker.id == markerID
+            }
+
+            return false
+        }
+    }
+
+    func spatialDataEntityCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func destinationManagerCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func destinationManagerIsRouteGuidanceActive() -> Bool {
+        context.eventProcessor.activeBehavior is RouteGuidance
+    }
+
+    func destinationManagerIsRouteOrTourGuidanceActive() -> Bool {
+        context.eventProcessor.activeBehavior is RouteGuidance ||
+            context.eventProcessor.activeBehavior is GuidedTour
+    }
+
+    func destinationManagerIsBeaconCalloutGeneratorBlocked() -> Bool {
+        context.eventProcessor.activeBehavior.blockedAutoGenerators.contains(where: { $0 == BeaconCalloutGenerator.self })
+    }
+
+    func spatialDataContextCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func spatialDataContextPerformInitialCloudSync(_ completion: @escaping () -> Void) {
+        context.cloudKeyValueStore.syncReferenceEntities(reason: .initialSync) {
+            self.context.cloudKeyValueStore.syncRoutes(reason: .initialSync)
+            completion()
+        }
+    }
+
+    func spatialDataContextClearCalloutHistory() {
+        context.calloutHistory.clear()
+    }
+
+    func spatialDataContextIsApplicationInNormalState() -> Bool {
+        context.state == .normal
+    }
+
+    func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation) {
+        context.audioEngine.updateUserLocation(location)
+    }
+}
+
+@MainActor
 class AppContext {
 
     // MARK: Keys
@@ -203,6 +522,8 @@ class AppContext {
         LocalizationContext.configureAccessibilityLanguage()
         
         cloudKeyValueStore = CloudKeyValueStore()
+
+        DataRuntimeProviderRegistry.configure(with: AppContextDataRuntimeProviders(context: self))
     }
     
     // MARK: Actions

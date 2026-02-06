@@ -25,27 +25,24 @@ enum SpatialDataContextError: Error {
 
 @MainActor
 enum SpatialDataContextRuntime {
-    static var currentUserLocation: () -> CLLocation? = {
-        AppContext.shared.geolocationManager.location
+    static func currentUserLocation() -> CLLocation? {
+        DataRuntimeProviderRegistry.providers.spatialDataContextCurrentUserLocation()
     }
 
-    static var performInitialCloudSync: (_ completion: @escaping () -> Void) -> Void = { completion in
-        AppContext.shared.cloudKeyValueStore.syncReferenceEntities(reason: .initialSync) {
-            AppContext.shared.cloudKeyValueStore.syncRoutes(reason: .initialSync)
-            completion()
-        }
+    static func performInitialCloudSync(_ completion: @escaping () -> Void) {
+        DataRuntimeProviderRegistry.providers.spatialDataContextPerformInitialCloudSync(completion)
     }
 
-    static var clearCalloutHistory: () -> Void = {
-        AppContext.shared.calloutHistory.clear()
+    static func clearCalloutHistory() {
+        DataRuntimeProviderRegistry.providers.spatialDataContextClearCalloutHistory()
     }
 
-    static var isApplicationInNormalState: () -> Bool = {
-        AppContext.shared.state == .normal
+    static func isApplicationInNormalState() -> Bool {
+        DataRuntimeProviderRegistry.providers.spatialDataContextIsApplicationInNormalState()
     }
 
-    static var updateAudioEngineUserLocation: (_ location: CLLocation) -> Void = { location in
-        AppContext.shared.audioEngine.updateUserLocation(location)
+    static func updateAudioEngineUserLocation(_ location: CLLocation) {
+        DataRuntimeProviderRegistry.providers.spatialDataContextUpdateAudioEngineUserLocation(location)
     }
 }
 

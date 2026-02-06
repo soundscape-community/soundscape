@@ -13,8 +13,8 @@ import SSGeo
 
 @MainActor
 enum SpatialDataEntityRuntime {
-    static var currentUserLocation: () -> CLLocation? = {
-        AppContext.shared.geolocationManager.location
+    static func currentUserLocation() -> CLLocation? {
+        DataRuntimeProviderRegistry.providers.spatialDataEntityCurrentUserLocation()
     }
 }
 
