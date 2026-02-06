@@ -102,7 +102,8 @@ class SearchWaypointViewController: UIViewController {
         }
         
         if let waypoints = waypoints {
-            let content = WaypointAddList(waypoints: waypoints)
+            let userLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
+            let content = WaypointAddList(waypoints: waypoints, userLocation: userLocation)
             hostingController = UIHostingController(rootView: AnyView(content))
             
             guard let hostingController = hostingController else {

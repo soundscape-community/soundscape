@@ -14,10 +14,6 @@ import SSGeo
 class UserLocationStore: ObservableObject {
     @Published var ssGeoLocation: SSGeoLocation?
     
-    var location: CLLocation? {
-        ssGeoLocation?.clLocation
-    }
-    
     private var listener: AnyCancellable?
     
     init() {

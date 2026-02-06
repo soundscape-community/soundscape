@@ -56,6 +56,7 @@ struct RouteEditView: View {
     @State private var name = ""
     @State private var description = ""
     @State private var identifiableWaypoints: [IdentifiableLocationDetail] = []
+    @StateObject private var userLocationStore = UserLocationStore()
     
     // Alerts
     @State private var alert: EditViewAlert?
@@ -237,7 +238,8 @@ struct RouteEditView: View {
                     
                     Section(header: header) {
                         if identifiableWaypoints.count > 0 {
-                            WaypointEditList(identifiableWaypoints: $identifiableWaypoints)
+                            WaypointEditList(identifiableWaypoints: $identifiableWaypoints,
+                                             userLocation: userLocationStore.ssGeoLocation)
                         } else {
                             RouteEditTutorialView()
                                 .plainListRowBackground(Color.tertiaryBackground)

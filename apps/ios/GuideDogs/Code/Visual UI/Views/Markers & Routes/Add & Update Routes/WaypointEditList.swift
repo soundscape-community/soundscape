@@ -15,11 +15,13 @@ struct WaypointEditList: View {
     // MARK: Properties
     
     @Binding private var identifiableWaypoints: [IdentifiableLocationDetail]
+    private let userLocation: SSGeoLocation?
     
     // MARK: Initialization
     
-    init(identifiableWaypoints: Binding<[IdentifiableLocationDetail]>) {
+    init(identifiableWaypoints: Binding<[IdentifiableLocationDetail]>, userLocation: SSGeoLocation?) {
         _identifiableWaypoints = identifiableWaypoints
+        self.userLocation = userLocation
     }
     
     // MARK: `body`
@@ -36,8 +38,6 @@ struct WaypointEditList: View {
             .accessibilityAddTraits(.isHeader)
         
         ForEach(Array(identifiableWaypoints.enumerated()), id: \.0) { (index, element) in
-            let userLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
-            
             LocationItemView(locationDetail: element.locationDetail, userLocation: userLocation)
                 .locationItemStyle(.editWaypoint(index: index))
                 .accessibilityElement(children: .combine)
@@ -62,7 +62,8 @@ struct WaypointEditList_Previews: PreviewProvider {
         AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
         
         return List {
-            WaypointEditList(identifiableWaypoints: .constant(RouteDetailsView_Previews.testOMRoute.waypoints.asIdenfifiable))
+            WaypointEditList(identifiableWaypoints: .constant(RouteDetailsView_Previews.testOMRoute.waypoints.asIdenfifiable),
+                             userLocation: location.ssGeoLocation)
         }
         .listStyle(PlainListStyle())
         .environment(\.editMode, .constant(.active))

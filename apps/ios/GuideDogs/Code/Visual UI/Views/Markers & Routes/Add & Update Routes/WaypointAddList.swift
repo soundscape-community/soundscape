@@ -16,11 +16,13 @@ struct WaypointAddList: View {
     // MARK: Properties
     
     @ObservedObject private var viewModel: WaypointAddListViewModel
+    private let userLocation: SSGeoLocation?
     
     // MARK: Initialization
     
-    init(waypoints: Binding<[IdentifiableLocationDetail]>) {
+    init(waypoints: Binding<[IdentifiableLocationDetail]>, userLocation: SSGeoLocation?) {
         viewModel = WaypointAddListViewModel(waypoints: waypoints)
+        self.userLocation = userLocation
         
         // Fill empty space in the list view
         UITableView.appearance().backgroundColor = Colors.Background.tertiary!
@@ -52,8 +54,6 @@ struct WaypointAddList: View {
                     if viewModel.markers.count > 0 {
                         // All markers have been fetched
                         ForEach(viewModel.markers) { element in
-                            let userLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
-                            
                             LocationItemView(locationDetail: element.locationDetail, userLocation: userLocation)
                                 .locationItemStyle(.addWaypoint(index: element.index))
                                 .onTapGesture {
@@ -115,9 +115,9 @@ struct WaypointAddList_Previews: PreviewProvider {
         }
         
         return Group {
-            WaypointAddList(waypoints: .constant(waypoints))
+            WaypointAddList(waypoints: .constant(waypoints), userLocation: userLocation.ssGeoLocation)
             
-            WaypointAddList(waypoints: .constant([]))
+            WaypointAddList(waypoints: .constant([]), userLocation: userLocation.ssGeoLocation)
         }
         .environment(\.realmConfiguration, RealmHelper.databaseConfig)
         
