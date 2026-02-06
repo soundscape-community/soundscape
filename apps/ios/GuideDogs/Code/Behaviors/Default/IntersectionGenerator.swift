@@ -45,6 +45,13 @@ extension Notification.Name {
 }
 
 @MainActor
+enum IntersectionGeneratorRuntime {
+    static func audioOutputType() -> String {
+        BehaviorRuntimeProviderRegistry.providers.behaviorAudioOutputType()
+    }
+}
+
+@MainActor
 class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
     
     // MARK: - Constants
@@ -85,6 +92,8 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
     var canInterrupt: Bool = true
     
     private unowned let owner: SoundscapeBehavior
+    private unowned let geoManager: GeolocationManagerProtocol
+    private unowned let motionActivity: MotionActivityProtocol
     private unowned let spatialDataContext: SpatialDataProtocol
     private unowned let reverseGeocoder: ReverseGeocoder
     
@@ -108,8 +117,14 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
         }
     }
     
-    init(_ owner: SoundscapeBehavior, geoManager: GeolocationManagerProtocol, data: SpatialDataProtocol, geocoder: ReverseGeocoder) {
+    init(_ owner: SoundscapeBehavior,
+         geoManager: GeolocationManagerProtocol,
+         motionActivity: MotionActivityProtocol,
+         data: SpatialDataProtocol,
+         geocoder: ReverseGeocoder) {
         self.owner = owner
+        self.geoManager = geoManager
+        self.motionActivity = motionActivity
         heading = geoManager.heading(orderedBy: [.course])
         spatialDataContext = data
         reverseGeocoder = geocoder
@@ -157,8 +172,8 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
             
             GDATelemetry.track("callout", with: ["context": "intersection.arrival",
                                                  "type": callout.logCategory,
-                                                 "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
-                                                 "audio.output": AppContext.shared.audioEngine.outputType])
+                                                 "activity": motionActivity.currentActivity.rawValue,
+                                                 "audio.output": IntersectionGeneratorRuntime.audioOutputType()])
             
             return .playCallouts(CalloutGroup([callout], action: .interruptAndClear, logContext: "intersections"))
             
@@ -198,7 +213,7 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
         }
 
         // We don't callout intersections when a user is in a vehicle
-        guard !AppContext.shared.motionActivityContext.isInVehicle else {
+        guard !motionActivity.isInVehicle else {
             clearCurrentData()
             return
         }
@@ -322,8 +337,8 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
         GDLogIntersectionInfo("Calling out intersection: \"\(intersection.localizedName)\", " +
             "distance: \(String(format: "%.2f", location.coordinate.ssGeoCoordinate.distance(to: intersection.coordinate.ssGeoCoordinate)))m, " +
             "bearing: \(String(format: "%.2f", location.bearing(to: intersection.location)))°, " +
-            "presentationHeading: \(String(format: "%.2f", AppContext.shared.geolocationManager.presentationHeading.value ?? -1.0))°, " +
-            "collectionHeading: \(String(format: "%.2f", AppContext.shared.geolocationManager.collectionHeading.value ?? -1.0))°, " +
+            "presentationHeading: \(String(format: "%.2f", geoManager.presentationHeading.value ?? -1.0))°, " +
+            "collectionHeading: \(String(format: "%.2f", geoManager.collectionHeading.value ?? -1.0))°, " +
             "id: \(intersection.key)")
 
         currentIntersectionKey = intersection.key

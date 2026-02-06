@@ -43,6 +43,10 @@ enum GuidedTourRuntime {
         BehaviorRuntimeProviderRegistry.providers.guidedTourSecondaryRoadsContext()
     }
 
+    static func activeGuidedTour() -> GuidedTour? {
+        BehaviorRuntimeProviderRegistry.providers.guidedTourActiveBehavior()
+    }
+
     static func removeRegisteredPOIs() {
         BehaviorRuntimeProviderRegistry.providers.guidedTourRemoveRegisteredPOIs()
     }

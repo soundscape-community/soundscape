@@ -23,6 +23,7 @@ class EventProcessor: BehaviorDelegate {
     
     private let calloutCoordinator: CalloutCoordinator
     private unowned let audioEngine: AudioEngineProtocol
+    private unowned let geolocationManager: GeolocationManagerProtocol
     private unowned let data: SpatialDataProtocol
     private let eventQueue = EventQueue()
     private var eventLoopTask: Task<Void, Never>?
@@ -42,9 +43,14 @@ class EventProcessor: BehaviorDelegate {
 
     // MARK: Setup and Initialization
     
-    init(activeBehavior: Behavior, calloutCoordinator: CalloutCoordinator, audioEngine: AudioEngineProtocol, data: SpatialDataProtocol) {
+    init(activeBehavior: Behavior,
+         calloutCoordinator: CalloutCoordinator,
+         audioEngine: AudioEngineProtocol,
+         geolocationManager: GeolocationManagerProtocol,
+         data: SpatialDataProtocol) {
         self.calloutCoordinator = calloutCoordinator
         self.audioEngine = audioEngine
+        self.geolocationManager = geolocationManager
         self.data = data
         self.behaviorStackTop = BehaviorNode(behavior: activeBehavior, parent: nil)
         
@@ -101,7 +107,7 @@ class EventProcessor: BehaviorDelegate {
         process(BehaviorActivatedEvent())
         
         // Make sure the new behavior has the current location... (only really matters in GPX simulation)
-        if let location = AppContext.shared.geolocationManager.location {
+        if let location = geolocationManager.location {
             process(LocationUpdatedEvent(location))
         }
     }
@@ -353,7 +359,7 @@ class EventProcessor: BehaviorDelegate {
         
         // Hush callouts if needed
         if hasAnyCalloutAudio {
-            guard !AppContext.shared.eventProcessor.isCustomBehaviorActive else {
+            guard !isCustomBehaviorActive else {
                 interruptCurrent(clearQueue: true, playHush: true)
                 return true
             }

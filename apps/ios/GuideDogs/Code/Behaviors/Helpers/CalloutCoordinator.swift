@@ -13,6 +13,13 @@ import CoreLocation
 import SSDataStructures
 
 @MainActor
+enum CalloutCoordinatorRuntime {
+    static func audioOutputType() -> String {
+        BehaviorRuntimeProviderRegistry.providers.behaviorAudioOutputType()
+    }
+}
+
+@MainActor
 final class CalloutCoordinator {
 
     private enum Command {
@@ -455,9 +462,10 @@ final class CalloutCoordinator {
     }
 
     private func log(callout: CalloutProtocol, context: String?) {
+        let currentActivity = motionActivityContext?.currentActivity.rawValue ?? "unknown"
         var properties = ["type": callout.logCategory,
-                          "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
-                          "audio.output": AppContext.shared.audioEngine.outputType]
+                          "activity": currentActivity,
+                          "audio.output": CalloutCoordinatorRuntime.audioOutputType()]
 
         if let context {
             properties["context"] = context

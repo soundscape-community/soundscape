@@ -17,6 +17,7 @@ final class EventProcessorTest: XCTestCase {
     var eventProcessor: EventProcessor?
     var mockAudioEngine: MockAudioEngine?
     var mockData: MockSpatialData?
+    var mockGeo: MockGeolocationManager?
     var mockBehavior: MockBehavior?
     var calloutCoordinator: CalloutCoordinator?
     
@@ -26,11 +27,11 @@ final class EventProcessorTest: XCTestCase {
         // Create mock dependencies
         mockAudioEngine = MockAudioEngine()
         mockData = MockSpatialData()
-        let mockGeo = MockGeolocationManager()
+        mockGeo = MockGeolocationManager()
         let mockMotion = MockMotionActivity()
         calloutCoordinator = CalloutCoordinator(
             audioEngine: mockAudioEngine!,
-            geo: mockGeo,
+            geo: mockGeo!,
             motionActivityContext: mockMotion,
             history: CalloutHistory()
         )
@@ -41,6 +42,7 @@ final class EventProcessorTest: XCTestCase {
             activeBehavior: mockBehavior!,
             calloutCoordinator: calloutCoordinator!,
             audioEngine: mockAudioEngine!,
+            geolocationManager: mockGeo!,
             data: mockData!
         )
     }
@@ -49,6 +51,7 @@ final class EventProcessorTest: XCTestCase {
         eventProcessor = nil
         mockAudioEngine = nil
         mockData = nil
+        mockGeo = nil
         mockBehavior = nil
         calloutCoordinator = nil
         super.tearDown()

@@ -506,6 +506,7 @@ protocol RouteGuidanceRuntimeProviding {
 protocol GuidedTourRuntimeProviding {
     func guidedTourCurrentUserLocation() -> CLLocation?
     func guidedTourSecondaryRoadsContext() -> SecondaryRoadsContext
+    func guidedTourActiveBehavior() -> GuidedTour?
     func guidedTourRemoveRegisteredPOIs()
 }
 
@@ -571,6 +572,11 @@ private final class UnconfiguredBehaviorRuntimeProviders: BehaviorRuntimeProvide
         return .standard
     }
 
+    func guidedTourActiveBehavior() -> GuidedTour? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
     func guidedTourRemoveRegisteredPOIs() {
         debugAssertUnconfigured(#function)
     }
@@ -628,6 +634,10 @@ final class AppContextBehaviorRuntimeProviders: BehaviorRuntimeProviders {
 
     func guidedTourSecondaryRoadsContext() -> SecondaryRoadsContext {
         AppContext.secondaryRoadsContext
+    }
+
+    func guidedTourActiveBehavior() -> GuidedTour? {
+        context.eventProcessor.activeBehavior as? GuidedTour
     }
 
     func guidedTourRemoveRegisteredPOIs() {
@@ -826,6 +836,7 @@ class AppContext {
         eventProcessor = EventProcessor(activeBehavior: defaultBehavior,
                         calloutCoordinator: calloutCoordinator,
                         audioEngine: audioEngine,
+                        geolocationManager: geolocationManager,
                         data: spatialDataContext)
         
         offlineContext = OfflineContext(isNetworkConnectionAvailable: device.isNetworkConnectionAvailable,

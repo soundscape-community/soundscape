@@ -43,6 +43,10 @@ final class BehaviorRuntimeProviderDispatchTests: XCTestCase {
             tourSecondaryRoadsContext
         }
 
+        func guidedTourActiveBehavior() -> GuidedTour? {
+            nil
+        }
+
         func guidedTourRemoveRegisteredPOIs() {
             removeRegisteredPOIsCount += 1
         }
@@ -97,6 +101,7 @@ final class BehaviorRuntimeProviderDispatchTests: XCTestCase {
 
         XCTAssertEqual(GuidedTourRuntime.currentUserLocation(), location)
         XCTAssertEqual(GuidedTourRuntime.secondaryRoadsContext(), .strict)
+        XCTAssertNil(GuidedTourRuntime.activeGuidedTour())
 
         GuidedTourRuntime.removeRegisteredPOIs()
         XCTAssertEqual(provider.removeRegisteredPOIsCount, 1)

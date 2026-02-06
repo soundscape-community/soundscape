@@ -40,7 +40,11 @@ class SoundscapeBehavior: BehaviorBase {
         // Note that the order in which generators are added matters. Generators that are
         // added first, get the first opportunity to consume events that have `distribution`
         // set to `EventDistribution.consumed`.
-        autoGenerators.append(IntersectionGenerator(self, geoManager: geo, data: data, geocoder: reverseGeocoder))
+        autoGenerators.append(IntersectionGenerator(self,
+                                                    geoManager: geo,
+                                                    motionActivity: motionActivity,
+                                                    data: data,
+                                                    geocoder: reverseGeocoder))
         autoGenerators.append(ARHeadsetGenerator(audioEngine: audioEngine,
                                                  destinationManager: data.destinationManager,
                                                  deviceManager: deviceManager))

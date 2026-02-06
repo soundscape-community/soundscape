@@ -9,6 +9,7 @@
 import CoreLocation
 import Combine
 
+@MainActor
 class TourDetail: RouteDetailProtocol {
     
     // MARK: Properties
@@ -23,7 +24,7 @@ class TourDetail: RouteDetailProtocol {
     private var listeners: [AnyCancellable] = []
     
     var guidance: GuidedTour? {
-        guard let guide = AppContext.shared.eventProcessor.activeBehavior as? GuidedTour else {
+        guard let guide = GuidedTourRuntime.activeGuidedTour() else {
             return nil
         }
         
