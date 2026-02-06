@@ -75,6 +75,30 @@ xcodebuild test-without-building -workspace GuideDogs.xcworkspace \
   -destination "$DESTINATION"
 ```
 
+## Dependency Analysis Tooling
+- Source-level dependency analysis is available via `tools/SSIndexAnalyzer` (SwiftPM executable using `swiftlang/indexstore-db`).
+- Build `SSIndexAnalyzer` locally:
+
+```bash
+swift build --package-path tools/SSIndexAnalyzer
+```
+
+- Run against latest `GuideDogs` DerivedData index store (auto-discovery defaults):
+
+```bash
+swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --top 40 --min-count 2
+```
+
+- Typical explicit usage (if auto-discovery is not desired):
+
+```bash
+swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer \
+  --store-path /Users/<user>/Library/Developer/Xcode/DerivedData/GuideDogs-<id>/Index.noindex/DataStore \
+  --db-path /tmp/ss-index-analyzer-db \
+  --source-root apps/ios/GuideDogs/Code \
+  --lib-indexstore /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libIndexStore.dylib
+```
+
 ## Documentation Navigation
 Operational/current docs:
 - `docs/README.md` (index)
