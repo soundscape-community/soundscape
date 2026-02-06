@@ -60,6 +60,7 @@ Phase 1 complete:
 - 2026-02-06: Migrated additional non-UI runtime distance paths (`Array+POI`, `CoreLocation+Extensions` transform helper, `RoadAdjacentDataView`, `AuthoredActivityContent`, `BaseAudioPlayer`, `DynamicAudioEngineAssets`, NaviLens integration helper) to explicit `SSGeoCoordinate.distance(to:)` calls.
 - 2026-02-06: Migrated recommender distance sorting/filtering in `RouteRecommender` and `NavilensRecommender` to explicit `SSGeoCoordinate.distance(to:)` usage to remove remaining direct coordinate distance math in recommender publishers.
 - 2026-02-06: Migrated UI label callers (`BeaconTitle*`, `TourToolbar`, `LocationItemView`, `LocationDetailLabelView`, `WaypointCell`, `LocationDetailTableViewController`, `EditMarkerView`) to `SSGeoLocation` overloads for distance labels, reducing `CLLocation`-typed call-site coupling in view/presenter layers.
+- 2026-02-06: Migrated beacon “more information” action flow (`BeaconActionHandler`, `BeaconTitleViewController`, `BeaconTitleView`) to `SSGeoLocation` inputs and removed unused `CLLocation` overloads from `BeaconDetailLocalizedLabel`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

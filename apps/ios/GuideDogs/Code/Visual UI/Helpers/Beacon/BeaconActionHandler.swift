@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import CoreLocation
 import SwiftUI
+import SSGeo
 
 @MainActor
 struct BeaconActionHandler {
@@ -87,7 +87,7 @@ struct BeaconActionHandler {
     }
     
     ///
-    /// `moreInformation(detail: BeaconDetail, userLocation: CLLocation)`
+    /// `moreInformation(detail: BeaconDetail, userLocation: SSGeoLocation)`
     ///
     /// parameters
     /// - detail is the `BeaconDetail` object corresponding to the expected `ReferenceEntity`
@@ -95,7 +95,7 @@ struct BeaconActionHandler {
     ///
     /// queues a call out for the given audio beacon
     ///
-    static func moreInformation(detail: BeaconDetail, userLocation: CLLocation?) {
+    static func moreInformation(detail: BeaconDetail, userLocation: SSGeoLocation?) {
         let dLabel = detail.labels.moreInformation(userLocation: userLocation)
         let moreInformation = dLabel.accessibilityText ?? dLabel.text
         

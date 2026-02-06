@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreLocation
 import SSGeo
 
 @MainActor
@@ -90,10 +89,6 @@ struct BeaconDetailLocalizedLabel {
         return LocalizedLabel(text: text, accessibilityText: accessibilityText)
     }
     
-    func distance(from userLocation: CLLocation?) -> LocalizedLabel {
-        distance(from: userLocation?.ssGeoLocation)
-    }
-    
     func moreInformation(userLocation: SSGeoLocation?) -> LocalizedLabel {
         var text: String
         var accessibilityText: String?
@@ -111,10 +106,6 @@ struct BeaconDetailLocalizedLabel {
         }
             
         return LocalizedLabel(text: text, accessibilityText: accessibilityText)
-    }
-    
-    func moreInformation(userLocation: CLLocation?) -> LocalizedLabel {
-        moreInformation(userLocation: userLocation?.ssGeoLocation)
     }
     
 }

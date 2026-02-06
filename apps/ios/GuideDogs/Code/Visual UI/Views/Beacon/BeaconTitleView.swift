@@ -83,7 +83,7 @@ struct BeaconTitleView: View {
         }
         .if(beacon.routeDetail == nil) { view in
             view.accessibilityAction(named: Text(BeaconAction.moreInformation.text), {
-                BeaconActionHandler.moreInformation(detail: beacon, userLocation: userLocation)
+                BeaconActionHandler.moreInformation(detail: beacon, userLocation: userLocation?.ssGeoLocation)
             })
         }
         .if(beacon.routeDetail == nil) { view in

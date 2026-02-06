@@ -276,7 +276,7 @@ class BeaconTitleViewController: UIViewController {
             actions.append(contentsOf: [
                 .callout(beacon),
                 .toggleAudio(beacon),
-                .moreInformation(beacon, userLocation: self.userLocation)
+                .moreInformation(beacon, userLocation: self.userLocation?.ssGeoLocation)
             ])
         } else {
             // Save marker
@@ -300,7 +300,7 @@ class BeaconTitleViewController: UIViewController {
             actions.append(contentsOf: [
                 .callout(beacon),
                 .toggleAudio(beacon),
-                .moreInformation(beacon, userLocation: self.userLocation)
+                .moreInformation(beacon, userLocation: self.userLocation?.ssGeoLocation)
             ])
             
             // Remove beacon
@@ -346,7 +346,7 @@ private extension UIAccessibilityCustomAction {
         })
     }
     
-    static func moreInformation(_ beacon: BeaconDetail, userLocation: CLLocation?) -> UIAccessibilityCustomAction {
+    static func moreInformation(_ beacon: BeaconDetail, userLocation: SSGeoLocation?) -> UIAccessibilityCustomAction {
         return UIAccessibilityCustomAction(name: BeaconAction.moreInformation.text, actionHandler: { _ in
             BeaconActionHandler.moreInformation(detail: beacon, userLocation: userLocation)
             
