@@ -153,11 +153,7 @@ extension CLLocationCoordinate2D {
     }
     
     nonisolated func distance(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
-        return SSGeoMath.distanceMeters(
-            from: self.ssGeoCoordinate,
-            to: coordinate.ssGeoCoordinate,
-            earthRadiusMeters: GeometryUtils.earthRadius
-        )
+        return ssGeoCoordinate.distance(to: coordinate.ssGeoCoordinate)
     }
     
     /// Returns a compass bearing (in the range 0...360) to the specified coordinate.
@@ -195,22 +191,9 @@ extension CLLocationCoordinate2D {
     /// - Returns: Destination point.
     /// - note: Source: http://www.movable-type.co.uk/scripts/latlong.html
     nonisolated func destination(distance: CLLocationDistance, bearing: CLLocationDirection) -> CLLocationCoordinate2D {
-        let δ = distance / GeometryUtils.earthRadius
-        let θ = bearing.degreesToRadians
-        
-        let φ1 = self.latitude.degreesToRadians
-        let λ1 = self.longitude.degreesToRadians
-        
-        let sinφ2 = sin(φ1) * cos(δ) + cos(φ1) * sin(δ) * cos(θ)
-        let φ2 = asin(sinφ2)
-        let y = sin(θ) * sin(δ) * cos(φ1)
-        let x = cos(δ) - sin(φ1) * sinφ2
-        let λ2 = λ1 + atan2(y, x)
-        
-        let latitude = φ2.radiansToDegrees
-        let longitude = λ2.radiansToDegrees
-        
-        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        return ssGeoCoordinate
+            .destination(distanceMeters: distance, initialBearingDegrees: bearing)
+            .clCoordinate
     }
     
     /// Returns a coordinate that is located between two coordinates, at a specific distance.

@@ -51,14 +51,15 @@ struct SSGeoTests {
     @Test
     func distanceAccuracyComparedToCoreLocation() {
         var rng = LCRandom(seed: 0xC0FFEE)
-        var maxRelativeError = 0.0
-        var maxAbsoluteErrorUnder10km = 0.0
+        var maxAbsoluteError = 0.0
+        var wgs84CloserOrEqualCount = 0
 
-        for _ in 0 ..< 1_500 {
+        for _ in 0 ..< 2_000 {
             let from = randomCoordinate(rng: &rng)
             let to = randomCoordinate(rng: &rng)
 
             let ours = SSGeoMath.distanceMeters(from: from, to: to)
+            let sphericalApprox = SSGeoMath.distanceMetersSphericalApprox(from: from, to: to)
             let expected = CLLocation(
                 latitude: from.latitude,
                 longitude: from.longitude
@@ -67,22 +68,41 @@ struct SSGeoTests {
             )
 
             let absError = abs(ours - expected)
+            let sphericalAbsError = abs(sphericalApprox - expected)
             let relError = expected > 0 ? absError / expected : 0
 
-            maxRelativeError = max(maxRelativeError, relError)
-            if expected <= 10_000.0 {
-                maxAbsoluteErrorUnder10km = max(maxAbsoluteErrorUnder10km, absError)
+            if absError <= sphericalAbsError {
+                wgs84CloserOrEqualCount += 1
             }
+            maxAbsoluteError = max(maxAbsoluteError, absError)
 
-            if expected > 1.0 {
-                #expect(relError < 0.0075)
+            if expected <= 10_000.0 {
+                #expect(absError < 1.0)
+            } else if expected > 1.0 {
+                #expect(relError < 0.001)
             } else {
                 #expect(absError < 0.5)
             }
         }
 
-        #expect(maxRelativeError < 0.0075)
-        #expect(maxAbsoluteErrorUnder10km < 40.0)
+        #expect(Double(wgs84CloserOrEqualCount) / 2_000.0 > 0.99)
+        #expect(maxAbsoluteError < 15.0)
+    }
+
+    @Test
+    func destinationRoundTripMaintainsDistanceAndBearing() {
+        let start = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+        let destination = SSGeoMath.destinationCoordinate(
+            from: start,
+            distanceMeters: 12_345.0,
+            initialBearingDegrees: 37.0
+        )
+
+        let roundTripDistance = SSGeoMath.distanceMeters(from: start, to: destination)
+        let roundTripBearing = SSGeoMath.initialBearingDegrees(from: start, to: destination)
+
+        #expect(abs(roundTripDistance - 12_345.0) < 1.0)
+        #expect(abs(roundTripBearing - 37.0) < 0.5)
     }
 
     @Test

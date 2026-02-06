@@ -246,7 +246,6 @@ class GeometryUtilsTest: XCTestCase {
                            CLLocationCoordinate2DMake(0, 180)]
         XCTAssertEqual(GeometryUtils.pathDistance(twoPoints_1),
                        twoPoints_1[0].distance(from: twoPoints_1[1]))
-        XCTAssertEqual(GeometryUtils.pathDistance(twoPoints_1), GeometryUtils.earthRadius * Double.pi)
         
         // It should follow the path, not just the distance from start to end
         let circlePath = [CLLocationCoordinate2DMake(0, 0),
