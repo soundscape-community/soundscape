@@ -25,7 +25,7 @@ final class GDASpatialDataResultEntityDistanceTests: XCTestCase {
         XCTAssertEqual(closest.coordinate.latitude, expectedCoordinate.latitude, accuracy: 1e-9)
         XCTAssertEqual(closest.coordinate.longitude, expectedCoordinate.longitude, accuracy: 1e-9)
 
-        let expectedDistance = user.coordinate.distance(from: expectedCoordinate)
+        let expectedDistance = user.coordinate.ssGeoCoordinate.distance(to: expectedCoordinate.ssGeoCoordinate)
         XCTAssertEqual(
             entity.distanceToClosestLocation(from: user, useEntranceIfAvailable: false),
             expectedDistance,
@@ -50,7 +50,7 @@ final class GDASpatialDataResultEntityDistanceTests: XCTestCase {
         XCTAssertEqual(closest.coordinate.latitude, expectedClosest.latitude, accuracy: 1e-9)
         XCTAssertEqual(closest.coordinate.longitude, expectedClosest.longitude, accuracy: 1e-9)
 
-        let expectedDistance = user.coordinate.distance(from: expectedClosest)
+        let expectedDistance = user.coordinate.ssGeoCoordinate.distance(to: expectedClosest.ssGeoCoordinate)
         XCTAssertEqual(
             entity.distanceToClosestLocation(from: user, useEntranceIfAvailable: false),
             expectedDistance,

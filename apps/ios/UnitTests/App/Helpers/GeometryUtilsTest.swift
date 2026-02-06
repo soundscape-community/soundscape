@@ -245,7 +245,7 @@ class GeometryUtilsTest: XCTestCase {
         let twoPoints_1 = [CLLocationCoordinate2DMake(0, 0),
                            CLLocationCoordinate2DMake(0, 180)]
         XCTAssertEqual(GeometryUtils.pathDistance(twoPoints_1),
-                       twoPoints_1[0].distance(from: twoPoints_1[1]))
+                       twoPoints_1[0].ssGeoCoordinate.distance(to: twoPoints_1[1].ssGeoCoordinate))
         
         // It should follow the path, not just the distance from start to end
         let circlePath = [CLLocationCoordinate2DMake(0, 0),
@@ -264,10 +264,10 @@ class GeometryUtilsTest: XCTestCase {
                     CLLocationCoordinate2DMake(0, 0),
                     CLLocationCoordinate2DMake(0, 1)]
         
-        let dist1 = path[0].distance(from: path[1])
-        let dist2 = path[1].distance(from: path[2])
-        let dist3 = path[2].distance(from: path[3])
-        let dist4 = path[3].distance(from: path[4])
+        let dist1 = path[0].ssGeoCoordinate.distance(to: path[1].ssGeoCoordinate)
+        let dist2 = path[1].ssGeoCoordinate.distance(to: path[2].ssGeoCoordinate)
+        let dist3 = path[2].ssGeoCoordinate.distance(to: path[3].ssGeoCoordinate)
+        let dist4 = path[3].ssGeoCoordinate.distance(to: path[4].ssGeoCoordinate)
         
         // For some reason these test cases don't work between points.
         // Either I don't understand how this should work, or it's a bug.
@@ -415,7 +415,7 @@ class GeometryUtilsTest: XCTestCase {
         ]
 
         for pair in coordinatePairs {
-            let ours = pair.0.distance(from: pair.1)
+            let ours = pair.0.ssGeoCoordinate.distance(to: pair.1.ssGeoCoordinate)
             let expected = CLLocation(pair.0).distance(from: CLLocation(pair.1))
             let absError = abs(ours - expected)
 

@@ -62,6 +62,7 @@ Phase 1 complete:
 - 2026-02-06: Migrated UI label callers (`BeaconTitle*`, `TourToolbar`, `LocationItemView`, `LocationDetailLabelView`, `WaypointCell`, `LocationDetailTableViewController`, `EditMarkerView`) to `SSGeoLocation` overloads for distance labels, reducing `CLLocation`-typed call-site coupling in view/presenter layers.
 - 2026-02-06: Migrated beacon “more information” action flow (`BeaconActionHandler`, `BeaconTitleViewController`, `BeaconTitleView`) to `SSGeoLocation` inputs and removed unused `CLLocation` overloads from `BeaconDetailLocalizedLabel`.
 - 2026-02-06: Removed remaining `CLLocation` distance overload from `LocationDetailLocalizedLabel` and made `nameAndDistance` SSGeo-first (`SSGeoLocation` input) to continue collapsing legacy compatibility surfaces.
+- 2026-02-06: Removed unused `CLLocationCoordinate2D.distance(from:)` extension from app code and updated iOS unit tests (`GeometryUtilsTest`, `GDASpatialDataResultEntityDistanceTests`) to assert distances via explicit `SSGeoCoordinate.distance(to:)` calls.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

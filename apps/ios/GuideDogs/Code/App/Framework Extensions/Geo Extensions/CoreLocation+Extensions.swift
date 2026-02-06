@@ -152,10 +152,6 @@ extension CLLocationCoordinate2D {
         return CLLocationCoordinate2DIsValid(self) && self != CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
     }
     
-    nonisolated func distance(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
-        return ssGeoCoordinate.distance(to: coordinate.ssGeoCoordinate)
-    }
-    
     /// Returns a compass bearing (in the range 0...360) to the specified coordinate.
     ///
     /// - Parameters:
