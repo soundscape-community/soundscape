@@ -20,6 +20,12 @@ final class BehaviorRuntimeProviderDispatchTests: XCTestCase {
         var tourSecondaryRoadsContext: SecondaryRoadsContext = .standard
         var removeRegisteredPOIsCount = 0
 
+        var onboardingDestinationManagerValue: DestinationManagerProtocol?
+        var onboardingLocation: CLLocation?
+        var onboardingHeading: CLLocationDirection?
+        var onboardingGeolocationAuthorized = false
+        var onboardingMotionAuthorized = false
+
         func routeGuidanceCurrentUserLocation() -> CLLocation? {
             routeLocation
         }
@@ -38,6 +44,26 @@ final class BehaviorRuntimeProviderDispatchTests: XCTestCase {
 
         func guidedTourRemoveRegisteredPOIs() {
             removeRegisteredPOIsCount += 1
+        }
+
+        func onboardingDestinationManager() -> DestinationManagerProtocol? {
+            onboardingDestinationManagerValue
+        }
+
+        func onboardingCurrentUserLocation() -> CLLocation? {
+            onboardingLocation
+        }
+
+        func onboardingCurrentPresentationHeading() -> CLLocationDirection? {
+            onboardingHeading
+        }
+
+        func onboardingIsGeolocationAuthorized() -> Bool {
+            onboardingGeolocationAuthorized
+        }
+
+        func onboardingIsMotionActivityAuthorized() -> Bool {
+            onboardingMotionAuthorized
         }
     }
 
@@ -90,5 +116,21 @@ final class BehaviorRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(RouteGuidanceRuntime.secondaryRoadsContext(), .standard)
         XCTAssertNil(GuidedTourRuntime.currentUserLocation())
         XCTAssertEqual(GuidedTourRuntime.secondaryRoadsContext(), .standard)
+    }
+
+    func testOnboardingRuntimeDispatchesToConfiguredProvider() {
+        let provider = MockBehaviorRuntimeProviders()
+        let location = CLLocation(latitude: 47.65, longitude: -122.38)
+        provider.onboardingLocation = location
+        provider.onboardingHeading = 123.0
+        provider.onboardingGeolocationAuthorized = true
+        provider.onboardingMotionAuthorized = true
+        BehaviorRuntimeProviderRegistry.configure(with: provider)
+
+        XCTAssertNil(OnboardingRuntime.destinationManager())
+        XCTAssertEqual(OnboardingRuntime.currentUserLocation(), location)
+        XCTAssertEqual(OnboardingRuntime.currentPresentationHeading(), 123.0)
+        XCTAssertTrue(OnboardingRuntime.isGeolocationAuthorized())
+        XCTAssertTrue(OnboardingRuntime.isMotionActivityAuthorized())
     }
 }

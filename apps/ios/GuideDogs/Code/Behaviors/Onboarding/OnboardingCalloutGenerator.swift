@@ -79,7 +79,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        guard let marker = AppContext.shared.spatialDataContext.destinationManager.destination else {
+        guard let marker = OnboardingRuntime.destinationManager()?.destination else {
             return nil
         }
 
@@ -118,7 +118,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        guard let marker = AppContext.shared.spatialDataContext.destinationManager.destination else {
+        guard let marker = OnboardingRuntime.destinationManager()?.destination else {
             return nil
         }
 

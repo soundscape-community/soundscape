@@ -510,7 +510,16 @@ protocol GuidedTourRuntimeProviding {
 }
 
 @MainActor
-protocol BehaviorRuntimeProviders: RouteGuidanceRuntimeProviding, GuidedTourRuntimeProviding {}
+protocol OnboardingRuntimeProviding {
+    func onboardingDestinationManager() -> DestinationManagerProtocol?
+    func onboardingCurrentUserLocation() -> CLLocation?
+    func onboardingCurrentPresentationHeading() -> CLLocationDirection?
+    func onboardingIsGeolocationAuthorized() -> Bool
+    func onboardingIsMotionActivityAuthorized() -> Bool
+}
+
+@MainActor
+protocol BehaviorRuntimeProviders: RouteGuidanceRuntimeProviding, GuidedTourRuntimeProviding, OnboardingRuntimeProviding {}
 
 @MainActor
 enum BehaviorRuntimeProviderRegistry {
@@ -563,6 +572,31 @@ private final class UnconfiguredBehaviorRuntimeProviders: BehaviorRuntimeProvide
     func guidedTourRemoveRegisteredPOIs() {
         debugAssertUnconfigured(#function)
     }
+
+    func onboardingDestinationManager() -> DestinationManagerProtocol? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func onboardingCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func onboardingCurrentPresentationHeading() -> CLLocationDirection? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func onboardingIsGeolocationAuthorized() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func onboardingIsMotionActivityAuthorized() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
 }
 
 @MainActor
@@ -591,6 +625,26 @@ final class AppContextBehaviorRuntimeProviders: BehaviorRuntimeProviders {
 
     func guidedTourRemoveRegisteredPOIs() {
         context.eventProcessor.process(RemoveRegisteredPOIs())
+    }
+
+    func onboardingDestinationManager() -> DestinationManagerProtocol? {
+        context.spatialDataContext.destinationManager
+    }
+
+    func onboardingCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func onboardingCurrentPresentationHeading() -> CLLocationDirection? {
+        context.geolocationManager.presentationHeading.value
+    }
+
+    func onboardingIsGeolocationAuthorized() -> Bool {
+        context.geolocationManager.isAuthorized
+    }
+
+    func onboardingIsMotionActivityAuthorized() -> Bool {
+        context.motionActivityContext.isAuthorized
     }
 }
 

@@ -90,6 +90,9 @@ Phase 1 complete:
 - 2026-02-06: Added behavior runtime provider DI (`RouteGuidanceRuntimeProviding`, `GuidedTourRuntimeProviding`, `BehaviorRuntimeProviders`) with `AppContextBehaviorRuntimeProviders`, and migrated `RouteGuidance` + `GuidedTour` to runtime hooks/injected dependencies so they no longer read `AppContext.shared` directly.
 - 2026-02-06: Added `BehaviorRuntimeProviderDispatchTests` to verify route/tour runtime dispatch and provider reset isolation for behavior seams.
 - 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 254`, `Behaviors: 41`, `App: 25`, `Haptics: 13`, `Sensors: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Data: 0`.
+- 2026-02-06: Extended behavior runtime DI into onboarding (`OnboardingBehavior`, `OnboardingCalloutGenerator`) so onboarding beacon/audio/authorization hooks no longer read `AppContext.shared` or call `AppContext.process` directly.
+- 2026-02-06: Extended `BehaviorRuntimeProviderDispatchTests` to validate onboarding runtime dispatch (`location`, `heading`, `authorization`) and preserve reset semantics.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 254`, `Behaviors: 34`, `App: 25`, `Haptics: 13`, `Sensors: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

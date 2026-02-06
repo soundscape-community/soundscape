@@ -14,6 +14,29 @@ extension Notification.Name {
 }
 
 @MainActor
+enum OnboardingRuntime {
+    static func destinationManager() -> DestinationManagerProtocol? {
+        BehaviorRuntimeProviderRegistry.providers.onboardingDestinationManager()
+    }
+
+    static func currentUserLocation() -> CLLocation? {
+        BehaviorRuntimeProviderRegistry.providers.onboardingCurrentUserLocation()
+    }
+
+    static func currentPresentationHeading() -> CLLocationDirection? {
+        BehaviorRuntimeProviderRegistry.providers.onboardingCurrentPresentationHeading()
+    }
+
+    static func isGeolocationAuthorized() -> Bool {
+        BehaviorRuntimeProviderRegistry.providers.onboardingIsGeolocationAuthorized()
+    }
+
+    static func isMotionActivityAuthorized() -> Bool {
+        BehaviorRuntimeProviderRegistry.providers.onboardingIsMotionActivityAuthorized()
+    }
+}
+
+@MainActor
 class OnboardingBehavior: BehaviorBase {
     
     // MARK: Enums
@@ -52,9 +75,7 @@ class OnboardingBehavior: BehaviorBase {
     override func activate(with parent: Behavior?) {
         super.activate(with: parent)
         
-        let manager = AppContext.shared.spatialDataContext.destinationManager
-        
-        if manager.isAudioEnabled {
+        if let manager = OnboardingRuntime.destinationManager(), manager.isAudioEnabled {
             // If there is an existing beacon, turn off beacon audio
             manager.toggleDestinationAudio(true)
         }
@@ -75,12 +96,12 @@ class OnboardingBehavior: BehaviorBase {
         SettingsContext.shared.appUseCount += 1
         
         // Play spatial audio if required services are authorized
-        if AppContext.shared.geolocationManager.isAuthorized && AppContext.shared.motionActivityContext.isAuthorized {
+        if OnboardingRuntime.isGeolocationAuthorized() && OnboardingRuntime.isMotionActivityAuthorized() {
             // Play app launch sound
-            AppContext.process(GlyphEvent(.appLaunch))
+            delegate?.process(GlyphEvent(.appLaunch))
             
             // Start a `My Location` callout
-            AppContext.process(ExplorationModeToggled(.locate, logContext: "first_launch"))
+            delegate?.process(ExplorationModeToggled(.locate, logContext: "first_launch"))
         }
         
         // Post notification
@@ -127,11 +148,11 @@ private extension OnboardingBehavior {
     }
 
     func startSelectedBeaconAudio() -> Bool {
-        guard let userLocation = AppContext.shared.geolocationManager.location else {
+        guard let userLocation = OnboardingRuntime.currentUserLocation() else {
             return false
         }
 
-        guard let heading = AppContext.shared.geolocationManager.presentationHeading.value else {
+        guard let heading = OnboardingRuntime.currentPresentationHeading() else {
             return false
         }
 
