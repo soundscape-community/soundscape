@@ -44,6 +44,10 @@ enum SpatialDataContextRuntime {
     static func updateAudioEngineUserLocation(_ location: CLLocation) {
         DataRuntimeProviderRegistry.providers.spatialDataContextUpdateAudioEngineUserLocation(location)
     }
+
+    static func processEvent(_ event: Event) {
+        DataRuntimeProviderRegistry.providers.spatialDataContextProcessEvent(event)
+    }
 }
 
 extension Notification.Name {
@@ -588,7 +592,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     }
     
     fileprivate func notifyLocationUpdated(_ location: CLLocation, tilesChanged: Bool = false) {
-        AppContext.process(LocationUpdatedEvent(location))
+        SpatialDataContextRuntime.processEvent(LocationUpdatedEvent(location))
         
         NotificationCenter.default.post(name: Notification.Name.locationUpdated,
                                         object: self,

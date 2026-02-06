@@ -10,7 +10,7 @@ import SwiftUI
 
 class RouteDetailsViewHostingController: UIHostingController<AnyView> {
     required init?(coder aDecoder: NSCoder) {
-        guard let routeGuidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
+        guard let routeGuidance = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
             return nil
         }
         

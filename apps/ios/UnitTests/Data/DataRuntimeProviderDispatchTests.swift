@@ -33,6 +33,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var referenceSetDestinationError: Error?
         var referenceClearError: Error?
         var referenceRemovedMarkerIDs: [String] = []
+        var referenceProcessedEventNames: [String] = []
 
         var spatialDataEntityLocation: CLLocation?
 
@@ -40,12 +41,14 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var routeGuidanceActive = false
         var routeOrTourGuidanceActive = false
         var beaconCalloutBlocked = false
+        var destinationProcessedEventNames: [String] = []
 
         var spatialDataContextLocation: CLLocation?
         var didPerformInitialCloudSync = false
         var didClearCalloutHistory = false
         var appIsInNormalState = false
         var updatedAudioEngineLocations: [CLLocation] = []
+        var spatialDataContextProcessedEventNames: [String] = []
 
         func routeCurrentUserLocation() -> CLLocation? {
             routeLocation
@@ -91,6 +94,10 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             referenceRemoved.append(entity)
         }
 
+        func referenceProcessEvent(_ event: Event) {
+            referenceProcessedEventNames.append(event.name)
+        }
+
         func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
             if let referenceSetDestinationError {
                 throw referenceSetDestinationError
@@ -129,6 +136,10 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             beaconCalloutBlocked
         }
 
+        func destinationManagerProcessEvent(_ event: Event) {
+            destinationProcessedEventNames.append(event.name)
+        }
+
         func spatialDataContextCurrentUserLocation() -> CLLocation? {
             spatialDataContextLocation
         }
@@ -148,6 +159,10 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
 
         func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation) {
             updatedAudioEngineLocations.append(location)
+        }
+
+        func spatialDataContextProcessEvent(_ event: Event) {
+            spatialDataContextProcessedEventNames.append(event.name)
         }
     }
 
@@ -197,11 +212,13 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         ReferenceEntityRuntime.updateReferenceInCloud(entity)
         ReferenceEntityRuntime.removeReferenceFromCloud(entity)
         ReferenceEntityRuntime.removeCalloutHistoryForMarkerID("marker-1")
+        ReferenceEntityRuntime.processEvent(BehaviorActivatedEvent())
 
         XCTAssertEqual(provider.referenceStored.count, 1)
         XCTAssertEqual(provider.referenceUpdated.count, 1)
         XCTAssertEqual(provider.referenceRemoved.count, 1)
         XCTAssertEqual(provider.referenceRemovedMarkerIDs, ["marker-1"])
+        XCTAssertEqual(provider.referenceProcessedEventNames, [BehaviorActivatedEvent().name])
 
         provider.referenceSetDestinationError = MockError.expected
         XCTAssertThrowsError(try ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID("destination-2"))
@@ -225,6 +242,9 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertTrue(DestinationManagerRuntime.isRouteGuidanceActive())
         XCTAssertTrue(DestinationManagerRuntime.isRouteOrTourGuidanceActive())
         XCTAssertTrue(DestinationManagerRuntime.isBeaconCalloutGeneratorBlocked())
+
+        DestinationManagerRuntime.processEvent(BehaviorActivatedEvent())
+        XCTAssertEqual(provider.destinationProcessedEventNames, [BehaviorActivatedEvent().name])
     }
 
     func testSpatialDataContextRuntimeDispatchesToProvider() {
@@ -244,12 +264,14 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
 
         SpatialDataContextRuntime.clearCalloutHistory()
         SpatialDataContextRuntime.updateAudioEngineUserLocation(location)
+        SpatialDataContextRuntime.processEvent(BehaviorActivatedEvent())
 
         wait(for: [syncExpectation], timeout: 1.0)
         XCTAssertTrue(provider.didPerformInitialCloudSync)
         XCTAssertTrue(provider.didClearCalloutHistory)
         XCTAssertEqual(provider.updatedAudioEngineLocations.count, 1)
         XCTAssertEqual(provider.updatedAudioEngineLocations.first, location)
+        XCTAssertEqual(provider.spatialDataContextProcessedEventNames, [BehaviorActivatedEvent().name])
     }
 
     func testProviderResetClearsInjectedProvider() {

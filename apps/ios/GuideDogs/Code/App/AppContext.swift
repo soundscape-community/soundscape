@@ -45,6 +45,7 @@ protocol ReferenceEntityRuntimeProviding {
     func referenceStoreInCloud(_ entity: ReferenceEntity)
     func referenceUpdateInCloud(_ entity: ReferenceEntity)
     func referenceRemoveFromCloud(_ entity: ReferenceEntity)
+    func referenceProcessEvent(_ event: Event)
     func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool
     func referenceClearDestinationForCacheReset() throws
     func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String)
@@ -61,6 +62,7 @@ protocol DestinationManagerRuntimeProviding {
     func destinationManagerIsRouteGuidanceActive() -> Bool
     func destinationManagerIsRouteOrTourGuidanceActive() -> Bool
     func destinationManagerIsBeaconCalloutGeneratorBlocked() -> Bool
+    func destinationManagerProcessEvent(_ event: Event)
 }
 
 @MainActor
@@ -70,6 +72,7 @@ protocol SpatialDataContextRuntimeProviding {
     func spatialDataContextClearCalloutHistory()
     func spatialDataContextIsApplicationInNormalState() -> Bool
     func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation)
+    func spatialDataContextProcessEvent(_ event: Event)
 }
 
 @MainActor
@@ -155,6 +158,10 @@ private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
         debugAssertUnconfigured(#function)
     }
 
+    func referenceProcessEvent(_ event: Event) {
+        debugAssertUnconfigured(#function)
+    }
+
     func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
         debugAssertUnconfigured(#function)
         return false
@@ -193,6 +200,10 @@ private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
         return false
     }
 
+    func destinationManagerProcessEvent(_ event: Event) {
+        debugAssertUnconfigured(#function)
+    }
+
     func spatialDataContextCurrentUserLocation() -> CLLocation? {
         debugAssertUnconfigured(#function)
         return nil
@@ -213,6 +224,10 @@ private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
     }
 
     func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func spatialDataContextProcessEvent(_ event: Event) {
         debugAssertUnconfigured(#function)
     }
 }
@@ -277,6 +292,10 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
         context.cloudKeyValueStore.remove(referenceEntity: entity)
     }
 
+    func referenceProcessEvent(_ event: Event) {
+        context.eventProcessor.process(event)
+    }
+
     func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
         guard let destination = context.spatialDataContext.destinationManager.destination,
               destination.id == id else {
@@ -323,6 +342,10 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
         context.eventProcessor.activeBehavior.blockedAutoGenerators.contains(where: { $0 == BeaconCalloutGenerator.self })
     }
 
+    func destinationManagerProcessEvent(_ event: Event) {
+        context.eventProcessor.process(event)
+    }
+
     func spatialDataContextCurrentUserLocation() -> CLLocation? {
         context.geolocationManager.location
     }
@@ -344,6 +367,10 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
 
     func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation) {
         context.audioEngine.updateUserLocation(location)
+    }
+
+    func spatialDataContextProcessEvent(_ event: Event) {
+        context.eventProcessor.process(event)
     }
 }
 

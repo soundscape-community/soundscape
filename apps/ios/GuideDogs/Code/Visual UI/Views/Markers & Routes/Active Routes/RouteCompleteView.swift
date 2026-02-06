@@ -91,7 +91,7 @@ struct RouteCompleteView: View {
                         Button(action: {
                             // Resume route
                             route.shouldResume = true
-                            AppContext.shared.eventProcessor.activateCustom(behavior: route)
+                            VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(route)
                             navHelper.dismiss(animated: true, completion: nil)
                         }, label: {
                             GDLocalizedTextView("general.alert.resume")
@@ -134,16 +134,20 @@ struct RouteCompleteView_Previews: PreviewProvider {
     static let route = RouteDetailsView_Previews.testOMRoute
     
     static var previews: some View {
-        
-        RouteCompleteView(route: RouteGuidance(recreationalActivity,
-                                               spatialData: AppContext.shared.spatialDataContext,
-                                               motion: AppContext.shared.motionActivityContext))
-            .environmentObject(ViewNavigationHelper())
-        
-        RouteCompleteView(route: RouteGuidance(recreationalActivity,
-                                               spatialData: AppContext.shared.spatialDataContext,
-                                               motion: AppContext.shared.motionActivityContext))
-            .environmentObject(ViewNavigationHelper())
+        if let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
+           let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() {
+            RouteCompleteView(route: RouteGuidance(recreationalActivity,
+                                                   spatialData: spatialData,
+                                                   motion: motion))
+                .environmentObject(ViewNavigationHelper())
+
+            RouteCompleteView(route: RouteGuidance(recreationalActivity,
+                                                   spatialData: spatialData,
+                                                   motion: motion))
+                .environmentObject(ViewNavigationHelper())
+        } else {
+            EmptyView()
+        }
         
     }
 }

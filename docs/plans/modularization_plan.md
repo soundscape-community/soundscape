@@ -108,6 +108,11 @@ Phase 1 complete:
 - 2026-02-06: Extended visual runtime hooks with guidance construction/activation access (`visualActivateCustomBehavior`, `visualSpatialDataContext`, `visualMotionActivityContext`) and migrated `RouteDetailsView`, `RouteTutorialView`, and `GuidedTourDetailsView` start/stop guidance flows away from direct `AppContext.shared` usage.
 - 2026-02-06: Extended `VisualRuntimeProviderDispatchTests` to verify visual custom-behavior activation + shared context lookup dispatch for the new visual runtime hooks.
 - 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 223`, `App: 25`, `Haptics: 13`, `Sensors: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-06: Migrated remaining singleton-coupled route/tour UI entry points (`RoutesList`, `RouteCompleteView`, `TourToolbar`, `RouteDetailsViewHostingController`, `TourCardContainerHostingController`) to `VisualRuntimeProviderRegistry` hooks for active behavior, custom behavior activation/deactivation, and shared context lookup.
+- 2026-02-06: Extended Data runtime provider DI with event-dispatch hooks (`referenceProcessEvent`, `destinationManagerProcessEvent`, `spatialDataContextProcessEvent`) and replaced the last `Data`-layer `AppContext.process(...)` call sites in `ReferenceEntity`, `DestinationManager`, and `SpatialDataContext`; `rg "AppContext.shared|AppContext.process" apps/ios/GuideDogs/Code/Data` now returns zero matches.
+- 2026-02-06: Extended `DataRuntimeProviderDispatchTests` to verify dispatch of Data runtime event hooks and preserve provider-reset isolation.
+- 2026-02-06: Regenerated dependency analysis artifact after a fresh iOS test build: `docs/plans/artifacts/dependency-analysis/latest.txt`.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 204`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -234,7 +239,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 1 seam carving in `Visual UI` view-controller/helper entry points that still default to `AppContext.shared` (observable stores are carved, broader view layers remain).
-2. Continue the Visual UI runtime-provider pass into remaining beacon/route UI entry points (`BeaconTitleViewController`, `RouteDetailsViewHostingController`, `RoutesList`, `RouteCompleteView`, `TourToolbar`, `BeaconMapView`/`BeaconMapCard` previews) that still use direct `AppContext.shared`.
-3. Regenerate dependency-analysis artifact after each seam batch to track `Visual UI` trendlines now that `Behaviors` and `Data` callsites are at zero.
-4. Keep this document and `AGENTS.md` updated in every modularization PR with status and immediate next action.
+1. Continue Milestone 1 seam carving in `Visual UI` high-coupling view controllers (`DevicesViewController`, `HomeViewController`, `StatusTableViewController`, `MarkerTutorialViewController`) by introducing focused runtime-provider hooks rather than passing `AppContext` directly.
+2. Continue the Visual UI runtime-provider pass in remaining route/beacon surfaces (`BeaconTitleViewController`, `BeaconMapView`/`BeaconMapCard`, `MarkersList`) and then trim obsolete `AppContext` helper access from those flows.
+3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero.
+4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

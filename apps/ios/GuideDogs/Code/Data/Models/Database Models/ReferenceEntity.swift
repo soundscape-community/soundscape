@@ -40,6 +40,10 @@ enum ReferenceEntityRuntime {
     static func removeCalloutHistoryForMarkerID(_ markerID: String) {
         DataRuntimeProviderRegistry.providers.referenceRemoveCalloutHistoryForMarkerID(markerID)
     }
+
+    static func processEvent(_ event: Event) {
+        DataRuntimeProviderRegistry.providers.referenceProcessEvent(event)
+    }
 }
 
 enum ReferenceEntityError: Error {
@@ -604,7 +608,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     }
     
     private static func notifyEntityAdded(_ id: String) {
-        AppContext.process(MarkerAddedEvent(id))
+        ReferenceEntityRuntime.processEvent(MarkerAddedEvent(id))
         NotificationCenter.default.post(name: Notification.Name.markerAdded, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
     }
     

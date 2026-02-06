@@ -163,7 +163,8 @@ struct TourToolbar: View {
                     
                     // Audio Beacon
                     Button {
-                        GDATelemetry.track("tour_toolbar.toggle_audio.selected", with: ["isPlaying": (!AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled).description])
+                        let isAudioEnabled = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext()?.destinationManager.isAudioEnabled ?? false
+                        GDATelemetry.track("tour_toolbar.toggle_audio.selected", with: ["isPlaying": (!isAudioEnabled).description])
                         
                         withAnimation {
                             BeaconActionHandler.toggleAudio()
@@ -182,7 +183,7 @@ struct TourToolbar: View {
                 Button {
                     GDATelemetry.track("tour_toolbar.end.selected", with: ["is_completed": tour.state.isFinal.description])
                     
-                    AppContext.shared.eventProcessor.deactivateCustom()
+                    VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
                 } label: {
                     GDLocalizedTextView("tour_detail.beacon.stop")
                 }

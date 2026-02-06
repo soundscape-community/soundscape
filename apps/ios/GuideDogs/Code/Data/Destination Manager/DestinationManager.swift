@@ -40,6 +40,10 @@ enum DestinationManagerRuntime {
     static func isBeaconCalloutGeneratorBlocked() -> Bool {
         DataRuntimeProviderRegistry.providers.destinationManagerIsBeaconCalloutGeneratorBlocked()
     }
+
+    static func processEvent(_ event: Event) {
+        DataRuntimeProviderRegistry.providers.destinationManagerProcessEvent(event)
+    }
 }
 
 @MainActor
@@ -706,11 +710,11 @@ class DestinationManager: DestinationManagerProtocol {
         
         GDLogAppInfo("Geofence Triggered: \(isWithinGeofence ? "Entered" : "Exited")")
         
-        AppContext.process(BeaconGeofenceTriggeredEvent(beaconId: key,
-                                                        didEnter: isWithinGeofence,
-                                                        beaconIsEnabled: isAudioEnabled,
-                                                        beaconWasEnabled: wasAudioEnabled,
-                                                        location: location))
+        DestinationManagerRuntime.processEvent(BeaconGeofenceTriggeredEvent(beaconId: key,
+                                                                            didEnter: isWithinGeofence,
+                                                                            beaconIsEnabled: isAudioEnabled,
+                                                                            beaconWasEnabled: wasAudioEnabled,
+                                                                            location: location))
         
         NotificationCenter.default.post(name: Notification.Name.destinationGeofenceDidTrigger,
                                         object: self,
@@ -769,7 +773,7 @@ class DestinationManager: DestinationManagerProtocol {
                         DestinationManager.Keys.isAudioEnabled: isAudioEnabled]
         }
         
-        AppContext.process(BeaconChangedEvent(id: id, audioEnabled: self.isAudioEnabled))
+        DestinationManagerRuntime.processEvent(BeaconChangedEvent(id: id, audioEnabled: self.isAudioEnabled))
         NotificationCenter.default.post(name: Notification.Name.destinationChanged, object: self, userInfo: userInfo)
     }
     
