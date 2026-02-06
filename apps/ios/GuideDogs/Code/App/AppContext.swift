@@ -497,6 +497,104 @@ final class AppContextVisualRuntimeProviders: VisualRuntimeProviders {
 }
 
 @MainActor
+protocol RouteGuidanceRuntimeProviding {
+    func routeGuidanceCurrentUserLocation() -> CLLocation?
+    func routeGuidanceSecondaryRoadsContext() -> SecondaryRoadsContext
+}
+
+@MainActor
+protocol GuidedTourRuntimeProviding {
+    func guidedTourCurrentUserLocation() -> CLLocation?
+    func guidedTourSecondaryRoadsContext() -> SecondaryRoadsContext
+    func guidedTourRemoveRegisteredPOIs()
+}
+
+@MainActor
+protocol BehaviorRuntimeProviders: RouteGuidanceRuntimeProviding, GuidedTourRuntimeProviding {}
+
+@MainActor
+enum BehaviorRuntimeProviderRegistry {
+    private static let unconfiguredProviders = UnconfiguredBehaviorRuntimeProviders()
+    private(set) static var providers: BehaviorRuntimeProviders = unconfiguredProviders
+
+    static func configure(with providers: BehaviorRuntimeProviders) {
+        self.providers = providers
+    }
+
+    static func resetForTesting() {
+        providers = unconfiguredProviders
+    }
+}
+
+@MainActor
+private final class UnconfiguredBehaviorRuntimeProviders: BehaviorRuntimeProviders {
+    private static var isRunningUnitTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
+    private func debugAssertUnconfigured(_ method: StaticString) {
+#if DEBUG
+        if !Self.isRunningUnitTests {
+            assertionFailure("BehaviorRuntimeProviderRegistry is unconfigured when calling \(method)")
+        }
+#endif
+    }
+
+    func routeGuidanceCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func routeGuidanceSecondaryRoadsContext() -> SecondaryRoadsContext {
+        debugAssertUnconfigured(#function)
+        return .standard
+    }
+
+    func guidedTourCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func guidedTourSecondaryRoadsContext() -> SecondaryRoadsContext {
+        debugAssertUnconfigured(#function)
+        return .standard
+    }
+
+    func guidedTourRemoveRegisteredPOIs() {
+        debugAssertUnconfigured(#function)
+    }
+}
+
+@MainActor
+final class AppContextBehaviorRuntimeProviders: BehaviorRuntimeProviders {
+    private unowned let context: AppContext
+
+    init(context: AppContext) {
+        self.context = context
+    }
+
+    func routeGuidanceCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func routeGuidanceSecondaryRoadsContext() -> SecondaryRoadsContext {
+        AppContext.secondaryRoadsContext
+    }
+
+    func guidedTourCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func guidedTourSecondaryRoadsContext() -> SecondaryRoadsContext {
+        AppContext.secondaryRoadsContext
+    }
+
+    func guidedTourRemoveRegisteredPOIs() {
+        context.eventProcessor.process(RemoveRegisteredPOIs())
+    }
+}
+
+@MainActor
 class AppContext {
 
     // MARK: Keys
@@ -675,6 +773,7 @@ class AppContext {
 
         DataRuntimeProviderRegistry.configure(with: AppContextDataRuntimeProviders(context: self))
         VisualRuntimeProviderRegistry.configure(with: AppContextVisualRuntimeProviders(context: self))
+        BehaviorRuntimeProviderRegistry.configure(with: AppContextBehaviorRuntimeProviders(context: self))
     }
     
     // MARK: Actions

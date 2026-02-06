@@ -33,6 +33,21 @@ extension Notification.Name {
     static let tourWillEnd = Notification.Name("GDATourWillEnd")
 }
 
+@MainActor
+enum GuidedTourRuntime {
+    static func currentUserLocation() -> CLLocation? {
+        BehaviorRuntimeProviderRegistry.providers.guidedTourCurrentUserLocation()
+    }
+
+    static func secondaryRoadsContext() -> SecondaryRoadsContext {
+        BehaviorRuntimeProviderRegistry.providers.guidedTourSecondaryRoadsContext()
+    }
+
+    static func removeRegisteredPOIs() {
+        BehaviorRuntimeProviderRegistry.providers.guidedTourRemoveRegisteredPOIs()
+    }
+}
+
 struct TourState: Codable, CustomStringConvertible {
     var contentId: String
     
@@ -230,7 +245,7 @@ class GuidedTour: BehaviorBase {
         
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 3_000_000_000)
-            guard let self = self, let location = AppContext.shared.geolocationManager.location, !Task.isCancelled else { return }
+            guard let self = self, let location = GuidedTourRuntime.currentUserLocation(), !Task.isCancelled else { return }
             GDLogVerbose(.routeGuidance, "Registering \(self.content.event.pois.count) prioritized POIs for tour")
             if self.content.event.pois.count > 0 {
                 self.delegate?.process(RegisterPrioritizedPOIs(pois: self.content.event.pois))
@@ -254,7 +269,7 @@ class GuidedTour: BehaviorBase {
         
         GDATelemetry.track("tourguide.stopped", with: ["context": telemetryContext, "completed": String(state.isFinal)])
         
-        AppContext.process(RemoveRegisteredPOIs())
+        GuidedTourRuntime.removeRegisteredPOIs()
         
         return super.deactivate()
     }
@@ -393,7 +408,7 @@ class GuidedTour: BehaviorBase {
         // Save state after everything else so that the stateChanged event gets sent when all state is done changing
         saveState()
         
-        GDATelemetry.track("tourguide.next", with: ["context": telemetryContext, "automatic": "\(automatic)", "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
+        GDATelemetry.track("tourguide.next", with: ["context": telemetryContext, "automatic": "\(automatic)", "activity": motionActivity.currentActivity.rawValue])
     }
     
     /// Updates the `waypointIndex` property of the state object to be the index of the
@@ -423,7 +438,7 @@ class GuidedTour: BehaviorBase {
             GDLogInfo(.routeGuidance, "Tour Guide: Current waypoint is not known")
         }
         
-        GDATelemetry.track("tourguide.previous", with: ["context": telemetryContext, "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
+        GDATelemetry.track("tourguide.previous", with: ["context": telemetryContext, "activity": motionActivity.currentActivity.rawValue])
     }
     
     func setBeacon(waypointIndex index: Int, enableAudio: Bool = true) {
@@ -447,7 +462,7 @@ class GuidedTour: BehaviorBase {
         NotificationCenter.default.post(name: .tourTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: true])
         
         // Check if a beacon has already been set - meaning that we are transitioning from one waypoint to another
-        guard AppContext.shared.spatialDataContext.destinationManager.isDestinationSet else {
+        guard spatialDataContext.destinationManager.isDestinationSet else {
             completeSetBeacon(waypoint: waypoint, enableAudio: enableAudio)
             return
         }
@@ -455,13 +470,13 @@ class GuidedTour: BehaviorBase {
         // Ensure the beacon audio turns off when the app enters sleep mode
         if skipAsyncFinish && isBeaconAudioEnabled {
             // Toggle the audio off so that the next beacon starts immediately
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(forceMelody: false)
+            spatialDataContext.destinationManager.toggleDestinationAudio(forceMelody: false)
         }
         
         // Make sure the beacon is currently playing
-        guard isBeaconAsync, let id = AppContext.shared.spatialDataContext.destinationManager.beaconPlayerId else {
+        guard isBeaconAsync, let id = spatialDataContext.destinationManager.beaconPlayerId else {
             if !isBeaconAsync && isBeaconAudioEnabled {
-                AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(false, forceMelody: true)
+                spatialDataContext.destinationManager.toggleDestinationAudio(false, forceMelody: true)
             }
             
             let event: Event
@@ -490,7 +505,7 @@ class GuidedTour: BehaviorBase {
         GDLogInfo(.routeGuidance, "Start transition to next tour beacon...")
         
         do {
-            try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tourguide.set_beacon")
+            try spatialDataContext.destinationManager.clearDestination(logContext: "tourguide.set_beacon")
             GDLogInfo(.routeGuidance, "Awaiting finish of current tour beacon...")
         } catch {
             GDLogError(.routeGuidance, "Error: Unable to remove current beacon in Tour Guidance!")
@@ -498,7 +513,7 @@ class GuidedTour: BehaviorBase {
     }
     
     private func completeSetBeacon(waypoint: LocationDetail, enableAudio: Bool) {
-        guard let userLocation = AppContext.shared.geolocationManager.location else {
+        guard let userLocation = GuidedTourRuntime.currentUserLocation() else {
             return
         }
         
@@ -549,7 +564,7 @@ class GuidedTour: BehaviorBase {
     
     private func updateNowPlayingInfo(_ current: (index: Int, waypoint: LocationDetail)?) {
         guard let current = current,
-              let userLocation = userLocation ?? AppContext.shared.geolocationManager.location,
+              let userLocation = userLocation ?? GuidedTourRuntime.currentUserLocation(),
               let location = current.waypoint.source.closestLocation(from: userLocation, useEntranceIfAvailable: true) else {
             AudioSessionManager.removeNowPlayingInfo()
             return
@@ -575,7 +590,7 @@ class GuidedTour: BehaviorBase {
         return dataView.intersections
             .map({ (intersection: $0, distance: $0.coordinate.ssGeoCoordinate.distance(to: current.coordinate.ssGeoCoordinate)) })
             .sorted(by: { $0.distance < $1.distance })
-            .first(where: { $0.intersection.isMainIntersection(context: AppContext.secondaryRoadsContext) })?
+            .first(where: { $0.intersection.isMainIntersection(context: GuidedTourRuntime.secondaryRoadsContext()) })?
             .intersection.key
     }
     
