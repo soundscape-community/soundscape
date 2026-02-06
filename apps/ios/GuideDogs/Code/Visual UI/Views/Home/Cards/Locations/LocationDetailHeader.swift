@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import SSGeo
 
 struct LocationDetailHeader: View {
     
@@ -39,10 +40,14 @@ struct LocationDetailHeader: View {
 }
 
 struct LocationDetailHeader_Previews: PreviewProvider {
+    static let previewUserLocationStore = UserLocationStore(
+        designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))
+    )
     
     static var previews: some View {
         LocationDetailHeader(config: LocationDetailConfiguration(for: .tour(detail: BeaconMapView_Previews.behavior.content),
-                                                                 userLocation: nil))
+                                                                 userLocation: nil,
+                                                                 userLocationStore: previewUserLocationStore))
     }
     
 }

@@ -92,14 +92,16 @@ struct BeaconView_Previews: PreviewProvider {
         return guidance
     }
     
+    static let previewUserLocationStore = UserLocationStore(designValue: userLocation)
+    
     static var previews: some View {
         BeaconView()
-            .environmentObject(UserLocationStore(designValue: userLocation))
+            .environmentObject(previewUserLocationStore)
             .environmentObject(BeaconDetailStore(beacon: BeaconDetail(locationDetail: locationDetail, isAudioEnabled: true)))
             .environmentObject(ViewNavigationHelper())
         
         BeaconView()
-            .environmentObject(UserLocationStore(designValue: userLocation))
+            .environmentObject(previewUserLocationStore)
             .environmentObject(BeaconDetailStore(beacon: BeaconDetail(from: adaptiveSportsBehavior, isAudioEnabled: true)))
             .environmentObject(ViewNavigationHelper())
     }

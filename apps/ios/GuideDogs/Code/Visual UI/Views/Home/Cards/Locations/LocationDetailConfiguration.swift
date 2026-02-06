@@ -15,11 +15,13 @@ struct LocationDetailConfiguration {
     
     private let style: MapStyle
     private let userLocation: SSGeoLocation?
+    private let userLocationStore: UserLocationStore
     let isDetailViewEnabled: Bool
     
-    init(for style: MapStyle, userLocation: SSGeoLocation?, isDetailViewEnabled: Bool = true) {
+    init(for style: MapStyle, userLocation: SSGeoLocation?, userLocationStore: UserLocationStore, isDetailViewEnabled: Bool = true) {
         self.style = style
         self.userLocation = userLocation
+        self.userLocationStore = userLocationStore
         self.isDetailViewEnabled = isDetailViewEnabled
     }
     
@@ -55,7 +57,7 @@ struct LocationDetailConfiguration {
             WaypointDetailView(waypoint: detail, userLocation: userLocation)
         case .tour(let detail):
             GuidedTourDetailsView(detail)
-                .environmentObject(UserLocationStore())
+                .environmentObject(userLocationStore)
         }
     }
     

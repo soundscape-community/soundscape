@@ -73,6 +73,7 @@ Phase 1 complete:
 - 2026-02-06: Removed direct geolocation-manager reads from UIKit waypoint/location detail controllers (`SearchWaypointViewController`, `LocationDetailTableViewController`) by sourcing SSGeo user location through `UserLocationStore`.
 - 2026-02-06: Updated GPX waypoint parsing in `AuthoredActivityContent` to construct `SSGeoCoordinate`/`SSGeoLocation` directly from lat/lon values, removing an intermediate CoreLocation coordinate conversion step in the data ingestion path.
 - 2026-02-06: Migrated remaining `UserLocationStore(designValue: ...)` preview/test setup call sites to `SSGeoLocation` payloads and removed the obsolete `UserLocationStore` `CLLocation` design initializer.
+- 2026-02-06: Removed inline `UserLocationStore(...)` construction from SwiftUI view-builder call sites (production and previews), replacing them with `@StateObject` in view state or stored preview instances to avoid repeated body-time allocation.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

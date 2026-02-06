@@ -12,6 +12,7 @@ import RealmSwift
 struct RoutesList: View {
     @EnvironmentObject var navHelper: MarkersAndRoutesListNavigationHelper
     @ObservedObject private var loader = RouteLoader()
+    @StateObject private var userLocationStore = UserLocationStore()
     
     @Binding private var sort: SortStyle
     
@@ -62,7 +63,7 @@ struct RoutesList: View {
                     .environmentObject(navHelper as ViewNavigationHelper)
             } else {
                 RouteDetailsView(detail, deleteAction: .popToViewController(type: MarkersAndRoutesListHostViewController.self))
-                    .environmentObject(UserLocationStore())
+                    .environmentObject(userLocationStore)
                     .environmentObject(navHelper as ViewNavigationHelper)
             }
         }

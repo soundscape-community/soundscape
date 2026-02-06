@@ -42,6 +42,7 @@ struct EmptyActivitiesList: View {
 struct AuthoredActivitiesList: View {
     @EnvironmentObject var activityStorage: AuthoredActivityStorage
     @EnvironmentObject var navHelper: ViewNavigationHelper
+    @StateObject private var userLocationStore = UserLocationStore()
     
     @State private var showingAlert = false
     @State private var selectedActivityId: String?
@@ -52,12 +53,12 @@ struct AuthoredActivitiesList: View {
         switch activity.type {
         case .orienteering:
             RouteDetailsView(RouteDetail(source: .trailActivity(content: activity)), deleteAction: nil)
-                .environmentObject(UserLocationStore())
+                .environmentObject(userLocationStore)
                 .environmentObject(navHelper)
             
         case .guidedTour:
             GuidedTourDetailsView(TourDetail(content: activity))
-                .environmentObject(UserLocationStore())
+                .environmentObject(userLocationStore)
                 .environmentObject(navHelper)
         }
     }

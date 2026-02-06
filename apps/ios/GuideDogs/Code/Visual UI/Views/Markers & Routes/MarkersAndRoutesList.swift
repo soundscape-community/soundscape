@@ -157,6 +157,8 @@ struct MarkersAndRoutesList: View {
 }
 
 struct MarkersAndRoutesList_Previews: PreviewProvider {
+    static let previewUserLocationStore = UserLocationStore(designValue: CLLocation.sample.ssGeoLocation)
+    
     static var previews: some View {
         Realm.bootstrap()
         AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
@@ -165,7 +167,7 @@ struct MarkersAndRoutesList_Previews: PreviewProvider {
             MarkersAndRoutesList().navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.realmConfiguration, RealmHelper.databaseConfig)
-        .environmentObject(UserLocationStore(designValue: CLLocation.sample.ssGeoLocation))
+        .environmentObject(previewUserLocationStore)
         .environmentObject(MarkersAndRoutesListNavigationHelper())
     }
 }

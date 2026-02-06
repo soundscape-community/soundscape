@@ -21,7 +21,9 @@ struct BeaconMapView: View {
     private let style: MapStyle
     
     private var config: LocationDetailConfiguration {
-        LocationDetailConfiguration(for: style, userLocation: userLocationStore.ssGeoLocation)
+        LocationDetailConfiguration(for: style,
+                                    userLocation: userLocationStore.ssGeoLocation,
+                                    userLocationStore: userLocationStore)
     }
     
     // MARK: Initialization
@@ -71,6 +73,7 @@ struct BeaconMapView: View {
 }
 
 struct BeaconMapView_Previews: PreviewProvider {
+    static let previewUserLocationStore = UserLocationStore()
     
     static var content: AuthoredActivityContent {
         let availability = DateInterval(start: Date(), duration: 60 * 60 * 24 * 7)
@@ -108,9 +111,9 @@ struct BeaconMapView_Previews: PreviewProvider {
     
     static var previews: some View {
         BeaconMapView(style: .tour(detail: behavior.content))
-            .environmentObject(UserLocationStore())
+            .environmentObject(previewUserLocationStore)
         BeaconMapView(style: .location(detail: behavior.content.waypoints.first!))
-            .environmentObject(UserLocationStore())
+            .environmentObject(previewUserLocationStore)
     }
     
 }

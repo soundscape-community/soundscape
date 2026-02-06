@@ -23,7 +23,9 @@ struct BeaconMapCard: View {
     private let style: MapStyle
     
     private var config: LocationDetailConfiguration {
-        LocationDetailConfiguration(for: style, userLocation: userLocationStore.ssGeoLocation)
+        LocationDetailConfiguration(for: style,
+                                    userLocation: userLocationStore.ssGeoLocation,
+                                    userLocationStore: userLocationStore)
     }
     
     // MARK: Initialization
@@ -100,6 +102,7 @@ struct BeaconMapCard: View {
 }
 
 struct BeaconMapCard_Previews: PreviewProvider {
+    static let previewUserLocationStore = UserLocationStore()
     
     static var content: AuthoredActivityContent {
         let availability = DateInterval(start: Date(), duration: 60 * 60 * 24 * 7)
@@ -144,7 +147,7 @@ struct BeaconMapCard_Previews: PreviewProvider {
         .frame(maxHeight: .infinity)
         .padding(.horizontal, 24.0)
         .background(Color.Theme.darkTeal.ignoresSafeArea())
-        .environmentObject(UserLocationStore())
+        .environmentObject(previewUserLocationStore)
         
         VStack(spacing: 24.0) {
             BeaconMapCard(style: .waypoint(detail: WaypointDetail(index: 0, routeDetail: behavior.content)))
@@ -154,7 +157,7 @@ struct BeaconMapCard_Previews: PreviewProvider {
         .frame(maxHeight: .infinity)
         .padding(.horizontal, 24.0)
         .background(Color.Theme.darkTeal.ignoresSafeArea())
-        .environmentObject(UserLocationStore())
+        .environmentObject(previewUserLocationStore)
     }
     
 }

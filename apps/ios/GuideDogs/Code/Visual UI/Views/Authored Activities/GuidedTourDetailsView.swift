@@ -161,6 +161,10 @@ extension GuidedTourDetailsView {
 }
 
 struct GuidedTourDetailsView_Previews: PreviewProvider {
+    static let previewUserLocationStore = UserLocationStore(
+        designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))
+    )
+    
     static var testTourContent: AuthoredActivityContent {
         let availability = DateInterval(start: Date(), duration: 60 * 60 * 24 * 7)
         
@@ -205,7 +209,7 @@ struct GuidedTourDetailsView_Previews: PreviewProvider {
         GuidedTourDetailsView(testTour, designState: testTourState)
             .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
             .navigationBarTitleDisplayMode(.inline)
-            .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
+            .environmentObject(previewUserLocationStore)
             .previewDisplayName("Trail Activity")
             .previewLayout(.sizeThatFits)
         
@@ -213,7 +217,7 @@ struct GuidedTourDetailsView_Previews: PreviewProvider {
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
             .navigationBarTitleDisplayMode(.inline)
-            .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
+            .environmentObject(previewUserLocationStore)
             .previewDisplayName("Trail Activity")
             .previewLayout(.sizeThatFits)
         
@@ -221,7 +225,7 @@ struct GuidedTourDetailsView_Previews: PreviewProvider {
             GuidedTourDetailsView(testTour, designState: testTourState)
                 .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
                 .navigationBarTitleDisplayMode(.inline)
-                .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
+                .environmentObject(previewUserLocationStore)
                 .previewDisplayName("Trail Activity")
         }
     }

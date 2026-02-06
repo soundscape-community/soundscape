@@ -367,6 +367,10 @@ extension RouteDetailsView {
 }
 
 struct RouteDetailsView_Previews: PreviewProvider {
+    static let previewUserLocationStore = UserLocationStore(
+        designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))
+    )
+    
     static var testTrailContent: AuthoredActivityContent {
         let availability = DateInterval(start: Date(), duration: 60 * 60 * 24 * 7)
         
@@ -450,7 +454,7 @@ struct RouteDetailsView_Previews: PreviewProvider {
         RouteDetailsView(testSportRoute, deleteAction: nil, designState: testSportState)
             .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
             .navigationBarTitleDisplayMode(.inline)
-            .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
+            .environmentObject(previewUserLocationStore)
             .previewDisplayName("Trail Activity")
             .previewLayout(.sizeThatFits)
         
@@ -458,7 +462,7 @@ struct RouteDetailsView_Previews: PreviewProvider {
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
             .navigationBarTitleDisplayMode(.inline)
-            .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
+            .environmentObject(previewUserLocationStore)
             .previewDisplayName("Trail Activity")
             .previewLayout(.sizeThatFits)
         
@@ -466,7 +470,7 @@ struct RouteDetailsView_Previews: PreviewProvider {
             RouteDetailsView(testSportRoute, deleteAction: nil, designState: testSportState)
                 .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
                 .navigationBarTitleDisplayMode(.inline)
-                .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
+                .environmentObject(previewUserLocationStore)
                 .previewDisplayName("Trail Activity")
         }
         
@@ -474,7 +478,7 @@ struct RouteDetailsView_Previews: PreviewProvider {
             RouteDetailsView(testOMRoute, deleteAction: nil, designState: testOMState)
                 .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
                 .navigationBarTitleDisplayMode(.inline)
-                .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
+                .environmentObject(previewUserLocationStore)
         }
         .previewDisplayName("O&M Route")
     }

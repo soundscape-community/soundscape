@@ -23,6 +23,7 @@ struct WaypointCard: View {
     private var config: LocationDetailConfiguration {
         LocationDetailConfiguration(for: .waypoint(detail: waypoint),
                                     userLocation: userLocationStore.ssGeoLocation,
+                                    userLocationStore: userLocationStore,
                                     isDetailViewEnabled: false)
     }
     
@@ -154,6 +155,7 @@ struct WaypointCard_Previews: PreviewProvider {
     
     static let waypoint1 = WaypointDetail(index: 0, routeDetail: WaypointDetailView_Previews.route)
     static let waypoint2 = WaypointDetail(index: 1, routeDetail: WaypointDetailView_Previews.route)
+    static let previewUserLocationStore = UserLocationStore()
     
     static var previews: some View {
         NavigationView {
@@ -171,7 +173,7 @@ struct WaypointCard_Previews: PreviewProvider {
             .padding(.horizontal, 18.0)
             .background(Color.Theme.darkBlue.ignoresSafeArea())
         }
-        .environmentObject(UserLocationStore())
+        .environmentObject(previewUserLocationStore)
         
         NavigationView {
             VStack(spacing: 8.0) {
@@ -190,7 +192,7 @@ struct WaypointCard_Previews: PreviewProvider {
             .background(Color.Theme.darkBlue.ignoresSafeArea())
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-        .environmentObject(UserLocationStore())
+        .environmentObject(previewUserLocationStore)
     }
     
 }
