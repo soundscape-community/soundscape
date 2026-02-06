@@ -83,7 +83,9 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
                 return
             }
             
-            guard let device = AppContext.shared.deviceManager.devices.first, device is UserHeadingProvider, device.isConnected else {
+            guard let device = UIRuntimeProviderRegistry.providers.uiDevices().first,
+                  device is UserHeadingProvider,
+                  device.isConnected else {
                 self?.holdPhoneFlat()
                 return
             }
@@ -142,7 +144,9 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
         
         let string: String
             
-        if let device = AppContext.shared.deviceManager.devices.first, device is UserHeadingProvider, device.isConnected {
+        if let device = UIRuntimeProviderRegistry.providers.uiDevices().first,
+           device is UserHeadingProvider,
+           device.isConnected {
             switch device {
             case _ as HeadphoneMotionManagerWrapper:
                 string = orientationDoesntMatterAirPods
@@ -169,7 +173,7 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
                 }
                 
                 self?.delegate?.pauseBackgroundTrack { [weak self] in
-                    AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
+                    UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio()
                     
                     self?.searchForTing()
                 }
@@ -221,7 +225,9 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
                 
                 let string: String
                 
-                if let device = AppContext.shared.deviceManager.devices.first, device is UserHeadingProvider, device.isConnected {
+                if let device = UIRuntimeProviderRegistry.providers.uiDevices().first,
+                   device is UserHeadingProvider,
+                   device.isConnected {
                     string = self.beaconInBoundsRotateHeadset
                 } else {
                     string = self.beaconInBoundsRotate
@@ -258,7 +264,9 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
             
             let string: String
             
-            if let device = AppContext.shared.deviceManager.devices.first, device is UserHeadingProvider, device.isConnected {
+            if let device = UIRuntimeProviderRegistry.providers.uiDevices().first,
+               device is UserHeadingProvider,
+               device.isConnected {
                 string = self.beaconOutOfBoundsRotateHeadset
             } else {
                 string = self.beaconOutOfBoundsRotate
@@ -295,7 +303,7 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
     }
     
     private func isBeaconInBounds() -> Bool {
-        return AppContext.shared.spatialDataContext.destinationManager.isBeaconInBounds
+        return UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.isBeaconInBounds ?? false
     }
     
 }

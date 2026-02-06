@@ -131,6 +131,8 @@ Phase 1 complete:
 - 2026-02-06: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 171` (down from `180` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 - 2026-02-06: Migrated `DestinationTutorialIntroViewController` to `UIRuntimeProviders` for tutorial-mode toggling, audio-session interruption observer wiring, destination cleanup, and destination selection setup.
 - 2026-02-06: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 166` (down from `171` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-06: Migrated `DestinationTutorialBeaconPage` device/destination runtime reads to `UIRuntimeProviders` (`uiDevices`, `uiToggleDestinationAudio`, `uiSpatialDataContext`) and removed direct singleton usage in beacon in-bounds/out-of-bounds tutorial flow logic.
+- 2026-02-06: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 160` (down from `166` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
