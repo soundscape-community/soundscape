@@ -25,10 +25,6 @@ struct WaypointDetailView: View {
         self.userLocation = userLocation
     }
     
-    init(waypoint: WaypointDetail, userLocation: CLLocation?) {
-        self.init(waypoint: waypoint, userLocation: userLocation?.ssGeoLocation)
-    }
-    
     @ViewBuilder
     private var destination: some View {
         if let location = waypoint.locationDetail {

@@ -33,10 +33,6 @@ struct LocationDetailLabelView: View {
         self.highlightColor = nil
     }
     
-    init(location: LocationDetail, userLocation: CLLocation?) {
-        self.init(location: location, userLocation: userLocation?.ssGeoLocation)
-    }
-    
     private init(location: LocationDetail, userLocation: SSGeoLocation?, titleColor: Color?, subtitleColor: Color?, highlightColor: Color?) {
         self._location = State(initialValue: location)
         self.userLocation = userLocation
@@ -119,8 +115,8 @@ struct LocationDetailLabelView_Previews: PreviewProvider {
         return LocationDetail(location: location)
     }
     
-    static var userLocation: CLLocation {
-        return CLLocation(latitude: 47.640179, longitude: -122.111320)
+    static var userLocation: SSGeoLocation {
+        return SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.640179, longitude: -122.111320))
     }
     
     static var previews: some View {

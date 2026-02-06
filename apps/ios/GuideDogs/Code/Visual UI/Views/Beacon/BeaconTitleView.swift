@@ -24,10 +24,6 @@ struct BeaconTitleView: View {
         self.userLocation = userLocation
     }
     
-    init(beacon: BeaconDetail, userLocation: CLLocation?) {
-        self.init(beacon: beacon, userLocation: userLocation?.ssGeoLocation)
-    }
-    
     // MARK: `Body`
     
     var body: some View {
@@ -106,8 +102,8 @@ struct BeaconTitleView: View {
 
 struct BeaconTitleView_Previews: PreviewProvider {
     
-    static var userLocation: CLLocation {
-        return CLLocation(latitude: 47.640179, longitude: -122.111320)
+    static var userLocation: SSGeoLocation {
+        return SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.640179, longitude: -122.111320))
     }
     
     static var locationDetail: LocationDetail {

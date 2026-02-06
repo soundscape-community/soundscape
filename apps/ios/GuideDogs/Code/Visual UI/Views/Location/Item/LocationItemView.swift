@@ -39,10 +39,6 @@ struct LocationItemView: View {
         }
     }
     
-    init(locationDetail: LocationDetail, userLocation: CLLocation?) {
-        self.init(locationDetail: locationDetail, userLocation: userLocation?.ssGeoLocation)
-    }
-    
     private init(locationDetail: LocationDetail, userLocation: SSGeoLocation?, style: LocationItemStyle = .plain) {
         self.locationDetail = locationDetail
         self.userLocation = userLocation
@@ -105,8 +101,8 @@ struct LocationItemView_Previews: PreviewProvider {
         return LocationDetail(location: location, imported: importedDetail, telemetryContext: nil)
     }
     
-    static var userLocation: CLLocation {
-        return CLLocation(latitude: 47.640179, longitude: -122.111320)
+    static var userLocation: SSGeoLocation {
+        return SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.640179, longitude: -122.111320))
     }
     
     static var previews: some View {

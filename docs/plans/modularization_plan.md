@@ -67,6 +67,7 @@ Phase 1 complete:
 - 2026-02-06: Updated `BeaconTitleViewController` state/subscriptions to store user position as `SSGeoLocation` directly, removing local `CLLocation` storage and additional conversion churn in beacon UI updates.
 - 2026-02-06: Made additional UI location state SSGeo-first (`BeaconTitleView`, `LocationItemView`, `LocationDetailLabelView`, `LocationDetailTableViewController`) while keeping targeted `CLLocation` initializer overloads where call-site compatibility is still needed.
 - 2026-02-06: Migrated waypoint/tour detail UI call paths (`WaypointDetailView`, `GuidedTourDetailsView`, `LocationDetailConfiguration`, waypoint add/edit lists) to pass `SSGeoLocation` directly, reducing remaining call-site `.ssGeoLocation` conversion churn.
+- 2026-02-06: Removed now-unused `CLLocation` compatibility initializers from SSGeo-first views (`BeaconTitleView`, `LocationItemView`, `LocationDetailLabelView`, `WaypointDetailView`) after migrating production call sites, keeping UI distance APIs consistently `SSGeoLocation`-typed.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
