@@ -88,7 +88,7 @@ private struct TrackedCallout {
         if poi.isGenericOSMPOI {
             if trackingKey == poi.keyForTracking, let trackedPOI = callout.poi {
                 // If the POIs are both generic OSM POIs and are within the appropriate proximity range+ of each other, treat them as a match
-                return trackedPOI.centroidCoordinate.distance(from: poi.centroidCoordinate) < category.proximityRange(context: context)
+                return trackedPOI.centroidSSGeoCoordinate.distance(to: poi.centroidSSGeoCoordinate) < category.proximityRange(context: context)
             }
             
             return false

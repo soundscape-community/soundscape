@@ -371,7 +371,7 @@ extension RoadAdjacentDataView {
             // I.e. we don't want repeated callouts for the same marker in close proximity.
             
             if let prevCalloutLocation = from.adjacentCalloutLocationsHistory[marker.id] {
-                guard endpointLocation.distance(from: prevCalloutLocation) > RoadAdjacentDataView.adjacentCalloutThreshold else {
+                guard endpointLocation.ssGeoCoordinate.distance(to: prevCalloutLocation.ssGeoCoordinate) > RoadAdjacentDataView.adjacentCalloutThreshold else {
                     // The adjacent is within the threshold, i.e. not valid.
                     continue
                 }
@@ -396,7 +396,7 @@ extension RoadAdjacentDataView {
             
             // Only add markers that are still in proximity to current history
             for (markerId, coordinate) in from.adjacentCalloutLocationsHistory {
-                guard coordinate.distance(from: endpointLocation) < RoadAdjacentDataView.adjacentCalloutThreshold else {
+                guard coordinate.ssGeoCoordinate.distance(to: endpointLocation.ssGeoCoordinate) < RoadAdjacentDataView.adjacentCalloutThreshold else {
                     // The adjacent is outside the threshold, i.e., expired.
                     continue
                 }

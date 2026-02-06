@@ -192,7 +192,7 @@ class GeometryUtils {
         var distance: CLLocationDistance = 0
         
         for index in 0 ..< path.count-1 {
-            distance += path[index].distance(from: path[index+1])
+            distance += path[index].ssGeoCoordinate.distance(to: path[index+1].ssGeoCoordinate)
         }
         
         return distance
@@ -221,7 +221,7 @@ class GeometryUtils {
             let coord1 = path[index]
             let coord2 = path[index+1]
             
-            let coordDistance = coord1.distance(from: coord2)
+            let coordDistance = coord1.ssGeoCoordinate.distance(to: coord2.ssGeoCoordinate)
             totalDistance += coordDistance
             
             if totalDistance == targetDistance {
@@ -427,7 +427,7 @@ class GeometryUtils {
     nonisolated static func interpolateToEqualDistance(start: CLLocationCoordinate2D,
                                            end: CLLocationCoordinate2D,
                                            distance targetDistance: CLLocationDistance) -> [CLLocationCoordinate2D] {
-        let totalDistance = start.distance(from: end)
+        let totalDistance = start.ssGeoCoordinate.distance(to: end.ssGeoCoordinate)
         
         guard totalDistance > targetDistance else {
             return [start, end]
@@ -443,7 +443,7 @@ class GeometryUtils {
             let currentCoordinate = prevCoordinate.coordinateBetween(coordinate: end, distance: targetDistance)
             coordinates.append(currentCoordinate)
             
-            remainingDistance = currentCoordinate.distance(from: end)
+            remainingDistance = currentCoordinate.ssGeoCoordinate.distance(to: end.ssGeoCoordinate)
         } while remainingDistance > targetDistance
         
         coordinates.append(end)
