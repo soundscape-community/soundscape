@@ -10,13 +10,6 @@ import Foundation
 import RealmSwift
 import MapKit
 
-@MainActor
-enum SpatialDataCacheRuntime {
-    static var currentDestination: () -> ReferenceEntity? = {
-        AppContext.shared.spatialDataContext.destinationManager.destination
-    }
-}
-
 extension SpatialDataCache {
     
     struct Predicates {
@@ -378,7 +371,7 @@ class SpatialDataCache: NSObject {
     // MARK: VectorTile Tools
     
     @MainActor
-    static func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt) -> Set<VectorTile> {
+    static func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity? = nil) -> Set<VectorTile> {
         var tiles: Set<VectorTile> = []
         
         if forReferences {
@@ -388,7 +381,7 @@ class SpatialDataCache: NSObject {
             }
         }
         
-        if forDestinations, let destination = SpatialDataCacheRuntime.currentDestination() {
+        if forDestinations, let destination {
             tiles.insert(VectorTile(latitude: destination.latitude, longitude: destination.longitude, zoom: zoomLevel))
         }
         

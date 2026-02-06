@@ -432,7 +432,8 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             (tiles, toFetch) = SpatialDataContext.checkForTiles(location: location,
                                                                tiles: tiles,
                                                                includePORs: reloadPORs,
-                                                               prioritizeCurrent: prioritize)
+                                                               prioritizeCurrent: prioritize,
+                                                               destination: destinationManager.destination)
             
             // Update tile fetching state
             fetchingTiles = true
@@ -712,12 +713,15 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     ///   - location: User's current location
     ///   - tiles: The set of tiles currently downloaded around the user
     /// - Returns: The set of tiles currently downloaded that should still be tracked, and a list of new tiles to download and track.
-    public class func checkForTiles(location: CLLocation, tiles: Set<VectorTile>, includePORs: Bool, prioritizeCurrent: Bool = false) -> (Set<VectorTile>, [VectorTile]) {
+    public class func checkForTiles(location: CLLocation, tiles: Set<VectorTile>, includePORs: Bool, prioritizeCurrent: Bool = false, destination: ReferenceEntity? = nil) -> (Set<VectorTile>, [VectorTile]) {
         guard !prioritizeCurrent else {
             var needed = [VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)]
             
             if includePORs {
-                needed = Array(SpatialDataCache.tiles(forDestinations: true, forReferences: true, at: zoomLevel).union(needed))
+                needed = Array(SpatialDataCache.tiles(forDestinations: true,
+                                                      forReferences: true,
+                                                      at: zoomLevel,
+                                                      destination: destination).union(needed))
             }
             
             return (Set<VectorTile>(), needed)
@@ -726,7 +730,10 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         var neededTiles = VectorTile.tilesForRegion(location, radius: SpatialDataContext.cacheDistance, zoom: SpatialDataContext.zoomLevel)
         
         if includePORs {
-            neededTiles = Array(SpatialDataCache.tiles(forDestinations: true, forReferences: true, at: zoomLevel).union(neededTiles))
+            neededTiles = Array(SpatialDataCache.tiles(forDestinations: true,
+                                                       forReferences: true,
+                                                       at: zoomLevel,
+                                                       destination: destination).union(neededTiles))
         }
         
         let remainingTiles = Set(tiles.filter { neededTiles.contains($0) }) // Remove tile we don't need anymore
