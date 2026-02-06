@@ -408,12 +408,23 @@ protocol AudioFileStoreRuntimeProviding {
 
 @MainActor
 protocol UIRuntimeProviding {
+    func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?)
+    func uiIsFirstLaunch() -> Bool
+    func uiShouldShowNewFeatures() -> Bool
+    func uiNewFeatures() -> NewFeatures
     func uiIsCustomBehaviorActive() -> Bool
+    func uiIsActiveBehaviorGuidedTour() -> Bool
+    func uiIsActiveBehaviorRouteGuidance() -> Bool
     func uiActivateCustomBehavior(_ behavior: Behavior)
     func uiDeactivateCustomBehavior()
     func uiProcessEvent(_ event: Event)
     func uiCurrentUserLocation() -> CLLocation?
+    func uiCoreLocationServicesEnabled() -> Bool
+    func uiCoreLocationAuthorizationStatus() -> CoreLocationAuthorizationStatus
     func uiIsOffline() -> Bool
+    func uiIsStreetPreviewing() -> Bool
+    func uiIsDestinationAudioEnabled() -> Bool
+    func uiToggleDestinationAudio()
     func uiHushEventProcessor(playSound: Bool)
     func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void)
     func uiSpatialDataContext() -> SpatialDataProtocol?
@@ -496,7 +507,36 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         debugAssertUnconfigured(#function)
     }
 
+    func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiIsFirstLaunch() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiShouldShowNewFeatures() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiNewFeatures() -> NewFeatures {
+        debugAssertUnconfigured(#function)
+        return NewFeatures()
+    }
+
     func uiIsCustomBehaviorActive() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiIsActiveBehaviorGuidedTour() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiIsActiveBehaviorRouteGuidance() -> Bool {
         debugAssertUnconfigured(#function)
         return false
     }
@@ -518,9 +558,33 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         return nil
     }
 
+    func uiCoreLocationServicesEnabled() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiCoreLocationAuthorizationStatus() -> CoreLocationAuthorizationStatus {
+        debugAssertUnconfigured(#function)
+        return .notDetermined
+    }
+
     func uiIsOffline() -> Bool {
         debugAssertUnconfigured(#function)
         return true
+    }
+
+    func uiIsStreetPreviewing() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiIsDestinationAudioEnabled() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiToggleDestinationAudio() {
+        debugAssertUnconfigured(#function)
     }
 
     func uiHushEventProcessor(playSound: Bool) {
@@ -583,8 +647,32 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.audioEngine.stop(id)
     }
 
+    func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?) {
+        context.remoteCommandManager.delegate = delegate
+    }
+
+    func uiIsFirstLaunch() -> Bool {
+        context.isFirstLaunch
+    }
+
+    func uiShouldShowNewFeatures() -> Bool {
+        context.newFeatures.shouldShowNewFeatures()
+    }
+
+    func uiNewFeatures() -> NewFeatures {
+        context.newFeatures
+    }
+
     func uiIsCustomBehaviorActive() -> Bool {
         context.eventProcessor.isCustomBehaviorActive
+    }
+
+    func uiIsActiveBehaviorGuidedTour() -> Bool {
+        context.eventProcessor.activeBehavior is GuidedTour
+    }
+
+    func uiIsActiveBehaviorRouteGuidance() -> Bool {
+        context.eventProcessor.activeBehavior is RouteGuidance
     }
 
     func uiActivateCustomBehavior(_ behavior: Behavior) {
@@ -603,8 +691,28 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.geolocationManager.location
     }
 
+    func uiCoreLocationServicesEnabled() -> Bool {
+        context.geolocationManager.coreLocationServicesEnabled
+    }
+
+    func uiCoreLocationAuthorizationStatus() -> CoreLocationAuthorizationStatus {
+        context.geolocationManager.coreLocationAuthorizationStatus
+    }
+
     func uiIsOffline() -> Bool {
         context.offlineContext.state == .offline
+    }
+
+    func uiIsStreetPreviewing() -> Bool {
+        context.isStreetPreviewing
+    }
+
+    func uiIsDestinationAudioEnabled() -> Bool {
+        context.spatialDataContext.destinationManager.isAudioEnabled
+    }
+
+    func uiToggleDestinationAudio() {
+        context.spatialDataContext.destinationManager.toggleDestinationAudio()
     }
 
     func uiHushEventProcessor(playSound: Bool) {

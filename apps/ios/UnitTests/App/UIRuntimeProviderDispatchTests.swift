@@ -21,17 +21,28 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var initialLocation: SSGeoLocation?
         var geofenceResult = false
         var receivedGeofenceInputs: [SSGeoLocation] = []
+        var setRemoteCommandDelegateCallCount = 0
+        var isFirstLaunch = false
+        var shouldShowNewFeatures = false
+        var newFeatures = NewFeatures()
         var routeGuidanceLookupCount = 0
         var guidedTourLookupCount = 0
         var playAudioResult: AudioPlayerIdentifier?
         var playedAudioURLs: [URL] = []
         var stoppedAudioIDs: [AudioPlayerIdentifier] = []
         var customBehaviorActive = false
+        var isGuidedTourActive = false
+        var isRouteGuidanceActive = false
         var activateCustomBehaviorCount = 0
         var deactivateCustomBehaviorCount = 0
         var processedEventNames: [String] = []
         var currentUserLocation: CLLocation?
+        var coreLocationServicesEnabled = true
+        var coreLocationAuthorizationStatus: CoreLocationAuthorizationStatus = .fullAccuracyLocationAuthorized
         var isOffline = false
+        var isStreetPreviewing = false
+        var isDestinationAudioEnabled = false
+        var toggleDestinationAudioCallCount = 0
         var hushRequests: [Bool] = []
         var checkServiceConnectionResult = false
         var checkServiceConnectionCallCount = 0
@@ -75,8 +86,32 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
             stoppedAudioIDs.append(id)
         }
 
+        func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?) {
+            setRemoteCommandDelegateCallCount += 1
+        }
+
+        func uiIsFirstLaunch() -> Bool {
+            isFirstLaunch
+        }
+
+        func uiShouldShowNewFeatures() -> Bool {
+            shouldShowNewFeatures
+        }
+
+        func uiNewFeatures() -> NewFeatures {
+            newFeatures
+        }
+
         func uiIsCustomBehaviorActive() -> Bool {
             customBehaviorActive
+        }
+
+        func uiIsActiveBehaviorGuidedTour() -> Bool {
+            isGuidedTourActive
+        }
+
+        func uiIsActiveBehaviorRouteGuidance() -> Bool {
+            isRouteGuidanceActive
         }
 
         func uiActivateCustomBehavior(_ behavior: Behavior) {
@@ -95,8 +130,28 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
             currentUserLocation
         }
 
+        func uiCoreLocationServicesEnabled() -> Bool {
+            coreLocationServicesEnabled
+        }
+
+        func uiCoreLocationAuthorizationStatus() -> CoreLocationAuthorizationStatus {
+            coreLocationAuthorizationStatus
+        }
+
         func uiIsOffline() -> Bool {
             isOffline
+        }
+
+        func uiIsStreetPreviewing() -> Bool {
+            isStreetPreviewing
+        }
+
+        func uiIsDestinationAudioEnabled() -> Bool {
+            isDestinationAudioEnabled
+        }
+
+        func uiToggleDestinationAudio() {
+            toggleDestinationAudioCallCount += 1
         }
 
         func uiHushEventProcessor(playSound: Bool) {
@@ -159,23 +214,48 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
     }
 
     func testAdditionalUIRuntimeHooksDispatchToConfiguredProvider() {
+        final class MockRemoteCommandDelegate: RemoteCommandManagerDelegate {
+            func remoteCommandManager(_ remoteCommandManager: RemoteCommandManager, handle event: RemoteCommand) -> Bool {
+                true
+            }
+        }
+
         let provider = MockUIRuntimeProviders()
         let expectedPlayerID = UUID()
         provider.playAudioResult = expectedPlayerID
         provider.currentUserLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
+        provider.isFirstLaunch = true
+        provider.shouldShowNewFeatures = true
+        provider.isGuidedTourActive = true
+        provider.isRouteGuidanceActive = true
+        provider.coreLocationServicesEnabled = false
+        provider.coreLocationAuthorizationStatus = .denied
         provider.isOffline = true
+        provider.isStreetPreviewing = true
+        provider.isDestinationAudioEnabled = true
         provider.checkServiceConnectionResult = true
         UIRuntimeProviderRegistry.configure(with: provider)
 
+        UIRuntimeProviderRegistry.providers.uiSetRemoteCommandDelegate(MockRemoteCommandDelegate())
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsFirstLaunch())
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiShouldShowNewFeatures())
+        _ = UIRuntimeProviderRegistry.providers.uiNewFeatures()
         _ = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance()
         _ = UIRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour()
         _ = UIRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance()
         _ = UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive()
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorGuidedTour())
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorRouteGuidance())
         UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(MockBehavior())
         UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         UIRuntimeProviderRegistry.providers.uiProcessEvent(BehaviorActivatedEvent())
         _ = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
+        XCTAssertFalse(UIRuntimeProviderRegistry.providers.uiCoreLocationServicesEnabled())
+        XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus(), .denied)
         _ = UIRuntimeProviderRegistry.providers.uiIsOffline()
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing())
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsDestinationAudioEnabled())
+        UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio()
         UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
         _ = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()
         _ = UIRuntimeProviderRegistry.providers.uiMotionActivityContext()
@@ -196,8 +276,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.playedAudioURLs, [url])
         XCTAssertEqual(playerID, expectedPlayerID)
         XCTAssertEqual(provider.stoppedAudioIDs, [expectedPlayerID])
+        XCTAssertEqual(provider.setRemoteCommandDelegateCallCount, 1)
         XCTAssertEqual(provider.activateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)
+        XCTAssertEqual(provider.toggleDestinationAudioCallCount, 1)
         XCTAssertEqual(provider.processedEventNames, [BehaviorActivatedEvent().name])
         XCTAssertEqual(provider.hushRequests, [false])
         XCTAssertEqual(provider.checkServiceConnectionCallCount, 1)

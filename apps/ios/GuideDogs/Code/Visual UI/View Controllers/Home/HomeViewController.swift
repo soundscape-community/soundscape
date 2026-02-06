@@ -135,7 +135,7 @@ class HomeViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleLocationUpdatedNotification), name: Notification.Name.locationUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.continueUserAction), name: Notification.Name.continueUserAction, object: nil)
         
-        AppContext.shared.remoteCommandManager.delegate = self
+        UIRuntimeProviderRegistry.providers.uiSetRemoteCommandDelegate(self)
         
         experienceDidStartObserver = NotificationCenter.default.addObserver(forName: Notification.Name.processedActivityDeepLink, object: nil, queue: OperationQueue.main, using: { [weak self] (_) in
             self?.showOrRefreshExperiences()
@@ -207,7 +207,7 @@ class HomeViewController: UIViewController {
             // Prevents edge case of New Feature Feature displaying after fixing location services
             // permissions on first launch (caused because iOS kills the app if you change the Motion
             // & Fitness setting in the Settings app).
-            if AppContext.shared.isFirstLaunch {
+            if UIRuntimeProviderRegistry.providers.uiIsFirstLaunch() {
                 SettingsContext.shared.newFeaturesLastDisplayedVersion = AppContext.appVersion
                 didCheckForNewFeatures = true
             }
@@ -229,10 +229,10 @@ class HomeViewController: UIViewController {
             return
         }
         
-        if AppContext.shared.newFeatures.shouldShowNewFeatures() {
+        if UIRuntimeProviderRegistry.providers.uiShouldShowNewFeatures() {
             let vc = NewFeaturesViewController(nibName: "NewFeaturesView", bundle: nil)
             
-            vc.newFeatures = AppContext.shared.newFeatures
+            vc.newFeatures = UIRuntimeProviderRegistry.providers.uiNewFeatures()
             vc.modalPresentationStyle = .fullScreen
             vc.modalTransitionStyle = .crossDissolve
             vc.accessibilityViewIsModal = true
@@ -296,7 +296,7 @@ class HomeViewController: UIViewController {
     }
     
     private func configureSearchAndBrowseView() {
-        if AppContext.shared.eventProcessor.activeBehavior is GuidedTour {
+        if UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorGuidedTour() {
             navigationItem.searchController = nil
             searchContainerHeightConstraint.constant = 0.0
             NSLayoutConstraint.deactivate(cardContainerTopConstraints)
@@ -335,14 +335,12 @@ class HomeViewController: UIViewController {
     
     @discardableResult
     func checkPermissions() -> Bool {
-        let geolocationManager = AppContext.shared.geolocationManager
-        
-        if !geolocationManager.coreLocationServicesEnabled {
+        if !UIRuntimeProviderRegistry.providers.uiCoreLocationServicesEnabled() {
             self.performSegue(withIdentifier: "EnableLocationServices", sender: nil)
             return false
         }
         
-        switch geolocationManager.coreLocationAuthorizationStatus {
+        switch UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus() {
         case .notDetermined:
             self.performSegue(withIdentifier: "RequestLocationServices", sender: nil)
             return false
@@ -359,7 +357,7 @@ class HomeViewController: UIViewController {
                 // While Motion & Fitness is not authorized, disable callouts
                 if SettingsContext.shared.automaticCalloutsEnabled {
                     MotionActivityContext.motionFitnessDidToggleCallouts = true
-                    AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
+                    UIRuntimeProviderRegistry.providers.uiProcessEvent(ToggleAutoCalloutsEvent(playSound: false))
                 }
                 
                 // Use additional context regarding authorization so we can distinguish between Fitness Tracking
@@ -389,7 +387,7 @@ class HomeViewController: UIViewController {
                 // If necessary, turn callouts back on
                 if MotionActivityContext.motionFitnessDidToggleCallouts {
                     MotionActivityContext.motionFitnessDidToggleCallouts = false
-                    AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
+                    UIRuntimeProviderRegistry.providers.uiProcessEvent(ToggleAutoCalloutsEvent(playSound: false))
                 }
             }
         }
@@ -522,7 +520,7 @@ extension HomeViewController {
     }
     
     @objc private func continueUserAction(_ notification: Notification) {
-        guard !AppContext.shared.isStreetPreviewing else {
+        guard !UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing() else {
             // `PreviewViewController` will handle the user action
             return
         }
@@ -589,9 +587,9 @@ extension HomeViewController: DismissableViewControllerDelegate {
     
     func onDismissed(_ viewController: UIViewController) {
         // If there is an active route guidance behavior, then unmute the audio beacon
-        if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance,
-           !AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled {
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
+        if UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorRouteGuidance(),
+           !UIRuntimeProviderRegistry.providers.uiIsDestinationAudioEnabled() {
+            UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio()
         }
     }
     
