@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import CoreLocation
 import CoreBluetooth
+import SSGeo
 
 /// Enumeration describing the running state of the app.
 ///
@@ -347,6 +348,76 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
 }
 
 @MainActor
+protocol UserLocationStoreRuntimeProviding {
+    func userLocationStoreInitialUserLocation() -> SSGeoLocation?
+}
+
+@MainActor
+protocol BeaconDetailRuntimeProviding {
+    func beaconDetailIsUserWithinDestinationGeofence(_ userLocation: SSGeoLocation) -> Bool
+}
+
+@MainActor
+protocol VisualRuntimeProviders: UserLocationStoreRuntimeProviding,
+                                 BeaconDetailRuntimeProviding {}
+
+@MainActor
+enum VisualRuntimeProviderRegistry {
+    private static let unconfiguredProviders = UnconfiguredVisualRuntimeProviders()
+    private(set) static var providers: VisualRuntimeProviders = unconfiguredProviders
+
+    static func configure(with providers: VisualRuntimeProviders) {
+        self.providers = providers
+    }
+
+    static func resetForTesting() {
+        providers = unconfiguredProviders
+    }
+}
+
+@MainActor
+private final class UnconfiguredVisualRuntimeProviders: VisualRuntimeProviders {
+    private static var isRunningUnitTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
+    private func debugAssertUnconfigured(_ method: StaticString) {
+#if DEBUG
+        if !Self.isRunningUnitTests {
+            assertionFailure("VisualRuntimeProviderRegistry is unconfigured when calling \(method)")
+        }
+#endif
+    }
+
+    func userLocationStoreInitialUserLocation() -> SSGeoLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func beaconDetailIsUserWithinDestinationGeofence(_ userLocation: SSGeoLocation) -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+}
+
+@MainActor
+final class AppContextVisualRuntimeProviders: VisualRuntimeProviders {
+    private unowned let context: AppContext
+
+    init(context: AppContext) {
+        self.context = context
+    }
+
+    func userLocationStoreInitialUserLocation() -> SSGeoLocation? {
+        context.geolocationManager.location?.ssGeoLocation
+    }
+
+    func beaconDetailIsUserWithinDestinationGeofence(_ userLocation: SSGeoLocation) -> Bool {
+        context.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation)
+    }
+}
+
+@MainActor
 class AppContext {
 
     // MARK: Keys
@@ -524,6 +595,7 @@ class AppContext {
         cloudKeyValueStore = CloudKeyValueStore()
 
         DataRuntimeProviderRegistry.configure(with: AppContextDataRuntimeProviders(context: self))
+        VisualRuntimeProviderRegistry.configure(with: AppContextVisualRuntimeProviders(context: self))
     }
     
     // MARK: Actions

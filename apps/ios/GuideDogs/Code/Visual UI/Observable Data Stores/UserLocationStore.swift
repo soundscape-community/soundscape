@@ -12,8 +12,8 @@ import SSGeo
 
 @MainActor
 enum UserLocationStoreRuntime {
-    static var initialUserLocation: () -> SSGeoLocation? = {
-        AppContext.shared.geolocationManager.location?.ssGeoLocation
+    static func initialUserLocation() -> SSGeoLocation? {
+        VisualRuntimeProviderRegistry.providers.userLocationStoreInitialUserLocation()
     }
 }
 

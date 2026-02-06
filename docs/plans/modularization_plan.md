@@ -83,7 +83,9 @@ Phase 1 complete:
 - 2026-02-06: Added `UserLocationStoreRuntime` to source initial user location via an injectable hook, removing direct `AppContext` reads from `UserLocationStore` construction while preserving location-update notifications.
 - 2026-02-06: Replaced `Data` runtime-seam default closures with protocol-based registry providers (`RouteRuntimeProviding`, `ReferenceEntityRuntimeProviding`, `SpatialDataEntityRuntimeProviding`, `DestinationManagerRuntimeProviding`, `SpatialDataContextRuntimeProviding`) and wired `AppContextDataRuntimeProviders` during `AppContext` composition.
 - 2026-02-06: Added `DataRuntimeProviderDispatchTests` to verify runtime dispatch, throw/nil behavior propagation, and provider reset isolation; `rg \"AppContext.shared\" apps/ios/GuideDogs/Code/Data` now returns zero matches.
-- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 260`, `Behaviors: 70`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Data: 0`.
+- 2026-02-06: Added visual runtime provider DI (`UserLocationStoreRuntimeProviding`, `BeaconDetailRuntimeProviding`, `VisualRuntimeProviders`) with `AppContextVisualRuntimeProviders`, and migrated `UserLocationStoreRuntime` + `BeaconDetailRuntime` to provider registry lookups.
+- 2026-02-06: Added `VisualRuntimeProviderDispatchTests` to verify provider dispatch and reset isolation for visual runtime seams.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 258`, `Behaviors: 70`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -210,7 +212,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 1 seam carving outside `Data` by applying protocol registry DI to high-coupling `Visual UI` runtime seams (`UserLocationStoreRuntime`, `BeaconDetailRuntime`, and `Observable Data Stores`) so view-layer state no longer defaults to `AppContext.shared`.
-2. Carve `Behaviors` runtime dependencies behind narrow protocols, prioritizing callout-generation hotspots where `AppContext.shared` reads are currently direct.
-3. Run fresh iOS build/test and regenerate dependency analysis artifact for branch head to track post-`Data` seam-coupling trendlines.
+1. Continue Milestone 1 seam carving in `Visual UI` by introducing runtime providers for additional observable stores/view-model entry points that still default to `AppContext.shared`.
+2. Start `Behaviors` seam carving with protocol DI for highest-frequency callout-generation dependencies currently reading `AppContext.shared` directly.
+3. Regenerate dependency-analysis artifact after each seam batch to track `Visual UI` and `Behaviors` edge-count trendlines.
 4. Keep this document and `AGENTS.md` updated in every modularization PR with status and immediate next action.

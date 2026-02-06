@@ -11,8 +11,8 @@ import SSGeo
 
 @MainActor
 enum BeaconDetailRuntime {
-    static var isUserWithinDestinationGeofence: (SSGeoLocation) -> Bool = { userLocation in
-        AppContext.shared.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation)
+    static func isUserWithinDestinationGeofence(_ userLocation: SSGeoLocation) -> Bool {
+        VisualRuntimeProviderRegistry.providers.beaconDetailIsUserWithinDestinationGeofence(userLocation)
     }
 }
 
