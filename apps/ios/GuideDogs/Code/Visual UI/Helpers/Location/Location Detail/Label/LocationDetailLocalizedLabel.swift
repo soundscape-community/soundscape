@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreLocation
 import SSGeo
 
 @MainActor
@@ -73,15 +72,11 @@ struct LocationDetailLocalizedLabel {
         }
     }
 
-    func distance(from userLocation: CLLocation?) -> LocalizedLabel? {
-        distance(from: userLocation?.ssGeoLocation)
-    }
-    
     var annotation: LocalizedLabel {
         return LocalizedLabel(text: detail.displayAnnotation, accessibilityText: nil)
     }
     
-    func nameAndDistance(from userLocation: CLLocation?) -> LocalizedLabel {
+    func nameAndDistance(from userLocation: SSGeoLocation?) -> LocalizedLabel {
         let name = name()
         
         if let distance = distance(from: userLocation) {
