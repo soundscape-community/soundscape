@@ -11,6 +11,13 @@ import CoreLocation
 import RealmSwift
 import SSGeo
 
+@MainActor
+enum ReferenceEntityRuntime {
+    static var currentUserLocation: () -> CLLocation? = {
+        AppContext.shared.geolocationManager.location
+    }
+}
+
 enum ReferenceEntityError: Error {
     case entityKeyDoesNotExist
     case entityDoesNotExist
@@ -716,7 +723,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
                     .compactMap({ $0.ref.id })
                 
             case .distance:
-                let loc = AppContext.shared.geolocationManager.location ?? CLLocation(latitude: 0.0, longitude: 0.0)
+                let loc = ReferenceEntityRuntime.currentUserLocation() ?? CLLocation(latitude: 0.0, longitude: 0.0)
                 
                 return database.objects(ReferenceEntity.self)
                     .filter("isTemp == false")

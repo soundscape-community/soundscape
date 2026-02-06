@@ -10,6 +10,45 @@ import Foundation
 import RealmSwift
 import CoreLocation
 
+@MainActor
+enum RouteRuntime {
+    static var currentUserLocation: () -> CLLocation? = {
+        AppContext.shared.geolocationManager.location
+    }
+
+    static var activeRouteDatabaseID: () -> String? = {
+        guard let routeGuidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
+            return nil
+        }
+
+        guard case let .database(activeID) = routeGuidance.content.source else {
+            return nil
+        }
+
+        return activeID
+    }
+
+    static var deactivateActiveBehavior: () -> Void = {
+        AppContext.shared.eventProcessor.deactivateCustom()
+    }
+
+    static var storeRouteInCloud: (Route) -> Void = { route in
+        AppContext.shared.cloudKeyValueStore.store(route: route)
+    }
+
+    static var updateRouteInCloud: (Route) -> Void = { route in
+        AppContext.shared.cloudKeyValueStore.update(route: route)
+    }
+
+    static var removeRouteFromCloud: (Route) -> Void = { route in
+        AppContext.shared.cloudKeyValueStore.remove(route: route)
+    }
+
+    static var currentMotionActivityRawValue: () -> String = {
+        AppContext.shared.motionActivityContext.currentActivity.rawValue
+    }
+}
+
 extension Notification.Name {
     static let routeAdded = Notification.Name("GDARouteAdded")
     static let routeUpdated = Notification.Name("GDARouteUpdated")
@@ -66,15 +105,7 @@ class Route: Object, ObjectKeyIdentifiable {
     
     @MainActor
     var isActive: Bool {
-        guard let routeGuidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
-            return false
-        }
-        
-        guard case let .database(activeID) = routeGuidance.content.source else {
-            return false
-        }
-        
-        return activeID == self.id
+        RouteRuntime.activeRouteDatabaseID() == self.id
     }
     
     // MARK: Initialization

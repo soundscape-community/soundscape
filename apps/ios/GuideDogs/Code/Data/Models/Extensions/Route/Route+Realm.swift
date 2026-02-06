@@ -38,7 +38,7 @@ extension Route {
                     .compactMap({ $0.id })
                 
             case .distance:
-                let userLocation = AppContext.shared.geolocationManager.location ?? CLLocation(latitude: 0.0, longitude: 0.0)
+                let userLocation = RouteRuntime.currentUserLocation() ?? CLLocation(latitude: 0.0, longitude: 0.0)
                 
                 return database.objects(Route.self)
                     .compactMap { route -> (id: String, distance: CLLocationDistance)? in
@@ -100,18 +100,18 @@ extension Route {
             if let existingRoute = database.object(ofType: Route.self, forPrimaryKey: route.id) {
                 try update(id: existingRoute.id, name: route.name, description: route.routeDescription, waypoints: route.waypoints)
                 
-                AppContext.shared.cloudKeyValueStore.update(route: route)
+                RouteRuntime.updateRouteInCloud(route)
             } else {
                 try database.write {
                     database.add(route, update: .modified)
                 }
                 
-                AppContext.shared.cloudKeyValueStore.store(route: route)
+                RouteRuntime.storeRouteInCloud(route)
                 
                 let id = route.id
                 
                 NotificationCenter.default.post(name: .routeAdded, object: self, userInfo: [Route.Keys.id: id])
-                GDATelemetry.track("routes.added", with: ["context": context ?? "none", "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
+                GDATelemetry.track("routes.added", with: ["context": context ?? "none", "activity": RouteRuntime.currentMotionActivityRawValue()])
             }
         }
     }
@@ -137,10 +137,10 @@ extension Route {
             // `delete` should never be called when a route is active, but just in case it is,
             // deactive the route behavior to prevent unknown consequences of deleting active route
             if route.isActive {
-                AppContext.shared.eventProcessor.deactivateCustom()
+                RouteRuntime.deactivateActiveBehavior()
             }
             
-            AppContext.shared.cloudKeyValueStore.remove(route: route)
+            RouteRuntime.removeRouteFromCloud(route)
             
             try database.write {
                 database.delete(route)
@@ -160,10 +160,10 @@ extension Route {
     // MARK: Update Routes
     
     private static func onRouteDidUpdate(_ route: Route) {
-        AppContext.shared.cloudKeyValueStore.update(route: route)
+        RouteRuntime.updateRouteInCloud(route)
 
         NotificationCenter.default.post(name: .routeUpdated, object: self, userInfo: [Route.Keys.id: route.id])
-        GDATelemetry.track("routes.edited", with: ["activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
+        GDATelemetry.track("routes.edited", with: ["activity": RouteRuntime.currentMotionActivityRawValue()])
     }
     
     static func updateLastSelectedDate(id: String, _ lastSelectedDate: Date = Date()) throws {
@@ -198,7 +198,7 @@ extension Route {
             // but just in case it is, deactive the route behavior to prevent unknown
             // consequences of updating waypoints in an active route
             if route.isActive {
-                AppContext.shared.eventProcessor.deactivateCustom()
+                RouteRuntime.deactivateActiveBehavior()
             }
             
             try database.write {
