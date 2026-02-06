@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 struct WaypointDetailView: View {
     
@@ -17,7 +18,16 @@ struct WaypointDetailView: View {
     @State private var isShareAlertPresented = false
     
     let waypoint: WaypointDetail
-    let userLocation: CLLocation?
+    let userLocation: SSGeoLocation?
+    
+    init(waypoint: WaypointDetail, userLocation: SSGeoLocation?) {
+        self.waypoint = waypoint
+        self.userLocation = userLocation
+    }
+    
+    init(waypoint: WaypointDetail, userLocation: CLLocation?) {
+        self.init(waypoint: waypoint, userLocation: userLocation?.ssGeoLocation)
+    }
     
     @ViewBuilder
     private var destination: some View {
@@ -103,7 +113,7 @@ struct WaypointDetailView: View {
 
 struct WaypointDetailView_Previews: PreviewProvider {
     
-    static let userLocation = CLLocation(latitude: 47.640179, longitude: -122.111320)
+    static let userLocation = SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.640179, longitude: -122.111320))
     
     static let waypointLocation = CLLocation(latitude: 47.621901, longitude: -122.341150)
     

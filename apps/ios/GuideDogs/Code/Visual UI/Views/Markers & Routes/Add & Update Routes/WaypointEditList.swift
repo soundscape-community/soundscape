@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 struct WaypointEditList: View {
     
@@ -35,7 +36,7 @@ struct WaypointEditList: View {
             .accessibilityAddTraits(.isHeader)
         
         ForEach(Array(identifiableWaypoints.enumerated()), id: \.0) { (index, element) in
-            let userLocation = AppContext.shared.geolocationManager.location
+            let userLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
             
             LocationItemView(locationDetail: element.locationDetail, userLocation: userLocation)
                 .locationItemStyle(.editWaypoint(index: index))

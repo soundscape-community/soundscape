@@ -49,7 +49,7 @@ struct LocationDetailConfiguration {
             // Currently, detail view is only supported for waypoint / tour
             EmptyView()
         case .waypoint(let detail):
-            WaypointDetailView(waypoint: detail, userLocation: AppContext.shared.geolocationManager.location)
+            WaypointDetailView(waypoint: detail, userLocation: AppContext.shared.geolocationManager.location?.ssGeoLocation)
         case .tour(let detail):
             GuidedTourDetailsView(detail)
                 .environmentObject(UserLocationStore())
@@ -59,7 +59,7 @@ struct LocationDetailConfiguration {
     @ViewBuilder @MainActor
     func annotationDetailView(for annotation: MKAnnotation?) -> some View {
         if let annotation = annotation as? WaypointDetailAnnotation {
-            WaypointDetailView(waypoint: annotation.detail, userLocation: AppContext.shared.geolocationManager.location)
+            WaypointDetailView(waypoint: annotation.detail, userLocation: AppContext.shared.geolocationManager.location?.ssGeoLocation)
         } else {
             // Unexpected state
             // Currently, detail view is only supported for waypoint annotations

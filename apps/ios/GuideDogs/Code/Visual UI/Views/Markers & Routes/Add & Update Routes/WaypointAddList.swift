@@ -9,6 +9,7 @@
 import SwiftUI
 import CoreLocation
 import RealmSwift
+import SSGeo
 
 struct WaypointAddList: View {
     
@@ -51,7 +52,7 @@ struct WaypointAddList: View {
                     if viewModel.markers.count > 0 {
                         // All markers have been fetched
                         ForEach(viewModel.markers) { element in
-                            let userLocation = AppContext.shared.geolocationManager.location
+                            let userLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
                             
                             LocationItemView(locationDetail: element.locationDetail, userLocation: userLocation)
                                 .locationItemStyle(.addWaypoint(index: element.index))

@@ -65,7 +65,7 @@ struct GuidedTourDetailsView: View {
                     NavigationLink {
                         let detail = WaypointDetail(index: index, routeDetail: tour)
                         
-                        WaypointDetailView(waypoint: detail, userLocation: user.location)
+                        WaypointDetailView(waypoint: detail, userLocation: user.ssGeoLocation)
                     } label: {
                         WaypointCell(index: index,
                                      count: tour.waypoints.count,
