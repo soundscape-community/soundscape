@@ -113,6 +113,11 @@ Phase 1 complete:
 - 2026-02-06: Extended `DataRuntimeProviderDispatchTests` to verify dispatch of Data runtime event hooks and preserve provider-reset isolation.
 - 2026-02-06: Regenerated dependency analysis artifact after a fresh iOS test build: `docs/plans/artifacts/dependency-analysis/latest.txt`.
 - 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 204`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-06: Extended `VisualRuntimeProviders` with troubleshooting/status hooks (`visualCurrentUserLocation`, `visualIsOffline`, `visualHushEventProcessor`, `visualCheckSpatialServiceConnection`) and migrated `StatusTableViewController` away from direct `AppContext.shared` / `AppContext.process` usage.
+- 2026-02-06: Extended `VisualRuntimeProviderDispatchTests` to verify the new troubleshooting/status runtime hook dispatch and completion-callback behavior.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 194`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-06: Migrated `MarkersList` route-active behavior check to `VisualRuntimeProviderRegistry` and removed preview-only `AppContext` location mock setup from `MarkersList_Previews`.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 192`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -239,7 +244,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 1 seam carving in `Visual UI` high-coupling view controllers (`DevicesViewController`, `HomeViewController`, `StatusTableViewController`, `MarkerTutorialViewController`) by introducing focused runtime-provider hooks rather than passing `AppContext` directly.
-2. Continue the Visual UI runtime-provider pass in remaining route/beacon surfaces (`BeaconTitleViewController`, `BeaconMapView`/`BeaconMapCard`, `MarkersList`) and then trim obsolete `AppContext` helper access from those flows.
+1. Continue Milestone 1 seam carving in remaining high-coupling `Visual UI` view controllers (`DevicesViewController`, `HomeViewController`, `MarkerTutorialViewController`) by introducing focused runtime-provider hooks rather than passing `AppContext` directly.
+2. Continue the Visual UI runtime-provider pass in remaining route/beacon surfaces (`BeaconTitleViewController`, `BeaconMapView`/`BeaconMapCard`) and then trim obsolete `AppContext` helper access from those flows.
 3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

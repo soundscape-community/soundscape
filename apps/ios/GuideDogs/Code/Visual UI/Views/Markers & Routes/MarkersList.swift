@@ -8,7 +8,6 @@
 
 import SwiftUI
 import RealmSwift
-import CoreLocation
 
 struct MarkersList: View {
     @EnvironmentObject var navHelper: MarkersAndRoutesListNavigationHelper
@@ -29,7 +28,7 @@ struct MarkersList: View {
     }
     
     private var routeIsActive: Bool {
-        return AppContext.shared.eventProcessor.activeBehavior is RouteGuidance
+        VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() != nil
     }
     
     init(sort style: Binding<SortStyle>) {
@@ -147,7 +146,6 @@ struct MarkersList: View {
 struct MarkersList_Previews: PreviewProvider {
     static var previews: some View {
         Realm.bootstrap()
-        AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
         
         return Group {
             MarkersList(sort: .constant(.distance))

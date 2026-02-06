@@ -412,6 +412,10 @@ protocol VisualBehaviorRuntimeProviding {
     func visualActivateCustomBehavior(_ behavior: Behavior)
     func visualDeactivateCustomBehavior()
     func visualProcessEvent(_ event: Event)
+    func visualCurrentUserLocation() -> CLLocation?
+    func visualIsOffline() -> Bool
+    func visualHushEventProcessor(playSound: Bool)
+    func visualCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void)
     func visualSpatialDataContext() -> SpatialDataProtocol?
     func visualMotionActivityContext() -> MotionActivityProtocol?
 }
@@ -509,6 +513,25 @@ private final class UnconfiguredVisualRuntimeProviders: VisualRuntimeProviders {
         debugAssertUnconfigured(#function)
     }
 
+    func visualCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func visualIsOffline() -> Bool {
+        debugAssertUnconfigured(#function)
+        return true
+    }
+
+    func visualHushEventProcessor(playSound: Bool) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func visualCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
+        debugAssertUnconfigured(#function)
+        completion(false)
+    }
+
     func visualSpatialDataContext() -> SpatialDataProtocol? {
         debugAssertUnconfigured(#function)
         return nil
@@ -574,6 +597,22 @@ final class AppContextVisualRuntimeProviders: VisualRuntimeProviders {
 
     func visualProcessEvent(_ event: Event) {
         context.eventProcessor.process(event)
+    }
+
+    func visualCurrentUserLocation() -> CLLocation? {
+        context.geolocationManager.location
+    }
+
+    func visualIsOffline() -> Bool {
+        context.offlineContext.state == .offline
+    }
+
+    func visualHushEventProcessor(playSound: Bool) {
+        context.eventProcessor.hush(playSound: playSound)
+    }
+
+    func visualCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
+        context.spatialDataContext.checkServiceConnection(completionHandler: completion)
     }
 
     func visualSpatialDataContext() -> SpatialDataProtocol? {

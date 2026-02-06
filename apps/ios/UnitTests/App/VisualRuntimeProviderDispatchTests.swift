@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import CoreLocation
 import SSGeo
 @testable import Soundscape
 
@@ -29,6 +30,11 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         var activateCustomBehaviorCount = 0
         var deactivateCustomBehaviorCount = 0
         var processedEventNames: [String] = []
+        var currentUserLocation: CLLocation?
+        var isOffline = false
+        var hushRequests: [Bool] = []
+        var checkServiceConnectionResult = false
+        var checkServiceConnectionCallCount = 0
         var spatialDataLookupCount = 0
         var motionActivityLookupCount = 0
 
@@ -85,6 +91,23 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
             processedEventNames.append(event.name)
         }
 
+        func visualCurrentUserLocation() -> CLLocation? {
+            currentUserLocation
+        }
+
+        func visualIsOffline() -> Bool {
+            isOffline
+        }
+
+        func visualHushEventProcessor(playSound: Bool) {
+            hushRequests.append(playSound)
+        }
+
+        func visualCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
+            checkServiceConnectionCallCount += 1
+            completion(checkServiceConnectionResult)
+        }
+
         func visualSpatialDataContext() -> SpatialDataProtocol? {
             spatialDataLookupCount += 1
             return nil
@@ -139,6 +162,9 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         let provider = MockVisualRuntimeProviders()
         let expectedPlayerID = UUID()
         provider.playAudioResult = expectedPlayerID
+        provider.currentUserLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
+        provider.isOffline = true
+        provider.checkServiceConnectionResult = true
         VisualRuntimeProviderRegistry.configure(with: provider)
 
         _ = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance()
@@ -148,8 +174,16 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(MockBehavior())
         VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
         VisualRuntimeProviderRegistry.providers.visualProcessEvent(BehaviorActivatedEvent())
+        _ = VisualRuntimeProviderRegistry.providers.visualCurrentUserLocation()
+        _ = VisualRuntimeProviderRegistry.providers.visualIsOffline()
+        VisualRuntimeProviderRegistry.providers.visualHushEventProcessor(playSound: false)
         _ = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext()
         _ = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext()
+        let serviceCheckExpectation = expectation(description: "service check completion")
+        VisualRuntimeProviderRegistry.providers.visualCheckSpatialServiceConnection { success in
+            XCTAssertTrue(success)
+            serviceCheckExpectation.fulfill()
+        }
 
         let url = URL(fileURLWithPath: "/tmp/test-audio.mp3")
         let playerID = VisualRuntimeProviderRegistry.providers.audioFileStorePlay(url)
@@ -165,7 +199,10 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.activateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.processedEventNames, [BehaviorActivatedEvent().name])
+        XCTAssertEqual(provider.hushRequests, [false])
+        XCTAssertEqual(provider.checkServiceConnectionCallCount, 1)
         XCTAssertEqual(provider.spatialDataLookupCount, 1)
         XCTAssertEqual(provider.motionActivityLookupCount, 1)
+        wait(for: [serviceCheckExpectation], timeout: 1.0)
     }
 }

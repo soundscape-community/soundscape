@@ -1,6 +1,6 @@
 SSIndexAnalyzer Report
-Generated (UTC): 20260206-222107Z
-Git commit: 3e413bb
+Generated (UTC): 20260206-223623Z
+Git commit: e5fa5c0
 Repository: /Users/robbie/src/soundscape
 Command: swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --top 40 --min-count 2 --file-top 40 --external-top 25
 
@@ -10,9 +10,9 @@ Database path: /tmp/ss-index-analyzer-db
 Source root: /Users/robbie/src/soundscape/apps/ios/GuideDogs/Code
 libIndexStore: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libIndexStore.dylib
 Swift files scanned: 725
-Reference occurrences: 90165
-Resolved cross-subsystem refs: 9551
-Resolved external refs: 28887
+Reference occurrences: 90209
+Resolved cross-subsystem refs: 9558
+Resolved external refs: 28903
 
 Top cross-subsystem dependency edges:
   1.   2625  Visual UI -> App
@@ -24,7 +24,7 @@ Top cross-subsystem dependency edges:
   7.    340  Behaviors -> Audio
   8.    339  Audio -> App
   9.    242  Visual UI -> Sensors
- 10.    234  App -> Data
+ 10.    235  App -> Data
  11.    183  Behaviors -> Generators
  12.    171  Behaviors -> Sensors
  13.    167  App -> Visual UI
@@ -34,11 +34,11 @@ Top cross-subsystem dependency edges:
  17.    145  Visual UI -> Audio
  18.    140  Generators -> Data
  19.    120  Notifications -> App
- 20.    113  App -> Sensors
+ 20.    115  App -> Sensors
  21.    113  Sensors -> Devices
  22.    101  Visual UI -> Devices
  23.     97  Generators -> Audio
- 24.     82  App -> Behaviors
+ 24.     83  App -> Behaviors
  25.     81  Notifications -> Visual UI
  26.     78  Generators -> App
  27.     74  Data -> Generators
@@ -72,8 +72,8 @@ Top cross-file edges:
  13.     45  Visual UI/View Controllers/Settings/Voice/VoiceSettingsTableViewController.swift -> App/Settings/SettingsContext.swift
  14.     43  Visual UI/Views/Route Details/RouteDetailsView.swift -> Data/Authored Activities/AuthoredActivityContent.swift
  15.     42  Visual UI/View Controllers/Home/HomeViewController+RemoteControl.swift -> App/AppContext.swift
- 16.     41  Behaviors/Preview/PreviewBehavior.swift -> Data/Preview/Protocols/RootedPreviewGraph.swift
- 17.     40  App/AppContext.swift -> Behaviors/EventProcessor.swift
+ 16.     41  App/AppContext.swift -> Behaviors/EventProcessor.swift
+ 17.     41  Behaviors/Preview/PreviewBehavior.swift -> Data/Preview/Protocols/RootedPreviewGraph.swift
  18.     40  Behaviors/Route Guidance/RouteGuidance.swift -> Visual UI/Helpers/Routes/Route Detail/RouteDetail.swift
  19.     40  Visual UI/View Controllers/Tutorials/Destination/DestinationTutorialViewController.swift -> App/AppContext.swift
  20.     38  Behaviors/Guided Tour/GuidedTour.swift -> Data/Spatial Data/Protocols/SpatialDataProtocol.swift
@@ -85,10 +85,10 @@ Top cross-file edges:
  26.     35  Behaviors/Default/IntersectionGenerator.swift -> Data/Models/Cache Models/Intersection.swift
  27.     35  Behaviors/Helpers/CalloutCoordinator.swift -> App/Logging/LoggingContext.swift
  28.     35  Visual UI/Helpers/Location/Location Action/LocationActionHandler.swift -> App/AppContext.swift
- 29.     33  Behaviors/Preview/PreviewBehavior.swift -> Data/Preview/Protocols/AdjacentDataView.swift
- 30.     33  Visual UI/View Controllers/Devices/DevicesViewController.swift -> App/Logging/LoggingContext.swift
- 31.     33  Visual UI/View Controllers/Devices/DevicesViewController.swift -> Devices/Protocols/Device.swift
- 32.     32  App/AppContext.swift -> Sensors/Geolocation/Geolocation Manager/GeolocationManager.swift
+ 29.     34  App/AppContext.swift -> Sensors/Geolocation/Geolocation Manager/GeolocationManager.swift
+ 30.     33  Behaviors/Preview/PreviewBehavior.swift -> Data/Preview/Protocols/AdjacentDataView.swift
+ 31.     33  Visual UI/View Controllers/Devices/DevicesViewController.swift -> App/Logging/LoggingContext.swift
+ 32.     33  Visual UI/View Controllers/Devices/DevicesViewController.swift -> Devices/Protocols/Device.swift
  33.     30  Behaviors/Default/HeadsetTestGenerator.swift -> App/AppContext.swift
  34.     30  Behaviors/Route Guidance/RouteGuidance.swift -> App/Logging/LoggingContext.swift
  35.     30  Data/Spatial Data/SpatialDataContext.swift -> App/Logging/LoggingContext.swift
@@ -111,7 +111,7 @@ Top external module edges:
  10.    504  App -> Swift.String
  11.    454  Data -> Foundation
  12.    443  App -> Foundation
- 13.    438  App -> _LocationEssentials.CLLocationEssentials
+ 13.    441  App -> _LocationEssentials.CLLocationEssentials
  14.    400  Data -> Swift.Collection.Array
  15.    389  Behaviors -> Swift.Bool
  16.    364  Data -> Swift.Bool
@@ -119,8 +119,8 @@ Top external module edges:
  18.    334  Visual UI -> Combine
  19.    317  Behaviors -> Swift.Collection.Array
  20.    317  Devices -> Swift.Math.Floating
- 21.    301  Behaviors -> _Concurrency
- 22.    298  App -> Swift.Bool
+ 21.    307  App -> Swift.Bool
+ 22.    301  Behaviors -> _Concurrency
  23.    275  Visual UI -> Swift.Math.Integers
  24.    271  Data -> Swift.Collection
  25.    262  Behaviors -> Swift.String
