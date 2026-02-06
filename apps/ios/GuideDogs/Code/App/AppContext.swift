@@ -409,6 +409,12 @@ protocol AudioFileStoreRuntimeProviding {
 @MainActor
 protocol UIRuntimeProviding {
     func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?)
+    func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?)
+    func uiDevices() -> [Device]
+    func uiAddDevice(_ device: Device)
+    func uiRemoveDevice(_ device: Device)
+    func uiUserHeading() -> Heading
+    func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void)
     func uiSetTutorialMode(_ isEnabled: Bool)
     func uiIsFirstLaunch() -> Bool
     func uiShouldShowNewFeatures() -> Bool
@@ -510,6 +516,33 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
 
     func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?) {
         debugAssertUnconfigured(#function)
+    }
+
+    func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiDevices() -> [Device] {
+        debugAssertUnconfigured(#function)
+        return []
+    }
+
+    func uiAddDevice(_ device: Device) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiRemoveDevice(_ device: Device) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiUserHeading() -> Heading {
+        debugAssertUnconfigured(#function)
+        return Heading(orderedBy: [.user], course: nil, deviceHeading: nil, userHeading: nil)
+    }
+
+    func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void) {
+        debugAssertUnconfigured(#function)
+        completion(false)
     }
 
     func uiSetTutorialMode(_ isEnabled: Bool) {
@@ -654,6 +687,30 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?) {
         context.remoteCommandManager.delegate = delegate
+    }
+
+    func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?) {
+        context.deviceManager.delegate = delegate
+    }
+
+    func uiDevices() -> [Device] {
+        context.deviceManager.devices
+    }
+
+    func uiAddDevice(_ device: Device) {
+        context.deviceManager.add(device: device)
+    }
+
+    func uiRemoveDevice(_ device: Device) {
+        context.deviceManager.remove(device: device)
+    }
+
+    func uiUserHeading() -> Heading {
+        context.geolocationManager.heading(orderedBy: [.user])
+    }
+
+    func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void) {
+        context.bleManager.authorizationStatus(completion: completion)
     }
 
     func uiSetTutorialMode(_ isEnabled: Bool) {

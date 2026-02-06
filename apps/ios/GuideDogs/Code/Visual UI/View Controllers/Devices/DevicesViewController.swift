@@ -402,7 +402,7 @@ class DevicesViewController: UIViewController {
         super.viewDidLoad()
         
         let device: Device?
-        let devices = AppContext.shared.deviceManager.devices
+        let devices = UIRuntimeProviderRegistry.providers.uiDevices()
         
         if let testDevice = connectedDevice {
             GDLogHeadphoneMotionInfo("viewDidLoad: Using connectedDevice")
@@ -433,7 +433,7 @@ class DevicesViewController: UIViewController {
                 self.state = .pairingAudio
     
             case .ready:
-                AppContext.shared.deviceManager.add(device: firstDevice)
+                UIRuntimeProviderRegistry.providers.uiAddDevice(firstDevice)
                 firstDevice.startUserHeadingUpdates()
                 state = .connected
                 
@@ -459,10 +459,10 @@ class DevicesViewController: UIViewController {
         
         GDATelemetry.trackScreenView("devices")
         
-        AppContext.shared.deviceManager.delegate = self
+        UIRuntimeProviderRegistry.providers.uiSetDeviceManagerDelegate(self)
 
-        // Set the device currently connected AppContext.shared.deviceManager.devices.first is NOT guaranteed to be the one connected!
-        AppContext.shared.deviceManager.devices.forEach() { device in
+        // Set the currently connected device; the first device is not guaranteed to be connected.
+        UIRuntimeProviderRegistry.providers.uiDevices().forEach() { device in
             if device.isConnected {
                 self.connectedDevice = device
                 return
@@ -485,7 +485,7 @@ class DevicesViewController: UIViewController {
         // Reset the nav bar images
         navigationController?.navigationBar.configureAppearance(for: .default)
         
-        AppContext.shared.deviceManager.delegate = nil
+        UIRuntimeProviderRegistry.providers.uiSetDeviceManagerDelegate(nil)
         
         deviceHeading = nil
         
@@ -527,7 +527,7 @@ class DevicesViewController: UIViewController {
             GDLogHeadphoneMotionInfo("renderingView WITHOUT a device connected. Using the first in device manager which seems not to be very useful...")
         }
         
-        let currentDevice = connectedDevice ?? AppContext.shared.deviceManager.devices.first
+        let currentDevice = connectedDevice ?? UIRuntimeProviderRegistry.providers.uiDevices().first
         
         imageView.image = state.backgroundImage
         text.text = state.text(for: currentDevice)
@@ -643,7 +643,7 @@ class DevicesViewController: UIViewController {
         }
         
         centerHeading = nil
-        deviceHeading = AppContext.shared.geolocationManager.heading(orderedBy: [.user])
+        deviceHeading = UIRuntimeProviderRegistry.providers.uiUserHeading()
         deviceHeading?.onHeadingDidUpdate { [weak self] (heading) in
             guard let heading = heading?.value else {
                 return
@@ -712,7 +712,7 @@ class DevicesViewController: UIViewController {
     }
     
     @IBAction func onPrimaryBtnTouchUpInside() {
-        AppContext.shared.bleManager.authorizationStatus { authorized in
+        UIRuntimeProviderRegistry.providers.uiBLEAuthorizationStatus { authorized in
             guard authorized else {
                 let alert = ErrorAlerts.buildBLEAlert()
                 self.present(alert, animated: true)
@@ -742,7 +742,7 @@ class DevicesViewController: UIViewController {
             }))
 
             // In case the test sound was playing when we disconnected
-            AppContext.process(HeadsetTestEvent(.end))
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(HeadsetTestEvent(.end))
             
             present(alert, animated: true, completion: nil)
             
@@ -767,7 +767,7 @@ class DevicesViewController: UIViewController {
         case .firstConnection:
             if let device = connectedDevice {
                 // Now that we have given the user instructions for calibrating, add the device (which should start the calibration)
-                AppContext.shared.deviceManager.add(device: device)
+                UIRuntimeProviderRegistry.providers.uiAddDevice(device)
             }
             
             if let boseDev = self.connectedDevice as? BoseFramesMotionManager {
@@ -780,10 +780,10 @@ class DevicesViewController: UIViewController {
             
         case .calibrating:
             // Override the calibration procedure
-            AppContext.process(CalibrationOverrideEvent())
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(CalibrationOverrideEvent())
             NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationCancelled, object: self)
             
-            if let currentDevice = (connectedDevice ?? AppContext.shared.deviceManager.devices.first) as? CalibratableDevice {
+            if let currentDevice = (connectedDevice ?? UIRuntimeProviderRegistry.providers.uiDevices().first) as? CalibratableDevice {
                 currentDevice.calibrationOverriden = true
             }
             
@@ -795,7 +795,7 @@ class DevicesViewController: UIViewController {
             
         case .completedPairing:
             // Return to the home screen
-            AppContext.process(HeadsetTestEvent(.end))
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(HeadsetTestEvent(.end))
             performSegue(withIdentifier: Segue.unwind, sender: self)
             
         case .paired, .connected:
@@ -804,21 +804,21 @@ class DevicesViewController: UIViewController {
                                           preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
             alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.forget"), style: .destructive, handler: { [weak self] (_) in
-                let testDevice = (self?.connectedDevice ?? AppContext.shared.deviceManager.devices.first)
+                let testDevice = (self?.connectedDevice ?? UIRuntimeProviderRegistry.providers.uiDevices().first)
                 if let device = testDevice {
                     let name = device.name
                     device.disconnect()
-                    AppContext.shared.deviceManager.remove(device: device)
+                    UIRuntimeProviderRegistry.providers.uiRemoveDevice(device)
                     self?.state = .disconnected
                     self?.connectedDevice = nil
-                    AppContext.shared.eventProcessor.process(HeadsetConnectionEvent(name, state: .disconnected))
+                    UIRuntimeProviderRegistry.providers.uiProcessEvent(HeadsetConnectionEvent(name, state: .disconnected))
                 }
             }))
             
             present(alert, animated: true, completion: nil)
         case .testHeadset:
             // Stop the test
-            AppContext.process(HeadsetTestEvent(.end))
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(HeadsetTestEvent(.end))
             
             // Return to the home screen
             performSegue(withIdentifier: Segue.unwind, sender: self)
@@ -830,7 +830,7 @@ class DevicesViewController: UIViewController {
     
     @IBAction func onSecondaryBtnTouchUpInside() {
         state = .testHeadset
-        AppContext.process(HeadsetTestEvent(.start))
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(HeadsetTestEvent(.start))
     }
     
     private func connectDevice(of type: Device.Type, name: String) {
@@ -848,7 +848,7 @@ class DevicesViewController: UIViewController {
                         self.state = .completedPairing
                     } else {
                         // Device is enabled but not connected
-                        AppContext.shared.deviceManager.add(device: device)
+                        UIRuntimeProviderRegistry.providers.uiAddDevice(device)
                         
                         self.state = .paired
                     }
@@ -864,7 +864,7 @@ class DevicesViewController: UIViewController {
                             let device = self.connectedDevice as? BoseFramesMotionManager
                         else {return}
                         
-                        AppContext.shared.deviceManager.add(device: device)
+                        UIRuntimeProviderRegistry.providers.uiAddDevice(device)
      
                         self.state = (device.calibrationState == .calibrated ? .completedPairing : .calibrating)
                         self.renderView()
@@ -1029,7 +1029,7 @@ extension DevicesViewController: DeviceManagerDelegate {
         
         GDLogHeadphoneMotionInfo("DeviceViewController in didDisconnectDevice")
         
-        if AppContext.shared.deviceManager.devices.first != nil {
+        if UIRuntimeProviderRegistry.providers.uiDevices().first != nil {
             // If the calibration UI was showing but the device disconnected, dismiss the view...
             guard state != .calibrating || !launchedAutomatically else {
                 dismiss(animated: true, completion: nil)

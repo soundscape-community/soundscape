@@ -123,6 +123,9 @@ Phase 1 complete:
 - 2026-02-06: Extended `UIRuntimeProviders` with tutorial-mode toggling (`uiSetTutorialMode`) and migrated `MarkerTutorialViewController` away from direct `AppContext.shared` / `AppContext.process` usage for tutorial state, destination control, and event dispatch.
 - 2026-02-06: Extended `UIRuntimeProviderDispatchTests` to cover tutorial-mode runtime dispatch.
 - 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 173`, `App: 25`, `Sensors: 11`, `Haptics: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-06: Extended `UIRuntimeProviders` with device-management hooks (`uiSetDeviceManagerDelegate`, `uiDevices`, `uiAddDevice`, `uiRemoveDevice`, `uiUserHeading`, `uiBLEAuthorizationStatus`) and migrated `DevicesViewController` away from direct `AppContext.shared` / `AppContext.process` usage.
+- 2026-02-06: Extended `UIRuntimeProviderDispatchTests` to verify device-management/heading/BLE runtime hook dispatch and reset isolation.
+- 2026-02-06: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 180` (down from `202` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -249,7 +252,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 1 seam carving in remaining high-coupling UI view controllers under `Visual UI` (`DevicesViewController`) by introducing focused runtime-provider hooks rather than passing `AppContext` directly.
+1. Continue Milestone 1 seam carving in remaining high-coupling UI/tutorial surfaces (`DestinationTutorialViewController`, `DestinationTutorialIntroViewController`, `DestinationTutorialBeaconPage`) using focused `UIRuntimeProviders` hooks for event dispatch, destination control, and device checks.
 2. Continue the UI runtime-provider pass in remaining route/beacon surfaces (`BeaconTitleViewController`, `BeaconMapView`/`BeaconMapCard`) and then trim obsolete `AppContext` helper access from those flows.
 3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.
