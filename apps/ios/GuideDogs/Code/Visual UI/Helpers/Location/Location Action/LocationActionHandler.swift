@@ -122,7 +122,8 @@ struct LocationActionHandler {
             let behavior = PreviewBehavior(at: decisionPoint,
                                            from: locationDetail,
                                            geolocationManager: AppContext.shared.geolocationManager,
-                                           destinationManager: AppContext.shared.spatialDataContext.destinationManager)
+                                           destinationManager: AppContext.shared.spatialDataContext.destinationManager,
+                                           audioEngine: AppContext.shared.audioEngine)
             
             completion(.success(behavior))
         }

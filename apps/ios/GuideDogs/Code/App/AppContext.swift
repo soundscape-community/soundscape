@@ -804,7 +804,8 @@ class AppContext {
                                                  reverseGeocoder: reverseGeocoder,
                                                  deviceManager: deviceManager,
                                                  motionActivity: motionActivityContext,
-                                                 deviceMotion: DeviceMotionManager.shared)
+                                                 deviceMotion: DeviceMotionManager.shared,
+                                                 audioEngine: audioEngine)
         
         let calloutCoordinator = CalloutCoordinator(audioEngine: audioEngine,
                                 geo: geolocationManager,

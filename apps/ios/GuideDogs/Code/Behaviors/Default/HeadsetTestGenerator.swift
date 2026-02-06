@@ -27,8 +27,17 @@ extension CalloutOrigin {
 
 @MainActor
 final class HeadsetTestGenerator: ManualGenerator {
+    private unowned let geolocationManager: GeolocationManagerProtocol
+    private unowned let destinationManager: DestinationManagerProtocol
+    private unowned let audioEngine: AudioEngineProtocol
     
     private var beaconPlayerId: AudioPlayerIdentifier?
+
+    init(geolocationManager: GeolocationManagerProtocol, destinationManager: DestinationManagerProtocol, audioEngine: AudioEngineProtocol) {
+        self.geolocationManager = geolocationManager
+        self.destinationManager = destinationManager
+        self.audioEngine = audioEngine
+    }
     
     func respondsTo(_ event: UserInitiatedEvent) -> Bool {
         return event is HeadsetTestEvent
@@ -70,15 +79,15 @@ final class HeadsetTestGenerator: ManualGenerator {
     }
     
     private func setBeacon() {
-        let heading = AppContext.shared.geolocationManager.presentationHeading
+        let heading = geolocationManager.presentationHeading
         
-        guard let location = AppContext.shared.geolocationManager.location, let headingVal = heading.value else {
+        guard let location = geolocationManager.location, let headingVal = heading.value else {
             return
         }
         
         // If there is an existing beacon, mute it
-        if AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled {
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
+        if destinationManager.isAudioEnabled {
+            destinationManager.toggleDestinationAudio()
         }
         
         // Calculate beacon location
@@ -115,7 +124,7 @@ final class HeadsetTestGenerator: ManualGenerator {
             return
         }
         
-        beaconPlayerId = AppContext.shared.audioEngine.play(sound)
+        beaconPlayerId = audioEngine.play(sound)
     }
     
     private func clearBeacon() {
@@ -123,7 +132,7 @@ final class HeadsetTestGenerator: ManualGenerator {
             return
         }
         
-        AppContext.shared.audioEngine.stop(id)
+        audioEngine.stop(id)
         beaconPlayerId = nil
     }
 }

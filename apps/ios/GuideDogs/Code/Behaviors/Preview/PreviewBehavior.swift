@@ -107,6 +107,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
     // MARK: Beacon
     
     unowned let destinationManager: DestinationManagerProtocol
+    unowned let audioEngine: AudioEngineProtocol
     
     /// Key for looking up the beacon (if one is set)
     private var beaconKey: String?
@@ -119,13 +120,18 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
     /// decision (currently selected edge in the road graph) to nil.
     ///
     /// - Parameter initial: The decision point to start the preview at
-    init(at initial: DecisionPoint, from: LocationDetail, geolocationManager: GeolocationManagerProtocol, destinationManager: DestinationManagerProtocol) {
+    init(at initial: DecisionPoint,
+         from: LocationDetail,
+         geolocationManager: GeolocationManagerProtocol,
+         destinationManager: DestinationManagerProtocol,
+         audioEngine: AudioEngineProtocol) {
         self.isStartedSubject = .init(false)
         self.currentDecisionPoint = .init(initial)
         self.currentlyFocussedRoad = .init(nil)
         self.isTransitioningSubject = .init(false)
         self.geolocationManager = geolocationManager
         self.destinationManager = destinationManager
+        self.audioEngine = audioEngine
         self.initialLocation = from
         
         super.init(blockedAutoGenerators: [AutoCalloutGenerator.self, BeaconCalloutGenerator.self], blockedManualGenerators: [BeaconCalloutGenerator.self])
@@ -165,7 +171,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
             self?.pausePreview()
         })
         
-        cancellationTokens.append(NotificationCenter.default.publisher(for: .destinationChanged, object: AppContext.shared.spatialDataContext.destinationManager).sink { [weak self] (notification) in
+        cancellationTokens.append(NotificationCenter.default.publisher(for: .destinationChanged, object: destinationManager).sink { [weak self] (notification) in
             guard let `self` = self else {
                 return
             }
@@ -478,10 +484,10 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         }
         
         let compassTargets = (0 ..< 12).map { WandTarget(CompassOrientation(bearing: Double($0) * 30.0)) }
-        compassWand.start(with: compassTargets, heading: AppContext.shared.geolocationManager.heading(orderedBy: [.device]))
+        compassWand.start(with: compassTargets, heading: geolocationManager.heading(orderedBy: [.device]))
         
         // When the callouts are done, start the wand experience at the new intersection
-        let roadHeading = AppContext.shared.geolocationManager.heading(orderedBy: [.device])
+        let roadHeading = geolocationManager.heading(orderedBy: [.device])
         let roadTargets = currentDecisionPoint.value.edges.map { (edge) -> WandTarget in
             if edge.isSupported {
                 return WandTarget(edge.direction, window: 60.0)
@@ -499,7 +505,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         compassWand.stop()
         
         if let beacon = roadWandBeacon {
-            AppContext.shared.audioEngine.stop(beacon)
+            audioEngine.stop(beacon)
             roadWandBeacon = nil
         }
     }
@@ -548,7 +554,7 @@ extension PreviewBehavior: WandDelegate {
             return
         }
         
-        roadWandBeacon = AppContext.shared.audioEngine.play(beacon, heading: AppContext.shared.geolocationManager.heading(orderedBy: [.device]))
+        roadWandBeacon = audioEngine.play(beacon, heading: geolocationManager.heading(orderedBy: [.device]))
     }
     
     func wand(_ wand: Wand, didCrossThreshold target: Orientable) {

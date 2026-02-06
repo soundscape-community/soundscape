@@ -16,7 +16,8 @@ class SoundscapeBehavior: BehaviorBase {
          reverseGeocoder: ReverseGeocoder,
          deviceManager: DeviceManagerProtocol,
          motionActivity: MotionActivityProtocol,
-         deviceMotion: DeviceMotionProvider) {
+         deviceMotion: DeviceMotionProvider,
+         audioEngine: AudioEngineProtocol) {
         
         super.init()
         
@@ -29,7 +30,9 @@ class SoundscapeBehavior: BehaviorBase {
                                            deviceMotion: deviceMotion)
 
         manualGenerators.append(SystemGenerator(geo: geo, device: deviceManager))
-        manualGenerators.append(HeadsetTestGenerator())
+        manualGenerators.append(HeadsetTestGenerator(geolocationManager: geo,
+                                                     destinationManager: data.destinationManager,
+                                                     audioEngine: audioEngine))
         manualGenerators.append(explore)
         manualGenerators.append(beacon)
         manualGenerators.append(auto)
@@ -38,7 +41,9 @@ class SoundscapeBehavior: BehaviorBase {
         // added first, get the first opportunity to consume events that have `distribution`
         // set to `EventDistribution.consumed`.
         autoGenerators.append(IntersectionGenerator(self, geoManager: geo, data: data, geocoder: reverseGeocoder))
-        autoGenerators.append(ARHeadsetGenerator())
+        autoGenerators.append(ARHeadsetGenerator(audioEngine: audioEngine,
+                                                 destinationManager: data.destinationManager,
+                                                 deviceManager: deviceManager))
         autoGenerators.append(explore)
         autoGenerators.append(beacon)
         autoGenerators.append(auto)

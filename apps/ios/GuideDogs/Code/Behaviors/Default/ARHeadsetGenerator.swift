@@ -51,6 +51,10 @@ extension CalloutOrigin {
 
 @MainActor
 class ARHeadsetGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
+    private unowned let audioEngine: AudioEngineProtocol
+    private unowned let destinationManager: DestinationManagerProtocol
+    private unowned let deviceManager: DeviceManagerProtocol
+
     private var calibrationPlayerId: AudioPlayerIdentifier?
     
     private var previousCalibrationState = DeviceCalibrationState.needsCalibrating
@@ -62,6 +66,12 @@ class ARHeadsetGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
     private var previousBeaconAudioEnabled = false
     
     let canInterrupt = false
+
+    init(audioEngine: AudioEngineProtocol, destinationManager: DestinationManagerProtocol, deviceManager: DeviceManagerProtocol) {
+        self.audioEngine = audioEngine
+        self.destinationManager = destinationManager
+        self.deviceManager = deviceManager
+    }
     
     func cancelCalloutsForEntity(id: String) {
         // No-op: This generator only responds to events regarding AR headsets and not POIs or locations
@@ -159,7 +169,7 @@ class ARHeadsetGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
         case (.needsCalibrating, .calibrating): // Calibration has started
             callouts = CalloutGroup([StringCallout(.arHeadset, needsCalibratingCalloutString)], logContext: "ar_headset")
             callouts?.onStart = self.startCalibrationTrack
-            callouts?.isValid = ARHeadsetGenerator.shouldPlayCalibrationStartedCallouts
+            callouts?.isValid = { [weak self] in self?.shouldPlayCalibrationStartedCallouts() ?? false }
             
         case (.calibrating, .calibrated): // Calibration has ended
             let callout = StringCallout(.arHeadset, GDLocalizedString("devices.callouts.calibrated"))
@@ -167,20 +177,20 @@ class ARHeadsetGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
             
             callouts = CalloutGroup([earcon, callout], logContext: "ar_headset")
             callouts?.onStart = self.stopCalibrationTrack
-            callouts?.isValid = ARHeadsetGenerator.shouldPlayCalibrationEndCallouts
+            callouts?.isValid = { [weak self] in self?.shouldPlayCalibrationEndCallouts() ?? false }
             
         case (.calibrated, .calibrating): // Device needs to be recalibrated
             let callout = StringCallout(.arHeadset, needsCalibratingCalloutString)
             
             callouts = CalloutGroup([callout], logContext: "ar_headset")
             callouts?.onStart = self.startCalibrationTrack
-            callouts?.isValid = ARHeadsetGenerator.shouldPlayCalibrationStartedCallouts
+            callouts?.isValid = { [weak self] in self?.shouldPlayCalibrationStartedCallouts() ?? false }
             
         case (.needsCalibrating, .calibrated): // Device was already calibrated
             let callout = StringCallout(.arHeadset, GDLocalizedString("devices.callouts.calibrated"))
             let earcon = GlyphCallout(.arHeadset, .calibrationSuccess)
             callouts = CalloutGroup([earcon, callout], logContext: "ar_headset")
-            callouts?.isValid = ARHeadsetGenerator.shouldPlayCalibrationEndCallouts
+            callouts?.isValid = { [weak self] in self?.shouldPlayCalibrationEndCallouts() ?? false }
             
         default:
             return nil
@@ -190,14 +200,14 @@ class ARHeadsetGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
     }
     
     private func startCalibrationTrack() {
-        guard let id = AppContext.shared.audioEngine.play(looped: GenericSound(.calibrationInProgress)) else {
+        guard let id = audioEngine.play(looped: GenericSound(.calibrationInProgress)) else {
             return
         }
         
-        previousBeaconAudioEnabled = AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled
+        previousBeaconAudioEnabled = destinationManager.isAudioEnabled
         
         if previousBeaconAudioEnabled {
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
+            destinationManager.toggleDestinationAudio()
         }
         
         calibrationPlayerId = id
@@ -209,28 +219,21 @@ class ARHeadsetGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing {
         }
         
         if previousBeaconAudioEnabled {
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
+            destinationManager.toggleDestinationAudio()
             previousBeaconAudioEnabled = false
         }
         
         calibrationPlayerId = nil
-        AppContext.shared.audioEngine.stop(id)
+        audioEngine.stop(id)
     }
-    
-}
 
-// MARK: - Helpers
-
-extension ARHeadsetGenerator {
-    
-    private static func shouldPlayCalibrationStartedCallouts() -> Bool {
-        guard let device = AppContext.shared.deviceManager.devices.first as? CalibratableDevice, device.isConnected else { return false }
+    private func shouldPlayCalibrationStartedCallouts() -> Bool {
+        guard let device = deviceManager.devices.first as? CalibratableDevice, device.isConnected else { return false }
         return device.calibrationState != .calibrated
     }
-    
-    private static func shouldPlayCalibrationEndCallouts() -> Bool {
-        guard let device = AppContext.shared.deviceManager.devices.first as? CalibratableDevice, device.isConnected else { return false }
+
+    private func shouldPlayCalibrationEndCallouts() -> Bool {
+        guard let device = deviceManager.devices.first as? CalibratableDevice, device.isConnected else { return false }
         return device.calibrationState == .calibrated
     }
-    
 }
