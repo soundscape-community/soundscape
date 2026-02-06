@@ -25,6 +25,9 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         var playAudioResult: AudioPlayerIdentifier?
         var playedAudioURLs: [URL] = []
         var stoppedAudioIDs: [AudioPlayerIdentifier] = []
+        var customBehaviorActive = false
+        var deactivateCustomBehaviorCount = 0
+        var processedEventNames: [String] = []
 
         func userLocationStoreInitialUserLocation() -> SSGeoLocation? {
             initialLocation
@@ -61,6 +64,18 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
 
         func audioFileStoreStop(_ id: AudioPlayerIdentifier) {
             stoppedAudioIDs.append(id)
+        }
+
+        func visualIsCustomBehaviorActive() -> Bool {
+            customBehaviorActive
+        }
+
+        func visualDeactivateCustomBehavior() {
+            deactivateCustomBehaviorCount += 1
+        }
+
+        func visualProcessEvent(_ event: Event) {
+            processedEventNames.append(event.name)
         }
     }
 
@@ -112,6 +127,9 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         _ = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance()
         _ = VisualRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour()
         _ = VisualRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance()
+        _ = VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive()
+        VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
+        VisualRuntimeProviderRegistry.providers.visualProcessEvent(BehaviorActivatedEvent())
 
         let url = URL(fileURLWithPath: "/tmp/test-audio.mp3")
         let playerID = VisualRuntimeProviderRegistry.providers.audioFileStorePlay(url)
@@ -124,5 +142,7 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.playedAudioURLs, [url])
         XCTAssertEqual(playerID, expectedPlayerID)
         XCTAssertEqual(provider.stoppedAudioIDs, [expectedPlayerID])
+        XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)
+        XCTAssertEqual(provider.processedEventNames, [BehaviorActivatedEvent().name])
     }
 }

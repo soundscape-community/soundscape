@@ -38,7 +38,7 @@ class RouteDetail: RouteDetailProtocol {
     private var listeners: [AnyCancellable] = []
     
     var guidance: RouteGuidance? {
-        guard let routeGuidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
+        guard let routeGuidance = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
             return nil
         }
         

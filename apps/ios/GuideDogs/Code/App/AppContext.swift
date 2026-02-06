@@ -380,12 +380,20 @@ protocol AudioFileStoreRuntimeProviding {
 }
 
 @MainActor
+protocol VisualBehaviorRuntimeProviding {
+    func visualIsCustomBehaviorActive() -> Bool
+    func visualDeactivateCustomBehavior()
+    func visualProcessEvent(_ event: Event)
+}
+
+@MainActor
 protocol VisualRuntimeProviders: UserLocationStoreRuntimeProviding,
                                  BeaconDetailRuntimeProviding,
                                  BeaconStoreRuntimeProviding,
                                  RouteGuidanceStateStoreRuntimeProviding,
                                  GuidedTourStateStoreRuntimeProviding,
-                                 AudioFileStoreRuntimeProviding {}
+                                 AudioFileStoreRuntimeProviding,
+                                 VisualBehaviorRuntimeProviding {}
 
 @MainActor
 enum VisualRuntimeProviderRegistry {
@@ -453,6 +461,19 @@ private final class UnconfiguredVisualRuntimeProviders: VisualRuntimeProviders {
     func audioFileStoreStop(_ id: AudioPlayerIdentifier) {
         debugAssertUnconfigured(#function)
     }
+
+    func visualIsCustomBehaviorActive() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func visualDeactivateCustomBehavior() {
+        debugAssertUnconfigured(#function)
+    }
+
+    func visualProcessEvent(_ event: Event) {
+        debugAssertUnconfigured(#function)
+    }
 }
 
 @MainActor
@@ -493,6 +514,18 @@ final class AppContextVisualRuntimeProviders: VisualRuntimeProviders {
 
     func audioFileStoreStop(_ id: AudioPlayerIdentifier) {
         context.audioEngine.stop(id)
+    }
+
+    func visualIsCustomBehaviorActive() -> Bool {
+        context.eventProcessor.isCustomBehaviorActive
+    }
+
+    func visualDeactivateCustomBehavior() {
+        context.eventProcessor.deactivateCustom()
+    }
+
+    func visualProcessEvent(_ event: Event) {
+        context.eventProcessor.process(event)
     }
 }
 

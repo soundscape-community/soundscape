@@ -67,7 +67,7 @@ struct BeaconActionHandler {
             return
         }
         
-        AppContext.process(BeaconCalloutEvent(beaconId: key, logContext: "home_screen"))
+        VisualRuntimeProviderRegistry.providers.visualProcessEvent(BeaconCalloutEvent(beaconId: key, logContext: "home_screen"))
         GDATelemetry.track("beacon.callout")
     }
     
@@ -77,12 +77,16 @@ struct BeaconActionHandler {
     /// toggles the audio for the current audio beacon
     ///
     static func toggleAudio() {
-        guard AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(automatic: false) else {
+        guard let destinationManager = VisualRuntimeProviderRegistry.providers.beaconStoreDestinationManager() else {
+            return
+        }
+
+        guard destinationManager.toggleDestinationAudio(automatic: false) else {
             // Failed to toggle audio
             return
         }
         
-        let isAudioEnabled = AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled
+        let isAudioEnabled = destinationManager.isAudioEnabled
         GDATelemetry.track("beacon.toggle_audio", value: String(isAudioEnabled))
     }
     
@@ -116,16 +120,17 @@ struct BeaconActionHandler {
                 return
             }
             
-            AppContext.shared.eventProcessor.deactivateCustom()
+            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
         } else {
-            guard AppContext.shared.spatialDataContext.destinationManager.destinationKey == detail.locationDetail.beaconId else {
+            guard let destinationManager = VisualRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
+                  destinationManager.destinationKey == detail.locationDetail.beaconId else {
                 // There is no beacon to clear
                 return
             }
             
             do {
                 // Try to remove the beacon
-                try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "home_screen")
+                try destinationManager.clearDestination(logContext: "home_screen")
             } catch {
                 return
             }

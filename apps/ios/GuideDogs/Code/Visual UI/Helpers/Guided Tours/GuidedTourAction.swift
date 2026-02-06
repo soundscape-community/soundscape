@@ -59,7 +59,7 @@ enum GuidedTourAction: String, Action {
     case checkForUpdates
     
     static func actions(for detail: TourDetail) -> [GuidedTourActionState] {
-        let isDefaultBehaviorActive = AppContext.shared.eventProcessor.activeBehavior is SoundscapeBehavior
+        let isDefaultBehaviorActive = !VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive()
         
         if detail.isGuidanceActive {
             return [GuidedTourActionState(.stopTour)]
