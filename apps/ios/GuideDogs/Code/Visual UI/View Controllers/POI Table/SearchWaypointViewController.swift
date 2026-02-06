@@ -23,6 +23,7 @@ class SearchWaypointViewController: UIViewController {
     var waypoints: Binding<[IdentifiableLocationDetail]>?
     private var hostingController: UIViewController?
     private var searchController: UISearchController?
+    private let userLocationStore = UserLocationStore()
     
     private var cancellable: AnyCancellable?
     
@@ -102,8 +103,7 @@ class SearchWaypointViewController: UIViewController {
         }
         
         if let waypoints = waypoints {
-            let userLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
-            let content = WaypointAddList(waypoints: waypoints, userLocation: userLocation)
+            let content = WaypointAddList(waypoints: waypoints, userLocation: userLocationStore.ssGeoLocation)
             hostingController = UIHostingController(rootView: AnyView(content))
             
             guard let hostingController = hostingController else {

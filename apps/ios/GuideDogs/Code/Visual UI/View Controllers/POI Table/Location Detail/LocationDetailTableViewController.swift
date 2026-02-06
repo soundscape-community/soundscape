@@ -25,6 +25,7 @@ class LocationDetailTableViewController: UITableViewController {
     // MARK: Properties
     
     private let defaultCell = UITableViewCell(style: .default, reuseIdentifier: "DefaultCell")
+    private let userLocationStore = UserLocationStore()
     private var userLocation: SSGeoLocation?
     
     var locationDetail: LocationDetail? {
@@ -54,7 +55,7 @@ class LocationDetailTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.userLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
+        self.userLocation = userLocationStore.ssGeoLocation
     }
     
     override func viewDidLayoutSubviews() {
