@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import RealmSwift
+import SSGeo
 
 enum ReferenceEntityError: Error {
     case entityKeyDoesNotExist
@@ -60,6 +61,11 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     /// CLLocationCoordinate2D for the referenced entity
     var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
+    /// Portable coordinate payload for cross-platform boundaries.
+    var geoCoordinate: SSGeoCoordinate {
+        coordinate.ssGeoCoordinate
     }
     
     /// A computed property that returns the "preferred" name of the POI. If the entity
@@ -148,6 +154,17 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         // Set temporary status
         isTemp = temp
     }
+
+    convenience init(coordinate: SSGeoCoordinate, entityKey: String? = nil, name: String? = nil, estimatedAddress: String? = nil, annotation: String? = nil, temp: Bool = false) {
+        self.init(
+            coordinate: coordinate.clCoordinate,
+            entityKey: entityKey,
+            name: name,
+            estimatedAddress: estimatedAddress,
+            annotation: annotation,
+            temp: temp
+        )
+    }
     
     convenience init(location: GenericLocation, name: String? = nil, estimatedAddress: String? = nil, annotation: String? = nil, temp: Bool = false) {
         self.init()
@@ -224,7 +241,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             return poi.distanceToClosestLocation(from: location)
         }
         
-        return self.coordinate.distance(from: location.coordinate)
+        return SSGeoMath.distanceMeters(from: geoCoordinate, to: location.coordinate.ssGeoCoordinate)
     }
     
     /// Bearing from the entity to the user's location
@@ -236,7 +253,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             return poi.bearingToClosestLocation(from: location)
         }
         
-        return location.coordinate.bearing(to: coordinate)
+        return SSGeoMath.initialBearingDegrees(from: location.coordinate.ssGeoCoordinate, to: geoCoordinate)
     }
     
     /// Helper method for calculating the closest location on the underlying POI for this
@@ -249,7 +266,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             return poi.closestLocation(from: location, useEntranceIfAvailable: true)
         }
         
-        return CLLocation(latitude: latitude, longitude: longitude)
+        return geoCoordinate.clLocation
     }
     
     /// Gets the POI for the reference entity.

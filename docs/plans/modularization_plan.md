@@ -44,6 +44,7 @@ Phase 1 complete:
 - 2026-02-06: Baseline index analysis showed high coupling into `App/AppContext.swift` and reverse edges (`Behaviors -> Visual UI`), indicating current folders do not enforce clean subsystem boundaries.
 - 2026-02-06: Added common module `SSGeo` with portable location payloads and geodesic helpers, plus tests that compare distance accuracy/performance against `CoreLocation` where available.
 - 2026-02-06: Migrated `Data/Authored Activities` GPX parsing boundary to store portable `SSGeoLocation` in waypoints/POIs while preserving existing `CLLocationCoordinate2D`-based iOS APIs.
+- 2026-02-06: Migrated additional `Data` geospatial paths (`POI`, `ReferenceEntity`, `GenericLocation`, `Address`) to use `SSGeo` coordinate payloads and `SSGeoMath` internally while preserving existing CoreLocation-facing APIs.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

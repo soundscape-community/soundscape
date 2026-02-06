@@ -7,6 +7,7 @@
 //
 
 import CoreLocation
+import SSGeo
 
 /// Protocol for all OSM entity data structures
 protocol POI {
@@ -42,6 +43,14 @@ extension POI {
     
     var centroidLocation: CLLocation {
         return CLLocation(centroidCoordinate)
+    }
+
+    var centroidSSGeoCoordinate: SSGeoCoordinate {
+        centroidCoordinate.ssGeoCoordinate
+    }
+
+    var centroidSSGeoLocation: SSGeoLocation {
+        SSGeoLocation(coordinate: centroidSSGeoCoordinate)
     }
     
 }

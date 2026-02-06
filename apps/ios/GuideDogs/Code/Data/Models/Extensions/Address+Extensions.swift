@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 extension Address: SelectablePOI {
     
@@ -21,6 +22,10 @@ extension Address: SelectablePOI {
     
     var location: CLLocation {
         return CLLocation(latitude: latitude, longitude: longitude)
+    }
+
+    var geoCoordinate: SSGeoCoordinate {
+        SSGeoCoordinate(latitude: latitude, longitude: longitude)
     }
     
     var coordinates: [Any]? {
@@ -43,15 +48,15 @@ extension Address: SelectablePOI {
     }
     
     func distanceToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDistance {
-        return self.location.distance(from: location)
+        return SSGeoMath.distanceMeters(from: geoCoordinate, to: location.coordinate.ssGeoCoordinate)
     }
     
     func bearingToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDirection {
-        return location.bearing(to: self.location)
+        return SSGeoMath.initialBearingDegrees(from: location.coordinate.ssGeoCoordinate, to: geoCoordinate)
     }
     
     func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {
-        return self.location
+        return geoCoordinate.clLocation
     }
     
 }

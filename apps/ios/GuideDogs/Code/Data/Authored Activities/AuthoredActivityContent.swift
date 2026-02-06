@@ -373,18 +373,6 @@ extension AuthoredActivityContent {
     }
 }
 
-private extension SSGeoCoordinate {
-    var clCoordinate: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
-}
-
-private extension CLLocationCoordinate2D {
-    var ssGeoCoordinate: SSGeoCoordinate {
-        SSGeoCoordinate(latitude: latitude, longitude: longitude)
-    }
-}
-
 // MARK: - Custom String Convertible
 
 extension AuthoredActivityContent: CustomStringConvertible {

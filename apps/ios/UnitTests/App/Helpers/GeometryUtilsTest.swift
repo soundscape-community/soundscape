@@ -406,6 +406,39 @@ class GeometryUtilsTest: XCTestCase {
         XCTAssertNotNil(s_pole_closest)
         XCTAssertEqual(s_pole_closest!.coordinate, path.first)
     }
+
+    func testCoordinateDistanceMatchesCoreLocation() throws {
+        let coordinatePairs: [(CLLocationCoordinate2D, CLLocationCoordinate2D)] = [
+            (.init(latitude: 47.6205, longitude: -122.3493), .init(latitude: 47.6062, longitude: -122.3321)),
+            (.init(latitude: 40.7128, longitude: -74.0060), .init(latitude: 34.0522, longitude: -118.2437)),
+            (.init(latitude: 51.5074, longitude: -0.1278), .init(latitude: 48.8566, longitude: 2.3522)),
+            (.init(latitude: -33.8688, longitude: 151.2093), .init(latitude: 35.6762, longitude: 139.6503))
+        ]
+
+        for pair in coordinatePairs {
+            let ours = pair.0.distance(from: pair.1)
+            let expected = CLLocation(pair.0).distance(from: CLLocation(pair.1))
+            let absError = abs(ours - expected)
+
+            if expected <= 10_000.0 {
+                XCTAssertLessThan(absError, 40.0)
+            } else {
+                XCTAssertLessThan(absError / expected, 0.0075)
+            }
+        }
+    }
+
+    func testCoordinateBearingPreservesBehavior() throws {
+        let origin = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        let east = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.2480)
+        let north = CLLocationCoordinate2D(latitude: 47.7210, longitude: -122.3493)
+
+        XCTAssertEqual(origin.bearing(to: east), 90.0, accuracy: 0.5)
+        XCTAssertEqual(origin.bearing(to: north), 0.0, accuracy: 0.5)
+
+        let invalidOrigin = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+        XCTAssertEqual(invalidOrigin.bearing(to: east), -1.0)
+    }
     
     
     // TODO: test `interpolateToEqualDistance` with coordinates

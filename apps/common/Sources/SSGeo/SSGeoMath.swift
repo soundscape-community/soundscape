@@ -4,7 +4,11 @@ public enum SSGeoMath {
     // Spherical earth radius used by haversine distance.
     public static let earthRadiusMeters = 6_371_000.0
 
-    public static func distanceMeters(from: SSGeoCoordinate, to: SSGeoCoordinate) -> Double {
+    public static func distanceMeters(
+        from: SSGeoCoordinate,
+        to: SSGeoCoordinate,
+        earthRadiusMeters: Double = earthRadiusMeters
+    ) -> Double {
         let lat1 = from.latitude * .pi / 180.0
         let lon1 = from.longitude * .pi / 180.0
         let lat2 = to.latitude * .pi / 180.0

@@ -52,9 +52,9 @@ extension POI {
     }
     
     private func computeSpatial(other: POI, threshold: CLLocationDistance = 250.0) -> Double {
-        // Create `CLLocation` at the center of each entity
-        let centerA = CLLocation(latitude: self.centroidLatitude, longitude: self.centroidLongitude)
-        let centerB = CLLocation(latitude: other.centroidLatitude, longitude: other.centroidLongitude)
+        // Create center locations from portable coordinate payloads.
+        let centerA = centroidSSGeoCoordinate.clLocation
+        let centerB = other.centroidSSGeoCoordinate.clLocation
         
         // For each entity, calculate distance as distance from the first entity
         // to the center of the second entity

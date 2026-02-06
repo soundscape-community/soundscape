@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import GLKit
+import SSGeo
 
 extension CLLocation {
     
@@ -84,6 +85,18 @@ extension CLLocation {
         
         return directionRange.contains(course)
     }
+
+    var ssGeoLocation: SSGeoLocation {
+        SSGeoLocation(
+            coordinate: coordinate.ssGeoCoordinate,
+            altitudeMeters: altitude,
+            timestamp: timestamp,
+            horizontalAccuracyMeters: horizontalAccuracy >= 0 ? horizontalAccuracy : nil,
+            verticalAccuracyMeters: verticalAccuracy >= 0 ? verticalAccuracy : nil,
+            speedMetersPerSecond: speed >= 0 ? speed : nil,
+            courseDegrees: course >= 0 ? course : nil
+        )
+    }
     
 }
 
@@ -140,8 +153,11 @@ extension CLLocationCoordinate2D {
     }
     
     nonisolated func distance(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
-        return CLLocation(latitude: self.latitude, longitude: self.longitude)
-            .distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
+        return SSGeoMath.distanceMeters(
+            from: self.ssGeoCoordinate,
+            to: coordinate.ssGeoCoordinate,
+            earthRadiusMeters: GeometryUtils.earthRadius
+        )
     }
     
     /// Returns a compass bearing (in the range 0...360) to the specified coordinate.
@@ -169,20 +185,7 @@ extension CLLocationCoordinate2D {
             return 0
         }
         
-        let startLatitude = self.latitude.degreesToRadians
-        let startLongitude = self.longitude.degreesToRadians
-
-        let endLatitude = coordinate.latitude.degreesToRadians
-        let endLongitude = coordinate.longitude.degreesToRadians
-
-        let dLongitude = endLongitude - startLongitude
-        let cosEndLatitude = cos(endLatitude)
-
-        let y = sin(dLongitude) * cosEndLatitude
-        let x = cos(startLatitude) * sin(endLatitude) - sin(startLatitude) * cosEndLatitude * cos(dLongitude)
-        let bearing = atan2(y, x).radiansToDegrees
-
-        return fmod(bearing + 360.0, 360.0)
+        return SSGeoMath.initialBearingDegrees(from: self.ssGeoCoordinate, to: coordinate.ssGeoCoordinate)
     }
     
     /// Returns the destination point from `self` having travelled the given distance on the given bearing.
@@ -218,7 +221,39 @@ extension CLLocationCoordinate2D {
     nonisolated func coordinateBetween(coordinate: CLLocationCoordinate2D, distance: CLLocationDistance) -> CLLocationCoordinate2D {
         return self.destination(distance: distance, bearing: self.bearing(to: coordinate))
     }
+
+    var ssGeoCoordinate: SSGeoCoordinate {
+        SSGeoCoordinate(latitude: latitude, longitude: longitude)
+    }
     
+}
+
+extension SSGeoCoordinate {
+    var clCoordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
+    var clLocation: CLLocation {
+        CLLocation(clCoordinate)
+    }
+}
+
+extension SSGeoLocation {
+    var clLocation: CLLocation {
+        guard let timestamp else {
+            return coordinate.clLocation
+        }
+
+        return CLLocation(
+            coordinate: coordinate.clCoordinate,
+            altitude: altitudeMeters ?? 0,
+            horizontalAccuracy: horizontalAccuracyMeters ?? -1,
+            verticalAccuracy: verticalAccuracyMeters ?? -1,
+            course: courseDegrees ?? -1,
+            speed: speedMetersPerSecond ?? -1,
+            timestamp: timestamp
+        )
+    }
 }
 
 extension CLLocationCoordinate2D: Equatable {
