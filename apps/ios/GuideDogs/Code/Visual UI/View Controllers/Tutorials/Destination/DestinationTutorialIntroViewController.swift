@@ -46,7 +46,7 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleAudioSessionInterruption(_:)),
                                                name: AVAudioSession.interruptionNotification,
-                                               object: AppContext.shared.audioEngine.session)
+                                               object: UIRuntimeProviderRegistry.providers.uiAudioSession())
     }
     
     @objc func handleAudioSessionInterruption(_ notification: NSNotification) {
@@ -56,10 +56,10 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        AppContext.shared.isInTutorialMode = true
+        UIRuntimeProviderRegistry.providers.uiSetTutorialMode(true)
         
         // Clear destination if needed
-        try? AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tutorial.beacon.start_tutorial")
+        try? UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.clearDestination(logContext: "tutorial.beacon.start_tutorial")
 
         navigationController?.setNavigationBarHidden(true, animated: true)
         
@@ -136,7 +136,7 @@ extension DestinationTutorialIntroViewController: DestinationTutorialPageDelegat
             performSegue(withIdentifier: "ExitTutorialSegue", sender: self)
         }
         
-        AppContext.shared.isInTutorialMode = false
+        UIRuntimeProviderRegistry.providers.uiSetTutorialMode(false)
     }
 }
 
@@ -162,8 +162,17 @@ extension DestinationTutorialIntroViewController: POITableViewDelegate {
     }
     
     func didSelect(poi: POI) {
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+            GDLogAppError("Unable to set destination in Destination tutorial")
+            return
+        }
+
         do {
-            entityKey = try AppContext.shared.spatialDataContext.destinationManager.setDestination(entityKey: poi.key, enableAudio: false, userLocation: AppContext.shared.geolocationManager.location, estimatedAddress: nil, logContext: "tutorial.beacon")
+            entityKey = try destinationManager.setDestination(entityKey: poi.key,
+                                                             enableAudio: false,
+                                                             userLocation: UIRuntimeProviderRegistry.providers.uiCurrentUserLocation(),
+                                                             estimatedAddress: nil,
+                                                             logContext: "tutorial.beacon")
         } catch {
             GDLogAppError("Unable to set destination in Destination tutorial")
         }
