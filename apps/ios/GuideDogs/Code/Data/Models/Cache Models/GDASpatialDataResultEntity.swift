@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import RealmSwift
+import SSGeo
 
 class LocalizedString: Object {
     /// Lowercase ISO 639-1 alpha2 code (second column), or a lowercase ISO 639-2 code if an ISO 639-1 code doesn't exist.
@@ -61,6 +62,11 @@ class GDASpatialDataResultEntity: Object {
     // MARK: - Computed & Non-Realm Properties
     
     var geometryType: GeometryType?
+
+    /// Portable coordinate payload for cross-platform boundaries.
+    var geoCoordinate: SSGeoCoordinate {
+        SSGeoCoordinate(latitude: latitude, longitude: longitude)
+    }
     
     private var _coordinates: [Any]?
     var coordinates: [Any]? {

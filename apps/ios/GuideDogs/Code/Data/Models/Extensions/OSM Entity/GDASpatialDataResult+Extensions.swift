@@ -8,6 +8,7 @@
 
 import CoreLocation
 import CocoaLumberjackSwift
+import SSGeo
 
 @MainActor
 extension GDASpatialDataResultEntity: SelectablePOI {
@@ -16,8 +17,9 @@ extension GDASpatialDataResultEntity: SelectablePOI {
         if self.contains(location: location.coordinate) {
             return 0
         }
-        
-        return closestLocation(from: location, useEntranceIfAvailable: useEntranceIfAvailable).distance(from: location)
+
+        let closestCoordinate = closestLocation(from: location, useEntranceIfAvailable: useEntranceIfAvailable).coordinate
+        return SSGeoMath.distanceMeters(from: location.coordinate.ssGeoCoordinate, to: closestCoordinate.ssGeoCoordinate)
     }
     
     func bearingToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDirection {
@@ -25,7 +27,8 @@ extension GDASpatialDataResultEntity: SelectablePOI {
             return 0
         }
         
-        return location.bearing(to: closestLocation(from: location, useEntranceIfAvailable: useEntranceIfAvailable))
+        let closestCoordinate = closestLocation(from: location, useEntranceIfAvailable: useEntranceIfAvailable).coordinate
+        return SSGeoMath.initialBearingDegrees(from: location.coordinate.ssGeoCoordinate, to: closestCoordinate.ssGeoCoordinate)
     }
     
     func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {
@@ -35,7 +38,7 @@ extension GDASpatialDataResultEntity: SelectablePOI {
             return edge
         }
         
-        return CLLocation(latitude: latitude, longitude: longitude)
+        return geoCoordinate.clLocation
     }
     
     var searchString: String? {

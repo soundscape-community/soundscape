@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 @MainActor
 extension GDASpatialDataResultEntity {
@@ -38,8 +39,9 @@ extension GDASpatialDataResultEntity {
         }
         // If we have coordinates, use those to update the distance and bearing,
         // otherwise, use the `latitude` and `longitude` properties
-        
-        var closestLocation: CLLocation?
+
+        let sourceCoordinate = location.coordinate.ssGeoCoordinate
+        var closestLocationCoordinate: SSGeoCoordinate?
         var minimumDistance = CLLocationDistanceMax
         
         if geometryType == .lineString || geometryType == .multiPoint {
@@ -50,12 +52,12 @@ extension GDASpatialDataResultEntity {
             for coordinate in coordinates {
                 let lat = coordinate[1]
                 let lon = coordinate[0]
-                
-                let newLocation = CLLocation(latitude: lat, longitude: lon)
-                let distance = newLocation.distance(from: location)
+
+                let newLocationCoordinate = SSGeoCoordinate(latitude: lat, longitude: lon)
+                let distance = SSGeoMath.distanceMeters(from: sourceCoordinate, to: newLocationCoordinate)
                 
                 if distance < minimumDistance {
-                    closestLocation = newLocation
+                    closestLocationCoordinate = newLocationCoordinate
                     minimumDistance = distance
                 }
             }
@@ -63,8 +65,10 @@ extension GDASpatialDataResultEntity {
             guard let polygon = coordinates as? GAMultiLine else {
                 return nil
             }
-            
-            closestLocation = GeometryUtils.closestEdge(from: location.coordinate, on: polygon)
+
+            if let closestEdgeLocation = GeometryUtils.closestEdge(from: location.coordinate, on: polygon) {
+                closestLocationCoordinate = closestEdgeLocation.coordinate.ssGeoCoordinate
+            }
         } else if geometryType == .multiPolygon {
             guard let polygons = coordinates as? GAMultiLineCollection else {
                 return nil
@@ -74,17 +78,18 @@ extension GDASpatialDataResultEntity {
                 guard let newLocation = GeometryUtils.closestEdge(from: location.coordinate, on: polygon) else {
                     continue
                 }
-                
-                let distance = newLocation.distance(from: location)
+
+                let newLocationCoordinate = newLocation.coordinate.ssGeoCoordinate
+                let distance = SSGeoMath.distanceMeters(from: sourceCoordinate, to: newLocationCoordinate)
                 
                 if distance < minimumDistance {
-                    closestLocation = newLocation
+                    closestLocationCoordinate = newLocationCoordinate
                     minimumDistance = distance
                 }
             }
         }
-        
-        return closestLocation
+
+        return closestLocationCoordinate?.clLocation
     }
     
 }
