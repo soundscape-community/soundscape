@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import Combine
+import SSGeo
 
 struct TourProgress {
     let currentWaypoint: (index: Int, waypoint: LocationDetail)?
@@ -554,7 +555,7 @@ class GuidedTour: BehaviorBase {
             return
         }
         
-        let distance = location.coordinate.distance(from: userLocation.coordinate)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: userLocation.coordinate.ssGeoCoordinate)
         let formattedDistance = LanguageFormatter.formattedDistance(from: distance)
         
         AudioSessionManager.setNowPlayingInfo(title: content.displayName,
@@ -572,7 +573,7 @@ class GuidedTour: BehaviorBase {
         }
         
         return dataView.intersections
-            .map({ (intersection: $0, distance: $0.coordinate.distance(from: current.coordinate)) })
+            .map({ (intersection: $0, distance: $0.coordinate.ssGeoCoordinate.distance(to: current.coordinate.ssGeoCoordinate)) })
             .sorted(by: { $0.distance < $1.distance })
             .first(where: { $0.intersection.isMainIntersection(context: AppContext.secondaryRoadsContext) })?
             .intersection.key

@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 @MainActor
 class TourWaypointDistanceCallout: CalloutProtocol {
@@ -47,7 +48,7 @@ class TourWaypointDistanceCallout: CalloutProtocol {
             return Sounds.empty
         }
         
-        let distance = location.coordinate.distance(from: waypoint.location.coordinate)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: waypoint.location.coordinate.ssGeoCoordinate)
         
         let glyph = GlyphSound(.poiSense, at: waypoint.location)
         let distanceString = LanguageFormatter.formattedDistance(from: distance)
@@ -64,7 +65,7 @@ class TourWaypointDistanceCallout: CalloutProtocol {
             return nil
         }
         
-        let distance = location.coordinate.distance(from: waypoint.location.coordinate)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: waypoint.location.coordinate.ssGeoCoordinate)
 
         if tts {
             return LanguageFormatter.spellOutDistance(distance )

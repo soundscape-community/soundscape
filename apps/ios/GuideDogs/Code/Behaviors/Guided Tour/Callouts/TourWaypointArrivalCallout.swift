@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 extension CalloutOrigin {
     static let tourGuidance = CalloutOrigin(rawValue: "tour_guidance", localizedString: GDLocalizedString("route_detail.name.default"))!
@@ -89,7 +90,7 @@ class TourWaypointArrivalCallout: CalloutProtocol {
             return nil
         }
         
-        let distance = location.coordinate.distance(from: waypoint.location.coordinate)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: waypoint.location.coordinate.ssGeoCoordinate)
         
         if tts {
             return LanguageFormatter.spellOutDistance(distance)

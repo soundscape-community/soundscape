@@ -7,6 +7,7 @@
 //
 
 import CoreLocation
+import SSGeo
 
 class WaypointDepartureCallout: CalloutProtocol {
     let id = UUID()
@@ -49,7 +50,7 @@ class WaypointDepartureCallout: CalloutProtocol {
         
         let beaconOn: String
         if let location = location {
-            let distance = location.coordinate.distance(from: waypoint.location.coordinate)
+            let distance = location.coordinate.ssGeoCoordinate.distance(to: waypoint.location.coordinate.ssGeoCoordinate)
             let formattedDistance = LanguageFormatter.string(from: distance, rounded: true)
             
             beaconOn = GDLocalizedString("behavior.scavenger_hunt.callout.next_flag",
@@ -78,7 +79,7 @@ class WaypointDepartureCallout: CalloutProtocol {
             return nil
         }
         
-        let distance = location.coordinate.distance(from: waypoint.location.coordinate)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: waypoint.location.coordinate.ssGeoCoordinate)
         
         if tts {
             return LanguageFormatter.spellOutDistance(distance)

@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 class RouteGuidanceReadyEvent: StateChangedEvent { }
 
@@ -244,7 +245,9 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
             return false
         }
         
-        let distance = locationEvent.location.coordinate.distance(from: current.waypoint.location.coordinate)
+        let distance = locationEvent.location.coordinate.ssGeoCoordinate.distance(
+            to: current.waypoint.location.coordinate.ssGeoCoordinate
+        )
         
         // When the user gets within 40 meters of the waypoint, block other callouts to prevent
         // the route guidance callouts from being poorly timed.
