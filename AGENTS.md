@@ -4,6 +4,7 @@ This file is the canonical instruction source for coding agents in this reposito
 
 ## Repository Map
 - `apps/ios/`: iOS app (`GuideDogs.xcworkspace`, app code, unit tests, CI scripts).
+- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SoundscapeCoreDataStructures`).
 - `svcs/data/`: open-source data-plane ingestion/tile tooling (Python, Docker, SQL, Helm chart assets).
 - `docs/`: project documentation.
 - `.github/workflows/`: CI definitions (use these as command truth for automation-aligned docs).
@@ -15,6 +16,20 @@ This file is the canonical instruction source for coding agents in this reposito
 - `CalloutCoordinator` owns callout queueing, interruption, hush behavior, and playback sequencing.
 - `AudioPlaybackActor` provides async audio playback control for the coordinator and wraps `AudioEngine` interactions.
 - `HandledEventAction` is the behavior-to-processor contract for callout playback, event fan-out, and interrupt requests.
+- `SoundscapeCoreDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
+
+## Modularization Status (Phase 1)
+- First extraction is complete: core data-structure types moved from `apps/ios` into `apps/common/Sources/SoundscapeCoreDataStructures`.
+- Boundary rule: keep `apps/common` platform-agnostic. Do not import Apple UI/platform frameworks in `apps/common/Sources`.
+- Boundary enforcement script: `bash apps/common/Scripts/check_forbidden_imports.sh`.
+- Package tests for extracted module: `swift test --package-path apps/common`.
+
+## Plan Documents
+- Active plans live in `docs/plans/`.
+- Modularization progress is tracked in `docs/plans/modularization_plan.md`.
+- Each active plan must include: summary, scope, current status, progress updates, and next steps.
+- After each implementation in plan scope, update the plan document in the same change with current progress and immediate next steps.
+- When modularization lands a new module, update both `docs/plans/modularization_plan.md` and this file's modularization status section (concisely).
 
 ## Build, Test, and Lint Commands
 Use commands aligned with `.github/workflows/ios-tests.yml`, but for local runs always use a simulator that is already installed on the current machine.
@@ -27,6 +42,9 @@ Local session rule:
 From repo root:
 
 ```bash
+bash apps/common/Scripts/check_forbidden_imports.sh
+swift test --package-path apps/common
+
 cd apps/ios
 swift Scripts/LocalizationLinter/main.swift
 

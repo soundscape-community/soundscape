@@ -18,3 +18,7 @@ Use this index to find current operational docs versus historical planning logs.
 - [Concurrency migration plan](./concurrency_migration_plan.md)
 
 These historical planning docs are useful for context, but operational commands may drift. Prefer `AGENTS.md` and CI workflow files for current commands and defaults.
+
+## Active Plan Docs
+- [Plan documentation standards](./plans/README.md)
+- [Modularization plan (live status)](./plans/modularization_plan.md)
