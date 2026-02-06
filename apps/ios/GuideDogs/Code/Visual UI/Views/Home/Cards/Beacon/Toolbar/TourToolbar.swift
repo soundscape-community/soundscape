@@ -22,7 +22,7 @@ struct TourToolbar: View {
     private let timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
     
     private var distanceText: String? {
-        return viewModel.currentWaypointLocation?.labels.distance(from: userLocation.location?.ssGeoLocation)?.text
+        return viewModel.currentWaypointLocation?.labels.distance(from: userLocation.ssGeoLocation)?.text
     }
     
     private var elapsedText: String? {
@@ -58,7 +58,7 @@ struct TourToolbar: View {
             }
             
             // Initialize distance text
-            let label = waypoint.labels.distance(from: userLocation.location?.ssGeoLocation)
+            let label = waypoint.labels.distance(from: userLocation.ssGeoLocation)
             let distanceAccessibility = label?.accessibilityText ?? label?.text
             
             // Initialize remaining text

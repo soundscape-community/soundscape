@@ -62,7 +62,7 @@ class BeaconTitleViewController: UIViewController {
         configureTimer()
         
         // Listen for location updates
-        listeners.append(userLocationStore.$location
+        listeners.append(userLocationStore.$ssGeoLocation
                             .receive(on: DispatchQueue.main)
                             .sink(receiveValue: { [weak self] newValue in
             guard let `self` = self else {
@@ -74,7 +74,7 @@ class BeaconTitleViewController: UIViewController {
             }
             
             // Save new value
-            self.userLocation = newValue
+            self.userLocation = newValue?.clLocation
             
             self.configureView()
         }))

@@ -8,10 +8,15 @@
 
 import Combine
 import CoreLocation
+import SSGeo
 
 @MainActor
 class UserLocationStore: ObservableObject {
-    @Published var location: CLLocation?
+    @Published var ssGeoLocation: SSGeoLocation?
+    
+    var location: CLLocation? {
+        ssGeoLocation?.clLocation
+    }
     
     private var listener: AnyCancellable?
     
@@ -21,15 +26,19 @@ class UserLocationStore: ObservableObject {
                 return
             }
             
-            self?.location = location
+            self?.ssGeoLocation = location.ssGeoLocation
         }
         
         // Save initial value
-        self.location = AppContext.shared.geolocationManager.location
+        self.ssGeoLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
     }
     
     init(designValue: CLLocation) {
-        location = designValue
+        ssGeoLocation = designValue.ssGeoLocation
+    }
+    
+    init(designValue: SSGeoLocation) {
+        ssGeoLocation = designValue
     }
     
     deinit {

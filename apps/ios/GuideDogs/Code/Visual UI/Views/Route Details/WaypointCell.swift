@@ -122,7 +122,7 @@ struct WaypointCell: View {
     }
     
     private var locationDetailLabel: LocalizedLabel? {
-        return detail.labels.distance(from: user.location?.ssGeoLocation)
+        return detail.labels.distance(from: user.ssGeoLocation)
     }
     
     var body: some View {
