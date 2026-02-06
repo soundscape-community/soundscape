@@ -24,6 +24,26 @@ enum DestinationManagerError: Error {
 }
 
 @MainActor
+enum DestinationManagerRuntime {
+    static var currentUserLocation: () -> CLLocation? = {
+        AppContext.shared.geolocationManager.location
+    }
+
+    static var isRouteGuidanceActive: () -> Bool = {
+        AppContext.shared.eventProcessor.activeBehavior is RouteGuidance
+    }
+
+    static var isRouteOrTourGuidanceActive: () -> Bool = {
+        AppContext.shared.eventProcessor.activeBehavior is RouteGuidance ||
+            AppContext.shared.eventProcessor.activeBehavior is GuidedTour
+    }
+
+    static var isBeaconCalloutGeneratorBlocked: () -> Bool = {
+        AppContext.shared.eventProcessor.activeBehavior.blockedAutoGenerators.contains(where: { $0 == BeaconCalloutGenerator.self })
+    }
+}
+
+@MainActor
 class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Notification Keys
@@ -239,7 +259,7 @@ class DestinationManager: DestinationManagerProtocol {
         isGeofenceEnabled = true
         isWithinGeofence = false
         
-        if let userLoc = userLocation ?? AppContext.shared.geolocationManager.location {
+        if let userLoc = userLocation ?? DestinationManagerRuntime.currentUserLocation() {
             updateBeaconClosestLocation(for: userLoc)
         }
         
@@ -405,7 +425,7 @@ class DestinationManager: DestinationManagerProtocol {
     /// - Returns: True if the audio beacon was toggled, false otherwise (e.g. no destination is set or user's location is unknown).
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool {
-        let isRouteBeacon = AppContext.shared.eventProcessor.activeBehavior is RouteGuidance
+        let isRouteBeacon = DestinationManagerRuntime.isRouteGuidanceActive()
         guard destination != nil else {
             // Return if destination does not exist
             return false
@@ -423,7 +443,7 @@ class DestinationManager: DestinationManagerProtocol {
             return disableDestinationAudio(sendNotfication)
         }
         
-        guard let userLocation = AppContext.shared.geolocationManager.location else {
+        guard let userLocation = DestinationManagerRuntime.currentUserLocation() else {
             return false
         }
         
@@ -468,7 +488,7 @@ class DestinationManager: DestinationManagerProtocol {
                               startMelody: SettingsContext.shared.playBeaconStartAndEndMelodies && !isUnmuting,
                               endMelody: SettingsContext.shared.playBeaconStartAndEndMelodies)
         
-        if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance || AppContext.shared.eventProcessor.activeBehavior is GuidedTour {
+        if DestinationManagerRuntime.isRouteOrTourGuidanceActive() {
             guard let hum = BeaconSound(ProximityBeacon.self, at: args.loc, isLocalized: false) else {
                 return false
             }
@@ -566,7 +586,7 @@ class DestinationManager: DestinationManagerProtocol {
     }
     
     private func isBeaconInBounds(with userHeading: Double) -> Bool {
-        guard let userLocation = AppContext.shared.geolocationManager.location else {
+        guard let userLocation = DestinationManagerRuntime.currentUserLocation() else {
             return false
         }
         
@@ -647,7 +667,7 @@ class DestinationManager: DestinationManagerProtocol {
         // TODO: All of this logic (callout and view update logic) should moved into
         //       the BeaconCalloutGenerator
         
-        guard !AppContext.shared.eventProcessor.activeBehavior.blockedAutoGenerators.contains(where: { $0 == BeaconCalloutGenerator.self }) else {
+        guard !DestinationManagerRuntime.isBeaconCalloutGeneratorBlocked() else {
             GDLogAutoCalloutInfo("Skipping beacon geofence update. Beacon callouts are managed by the active behavior.")
             return
         }
@@ -704,7 +724,7 @@ class DestinationManager: DestinationManagerProtocol {
     
     private func updateNowPlayingDisplay(for location: CLLocation? = nil) {
         if appDidInitialize {
-            guard !(AppContext.shared.eventProcessor.activeBehavior is RouteGuidance) else {
+            guard !DestinationManagerRuntime.isRouteGuidanceActive() else {
                 // `RouteGuidance` will set the "Now Playing" text
                 return
             }

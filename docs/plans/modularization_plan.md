@@ -76,6 +76,7 @@ Phase 1 complete:
 - 2026-02-06: Removed inline `UserLocationStore(...)` construction from SwiftUI view-builder call sites (production and previews), replacing them with `@StateObject` in view state or stored preview instances to avoid repeated body-time allocation.
 - 2026-02-06: Started Milestone 1 seam-carving in Data models by introducing injectable runtime bridges for route/reference-entity location/runtime dependencies (`RouteRuntime`, `ReferenceEntityRuntime`, `SpatialDataEntityRuntime`) and migrating route persistence/sort and spatial debug quick-look call sites away from direct inline `AppContext` reads.
 - 2026-02-06: Extended `ReferenceEntityRuntime` to cover cloud sync + destination/callout-history mutations, migrating marker add/update/remove flows to runtime bridge calls so `ReferenceEntity` operations no longer perform direct `AppContext.shared` service lookups inline.
+- 2026-02-06: Added `DestinationManagerRuntime` and migrated destination manager geolocation/active-behavior reads behind runtime hooks (`route/tour active`, `beacon-callout-blocked`, `current user location`) to continue removing direct in-method `AppContext.shared` lookups from data-layer runtime logic.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
