@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreLocation
 import Combine
 import SwiftUI
 import SSGeo
@@ -44,7 +43,7 @@ class BeaconTitleViewController: UIViewController {
     private var beaconDetailStore = BeaconDetailStore()
     private var listeners: [AnyCancellable] = []
     private var beaconDetail: BeaconDetail?
-    private var userLocation: CLLocation?
+    private var userLocation: SSGeoLocation?
     private var timer: Timer?
     
     // MARK: View Life Cycle
@@ -74,7 +73,7 @@ class BeaconTitleViewController: UIViewController {
             }
             
             // Save new value
-            self.userLocation = newValue?.clLocation
+            self.userLocation = newValue
             
             self.configureView()
         }))
@@ -196,7 +195,7 @@ class BeaconTitleViewController: UIViewController {
             
             // Configure beacon label
             let nLabel = beacon.labels.name
-            let dLabel = beacon.labels.distance(from: userLocation?.ssGeoLocation)
+            let dLabel = beacon.labels.distance(from: userLocation)
             // Appending labels
             let aLabel = nLabel.appending(dLabel, localizedSeparator: "・")
             
@@ -276,7 +275,7 @@ class BeaconTitleViewController: UIViewController {
             actions.append(contentsOf: [
                 .callout(beacon),
                 .toggleAudio(beacon),
-                .moreInformation(beacon, userLocation: self.userLocation?.ssGeoLocation)
+                .moreInformation(beacon, userLocation: self.userLocation)
             ])
         } else {
             // Save marker
@@ -300,7 +299,7 @@ class BeaconTitleViewController: UIViewController {
             actions.append(contentsOf: [
                 .callout(beacon),
                 .toggleAudio(beacon),
-                .moreInformation(beacon, userLocation: self.userLocation?.ssGeoLocation)
+                .moreInformation(beacon, userLocation: self.userLocation)
             ])
             
             // Remove beacon
