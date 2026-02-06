@@ -48,6 +48,7 @@ Phase 1 complete:
 - 2026-02-06: Updated `SSGeoMath` to default to WGS84 geodesic calculations (Vincenty with spherical fallback), added explicit spherical-approx APIs, and refactored iOS coordinate extensions to call SSGeo geodesy instead of choosing radius in app code.
 - 2026-02-06: Migrated `GDASpatialDataResultEntity` distance/bearing internals from direct `CLLocation` math to `SSGeoMath`/portable coordinates while preserving CoreLocation method signatures, and added focused iOS unit tests for fallback/line-string/bearing behavior.
 - 2026-02-06: Migrated `Data` intersection/roundabout/preview distance hot paths away from direct `CLLocation.distance(from:)` toward `SSGeoMath` or coordinate-based SSGeo-backed helpers, with new unit coverage for nearest-intersection selection.
+- 2026-02-06: Migrated `Behaviors` + `Generators` waypoint/intersection/filter/reverse-geocoder distance calls from direct `CLLocation.distance(from:)` to SSGeo-backed coordinate distance helpers, preserving existing callout thresholds and public APIs.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -174,7 +175,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Run a fresh `xcodebuild build-for-testing` and regenerate dependency analysis artifact for the branch head.
-2. Start Milestone 1 with `Data/Authored Activities` as the first seam-carving area (high coupling, clear boundaries, test coverage exists).
-3. Draft initial async repository contracts for authored activity loading/parsing.
+1. Complete remaining direct `CLLocation.distance(from:)` migrations in `Sensors`, `Data`, and selected `App` helpers where portable coordinate math can be used without API churn.
+2. Run a fresh `xcodebuild build-for-testing` and regenerate dependency analysis artifact for the branch head.
+3. Start Milestone 1 seam-carving by removing `AppContext` reads from `Data/Authored Activities` behind narrow injected protocols.
 4. Keep this document and `AGENTS.md` updated in every modularization PR with status and next action.

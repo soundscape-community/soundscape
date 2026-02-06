@@ -554,7 +554,7 @@ class GuidedTour: BehaviorBase {
             return
         }
         
-        let distance = location.distance(from: userLocation)
+        let distance = location.coordinate.distance(from: userLocation.coordinate)
         let formattedDistance = LanguageFormatter.formattedDistance(from: distance)
         
         AudioSessionManager.setNowPlayingInfo(title: content.displayName,
@@ -572,7 +572,7 @@ class GuidedTour: BehaviorBase {
         }
         
         return dataView.intersections
-            .map({ (intersection: $0, distance: $0.location.distance(from: current)) })
+            .map({ (intersection: $0, distance: $0.coordinate.distance(from: current.coordinate)) })
             .sorted(by: { $0.distance < $1.distance })
             .first(where: { $0.intersection.isMainIntersection(context: AppContext.secondaryRoadsContext) })?
             .intersection.key

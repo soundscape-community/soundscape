@@ -136,8 +136,8 @@ class BeaconUpdateFilter {
         
         let beaconDistanceRange = updateRange(for: .beacon, location: location)
         let updateDistanceRange = updateRange(for: .update, location: location)
-        let distanceToBeacon = location.distance(from: beaconLocation)
-        let distanceFromLastUpdate = location.distance(from: lastUpdate.location)
+        let distanceToBeacon = location.coordinate.distance(from: beaconLocation.coordinate)
+        let distanceFromLastUpdate = location.coordinate.distance(from: lastUpdate.location.coordinate)
         
         if distanceToBeacon >= beaconDistanceRange.upperBound {
             GDLogVerbose(.routeGuidance, "Checking should update... Distance to beacon greater than far range (\(beaconDistanceRange.upperBound.roundToDecimalPlaces(1))m), Distance from last update \(distanceFromLastUpdate.roundToDecimalPlaces(1))m")
@@ -202,7 +202,7 @@ class BeaconUpdateFilter {
         // If an update has been completed and the distance to the beacon is below the beacon distance
         // range, then the user has arrived, so we should clear the beacon location in order to stop
         // allowing updates
-        let distance = updateLocation.distance(from: beacon)
+        let distance = updateLocation.coordinate.distance(from: beacon.coordinate)
         let beaconDistanceRange = updateRange(for: .beacon, location: updateLocation)
         if distance < beaconDistanceRange.lowerBound {
             beaconLocation = nil
@@ -215,7 +215,7 @@ class BeaconUpdateFilter {
             return
         }
         
-        lastUpdate = FilterUpdateSnapshot(updateLocation, elapsed: Date().timeIntervalSince(previous.time), distance: previous.location.distance(from: updateLocation))
+        lastUpdate = FilterUpdateSnapshot(updateLocation, elapsed: Date().timeIntervalSince(previous.time), distance: previous.location.coordinate.distance(from: updateLocation.coordinate))
     }
     
     /// Resets the filter (ensuring that the next call to `shouldUpdate(location:)` will return true

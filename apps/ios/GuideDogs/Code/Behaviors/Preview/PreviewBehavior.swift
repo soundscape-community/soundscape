@@ -379,7 +379,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         let beaconContext: (location: CLLocation, distance: CLLocationDistance, arrived: Bool)?
         if let key = beaconKey, let beacon = SpatialDataCache.referenceEntityByKey(key) {
             let location = beacon.closestLocation(from: to.node.location)
-            let distance = to.node.location.distance(from: location)
+            let distance = to.node.location.coordinate.distance(from: location.coordinate)
             beaconContext = (location, distance, distance < 15.0)
         } else {
             beaconContext = nil

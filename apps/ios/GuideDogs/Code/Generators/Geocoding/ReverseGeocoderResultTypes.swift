@@ -124,7 +124,7 @@ struct GenericGeocoderResult: ReverseGeocoderResult {
         
         return LocationCalloutComponents(name: road.localizedName,
                                          location: roadLocation,
-                                         distance: location.distance(from: roadLocation),
+                                         distance: location.coordinate.distance(from: roadLocation.coordinate),
                                          encodedDirection: encoded,
                                          bearing: location.bearing(to: roadLocation))
     }
@@ -322,7 +322,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
         
         return LocationCalloutComponents(name: road.localizedName,
                                          location: roadLocation,
-                                         distance: location.distance(from: roadLocation),
+                                         distance: location.coordinate.distance(from: roadLocation.coordinate),
                                          encodedDirection: encoded,
                                          bearing: location.bearing(to: roadLocation))
     }
@@ -348,7 +348,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
         
         return LocationCalloutComponents(name: localizedName,
                                          location: intersection.location,
-                                         distance: location.distance(from: intersection.location),
+                                         distance: location.coordinate.distance(from: intersection.location.coordinate),
                                          encodedDirection: encoded,
                                          bearing: location.bearing(to: intersection.location))
     }

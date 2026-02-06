@@ -50,7 +50,7 @@ struct PreviewGenerator<DecisionPoint: RootedPreviewGraph>: ManualGenerator {
             ]
             callouts.append(contentsOf: event.node.makeInitialCallouts(resumed: false))
 
-            let distance = event.node.node.location.distance(from: event.from.location)
+            let distance = event.node.node.location.coordinate.distance(from: event.from.location.coordinate)
             if distance > 1.0, !event.from.displayName.isGeocoordinate() {
                 let formattedName = LanguageFormatter.string(from: distance, accuracy: 0.0, name: event.from.displayName)
                 callouts.append(StringCallout(.preview, formattedName, position: event.node.node.location.bearing(to: event.from.location)))

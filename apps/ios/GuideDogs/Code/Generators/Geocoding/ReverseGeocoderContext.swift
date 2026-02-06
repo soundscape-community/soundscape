@@ -194,7 +194,7 @@ class ReverseGeocoderContext: ReverseGeocoder {
         }
         
         // Sticky road logic should only apply when near an intersection
-        guard closestIntersection.location.distance(from: location) < ReverseGeocoderContext.nearIntersectionDistance else {
+        guard closestIntersection.coordinate.distance(from: location.coordinate) < ReverseGeocoderContext.nearIntersectionDistance else {
             return false
         }
         

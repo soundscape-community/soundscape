@@ -49,7 +49,7 @@ class TourWaypointDepartureCallout: CalloutProtocol {
         
         let beaconOn: String
         if let location = location {
-            let distance = location.distance(from: waypoint.location)
+            let distance = location.coordinate.distance(from: waypoint.location.coordinate)
             let formattedDistance = LanguageFormatter.string(from: distance, rounded: true)
             
             beaconOn = GDLocalizedString("behavior.scavenger_hunt.callout.next_flag",
@@ -78,7 +78,7 @@ class TourWaypointDepartureCallout: CalloutProtocol {
             return nil
         }
         
-        let distance = location.distance(from: waypoint.location)
+        let distance = location.coordinate.distance(from: waypoint.location.coordinate)
         
         if tts {
             return LanguageFormatter.spellOutDistance(distance)

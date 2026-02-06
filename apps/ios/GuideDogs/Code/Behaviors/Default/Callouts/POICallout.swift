@@ -125,7 +125,7 @@ struct POICallout: POICalloutProtocol {
         
         if let marker = marker {
             soundLocation = marker.closestLocation(from: location)
-            distance = soundLocation.distance(from: location)
+            distance = soundLocation.coordinate.distance(from: location.coordinate)
             category = SuperCategory(rawValue: marker.getPOI().superCategory) ?? .undefined
             
             if marker.name.isEmpty {
@@ -142,7 +142,7 @@ struct POICallout: POICalloutProtocol {
             }
         } else {
             soundLocation = poi.closestLocation(from: location)
-            distance = soundLocation.distance(from: location)
+            distance = soundLocation.coordinate.distance(from: location.coordinate)
             
             if poi.localizedName.isEmpty {
                 // Use a default name

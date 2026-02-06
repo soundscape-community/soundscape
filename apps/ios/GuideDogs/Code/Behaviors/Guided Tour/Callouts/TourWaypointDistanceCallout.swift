@@ -47,7 +47,7 @@ class TourWaypointDistanceCallout: CalloutProtocol {
             return Sounds.empty
         }
         
-        let distance = location.distance(from: waypoint.location)
+        let distance = location.coordinate.distance(from: waypoint.location.coordinate)
         
         let glyph = GlyphSound(.poiSense, at: waypoint.location)
         let distanceString = LanguageFormatter.formattedDistance(from: distance)
@@ -64,7 +64,7 @@ class TourWaypointDistanceCallout: CalloutProtocol {
             return nil
         }
         
-        let distance = location.distance(from: waypoint.location)
+        let distance = location.coordinate.distance(from: waypoint.location.coordinate)
 
         if tts {
             return LanguageFormatter.spellOutDistance(distance )

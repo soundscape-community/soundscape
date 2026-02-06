@@ -89,7 +89,7 @@ class TourWaypointArrivalCallout: CalloutProtocol {
             return nil
         }
         
-        let distance = location.distance(from: waypoint.location)
+        let distance = location.coordinate.distance(from: waypoint.location.coordinate)
         
         if tts {
             return LanguageFormatter.spellOutDistance(distance)

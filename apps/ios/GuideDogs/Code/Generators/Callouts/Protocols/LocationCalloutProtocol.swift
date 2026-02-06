@@ -25,7 +25,7 @@ extension LocationCalloutProtocol {
             return nil
         }
         
-        let distance = location.distance(from: generatedAt)
+        let distance = location.coordinate.distance(from: generatedAt.coordinate)
         
         if tts {
             return LanguageFormatter.spellOutDistance(distance)

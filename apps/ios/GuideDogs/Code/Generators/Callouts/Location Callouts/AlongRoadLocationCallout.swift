@@ -164,7 +164,7 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
             
             if useAutomotive,
                 let location = location,
-                location.distance(from: intersection.location) < AlongRoadLocationCallout.thresholdForIntersectionDistanceCallout {
+                location.coordinate.distance(from: intersection.location.coordinate) < AlongRoadLocationCallout.thresholdForIntersectionDistanceCallout {
                 distanceString = nil
             } else {
                 distanceString = intComponents.formattedDistance

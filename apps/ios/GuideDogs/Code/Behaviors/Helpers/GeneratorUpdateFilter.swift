@@ -125,7 +125,7 @@ class GeneratorUpdateFilter {
         
         // If the user has moved at least (updateDistanceInterval) meters, and at least (updateTimeInterval) seconds
         // have passed, then we should update
-        let distCheck = location.distance(from: lastUpdate.location) > minDistance * multiplier
+        let distCheck = location.coordinate.distance(from: lastUpdate.location.coordinate) > minDistance * multiplier
         let timeCheck = lastUpdate.time + minTime < Date()
         
         return distCheck && timeCheck
@@ -179,7 +179,7 @@ class GeneratorUpdateFilter {
             return
         }
         
-        lastUpdate = FilterUpdateSnapshot(updateLocation, elapsed: Date().timeIntervalSince(previous.time), distance: previous.location.distance(from: updateLocation))
+        lastUpdate = FilterUpdateSnapshot(updateLocation, elapsed: Date().timeIntervalSince(previous.time), distance: previous.location.coordinate.distance(from: updateLocation.coordinate))
     }
     
     /// Resets the filter (ensuring that the next call to `shouldUpdate(location:)` will return true

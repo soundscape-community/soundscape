@@ -244,7 +244,7 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
             return false
         }
         
-        let distance = locationEvent.location.distance(from: current.waypoint.location)
+        let distance = locationEvent.location.coordinate.distance(from: current.waypoint.location.coordinate)
         
         // When the user gets within 40 meters of the waypoint, block other callouts to prevent
         // the route guidance callouts from being poorly timed.

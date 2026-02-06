@@ -65,7 +65,7 @@ struct IntersectionCallout: CalloutProtocol {
             
             // If this is a repeat and the user isn't next to the intersection anymore, switch to using the
             // intersection's name instead of the road directions.
-            if location.distance(from: intersection.location) > IntersectionGenerator.arrivalDistance {
+            if location.coordinate.distance(from: intersection.coordinate) > IntersectionGenerator.arrivalDistance {
                 if isRoundabout, let roundabout = intersection.roundabout, !roundabout.isLarge {
                     // "Pike roundabout" ("Pike" is the roundabout name)
                     sounds.append(contentsOf: IntersectionCallout.roundaboutSounds(roundabout: roundabout,
@@ -99,7 +99,7 @@ struct IntersectionCallout: CalloutProtocol {
             return nil
         }
         
-        let distance = location.distance(from: intersection.location)
+        let distance = location.coordinate.distance(from: intersection.coordinate)
         
         if tts {
             return LanguageFormatter.spellOutDistance(distance)

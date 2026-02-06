@@ -252,7 +252,7 @@ class TourGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSub
             return false
         }
         
-        let distance = locationEvent.location.distance(from: current.waypoint.location)
+        let distance = locationEvent.location.coordinate.distance(from: current.waypoint.location.coordinate)
         
         // When the user gets within 40 meters of the waypoint, block other callouts to prevent
         // the route guidance callouts from being poorly timed.
@@ -321,7 +321,7 @@ class TourGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSub
             return false
         }
         
-        let distance = locationEvent.location.distance(from: previous)
+        let distance = locationEvent.location.coordinate.distance(from: previous.coordinate)
                 
         guard distance > departureDistance else {
             return false
