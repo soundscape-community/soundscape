@@ -48,7 +48,7 @@ class GuidedTourWaypointAudioStore: ObservableObject {
     }
     
     private func updateState() {
-        guard let tour = VisualRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour() else {
+        guard let tour = UIRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour() else {
             state = nil
             return
         }

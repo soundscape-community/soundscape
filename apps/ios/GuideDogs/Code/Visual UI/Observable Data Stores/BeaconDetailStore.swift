@@ -23,9 +23,9 @@ class BeaconDetailStore: ObservableObject {
     // MARK: Initialization
     
     convenience init() {
-        let manager = VisualRuntimeProviderRegistry.providers.beaconStoreDestinationManager()
+        let manager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager()
         
-        if let behavior = VisualRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance(),
+        if let behavior = UIRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance(),
            let manager {
             let beacon = BeaconDetail(from: behavior, isAudioEnabled: manager.isAudioEnabled)
             
@@ -128,7 +128,7 @@ class BeaconDetailStore: ObservableObject {
                 return
             }
             
-            guard let behavior = VisualRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance() else {
+            guard let behavior = UIRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance() else {
                 return
             }
             

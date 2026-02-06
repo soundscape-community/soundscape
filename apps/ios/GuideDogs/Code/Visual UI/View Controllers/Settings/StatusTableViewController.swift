@@ -40,7 +40,7 @@ class StatusTableViewController: BaseTableViewController {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onLocationUpdated(notification:)),
                                                name: Notification.Name.locationUpdated,
-                                               object: VisualRuntimeProviderRegistry.providers.visualSpatialDataContext())
+                                               object: UIRuntimeProviderRegistry.providers.uiSpatialDataContext())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,7 +53,7 @@ class StatusTableViewController: BaseTableViewController {
         super.viewWillDisappear(animated)
         
         NotificationCenter.default.removeObserver(self, name: Notification.Name.spatialDataStateChanged, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.locationUpdated, object: VisualRuntimeProviderRegistry.providers.visualSpatialDataContext())
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.locationUpdated, object: UIRuntimeProviderRegistry.providers.uiSpatialDataContext())
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -118,7 +118,7 @@ class StatusTableViewController: BaseTableViewController {
         case Section.gps:
             let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.gps, for: indexPath)
             
-            guard let accuracy = VisualRuntimeProviderRegistry.providers.visualCurrentUserLocation()?.horizontalAccuracy else {
+            guard let accuracy = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()?.horizontalAccuracy else {
                 return cell
             }
             
@@ -226,12 +226,12 @@ extension StatusTableViewController {
     
     @objc func crosscheckTouchUpInside() {
         GDLogAppInfo("Play crosscheck audio")
-        VisualRuntimeProviderRegistry.providers.visualProcessEvent(CheckAudioEvent())
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(CheckAudioEvent())
     }
     
     @objc func clearCacheTouchUpInside() {
         // Only allow the cache to be deleted if we have a network connection to reload the cache
-        guard !VisualRuntimeProviderRegistry.providers.visualIsOffline() else {
+        guard !UIRuntimeProviderRegistry.providers.uiIsOffline() else {
             let alert = UIAlertController(title: GDLocalizedString("general.error.network_connection_required"),
                                           message: GDLocalizedString("general.error.network_connection_required.deleting_data"),
                                           preferredStyle: UIAlertController.Style.alert)
@@ -249,7 +249,7 @@ extension StatusTableViewController {
         
         alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive, handler: { _ in
-            VisualRuntimeProviderRegistry.providers.visualHushEventProcessor(playSound: false)
+            UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
             
             if SettingsContext.shared.automaticCalloutsEnabled {
                 self.reenableCalloutsAfterReload = true
@@ -258,7 +258,7 @@ extension StatusTableViewController {
             self.performSegue(withIdentifier: Segue.showLoadingModal, sender: self)
             
             // Check that tiles can be downloaded before we attempt to delete the cache
-            VisualRuntimeProviderRegistry.providers.visualCheckSpatialServiceConnection { [weak self] (success) in
+            UIRuntimeProviderRegistry.providers.uiCheckSpatialServiceConnection { [weak self] (success) in
                 guard success else {
                     self?.displayUnableToClearCacheWarning()
                     return
@@ -274,7 +274,7 @@ extension StatusTableViewController {
     
     @objc func deleteUserDataTouchUpInside() {
         // Only allow the cache to be deleted if we have a network connection to reload the cache
-        guard !VisualRuntimeProviderRegistry.providers.visualIsOffline() else {
+        guard !UIRuntimeProviderRegistry.providers.uiIsOffline() else {
             let alert = UIAlertController(title: GDLocalizedString("general.error.network_connection_required"),
                                           message: GDLocalizedString("general.error.network_connection_required.deleting_data"),
                                           preferredStyle: UIAlertController.Style.alert)
@@ -297,7 +297,7 @@ extension StatusTableViewController {
         }))
         
         alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive, handler: { _ in
-            VisualRuntimeProviderRegistry.providers.visualHushEventProcessor(playSound: false)
+            UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
             
             if SettingsContext.shared.automaticCalloutsEnabled {
                 self.reenableCalloutsAfterReload = true
@@ -306,7 +306,7 @@ extension StatusTableViewController {
             self.performSegue(withIdentifier: Segue.showLoadingModal, sender: self)
             
             // Check that tiles can be downloaded before we attempt to delete the cache
-            VisualRuntimeProviderRegistry.providers.visualCheckSpatialServiceConnection { [weak self] (success) in
+            UIRuntimeProviderRegistry.providers.uiCheckSpatialServiceConnection { [weak self] (success) in
                 guard success else {
                     self?.displayUnableToClearCacheWarning()
                     return
@@ -348,7 +348,7 @@ extension StatusTableViewController {
             }
         }
         
-        let success = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext()?.clearCache() ?? false
+        let success = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.clearCache() ?? false
         
         GDATelemetry.track("settings.clear_cache", with: ["keep_user_data": String(!deletePORs)])
         

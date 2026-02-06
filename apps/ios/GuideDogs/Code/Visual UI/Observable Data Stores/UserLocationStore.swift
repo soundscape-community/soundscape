@@ -13,7 +13,7 @@ import SSGeo
 @MainActor
 enum UserLocationStoreRuntime {
     static func initialUserLocation() -> SSGeoLocation? {
-        VisualRuntimeProviderRegistry.providers.userLocationStoreInitialUserLocation()
+        UIRuntimeProviderRegistry.providers.userLocationStoreInitialUserLocation()
     }
 }
 

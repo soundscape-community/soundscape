@@ -407,34 +407,34 @@ protocol AudioFileStoreRuntimeProviding {
 }
 
 @MainActor
-protocol VisualBehaviorRuntimeProviding {
-    func visualIsCustomBehaviorActive() -> Bool
-    func visualActivateCustomBehavior(_ behavior: Behavior)
-    func visualDeactivateCustomBehavior()
-    func visualProcessEvent(_ event: Event)
-    func visualCurrentUserLocation() -> CLLocation?
-    func visualIsOffline() -> Bool
-    func visualHushEventProcessor(playSound: Bool)
-    func visualCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void)
-    func visualSpatialDataContext() -> SpatialDataProtocol?
-    func visualMotionActivityContext() -> MotionActivityProtocol?
+protocol UIRuntimeProviding {
+    func uiIsCustomBehaviorActive() -> Bool
+    func uiActivateCustomBehavior(_ behavior: Behavior)
+    func uiDeactivateCustomBehavior()
+    func uiProcessEvent(_ event: Event)
+    func uiCurrentUserLocation() -> CLLocation?
+    func uiIsOffline() -> Bool
+    func uiHushEventProcessor(playSound: Bool)
+    func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void)
+    func uiSpatialDataContext() -> SpatialDataProtocol?
+    func uiMotionActivityContext() -> MotionActivityProtocol?
 }
 
 @MainActor
-protocol VisualRuntimeProviders: UserLocationStoreRuntimeProviding,
+protocol UIRuntimeProviders: UserLocationStoreRuntimeProviding,
                                  BeaconDetailRuntimeProviding,
                                  BeaconStoreRuntimeProviding,
                                  RouteGuidanceStateStoreRuntimeProviding,
                                  GuidedTourStateStoreRuntimeProviding,
                                  AudioFileStoreRuntimeProviding,
-                                 VisualBehaviorRuntimeProviding {}
+                                 UIRuntimeProviding {}
 
 @MainActor
-enum VisualRuntimeProviderRegistry {
-    private static let unconfiguredProviders = UnconfiguredVisualRuntimeProviders()
-    private(set) static var providers: VisualRuntimeProviders = unconfiguredProviders
+enum UIRuntimeProviderRegistry {
+    private static let unconfiguredProviders = UnconfiguredUIRuntimeProviders()
+    private(set) static var providers: UIRuntimeProviders = unconfiguredProviders
 
-    static func configure(with providers: VisualRuntimeProviders) {
+    static func configure(with providers: UIRuntimeProviders) {
         self.providers = providers
     }
 
@@ -444,7 +444,7 @@ enum VisualRuntimeProviderRegistry {
 }
 
 @MainActor
-private final class UnconfiguredVisualRuntimeProviders: VisualRuntimeProviders {
+private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
     private static var isRunningUnitTests: Bool {
         ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
@@ -452,7 +452,7 @@ private final class UnconfiguredVisualRuntimeProviders: VisualRuntimeProviders {
     private func debugAssertUnconfigured(_ method: StaticString) {
 #if DEBUG
         if !Self.isRunningUnitTests {
-            assertionFailure("VisualRuntimeProviderRegistry is unconfigured when calling \(method)")
+            assertionFailure("UIRuntimeProviderRegistry is unconfigured when calling \(method)")
         }
 #endif
     }
@@ -496,55 +496,55 @@ private final class UnconfiguredVisualRuntimeProviders: VisualRuntimeProviders {
         debugAssertUnconfigured(#function)
     }
 
-    func visualIsCustomBehaviorActive() -> Bool {
+    func uiIsCustomBehaviorActive() -> Bool {
         debugAssertUnconfigured(#function)
         return false
     }
 
-    func visualActivateCustomBehavior(_ behavior: Behavior) {
+    func uiActivateCustomBehavior(_ behavior: Behavior) {
         debugAssertUnconfigured(#function)
     }
 
-    func visualDeactivateCustomBehavior() {
+    func uiDeactivateCustomBehavior() {
         debugAssertUnconfigured(#function)
     }
 
-    func visualProcessEvent(_ event: Event) {
+    func uiProcessEvent(_ event: Event) {
         debugAssertUnconfigured(#function)
     }
 
-    func visualCurrentUserLocation() -> CLLocation? {
+    func uiCurrentUserLocation() -> CLLocation? {
         debugAssertUnconfigured(#function)
         return nil
     }
 
-    func visualIsOffline() -> Bool {
+    func uiIsOffline() -> Bool {
         debugAssertUnconfigured(#function)
         return true
     }
 
-    func visualHushEventProcessor(playSound: Bool) {
+    func uiHushEventProcessor(playSound: Bool) {
         debugAssertUnconfigured(#function)
     }
 
-    func visualCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
+    func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
         debugAssertUnconfigured(#function)
         completion(false)
     }
 
-    func visualSpatialDataContext() -> SpatialDataProtocol? {
+    func uiSpatialDataContext() -> SpatialDataProtocol? {
         debugAssertUnconfigured(#function)
         return nil
     }
 
-    func visualMotionActivityContext() -> MotionActivityProtocol? {
+    func uiMotionActivityContext() -> MotionActivityProtocol? {
         debugAssertUnconfigured(#function)
         return nil
     }
 }
 
 @MainActor
-final class AppContextVisualRuntimeProviders: VisualRuntimeProviders {
+final class AppContextUIRuntimeProviders: UIRuntimeProviders {
     private unowned let context: AppContext
 
     init(context: AppContext) {
@@ -583,43 +583,43 @@ final class AppContextVisualRuntimeProviders: VisualRuntimeProviders {
         context.audioEngine.stop(id)
     }
 
-    func visualIsCustomBehaviorActive() -> Bool {
+    func uiIsCustomBehaviorActive() -> Bool {
         context.eventProcessor.isCustomBehaviorActive
     }
 
-    func visualActivateCustomBehavior(_ behavior: Behavior) {
+    func uiActivateCustomBehavior(_ behavior: Behavior) {
         context.eventProcessor.activateCustom(behavior: behavior)
     }
 
-    func visualDeactivateCustomBehavior() {
+    func uiDeactivateCustomBehavior() {
         context.eventProcessor.deactivateCustom()
     }
 
-    func visualProcessEvent(_ event: Event) {
+    func uiProcessEvent(_ event: Event) {
         context.eventProcessor.process(event)
     }
 
-    func visualCurrentUserLocation() -> CLLocation? {
+    func uiCurrentUserLocation() -> CLLocation? {
         context.geolocationManager.location
     }
 
-    func visualIsOffline() -> Bool {
+    func uiIsOffline() -> Bool {
         context.offlineContext.state == .offline
     }
 
-    func visualHushEventProcessor(playSound: Bool) {
+    func uiHushEventProcessor(playSound: Bool) {
         context.eventProcessor.hush(playSound: playSound)
     }
 
-    func visualCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
+    func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
         context.spatialDataContext.checkServiceConnection(completionHandler: completion)
     }
 
-    func visualSpatialDataContext() -> SpatialDataProtocol? {
+    func uiSpatialDataContext() -> SpatialDataProtocol? {
         context.spatialDataContext
     }
 
-    func visualMotionActivityContext() -> MotionActivityProtocol? {
+    func uiMotionActivityContext() -> MotionActivityProtocol? {
         context.motionActivityContext
     }
 }
@@ -977,7 +977,7 @@ class AppContext {
         cloudKeyValueStore = CloudKeyValueStore()
 
         DataRuntimeProviderRegistry.configure(with: AppContextDataRuntimeProviders(context: self))
-        VisualRuntimeProviderRegistry.configure(with: AppContextVisualRuntimeProviders(context: self))
+        UIRuntimeProviderRegistry.configure(with: AppContextUIRuntimeProviders(context: self))
         BehaviorRuntimeProviderRegistry.configure(with: AppContextBehaviorRuntimeProviders(context: self))
     }
     

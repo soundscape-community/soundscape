@@ -1,5 +1,5 @@
 //
-//  VisualRuntimeProviderDispatchTests.swift
+//  UIRuntimeProviderDispatchTests.swift
 //  UnitTests
 //
 //  Copyright (c) Microsoft Corporation.
@@ -12,12 +12,12 @@ import SSGeo
 @testable import Soundscape
 
 @MainActor
-final class VisualRuntimeProviderDispatchTests: XCTestCase {
+final class UIRuntimeProviderDispatchTests: XCTestCase {
     private func location(latitude: Double, longitude: Double) -> SSGeoLocation {
         SSGeoLocation(coordinate: SSGeoCoordinate(latitude: latitude, longitude: longitude))
     }
 
-    private final class MockVisualRuntimeProviders: VisualRuntimeProviders {
+    private final class MockUIRuntimeProviders: UIRuntimeProviders {
         var initialLocation: SSGeoLocation?
         var geofenceResult = false
         var receivedGeofenceInputs: [SSGeoLocation] = []
@@ -75,68 +75,68 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
             stoppedAudioIDs.append(id)
         }
 
-        func visualIsCustomBehaviorActive() -> Bool {
+        func uiIsCustomBehaviorActive() -> Bool {
             customBehaviorActive
         }
 
-        func visualActivateCustomBehavior(_ behavior: Behavior) {
+        func uiActivateCustomBehavior(_ behavior: Behavior) {
             activateCustomBehaviorCount += 1
         }
 
-        func visualDeactivateCustomBehavior() {
+        func uiDeactivateCustomBehavior() {
             deactivateCustomBehaviorCount += 1
         }
 
-        func visualProcessEvent(_ event: Event) {
+        func uiProcessEvent(_ event: Event) {
             processedEventNames.append(event.name)
         }
 
-        func visualCurrentUserLocation() -> CLLocation? {
+        func uiCurrentUserLocation() -> CLLocation? {
             currentUserLocation
         }
 
-        func visualIsOffline() -> Bool {
+        func uiIsOffline() -> Bool {
             isOffline
         }
 
-        func visualHushEventProcessor(playSound: Bool) {
+        func uiHushEventProcessor(playSound: Bool) {
             hushRequests.append(playSound)
         }
 
-        func visualCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
+        func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
             checkServiceConnectionCallCount += 1
             completion(checkServiceConnectionResult)
         }
 
-        func visualSpatialDataContext() -> SpatialDataProtocol? {
+        func uiSpatialDataContext() -> SpatialDataProtocol? {
             spatialDataLookupCount += 1
             return nil
         }
 
-        func visualMotionActivityContext() -> MotionActivityProtocol? {
+        func uiMotionActivityContext() -> MotionActivityProtocol? {
             motionActivityLookupCount += 1
             return nil
         }
     }
 
     override func tearDown() {
-        VisualRuntimeProviderRegistry.resetForTesting()
+        UIRuntimeProviderRegistry.resetForTesting()
         super.tearDown()
     }
 
     func testUserLocationStoreRuntimeDispatchesToConfiguredProvider() {
-        let provider = MockVisualRuntimeProviders()
+        let provider = MockUIRuntimeProviders()
         let expected = location(latitude: 47.6205, longitude: -122.3493)
         provider.initialLocation = expected
-        VisualRuntimeProviderRegistry.configure(with: provider)
+        UIRuntimeProviderRegistry.configure(with: provider)
 
         XCTAssertEqual(UserLocationStoreRuntime.initialUserLocation(), expected)
     }
 
     func testBeaconDetailRuntimeDispatchesToConfiguredProvider() {
-        let provider = MockVisualRuntimeProviders()
+        let provider = MockUIRuntimeProviders()
         provider.geofenceResult = true
-        VisualRuntimeProviderRegistry.configure(with: provider)
+        UIRuntimeProviderRegistry.configure(with: provider)
 
         let userLocation = location(latitude: 47.6205, longitude: -122.3493)
         XCTAssertTrue(BeaconDetailRuntime.isUserWithinDestinationGeofence(userLocation))
@@ -144,51 +144,51 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
     }
 
     func testProviderResetClearsInjectedProvider() {
-        let provider = MockVisualRuntimeProviders()
+        let provider = MockUIRuntimeProviders()
         provider.initialLocation = location(latitude: 47.61, longitude: -122.33)
         provider.geofenceResult = true
-        VisualRuntimeProviderRegistry.configure(with: provider)
+        UIRuntimeProviderRegistry.configure(with: provider)
 
         XCTAssertNotNil(UserLocationStoreRuntime.initialUserLocation())
         XCTAssertTrue(BeaconDetailRuntime.isUserWithinDestinationGeofence(location(latitude: 47.62, longitude: -122.34)))
 
-        VisualRuntimeProviderRegistry.resetForTesting()
+        UIRuntimeProviderRegistry.resetForTesting()
 
         XCTAssertNil(UserLocationStoreRuntime.initialUserLocation())
         XCTAssertFalse(BeaconDetailRuntime.isUserWithinDestinationGeofence(location(latitude: 47.62, longitude: -122.34)))
     }
 
-    func testAdditionalVisualRuntimeHooksDispatchToConfiguredProvider() {
-        let provider = MockVisualRuntimeProviders()
+    func testAdditionalUIRuntimeHooksDispatchToConfiguredProvider() {
+        let provider = MockUIRuntimeProviders()
         let expectedPlayerID = UUID()
         provider.playAudioResult = expectedPlayerID
         provider.currentUserLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
         provider.isOffline = true
         provider.checkServiceConnectionResult = true
-        VisualRuntimeProviderRegistry.configure(with: provider)
+        UIRuntimeProviderRegistry.configure(with: provider)
 
-        _ = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance()
-        _ = VisualRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour()
-        _ = VisualRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance()
-        _ = VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive()
-        VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(MockBehavior())
-        VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
-        VisualRuntimeProviderRegistry.providers.visualProcessEvent(BehaviorActivatedEvent())
-        _ = VisualRuntimeProviderRegistry.providers.visualCurrentUserLocation()
-        _ = VisualRuntimeProviderRegistry.providers.visualIsOffline()
-        VisualRuntimeProviderRegistry.providers.visualHushEventProcessor(playSound: false)
-        _ = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext()
-        _ = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext()
+        _ = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance()
+        _ = UIRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour()
+        _ = UIRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance()
+        _ = UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive()
+        UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(MockBehavior())
+        UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(BehaviorActivatedEvent())
+        _ = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
+        _ = UIRuntimeProviderRegistry.providers.uiIsOffline()
+        UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
+        _ = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()
+        _ = UIRuntimeProviderRegistry.providers.uiMotionActivityContext()
         let serviceCheckExpectation = expectation(description: "service check completion")
-        VisualRuntimeProviderRegistry.providers.visualCheckSpatialServiceConnection { success in
+        UIRuntimeProviderRegistry.providers.uiCheckSpatialServiceConnection { success in
             XCTAssertTrue(success)
             serviceCheckExpectation.fulfill()
         }
 
         let url = URL(fileURLWithPath: "/tmp/test-audio.mp3")
-        let playerID = VisualRuntimeProviderRegistry.providers.audioFileStorePlay(url)
+        let playerID = UIRuntimeProviderRegistry.providers.audioFileStorePlay(url)
         if let playerID {
-            VisualRuntimeProviderRegistry.providers.audioFileStoreStop(playerID)
+            UIRuntimeProviderRegistry.providers.audioFileStoreStop(playerID)
         }
 
         XCTAssertEqual(provider.routeGuidanceLookupCount, 2)

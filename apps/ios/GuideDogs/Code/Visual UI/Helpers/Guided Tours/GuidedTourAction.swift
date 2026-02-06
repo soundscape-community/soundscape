@@ -59,7 +59,7 @@ enum GuidedTourAction: String, Action {
     case checkForUpdates
     
     static func actions(for detail: TourDetail) -> [GuidedTourActionState] {
-        let isDefaultBehaviorActive = !VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive()
+        let isDefaultBehaviorActive = !UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive()
         
         if detail.isGuidanceActive {
             return [GuidedTourActionState(.stopTour)]

@@ -67,7 +67,7 @@ struct BeaconActionHandler {
             return
         }
         
-        VisualRuntimeProviderRegistry.providers.visualProcessEvent(BeaconCalloutEvent(beaconId: key, logContext: "home_screen"))
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(BeaconCalloutEvent(beaconId: key, logContext: "home_screen"))
         GDATelemetry.track("beacon.callout")
     }
     
@@ -77,7 +77,7 @@ struct BeaconActionHandler {
     /// toggles the audio for the current audio beacon
     ///
     static func toggleAudio() {
-        guard let destinationManager = VisualRuntimeProviderRegistry.providers.beaconStoreDestinationManager() else {
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager() else {
             return
         }
 
@@ -120,9 +120,9 @@ struct BeaconActionHandler {
                 return
             }
             
-            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
+            UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         } else {
-            guard let destinationManager = VisualRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
+            guard let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
                   destinationManager.destinationKey == detail.locationDetail.beaconId else {
                 // There is no beacon to clear
                 return

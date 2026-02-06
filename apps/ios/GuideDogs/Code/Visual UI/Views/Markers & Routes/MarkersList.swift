@@ -28,7 +28,7 @@ struct MarkersList: View {
     }
     
     private var routeIsActive: Bool {
-        VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() != nil
+        UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() != nil
     }
     
     init(sort style: Binding<SortStyle>) {

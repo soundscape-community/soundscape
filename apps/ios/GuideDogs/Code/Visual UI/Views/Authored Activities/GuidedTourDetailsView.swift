@@ -105,8 +105,8 @@ struct GuidedTourDetailsView: View {
 
 extension GuidedTourDetailsView {
     private func makeGuidedTour(_ detail: TourDetail) -> GuidedTour? {
-        guard let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
-              let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() else {
+        guard let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+              let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() else {
             return nil
         }
 
@@ -131,8 +131,8 @@ extension GuidedTourDetailsView {
     }
     
     private func startTour(_ tour: GuidedTour) {
-        if VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() {
-            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
+        if UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive() {
+            UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         }
         
         // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
@@ -140,16 +140,16 @@ extension GuidedTourDetailsView {
             home.shouldFocusOnBeacon = true
         }
         
-        VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(tour)
+        UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(tour)
         navHelper.popToRootViewController(animated: true)
     }
     
     private func stopTour() {
-        guard VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() else {
+        guard UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive() else {
             return
         }
         
-        VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
+        UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
     }
     
     private func checkForUpdates(checkForUpdates: Bool = false) {

@@ -29,7 +29,7 @@ struct TourWaypointDetail {
         
         // If guidance is active for this route, then the route will be
         // the active behavior
-        guard let behavior = VisualRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour() else {
+        guard let behavior = UIRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour() else {
             return false
         }
         

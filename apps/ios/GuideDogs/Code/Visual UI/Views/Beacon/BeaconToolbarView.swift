@@ -27,7 +27,7 @@ struct BeaconToolbarView: View {
     init(beacon: BeaconDetail) {
         self.beacon = beacon
         
-        guard let routeGuidance = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
+        guard let routeGuidance = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
             _prevDisabled = State(initialValue: true)
             _nextDisabled = State(initialValue: true)
             return
@@ -193,7 +193,7 @@ struct BeaconToolbarView: View {
     }
     
     private func updateBtnState() {
-        guard let routeGuidance = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
+        guard let routeGuidance = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
             return
         }
         

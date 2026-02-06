@@ -12,7 +12,7 @@ import SSGeo
 @MainActor
 enum BeaconDetailRuntime {
     static func isUserWithinDestinationGeofence(_ userLocation: SSGeoLocation) -> Bool {
-        VisualRuntimeProviderRegistry.providers.beaconDetailIsUserWithinDestinationGeofence(userLocation)
+        UIRuntimeProviderRegistry.providers.beaconDetailIsUserWithinDestinationGeofence(userLocation)
     }
 }
 

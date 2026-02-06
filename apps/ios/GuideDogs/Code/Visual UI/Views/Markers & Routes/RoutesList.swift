@@ -35,7 +35,7 @@ struct RoutesList: View {
     init(sort style: Binding<SortStyle>) {
         _sort = style
         
-        if let routeGuidance = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance(),
+        if let routeGuidance = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance(),
            case let .database(id) = routeGuidance.content.source {
             activeRouteID = id
         } else {
@@ -85,24 +85,24 @@ struct RoutesList: View {
                 ForEach(loader.routeIDs, id: \.self) { id in
                     RouteCell(model: RouteModel(id: id))
                         .accessibilityAddTraits(.isButton)
-                        .conditionalAccessibilityAction(!VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() && activeRouteID == nil, named: Text(RouteActionState(.startRoute).text)) {
+                        .conditionalAccessibilityAction(!UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive() && activeRouteID == nil, named: Text(RouteActionState(.startRoute).text)) {
                             GDATelemetry.track("routes.start", with: ["source": "accessibility_action"])
 
-                            guard let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
-                                  let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() else {
+                            guard let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+                                  let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() else {
                                 return
                             }
 
                             let routeGuidance = RouteGuidance(.init(source: .database(id: id)),
                                                               spatialData: spatialData,
                                                               motion: motion)
-                            VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(routeGuidance)
+                            UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(routeGuidance)
                             navHelper.popToRootViewController(animated: true)
                         }
                         .conditionalAccessibilityAction(id == activeRouteID, named: Text(RouteActionState(.stopRoute).text)) {
                             GDATelemetry.track("routes.stop", with: ["source": "accessibility_action"])
                             
-                            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
+                            UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
                         }
                         .conditionalAccessibilityAction(id != activeRouteID, named: Text(RouteActionState(.edit).text)) {
                             GDATelemetry.track("routes.edit", with: ["source": "accessibility_action"])

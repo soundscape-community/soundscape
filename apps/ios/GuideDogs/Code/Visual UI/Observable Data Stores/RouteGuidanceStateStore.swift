@@ -48,7 +48,7 @@ class RouteGuidanceStateStore: ObservableObject {
     }
     
     private func updateState() {
-        guard let routeGuidance = VisualRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
+        guard let routeGuidance = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
             state = nil
             return
         }

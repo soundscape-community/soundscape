@@ -139,7 +139,7 @@ enum RouteAction: String, Action {
     case edit
     
     static func actions(for detail: RouteDetail) -> [RouteActionState] {
-        let isDefaultBehaviorActive = !VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive()
+        let isDefaultBehaviorActive = !UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive()
         
         switch detail.source {
         case .database:

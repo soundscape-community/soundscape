@@ -243,8 +243,8 @@ struct RouteDetailsView: View {
 
 extension RouteDetailsView {
     private func makeRouteGuidance(_ detail: RouteDetail) -> RouteGuidance? {
-        guard let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
-              let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() else {
+        guard let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+              let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() else {
             return nil
         }
 
@@ -322,8 +322,8 @@ extension RouteDetailsView {
     }
     
     private func startGuidance(_ guidance: RouteGuidance) {
-        if VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() {
-            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
+        if UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive() {
+            UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         }
         
         // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
@@ -331,16 +331,16 @@ extension RouteDetailsView {
             home.shouldFocusOnBeacon = true
         }
         
-        VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(guidance)
+        UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(guidance)
         navHelper.popToRootViewController(animated: true)
     }
     
     private func stopGuidance() {
-        guard VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() else {
+        guard UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive() else {
             return
         }
         
-        VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
+        UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
     }
     
     private func resetActivity(checkForUpdates: Bool = false) {

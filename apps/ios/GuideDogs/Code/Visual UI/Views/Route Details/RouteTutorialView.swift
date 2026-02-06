@@ -18,8 +18,8 @@ struct RouteTutorialView: View {
     @Binding var isShown: Bool
 
     private func makeRouteGuidance() -> RouteGuidance? {
-        guard let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
-              let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() else {
+        guard let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+              let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() else {
             return nil
         }
 
@@ -27,8 +27,8 @@ struct RouteTutorialView: View {
     }
     
     private func startGuidance(_ guidance: RouteGuidance) {
-        if VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() {
-            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
+        if UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive() {
+            UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         }
         
         // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
@@ -36,7 +36,7 @@ struct RouteTutorialView: View {
             home.shouldFocusOnBeacon = true
         }
         
-        VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(guidance)
+        UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(guidance)
         navHelper.popToRootViewController(animated: true)
     }
     

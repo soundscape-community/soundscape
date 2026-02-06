@@ -91,7 +91,7 @@ struct RouteCompleteView: View {
                         Button(action: {
                             // Resume route
                             route.shouldResume = true
-                            VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(route)
+                            UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(route)
                             navHelper.dismiss(animated: true, completion: nil)
                         }, label: {
                             GDLocalizedTextView("general.alert.resume")
@@ -134,8 +134,8 @@ struct RouteCompleteView_Previews: PreviewProvider {
     static let route = RouteDetailsView_Previews.testOMRoute
     
     static var previews: some View {
-        if let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
-           let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() {
+        if let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+           let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() {
             RouteCompleteView(route: RouteGuidance(recreationalActivity,
                                                    spatialData: spatialData,
                                                    motion: motion))

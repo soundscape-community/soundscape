@@ -14,7 +14,7 @@ class TourCardContainerHostingController: UIHostingController<AnyView> {
     var style: BeaconStyle!
     
     required init?(coder aDecoder: NSCoder) {
-        guard let tour = VisualRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour() else {
+        guard let tour = UIRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour() else {
             // Unexpected state
             super.init(coder: aDecoder, rootView: AnyView(EmptyView()))
             return
