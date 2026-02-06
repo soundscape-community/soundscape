@@ -105,6 +105,9 @@ Phase 1 complete:
 - 2026-02-06: Updated `BeaconToolbarView` route-guidance lookups to `VisualRuntimeProviderRegistry` for route progress button state initialization and refresh.
 - 2026-02-06: Extended `VisualRuntimeProviderDispatchTests` to verify the new visual behavior/event runtime hooks dispatch to configured providers.
 - 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 244`, `App: 25`, `Haptics: 13`, `Sensors: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-06: Extended visual runtime hooks with guidance construction/activation access (`visualActivateCustomBehavior`, `visualSpatialDataContext`, `visualMotionActivityContext`) and migrated `RouteDetailsView`, `RouteTutorialView`, and `GuidedTourDetailsView` start/stop guidance flows away from direct `AppContext.shared` usage.
+- 2026-02-06: Extended `VisualRuntimeProviderDispatchTests` to verify visual custom-behavior activation + shared context lookup dispatch for the new visual runtime hooks.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 223`, `App: 25`, `Haptics: 13`, `Sensors: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -232,6 +235,6 @@ Acceptance criteria:
 
 ## Immediate Next Steps
 1. Continue Milestone 1 seam carving in `Visual UI` view-controller/helper entry points that still default to `AppContext.shared` (observable stores are carved, broader view layers remain).
-2. Continue the Visual UI runtime-provider pass into higher-level route/tour/beacon views and controllers (`RouteDetailsView`, `GuidedTourDetailsView`, `RouteTutorialView`, `BeaconTitleViewController`, `BeaconMapView`, `BeaconMapCard`) that still activate/deactivate behaviors via `AppContext.shared`.
+2. Continue the Visual UI runtime-provider pass into remaining beacon/route UI entry points (`BeaconTitleViewController`, `RouteDetailsViewHostingController`, `RoutesList`, `RouteCompleteView`, `TourToolbar`, `BeaconMapView`/`BeaconMapCard` previews) that still use direct `AppContext.shared`.
 3. Regenerate dependency-analysis artifact after each seam batch to track `Visual UI` trendlines now that `Behaviors` and `Data` callsites are at zero.
 4. Keep this document and `AGENTS.md` updated in every modularization PR with status and immediate next action.

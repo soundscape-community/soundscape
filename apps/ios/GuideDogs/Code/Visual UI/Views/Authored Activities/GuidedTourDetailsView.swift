@@ -104,13 +104,23 @@ struct GuidedTourDetailsView: View {
 }
 
 extension GuidedTourDetailsView {
+    private func makeGuidedTour(_ detail: TourDetail) -> GuidedTour? {
+        guard let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
+              let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() else {
+            return nil
+        }
+
+        return GuidedTour(detail, spatialData: spatialData, motion: motion)
+    }
+
     private func handleAction(_ action: GuidedTourAction) {
         switch action {
         case .startTour:
             // Start the route immediately
-            startTour(GuidedTour(tour,
-                                 spatialData: AppContext.shared.spatialDataContext,
-                                 motion: AppContext.shared.motionActivityContext))
+            guard let guidance = makeGuidedTour(tour) else {
+                return
+            }
+            startTour(guidance)
             
         case .stopTour:
             stopTour()
@@ -121,8 +131,8 @@ extension GuidedTourDetailsView {
     }
     
     private func startTour(_ tour: GuidedTour) {
-        if AppContext.shared.eventProcessor.isCustomBehaviorActive {
-            AppContext.shared.eventProcessor.deactivateCustom()
+        if VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() {
+            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
         }
         
         // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
@@ -130,16 +140,16 @@ extension GuidedTourDetailsView {
             home.shouldFocusOnBeacon = true
         }
         
-        AppContext.shared.eventProcessor.activateCustom(behavior: tour)
+        VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(tour)
         navHelper.popToRootViewController(animated: true)
     }
     
     private func stopTour() {
-        guard AppContext.shared.eventProcessor.isCustomBehaviorActive else {
+        guard VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() else {
             return
         }
         
-        AppContext.shared.eventProcessor.deactivateCustom()
+        VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
     }
     
     private func checkForUpdates(checkForUpdates: Bool = false) {

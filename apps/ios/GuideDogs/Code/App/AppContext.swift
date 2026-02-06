@@ -382,8 +382,11 @@ protocol AudioFileStoreRuntimeProviding {
 @MainActor
 protocol VisualBehaviorRuntimeProviding {
     func visualIsCustomBehaviorActive() -> Bool
+    func visualActivateCustomBehavior(_ behavior: Behavior)
     func visualDeactivateCustomBehavior()
     func visualProcessEvent(_ event: Event)
+    func visualSpatialDataContext() -> SpatialDataProtocol?
+    func visualMotionActivityContext() -> MotionActivityProtocol?
 }
 
 @MainActor
@@ -467,12 +470,26 @@ private final class UnconfiguredVisualRuntimeProviders: VisualRuntimeProviders {
         return false
     }
 
+    func visualActivateCustomBehavior(_ behavior: Behavior) {
+        debugAssertUnconfigured(#function)
+    }
+
     func visualDeactivateCustomBehavior() {
         debugAssertUnconfigured(#function)
     }
 
     func visualProcessEvent(_ event: Event) {
         debugAssertUnconfigured(#function)
+    }
+
+    func visualSpatialDataContext() -> SpatialDataProtocol? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func visualMotionActivityContext() -> MotionActivityProtocol? {
+        debugAssertUnconfigured(#function)
+        return nil
     }
 }
 
@@ -520,12 +537,24 @@ final class AppContextVisualRuntimeProviders: VisualRuntimeProviders {
         context.eventProcessor.isCustomBehaviorActive
     }
 
+    func visualActivateCustomBehavior(_ behavior: Behavior) {
+        context.eventProcessor.activateCustom(behavior: behavior)
+    }
+
     func visualDeactivateCustomBehavior() {
         context.eventProcessor.deactivateCustom()
     }
 
     func visualProcessEvent(_ event: Event) {
         context.eventProcessor.process(event)
+    }
+
+    func visualSpatialDataContext() -> SpatialDataProtocol? {
+        context.spatialDataContext
+    }
+
+    func visualMotionActivityContext() -> MotionActivityProtocol? {
+        context.motionActivityContext
     }
 }
 

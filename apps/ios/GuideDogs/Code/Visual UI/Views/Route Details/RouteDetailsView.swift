@@ -242,6 +242,15 @@ struct RouteDetailsView: View {
 }
 
 extension RouteDetailsView {
+    private func makeRouteGuidance(_ detail: RouteDetail) -> RouteGuidance? {
+        guard let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
+              let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() else {
+            return nil
+        }
+
+        return RouteGuidance(detail, spatialData: spatialData, motion: motion)
+    }
+
     private var alertView: Alert {
         switch alert {
         case .reverseRouteError:
@@ -267,9 +276,10 @@ extension RouteDetailsView {
                 goToNavDestination = true
             } else {
                 // Start the route immediately
-                startGuidance(RouteGuidance(route.detail,
-                                            spatialData: AppContext.shared.spatialDataContext,
-                                            motion: AppContext.shared.motionActivityContext))
+                guard let guidance = makeRouteGuidance(route.detail) else {
+                    return
+                }
+                startGuidance(guidance)
             }
             
         case .startRouteReverse:
@@ -279,9 +289,10 @@ extension RouteDetailsView {
             do {
                 if let reversedRoute = try Route.createReversedRoute(from: existingRoute) {
                     let targetDetail = RouteDetail(source: .cache(route: reversedRoute))
-                    startGuidance(RouteGuidance(targetDetail,
-                                                spatialData: AppContext.shared.spatialDataContext,
-                                                motion: AppContext.shared.motionActivityContext))
+                    guard let guidance = makeRouteGuidance(targetDetail) else {
+                        return
+                    }
+                    startGuidance(guidance)
                 }
             } catch {
                 alert = .reverseRouteError
@@ -311,8 +322,8 @@ extension RouteDetailsView {
     }
     
     private func startGuidance(_ guidance: RouteGuidance) {
-        if AppContext.shared.eventProcessor.isCustomBehaviorActive {
-            AppContext.shared.eventProcessor.deactivateCustom()
+        if VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() {
+            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
         }
         
         // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
@@ -320,16 +331,16 @@ extension RouteDetailsView {
             home.shouldFocusOnBeacon = true
         }
         
-        AppContext.shared.eventProcessor.activateCustom(behavior: guidance)
+        VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(guidance)
         navHelper.popToRootViewController(animated: true)
     }
     
     private func stopGuidance() {
-        guard AppContext.shared.eventProcessor.isCustomBehaviorActive else {
+        guard VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() else {
             return
         }
         
-        AppContext.shared.eventProcessor.deactivateCustom()
+        VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
     }
     
     private func resetActivity(checkForUpdates: Bool = false) {

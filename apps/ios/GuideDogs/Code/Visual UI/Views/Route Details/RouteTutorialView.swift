@@ -16,10 +16,19 @@ struct RouteTutorialView: View {
     let detail: RouteDetail
     
     @Binding var isShown: Bool
+
+    private func makeRouteGuidance() -> RouteGuidance? {
+        guard let spatialData = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext(),
+              let motion = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext() else {
+            return nil
+        }
+
+        return RouteGuidance(detail, spatialData: spatialData, motion: motion)
+    }
     
     private func startGuidance(_ guidance: RouteGuidance) {
-        if AppContext.shared.eventProcessor.isCustomBehaviorActive {
-            AppContext.shared.eventProcessor.deactivateCustom()
+        if VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive() {
+            VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
         }
         
         // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
@@ -27,7 +36,7 @@ struct RouteTutorialView: View {
             home.shouldFocusOnBeacon = true
         }
         
-        AppContext.shared.eventProcessor.activateCustom(behavior: guidance)
+        VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(guidance)
         navHelper.popToRootViewController(animated: true)
     }
     
@@ -65,9 +74,10 @@ struct RouteTutorialView: View {
                     
                     Button {
                         // Start the route and pop to the home screen
-                        startGuidance(RouteGuidance(detail,
-                                                    spatialData: AppContext.shared.spatialDataContext,
-                                                    motion: AppContext.shared.motionActivityContext))
+                        guard let guidance = makeRouteGuidance() else {
+                            return
+                        }
+                        startGuidance(guidance)
                         FirstUseExperience.setDidComplete(for: .routeTutorial)
                     } label: {
                         GDLocalizedTextView("general.alert.dismiss")

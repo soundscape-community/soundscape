@@ -26,8 +26,11 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         var playedAudioURLs: [URL] = []
         var stoppedAudioIDs: [AudioPlayerIdentifier] = []
         var customBehaviorActive = false
+        var activateCustomBehaviorCount = 0
         var deactivateCustomBehaviorCount = 0
         var processedEventNames: [String] = []
+        var spatialDataLookupCount = 0
+        var motionActivityLookupCount = 0
 
         func userLocationStoreInitialUserLocation() -> SSGeoLocation? {
             initialLocation
@@ -70,12 +73,26 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
             customBehaviorActive
         }
 
+        func visualActivateCustomBehavior(_ behavior: Behavior) {
+            activateCustomBehaviorCount += 1
+        }
+
         func visualDeactivateCustomBehavior() {
             deactivateCustomBehaviorCount += 1
         }
 
         func visualProcessEvent(_ event: Event) {
             processedEventNames.append(event.name)
+        }
+
+        func visualSpatialDataContext() -> SpatialDataProtocol? {
+            spatialDataLookupCount += 1
+            return nil
+        }
+
+        func visualMotionActivityContext() -> MotionActivityProtocol? {
+            motionActivityLookupCount += 1
+            return nil
         }
     }
 
@@ -128,8 +145,11 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         _ = VisualRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour()
         _ = VisualRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance()
         _ = VisualRuntimeProviderRegistry.providers.visualIsCustomBehaviorActive()
+        VisualRuntimeProviderRegistry.providers.visualActivateCustomBehavior(MockBehavior())
         VisualRuntimeProviderRegistry.providers.visualDeactivateCustomBehavior()
         VisualRuntimeProviderRegistry.providers.visualProcessEvent(BehaviorActivatedEvent())
+        _ = VisualRuntimeProviderRegistry.providers.visualSpatialDataContext()
+        _ = VisualRuntimeProviderRegistry.providers.visualMotionActivityContext()
 
         let url = URL(fileURLWithPath: "/tmp/test-audio.mp3")
         let playerID = VisualRuntimeProviderRegistry.providers.audioFileStorePlay(url)
@@ -142,7 +162,10 @@ final class VisualRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.playedAudioURLs, [url])
         XCTAssertEqual(playerID, expectedPlayerID)
         XCTAssertEqual(provider.stoppedAudioIDs, [expectedPlayerID])
+        XCTAssertEqual(provider.activateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.processedEventNames, [BehaviorActivatedEvent().name])
+        XCTAssertEqual(provider.spatialDataLookupCount, 1)
+        XCTAssertEqual(provider.motionActivityLookupCount, 1)
     }
 }
