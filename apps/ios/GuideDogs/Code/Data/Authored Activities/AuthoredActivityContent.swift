@@ -193,19 +193,20 @@ struct AuthoredActivityContent {
 // MARK: - Parsing GPX Event Data
 
 fileprivate extension GPXWaypoint {
-    var coordinate: CLLocationCoordinate2D? {
+    var ssGeoCoordinate: SSGeoCoordinate? {
         guard let latitude = latitude, let longitude = longitude else {
             return nil
         }
-        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        
+        return SSGeoCoordinate(latitude: latitude, longitude: longitude)
     }
 
     var ssGeoLocation: SSGeoLocation? {
-        guard let coordinate else {
+        guard let ssGeoCoordinate else {
             return nil
         }
 
-        return SSGeoLocation(coordinate: coordinate.ssGeoCoordinate)
+        return SSGeoLocation(coordinate: ssGeoCoordinate)
     }
 }
 
