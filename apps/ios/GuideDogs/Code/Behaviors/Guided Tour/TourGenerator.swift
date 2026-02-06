@@ -39,6 +39,13 @@ class TourWaypointDepartureEvent: StateChangedEvent {
 }
 
 @MainActor
+enum TourGeneratorRuntime {
+    static func audioOutputType() -> String {
+        BehaviorRuntimeProviderRegistry.providers.behaviorAudioOutputType()
+    }
+}
+
+@MainActor
 class TourGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSubscribing {
     
     struct Key {
@@ -84,9 +91,11 @@ class TourGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSub
     var canInterrupt: Bool = false
     
     private unowned let owner: GuidedTour
+    private unowned let motionActivity: MotionActivityProtocol
     
     init(_ owner: GuidedTour, motionActivity: MotionActivityProtocol, alreadyCompleted: Bool) {
         self.owner = owner
+        self.motionActivity = motionActivity
         self.alreadyCompleted = alreadyCompleted
         distanceCalloutFilter = BeaconUpdateFilter(updateDistance: 10.0 ..< 25.0, beaconDistance: 12.0 ..< 100.0, motionActivity: motionActivity)
     }
@@ -234,8 +243,8 @@ class TourGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSub
             
             GDATelemetry.track("callout", with: ["context": "intersection.arrival",
                                                  "type": callout.logCategory,
-                                                 "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
-                                                 "audio.output": AppContext.shared.audioEngine.outputType])
+                                                 "activity": motionActivity.currentActivity.rawValue,
+                                                 "audio.output": TourGeneratorRuntime.audioOutputType()])
             
             let group = CalloutGroup([callout], action: .interruptAndClear, logContext: "intersections")
             currentIntersectionGroupID = group.id

@@ -95,6 +95,9 @@ Phase 1 complete:
 - 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 254`, `Behaviors: 34`, `App: 25`, `Haptics: 13`, `Sensors: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Data: 0`.
 - 2026-02-06: Migrated `ARHeadsetGenerator`, `HeadsetTestGenerator`, and `PreviewBehavior` from direct `AppContext.shared` access to constructor-injected protocol dependencies (`AudioEngineProtocol`, `GeolocationManagerProtocol`, `DestinationManagerProtocol`, `DeviceManagerProtocol`) and updated composition call sites (`SoundscapeBehavior`, `LocationActionHandler`).
 - 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 255`, `App: 25`, `Behaviors: 15`, `Haptics: 13`, `Sensors: 11`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Data: 0`.
+- 2026-02-06: Extended behavior runtime DI for route/tour generators by adding `behaviorAudioOutputType()` to `BehaviorRuntimeProviders`, routing telemetry output-type lookups through `BehaviorRuntimeProviderRegistry`, and replacing route deactivation/motion-activity singleton reads with runtime/injected protocol access in `RouteGuidanceGenerator` and `TourGenerator`.
+- 2026-02-06: Extended `BehaviorRuntimeProviderDispatchTests` to verify route/tour generator runtime dispatch of audio output type.
+- 2026-02-06: Updated `AppContext.shared` coupling snapshot (current matches by top-level subsystem): `Visual UI: 255`, `App: 25`, `Haptics: 13`, `Sensors: 11`, `Behaviors: 10`, `Audio: 8`, `Notifications: 5`, `Generators: 5`, `Language: 2`, `Devices: 1`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -221,7 +224,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 1 behavior seam carving for remaining `Behaviors` callsites (`RouteGuidanceGenerator`, `TourGenerator`, `IntersectionGenerator`, `Helpers/CalloutCoordinator`, and low-frequency residual defaults).
+1. Continue Milestone 1 behavior seam carving for remaining `Behaviors` callsites (`Default/IntersectionGenerator`, `Helpers/CalloutCoordinator`, `EventProcessor`, and `Guided Tour/TourDetail`).
 2. Continue Milestone 1 seam carving in `Visual UI` view-controller/helper entry points that still default to `AppContext.shared` (observable stores are carved, broader view layers remain).
 3. Regenerate dependency-analysis artifact after each seam batch to track `Visual UI` and `Behaviors` edge-count trendlines.
 4. Keep this document and `AGENTS.md` updated in every modularization PR with status and immediate next action.

@@ -43,6 +43,13 @@ extension Notification.Name {
 }
 
 @MainActor
+enum RouteGuidanceGeneratorRuntime {
+    static func audioOutputType() -> String {
+        BehaviorRuntimeProviderRegistry.providers.behaviorAudioOutputType()
+    }
+}
+
+@MainActor
 class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSubscribing {
     
     struct Key {
@@ -77,9 +84,11 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
     var canInterrupt: Bool = false
     
     private unowned let owner: RouteGuidance
+    private unowned let motionActivity: MotionActivityProtocol
     
     init(_ owner: RouteGuidance, motionActivity: MotionActivityProtocol, alreadyCompleted: Bool) {
         self.owner = owner
+        self.motionActivity = motionActivity
         self.alreadyCompleted = alreadyCompleted
         distanceCalloutFilter = BeaconUpdateFilter(updateDistance: 10.0 ..< 25.0, beaconDistance: 12.0 ..< 100.0, motionActivity: motionActivity)
     }
@@ -226,8 +235,8 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
             
             GDATelemetry.track("callout", with: ["context": "intersection.arrival",
                                                  "type": callout.logCategory,
-                                                 "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
-                                                 "audio.output": AppContext.shared.audioEngine.outputType])
+                                                 "activity": motionActivity.currentActivity.rawValue,
+                                                 "audio.output": RouteGuidanceGeneratorRuntime.audioOutputType()])
             
             let group = CalloutGroup([callout], action: .interruptAndClear, logContext: "intersections")
             currentIntersectionGroupID = group.id
@@ -438,9 +447,7 @@ extension RouteGuidanceGenerator: CalloutGroupDelegate {
             }
             
             if shouldDeactivate {
-                Task { @MainActor in
-                    AppContext.shared.eventProcessor.deactivateCustom()
-                }
+                RouteRuntime.deactivateActiveBehavior()
             } else {
                 // Already on MainActor, no dispatch needed
                 owner.finishTransitioningBeacon()

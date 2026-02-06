@@ -519,7 +519,9 @@ protocol OnboardingRuntimeProviding {
 }
 
 @MainActor
-protocol BehaviorRuntimeProviders: RouteGuidanceRuntimeProviding, GuidedTourRuntimeProviding, OnboardingRuntimeProviding {}
+protocol BehaviorRuntimeProviders: RouteGuidanceRuntimeProviding, GuidedTourRuntimeProviding, OnboardingRuntimeProviding {
+    func behaviorAudioOutputType() -> String
+}
 
 @MainActor
 enum BehaviorRuntimeProviderRegistry {
@@ -597,6 +599,11 @@ private final class UnconfiguredBehaviorRuntimeProviders: BehaviorRuntimeProvide
         debugAssertUnconfigured(#function)
         return false
     }
+
+    func behaviorAudioOutputType() -> String {
+        debugAssertUnconfigured(#function)
+        return "unknown"
+    }
 }
 
 @MainActor
@@ -645,6 +652,10 @@ final class AppContextBehaviorRuntimeProviders: BehaviorRuntimeProviders {
 
     func onboardingIsMotionActivityAuthorized() -> Bool {
         context.motionActivityContext.isAuthorized
+    }
+
+    func behaviorAudioOutputType() -> String {
+        context.audioEngine.outputType
     }
 }
 

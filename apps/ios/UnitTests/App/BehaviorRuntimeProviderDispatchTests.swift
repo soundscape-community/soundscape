@@ -25,6 +25,7 @@ final class BehaviorRuntimeProviderDispatchTests: XCTestCase {
         var onboardingHeading: CLLocationDirection?
         var onboardingGeolocationAuthorized = false
         var onboardingMotionAuthorized = false
+        var currentAudioOutputType = "mock-output"
 
         func routeGuidanceCurrentUserLocation() -> CLLocation? {
             routeLocation
@@ -64,6 +65,10 @@ final class BehaviorRuntimeProviderDispatchTests: XCTestCase {
 
         func onboardingIsMotionActivityAuthorized() -> Bool {
             onboardingMotionAuthorized
+        }
+
+        func behaviorAudioOutputType() -> String {
+            currentAudioOutputType
         }
     }
 
@@ -132,5 +137,14 @@ final class BehaviorRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(OnboardingRuntime.currentPresentationHeading(), 123.0)
         XCTAssertTrue(OnboardingRuntime.isGeolocationAuthorized())
         XCTAssertTrue(OnboardingRuntime.isMotionActivityAuthorized())
+    }
+
+    func testGeneratorRuntimeDispatchesToConfiguredProvider() {
+        let provider = MockBehaviorRuntimeProviders()
+        provider.currentAudioOutputType = "spatial"
+        BehaviorRuntimeProviderRegistry.configure(with: provider)
+
+        XCTAssertEqual(RouteGuidanceGeneratorRuntime.audioOutputType(), "spatial")
+        XCTAssertEqual(TourGeneratorRuntime.audioOutputType(), "spatial")
     }
 }
