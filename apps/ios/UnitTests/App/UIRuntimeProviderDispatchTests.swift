@@ -8,6 +8,7 @@
 
 import XCTest
 import CoreLocation
+import AVFoundation
 import SSGeo
 @testable import Soundscape
 
@@ -56,6 +57,8 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var userHeading = Heading(orderedBy: [.user], course: nil, deviceHeading: nil, userHeading: HeadingValue(90.0, nil))
         var bleAuthorizationResult = false
         var bleAuthorizationCallCount = 0
+        var audioSession = AVAudioSession.sharedInstance()
+        var audioSessionLookupCount = 0
 
         func userLocationStoreInitialUserLocation() -> SSGeoLocation? {
             initialLocation
@@ -121,6 +124,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void) {
             bleAuthorizationCallCount += 1
             completion(bleAuthorizationResult)
+        }
+
+        func uiAudioSession() -> AVAudioSession {
+            audioSessionLookupCount += 1
+            return audioSession
         }
 
         func uiSetTutorialMode(_ isEnabled: Bool) {
@@ -282,6 +290,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         UIRuntimeProviderRegistry.providers.uiAddDevice(testDevice)
         UIRuntimeProviderRegistry.providers.uiRemoveDevice(testDevice)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiUserHeading() === provider.userHeading)
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiAudioSession() === provider.audioSession)
         UIRuntimeProviderRegistry.providers.uiSetTutorialMode(true)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsFirstLaunch())
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiShouldShowNewFeatures())
@@ -332,6 +341,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.addedDeviceIDs, [testDevice.id])
         XCTAssertEqual(provider.removedDeviceIDs, [testDevice.id])
         XCTAssertEqual(provider.bleAuthorizationCallCount, 1)
+        XCTAssertEqual(provider.audioSessionLookupCount, 1)
         XCTAssertEqual(provider.tutorialModeValues, [true])
         XCTAssertEqual(provider.activateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)

@@ -61,7 +61,7 @@ class DestinationTutorialViewController: CustomPageViewController, AVAudioPlayer
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleAudioSessionInterruption(_:)),
                                                name: AVAudioSession.interruptionNotification,
-                                               object: AppContext.shared.audioEngine.session)
+                                               object: UIRuntimeProviderRegistry.providers.uiAudioSession())
     }
     
     @objc func handleAudioSessionInterruption(_ notification: NSNotification) {
@@ -79,7 +79,7 @@ class DestinationTutorialViewController: CustomPageViewController, AVAudioPlayer
         
         if SettingsContext.shared.automaticCalloutsEnabled {
             // Toggle callouts off for now
-            AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(ToggleAutoCalloutsEvent(playSound: false))
         }
     }
     
@@ -95,20 +95,21 @@ class DestinationTutorialViewController: CustomPageViewController, AVAudioPlayer
         NotificationCenter.default.post(name: NSNotification.Name.enableMagicTap, object: self)
         NotificationCenter.default.post(name: NSNotification.Name.enableDestinationGeofence, object: self)
         
-        AppContext.shared.eventProcessor.hush(playSound: false)
+        UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
         
         if !SettingsContext.shared.automaticCalloutsEnabled {
             // Toggle callouts back on
-            AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(ToggleAutoCalloutsEvent(playSound: false))
         }
         
-        guard !AppContext.shared.spatialDataContext.destinationManager.isDestinationSet else {
-            // Remove destination by clearing from cache
-            try? AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tutorial.beacon.clear_test_beacon")
+        guard UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.isDestinationSet == true else {
             return
         }
+
+        // Remove destination by clearing from cache
+        try? UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.clearDestination(logContext: "tutorial.beacon.clear_test_beacon")
     }
-    
+
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
         // Remove reference to `presentedAlertController`
         presentedAlertController = nil
@@ -131,7 +132,7 @@ class DestinationTutorialViewController: CustomPageViewController, AVAudioPlayer
             
             NotificationCenter.default.removeObserver(self,
                                                       name: AVAudioSession.interruptionNotification,
-                                                      object: AppContext.shared.audioEngine.session)
+                                                      object: UIRuntimeProviderRegistry.providers.uiAudioSession())
             
             if self.navigationController?.presentingViewController != nil {
                 FirstUseExperience.setDidComplete(for: .beaconTutorial)
@@ -140,7 +141,7 @@ class DestinationTutorialViewController: CustomPageViewController, AVAudioPlayer
                 self.performSegue(withIdentifier: "ExitTutorialSegue", sender: self)
             }
             
-            AppContext.shared.isInTutorialMode = false
+            UIRuntimeProviderRegistry.providers.uiSetTutorialMode(false)
             
             GDATelemetry.track("tutorial.beacon.exit")
             if GDATelemetry.helper?.tutorialBeaconStatus != "finished" {
@@ -181,7 +182,7 @@ extension DestinationTutorialViewController: DestinationTutorialPageDelegate {
     func tutorialComplete() {
         NotificationCenter.default.removeObserver(self,
                                                   name: AVAudioSession.interruptionNotification,
-                                                  object: AppContext.shared.audioEngine.session)
+                                                  object: UIRuntimeProviderRegistry.providers.uiAudioSession())
         
         if self.navigationController?.presentingViewController != nil {
             FirstUseExperience.setDidComplete(for: .beaconTutorial)

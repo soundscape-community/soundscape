@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import CoreLocation
 import CoreBluetooth
+import AVFoundation
 import SSGeo
 
 /// Enumeration describing the running state of the app.
@@ -415,6 +416,7 @@ protocol UIRuntimeProviding {
     func uiRemoveDevice(_ device: Device)
     func uiUserHeading() -> Heading
     func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void)
+    func uiAudioSession() -> AVAudioSession
     func uiSetTutorialMode(_ isEnabled: Bool)
     func uiIsFirstLaunch() -> Bool
     func uiShouldShowNewFeatures() -> Bool
@@ -543,6 +545,11 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
     func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void) {
         debugAssertUnconfigured(#function)
         completion(false)
+    }
+
+    func uiAudioSession() -> AVAudioSession {
+        debugAssertUnconfigured(#function)
+        return AVAudioSession.sharedInstance()
     }
 
     func uiSetTutorialMode(_ isEnabled: Bool) {
@@ -711,6 +718,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void) {
         context.bleManager.authorizationStatus(completion: completion)
+    }
+
+    func uiAudioSession() -> AVAudioSession {
+        context.audioEngine.session
     }
 
     func uiSetTutorialMode(_ isEnabled: Bool) {
