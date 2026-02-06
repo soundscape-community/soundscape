@@ -7,6 +7,7 @@
 //
 
 import CoreLocation
+import SSGeo
 
 protocol DestinationManagerProtocol: AnyObject {
     
@@ -58,6 +59,10 @@ protocol DestinationManagerProtocol: AnyObject {
 
 // This extension adds the ability to not pass the `logContext` argument
 extension DestinationManagerProtocol {
+    func isUserWithinGeofence(_ userLocation: SSGeoLocation) -> Bool {
+        return isUserWithinGeofence(userLocation.clLocation)
+    }
+
     func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?) throws {
         try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: nil)
     }

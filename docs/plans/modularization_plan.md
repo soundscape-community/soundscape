@@ -79,6 +79,7 @@ Phase 1 complete:
 - 2026-02-06: Added `DestinationManagerRuntime` and migrated destination manager geolocation/active-behavior reads behind runtime hooks (`route/tour active`, `beacon-callout-blocked`, `current user location`) to continue removing direct in-method `AppContext.shared` lookups from data-layer runtime logic.
 - 2026-02-06: Added `SpatialDataContextRuntime` and `SpatialDataCacheRuntime` hooks to move initial location/cloud sync/callout-history/app-state/audio-engine destination lookups behind injectable seams, and removed internal self-references through `AppContext.shared.spatialDataContext` during data-view expansion.
 - 2026-02-06: Removed `SpatialDataCache` destination lookup via `AppContext` by threading destination state through `SpatialDataContext.checkForTiles(...)` and `SpatialDataCache.tiles(...)`, making tile selection inputs explicit and reducing hidden global coupling in spatial cache decisions.
+- 2026-02-06: Added an `SSGeoLocation` geofence helper on `DestinationManagerProtocol` and replaced beacon label geofence checks with `BeaconDetailRuntime` so beacon UI labels no longer read destination geofence state directly from `AppContext`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

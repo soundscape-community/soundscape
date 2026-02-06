@@ -10,6 +10,13 @@ import Foundation
 import SSGeo
 
 @MainActor
+enum BeaconDetailRuntime {
+    static var isUserWithinDestinationGeofence: (SSGeoLocation) -> Bool = { userLocation in
+        AppContext.shared.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation)
+    }
+}
+
+@MainActor
 struct BeaconDetailLocalizedLabel {
     
     // MARK: Properties
@@ -77,7 +84,7 @@ struct BeaconDetailLocalizedLabel {
         var text: String
         var accessibilityText: String?
         
-        if let userLocation = userLocation, AppContext.shared.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation.clLocation) {
+        if let userLocation = userLocation, BeaconDetailRuntime.isUserWithinDestinationGeofence(userLocation) {
             text = GDLocalizedString("poi_screen.section_header.nearby")
         } else if let dLabel = detail.locationDetail.labels.distance(from: userLocation) {
             text = dLabel.text
@@ -93,7 +100,7 @@ struct BeaconDetailLocalizedLabel {
         var text: String
         var accessibilityText: String?
             
-        if let userLocation = userLocation, AppContext.shared.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation.clLocation) {
+        if let userLocation = userLocation, BeaconDetailRuntime.isUserWithinDestinationGeofence(userLocation) {
             // "<Some Place> is nearby. Street address is <Some Address>"
             text = GDLocalizedString("directions.name_is_nearby_street_address", detail.locationDetail.displayName, detail.locationDetail.displayAddress)
         } else if let dLabel = detail.locationDetail.labels.distance(from: userLocation) {
