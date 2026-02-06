@@ -46,7 +46,7 @@ class SignificantChangeMonitoringOrigin {
         } else if let origin = self.location {
             // Update the user's location after the user has moved
             // more than 40 meters
-            return location.distance(from: origin) > 40.0
+            return location.coordinate.distance(from: origin.coordinate) > 40.0
         }
         
         // `origin` is invalid

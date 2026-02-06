@@ -24,7 +24,7 @@ extension Array where Element == POI {
     func sorted(byDistanceFrom location: CLLocation) -> [POI] {
          // Storing the poi with its distance from current location
         let poisWithDistance = self.map { poi in
-            (poi: poi, distance: location.distance(from: CLLocation(latitude: poi.centroidLatitude, longitude: poi.centroidLongitude)))
+            (poi: poi, distance: location.coordinate.distance(from: poi.centroidCoordinate))
         }
         // Sort the array based on the distance, then extract the POIs in sorted order
         let sortedPoisWithDistance = poisWithDistance.sorted { $0.distance < $1.distance }

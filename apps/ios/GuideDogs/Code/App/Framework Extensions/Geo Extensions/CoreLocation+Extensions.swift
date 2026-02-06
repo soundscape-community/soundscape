@@ -126,7 +126,7 @@ extension Array where Element == CLLocation {
             }
             
             let prevLocation = locations[index-1]
-            let distance = location.distance(from: prevLocation)
+            let distance = location.coordinate.distance(from: prevLocation.coordinate)
             let updatedLocation: CLLocation
             
             if distance > 0.0 {

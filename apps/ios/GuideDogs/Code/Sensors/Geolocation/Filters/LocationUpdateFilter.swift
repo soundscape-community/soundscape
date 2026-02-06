@@ -79,7 +79,7 @@ class LocationUpdateFilter {
         }
         
         if let previousLocation = previousLocation {
-            self.previousDistance = previousLocation.distance(from: location)
+            self.previousDistance = previousLocation.coordinate.distance(from: location.coordinate)
         }
         
         // Set the update time to now, and the location to the provided location
@@ -119,7 +119,7 @@ class LocationUpdateFilter {
         
         // If the user has moved at least (updateDistanceInterval) meters, and at least (updateTimeInterval) seconds
         // have passed, then we should update
-        let dist = location.distance(from: previousLocation)
+        let dist = location.coordinate.distance(from: previousLocation.coordinate)
         let time = previousTime + updateTimeInterval
                 
         if dist > updateDistanceInterval && time < Date() {

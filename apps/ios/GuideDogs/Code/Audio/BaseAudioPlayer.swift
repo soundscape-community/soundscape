@@ -242,7 +242,7 @@ class BaseAudioPlayer: AudioPlayer {
 
         case .localized(let location, let style) where style == .real:
             let bearing = userLocation.bearing(to: location)
-            layers.forEach { $0.position = AVAudio3DPoint(from: bearing, distance: userLocation.distance(from: location)) }
+            layers.forEach { $0.position = AVAudio3DPoint(from: bearing, distance: userLocation.coordinate.distance(from: location.coordinate)) }
                 
         default:
             // Changes in the user's location do not affect standard (2D) or relative sounds

@@ -681,7 +681,7 @@ class GPXSimulator {
         let location = CLLocation(latitude: currentLatitude, longitude: currentLongitude)
         let prevLocation = CLLocation(latitude: prevLatitude, longitude: prevLongitude)
         
-        let distance = location.distance(from: prevLocation)
+        let distance = location.coordinate.distance(from: prevLocation.coordinate)
         let time = timeIntervalBetweenLocations
         
         return distance/time
@@ -719,7 +719,7 @@ class GPXSimulator {
         var closestDistance: CLLocationDistance = CLLocationDistanceMax
 
         for trackPoint in allTrackPoints {
-            let distance = location.distance(from: trackPoint.gpxLocation().location)
+            let distance = location.coordinate.distance(from: trackPoint.gpxLocation().location.coordinate)
             if distance > closestDistance {
                 continue
             }

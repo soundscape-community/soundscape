@@ -49,6 +49,7 @@ Phase 1 complete:
 - 2026-02-06: Migrated `GDASpatialDataResultEntity` distance/bearing internals from direct `CLLocation` math to `SSGeoMath`/portable coordinates while preserving CoreLocation method signatures, and added focused iOS unit tests for fallback/line-string/bearing behavior.
 - 2026-02-06: Migrated `Data` intersection/roundabout/preview distance hot paths away from direct `CLLocation.distance(from:)` toward `SSGeoMath` or coordinate-based SSGeo-backed helpers, with new unit coverage for nearest-intersection selection.
 - 2026-02-06: Migrated `Behaviors` + `Generators` waypoint/intersection/filter/reverse-geocoder distance calls from direct `CLLocation.distance(from:)` to SSGeo-backed coordinate distance helpers, preserving existing callout thresholds and public APIs.
+- 2026-02-06: Migrated additional non-UI runtime distance paths in `Sensors` (`GPXSimulator`, geolocation filters), `Audio` (localized/proximity beacon distance), and core app extensions (`Array+POI`, `CoreLocation+Extensions`) to SSGeo-backed coordinate distance helpers.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

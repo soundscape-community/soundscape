@@ -146,7 +146,7 @@ enum ProximityBeacon: String, DynamicAudioEngineAsset {
                 return (.far, 0.0)
             }
             
-            let distance = user.distance(from: beacon)
+            let distance = user.coordinate.distance(from: beacon.coordinate)
             
             if distance < 20.0 {
                 return (.near, 1.0)
