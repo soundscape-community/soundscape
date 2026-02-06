@@ -14,11 +14,17 @@ struct WaypointCard: View {
     // MARK: Properties
     
     @Environment(\.colorPalette) var colorPalette
+    @EnvironmentObject private var userLocationStore: UserLocationStore
     @State private var isWaypointDetailViewPresented = false
     
     let waypoint: WaypointDetail
     let isCurrent: Bool
-    private let config: LocationDetailConfiguration
+    
+    private var config: LocationDetailConfiguration {
+        LocationDetailConfiguration(for: .waypoint(detail: waypoint),
+                                    userLocation: userLocationStore.ssGeoLocation,
+                                    isDetailViewEnabled: false)
+    }
     
     private var mediaAccessibilityLabel: String? {
         guard let location = waypoint.locationDetail else {
@@ -41,7 +47,6 @@ struct WaypointCard: View {
     init(waypoint: WaypointDetail, isCurrent: Bool) {
         self.waypoint = waypoint
         self.isCurrent = isCurrent
-        self.config = LocationDetailConfiguration(for: .waypoint(detail: waypoint), isDetailViewEnabled: false)
     }
     
     // MARK: `body`
@@ -166,6 +171,7 @@ struct WaypointCard_Previews: PreviewProvider {
             .padding(.horizontal, 18.0)
             .background(Color.Theme.darkBlue.ignoresSafeArea())
         }
+        .environmentObject(UserLocationStore())
         
         NavigationView {
             VStack(spacing: 8.0) {
@@ -184,6 +190,7 @@ struct WaypointCard_Previews: PreviewProvider {
             .background(Color.Theme.darkBlue.ignoresSafeArea())
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+        .environmentObject(UserLocationStore())
     }
     
 }

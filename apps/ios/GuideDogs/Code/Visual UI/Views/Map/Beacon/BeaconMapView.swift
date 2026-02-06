@@ -12,18 +12,22 @@ struct BeaconMapView: View {
     
     // MARK: Properties
     
+    @EnvironmentObject private var userLocationStore: UserLocationStore
+    
     @State private var isMapDetailViewPresented = false
     @State private var isAnnotationDetailViewPresented = false
     @State private var selectedAnnotation: IdentifiableAnnotation?
     
     private let style: MapStyle
-    private let config: LocationDetailConfiguration
+    
+    private var config: LocationDetailConfiguration {
+        LocationDetailConfiguration(for: style, userLocation: userLocationStore.ssGeoLocation)
+    }
     
     // MARK: Initialization
     
     init(style: MapStyle) {
         self.style = style
-        self.config = LocationDetailConfiguration(for: style)
     }
     
     var body: some View {
@@ -104,7 +108,9 @@ struct BeaconMapView_Previews: PreviewProvider {
     
     static var previews: some View {
         BeaconMapView(style: .tour(detail: behavior.content))
+            .environmentObject(UserLocationStore())
         BeaconMapView(style: .location(detail: behavior.content.waypoints.first!))
+            .environmentObject(UserLocationStore())
     }
     
 }

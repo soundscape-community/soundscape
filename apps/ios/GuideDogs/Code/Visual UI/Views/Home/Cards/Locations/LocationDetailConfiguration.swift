@@ -9,14 +9,17 @@
 import Foundation
 import SwiftUI
 import MapKit
+import SSGeo
 
 struct LocationDetailConfiguration {
     
     private let style: MapStyle
+    private let userLocation: SSGeoLocation?
     let isDetailViewEnabled: Bool
     
-    init(for style: MapStyle, isDetailViewEnabled: Bool = true) {
+    init(for style: MapStyle, userLocation: SSGeoLocation?, isDetailViewEnabled: Bool = true) {
         self.style = style
+        self.userLocation = userLocation
         self.isDetailViewEnabled = isDetailViewEnabled
     }
     
@@ -49,7 +52,7 @@ struct LocationDetailConfiguration {
             // Currently, detail view is only supported for waypoint / tour
             EmptyView()
         case .waypoint(let detail):
-            WaypointDetailView(waypoint: detail, userLocation: AppContext.shared.geolocationManager.location?.ssGeoLocation)
+            WaypointDetailView(waypoint: detail, userLocation: userLocation)
         case .tour(let detail):
             GuidedTourDetailsView(detail)
                 .environmentObject(UserLocationStore())
@@ -59,7 +62,7 @@ struct LocationDetailConfiguration {
     @ViewBuilder @MainActor
     func annotationDetailView(for annotation: MKAnnotation?) -> some View {
         if let annotation = annotation as? WaypointDetailAnnotation {
-            WaypointDetailView(waypoint: annotation.detail, userLocation: AppContext.shared.geolocationManager.location?.ssGeoLocation)
+            WaypointDetailView(waypoint: annotation.detail, userLocation: userLocation)
         } else {
             // Unexpected state
             // Currently, detail view is only supported for waypoint annotations

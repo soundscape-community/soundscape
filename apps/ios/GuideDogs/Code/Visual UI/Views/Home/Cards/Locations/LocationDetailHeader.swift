@@ -41,7 +41,8 @@ struct LocationDetailHeader: View {
 struct LocationDetailHeader_Previews: PreviewProvider {
     
     static var previews: some View {
-        LocationDetailHeader(config: LocationDetailConfiguration(for: .tour(detail: BeaconMapView_Previews.behavior.content)))
+        LocationDetailHeader(config: LocationDetailConfiguration(for: .tour(detail: BeaconMapView_Previews.behavior.content),
+                                                                 userLocation: nil))
     }
     
 }

@@ -69,6 +69,7 @@ Phase 1 complete:
 - 2026-02-06: Migrated waypoint/tour detail UI call paths (`WaypointDetailView`, `GuidedTourDetailsView`, `LocationDetailConfiguration`, waypoint add/edit lists) to pass `SSGeoLocation` directly, reducing remaining call-site `.ssGeoLocation` conversion churn.
 - 2026-02-06: Removed now-unused `CLLocation` compatibility initializers from SSGeo-first views (`BeaconTitleView`, `LocationItemView`, `LocationDetailLabelView`, `WaypointDetailView`) after migrating production call sites, keeping UI distance APIs consistently `SSGeoLocation`-typed.
 - 2026-02-06: Removed direct `AppContext` location reads from waypoint add/edit list rendering (`WaypointAddList`, `WaypointEditList`) by threading `SSGeoLocation` through their call sites, and removed obsolete `UserLocationStore.location` (`CLLocation`) compatibility accessor.
+- 2026-02-06: Made map/waypoint card detail configuration explicitly location-injected (`LocationDetailConfiguration` now takes `SSGeoLocation?`), and updated `BeaconMapView`, `BeaconMapCard`, and `WaypointCard` to source user location from `UserLocationStore` instead of `AppContext`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

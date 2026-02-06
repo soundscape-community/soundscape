@@ -14,18 +14,22 @@ struct BeaconMapCard: View {
     
     // MARK: Properties
     
+    @EnvironmentObject private var userLocationStore: UserLocationStore
+    
     @State private var isFullScreenViewPresented = false
     @State private var isMapDetailViewPresented = false
     @State private var selectedAnnotation: IdentifiableAnnotation?
     
     private let style: MapStyle
-    private let config: LocationDetailConfiguration
+    
+    private var config: LocationDetailConfiguration {
+        LocationDetailConfiguration(for: style, userLocation: userLocationStore.ssGeoLocation)
+    }
     
     // MARK: Initialization
     
     init(style: MapStyle) {
         self.style = style
-        self.config = LocationDetailConfiguration(for: style)
     }
     
     // MARK: `body`
