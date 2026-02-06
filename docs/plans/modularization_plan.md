@@ -72,6 +72,7 @@ Phase 1 complete:
 - 2026-02-06: Made map/waypoint card detail configuration explicitly location-injected (`LocationDetailConfiguration` now takes `SSGeoLocation?`), and updated `BeaconMapView`, `BeaconMapCard`, and `WaypointCard` to source user location from `UserLocationStore` instead of `AppContext`.
 - 2026-02-06: Removed direct geolocation-manager reads from UIKit waypoint/location detail controllers (`SearchWaypointViewController`, `LocationDetailTableViewController`) by sourcing SSGeo user location through `UserLocationStore`.
 - 2026-02-06: Updated GPX waypoint parsing in `AuthoredActivityContent` to construct `SSGeoCoordinate`/`SSGeoLocation` directly from lat/lon values, removing an intermediate CoreLocation coordinate conversion step in the data ingestion path.
+- 2026-02-06: Migrated remaining `UserLocationStore(designValue: ...)` preview/test setup call sites to `SSGeoLocation` payloads and removed the obsolete `UserLocationStore` `CLLocation` design initializer.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

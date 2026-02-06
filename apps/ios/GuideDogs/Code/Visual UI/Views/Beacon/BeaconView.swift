@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 struct BeaconView: View {
     
@@ -64,8 +65,8 @@ struct BeaconView: View {
 
 struct BeaconView_Previews: PreviewProvider {
     
-    static var userLocation: CLLocation {
-        return CLLocation(latitude: 47.640179, longitude: -122.111320)
+    static var userLocation: SSGeoLocation {
+        return SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.640179, longitude: -122.111320))
     }
     
     static var locationDetail: LocationDetail {

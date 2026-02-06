@@ -144,7 +144,7 @@ struct MarkerCell: View {
 }
 
 struct MarkerCell_Previews: PreviewProvider {
-    static var userLocationStore = UserLocationStore(designValue: CLLocation.sample)
+    static var userLocationStore = UserLocationStore(designValue: CLLocation.sample.ssGeoLocation)
     
     static var previews: some View {
         Realm.bootstrap()

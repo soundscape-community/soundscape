@@ -9,6 +9,7 @@
 import UIKit
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 struct GuidedTourDetailsView: View {
     @EnvironmentObject var user: UserLocationStore
@@ -204,7 +205,7 @@ struct GuidedTourDetailsView_Previews: PreviewProvider {
         GuidedTourDetailsView(testTour, designState: testTourState)
             .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
             .navigationBarTitleDisplayMode(.inline)
-            .environmentObject(UserLocationStore(designValue: CLLocation(latitude: 47.622181, longitude: -122.341060)))
+            .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
             .previewDisplayName("Trail Activity")
             .previewLayout(.sizeThatFits)
         
@@ -212,7 +213,7 @@ struct GuidedTourDetailsView_Previews: PreviewProvider {
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
             .navigationBarTitleDisplayMode(.inline)
-            .environmentObject(UserLocationStore(designValue: CLLocation(latitude: 47.622181, longitude: -122.341060)))
+            .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
             .previewDisplayName("Trail Activity")
             .previewLayout(.sizeThatFits)
         
@@ -220,7 +221,7 @@ struct GuidedTourDetailsView_Previews: PreviewProvider {
             GuidedTourDetailsView(testTour, designState: testTourState)
                 .navigationTitle(GDLocalizedTextView("behavior.experiences.route_nav_title"))
                 .navigationBarTitleDisplayMode(.inline)
-                .environmentObject(UserLocationStore(designValue: CLLocation(latitude: 47.622181, longitude: -122.341060)))
+                .environmentObject(UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.622181, longitude: -122.341060))))
                 .previewDisplayName("Trail Activity")
         }
     }

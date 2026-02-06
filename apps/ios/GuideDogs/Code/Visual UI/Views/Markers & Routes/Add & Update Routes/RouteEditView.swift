@@ -9,6 +9,7 @@
 import SwiftUI
 import CoreLocation
 import RealmSwift
+import SSGeo
 
 @MainActor
 struct RouteEditView: View {
@@ -311,7 +312,7 @@ struct RouteEditView: View {
 struct RouteEditView_Previews: PreviewProvider {
     
     static var uStore: UserLocationStore {
-        let location = CLLocation(latitude: 47.640179, longitude: -122.111320)
+        let location = SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.640179, longitude: -122.111320))
         return UserLocationStore(designValue: location)
     }
     

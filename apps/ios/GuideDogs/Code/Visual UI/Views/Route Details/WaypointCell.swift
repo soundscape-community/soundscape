@@ -206,7 +206,7 @@ struct WaypointCell_Previews: PreviewProvider {
     }
     
     static var location: UserLocationStore {
-        return UserLocationStore(designValue: .init(latitude: 47.621701, longitude: -122.341150))
+        return UserLocationStore(designValue: SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.621701, longitude: -122.341150)))
     }
     
     static var previews: some View {

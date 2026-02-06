@@ -28,11 +28,7 @@ class UserLocationStore: ObservableObject {
         // Save initial value
         self.ssGeoLocation = AppContext.shared.geolocationManager.location?.ssGeoLocation
     }
-    
-    init(designValue: CLLocation) {
-        ssGeoLocation = designValue.ssGeoLocation
-    }
-    
+
     init(designValue: SSGeoLocation) {
         ssGeoLocation = designValue
     }

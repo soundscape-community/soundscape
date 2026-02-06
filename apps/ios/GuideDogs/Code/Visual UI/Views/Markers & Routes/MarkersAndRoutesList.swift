@@ -165,7 +165,7 @@ struct MarkersAndRoutesList_Previews: PreviewProvider {
             MarkersAndRoutesList().navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.realmConfiguration, RealmHelper.databaseConfig)
-        .environmentObject(UserLocationStore(designValue: CLLocation.sample))
+        .environmentObject(UserLocationStore(designValue: CLLocation.sample.ssGeoLocation))
         .environmentObject(MarkersAndRoutesListNavigationHelper())
     }
 }
