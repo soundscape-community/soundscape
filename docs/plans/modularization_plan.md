@@ -47,6 +47,7 @@ Phase 1 complete:
 - 2026-02-06: Migrated additional `Data` geospatial paths (`POI`, `ReferenceEntity`, `GenericLocation`, `Address`) to use `SSGeo` coordinate payloads and `SSGeoMath` internally while preserving existing CoreLocation-facing APIs.
 - 2026-02-06: Updated `SSGeoMath` to default to WGS84 geodesic calculations (Vincenty with spherical fallback), added explicit spherical-approx APIs, and refactored iOS coordinate extensions to call SSGeo geodesy instead of choosing radius in app code.
 - 2026-02-06: Migrated `GDASpatialDataResultEntity` distance/bearing internals from direct `CLLocation` math to `SSGeoMath`/portable coordinates while preserving CoreLocation method signatures, and added focused iOS unit tests for fallback/line-string/bearing behavior.
+- 2026-02-06: Migrated `Data` intersection/roundabout/preview distance hot paths away from direct `CLLocation.distance(from:)` toward `SSGeoMath` or coordinate-based SSGeo-backed helpers, with new unit coverage for nearest-intersection selection.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

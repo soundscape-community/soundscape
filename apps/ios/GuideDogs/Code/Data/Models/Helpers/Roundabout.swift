@@ -9,6 +9,7 @@
 import Foundation
 import MapKit
 import CocoaLumberjackSwift
+import SSGeo
 
 /// Roundabouts are synthesized objects we calculate from specific intersections
 @MainActor
@@ -227,7 +228,7 @@ extension Roundabout {
         var maxDistance = CLLocationDistance(0.0)
         
         for int in intersections {
-            let distance = int.location.distance(from: intersectionLocation)
+            let distance = SSGeoMath.distanceMeters(from: int.coordinate.ssGeoCoordinate, to: intersectionLocation.coordinate.ssGeoCoordinate)
             if distance > maxDistance {
                 maxDistance = distance
             }

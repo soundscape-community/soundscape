@@ -174,7 +174,7 @@ struct RoadAdjacentDataView: AdjacentDataView, Equatable {
             }]
         }
 
-        let distance = endpoint.location.distance(from: from.location)
+        let distance = endpoint.coordinate.distance(from: from.coordinate)
         let formattedDistance = LanguageFormatter.formattedDistance(from: distance)
         let distanceCallout = StringCallout(.preview, formattedDistance, position: bearing)
         

@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import RealmSwift
 import CocoaLumberjackSwift
+import SSGeo
 
 //--------------------//
 // Intersection Types //
@@ -453,7 +454,7 @@ extension Intersection {
         }
         
         return intersections
-            .map({ (intersection: $0, distance: $0.location.distance(from: location)) })
+            .map({ (intersection: $0, distance: SSGeoMath.distanceMeters(from: $0.coordinate.ssGeoCoordinate, to: location.coordinate.ssGeoCoordinate)) })
             .filter { (item) -> Bool in
                 // Filter out by distance
                 if let maxDistance = maxDistance, maxDistance > 0 {
@@ -504,7 +505,7 @@ extension Intersection {
         var minDistance: CLLocationDistance = CLLocationDistance.greatestFiniteMagnitude
         
         for intersection in intersections {
-            let currentDistance = intersection.location.distance(from: location)
+            let currentDistance = SSGeoMath.distanceMeters(from: intersection.coordinate.ssGeoCoordinate, to: location.coordinate.ssGeoCoordinate)
             if currentDistance < minDistance {
                 closest = intersection
                 minDistance = currentDistance
