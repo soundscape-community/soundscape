@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 enum WaypointCellGuidanceState {
     case none
@@ -121,7 +122,7 @@ struct WaypointCell: View {
     }
     
     private var locationDetailLabel: LocalizedLabel? {
-        return detail.labels.distance(from: user.location)
+        return detail.labels.distance(from: user.location?.ssGeoLocation)
     }
     
     var body: some View {

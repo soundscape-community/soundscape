@@ -9,6 +9,7 @@
 import SwiftUI
 import Combine
 import CoreLocation
+import SSGeo
 
 struct EditMarkerConfig {
     let detail: LocationDetail
@@ -258,7 +259,7 @@ struct EditMarkerView: View {
     }
     
     private func onAccessibilityEditLocation(_ newValue: LocationDetail, oldValue: LocationDetail, isFirst: Bool = false) {
-        guard let distance = newValue.labels.distance(from: oldValue.location) else {
+        guard let distance = newValue.labels.distance(from: oldValue.location.ssGeoLocation) else {
             return
         }
         

@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 class LocationDetailTableViewController: UITableViewController {
     
@@ -110,7 +111,7 @@ class LocationDetailTableViewController: UITableViewController {
             cell.nameLabel.accessibilityLabel = labels.name().accessibilityText
             
             // Configure distance label
-            let distanceLabel = labels.distance(from: userLocation)
+            let distanceLabel = labels.distance(from: userLocation?.ssGeoLocation)
             cell.distanceLabel.text = distanceLabel?.text
             cell.distanceLabel.accessibilityLabel = distanceLabel?.accessibilityText
             

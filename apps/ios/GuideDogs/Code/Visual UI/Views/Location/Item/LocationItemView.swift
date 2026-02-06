@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 struct LocationItemView: View {
     
@@ -61,7 +62,7 @@ struct LocationItemView: View {
                     .locationNameTextFormat()
                     .accessibilitySortPriority(accessibilitySortPriority.name)
                 
-                if let distance = locationDetail.labels.distance(from: userLocation) {
+                if let distance = locationDetail.labels.distance(from: userLocation?.ssGeoLocation) {
                     distance.accessibleTextView
                         .locationDistanceTextFormat()
                         .accessibilitySortPriority(accessibilitySortPriority.distance)

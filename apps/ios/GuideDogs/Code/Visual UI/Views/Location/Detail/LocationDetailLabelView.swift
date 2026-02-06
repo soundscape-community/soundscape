@@ -9,6 +9,7 @@
 import SwiftUI
 import CoreLocation
 import RealmSwift
+import SSGeo
 
 struct LocationDetailLabelView: View {
     
@@ -50,7 +51,7 @@ struct LocationDetailLabelView: View {
                     .font(.largeTitle)
                 
                 VStack(alignment: .leading, spacing: 4.0) {
-                    if let distance = location.labels.distance(from: userLocation) {
+                    if let distance = location.labels.distance(from: userLocation?.ssGeoLocation) {
                         distance.accessibleTextView(leftAccessory: Image(systemName: "map"))
                             .font(.callout)
                             .foregroundColor(highlightColor)

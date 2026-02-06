@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import Combine
 import SwiftUI
+import SSGeo
 
 struct BeaconTitleViewRepresentable: UIViewControllerRepresentable {
     
@@ -195,7 +196,7 @@ class BeaconTitleViewController: UIViewController {
             
             // Configure beacon label
             let nLabel = beacon.labels.name
-            let dLabel = beacon.labels.distance(from: userLocation)
+            let dLabel = beacon.labels.distance(from: userLocation?.ssGeoLocation)
             // Appending labels
             let aLabel = nLabel.appending(dLabel, localizedSeparator: "・")
             

@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreLocation
+import SSGeo
 
 struct BeaconTitleView: View {
     
@@ -34,7 +35,7 @@ struct BeaconTitleView: View {
             
             Group {
                 let nLabel = beacon.labels.name
-                let dLabel = beacon.labels.distance(from: userLocation)
+                let dLabel = beacon.labels.distance(from: userLocation?.ssGeoLocation)
                 let aLabel = nLabel.appending(dLabel, localizedSeparator: " ")
                 
                 Group {
