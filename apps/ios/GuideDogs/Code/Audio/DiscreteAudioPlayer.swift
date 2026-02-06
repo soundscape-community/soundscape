@@ -8,7 +8,7 @@
 
 import Foundation
 import AVFoundation
-import SoundscapeCoreDataStructures
+import SSDataStructures
 
 // Actor used to serialize all mutable state for discrete audio playback layers
 // Eliminates data races previously caused by ad hoc Task mutations.

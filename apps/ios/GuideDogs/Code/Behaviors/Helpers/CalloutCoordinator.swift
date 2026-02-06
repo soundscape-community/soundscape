@@ -10,7 +10,7 @@
 
 import Foundation
 import CoreLocation
-import SoundscapeCoreDataStructures
+import SSDataStructures
 
 @MainActor
 final class CalloutCoordinator {

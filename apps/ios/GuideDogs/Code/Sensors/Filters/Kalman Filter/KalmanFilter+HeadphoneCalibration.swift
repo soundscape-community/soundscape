@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SoundscapeCoreDataStructures
+import SSDataStructures
 
 extension KalmanFilter {
     

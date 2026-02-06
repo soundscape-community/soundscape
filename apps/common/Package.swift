@@ -5,17 +5,17 @@ let package = Package(
     name: "SoundscapeCommon",
     products: [
         .library(
-            name: "SoundscapeCoreDataStructures",
-            targets: ["SoundscapeCoreDataStructures"]
+            name: "SSDataStructures",
+            targets: ["SSDataStructures"]
         ),
     ],
     targets: [
         .target(
-            name: "SoundscapeCoreDataStructures"
+            name: "SSDataStructures"
         ),
         .testTarget(
-            name: "SoundscapeCoreDataStructuresTests",
-            dependencies: ["SoundscapeCoreDataStructures"]
+            name: "SSDataStructuresTests",
+            dependencies: ["SSDataStructures"]
         ),
     ]
 )

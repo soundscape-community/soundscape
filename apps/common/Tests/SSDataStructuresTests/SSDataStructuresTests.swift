@@ -1,9 +1,9 @@
 import Foundation
 import Testing
 
-@testable import SoundscapeCoreDataStructures
+@testable import SSDataStructures
 
-struct SoundscapeCoreDataStructuresTests {
+struct SSDataStructuresTests {
 
     @Test
     func boundedStackRespectsBoundAndOrder() {

@@ -4,7 +4,7 @@ This file is the canonical instruction source for coding agents in this reposito
 
 ## Repository Map
 - `apps/ios/`: iOS app (`GuideDogs.xcworkspace`, app code, unit tests, CI scripts).
-- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SoundscapeCoreDataStructures`).
+- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SSDataStructures`).
 - `svcs/data/`: open-source data-plane ingestion/tile tooling (Python, Docker, SQL, Helm chart assets).
 - `docs/`: project documentation.
 - `.github/workflows/`: CI definitions (use these as command truth for automation-aligned docs).
@@ -16,13 +16,18 @@ This file is the canonical instruction source for coding agents in this reposito
 - `CalloutCoordinator` owns callout queueing, interruption, hush behavior, and playback sequencing.
 - `AudioPlaybackActor` provides async audio playback control for the coordinator and wraps `AudioEngine` interactions.
 - `HandledEventAction` is the behavior-to-processor contract for callout playback, event fan-out, and interrupt requests.
-- `SoundscapeCoreDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
+- `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
 
 ## Modularization Status (Phase 1)
-- First extraction is complete: core data-structure types moved from `apps/ios` into `apps/common/Sources/SoundscapeCoreDataStructures`.
+- First extraction is complete: core data-structure types moved from `apps/ios` into `apps/common/Sources/SSDataStructures`.
 - Boundary rule: keep `apps/common` platform-agnostic. Do not import Apple UI/platform frameworks in `apps/common/Sources`.
 - Boundary enforcement script: `bash apps/common/Scripts/check_forbidden_imports.sh`.
 - Package tests for extracted module: `swift test --package-path apps/common`.
+
+## Common Module Naming
+- Use `SS` + concise domain noun for modules in `apps/common` (for example: `SSDataStructures`, `SSUniversalLinks`).
+- Avoid `Soundscape*` prefixes and avoid generic names like `Core` or `Common` alone.
+- Keep names short, domain-specific, and consistent with import usage in iOS targets.
 
 ## Plan Documents
 - Active plans live in `docs/plans/`.
