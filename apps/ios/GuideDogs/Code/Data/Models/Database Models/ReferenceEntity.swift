@@ -16,6 +16,43 @@ enum ReferenceEntityRuntime {
     static var currentUserLocation: () -> CLLocation? = {
         AppContext.shared.geolocationManager.location
     }
+
+    static var storeReferenceInCloud: (ReferenceEntity) -> Void = { entity in
+        AppContext.shared.cloudKeyValueStore.store(referenceEntity: entity)
+    }
+
+    static var updateReferenceInCloud: (ReferenceEntity) -> Void = { entity in
+        AppContext.shared.cloudKeyValueStore.update(referenceEntity: entity)
+    }
+
+    static var removeReferenceFromCloud: (ReferenceEntity) -> Void = { entity in
+        AppContext.shared.cloudKeyValueStore.remove(referenceEntity: entity)
+    }
+
+    static var setDestinationTemporaryIfMatchingID: (String) throws -> Bool = { id in
+        guard let destination = AppContext.shared.spatialDataContext.destinationManager.destination,
+              destination.id == id else {
+            return false
+        }
+
+        try destination.setTemporary(true)
+        return true
+    }
+
+    static var clearDestinationForCacheReset: () throws -> Void = {
+        try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "settings.clear_cache")
+    }
+
+    static var removeCalloutHistoryForMarkerID: (String) -> Void = { markerID in
+        AppContext.shared.calloutHistory.remove { callout in
+            if let poiCallout = callout as? POICallout,
+               let calloutMarker = poiCallout.marker {
+                return calloutMarker.id == markerID
+            }
+
+            return false
+        }
+    }
 }
 
 enum ReferenceEntityError: Error {
@@ -397,7 +434,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             }
             
             if !temporary {
-                AppContext.shared.cloudKeyValueStore.store(referenceEntity: reference)
+                ReferenceEntityRuntime.storeReferenceInCloud(reference)
                 
                 let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
                 
@@ -489,7 +526,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             // Update the lastSelectedDate to support recents
             try entity.updateLastSelectedDate(to: now)
             
-            AppContext.shared.cloudKeyValueStore.update(referenceEntity: entity)
+            ReferenceEntityRuntime.updateReferenceInCloud(entity)
             
             let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
             GDATelemetry.track("markers.edited", with: ["includesAnnotation": includesAnnotation, "context": context ?? "none"])
@@ -562,7 +599,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             }
             
             if !temporary {
-                AppContext.shared.cloudKeyValueStore.store(referenceEntity: reference)
+                ReferenceEntityRuntime.storeReferenceInCloud(reference)
                 
                 let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
                 GDATelemetry.track("markers.added", with: ["type": "generic_location", "includesAnnotation": includesAnnotation, "context": context ?? "none"])
@@ -598,8 +635,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Parameter id: ID of the reference entity to remove
     /// - Throws: If the database/cache cannot be accessed or no reference entity exists for the provided ID
     static func remove(id: String) throws {
-        if let destination = AppContext.shared.spatialDataContext.destinationManager.destination, destination.id == id {
-            try destination.setTemporary(true)
+        if try ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID(id) {
             ReferenceEntity.notifyEntityRemoved(id)
             return
         }
@@ -613,19 +649,13 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         // If the marker doesn't have an underlying entity it refers to, remove from the
         // callout history so there isn't an empty card in the history
         if entity.entityKey == nil {
-            AppContext.shared.calloutHistory.remove { (callout) -> Bool in
-                if let callout = callout as? POICallout, let calloutMarker = callout.marker {
-                    return calloutMarker.id == entity.id
-                }
-                
-                return false
-            }
+            ReferenceEntityRuntime.removeCalloutHistoryForMarkerID(entity.id)
         }
         
         // Remove the marker from corresponding routes
         try Route.removeWaypointFromAllRoutes(markerId: id)
         
-        AppContext.shared.cloudKeyValueStore.remove(referenceEntity: entity)
+        ReferenceEntityRuntime.removeReferenceFromCloud(entity)
         
         try database.write {
             database.delete(entity)
@@ -642,7 +672,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Throws: If the database/cache cannot be accessed or any reference entity cannot be removed
     static func removeAll() throws {
         // Remove the destination
-        try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "settings.clear_cache")
+        try ReferenceEntityRuntime.clearDestinationForCacheReset()
         
         let database = try RealmHelper.getDatabaseRealm()
         
@@ -653,7 +683,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         for entity in database.objects(ReferenceEntity.self) {
             let id = entity.id
             
-            AppContext.shared.cloudKeyValueStore.remove(referenceEntity: entity)
+            ReferenceEntityRuntime.removeReferenceFromCloud(entity)
             
             try database.write {
                 database.delete(entity)
