@@ -26,6 +26,7 @@
 		281A9A9A23AAAF17008E548D /* GenericSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281A9A9923AAAF17008E548D /* GenericSound.swift */; };
 		281BCBFF262638290031298D /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 281BCBFE262638290031298D /* RealmSwift */; };
 		A1C0D0012F0A000100000001 /* SSDataStructures in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0032F0A000100000001 /* SSDataStructures */; };
+		A1C0D0042F0A000100000001 /* SSGeo in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0052F0A000100000001 /* SSGeo */; };
 		281CB8722016692F0059B8C4 /* CalloutHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB8712016692F0059B8C4 /* CalloutHistory.swift */; };
 		281CB879201691D40059B8C4 /* StringCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB878201691D40059B8C4 /* StringCallout.swift */; };
 		281CB87B201699760059B8C4 /* DestinationCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB87A201699760059B8C4 /* DestinationCallout.swift */; };
@@ -1570,6 +1571,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1C0D0012F0A000100000001 /* SSDataStructures in Frameworks */,
+				A1C0D0042F0A000100000001 /* SSGeo in Frameworks */,
 				283B0307264B03920092F74F /* SDWebImageSwiftUI in Frameworks */,
 				2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
 				286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */,
@@ -4362,6 +4364,7 @@
 			name = Soundscape;
 			packageProductDependencies = (
 				A1C0D0032F0A000100000001 /* SSDataStructures */,
+				A1C0D0052F0A000100000001 /* SSGeo */,
 				286F409C2624FF6000C3F80B /* NVActivityIndicatorView */,
 				2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
 				2866A7CE2625028600EBA2D8 /* Reachability */,
@@ -5897,6 +5900,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A1C0D0022F0A000100000001 /* XCLocalSwiftPackageReference "../common" */;
 			productName = SSDataStructures;
+		};
+		A1C0D0052F0A000100000001 /* SSGeo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0D0022F0A000100000001 /* XCLocalSwiftPackageReference "../common" */;
+			productName = SSGeo;
 		};
 		281BCBFE262638290031298D /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;

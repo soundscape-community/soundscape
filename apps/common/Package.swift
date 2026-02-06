@@ -8,14 +8,25 @@ let package = Package(
             name: "SSDataStructures",
             targets: ["SSDataStructures"]
         ),
+        .library(
+            name: "SSGeo",
+            targets: ["SSGeo"]
+        ),
     ],
     targets: [
         .target(
             name: "SSDataStructures"
         ),
+        .target(
+            name: "SSGeo"
+        ),
         .testTarget(
             name: "SSDataStructuresTests",
             dependencies: ["SSDataStructures"]
+        ),
+        .testTarget(
+            name: "SSGeoTests",
+            dependencies: ["SSGeo"]
         ),
     ]
 )

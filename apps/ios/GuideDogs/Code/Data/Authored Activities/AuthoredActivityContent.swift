@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import CoreGPX
+import SSGeo
 
 // MARK: - Data Models
 
@@ -29,8 +30,13 @@ struct ActivityWaypointAudioClip {
 }
 
 struct ActivityWaypoint {
-    /// Location of the waypoint (GPX: wptType:lat/lon)
-    let coordinate: CLLocationCoordinate2D
+    /// Portable location payload for cross-platform data boundaries.
+    let location: SSGeoLocation
+
+    /// Convenience coordinate view used by existing iOS call sites.
+    var coordinate: CLLocationCoordinate2D {
+        location.coordinate.clCoordinate
+    }
     
     /// Name or title for the geolocation represented by this waypoint (GPX: wptType:name)
     let name: String?
@@ -53,15 +59,15 @@ struct ActivityWaypoint {
     /// Initializer for waypoints with default values for optional properties.
     ///
     /// - Parameters:
-    ///   - coordinate: Location of the waypoint
+    ///   - location: Location payload of the waypoint
     ///   - name: Name of the waypoint
     ///   - description: Description of the waypoint displayed to users
     ///   - departureCallout: Callout that is announced when the user first departs for the waypoint
     ///   - arrivalCallout: Callout that is announced when the user arrives at the waypoint
     ///   - images: Images associated with the waypoint
     ///   - audioClips: Audio clips associated with the waypoint
-    init(coordinate: CLLocationCoordinate2D, name: String? = nil, description: String? = nil, departureCallout: String? = nil, arrivalCallout: String? = nil, images: [ActivityWaypointImage] = [], audioClips: [ActivityWaypointAudioClip] = []) {
-        self.coordinate = coordinate
+    init(location: SSGeoLocation, name: String? = nil, description: String? = nil, departureCallout: String? = nil, arrivalCallout: String? = nil, images: [ActivityWaypointImage] = [], audioClips: [ActivityWaypointAudioClip] = []) {
+        self.location = location
         self.name = name
         self.description = description
         self.departureCallout = departureCallout
@@ -69,13 +75,30 @@ struct ActivityWaypoint {
         self.images = images
         self.audioClips = audioClips
     }
+
+    init(coordinate: CLLocationCoordinate2D, name: String? = nil, description: String? = nil, departureCallout: String? = nil, arrivalCallout: String? = nil, images: [ActivityWaypointImage] = [], audioClips: [ActivityWaypointAudioClip] = []) {
+        self.init(
+            location: SSGeoLocation(coordinate: coordinate.ssGeoCoordinate),
+            name: name,
+            description: description,
+            departureCallout: departureCallout,
+            arrivalCallout: arrivalCallout,
+            images: images,
+            audioClips: audioClips
+        )
+    }
 }
 
 class ActivityPOI {
     let id = UUID()
-    
-    /// Location of the waypoint (GPX: wptType:lat/lon)
-    let coordinate: CLLocationCoordinate2D
+
+    /// Portable location payload for cross-platform data boundaries.
+    let location: SSGeoLocation
+
+    /// Convenience coordinate view used by existing iOS call sites.
+    var coordinate: CLLocationCoordinate2D {
+        location.coordinate.clCoordinate
+    }
     
     /// Name or title for the geolocation represented by this waypoint (GPX: wptType:name)
     let name: String
@@ -83,10 +106,18 @@ class ActivityPOI {
     /// Annotation for the geolocation represented by this waypoint (GPX: wptType:desc)
     let description: String?
     
-    init(coordinate: CLLocationCoordinate2D, name: String, description: String?) {
-        self.coordinate = coordinate
+    init(location: SSGeoLocation, name: String, description: String?) {
+        self.location = location
         self.name = name
         self.description = description
+    }
+
+    convenience init(coordinate: CLLocationCoordinate2D, name: String, description: String?) {
+        self.init(
+            location: SSGeoLocation(coordinate: coordinate.ssGeoCoordinate),
+            name: name,
+            description: description
+        )
     }
 }
 
@@ -167,6 +198,14 @@ fileprivate extension GPXWaypoint {
             return nil
         }
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
+    var ssGeoLocation: SSGeoLocation? {
+        guard let coordinate else {
+            return nil
+        }
+
+        return SSGeoLocation(coordinate: coordinate.ssGeoCoordinate)
     }
 }
 
@@ -250,12 +289,12 @@ extension AuthoredActivityContent {
             }
             
             let pois: [ActivityPOI] = gpx.waypoints.compactMap {
-                guard let coord = $0.coordinate else {
+                guard let location = $0.ssGeoLocation else {
                     // skip waypoints without a location (why does GPX allow this waypoints to lack a location?)
                     // TODO: maybe log a warning
                     return nil
                 }
-                return ActivityPOI(coordinate: coord, name: $0.name ?? "Unlabeled POI", description: $0.desc)
+                return ActivityPOI(location: location, name: $0.name ?? "Unlabeled POI", description: $0.desc)
             }
             
             return AuthoredActivityContent(id: id,
@@ -319,11 +358,11 @@ extension AuthoredActivityContent {
             // Coordinate shouldn't be nil, but CoreGPX allows it to be so.
             // For now we just skip those points
             // TODO: there's probably a better way to enforce this
-            guard let coordinate = wpt.coordinate else {
+            guard let location = wpt.ssGeoLocation else {
                 return nil
             }
             
-            return ActivityWaypoint(coordinate: coordinate,
+            return ActivityWaypoint(location: location,
                                     name: wpt.name,
                                     description: wpt.desc,
                                     departureCallout: departure,
@@ -331,6 +370,18 @@ extension AuthoredActivityContent {
                                     images: parsedImages,
                                     audioClips: parsedAudioClips)
         }
+    }
+}
+
+private extension SSGeoCoordinate {
+    var clCoordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
+
+private extension CLLocationCoordinate2D {
+    var ssGeoCoordinate: SSGeoCoordinate {
+        SSGeoCoordinate(latitude: latitude, longitude: longitude)
     }
 }
 

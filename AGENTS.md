@@ -4,7 +4,7 @@ This file is the canonical instruction source for coding agents in this reposito
 
 ## Repository Map
 - `apps/ios/`: iOS app (`GuideDogs.xcworkspace`, app code, unit tests, CI scripts).
-- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SSDataStructures`).
+- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SSDataStructures`, `SSGeo`).
 - `svcs/data/`: open-source data-plane ingestion/tile tooling (Python, Docker, SQL, Helm chart assets).
 - `docs/`: project documentation.
 - `.github/workflows/`: CI definitions (use these as command truth for automation-aligned docs).
@@ -17,9 +17,11 @@ This file is the canonical instruction source for coding agents in this reposito
 - `AudioPlaybackActor` provides async audio playback control for the coordinator and wraps `AudioEngine` interactions.
 - `HandledEventAction` is the behavior-to-processor contract for callout playback, event fan-out, and interrupt requests.
 - `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
+- `SSGeo` now lives in `apps/common` and provides portable location payloads plus basic geodesic math without `CoreLocation`.
 
 ## Modularization Status (Phase 1)
 - First extraction is complete: core data-structure types moved from `apps/ios` into `apps/common/Sources/SSDataStructures`.
+- Shared geo primitives extraction is complete: portable coordinate/location/math types now live in `apps/common/Sources/SSGeo`.
 - Boundary rule: keep `apps/common` platform-agnostic. Do not import Apple UI/platform frameworks in `apps/common/Sources`.
 - Boundary enforcement script: `bash apps/common/Scripts/check_forbidden_imports.sh`.
 - Package tests for extracted module: `swift test --package-path apps/common`.
@@ -83,10 +85,39 @@ xcodebuild test-without-building -workspace GuideDogs.xcworkspace \
 swift build --package-path tools/SSIndexAnalyzer
 ```
 
+- Export a timestamped report for later chats/review (writes to `docs/plans/artifacts/dependency-analysis/` and refreshes `latest.txt`):
+
+```bash
+bash tools/SSIndexAnalyzer/Scripts/export_analysis_report.sh
+```
+
 - Run against latest `GuideDogs` DerivedData index store (auto-discovery defaults):
 
 ```bash
 swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --top 40 --min-count 2 --external-top 20
+```
+
+- Deterministic index freshness workflow (recommended before exporting a report):
+
+```bash
+cd apps/ios
+SIMULATOR_ID=$(xcrun simctl list devices available | rg "iPhone" | head -n 1 | sed -E 's/.*\(([0-9A-F-]+)\).*/\1/')
+DESTINATION="platform=iOS Simulator,id=${SIMULATOR_ID}"
+xcodebuild build-for-testing -workspace GuideDogs.xcworkspace \
+  -scheme Soundscape \
+  -destination "$DESTINATION" \
+  -derivedDataPath /tmp/ss-index-derived \
+  CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+
+cd ../..
+bash tools/SSIndexAnalyzer/Scripts/export_analysis_report.sh \
+  --store-path /tmp/ss-index-derived/Index.noindex/DataStore
+```
+
+- Override analyzer output scope by passing args through the export script:
+
+```bash
+bash tools/SSIndexAnalyzer/Scripts/export_analysis_report.sh --top 50 --min-count 3 --file-top 50 --external-top 30
 ```
 
 - Typical explicit usage (if auto-discovery is not desired):
