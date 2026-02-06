@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 @MainActor
 struct LocationDetailLocalizedLabel {
@@ -37,13 +38,14 @@ struct LocationDetailLocalizedLabel {
         return LocalizedLabel(text: detail.displayAddress, accessibilityText: nil)
     }
     
-    func distance(from userLocation: CLLocation?) -> LocalizedLabel? {
+    func distance(from userLocation: SSGeoLocation?) -> LocalizedLabel? {
         var text: String?
         var accessibilityText: String?
         
         if let userLocation = userLocation {
-            let distance = detail.location.coordinate.distance(from: userLocation.coordinate)
-            let bearing = userLocation.bearing(to: detail.location)
+            let detailCoordinate = detail.location.coordinate.ssGeoCoordinate
+            let distance = userLocation.coordinate.distance(to: detailCoordinate)
+            let bearing = userLocation.coordinate.clCoordinate.bearing(to: detail.location.coordinate)
             
             if distance > 0, bearing >= 0, let direction = CardinalDirection(direction: bearing) {
                 // "30 m・NW"
@@ -69,6 +71,10 @@ struct LocationDetailLocalizedLabel {
             // Failed to initialize distance label
             return nil
         }
+    }
+
+    func distance(from userLocation: CLLocation?) -> LocalizedLabel? {
+        distance(from: userLocation?.ssGeoLocation)
     }
     
     var annotation: LocalizedLabel {

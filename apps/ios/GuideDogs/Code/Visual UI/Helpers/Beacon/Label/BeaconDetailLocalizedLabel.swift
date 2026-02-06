@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import SSGeo
 
 @MainActor
 struct BeaconDetailLocalizedLabel {
@@ -73,11 +74,11 @@ struct BeaconDetailLocalizedLabel {
         return LocalizedLabel(text: text, accessibilityText: accessibilityText)
     }
     
-    func distance(from userLocation: CLLocation?) -> LocalizedLabel {
+    func distance(from userLocation: SSGeoLocation?) -> LocalizedLabel {
         var text: String
         var accessibilityText: String?
         
-        if let userLocation = userLocation, AppContext.shared.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation) {
+        if let userLocation = userLocation, AppContext.shared.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation.clLocation) {
             text = GDLocalizedString("poi_screen.section_header.nearby")
         } else if let dLabel = detail.locationDetail.labels.distance(from: userLocation) {
             text = dLabel.text
@@ -89,11 +90,15 @@ struct BeaconDetailLocalizedLabel {
         return LocalizedLabel(text: text, accessibilityText: accessibilityText)
     }
     
-    func moreInformation(userLocation: CLLocation?) -> LocalizedLabel {
+    func distance(from userLocation: CLLocation?) -> LocalizedLabel {
+        distance(from: userLocation?.ssGeoLocation)
+    }
+    
+    func moreInformation(userLocation: SSGeoLocation?) -> LocalizedLabel {
         var text: String
         var accessibilityText: String?
             
-        if let userLocation = userLocation, AppContext.shared.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation) {
+        if let userLocation = userLocation, AppContext.shared.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation.clLocation) {
             // "<Some Place> is nearby. Street address is <Some Address>"
             text = GDLocalizedString("directions.name_is_nearby_street_address", detail.locationDetail.displayName, detail.locationDetail.displayAddress)
         } else if let dLabel = detail.locationDetail.labels.distance(from: userLocation) {
@@ -106,6 +111,10 @@ struct BeaconDetailLocalizedLabel {
         }
             
         return LocalizedLabel(text: text, accessibilityText: accessibilityText)
+    }
+    
+    func moreInformation(userLocation: CLLocation?) -> LocalizedLabel {
+        moreInformation(userLocation: userLocation?.ssGeoLocation)
     }
     
 }

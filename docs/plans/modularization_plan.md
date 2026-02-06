@@ -52,6 +52,7 @@ Phase 1 complete:
 - 2026-02-06: Migrated additional non-UI runtime distance paths in `Sensors` (`GPXSimulator`, geolocation filters), `Audio` (localized/proximity beacon distance), and core app extensions (`Array+POI`, `CoreLocation+Extensions`) to SSGeo-backed coordinate distance helpers.
 - 2026-02-06: Migrated concrete UI/runtime callers that still used direct `CLLocation.distance(from:)` (`LocationDetailLocalizedLabel`, NaviLens integrations, Route/NaviLens recommenders) to SSGeo-backed coordinate distance helpers while preserving existing label/output behavior.
 - 2026-02-06: Migrated remaining hot-path coordinate distance calculations in `GeometryUtils`, `RoadAdjacentDataView`, and `AutoCalloutGenerator` to explicit `SSGeoCoordinate.distance(to:)` usage, reducing dependence on CoreLocation extension distance wrappers.
+- 2026-02-06: Added SSGeo-first label helpers in `LocationDetailLocalizedLabel` and `BeaconDetailLocalizedLabel` (`SSGeoLocation` inputs with `CLLocation` compatibility overloads) to keep UI geospatial formatting logic migration-friendly while preserving current caller APIs.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
