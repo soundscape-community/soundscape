@@ -136,7 +136,7 @@ struct LocationDetail {
             return nil
         }
         
-        guard AppContext.shared.spatialDataContext.destinationManager.destinationKey == marker.id else {
+        guard UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.destinationKey == marker.id else {
             return nil
         }
         
@@ -381,7 +381,7 @@ extension LocationDetail {
             let location: CLLocation
             let centerLocation = entity.centroidLocation
             
-            if let userLocation = AppContext.shared.geolocationManager.location {
+            if let userLocation = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() {
                 location = entity.closestLocation(from: userLocation)
             } else {
                 location = entity.centroidLocation
@@ -441,7 +441,7 @@ extension LocationDetail {
             return value
         }
         
-        guard let userLocation = AppContext.shared.geolocationManager.location else {
+        guard let userLocation = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
             // no-op
             return value
         }

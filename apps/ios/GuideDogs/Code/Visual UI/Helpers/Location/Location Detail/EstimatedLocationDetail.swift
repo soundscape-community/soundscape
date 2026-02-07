@@ -26,7 +26,9 @@ struct EstimatedLocationDetail {
     static func make(for value: LocationDetail, completion: @escaping (EstimatedLocationDetail) -> Void) {
         // Search for an OSM polygon containing the given location
         // using entities that are closest to the given location
-        let dataView = AppContext.shared.spatialDataContext.getDataView(for: value.location)
+        let dataView = UIRuntimeProviderRegistry.providers
+            .uiSpatialDataContext()?
+            .getDataView(for: value.location, searchDistance: SpatialDataContext.initialPOISearchDistance)
         let nearbyEntities = dataView?.pois.sorted(by: Sort.distance(origin: value.location), maxLength: 20)
         
         let atEntity = nearbyEntities?.first(where: { $0.contains(location: value.location.coordinate) })
@@ -42,7 +44,7 @@ struct EstimatedLocationDetail {
             } else if let streetName = address?.streetName, streetName.isEmpty == false {
                 // Save estimated value
                 estimatedName = GDLocalizedString("directions.near_name", streetName)
-            } else if let result = AppContext.shared.reverseGeocoder.reverseGeocode(value.location) {
+            } else if let result = UIRuntimeProviderRegistry.providers.uiReverseGeocode(value.location) {
                 // Apple's geocoder didn't get us a result, so we are falling back to our geocoder
                 switch result {
                 case is GenericGeocoderResult:

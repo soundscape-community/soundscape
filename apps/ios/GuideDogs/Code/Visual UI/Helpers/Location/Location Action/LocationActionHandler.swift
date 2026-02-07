@@ -86,15 +86,19 @@ struct LocationActionHandler {
     }
     
     static private func beacon(entityId: String) throws {
-        let manager = AppContext.shared.spatialDataContext.destinationManager
-        let userLocation = AppContext.shared.geolocationManager.location
+        guard let manager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+            throw LocationActionError.failedToSetBeacon
+        }
+        let userLocation = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         try manager.setDestination(entityKey: entityId, enableAudio: true, userLocation: userLocation, estimatedAddress: nil, logContext: "location_action")
     }
     
     static private func beacon(location: CLLocation, name: String, address: String?) throws {
-        let manager = AppContext.shared.spatialDataContext.destinationManager
-        let userLocation = AppContext.shared.geolocationManager.location
+        guard let manager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+            throw LocationActionError.failedToSetBeacon
+        }
+        let userLocation = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         let gLocation = GenericLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude, name: name)
         try manager.setDestination(location: gLocation, address: address, enableAudio: true, userLocation: userLocation, logContext: "location_action")
@@ -103,8 +107,13 @@ struct LocationActionHandler {
     static func preview(locationDetail: LocationDetail, completion: @escaping PreviewCompletion) -> Progress? {
         // Save selection
         locationDetail.updateLastSelectedDate()
-        
-        return AppContext.shared.spatialDataContext.updateSpatialData(at: locationDetail.location) {
+
+        guard let spatialDataContext = UIRuntimeProviderRegistry.providers.uiSpatialDataContext() else {
+            completion(.failure(.failedToStartPreview))
+            return nil
+        }
+
+        return spatialDataContext.updateSpatialData(at: locationDetail.location) {
             guard let intersection = ReverseGeocoderContext.closestIntersection(for: locationDetail) else {
                 GDATelemetry.track("preview.error.closest_intersection_not_found")
                 completion(.failure(.failedToStartPreview))
@@ -118,12 +127,18 @@ struct LocationActionHandler {
                 completion(.failure(.failedToStartPreview))
                 return
             }
+
+            guard let geolocationManager = UIRuntimeProviderRegistry.providers.uiGeolocationManager(),
+                  let audioEngine = UIRuntimeProviderRegistry.providers.uiAudioEngine() else {
+                completion(.failure(.failedToStartPreview))
+                return
+            }
             
             let behavior = PreviewBehavior(at: decisionPoint,
                                            from: locationDetail,
-                                           geolocationManager: AppContext.shared.geolocationManager,
-                                           destinationManager: AppContext.shared.spatialDataContext.destinationManager,
-                                           audioEngine: AppContext.shared.audioEngine)
+                                           geolocationManager: geolocationManager,
+                                           destinationManager: spatialDataContext.destinationManager,
+                                           audioEngine: audioEngine)
             
             completion(.success(behavior))
         }

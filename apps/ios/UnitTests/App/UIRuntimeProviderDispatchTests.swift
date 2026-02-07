@@ -50,6 +50,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var checkServiceConnectionCallCount = 0
         var spatialDataLookupCount = 0
         var motionActivityLookupCount = 0
+        var geolocationManagerLookupCount = 0
+        var audioEngineLookupCount = 0
+        var reverseGeocodeLookupCount = 0
+        var reverseGeocodeLocations: [CLLocation] = []
         var setDeviceManagerDelegateCallCount = 0
         var devices: [Device] = []
         var addedDeviceIDs: [UUID] = []
@@ -173,6 +177,22 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiCurrentUserLocation() -> CLLocation? {
             currentUserLocation
+        }
+
+        func uiGeolocationManager() -> GeolocationManagerProtocol? {
+            geolocationManagerLookupCount += 1
+            return nil
+        }
+
+        func uiAudioEngine() -> AudioEngineProtocol? {
+            audioEngineLookupCount += 1
+            return nil
+        }
+
+        func uiReverseGeocode(_ location: CLLocation) -> ReverseGeocoderResult? {
+            reverseGeocodeLookupCount += 1
+            reverseGeocodeLocations.append(location)
+            return nil
         }
 
         func uiCoreLocationServicesEnabled() -> Bool {
@@ -305,6 +325,9 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         UIRuntimeProviderRegistry.providers.uiProcessEvent(BehaviorActivatedEvent())
         _ = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
+        _ = UIRuntimeProviderRegistry.providers.uiGeolocationManager()
+        _ = UIRuntimeProviderRegistry.providers.uiAudioEngine()
+        _ = UIRuntimeProviderRegistry.providers.uiReverseGeocode(CLLocation(latitude: 47.6205, longitude: -122.3493))
         XCTAssertFalse(UIRuntimeProviderRegistry.providers.uiCoreLocationServicesEnabled())
         XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus(), .denied)
         _ = UIRuntimeProviderRegistry.providers.uiIsOffline()
@@ -351,6 +374,14 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.checkServiceConnectionCallCount, 1)
         XCTAssertEqual(provider.spatialDataLookupCount, 1)
         XCTAssertEqual(provider.motionActivityLookupCount, 1)
+        XCTAssertEqual(provider.geolocationManagerLookupCount, 1)
+        XCTAssertEqual(provider.audioEngineLookupCount, 1)
+        XCTAssertEqual(provider.reverseGeocodeLookupCount, 1)
+        XCTAssertEqual(provider.reverseGeocodeLocations.count, 1)
+        if let reverseGeocodeLocation = provider.reverseGeocodeLocations.first {
+            XCTAssertEqual(reverseGeocodeLocation.coordinate.latitude, 47.6205, accuracy: 0.0001)
+            XCTAssertEqual(reverseGeocodeLocation.coordinate.longitude, -122.3493, accuracy: 0.0001)
+        }
         wait(for: [serviceCheckExpectation, bleAuthorizationExpectation], timeout: 1.0)
     }
 }

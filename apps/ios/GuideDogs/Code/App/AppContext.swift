@@ -428,6 +428,9 @@ protocol UIRuntimeProviding {
     func uiDeactivateCustomBehavior()
     func uiProcessEvent(_ event: Event)
     func uiCurrentUserLocation() -> CLLocation?
+    func uiGeolocationManager() -> GeolocationManagerProtocol?
+    func uiAudioEngine() -> AudioEngineProtocol?
+    func uiReverseGeocode(_ location: CLLocation) -> ReverseGeocoderResult?
     func uiCoreLocationServicesEnabled() -> Bool
     func uiCoreLocationAuthorizationStatus() -> CoreLocationAuthorizationStatus
     func uiIsOffline() -> Bool
@@ -603,6 +606,21 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         return nil
     }
 
+    func uiGeolocationManager() -> GeolocationManagerProtocol? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func uiAudioEngine() -> AudioEngineProtocol? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func uiReverseGeocode(_ location: CLLocation) -> ReverseGeocoderResult? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
     func uiCoreLocationServicesEnabled() -> Bool {
         debugAssertUnconfigured(#function)
         return false
@@ -766,6 +784,18 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiCurrentUserLocation() -> CLLocation? {
         context.geolocationManager.location
+    }
+
+    func uiGeolocationManager() -> GeolocationManagerProtocol? {
+        context.geolocationManager
+    }
+
+    func uiAudioEngine() -> AudioEngineProtocol? {
+        context.audioEngine
+    }
+
+    func uiReverseGeocode(_ location: CLLocation) -> ReverseGeocoderResult? {
+        context.reverseGeocoder.reverseGeocode(location)
     }
 
     func uiCoreLocationServicesEnabled() -> Bool {
