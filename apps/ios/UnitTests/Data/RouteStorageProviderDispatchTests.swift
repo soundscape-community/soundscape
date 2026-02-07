@@ -15,10 +15,12 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     final class MockRouteSpatialDataStore: RouteSpatialDataStore {
         var referenceEntitiesByKey: [String: ReferenceEntity] = [:]
         var routesToReturn: [Route] = []
+        var routesByKey: [String: Route] = [:]
         var routesContainingToReturn: [String: [Route]] = [:]
 
         private(set) var referenceEntityByKeyCallKeys: [String] = []
         private(set) var routesCallCount = 0
+        private(set) var routeByKeyCallKeys: [String] = []
         private(set) var routesContainingCallKeys: [String] = []
 
         func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
@@ -29,6 +31,11 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func routes() -> [Route] {
             routesCallCount += 1
             return routesToReturn
+        }
+
+        func routeByKey(_ key: String) -> Route? {
+            routeByKeyCallKeys.append(key)
+            return routesByKey[key]
         }
 
         func routesContaining(markerId: String) -> [Route] {
@@ -74,6 +81,37 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         try Route.deleteAll()
 
         XCTAssertEqual(store.routesCallCount, 1)
+    }
+
+    func testEncodeFromDetailUsesInjectedSpatialStoreRouteLookup() throws {
+        let route = try createPersistedRoute(name: "EncodeRoute")
+        let store = MockRouteSpatialDataStore()
+        store.routesByKey[route.id] = route
+        RouteSpatialDataStoreRegistry.configure(with: store)
+
+        let detail = RouteDetail(source: .database(id: route.id))
+        let data = RouteParameters.encode(from: detail, context: .backup)
+
+        XCTAssertNotNil(data)
+        XCTAssertEqual(store.routeByKeyCallKeys, [route.id])
+    }
+
+    func testRouteInitFromParametersUsesInjectedSpatialStoreMarkerLookup() throws {
+        let route = try createPersistedRoute(name: "InitFromParametersRoute")
+        let firstMarkerID = route.waypoints.ordered.first?.markerId
+        XCTAssertNotNil(firstMarkerID)
+
+        guard let parameters = RouteParameters(route: route, context: .backup) else {
+            XCTFail("Expected route parameters to initialize")
+            return
+        }
+
+        let store = MockRouteSpatialDataStore()
+        RouteSpatialDataStoreRegistry.configure(with: store)
+
+        _ = Route(from: parameters)
+
+        XCTAssertEqual(store.referenceEntityByKeyCallKeys.first, firstMarkerID)
     }
 
     private func createPersistedRoute(name: String) throws -> Route {

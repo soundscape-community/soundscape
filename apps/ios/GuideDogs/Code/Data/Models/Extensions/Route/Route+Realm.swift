@@ -14,6 +14,7 @@ import CoreLocation
 protocol RouteSpatialDataStore {
     func referenceEntityByKey(_ key: String) -> ReferenceEntity?
     func routes() -> [Route]
+    func routeByKey(_ key: String) -> Route?
     func routesContaining(markerId: String) -> [Route]
 }
 
@@ -25,6 +26,10 @@ struct DefaultRouteSpatialDataStore: RouteSpatialDataStore {
 
     func routes() -> [Route] {
         SpatialDataCache.routes()
+    }
+
+    func routeByKey(_ key: String) -> Route? {
+        SpatialDataCache.routeByKey(key)
     }
 
     func routesContaining(markerId: String) -> [Route] {

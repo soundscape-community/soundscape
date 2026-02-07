@@ -175,6 +175,9 @@ Phase 1 complete:
 - 2026-02-07: Added `RouteStorageProviderDispatchTests` to verify route storage seam dispatch (`referenceEntityByKey`, `routesContaining`) and provider reset isolation.
 - 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`), with all new/affected data runtime tests passing.
 - 2026-02-07: Updated `AppContext` coupling snapshot after route-storage seam (unchanged singleton usage profile): `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-07: Extended `RouteSpatialDataStore` with route lookup (`routeByKey`) and migrated additional route call sites away from static cache usage: `Route.init(from:)` first-waypoint marker lookup in `Route.swift` and route serialization lookup in `RouteParameters+Codable.encode(from:detail,context:)`.
+- 2026-02-07: Extended `RouteStorageProviderDispatchTests` with route serialization/init dispatch coverage (`testEncodeFromDetailUsesInjectedSpatialStoreRouteLookup`, `testRouteInitFromParametersUsesInjectedSpatialStoreMarkerLookup`) and route-list dispatch coverage (`testDeleteAllUsesInjectedSpatialStoreRoutesList`).
+- 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`5` tests); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
