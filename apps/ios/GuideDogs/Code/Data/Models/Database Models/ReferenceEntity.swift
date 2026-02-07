@@ -88,7 +88,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             return nil
         }
         
-        return SpatialDataCache.searchByKey(key: key)
+        return SpatialDataStoreRegistry.store.searchByKey(key)
     }()
     
     // MARK: Computed Properties
@@ -349,7 +349,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     // MARK: Static Methods
     
     static func add(detail: LocationDetail, telemetryContext: String?, isTemporary: Bool = false, notify: Bool = true) throws -> String {
-        if let id = detail.markerId, let marker = SpatialDataCache.referenceEntityByKey(id) {
+        if let id = detail.markerId, let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) {
             try update(entity: marker, location: detail.location.coordinate, nickname: detail.nickname, address: detail.estimatedAddress, annotation: detail.annotation, context: telemetryContext, isTemp: isTemporary)
             
             return id
@@ -385,14 +385,14 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             let database = try RealmHelper.getDatabaseRealm()
             let cache = try RealmHelper.getCacheRealm()
             
-            if let existingMarker = SpatialDataCache.referenceEntityByEntityKey(entityKey) {
+            if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey) {
                 // Update and return the existing marker
                 try update(entity: existingMarker, nickname: nickname, address: estimatedAddress, annotation: annotation, context: context, isTemp: temporary)
                 
                 return existingMarker.id
             }
             
-            guard let entity = SpatialDataCache.searchByKey(key: entityKey) else {
+            guard let entity = SpatialDataStoreRegistry.store.searchByKey(entityKey) else {
                 // Return if entity does not exist (or doesn't exist in Realm)
                 throw ReferenceEntityError.entityDoesNotExist
             }
@@ -551,7 +551,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             // match, then we can also update the marker to set `isTemp` to false. This covers the only edge case where
             // we allow permanent markers to become temporary: when a marker is deleted and there is currently a beacon
             // set on the location of that marker.
-            if let existingMarker = SpatialDataCache.referenceEntityByGenericLocation(location, isTemp: nil) {
+            if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location) {
                 let tempStatusMatches = existingMarker.isTemp == temporary
                 let propertiesMatch = existingMarker.nickname == nickname &&
                                       existingMarker.estimatedAddress == estimatedAddress &&

@@ -196,6 +196,9 @@ Phase 1 complete:
 - 2026-02-07: Extended `SpatialDataStore` with generic-location + temporary-marker operations (`referenceEntityByGenericLocation`, `addTemporaryReferenceEntity` overloads, `removeAllTemporaryReferenceEntities`) and updated `SpatialDataDestinationEntityStore` to delegate through `SpatialDataStoreRegistry` for both destination reads and temporary marker mutations.
 - 2026-02-07: Extended `RouteStorageProviderDispatchTests` with additional storage dispatch coverage (`testSpatialDataStoreReferenceEntityByGenericLocationDispatchesToInjectedStore`, `testSpatialDataStoreTemporaryReferenceEntityOperationsDispatchToInjectedStore`) and validated route add/mutation dispatch (`testRouteAddUsesInjectedSpatialStoreReferenceEntityAdd`).
 - 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`11` tests); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
+- 2026-02-07: Migrated remaining `ReferenceEntity` internal read seams (`getPOI()`, `add(detail:)`, `add(entityKey:...)`, `add(location:...)`) from direct `SpatialDataCache` static lookups to `SpatialDataStoreRegistry.store` dispatch.
+- 2026-02-07: Extended `RouteStorageProviderDispatchTests` with `ReferenceEntity` lookup dispatch coverage (`testReferenceEntityGetPOIUsesInjectedSpatialStoreSearchLookup`, `testReferenceEntityAddEntityKeyUsesInjectedSpatialStoreLookups`, `testReferenceEntityAddLocationUsesInjectedSpatialStoreGenericLocationLookup`).
+- 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`16` tests); full `xcodebuild test-without-building` not rerun in this sub-slice (known baseline full-suite blocker remains simulator audio tests).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -322,7 +325,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 2 seam-carving by introducing equivalent injected storage seams for remaining `ReferenceEntity` mutation operations still internal to model methods (`update`, remove, bulk-remove) where it improves testability and future persistence swap readiness.
-2. Evaluate the next high-leverage boundary move: split `Data` internals into `Domain` vs `Infrastructure` folders in small compile-safe batches now that route/destination/marker runtime seams cover reads and key mutation entry points.
-3. Prepare folder-boundary migration mechanics (including Xcode project/group updates) so `Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, and `Data/Composition` moves can land in small compile-safe batches.
+1. Continue Milestone 2 seam-carving by routing remaining road/intersection/entity graph lookups (`Road`, `Intersection`, `Roundabout`, `GDASpatialDataResultEntity`) through `SpatialDataStoreRegistry` so model-layer read paths no longer call `SpatialDataCache` directly.
+2. After the graph-lookup seam lands, reassess remaining `Data` static cache coupling in `SpatialDataView`/`SpatialDataContext` and decide whether to keep those as infrastructure internals or expose additional protocol operations.
+3. Evaluate the next high-leverage boundary move: split `Data` internals into `Domain` vs `Infrastructure` folders in small compile-safe batches now that route/destination/marker/runtime read seams are broadly in place.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

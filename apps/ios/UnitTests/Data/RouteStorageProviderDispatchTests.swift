@@ -293,6 +293,68 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
     }
 
+    func testReferenceEntityGetPOIUsesInjectedSpatialStoreSearchLookup() {
+        let key = "poi-key"
+        let poi = GenericLocation(lat: 47.6205, lon: -122.3493, name: "POI")
+        poi.key = key
+
+        let store = MockSpatialDataStore()
+        store.searchResultsByKey[key] = poi
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let reference = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493),
+                                        entityKey: key)
+        _ = reference.getPOI()
+
+        XCTAssertEqual(store.searchByKeyCallKeys, [key])
+    }
+
+    func testReferenceEntityAddEntityKeyUsesInjectedSpatialStoreLookups() {
+        let missingKey = "missing-entity-key"
+        let store = MockSpatialDataStore()
+        SpatialDataStoreRegistry.configure(with: store)
+
+        XCTAssertThrowsError(try ReferenceEntity.add(entityKey: missingKey,
+                                                     nickname: nil,
+                                                     estimatedAddress: nil,
+                                                     annotation: nil,
+                                                     temporary: false,
+                                                     context: nil,
+                                                     notify: false)) { error in
+            guard case ReferenceEntityError.entityDoesNotExist = error else {
+                XCTFail("Expected entityDoesNotExist, received: \(error)")
+                return
+            }
+        }
+
+        XCTAssertEqual(store.referenceEntityByEntityKeyCallKeys, [missingKey])
+        XCTAssertEqual(store.searchByKeyCallKeys, [missingKey])
+    }
+
+    func testReferenceEntityAddLocationUsesInjectedSpatialStoreGenericLocationLookup() throws {
+        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Lookup")
+        let existingMarker = ReferenceEntity(coordinate: location.location.coordinate,
+                                             entityKey: nil,
+                                             name: "Existing")
+        existingMarker.nickname = "Existing"
+
+        let key = "\(location.location.coordinate.latitude),\(location.location.coordinate.longitude)"
+        let store = MockSpatialDataStore()
+        store.referenceEntitiesByGenericLocation[key] = existingMarker
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let id = try ReferenceEntity.add(location: location,
+                                         nickname: nil,
+                                         estimatedAddress: nil,
+                                         annotation: nil,
+                                         temporary: true,
+                                         context: "test",
+                                         notify: false)
+
+        XCTAssertEqual(id, existingMarker.id)
+        XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [key])
+    }
+
     func testLocationParametersFetchEntityUsesInjectedSpatialStoreSearchLookup() {
         let lookupID = "osm-lookup-id"
         let locationParameters = LocationParameters(name: "Test Entity",
