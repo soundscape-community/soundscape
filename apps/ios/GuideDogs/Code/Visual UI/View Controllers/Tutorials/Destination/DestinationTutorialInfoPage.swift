@@ -24,7 +24,7 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
         
         pageTextLabel.text = mobilitySkills
         
-        AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
+        UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio()
         
         self.delegate?.resumeBackgroundTrack()
         
@@ -52,7 +52,8 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
     }
     
     private func playCallout() {
-        guard let entity = self.entity, let location = AppContext.shared.geolocationManager.location else {
+        guard let entity = self.entity,
+              let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
             // Return if destination could not be retrieved
             return
         }

@@ -123,24 +123,17 @@ struct BeaconMapCard_Previews: PreviewProvider {
                                        waypoints: waypoints, pois: [])
     }
     
+    static var tourDetail: TourDetail {
+        TourDetail(content: content)
+    }
+
     static var behavior: GuidedTour {
-        let detail = TourDetail(content: content)
-        
-        var state = TourState(id: detail.id)
-        state.totalTime = 60 * 27 + 41
-        state.visited.append(0)
-        state.waypointIndex = 1
-        
-        let behavior = GuidedTour(detail, spatialData: AppContext.shared.spatialDataContext, motion: AppContext.shared.motionActivityContext)
-        
-        behavior.state = state
-        
-        return behavior
+        BeaconMapView_Previews.behavior
     }
     
     static var previews: some View {
         VStack(spacing: 24.0) {
-            BeaconMapCard(style: .tour(detail: behavior.content))
+            BeaconMapCard(style: .tour(detail: tourDetail))
                 .frame(height: 264.0)
                 .cornerRadius(5.0)
         }
@@ -150,7 +143,7 @@ struct BeaconMapCard_Previews: PreviewProvider {
         .environmentObject(previewUserLocationStore)
         
         VStack(spacing: 24.0) {
-            BeaconMapCard(style: .waypoint(detail: WaypointDetail(index: 0, routeDetail: behavior.content)))
+            BeaconMapCard(style: .waypoint(detail: WaypointDetail(index: 0, routeDetail: tourDetail)))
                 .frame(height: 264.0)
                 .cornerRadius(5.0)
         }

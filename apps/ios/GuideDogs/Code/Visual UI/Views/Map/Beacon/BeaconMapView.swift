@@ -94,25 +94,27 @@ struct BeaconMapView_Previews: PreviewProvider {
                                        waypoints: waypoints, pois: [])
     }
     
+    static var tourDetail: TourDetail {
+        TourDetail(content: content)
+    }
+
     static var behavior: GuidedTour {
-        let detail = TourDetail(content: content)
-        
-        var state = TourState(id: detail.id)
+        var state = TourState(id: tourDetail.id)
         state.totalTime = 60 * 27 + 41
         state.visited.append(0)
         state.waypointIndex = 1
-        
-        let behavior = GuidedTour(detail, spatialData: AppContext.shared.spatialDataContext, motion: AppContext.shared.motionActivityContext)
-        
+
+        let behavior = GuidedTour(tourDetail,
+                                  spatialData: AppContext.shared.spatialDataContext,
+                                  motion: AppContext.shared.motionActivityContext)
         behavior.state = state
-        
         return behavior
     }
     
     static var previews: some View {
-        BeaconMapView(style: .tour(detail: behavior.content))
+        BeaconMapView(style: .tour(detail: tourDetail))
             .environmentObject(previewUserLocationStore)
-        BeaconMapView(style: .location(detail: behavior.content.waypoints.first!))
+        BeaconMapView(style: .location(detail: tourDetail.waypoints.first!))
             .environmentObject(previewUserLocationStore)
     }
     

@@ -35,14 +35,14 @@ class DestinationTutorialMutePage: DestinationTutorialPage {
             
             self?.delegate?.pauseBackgroundTrack(nil)
             
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
+            UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio()
                 
             NotificationCenter.default.post(name: NSNotification.Name.enableMagicTap, object: self)
             
             guard !UIDeviceManager.isSimulator else {
                 Task { @MainActor [weak self] in
                     try? await Task.sleep(nanoseconds: 2_000_000_000)
-                    AppContext.shared.eventProcessor.hush()
+                    UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
                     self?.onMagicTapOccurred()
                 }
                 return

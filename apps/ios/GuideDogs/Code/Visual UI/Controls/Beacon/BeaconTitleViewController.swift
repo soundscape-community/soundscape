@@ -263,11 +263,11 @@ class BeaconTitleViewController: UIViewController {
             
             // Stop route or activity
             actions.append(UIAccessibilityCustomAction(name: name, actionHandler: { _ in
-                guard AppContext.shared.eventProcessor.isCustomBehaviorActive else {
+                guard UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive() else {
                     return false
                 }
                 
-                AppContext.shared.eventProcessor.deactivateCustom()
+                UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
                 return true
             }))
             

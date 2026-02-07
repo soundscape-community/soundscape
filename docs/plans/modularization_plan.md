@@ -133,6 +133,8 @@ Phase 1 complete:
 - 2026-02-06: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 166` (down from `171` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 - 2026-02-06: Migrated `DestinationTutorialBeaconPage` device/destination runtime reads to `UIRuntimeProviders` (`uiDevices`, `uiToggleDestinationAudio`, `uiSpatialDataContext`) and removed direct singleton usage in beacon in-bounds/out-of-bounds tutorial flow logic.
 - 2026-02-06: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 160` (down from `166` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-06: Migrated remaining destination tutorial and beacon-map/title UI call sites (`DestinationTutorialMutePage`, `DestinationTutorialInfoPage`, `BeaconTitleViewController`, `BeaconMapCard` previews) to runtime providers or direct non-singleton preview data; kept one preview-only compatibility constructor in `BeaconMapView_Previews.behavior`.
+- 2026-02-06: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 154` (down from `160` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -259,7 +261,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 1 seam carving in remaining high-coupling UI/tutorial surfaces (`DestinationTutorialViewController`, `DestinationTutorialIntroViewController`, `DestinationTutorialBeaconPage`) using focused `UIRuntimeProviders` hooks for event dispatch, destination control, and device checks.
-2. Continue the UI runtime-provider pass in remaining route/beacon surfaces (`BeaconTitleViewController`, `BeaconMapView`/`BeaconMapCard`) and then trim obsolete `AppContext` helper access from those flows.
+1. Continue Milestone 1 seam carving in remaining high-coupling UI helper/view-controller surfaces (`LocationDetail`, `EstimatedLocationDetail`, `LocationActionHandler`, nearby/search table helpers) by routing singleton reads through focused `UIRuntimeProviders` hooks.
+2. Continue the UI runtime-provider pass in remaining onboarding and launch flows (`OnboardingCalloutButton`, onboarding beacon interactive view model/view, launch helper remote-control actions) and trim obsolete `AppContext` helper access from those paths.
 3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.
