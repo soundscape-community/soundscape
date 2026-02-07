@@ -428,6 +428,7 @@ protocol UIRuntimeProviding {
     func uiDeactivateCustomBehavior()
     func uiProcessEvent(_ event: Event)
     func uiCurrentUserLocation() -> CLLocation?
+    func uiCalloutHistoryCallouts() -> [CalloutProtocol]
     func uiGeolocationManager() -> GeolocationManagerProtocol?
     func uiAudioEngine() -> AudioEngineProtocol?
     func uiReverseGeocode(_ location: CLLocation) -> ReverseGeocoderResult?
@@ -604,6 +605,11 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
     func uiCurrentUserLocation() -> CLLocation? {
         debugAssertUnconfigured(#function)
         return nil
+    }
+
+    func uiCalloutHistoryCallouts() -> [CalloutProtocol] {
+        debugAssertUnconfigured(#function)
+        return []
     }
 
     func uiGeolocationManager() -> GeolocationManagerProtocol? {
@@ -784,6 +790,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiCurrentUserLocation() -> CLLocation? {
         context.geolocationManager.location
+    }
+
+    func uiCalloutHistoryCallouts() -> [CalloutProtocol] {
+        context.calloutHistory.callouts
     }
 
     func uiGeolocationManager() -> GeolocationManagerProtocol? {

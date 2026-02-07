@@ -47,7 +47,7 @@ class SearchResultsUpdater: NSObject {
         super.init()
         
         // Save user's current location
-        location = AppContext.shared.geolocationManager.location
+        location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         // Observe changes in user's location
         // This is required so that we can present all search
@@ -112,7 +112,7 @@ extension SearchResultsUpdater: UISearchResultsUpdating {
             delegate?.searchResultsDidStartUpdating()
         }
         
-        guard AppContext.shared.offlineContext.state == .online else {
+        guard !UIRuntimeProviderRegistry.providers.uiIsOffline() else {
             return
         }
         
@@ -157,7 +157,7 @@ extension SearchResultsUpdater: UISearchBarDelegate {
         // begins
         delegate?.searchResultsDidStartUpdating()
         
-        guard AppContext.shared.offlineContext.state == .online else {
+        guard !UIRuntimeProviderRegistry.providers.uiIsOffline() else {
             return
         }
         

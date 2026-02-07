@@ -34,15 +34,17 @@ class NearbyDataContext {
     // MARK: Initialization
     
     init(location: CLLocation? = nil) {
-        self.location = location ?? AppContext.shared.geolocationManager.location
+        self.location = location ?? UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         let initialDataValue = NearbyData(pois: [], filters: NearbyTableFilter.primaryTypeFilters)
         data = .init(initialDataValue)
         
         // Fetch nearby data
-        let dataView = AppContext.shared.spatialDataContext.getCurrentDataView { (dataView) -> Bool in
-            return dataView.pois.count < 100
-        }
+        let dataView = UIRuntimeProviderRegistry.providers
+            .uiSpatialDataContext()?
+            .getCurrentDataView(initialSearchDistance: SpatialDataContext.initialPOISearchDistance) { dataView in
+                dataView.pois.count < 100
+            }
         
         if let dataView = dataView {
             pois = dataView.pois

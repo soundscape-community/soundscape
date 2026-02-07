@@ -120,7 +120,7 @@ class SearchResultsTableViewController: UITableViewController {
         let configurator = ListItemTableViewCellConfigurator()
         // Initialize `cellConfigurator` to display distances from the
         // user's current location
-        configurator.location = AppContext.shared.geolocationManager.location
+        configurator.location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         // `delegate` should never be `nil`, but if it is, assume that actions are disabled
         let isAccessibilityActionsEnabled = delegate?.isAccessibilityActionsEnabled ?? false
         configurator.accessibilityActionDelegate = isAccessibilityActionsEnabled ? self :  nil
@@ -129,7 +129,7 @@ class SearchResultsTableViewController: UITableViewController {
         let selections = SpatialDataCache.recentlySelectedObjects()
         
         // Initialize recent callouts
-        let callouts: [POI] = AppContext.shared.calloutHistory.callouts
+        let callouts: [POI] = UIRuntimeProviderRegistry.providers.uiCalloutHistoryCallouts()
             .sorted(by: { return $0.timestamp > $1.timestamp })
             .compactMap({
                 var poi: POI?
@@ -356,7 +356,7 @@ extension SearchResultsTableViewController: SearchResultsUpdaterDelegate {
         let delegate = TableViewDelegate.make(selectDelegate: self)
         let voiceoverAnnoucement: String?
         
-        if AppContext.shared.offlineContext.state == .online {
+        if !UIRuntimeProviderRegistry.providers.uiIsOffline() {
             // We are waiting for results to be returned
             dataSource = StaticTableViewDataSource(header: nil, cells: [Results.searching])
             voiceoverAnnoucement = nil

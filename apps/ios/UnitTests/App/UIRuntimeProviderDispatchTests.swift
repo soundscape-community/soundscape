@@ -42,6 +42,8 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var coreLocationServicesEnabled = true
         var coreLocationAuthorizationStatus: CoreLocationAuthorizationStatus = .fullAccuracyLocationAuthorized
         var isOffline = false
+        var calloutHistoryLookupCount = 0
+        var calloutHistoryCallouts: [CalloutProtocol] = []
         var isStreetPreviewing = false
         var isDestinationAudioEnabled = false
         var toggleDestinationAudioCallCount = 0
@@ -177,6 +179,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiCurrentUserLocation() -> CLLocation? {
             currentUserLocation
+        }
+
+        func uiCalloutHistoryCallouts() -> [CalloutProtocol] {
+            calloutHistoryLookupCount += 1
+            return calloutHistoryCallouts
         }
 
         func uiGeolocationManager() -> GeolocationManagerProtocol? {
@@ -325,6 +332,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         UIRuntimeProviderRegistry.providers.uiProcessEvent(BehaviorActivatedEvent())
         _ = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
+        _ = UIRuntimeProviderRegistry.providers.uiCalloutHistoryCallouts()
         _ = UIRuntimeProviderRegistry.providers.uiGeolocationManager()
         _ = UIRuntimeProviderRegistry.providers.uiAudioEngine()
         _ = UIRuntimeProviderRegistry.providers.uiReverseGeocode(CLLocation(latitude: 47.6205, longitude: -122.3493))
@@ -369,6 +377,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.activateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.toggleDestinationAudioCallCount, 1)
+        XCTAssertEqual(provider.calloutHistoryLookupCount, 1)
         XCTAssertEqual(provider.processedEventNames, [BehaviorActivatedEvent().name])
         XCTAssertEqual(provider.hushRequests, [false])
         XCTAssertEqual(provider.checkServiceConnectionCallCount, 1)

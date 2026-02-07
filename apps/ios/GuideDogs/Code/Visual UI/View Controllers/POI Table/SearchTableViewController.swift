@@ -71,7 +71,7 @@ class SearchTableViewController: BaseTableViewController {
             rows.append(MoreLocations.markers)
         }
         
-        if delegate?.allowCurrentLocation ?? true && AppContext.shared.isStreetPreviewing == false {
+        if delegate?.allowCurrentLocation ?? true && !UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing() {
             rows.append(MoreLocations.currentLocation)
         }
         
@@ -180,7 +180,7 @@ class SearchTableViewController: BaseTableViewController {
     /// Private method used by a custom accessibility action that allows for jumping straight to saving
     /// the current location as a marker without loading the Location Details screen
     private func saveCurrentLocation() {
-        guard let location = AppContext.shared.geolocationManager.location else {
+        guard let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
             self.present(ErrorAlerts.buildLocationAlert(), animated: true, completion: nil)
             return
         }
@@ -241,7 +241,7 @@ extension SearchTableViewController: TableViewSelectDelegate {
             GDATelemetry.track("poi_selected.current_location", with: ["context": self.delegate?.usageLog ?? ""])
             
             // Selected current location cell
-            guard let location = AppContext.shared.geolocationManager.location else {
+            guard let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
                 self.present(ErrorAlerts.buildLocationAlert(), animated: true, completion: nil)
                 return
             }
@@ -297,7 +297,7 @@ extension SearchTableViewController: LocationActionDelegate {
                     try LocationActionHandler.beacon(locationDetail: detail)
                     self.navigationController?.popToRootViewController(animated: true)
                 case .preview:
-                    if AppContext.shared.isStreetPreviewing {
+                    if UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing() {
                         let alert = LocationActionAlert.restartPreview { [weak self] (_) in
                             self?.performSegue(withIdentifier: "UnwindPreviewView", sender: detail)
                         }
