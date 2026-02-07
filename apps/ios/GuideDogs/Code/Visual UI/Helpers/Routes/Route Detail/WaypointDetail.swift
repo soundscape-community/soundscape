@@ -38,7 +38,7 @@ struct WaypointDetail {
         
         // If guidance is active for this route, then the route will be
         // the active behavior
-        guard let behavior = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance else {
+        guard let behavior = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
             return false
         }
         

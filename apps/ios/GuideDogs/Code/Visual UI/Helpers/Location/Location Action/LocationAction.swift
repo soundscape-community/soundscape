@@ -23,7 +23,7 @@ enum LocationAction {
         case .save(let isEnabled): return isEnabled
         case .share(let isEnabled): return isEnabled
         case .beacon, .preview, .edit, .navilens:
-            if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance {
+            if UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorRouteGuidance() {
                 return false
             } else {
                 return true

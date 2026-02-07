@@ -40,7 +40,7 @@ struct ShareMarkerAlert: ShareAlertFactory {
         alert.addAction(UIAlertAction(title: GDLocalizedString("universal_links.alert.action.marker"), style: .default, handler: markerHandler))
         
         // Beacon action is disabled while route guidance is active
-        if (AppContext.shared.eventProcessor.activeBehavior is RouteGuidance) == false {
+        if !UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorRouteGuidance() {
             // Add action to set a beacon
             alert.addAction(UIAlertAction(title: GDLocalizedString("universal_links.alert.action.beacon"), style: .default, handler: beaconHandler))
         }

@@ -348,7 +348,7 @@ class HelpViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
         case Section.tutorials:
-            if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance {
+            if UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorRouteGuidance() {
                 return GDLocalizedString("help.tutorial.footer.disabled")
             } else {
                 return nil
@@ -372,7 +372,7 @@ class HelpViewController: BaseTableViewController {
                 cell.textLabel?.text = GDLocalizedString("tutorial.markers.getting_started")
             }
             
-            if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance {
+            if UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorRouteGuidance() {
                 cell.textLabel?.isEnabled = false
             }
             

@@ -25,7 +25,7 @@ class MixAudioSettingCell: UITableViewCell {
         
         // Initialization code
         settingSwitch?.isOn = !SettingsContext.shared.audioSessionMixesWithOthers
-        settingSwitch?.isEnabled = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance == nil
+        settingSwitch?.isEnabled = !UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorRouteGuidance()
     }
 
     @IBAction func onSettingValueChanged(_ sender: Any) {
