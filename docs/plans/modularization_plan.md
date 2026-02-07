@@ -178,6 +178,8 @@ Phase 1 complete:
 - 2026-02-07: Extended `RouteSpatialDataStore` with route lookup (`routeByKey`) and migrated additional route call sites away from static cache usage: `Route.init(from:)` first-waypoint marker lookup in `Route.swift` and route serialization lookup in `RouteParameters+Codable.encode(from:detail,context:)`.
 - 2026-02-07: Extended `RouteStorageProviderDispatchTests` with route serialization/init dispatch coverage (`testEncodeFromDetailUsesInjectedSpatialStoreRouteLookup`, `testRouteInitFromParametersUsesInjectedSpatialStoreMarkerLookup`) and route-list dispatch coverage (`testDeleteAllUsesInjectedSpatialStoreRoutesList`).
 - 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`5` tests); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
+- 2026-02-07: Migrated cloud route backup/import route+marker lookups in `CloudKeyValueStore+Routes` (`store()`, `isValid(routeParameters:)`, `shouldUpdateLocalRoute`) from direct `SpatialDataCache` static access to `RouteSpatialDataStoreRegistry` provider lookups.
+- 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`5` tests); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
