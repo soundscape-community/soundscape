@@ -145,7 +145,7 @@ class Route: Object, ObjectKeyIdentifiable {
         waypoints.append(objectsIn: pWaypoints)
         
         if let first = pWaypoints.ordered.first,
-           let marker = RouteSpatialDataStoreRegistry.store.referenceEntityByKey(first.markerId) {
+           let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(first.markerId) {
             firstWaypointLatitude = marker.latitude
             firstWaypointLongitude = marker.longitude
         }

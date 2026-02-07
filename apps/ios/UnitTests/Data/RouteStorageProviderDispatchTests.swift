@@ -12,13 +12,15 @@ import CoreLocation
 
 @MainActor
 final class RouteStorageProviderDispatchTests: XCTestCase {
-    final class MockRouteSpatialDataStore: RouteSpatialDataStore {
+    final class MockSpatialDataStore: SpatialDataStore {
         var referenceEntitiesByKey: [String: ReferenceEntity] = [:]
+        var referenceEntitiesToReturn: [ReferenceEntity] = []
         var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
         var routesContainingToReturn: [String: [Route]] = [:]
 
         private(set) var referenceEntityByKeyCallKeys: [String] = []
+        private(set) var referenceEntitiesCallCount = 0
         private(set) var routesCallCount = 0
         private(set) var routeByKeyCallKeys: [String] = []
         private(set) var routesContainingCallKeys: [String] = []
@@ -26,6 +28,11 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
             referenceEntityByKeyCallKeys.append(key)
             return referenceEntitiesByKey[key]
+        }
+
+        func referenceEntities() -> [ReferenceEntity] {
+            referenceEntitiesCallCount += 1
+            return referenceEntitiesToReturn
         }
 
         func routes() -> [Route] {
@@ -45,7 +52,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        RouteSpatialDataStoreRegistry.resetForTesting()
+        SpatialDataStoreRegistry.resetForTesting()
         try clearAllRoutes()
     }
 
@@ -54,8 +61,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let markerID = route.waypoints.ordered.first?.markerId
         XCTAssertNotNil(markerID)
 
-        let store = MockRouteSpatialDataStore()
-        RouteSpatialDataStoreRegistry.configure(with: store)
+        let store = MockSpatialDataStore()
+        SpatialDataStoreRegistry.configure(with: store)
 
         let keys = Route.objectKeys(sortedBy: .distance)
 
@@ -64,9 +71,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     }
 
     func testRemoveWaypointFromAllRoutesUsesInjectedSpatialStoreLookup() throws {
-        let store = MockRouteSpatialDataStore()
+        let store = MockSpatialDataStore()
         store.routesContainingToReturn["marker-id"] = []
-        RouteSpatialDataStoreRegistry.configure(with: store)
+        SpatialDataStoreRegistry.configure(with: store)
 
         try Route.removeWaypointFromAllRoutes(markerId: "marker-id")
 
@@ -74,9 +81,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     }
 
     func testDeleteAllUsesInjectedSpatialStoreRoutesList() throws {
-        let store = MockRouteSpatialDataStore()
+        let store = MockSpatialDataStore()
         store.routesToReturn = []
-        RouteSpatialDataStoreRegistry.configure(with: store)
+        SpatialDataStoreRegistry.configure(with: store)
 
         try Route.deleteAll()
 
@@ -85,9 +92,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     func testEncodeFromDetailUsesInjectedSpatialStoreRouteLookup() throws {
         let route = try createPersistedRoute(name: "EncodeRoute")
-        let store = MockRouteSpatialDataStore()
+        let store = MockSpatialDataStore()
         store.routesByKey[route.id] = route
-        RouteSpatialDataStoreRegistry.configure(with: store)
+        SpatialDataStoreRegistry.configure(with: store)
 
         let detail = RouteDetail(source: .database(id: route.id))
         let data = RouteParameters.encode(from: detail, context: .backup)
@@ -106,8 +113,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             return
         }
 
-        let store = MockRouteSpatialDataStore()
-        RouteSpatialDataStoreRegistry.configure(with: store)
+        let store = MockSpatialDataStore()
+        SpatialDataStoreRegistry.configure(with: store)
 
         _ = Route(from: parameters)
 

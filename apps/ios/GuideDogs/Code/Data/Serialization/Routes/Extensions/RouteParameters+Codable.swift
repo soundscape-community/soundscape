@@ -60,7 +60,7 @@ extension RouteParameters {
             return nil
         }
         
-        guard let route = RouteSpatialDataStoreRegistry.store.routeByKey(id) else {
+        guard let route = SpatialDataStoreRegistry.store.routeByKey(id) else {
             GDLogURLResourceError("Failed to encode - Failed to fetch route from Realm")
             return nil
         }

@@ -162,7 +162,7 @@ extension CloudKeyValueStore {
     
     /// Store route entities from database to cloud store
     private func store() {
-        var localRoutes = RouteSpatialDataStoreRegistry.store.routes()
+        var localRoutes = SpatialDataStoreRegistry.store.routes()
         
         // Filter only objects that require an update
         localRoutes = localRoutes.filter { shouldUpdateCloudRoute(withLocalRoute: $0) }
@@ -222,7 +222,7 @@ extension CloudKeyValueStore {
     private static func isValid(routeParameters: RouteParameters) -> Bool {
         let markerIds = routeParameters.waypoints.map { $0.markerId }
         
-        for markerId in markerIds where RouteSpatialDataStoreRegistry.store.referenceEntityByKey(markerId) == nil {
+        for markerId in markerIds where SpatialDataStoreRegistry.store.referenceEntityByKey(markerId) == nil {
             GDLogCloudInfo("Route with id: \(routeParameters.id), name: \(routeParameters.name), is missing a marker with id: \(markerId)")
             return false
         }
@@ -232,7 +232,7 @@ extension CloudKeyValueStore {
     
     private func shouldUpdateLocalRoute(withRouteParameters routeParameters: RouteParameters) -> Bool {
         // True if local database does not contain the cloud entity
-        guard let localRoute = RouteSpatialDataStoreRegistry.store.routeByKey(routeParameters.id) else { return true }
+        guard let localRoute = SpatialDataStoreRegistry.store.routeByKey(routeParameters.id) else { return true }
         
         return localRoute.shouldUpdate(withRouteParameters: routeParameters)
     }

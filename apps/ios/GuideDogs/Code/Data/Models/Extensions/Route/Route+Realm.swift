@@ -11,17 +11,22 @@ import RealmSwift
 import CoreLocation
 
 @MainActor
-protocol RouteSpatialDataStore {
+protocol SpatialDataStore {
     func referenceEntityByKey(_ key: String) -> ReferenceEntity?
+    func referenceEntities() -> [ReferenceEntity]
     func routes() -> [Route]
     func routeByKey(_ key: String) -> Route?
     func routesContaining(markerId: String) -> [Route]
 }
 
 @MainActor
-struct DefaultRouteSpatialDataStore: RouteSpatialDataStore {
+struct DefaultSpatialDataStore: SpatialDataStore {
     func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
         SpatialDataCache.referenceEntityByKey(key)
+    }
+
+    func referenceEntities() -> [ReferenceEntity] {
+        SpatialDataCache.referenceEntities()
     }
 
     func routes() -> [Route] {
@@ -38,11 +43,11 @@ struct DefaultRouteSpatialDataStore: RouteSpatialDataStore {
 }
 
 @MainActor
-enum RouteSpatialDataStoreRegistry {
-    private static let defaultStore = DefaultRouteSpatialDataStore()
-    private(set) static var store: RouteSpatialDataStore = defaultStore
+enum SpatialDataStoreRegistry {
+    private static let defaultStore = DefaultSpatialDataStore()
+    private(set) static var store: SpatialDataStore = defaultStore
 
-    static func configure(with store: RouteSpatialDataStore) {
+    static func configure(with store: SpatialDataStore) {
         self.store = store
     }
 
@@ -84,7 +89,7 @@ extension Route {
                 return database.objects(Route.self)
                     .compactMap { route -> (id: String, distance: CLLocationDistance)? in
                         guard let start = route.waypoints.ordered.first,
-                              let entity = RouteSpatialDataStoreRegistry.store.referenceEntityByKey(start.markerId) else {
+                              let entity = SpatialDataStoreRegistry.store.referenceEntityByKey(start.markerId) else {
                             return (id: route.id, distance: CLLocationDistance.greatestFiniteMagnitude)
                         }
                         
@@ -194,7 +199,7 @@ extension Route {
     }
     
     static func deleteAll() throws {
-        try RouteSpatialDataStoreRegistry.store.routes().forEach({
+        try SpatialDataStoreRegistry.store.routes().forEach({
             try delete($0.id)
         })
     }
@@ -264,7 +269,7 @@ extension Route {
                 
                 // Update first waypoint latitude and longitude
                 if let first = waypoints.ordered.first,
-                   let marker = RouteSpatialDataStoreRegistry.store.referenceEntityByKey(first.markerId) {
+                   let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(first.markerId) {
                     route.firstWaypointLatitude = marker.latitude
                     route.firstWaypointLongitude = marker.longitude
                 } else {
@@ -319,13 +324,13 @@ extension Route {
     }
     
     static func removeWaypointFromAllRoutes(markerId: String) throws {
-        try RouteSpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
+        try SpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
             try removeWaypoint(from: $0, markerId: markerId)
         })
     }
     
     static func updateWaypointInAllRoutes(markerId: String) throws {
-        try RouteSpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
+        try SpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
             guard let first = $0.waypoints.ordered.first else {
                 return
             }

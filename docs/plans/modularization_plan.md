@@ -180,6 +180,9 @@ Phase 1 complete:
 - 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`5` tests); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 - 2026-02-07: Migrated cloud route backup/import route+marker lookups in `CloudKeyValueStore+Routes` (`store()`, `isValid(routeParameters:)`, `shouldUpdateLocalRoute`) from direct `SpatialDataCache` static access to `RouteSpatialDataStoreRegistry` provider lookups.
 - 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`5` tests); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
+- 2026-02-07: Renamed route-focused seam types to broader spatial naming (`RouteSpatialDataStore` -> `SpatialDataStore`, `DefaultRouteSpatialDataStore` -> `DefaultSpatialDataStore`, `RouteSpatialDataStoreRegistry` -> `SpatialDataStoreRegistry`) to reflect shared use across Route and Marker cloud sync paths.
+- 2026-02-07: Extended `SpatialDataStore` with `referenceEntities()` and migrated marker cloud-store sync lookups in `CloudKeyValueStore+Markers` (`store()`, `shouldUpdateLocalReferenceEntity`) from direct `SpatialDataCache` reads to provider lookups.
+- 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`5` tests); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -307,5 +310,6 @@ Acceptance criteria:
 
 ## Immediate Next Steps
 1. Continue Milestone 2 seam-carving by introducing equivalent injected storage seams for `Route` and `ReferenceEntity` high-traffic operations (read by ID/list/sort, temp cleanup, upsert/remove) before moving files across layer folders.
-2. Prepare folder-boundary migration mechanics (including Xcode project/group updates) so `Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, and `Data/Composition` moves can land in small compile-safe batches.
-3. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.
+2. Extend `SpatialDataStore` seam coverage into marker serialization and preview paths (`MarkerParameters`, `LocationParameters`, `RoadAdjacentDataView`) so cloud + encoding + preview reads converge on the same storage boundary.
+3. Prepare folder-boundary migration mechanics (including Xcode project/group updates) so `Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, and `Data/Composition` moves can land in small compile-safe batches.
+4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.
