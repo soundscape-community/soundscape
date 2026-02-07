@@ -51,7 +51,7 @@ class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccess
                     self.popToRootViewController(animated: true)
                     
                 case .preview:
-                    if AppContext.shared.isStreetPreviewing {
+                    if UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing() {
                         let alert = LocationActionAlert.restartPreview { [weak self] (_) in
                             self?.host?.performSegue(withIdentifier: "UnwindPreviewView", sender: detail)
                         }

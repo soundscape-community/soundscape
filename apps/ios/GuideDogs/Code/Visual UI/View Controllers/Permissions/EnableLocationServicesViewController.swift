@@ -45,7 +45,7 @@ class EnableLocationServicesViewController: UIViewController {
     
     @objc func applicationDidBecomeActive() {
         // If a user turned on location services, dismiss this screen
-        if AppContext.shared.geolocationManager.coreLocationServicesEnabled {
+        if UIRuntimeProviderRegistry.providers.uiCoreLocationServicesEnabled() {
             navigationController?.popViewController(animated: true)
         }
     }

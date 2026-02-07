@@ -33,7 +33,7 @@ class MarkerModel: ObservableObject {
         self.id = id
         
         // Save initial value
-        self.location = AppContext.shared.geolocationManager.location
+        self.location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         tokens.append(NotificationCenter.default.publisher(for: .markerUpdated).sink { [weak self] notification in
             guard id == notification.userInfo?[ReferenceEntity.Keys.entityId] as? String else {

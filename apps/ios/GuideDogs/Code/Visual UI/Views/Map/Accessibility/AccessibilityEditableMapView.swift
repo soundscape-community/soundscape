@@ -90,7 +90,7 @@ struct AccessibilityEditableMapView: View {
         .accessibilityAction(named: GDLocalizedString("location_detail.map.edit.accessibility_action.current_location")) {
             GDATelemetry.track("nudge_marker.current_location")
             
-            guard let location = AppContext.shared.geolocationManager.location else {
+            guard let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
                 GDATelemetry.track("nudge_marker.current_location.location_nil")
                 return
             }

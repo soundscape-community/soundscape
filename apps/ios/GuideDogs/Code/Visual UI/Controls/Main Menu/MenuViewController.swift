@@ -154,6 +154,6 @@ class MenuViewController: UIViewController {
     
     @objc func onCrosscheckTouchUpInside() {
         GDLogAppInfo("Play crosscheck audio")
-        AppContext.process(CheckAudioEvent())
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(CheckAudioEvent())
     }
 }

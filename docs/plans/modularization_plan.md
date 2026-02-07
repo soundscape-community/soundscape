@@ -160,6 +160,8 @@ Phase 1 complete:
 - 2026-02-07: Extended `UIRuntimeProviders` with preview/sleep/auth hooks (`uiGoToSleep`, `uiSnooze`, `uiWakeUp`, `uiActiveBehaviorID`, `uiCurrentPreviewDecisionPoint`, `uiLocationAuthorizationProvider`, `uiMotionAuthorizationProvider`) and migrated `StandbyViewController`, `PreviewViewController`, `CalloutButtonPanelViewController`, and `AuthorizationViewModel` away from direct singleton calls.
 - 2026-02-07: Extended `UIRuntimeProviderDispatchTests` to validate dispatch/reset behavior for the new UI hooks (sleep/wake, active behavior ID, preview decision point, location/motion authorization providers).
 - 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 27` (down from `74` pre-slice), `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-07: Migrated additional remaining UI/controller seams (`Integrations`, `NearbyTableViewController`, `LocationDetailViewController`, `MarkersAndRoutesListNavigationHelper`, `PreviewTutorialViewController`, `EnableLocationServicesViewController`, `MenuViewController`, `MarkerModel`, `TourViewModel`, `AccessibilityEditableMapView`, `AuthoredActivityStorage`) to `UIRuntimeProviderRegistry` hooks without expanding provider API surface.
+- 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 16` (down from `27` pre-slice), `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -286,7 +288,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 1 seam carving in the remaining `Visual UI` production call sites (`TutorialCalloutPlayer`, permission/POI/detail controllers, menu/preview controls, list/map view models) and keep preview-only call sites isolated to preview scaffolding.
-2. Evaluate whether `AppContext` usage inside SwiftUI preview helpers (`BeaconMapView`, `BeaconView`, `BeaconToolbarView`, `BeaconTitleView`) should be replaced with explicit preview fixtures or left as non-production-only compatibility shims.
-3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero and `Visual UI` singleton coupling is significantly reduced.
+1. Continue Milestone 1 seam carving in the remaining `Visual UI` call sites that still reference `AppContext` directly: `TutorialCalloutPlayer`, `AuthorizeLocationsViewController`, `LocationPermissionViewController`, `PreviewControlViewController`, `AccessibilityEditableMapViewModel`, plus preview-only mock-location/setup call sites.
+2. Decide and apply policy for preview-only singleton usage (`BeaconMapView`, `BeaconView`, `BeaconToolbarView`, `BeaconTitleView`, marker list preview helpers): either migrate to explicit preview fixtures/runtime stubs or mark as accepted non-production debt.
+3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero and `Visual UI` singleton coupling is reduced to a small residual set.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

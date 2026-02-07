@@ -137,7 +137,7 @@ class TourViewModel: ObservableObject {
             isComplete = tour.state.isFinal
             currentWaypointIndex = tour.currentWaypoint?.index
             isDepartedForCurrentWaypoint = tour.hasDepartedForCurrentWaypoint
-            isAudioBeaconEnabled = AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled
+            isAudioBeaconEnabled = UIRuntimeProviderRegistry.providers.uiIsDestinationAudioEnabled()
         } else {
             // Default values
             isComplete = false

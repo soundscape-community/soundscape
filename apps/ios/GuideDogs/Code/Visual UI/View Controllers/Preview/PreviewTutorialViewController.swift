@@ -33,7 +33,7 @@ class PreviewTutorialViewController: UIViewController {
         if SettingsContext.shared.automaticCalloutsEnabled {
             didMuteCallouts = true
             SettingsContext.shared.automaticCalloutsEnabled = false
-            AppContext.shared.eventProcessor.hush(playSound: false)
+            UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
         }
     }
     

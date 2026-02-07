@@ -29,7 +29,7 @@ func launchNaviLens(detail: LocationDetail) {
 @MainActor
 func guideToNaviLens(detail: LocationDetail) throws {
     // Launch NaviLens if close enough, otherwise start beacon
-    guard let location = AppContext.shared.geolocationManager.location else {
+    guard let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
         // Location is unknown
         return launchNaviLens(detail: detail)
     }

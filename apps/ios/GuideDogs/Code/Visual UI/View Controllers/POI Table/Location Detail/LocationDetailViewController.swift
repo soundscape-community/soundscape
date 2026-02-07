@@ -303,7 +303,7 @@ extension LocationDetailViewController: LocationActionDelegate {
                     }
                     
                 case .preview:
-                    if AppContext.shared.isStreetPreviewing {
+                    if UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing() {
                         let alert = LocationActionAlert.restartPreview { [weak self] (_) in
                             self?.performSegue(withIdentifier: "UnwindPreviewView", sender: detail)
                         }

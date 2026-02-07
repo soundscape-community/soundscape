@@ -33,8 +33,7 @@ struct ActivityModel {
     }
     
     private static func state(for activity: AuthoredActivityContent) -> State {
-        switch AppContext.shared.eventProcessor.activeBehavior {
-        case let guidance as RouteGuidance:
+        if let guidance = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() {
             if guidance.content.id == activity.id {
                 return .active
             }
@@ -44,17 +43,17 @@ struct ActivityModel {
             }
             
             return state.isFinal ? .complete : .notComplete
-            
-        case let guidance as GuidedTour:
+        }
+
+        if let guidance = UIRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour() {
             if guidance.content.id == activity.id {
                 return .active
             }
             
             return guidance.state.isFinal ? .complete : .notComplete
-            
-        default:
-            return .notComplete
         }
+
+        return .notComplete
     }
 }
 
