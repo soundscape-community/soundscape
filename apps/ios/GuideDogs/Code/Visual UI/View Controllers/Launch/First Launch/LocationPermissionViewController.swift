@@ -19,10 +19,6 @@ class LocationPermissionViewController: UIViewController {
     
     var displayAsModal: Bool = false
     
-    private var geolocationManager: GeolocationManager {
-        return AppContext.shared.geolocationManager
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -61,7 +57,7 @@ class LocationPermissionViewController: UIViewController {
         // Only if the authorization status is `notDetermined` we are able to request authorization from iOS (user pop-up).
         // In any other case we should open the app settings in the iOS Settings app.
         
-        switch geolocationManager.coreLocationAuthorizationStatus {
+        switch UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus() {
         case .notDetermined, .fullAccuracyLocationAuthorized:
             descriptionLabel.text = GDLocalizedString("first_launch.location.text")
             buttonLabel.text = GDLocalizedString("first_launch.location.enable_location")
@@ -75,7 +71,7 @@ class LocationPermissionViewController: UIViewController {
     }
     
     @IBAction func onEnableButtonTouchUp(_ sender: UIButton) {
-        guard geolocationManager.coreLocationServicesEnabled else {
+        guard UIRuntimeProviderRegistry.providers.uiCoreLocationServicesEnabled() else {
             let alert = ErrorAlerts.buildLocationServicesAlert(dismissHandler: nil)
             self.present(alert, animated: true, completion: nil)
             return
@@ -84,9 +80,9 @@ class LocationPermissionViewController: UIViewController {
         // Only if the authorization status is `notDetermined` we are able to request authorization from iOS (user pop-up).
         // In any other case we should open the app settings in the iOS Settings app.
         
-        switch geolocationManager.coreLocationAuthorizationStatus {
+        switch UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus() {
         case .notDetermined:
-            geolocationManager.requestCoreLocationAuthorization()
+            UIRuntimeProviderRegistry.providers.uiRequestCoreLocationAuthorization()
         case .fullAccuracyLocationAuthorized:
             dismissView()
         default:
@@ -98,13 +94,13 @@ class LocationPermissionViewController: UIViewController {
     }
     
     @objc func applicationDidBecomeActive() {
-        guard geolocationManager.coreLocationServicesEnabled else {
+        guard UIRuntimeProviderRegistry.providers.uiCoreLocationServicesEnabled() else {
             let alert = ErrorAlerts.buildLocationServicesAlert(dismissHandler: nil)
             self.present(alert, animated: true, completion: nil)
             return
         }
         
-        switch geolocationManager.coreLocationAuthorizationStatus {
+        switch UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus() {
         case .fullAccuracyLocationAuthorized:
             dismissView()
         default:

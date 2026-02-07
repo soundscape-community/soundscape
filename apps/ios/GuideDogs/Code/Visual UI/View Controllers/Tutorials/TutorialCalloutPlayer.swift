@@ -34,6 +34,6 @@ final class TutorialCalloutPlayer {
         }
 
         let group = CalloutGroup([callout], action: .interruptAndClear, logContext: logContext)
-        return await AppContext.shared.eventProcessor.playCallouts(group)
+        return await UIRuntimeProviderRegistry.providers.uiPlayCallouts(group)
     }
 }

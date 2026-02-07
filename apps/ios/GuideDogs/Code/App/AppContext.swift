@@ -424,6 +424,7 @@ protocol UIRuntimeProviding {
     func uiAddDevice(_ device: Device)
     func uiRemoveDevice(_ device: Device)
     func uiPresentationHeading() -> Heading
+    func uiDeviceHeading() -> Heading
     func uiUserHeading() -> Heading
     func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void)
     func uiAudioSession() -> AVAudioSession
@@ -448,6 +449,7 @@ protocol UIRuntimeProviding {
     func uiReverseGeocode(_ location: CLLocation) -> ReverseGeocoderResult?
     func uiCoreLocationServicesEnabled() -> Bool
     func uiCoreLocationAuthorizationStatus() -> CoreLocationAuthorizationStatus
+    func uiRequestCoreLocationAuthorization()
     func uiLocationAuthorizationProvider() -> AsyncAuthorizationProvider?
     func uiMotionAuthorizationProvider() -> AsyncAuthorizationProvider?
     func uiIsOffline() -> Bool
@@ -458,6 +460,7 @@ protocol UIRuntimeProviding {
     func uiToggleDestinationAudio(automatic: Bool) -> Bool
     func uiHushEventProcessor(playSound: Bool)
     func uiHushEventProcessor(playSound: Bool, hushBeacon: Bool)
+    func uiPlayCallouts(_ group: CalloutGroup) async -> Bool
     func uiIsSimulatingGPX() -> Bool
     func uiToggleGPXSimulationState() -> Bool?
     func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void)
@@ -615,6 +618,11 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         return Heading(orderedBy: [.user], course: nil, deviceHeading: nil, userHeading: nil)
     }
 
+    func uiDeviceHeading() -> Heading {
+        debugAssertUnconfigured(#function)
+        return Heading(orderedBy: [.device], course: nil, deviceHeading: nil, userHeading: nil)
+    }
+
     func uiUserHeading() -> Heading {
         debugAssertUnconfigured(#function)
         return Heading(orderedBy: [.user], course: nil, deviceHeading: nil, userHeading: nil)
@@ -730,6 +738,10 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         return .notDetermined
     }
 
+    func uiRequestCoreLocationAuthorization() {
+        debugAssertUnconfigured(#function)
+    }
+
     func uiLocationAuthorizationProvider() -> AsyncAuthorizationProvider? {
         debugAssertUnconfigured(#function)
         return nil
@@ -775,6 +787,11 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
 
     func uiHushEventProcessor(playSound: Bool, hushBeacon: Bool) {
         debugAssertUnconfigured(#function)
+    }
+
+    func uiPlayCallouts(_ group: CalloutGroup) async -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
     }
 
     func uiIsSimulatingGPX() -> Bool {
@@ -903,6 +920,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.geolocationManager.presentationHeading
     }
 
+    func uiDeviceHeading() -> Heading {
+        context.geolocationManager.heading(orderedBy: [.device])
+    }
+
     func uiUserHeading() -> Heading {
         context.geolocationManager.heading(orderedBy: [.user])
     }
@@ -999,6 +1020,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.geolocationManager.coreLocationAuthorizationStatus
     }
 
+    func uiRequestCoreLocationAuthorization() {
+        context.geolocationManager.requestCoreLocationAuthorization()
+    }
+
     func uiLocationAuthorizationProvider() -> AsyncAuthorizationProvider? {
         context.geolocationManager
     }
@@ -1037,6 +1062,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiHushEventProcessor(playSound: Bool, hushBeacon: Bool) {
         context.eventProcessor.hush(playSound: playSound, hushBeacon: hushBeacon)
+    }
+
+    func uiPlayCallouts(_ group: CalloutGroup) async -> Bool {
+        await context.eventProcessor.playCallouts(group)
     }
 
     func uiIsSimulatingGPX() -> Bool {

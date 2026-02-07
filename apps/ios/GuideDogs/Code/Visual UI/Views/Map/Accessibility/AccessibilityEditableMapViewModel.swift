@@ -26,7 +26,7 @@ class AccessibilityEditableMapViewModel: ObservableObject {
             case .south: return 180.0
             case .east: return 90.0
             case .west: return 270.0
-            case .compass: return AppContext.shared.geolocationManager.heading(orderedBy: [.device]).value
+            case .compass: return UIRuntimeProviderRegistry.providers.uiDeviceHeading().value
             }
         }
     }

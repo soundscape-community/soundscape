@@ -48,7 +48,7 @@ class PreviewControlViewController: UIViewController {
         super.viewDidLoad()
         
         // Listen for heading updates from the device
-        headingSubscriber = AppContext.shared.geolocationManager.heading(orderedBy: [.device])
+        headingSubscriber = UIRuntimeProviderRegistry.providers.uiDeviceHeading()
         
         // Start heading updates
         headingSubscriber?.onHeadingDidUpdate { [weak self] (newHeadingValue) in

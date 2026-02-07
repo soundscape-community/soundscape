@@ -14,10 +14,6 @@ class AuthorizeLocationsViewController: UIViewController {
     @IBOutlet weak var enableButton: UIButton!
     @IBOutlet weak var instructionsLabel: UILabel!
     
-    private var geolocationManager: GeolocationManager {
-        return AppContext.shared.geolocationManager
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,7 +38,7 @@ class AuthorizeLocationsViewController: UIViewController {
     }
     
     private func configureView() {
-        switch geolocationManager.coreLocationAuthorizationStatus {
+        switch UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus() {
         case .reducedAccuracyLocationAuthorized:
             instructionsLabel.text = GDLocalizedString("general.error.location_services.precise_location.instructions")
         default:
@@ -59,7 +55,7 @@ class AuthorizeLocationsViewController: UIViewController {
     
     @objc func applicationDidBecomeActive() {
         // If the user fully authorized location services, dismiss this screen
-        switch geolocationManager.coreLocationAuthorizationStatus {
+        switch UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus() {
         case .fullAccuracyLocationAuthorized:
             self.performSegue(withIdentifier: "unwindFromAuthorize", sender: nil)
         default:

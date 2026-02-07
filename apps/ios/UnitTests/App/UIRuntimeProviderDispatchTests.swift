@@ -93,7 +93,12 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var addedDeviceIDs: [UUID] = []
         var removedDeviceIDs: [UUID] = []
         var presentationHeadingLookupCount = 0
+        var deviceHeadingLookupCount = 0
+        var requestCoreLocationAuthorizationCallCount = 0
+        var playCalloutsCallCount = 0
+        var playCalloutsResult = true
         var userHeading = Heading(orderedBy: [.user], course: nil, deviceHeading: nil, userHeading: HeadingValue(90.0, nil))
+        var deviceHeading = Heading(orderedBy: [.device], course: nil, deviceHeading: HeadingValue(180.0, nil), userHeading: nil)
         var setExperimentDelegateCallCount = 0
         var setExperimentDelegateToNilCount = 0
         var initializeExperimentManagerCallCount = 0
@@ -206,6 +211,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
             return userHeading
         }
 
+        func uiDeviceHeading() -> Heading {
+            deviceHeadingLookupCount += 1
+            return deviceHeading
+        }
+
         func uiUserHeading() -> Heading {
             userHeading
         }
@@ -311,6 +321,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
             coreLocationAuthorizationStatus
         }
 
+        func uiRequestCoreLocationAuthorization() {
+            requestCoreLocationAuthorizationCallCount += 1
+        }
+
         func uiLocationAuthorizationProvider() -> AsyncAuthorizationProvider? {
             locationAuthorizationProviderLookupCount += 1
             return locationAuthorizationProvider
@@ -352,6 +366,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiHushEventProcessor(playSound: Bool, hushBeacon: Bool) {
             hushRequestsWithBeacon.append((playSound, hushBeacon))
+        }
+
+        func uiPlayCallouts(_ group: CalloutGroup) async -> Bool {
+            playCalloutsCallCount += 1
+            return playCalloutsResult
         }
 
         func uiIsSimulatingGPX() -> Bool {
@@ -470,6 +489,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         UIRuntimeProviderRegistry.providers.uiAddDevice(testDevice)
         UIRuntimeProviderRegistry.providers.uiRemoveDevice(testDevice)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiPresentationHeading() === provider.userHeading)
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiDeviceHeading() === provider.deviceHeading)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiUserHeading() === provider.userHeading)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiAudioSession() === provider.audioSession)
         UIRuntimeProviderRegistry.providers.uiSetTutorialMode(true)
@@ -496,6 +516,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         _ = UIRuntimeProviderRegistry.providers.uiReverseGeocode(CLLocation(latitude: 47.6205, longitude: -122.3493))
         XCTAssertFalse(UIRuntimeProviderRegistry.providers.uiCoreLocationServicesEnabled())
         XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus(), .denied)
+        UIRuntimeProviderRegistry.providers.uiRequestCoreLocationAuthorization()
         let observedLocationAuthProvider = UIRuntimeProviderRegistry.providers.uiLocationAuthorizationProvider() as? MockAuthorizationProvider
         let observedMotionAuthProvider = UIRuntimeProviderRegistry.providers.uiMotionAuthorizationProvider() as? MockAuthorizationProvider
         XCTAssertTrue(observedLocationAuthProvider === locationAuthProvider)
@@ -508,6 +529,13 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio(automatic: false))
         UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
         UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false, hushBeacon: false)
+        let playCalloutsExpectation = expectation(description: "play callouts completion")
+        Task { @MainActor in
+            let group = CalloutGroup([StringCallout(.system, "test")], action: .enqueue, logContext: "test.ui.runtime")
+            let result = await UIRuntimeProviderRegistry.providers.uiPlayCallouts(group)
+            XCTAssertTrue(result)
+            playCalloutsExpectation.fulfill()
+        }
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsSimulatingGPX())
         XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiToggleGPXSimulationState(), false)
         _ = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()
@@ -548,6 +576,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.addedDeviceIDs, [testDevice.id])
         XCTAssertEqual(provider.removedDeviceIDs, [testDevice.id])
         XCTAssertEqual(provider.presentationHeadingLookupCount, 1)
+        XCTAssertEqual(provider.deviceHeadingLookupCount, 1)
         XCTAssertEqual(provider.bleAuthorizationCallCount, 1)
         XCTAssertEqual(provider.audioSessionLookupCount, 1)
         XCTAssertEqual(provider.telemetryHelperLookupCount, 1)
@@ -573,11 +602,13 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.reverseGeocodeLookupCount, 1)
         XCTAssertEqual(provider.locationAuthorizationProviderLookupCount, 1)
         XCTAssertEqual(provider.motionAuthorizationProviderLookupCount, 1)
+        XCTAssertEqual(provider.requestCoreLocationAuthorizationCallCount, 1)
         XCTAssertEqual(provider.reverseGeocodeLocations.count, 1)
         if let reverseGeocodeLocation = provider.reverseGeocodeLocations.first {
             XCTAssertEqual(reverseGeocodeLocation.coordinate.latitude, 47.6205, accuracy: 0.0001)
             XCTAssertEqual(reverseGeocodeLocation.coordinate.longitude, -122.3493, accuracy: 0.0001)
         }
-        wait(for: [serviceCheckExpectation, bleAuthorizationExpectation], timeout: 1.0)
+        wait(for: [serviceCheckExpectation, bleAuthorizationExpectation, playCalloutsExpectation], timeout: 1.0)
+        XCTAssertEqual(provider.playCalloutsCallCount, 1)
     }
 }
