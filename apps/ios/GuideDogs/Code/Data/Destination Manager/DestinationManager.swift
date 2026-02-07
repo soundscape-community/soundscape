@@ -60,31 +60,31 @@ protocol DestinationEntityStore {
 @MainActor
 struct SpatialDataDestinationEntityStore: DestinationEntityStore {
     func referenceEntity(forReferenceID id: String) -> ReferenceEntity? {
-        SpatialDataCache.referenceEntityByKey(id)
+        SpatialDataStoreRegistry.store.referenceEntityByKey(id)
     }
 
     func referenceEntity(forGenericLocation location: GenericLocation) -> ReferenceEntity? {
-        SpatialDataCache.referenceEntityByGenericLocation(location)
+        SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location)
     }
 
     func referenceEntity(forEntityKey key: String) -> ReferenceEntity? {
-        SpatialDataCache.referenceEntityByEntityKey(key)
+        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
-        try ReferenceEntity.add(location: location, estimatedAddress: estimatedAddress, temporary: true)
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location, estimatedAddress: estimatedAddress)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
-        try ReferenceEntity.add(location: location, nickname: nickname, estimatedAddress: estimatedAddress, temporary: true)
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location, nickname: nickname, estimatedAddress: estimatedAddress)
     }
 
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
-        try ReferenceEntity.add(entityKey: entityKey, nickname: nil, estimatedAddress: estimatedAddress, temporary: true)
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: estimatedAddress)
     }
 
     func removeAllTemporaryReferenceEntities() throws {
-        try ReferenceEntity.removeAllTemporary()
+        try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
     }
 }
 

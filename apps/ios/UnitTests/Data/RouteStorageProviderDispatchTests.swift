@@ -17,9 +17,11 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         var referenceEntitiesByEntityKey: [String: ReferenceEntity] = [:]
         var referenceEntitiesByLocation: [String: ReferenceEntity] = [:]
         var referenceEntitiesNearByLocation: [String: [ReferenceEntity]] = [:]
+        var referenceEntitiesByGenericLocation: [String: ReferenceEntity] = [:]
         var referenceEntitiesToReturn: [ReferenceEntity] = []
         var searchResultsByKey: [String: POI] = [:]
         var addedReferenceEntityID = "mock-added-reference-entity-id"
+        var addedTemporaryReferenceEntityID = "mock-temp-reference-entity-id"
         var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
         var routesContainingToReturn: [String: [Route]] = [:]
@@ -28,9 +30,14 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var referenceEntityByEntityKeyCallKeys: [String] = []
         private(set) var referenceEntityByLocationCallKeys: [String] = []
         private(set) var referenceEntitiesNearCallKeys: [String] = []
+        private(set) var referenceEntityByGenericLocationCallKeys: [String] = []
         private(set) var referenceEntitiesCallCount = 0
         private(set) var searchByKeyCallKeys: [String] = []
         private(set) var addReferenceEntityCallCount = 0
+        private(set) var addTemporaryReferenceEntityLocationCallCount = 0
+        private(set) var addTemporaryReferenceEntityLocationWithNicknameCallCount = 0
+        private(set) var addTemporaryReferenceEntityEntityKeyCallKeys: [String] = []
+        private(set) var removeAllTemporaryReferenceEntitiesCallCount = 0
         private(set) var routesCallCount = 0
         private(set) var routeByKeyCallKeys: [String] = []
         private(set) var routesContainingCallKeys: [String] = []
@@ -70,6 +77,31 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
             addReferenceEntityCallCount += 1
             return addedReferenceEntityID
+        }
+
+        func referenceEntityByGenericLocation(_ location: GenericLocation) -> ReferenceEntity? {
+            let key = locationKey(for: location.location.coordinate)
+            referenceEntityByGenericLocationCallKeys.append(key)
+            return referenceEntitiesByGenericLocation[key]
+        }
+
+        func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
+            addTemporaryReferenceEntityLocationCallCount += 1
+            return addedTemporaryReferenceEntityID
+        }
+
+        func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
+            addTemporaryReferenceEntityLocationWithNicknameCallCount += 1
+            return addedTemporaryReferenceEntityID
+        }
+
+        func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
+            addTemporaryReferenceEntityEntityKeyCallKeys.append(entityKey)
+            return addedTemporaryReferenceEntityID
+        }
+
+        func removeAllTemporaryReferenceEntities() throws {
+            removeAllTemporaryReferenceEntitiesCallCount += 1
         }
 
         func routes() -> [Route] {
@@ -206,6 +238,21 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.referenceEntityByEntityKeyCallKeys, [entityKey])
     }
 
+    func testSpatialDataStoreReferenceEntityByGenericLocationDispatchesToInjectedStore() {
+        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Generic")
+        let marker = ReferenceEntity(coordinate: location.location.coordinate)
+        let key = "\(location.location.coordinate.latitude),\(location.location.coordinate.longitude)"
+
+        let store = MockSpatialDataStore()
+        store.referenceEntitiesByGenericLocation[key] = marker
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let entity = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location)
+
+        XCTAssertTrue(entity === marker)
+        XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [key])
+    }
+
     func testSpatialDataStoreReferenceEntitiesNearDispatchesToInjectedStore() {
         let coordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
         let range = CalloutRangeContext.streetPreview.searchDistance
@@ -221,6 +268,29 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(entities.count, 1)
         XCTAssertTrue(entities.first === marker)
         XCTAssertEqual(store.referenceEntitiesNearCallKeys, [locationLookupKey])
+    }
+
+    func testSpatialDataStoreTemporaryReferenceEntityOperationsDispatchToInjectedStore() throws {
+        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Temp")
+        let entityKey = "entity-key"
+        let expectedID = "temp-id"
+
+        let store = MockSpatialDataStore()
+        store.addedTemporaryReferenceEntityID = expectedID
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let idFromLocation = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location, estimatedAddress: "Address")
+        let idFromNickname = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location, nickname: "Nickname", estimatedAddress: "Address")
+        let idFromEntityKey = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: "Address")
+        try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+
+        XCTAssertEqual(idFromLocation, expectedID)
+        XCTAssertEqual(idFromNickname, expectedID)
+        XCTAssertEqual(idFromEntityKey, expectedID)
+        XCTAssertEqual(store.addTemporaryReferenceEntityLocationCallCount, 1)
+        XCTAssertEqual(store.addTemporaryReferenceEntityLocationWithNicknameCallCount, 1)
+        XCTAssertEqual(store.addTemporaryReferenceEntityEntityKeyCallKeys, [entityKey])
+        XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
     }
 
     func testLocationParametersFetchEntityUsesInjectedSpatialStoreSearchLookup() {

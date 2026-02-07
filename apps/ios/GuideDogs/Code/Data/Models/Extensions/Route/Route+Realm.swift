@@ -19,6 +19,11 @@ protocol SpatialDataStore {
     func referenceEntities() -> [ReferenceEntity]
     func searchByKey(_ key: String) -> POI?
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
+    func referenceEntityByGenericLocation(_ location: GenericLocation) -> ReferenceEntity?
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
+    func removeAllTemporaryReferenceEntities() throws
     func routes() -> [Route]
     func routeByKey(_ key: String) -> Route?
     func routesContaining(markerId: String) -> [Route]
@@ -52,6 +57,26 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
         try ReferenceEntity.add(detail: detail, telemetryContext: telemetryContext, notify: notify)
+    }
+
+    func referenceEntityByGenericLocation(_ location: GenericLocation) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByGenericLocation(location)
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(location: location, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(location: location, nickname: nickname, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(entityKey: entityKey, nickname: nil, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func removeAllTemporaryReferenceEntities() throws {
+        try ReferenceEntity.removeAllTemporary()
     }
 
     func routes() -> [Route] {

@@ -193,6 +193,9 @@ Phase 1 complete:
 - 2026-02-07: Extended `RouteStorageProviderDispatchTests` with route mutation seam coverage (`testRouteAddUsesInjectedSpatialStoreReferenceEntityAdd`) and refreshed class dispatch validation coverage (10 targeted tests passing).
 - 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; focused route-mutation + storage-dispatch tests passed; full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 - 2026-02-07: Regenerated dependency-analysis artifact after the latest data seam slices: `docs/plans/artifacts/dependency-analysis/latest.txt` (timestamped artifact: `20260207-092318Z-ssindex-0a2fa30.txt`).
+- 2026-02-07: Extended `SpatialDataStore` with generic-location + temporary-marker operations (`referenceEntityByGenericLocation`, `addTemporaryReferenceEntity` overloads, `removeAllTemporaryReferenceEntities`) and updated `SpatialDataDestinationEntityStore` to delegate through `SpatialDataStoreRegistry` for both destination reads and temporary marker mutations.
+- 2026-02-07: Extended `RouteStorageProviderDispatchTests` with additional storage dispatch coverage (`testSpatialDataStoreReferenceEntityByGenericLocationDispatchesToInjectedStore`, `testSpatialDataStoreTemporaryReferenceEntityOperationsDispatchToInjectedStore`) and validated route add/mutation dispatch (`testRouteAddUsesInjectedSpatialStoreReferenceEntityAdd`).
+- 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (`11` tests); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -319,7 +322,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue Milestone 2 seam-carving by introducing equivalent injected storage seams for `ReferenceEntity` high-traffic mutation operations (temp cleanup, upsert/remove) before moving files across layer folders.
-2. Continue storage-seam rollout in `Data` by replacing remaining direct `ReferenceEntity` static mutation/read call sites with injectable provider/adapter methods where practical (`update`, temporary cleanup, remove and bulk-remove flows).
+1. Continue Milestone 2 seam-carving by introducing equivalent injected storage seams for remaining `ReferenceEntity` mutation operations still internal to model methods (`update`, remove, bulk-remove) where it improves testability and future persistence swap readiness.
+2. Evaluate the next high-leverage boundary move: split `Data` internals into `Domain` vs `Infrastructure` folders in small compile-safe batches now that route/destination/marker runtime seams cover reads and key mutation entry points.
 3. Prepare folder-boundary migration mechanics (including Xcode project/group updates) so `Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, and `Data/Composition` moves can land in small compile-safe batches.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.
