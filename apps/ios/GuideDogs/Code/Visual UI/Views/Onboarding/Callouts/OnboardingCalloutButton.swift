@@ -58,7 +58,7 @@ struct OnboardingCalloutButton: View {
             }
         }
         .onDisappear {
-            AppContext.shared.eventProcessor.hush(playSound: true)
+            UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: true)
         }
     }
     
@@ -70,7 +70,7 @@ struct OnboardingCalloutButton: View {
         if audioButtonIsAnimating {
             GDATelemetry.track("onboarding.callout.hushed")
             
-             AppContext.shared.eventProcessor.hush(playSound: true)
+            UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: true)
             
             stopAnimation(audioDidComplete: false)
         } else {
@@ -78,7 +78,7 @@ struct OnboardingCalloutButton: View {
             
             startAnimation()
             
-            AppContext.process(OnboardingExampleCalloutEvent { _ in
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(OnboardingExampleCalloutEvent { _ in
                 GDATelemetry.track("onboarding.callout.completed")
                 
                 stopAnimation()

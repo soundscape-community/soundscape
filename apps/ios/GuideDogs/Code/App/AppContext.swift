@@ -414,6 +414,7 @@ protocol UIRuntimeProviding {
     func uiDevices() -> [Device]
     func uiAddDevice(_ device: Device)
     func uiRemoveDevice(_ device: Device)
+    func uiPresentationHeading() -> Heading
     func uiUserHeading() -> Heading
     func uiBLEAuthorizationStatus(_ completion: @escaping (Bool) -> Void)
     func uiAudioSession() -> AVAudioSession
@@ -539,6 +540,11 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
 
     func uiRemoveDevice(_ device: Device) {
         debugAssertUnconfigured(#function)
+    }
+
+    func uiPresentationHeading() -> Heading {
+        debugAssertUnconfigured(#function)
+        return Heading(orderedBy: [.user], course: nil, deviceHeading: nil, userHeading: nil)
     }
 
     func uiUserHeading() -> Heading {
@@ -734,6 +740,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiRemoveDevice(_ device: Device) {
         context.deviceManager.remove(device: device)
+    }
+
+    func uiPresentationHeading() -> Heading {
+        context.geolocationManager.presentationHeading
     }
 
     func uiUserHeading() -> Heading {

@@ -33,11 +33,11 @@ class InteractiveBeaconViewModel: ObservableObject {
     // MARK: Initialization
     
     init() {
-        publisher = AppContext.shared.geolocationManager.presentationHeading
+        publisher = UIRuntimeProviderRegistry.providers.uiPresentationHeading()
         
         // Save initial values
         heading = publisher.value
-        location = AppContext.shared.geolocationManager.location
+        location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         updateCurrentValues()
         
@@ -79,12 +79,13 @@ class InteractiveBeaconViewModel: ObservableObject {
             return
         }
         
-        guard let bearingToLocation = AppContext.shared.spatialDataContext.destinationManager.destination?.bearingToClosestLocation(from: location) else {
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
+              let bearingToLocation = destinationManager.destination?.bearingToClosestLocation(from: location) else {
             return
         }
         
         bearingToBeacon = heading.bearing(to: bearingToLocation)
-        isBeaconInBounds = AppContext.shared.spatialDataContext.destinationManager.isBeaconInBounds
+        isBeaconInBounds = destinationManager.isBeaconInBounds
         
         if bearingToBeacon > 345.0 || bearingToBeacon < 15.0 {
             beaconOrientation = .ahead

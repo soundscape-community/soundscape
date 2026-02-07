@@ -63,27 +63,27 @@ struct InteractiveBeaconView: View {
                 return
             }
             
-            AppContext.process(event)
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(event)
         }
         .onAppear {
             // Start the animation
             isAnimating = true
             
             // Start the audio beacon
-            AppContext.process(StartSelectedBeaconAudioEvent())
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(StartSelectedBeaconAudioEvent())
             
             // Include a delay so that the callout does not interrupt VoiceOver
             let delay = UIAccessibility.isVoiceOverRunning ? 2.5 : 1.0
             
             Task {
                 try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-                AppContext.process(SelectedBeaconCalloutEvent(completion: { _ in
+                UIRuntimeProviderRegistry.providers.uiProcessEvent(SelectedBeaconCalloutEvent(completion: { _ in
                     didFirstCalloutComplete = true
                 }))
             }
         }
         .onDisappear {
-            AppContext.process(StopSelectedBeaconAudioEvent())
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(StopSelectedBeaconAudioEvent())
         }
     }
     

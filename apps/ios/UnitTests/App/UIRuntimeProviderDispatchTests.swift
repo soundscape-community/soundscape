@@ -60,6 +60,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var devices: [Device] = []
         var addedDeviceIDs: [UUID] = []
         var removedDeviceIDs: [UUID] = []
+        var presentationHeadingLookupCount = 0
         var userHeading = Heading(orderedBy: [.user], course: nil, deviceHeading: nil, userHeading: HeadingValue(90.0, nil))
         var bleAuthorizationResult = false
         var bleAuthorizationCallCount = 0
@@ -121,6 +122,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiRemoveDevice(_ device: Device) {
             removedDeviceIDs.append(device.id)
+        }
+
+        func uiPresentationHeading() -> Heading {
+            presentationHeadingLookupCount += 1
+            return userHeading
         }
 
         func uiUserHeading() -> Heading {
@@ -316,6 +322,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiDevices().count, 1)
         UIRuntimeProviderRegistry.providers.uiAddDevice(testDevice)
         UIRuntimeProviderRegistry.providers.uiRemoveDevice(testDevice)
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiPresentationHeading() === provider.userHeading)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiUserHeading() === provider.userHeading)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiAudioSession() === provider.audioSession)
         UIRuntimeProviderRegistry.providers.uiSetTutorialMode(true)
@@ -371,6 +378,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.setDeviceManagerDelegateCallCount, 1)
         XCTAssertEqual(provider.addedDeviceIDs, [testDevice.id])
         XCTAssertEqual(provider.removedDeviceIDs, [testDevice.id])
+        XCTAssertEqual(provider.presentationHeadingLookupCount, 1)
         XCTAssertEqual(provider.bleAuthorizationCallCount, 1)
         XCTAssertEqual(provider.audioSessionLookupCount, 1)
         XCTAssertEqual(provider.tutorialModeValues, [true])
