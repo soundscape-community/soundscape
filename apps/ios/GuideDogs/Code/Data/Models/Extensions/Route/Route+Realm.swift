@@ -9,6 +9,7 @@
 import Foundation
 import RealmSwift
 import CoreLocation
+import MapKit
 
 @MainActor
 protocol SpatialDataStore {
@@ -27,6 +28,10 @@ protocol SpatialDataStore {
     func routes() -> [Route]
     func routeByKey(_ key: String) -> Route?
     func routesContaining(markerId: String) -> [Route]
+    func roadByKey(_ key: String) -> Road?
+    func intersections(forRoadKey key: String) -> [Intersection]
+    func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection?
+    func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]?
 }
 
 @MainActor
@@ -89,6 +94,22 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func routesContaining(markerId: String) -> [Route] {
         SpatialDataCache.routesContaining(markerId: markerId)
+    }
+
+    func roadByKey(_ key: String) -> Road? {
+        SpatialDataCache.road(withKey: key)
+    }
+
+    func intersections(forRoadKey key: String) -> [Intersection] {
+        SpatialDataCache.intersections(forRoadKey: key) ?? []
+    }
+
+    func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
+        SpatialDataCache.intersection(forRoadKey: key, atCoordinate: coordinate)
+    }
+
+    func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]? {
+        SpatialDataCache.intersections(forRoadKey: key, inRegion: region)
     }
 }
 

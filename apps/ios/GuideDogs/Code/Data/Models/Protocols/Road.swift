@@ -96,11 +96,11 @@ extension Road {
     }
     
     var intersections: [Intersection] {
-        return SpatialDataCache.intersections(forRoadKey: key) ?? []
+        return SpatialDataStoreRegistry.store.intersections(forRoadKey: key)
     }
     
     func intersection(atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
-        return SpatialDataCache.intersection(forRoadKey: key, atCoordinate: coordinate)
+        return SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate)
     }
     
     func isMainRoad(context: SecondaryRoadsContext = .standard, detectionType: MainRoadDetectionType = .roadName) -> Bool {

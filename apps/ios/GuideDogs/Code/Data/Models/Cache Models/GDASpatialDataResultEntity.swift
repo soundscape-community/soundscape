@@ -117,7 +117,7 @@ class GDASpatialDataResultEntity: Object {
         
         var entranceObjects = [POI]()
         for entranceID in entranceIDs {
-            if let entrance = SpatialDataCache.searchByKey(key: entranceID) {
+            if let entrance = SpatialDataStoreRegistry.store.searchByKey(entranceID) {
                 entranceObjects.append(entrance)
             }
         }

@@ -8,6 +8,7 @@
 
 import XCTest
 import CoreLocation
+import MapKit
 @testable import Soundscape
 
 @MainActor
@@ -25,6 +26,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
         var routesContainingToReturn: [String: [Route]] = [:]
+        var roadsByKey: [String: Road] = [:]
+        var intersectionsByRoadKey: [String: [Intersection]] = [:]
+        var intersectionsByRoadCoordinateKey: [String: Intersection] = [:]
+        var intersectionsByRoadRegionKey: [String: [Intersection]] = [:]
 
         private(set) var referenceEntityByKeyCallKeys: [String] = []
         private(set) var referenceEntityByEntityKeyCallKeys: [String] = []
@@ -41,6 +46,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var routesCallCount = 0
         private(set) var routeByKeyCallKeys: [String] = []
         private(set) var routesContainingCallKeys: [String] = []
+        private(set) var roadByKeyCallKeys: [String] = []
+        private(set) var intersectionsForRoadKeyCallKeys: [String] = []
+        private(set) var intersectionForRoadCoordinateCallKeys: [String] = []
+        private(set) var intersectionsForRoadRegionCallKeys: [String] = []
 
         func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
             referenceEntityByKeyCallKeys.append(key)
@@ -119,8 +128,38 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             return routesContainingToReturn[markerId] ?? []
         }
 
+        func roadByKey(_ key: String) -> Road? {
+            roadByKeyCallKeys.append(key)
+            return roadsByKey[key]
+        }
+
+        func intersections(forRoadKey key: String) -> [Intersection] {
+            intersectionsForRoadKeyCallKeys.append(key)
+            return intersectionsByRoadKey[key] ?? []
+        }
+
+        func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
+            let lookupKey = roadCoordinateKey(forRoadKey: key, coordinate: coordinate)
+            intersectionForRoadCoordinateCallKeys.append(lookupKey)
+            return intersectionsByRoadCoordinateKey[lookupKey]
+        }
+
+        func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]? {
+            let lookupKey = roadRegionKey(forRoadKey: key, region: region)
+            intersectionsForRoadRegionCallKeys.append(lookupKey)
+            return intersectionsByRoadRegionKey[lookupKey]
+        }
+
         private func locationKey(for coordinate: CLLocationCoordinate2D) -> String {
             "\(coordinate.latitude),\(coordinate.longitude)"
+        }
+
+        private func roadCoordinateKey(forRoadKey key: String, coordinate: CLLocationCoordinate2D) -> String {
+            "\(key)@\(locationKey(for: coordinate))"
+        }
+
+        private func roadRegionKey(forRoadKey key: String, region: MKCoordinateRegion) -> String {
+            "\(key)@\(locationKey(for: region.center))@\(region.span.latitudeDelta),\(region.span.longitudeDelta)"
         }
     }
 
@@ -293,6 +332,125 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
     }
 
+    func testSpatialDataStoreRoadByKeyDispatchesToInjectedStore() {
+        let roadKey = "road-key"
+        let roadEntity = createRoadEntity(key: roadKey)
+        let store = MockSpatialDataStore()
+        store.roadsByKey[roadKey] = roadEntity
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let road = SpatialDataStoreRegistry.store.roadByKey(roadKey)
+
+        guard let returnedRoad = road as? GDASpatialDataResultEntity else {
+            XCTFail("Expected GDASpatialDataResultEntity road")
+            return
+        }
+
+        XCTAssertTrue(returnedRoad === roadEntity)
+        XCTAssertEqual(store.roadByKeyCallKeys, [roadKey])
+    }
+
+    func testSpatialDataStoreIntersectionsForRoadKeyDispatchesToInjectedStore() {
+        let roadKey = "road-key"
+        let intersection = createIntersection(key: "intersection-key",
+                                              coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        let store = MockSpatialDataStore()
+        store.intersectionsByRoadKey[roadKey] = [intersection]
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let intersections = SpatialDataStoreRegistry.store.intersections(forRoadKey: roadKey)
+
+        XCTAssertEqual(intersections.count, 1)
+        XCTAssertTrue(intersections.first === intersection)
+        XCTAssertEqual(store.intersectionsForRoadKeyCallKeys, [roadKey])
+    }
+
+    func testSpatialDataStoreIntersectionForRoadKeyAtCoordinateDispatchesToInjectedStore() {
+        let roadKey = "road-key"
+        let coordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        let lookupKey = "\(roadKey)@\(coordinate.latitude),\(coordinate.longitude)"
+        let intersection = createIntersection(key: "intersection-key", coordinate: coordinate)
+        let store = MockSpatialDataStore()
+        store.intersectionsByRoadCoordinateKey[lookupKey] = intersection
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let result = SpatialDataStoreRegistry.store.intersection(forRoadKey: roadKey, atCoordinate: coordinate)
+
+        XCTAssertTrue(result === intersection)
+        XCTAssertEqual(store.intersectionForRoadCoordinateCallKeys, [lookupKey])
+    }
+
+    func testSpatialDataStoreIntersectionsForRoadKeyInRegionDispatchesToInjectedStore() {
+        let roadKey = "road-key"
+        let center = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        let region = MKCoordinateRegion(center: center, latitudinalMeters: 500, longitudinalMeters: 500)
+        let lookupKey = "\(roadKey)@\(center.latitude),\(center.longitude)@\(region.span.latitudeDelta),\(region.span.longitudeDelta)"
+        let intersection = createIntersection(key: "intersection-key", coordinate: center)
+        let store = MockSpatialDataStore()
+        store.intersectionsByRoadRegionKey[lookupKey] = [intersection]
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let intersections = SpatialDataStoreRegistry.store.intersections(forRoadKey: roadKey, inRegion: region)
+
+        XCTAssertEqual(intersections?.count, 1)
+        XCTAssertTrue(intersections?.first === intersection)
+        XCTAssertEqual(store.intersectionsForRoadRegionCallKeys, [lookupKey])
+    }
+
+    func testIntersectionRoadsUseInjectedSpatialStoreLookup() {
+        let roadKey = "road-key"
+        let roadEntity = createRoadEntity(key: roadKey)
+        let intersection = createIntersection(key: "intersection-key",
+                                              coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493),
+                                              roadKeys: [roadKey])
+        let store = MockSpatialDataStore()
+        store.roadsByKey[roadKey] = roadEntity
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let roads = intersection.roads
+
+        XCTAssertEqual(roads.count, 1)
+        XCTAssertEqual(store.roadByKeyCallKeys, [roadKey])
+    }
+
+    func testRoadIntersectionsUseInjectedSpatialStoreLookup() {
+        let roadKey = "road-key"
+        guard let road = createRoadEntity(key: roadKey) as? Road else {
+            XCTFail("Expected road-conforming entity")
+            return
+        }
+        let intersection = createIntersection(key: "intersection-key",
+                                              coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        let store = MockSpatialDataStore()
+        store.intersectionsByRoadKey[roadKey] = [intersection]
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let intersections = road.intersections
+
+        XCTAssertEqual(intersections.count, 1)
+        XCTAssertTrue(intersections.first === intersection)
+        XCTAssertEqual(store.intersectionsForRoadKeyCallKeys, [roadKey])
+    }
+
+    func testRoadIntersectionAtCoordinateUsesInjectedSpatialStoreLookup() {
+        let roadKey = "road-key"
+        let coordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        guard let road = createRoadEntity(key: roadKey) as? Road else {
+            XCTFail("Expected road-conforming entity")
+            return
+        }
+        let lookupKey = "\(roadKey)@\(coordinate.latitude),\(coordinate.longitude)"
+        let intersection = createIntersection(key: "intersection-key", coordinate: coordinate)
+        let store = MockSpatialDataStore()
+        store.intersectionsByRoadCoordinateKey[lookupKey] = intersection
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let result = road.intersection(atCoordinate: coordinate)
+
+        XCTAssertTrue(result === intersection)
+        XCTAssertEqual(store.intersectionForRoadCoordinateCallKeys, [lookupKey])
+    }
+
     func testReferenceEntityGetPOIUsesInjectedSpatialStoreSearchLookup() {
         let key = "poi-key"
         let poi = GenericLocation(lat: 47.6205, lon: -122.3493, name: "POI")
@@ -418,6 +576,27 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         }
 
         return route
+    }
+
+    private func createRoadEntity(key: String) -> GDASpatialDataResultEntity {
+        let parameters = LocationParameters(name: "Road \(key)",
+                                            address: nil,
+                                            coordinate: CoordinateParameters(latitude: 47.6205, longitude: -122.3493),
+                                            entity: nil)
+        let road = GDASpatialDataResultEntity(id: key, parameters: parameters)
+        road.nameTag = "road"
+        return road
+    }
+
+    private func createIntersection(key: String,
+                                    coordinate: CLLocationCoordinate2D,
+                                    roadKeys: [String] = []) -> Intersection {
+        let intersection = Intersection()
+        intersection.key = key
+        intersection.latitude = coordinate.latitude
+        intersection.longitude = coordinate.longitude
+        roadKeys.forEach { intersection.roadIds.append(IntersectionRoadId(withId: $0)) }
+        return intersection
     }
 
     private func clearAllRoutes() throws {
