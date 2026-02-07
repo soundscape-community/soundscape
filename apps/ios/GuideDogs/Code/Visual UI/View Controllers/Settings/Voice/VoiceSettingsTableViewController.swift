@@ -94,26 +94,28 @@ class VoiceSettingsTableViewController: BaseTableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        let providers = UIRuntimeProviderRegistry.providers
         
         GDATelemetry.trackScreenView("settings.voice")
         
-        if AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled {
+        if providers.uiIsDestinationAudioEnabled() {
             didMuteBeacon = true
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(false)
+            _ = providers.uiToggleDestinationAudio(automatic: false)
         }
         
         if SettingsContext.shared.automaticCalloutsEnabled {
             didMuteCallouts = true
             SettingsContext.shared.automaticCalloutsEnabled = false
-            AppContext.shared.eventProcessor.hush(playSound: false)
+            providers.uiHushEventProcessor(playSound: false)
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        let providers = UIRuntimeProviderRegistry.providers
         
         if didMuteBeacon {
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(false)
+            _ = providers.uiToggleDestinationAudio(automatic: false)
         }
         
         if didMuteCallouts {
@@ -283,14 +285,14 @@ class VoiceSettingsTableViewController: BaseTableViewController {
         currentVoiceIdentifier = voice.identifier
         SettingsContext.shared.voiceId = voice.identifier
         
-        AppContext.shared.eventProcessor.hush()
+        UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: true, hushBeacon: true)
         
         refreshCells(previous: currentVoiceIndex, new: indexPath)
         Task { [weak self] in
             try? await Task.sleep(nanoseconds: 1_000_000_000)
             guard let self, self.previewingVoiceIdentifier == voice.identifier else { return }
             GDATelemetry.track("settings.voice.preview", with: ["voice": voice.name])
-            AppContext.process(TTSVoicePreviewEvent(name: voice.name) { [weak self] _ in
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(TTSVoicePreviewEvent(name: voice.name) { [weak self] _ in
                 guard let self, self.previewingVoiceIdentifier == voice.identifier else { return }
                 self.previewingVoiceIdentifier = nil
                 self.refreshCells(previous: nil, new: indexPath)

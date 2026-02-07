@@ -31,7 +31,8 @@ class RecommenderViewModel: ObservableObject {
     private var currentContent: (() -> AnyView)?
     
     private var shouldPublish: Bool {
-        return AppContext.shared.eventProcessor.activeBehavior is SoundscapeBehavior && AppContext.shared.spatialDataContext.destinationManager.isDestinationSet == false
+        let providers = UIRuntimeProviderRegistry.providers
+        return providers.uiIsActiveBehaviorSoundscape() && providers.uiIsDestinationSet() == false
     }
     
     // MARK: Initialization

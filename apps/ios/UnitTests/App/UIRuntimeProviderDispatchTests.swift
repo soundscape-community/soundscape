@@ -18,6 +18,13 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         SSGeoLocation(coordinate: SSGeoCoordinate(latitude: latitude, longitude: longitude))
     }
 
+    private final class MockAuthorizationProvider: AsyncAuthorizationProvider {
+        weak var authorizationDelegate: AsyncAuthorizationProviderDelegate?
+        var authorizationStatus: AuthorizationStatus = .notDetermined
+
+        func requestAuthorization() {}
+    }
+
     private final class MockUIRuntimeProviders: UIRuntimeProviders {
         var initialLocation: SSGeoLocation?
         var geofenceResult = false
@@ -33,24 +40,37 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var activeRouteGuidanceLookupCount = 0
         var guidedTourLookupCount = 0
         var isApplicationInNormalState = true
+        var goToSleepCallCount = 0
+        var snoozeCallCount = 0
+        var wakeUpCallCount = 0
+        var activeBehaviorID = UUID()
+        var activeBehaviorIDLookupCount = 0
         var toggleAudioResult = false
         var toggleAudioCallCount = 0
         var playAudioResult: AudioPlayerIdentifier?
         var playedAudioURLs: [URL] = []
         var stoppedAudioIDs: [AudioPlayerIdentifier] = []
         var customBehaviorActive = false
+        var isSoundscapeBehaviorActive = false
         var isGuidedTourActive = false
         var isRouteGuidanceActive = false
         var activateCustomBehaviorCount = 0
         var deactivateCustomBehaviorCount = 0
         var processedEventNames: [String] = []
         var currentUserLocation: CLLocation?
+        var currentPreviewDecisionPoint: IntersectionDecisionPoint?
+        var currentPreviewDecisionPointLookupCount = 0
         var coreLocationServicesEnabled = true
         var coreLocationAuthorizationStatus: CoreLocationAuthorizationStatus = .fullAccuracyLocationAuthorized
+        var locationAuthorizationProvider: AsyncAuthorizationProvider?
+        var motionAuthorizationProvider: AsyncAuthorizationProvider?
+        var locationAuthorizationProviderLookupCount = 0
+        var motionAuthorizationProviderLookupCount = 0
         var isOffline = false
         var calloutHistoryLookupCount = 0
         var calloutHistoryCallouts: [CalloutProtocol] = []
         var isStreetPreviewing = false
+        var isDestinationSet = false
         var isDestinationAudioEnabled = false
         var toggleDestinationAudioCallCount = 0
         var toggleDestinationAudioAutomaticInputs: [Bool] = []
@@ -142,6 +162,23 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
             isApplicationInNormalState
         }
 
+        func uiGoToSleep() {
+            goToSleepCallCount += 1
+        }
+
+        func uiSnooze() {
+            snoozeCallCount += 1
+        }
+
+        func uiWakeUp() {
+            wakeUpCallCount += 1
+        }
+
+        func uiActiveBehaviorID() -> UUID {
+            activeBehaviorIDLookupCount += 1
+            return activeBehaviorID
+        }
+
         func uiActiveRouteGuidance() -> RouteGuidance? {
             activeRouteGuidanceLookupCount += 1
             return nil
@@ -212,6 +249,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
             customBehaviorActive
         }
 
+        func uiIsActiveBehaviorSoundscape() -> Bool {
+            isSoundscapeBehaviorActive
+        }
+
         func uiIsActiveBehaviorGuidedTour() -> Bool {
             isGuidedTourActive
         }
@@ -234,6 +275,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiCurrentUserLocation() -> CLLocation? {
             currentUserLocation
+        }
+
+        func uiCurrentPreviewDecisionPoint() -> IntersectionDecisionPoint? {
+            currentPreviewDecisionPointLookupCount += 1
+            return currentPreviewDecisionPoint
         }
 
         func uiCalloutHistoryCallouts() -> [CalloutProtocol] {
@@ -265,12 +311,26 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
             coreLocationAuthorizationStatus
         }
 
+        func uiLocationAuthorizationProvider() -> AsyncAuthorizationProvider? {
+            locationAuthorizationProviderLookupCount += 1
+            return locationAuthorizationProvider
+        }
+
+        func uiMotionAuthorizationProvider() -> AsyncAuthorizationProvider? {
+            motionAuthorizationProviderLookupCount += 1
+            return motionAuthorizationProvider
+        }
+
         func uiIsOffline() -> Bool {
             isOffline
         }
 
         func uiIsStreetPreviewing() -> Bool {
             isStreetPreviewing
+        }
+
+        func uiIsDestinationSet() -> Bool {
+            isDestinationSet
         }
 
         func uiIsDestinationAudioEnabled() -> Bool {
@@ -371,8 +431,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         provider.currentUserLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
         provider.isFirstLaunch = true
         provider.shouldShowNewFeatures = true
+        provider.isSoundscapeBehaviorActive = true
         provider.isGuidedTourActive = true
         provider.isRouteGuidanceActive = true
+        provider.isDestinationSet = true
         provider.coreLocationServicesEnabled = false
         provider.coreLocationAuthorizationStatus = .denied
         provider.isOffline = true
@@ -385,6 +447,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         provider.toggleGPXSimulationStateResult = false
         provider.checkServiceConnectionResult = true
         provider.bleAuthorizationResult = true
+        let locationAuthProvider = MockAuthorizationProvider()
+        let motionAuthProvider = MockAuthorizationProvider()
+        provider.locationAuthorizationProvider = locationAuthProvider
+        provider.motionAuthorizationProvider = motionAuthProvider
         let testDevice = HeadphoneMotionManagerWrapper(id: UUID(), name: "Test Headphones")
         provider.devices = [testDevice]
         UIRuntimeProviderRegistry.configure(with: provider)
@@ -394,6 +460,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         UIRuntimeProviderRegistry.providers.uiSetExperimentManagerDelegate(nil)
         UIRuntimeProviderRegistry.providers.uiInitializeExperimentManager()
         XCTAssertFalse(UIRuntimeProviderRegistry.providers.uiIsApplicationInNormalState())
+        UIRuntimeProviderRegistry.providers.uiGoToSleep()
+        UIRuntimeProviderRegistry.providers.uiSnooze()
+        UIRuntimeProviderRegistry.providers.uiWakeUp()
+        XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiActiveBehaviorID(), provider.activeBehaviorID)
         _ = UIRuntimeProviderRegistry.providers.uiActiveRouteGuidance()
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiToggleAudio())
         XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiDevices().count, 1)
@@ -412,20 +482,27 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         _ = UIRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour()
         _ = UIRuntimeProviderRegistry.providers.beaconStoreActiveRouteGuidance()
         _ = UIRuntimeProviderRegistry.providers.uiIsCustomBehaviorActive()
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorSoundscape())
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorGuidedTour())
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsActiveBehaviorRouteGuidance())
         UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(MockBehavior())
         UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         UIRuntimeProviderRegistry.providers.uiProcessEvent(BehaviorActivatedEvent())
         _ = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
+        XCTAssertNil(UIRuntimeProviderRegistry.providers.uiCurrentPreviewDecisionPoint())
         _ = UIRuntimeProviderRegistry.providers.uiCalloutHistoryCallouts()
         _ = UIRuntimeProviderRegistry.providers.uiGeolocationManager()
         _ = UIRuntimeProviderRegistry.providers.uiAudioEngine()
         _ = UIRuntimeProviderRegistry.providers.uiReverseGeocode(CLLocation(latitude: 47.6205, longitude: -122.3493))
         XCTAssertFalse(UIRuntimeProviderRegistry.providers.uiCoreLocationServicesEnabled())
         XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiCoreLocationAuthorizationStatus(), .denied)
+        let observedLocationAuthProvider = UIRuntimeProviderRegistry.providers.uiLocationAuthorizationProvider() as? MockAuthorizationProvider
+        let observedMotionAuthProvider = UIRuntimeProviderRegistry.providers.uiMotionAuthorizationProvider() as? MockAuthorizationProvider
+        XCTAssertTrue(observedLocationAuthProvider === locationAuthProvider)
+        XCTAssertTrue(observedMotionAuthProvider === motionAuthProvider)
         _ = UIRuntimeProviderRegistry.providers.uiIsOffline()
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing())
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsDestinationSet())
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsDestinationAudioEnabled())
         UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio()
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio(automatic: false))
@@ -462,6 +539,10 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.setExperimentDelegateCallCount, 1)
         XCTAssertEqual(provider.setExperimentDelegateToNilCount, 1)
         XCTAssertEqual(provider.initializeExperimentManagerCallCount, 1)
+        XCTAssertEqual(provider.goToSleepCallCount, 1)
+        XCTAssertEqual(provider.snoozeCallCount, 1)
+        XCTAssertEqual(provider.wakeUpCallCount, 1)
+        XCTAssertEqual(provider.activeBehaviorIDLookupCount, 1)
         XCTAssertEqual(provider.activeRouteGuidanceLookupCount, 1)
         XCTAssertEqual(provider.toggleAudioCallCount, 1)
         XCTAssertEqual(provider.addedDeviceIDs, [testDevice.id])
@@ -477,6 +558,7 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.toggleDestinationAudioCallCount, 1)
         XCTAssertEqual(provider.toggleDestinationAudioAutomaticInputs, [false])
         XCTAssertEqual(provider.calloutHistoryLookupCount, 1)
+        XCTAssertEqual(provider.currentPreviewDecisionPointLookupCount, 1)
         XCTAssertEqual(provider.processedEventNames, [BehaviorActivatedEvent().name])
         XCTAssertEqual(provider.hushRequests, [false])
         XCTAssertEqual(provider.hushRequestsWithBeacon.count, 1)
@@ -489,6 +571,8 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.geolocationManagerLookupCount, 1)
         XCTAssertEqual(provider.audioEngineLookupCount, 1)
         XCTAssertEqual(provider.reverseGeocodeLookupCount, 1)
+        XCTAssertEqual(provider.locationAuthorizationProviderLookupCount, 1)
+        XCTAssertEqual(provider.motionAuthorizationProviderLookupCount, 1)
         XCTAssertEqual(provider.reverseGeocodeLocations.count, 1)
         if let reverseGeocodeLocation = provider.reverseGeocodeLocations.first {
             XCTAssertEqual(reverseGeocodeLocation.coordinate.latitude, 47.6205, accuracy: 0.0001)

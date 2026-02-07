@@ -26,7 +26,7 @@ class StandbyViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        AppContext.shared.goToSleep()
+        UIRuntimeProviderRegistry.providers.uiGoToSleep()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.onAppOperationStateDidChange), name: Notification.Name.appOperationStateDidChange, object: nil)
         
@@ -46,7 +46,7 @@ class StandbyViewController: UIViewController {
     }
     
     @objc func onAppOperationStateDidChange() {
-        if AppContext.shared.state == .normal {
+        if UIRuntimeProviderRegistry.providers.uiIsApplicationInNormalState() {
             dismiss(animated: true) { [weak self] in
                 guard let `self` = self else {
                     return
@@ -58,7 +58,7 @@ class StandbyViewController: UIViewController {
     }
 
     @IBAction func snoozePressed() {
-        AppContext.shared.snooze()
+        UIRuntimeProviderRegistry.providers.uiSnooze()
         
         snoozeContainer.isHidden = true
         buttonSpacingConstraint.isActive = false
@@ -75,7 +75,7 @@ class StandbyViewController: UIViewController {
     }
     
     @IBAction func wakeUpPressed() {
-        AppContext.shared.wakeUp()
+        UIRuntimeProviderRegistry.providers.uiWakeUp()
     }
     
 }

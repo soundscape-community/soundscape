@@ -414,6 +414,10 @@ protocol UIRuntimeProviding {
     func uiSetExperimentManagerDelegate(_ delegate: ExperimentManagerDelegate?)
     func uiInitializeExperimentManager()
     func uiIsApplicationInNormalState() -> Bool
+    func uiGoToSleep()
+    func uiSnooze()
+    func uiWakeUp()
+    func uiActiveBehaviorID() -> UUID
     func uiActiveRouteGuidance() -> RouteGuidance?
     func uiToggleAudio() -> Bool
     func uiDevices() -> [Device]
@@ -430,20 +434,25 @@ protocol UIRuntimeProviding {
     func uiShouldShowNewFeatures() -> Bool
     func uiNewFeatures() -> NewFeatures
     func uiIsCustomBehaviorActive() -> Bool
+    func uiIsActiveBehaviorSoundscape() -> Bool
     func uiIsActiveBehaviorGuidedTour() -> Bool
     func uiIsActiveBehaviorRouteGuidance() -> Bool
     func uiActivateCustomBehavior(_ behavior: Behavior)
     func uiDeactivateCustomBehavior()
     func uiProcessEvent(_ event: Event)
     func uiCurrentUserLocation() -> CLLocation?
+    func uiCurrentPreviewDecisionPoint() -> IntersectionDecisionPoint?
     func uiCalloutHistoryCallouts() -> [CalloutProtocol]
     func uiGeolocationManager() -> GeolocationManagerProtocol?
     func uiAudioEngine() -> AudioEngineProtocol?
     func uiReverseGeocode(_ location: CLLocation) -> ReverseGeocoderResult?
     func uiCoreLocationServicesEnabled() -> Bool
     func uiCoreLocationAuthorizationStatus() -> CoreLocationAuthorizationStatus
+    func uiLocationAuthorizationProvider() -> AsyncAuthorizationProvider?
+    func uiMotionAuthorizationProvider() -> AsyncAuthorizationProvider?
     func uiIsOffline() -> Bool
     func uiIsStreetPreviewing() -> Bool
+    func uiIsDestinationSet() -> Bool
     func uiIsDestinationAudioEnabled() -> Bool
     func uiToggleDestinationAudio()
     func uiToggleDestinationAudio(automatic: Bool) -> Bool
@@ -561,6 +570,23 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         return false
     }
 
+    func uiGoToSleep() {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiSnooze() {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiWakeUp() {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiActiveBehaviorID() -> UUID {
+        debugAssertUnconfigured(#function)
+        return UUID()
+    }
+
     func uiActiveRouteGuidance() -> RouteGuidance? {
         debugAssertUnconfigured(#function)
         return nil
@@ -637,6 +663,11 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         return false
     }
 
+    func uiIsActiveBehaviorSoundscape() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
     func uiIsActiveBehaviorGuidedTour() -> Bool {
         debugAssertUnconfigured(#function)
         return false
@@ -660,6 +691,11 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
     }
 
     func uiCurrentUserLocation() -> CLLocation? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func uiCurrentPreviewDecisionPoint() -> IntersectionDecisionPoint? {
         debugAssertUnconfigured(#function)
         return nil
     }
@@ -694,12 +730,27 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         return .notDetermined
     }
 
+    func uiLocationAuthorizationProvider() -> AsyncAuthorizationProvider? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func uiMotionAuthorizationProvider() -> AsyncAuthorizationProvider? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
     func uiIsOffline() -> Bool {
         debugAssertUnconfigured(#function)
         return true
     }
 
     func uiIsStreetPreviewing() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiIsDestinationSet() -> Bool {
         debugAssertUnconfigured(#function)
         return false
     }
@@ -812,6 +863,22 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.state == .normal
     }
 
+    func uiGoToSleep() {
+        context.goToSleep()
+    }
+
+    func uiSnooze() {
+        context.snooze()
+    }
+
+    func uiWakeUp() {
+        context.wakeUp()
+    }
+
+    func uiActiveBehaviorID() -> UUID {
+        context.eventProcessor.activeBehavior.id
+    }
+
     func uiActiveRouteGuidance() -> RouteGuidance? {
         context.eventProcessor.activeBehavior as? RouteGuidance
     }
@@ -876,6 +943,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.eventProcessor.isCustomBehaviorActive
     }
 
+    func uiIsActiveBehaviorSoundscape() -> Bool {
+        context.eventProcessor.activeBehavior is SoundscapeBehavior
+    }
+
     func uiIsActiveBehaviorGuidedTour() -> Bool {
         context.eventProcessor.activeBehavior is GuidedTour
     }
@@ -898,6 +969,10 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiCurrentUserLocation() -> CLLocation? {
         context.geolocationManager.location
+    }
+
+    func uiCurrentPreviewDecisionPoint() -> IntersectionDecisionPoint? {
+        (context.eventProcessor.activeBehavior as? PreviewBehavior<IntersectionDecisionPoint>)?.currentDecisionPoint.value
     }
 
     func uiCalloutHistoryCallouts() -> [CalloutProtocol] {
@@ -924,12 +999,24 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.geolocationManager.coreLocationAuthorizationStatus
     }
 
+    func uiLocationAuthorizationProvider() -> AsyncAuthorizationProvider? {
+        context.geolocationManager
+    }
+
+    func uiMotionAuthorizationProvider() -> AsyncAuthorizationProvider? {
+        context.motionActivityContext
+    }
+
     func uiIsOffline() -> Bool {
         context.offlineContext.state == .offline
     }
 
     func uiIsStreetPreviewing() -> Bool {
         context.isStreetPreviewing
+    }
+
+    func uiIsDestinationSet() -> Bool {
+        context.spatialDataContext.destinationManager.isDestinationSet
     }
 
     func uiIsDestinationAudioEnabled() -> Bool {

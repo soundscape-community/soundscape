@@ -419,7 +419,9 @@ class PreviewViewController: UIViewController {
     // MARK: Preview
     
     private func start() {
-        guard AppContext.shared.eventProcessor.activeBehavior.id != behavior?.id else {
+        let providers = UIRuntimeProviderRegistry.providers
+
+        guard providers.uiActiveBehaviorID() != behavior?.id else {
             return
         }
         
@@ -432,12 +434,14 @@ class PreviewViewController: UIViewController {
         configureActivityIndicatorView(isHidden: false)
         
         // Activate the preview behavior
-        AppContext.shared.eventProcessor.activateCustom(behavior: behavior)
+        providers.uiActivateCustomBehavior(behavior)
     }
     
     private func stop() {
+        let providers = UIRuntimeProviderRegistry.providers
+
         if let behavior = behavior {
-            guard AppContext.shared.eventProcessor.activeBehavior.id == behavior.id else {
+            guard providers.uiActiveBehaviorID() == behavior.id else {
                 return
             }
             
@@ -449,7 +453,7 @@ class PreviewViewController: UIViewController {
             configureActivityIndicatorView(isHidden: false)
             
             // Deactivate the preview behavior
-            AppContext.shared.eventProcessor.deactivateCustom()
+            providers.uiDeactivateCustomBehavior()
         } else {
             // There is no behavior to deactivate (it might be initializing)
             // Dismiss the view and return home

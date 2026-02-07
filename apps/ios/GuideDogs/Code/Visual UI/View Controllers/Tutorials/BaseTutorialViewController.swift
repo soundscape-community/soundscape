@@ -86,7 +86,7 @@ class BaseTutorialViewController: UIViewController {
     }
     
     internal func stop() {
-        AppContext.shared.eventProcessor.hush(playSound: false)
+        UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
     }
     
     internal func updatePageText(_ text: String) {
@@ -105,13 +105,13 @@ class BaseTutorialViewController: UIViewController {
     
     internal func toggleAppCalloutsOn() {
         if !SettingsContext.shared.automaticCalloutsEnabled {
-            AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(ToggleAutoCalloutsEvent(playSound: false))
         }
     }
     
     internal func toggleAppCalloutsOff() {
         if SettingsContext.shared.automaticCalloutsEnabled {
-            AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(ToggleAutoCalloutsEvent(playSound: false))
         }
     }
     

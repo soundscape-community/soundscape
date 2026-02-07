@@ -122,6 +122,7 @@ class CalloutButtonPanelViewController: UIViewController {
     
     @IBAction private func onLocateTouchUpInside(_ sender: AnyObject?) {
         updateAnimation(locateImageView, locateAnimation, true)
+        let providers = UIRuntimeProviderRegistry.providers
         
         let completion: (Bool) -> Void = { [weak self] _ in
             guard let imageView = self?.locateImageView else {
@@ -137,19 +138,19 @@ class CalloutButtonPanelViewController: UIViewController {
         
         let event: Event
         
-        if let preview = AppContext.shared.eventProcessor.activeBehavior as? PreviewBehavior<IntersectionDecisionPoint> {
-            event = PreviewMyLocationEvent(current: preview.currentDecisionPoint.value, completionHandler: completion)
+        if let current = providers.uiCurrentPreviewDecisionPoint() {
+            event = PreviewMyLocationEvent(current: current, completionHandler: completion)
         } else {
             event = ExplorationModeToggled(.locate, sender: sender, logContext: logContext, completion: completion)
         }
         
-        AppContext.process(event)
+        providers.uiProcessEvent(event)
     }
     
     @IBAction private func onOrientateTouchUpInside(_ sender: AnyObject?) {
         updateAnimation(orientateImageView, orientateAnimation, true)
 
-        AppContext.process(ExplorationModeToggled(.aroundMe, sender: sender, logContext: logContext) { [weak self] _ in
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(ExplorationModeToggled(.aroundMe, sender: sender, logContext: logContext) { [weak self] _ in
             guard let imageView = self?.orientateImageView else {
                 return
             }
@@ -165,7 +166,7 @@ class CalloutButtonPanelViewController: UIViewController {
     @IBAction private func onLookAheadTouchUpInside(_ sender: AnyObject?) {
         updateAnimation(exploreImageView, exploreAnimation, true)
         
-        AppContext.process(ExplorationModeToggled(.aheadOfMe, sender: sender, logContext: logContext) { [weak self] _ in
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(ExplorationModeToggled(.aheadOfMe, sender: sender, logContext: logContext) { [weak self] _ in
             guard let imageView = self?.exploreImageView else {
                 return
             }
@@ -181,7 +182,7 @@ class CalloutButtonPanelViewController: UIViewController {
     @IBAction private func onMarkedPointsTouchUpInside(_ sender: AnyObject?) {
         updateAnimation(markedPointImageView, markedPointsAnimation, true)
         
-        AppContext.process(ExplorationModeToggled(.nearbyMarkers, sender: sender, logContext: logContext) { [weak self] _ in
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(ExplorationModeToggled(.nearbyMarkers, sender: sender, logContext: logContext) { [weak self] _ in
             guard let imageView = self?.markedPointImageView else {
                 return
             }

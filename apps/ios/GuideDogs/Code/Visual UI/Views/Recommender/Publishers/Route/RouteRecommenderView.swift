@@ -22,10 +22,16 @@ struct RouteRecommenderView: View {
     var body: some View {
         Button(action: {
             if FirstUseExperience.didComplete(.routeTutorial) {
+                let providers = UIRuntimeProviderRegistry.providers
+                guard let spatialData = providers.uiSpatialDataContext(),
+                      let motion = providers.uiMotionActivityContext() else {
+                    return
+                }
+
                 let behavior = RouteGuidance(route,
-                                             spatialData: AppContext.shared.spatialDataContext,
-                                             motion: AppContext.shared.motionActivityContext)
-                AppContext.shared.eventProcessor.activateCustom(behavior: behavior)
+                                             spatialData: spatialData,
+                                             motion: motion)
+                providers.uiActivateCustomBehavior(behavior)
             } else {
                 isTutorialActive = true
             }

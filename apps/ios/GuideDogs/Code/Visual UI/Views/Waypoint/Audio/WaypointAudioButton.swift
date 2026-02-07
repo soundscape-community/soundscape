@@ -52,7 +52,7 @@ struct WaypointAudioButton: View {
         Button {
             var isActivityActive = false
             
-            if let tour = AppContext.shared.eventProcessor.activeBehavior as? GuidedTour, tour.content.id == activityID {
+            if let tour = UIRuntimeProviderRegistry.providers.guidedTourStateStoreActiveTour(), tour.content.id == activityID {
                 isActivityActive = true
             }
             
@@ -167,7 +167,7 @@ struct WaypointAudioButton: View {
     private func startAudio() {
         // If another player is currently playing, stop it before starting the new one
         if let currentPlayerID = isPlayingAudio {
-            AppContext.shared.audioEngine.stop(currentPlayerID)
+            UIRuntimeProviderRegistry.providers.uiAudioEngine()?.stop(currentPlayerID)
         }
         
         audio.start()

@@ -204,7 +204,7 @@ extension SettingsViewController: MixAudioSettingCellDelegate {
 
     private func updateSetting(_ newValue: Bool) {
         SettingsContext.shared.audioSessionMixesWithOthers = newValue
-        AppContext.shared.audioEngine.mixWithOthers = newValue
+        UIRuntimeProviderRegistry.providers.uiAudioEngine()?.mixWithOthers = newValue
         
         GDATelemetry.track("settings.mix_audio",
                            with: ["value": "\(SettingsContext.shared.audioSessionMixesWithOthers)",

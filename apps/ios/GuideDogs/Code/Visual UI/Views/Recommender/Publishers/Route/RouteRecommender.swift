@@ -59,7 +59,7 @@ class RouteRecommender: Recommender {
             self.publisher.value = currentValue
         }
         
-        guard let location = AppContext.shared.geolocationManager.location else {
+        guard let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
             // Location is unknown
             return
         }

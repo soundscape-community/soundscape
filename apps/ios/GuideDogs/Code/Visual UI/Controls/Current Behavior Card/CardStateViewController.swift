@@ -60,30 +60,31 @@ class CardStateViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        let providers = UIRuntimeProviderRegistry.providers
         
         // Configure the initial state
-        if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance {
+        if providers.uiIsActiveBehaviorRouteGuidance() {
             state = .route
-        } else if AppContext.shared.eventProcessor.activeBehavior is GuidedTour {
+        } else if providers.uiIsActiveBehaviorGuidedTour() {
             state = .tour
-        } else if AppContext.shared.spatialDataContext.destinationManager.isDestinationSet {
+        } else if providers.uiIsDestinationSet() {
             state = .beacon
         } else {
             state = .default
         }
         
-        behaviorActivatedObserver = NotificationCenter.default.addObserver(forName: Notification.Name.behaviorActivated, object: AppContext.shared.eventProcessor, queue: OperationQueue.main) { [weak self] (_) in
-            if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance {
+        behaviorActivatedObserver = NotificationCenter.default.addObserver(forName: Notification.Name.behaviorActivated, object: nil, queue: OperationQueue.main) { [weak self] (_) in
+            if providers.uiIsActiveBehaviorRouteGuidance() {
                 self?.state = .route
             }
             
-            if AppContext.shared.eventProcessor.activeBehavior is GuidedTour {
+            if providers.uiIsActiveBehaviorGuidedTour() {
                 self?.state = .tour
             }
         }
         
-        behaviorDeactivatedObserver = NotificationCenter.default.addObserver(forName: Notification.Name.behaviorDeactivated, object: AppContext.shared.eventProcessor, queue: OperationQueue.main) { [weak self] (_) in
-            if AppContext.shared.spatialDataContext.destinationManager.isDestinationSet {
+        behaviorDeactivatedObserver = NotificationCenter.default.addObserver(forName: Notification.Name.behaviorDeactivated, object: nil, queue: OperationQueue.main) { [weak self] (_) in
+            if providers.uiIsDestinationSet() {
                 self?.state = .beacon
             } else {
                 // Remove the child view controller
@@ -91,13 +92,13 @@ class CardStateViewController: UIViewController {
             }
         }
         
-        beaconChangedObserver = NotificationCenter.default.addObserver(forName: Notification.Name.destinationChanged, object: AppContext.shared.spatialDataContext.destinationManager, queue: OperationQueue.main) { [weak self] (notification) in
-            guard AppContext.shared.eventProcessor.activeBehavior is SoundscapeBehavior else {
+        beaconChangedObserver = NotificationCenter.default.addObserver(forName: Notification.Name.destinationChanged, object: providers.uiSpatialDataContext()?.destinationManager, queue: OperationQueue.main) { [weak self] (notification) in
+            guard providers.uiIsActiveBehaviorSoundscape() else {
                 return
             }
             
             // Show the destination view if the destination has been set from a different location
-            if AppContext.shared.spatialDataContext.destinationManager.isDestinationSet {
+            if providers.uiIsDestinationSet() {
                 self?.state = .beacon
                 
                 return

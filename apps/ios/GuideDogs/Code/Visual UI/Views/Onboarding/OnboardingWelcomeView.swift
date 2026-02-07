@@ -56,10 +56,10 @@ struct OnboardingWelcomeView: View {
             // then onboarding was started from app settings
             GDATelemetry.track("onboarding.started", with: [ "first_launch": "\(!FirstUseExperience.didComplete(.oobe))"])
             
-            AppContext.shared.eventProcessor.activateCustom(behavior: OnboardingBehavior(context: context))
+            UIRuntimeProviderRegistry.providers.uiActivateCustomBehavior(OnboardingBehavior(context: context))
         }
         .onDisappear {
-            AppContext.shared.eventProcessor.deactivateCustom()
+            UIRuntimeProviderRegistry.providers.uiDeactivateCustomBehavior()
         }
     }
     

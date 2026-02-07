@@ -52,6 +52,7 @@ class NavilensRecommender: Recommender {
     // MARK: Manage Publisher
     
     private func publishCurrentValue() {
+        let providers = UIRuntimeProviderRegistry.providers
         var currentValue: (() -> AnyView)?
         
         defer {
@@ -59,7 +60,7 @@ class NavilensRecommender: Recommender {
             self.publisher.value = currentValue
         }
         
-        guard let location = AppContext.shared.geolocationManager.location else {
+        guard let location = providers.uiCurrentUserLocation() else {
             // Location is unknown
             return
         }
@@ -68,7 +69,7 @@ class NavilensRecommender: Recommender {
         let navilensOnly = Filter.superCategories(orExpected: [SuperCategory.navilens])
         let navilensInRangeDistance: CLLocationDistance = 30
 
-        guard let dataView = AppContext.shared.spatialDataContext.getDataView(for: location, searchDistance: navilensInRangeDistance) else {
+        guard let dataView = providers.uiSpatialDataContext()?.getDataView(for: location, searchDistance: navilensInRangeDistance) else {
             return
         }
 

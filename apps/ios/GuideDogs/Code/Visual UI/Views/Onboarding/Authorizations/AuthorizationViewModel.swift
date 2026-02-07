@@ -27,8 +27,10 @@ class AuthorizationViewModel: ObservableObject, AuthorizationProvider {
         self.service = service
         
         switch service {
-        case .location: provider = AppContext.shared.geolocationManager
-        case .motion: provider = AppContext.shared.motionActivityContext
+        case .location:
+            provider = UIRuntimeProviderRegistry.providers.uiLocationAuthorizationProvider() ?? UnconfiguredAuthorizationProvider()
+        case .motion:
+            provider = UIRuntimeProviderRegistry.providers.uiMotionAuthorizationProvider() ?? UnconfiguredAuthorizationProvider()
         }
         
         // Initialize published properties
@@ -49,6 +51,16 @@ class AuthorizationViewModel: ObservableObject, AuthorizationProvider {
         GDATelemetry.track("onboarding.authorization.request", with: ["service": service.rawValue])
     }
     
+}
+
+private final class UnconfiguredAuthorizationProvider: AsyncAuthorizationProvider {
+    weak var authorizationDelegate: AsyncAuthorizationProviderDelegate?
+
+    var authorizationStatus: AuthorizationStatus {
+        .notDetermined
+    }
+
+    func requestAuthorization() {}
 }
 
 extension AuthorizationViewModel: AsyncAuthorizationProviderDelegate {
