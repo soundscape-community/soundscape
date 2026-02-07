@@ -47,6 +47,48 @@ enum DestinationManagerRuntime {
 }
 
 @MainActor
+protocol DestinationEntityStore {
+    func referenceEntity(forReferenceID id: String) -> ReferenceEntity?
+    func referenceEntity(forGenericLocation location: GenericLocation) -> ReferenceEntity?
+    func referenceEntity(forEntityKey key: String) -> ReferenceEntity?
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
+    func removeAllTemporaryReferenceEntities() throws
+}
+
+@MainActor
+struct SpatialDataDestinationEntityStore: DestinationEntityStore {
+    func referenceEntity(forReferenceID id: String) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByKey(id)
+    }
+
+    func referenceEntity(forGenericLocation location: GenericLocation) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByGenericLocation(location)
+    }
+
+    func referenceEntity(forEntityKey key: String) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByEntityKey(key)
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(location: location, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(location: location, nickname: nickname, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(entityKey: entityKey, nickname: nil, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func removeAllTemporaryReferenceEntities() throws {
+        try ReferenceEntity.removeAllTemporary()
+    }
+}
+
+@MainActor
 class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Notification Keys
@@ -88,7 +130,7 @@ class DestinationManager: DestinationManagerProtocol {
             return nil
         }
         
-        return SpatialDataCache.referenceEntityByKey(destinationKey)
+        return destinationStore.referenceEntity(forReferenceID: destinationKey)
     }
 
     // All continuous audio should be disabled on launch
@@ -102,6 +144,7 @@ class DestinationManager: DestinationManagerProtocol {
     private var isWithinGeofence: Bool = false
     
     private weak var audioEngine: AudioEngineProtocol!
+    private let destinationStore: DestinationEntityStore
     
     private var finishBeaconPlayerOnRemove: Bool = false
     private var _beaconPlayerId: AudioPlayerIdentifier? {
@@ -175,8 +218,12 @@ class DestinationManager: DestinationManagerProtocol {
 
     // MARK: Initialization
     
-    init(userLocation: CLLocation? = nil, audioEngine engine: AudioEngineProtocol, collectionHeading: Heading) {
+    init(userLocation: CLLocation? = nil,
+         audioEngine engine: AudioEngineProtocol,
+         collectionHeading: Heading,
+         destinationStore: DestinationEntityStore? = nil) {
         self.collectionHeading = collectionHeading
+        self.destinationStore = destinationStore ?? SpatialDataDestinationEntityStore()
         
         audioEngine = engine
         
@@ -254,7 +301,7 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - logContext: The context of the call that will be passed to the telemetry service
     /// - Throws: If the destination cannot be set
     func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws {
-        guard let entity = SpatialDataCache.referenceEntityByKey(referenceID) else {
+        guard let entity = destinationStore.referenceEntity(forReferenceID: referenceID) else {
             throw DestinationManagerError.referenceEntityDoesNotExist
         }
         
@@ -322,13 +369,13 @@ class DestinationManager: DestinationManagerProtocol {
     @discardableResult
     func setDestination(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
         // If the reference entity already exists, just set the destination to that
-        if let ref = SpatialDataCache.referenceEntityByGenericLocation(location) {
+        if let ref = destinationStore.referenceEntity(forGenericLocation: location) {
             try setDestination(referenceID: ref.id, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
             
             return ref.id
         }
         
-        let refID = try ReferenceEntity.add(location: location, estimatedAddress: address, temporary: true)
+        let refID = try destinationStore.addTemporaryReferenceEntity(location: location, estimatedAddress: address)
         
         // Set the newly created generic location as the destination
         try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
@@ -352,7 +399,9 @@ class DestinationManager: DestinationManagerProtocol {
     func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
         // The generic location cannot already exist if this method is called, so go ahead and create one
         let genericLoc: GenericLocation = GenericLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude, name: GDLocalizationUnnecessary(""))
-        let refID = try ReferenceEntity.add(location: genericLoc, nickname: behavior, estimatedAddress: nil, temporary: true)
+        let refID = try destinationStore.addTemporaryReferenceEntity(location: genericLoc,
+                                                                     nickname: behavior,
+                                                                     estimatedAddress: nil)
         
         // Set the newly created generic location as the destination
         try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
@@ -376,13 +425,13 @@ class DestinationManager: DestinationManagerProtocol {
     @discardableResult
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) throws -> String {
         // If the reference entity already exists, just set the destination to that
-        if let ref = SpatialDataCache.referenceEntityByEntityKey(entityKey) {
+        if let ref = destinationStore.referenceEntity(forEntityKey: entityKey) {
             try setDestination(referenceID: ref.id, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
             
             return ref.id
         }
         
-        let refID = try ReferenceEntity.add(entityKey: entityKey, nickname: nil, estimatedAddress: estimatedAddress, temporary: true)
+        let refID = try destinationStore.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: estimatedAddress)
         try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
         
         return refID
@@ -396,7 +445,7 @@ class DestinationManager: DestinationManagerProtocol {
     /// - Throws: If temporary reference entities can not be deleted
     func clearDestination(logContext: String?) throws {
         // Remove all temporary reference entities
-        try ReferenceEntity.removeAllTemporary()
+        try destinationStore.removeAllTemporaryReferenceEntities()
         
         beaconClosestLocation = nil
         temporaryBeaconClosestLocation = nil
