@@ -189,6 +189,9 @@ Phase 1 complete:
 - 2026-02-07: Extended `SpatialDataStore` with `referenceEntitiesNear(_:range:)` and migrated `RoadAdjacentDataView` marker reads (`makeCalloutsForAdjacents`, `markersAlongPath`) from direct static `SpatialDataCache` calls to provider-based lookups.
 - 2026-02-07: Added direct dispatch coverage for newly added spatial-store methods in `RouteStorageProviderDispatchTests` (`testSpatialDataStoreReferenceEntityByEntityKeyDispatchesToInjectedStore`, `testSpatialDataStoreReferenceEntitiesNearDispatchesToInjectedStore`).
 - 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; targeted `RouteStorageProviderDispatchTests` passed (class suite + focused method filters); full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
+- 2026-02-07: Extended `SpatialDataStore` with marker mutation API (`addReferenceEntity(detail:telemetryContext:notify:)`) and migrated `Route.add(...)` waypoint marker creation from direct `ReferenceEntity.add` to provider-based mutation dispatch.
+- 2026-02-07: Extended `RouteStorageProviderDispatchTests` with route mutation seam coverage (`testRouteAddUsesInjectedSpatialStoreReferenceEntityAdd`) and refreshed class dispatch validation coverage (10 targeted tests passing).
+- 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; focused route-mutation + storage-dispatch tests passed; full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -316,6 +319,6 @@ Acceptance criteria:
 
 ## Immediate Next Steps
 1. Continue Milestone 2 seam-carving by introducing equivalent injected storage seams for `ReferenceEntity` high-traffic mutation operations (temp cleanup, upsert/remove) before moving files across layer folders.
-2. Continue storage-seam rollout in `Data` by replacing remaining direct `ReferenceEntity` static mutation/read call sites with injectable provider/adapter methods where practical (`add`, `update`, temporary cleanup flows).
+2. Continue storage-seam rollout in `Data` by replacing remaining direct `ReferenceEntity` static mutation/read call sites with injectable provider/adapter methods where practical (`update`, temporary cleanup, remove and bulk-remove flows).
 3. Prepare folder-boundary migration mechanics (including Xcode project/group updates) so `Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, and `Data/Composition` moves can land in small compile-safe batches.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

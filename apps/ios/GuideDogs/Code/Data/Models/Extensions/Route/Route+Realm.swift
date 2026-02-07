@@ -18,6 +18,7 @@ protocol SpatialDataStore {
     func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity]
     func referenceEntities() -> [ReferenceEntity]
     func searchByKey(_ key: String) -> POI?
+    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
     func routes() -> [Route]
     func routeByKey(_ key: String) -> Route?
     func routesContaining(markerId: String) -> [Route]
@@ -47,6 +48,10 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func searchByKey(_ key: String) -> POI? {
         SpatialDataCache.searchByKey(key: key)
+    }
+
+    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
+        try ReferenceEntity.add(detail: detail, telemetryContext: telemetryContext, notify: notify)
     }
 
     func routes() -> [Route] {
@@ -157,7 +162,9 @@ extension Route {
                     return
                 }
                 
-                let markerId = try ReferenceEntity.add(detail: locationDetail, telemetryContext: "add_route", notify: false)
+                let markerId = try SpatialDataStoreRegistry.store.addReferenceEntity(detail: locationDetail,
+                                                                                     telemetryContext: "add_route",
+                                                                                     notify: false)
                 
                 // `markerId` will change when adding a new Realm object
                 // `markerId` will not change when updating an existing Realm object

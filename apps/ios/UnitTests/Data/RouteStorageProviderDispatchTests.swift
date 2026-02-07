@@ -19,6 +19,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         var referenceEntitiesNearByLocation: [String: [ReferenceEntity]] = [:]
         var referenceEntitiesToReturn: [ReferenceEntity] = []
         var searchResultsByKey: [String: POI] = [:]
+        var addedReferenceEntityID = "mock-added-reference-entity-id"
         var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
         var routesContainingToReturn: [String: [Route]] = [:]
@@ -29,6 +30,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var referenceEntitiesNearCallKeys: [String] = []
         private(set) var referenceEntitiesCallCount = 0
         private(set) var searchByKeyCallKeys: [String] = []
+        private(set) var addReferenceEntityCallCount = 0
         private(set) var routesCallCount = 0
         private(set) var routeByKeyCallKeys: [String] = []
         private(set) var routesContainingCallKeys: [String] = []
@@ -63,6 +65,11 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func searchByKey(_ key: String) -> POI? {
             searchByKeyCallKeys.append(key)
             return searchResultsByKey[key]
+        }
+
+        func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
+            addReferenceEntityCallCount += 1
+            return addedReferenceEntityID
         }
 
         func routes() -> [Route] {
@@ -242,6 +249,26 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         wait(for: [expectation], timeout: 1.0)
         XCTAssertEqual(store.searchByKeyCallKeys, [lookupID])
+    }
+
+    func testRouteAddUsesInjectedSpatialStoreReferenceEntityAdd() throws {
+        let expectedMarkerID = "added-from-injected-store"
+        let waypointLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
+        let imported = ImportedLocationDetail(nickname: "Waypoint", annotation: "Test waypoint")
+        let waypointDetail = LocationDetail(location: waypointLocation, imported: imported, telemetryContext: nil)
+        let waypoint = RouteWaypoint(index: 0,
+                                     markerId: "initial-marker-id",
+                                     importedLocationDetail: waypointDetail)
+        let route = Route(name: "RouteAddInjectedStore-\(UUID().uuidString)", description: nil, waypoints: [waypoint])
+
+        let store = MockSpatialDataStore()
+        store.addedReferenceEntityID = expectedMarkerID
+        SpatialDataStoreRegistry.configure(with: store)
+
+        try Route.add(route, context: "test")
+
+        XCTAssertEqual(store.addReferenceEntityCallCount, 1)
+        XCTAssertEqual(route.waypoints.ordered.first?.markerId, expectedMarkerID)
     }
 
     private func createPersistedRoute(name: String) throws -> Route {
