@@ -144,6 +144,9 @@ Phase 1 complete:
 - 2026-02-07: Extended `UIRuntimeProviders` with `uiPresentationHeading()` and migrated onboarding callout/beacon interactive UI seams (`OnboardingCalloutButton`, `InteractiveBeaconView`, `InteractiveBeaconViewModel`) away from direct `AppContext.shared` / `AppContext.process` usage for hush/event dispatch, heading stream access, current-location, and destination beacon state.
 - 2026-02-07: Extended `UIRuntimeProviderDispatchTests` to validate dispatch/reset behavior for the new presentation-heading runtime hook.
 - 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 118` (down from `129` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-07: Extended `UIRuntimeProviders` with launch/remote-control hooks (`uiIsApplicationInNormalState`, `uiActiveRouteGuidance`, `uiToggleAudio`, `uiToggleDestinationAudio(automatic:)`, `uiHushEventProcessor(playSound:hushBeacon:)`, `uiIsSimulatingGPX`, `uiToggleGPXSimulationState`) and migrated `HomeViewController+RemoteControl` and `LaunchHelper` away from direct `AppContext.shared` / `AppContext.process` usage.
+- 2026-02-07: Extended `UIRuntimeProviderDispatchTests` to validate dispatch/reset behavior for the new launch/remote-control runtime hooks.
+- 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 103` (down from `118` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -270,7 +273,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue the UI runtime-provider pass in remaining launch/remote-control flows (`HomeViewController+RemoteControl`, `LaunchHelper`, `DynamicLaunchViewController`) and trim obsolete `AppContext` helper access from those paths.
+1. Continue the UI runtime-provider pass in remaining launch/bootstrap flows (`DynamicLaunchViewController`, `OnboardingBeaconView`) and trim obsolete `AppContext` helper access from those paths.
 2. Continue Milestone 1 seam carving in remaining high-coupling UI settings/runtime-control surfaces (`VolumeControls`, `CardStateViewController`, `VoiceSettingsTableViewController`) using focused `UIRuntimeProviders` hooks.
 3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

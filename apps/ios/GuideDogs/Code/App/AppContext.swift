@@ -411,6 +411,9 @@ protocol AudioFileStoreRuntimeProviding {
 protocol UIRuntimeProviding {
     func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?)
     func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?)
+    func uiIsApplicationInNormalState() -> Bool
+    func uiActiveRouteGuidance() -> RouteGuidance?
+    func uiToggleAudio() -> Bool
     func uiDevices() -> [Device]
     func uiAddDevice(_ device: Device)
     func uiRemoveDevice(_ device: Device)
@@ -439,7 +442,11 @@ protocol UIRuntimeProviding {
     func uiIsStreetPreviewing() -> Bool
     func uiIsDestinationAudioEnabled() -> Bool
     func uiToggleDestinationAudio()
+    func uiToggleDestinationAudio(automatic: Bool) -> Bool
     func uiHushEventProcessor(playSound: Bool)
+    func uiHushEventProcessor(playSound: Bool, hushBeacon: Bool)
+    func uiIsSimulatingGPX() -> Bool
+    func uiToggleGPXSimulationState() -> Bool?
     func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void)
     func uiSpatialDataContext() -> SpatialDataProtocol?
     func uiMotionActivityContext() -> MotionActivityProtocol?
@@ -527,6 +534,21 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
 
     func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?) {
         debugAssertUnconfigured(#function)
+    }
+
+    func uiIsApplicationInNormalState() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiActiveRouteGuidance() -> RouteGuidance? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func uiToggleAudio() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
     }
 
     func uiDevices() -> [Device] {
@@ -662,8 +684,27 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         debugAssertUnconfigured(#function)
     }
 
+    func uiToggleDestinationAudio(automatic: Bool) -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
     func uiHushEventProcessor(playSound: Bool) {
         debugAssertUnconfigured(#function)
+    }
+
+    func uiHushEventProcessor(playSound: Bool, hushBeacon: Bool) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiIsSimulatingGPX() -> Bool {
+        debugAssertUnconfigured(#function)
+        return false
+    }
+
+    func uiToggleGPXSimulationState() -> Bool? {
+        debugAssertUnconfigured(#function)
+        return nil
     }
 
     func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
@@ -728,6 +769,18 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?) {
         context.deviceManager.delegate = delegate
+    }
+
+    func uiIsApplicationInNormalState() -> Bool {
+        context.state == .normal
+    }
+
+    func uiActiveRouteGuidance() -> RouteGuidance? {
+        context.eventProcessor.activeBehavior as? RouteGuidance
+    }
+
+    func uiToggleAudio() -> Bool {
+        context.eventProcessor.toggleAudio()
     }
 
     func uiDevices() -> [Device] {
@@ -842,8 +895,29 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.spatialDataContext.destinationManager.toggleDestinationAudio()
     }
 
+    func uiToggleDestinationAudio(automatic: Bool) -> Bool {
+        context.spatialDataContext.destinationManager.toggleDestinationAudio(automatic: automatic)
+    }
+
     func uiHushEventProcessor(playSound: Bool) {
         context.eventProcessor.hush(playSound: playSound)
+    }
+
+    func uiHushEventProcessor(playSound: Bool, hushBeacon: Bool) {
+        context.eventProcessor.hush(playSound: playSound, hushBeacon: hushBeacon)
+    }
+
+    func uiIsSimulatingGPX() -> Bool {
+        context.geolocationManager.isSimulatingGPX
+    }
+
+    func uiToggleGPXSimulationState() -> Bool? {
+        guard let gpxSimulator = context.geolocationManager.gpxSimulator else {
+            return nil
+        }
+
+        gpxSimulator.toggleSimulationState()
+        return gpxSimulator.isPaused
     }
 
     func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {

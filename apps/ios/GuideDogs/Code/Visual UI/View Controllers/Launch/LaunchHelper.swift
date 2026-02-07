@@ -144,7 +144,7 @@ extension UIWindow {
         }
         
         // Hush callouts
-        AppContext.shared.eventProcessor.toggleAudio()
+        UIRuntimeProviderRegistry.providers.uiToggleAudio()
         
         NotificationCenter.default.post(name: NSNotification.Name.magicTapOccurred, object: self)
         
@@ -161,14 +161,15 @@ extension UIWindow {
 
     open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionEnded(motion, with: event)
+        let providers = UIRuntimeProviderRegistry.providers
         
         if(motion == .motionShake && SettingsContext.shared.shakeCalloutsEnabled){
             
-            guard let callout = AppContext.shared.calloutHistory.callouts.last else {
+            guard let callout = providers.uiCalloutHistoryCallouts().last else {
                 return
             }
 
-            AppContext.process(RepeatCalloutEvent(callout: callout) { (_) in
+            providers.uiProcessEvent(RepeatCalloutEvent(callout: callout) { (_) in
             })
             
             return
@@ -179,18 +180,16 @@ extension UIWindow {
         // We use the shake motion to pause and resume a GPX simulation
         guard FeatureFlag.isEnabled(.developerTools),
             motion == .motionShake,
-            AppContext.shared.geolocationManager.isSimulatingGPX else {
+            providers.uiIsSimulatingGPX() else {
                 return
         }
         
         DDLogInfo("Shake motion detected")
-        
-        guard let gpxSimulator = AppContext.shared.geolocationManager.gpxSimulator else { return }
-        gpxSimulator.toggleSimulationState()
+        guard let isPaused = providers.uiToggleGPXSimulationState() else { return }
         
         let generator = UINotificationFeedbackGenerator()
         
-        if gpxSimulator.isPaused {
+        if isPaused {
             generator.notificationOccurred(.error)
         } else {
             generator.notificationOccurred(.success)

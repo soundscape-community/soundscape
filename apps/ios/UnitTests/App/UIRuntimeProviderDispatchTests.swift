@@ -28,7 +28,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var shouldShowNewFeatures = false
         var newFeatures = NewFeatures()
         var routeGuidanceLookupCount = 0
+        var activeRouteGuidanceLookupCount = 0
         var guidedTourLookupCount = 0
+        var isApplicationInNormalState = true
+        var toggleAudioResult = false
+        var toggleAudioCallCount = 0
         var playAudioResult: AudioPlayerIdentifier?
         var playedAudioURLs: [URL] = []
         var stoppedAudioIDs: [AudioPlayerIdentifier] = []
@@ -47,7 +51,13 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var isStreetPreviewing = false
         var isDestinationAudioEnabled = false
         var toggleDestinationAudioCallCount = 0
+        var toggleDestinationAudioAutomaticInputs: [Bool] = []
+        var toggleDestinationAudioAutomaticResult = false
         var hushRequests: [Bool] = []
+        var hushRequestsWithBeacon: [(playSound: Bool, hushBeacon: Bool)] = []
+        var isSimulatingGPX = false
+        var toggleGPXSimulationStateResult: Bool?
+        var toggleGPXSimulationStateCallCount = 0
         var checkServiceConnectionResult = false
         var checkServiceConnectionCallCount = 0
         var spatialDataLookupCount = 0
@@ -110,6 +120,20 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?) {
             setDeviceManagerDelegateCallCount += 1
+        }
+
+        func uiIsApplicationInNormalState() -> Bool {
+            isApplicationInNormalState
+        }
+
+        func uiActiveRouteGuidance() -> RouteGuidance? {
+            activeRouteGuidanceLookupCount += 1
+            return nil
+        }
+
+        func uiToggleAudio() -> Bool {
+            toggleAudioCallCount += 1
+            return toggleAudioResult
         }
 
         func uiDevices() -> [Device] {
@@ -232,8 +256,26 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
             toggleDestinationAudioCallCount += 1
         }
 
+        func uiToggleDestinationAudio(automatic: Bool) -> Bool {
+            toggleDestinationAudioAutomaticInputs.append(automatic)
+            return toggleDestinationAudioAutomaticResult
+        }
+
         func uiHushEventProcessor(playSound: Bool) {
             hushRequests.append(playSound)
+        }
+
+        func uiHushEventProcessor(playSound: Bool, hushBeacon: Bool) {
+            hushRequestsWithBeacon.append((playSound, hushBeacon))
+        }
+
+        func uiIsSimulatingGPX() -> Bool {
+            isSimulatingGPX
+        }
+
+        func uiToggleGPXSimulationState() -> Bool? {
+            toggleGPXSimulationStateCallCount += 1
+            return toggleGPXSimulationStateResult
         }
 
         func uiCheckSpatialServiceConnection(_ completion: @escaping (Bool) -> Void) {
@@ -311,6 +353,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         provider.isOffline = true
         provider.isStreetPreviewing = true
         provider.isDestinationAudioEnabled = true
+        provider.isApplicationInNormalState = false
+        provider.toggleAudioResult = true
+        provider.toggleDestinationAudioAutomaticResult = true
+        provider.isSimulatingGPX = true
+        provider.toggleGPXSimulationStateResult = false
         provider.checkServiceConnectionResult = true
         provider.bleAuthorizationResult = true
         let testDevice = HeadphoneMotionManagerWrapper(id: UUID(), name: "Test Headphones")
@@ -319,6 +366,9 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         UIRuntimeProviderRegistry.providers.uiSetRemoteCommandDelegate(MockRemoteCommandDelegate())
         UIRuntimeProviderRegistry.providers.uiSetDeviceManagerDelegate(nil)
+        XCTAssertFalse(UIRuntimeProviderRegistry.providers.uiIsApplicationInNormalState())
+        _ = UIRuntimeProviderRegistry.providers.uiActiveRouteGuidance()
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiToggleAudio())
         XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiDevices().count, 1)
         UIRuntimeProviderRegistry.providers.uiAddDevice(testDevice)
         UIRuntimeProviderRegistry.providers.uiRemoveDevice(testDevice)
@@ -349,7 +399,11 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing())
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsDestinationAudioEnabled())
         UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio()
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiToggleDestinationAudio(automatic: false))
         UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
+        UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false, hushBeacon: false)
+        XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsSimulatingGPX())
+        XCTAssertEqual(UIRuntimeProviderRegistry.providers.uiToggleGPXSimulationState(), false)
         _ = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()
         _ = UIRuntimeProviderRegistry.providers.uiMotionActivityContext()
         let serviceCheckExpectation = expectation(description: "service check completion")
@@ -376,6 +430,8 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.stoppedAudioIDs, [expectedPlayerID])
         XCTAssertEqual(provider.setRemoteCommandDelegateCallCount, 1)
         XCTAssertEqual(provider.setDeviceManagerDelegateCallCount, 1)
+        XCTAssertEqual(provider.activeRouteGuidanceLookupCount, 1)
+        XCTAssertEqual(provider.toggleAudioCallCount, 1)
         XCTAssertEqual(provider.addedDeviceIDs, [testDevice.id])
         XCTAssertEqual(provider.removedDeviceIDs, [testDevice.id])
         XCTAssertEqual(provider.presentationHeadingLookupCount, 1)
@@ -385,9 +441,14 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.activateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.toggleDestinationAudioCallCount, 1)
+        XCTAssertEqual(provider.toggleDestinationAudioAutomaticInputs, [false])
         XCTAssertEqual(provider.calloutHistoryLookupCount, 1)
         XCTAssertEqual(provider.processedEventNames, [BehaviorActivatedEvent().name])
         XCTAssertEqual(provider.hushRequests, [false])
+        XCTAssertEqual(provider.hushRequestsWithBeacon.count, 1)
+        XCTAssertEqual(provider.hushRequestsWithBeacon.first?.playSound, false)
+        XCTAssertEqual(provider.hushRequestsWithBeacon.first?.hushBeacon, false)
+        XCTAssertEqual(provider.toggleGPXSimulationStateCallCount, 1)
         XCTAssertEqual(provider.checkServiceConnectionCallCount, 1)
         XCTAssertEqual(provider.spatialDataLookupCount, 1)
         XCTAssertEqual(provider.motionActivityLookupCount, 1)

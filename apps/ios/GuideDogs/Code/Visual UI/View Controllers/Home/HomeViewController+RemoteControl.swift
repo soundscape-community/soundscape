@@ -14,16 +14,17 @@ extension HomeViewController: RemoteCommandManagerDelegate {
     
     func remoteCommandManager(_ remoteCommandManager: RemoteCommandManager, handle event: RemoteCommand) -> Bool {
         GDATelemetry.track("remote_command.\(event.rawValue)")
+        let providers = UIRuntimeProviderRegistry.providers
         
         // Disallow remote command events when in sleep/snooze mode
-        guard AppContext.shared.state == .normal else {
+        guard providers.uiIsApplicationInNormalState() else {
             return false
         }
         
-        if let route = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance {
+        if let route = providers.uiActiveRouteGuidance() {
             switch event {
             case .play, .pause, .stop, .togglePlayPause:
-                return AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(automatic: false)
+                return providers.uiToggleDestinationAudio(automatic: false)
             case .nextTrack, .seekForward:
                 route.nextWaypoint()
                 return true
@@ -48,7 +49,7 @@ extension HomeViewController: RemoteCommandManagerDelegate {
     }
     
     private func handleToggleAudio() -> Bool {
-        return AppContext.shared.eventProcessor.toggleAudio()
+        UIRuntimeProviderRegistry.providers.uiToggleAudio()
     }
     
     private func handleMyLocation() -> Bool {
@@ -58,18 +59,18 @@ extension HomeViewController: RemoteCommandManagerDelegate {
     
     private func handleRepeat() -> Bool {
         guard !isRepeating else {
-            AppContext.shared.eventProcessor.hush(playSound: false)
+            UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
             isRepeating = false
             return true
         }
         
-        guard let callout = AppContext.shared.calloutHistory.callouts.last else {
+        guard let callout = UIRuntimeProviderRegistry.providers.uiCalloutHistoryCallouts().last else {
             return false
         }
         
         isRepeating = true
 
-        AppContext.process(RepeatCalloutEvent(callout: callout) { (_) in
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(RepeatCalloutEvent(callout: callout) { (_) in
             isRepeating = false
         })
         
@@ -77,14 +78,14 @@ extension HomeViewController: RemoteCommandManagerDelegate {
     }
     
     private func handleToggleCallouts() -> Bool {
-        AppContext.process(ToggleAutoCalloutsEvent(playSound: true))
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(ToggleAutoCalloutsEvent(playSound: true))
         
         GDATelemetry.track("settings.allow_callouts", value: String(SettingsContext.shared.automaticCalloutsEnabled))
         
         // Play announcement
-        AppContext.shared.eventProcessor.hush(playSound: false, hushBeacon: false)
+        UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false, hushBeacon: false)
         let announcement = SettingsContext.shared.automaticCalloutsEnabled ? GDLocalizedString("callouts.callouts_on") : GDLocalizedString("callouts.callouts_off")
-        AppContext.process(GenericAnnouncementEvent(announcement))
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(GenericAnnouncementEvent(announcement))
         return true
     }
     
