@@ -171,6 +171,10 @@ Phase 1 complete:
 - 2026-02-07: Extended `DestinationManagerTest` with injected-store coverage (`testSetDestinationUsesInjectedEntityStoreLookup`, `testClearDestinationUsesInjectedEntityStoreCleanup`) to verify dispatch behavior while preserving existing geofence and destination behavior tests.
 - 2026-02-07: `AppContext` coupling snapshot unchanged for this slice (still no `Visual UI`/`Data` singleton usage): `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 - 2026-02-07: Regenerated dependency-analysis artifact after the destination-storage seam slice: `docs/plans/artifacts/dependency-analysis/latest.txt` (timestamped artifact: `20260207-084920Z-ssindex-4ff83b8.txt`).
+- 2026-02-07: Added route storage seam types in `Route+Realm` (`RouteSpatialDataStore`, `DefaultRouteSpatialDataStore`, `RouteSpatialDataStoreRegistry`) and migrated route storage call sites (`objectKeys(sortedBy: .distance)`, `deleteAll()`, first-waypoint update lookup, and route waypoint bulk update/remove paths) away from direct static `SpatialDataCache` calls.
+- 2026-02-07: Added `RouteStorageProviderDispatchTests` to verify route storage seam dispatch (`referenceEntityByKey`, `routesContaining`) and provider reset isolation.
+- 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`), with all new/affected data runtime tests passing.
+- 2026-02-07: Updated `AppContext` coupling snapshot after route-storage seam (unchanged singleton usage profile): `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
