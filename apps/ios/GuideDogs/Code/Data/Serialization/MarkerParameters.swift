@@ -93,7 +93,7 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let marker = SpatialDataCache.referenceEntityByKey(markerId) else {
+        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(markerId) else {
             return nil
         }
         
@@ -101,9 +101,9 @@ struct MarkerParameters: Codable {
     }
     
     init?(entity: POI) {
-        if let entity = entity as? GenericLocation, let marker = SpatialDataCache.referenceEntityByLocation(entity.location.coordinate) {
+        if let entity = entity as? GenericLocation, let marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(entity.location.coordinate) {
             self.init(marker: marker)
-        } else if let marker = SpatialDataCache.referenceEntityByEntityKey(entity.key) {
+        } else if let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entity.key) {
             self.init(marker: marker)
         } else {
             self.init(entity: entity, markerId: nil, estimatedAddress: nil, nickname: nil, annotation: nil, lastUpdatedDate: nil)
@@ -116,7 +116,7 @@ struct MarkerParameters: Codable {
         
         switch detail.source {
         case .entity(let id):
-            guard let cachedEntity = SpatialDataCache.searchByKey(key: id) else {
+            guard let cachedEntity = SpatialDataStoreRegistry.store.searchByKey(id) else {
                 return nil
             }
             
@@ -142,7 +142,7 @@ struct MarkerParameters: Codable {
         
         let lastUpdatedDate: Date?
         
-        if let markerId = markerId, let marker = SpatialDataCache.referenceEntityByEntityKey(markerId) {
+        if let markerId = markerId, let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(markerId) {
             lastUpdatedDate = marker.lastUpdatedDate
         } else {
             lastUpdatedDate = nil

@@ -13,7 +13,10 @@ import CoreLocation
 @MainActor
 protocol SpatialDataStore {
     func referenceEntityByKey(_ key: String) -> ReferenceEntity?
+    func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity?
+    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity?
     func referenceEntities() -> [ReferenceEntity]
+    func searchByKey(_ key: String) -> POI?
     func routes() -> [Route]
     func routeByKey(_ key: String) -> Route?
     func routesContaining(markerId: String) -> [Route]
@@ -25,8 +28,20 @@ struct DefaultSpatialDataStore: SpatialDataStore {
         SpatialDataCache.referenceEntityByKey(key)
     }
 
+    func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByEntityKey(key)
+    }
+
+    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByLocation(coordinate)
+    }
+
     func referenceEntities() -> [ReferenceEntity] {
         SpatialDataCache.referenceEntities()
+    }
+
+    func searchByKey(_ key: String) -> POI? {
+        SpatialDataCache.searchByKey(key: key)
     }
 
     func routes() -> [Route] {
