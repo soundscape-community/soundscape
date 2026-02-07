@@ -51,15 +51,14 @@ class DynamicLaunchViewController: UIViewController {
     /// - Parameter animated: If `true`, the view was added to the window using an animation.
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        UIRuntimeProviderRegistry.ensureConfiguredForLaunchIfNeeded()
+        let providers = UIRuntimeProviderRegistry.providers
         
         // Always turn callouts on when the app starts
         SettingsContext.shared.automaticCalloutsEnabled = true
         
-        // Force the instantiation of AppContext now by accessing AppContext.shared
-        _ = AppContext.shared
-        
-        // Instantie the telemetry helper with the appContext object
-        GDATelemetry.helper = TelemetryHelper(appContext: AppContext.shared)
+        // Instantiate the telemetry helper through runtime providers
+        GDATelemetry.helper = providers.uiTelemetryHelper()
         
         // Do some logging since the app has launched
         if let helper = GDATelemetry.helper {
@@ -91,8 +90,9 @@ class DynamicLaunchViewController: UIViewController {
     
     private func completeInitialization() {
         // Initialize the experiment manager before displaying the initial view
-        AppContext.shared.experimentManager.delegate = self
-        AppContext.shared.experimentManager.initialize()
+        let providers = UIRuntimeProviderRegistry.providers
+        providers.uiSetExperimentManagerDelegate(self)
+        providers.uiInitializeExperimentManager()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -110,16 +110,18 @@ extension DynamicLaunchViewController: ExperimentManagerDelegate {
                 GDATelemetry.track("experiment_snapshot", with: helper.experimentSnapshot)
             }
             
-            AppContext.shared.experimentManager.delegate = nil
+            UIRuntimeProviderRegistry.providers.uiSetExperimentManagerDelegate(nil)
             
             self?.configureInitialAppView()
         }
     }
     
     private func configureInitialAppView() {
+        let providers = UIRuntimeProviderRegistry.providers
+
         // Configure the appropriate view for the app
         if FirstUseExperience.didComplete(.oobe) {
-            AppContext.shared.start()
+            providers.uiStartApp(fromFirstLaunch: false)
             
             LaunchHelper.configureAppView(with: .main)
         } else {

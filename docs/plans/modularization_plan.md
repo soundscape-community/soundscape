@@ -147,6 +147,12 @@ Phase 1 complete:
 - 2026-02-07: Extended `UIRuntimeProviders` with launch/remote-control hooks (`uiIsApplicationInNormalState`, `uiActiveRouteGuidance`, `uiToggleAudio`, `uiToggleDestinationAudio(automatic:)`, `uiHushEventProcessor(playSound:hushBeacon:)`, `uiIsSimulatingGPX`, `uiToggleGPXSimulationState`) and migrated `HomeViewController+RemoteControl` and `LaunchHelper` away from direct `AppContext.shared` / `AppContext.process` usage.
 - 2026-02-07: Extended `UIRuntimeProviderDispatchTests` to validate dispatch/reset behavior for the new launch/remote-control runtime hooks.
 - 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 103` (down from `118` pre-slice), `App: 25`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-07: Extended `UIRuntimeProviders` with launch-bootstrap hooks (`uiSetExperimentManagerDelegate`, `uiInitializeExperimentManager`, `uiTelemetryHelper`, `uiStartApp(fromFirstLaunch:)`) and added `UIRuntimeProviderRegistry.ensureConfiguredForLaunchIfNeeded()` to bootstrap providers during cold start.
+- 2026-02-07: Migrated `DynamicLaunchViewController` and `OnboardingBeaconView` away from direct `AppContext.shared` usage for startup wiring, experiment-manager lifecycle, telemetry helper initialization, and first-launch app start.
+- 2026-02-07: Extended `UIRuntimeProviderDispatchTests` to validate dispatch/reset behavior for the new launch-bootstrap runtime hooks.
+- 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 95` (down from `103` pre-slice), `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-07: Migrated voice/volume demo UI seams (`SpeakingRateTableViewCell`, `VolumeControls`) to existing `UIRuntimeProviders` hooks for hush/discrete-audio stop/event dispatch, removing direct `AppContext.shared` / `AppContext.process` usage without adding new runtime APIs.
+- 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 80` (down from `95` pre-slice), `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -273,7 +279,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue the UI runtime-provider pass in remaining launch/bootstrap flows (`DynamicLaunchViewController`, `OnboardingBeaconView`) and trim obsolete `AppContext` helper access from those paths.
-2. Continue Milestone 1 seam carving in remaining high-coupling UI settings/runtime-control surfaces (`VolumeControls`, `CardStateViewController`, `VoiceSettingsTableViewController`) using focused `UIRuntimeProviders` hooks.
+1. Continue Milestone 1 seam carving in remaining high-coupling UI settings/runtime-control surfaces (`CardStateViewController`, `VoiceSettingsTableViewController`, `MixAudioSettingCell`, `SettingsViewController`) using focused `UIRuntimeProviders` hooks.
+2. Reduce remaining behavior-state singleton reads in UI helpers/controllers (`HelpViewController`, `WaypointDetail`, `LocationAction`, `MixAudioSettingCell`, `ShareMarkerAlert`) by extending existing provider hooks instead of introducing new globals.
 3. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero.
 4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

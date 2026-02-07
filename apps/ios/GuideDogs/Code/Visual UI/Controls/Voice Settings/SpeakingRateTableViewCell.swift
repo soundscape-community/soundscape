@@ -36,9 +36,9 @@ class SpeakingRateTableViewCell: UITableViewCell {
     
     fileprivate func announcementTest() {
         let test = {
-            AppContext.shared.eventProcessor.hush(playSound: false)
-            AppContext.shared.audioEngine.stopDiscrete()
-            AppContext.process(GenericAnnouncementEvent(GDLocalizedString("voice.voice_rate_test")))
+            UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
+            UIRuntimeProviderRegistry.providers.uiAudioEngine()?.stopDiscrete()
+            UIRuntimeProviderRegistry.providers.uiProcessEvent(GenericAnnouncementEvent(GDLocalizedString("voice.voice_rate_test")))
         }
         
         // When VoiceOver is running, we will wait until the current announcement has finished

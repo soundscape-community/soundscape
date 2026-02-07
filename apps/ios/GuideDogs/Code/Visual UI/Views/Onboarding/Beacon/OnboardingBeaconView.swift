@@ -75,7 +75,7 @@ struct OnboardingBeaconView: View {
         .onAppear {
             GDATelemetry.trackScreenView("onboarding.beacon_picker")
             
-            AppContext.shared.start(fromFirstLaunch: true)
+            UIRuntimeProviderRegistry.providers.uiStartApp(fromFirstLaunch: true)
         }
     }
     

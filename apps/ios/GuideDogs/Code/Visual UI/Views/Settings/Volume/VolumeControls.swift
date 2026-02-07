@@ -79,18 +79,14 @@ struct VolumeControls: View {
     private func demoTTS() {
         // When VoiceOver is running, we will wait until the current announcement has finished
         if !UIAccessibility.isVoiceOverRunning {
-            AppContext.shared.eventProcessor.hush(playSound: false)
-            AppContext.shared.audioEngine.stopDiscrete()
-            AppContext.process(GenericAnnouncementEvent(GDLocalizedString("voice.voice_rate_test")))
+            playTTSDemoAnnouncement()
         } else {
             ttsTimer?.cancel()
             ttsTimer = Timer.publish(every: 1.5, on: RunLoop.main, in: .common)
                 .autoconnect()
                 .first()
                 .sink { _ in
-                    AppContext.shared.eventProcessor.hush(playSound: false)
-                    AppContext.shared.audioEngine.stopDiscrete()
-                    AppContext.process(GenericAnnouncementEvent(GDLocalizedString("voice.voice_rate_test")))
+                    playTTSDemoAnnouncement()
                     ttsTimer = nil
                 }
         }
@@ -99,21 +95,32 @@ struct VolumeControls: View {
     private func demoOther() {
         // When VoiceOver is running, we will wait until the current announcement has finished
         if !UIAccessibility.isVoiceOverRunning {
-            AppContext.shared.eventProcessor.hush(playSound: false)
-            AppContext.shared.audioEngine.stopDiscrete()
-            AppContext.process(GlyphEvent(.connectionSuccess))
+            playOtherDemoGlyph()
         } else {
             otherTimer?.cancel()
             otherTimer = Timer.publish(every: 1.5, on: RunLoop.main, in: .common)
                 .autoconnect()
                 .first()
                 .sink { _ in
-                    AppContext.shared.eventProcessor.hush(playSound: false)
-                    AppContext.shared.audioEngine.stopDiscrete()
-                    AppContext.process(GlyphEvent(.connectionSuccess))
+                    playOtherDemoGlyph()
                     otherTimer = nil
                 }
         }
+    }
+
+    private func hushAndStopDiscreteAudio() {
+        UIRuntimeProviderRegistry.providers.uiHushEventProcessor(playSound: false)
+        UIRuntimeProviderRegistry.providers.uiAudioEngine()?.stopDiscrete()
+    }
+
+    private func playTTSDemoAnnouncement() {
+        hushAndStopDiscreteAudio()
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(GenericAnnouncementEvent(GDLocalizedString("voice.voice_rate_test")))
+    }
+
+    private func playOtherDemoGlyph() {
+        hushAndStopDiscreteAudio()
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(GlyphEvent(.connectionSuccess))
     }
 }
 

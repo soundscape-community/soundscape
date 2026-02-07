@@ -25,6 +25,8 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var setRemoteCommandDelegateCallCount = 0
         var tutorialModeValues: [Bool] = []
         var isFirstLaunch = false
+        var telemetryHelperLookupCount = 0
+        var startAppFromFirstLaunchValues: [Bool] = []
         var shouldShowNewFeatures = false
         var newFeatures = NewFeatures()
         var routeGuidanceLookupCount = 0
@@ -72,6 +74,9 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         var removedDeviceIDs: [UUID] = []
         var presentationHeadingLookupCount = 0
         var userHeading = Heading(orderedBy: [.user], course: nil, deviceHeading: nil, userHeading: HeadingValue(90.0, nil))
+        var setExperimentDelegateCallCount = 0
+        var setExperimentDelegateToNilCount = 0
+        var initializeExperimentManagerCallCount = 0
         var bleAuthorizationResult = false
         var bleAuthorizationCallCount = 0
         var audioSession = AVAudioSession.sharedInstance()
@@ -120,6 +125,17 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?) {
             setDeviceManagerDelegateCallCount += 1
+        }
+
+        func uiSetExperimentManagerDelegate(_ delegate: ExperimentManagerDelegate?) {
+            setExperimentDelegateCallCount += 1
+            if delegate == nil {
+                setExperimentDelegateToNilCount += 1
+            }
+        }
+
+        func uiInitializeExperimentManager() {
+            initializeExperimentManagerCallCount += 1
         }
 
         func uiIsApplicationInNormalState() -> Bool {
@@ -173,6 +189,15 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         func uiIsFirstLaunch() -> Bool {
             isFirstLaunch
+        }
+
+        func uiTelemetryHelper() -> TelemetryHelper? {
+            telemetryHelperLookupCount += 1
+            return nil
+        }
+
+        func uiStartApp(fromFirstLaunch: Bool) {
+            startAppFromFirstLaunchValues.append(fromFirstLaunch)
         }
 
         func uiShouldShowNewFeatures() -> Bool {
@@ -366,6 +391,8 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
 
         UIRuntimeProviderRegistry.providers.uiSetRemoteCommandDelegate(MockRemoteCommandDelegate())
         UIRuntimeProviderRegistry.providers.uiSetDeviceManagerDelegate(nil)
+        UIRuntimeProviderRegistry.providers.uiSetExperimentManagerDelegate(nil)
+        UIRuntimeProviderRegistry.providers.uiInitializeExperimentManager()
         XCTAssertFalse(UIRuntimeProviderRegistry.providers.uiIsApplicationInNormalState())
         _ = UIRuntimeProviderRegistry.providers.uiActiveRouteGuidance()
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiToggleAudio())
@@ -377,6 +404,8 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiAudioSession() === provider.audioSession)
         UIRuntimeProviderRegistry.providers.uiSetTutorialMode(true)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiIsFirstLaunch())
+        XCTAssertNil(UIRuntimeProviderRegistry.providers.uiTelemetryHelper())
+        UIRuntimeProviderRegistry.providers.uiStartApp(fromFirstLaunch: true)
         XCTAssertTrue(UIRuntimeProviderRegistry.providers.uiShouldShowNewFeatures())
         _ = UIRuntimeProviderRegistry.providers.uiNewFeatures()
         _ = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance()
@@ -430,6 +459,9 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.stoppedAudioIDs, [expectedPlayerID])
         XCTAssertEqual(provider.setRemoteCommandDelegateCallCount, 1)
         XCTAssertEqual(provider.setDeviceManagerDelegateCallCount, 1)
+        XCTAssertEqual(provider.setExperimentDelegateCallCount, 1)
+        XCTAssertEqual(provider.setExperimentDelegateToNilCount, 1)
+        XCTAssertEqual(provider.initializeExperimentManagerCallCount, 1)
         XCTAssertEqual(provider.activeRouteGuidanceLookupCount, 1)
         XCTAssertEqual(provider.toggleAudioCallCount, 1)
         XCTAssertEqual(provider.addedDeviceIDs, [testDevice.id])
@@ -437,6 +469,8 @@ final class UIRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.presentationHeadingLookupCount, 1)
         XCTAssertEqual(provider.bleAuthorizationCallCount, 1)
         XCTAssertEqual(provider.audioSessionLookupCount, 1)
+        XCTAssertEqual(provider.telemetryHelperLookupCount, 1)
+        XCTAssertEqual(provider.startAppFromFirstLaunchValues, [true])
         XCTAssertEqual(provider.tutorialModeValues, [true])
         XCTAssertEqual(provider.activateCustomBehaviorCount, 1)
         XCTAssertEqual(provider.deactivateCustomBehaviorCount, 1)

@@ -411,6 +411,8 @@ protocol AudioFileStoreRuntimeProviding {
 protocol UIRuntimeProviding {
     func uiSetRemoteCommandDelegate(_ delegate: RemoteCommandManagerDelegate?)
     func uiSetDeviceManagerDelegate(_ delegate: DeviceManagerDelegate?)
+    func uiSetExperimentManagerDelegate(_ delegate: ExperimentManagerDelegate?)
+    func uiInitializeExperimentManager()
     func uiIsApplicationInNormalState() -> Bool
     func uiActiveRouteGuidance() -> RouteGuidance?
     func uiToggleAudio() -> Bool
@@ -423,6 +425,8 @@ protocol UIRuntimeProviding {
     func uiAudioSession() -> AVAudioSession
     func uiSetTutorialMode(_ isEnabled: Bool)
     func uiIsFirstLaunch() -> Bool
+    func uiTelemetryHelper() -> TelemetryHelper?
+    func uiStartApp(fromFirstLaunch: Bool)
     func uiShouldShowNewFeatures() -> Bool
     func uiNewFeatures() -> NewFeatures
     func uiIsCustomBehaviorActive() -> Bool
@@ -465,6 +469,14 @@ protocol UIRuntimeProviders: UserLocationStoreRuntimeProviding,
 enum UIRuntimeProviderRegistry {
     private static let unconfiguredProviders = UnconfiguredUIRuntimeProviders()
     private(set) static var providers: UIRuntimeProviders = unconfiguredProviders
+
+    static func ensureConfiguredForLaunchIfNeeded() {
+        guard providers is UnconfiguredUIRuntimeProviders else {
+            return
+        }
+
+        _ = AppContext.shared
+    }
 
     static func configure(with providers: UIRuntimeProviders) {
         self.providers = providers
@@ -536,6 +548,14 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
         debugAssertUnconfigured(#function)
     }
 
+    func uiSetExperimentManagerDelegate(_ delegate: ExperimentManagerDelegate?) {
+        debugAssertUnconfigured(#function)
+    }
+
+    func uiInitializeExperimentManager() {
+        debugAssertUnconfigured(#function)
+    }
+
     func uiIsApplicationInNormalState() -> Bool {
         debugAssertUnconfigured(#function)
         return false
@@ -591,6 +611,15 @@ private final class UnconfiguredUIRuntimeProviders: UIRuntimeProviders {
     func uiIsFirstLaunch() -> Bool {
         debugAssertUnconfigured(#function)
         return false
+    }
+
+    func uiTelemetryHelper() -> TelemetryHelper? {
+        debugAssertUnconfigured(#function)
+        return nil
+    }
+
+    func uiStartApp(fromFirstLaunch: Bool) {
+        debugAssertUnconfigured(#function)
     }
 
     func uiShouldShowNewFeatures() -> Bool {
@@ -771,6 +800,14 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
         context.deviceManager.delegate = delegate
     }
 
+    func uiSetExperimentManagerDelegate(_ delegate: ExperimentManagerDelegate?) {
+        context.experimentManager.delegate = delegate
+    }
+
+    func uiInitializeExperimentManager() {
+        context.experimentManager.initialize()
+    }
+
     func uiIsApplicationInNormalState() -> Bool {
         context.state == .normal
     }
@@ -817,6 +854,14 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
 
     func uiIsFirstLaunch() -> Bool {
         context.isFirstLaunch
+    }
+
+    func uiTelemetryHelper() -> TelemetryHelper? {
+        TelemetryHelper(appContext: context)
+    }
+
+    func uiStartApp(fromFirstLaunch: Bool) {
+        context.start(fromFirstLaunch: fromFirstLaunch)
     }
 
     func uiShouldShowNewFeatures() -> Bool {
