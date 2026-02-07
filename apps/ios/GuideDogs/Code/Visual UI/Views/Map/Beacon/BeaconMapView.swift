@@ -104,13 +104,19 @@ struct BeaconMapView_Previews: PreviewProvider {
         state.visited.append(0)
         state.waypointIndex = 1
 
+        UIRuntimeProviderRegistry.ensureConfiguredForLaunchIfNeeded()
+        guard let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+              let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() else {
+            fatalError("UI runtime providers are unavailable for BeaconMapView previews")
+        }
+
         let behavior = GuidedTour(tourDetail,
-                                  spatialData: AppContext.shared.spatialDataContext,
-                                  motion: AppContext.shared.motionActivityContext)
+                                  spatialData: spatialData,
+                                  motion: motion)
         behavior.state = state
         return behavior
     }
-    
+
     static var previews: some View {
         BeaconMapView(style: .tour(detail: tourDetail))
             .environmentObject(previewUserLocationStore)

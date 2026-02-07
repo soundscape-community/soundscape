@@ -161,7 +161,6 @@ struct MarkersAndRoutesList_Previews: PreviewProvider {
     
     static var previews: some View {
         Realm.bootstrap()
-        AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
         
         return NavigationView {
             MarkersAndRoutesList().navigationBarTitleDisplayMode(.inline)

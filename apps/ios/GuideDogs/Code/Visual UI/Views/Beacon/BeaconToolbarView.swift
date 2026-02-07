@@ -219,8 +219,13 @@ struct BeaconToolbarView_Previews: PreviewProvider {
         return LocationDetail(location: location, imported: importedDetail, telemetryContext: nil)
     }
     
-    static var adaptiveSportsBehavior: RouteGuidance {
+    static var adaptiveSportsBehavior: RouteGuidance? {
         let route = RouteDetailsView_Previews.testSportRoute
+        UIRuntimeProviderRegistry.ensureConfiguredForLaunchIfNeeded()
+        guard let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+              let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() else {
+            return nil
+        }
         
         var state = RouteGuidanceState(id: route.id)
         state.totalTime = 60 * 27 + 41
@@ -228,8 +233,8 @@ struct BeaconToolbarView_Previews: PreviewProvider {
         state.waypointIndex = 1
         
         let guidance = RouteGuidance(route,
-                                     spatialData: AppContext.shared.spatialDataContext,
-                                     motion: AppContext.shared.motionActivityContext)
+                                     spatialData: spatialData,
+                                     motion: motion)
         guidance.state = state
         
         return guidance
@@ -239,10 +244,13 @@ struct BeaconToolbarView_Previews: PreviewProvider {
         
         Group {
             BeaconToolbarView(beacon: BeaconDetail(locationDetail: locationDetail, isAudioEnabled: false))
-                .environmentObject(BeaconDetailStore(beacon: BeaconDetail(from: adaptiveSportsBehavior, isAudioEnabled: true)))
+                .environmentObject(BeaconDetailStore(beacon: BeaconDetail(locationDetail: locationDetail, isAudioEnabled: true)))
             
-            BeaconToolbarView(beacon: BeaconDetail(from: adaptiveSportsBehavior, isAudioEnabled: true)!)
-                .environmentObject(BeaconDetailStore(beacon: BeaconDetail(from: adaptiveSportsBehavior, isAudioEnabled: true)))
+            if let routeGuidance = adaptiveSportsBehavior,
+               let routeBeacon = BeaconDetail(from: routeGuidance, isAudioEnabled: true) {
+                BeaconToolbarView(beacon: routeBeacon)
+                    .environmentObject(BeaconDetailStore(beacon: routeBeacon))
+            }
         }
         .background(Color.primaryBackground)
         

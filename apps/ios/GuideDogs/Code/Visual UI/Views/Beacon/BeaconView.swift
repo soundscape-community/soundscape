@@ -76,8 +76,13 @@ struct BeaconView_Previews: PreviewProvider {
         return LocationDetail(location: location, imported: importedDetail, telemetryContext: nil)
     }
     
-    static var adaptiveSportsBehavior: RouteGuidance {
+    static var adaptiveSportsBehavior: RouteGuidance? {
         let route = RouteDetailsView_Previews.testSportRoute
+        UIRuntimeProviderRegistry.ensureConfiguredForLaunchIfNeeded()
+        guard let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+              let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() else {
+            return nil
+        }
         
         var state = RouteGuidanceState(id: route.id)
         state.totalTime = 60 * 27 + 41
@@ -85,8 +90,8 @@ struct BeaconView_Previews: PreviewProvider {
         state.waypointIndex = 1
         
         let guidance = RouteGuidance(route,
-                                     spatialData: AppContext.shared.spatialDataContext,
-                                     motion: AppContext.shared.motionActivityContext)
+                                     spatialData: spatialData,
+                                     motion: motion)
         guidance.state = state
         
         return guidance
@@ -100,10 +105,13 @@ struct BeaconView_Previews: PreviewProvider {
             .environmentObject(BeaconDetailStore(beacon: BeaconDetail(locationDetail: locationDetail, isAudioEnabled: true)))
             .environmentObject(ViewNavigationHelper())
         
-        BeaconView()
-            .environmentObject(previewUserLocationStore)
-            .environmentObject(BeaconDetailStore(beacon: BeaconDetail(from: adaptiveSportsBehavior, isAudioEnabled: true)))
-            .environmentObject(ViewNavigationHelper())
+        if let routeGuidance = adaptiveSportsBehavior,
+           let routeBeacon = BeaconDetail(from: routeGuidance, isAudioEnabled: true) {
+            BeaconView()
+                .environmentObject(previewUserLocationStore)
+                .environmentObject(BeaconDetailStore(beacon: routeBeacon))
+                .environmentObject(ViewNavigationHelper())
+        }
     }
     
 }

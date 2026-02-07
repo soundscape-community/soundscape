@@ -100,8 +100,6 @@ struct WaypointAddList_Previews: PreviewProvider {
         
         Realm.bootstrap()
         
-        AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
-        
         let markerIds = SpatialDataCache.referenceEntities().compactMap({ return $0.id })
         let waypoints: [IdentifiableLocationDetail]
         

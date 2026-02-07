@@ -165,6 +165,8 @@ Phase 1 complete:
 - 2026-02-07: Extended `UIRuntimeProviders` with remaining production-control hooks (`uiDeviceHeading`, `uiRequestCoreLocationAuthorization`, `uiPlayCallouts`) and migrated `PreviewControlViewController`, `AccessibilityEditableMapViewModel`, `AuthorizeLocationsViewController`, `LocationPermissionViewController`, and `TutorialCalloutPlayer` off direct singleton usage.
 - 2026-02-07: Extended `UIRuntimeProviderDispatchTests` to validate dispatch/reset behavior for the new heading/location-authorization/play-callouts hooks.
 - 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `Visual UI: 11` (down from `16` pre-slice), `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
+- 2026-02-07: Migrated remaining preview-only UI call sites (`BeaconTitleView`, `BeaconToolbarView`, `BeaconView`, `BeaconMapView`, `WaypointAddList`, `WaypointEditList`, `MarkersAndRoutesList`) off direct `AppContext.shared` reads by using existing `UIRuntimeProviderRegistry` hooks and explicit preview data setup.
+- 2026-02-07: Updated `AppContext` coupling snapshot using `AppContext.shared|AppContext.process` matches by top-level subsystem: `App: 26`, `Sensors: 18`, `Haptics: 11`, `Audio: 9`, `Notifications: 5`, `Generators: 5`, `Offline: 2`, `Language: 2`, `Devices: 2`, `Behaviors: 0`, `Data: 0`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -291,6 +293,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Decide and apply policy for the remaining `Visual UI` `AppContext` call sites (currently preview-only setup in `Beacon*` previews and marker add/edit preview helpers): migrate to explicit preview fixtures/runtime stubs or intentionally retain as non-production scaffolding.
-2. Start Milestone 2 prep by carving `Data` folders into `Domain`/`Contracts`/`Infrastructure` boundaries now that direct `AppContext` usage in `Data` is zero and `Visual UI` production singleton coupling is effectively removed.
+1. Start Milestone 2 by creating explicit `Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, and `Data/Composition` folders (or folder groups) and moving files without behavior changes.
+2. Define initial async-first storage contracts (`RouteStore`, `ReferenceEntityStore`, `SpatialIndexStore`) in `Data/Contracts`, then add adapter shims in `Data/Infrastructure` that forward to existing Realm-backed implementations.
 3. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

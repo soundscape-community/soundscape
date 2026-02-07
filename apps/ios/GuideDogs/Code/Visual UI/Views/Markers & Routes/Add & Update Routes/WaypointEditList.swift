@@ -58,9 +58,6 @@ struct WaypointEditList_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        
-        AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
-        
         return List {
             WaypointEditList(identifiableWaypoints: .constant(RouteDetailsView_Previews.testOMRoute.waypoints.asIdenfifiable),
                              userLocation: location.ssGeoLocation)

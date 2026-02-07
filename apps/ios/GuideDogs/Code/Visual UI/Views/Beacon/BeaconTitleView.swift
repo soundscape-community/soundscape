@@ -113,8 +113,13 @@ struct BeaconTitleView_Previews: PreviewProvider {
         return LocationDetail(location: location, imported: importedDetail, telemetryContext: nil)
     }
     
-    static var adaptiveSportsBehavior: RouteGuidance {
+    static var adaptiveSportsBehavior: RouteGuidance? {
         let route = RouteDetailsView_Previews.testSportRoute
+        UIRuntimeProviderRegistry.ensureConfiguredForLaunchIfNeeded()
+        guard let spatialData = UIRuntimeProviderRegistry.providers.uiSpatialDataContext(),
+              let motion = UIRuntimeProviderRegistry.providers.uiMotionActivityContext() else {
+            return nil
+        }
         
         var state = RouteGuidanceState(id: route.id)
         state.totalTime = 60 * 27 + 41
@@ -122,8 +127,8 @@ struct BeaconTitleView_Previews: PreviewProvider {
         state.waypointIndex = 1
         
         let guidance = RouteGuidance(route,
-                                     spatialData: AppContext.shared.spatialDataContext,
-                                     motion: AppContext.shared.motionActivityContext)
+                                     spatialData: spatialData,
+                                     motion: motion)
         guidance.state = state
         
         return guidance
@@ -135,9 +140,11 @@ struct BeaconTitleView_Previews: PreviewProvider {
             BeaconTitleView(beacon: BeaconDetail(locationDetail: locationDetail, isAudioEnabled: true), userLocation: userLocation)
                 .padding(10.0)
             
-            BeaconTitleView(beacon: BeaconDetail(from: adaptiveSportsBehavior, isAudioEnabled: true)!,
-                            userLocation: (nil as SSGeoLocation?))
-                .padding(10.0)
+            if let routeGuidance = adaptiveSportsBehavior,
+               let routeBeacon = BeaconDetail(from: routeGuidance, isAudioEnabled: true) {
+                BeaconTitleView(beacon: routeBeacon, userLocation: nil)
+                    .padding(10.0)
+            }
         }
         .background(Color.primaryBackground)
         
