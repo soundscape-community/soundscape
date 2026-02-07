@@ -192,6 +192,7 @@ Phase 1 complete:
 - 2026-02-07: Extended `SpatialDataStore` with marker mutation API (`addReferenceEntity(detail:telemetryContext:notify:)`) and migrated `Route.add(...)` waypoint marker creation from direct `ReferenceEntity.add` to provider-based mutation dispatch.
 - 2026-02-07: Extended `RouteStorageProviderDispatchTests` with route mutation seam coverage (`testRouteAddUsesInjectedSpatialStoreReferenceEntityAdd`) and refreshed class dispatch validation coverage (10 targeted tests passing).
 - 2026-02-07: Validation for this slice: `xcodebuild build-for-testing` passed; focused route-mutation + storage-dispatch tests passed; full `xcodebuild test-without-building` remains blocked only by known simulator audio failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
+- 2026-02-07: Regenerated dependency-analysis artifact after the latest data seam slices: `docs/plans/artifacts/dependency-analysis/latest.txt` (timestamped artifact: `20260207-092318Z-ssindex-0a2fa30.txt`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
