@@ -16,6 +16,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         var referenceEntitiesByKey: [String: ReferenceEntity] = [:]
         var referenceEntitiesByEntityKey: [String: ReferenceEntity] = [:]
         var referenceEntitiesByLocation: [String: ReferenceEntity] = [:]
+        var referenceEntitiesNearByLocation: [String: [ReferenceEntity]] = [:]
         var referenceEntitiesToReturn: [ReferenceEntity] = []
         var searchResultsByKey: [String: POI] = [:]
         var routesToReturn: [Route] = []
@@ -25,6 +26,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var referenceEntityByKeyCallKeys: [String] = []
         private(set) var referenceEntityByEntityKeyCallKeys: [String] = []
         private(set) var referenceEntityByLocationCallKeys: [String] = []
+        private(set) var referenceEntitiesNearCallKeys: [String] = []
         private(set) var referenceEntitiesCallCount = 0
         private(set) var searchByKeyCallKeys: [String] = []
         private(set) var routesCallCount = 0
@@ -45,6 +47,12 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             let key = locationKey(for: coordinate)
             referenceEntityByLocationCallKeys.append(key)
             return referenceEntitiesByLocation[key]
+        }
+
+        func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity] {
+            let key = "\(locationKey(for: coordinate))@\(range)"
+            referenceEntitiesNearCallKeys.append(key)
+            return referenceEntitiesNearByLocation[key] ?? []
         }
 
         func referenceEntities() -> [ReferenceEntity] {
@@ -176,6 +184,36 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertNotNil(parameters)
         XCTAssertEqual(store.referenceEntityByLocationCallKeys, [locationLookupKey])
+    }
+
+    func testSpatialDataStoreReferenceEntityByEntityKeyDispatchesToInjectedStore() {
+        let marker = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        let entityKey = "entity-key"
+        let store = MockSpatialDataStore()
+        store.referenceEntitiesByEntityKey[entityKey] = marker
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let entity = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey)
+
+        XCTAssertTrue(entity === marker)
+        XCTAssertEqual(store.referenceEntityByEntityKeyCallKeys, [entityKey])
+    }
+
+    func testSpatialDataStoreReferenceEntitiesNearDispatchesToInjectedStore() {
+        let coordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        let range = CalloutRangeContext.streetPreview.searchDistance
+        let marker = ReferenceEntity(coordinate: coordinate)
+        let locationLookupKey = "\(coordinate.latitude),\(coordinate.longitude)@\(range)"
+
+        let store = MockSpatialDataStore()
+        store.referenceEntitiesNearByLocation[locationLookupKey] = [marker]
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let entities = SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate, range: range)
+
+        XCTAssertEqual(entities.count, 1)
+        XCTAssertTrue(entities.first === marker)
+        XCTAssertEqual(store.referenceEntitiesNearCallKeys, [locationLookupKey])
     }
 
     func testLocationParametersFetchEntityUsesInjectedSpatialStoreSearchLookup() {

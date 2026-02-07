@@ -15,6 +15,7 @@ protocol SpatialDataStore {
     func referenceEntityByKey(_ key: String) -> ReferenceEntity?
     func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity?
     func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity?
+    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity]
     func referenceEntities() -> [ReferenceEntity]
     func searchByKey(_ key: String) -> POI?
     func routes() -> [Route]
@@ -34,6 +35,10 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity? {
         SpatialDataCache.referenceEntityByLocation(coordinate)
+    }
+
+    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity] {
+        SpatialDataCache.referenceEntitiesNear(coordinate, range: range)
     }
 
     func referenceEntities() -> [ReferenceEntity] {
