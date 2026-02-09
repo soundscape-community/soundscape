@@ -30,6 +30,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         var intersectionsByRoadKey: [String: [Intersection]] = [:]
         var intersectionsByRoadCoordinateKey: [String: Intersection] = [:]
         var intersectionsByRoadRegionKey: [String: [Intersection]] = [:]
+        var tilesToReturn: Set<VectorTile> = []
+        var tileDataByQuadKey: [String: TileData] = [:]
+        var genericLocationsByLookupKey: [String: [POI]] = [:]
 
         private(set) var referenceEntityByKeyCallKeys: [String] = []
         private(set) var referenceEntityByEntityKeyCallKeys: [String] = []
@@ -50,6 +53,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var intersectionsForRoadKeyCallKeys: [String] = []
         private(set) var intersectionForRoadCoordinateCallKeys: [String] = []
         private(set) var intersectionsForRoadRegionCallKeys: [String] = []
+        private(set) var tilesCallKeys: [String] = []
+        private(set) var tileDataCallQuadKeys: [[String]] = []
+        private(set) var genericLocationsNearCallKeys: [String] = []
 
         func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
             referenceEntityByKeyCallKeys.append(key)
@@ -150,6 +156,30 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             return intersectionsByRoadRegionKey[lookupKey]
         }
 
+        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile> {
+            let destinationKey: String
+            if let destination = destination {
+                destinationKey = "\(destination.latitude),\(destination.longitude)"
+            } else {
+                destinationKey = "nil"
+            }
+
+            tilesCallKeys.append("\(forDestinations)|\(forReferences)|\(zoomLevel)|\(destinationKey)")
+            return tilesToReturn
+        }
+
+        func tileData(for tiles: [VectorTile]) -> [TileData] {
+            let quadKeys = tiles.map(\.quadKey)
+            tileDataCallQuadKeys.append(quadKeys)
+            return quadKeys.compactMap { tileDataByQuadKey[$0] }
+        }
+
+        func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI] {
+            let lookupKey = genericLocationLookupKey(location: location, range: range)
+            genericLocationsNearCallKeys.append(lookupKey)
+            return genericLocationsByLookupKey[lookupKey] ?? []
+        }
+
         private func locationKey(for coordinate: CLLocationCoordinate2D) -> String {
             "\(coordinate.latitude),\(coordinate.longitude)"
         }
@@ -160,6 +190,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         private func roadRegionKey(forRoadKey key: String, region: MKCoordinateRegion) -> String {
             "\(key)@\(locationKey(for: region.center))@\(region.span.latitudeDelta),\(region.span.longitudeDelta)"
+        }
+
+        private func genericLocationLookupKey(location: CLLocation, range: CLLocationDistance?) -> String {
+            "\(locationKey(for: location.coordinate))@\(range.map(String.init(describing:)) ?? "nil")"
         }
     }
 
@@ -449,6 +483,59 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertTrue(result === intersection)
         XCTAssertEqual(store.intersectionForRoadCoordinateCallKeys, [lookupKey])
+    }
+
+    func testSpatialDataStoreTilesDispatchesToInjectedStore() {
+        let zoomLevel: UInt = 16
+        let destination = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        let expectedTile = VectorTile(latitude: 47.6205, longitude: -122.3493, zoom: zoomLevel)
+        let expectedCallKey = "true|true|\(zoomLevel)|\(destination.latitude),\(destination.longitude)"
+
+        let store = MockSpatialDataStore()
+        store.tilesToReturn = [expectedTile]
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let tiles = SpatialDataStoreRegistry.store.tiles(forDestinations: true,
+                                                         forReferences: true,
+                                                         at: zoomLevel,
+                                                         destination: destination)
+
+        XCTAssertEqual(tiles.count, 1)
+        XCTAssertEqual(tiles.first?.quadKey, expectedTile.quadKey)
+        XCTAssertEqual(store.tilesCallKeys, [expectedCallKey])
+    }
+
+    func testSpatialDataStoreTileDataDispatchesToInjectedStore() {
+        let tile = VectorTile(latitude: 47.6205, longitude: -122.3493, zoom: 16)
+        let tileData = TileData()
+        tileData.quadkey = tile.quadKey
+
+        let store = MockSpatialDataStore()
+        store.tileDataByQuadKey[tile.quadKey] = tileData
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let tileDataResults = SpatialDataStoreRegistry.store.tileData(for: [tile])
+
+        XCTAssertEqual(tileDataResults.count, 1)
+        XCTAssertTrue(tileDataResults.first === tileData)
+        XCTAssertEqual(store.tileDataCallQuadKeys, [[tile.quadKey]])
+    }
+
+    func testSpatialDataStoreGenericLocationsNearDispatchesToInjectedStore() {
+        let location = CLLocation(latitude: 47.6205, longitude: -122.3493)
+        let range = CLLocationDistance(50)
+        let lookupKey = "\(location.coordinate.latitude),\(location.coordinate.longitude)@\(String(describing: range))"
+        let genericLocation = GenericLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude, name: "Nearby")
+
+        let store = MockSpatialDataStore()
+        store.genericLocationsByLookupKey[lookupKey] = [genericLocation]
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let results = SpatialDataStoreRegistry.store.genericLocationsNear(location, range: range)
+
+        XCTAssertEqual(results.count, 1)
+        XCTAssertEqual(results.first?.key, genericLocation.key)
+        XCTAssertEqual(store.genericLocationsNearCallKeys, [lookupKey])
     }
 
     func testReferenceEntityGetPOIUsesInjectedSpatialStoreSearchLookup() {

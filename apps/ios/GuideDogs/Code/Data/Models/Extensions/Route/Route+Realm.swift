@@ -32,6 +32,9 @@ protocol SpatialDataStore {
     func intersections(forRoadKey key: String) -> [Intersection]
     func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection?
     func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]?
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile>
+    func tileData(for tiles: [VectorTile]) -> [TileData]
+    func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI]
 }
 
 @MainActor
@@ -110,6 +113,21 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]? {
         SpatialDataCache.intersections(forRoadKey: key, inRegion: region)
+    }
+
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile> {
+        SpatialDataCache.tiles(forDestinations: forDestinations,
+                               forReferences: forReferences,
+                               at: zoomLevel,
+                               destination: destination)
+    }
+
+    func tileData(for tiles: [VectorTile]) -> [TileData] {
+        SpatialDataCache.tileData(for: tiles)
+    }
+
+    func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI] {
+        SpatialDataCache.genericLocationsNear(location, range: range)
     }
 }
 
