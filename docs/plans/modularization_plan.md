@@ -218,6 +218,8 @@ Phase 1 complete:
 - 2026-02-09: Validation for folder-move slice: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 - 2026-02-09: Continued the folder-layer split by moving additional Realm-only support files into `Code/Data/Infrastructure/Realm` (`RealmHelper.swift`, `RealmMigrationTools.swift`, `RealmString.swift`) and updating Xcode file reference paths.
 - 2026-02-09: Validation for the second Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
+- 2026-02-09: Moved `RouteRealmError.swift` into `Code/Data/Infrastructure/Realm` and updated Xcode file reference paths so Realm-specific route persistence errors reside with other infrastructure persistence files.
+- 2026-02-09: Validation for the third Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
