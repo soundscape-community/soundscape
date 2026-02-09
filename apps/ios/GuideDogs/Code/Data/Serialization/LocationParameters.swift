@@ -48,7 +48,7 @@ extension LocationParameters {
     
     @MainActor
     private func addOrUpdateOSMEntity(id: String, completion: @escaping Completion) {
-        if let entity = SpatialDataStoreRegistry.store.searchByKey(id) as? GDASpatialDataResultEntity {
+        if let entity = DataContractRegistry.spatialReadCompatibility.poi(byKey: id) as? GDASpatialDataResultEntity {
             // Data for the OSM entity has already been cached on the device
             completion(.success(entity))
         } else {

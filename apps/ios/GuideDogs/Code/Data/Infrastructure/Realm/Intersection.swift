@@ -180,7 +180,7 @@ class Intersection: Object, Locatable, Localizable {
     /// The set of roads that participate in this intersection
     @MainActor
     var roads: [Road] {
-        roadIds.compactMap { SpatialDataStoreRegistry.store.roadByKey($0.id) }
+        roadIds.compactMap { DataContractRegistry.spatialReadCompatibility.road(byKey: $0.id) }
     }
     
     // Some intersections can contain the same road more than once, for example if one road loops back to the intersection.
@@ -190,7 +190,7 @@ class Intersection: Object, Locatable, Localizable {
         return roadIds
             .map { $0.id }
             .dropDuplicates()
-            .compactMap { SpatialDataStoreRegistry.store.roadByKey($0) }
+            .compactMap { DataContractRegistry.spatialReadCompatibility.road(byKey: $0) }
     }
     
     @MainActor

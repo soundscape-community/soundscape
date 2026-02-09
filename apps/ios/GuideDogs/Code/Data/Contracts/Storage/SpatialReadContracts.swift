@@ -52,3 +52,42 @@ protocol SpatialReadContract: RouteReadContract,
                               ReferenceReadContract,
                               RoadGraphReadContract,
                               TileReadContract {}
+
+@MainActor
+protocol RouteReadCompatibilityContract {
+    func routes() -> [Route]
+    func route(byKey key: String) -> Route?
+    func routes(containingMarkerID markerID: String) -> [Route]
+}
+
+@MainActor
+protocol ReferenceReadCompatibilityContract {
+    func referenceEntity(byID id: String) -> ReferenceEntity?
+    func referenceEntity(byEntityKey key: String) -> ReferenceEntity?
+    func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> ReferenceEntity?
+    func referenceEntity(byGenericLocation location: GenericLocation) -> ReferenceEntity?
+    func referenceEntities() -> [ReferenceEntity]
+    func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) -> [ReferenceEntity]
+    func poi(byKey key: String) -> POI?
+}
+
+@MainActor
+protocol RoadGraphReadCompatibilityContract {
+    func road(byKey key: String) -> Road?
+    func intersections(forRoadKey key: String) -> [Intersection]
+    func intersection(forRoadKey key: String, at coordinate: SSGeoCoordinate) -> Intersection?
+    func intersections(forRoadKey key: String, in region: SpatialIntersectionRegion) -> [Intersection]?
+}
+
+@MainActor
+protocol TileReadCompatibilityContract {
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile>
+    func tileData(for tiles: [VectorTile]) -> [TileData]
+    func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) -> [POI]
+}
+
+@MainActor
+protocol SpatialReadCompatibilityContract: RouteReadCompatibilityContract,
+                                           ReferenceReadCompatibilityContract,
+                                           RoadGraphReadCompatibilityContract,
+                                           TileReadCompatibilityContract {}

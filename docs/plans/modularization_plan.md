@@ -239,6 +239,8 @@ Phase 1 complete:
 - 2026-02-09: Added `apps/ios/Scripts/ci/check_data_contract_boundaries.sh` and wired it into `.github/workflows/ios-tests.yml` to block `RealmSwift`, `CoreLocation`, and `MapKit` imports in `GuideDogs/Code/Data/Contracts` (and `Data/Domain` when introduced).
 - 2026-02-09: Added unit coverage for the new seam (`DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) to validate contract dispatch, async-wrapper compatibility behavior, and fallback handling for invalid cloud payloads.
 - 2026-02-09: Updated cloud-sync orchestration callsites to use async internals directly (`SpatialDataContext.handleCloudKeyValueStoreDidChange`, `AppContextDataRuntimeProviders.spatialDataContextPerformInitialCloudSync`) while preserving completion-based compatibility surfaces for existing callers.
+- 2026-02-09: Added sync compatibility contracts (`SpatialReadCompatibilityContract` family) alongside async-first `SpatialReadContract`, wired `DataContractRegistry.spatialReadCompatibility`, and migrated additional synchronous read callers off direct `SpatialDataStoreRegistry` usage (`Route.swift`, `Route+Realm.swift` reads, `ReferenceEntity.swift` reads, `DestinationManager` read store methods, `MarkerParameters`, `LocationParameters`, `RouteParameters+Codable`, `RoadAdjacentDataView`, `Intersection`, `Road` protocol helpers, `Roundabout`, `GDASpatialDataResultEntity`).
+- 2026-02-09: Remaining direct `SpatialDataStoreRegistry.store` callsites are now concentrated to expected seams: adapter implementation (`RealmSpatialReadContract`, 17), write/mutation seams pending write-contract extraction (`DestinationManager` temporary marker mutations + `Route.add` marker import, 5), and infrastructure tile/view orchestration (`SpatialDataContext` + `SpatialDataView`, 6).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -365,6 +367,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Expand `Data/Contracts` beyond cloud sync by migrating additional read callers from `SpatialDataStoreRegistry` to `DataContractRegistry.spatialRead` and then introducing write contracts for marker/route mutations.
-2. Add explicit domain DTOs/value surfaces on contract boundaries to reduce leakage of Realm-backed model types before backend replacement work begins.
-3. Keep tightening CI guardrails with targeted forbidden-edge checks (for example `Data/Contracts -> App/Visual UI`) as contract/domain folders gain more surface area.
+1. Introduce first write-side contract(s) for marker/route mutation seams currently still direct (`addReferenceEntity`, temporary marker add/remove) and migrate `DestinationManager` + `Route.add` mutation callsites through `DataContractRegistry`.
+2. Migrate remaining read-only infrastructure tile/view callsites (`SpatialDataContext`, `SpatialDataView`) to contract registry paths, then delete residual direct `SpatialDataStoreRegistry` usage outside adapter + write seams.
+3. Add explicit domain DTOs/value surfaces on contract boundaries to reduce leakage of Realm-backed model types before backend replacement work begins.
+4. Keep tightening CI guardrails with targeted forbidden-edge checks (for example `Data/Contracts -> App/Visual UI`) as contract/domain folders gain more surface area.

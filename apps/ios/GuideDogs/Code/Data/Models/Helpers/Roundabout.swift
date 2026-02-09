@@ -176,7 +176,10 @@ extension Roundabout {
             
             // Get the list of intersections that lie on that road (except the given intersection)
             let region = MKCoordinateRegion(center: intersection.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-            guard let roadIntersections = SpatialDataStoreRegistry.store.intersections(forRoadKey: road.key, inRegion: region),
+            let intersectionRegion = SpatialIntersectionRegion(center: region.center.ssGeoCoordinate,
+                                                               latitudeDelta: region.span.latitudeDelta,
+                                                               longitudeDelta: region.span.longitudeDelta)
+            guard let roadIntersections = DataContractRegistry.spatialReadCompatibility.intersections(forRoadKey: road.key, in: intersectionRegion),
                 !roadIntersections.isEmpty else {
                     continue
             }

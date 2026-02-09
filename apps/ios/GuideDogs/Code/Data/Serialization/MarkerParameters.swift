@@ -93,7 +93,7 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(markerId) else {
+        guard let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: markerId) else {
             return nil
         }
         
@@ -101,9 +101,10 @@ struct MarkerParameters: Codable {
     }
     
     init?(entity: POI) {
-        if let entity = entity as? GenericLocation, let marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(entity.location.coordinate) {
+        if let entity = entity as? GenericLocation,
+           let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: entity.location.coordinate.ssGeoCoordinate) {
             self.init(marker: marker)
-        } else if let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entity.key) {
+        } else if let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: entity.key) {
             self.init(marker: marker)
         } else {
             self.init(entity: entity, markerId: nil, estimatedAddress: nil, nickname: nil, annotation: nil, lastUpdatedDate: nil)
@@ -116,7 +117,7 @@ struct MarkerParameters: Codable {
         
         switch detail.source {
         case .entity(let id):
-            guard let cachedEntity = SpatialDataStoreRegistry.store.searchByKey(id) else {
+            guard let cachedEntity = DataContractRegistry.spatialReadCompatibility.poi(byKey: id) else {
                 return nil
             }
             
@@ -142,7 +143,7 @@ struct MarkerParameters: Codable {
         
         let lastUpdatedDate: Date?
         
-        if let markerId = markerId, let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(markerId) {
+        if let markerId = markerId, let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: markerId) {
             lastUpdatedDate = marker.lastUpdatedDate
         } else {
             lastUpdatedDate = nil

@@ -60,15 +60,15 @@ protocol DestinationEntityStore {
 @MainActor
 struct SpatialDataDestinationEntityStore: DestinationEntityStore {
     func referenceEntity(forReferenceID id: String) -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByKey(id)
+        DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id)
     }
 
     func referenceEntity(forGenericLocation location: GenericLocation) -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location)
+        DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: location)
     }
 
     func referenceEntity(forEntityKey key: String) -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)
+        DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
