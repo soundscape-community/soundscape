@@ -352,8 +352,9 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
     }
 
     func spatialDataContextPerformInitialCloudSync(_ completion: @escaping () -> Void) {
-        context.cloudKeyValueStore.syncReferenceEntities(reason: .initialSync) {
-            self.context.cloudKeyValueStore.syncRoutes(reason: .initialSync)
+        Task { @MainActor in
+            await context.cloudKeyValueStore.syncReferenceEntitiesAsync(reason: .initialSync)
+            await context.cloudKeyValueStore.syncRoutesAsync(reason: .initialSync)
             completion()
         }
     }

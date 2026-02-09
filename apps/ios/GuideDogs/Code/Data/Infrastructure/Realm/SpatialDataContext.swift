@@ -860,22 +860,25 @@ extension SpatialDataContext {
     @objc private func handleCloudKeyValueStoreDidChange(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
             let changeReason = userInfo[CloudKeyValueStore.NotificationKeys.reason] as? CloudKeyValueStoreChangeReason,
-            let changedKeys = userInfo[CloudKeyValueStore.NotificationKeys.changedKeys] as? [String],
             let cloudStore = notification.object as? CloudKeyValueStore else {
                 GDLogAppError("Unable to handle cloud key-value store did changed notification")
                 return
         }
+
+        let changedKeys = userInfo[CloudKeyValueStore.NotificationKeys.changedKeys] as? [String]
         
         switch changeReason {
         case .initialSync, .serverChanged:
-            // Sync only changed keys
-            cloudStore.syncReferenceEntities(reason: changeReason, changedKeys: changedKeys) {
-                cloudStore.syncRoutes(reason: changeReason, changedKeys: changedKeys)
+            // Sync only changed keys when provided, otherwise fallback to full import semantics.
+            Task { @MainActor in
+                await cloudStore.syncReferenceEntitiesAsync(reason: changeReason, changedKeys: changedKeys)
+                await cloudStore.syncRoutesAsync(reason: changeReason, changedKeys: changedKeys)
             }
         case .accountChanged:
-            // Sync all entities
-            cloudStore.syncReferenceEntities(reason: changeReason) {
-                cloudStore.syncRoutes(reason: changeReason)
+            // Sync all entities.
+            Task { @MainActor in
+                await cloudStore.syncReferenceEntitiesAsync(reason: changeReason)
+                await cloudStore.syncRoutesAsync(reason: changeReason)
             }
         case .quotaViolationChange:
             showQuotaViolationAlert()

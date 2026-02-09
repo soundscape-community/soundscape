@@ -152,3 +152,5 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Keep iOS app changes and services changes isolated unless intentionally cross-cutting.
 - Use `GDLog*` logging conventions instead of ad-hoc prints when touching runtime logging paths.
 - Do not alter Microsoft copyright notices in existing files.
+- **NEVER** add Microsoft copyright notices to any files.
+- **do** add copyright notice for "Soundscape Community Contributers" to modified or new files

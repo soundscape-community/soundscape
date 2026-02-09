@@ -238,6 +238,7 @@ Phase 1 complete:
 - 2026-02-09: Migrated cloud sync read paths in `CloudKeyValueStore+Routes` and `CloudKeyValueStore+Markers` to contract-backed async internals (`syncRoutesAsync`, `syncReferenceEntitiesAsync`) while keeping sync wrappers for compatibility with current callers in `AppContext` and `SpatialDataContext`.
 - 2026-02-09: Added `apps/ios/Scripts/ci/check_data_contract_boundaries.sh` and wired it into `.github/workflows/ios-tests.yml` to block `RealmSwift`, `CoreLocation`, and `MapKit` imports in `GuideDogs/Code/Data/Contracts` (and `Data/Domain` when introduced).
 - 2026-02-09: Added unit coverage for the new seam (`DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) to validate contract dispatch, async-wrapper compatibility behavior, and fallback handling for invalid cloud payloads.
+- 2026-02-09: Updated cloud-sync orchestration callsites to use async internals directly (`SpatialDataContext.handleCloudKeyValueStoreDidChange`, `AppContextDataRuntimeProviders.spatialDataContextPerformInitialCloudSync`) while preserving completion-based compatibility surfaces for existing callers.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
