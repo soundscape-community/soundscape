@@ -42,6 +42,9 @@ jobs:
             - name: Enforce SpatialDataCache seam
               run: |
                 bash apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh
+            - name: Enforce Realm infrastructure boundary
+              run: |
+                bash apps/ios/Scripts/ci/check_realm_infrastructure_boundary.sh
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace

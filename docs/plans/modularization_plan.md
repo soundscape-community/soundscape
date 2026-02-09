@@ -230,6 +230,10 @@ Phase 1 complete:
 - 2026-02-09: Moved preview Realm helper `Samplable.swift` from `Code/Data/Models/Preview Content` into `Code/Data/Infrastructure/Realm` and updated the Xcode file reference path.
 - 2026-02-09: Validation for the seventh Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` not rerun in this sub-slice (known baseline blocker remains simulator audio tests).
 - 2026-02-09: `RealmSwift` imports in `Code/Data` are now fully concentrated in `Code/Data/Infrastructure/Realm` except `SpatialDataCache.swift` and `SpatialDataContext.swift`.
+- 2026-02-09: Moved `SpatialDataCache.swift` and `SpatialDataContext.swift` from `Code/Data/Spatial Data` into `Code/Data/Infrastructure/Realm`, updated Xcode file reference paths, and refreshed seam-guard messaging to the new cache file location.
+- 2026-02-09: Validation for the eighth Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` not rerun in this sub-slice (known baseline blocker remains simulator audio tests).
+- 2026-02-09: `RealmSwift` imports in `Code/Data` are now fully confined to `Code/Data/Infrastructure/Realm`.
+- 2026-02-09: Added `apps/ios/Scripts/ci/check_realm_infrastructure_boundary.sh` and wired it into `.github/workflows/ios-tests.yml` so CI fails if `import RealmSwift` appears outside `GuideDogs/Code/Data/Infrastructure/Realm`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -356,6 +360,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Finish the `Data/Infrastructure/Realm` move for the last non-infrastructure `RealmSwift` import holders (`SpatialDataCache.swift`, `SpatialDataContext.swift`) in compile-safe batches.
-2. Introduce first `Data/Contracts` storage interfaces (starting with route/spatial storage read ports) while keeping current Realm-backed adapters in `Data/Infrastructure`.
-3. Add a follow-up seam guard for folder-layer boundaries (ban `import RealmSwift` outside approved infrastructure paths) once the next Infrastructure and contracts slices land.
+1. Introduce first `Data/Contracts` storage interfaces (starting with route/spatial storage read ports) while keeping current Realm-backed adapters in `Data/Infrastructure`.
+2. Start carving model-to-contract mapping boundaries so future backend swaps (GRDB/SQLiteData) avoid leaking Realm-backed types across domain/use-case layers.
+3. Add follow-up seam checks to ensure `Data/Contracts` and `Data/Domain` stay free of Realm/CoreLocation-specific imports as those folders are introduced.
