@@ -222,6 +222,8 @@ Phase 1 complete:
 - 2026-02-09: Validation for the third Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 - 2026-02-09: Continued the folder-layer split by moving Realm-only helper/value files `OsmTag.swift` and `IntersectionRoadId.swift` from `Code/Data/Models/...` into `Code/Data/Infrastructure/Realm`, with corresponding Xcode file reference path updates.
 - 2026-02-09: Validation for the fourth Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` not rerun in this sub-slice (known baseline blocker remains simulator audio tests).
+- 2026-02-09: Continued the folder-layer split by moving Realm-backed route model files `Route.swift` and `RouteWaypoint.swift` from `Code/Data/Models/Database Models/Routes` into `Code/Data/Infrastructure/Realm` and updating Xcode file reference paths.
+- 2026-02-09: Validation for the fifth Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` not rerun in this sub-slice (known baseline blocker remains simulator audio tests).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -348,6 +350,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue the `Data/Infrastructure/Realm` move in small compile-safe batches for remaining Realm-backed model files still outside Infrastructure (for example `Route.swift`, `RouteWaypoint.swift`, `ReferenceEntity.swift`, `Address.swift`, `Intersection.swift`, `GDASpatialDataResultEntity.swift`, `TileData.swift`, `Samplable.swift`).
+1. Continue the `Data/Infrastructure/Realm` move in small compile-safe batches for remaining Realm-backed model files still outside Infrastructure (for example `ReferenceEntity.swift`, `Address.swift`, `Intersection.swift`, `GDASpatialDataResultEntity.swift`, `TileData.swift`, `Samplable.swift`).
 2. Introduce first `Data/Contracts` storage interfaces (starting with route/spatial storage read ports) while keeping current Realm-backed adapters in `Data/Infrastructure`.
 3. Add a follow-up seam guard for folder-layer boundaries (ban `import RealmSwift` outside approved infrastructure paths) once the next Infrastructure and contracts slices land.
