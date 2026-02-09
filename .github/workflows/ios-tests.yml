@@ -45,6 +45,9 @@ jobs:
             - name: Enforce Realm infrastructure boundary
               run: |
                 bash apps/ios/Scripts/ci/check_realm_infrastructure_boundary.sh
+            - name: Enforce data contract boundaries
+              run: |
+                bash apps/ios/Scripts/ci/check_data_contract_boundaries.sh
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace

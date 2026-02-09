@@ -234,6 +234,10 @@ Phase 1 complete:
 - 2026-02-09: Validation for the eighth Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` not rerun in this sub-slice (known baseline blocker remains simulator audio tests).
 - 2026-02-09: `RealmSwift` imports in `Code/Data` are now fully confined to `Code/Data/Infrastructure/Realm`.
 - 2026-02-09: Added `apps/ios/Scripts/ci/check_realm_infrastructure_boundary.sh` and wired it into `.github/workflows/ios-tests.yml` so CI fails if `import RealmSwift` appears outside `GuideDogs/Code/Data/Infrastructure/Realm`.
+- 2026-02-09: Added first `Data/Contracts` read surface (`SpatialReadContract` family + `DataContractRegistry`) and a Realm-backed adapter (`RealmSpatialReadContract`) that delegates to the existing `SpatialDataStoreRegistry` seam so runtime behavior stays unchanged.
+- 2026-02-09: Migrated cloud sync read paths in `CloudKeyValueStore+Routes` and `CloudKeyValueStore+Markers` to contract-backed async internals (`syncRoutesAsync`, `syncReferenceEntitiesAsync`) while keeping sync wrappers for compatibility with current callers in `AppContext` and `SpatialDataContext`.
+- 2026-02-09: Added `apps/ios/Scripts/ci/check_data_contract_boundaries.sh` and wired it into `.github/workflows/ios-tests.yml` to block `RealmSwift`, `CoreLocation`, and `MapKit` imports in `GuideDogs/Code/Data/Contracts` (and `Data/Domain` when introduced).
+- 2026-02-09: Added unit coverage for the new seam (`DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) to validate contract dispatch, async-wrapper compatibility behavior, and fallback handling for invalid cloud payloads.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -360,6 +364,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Introduce first `Data/Contracts` storage interfaces (starting with route/spatial storage read ports) while keeping current Realm-backed adapters in `Data/Infrastructure`.
-2. Start carving model-to-contract mapping boundaries so future backend swaps (GRDB/SQLiteData) avoid leaking Realm-backed types across domain/use-case layers.
-3. Add follow-up seam checks to ensure `Data/Contracts` and `Data/Domain` stay free of Realm/CoreLocation-specific imports as those folders are introduced.
+1. Expand `Data/Contracts` beyond cloud sync by migrating additional read callers from `SpatialDataStoreRegistry` to `DataContractRegistry.spatialRead` and then introducing write contracts for marker/route mutations.
+2. Add explicit domain DTOs/value surfaces on contract boundaries to reduce leakage of Realm-backed model types before backend replacement work begins.
+3. Keep tightening CI guardrails with targeted forbidden-edge checks (for example `Data/Contracts -> App/Visual UI`) as contract/domain folders gain more surface area.

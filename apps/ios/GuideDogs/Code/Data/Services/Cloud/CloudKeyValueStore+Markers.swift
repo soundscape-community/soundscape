@@ -94,18 +94,21 @@ extension CloudKeyValueStore {
     // MARK: Bulk Set/Get
     
     func syncReferenceEntities(reason: CloudKeyValueStoreChangeReason, changedKeys: [String]? = nil, completion: CompletionHandler = nil) {
-        // Importing
-        importChanges(changedKeys: changedKeys) { [weak self] in
-            // Exporting
-            if reason == .initialSync || reason == .accountChanged {
-                self?.store()
-            }
-            
+        Task { @MainActor in
+            await syncReferenceEntitiesAsync(reason: reason, changedKeys: changedKeys)
             completion?()
         }
     }
-    
-    private func importChanges(changedKeys: [String]? = nil, completion: CompletionHandler = nil) {
+
+    func syncReferenceEntitiesAsync(reason: CloudKeyValueStoreChangeReason, changedKeys: [String]? = nil) async {
+        await importReferenceEntityChanges(changedKeys: changedKeys)
+
+        if reason == .initialSync || reason == .accountChanged {
+            await store()
+        }
+    }
+
+    private func importReferenceEntityChanges(changedKeys: [String]? = nil) async {
         var markerParametersObjects = self.markerParametersObjects
         
         // If there are changed keys, we only add/update those objects.
@@ -126,50 +129,40 @@ extension CloudKeyValueStore {
                 return changedIds.contains(id)
             })
         }
-        
-        // Filter only objects that require an update
-        markerParametersObjects = markerParametersObjects.filter { shouldUpdateLocalReferenceEntity(withMarkerParameters: $0) }
-        
-        importChanges(markerParametersObjects: markerParametersObjects, completion: completion)
+
+        var markerParametersNeedingUpdate: [MarkerParameters] = []
+        for markerParameters in markerParametersObjects where await shouldUpdateLocalReferenceEntity(withMarkerParameters: markerParameters) {
+            markerParametersNeedingUpdate.append(markerParameters)
+        }
+
+        await importReferenceEntityChanges(markerParametersObjects: markerParametersNeedingUpdate)
     }
     
     /// Import marker parameters from cloud store to database
-    private func importChanges(markerParametersObjects: [MarkerParameters], completion: (() -> Void)? = nil) {
-        guard !markerParametersObjects.isEmpty else {
-            completion?()
-            return
-        }
-        
-        let group = DispatchGroup()
-        
+    private func importReferenceEntityChanges(markerParametersObjects: [MarkerParameters]) async {
         for markerParameters in markerParametersObjects {
-            group.enter()
-            importChanges(markerParameters: markerParameters) {
-                group.leave()
-            }
+            await importChanges(markerParameters: markerParameters)
         }
-        
-        group.notify(queue: DispatchQueue.main, execute: {
-            completion?()
-        })
     }
-    
-    private func importChanges(markerParameters: MarkerParameters, completion: (() -> Void)? = nil) {
+
+    private func importChanges(markerParameters: MarkerParameters) async {
         // We load the underlying entity which either finds it in the local database,
         // or initializes and store a new underlying entity
-        markerParameters.location.fetchEntity { [weak self] (result) in
-            switch result {
-            case .success(let entity):
-                if let referenceEntity = ReferenceEntity(markerParameters: markerParameters, entity: entity) {
-                    self?.importChanges(referenceEntity: referenceEntity)
-                } else {
-                    GDLogCloudInfo("Error initializing `ReferenceEntity` object for marker with id: \(markerParameters.id ?? "none")")
-                }
-            case .failure(let error):
-                GDLogCloudInfo("Error loading underlying entity: \(error)")
+        let result: Result<POI, Error> = await withCheckedContinuation { continuation in
+            markerParameters.location.fetchEntity { result in
+                continuation.resume(returning: result)
             }
-            
-            completion?()
+        }
+
+        switch result {
+        case .success(let entity):
+            if let referenceEntity = ReferenceEntity(markerParameters: markerParameters, entity: entity) {
+                importChanges(referenceEntity: referenceEntity)
+            } else {
+                GDLogCloudInfo("Error initializing `ReferenceEntity` object for marker with id: \(markerParameters.id ?? "none")")
+            }
+        case .failure(let error):
+            GDLogCloudInfo("Error loading underlying entity: \(error)")
         }
     }
     
@@ -190,13 +183,10 @@ extension CloudKeyValueStore {
     }
     
     /// Store reference entities from database to cloud store
-    private func store() {
-        var localReferenceEntities = SpatialDataStoreRegistry.store.referenceEntities()
-        
-        // Filter only objects that require an update
-        localReferenceEntities = localReferenceEntities.filter { shouldUpdateCloudReferenceEntity(withLocalReferenceEntity: $0) }
-        
-        for referenceEntity in localReferenceEntities {
+    private func store() async {
+        let localReferenceEntities = await DataContractRegistry.spatialRead.referenceEntities()
+
+        for referenceEntity in localReferenceEntities where shouldUpdateCloudReferenceEntity(withLocalReferenceEntity: referenceEntity) {
             store(referenceEntity: referenceEntity)
         }
     }
@@ -207,12 +197,12 @@ extension CloudKeyValueStore {
 @MainActor
 extension CloudKeyValueStore {
     
-    private func shouldUpdateLocalReferenceEntity(withMarkerParameters markerParameters: MarkerParameters) -> Bool {
+    private func shouldUpdateLocalReferenceEntity(withMarkerParameters markerParameters: MarkerParameters) async -> Bool {
         // False if no id
         guard let id = markerParameters.id else { return false }
         
         // True if local database does not contain the cloud entity
-        guard let localReferenceEntity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else { return true }
+        guard let localReferenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else { return true }
         
         return localReferenceEntity.shouldUpdate(withMarkerParameters: markerParameters)
     }

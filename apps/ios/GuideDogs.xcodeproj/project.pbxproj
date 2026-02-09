@@ -27,6 +27,9 @@
 		281BCBFF262638290031298D /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 281BCBFE262638290031298D /* RealmSwift */; };
 		A1C0D0012F0A000100000001 /* SSDataStructures in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0032F0A000100000001 /* SSDataStructures */; };
 		A1C0D0042F0A000100000001 /* SSGeo in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0052F0A000100000001 /* SSGeo */; };
+		A1C0D1212F0C000100000001 /* SpatialReadContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1112F0C000100000001 /* SpatialReadContracts.swift */; };
+		A1C0D1222F0C000100000001 /* DataContractRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1122F0C000100000001 /* DataContractRegistry.swift */; };
+		A1C0D1232F0C000100000001 /* RealmSpatialReadContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1132F0C000100000001 /* RealmSpatialReadContract.swift */; };
 		281CB8722016692F0059B8C4 /* CalloutHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB8712016692F0059B8C4 /* CalloutHistory.swift */; };
 		281CB879201691D40059B8C4 /* StringCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB878201691D40059B8C4 /* StringCallout.swift */; };
 		281CB87B201699760059B8C4 /* DestinationCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB87A201699760059B8C4 /* DestinationCallout.swift */; };
@@ -1237,6 +1240,9 @@
 		628855452656F98B00EFFB91 /* Route+Realm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Route+Realm.swift"; path = "Code/Data/Infrastructure/Realm/Route+Realm.swift"; sourceTree = "<group>"; };
 		6288555C265721A300EFFB91 /* RouteParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteParameters.swift; path = Code/Data/Serialization/RouteParameters.swift; sourceTree = "<group>"; };
 		628855672657221300EFFB91 /* RouteWaypointParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteWaypointParameters.swift; path = Code/Data/Serialization/Routes/RouteWaypointParameters.swift; sourceTree = "<group>"; };
+		A1C0D1112F0C000100000001 /* SpatialReadContracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDogs/Code/Data/Contracts/Storage/SpatialReadContracts.swift; sourceTree = SOURCE_ROOT; };
+		A1C0D1122F0C000100000001 /* DataContractRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDogs/Code/Data/Contracts/Storage/DataContractRegistry.swift; sourceTree = SOURCE_ROOT; };
+		A1C0D1132F0C000100000001 /* RealmSpatialReadContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDogs/Code/Data/Infrastructure/Realm/RealmSpatialReadContract.swift; sourceTree = SOURCE_ROOT; };
 		629821AF251049AC00775CC2 /* NearbyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyData.swift; sourceTree = "<group>"; };
 		629821B1251049CF00775CC2 /* NearbyDataContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyDataContext.swift; sourceTree = "<group>"; };
 		629A08BE24F5C9D4008204A9 /* UIBarButtonItem+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIBarButtonItem+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UIBarButtonItem+Extensions.swift"; sourceTree = "<group>"; };
@@ -5147,6 +5153,9 @@
 				B9E63D0B26FE735600CCE4ED /* CloudKeyValueStore+Routes.swift in Sources */,
 				625F8524243BDAD10085AE05 /* UserActivityManager.swift in Sources */,
 				624DF68B27BED80C000A634C /* AuthorizationStatus.swift in Sources */,
+				A1C0D1212F0C000100000001 /* SpatialReadContracts.swift in Sources */,
+				A1C0D1222F0C000100000001 /* DataContractRegistry.swift in Sources */,
+				A1C0D1232F0C000100000001 /* RealmSpatialReadContract.swift in Sources */,
 				3153765521FF1DFB008445AD /* CodeableDirection.swift in Sources */,
 				620BC33F25F2CC98007DBA29 /* HeadphoneMotionManagerStatus.swift in Sources */,
 				62494FFF26FBE0A0008D842B /* ViewControllerRepresentable.swift in Sources */,

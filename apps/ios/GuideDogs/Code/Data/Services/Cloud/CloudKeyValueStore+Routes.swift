@@ -94,16 +94,20 @@ extension CloudKeyValueStore {
     
     /// Make sure to call this after syncing markers
     func syncRoutes(reason: CloudKeyValueStoreChangeReason, changedKeys: [String]? = nil) {
-        // Importing
-        importChanges(changedKeys: changedKeys)
-        
-        // Backing up
-        if reason == .initialSync || reason == .accountChanged {
-            store()
+        Task { @MainActor in
+            await syncRoutesAsync(reason: reason, changedKeys: changedKeys)
         }
     }
-    
-    private func importChanges(changedKeys: [String]? = nil) {
+
+    func syncRoutesAsync(reason: CloudKeyValueStoreChangeReason, changedKeys: [String]? = nil) async {
+        await importRouteChanges(changedKeys: changedKeys)
+
+        if reason == .initialSync || reason == .accountChanged {
+            await store()
+        }
+    }
+
+    private func importRouteChanges(changedKeys: [String]? = nil) async {
         var routeParametersObjects = self.routeParametersObjects
         
         // If there are changed keys, we only add/update those objects.
@@ -123,20 +127,22 @@ extension CloudKeyValueStore {
                 return changedIds.contains(routeParameters.id)
             })
         }
-        
-        // Filter only objects that require an update
-        routeParametersObjects = routeParametersObjects.filter { shouldUpdateLocalRoute(withRouteParameters: $0) }
-        
-        importChanges(routeParametersObjects: routeParametersObjects)
+
+        var routeParametersNeedingUpdate: [RouteParameters] = []
+        for routeParameters in routeParametersObjects where await shouldUpdateLocalRoute(withRouteParameters: routeParameters) {
+            routeParametersNeedingUpdate.append(routeParameters)
+        }
+
+        await importRouteChanges(routeParametersObjects: routeParametersNeedingUpdate)
     }
     
     /// Import route parameters from cloud store to database
-    private func importChanges(routeParametersObjects: [RouteParameters]) {
+    private func importRouteChanges(routeParametersObjects: [RouteParameters]) async {
         for routeParameters in routeParametersObjects {
             importChanges(routeParameters: routeParameters)
         }
-        
-        notifyOfInvalidRoutesIfNeeded(routeParametersObjects: routeParametersObjects)
+
+        await notifyOfInvalidRoutesIfNeeded(routeParametersObjects: routeParametersObjects)
     }
     
     private func importChanges(routeParameters: RouteParameters) {
@@ -161,13 +167,10 @@ extension CloudKeyValueStore {
     }
     
     /// Store route entities from database to cloud store
-    private func store() {
-        var localRoutes = SpatialDataStoreRegistry.store.routes()
-        
-        // Filter only objects that require an update
-        localRoutes = localRoutes.filter { shouldUpdateCloudRoute(withLocalRoute: $0) }
-        
-        for route in localRoutes {
+    private func store() async {
+        let localRoutes = await DataContractRegistry.spatialRead.routes()
+
+        for route in localRoutes where shouldUpdateCloudRoute(withLocalRoute: route) {
             store(route: route)
         }
     }
@@ -179,7 +182,7 @@ extension CloudKeyValueStore {
 @MainActor
 extension CloudKeyValueStore {
     
-    func notifyOfInvalidRoutesIfNeeded(routeParametersObjects: [RouteParameters]) {
+    func notifyOfInvalidRoutesIfNeeded(routeParametersObjects: [RouteParameters]) async {
         guard FirstUseExperience.didComplete(.oobe) else {
             // If there is an error, do not display it until after onboarding has completed
             // Save the parameters
@@ -190,8 +193,11 @@ extension CloudKeyValueStore {
         guard CloudKeyValueStore.errorAlert == nil else {
             return
         }
-        
-        let invalidRoutes = routeParametersObjects.filter { !CloudKeyValueStore.isValid(routeParameters: $0) }
+
+        var invalidRoutes: [RouteParameters] = []
+        for routeParameters in routeParametersObjects where await !CloudKeyValueStore.isValid(routeParameters: routeParameters) {
+            invalidRoutes.append(routeParameters)
+        }
         
         guard !invalidRoutes.isEmpty else {
             return
@@ -219,10 +225,10 @@ extension CloudKeyValueStore {
     }
     
     /// Check if there are markers in the imported route that does not exist in as reference entities
-    private static func isValid(routeParameters: RouteParameters) -> Bool {
+    private static func isValid(routeParameters: RouteParameters) async -> Bool {
         let markerIds = routeParameters.waypoints.map { $0.markerId }
         
-        for markerId in markerIds where SpatialDataStoreRegistry.store.referenceEntityByKey(markerId) == nil {
+        for markerId in markerIds where await DataContractRegistry.spatialRead.referenceEntity(byID: markerId) == nil {
             GDLogCloudInfo("Route with id: \(routeParameters.id), name: \(routeParameters.name), is missing a marker with id: \(markerId)")
             return false
         }
@@ -230,9 +236,9 @@ extension CloudKeyValueStore {
         return true
     }
     
-    private func shouldUpdateLocalRoute(withRouteParameters routeParameters: RouteParameters) -> Bool {
+    private func shouldUpdateLocalRoute(withRouteParameters routeParameters: RouteParameters) async -> Bool {
         // True if local database does not contain the cloud entity
-        guard let localRoute = SpatialDataStoreRegistry.store.routeByKey(routeParameters.id) else { return true }
+        guard let localRoute = await DataContractRegistry.spatialRead.route(byKey: routeParameters.id) else { return true }
         
         return localRoute.shouldUpdate(withRouteParameters: routeParameters)
     }

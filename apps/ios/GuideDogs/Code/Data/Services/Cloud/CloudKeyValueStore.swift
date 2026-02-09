@@ -209,7 +209,7 @@ extension CloudKeyValueStore {
         }
         
         Task { @MainActor in
-            notifyOfInvalidRoutesIfNeeded(routeParametersObjects: pendingRouteErrorNotifications)
+            await notifyOfInvalidRoutesIfNeeded(routeParametersObjects: pendingRouteErrorNotifications)
         }
         pendingRouteErrorNotifications.removeAll()
     }
