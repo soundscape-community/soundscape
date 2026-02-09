@@ -1,6 +1,6 @@
 # Modularization Plan
 
-Last updated: 2026-02-07
+Last updated: 2026-02-09
 
 ## Summary
 Modularize the iOS codebase incrementally to maximize platform-agnostic reuse for future multi-platform clients. Extract leaf modules first, enforce strict boundaries, and keep behavior changes out of structural moves.
@@ -210,6 +210,9 @@ Phase 1 complete:
 - 2026-02-07: Data-layer `SpatialDataCache` coupling snapshot after infrastructure seam: all direct static cache references outside `SpatialDataCache.swift` are now isolated to the `DefaultSpatialDataStore` adapter in `Route+Realm.swift`.
 - 2026-02-07: Added guard script `apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh` to fail when direct `SpatialDataCache` references appear outside allowed seam files (`SpatialDataCache.swift`, `Route+Realm.swift`).
 - 2026-02-07: Validation for guard slice: `bash apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh` passes with current seam boundaries.
+- 2026-02-09: Moved `SpatialDataStore` seam definitions (`SpatialDataStore`, `DefaultSpatialDataStore`, `SpatialDataStoreRegistry`) from `Route+Realm.swift` into `SpatialDataCache.swift` to co-locate the storage seam with data infrastructure instead of model extensions.
+- 2026-02-09: Tightened guard script `apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh` so direct `SpatialDataCache.*` usage is only allowed in `SpatialDataCache.swift`; no secondary allowlist files remain.
+- 2026-02-09: Validation for seam-centralization slice: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -336,7 +339,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Decide whether to keep `DefaultSpatialDataStore` in `Route+Realm.swift` or move the adapter/registry into a dedicated `Data/Infrastructure` composition area before folder-layer extraction.
-2. Start the folder-layer split in compile-safe batches (`Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, `Data/Composition`) now that static cache access has been centralized behind the storage seam.
-3. Decide where to wire the new guard script (`apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh`) into local verification and CI once the folder split stabilizes.
-4. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.
+1. Start the folder-layer split in compile-safe batches (`Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, `Data/Composition`) now that static cache access has been centralized into a single infrastructure file.
+2. Wire `apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh` into local verification defaults and CI so seam regressions fail automatically.
+3. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.

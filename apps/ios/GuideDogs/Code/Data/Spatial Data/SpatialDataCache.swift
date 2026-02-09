@@ -10,6 +10,140 @@ import Foundation
 import RealmSwift
 import MapKit
 
+@MainActor
+protocol SpatialDataStore {
+    func referenceEntityByKey(_ key: String) -> ReferenceEntity?
+    func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity?
+    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity?
+    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity]
+    func referenceEntities() -> [ReferenceEntity]
+    func searchByKey(_ key: String) -> POI?
+    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
+    func referenceEntityByGenericLocation(_ location: GenericLocation) -> ReferenceEntity?
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
+    func removeAllTemporaryReferenceEntities() throws
+    func routes() -> [Route]
+    func routeByKey(_ key: String) -> Route?
+    func routesContaining(markerId: String) -> [Route]
+    func roadByKey(_ key: String) -> Road?
+    func intersections(forRoadKey key: String) -> [Intersection]
+    func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection?
+    func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]?
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile>
+    func tileData(for tiles: [VectorTile]) -> [TileData]
+    func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI]
+}
+
+@MainActor
+struct DefaultSpatialDataStore: SpatialDataStore {
+    func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByKey(key)
+    }
+
+    func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByEntityKey(key)
+    }
+
+    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByLocation(coordinate)
+    }
+
+    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity] {
+        SpatialDataCache.referenceEntitiesNear(coordinate, range: range)
+    }
+
+    func referenceEntities() -> [ReferenceEntity] {
+        SpatialDataCache.referenceEntities()
+    }
+
+    func searchByKey(_ key: String) -> POI? {
+        SpatialDataCache.searchByKey(key: key)
+    }
+
+    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
+        try ReferenceEntity.add(detail: detail, telemetryContext: telemetryContext, notify: notify)
+    }
+
+    func referenceEntityByGenericLocation(_ location: GenericLocation) -> ReferenceEntity? {
+        SpatialDataCache.referenceEntityByGenericLocation(location)
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(location: location, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(location: location, nickname: nickname, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
+        try ReferenceEntity.add(entityKey: entityKey, nickname: nil, estimatedAddress: estimatedAddress, temporary: true)
+    }
+
+    func removeAllTemporaryReferenceEntities() throws {
+        try ReferenceEntity.removeAllTemporary()
+    }
+
+    func routes() -> [Route] {
+        SpatialDataCache.routes()
+    }
+
+    func routeByKey(_ key: String) -> Route? {
+        SpatialDataCache.routeByKey(key)
+    }
+
+    func routesContaining(markerId: String) -> [Route] {
+        SpatialDataCache.routesContaining(markerId: markerId)
+    }
+
+    func roadByKey(_ key: String) -> Road? {
+        SpatialDataCache.road(withKey: key)
+    }
+
+    func intersections(forRoadKey key: String) -> [Intersection] {
+        SpatialDataCache.intersections(forRoadKey: key) ?? []
+    }
+
+    func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
+        SpatialDataCache.intersection(forRoadKey: key, atCoordinate: coordinate)
+    }
+
+    func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]? {
+        SpatialDataCache.intersections(forRoadKey: key, inRegion: region)
+    }
+
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile> {
+        SpatialDataCache.tiles(forDestinations: forDestinations,
+                               forReferences: forReferences,
+                               at: zoomLevel,
+                               destination: destination)
+    }
+
+    func tileData(for tiles: [VectorTile]) -> [TileData] {
+        SpatialDataCache.tileData(for: tiles)
+    }
+
+    func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI] {
+        SpatialDataCache.genericLocationsNear(location, range: range)
+    }
+}
+
+@MainActor
+enum SpatialDataStoreRegistry {
+    private static let defaultStore = DefaultSpatialDataStore()
+    private(set) static var store: SpatialDataStore = defaultStore
+
+    static func configure(with store: SpatialDataStore) {
+        self.store = store
+    }
+
+    static func resetForTesting() {
+        store = defaultStore
+    }
+}
+
 extension SpatialDataCache {
     
     struct Predicates {
