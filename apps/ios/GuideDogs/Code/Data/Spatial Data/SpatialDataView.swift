@@ -154,13 +154,15 @@ class SpatialDataView: SpatialDataViewProtocol {
         let vectorTiles = VectorTile.tilesForRegion(location, radius: range, zoom: zoom)
         
         // Get the tile data for the specified tiles
-        tiles = SpatialDataStoreRegistry.store.tileData(for: vectorTiles)
+        tiles = DataContractRegistry.spatialReadCompatibility.tileData(for: vectorTiles)
         
         // Get the marked points
-        markedPoints = SpatialDataStoreRegistry.store.referenceEntitiesNear(location.coordinate, range: range)
+        markedPoints = DataContractRegistry.spatialReadCompatibility.referenceEntities(near: location.coordinate.ssGeoCoordinate,
+                                                                                      rangeMeters: range)
         
         // Get the generic locations (these will get merged with the regular POIs)
-        genericLocations = SpatialDataStoreRegistry.store.genericLocationsNear(location, range: range)
+        genericLocations = DataContractRegistry.spatialReadCompatibility.genericLocations(near: location.ssGeoLocation,
+                                                                                         rangeMeters: range)
         
         // Store references to context objects
         geolocationManager = geolocation
