@@ -214,6 +214,8 @@ Phase 1 complete:
 - 2026-02-09: Tightened guard script `apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh` so direct `SpatialDataCache.*` usage is only allowed in `SpatialDataCache.swift`; no secondary allowlist files remain.
 - 2026-02-09: Validation for seam-centralization slice: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 - 2026-02-09: Wired `apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh` into CI (`.github/workflows/ios-tests.yml`) so seam regressions fail before iOS build/test.
+- 2026-02-09: Started folder-layer split batch by moving `Route+Realm.swift` from `Code/Data/Models/Extensions/Route` to `Code/Data/Infrastructure/Realm` and updating the Xcode file reference path, making a first concrete Realm/persistence placement under `Data/Infrastructure`.
+- 2026-02-09: Validation for folder-move slice: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -340,6 +342,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Start the folder-layer split in compile-safe batches (`Data/Domain`, `Data/Contracts`, `Data/Infrastructure`, `Data/Composition`) now that static cache access has been centralized into a single infrastructure file.
-2. Regenerate dependency-analysis artifact after each seam batch (`docs/plans/artifacts/dependency-analysis/latest.txt`) and keep this plan + `AGENTS.md` updated with each slice.
-3. Add a follow-up seam guard for folder-layer boundaries (for example, ban `RealmSwift` outside planned `Data/Infrastructure`) once the first `Data/Domain` and `Data/Contracts` moves land.
+1. Continue the `Data/Infrastructure/Realm` move in small compile-safe batches (for example `RealmHelper.swift`, `RouteRealmError.swift`, and other Realm-only persistence helpers currently under `Data/Models` paths).
+2. Introduce first `Data/Contracts` storage interfaces (starting with route/spatial storage read ports) while keeping current Realm-backed adapters in `Data/Infrastructure`.
+3. Add a follow-up seam guard for folder-layer boundaries (for example, ban `RealmSwift` outside planned `Data/Infrastructure`) once the next `Infrastructure` file moves land.
