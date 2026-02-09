@@ -216,6 +216,8 @@ Phase 1 complete:
 - 2026-02-09: Wired `apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh` into CI (`.github/workflows/ios-tests.yml`) so seam regressions fail before iOS build/test.
 - 2026-02-09: Started folder-layer split batch by moving `Route+Realm.swift` from `Code/Data/Models/Extensions/Route` to `Code/Data/Infrastructure/Realm` and updating the Xcode file reference path, making a first concrete Realm/persistence placement under `Data/Infrastructure`.
 - 2026-02-09: Validation for folder-move slice: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
+- 2026-02-09: Continued the folder-layer split by moving additional Realm-only support files into `Code/Data/Infrastructure/Realm` (`RealmHelper.swift`, `RealmMigrationTools.swift`, `RealmString.swift`) and updating Xcode file reference paths.
+- 2026-02-09: Validation for the second Infrastructure batch: seam guard passes, `xcodebuild build-for-testing` passes, targeted `RouteStorageProviderDispatchTests` pass (`26` tests), full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -342,6 +344,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue the `Data/Infrastructure/Realm` move in small compile-safe batches (for example `RealmHelper.swift`, `RouteRealmError.swift`, and other Realm-only persistence helpers currently under `Data/Models` paths).
+1. Continue the `Data/Infrastructure/Realm` move in small compile-safe batches (for example `RouteRealmError.swift` and other Realm-only persistence helpers still under `Data/Models` paths).
 2. Introduce first `Data/Contracts` storage interfaces (starting with route/spatial storage read ports) while keeping current Realm-backed adapters in `Data/Infrastructure`.
-3. Add a follow-up seam guard for folder-layer boundaries (for example, ban `RealmSwift` outside planned `Data/Infrastructure`) once the next `Infrastructure` file moves land.
+3. Add a follow-up seam guard for folder-layer boundaries (for example, ban `RealmSwift` outside planned `Data/Infrastructure`) once the next Infrastructure and contracts slices land.
