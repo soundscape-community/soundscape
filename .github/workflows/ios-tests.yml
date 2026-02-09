@@ -39,6 +39,9 @@ jobs:
             - name: Test common package
               run: |
                 swift test --package-path apps/common
+            - name: Enforce SpatialDataCache seam
+              run: |
+                bash apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace
