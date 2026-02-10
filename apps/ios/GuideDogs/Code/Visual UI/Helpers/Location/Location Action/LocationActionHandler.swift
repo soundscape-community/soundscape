@@ -30,7 +30,11 @@ struct LocationActionHandler {
             let estimatedAddress = locationDetail.estimatedAddress
             let annotation = locationDetail.annotation
             
-            markerId = try? RealmReferenceEntity.add(entityKey: id, nickname: nickname, estimatedAddress: estimatedAddress, annotation: annotation, context: "location_action")
+            markerId = try? DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(entityKey: id,
+                                                                                               nickname: nickname,
+                                                                                               estimatedAddress: estimatedAddress,
+                                                                                               annotation: annotation,
+                                                                                               context: "location_action")
         case .coordinate:
             let latitude = locationDetail.location.coordinate.latitude
             let longitude = locationDetail.location.coordinate.longitude
@@ -40,7 +44,12 @@ struct LocationActionHandler {
             
             let genericLocation = GenericLocation(lat: latitude, lon: longitude)
             
-            markerId = try? RealmReferenceEntity.add(location: genericLocation, nickname: nickname, estimatedAddress: estimatedAddress, annotation: annotation, temporary: false, context: "location_action")
+            markerId = try? DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(location: genericLocation,
+                                                                                               nickname: nickname,
+                                                                                               estimatedAddress: estimatedAddress,
+                                                                                               annotation: annotation,
+                                                                                               temporary: false,
+                                                                                               context: "location_action")
             
         case .designData:
             markerId = nil

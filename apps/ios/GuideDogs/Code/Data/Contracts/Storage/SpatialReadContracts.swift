@@ -137,9 +137,12 @@ protocol SpatialReadCompatibilityContract: RouteReadCompatibilityContract,
 @MainActor
 protocol SpatialWriteContract {
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String
+    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String
+    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String
+    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) async throws
     func removeReferenceEntity(id: String) async throws
     func removeAllTemporaryReferenceEntities() async throws
 }
@@ -148,9 +151,12 @@ protocol SpatialWriteContract {
 @available(*, deprecated, message: "Temporary compatibility seam. Use async SpatialWriteContract APIs instead.")
 protocol SpatialWriteCompatibilityContract {
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
+    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) throws -> String
+    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
+    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) throws
     func removeReferenceEntity(id: String) throws
     func removeAllTemporaryReferenceEntities() throws
 }

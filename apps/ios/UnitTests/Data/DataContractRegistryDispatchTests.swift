@@ -333,7 +333,10 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var markerIDsByEntityKey: [String: String] = [:]
         var nextTemporaryID = "temp-marker-id"
         private(set) var addReferenceEntityCalls: [String?] = []
+        private(set) var addReferenceEntityByEntityKeyCalls: [String] = []
+        private(set) var addReferenceEntityByLocationCalls: [String] = []
         private(set) var addTemporaryEntityKeyCalls: [String] = []
+        private(set) var updateReferenceEntityCalls: [String] = []
         private(set) var removeReferenceEntityCalls: [String] = []
         private(set) var removeAllTemporaryCalls = 0
 
@@ -346,6 +349,34 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             try (self as SpatialWriteCompatibilityContract).addReferenceEntity(detail: detail,
                                                                                telemetryContext: telemetryContext,
                                                                                notify: notify)
+        }
+
+        func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) throws -> String {
+            addReferenceEntityByEntityKeyCalls.append(entityKey)
+            return markerIDsByEntityKey[entityKey] ?? nextTemporaryID
+        }
+
+        func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String {
+            try (self as SpatialWriteCompatibilityContract).addReferenceEntity(entityKey: entityKey,
+                                                                               nickname: nickname,
+                                                                               estimatedAddress: estimatedAddress,
+                                                                               annotation: annotation,
+                                                                               context: context)
+        }
+
+        func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) throws -> String {
+            let coordinate = location.location.coordinate
+            addReferenceEntityByLocationCalls.append("\(coordinate.latitude),\(coordinate.longitude)|\(temporary)")
+            return nextTemporaryID
+        }
+
+        func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String {
+            try (self as SpatialWriteCompatibilityContract).addReferenceEntity(location: location,
+                                                                               nickname: nickname,
+                                                                               estimatedAddress: estimatedAddress,
+                                                                               annotation: annotation,
+                                                                               temporary: temporary,
+                                                                               context: context)
         }
 
         func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
@@ -375,6 +406,20 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
             try (self as SpatialWriteCompatibilityContract).addTemporaryReferenceEntity(entityKey: entityKey,
                                                                                         estimatedAddress: estimatedAddress)
+        }
+
+        func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) throws {
+            updateReferenceEntityCalls.append(id)
+        }
+
+        func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) async throws {
+            try (self as SpatialWriteCompatibilityContract).updateReferenceEntity(id: id,
+                                                                                  location: location,
+                                                                                  nickname: nickname,
+                                                                                  estimatedAddress: estimatedAddress,
+                                                                                  annotation: annotation,
+                                                                                  context: context,
+                                                                                  isTemp: isTemp)
         }
 
         func removeReferenceEntity(id: String) throws {
@@ -634,13 +679,37 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
 
+        let markerFromEntity = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(entityKey: "entity-1",
+                                                                                                     nickname: "Test",
+                                                                                                     estimatedAddress: "123 Main",
+                                                                                                     annotation: nil,
+                                                                                                     context: "unit-test")
+        let markerFromLocation = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(location: GenericLocation(lat: 47.62,
+                                                                                                                lon: -122.35),
+                                                                                                       nickname: "Nearby",
+                                                                                                       estimatedAddress: "1st Ave",
+                                                                                                       annotation: nil,
+                                                                                                       temporary: false,
+                                                                                                       context: "unit-test")
         let markerID = try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(entityKey: "entity-1",
                                                                                                       estimatedAddress: "123 Main")
+        try DataContractRegistry.spatialWriteCompatibility.updateReferenceEntity(id: markerFromEntity,
+                                                                                 location: SSGeoCoordinate(latitude: 47.62, longitude: -122.35),
+                                                                                 nickname: "Updated",
+                                                                                 estimatedAddress: "1st Ave",
+                                                                                 annotation: nil,
+                                                                                 context: "unit-test",
+                                                                                 isTemp: false)
         try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: markerID)
         try DataContractRegistry.spatialWriteCompatibility.removeAllTemporaryReferenceEntities()
 
+        XCTAssertEqual(markerFromEntity, "marker-1")
+        XCTAssertEqual(markerFromLocation, "temp-marker-id")
         XCTAssertEqual(markerID, "marker-1")
+        XCTAssertEqual(writeMock.addReferenceEntityByEntityKeyCalls, ["entity-1"])
+        XCTAssertEqual(writeMock.addReferenceEntityByLocationCalls, ["47.62,-122.35|false"])
         XCTAssertEqual(writeMock.addTemporaryEntityKeyCalls, ["entity-1"])
+        XCTAssertEqual(writeMock.updateReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeAllTemporaryCalls, 1)
     }

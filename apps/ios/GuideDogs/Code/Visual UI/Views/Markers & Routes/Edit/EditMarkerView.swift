@@ -307,22 +307,22 @@ struct EditMarkerView: View {
                                annotation: finalAnnotation)
         } else if case .entity(let id) = locationDetail.source, updatedLocation == nil {
             // If this is a new marker that refers to an underlying POI, create a new reference point
-            markerId = try RealmReferenceEntity.add(entityKey: id,
-                                               nickname: finalNickname,
-                                               estimatedAddress: detail.estimatedAddress,
-                                               annotation: finalAnnotation,
-                                               context: config.context)
+            markerId = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(entityKey: id,
+                                                                                             nickname: finalNickname,
+                                                                                             estimatedAddress: detail.estimatedAddress,
+                                                                                             annotation: finalAnnotation,
+                                                                                             context: config.context)
         } else {
             // If this is a new marker in some generic location (not referencing an underlying POI), create
             // a reference point to the generic location
             let loc = GenericLocation(lat: detail.location.coordinate.latitude,
                                       lon: detail.location.coordinate.longitude)
-            markerId = try RealmReferenceEntity.add(location: loc,
-                                               nickname: finalNickname,
-                                               estimatedAddress: detail.estimatedAddress,
-                                               annotation: finalAnnotation,
-                                               temporary: false,
-                                               context: config.context)
+            markerId = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(location: loc,
+                                                                                             nickname: finalNickname,
+                                                                                             estimatedAddress: detail.estimatedAddress,
+                                                                                             annotation: finalAnnotation,
+                                                                                             temporary: false,
+                                                                                             context: config.context)
         }
         
         if let marker = LocationDetail(markerId: markerId) {
@@ -334,11 +334,13 @@ struct EditMarkerView: View {
     
     private func updateExisting(id: String, coordinate: CLLocationCoordinate2D?, nickname: String?, address: String?, annotation: String?) throws {
         try autoreleasepool {
-            guard let entity = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id) else {
-                return
-            }
-            
-            try RealmReferenceEntity.update(entity: entity, location: coordinate, nickname: nickname, address: address, annotation: annotation, context: config.context, isTemp: false)
+            try DataContractRegistry.spatialWriteCompatibility.updateReferenceEntity(id: id,
+                                                                                     location: coordinate?.ssGeoCoordinate,
+                                                                                     nickname: nickname,
+                                                                                     estimatedAddress: address,
+                                                                                     annotation: annotation,
+                                                                                     context: config.context,
+                                                                                     isTemp: false)
             
             GDATelemetry.track("markers.edited", with: [
                 "includesAnnotation": String(!(annotation?.isEmpty ?? true)),
@@ -354,7 +356,7 @@ struct EditMarkerView: View {
         }
         
         do {
-            try RealmReferenceEntity.remove(id: id)
+            try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: id)
         } catch {
             GDLogAppError("Unable to successfully delete the reference entity (id: \(id))")
         }
