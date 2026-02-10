@@ -202,9 +202,9 @@ extension CloudKeyValueStore {
         guard let id = markerParameters.id else { return false }
         
         // True if local database does not contain the cloud entity
-        guard let localReferenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else { return true }
+        guard let localReferenceMetadata = await DataContractRegistry.spatialRead.referenceMetadata(byID: id) else { return true }
         
-        return localReferenceEntity.shouldUpdate(withMarkerParameters: markerParameters)
+        return CloudKeyValueStore.shouldUpdate(localReferenceMetadata: localReferenceMetadata, withMarkerParameters: markerParameters)
     }
     
     private func shouldUpdateCloudReferenceEntity(withLocalReferenceEntity localReferenceEntity: ReferenceEntity) -> Bool {
@@ -214,19 +214,15 @@ extension CloudKeyValueStore {
         
         return markerParameters.shouldUpdate(withReferenceEntity: localReferenceEntity)
     }
-    
-}
 
-extension ReferenceEntity {
-    
-    fileprivate func shouldUpdate(withMarkerParameters markerParameters: MarkerParameters) -> Bool {
-        // False if the other entity does not have a `lastUpdatedDate` property
+    private static func shouldUpdate(localReferenceMetadata: ReferenceReadMetadata, withMarkerParameters markerParameters: MarkerParameters) -> Bool {
+        // False if the cloud entity does not have a `lastUpdatedDate` property
         guard let otherLastUpdated = markerParameters.lastUpdatedDate else { return false }
-        
-        // True if this entity does not have a `lastUpdatedDate` property
-        guard let selfLastUpdated = self.lastUpdatedDate else { return true }
-        
-        // True only if the last update date of the other entity is newer
+
+        // True if local entity does not have a `lastUpdatedDate` property
+        guard let selfLastUpdated = localReferenceMetadata.lastUpdatedDate else { return true }
+
+        // True only if the cloud entity is newer
         return otherLastUpdated > selfLastUpdated
     }
     

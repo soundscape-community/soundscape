@@ -13,9 +13,12 @@ import SSGeo
 final class CloudSyncContractBridgeTests: XCTestCase {
     private final class MockSpatialReadContract: SpatialReadContract {
         var routesByKey: [String: Route] = [:]
+        var routeMetadataByKey: [String: RouteReadMetadata] = [:]
         private(set) var routeByKeyCalls: [String] = []
+        private(set) var routeMetadataByKeyCalls: [String] = []
 
         var onRouteByKey: ((String) -> Void)?
+        var onRouteMetadataByKey: ((String) -> Void)?
 
         func routes() async -> [Route] {
             []
@@ -27,11 +30,21 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             return routesByKey[key]
         }
 
+        func routeMetadata(byKey key: String) async -> RouteReadMetadata? {
+            routeMetadataByKeyCalls.append(key)
+            onRouteMetadataByKey?(key)
+            return routeMetadataByKey[key]
+        }
+
         func routes(containingMarkerID markerID: String) async -> [Route] {
             []
         }
 
         func referenceEntity(byID id: String) async -> ReferenceEntity? {
+            nil
+        }
+
+        func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
             nil
         }
 
@@ -142,13 +155,14 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         let mock = MockSpatialReadContract()
         mock.routesByKey[id] = localRoute
+        mock.routeMetadataByKey[id] = RouteReadMetadata(id: id, lastUpdatedDate: localRoute.lastUpdatedDate)
         DataContractRegistry.configure(spatialRead: mock)
 
         let store = TestCloudKeyValueStore()
         store.storage[routeKey] = makeRouteData(id: id, lastUpdatedDate: Date(timeIntervalSince1970: 1_000))
 
-        let lookupExpectation = expectation(description: "route lookup")
-        mock.onRouteByKey = { lookedUpID in
+        let lookupExpectation = expectation(description: "route metadata lookup")
+        mock.onRouteMetadataByKey = { lookedUpID in
             if lookedUpID == id {
                 lookupExpectation.fulfill()
             }
@@ -157,7 +171,8 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         store.syncRoutes(reason: .serverChanged, changedKeys: [routeKey])
 
         wait(for: [lookupExpectation], timeout: 2.0)
-        XCTAssertEqual(mock.routeByKeyCalls, [id])
+        XCTAssertEqual(mock.routeMetadataByKeyCalls, [id])
+        XCTAssertTrue(mock.routeByKeyCalls.isEmpty)
     }
 
     func testSyncRoutesFallbackWhenCloudDataIsInvalid() async {
@@ -169,7 +184,7 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         await store.syncRoutesAsync(reason: .serverChanged, changedKeys: ["routes.invalid"])
 
-        XCTAssertTrue(mock.routeByKeyCalls.isEmpty)
+        XCTAssertTrue(mock.routeMetadataByKeyCalls.isEmpty)
     }
 
     private func makeRouteData(id: String, lastUpdatedDate: Date?) -> Data {

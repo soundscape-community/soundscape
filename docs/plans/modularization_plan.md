@@ -249,6 +249,7 @@ Phase 1 complete:
 - 2026-02-10: Marked temporary compatibility seams as explicitly deprecated (`@available(*, deprecated, message: ...)`) across compatibility contracts and registry compatibility accessors so migration targets are visible and searchable.
 - 2026-02-10: Split Realm-backed data contract adapters into dedicated infrastructure files (`RealmSpatialReadContract.swift`, `RealmSpatialWriteContract.swift`) while keeping `DataContractRegistry` as the single seam entry point.
 - 2026-02-10: Extended `check_data_contract_boundaries.sh` to also fail on direct app/runtime singleton symbols (`AppContext`, `AppContext.shared`, `UIRuntimeProviderRegistry`, `BehaviorRuntimeProviderRegistry`) in `Data/Contracts` and `Data/Domain`.
+- 2026-02-10: Added lightweight metadata DTO surfaces on read contracts (`RouteReadMetadata`, `ReferenceReadMetadata`) and migrated cloud-sync local-update checks to these metadata methods instead of loading full `Route`/`ReferenceEntity` models for comparison logic.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -375,6 +376,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Add explicit domain DTOs/value surfaces on contract boundaries to reduce leakage of Realm-backed model types before backend replacement work begins.
+1. Continue replacing contract methods that expose `Data/Infrastructure/Realm` model types with DTO/value surfaces (starting with cloud-sync export/store paths that still pass `Route`/`ReferenceEntity`).
 2. Add a follow-up guard that flags `Data/Contracts` references to model files under `Data/Infrastructure/Realm` so contract APIs can converge on domain DTO/value types.
 3. Begin introducing `Data/Domain` folder structure with portable types as contracts gain DTO boundaries, then extend boundary scripts to include the new layer.

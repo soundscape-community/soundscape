@@ -14,16 +14,28 @@ struct SpatialIntersectionRegion: Sendable {
     let longitudeDelta: Double
 }
 
+struct RouteReadMetadata: Sendable {
+    let id: String
+    let lastUpdatedDate: Date?
+}
+
+struct ReferenceReadMetadata: Sendable {
+    let id: String
+    let lastUpdatedDate: Date?
+}
+
 @MainActor
 protocol RouteReadContract {
     func routes() async -> [Route]
     func route(byKey key: String) async -> Route?
+    func routeMetadata(byKey key: String) async -> RouteReadMetadata?
     func routes(containingMarkerID markerID: String) async -> [Route]
 }
 
 @MainActor
 protocol ReferenceReadContract {
     func referenceEntity(byID id: String) async -> ReferenceEntity?
+    func referenceMetadata(byID id: String) async -> ReferenceReadMetadata?
     func referenceEntity(byEntityKey key: String) async -> ReferenceEntity?
     func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity?
     func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity?
@@ -58,6 +70,7 @@ protocol SpatialReadContract: RouteReadContract,
 protocol RouteReadCompatibilityContract {
     func routes() -> [Route]
     func route(byKey key: String) -> Route?
+    func routeMetadata(byKey key: String) -> RouteReadMetadata?
     func routes(containingMarkerID markerID: String) -> [Route]
 }
 
@@ -65,6 +78,7 @@ protocol RouteReadCompatibilityContract {
 @available(*, deprecated, message: "Temporary compatibility seam. Use async ReferenceReadContract APIs instead.")
 protocol ReferenceReadCompatibilityContract {
     func referenceEntity(byID id: String) -> ReferenceEntity?
+    func referenceMetadata(byID id: String) -> ReferenceReadMetadata?
     func referenceEntity(byEntityKey key: String) -> ReferenceEntity?
     func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> ReferenceEntity?
     func referenceEntity(byGenericLocation location: GenericLocation) -> ReferenceEntity?

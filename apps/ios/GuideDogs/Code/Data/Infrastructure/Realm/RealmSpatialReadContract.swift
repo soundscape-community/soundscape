@@ -28,6 +28,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         (self as SpatialReadCompatibilityContract).route(byKey: key)
     }
 
+    func routeMetadata(byKey key: String) -> RouteReadMetadata? {
+        guard let route = SpatialDataStoreRegistry.store.routeByKey(key) else {
+            return nil
+        }
+
+        return RouteReadMetadata(id: route.id, lastUpdatedDate: route.lastUpdatedDate)
+    }
+
+    func routeMetadata(byKey key: String) async -> RouteReadMetadata? {
+        (self as SpatialReadCompatibilityContract).routeMetadata(byKey: key)
+    }
+
     func routes(containingMarkerID markerID: String) -> [Route] {
         SpatialDataStoreRegistry.store.routesContaining(markerId: markerID)
     }
@@ -42,6 +54,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
 
     func referenceEntity(byID id: String) async -> ReferenceEntity? {
         (self as SpatialReadCompatibilityContract).referenceEntity(byID: id)
+    }
+
+    func referenceMetadata(byID id: String) -> ReferenceReadMetadata? {
+        guard let referenceEntity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+            return nil
+        }
+
+        return ReferenceReadMetadata(id: referenceEntity.id, lastUpdatedDate: referenceEntity.lastUpdatedDate)
+    }
+
+    func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
+        (self as SpatialReadCompatibilityContract).referenceMetadata(byID: id)
     }
 
     func referenceEntity(byEntityKey key: String) -> ReferenceEntity? {

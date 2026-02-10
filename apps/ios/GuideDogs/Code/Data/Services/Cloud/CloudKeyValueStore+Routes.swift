@@ -228,7 +228,7 @@ extension CloudKeyValueStore {
     private static func isValid(routeParameters: RouteParameters) async -> Bool {
         let markerIds = routeParameters.waypoints.map { $0.markerId }
         
-        for markerId in markerIds where await DataContractRegistry.spatialRead.referenceEntity(byID: markerId) == nil {
+        for markerId in markerIds where await DataContractRegistry.spatialRead.referenceMetadata(byID: markerId) == nil {
             GDLogCloudInfo("Route with id: \(routeParameters.id), name: \(routeParameters.name), is missing a marker with id: \(markerId)")
             return false
         }
@@ -238,9 +238,20 @@ extension CloudKeyValueStore {
     
     private func shouldUpdateLocalRoute(withRouteParameters routeParameters: RouteParameters) async -> Bool {
         // True if local database does not contain the cloud entity
-        guard let localRoute = await DataContractRegistry.spatialRead.route(byKey: routeParameters.id) else { return true }
+        guard let localRouteMetadata = await DataContractRegistry.spatialRead.routeMetadata(byKey: routeParameters.id) else { return true }
         
-        return localRoute.shouldUpdate(withRouteParameters: routeParameters)
+        return CloudKeyValueStore.shouldUpdate(localRouteMetadata: localRouteMetadata, withRouteParameters: routeParameters)
+    }
+
+    private static func shouldUpdate(localRouteMetadata: RouteReadMetadata, withRouteParameters routeParameters: RouteParameters) -> Bool {
+        // False if the cloud entity does not have a `lastUpdatedDate` property
+        guard let otherLastUpdated = routeParameters.lastUpdatedDate else { return false }
+
+        // True if local entity does not have a `lastUpdatedDate` property
+        guard let selfLastUpdated = localRouteMetadata.lastUpdatedDate else { return true }
+
+        // True only if the cloud entity is newer
+        return otherLastUpdated > selfLastUpdated
     }
     
     private func shouldUpdateCloudRoute(withLocalRoute localRoute: Route) -> Bool {
@@ -249,18 +260,6 @@ extension CloudKeyValueStore {
         guard let routeParameters = self.routeParameters(forKey: key) else { return true }
         
         return routeParameters.shouldUpdate(withRoute: localRoute)
-    }
-    
-}
-
-extension Route {
-    
-    fileprivate func shouldUpdate(withRouteParameters routeParameters: RouteParameters) -> Bool {
-        // False if the other entity does not have a `lastUpdatedDate` property
-        guard let otherLastUpdated = routeParameters.lastUpdatedDate else { return false }
-        
-        // True only if the last update date of the other entity is newer
-        return otherLastUpdated > self.lastUpdatedDate
     }
     
 }
