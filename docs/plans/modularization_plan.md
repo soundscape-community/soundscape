@@ -468,3 +468,15 @@ Acceptance criteria:
 1. Validate and migrate any remaining non-infrastructure `Route.*` static maintenance callsites (if any) to contract-backed seams, then keep remaining direct statics confined to adapters/tests.
 2. Continue reducing deprecated sync compatibility usage by migrating targeted callers from `spatialReadCompatibility`/`spatialWriteCompatibility` to async contract APIs where call graph permits.
 3. Keep compatibility APIs temporary and explicit; only add specialized value shapes when they represent true independent concepts (for example serialized payload types), not narrow per-callsite field subsets.
+
+## Session Handoff (2026-02-10)
+- Latest landed commits for this slice sequence:
+- `7ecbc04` (`refactor: route settings bulk cleanup through data write contracts`)
+- `69f6f3e` (`refactor: route settings cache address restore through write contracts`)
+- `9c3110d` (`refactor: migrate route settings and ui writes to data contracts`)
+- `44b507f` (`chore: enforce route mutation seam in ci`)
+- Data contract write surface now includes route + settings maintenance seams: `addRoute`, `updateRoute`, `deleteRoute`, `removeAllRoutes`, and `restoreCachedAddresses` (using `AddressCacheRecord` value shape).
+- `StatusTableViewController`, `RouteLoader`, and `RouteEditView` route/settings mutations now dispatch through `DataContractRegistry.spatialWriteCompatibility`.
+- New CI guard script exists and is wired: `apps/ios/Scripts/ci/check_route_mutation_seam.sh` (fails on direct `Route.add/update/delete/deleteAll` outside `Data/Infrastructure/Realm`).
+- Current direct `Route` mutation statics are intentionally confined to infrastructure adapter/implementation paths (`Route+Realm.swift`, `RealmSpatialWriteContract.swift`).
+- This session validated with boundary/seam scripts, localization linter, `xcodebuild build-for-testing`, and targeted test suites (`CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`).
