@@ -76,6 +76,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         (self as SpatialReadCompatibilityContract).referenceEntity(byID: id)
     }
 
+    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) -> Double? {
+        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+            return nil
+        }
+
+        return marker.distanceToClosestLocation(from: location.clLocation)
+    }
+
+    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? {
+        (self as SpatialReadCompatibilityContract).distanceToClosestLocation(forMarkerID: id, from: location)
+    }
+
     func referenceMetadata(byID id: String) -> ReferenceReadMetadata? {
         guard let referenceEntity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return nil

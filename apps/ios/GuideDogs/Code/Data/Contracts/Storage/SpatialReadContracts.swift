@@ -37,6 +37,7 @@ protocol RouteReadContract {
 @MainActor
 protocol ReferenceReadContract {
     func referenceEntity(byID id: String) async -> ReferenceEntity?
+    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double?
     func referenceMetadata(byID id: String) async -> ReferenceReadMetadata?
     func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata?
     func markerParameters(byID id: String) async -> MarkerParameters?
@@ -86,6 +87,7 @@ protocol RouteReadCompatibilityContract {
 @available(*, deprecated, message: "Temporary compatibility seam. Use async ReferenceReadContract APIs instead.")
 protocol ReferenceReadCompatibilityContract {
     func referenceEntity(byID id: String) -> ReferenceEntity?
+    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) -> Double?
     func referenceMetadata(byID id: String) -> ReferenceReadMetadata?
     func referenceMetadata(byEntityKey key: String) -> ReferenceReadMetadata?
     func markerParameters(byID id: String) -> MarkerParameters?

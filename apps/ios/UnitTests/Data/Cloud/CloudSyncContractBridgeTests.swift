@@ -57,6 +57,10 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             nil
         }
 
+        func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? {
+            nil
+        }
+
         func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
             nil
         }

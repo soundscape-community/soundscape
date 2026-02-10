@@ -262,6 +262,10 @@ Phase 1 complete:
 - 2026-02-10: Validation for keyed-serialization follow-up slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, and `check_realm_infrastructure_boundary.sh` pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 - 2026-02-10: Migrated route first-waypoint coordinate hydration (`Route.init(from:)`, `Route.update(...)`) from full marker entity reads to `markerParameters(byID:)` DTO contract reads, reducing serialization-oriented full-model contract usage in Realm route persistence paths.
 - 2026-02-10: Validation for route first-waypoint DTO slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-10: Added a distance query to data read contracts (`distanceToClosestLocation(forMarkerID:from:)`) with Realm adapter support so callers can request closest-distance results without loading full `ReferenceEntity` models.
+- 2026-02-10: Migrated route distance sorting (`Route.objectKeys(sortedBy: .distance)`) to the new distance contract query while preserving existing closest-location behavior through the Realm adapter.
+- 2026-02-10: Extended contract test coverage for the distance query (`DataContractRegistryDispatchTests` async + compatibility paths) and updated cloud contract mocks for protocol conformance.
+- 2026-02-10: Validation for route distance-query contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

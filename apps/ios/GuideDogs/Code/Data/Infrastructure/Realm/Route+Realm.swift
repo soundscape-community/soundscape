@@ -42,12 +42,15 @@ extension Route {
                 
                 return database.objects(Route.self)
                     .compactMap { route -> (id: String, distance: CLLocationDistance)? in
-                        guard let start = route.waypoints.ordered.first,
-                              let entity = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: start.markerId) else {
+                        guard let start = route.waypoints.ordered.first else {
                             return (id: route.id, distance: CLLocationDistance.greatestFiniteMagnitude)
                         }
-                        
-                        return (id: route.id, distance: entity.distanceToClosestLocation(from: userLocation))
+
+                        let distance = DataContractRegistry.spatialReadCompatibility.distanceToClosestLocation(forMarkerID: start.markerId,
+                                                                                                             from: userLocation.ssGeoLocation)
+                            ?? CLLocationDistance.greatestFiniteMagnitude
+
+                        return (id: route.id, distance: distance)
                     }
                     .sorted { $0.distance < $1.distance }
                     .compactMap({ $0.id })
