@@ -14,8 +14,10 @@ enum DataContractRegistry {
     private static let defaultSpatialWrite = RealmSpatialWriteContract()
     private static let defaultSpatialWriteCompatibility = RealmSpatialWriteContract()
     private(set) static var spatialRead: SpatialReadContract = defaultSpatialRead
+    @available(*, deprecated, message: "Temporary compatibility seam. Prefer DataContractRegistry.spatialRead async APIs.")
     private(set) static var spatialReadCompatibility: SpatialReadCompatibilityContract = defaultSpatialReadCompatibility
     private(set) static var spatialWrite: SpatialWriteContract = defaultSpatialWrite
+    @available(*, deprecated, message: "Temporary compatibility seam. Prefer DataContractRegistry.spatialWrite async APIs.")
     private(set) static var spatialWriteCompatibility: SpatialWriteCompatibilityContract = defaultSpatialWriteCompatibility
 
     static func configure(

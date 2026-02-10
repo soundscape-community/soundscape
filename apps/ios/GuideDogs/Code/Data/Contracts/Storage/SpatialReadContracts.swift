@@ -54,6 +54,7 @@ protocol SpatialReadContract: RouteReadContract,
                               TileReadContract {}
 
 @MainActor
+@available(*, deprecated, message: "Temporary compatibility seam. Use async RouteReadContract APIs instead.")
 protocol RouteReadCompatibilityContract {
     func routes() -> [Route]
     func route(byKey key: String) -> Route?
@@ -61,6 +62,7 @@ protocol RouteReadCompatibilityContract {
 }
 
 @MainActor
+@available(*, deprecated, message: "Temporary compatibility seam. Use async ReferenceReadContract APIs instead.")
 protocol ReferenceReadCompatibilityContract {
     func referenceEntity(byID id: String) -> ReferenceEntity?
     func referenceEntity(byEntityKey key: String) -> ReferenceEntity?
@@ -72,6 +74,7 @@ protocol ReferenceReadCompatibilityContract {
 }
 
 @MainActor
+@available(*, deprecated, message: "Temporary compatibility seam. Use async RoadGraphReadContract APIs instead.")
 protocol RoadGraphReadCompatibilityContract {
     func road(byKey key: String) -> Road?
     func intersections(forRoadKey key: String) -> [Intersection]
@@ -80,6 +83,7 @@ protocol RoadGraphReadCompatibilityContract {
 }
 
 @MainActor
+@available(*, deprecated, message: "Temporary compatibility seam. Use async TileReadContract APIs instead.")
 protocol TileReadCompatibilityContract {
     func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile>
     func tileData(for tiles: [VectorTile]) -> [TileData]
@@ -87,6 +91,7 @@ protocol TileReadCompatibilityContract {
 }
 
 @MainActor
+@available(*, deprecated, message: "Temporary compatibility seam. Use async SpatialReadContract APIs instead.")
 protocol SpatialReadCompatibilityContract: RouteReadCompatibilityContract,
                                            ReferenceReadCompatibilityContract,
                                            RoadGraphReadCompatibilityContract,
@@ -102,6 +107,7 @@ protocol SpatialWriteContract {
 }
 
 @MainActor
+@available(*, deprecated, message: "Temporary compatibility seam. Use async SpatialWriteContract APIs instead.")
 protocol SpatialWriteCompatibilityContract {
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String

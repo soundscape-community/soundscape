@@ -154,3 +154,8 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Do not alter Microsoft copyright notices in existing files.
 - **NEVER** add Microsoft copyright notices to any files.
 - **do** add copyright notice for "Soundscape Community Contributers" to modified or new files
+
+## Compatibility Seam Policy
+- Temporary compatibility APIs (for example sync wrappers around async-first contracts) must be explicitly marked deprecated with `@available(*, deprecated, message: "...")`.
+- Deprecation messages should point to the preferred replacement API (for example async contract surface) so callsites are easy to migrate.
+- When adding or removing a temporary compatibility seam, update `docs/plans/modularization_plan.md` with current status and intended removal direction.
