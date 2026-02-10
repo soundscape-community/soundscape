@@ -29,6 +29,19 @@ struct ReferenceCalloutReadData: Sendable {
     let superCategory: String
 }
 
+struct AddressCacheRecord: Sendable {
+    let key: String
+    let lastSelectedDate: Date?
+    let name: String
+    let addressLine: String?
+    let streetName: String?
+    let latitude: Double
+    let longitude: Double
+    let centroidLatitude: Double
+    let centroidLongitude: Double
+    let searchString: String?
+}
+
 @MainActor
 protocol RouteReadContract {
     func routes() async -> [Route]
@@ -136,6 +149,9 @@ protocol SpatialReadCompatibilityContract: RouteReadCompatibilityContract,
 
 @MainActor
 protocol SpatialWriteContract {
+    func addRoute(_ route: Route, context: String?) async throws
+    func deleteRoute(id: String) async throws
+    func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) async throws
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String
     func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String
@@ -145,7 +161,7 @@ protocol SpatialWriteContract {
     func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) async throws
     func removeAllReferenceEntities() async throws
     func removeAllRoutes() async throws
-    func restoreCachedAddresses(_ addresses: [Address]) async throws
+    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws
     func cleanCorruptReferenceEntities() async throws
     func removeReferenceEntity(id: String) async throws
     func removeAllTemporaryReferenceEntities() async throws
@@ -154,6 +170,9 @@ protocol SpatialWriteContract {
 @MainActor
 @available(*, deprecated, message: "Temporary compatibility seam. Use async SpatialWriteContract APIs instead.")
 protocol SpatialWriteCompatibilityContract {
+    func addRoute(_ route: Route, context: String?) throws
+    func deleteRoute(id: String) throws
+    func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) throws
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) throws -> String
     func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) throws -> String
@@ -163,7 +182,7 @@ protocol SpatialWriteCompatibilityContract {
     func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) throws
     func removeAllReferenceEntities() throws
     func removeAllRoutes() throws
-    func restoreCachedAddresses(_ addresses: [Address]) throws
+    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) throws
     func cleanCorruptReferenceEntities() throws
     func removeReferenceEntity(id: String) throws
     func removeAllTemporaryReferenceEntities() throws

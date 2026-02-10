@@ -332,6 +332,9 @@ final class DataContractRegistryDispatchTests: XCTestCase {
     private final class MockSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilityContract {
         var markerIDsByEntityKey: [String: String] = [:]
         var nextTemporaryID = "temp-marker-id"
+        private(set) var addRouteCalls: [String?] = []
+        private(set) var deleteRouteCalls: [String] = []
+        private(set) var updateRouteCalls: [String] = []
         private(set) var addReferenceEntityCalls: [String?] = []
         private(set) var addReferenceEntityByEntityKeyCalls: [String] = []
         private(set) var addReferenceEntityByLocationCalls: [String] = []
@@ -343,6 +346,33 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var cleanCorruptReferenceEntitiesCalls = 0
         private(set) var removeReferenceEntityCalls: [String] = []
         private(set) var removeAllTemporaryCalls = 0
+
+        func addRoute(_ route: Route, context: String?) throws {
+            addRouteCalls.append(context)
+        }
+
+        func addRoute(_ route: Route, context: String?) async throws {
+            try (self as SpatialWriteCompatibilityContract).addRoute(route, context: context)
+        }
+
+        func deleteRoute(id: String) throws {
+            deleteRouteCalls.append(id)
+        }
+
+        func deleteRoute(id: String) async throws {
+            try (self as SpatialWriteCompatibilityContract).deleteRoute(id: id)
+        }
+
+        func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) throws {
+            updateRouteCalls.append(id)
+        }
+
+        func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) async throws {
+            try (self as SpatialWriteCompatibilityContract).updateRoute(id: id,
+                                                                        name: name,
+                                                                        description: description,
+                                                                        waypoints: waypoints)
+        }
 
         func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
             addReferenceEntityCalls.append(telemetryContext)
@@ -442,11 +472,11 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             try (self as SpatialWriteCompatibilityContract).removeAllRoutes()
         }
 
-        func restoreCachedAddresses(_ addresses: [Address]) throws {
+        func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) throws {
             restoreCachedAddressCounts.append(addresses.count)
         }
 
-        func restoreCachedAddresses(_ addresses: [Address]) async throws {
+        func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {
             try (self as SpatialWriteCompatibilityContract).restoreCachedAddresses(addresses)
         }
 
@@ -712,9 +742,17 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let readMock = MockSpatialReadContract()
         let writeMock = MockSpatialWriteContract()
         writeMock.markerIDsByEntityKey["entity-1"] = "marker-1"
+        let route = Route()
+        route.id = "route-1"
 
         DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
 
+        try DataContractRegistry.spatialWriteCompatibility.addRoute(route, context: "unit-test")
+        try DataContractRegistry.spatialWriteCompatibility.updateRoute(id: route.id,
+                                                                       name: "Updated Route",
+                                                                       description: "Updated Description",
+                                                                       waypoints: [])
+        try DataContractRegistry.spatialWriteCompatibility.deleteRoute(id: route.id)
         let markerFromEntity = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(entityKey: "entity-1",
                                                                                                      nickname: "Test",
                                                                                                      estimatedAddress: "123 Main",
@@ -738,7 +776,27 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                  isTemp: false)
         try DataContractRegistry.spatialWriteCompatibility.removeAllReferenceEntities()
         try DataContractRegistry.spatialWriteCompatibility.removeAllRoutes()
-        try DataContractRegistry.spatialWriteCompatibility.restoreCachedAddresses([Address(), Address()])
+        let firstAddress = AddressCacheRecord(key: "address-1",
+                                              lastSelectedDate: nil,
+                                              name: "Address 1",
+                                              addressLine: "1 Main",
+                                              streetName: "Main",
+                                              latitude: 47.62,
+                                              longitude: -122.35,
+                                              centroidLatitude: 47.62,
+                                              centroidLongitude: -122.35,
+                                              searchString: nil)
+        let secondAddress = AddressCacheRecord(key: "address-2",
+                                               lastSelectedDate: nil,
+                                               name: "Address 2",
+                                               addressLine: "2 Main",
+                                               streetName: "Main",
+                                               latitude: 47.63,
+                                               longitude: -122.36,
+                                               centroidLatitude: 47.63,
+                                               centroidLongitude: -122.36,
+                                               searchString: nil)
+        try DataContractRegistry.spatialWriteCompatibility.restoreCachedAddresses([firstAddress, secondAddress])
         try DataContractRegistry.spatialWriteCompatibility.cleanCorruptReferenceEntities()
         try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: markerID)
         try DataContractRegistry.spatialWriteCompatibility.removeAllTemporaryReferenceEntities()
@@ -746,6 +804,9 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(markerFromEntity, "marker-1")
         XCTAssertEqual(markerFromLocation, "temp-marker-id")
         XCTAssertEqual(markerID, "marker-1")
+        XCTAssertEqual(writeMock.addRouteCalls, ["unit-test"])
+        XCTAssertEqual(writeMock.updateRouteCalls, [route.id])
+        XCTAssertEqual(writeMock.deleteRouteCalls, [route.id])
         XCTAssertEqual(writeMock.addReferenceEntityByEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(writeMock.addReferenceEntityByLocationCalls, ["47.62,-122.35|false"])
         XCTAssertEqual(writeMock.addTemporaryEntityKeyCalls, ["entity-1"])

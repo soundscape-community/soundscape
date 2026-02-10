@@ -322,7 +322,7 @@ extension StatusTableViewController {
     }
     
     private func clearCache(_ deletePORs: Bool) {
-        var storedAddresses: [Address] = []
+        var storedAddresses: [AddressCacheRecord] = []
         
         if deletePORs {
             do {
@@ -340,7 +340,16 @@ extension StatusTableViewController {
             for marker in markers {
                 if let entity = marker.getPOI() as? Address, storedAddresses.contains(where: { $0.key == entity.key }) == false {
                     // Copy the address
-                    storedAddresses.append(Address(value: entity))
+                    storedAddresses.append(AddressCacheRecord(key: entity.key,
+                                                             lastSelectedDate: entity.lastSelectedDate,
+                                                             name: entity.name,
+                                                             addressLine: entity.addressLine,
+                                                             streetName: entity.streetName,
+                                                             latitude: entity.latitude,
+                                                             longitude: entity.longitude,
+                                                             centroidLatitude: entity.centroidLatitude,
+                                                             centroidLongitude: entity.centroidLongitude,
+                                                             searchString: entity.searchString))
                 }
             }
         }

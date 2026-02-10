@@ -10,6 +10,33 @@ import SSGeo
 
 @MainActor
 struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilityContract {
+    func addRoute(_ route: Route, context: String?) throws {
+        try Route.add(route, context: context)
+    }
+
+    func addRoute(_ route: Route, context: String?) async throws {
+        try (self as SpatialWriteCompatibilityContract).addRoute(route, context: context)
+    }
+
+    func deleteRoute(id: String) throws {
+        try Route.delete(id)
+    }
+
+    func deleteRoute(id: String) async throws {
+        try (self as SpatialWriteCompatibilityContract).deleteRoute(id: id)
+    }
+
+    func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) throws {
+        try Route.update(id: id, name: name, description: description, waypoints: waypoints)
+    }
+
+    func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) async throws {
+        try (self as SpatialWriteCompatibilityContract).updateRoute(id: id,
+                                                                    name: name,
+                                                                    description: description,
+                                                                    waypoints: waypoints)
+    }
+
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
         try SpatialDataStoreRegistry.store.addReferenceEntity(detail: detail,
                                                               telemetryContext: telemetryContext,
@@ -128,19 +155,30 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
         try (self as SpatialWriteCompatibilityContract).removeAllRoutes()
     }
 
-    func restoreCachedAddresses(_ addresses: [Address]) throws {
+    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) throws {
         guard let cache = try? RealmHelper.getCacheRealm() else {
             throw RouteRealmError.databaseError
         }
 
         try cache.write {
-            for address in addresses {
+            for record in addresses {
+                let address = Address()
+                address.key = record.key
+                address.lastSelectedDate = record.lastSelectedDate
+                address.name = record.name
+                address.addressLine = record.addressLine
+                address.streetName = record.streetName
+                address.latitude = record.latitude
+                address.longitude = record.longitude
+                address.centroidLatitude = record.centroidLatitude
+                address.centroidLongitude = record.centroidLongitude
+                address.searchString = record.searchString
                 cache.create(Address.self, value: address, update: .modified)
             }
         }
     }
 
-    func restoreCachedAddresses(_ addresses: [Address]) async throws {
+    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {
         try (self as SpatialWriteCompatibilityContract).restoreCachedAddresses(addresses)
     }
 

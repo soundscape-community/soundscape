@@ -49,7 +49,7 @@ class RouteLoader: ObservableObject {
         
         routeIDs.remove(at: index)
         
-        try Route.delete(id)
+        try DataContractRegistry.spatialWriteCompatibility.deleteRoute(id: id)
         UIAccessibility.post(notification: .announcement, argument: GDLocalizedString("routes.action.deleted"))
     }
     

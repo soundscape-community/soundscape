@@ -24,7 +24,6 @@ readonly KNOWN_INFRA_TYPES=(
 
 # Temporary allowlist while contracts are still being migrated to DTO/value types.
 readonly ALLOWED_INFRA_TYPES_IN_CONTRACTS=(
-  Address
   Intersection
   RealmReferenceEntity
   Road

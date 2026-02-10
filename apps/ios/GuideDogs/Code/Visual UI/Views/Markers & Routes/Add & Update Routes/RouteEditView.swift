@@ -37,7 +37,7 @@ struct RouteEditView: View {
             case .add: return GDLocalizedString("route_detail.action.create")
             case .edit: return GDLocalizedString("route_detail.action.edit")
             case .import(let route):
-                if SpatialDataCache.routeByKey(route.id) == nil {
+                if DataContractRegistry.spatialReadCompatibility.route(byKey: route.id) == nil {
                     // Import a new route
                     return GDLocalizedString("route_detail.action.create")
                 } else {
@@ -125,7 +125,7 @@ struct RouteEditView: View {
         }
         
         do {
-            try Route.delete(id)
+            try DataContractRegistry.spatialWriteCompatibility.deleteRoute(id: id)
             
             navHelper.onNavigationAction(deleteAction ?? .popViewController)
         } catch {
@@ -156,7 +156,7 @@ struct RouteEditView: View {
     private func onAddRoute() throws {
         let route = Route(name: name, description: description, waypoints: identifiableWaypoints.asRouteWaypoint)
         
-        try Route.add(route)
+        try DataContractRegistry.spatialWriteCompatibility.addRoute(route, context: nil)
     }
     
     private func onUpdateRoute(_ detail: RouteDetail) throws {
@@ -165,7 +165,10 @@ struct RouteEditView: View {
             throw RouteRealmError.doesNotExist
         }
         
-        try Route.update(id: id, name: name, description: description, waypoints: identifiableWaypoints.asLocationDetail)
+        try DataContractRegistry.spatialWriteCompatibility.updateRoute(id: id,
+                                                                       name: name,
+                                                                       description: description,
+                                                                       waypoints: identifiableWaypoints.asLocationDetail)
     }
     
     private func onImportRoute(_ route: Route) throws {
@@ -186,7 +189,7 @@ struct RouteEditView: View {
             route.waypoints.append(objectsIn: identifiableWaypoints.asRouteWaypoint)
         }
         
-        try Route.add(route)
+        try DataContractRegistry.spatialWriteCompatibility.addRoute(route, context: nil)
     }
     
     private var alertView: Alert {
