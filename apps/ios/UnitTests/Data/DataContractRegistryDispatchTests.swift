@@ -169,6 +169,62 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         }
     }
 
+    private final class MockSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilityContract {
+        var markerIDsByEntityKey: [String: String] = [:]
+        var nextTemporaryID = "temp-marker-id"
+        private(set) var addReferenceEntityCalls: [String?] = []
+        private(set) var addTemporaryEntityKeyCalls: [String] = []
+        private(set) var removeAllTemporaryCalls = 0
+
+        func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
+            addReferenceEntityCalls.append(telemetryContext)
+            return detail.markerId ?? "generated-marker-id"
+        }
+
+        func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
+            try (self as SpatialWriteCompatibilityContract).addReferenceEntity(detail: detail,
+                                                                               telemetryContext: telemetryContext,
+                                                                               notify: notify)
+        }
+
+        func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
+            nextTemporaryID
+        }
+
+        func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
+            try (self as SpatialWriteCompatibilityContract).addTemporaryReferenceEntity(location: location,
+                                                                                        estimatedAddress: estimatedAddress)
+        }
+
+        func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
+            nextTemporaryID
+        }
+
+        func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
+            try (self as SpatialWriteCompatibilityContract).addTemporaryReferenceEntity(location: location,
+                                                                                        nickname: nickname,
+                                                                                        estimatedAddress: estimatedAddress)
+        }
+
+        func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
+            addTemporaryEntityKeyCalls.append(entityKey)
+            return markerIDsByEntityKey[entityKey] ?? nextTemporaryID
+        }
+
+        func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
+            try (self as SpatialWriteCompatibilityContract).addTemporaryReferenceEntity(entityKey: entityKey,
+                                                                                        estimatedAddress: estimatedAddress)
+        }
+
+        func removeAllTemporaryReferenceEntities() throws {
+            removeAllTemporaryCalls += 1
+        }
+
+        func removeAllTemporaryReferenceEntities() async throws {
+            try (self as SpatialWriteCompatibilityContract).removeAllTemporaryReferenceEntities()
+        }
+    }
+
     override func tearDown() {
         DataContractRegistry.resetForTesting()
         super.tearDown()
@@ -211,10 +267,12 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let mock = MockSpatialReadContract()
         DataContractRegistry.configure(spatialRead: mock)
         XCTAssertFalse(DataContractRegistry.spatialRead is RealmSpatialReadContract)
+        XCTAssertTrue(DataContractRegistry.spatialWrite is RealmSpatialWriteContract)
 
         DataContractRegistry.resetForTesting()
 
         XCTAssertTrue(DataContractRegistry.spatialRead is RealmSpatialReadContract)
+        XCTAssertTrue(DataContractRegistry.spatialWrite is RealmSpatialWriteContract)
     }
 
     func testNilPropagationForMissingEntities() async {
@@ -249,5 +307,21 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(fetchedReference?.id, reference.id)
         XCTAssertEqual(mock.routeByKeySyncCalls, [route.id])
         XCTAssertEqual(mock.referenceByIDSyncCalls, [reference.id])
+    }
+
+    func testSpatialWriteCompatibilityDispatchesToConfiguredContract() throws {
+        let readMock = MockSpatialReadContract()
+        let writeMock = MockSpatialWriteContract()
+        writeMock.markerIDsByEntityKey["entity-1"] = "marker-1"
+
+        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+
+        let markerID = try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(entityKey: "entity-1",
+                                                                                                      estimatedAddress: "123 Main")
+        try DataContractRegistry.spatialWriteCompatibility.removeAllTemporaryReferenceEntities()
+
+        XCTAssertEqual(markerID, "marker-1")
+        XCTAssertEqual(writeMock.addTemporaryEntityKeyCalls, ["entity-1"])
+        XCTAssertEqual(writeMock.removeAllTemporaryCalls, 1)
     }
 }

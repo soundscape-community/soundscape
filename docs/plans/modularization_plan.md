@@ -243,6 +243,9 @@ Phase 1 complete:
 - 2026-02-09: Remaining direct `SpatialDataStoreRegistry.store` callsites are now concentrated to expected seams: adapter implementation (`RealmSpatialReadContract`, 17), write/mutation seams pending write-contract extraction (`DestinationManager` temporary marker mutations + `Route.add` marker import, 5), and infrastructure tile/view orchestration (`SpatialDataContext` + `SpatialDataView`, 6).
 - 2026-02-09: Migrated the remaining infrastructure tile/view read callsites (`SpatialDataContext`, `SpatialDataView`) to `DataContractRegistry.spatialReadCompatibility`, removing all direct `SpatialDataStoreRegistry` reads outside the adapter and write-mutation seams.
 - 2026-02-09: Direct `SpatialDataStoreRegistry.store` usage is now limited to two intentional areas: `RealmSpatialReadContract` adapter implementation (17) and write mutation seams (`DestinationManager` temporary marker mutations + `Route.add` marker import, 5).
+- 2026-02-09: Added first write-side contracts (`SpatialWriteContract`, `SpatialWriteCompatibilityContract`) and `DataContractRegistry` wiring (`spatialWrite`, `spatialWriteCompatibility`) with Realm-backed adapter implementation (`RealmSpatialWriteContract`).
+- 2026-02-09: Migrated remaining write mutation callsites (`DestinationManager` temporary marker add/remove and `Route.add` marker import) to `DataContractRegistry.spatialWriteCompatibility`; direct `SpatialDataStoreRegistry` usage is now fully isolated to the Realm adapter file.
+- 2026-02-09: Extended data contract seam tests with write dispatch coverage (`DataContractRegistryDispatchTests.testSpatialWriteCompatibilityDispatchesToConfiguredContract`) while preserving existing route/cloud dispatch suites.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -369,6 +372,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Introduce first write-side contract(s) for marker/route mutation seams currently still direct (`addReferenceEntity`, temporary marker add/remove) and migrate `DestinationManager` + `Route.add` mutation callsites through `DataContractRegistry`.
-2. Add explicit domain DTOs/value surfaces on contract boundaries to reduce leakage of Realm-backed model types before backend replacement work begins.
+1. Add explicit domain DTOs/value surfaces on contract boundaries to reduce leakage of Realm-backed model types before backend replacement work begins.
+2. Split read/write Realm adapters into dedicated files/modules under `Data/Infrastructure/Realm` (keeping `DataContractRegistry` as the only seam entry point) to prepare for non-Realm backend adapters.
 3. Keep tightening CI guardrails with targeted forbidden-edge checks (for example `Data/Contracts -> App/Visual UI`) as contract/domain folders gain more surface area.

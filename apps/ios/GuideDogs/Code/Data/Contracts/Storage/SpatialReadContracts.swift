@@ -91,3 +91,21 @@ protocol SpatialReadCompatibilityContract: RouteReadCompatibilityContract,
                                            ReferenceReadCompatibilityContract,
                                            RoadGraphReadCompatibilityContract,
                                            TileReadCompatibilityContract {}
+
+@MainActor
+protocol SpatialWriteContract {
+    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String
+    func removeAllTemporaryReferenceEntities() async throws
+}
+
+@MainActor
+protocol SpatialWriteCompatibilityContract {
+    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
+    func removeAllTemporaryReferenceEntities() throws
+}

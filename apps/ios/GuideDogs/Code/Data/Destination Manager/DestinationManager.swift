@@ -72,19 +72,23 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location, estimatedAddress: estimatedAddress)
+        try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(location: location,
+                                                                                       estimatedAddress: estimatedAddress)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location, nickname: nickname, estimatedAddress: estimatedAddress)
+        try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(location: location,
+                                                                                       nickname: nickname,
+                                                                                       estimatedAddress: estimatedAddress)
     }
 
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: estimatedAddress)
+        try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(entityKey: entityKey,
+                                                                                       estimatedAddress: estimatedAddress)
     }
 
     func removeAllTemporaryReferenceEntities() throws {
-        try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+        try DataContractRegistry.spatialWriteCompatibility.removeAllTemporaryReferenceEntities()
     }
 }
 

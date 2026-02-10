@@ -91,9 +91,9 @@ extension Route {
                     return
                 }
                 
-                let markerId = try SpatialDataStoreRegistry.store.addReferenceEntity(detail: locationDetail,
-                                                                                     telemetryContext: "add_route",
-                                                                                     notify: false)
+                let markerId = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(detail: locationDetail,
+                                                                                                      telemetryContext: "add_route",
+                                                                                                      notify: false)
                 
                 // `markerId` will change when adding a new Realm object
                 // `markerId` will not change when updating an existing Realm object
