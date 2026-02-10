@@ -48,6 +48,9 @@ jobs:
             - name: Enforce data contract boundaries
               run: |
                 bash apps/ios/Scripts/ci/check_data_contract_boundaries.sh
+            - name: Enforce data contract infra type allowlist
+              run: |
+                bash apps/ios/Scripts/ci/check_data_contract_infra_type_allowlist.sh
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace
