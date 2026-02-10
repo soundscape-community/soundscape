@@ -112,6 +112,22 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
                                                                               isTemp: isTemp)
     }
 
+    func removeAllReferenceEntities() throws {
+        try RealmReferenceEntity.removeAll()
+    }
+
+    func removeAllReferenceEntities() async throws {
+        try (self as SpatialWriteCompatibilityContract).removeAllReferenceEntities()
+    }
+
+    func cleanCorruptReferenceEntities() throws {
+        try RealmReferenceEntity.cleanCorruptEntities()
+    }
+
+    func cleanCorruptReferenceEntities() async throws {
+        try (self as SpatialWriteCompatibilityContract).cleanCorruptReferenceEntities()
+    }
+
     func removeReferenceEntity(id: String) throws {
         try RealmReferenceEntity.remove(id: id)
     }

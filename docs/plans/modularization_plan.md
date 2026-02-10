@@ -315,6 +315,10 @@ Phase 1 complete:
 - 2026-02-10: Migrated marker edit/save action write callsites (`EditMarkerView`, `LocationActionHandler`) from direct `RealmReferenceEntity.add/update/remove` static calls to `DataContractRegistry.spatialWriteCompatibility`, preserving existing telemetry and mutation semantics.
 - 2026-02-10: Extended `DataContractRegistryDispatchTests` write dispatch coverage for new compatibility mutation methods (`addReferenceEntity` by entity/location and `updateReferenceEntity`), while retaining existing temporary-marker and remove dispatch assertions.
 - 2026-02-10: Validation for marker write-contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
+- 2026-02-10: Extended write contracts with bulk marker maintenance operations (`removeAllReferenceEntities`, `cleanCorruptReferenceEntities`) and implemented Realm adapter support in `RealmSpatialWriteContract`.
+- 2026-02-10: Migrated `StatusTableViewController` bulk marker maintenance flows (`clearCache(deletePORs:)`, `spatialDataStateChanged`) from direct `RealmReferenceEntity.removeAll/cleanCorruptEntities` calls to `DataContractRegistry.spatialWriteCompatibility`.
+- 2026-02-10: Extended `DataContractRegistryDispatchTests` coverage for the new compatibility bulk marker operations (`removeAllReferenceEntities`, `cleanCorruptReferenceEntities`) while preserving existing write dispatch assertions.
+- 2026-02-10: Validation for bulk marker maintenance contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -441,6 +445,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue migrating deprecated sync compatibility seams from `RealmReferenceEntity` toward domain/contract usage in remaining UI pathways (next focus: `StatusTableViewController` bulk marker maintenance operations still call `RealmReferenceEntity` statics directly).
-2. Move persistence-heavy static operations off `RealmReferenceEntity` into infrastructure store/repository types so UI/behavior layers stop depending on Realm object semantics directly (next target: contract-backed bulk marker maintenance APIs for remove-all/cleanup paths).
+1. Continue migrating remaining UI-side Realm coupling in settings/debug flows (next focus: replace direct `Realm` object queries in `StatusTableViewController` address-preservation logic with contract-backed reads).
+2. Expand storage contracts to cover remaining bulk persistence statics outside marker paths (next target: route bulk deletion/maintenance seams currently invoked via `Route.deleteAll()` in settings cleanup).
 3. Keep compatibility APIs temporary and explicit; only add specialized value shapes when they represent true independent concepts (for example serialized payload types), not narrow per-callsite field subsets.

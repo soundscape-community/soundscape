@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -331,7 +332,7 @@ extension StatusTableViewController {
         if deletePORs {
             do {
                 // Remove the reference entities (regardless of type)
-                try RealmReferenceEntity.removeAll()
+                try DataContractRegistry.spatialWriteCompatibility.removeAllReferenceEntities()
                 
                 // Remove all routes
                 try Route.deleteAll()
@@ -425,7 +426,7 @@ extension StatusTableViewController {
         }
         
         do {
-            try RealmReferenceEntity.cleanCorruptEntities()
+            try DataContractRegistry.spatialWriteCompatibility.cleanCorruptReferenceEntities()
             GDLogAppVerbose("Successfully removed any corrupted Reference Entity objects (if any existed)")
         } catch {
             GDLogAppError("Unable to remove corrupted Reference Entity objects")

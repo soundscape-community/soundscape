@@ -337,6 +337,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var addReferenceEntityByLocationCalls: [String] = []
         private(set) var addTemporaryEntityKeyCalls: [String] = []
         private(set) var updateReferenceEntityCalls: [String] = []
+        private(set) var removeAllReferenceEntitiesCalls = 0
+        private(set) var cleanCorruptReferenceEntitiesCalls = 0
         private(set) var removeReferenceEntityCalls: [String] = []
         private(set) var removeAllTemporaryCalls = 0
 
@@ -420,6 +422,22 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                   annotation: annotation,
                                                                                   context: context,
                                                                                   isTemp: isTemp)
+        }
+
+        func removeAllReferenceEntities() throws {
+            removeAllReferenceEntitiesCalls += 1
+        }
+
+        func removeAllReferenceEntities() async throws {
+            try (self as SpatialWriteCompatibilityContract).removeAllReferenceEntities()
+        }
+
+        func cleanCorruptReferenceEntities() throws {
+            cleanCorruptReferenceEntitiesCalls += 1
+        }
+
+        func cleanCorruptReferenceEntities() async throws {
+            try (self as SpatialWriteCompatibilityContract).cleanCorruptReferenceEntities()
         }
 
         func removeReferenceEntity(id: String) throws {
@@ -700,6 +718,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                  annotation: nil,
                                                                                  context: "unit-test",
                                                                                  isTemp: false)
+        try DataContractRegistry.spatialWriteCompatibility.removeAllReferenceEntities()
+        try DataContractRegistry.spatialWriteCompatibility.cleanCorruptReferenceEntities()
         try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: markerID)
         try DataContractRegistry.spatialWriteCompatibility.removeAllTemporaryReferenceEntities()
 
@@ -710,6 +730,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.addReferenceEntityByLocationCalls, ["47.62,-122.35|false"])
         XCTAssertEqual(writeMock.addTemporaryEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(writeMock.updateReferenceEntityCalls, ["marker-1"])
+        XCTAssertEqual(writeMock.removeAllReferenceEntitiesCalls, 1)
+        XCTAssertEqual(writeMock.cleanCorruptReferenceEntitiesCalls, 1)
         XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeAllTemporaryCalls, 1)
     }
