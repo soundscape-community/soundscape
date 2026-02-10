@@ -120,6 +120,14 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
         try (self as SpatialWriteCompatibilityContract).removeAllReferenceEntities()
     }
 
+    func removeAllRoutes() throws {
+        try Route.deleteAll()
+    }
+
+    func removeAllRoutes() async throws {
+        try (self as SpatialWriteCompatibilityContract).removeAllRoutes()
+    }
+
     func cleanCorruptReferenceEntities() throws {
         try RealmReferenceEntity.cleanCorruptEntities()
     }

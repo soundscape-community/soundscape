@@ -319,6 +319,12 @@ Phase 1 complete:
 - 2026-02-10: Migrated `StatusTableViewController` bulk marker maintenance flows (`clearCache(deletePORs:)`, `spatialDataStateChanged`) from direct `RealmReferenceEntity.removeAll/cleanCorruptEntities` calls to `DataContractRegistry.spatialWriteCompatibility`.
 - 2026-02-10: Extended `DataContractRegistryDispatchTests` coverage for the new compatibility bulk marker operations (`removeAllReferenceEntities`, `cleanCorruptReferenceEntities`) while preserving existing write dispatch assertions.
 - 2026-02-10: Validation for bulk marker maintenance contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
+- 2026-02-10: Removed the remaining direct UI-side Realm marker query in settings cache preservation by switching `StatusTableViewController.clearCache(deletePORs:)` marker enumeration to `DataContractRegistry.spatialReadCompatibility.referenceEntities().map(\\.domainEntity)` and keeping address-preservation semantics unchanged.
+- 2026-02-10: Validation for settings marker-read contract cleanup slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
+- 2026-02-10: Extended write contracts with route bulk-maintenance (`removeAllRoutes`) across async and deprecated sync compatibility surfaces, with Realm adapter support in `RealmSpatialWriteContract`.
+- 2026-02-10: Migrated settings cache-clear route deletion from direct `Route.deleteAll()` to `DataContractRegistry.spatialWriteCompatibility.removeAllRoutes()` so the full settings bulk-clear path now stays on data contract seams.
+- 2026-02-10: Extended `DataContractRegistryDispatchTests` coverage for `removeAllRoutes` write dispatch while preserving existing bulk marker and temporary-marker mutation assertions.
+- 2026-02-10: Validation for route bulk-maintenance contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -445,6 +451,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue migrating remaining UI-side Realm coupling in settings/debug flows (next focus: replace direct `Realm` object queries in `StatusTableViewController` address-preservation logic with contract-backed reads).
-2. Expand storage contracts to cover remaining bulk persistence statics outside marker paths (next target: route bulk deletion/maintenance seams currently invoked via `Route.deleteAll()` in settings cleanup).
+1. Continue shrinking UI-side infrastructure knowledge in settings/debug flows by replacing direct cache-realm restore writes (`RealmHelper.getCacheRealm` + address reinsert loop in `StatusTableViewController.clearCache`) with a dedicated contract-backed infrastructure write seam.
+2. Expand storage contracts to cover remaining bulk persistence statics outside settings flows (next focus: any remaining direct `Route.*` static maintenance callsites not yet routed through `SpatialWriteCompatibilityContract`).
 3. Keep compatibility APIs temporary and explicit; only add specialized value shapes when they represent true independent concepts (for example serialized payload types), not narrow per-callsite field subsets.

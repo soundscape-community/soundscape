@@ -322,11 +322,6 @@ extension StatusTableViewController {
     }
     
     private func clearCache(_ deletePORs: Bool) {
-        guard let database = try? RealmHelper.getDatabaseRealm() else {
-            DDLogError("Error attempting to get database data!")
-            return
-        }
-        
         var storedAddresses: [Address] = []
         
         if deletePORs {
@@ -335,14 +330,15 @@ extension StatusTableViewController {
                 try DataContractRegistry.spatialWriteCompatibility.removeAllReferenceEntities()
                 
                 // Remove all routes
-                try Route.deleteAll()
+                try DataContractRegistry.spatialWriteCompatibility.removeAllRoutes()
             } catch {
                 GDLogAppError("Failed to remove all Reference Entities!")
             }
         } else {
             // Preserve addresses since they can't be reloaded like POI reference points can
-            for por in database.objects(RealmReferenceEntity.self) {
-                if let entity = por.getPOI() as? Address, storedAddresses.contains(where: { $0.key == entity.key }) == false {
+            let markers = DataContractRegistry.spatialReadCompatibility.referenceEntities().map(\.domainEntity)
+            for marker in markers {
+                if let entity = marker.getPOI() as? Address, storedAddresses.contains(where: { $0.key == entity.key }) == false {
                     // Copy the address
                     storedAddresses.append(Address(value: entity))
                 }
