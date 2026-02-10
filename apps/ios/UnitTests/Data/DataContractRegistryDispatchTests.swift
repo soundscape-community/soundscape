@@ -29,7 +29,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var markerParametersByEntityKey: [String: MarkerParameters] = [:]
         var markerParametersToReturn: [MarkerParameters] = []
         var referenceByEntityKey: [String: ReferenceEntity] = [:]
-        var adjacentMarkersByLookupKey: [String: [ReferenceAdjacentMarkerReadData]] = [:]
 
         private(set) var routeByKeyCalls: [String] = []
         private(set) var routeMetadataByKeyCalls: [String] = []
@@ -46,7 +45,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var markerParametersByEntityKeyCalls: [String] = []
         private(set) var markerParametersForBackupCalls = 0
         private(set) var referenceByEntityKeyCalls: [String] = []
-        private(set) var adjacentMarkersCalls: [String] = []
         private(set) var routeByKeySyncCalls: [String] = []
         private(set) var routeMetadataByKeySyncCalls: [String] = []
         private(set) var routeParametersByKeySyncCalls: [String] = []
@@ -60,7 +58,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var referenceMetadataByEntityKeySyncCalls: [String] = []
         private(set) var markerParametersByEntityKeySyncCalls: [String] = []
         private(set) var markerParametersForBackupSyncCalls = 0
-        private(set) var adjacentMarkersSyncCalls: [String] = []
 
         func routes() -> [Route] {
             routesToReturn
@@ -254,18 +251,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             []
         }
 
-        func adjacentMarkers(near coordinate: SSGeoCoordinate, rangeMeters: Double, from location: SSGeoLocation) -> [ReferenceAdjacentMarkerReadData] {
-            let lookupKey = adjacentMarkersLookupKey(coordinate: coordinate, rangeMeters: rangeMeters, location: location)
-            adjacentMarkersSyncCalls.append(lookupKey)
-            return adjacentMarkersByLookupKey[lookupKey] ?? []
-        }
-
-        func adjacentMarkers(near coordinate: SSGeoCoordinate, rangeMeters: Double, from location: SSGeoLocation) async -> [ReferenceAdjacentMarkerReadData] {
-            let lookupKey = adjacentMarkersLookupKey(coordinate: coordinate, rangeMeters: rangeMeters, location: location)
-            adjacentMarkersCalls.append(lookupKey)
-            return adjacentMarkersByLookupKey[lookupKey] ?? []
-        }
-
         func poi(byKey key: String) -> POI? {
             nil
         }
@@ -341,10 +326,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         private func coordinateKey(_ coordinate: SSGeoCoordinate) -> String {
             "\(coordinate.latitude),\(coordinate.longitude)"
-        }
-
-        private func adjacentMarkersLookupKey(coordinate: SSGeoCoordinate, rangeMeters: Double, location: SSGeoLocation) -> String {
-            "\(coordinateKey(coordinate))|range:\(rangeMeters)|from:\(coordinateKey(location.coordinate))"
         }
     }
 
@@ -444,9 +425,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         mock.markerParametersByEntityKey["entity-1"] = MarkerParameters(name: "Marker Entity Key 1", latitude: 47.62, longitude: -122.35)
         mock.markerParametersToReturn = [MarkerParameters(name: "Marker 1", latitude: 47.62, longitude: -122.35)]
         mock.referenceByEntityKey["entity-1"] = reference
-        mock.adjacentMarkersByLookupKey["47.62,-122.35|range:50.0|from:47.62,-122.35"] = [ReferenceAdjacentMarkerReadData(id: "marker-1",
-                                                                                                                               superCategory: "undefined",
-                                                                                                                               distanceToClosestLocation: 9.0)]
 
         DataContractRegistry.configure(spatialRead: mock)
 
@@ -469,9 +447,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let fetchedMarkerParametersByEntityKey = await DataContractRegistry.spatialRead.markerParameters(byEntityKey: "entity-1")
         let fetchedMarkerParameters = await DataContractRegistry.spatialRead.markerParametersForBackup()
         let fetchedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: "entity-1")
-        let fetchedAdjacentMarkers = await DataContractRegistry.spatialRead.adjacentMarkers(near: SSGeoCoordinate(latitude: 47.62, longitude: -122.35),
-                                                                                            rangeMeters: 50,
-                                                                                            from: markerLocation)
 
         XCTAssertEqual(fetchedRoutes.count, 1)
         XCTAssertEqual(fetchedRoute?.id, route.id)
@@ -489,8 +464,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertNotNil(fetchedMarkerParametersByEntityKey)
         XCTAssertEqual(fetchedMarkerParameters.count, 1)
         XCTAssertEqual(fetchedReferenceByEntityKey?.id, reference.id)
-        XCTAssertEqual(fetchedAdjacentMarkers.count, 1)
-        XCTAssertEqual(fetchedAdjacentMarkers.first?.id, "marker-1")
 
         XCTAssertEqual(mock.routeByKeyCalls, [route.id])
         XCTAssertEqual(mock.routeMetadataByKeyCalls, [route.id])
@@ -507,7 +480,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(mock.markerParametersByEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(mock.markerParametersForBackupCalls, 1)
         XCTAssertEqual(mock.referenceByEntityKeyCalls, ["entity-1"])
-        XCTAssertEqual(mock.adjacentMarkersCalls, ["47.62,-122.35|range:50.0|from:47.62,-122.35"])
     }
 
     func testResetForTestingRestoresDefaultRealmAdapter() {
@@ -594,9 +566,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         mock.referenceMetadataByEntityKey["entity-sync"] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
         mock.markerParametersByEntityKey["entity-sync"] = MarkerParameters(name: "Marker Entity Sync", latitude: 47.62, longitude: -122.35)
         mock.markerParametersToReturn = [MarkerParameters(name: "Marker Sync", latitude: 47.62, longitude: -122.35)]
-        mock.adjacentMarkersByLookupKey["47.62,-122.35|range:50.0|from:47.62,-122.35"] = [ReferenceAdjacentMarkerReadData(id: "marker-sync",
-                                                                                                                               superCategory: "undefined",
-                                                                                                                               distanceToClosestLocation: 4.0)]
 
         mock.routesByKey[route.id] = route
         mock.referenceByID[reference.id] = reference
@@ -620,9 +589,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let fetchedReferenceMetadataByEntityKey = DataContractRegistry.spatialReadCompatibility.referenceMetadata(byEntityKey: "entity-sync")
         let fetchedMarkerParametersByEntityKey = DataContractRegistry.spatialReadCompatibility.markerParameters(byEntityKey: "entity-sync")
         let fetchedMarkerParameters = DataContractRegistry.spatialReadCompatibility.markerParametersForBackup()
-        let fetchedAdjacentMarkers = DataContractRegistry.spatialReadCompatibility.adjacentMarkers(near: SSGeoCoordinate(latitude: 47.62, longitude: -122.35),
-                                                                                                   rangeMeters: 50,
-                                                                                                   from: markerLocation)
 
         XCTAssertEqual(fetchedRoute?.id, route.id)
         XCTAssertEqual(fetchedRouteMetadata?.id, route.id)
@@ -637,8 +603,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(fetchedReferenceMetadataByEntityKey?.id, reference.id)
         XCTAssertNotNil(fetchedMarkerParametersByEntityKey)
         XCTAssertEqual(fetchedMarkerParameters.count, 1)
-        XCTAssertEqual(fetchedAdjacentMarkers.count, 1)
-        XCTAssertEqual(fetchedAdjacentMarkers.first?.id, "marker-sync")
         XCTAssertEqual(mock.routeByKeySyncCalls, [route.id])
         XCTAssertEqual(mock.routeMetadataByKeySyncCalls, [route.id])
         XCTAssertEqual(mock.routeParametersByKeySyncCalls, ["\(route.id)|backup"])
@@ -652,7 +616,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(mock.referenceMetadataByEntityKeySyncCalls, ["entity-sync"])
         XCTAssertEqual(mock.markerParametersByEntityKeySyncCalls, ["entity-sync"])
         XCTAssertEqual(mock.markerParametersForBackupSyncCalls, 1)
-        XCTAssertEqual(mock.adjacentMarkersSyncCalls, ["47.62,-122.35|range:50.0|from:47.62,-122.35"])
     }
 
     func testSpatialWriteCompatibilityDispatchesToConfiguredContract() throws {

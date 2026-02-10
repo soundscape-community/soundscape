@@ -4,7 +4,6 @@
 //
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
-//  Copyright (c) Soundscape Community Contributers.
 //
 
 import Foundation
@@ -71,11 +70,11 @@ struct RoadAdjacentDataView: AdjacentDataView, Equatable {
                                                                                  distance: CLLocationDistance.averageWalkingSpeed)
         
         // Calculate the valid markers
-        let validMarkerIDsAlongPath = RoadAdjacentDataView.validMarkersAlongPath(walkingPathToIntersection, from: from)
-        adjacent = validMarkerIDsAlongPath
-
+        let validMarkersAlongPath = RoadAdjacentDataView.validMarkersAlongPath(walkingPathToIntersection, from: from)
+        adjacent = validMarkersAlongPath.map { $0.id }
+        
         // Process the updated markers history
-        adjacentCalloutLocationsHistory = RoadAdjacentDataView.updatedMarkerHistory(newMarkerIDs: validMarkerIDsAlongPath,
+        adjacentCalloutLocationsHistory = RoadAdjacentDataView.updatedMarkerHistory(newMarkers: validMarkersAlongPath,
                                                                                     targetLocation: endpoint.coordinate,
                                                                                     from: from)
     }
@@ -310,10 +309,10 @@ extension RoadAdjacentDataView {
         return adjacentDataViews
     }
     
-    /// Returns marker IDs that can be called out while walking along a path.
-    private static func markersAlongPath(_ coordinates: [CLLocationCoordinate2D]) -> [ReferenceEntityID] {
-        var markerIDs: [ReferenceEntityID] = []
-
+    /// Returns the markers that can be called out whaile walking along a path
+    private static func markersAlongPath(_ coordinates: [CLLocationCoordinate2D]) -> [ReferenceEntity] {
+        var markers: [ReferenceEntity] = []
+        
         let updateFilter = LocationUpdateFilter(minTime: 0.0, minDistance: 5.0)
         
         for coordinate in coordinates {
@@ -323,71 +322,71 @@ extension RoadAdjacentDataView {
                 continue
             }
             
-            let markersAtCoordinate = DataContractRegistry.spatialReadCompatibility.adjacentMarkers(near: coordinate.ssGeoCoordinate,
-                                                                                                     rangeMeters: CalloutRangeContext.streetPreview.searchDistance,
-                                                                                                     from: location.ssGeoLocation)
-
+            let markersAtCoordinate = DataContractRegistry.spatialReadCompatibility.referenceEntities(near: coordinate.ssGeoCoordinate,
+                                                                                                      rangeMeters: CalloutRangeContext.streetPreview.searchDistance)
+            
             for marker in markersAtCoordinate {
-                guard !markerIDs.contains(marker.id) else {
+                guard !markers.contains(where: { $0.id == marker.id }) else {
                     // Discard duplicate markers
                     continue
                 }
-
-                let category = SuperCategory(rawValue: marker.superCategory) ?? .undefined
+                
+                let distance = marker.distanceToClosestLocation(from: location)
+                let category = SuperCategory(rawValue: marker.getPOI().superCategory) ?? SuperCategory.undefined
                 let triggerRange = category.triggerRange(context: .streetPreview)
-
+                
                 // Only allow markers within the trigger range
-                guard marker.distanceToClosestLocation <= triggerRange else {
+                guard distance <= triggerRange else {
                     continue
                 }
-
-                markerIDs.append(marker.id)
+                
+                markers.append(marker)
             }
-
+            
         }
-
-        return markerIDs
+        
+        return markers
     }
     
     /// Returns the valid markers that can be called out along a path.
     /// This takes into account the marker callout history from previous roads (if given).
     private static func validMarkersAlongPath(_ coordinates: [CLLocationCoordinate2D],
-                                              from: RoadAdjacentDataView? = nil) -> [ReferenceEntityID] {
-        let allMarkerIDs = RoadAdjacentDataView.markersAlongPath(coordinates)
-
-        guard !allMarkerIDs.isEmpty else {
+                                              from: RoadAdjacentDataView? = nil) -> [ReferenceEntity] {
+        let allMarkers = RoadAdjacentDataView.markersAlongPath(coordinates)
+        
+        guard !allMarkers.isEmpty else {
             return []
         }
-
+        
         // If no history given, all found markers are valid.
         guard let from = from else {
-            return allMarkerIDs
+            return allMarkers
         }
-
-        var validMarkerIDs: [ReferenceEntityID] = []
-
+            
+        var validMarkers: [ReferenceEntity] = []
+        
         // The previous endpoint location (which is the current origin position)
         let endpointLocation = from.endpoint.coordinate
-
-        for markerID in allMarkerIDs {
+        
+        for marker in allMarkers {
             // We only allow a marker callout if it was not called out within a distance threshold.
             // I.e. we don't want repeated callouts for the same marker in close proximity.
-
-            if let prevCalloutLocation = from.adjacentCalloutLocationsHistory[markerID] {
+            
+            if let prevCalloutLocation = from.adjacentCalloutLocationsHistory[marker.id] {
                 guard endpointLocation.ssGeoCoordinate.distance(to: prevCalloutLocation.ssGeoCoordinate) > RoadAdjacentDataView.adjacentCalloutThreshold else {
                     // The adjacent is within the threshold, i.e. not valid.
                     continue
                 }
             }
-
-            validMarkerIDs.append(markerID)
+            
+            validMarkers.append(marker)
         }
-
-        return validMarkerIDs
+        
+        return validMarkers
     }
-
+    
     /// Returns a marker callout history based on new found markers and marker callout history.
-    private static func updatedMarkerHistory(newMarkerIDs: [ReferenceEntityID],
+    private static func updatedMarkerHistory(newMarkers: [ReferenceEntity],
                                              targetLocation: CLLocationCoordinate2D,
                                              from: RoadAdjacentDataView? = nil) -> [ReferenceEntityID: CLLocationCoordinate2D] {
         var updatedHistory: [ReferenceEntityID: CLLocationCoordinate2D] = [:]
@@ -409,10 +408,10 @@ extension RoadAdjacentDataView {
         }
         
         // Add new markers
-        for markerID in newMarkerIDs {
-            updatedHistory[markerID] = targetLocation
+        for marker in newMarkers {
+            updatedHistory[marker.id] = targetLocation
         }
-
+        
         return updatedHistory
     }
     

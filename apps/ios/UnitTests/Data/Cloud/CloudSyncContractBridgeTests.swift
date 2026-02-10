@@ -110,10 +110,6 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             []
         }
 
-        func adjacentMarkers(near coordinate: SSGeoCoordinate, rangeMeters: Double, from location: SSGeoLocation) async -> [ReferenceAdjacentMarkerReadData] {
-            []
-        }
-
         func poi(byKey key: String) async -> POI? {
             nil
         }
