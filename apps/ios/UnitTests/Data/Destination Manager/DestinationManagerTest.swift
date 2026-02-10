@@ -8,6 +8,7 @@
 
 import XCTest
 import CoreLocation
+import SSGeo
 @testable import Soundscape
 
 @MainActor
@@ -40,8 +41,8 @@ final class DestinationManagerTest: XCTestCase {
     @MainActor
     final class MockDestinationEntityStore: DestinationEntityStore {
         var referenceEntityForReferenceIDHandler: ((String) -> RealmReferenceEntity?)?
-        var referenceEntityForGenericLocationHandler: ((GenericLocation) -> RealmReferenceEntity?)?
-        var referenceEntityForEntityKeyHandler: ((String) -> RealmReferenceEntity?)?
+        var referenceEntityIDForGenericLocationHandler: ((GenericLocation) -> String?)?
+        var referenceEntityIDForEntityKeyHandler: ((String) -> String?)?
         var addTemporaryReferenceEntityHandler: ((GenericLocation, String?) throws -> String)?
         var addTemporaryReferenceEntityWithNicknameHandler: ((GenericLocation, String?, String?) throws -> String)?
         var addTemporaryReferenceEntityForEntityKeyHandler: ((String, String?) throws -> String)?
@@ -51,12 +52,12 @@ final class DestinationManagerTest: XCTestCase {
             referenceEntityForReferenceIDHandler?(id) ?? nil
         }
 
-        func referenceEntity(forGenericLocation location: GenericLocation) -> RealmReferenceEntity? {
-            referenceEntityForGenericLocationHandler?(location) ?? nil
+        func referenceEntityID(forGenericLocation location: GenericLocation) -> String? {
+            referenceEntityIDForGenericLocationHandler?(location) ?? nil
         }
 
-        func referenceEntity(forEntityKey key: String) -> RealmReferenceEntity? {
-            referenceEntityForEntityKeyHandler?(key) ?? nil
+        func referenceEntityID(forEntityKey key: String) -> String? {
+            referenceEntityIDForEntityKeyHandler?(key) ?? nil
         }
 
         func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
@@ -181,6 +182,85 @@ final class DestinationManagerTest: XCTestCase {
         try dm.clearDestination()
 
         XCTAssertEqual(removeAllTemporaryCallCount, 1)
+    }
+
+    func testSetDestinationGenericLocationUsesInjectedEntityIDLookup() throws {
+        let existingID = try RealmReferenceEntity.add(location: GenericLocation(lat: 42.7290570,
+                                                                                lon: -73.6726370,
+                                                                                name: "Test Generic"),
+                                                      estimatedAddress: nil,
+                                                      temporary: true)
+        let store = MockDestinationEntityStore()
+        var lookedUpLocations: [SSGeoCoordinate] = []
+        var addTemporaryCallCount = 0
+
+        store.referenceEntityIDForGenericLocationHandler = { location in
+            lookedUpLocations.append(location.geoCoordinate)
+            return existingID
+        }
+        store.referenceEntityForReferenceIDHandler = { id in
+            SpatialDataCache.referenceEntityByKey(id)
+        }
+        store.addTemporaryReferenceEntityHandler = { _, _ in
+            addTemporaryCallCount += 1
+            return UUID().uuidString
+        }
+        store.removeAllTemporaryReferenceEntitiesHandler = {
+            try RealmReferenceEntity.removeAllTemporary()
+        }
+
+        let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
+        let location = GenericLocation(lat: 42.7290570, lon: -73.6726370, name: "Test Generic")
+        let returnedID = try dm.setDestination(location: location,
+                                               address: nil,
+                                               enableAudio: false,
+                                               userLocation: nil,
+                                               logContext: nil)
+
+        XCTAssertEqual(returnedID, existingID)
+        XCTAssertEqual(lookedUpLocations.count, 1)
+        XCTAssertEqual(addTemporaryCallCount, 0)
+
+        try dm.clearDestination()
+    }
+
+    func testSetDestinationEntityKeyUsesInjectedEntityIDLookup() throws {
+        let existingID = try RealmReferenceEntity.add(location: GenericLocation(lat: 42.7292000,
+                                                                                lon: -73.6727000,
+                                                                                name: "Test Entity Key"),
+                                                      estimatedAddress: nil,
+                                                      temporary: true)
+        let store = MockDestinationEntityStore()
+        var lookedUpEntityKeys: [String] = []
+        var addTemporaryCallCount = 0
+
+        store.referenceEntityIDForEntityKeyHandler = { key in
+            lookedUpEntityKeys.append(key)
+            return existingID
+        }
+        store.referenceEntityForReferenceIDHandler = { id in
+            SpatialDataCache.referenceEntityByKey(id)
+        }
+        store.addTemporaryReferenceEntityForEntityKeyHandler = { _, _ in
+            addTemporaryCallCount += 1
+            return UUID().uuidString
+        }
+        store.removeAllTemporaryReferenceEntitiesHandler = {
+            try RealmReferenceEntity.removeAllTemporary()
+        }
+
+        let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
+        let returnedID = try dm.setDestination(entityKey: "entity-key-123",
+                                               enableAudio: false,
+                                               userLocation: nil,
+                                               estimatedAddress: nil,
+                                               logContext: nil)
+
+        XCTAssertEqual(returnedID, existingID)
+        XCTAssertEqual(lookedUpEntityKeys, ["entity-key-123"])
+        XCTAssertEqual(addTemporaryCallCount, 0)
+
+        try dm.clearDestination()
     }
     
     

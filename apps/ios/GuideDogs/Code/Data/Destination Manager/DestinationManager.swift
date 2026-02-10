@@ -49,8 +49,8 @@ enum DestinationManagerRuntime {
 @MainActor
 protocol DestinationEntityStore {
     func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity?
-    func referenceEntity(forGenericLocation location: GenericLocation) -> RealmReferenceEntity?
-    func referenceEntity(forEntityKey key: String) -> RealmReferenceEntity?
+    func referenceEntityID(forGenericLocation location: GenericLocation) -> String?
+    func referenceEntityID(forEntityKey key: String) -> String?
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
@@ -63,12 +63,12 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
         DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id)
     }
 
-    func referenceEntity(forGenericLocation location: GenericLocation) -> RealmReferenceEntity? {
-        DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: location)
+    func referenceEntityID(forGenericLocation location: GenericLocation) -> String? {
+        DataContractRegistry.spatialReadCompatibility.markerParameters(byCoordinate: location.geoCoordinate)?.id
     }
 
-    func referenceEntity(forEntityKey key: String) -> RealmReferenceEntity? {
-        DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)
+    func referenceEntityID(forEntityKey key: String) -> String? {
+        DataContractRegistry.spatialReadCompatibility.markerParameters(byEntityKey: key)?.id
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
@@ -373,10 +373,10 @@ class DestinationManager: DestinationManagerProtocol {
     @discardableResult
     func setDestination(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
         // If the reference entity already exists, just set the destination to that
-        if let ref = destinationStore.referenceEntity(forGenericLocation: location) {
-            try setDestination(referenceID: ref.id, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+        if let referenceID = destinationStore.referenceEntityID(forGenericLocation: location) {
+            try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
             
-            return ref.id
+            return referenceID
         }
         
         let refID = try destinationStore.addTemporaryReferenceEntity(location: location, estimatedAddress: address)
@@ -429,10 +429,10 @@ class DestinationManager: DestinationManagerProtocol {
     @discardableResult
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) throws -> String {
         // If the reference entity already exists, just set the destination to that
-        if let ref = destinationStore.referenceEntity(forEntityKey: entityKey) {
-            try setDestination(referenceID: ref.id, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+        if let referenceID = destinationStore.referenceEntityID(forEntityKey: entityKey) {
+            try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
             
-            return ref.id
+            return referenceID
         }
         
         let refID = try destinationStore.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: estimatedAddress)

@@ -283,6 +283,9 @@ Phase 1 complete:
 - 2026-02-10: Updated `RealmSpatialReadContract` async implementations to map `RealmReferenceEntity` values to domain `ReferenceEntity` (`domainEntity`) and resolve async tile destinations back to Realm via id lookup inside the adapter boundary.
 - 2026-02-10: Extended contract seam tests to conform to the new async domain entity signatures (`DataContractRegistryDispatchTests` and `CloudSyncContractBridgeTests`), preserving compatibility dispatch coverage for deprecated sync seams.
 - 2026-02-10: Validation for async domain-entity contract slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_realm_infrastructure_boundary.sh`, and `check_spatial_data_cache_seam.sh` pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-10: Reduced full-entity coupling in `DestinationManager` by changing generic-location/entity-key destination lookups to id-level reads (`markerParameters(byCoordinate:)`, `markerParameters(byEntityKey:)`) in `DestinationEntityStore`, avoiding unnecessary full `RealmReferenceEntity` loads on those paths.
+- 2026-02-10: Added destination-store seam coverage for the new id-based lookup flow (`DestinationManagerTest.testSetDestinationGenericLocationUsesInjectedEntityIDLookup`, `DestinationManagerTest.testSetDestinationEntityKeyUsesInjectedEntityIDLookup`) while preserving existing reference-id lookup behavior tests.
+- 2026-02-10: Validation for destination-id lookup slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
