@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -36,7 +37,7 @@ class MarkerModel: ObservableObject {
         self.location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         tokens.append(NotificationCenter.default.publisher(for: .markerUpdated).sink { [weak self] notification in
-            guard id == notification.userInfo?[RealmReferenceEntity.Keys.entityId] as? String else {
+            guard id == notification.userInfo?[ReferenceEntity.Keys.entityId] as? String else {
                 return
             }
             
@@ -51,7 +52,7 @@ class MarkerModel: ObservableObject {
     }
     
     private func update() {
-        guard let marker = SpatialDataCache.referenceEntityByKey(id) else {
+        guard let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id)?.domainEntity else {
             return
         }
         
@@ -62,7 +63,7 @@ class MarkerModel: ObservableObject {
         updateDistance(for: marker)
     }
     
-    private func updateDistance(for marker: RealmReferenceEntity) {
+    private func updateDistance(for marker: ReferenceEntity) {
         // Initialize `distance` and `direction` to an invalid value
         var distance = -1.0
         var direction = -1.0

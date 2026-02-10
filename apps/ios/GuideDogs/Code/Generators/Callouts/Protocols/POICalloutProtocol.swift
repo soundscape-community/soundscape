@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -13,7 +14,7 @@ protocol POICalloutProtocol: CalloutProtocol {
     
     var poi: POI? { get }
     
-    var marker: RealmReferenceEntity? { get }
+    var marker: ReferenceEntity? { get }
 }
 
 extension POICalloutProtocol {

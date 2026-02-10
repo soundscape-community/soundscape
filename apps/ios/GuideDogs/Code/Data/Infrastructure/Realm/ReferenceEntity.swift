@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -12,6 +13,10 @@ import RealmSwift
 import SSGeo
 
 struct ReferenceEntity: Identifiable, Equatable {
+    struct Keys {
+        static let entityId = "GDAReferenceEntityID"
+    }
+
     let id: String
     let entityKey: String?
     let lastUpdatedDate: Date?
@@ -71,6 +76,79 @@ struct ReferenceEntity: Identifiable, Equatable {
 }
 
 @MainActor
+extension ReferenceEntity {
+    private var poi: POI? {
+        guard let entityKey else {
+            return nil
+        }
+
+        return DataContractRegistry.spatialReadCompatibility.poi(byKey: entityKey)
+    }
+
+    var name: String {
+        nickname ?? givenLocalizedName
+    }
+
+    var givenLocalizedName: String {
+        getPOI().localizedName
+    }
+
+    var address: String {
+        let estimated = estimatedAddress != nil
+        ? GDLocalizedString("directions.near_name", estimatedAddress!)
+        : GDLocalizedString("directions.unknown_address")
+
+        guard entityKey != nil else {
+            return estimated
+        }
+
+        guard let entity = poi else {
+            return estimatedAddress ?? GDLocalizedString("directions.unknown_address")
+        }
+
+        return entity.addressLine ?? estimated
+    }
+
+    var displayAddress: String {
+        if name != givenLocalizedName
+            && !address.localizedCaseInsensitiveContains(givenLocalizedName)
+            && !(getPOI() is Address) {
+            return "\(givenLocalizedName)\n\(address)"
+        }
+
+        return address
+    }
+
+    func distanceToClosestLocation(from location: CLLocation) -> CLLocationDistance {
+        if let poi {
+            return poi.distanceToClosestLocation(from: location)
+        }
+
+        return SSGeoMath.distanceMeters(from: coordinate, to: location.coordinate.ssGeoCoordinate)
+    }
+
+    func bearingToClosestLocation(from location: CLLocation) -> CLLocationDirection {
+        if let poi {
+            return poi.bearingToClosestLocation(from: location)
+        }
+
+        return SSGeoMath.initialBearingDegrees(from: location.coordinate.ssGeoCoordinate, to: coordinate)
+    }
+
+    func closestLocation(from location: CLLocation) -> CLLocation {
+        if let poi {
+            return poi.closestLocation(from: location, useEntranceIfAvailable: true)
+        }
+
+        return coordinate.clLocation
+    }
+
+    func getPOI() -> POI {
+        poi ?? GenericLocation(ref: self)
+    }
+}
+
+@MainActor
 enum ReferenceEntityRuntime {
     static func currentUserLocation() -> CLLocation? {
         DataRuntimeProviderRegistry.providers.referenceCurrentUserLocation()
@@ -123,7 +201,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     // MARK: Constants
     
     struct Keys {
-        static let entityId = "GDAReferenceEntityID"
+        static let entityId = ReferenceEntity.Keys.entityId
     }
     
     // MARK: Properties
@@ -668,15 +746,15 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     
     private static func notifyEntityAdded(_ id: String) {
         ReferenceEntityRuntime.processEvent(MarkerAddedEvent(id))
-        NotificationCenter.default.post(name: Notification.Name.markerAdded, object: self, userInfo: [RealmReferenceEntity.Keys.entityId: id])
+        NotificationCenter.default.post(name: Notification.Name.markerAdded, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
     }
     
     private static func notifyEntityUpdated(_ id: String) {
-        NotificationCenter.default.post(name: .markerUpdated, object: self, userInfo: [Keys.entityId: id])
+        NotificationCenter.default.post(name: .markerUpdated, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
     }
     
     private static func notifyEntityRemoved(_ id: String) {
-        NotificationCenter.default.post(name: .markerRemoved, object: self, userInfo: [Keys.entityId: id])
+        NotificationCenter.default.post(name: .markerRemoved, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
     }
     
     /// Removes the reference entity with the corresponding ID. If the reference entity is currently set as the

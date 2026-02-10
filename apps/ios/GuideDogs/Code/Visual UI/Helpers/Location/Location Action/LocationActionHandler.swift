@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -48,7 +49,8 @@ struct LocationActionHandler {
             markerId = nil
         }
         
-        guard let markerId = markerId, SpatialDataCache.referenceEntityByEntityKey(markerId) != nil else {
+        guard let markerId = markerId,
+              DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: markerId) != nil else {
             throw LocationActionError.failedToSaveMarker
         }
         

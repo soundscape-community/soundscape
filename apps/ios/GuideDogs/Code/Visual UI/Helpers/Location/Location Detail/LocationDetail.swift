@@ -149,7 +149,7 @@ struct LocationDetail {
     }
     
     private var marker: ReferenceEntity? {
-        referenceEntity(source: source, isTemp: nil)?.domainEntity
+        referenceEntity(source: source, isTemp: nil)
     }
     
     // Name Properties
@@ -236,18 +236,18 @@ struct LocationDetail {
         return GDLocalizedString("location_detail.default.address")
     }
 
-    private func referenceEntity(source: Source, isTemp: Bool?) -> RealmReferenceEntity? {
-        let marker: RealmReferenceEntity?
+    private func referenceEntity(source: Source, isTemp: Bool?) -> ReferenceEntity? {
+        let marker: ReferenceEntity?
 
         switch source {
         case .entity(let id):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: id)
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: id)?.domainEntity
         case .coordinate(let location):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)?.domainEntity
         case .designData:
             marker = nil
         case .screenshots(let poi):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: poi.key)
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: poi.key)?.domainEntity
         }
 
         guard let isTemp, let marker else {

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -41,8 +42,8 @@ struct DestinationCallout: POICalloutProtocol {
         return entityKey
     }
     
-    var marker: RealmReferenceEntity? {
-        return SpatialDataCache.referenceEntityByEntityKey(key)
+    var marker: ReferenceEntity? {
+        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)?.domainEntity
     }
     
     /// A computed property for accessing the POI referenced by the key stored in this Callout object. Note

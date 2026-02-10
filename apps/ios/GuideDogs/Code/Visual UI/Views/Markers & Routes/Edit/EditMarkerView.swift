@@ -365,17 +365,17 @@ struct EditMarkerView: View {
     }
 
     private func temporaryMarkerId(for source: LocationDetail.Source) -> String? {
-        let marker: RealmReferenceEntity?
+        let marker: ReferenceEntity?
 
         switch source {
         case .entity(let id):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: id)
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: id)?.domainEntity
         case .coordinate(let location):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)?.domainEntity
         case .designData(let location, _):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)?.domainEntity
         case .screenshots(let poi):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: poi)
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: poi)?.domainEntity
         }
 
         guard let marker, marker.isTemp else {

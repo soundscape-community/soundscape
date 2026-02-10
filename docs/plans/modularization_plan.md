@@ -308,6 +308,9 @@ Phase 1 complete:
 - 2026-02-10: Validation for marker-loader write-contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
 - 2026-02-10: Removed now-unused Realm-typed convenience APIs from share/edit presentation seams (`MarkerEditViewRepresentable.init(marker: RealmReferenceEntity, ...)` and `ShareMarkerAlert.shareMarker(_ marker: RealmReferenceEntity/ReferenceEntity)`), leaving URL/name-based share flow and domain-typed edit entry points.
 - 2026-02-10: Validation for share/edit convenience cleanup slice: build + targeted contract/storage tests and boundary scripts remain green.
+- 2026-02-10: Migrated marker notification payload key usage from `RealmReferenceEntity.Keys.entityId` to domain `ReferenceEntity.Keys.entityId` across UI observers/controllers (`MarkerCell`, `LocationDetailStore`, `LocationDetailViewController`, `SearchWaypointViewController`) while preserving notification names and payload shape.
+- 2026-02-10: Migrated marker detail/edit read helpers to domain entities (`LocationDetail.referenceEntity(source:isTemp:)`, `EditMarkerView.temporaryMarkerId(for:)`) so these paths no longer require Realm object types for read-only marker resolution.
+- 2026-02-10: Validation for marker notification/detail-domain slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_realm_infrastructure_boundary.sh`, and `check_spatial_data_cache_seam.sh` pass; `xcodebuild build-for-testing` passes; targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass; `swift Scripts/LocalizationLinter/main.swift` passes.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -434,6 +437,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue migrating deprecated sync compatibility reads from `RealmReferenceEntity` to domain `ReferenceEntity` in remaining behavior/UI call chains (next focus: notification payload and marker-detail/editing paths still keyed directly off Realm type constants or entities), then shrink the infra-type allowlist as each compatibility surface flips.
-2. Move persistence-heavy static operations off `RealmReferenceEntity` into infrastructure store/repository types so UI/behavior layers stop depending on Realm object semantics directly.
+1. Continue migrating deprecated sync compatibility reads from `RealmReferenceEntity` to domain `ReferenceEntity` in remaining behavior/UI call chains (next focus: remaining write/update/delete marker operations in edit/action flows that still require loading a Realm object instance before mutation), then shrink the infra-type allowlist as each compatibility surface flips.
+2. Move persistence-heavy static operations off `RealmReferenceEntity` into infrastructure store/repository types so UI/behavior layers stop depending on Realm object semantics directly (first target: contract-backed marker update API to replace `RealmReferenceEntity.update(entity:...)` usage in `EditMarkerView`).
 3. Keep compatibility APIs temporary and explicit; only add specialized value shapes when they represent true independent concepts (for example serialized payload types), not narrow per-callsite field subsets.

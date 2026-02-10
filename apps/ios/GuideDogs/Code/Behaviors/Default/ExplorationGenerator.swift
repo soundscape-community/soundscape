@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -290,7 +291,7 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
     }
     
     private func getCalloutsForMarkers(location: CLLocation, requiredMarkerKeys: [String]) -> [CalloutProtocol] {
-        var markers: [RealmReferenceEntity] = []
+        var markers: [ReferenceEntity] = []
         var range = spatialDataType.initialPOISearchDistance
         while range <= spatialDataType.cacheDistance {
             defer {
@@ -321,7 +322,7 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
             }
             
             // Transform entity keys to entity objects
-            markers.append(contentsOf: filtered.compactMap { SpatialDataCache.referenceEntityByEntityKey($0) })
+            markers.append(contentsOf: filtered.compactMap { DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: $0)?.domainEntity })
         }
         
         return markers.map { POICallout(.nearbyMarkers, key: $0.getPOI().key, includeDistance: true) }

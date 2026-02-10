@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -25,7 +26,7 @@ struct BeaconActionHandler {
             return nil
         }
         
-        guard let beacon = SpatialDataCache.referenceEntityByKey(key) else {
+        guard let beacon = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: key)?.domainEntity else {
             // Failed to fetch beacon
             return nil
         }

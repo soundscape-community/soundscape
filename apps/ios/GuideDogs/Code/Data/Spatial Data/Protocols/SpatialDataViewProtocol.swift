@@ -3,12 +3,13 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 protocol SpatialDataViewProtocol {
     var pois: [POI] { get }
-    var markedPoints: [RealmReferenceEntity] { get }
+    var markedPoints: [ReferenceEntity] { get }
     var intersections: [Intersection] { get }
     var roads: [Road] { get }
     

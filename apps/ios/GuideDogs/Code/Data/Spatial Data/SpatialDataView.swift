@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -20,7 +21,7 @@ class SpatialDataView: SpatialDataViewProtocol {
     private let tiles: [TileData]
     
     /// The current destination
-    private let destination: RealmReferenceEntity?
+    private let destination: ReferenceEntity?
     
     // The current set of user defined PORs
     private let genericLocations: [POI]
@@ -30,7 +31,7 @@ class SpatialDataView: SpatialDataViewProtocol {
     
     // MARK: Public Properties
     
-    let markedPoints: [RealmReferenceEntity]
+    let markedPoints: [ReferenceEntity]
     
     /// Aggregated list of all POIs in the current spatial data view
     lazy var pois: [POI] = {
@@ -158,7 +159,7 @@ class SpatialDataView: SpatialDataViewProtocol {
         
         // Get the marked points
         markedPoints = DataContractRegistry.spatialReadCompatibility.referenceEntities(near: location.coordinate.ssGeoCoordinate,
-                                                                                      rangeMeters: range)
+                                                                                      rangeMeters: range).map(\.domainEntity)
         
         // Get the generic locations (these will get merged with the regular POIs)
         genericLocations = DataContractRegistry.spatialReadCompatibility.genericLocations(near: location.ssGeoLocation,
@@ -169,7 +170,7 @@ class SpatialDataView: SpatialDataViewProtocol {
         motionActivityContext = motionActivity
         
         // Retrieve destination
-        destination = destinationManager.destination
+        destination = destinationManager.destination?.domainEntity
     }
     
     // MARK: - Class Methods

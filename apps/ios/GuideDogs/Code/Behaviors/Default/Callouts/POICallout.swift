@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -68,16 +69,16 @@ struct POICallout: POICalloutProtocol {
             return storedPOI
         }
         
-        guard let poi = SpatialDataCache.searchByKey(key: key) else {
+        guard let poi = DataContractRegistry.spatialReadCompatibility.poi(byKey: key) else {
             return nil
         }
         
         return poi
     }
     
-    var marker: RealmReferenceEntity? {
+    var marker: ReferenceEntity? {
         // Check by both entity key and key in case this is a generic location marker
-        return SpatialDataCache.referenceEntityByEntityKey(key)
+        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)?.domainEntity
     }
     
     /// Constructor for the POI callout

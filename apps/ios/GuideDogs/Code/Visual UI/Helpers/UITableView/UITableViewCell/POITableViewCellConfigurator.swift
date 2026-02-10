@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -28,7 +29,8 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
     // MARK: `TableViewCellConfigurator`
     
     func configure(_ cell: TableViewCell, forDisplaying model: Model) {
-        if let marker = SpatialDataCache.referenceEntityByEntityKey(model.key), marker.isTemp == false {
+        if let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: model.key)?.domainEntity,
+           marker.isTemp == false {
             configureTitle(cell, marker: marker)
             configureDetail(cell, marker: marker)
             configureImageView(cell, marker: marker)
@@ -52,12 +54,12 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.titleLabel.accessibilityLabel = poi.localizedName
     }
     
-    private func configureTitle(_ cell: POITableViewCell, marker: RealmReferenceEntity) {
+    private func configureTitle(_ cell: POITableViewCell, marker: ReferenceEntity) {
         let name = marker.name
         
         cell.titleLabel.text = name
         
-        if SpatialDataCache.isAddress(poi: marker.getPOI()) && marker.nickname == nil {
+        if marker.getPOI() is Address, marker.nickname == nil {
             cell.titleLabel.accessibilityLabel = GDLocalizedString("markers.generic_name")
         } else {
             cell.titleLabel.accessibilityLabel = GDLocalizedString("markers.marker_with_name", name)
@@ -68,7 +70,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.detailLabel.text = poi.addressLine
     }
     
-    private func configureDetail(_ cell: POITableViewCell, marker: RealmReferenceEntity) {
+    private func configureDetail(_ cell: POITableViewCell, marker: ReferenceEntity) {
         cell.detailLabel.text = marker.displayAddress
     }
     
@@ -115,7 +117,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.imageViewType = .place
     }
     
-    private func configureImageView(_ cell: POITableViewCell, marker: RealmReferenceEntity) {
+    private func configureImageView(_ cell: POITableViewCell, marker: ReferenceEntity) {
         cell.imageViewType = .marker
     }
     

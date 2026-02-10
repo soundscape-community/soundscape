@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -310,8 +311,8 @@ extension RoadAdjacentDataView {
     }
     
     /// Returns the markers that can be called out whaile walking along a path
-    private static func markersAlongPath(_ coordinates: [CLLocationCoordinate2D]) -> [RealmReferenceEntity] {
-        var markers: [RealmReferenceEntity] = []
+    private static func markersAlongPath(_ coordinates: [CLLocationCoordinate2D]) -> [ReferenceEntity] {
+        var markers: [ReferenceEntity] = []
         
         let updateFilter = LocationUpdateFilter(minTime: 0.0, minDistance: 5.0)
         
@@ -324,6 +325,7 @@ extension RoadAdjacentDataView {
             
             let markersAtCoordinate = DataContractRegistry.spatialReadCompatibility.referenceEntities(near: coordinate.ssGeoCoordinate,
                                                                                                       rangeMeters: CalloutRangeContext.streetPreview.searchDistance)
+                .map(\.domainEntity)
             
             for marker in markersAtCoordinate {
                 guard !markers.contains(where: { $0.id == marker.id }) else {
@@ -351,7 +353,7 @@ extension RoadAdjacentDataView {
     /// Returns the valid markers that can be called out along a path.
     /// This takes into account the marker callout history from previous roads (if given).
     private static func validMarkersAlongPath(_ coordinates: [CLLocationCoordinate2D],
-                                              from: RoadAdjacentDataView? = nil) -> [RealmReferenceEntity] {
+                                              from: RoadAdjacentDataView? = nil) -> [ReferenceEntity] {
         let allMarkers = RoadAdjacentDataView.markersAlongPath(coordinates)
         
         guard !allMarkers.isEmpty else {
@@ -363,7 +365,7 @@ extension RoadAdjacentDataView {
             return allMarkers
         }
             
-        var validMarkers: [RealmReferenceEntity] = []
+        var validMarkers: [ReferenceEntity] = []
         
         // The previous endpoint location (which is the current origin position)
         let endpointLocation = from.endpoint.coordinate
@@ -386,7 +388,7 @@ extension RoadAdjacentDataView {
     }
     
     /// Returns a marker callout history based on new found markers and marker callout history.
-    private static func updatedMarkerHistory(newMarkers: [RealmReferenceEntity],
+    private static func updatedMarkerHistory(newMarkers: [ReferenceEntity],
                                              targetLocation: CLLocationCoordinate2D,
                                              from: RoadAdjacentDataView? = nil) -> [ReferenceEntityID: CLLocationCoordinate2D] {
         var updatedHistory: [ReferenceEntityID: CLLocationCoordinate2D] = [:]

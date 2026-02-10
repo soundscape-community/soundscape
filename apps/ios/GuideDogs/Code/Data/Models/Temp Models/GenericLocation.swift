@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -10,7 +11,7 @@ import Foundation
 import CoreLocation
 import SSGeo
 
-/// Generic Location POIs act as the underlying POI for a RealmReferenceEntity that doesn't
+/// Generic Location POIs act as the underlying POI for a marker reference entity that doesn't
 /// refer to any of the other standard POI types (GDASpatialDataResultEntity or Address).
 /// This is used for POIs that were created based on the user's current location.
 @MainActor
@@ -81,6 +82,18 @@ class GenericLocation: SelectablePOI {
         latitude = ref.latitude
         longitude = ref.longitude
         
+        addressLine = ref.estimatedAddress
+    }
+
+    init(ref: ReferenceEntity) {
+        key = ref.id
+        name = ref.nickname ?? ref.estimatedAddress ?? ""
+
+        lastSelectedDate = ref.lastSelectedDate
+
+        latitude = ref.latitude
+        longitude = ref.longitude
+
         addressLine = ref.estimatedAddress
     }
     

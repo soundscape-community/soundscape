@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -56,7 +57,7 @@ class LocationDetailStore: ObservableObject {
                 // Publish update
                 self.objectWillChange.send()
             } else {
-                guard let markerId = notification.userInfo?[RealmReferenceEntity.Keys.entityId] as? String else {
+                guard let markerId = notification.userInfo?[ReferenceEntity.Keys.entityId] as? String else {
                     return
                 }
                 

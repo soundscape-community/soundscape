@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -12,7 +13,7 @@ import CoreLocation
 @MainActor
 class MarkerQueue {
     
-    private typealias SortedMarker = (distance: CLLocationDistance, marker: RealmReferenceEntity)
+    private typealias SortedMarker = (distance: CLLocationDistance, marker: ReferenceEntity)
     
     // MARK: Properties
     
@@ -20,13 +21,13 @@ class MarkerQueue {
     private let location: CLLocation
     private var sortedMarkers: [SortedMarker] = []
     
-    var markers: [RealmReferenceEntity] {
+    var markers: [ReferenceEntity] {
         return sortedMarkers.map({ return $0.marker })
     }
     
     // MARK: Initialization
     
-    init(maxItems max: Int, location userLocation: CLLocation, sortedItems: [RealmReferenceEntity] = []) {
+    init(maxItems max: Int, location userLocation: CLLocation, sortedItems: [ReferenceEntity] = []) {
         guard max > 0 else {
             fatalError("maxItems must be greater than zero")
         }
@@ -55,7 +56,7 @@ class MarkerQueue {
         return left
     }
     
-    func insert(_ marker: RealmReferenceEntity) {
+    func insert(_ marker: ReferenceEntity) {
         let item = (distance: marker.distanceToClosestLocation(from: location), marker: marker)
         
         // Short-circuit the insertion index algorithm if we know this POI won't be inserted
@@ -91,7 +92,7 @@ class MarkerQueue {
         }
     }
     
-    func append(_ sortedMarkers: [RealmReferenceEntity]) {
+    func append(_ sortedMarkers: [ReferenceEntity]) {
         for marker in sortedMarkers {
             insert(marker)
         }

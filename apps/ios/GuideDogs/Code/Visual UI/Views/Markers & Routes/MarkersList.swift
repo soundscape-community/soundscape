@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -118,7 +119,7 @@ struct MarkersList: View {
     }
     
     func entity(for markerID: String) -> POI? {
-        return SpatialDataCache.referenceEntityByKey(markerID)?.getPOI()
+        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: markerID)?.domainEntity.getPOI()
     }
     
     private func confirmationAlert(for markerID: String) -> Alert {
