@@ -274,6 +274,7 @@ Phase 1 complete:
 - 2026-02-10: Migrated `MarkerParameters.init(entity:)` generic-location branch from `referenceEntity(byCoordinate:)` full-model reads to `markerParameters(byCoordinate:)` DTO reads.
 - 2026-02-10: Extended contract seam tests for coordinate marker DTO dispatch (`DataContractRegistryDispatchTests` async + compatibility paths) and updated cloud contract mocks for protocol conformance.
 - 2026-02-10: Validation for coordinate marker DTO slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-10: Reverted adjacent-marker subset DTO slice (`ReferenceAdjacentMarkerReadData`) to avoid proliferation of per-callsite partial models; plan direction now favors a canonical app-facing domain `ReferenceEntity` with Realm-specific persistence types isolated under infrastructure.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -400,6 +401,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue replacing contract methods that expose `Data/Infrastructure/Realm` model types with DTO/value surfaces, focusing next on read APIs that still return full models (`route(byKey:)`, `referenceEntity(byID:)`, `referenceEntity(byEntityKey:)`) where call sites only need serialization or metadata payloads.
-2. Shrink the `check_data_contract_infra_type_allowlist.sh` allowlist as each DTO migration lands, with a target of zero infrastructure model types in `Data/Contracts`.
-3. Begin introducing `Data/Domain` folder structure with portable types as contracts gain DTO boundaries, then extend boundary scripts to include the new layer.
+1. Introduce a canonical domain `ReferenceEntity` value type (non-Realm) in `Data/Domain` and keep it as the app-facing type across contracts and higher layers.
+2. Rename Realm persistence model to `RealmReferenceEntity` under `Data/Infrastructure/Realm`, add explicit mapping between domain and persistence types, and migrate repository/contract edges to return domain `ReferenceEntity` (not subset DTOs).
+3. Keep compatibility APIs temporary and explicit; only add specialized value shapes when they represent true independent concepts (for example serialized payload types), not narrow per-callsite field subsets.
