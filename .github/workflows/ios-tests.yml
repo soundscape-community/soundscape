@@ -51,6 +51,9 @@ jobs:
             - name: Enforce data contract infra type allowlist
               run: |
                 bash apps/ios/Scripts/ci/check_data_contract_infra_type_allowlist.sh
+            - name: Enforce route mutation seam
+              run: |
+                bash apps/ios/Scripts/ci/check_route_mutation_seam.sh
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace

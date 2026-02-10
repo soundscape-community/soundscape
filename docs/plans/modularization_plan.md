@@ -337,6 +337,8 @@ Phase 1 complete:
 - 2026-02-10: Migrated route mutation UI callsites (`RouteLoader.remove`, `RouteEditView` add/update/delete/import save flows) from direct `Route.*` statics to `DataContractRegistry.spatialWriteCompatibility`, and replaced route existence read in `RouteEditView.Style.title` with `spatialReadCompatibility.route(byKey:)`.
 - 2026-02-10: Extended `DataContractRegistryDispatchTests` route write coverage to assert dispatch for route add/update/delete compatibility APIs alongside marker write seams.
 - 2026-02-10: Validation for route-mutation write-contract slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_realm_infrastructure_boundary.sh`, and `check_spatial_data_cache_seam.sh` pass; `xcodebuild build-for-testing` passes; targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass; `swift Scripts/LocalizationLinter/main.swift` passes.
+- 2026-02-10: Added seam guard script `apps/ios/Scripts/ci/check_route_mutation_seam.sh` to fail on direct `Route.add/update/delete/deleteAll` usage outside `Data/Infrastructure/Realm`, and wired it into `.github/workflows/ios-tests.yml`.
+- 2026-02-10: Validation for route-mutation seam guard: `check_route_mutation_seam.sh` passes locally, alongside existing boundary scripts and localization linter.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

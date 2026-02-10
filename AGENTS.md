@@ -58,6 +58,7 @@ bash Scripts/ci/check_spatial_data_cache_seam.sh
 bash Scripts/ci/check_realm_infrastructure_boundary.sh
 bash Scripts/ci/check_data_contract_boundaries.sh
 bash Scripts/ci/check_data_contract_infra_type_allowlist.sh
+bash Scripts/ci/check_route_mutation_seam.sh
 
 # Per session: pick an installed iPhone simulator (first available).
 SIMULATOR_ID=$(xcrun simctl list devices available \
