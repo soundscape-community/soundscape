@@ -274,6 +274,9 @@ Phase 1 complete:
 - 2026-02-10: Migrated `MarkerParameters.init(entity:)` generic-location branch from `referenceEntity(byCoordinate:)` full-model reads to `markerParameters(byCoordinate:)` DTO reads.
 - 2026-02-10: Extended contract seam tests for coordinate marker DTO dispatch (`DataContractRegistryDispatchTests` async + compatibility paths) and updated cloud contract mocks for protocol conformance.
 - 2026-02-10: Validation for coordinate marker DTO slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-10: Added adjacent-marker DTO reads to contracts (`ReferenceAdjacentMarkerReadData`, `adjacentMarkers(near:rangeMeters:from:)`) with Realm adapter support so street-preview filtering can request id/category/distance payloads without loading full `ReferenceEntity` models.
+- 2026-02-10: Migrated `RoadAdjacentDataView` marker-path filtering to `DataContractRegistry.spatialReadCompatibility.adjacentMarkers(...)`, removing preview-path dependence on full entity reads for category and distance checks.
+- 2026-02-10: Validation for adjacent-marker DTO slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, and `check_realm_infrastructure_boundary.sh` pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

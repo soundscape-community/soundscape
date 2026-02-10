@@ -29,6 +29,12 @@ struct ReferenceCalloutReadData: Sendable {
     let superCategory: String
 }
 
+struct ReferenceAdjacentMarkerReadData: Sendable {
+    let id: String
+    let superCategory: String
+    let distanceToClosestLocation: Double
+}
+
 @MainActor
 protocol RouteReadContract {
     func routes() async -> [Route]
@@ -55,6 +61,7 @@ protocol ReferenceReadContract {
     func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity?
     func referenceEntities() async -> [ReferenceEntity]
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity]
+    func adjacentMarkers(near coordinate: SSGeoCoordinate, rangeMeters: Double, from location: SSGeoLocation) async -> [ReferenceAdjacentMarkerReadData]
     func poi(byKey key: String) async -> POI?
 }
 
@@ -107,6 +114,7 @@ protocol ReferenceReadCompatibilityContract {
     func referenceEntity(byGenericLocation location: GenericLocation) -> ReferenceEntity?
     func referenceEntities() -> [ReferenceEntity]
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) -> [ReferenceEntity]
+    func adjacentMarkers(near coordinate: SSGeoCoordinate, rangeMeters: Double, from location: SSGeoLocation) -> [ReferenceAdjacentMarkerReadData]
     func poi(byKey key: String) -> POI?
 }
 

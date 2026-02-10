@@ -208,6 +208,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         (self as SpatialReadCompatibilityContract).referenceEntities(near: coordinate, rangeMeters: rangeMeters)
     }
 
+    func adjacentMarkers(near coordinate: SSGeoCoordinate, rangeMeters: Double, from location: SSGeoLocation) -> [ReferenceAdjacentMarkerReadData] {
+        SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate.clCoordinate, range: rangeMeters).map { marker in
+            ReferenceAdjacentMarkerReadData(id: marker.id,
+                                            superCategory: marker.getPOI().superCategory,
+                                            distanceToClosestLocation: marker.distanceToClosestLocation(from: location.clLocation))
+        }
+    }
+
+    func adjacentMarkers(near coordinate: SSGeoCoordinate, rangeMeters: Double, from location: SSGeoLocation) async -> [ReferenceAdjacentMarkerReadData] {
+        (self as SpatialReadCompatibilityContract).adjacentMarkers(near: coordinate, rangeMeters: rangeMeters, from: location)
+    }
+
     func poi(byKey key: String) -> POI? {
         SpatialDataStoreRegistry.store.searchByKey(key)
     }
