@@ -53,6 +53,14 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
                                                                                     estimatedAddress: estimatedAddress)
     }
 
+    func removeReferenceEntity(id: String) throws {
+        try RealmReferenceEntity.remove(id: id)
+    }
+
+    func removeReferenceEntity(id: String) async throws {
+        try (self as SpatialWriteCompatibilityContract).removeReferenceEntity(id: id)
+    }
+
     func removeAllTemporaryReferenceEntities() throws {
         try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
     }

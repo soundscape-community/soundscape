@@ -302,6 +302,10 @@ Phase 1 complete:
 - 2026-02-10: Direct `SpatialDataCache` reads are now fully confined to infrastructure seam files, and validation remains green (`check_spatial_data_cache_seam.sh`, boundary scripts, `xcodebuild build-for-testing`, targeted contract/storage test suites, localization linter).
 - 2026-02-10: Migrated additional marker presentation types from `RealmReferenceEntity` to domain `ReferenceEntity` in tutorial read flows (`DestinationTutorialPage`, `MarkerTutorialViewController`) and table cell configuration (`MarkerTableViewCellConfigurator`) while keeping compatibility seams for persistence mutations.
 - 2026-02-10: Validation for domain marker-presentation slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
+- 2026-02-10: Extended write contracts with marker deletion (`removeReferenceEntity(id:)`) across async and deprecated sync compatibility surfaces, with Realm adapter support in `RealmSpatialWriteContract`.
+- 2026-02-10: Migrated `MarkerLoader` off direct `RealmReferenceEntity` static reads/writes by using contract-backed marker reads (`DataContractRegistry.spatialRead.referenceEntities()`) and write compatibility deletion (`DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id:)`), while preserving existing alphanumeric/distance sorting semantics.
+- 2026-02-10: Extended write dispatch coverage in `DataContractRegistryDispatchTests` to assert `removeReferenceEntity(id:)` routing through configured write providers.
+- 2026-02-10: Validation for marker-loader write-contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -428,6 +432,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue migrating deprecated sync compatibility reads from `RealmReferenceEntity` to domain `ReferenceEntity` in remaining behavior/UI call chains (next focus: marker loaders/share/editing surfaces that still require `RealmReferenceEntity` for mutation paths), then shrink the infra-type allowlist as each compatibility surface flips.
+1. Continue migrating deprecated sync compatibility reads from `RealmReferenceEntity` to domain `ReferenceEntity` in remaining behavior/UI call chains (next focus: share/editing/presentation surfaces still typed to Realm for convenience overloads or notification payload access), then shrink the infra-type allowlist as each compatibility surface flips.
 2. Move persistence-heavy static operations off `RealmReferenceEntity` into infrastructure store/repository types so UI/behavior layers stop depending on Realm object semantics directly.
 3. Keep compatibility APIs temporary and explicit; only add specialized value shapes when they represent true independent concepts (for example serialized payload types), not narrow per-callsite field subsets.

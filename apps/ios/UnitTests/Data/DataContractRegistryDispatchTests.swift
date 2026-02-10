@@ -334,6 +334,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var nextTemporaryID = "temp-marker-id"
         private(set) var addReferenceEntityCalls: [String?] = []
         private(set) var addTemporaryEntityKeyCalls: [String] = []
+        private(set) var removeReferenceEntityCalls: [String] = []
         private(set) var removeAllTemporaryCalls = 0
 
         func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
@@ -374,6 +375,14 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
             try (self as SpatialWriteCompatibilityContract).addTemporaryReferenceEntity(entityKey: entityKey,
                                                                                         estimatedAddress: estimatedAddress)
+        }
+
+        func removeReferenceEntity(id: String) throws {
+            removeReferenceEntityCalls.append(id)
+        }
+
+        func removeReferenceEntity(id: String) async throws {
+            try (self as SpatialWriteCompatibilityContract).removeReferenceEntity(id: id)
         }
 
         func removeAllTemporaryReferenceEntities() throws {
@@ -627,10 +636,12 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         let markerID = try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(entityKey: "entity-1",
                                                                                                       estimatedAddress: "123 Main")
+        try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: markerID)
         try DataContractRegistry.spatialWriteCompatibility.removeAllTemporaryReferenceEntities()
 
         XCTAssertEqual(markerID, "marker-1")
         XCTAssertEqual(writeMock.addTemporaryEntityKeyCalls, ["entity-1"])
+        XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeAllTemporaryCalls, 1)
     }
 }

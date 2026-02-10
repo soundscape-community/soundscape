@@ -140,6 +140,7 @@ protocol SpatialWriteContract {
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String
+    func removeReferenceEntity(id: String) async throws
     func removeAllTemporaryReferenceEntities() async throws
 }
 
@@ -150,5 +151,6 @@ protocol SpatialWriteCompatibilityContract {
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
+    func removeReferenceEntity(id: String) throws
     func removeAllTemporaryReferenceEntities() throws
 }

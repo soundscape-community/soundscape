@@ -3,10 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Combine
+import CoreLocation
 
 @MainActor
 class MarkerLoader: ObservableObject {
@@ -29,7 +31,8 @@ class MarkerLoader: ObservableObject {
         loadTask?.cancel()
         
         loadTask = Task {
-            let sortedKeys = await RealmReferenceEntity.asyncObjectKeys(sortedBy: sort)
+            let entities = await DataContractRegistry.spatialRead.referenceEntities().filter { !$0.isTemp }
+            let sortedKeys = sortedMarkerIDs(for: entities, sort: sort)
             
             guard !Task.isCancelled else { return }
             
@@ -47,8 +50,21 @@ class MarkerLoader: ObservableObject {
         
         markerIDs.remove(at: index)
         
-        try RealmReferenceEntity.remove(id: id)
+        try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: id)
         UIAccessibility.post(notification: .announcement, argument: GDLocalizedString("markers.action.deleted"))
+    }
+
+    private func sortedMarkerIDs(for entities: [ReferenceEntity], sort: SortStyle) -> [String] {
+        switch sort {
+        case .alphanumeric:
+            return entities.sorted(by: { $0.name < $1.name }).map(\.id)
+        case .distance:
+            let userLocation = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
+                ?? CLLocation(latitude: 0.0, longitude: 0.0)
+            return entities
+                .sorted(by: { $0.distanceToClosestLocation(from: userLocation) < $1.distanceToClosestLocation(from: userLocation) })
+                .map(\.id)
+        }
     }
     
     private func listenForChanges() {
