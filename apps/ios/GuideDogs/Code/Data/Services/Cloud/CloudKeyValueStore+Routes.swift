@@ -54,6 +54,11 @@ extension CloudKeyValueStore {
     private static func key(forRoute route: Route) -> String {
         return CloudKeyValueStore.routeKeyPrefix + "." + route.id
     }
+
+    /// Returns "route.object_id"
+    private static func key(forRouteID routeID: String) -> String {
+        return CloudKeyValueStore.routeKeyPrefix + "." + routeID
+    }
     
     /// Returns "object_id" from "route.object_id"
     private static func id(forRoute routeKey: String) -> String {
@@ -62,17 +67,7 @@ extension CloudKeyValueStore {
     
     func store(route: Route) {
         if let routeParameters = RouteParameters(route: route, context: .backup) {
-            let encoder = JSONEncoder()
-            let data: Data
-            
-            do {
-                data = try encoder.encode(routeParameters)
-            } catch {
-                GDLogCloudInfo("Could not encode route with id: \(routeParameters.id), name: \(routeParameters.name)")
-                return
-            }
-            
-            set(object: data, forKey: CloudKeyValueStore.key(forRoute: route))
+            store(routeParameters: routeParameters)
         } else {
             GDLogCloudInfo("Failed to initialize route")
             Task { @MainActor in
@@ -168,11 +163,25 @@ extension CloudKeyValueStore {
     
     /// Store route entities from database to cloud store
     private func store() async {
-        let localRoutes = await DataContractRegistry.spatialRead.routes()
+        let localRouteParametersObjects = await DataContractRegistry.spatialRead.routeParametersForBackup()
 
-        for route in localRoutes where shouldUpdateCloudRoute(withLocalRoute: route) {
-            store(route: route)
+        for routeParameters in localRouteParametersObjects where shouldUpdateCloudRoute(withLocalRouteParameters: routeParameters) {
+            store(routeParameters: routeParameters)
         }
+    }
+
+    private func store(routeParameters: RouteParameters) {
+        let encoder = JSONEncoder()
+        let data: Data
+
+        do {
+            data = try encoder.encode(routeParameters)
+        } catch {
+            GDLogCloudInfo("Could not encode route with id: \(routeParameters.id), name: \(routeParameters.name)")
+            return
+        }
+
+        set(object: data, forKey: CloudKeyValueStore.key(forRouteID: routeParameters.id))
     }
     
 }
@@ -254,24 +263,27 @@ extension CloudKeyValueStore {
         return otherLastUpdated > selfLastUpdated
     }
     
-    private func shouldUpdateCloudRoute(withLocalRoute localRoute: Route) -> Bool {
+    private func shouldUpdateCloudRoute(withLocalRouteParameters localRouteParameters: RouteParameters) -> Bool {
         // True if the cloud does not contain the local entity
-        let key = CloudKeyValueStore.key(forRoute: localRoute)
-        guard let routeParameters = self.routeParameters(forKey: key) else { return true }
-        
-        return routeParameters.shouldUpdate(withRoute: localRoute)
+        let key = CloudKeyValueStore.key(forRouteID: localRouteParameters.id)
+        guard let cloudRouteParameters = self.routeParameters(forKey: key) else { return true }
+
+        return cloudRouteParameters.shouldUpdate(withRouteParameters: localRouteParameters)
     }
     
 }
 
 extension RouteParameters {
     
-    fileprivate func shouldUpdate(withRoute route: Route) -> Bool {
+    fileprivate func shouldUpdate(withRouteParameters routeParameters: RouteParameters) -> Bool {
         // True if this entity does not have a `lastUpdatedDate` property
         guard let selfLastUpdated = self.lastUpdatedDate else { return true }
-        
+
+        // False if the other entity does not have a `lastUpdatedDate` property
+        guard let otherLastUpdated = routeParameters.lastUpdatedDate else { return false }
+
         // True only if the last update date of the other entity is newer
-        return route.lastUpdatedDate > selfLastUpdated
+        return otherLastUpdated > selfLastUpdated
     }
     
 }

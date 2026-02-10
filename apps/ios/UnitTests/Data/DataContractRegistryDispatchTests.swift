@@ -16,21 +16,27 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
         var routeMetadataByKey: [String: RouteReadMetadata] = [:]
+        var routeParametersToReturn: [RouteParameters] = []
         var routesContainingByMarkerID: [String: [Route]] = [:]
         var referenceByID: [String: ReferenceEntity] = [:]
         var referenceMetadataByID: [String: ReferenceReadMetadata] = [:]
+        var markerParametersToReturn: [MarkerParameters] = []
         var referenceByEntityKey: [String: ReferenceEntity] = [:]
 
         private(set) var routeByKeyCalls: [String] = []
         private(set) var routeMetadataByKeyCalls: [String] = []
+        private(set) var routeParametersForBackupCalls = 0
         private(set) var routesContainingCalls: [String] = []
         private(set) var referenceByIDCalls: [String] = []
         private(set) var referenceMetadataByIDCalls: [String] = []
+        private(set) var markerParametersForBackupCalls = 0
         private(set) var referenceByEntityKeyCalls: [String] = []
         private(set) var routeByKeySyncCalls: [String] = []
         private(set) var routeMetadataByKeySyncCalls: [String] = []
+        private(set) var routeParametersForBackupSyncCalls = 0
         private(set) var referenceByIDSyncCalls: [String] = []
         private(set) var referenceMetadataByIDSyncCalls: [String] = []
+        private(set) var markerParametersForBackupSyncCalls = 0
 
         func routes() -> [Route] {
             routesToReturn
@@ -60,6 +66,16 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             return routeMetadataByKey[key]
         }
 
+        func routeParametersForBackup() -> [RouteParameters] {
+            routeParametersForBackupSyncCalls += 1
+            return routeParametersToReturn
+        }
+
+        func routeParametersForBackup() async -> [RouteParameters] {
+            routeParametersForBackupCalls += 1
+            return routeParametersToReturn
+        }
+
         func routes(containingMarkerID markerID: String) -> [Route] {
             routesContainingByMarkerID[markerID] ?? []
         }
@@ -87,6 +103,16 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
             referenceMetadataByIDCalls.append(id)
             return referenceMetadataByID[id]
+        }
+
+        func markerParametersForBackup() -> [MarkerParameters] {
+            markerParametersForBackupSyncCalls += 1
+            return markerParametersToReturn
+        }
+
+        func markerParametersForBackup() async -> [MarkerParameters] {
+            markerParametersForBackupCalls += 1
+            return markerParametersToReturn
         }
 
         func referenceEntity(byEntityKey key: String) -> ReferenceEntity? {
@@ -263,12 +289,20 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         mock.routesToReturn = [route]
         mock.routesByKey[route.id] = route
         mock.routeMetadataByKey[route.id] = RouteReadMetadata(id: route.id, lastUpdatedDate: route.lastUpdatedDate)
+        mock.routeParametersToReturn = [RouteParameters(id: route.id,
+                                                       name: "Route 1",
+                                                       routeDescription: nil,
+                                                       waypoints: [],
+                                                       createdDate: nil,
+                                                       lastUpdatedDate: route.lastUpdatedDate,
+                                                       lastSelectedDate: nil)]
         mock.routesContainingByMarkerID["marker-1"] = [route]
 
         let reference = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.62, longitude: -122.35))
         reference.id = "marker-1"
         mock.referenceByID[reference.id] = reference
         mock.referenceMetadataByID[reference.id] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
+        mock.markerParametersToReturn = [MarkerParameters(name: "Marker 1", latitude: 47.62, longitude: -122.35)]
         mock.referenceByEntityKey["entity-1"] = reference
 
         DataContractRegistry.configure(spatialRead: mock)
@@ -276,24 +310,30 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let fetchedRoutes = await DataContractRegistry.spatialRead.routes()
         let fetchedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id)
         let fetchedRouteMetadata = await DataContractRegistry.spatialRead.routeMetadata(byKey: route.id)
+        let fetchedRouteParameters = await DataContractRegistry.spatialRead.routeParametersForBackup()
         let routesContainingMarker = await DataContractRegistry.spatialRead.routes(containingMarkerID: "marker-1")
         let fetchedReferenceByID = await DataContractRegistry.spatialRead.referenceEntity(byID: "marker-1")
         let fetchedReferenceMetadata = await DataContractRegistry.spatialRead.referenceMetadata(byID: "marker-1")
+        let fetchedMarkerParameters = await DataContractRegistry.spatialRead.markerParametersForBackup()
         let fetchedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: "entity-1")
 
         XCTAssertEqual(fetchedRoutes.count, 1)
         XCTAssertEqual(fetchedRoute?.id, route.id)
         XCTAssertEqual(fetchedRouteMetadata?.id, route.id)
+        XCTAssertEqual(fetchedRouteParameters.count, 1)
         XCTAssertEqual(routesContainingMarker.count, 1)
         XCTAssertEqual(fetchedReferenceByID?.id, reference.id)
         XCTAssertEqual(fetchedReferenceMetadata?.id, reference.id)
+        XCTAssertEqual(fetchedMarkerParameters.count, 1)
         XCTAssertEqual(fetchedReferenceByEntityKey?.id, reference.id)
 
         XCTAssertEqual(mock.routeByKeyCalls, [route.id])
         XCTAssertEqual(mock.routeMetadataByKeyCalls, [route.id])
+        XCTAssertEqual(mock.routeParametersForBackupCalls, 1)
         XCTAssertEqual(mock.routesContainingCalls, ["marker-1"])
         XCTAssertEqual(mock.referenceByIDCalls, ["marker-1"])
         XCTAssertEqual(mock.referenceMetadataByIDCalls, ["marker-1"])
+        XCTAssertEqual(mock.markerParametersForBackupCalls, 1)
         XCTAssertEqual(mock.referenceByEntityKeyCalls, ["entity-1"])
     }
 
@@ -333,9 +373,17 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let route = Route()
         route.id = "route-sync"
         mock.routeMetadataByKey[route.id] = RouteReadMetadata(id: route.id, lastUpdatedDate: route.lastUpdatedDate)
+        mock.routeParametersToReturn = [RouteParameters(id: route.id,
+                                                       name: "Route Sync",
+                                                       routeDescription: nil,
+                                                       waypoints: [],
+                                                       createdDate: nil,
+                                                       lastUpdatedDate: route.lastUpdatedDate,
+                                                       lastSelectedDate: nil)]
         let reference = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.62, longitude: -122.35))
         reference.id = "marker-sync"
         mock.referenceMetadataByID[reference.id] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
+        mock.markerParametersToReturn = [MarkerParameters(name: "Marker Sync", latitude: 47.62, longitude: -122.35)]
 
         mock.routesByKey[route.id] = route
         mock.referenceByID[reference.id] = reference
@@ -344,17 +392,23 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         let fetchedRoute = DataContractRegistry.spatialReadCompatibility.route(byKey: route.id)
         let fetchedRouteMetadata = DataContractRegistry.spatialReadCompatibility.routeMetadata(byKey: route.id)
+        let fetchedRouteParameters = DataContractRegistry.spatialReadCompatibility.routeParametersForBackup()
         let fetchedReference = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: reference.id)
         let fetchedReferenceMetadata = DataContractRegistry.spatialReadCompatibility.referenceMetadata(byID: reference.id)
+        let fetchedMarkerParameters = DataContractRegistry.spatialReadCompatibility.markerParametersForBackup()
 
         XCTAssertEqual(fetchedRoute?.id, route.id)
         XCTAssertEqual(fetchedRouteMetadata?.id, route.id)
+        XCTAssertEqual(fetchedRouteParameters.count, 1)
         XCTAssertEqual(fetchedReference?.id, reference.id)
         XCTAssertEqual(fetchedReferenceMetadata?.id, reference.id)
+        XCTAssertEqual(fetchedMarkerParameters.count, 1)
         XCTAssertEqual(mock.routeByKeySyncCalls, [route.id])
         XCTAssertEqual(mock.routeMetadataByKeySyncCalls, [route.id])
+        XCTAssertEqual(mock.routeParametersForBackupSyncCalls, 1)
         XCTAssertEqual(mock.referenceByIDSyncCalls, [reference.id])
         XCTAssertEqual(mock.referenceMetadataByIDSyncCalls, [reference.id])
+        XCTAssertEqual(mock.markerParametersForBackupSyncCalls, 1)
     }
 
     func testSpatialWriteCompatibilityDispatchesToConfiguredContract() throws {

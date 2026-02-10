@@ -55,6 +55,11 @@ extension CloudKeyValueStore {
     private static func key(for referenceEntity: ReferenceEntity) -> String {
         return CloudKeyValueStore.markerKeyPrefix + "." + referenceEntity.id
     }
+
+    /// Returns "marker.object_id"
+    private static func key(forReferenceEntityID id: String) -> String {
+        return CloudKeyValueStore.markerKeyPrefix + "." + id
+    }
     
     /// Returns "object_id" from "marker.object_id"
     private static func id(for referenceEntityKey: String) -> String {
@@ -63,17 +68,7 @@ extension CloudKeyValueStore {
     
     func store(referenceEntity: ReferenceEntity) {
         if let markerParameters = MarkerParameters(marker: referenceEntity) {
-            let encoder = JSONEncoder()
-            let data: Data
-            
-            do {
-                data = try encoder.encode(markerParameters)
-            } catch {
-                GDLogCloudInfo("Could not encode marker with id: \(markerParameters.id ?? "none"), nickname: \(markerParameters.nickname ?? "none")")
-                return
-            }
-            
-            set(object: data, forKey: CloudKeyValueStore.key(for: referenceEntity))
+            store(markerParameters: markerParameters)
         } else {
             GDLogCloudInfo("Failed to initialize marker parameters")
             Task { @MainActor in
@@ -184,11 +179,30 @@ extension CloudKeyValueStore {
     
     /// Store reference entities from database to cloud store
     private func store() async {
-        let localReferenceEntities = await DataContractRegistry.spatialRead.referenceEntities()
+        let localMarkerParametersObjects = await DataContractRegistry.spatialRead.markerParametersForBackup()
 
-        for referenceEntity in localReferenceEntities where shouldUpdateCloudReferenceEntity(withLocalReferenceEntity: referenceEntity) {
-            store(referenceEntity: referenceEntity)
+        for markerParameters in localMarkerParametersObjects where shouldUpdateCloudReferenceEntity(withLocalMarkerParameters: markerParameters) {
+            store(markerParameters: markerParameters)
         }
+    }
+
+    private func store(markerParameters: MarkerParameters) {
+        guard let id = markerParameters.id else {
+            GDLogCloudInfo("Could not encode marker with id: none, nickname: \(markerParameters.nickname ?? "none")")
+            return
+        }
+
+        let encoder = JSONEncoder()
+        let data: Data
+
+        do {
+            data = try encoder.encode(markerParameters)
+        } catch {
+            GDLogCloudInfo("Could not encode marker with id: \(id), nickname: \(markerParameters.nickname ?? "none")")
+            return
+        }
+
+        set(object: data, forKey: CloudKeyValueStore.key(forReferenceEntityID: id))
     }
 }
 
@@ -207,12 +221,14 @@ extension CloudKeyValueStore {
         return CloudKeyValueStore.shouldUpdate(localReferenceMetadata: localReferenceMetadata, withMarkerParameters: markerParameters)
     }
     
-    private func shouldUpdateCloudReferenceEntity(withLocalReferenceEntity localReferenceEntity: ReferenceEntity) -> Bool {
+    private func shouldUpdateCloudReferenceEntity(withLocalMarkerParameters localMarkerParameters: MarkerParameters) -> Bool {
+        guard let localID = localMarkerParameters.id else { return false }
+
         // True if the cloud does not contain the local entity
-        let key = CloudKeyValueStore.key(for: localReferenceEntity)
-        guard let markerParameters = self.markerParameters(forKey: key) else { return true }
-        
-        return markerParameters.shouldUpdate(withReferenceEntity: localReferenceEntity)
+        let key = CloudKeyValueStore.key(forReferenceEntityID: localID)
+        guard let cloudMarkerParameters = self.markerParameters(forKey: key) else { return true }
+
+        return cloudMarkerParameters.shouldUpdate(withMarkerParameters: localMarkerParameters)
     }
 
     private static func shouldUpdate(localReferenceMetadata: ReferenceReadMetadata, withMarkerParameters markerParameters: MarkerParameters) -> Bool {
@@ -230,13 +246,13 @@ extension CloudKeyValueStore {
 
 extension MarkerParameters {
     
-    fileprivate func shouldUpdate(withReferenceEntity referenceEntity: ReferenceEntity) -> Bool {
-        // False if the other entity does not have a `lastUpdatedDate` property
-        guard let otherLastUpdated = referenceEntity.lastUpdatedDate else { return false }
-        
+    fileprivate func shouldUpdate(withMarkerParameters markerParameters: MarkerParameters) -> Bool {
         // True if this entity does not have a `lastUpdatedDate` property
         guard let selfLastUpdated = self.lastUpdatedDate else { return true }
-        
+
+        // False if the other entity does not have a `lastUpdatedDate` property
+        guard let otherLastUpdated = markerParameters.lastUpdatedDate else { return false }
+
         // True only if the last update date of the other entity is newer
         return otherLastUpdated > selfLastUpdated
     }

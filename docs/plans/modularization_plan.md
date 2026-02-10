@@ -251,6 +251,9 @@ Phase 1 complete:
 - 2026-02-10: Extended `check_data_contract_boundaries.sh` to also fail on direct app/runtime singleton symbols (`AppContext`, `AppContext.shared`, `UIRuntimeProviderRegistry`, `BehaviorRuntimeProviderRegistry`) in `Data/Contracts` and `Data/Domain`.
 - 2026-02-10: Added lightweight metadata DTO surfaces on read contracts (`RouteReadMetadata`, `ReferenceReadMetadata`) and migrated cloud-sync local-update checks to these metadata methods instead of loading full `Route`/`ReferenceEntity` models for comparison logic.
 - 2026-02-10: Added `check_data_contract_infra_type_allowlist.sh` and wired it into CI to enforce a temporary explicit allowlist for Realm infrastructure model type names that may appear in `Data/Contracts`, preventing new type leakage while DTO migration continues.
+- 2026-02-10: Extended read contracts with backup-parameter export surfaces (`routeParametersForBackup`, `markerParametersForBackup`) and implemented Realm adapter support so cloud initial-sync export paths no longer load full `Route`/`ReferenceEntity` models for serialization.
+- 2026-02-10: Migrated cloud backup store paths in `CloudKeyValueStore+Routes` and `CloudKeyValueStore+Markers` to contract-backed parameter objects, added direct contract dispatch coverage in `DataContractRegistryDispatchTests`, and added cloud bridge tests for initial-sync backup export dispatch.
+- 2026-02-10: Validation for this slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, and `check_realm_infrastructure_boundary.sh` all pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass; full `xcodebuild test-without-building` still fails only in known simulator audio tests (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`, `10` assertions).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -377,6 +380,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue replacing contract methods that expose `Data/Infrastructure/Realm` model types with DTO/value surfaces (starting with cloud-sync export/store paths that still pass `Route`/`ReferenceEntity`).
+1. Continue replacing contract methods that expose `Data/Infrastructure/Realm` model types with DTO/value surfaces, focusing next on changed-key cloud reconciliation paths that still require full model reads (`route(byKey:)`, `referenceEntity(byID:)`).
 2. Shrink the `check_data_contract_infra_type_allowlist.sh` allowlist as each DTO migration lands, with a target of zero infrastructure model types in `Data/Contracts`.
 3. Begin introducing `Data/Domain` folder structure with portable types as contracts gain DTO boundaries, then extend boundary scripts to include the new layer.

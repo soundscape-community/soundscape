@@ -14,8 +14,12 @@ final class CloudSyncContractBridgeTests: XCTestCase {
     private final class MockSpatialReadContract: SpatialReadContract {
         var routesByKey: [String: Route] = [:]
         var routeMetadataByKey: [String: RouteReadMetadata] = [:]
+        var routeParametersForBackupResults: [RouteParameters] = []
+        var markerParametersForBackupResults: [MarkerParameters] = []
         private(set) var routeByKeyCalls: [String] = []
         private(set) var routeMetadataByKeyCalls: [String] = []
+        private(set) var routeParametersForBackupCalls = 0
+        private(set) var markerParametersForBackupCalls = 0
 
         var onRouteByKey: ((String) -> Void)?
         var onRouteMetadataByKey: ((String) -> Void)?
@@ -36,6 +40,11 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             return routeMetadataByKey[key]
         }
 
+        func routeParametersForBackup() async -> [RouteParameters] {
+            routeParametersForBackupCalls += 1
+            return routeParametersForBackupResults
+        }
+
         func routes(containingMarkerID markerID: String) async -> [Route] {
             []
         }
@@ -46,6 +55,11 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
             nil
+        }
+
+        func markerParametersForBackup() async -> [MarkerParameters] {
+            markerParametersForBackupCalls += 1
+            return markerParametersForBackupResults
         }
 
         func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? {
@@ -185,6 +199,38 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         await store.syncRoutesAsync(reason: .serverChanged, changedKeys: ["routes.invalid"])
 
         XCTAssertTrue(mock.routeMetadataByKeyCalls.isEmpty)
+    }
+
+    func testSyncRoutesInitialSyncUsesContractBackupParameters() async {
+        let id = "route-export-1"
+        let routeParameters = RouteParameters(id: id,
+                                              name: "Export Route",
+                                              routeDescription: nil,
+                                              waypoints: [],
+                                              createdDate: nil,
+                                              lastUpdatedDate: Date(timeIntervalSince1970: 1_000),
+                                              lastSelectedDate: nil)
+
+        let mock = MockSpatialReadContract()
+        mock.routeParametersForBackupResults = [routeParameters]
+        DataContractRegistry.configure(spatialRead: mock)
+
+        let store = TestCloudKeyValueStore()
+        await store.syncRoutesAsync(reason: .initialSync, changedKeys: nil)
+
+        XCTAssertEqual(mock.routeParametersForBackupCalls, 1)
+        XCTAssertNotNil(store.storage["routes.\(id)"] as? Data)
+    }
+
+    func testSyncReferenceEntitiesInitialSyncUsesContractBackupParameters() async {
+        let mock = MockSpatialReadContract()
+        mock.markerParametersForBackupResults = []
+        DataContractRegistry.configure(spatialRead: mock)
+
+        let store = TestCloudKeyValueStore()
+        await store.syncReferenceEntitiesAsync(reason: .initialSync, changedKeys: nil)
+
+        XCTAssertEqual(mock.markerParametersForBackupCalls, 1)
     }
 
     private func makeRouteData(id: String, lastUpdatedDate: Date?) -> Data {
