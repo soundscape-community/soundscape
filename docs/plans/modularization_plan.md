@@ -1,6 +1,6 @@
 # Modularization Plan
 
-Last updated: 2026-02-09
+Last updated: 2026-02-10
 
 ## Summary
 Modularize the iOS codebase incrementally to maximize platform-agnostic reuse for future multi-platform clients. Extract leaf modules first, enforce strict boundaries, and keep behavior changes out of structural moves.
@@ -246,6 +246,8 @@ Phase 1 complete:
 - 2026-02-09: Added first write-side contracts (`SpatialWriteContract`, `SpatialWriteCompatibilityContract`) and `DataContractRegistry` wiring (`spatialWrite`, `spatialWriteCompatibility`) with Realm-backed adapter implementation (`RealmSpatialWriteContract`).
 - 2026-02-09: Migrated remaining write mutation callsites (`DestinationManager` temporary marker add/remove and `Route.add` marker import) to `DataContractRegistry.spatialWriteCompatibility`; direct `SpatialDataStoreRegistry` usage is now fully isolated to the Realm adapter file.
 - 2026-02-09: Extended data contract seam tests with write dispatch coverage (`DataContractRegistryDispatchTests.testSpatialWriteCompatibilityDispatchesToConfiguredContract`) while preserving existing route/cloud dispatch suites.
+- 2026-02-10: Marked temporary compatibility seams as explicitly deprecated (`@available(*, deprecated, message: ...)`) across compatibility contracts and registry compatibility accessors so migration targets are visible and searchable.
+- 2026-02-10: Split Realm-backed data contract adapters into dedicated infrastructure files (`RealmSpatialReadContract.swift`, `RealmSpatialWriteContract.swift`) while keeping `DataContractRegistry` as the single seam entry point.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -373,5 +375,5 @@ Acceptance criteria:
 
 ## Immediate Next Steps
 1. Add explicit domain DTOs/value surfaces on contract boundaries to reduce leakage of Realm-backed model types before backend replacement work begins.
-2. Split read/write Realm adapters into dedicated files/modules under `Data/Infrastructure/Realm` (keeping `DataContractRegistry` as the only seam entry point) to prepare for non-Realm backend adapters.
-3. Keep tightening CI guardrails with targeted forbidden-edge checks (for example `Data/Contracts -> App/Visual UI`) as contract/domain folders gain more surface area.
+2. Keep tightening CI guardrails with targeted forbidden-edge checks (for example `Data/Contracts` references to `AppContext`/UI runtime surfaces) as contract/domain folders gain more surface area.
+3. Begin introducing `Data/Domain` folder structure with portable types as contracts gain DTO boundaries, then extend boundary scripts to include the new layer.

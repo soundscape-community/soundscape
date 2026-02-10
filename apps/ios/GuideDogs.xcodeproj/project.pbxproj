@@ -30,6 +30,7 @@
 		A1C0D1212F0C000100000001 /* SpatialReadContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1112F0C000100000001 /* SpatialReadContracts.swift */; };
 		A1C0D1222F0C000100000001 /* DataContractRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1122F0C000100000001 /* DataContractRegistry.swift */; };
 		A1C0D1232F0C000100000001 /* RealmSpatialReadContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1132F0C000100000001 /* RealmSpatialReadContract.swift */; };
+		A1C0D1242F0C000100000001 /* RealmSpatialWriteContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1142F0C000100000001 /* RealmSpatialWriteContract.swift */; };
 		281CB8722016692F0059B8C4 /* CalloutHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB8712016692F0059B8C4 /* CalloutHistory.swift */; };
 		281CB879201691D40059B8C4 /* StringCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB878201691D40059B8C4 /* StringCallout.swift */; };
 		281CB87B201699760059B8C4 /* DestinationCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB87A201699760059B8C4 /* DestinationCallout.swift */; };
@@ -1243,6 +1244,7 @@
 		A1C0D1112F0C000100000001 /* SpatialReadContracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDogs/Code/Data/Contracts/Storage/SpatialReadContracts.swift; sourceTree = SOURCE_ROOT; };
 		A1C0D1122F0C000100000001 /* DataContractRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDogs/Code/Data/Contracts/Storage/DataContractRegistry.swift; sourceTree = SOURCE_ROOT; };
 		A1C0D1132F0C000100000001 /* RealmSpatialReadContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDogs/Code/Data/Infrastructure/Realm/RealmSpatialReadContract.swift; sourceTree = SOURCE_ROOT; };
+		A1C0D1142F0C000100000001 /* RealmSpatialWriteContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDogs/Code/Data/Infrastructure/Realm/RealmSpatialWriteContract.swift; sourceTree = SOURCE_ROOT; };
 		629821AF251049AC00775CC2 /* NearbyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyData.swift; sourceTree = "<group>"; };
 		629821B1251049CF00775CC2 /* NearbyDataContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyDataContext.swift; sourceTree = "<group>"; };
 		629A08BE24F5C9D4008204A9 /* UIBarButtonItem+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIBarButtonItem+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UIBarButtonItem+Extensions.swift"; sourceTree = "<group>"; };
@@ -5156,6 +5158,7 @@
 				A1C0D1212F0C000100000001 /* SpatialReadContracts.swift in Sources */,
 				A1C0D1222F0C000100000001 /* DataContractRegistry.swift in Sources */,
 				A1C0D1232F0C000100000001 /* RealmSpatialReadContract.swift in Sources */,
+				A1C0D1242F0C000100000001 /* RealmSpatialWriteContract.swift in Sources */,
 				3153765521FF1DFB008445AD /* CodeableDirection.swift in Sources */,
 				620BC33F25F2CC98007DBA29 /* HeadphoneMotionManagerStatus.swift in Sources */,
 				62494FFF26FBE0A0008D842B /* ViewControllerRepresentable.swift in Sources */,
