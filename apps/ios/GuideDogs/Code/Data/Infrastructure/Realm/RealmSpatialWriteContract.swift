@@ -128,6 +128,22 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
         try (self as SpatialWriteCompatibilityContract).removeAllRoutes()
     }
 
+    func restoreCachedAddresses(_ addresses: [Address]) throws {
+        guard let cache = try? RealmHelper.getCacheRealm() else {
+            throw RouteRealmError.databaseError
+        }
+
+        try cache.write {
+            for address in addresses {
+                cache.create(Address.self, value: address, update: .modified)
+            }
+        }
+    }
+
+    func restoreCachedAddresses(_ addresses: [Address]) async throws {
+        try (self as SpatialWriteCompatibilityContract).restoreCachedAddresses(addresses)
+    }
+
     func cleanCorruptReferenceEntities() throws {
         try RealmReferenceEntity.cleanCorruptEntities()
     }

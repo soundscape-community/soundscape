@@ -339,6 +339,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var updateReferenceEntityCalls: [String] = []
         private(set) var removeAllReferenceEntitiesCalls = 0
         private(set) var removeAllRoutesCalls = 0
+        private(set) var restoreCachedAddressCounts: [Int] = []
         private(set) var cleanCorruptReferenceEntitiesCalls = 0
         private(set) var removeReferenceEntityCalls: [String] = []
         private(set) var removeAllTemporaryCalls = 0
@@ -439,6 +440,14 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         func removeAllRoutes() async throws {
             try (self as SpatialWriteCompatibilityContract).removeAllRoutes()
+        }
+
+        func restoreCachedAddresses(_ addresses: [Address]) throws {
+            restoreCachedAddressCounts.append(addresses.count)
+        }
+
+        func restoreCachedAddresses(_ addresses: [Address]) async throws {
+            try (self as SpatialWriteCompatibilityContract).restoreCachedAddresses(addresses)
         }
 
         func cleanCorruptReferenceEntities() throws {
@@ -729,6 +738,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                  isTemp: false)
         try DataContractRegistry.spatialWriteCompatibility.removeAllReferenceEntities()
         try DataContractRegistry.spatialWriteCompatibility.removeAllRoutes()
+        try DataContractRegistry.spatialWriteCompatibility.restoreCachedAddresses([Address(), Address()])
         try DataContractRegistry.spatialWriteCompatibility.cleanCorruptReferenceEntities()
         try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: markerID)
         try DataContractRegistry.spatialWriteCompatibility.removeAllTemporaryReferenceEntities()
@@ -742,6 +752,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.updateReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeAllReferenceEntitiesCalls, 1)
         XCTAssertEqual(writeMock.removeAllRoutesCalls, 1)
+        XCTAssertEqual(writeMock.restoreCachedAddressCounts, [2])
         XCTAssertEqual(writeMock.cleanCorruptReferenceEntitiesCalls, 1)
         XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeAllTemporaryCalls, 1)

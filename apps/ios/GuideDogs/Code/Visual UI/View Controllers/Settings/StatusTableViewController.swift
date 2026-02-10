@@ -359,18 +359,8 @@ extension StatusTableViewController {
             return
         }
         
-        // Save stored addresses
-        guard let cache = try? RealmHelper.getCacheRealm() else {
-            GDLogSpatialDataError("Cached data deleted, but couldn't get cache realm to restore addresses!")
-            return
-        }
-        
         do {
-            try cache.write {
-                for address in storedAddresses {
-                    cache.create(Address.self, value: address, update: .modified)
-                }
-            }
+            try DataContractRegistry.spatialWriteCompatibility.restoreCachedAddresses(storedAddresses)
         } catch {
             GDLogSpatialDataError("Cached data deleted, but couldn't restore addresses!")
             return

@@ -325,6 +325,10 @@ Phase 1 complete:
 - 2026-02-10: Migrated settings cache-clear route deletion from direct `Route.deleteAll()` to `DataContractRegistry.spatialWriteCompatibility.removeAllRoutes()` so the full settings bulk-clear path now stays on data contract seams.
 - 2026-02-10: Extended `DataContractRegistryDispatchTests` coverage for `removeAllRoutes` write dispatch while preserving existing bulk marker and temporary-marker mutation assertions.
 - 2026-02-10: Validation for route bulk-maintenance contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass, and `swift Scripts/LocalizationLinter/main.swift` passes.
+- 2026-02-10: Extended write contracts with cache address-restore support (`restoreCachedAddresses`) across async and deprecated sync compatibility surfaces, and implemented Realm adapter support in `RealmSpatialWriteContract`.
+- 2026-02-10: Migrated `StatusTableViewController.clearCache(deletePORs:)` address reinsert logic from direct `RealmHelper.getCacheRealm` writes to `DataContractRegistry.spatialWriteCompatibility.restoreCachedAddresses(...)`, removing remaining direct cache-realm writes from this settings flow.
+- 2026-02-10: Extended `DataContractRegistryDispatchTests` with `restoreCachedAddresses` write dispatch assertions and updated `check_data_contract_infra_type_allowlist.sh` to allow temporary `Address` contract type usage for this seam.
+- 2026-02-10: Validation for settings address-restore write-contract slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_realm_infrastructure_boundary.sh`, and `check_spatial_data_cache_seam.sh` pass; `xcodebuild build-for-testing` passes; targeted suites `CalloutCoordinatorTests`, `DestinationManagerTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass; `swift Scripts/LocalizationLinter/main.swift` passes.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -451,6 +455,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue shrinking UI-side infrastructure knowledge in settings/debug flows by replacing direct cache-realm restore writes (`RealmHelper.getCacheRealm` + address reinsert loop in `StatusTableViewController.clearCache`) with a dedicated contract-backed infrastructure write seam.
-2. Expand storage contracts to cover remaining bulk persistence statics outside settings flows (next focus: any remaining direct `Route.*` static maintenance callsites not yet routed through `SpatialWriteCompatibilityContract`).
+1. Reduce temporary infrastructure-type leakage in contracts by replacing the new `Address`-typed write seam payload with an app-facing value shape, then remove `Address` from the data-contract infra allowlist.
+2. Expand storage contracts to cover any remaining bulk persistence statics outside settings flows (next focus: direct `Route.*` maintenance callsites that still bypass `SpatialWriteCompatibilityContract`, if any remain beyond adapter/tests).
 3. Keep compatibility APIs temporary and explicit; only add specialized value shapes when they represent true independent concepts (for example serialized payload types), not narrow per-callsite field subsets.
