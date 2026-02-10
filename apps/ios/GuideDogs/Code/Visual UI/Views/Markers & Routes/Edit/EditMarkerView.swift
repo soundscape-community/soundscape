@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -294,7 +295,7 @@ struct EditMarkerView: View {
         let finalAnnotation = annotation.isEmpty ? nil : annotation
         let detail = updatedLocation ?? locationDetail
         
-        if let id = locationDetail.markerId ?? SpatialDataCache.referenceEntity(source: locationDetail.source, isTemp: true)?.id {
+        if let id = locationDetail.markerId ?? temporaryMarkerId(for: locationDetail.source) {
             // Save marker ID
             markerId = id
             
@@ -333,7 +334,7 @@ struct EditMarkerView: View {
     
     private func updateExisting(id: String, coordinate: CLLocationCoordinate2D?, nickname: String?, address: String?, annotation: String?) throws {
         try autoreleasepool {
-            guard let entity = SpatialDataCache.referenceEntityByKey(id) else {
+            guard let entity = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id) else {
                 return
             }
             
@@ -361,6 +362,27 @@ struct EditMarkerView: View {
         // TODO: Notify the rest of the app that the deletion has been completed
         
         navHelper.onNavigationAction(config.deleteAction ?? .popViewController)
+    }
+
+    private func temporaryMarkerId(for source: LocationDetail.Source) -> String? {
+        let marker: RealmReferenceEntity?
+
+        switch source {
+        case .entity(let id):
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: id)
+        case .coordinate(let location):
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
+        case .designData(let location, _):
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
+        case .screenshots(let poi):
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: poi)
+        }
+
+        guard let marker, marker.isTemp else {
+            return nil
+        }
+
+        return marker.id
     }
 }
 

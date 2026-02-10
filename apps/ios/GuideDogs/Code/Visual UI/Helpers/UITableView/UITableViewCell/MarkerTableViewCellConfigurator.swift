@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -14,7 +15,7 @@ import UIKit
 class MarkerTableViewCellConfigurator: TableViewCellConfigurator {
     
     typealias TableViewCell = POITableViewCell
-    typealias Model = RealmReferenceEntity
+    typealias Model = ReferenceEntity
     
     // MARK: Properties
     
@@ -44,7 +45,7 @@ class MarkerTableViewCellConfigurator: TableViewCellConfigurator {
     
     // MARK: `TableViewCellConfigurator`
     
-    func configure(_ cell: POITableViewCell, forDisplaying model: RealmReferenceEntity) {
+    func configure(_ cell: POITableViewCell, forDisplaying model: ReferenceEntity) {
         // Use the default configuration for a POI
         poiCellConfigurator.configure(cell, forDisplaying: model.getPOI())
         

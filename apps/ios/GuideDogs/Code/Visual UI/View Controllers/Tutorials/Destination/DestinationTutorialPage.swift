@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -23,12 +24,12 @@ class DestinationTutorialPage: BaseTutorialViewController {
     
     weak var delegate: DestinationTutorialPageDelegate?
     
-    var entity: RealmReferenceEntity? {
+    var entity: ReferenceEntity? {
         guard let key = delegate?.getEntityKey() else {
             return nil
         }
-        
-        return SpatialDataCache.referenceEntityByKey(key)
+
+        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)?.domainEntity
     }
     
     // MARK: BaseTutorialViewController Overrides

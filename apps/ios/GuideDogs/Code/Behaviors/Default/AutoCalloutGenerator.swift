@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -177,7 +178,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
                 return
             }
             
-            guard let marker = SpatialDataCache.referenceEntityByKey(id) else {
+            guard let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id) else {
                 return
             }
             
@@ -303,7 +304,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
             return event.playSound ? callouts : nil
             
         case let event as MarkerAddedEvent:
-            guard let id = event.markerId, let marker = SpatialDataCache.referenceEntityByKey(id) else {
+            guard let id = event.markerId, let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id) else {
                 return nil
             }
             
@@ -418,7 +419,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
             let category = SuperCategory(rawValue: poi.superCategory) ?? SuperCategory.undefined
             
             // We make sure the geocoded result has a POI that is a landmark or a marker
-            guard category == SuperCategory.landmarks || SpatialDataCache.referenceEntityByEntityKey(poi.key) != nil else {
+            guard category == SuperCategory.landmarks || DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: poi.key) != nil else {
                 GDLogAutoCalloutVerbose("Skipping location sense. GenericGeocoderResult error: POI is not a landmark or a marker. ")
                 return nil
             }
@@ -497,7 +498,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
                    .filter { poi in
                        // Skip this POI if it's sense is turned off and it's not a marker
                        let senseIsOn = categoryStates[poi.category, default: false]
-                       guard senseIsOn || SpatialDataCache.referenceEntityByEntityKey(poi.key) != nil else {
+                       guard senseIsOn || DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: poi.key) != nil else {
                            // Filter callout because category is disabled
                            return false
                        }
@@ -663,7 +664,7 @@ private extension POI {
     }
     
     var debugDescription: String {
-        if let marker = SpatialDataCache.referenceEntityByEntityKey(key) {
+        if let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key) {
             if marker.name.isEmpty {
                 // Use a default name
                 return GDLocalizedString("markers.generic_name")

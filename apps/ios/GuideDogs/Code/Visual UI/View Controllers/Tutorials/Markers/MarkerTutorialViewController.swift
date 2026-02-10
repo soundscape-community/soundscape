@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -82,9 +83,9 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     }
     
     private var selectedPOI: POI?
-    private var referenceEntity: RealmReferenceEntity? {
+    private var referenceEntity: ReferenceEntity? {
         guard let selectedPOI = selectedPOI else { return nil }
-        return SpatialDataCache.referenceEntityByEntityKey(selectedPOI.key)
+        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: selectedPOI.key)?.domainEntity
     }
     
     var player: FadeableAudioPlayer?

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -384,7 +385,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         }
 
         let beaconContext: (location: CLLocation, distance: CLLocationDistance, arrived: Bool)?
-        if let key = beaconKey, let beacon = SpatialDataCache.referenceEntityByKey(key) {
+        if let key = beaconKey, let beacon = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: key)?.domainEntity {
             let location = beacon.closestLocation(from: to.node.location)
             let distance = to.node.location.coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
             beaconContext = (location, distance, distance < 15.0)

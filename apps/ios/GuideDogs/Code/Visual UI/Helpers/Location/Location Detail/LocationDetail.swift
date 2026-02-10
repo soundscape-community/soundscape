@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -24,7 +25,7 @@ struct LocationDetail {
         
         fileprivate var entity: POI? {
             if case .entity(let id) = self {
-                return SpatialDataCache.searchByKey(key: id)
+                return DataContractRegistry.spatialReadCompatibility.poi(byKey: id)
             } else if case .screenshots(let poi) = self {
                 return poi
             }
@@ -147,9 +148,8 @@ struct LocationDetail {
         return beaconId != nil
     }
     
-    private var marker: RealmReferenceEntity? {
-        // Search for markers (including temporary markers) at the given location
-        return SpatialDataCache.referenceEntity(source: source, isTemp: nil)
+    private var marker: ReferenceEntity? {
+        referenceEntity(source: source, isTemp: nil)?.domainEntity
     }
     
     // Name Properties
@@ -234,6 +234,27 @@ struct LocationDetail {
         // When an address is not provided, return a
         // default value
         return GDLocalizedString("location_detail.default.address")
+    }
+
+    private func referenceEntity(source: Source, isTemp: Bool?) -> RealmReferenceEntity? {
+        let marker: RealmReferenceEntity?
+
+        switch source {
+        case .entity(let id):
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: id)
+        case .coordinate(let location):
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
+        case .designData:
+            marker = nil
+        case .screenshots(let poi):
+            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: poi.key)
+        }
+
+        guard let isTemp, let marker else {
+            return marker
+        }
+
+        return marker.isTemp == isTemp ? marker : nil
     }
     
     var hasAddress: Bool {
@@ -335,7 +356,11 @@ struct LocationDetail {
     func updateLastSelectedDate() {
         do {
             if let marker = self.marker {
-                try marker.updateLastSelectedDate()
+                guard let realmMarker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: marker.id) else {
+                    return
+                }
+
+                try realmMarker.updateLastSelectedDate()
             } else if var entity = self.source.entity as? SelectablePOI {
                 try autoreleasepool {
                     let cache = try RealmHelper.getCacheRealm()
@@ -356,12 +381,16 @@ struct LocationDetail {
 
 extension LocationDetail {
     
-    init(marker: RealmReferenceEntity, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
+    init(marker: ReferenceEntity, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         self.init(entity: marker.getPOI(), imported: imported, telemetryContext: telemetryContext)
+    }
+
+    init(marker: RealmReferenceEntity, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
+        self.init(marker: marker.domainEntity, imported: imported, telemetryContext: telemetryContext)
     }
     
     init?(markerId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let marker = SpatialDataCache.referenceEntityByKey(markerId) else {
+        guard let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: markerId)?.domainEntity else {
             return nil
         }
         
@@ -392,7 +421,7 @@ extension LocationDetail {
     }
     
     init?(entityId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let entity = SpatialDataCache.searchByKey(key: entityId) else {
+        guard let entity = DataContractRegistry.spatialReadCompatibility.poi(byKey: entityId) else {
             return nil
         }
         
