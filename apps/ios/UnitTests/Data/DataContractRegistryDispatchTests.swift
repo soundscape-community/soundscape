@@ -20,6 +20,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var routeParametersToReturn: [RouteParameters] = []
         var routesContainingByMarkerID: [String: [Route]] = [:]
         var referenceByID: [String: ReferenceEntity] = [:]
+        var referenceCalloutByID: [String: ReferenceCalloutReadData] = [:]
         var distanceToClosestLocationByMarkerID: [String: Double] = [:]
         var referenceMetadataByID: [String: ReferenceReadMetadata] = [:]
         var markerParametersByID: [String: MarkerParameters] = [:]
@@ -34,6 +35,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var routeParametersForBackupCalls = 0
         private(set) var routesContainingCalls: [String] = []
         private(set) var referenceByIDCalls: [String] = []
+        private(set) var referenceCalloutByIDCalls: [String] = []
         private(set) var distanceToClosestLocationCalls: [String] = []
         private(set) var referenceMetadataByIDCalls: [String] = []
         private(set) var markerParametersByIDCalls: [String] = []
@@ -46,6 +48,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var routeParametersByKeySyncCalls: [String] = []
         private(set) var routeParametersForBackupSyncCalls = 0
         private(set) var referenceByIDSyncCalls: [String] = []
+        private(set) var referenceCalloutByIDSyncCalls: [String] = []
         private(set) var distanceToClosestLocationSyncCalls: [String] = []
         private(set) var referenceMetadataByIDSyncCalls: [String] = []
         private(set) var markerParametersByIDSyncCalls: [String] = []
@@ -120,6 +123,16 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         func referenceEntity(byID id: String) async -> ReferenceEntity? {
             referenceByIDCalls.append(id)
             return referenceByID[id]
+        }
+
+        func referenceCallout(byID id: String) -> ReferenceCalloutReadData? {
+            referenceCalloutByIDSyncCalls.append(id)
+            return referenceCalloutByID[id]
+        }
+
+        func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? {
+            referenceCalloutByIDCalls.append(id)
+            return referenceCalloutByID[id]
         }
 
         func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) -> Double? {
@@ -384,6 +397,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let reference = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.62, longitude: -122.35))
         reference.id = "marker-1"
         mock.referenceByID[reference.id] = reference
+        mock.referenceCalloutByID[reference.id] = ReferenceCalloutReadData(name: "Marker 1", superCategory: "undefined")
         mock.distanceToClosestLocationByMarkerID[reference.id] = 12.34
         mock.referenceMetadataByID[reference.id] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
         mock.markerParametersByID[reference.id] = MarkerParameters(name: "Marker 1", latitude: 47.62, longitude: -122.35)
@@ -401,6 +415,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let fetchedRouteParameters = await DataContractRegistry.spatialRead.routeParametersForBackup()
         let routesContainingMarker = await DataContractRegistry.spatialRead.routes(containingMarkerID: "marker-1")
         let fetchedReferenceByID = await DataContractRegistry.spatialRead.referenceEntity(byID: "marker-1")
+        let fetchedReferenceCallout = await DataContractRegistry.spatialRead.referenceCallout(byID: "marker-1")
         let markerLocation = SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.62, longitude: -122.35))
         let fetchedDistance = await DataContractRegistry.spatialRead.distanceToClosestLocation(forMarkerID: "marker-1",
                                                                                                from: markerLocation)
@@ -418,6 +433,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(fetchedRouteParameters.count, 1)
         XCTAssertEqual(routesContainingMarker.count, 1)
         XCTAssertEqual(fetchedReferenceByID?.id, reference.id)
+        XCTAssertEqual(fetchedReferenceCallout?.name, "Marker 1")
         XCTAssertEqual(fetchedDistance ?? -1, 12.34, accuracy: 0.0001)
         XCTAssertEqual(fetchedReferenceMetadata?.id, reference.id)
         XCTAssertEqual(fetchedReferenceMetadataByEntityKey?.id, reference.id)
@@ -431,6 +447,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(mock.routeParametersForBackupCalls, 1)
         XCTAssertEqual(mock.routesContainingCalls, ["marker-1"])
         XCTAssertEqual(mock.referenceByIDCalls, ["marker-1"])
+        XCTAssertEqual(mock.referenceCalloutByIDCalls, ["marker-1"])
         XCTAssertEqual(mock.distanceToClosestLocationCalls, ["marker-1"])
         XCTAssertEqual(mock.referenceMetadataByIDCalls, ["marker-1"])
         XCTAssertEqual(mock.markerParametersByIDCalls, ["marker-1"])
@@ -460,6 +477,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let routeMetadata = await DataContractRegistry.spatialRead.routeMetadata(byKey: "missing-route")
         let routeParameter = await DataContractRegistry.spatialRead.routeParameters(byKey: "missing-route", context: .backup)
         let reference = await DataContractRegistry.spatialRead.referenceEntity(byID: "missing-marker")
+        let referenceCallout = await DataContractRegistry.spatialRead.referenceCallout(byID: "missing-marker")
         let unknownMarkerLocation = SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 0, longitude: 0))
         let distance = await DataContractRegistry.spatialRead.distanceToClosestLocation(forMarkerID: "missing-marker",
                                                                                        from: unknownMarkerLocation)
@@ -472,6 +490,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertNil(routeMetadata)
         XCTAssertNil(routeParameter)
         XCTAssertNil(reference)
+        XCTAssertNil(referenceCallout)
         XCTAssertNil(distance)
         XCTAssertNil(referenceMetadata)
         XCTAssertNil(markerParameters)
@@ -481,6 +500,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(mock.routeMetadataByKeyCalls, ["missing-route"])
         XCTAssertEqual(mock.routeParametersByKeyCalls, ["missing-route|backup"])
         XCTAssertEqual(mock.referenceByIDCalls, ["missing-marker"])
+        XCTAssertEqual(mock.referenceCalloutByIDCalls, ["missing-marker"])
         XCTAssertEqual(mock.distanceToClosestLocationCalls, ["missing-marker"])
         XCTAssertEqual(mock.referenceMetadataByIDCalls, ["missing-marker"])
         XCTAssertEqual(mock.markerParametersByIDCalls, ["missing-marker"])
@@ -509,6 +529,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                        lastSelectedDate: nil)]
         let reference = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.62, longitude: -122.35))
         reference.id = "marker-sync"
+        mock.referenceCalloutByID[reference.id] = ReferenceCalloutReadData(name: "Marker Sync", superCategory: "undefined")
         mock.distanceToClosestLocationByMarkerID[reference.id] = 5.67
         mock.referenceMetadataByID[reference.id] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
         mock.markerParametersByID[reference.id] = MarkerParameters(name: "Marker Sync", latitude: 47.62, longitude: -122.35)
@@ -527,6 +548,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         let fetchedRouteParameter = DataContractRegistry.spatialReadCompatibility.routeParameters(byKey: route.id, context: .backup)
         let fetchedRouteParameters = DataContractRegistry.spatialReadCompatibility.routeParametersForBackup()
         let fetchedReference = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: reference.id)
+        let fetchedReferenceCallout = DataContractRegistry.spatialReadCompatibility.referenceCallout(byID: reference.id)
         let markerLocation = SSGeoLocation(coordinate: SSGeoCoordinate(latitude: 47.62, longitude: -122.35))
         let fetchedDistance = DataContractRegistry.spatialReadCompatibility.distanceToClosestLocation(forMarkerID: reference.id,
                                                                                                      from: markerLocation)
@@ -541,6 +563,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(fetchedRouteParameter?.id, route.id)
         XCTAssertEqual(fetchedRouteParameters.count, 1)
         XCTAssertEqual(fetchedReference?.id, reference.id)
+        XCTAssertEqual(fetchedReferenceCallout?.name, "Marker Sync")
         XCTAssertEqual(fetchedDistance ?? -1, 5.67, accuracy: 0.0001)
         XCTAssertEqual(fetchedReferenceMetadata?.id, reference.id)
         XCTAssertEqual(fetchedReferenceMetadataByEntityKey?.id, reference.id)
@@ -551,6 +574,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(mock.routeParametersByKeySyncCalls, ["\(route.id)|backup"])
         XCTAssertEqual(mock.routeParametersForBackupSyncCalls, 1)
         XCTAssertEqual(mock.referenceByIDSyncCalls, [reference.id])
+        XCTAssertEqual(mock.referenceCalloutByIDSyncCalls, [reference.id])
         XCTAssertEqual(mock.distanceToClosestLocationSyncCalls, [reference.id])
         XCTAssertEqual(mock.referenceMetadataByIDSyncCalls, [reference.id])
         XCTAssertEqual(mock.markerParametersByIDSyncCalls, [reference.id])

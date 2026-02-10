@@ -24,6 +24,11 @@ struct ReferenceReadMetadata: Sendable {
     let lastUpdatedDate: Date?
 }
 
+struct ReferenceCalloutReadData: Sendable {
+    let name: String
+    let superCategory: String
+}
+
 @MainActor
 protocol RouteReadContract {
     func routes() async -> [Route]
@@ -37,6 +42,7 @@ protocol RouteReadContract {
 @MainActor
 protocol ReferenceReadContract {
     func referenceEntity(byID id: String) async -> ReferenceEntity?
+    func referenceCallout(byID id: String) async -> ReferenceCalloutReadData?
     func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double?
     func referenceMetadata(byID id: String) async -> ReferenceReadMetadata?
     func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata?
@@ -87,6 +93,7 @@ protocol RouteReadCompatibilityContract {
 @available(*, deprecated, message: "Temporary compatibility seam. Use async ReferenceReadContract APIs instead.")
 protocol ReferenceReadCompatibilityContract {
     func referenceEntity(byID id: String) -> ReferenceEntity?
+    func referenceCallout(byID id: String) -> ReferenceCalloutReadData?
     func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) -> Double?
     func referenceMetadata(byID id: String) -> ReferenceReadMetadata?
     func referenceMetadata(byEntityKey key: String) -> ReferenceReadMetadata?

@@ -266,6 +266,10 @@ Phase 1 complete:
 - 2026-02-10: Migrated route distance sorting (`Route.objectKeys(sortedBy: .distance)`) to the new distance contract query while preserving existing closest-location behavior through the Realm adapter.
 - 2026-02-10: Extended contract test coverage for the distance query (`DataContractRegistryDispatchTests` async + compatibility paths) and updated cloud contract mocks for protocol conformance.
 - 2026-02-10: Validation for route distance-query contract slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-10: Added preview-callout DTO reads to contracts (`ReferenceCalloutReadData`, `referenceCallout(byID:)`) with Realm adapter support so street-preview callout generation can request marker name/category data without loading full `ReferenceEntity` models.
+- 2026-02-10: Migrated `RoadAdjacentDataView.makeCalloutsForAdjacents()` to use `DataContractRegistry.spatialReadCompatibility.referenceCallout(byID:)` for category/name extraction.
+- 2026-02-10: Extended contract seam tests for preview-callout DTO dispatch (`DataContractRegistryDispatchTests` async + compatibility paths) and updated cloud contract mocks for protocol conformance.
+- 2026-02-10: Validation for preview-callout DTO slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

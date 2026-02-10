@@ -76,6 +76,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         (self as SpatialReadCompatibilityContract).referenceEntity(byID: id)
     }
 
+    func referenceCallout(byID id: String) -> ReferenceCalloutReadData? {
+        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+            return nil
+        }
+
+        return ReferenceCalloutReadData(name: marker.name, superCategory: marker.getPOI().superCategory)
+    }
+
+    func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? {
+        (self as SpatialReadCompatibilityContract).referenceCallout(byID: id)
+    }
+
     func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) -> Double? {
         guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return nil
