@@ -88,6 +88,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         (self as SpatialReadCompatibilityContract).referenceMetadata(byID: id)
     }
 
+    func referenceMetadata(byEntityKey key: String) -> ReferenceReadMetadata? {
+        guard let referenceEntity = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key) else {
+            return nil
+        }
+
+        return ReferenceReadMetadata(id: referenceEntity.id, lastUpdatedDate: referenceEntity.lastUpdatedDate)
+    }
+
+    func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata? {
+        (self as SpatialReadCompatibilityContract).referenceMetadata(byEntityKey: key)
+    }
+
     func markerParameters(byID id: String) -> MarkerParameters? {
         guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return nil
@@ -98,6 +110,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
 
     func markerParameters(byID id: String) async -> MarkerParameters? {
         (self as SpatialReadCompatibilityContract).markerParameters(byID: id)
+    }
+
+    func markerParameters(byEntityKey key: String) -> MarkerParameters? {
+        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key) else {
+            return nil
+        }
+
+        return MarkerParameters(marker: marker)
+    }
+
+    func markerParameters(byEntityKey key: String) async -> MarkerParameters? {
+        (self as SpatialReadCompatibilityContract).markerParameters(byEntityKey: key)
     }
 
     func markerParametersForBackup() -> [MarkerParameters] {

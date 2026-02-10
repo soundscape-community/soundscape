@@ -38,7 +38,9 @@ protocol RouteReadContract {
 protocol ReferenceReadContract {
     func referenceEntity(byID id: String) async -> ReferenceEntity?
     func referenceMetadata(byID id: String) async -> ReferenceReadMetadata?
+    func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata?
     func markerParameters(byID id: String) async -> MarkerParameters?
+    func markerParameters(byEntityKey key: String) async -> MarkerParameters?
     func markerParametersForBackup() async -> [MarkerParameters]
     func referenceEntity(byEntityKey key: String) async -> ReferenceEntity?
     func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity?
@@ -85,7 +87,9 @@ protocol RouteReadCompatibilityContract {
 protocol ReferenceReadCompatibilityContract {
     func referenceEntity(byID id: String) -> ReferenceEntity?
     func referenceMetadata(byID id: String) -> ReferenceReadMetadata?
+    func referenceMetadata(byEntityKey key: String) -> ReferenceReadMetadata?
     func markerParameters(byID id: String) -> MarkerParameters?
+    func markerParameters(byEntityKey key: String) -> MarkerParameters?
     func markerParametersForBackup() -> [MarkerParameters]
     func referenceEntity(byEntityKey key: String) -> ReferenceEntity?
     func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> ReferenceEntity?

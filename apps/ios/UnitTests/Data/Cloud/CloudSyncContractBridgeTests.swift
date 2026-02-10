@@ -61,7 +61,15 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             nil
         }
 
+        func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata? {
+            nil
+        }
+
         func markerParameters(byID id: String) async -> MarkerParameters? {
+            nil
+        }
+
+        func markerParameters(byEntityKey key: String) async -> MarkerParameters? {
             nil
         }
 

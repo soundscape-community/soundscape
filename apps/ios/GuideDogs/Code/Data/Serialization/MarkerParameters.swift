@@ -104,8 +104,8 @@ struct MarkerParameters: Codable {
         if let entity = entity as? GenericLocation,
            let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: entity.location.coordinate.ssGeoCoordinate) {
             self.init(marker: marker)
-        } else if let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: entity.key) {
-            self.init(marker: marker)
+        } else if let markerParameters = DataContractRegistry.spatialReadCompatibility.markerParameters(byEntityKey: entity.key) {
+            self = markerParameters
         } else {
             self.init(entity: entity, markerId: nil, estimatedAddress: nil, nickname: nil, annotation: nil, lastUpdatedDate: nil)
         }
@@ -143,8 +143,8 @@ struct MarkerParameters: Codable {
         
         let lastUpdatedDate: Date?
         
-        if let markerId = markerId, let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: markerId) {
-            lastUpdatedDate = marker.lastUpdatedDate
+        if let markerId = markerId, let metadata = DataContractRegistry.spatialReadCompatibility.referenceMetadata(byEntityKey: markerId) {
+            lastUpdatedDate = metadata.lastUpdatedDate
         } else {
             lastUpdatedDate = nil
         }
