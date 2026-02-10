@@ -102,8 +102,8 @@ struct MarkerParameters: Codable {
     
     init?(entity: POI) {
         if let entity = entity as? GenericLocation,
-           let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: entity.location.coordinate.ssGeoCoordinate) {
-            self.init(marker: marker)
+           let marker = DataContractRegistry.spatialReadCompatibility.markerParameters(byCoordinate: entity.location.coordinate.ssGeoCoordinate) {
+            self = marker
         } else if let markerParameters = DataContractRegistry.spatialReadCompatibility.markerParameters(byEntityKey: entity.key) {
             self = markerParameters
         } else {

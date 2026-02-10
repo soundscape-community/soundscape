@@ -47,6 +47,7 @@ protocol ReferenceReadContract {
     func referenceMetadata(byID id: String) async -> ReferenceReadMetadata?
     func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata?
     func markerParameters(byID id: String) async -> MarkerParameters?
+    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters?
     func markerParameters(byEntityKey key: String) async -> MarkerParameters?
     func markerParametersForBackup() async -> [MarkerParameters]
     func referenceEntity(byEntityKey key: String) async -> ReferenceEntity?
@@ -98,6 +99,7 @@ protocol ReferenceReadCompatibilityContract {
     func referenceMetadata(byID id: String) -> ReferenceReadMetadata?
     func referenceMetadata(byEntityKey key: String) -> ReferenceReadMetadata?
     func markerParameters(byID id: String) -> MarkerParameters?
+    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) -> MarkerParameters?
     func markerParameters(byEntityKey key: String) -> MarkerParameters?
     func markerParametersForBackup() -> [MarkerParameters]
     func referenceEntity(byEntityKey key: String) -> ReferenceEntity?

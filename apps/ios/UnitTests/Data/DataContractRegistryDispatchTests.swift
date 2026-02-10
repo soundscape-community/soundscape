@@ -24,6 +24,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var distanceToClosestLocationByMarkerID: [String: Double] = [:]
         var referenceMetadataByID: [String: ReferenceReadMetadata] = [:]
         var markerParametersByID: [String: MarkerParameters] = [:]
+        var markerParametersByCoordinate: [String: MarkerParameters] = [:]
         var referenceMetadataByEntityKey: [String: ReferenceReadMetadata] = [:]
         var markerParametersByEntityKey: [String: MarkerParameters] = [:]
         var markerParametersToReturn: [MarkerParameters] = []
@@ -39,6 +40,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var distanceToClosestLocationCalls: [String] = []
         private(set) var referenceMetadataByIDCalls: [String] = []
         private(set) var markerParametersByIDCalls: [String] = []
+        private(set) var markerParametersByCoordinateCalls: [String] = []
         private(set) var referenceMetadataByEntityKeyCalls: [String] = []
         private(set) var markerParametersByEntityKeyCalls: [String] = []
         private(set) var markerParametersForBackupCalls = 0
@@ -52,6 +54,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var distanceToClosestLocationSyncCalls: [String] = []
         private(set) var referenceMetadataByIDSyncCalls: [String] = []
         private(set) var markerParametersByIDSyncCalls: [String] = []
+        private(set) var markerParametersByCoordinateSyncCalls: [String] = []
         private(set) var referenceMetadataByEntityKeySyncCalls: [String] = []
         private(set) var markerParametersByEntityKeySyncCalls: [String] = []
         private(set) var markerParametersForBackupSyncCalls = 0
@@ -173,6 +176,18 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         func markerParameters(byID id: String) async -> MarkerParameters? {
             markerParametersByIDCalls.append(id)
             return markerParametersByID[id]
+        }
+
+        func markerParameters(byCoordinate coordinate: SSGeoCoordinate) -> MarkerParameters? {
+            let key = coordinateKey(coordinate)
+            markerParametersByCoordinateSyncCalls.append(key)
+            return markerParametersByCoordinate[key]
+        }
+
+        func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? {
+            let key = coordinateKey(coordinate)
+            markerParametersByCoordinateCalls.append(key)
+            return markerParametersByCoordinate[key]
         }
 
         func markerParameters(byEntityKey key: String) -> MarkerParameters? {
@@ -308,6 +323,10 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                 return "share"
             }
         }
+
+        private func coordinateKey(_ coordinate: SSGeoCoordinate) -> String {
+            "\(coordinate.latitude),\(coordinate.longitude)"
+        }
     }
 
     private final class MockSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilityContract {
@@ -401,6 +420,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         mock.distanceToClosestLocationByMarkerID[reference.id] = 12.34
         mock.referenceMetadataByID[reference.id] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
         mock.markerParametersByID[reference.id] = MarkerParameters(name: "Marker 1", latitude: 47.62, longitude: -122.35)
+        mock.markerParametersByCoordinate["47.62,-122.35"] = MarkerParameters(name: "Marker by Coordinate", latitude: 47.62, longitude: -122.35)
         mock.referenceMetadataByEntityKey["entity-1"] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
         mock.markerParametersByEntityKey["entity-1"] = MarkerParameters(name: "Marker Entity Key 1", latitude: 47.62, longitude: -122.35)
         mock.markerParametersToReturn = [MarkerParameters(name: "Marker 1", latitude: 47.62, longitude: -122.35)]
@@ -421,6 +441,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                                from: markerLocation)
         let fetchedReferenceMetadata = await DataContractRegistry.spatialRead.referenceMetadata(byID: "marker-1")
         _ = await DataContractRegistry.spatialRead.markerParameters(byID: "marker-1")
+        let fetchedMarkerParametersByCoordinate = await DataContractRegistry.spatialRead.markerParameters(byCoordinate: SSGeoCoordinate(latitude: 47.62,
+                                                                                                                         longitude: -122.35))
         let fetchedReferenceMetadataByEntityKey = await DataContractRegistry.spatialRead.referenceMetadata(byEntityKey: "entity-1")
         let fetchedMarkerParametersByEntityKey = await DataContractRegistry.spatialRead.markerParameters(byEntityKey: "entity-1")
         let fetchedMarkerParameters = await DataContractRegistry.spatialRead.markerParametersForBackup()
@@ -435,6 +457,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(fetchedReferenceByID?.id, reference.id)
         XCTAssertEqual(fetchedReferenceCallout?.name, "Marker 1")
         XCTAssertEqual(fetchedDistance ?? -1, 12.34, accuracy: 0.0001)
+        XCTAssertEqual(fetchedMarkerParametersByCoordinate?.location.coordinate.latitude ?? -1, 47.62, accuracy: 0.0001)
+        XCTAssertEqual(fetchedMarkerParametersByCoordinate?.location.coordinate.longitude ?? -1, -122.35, accuracy: 0.0001)
         XCTAssertEqual(fetchedReferenceMetadata?.id, reference.id)
         XCTAssertEqual(fetchedReferenceMetadataByEntityKey?.id, reference.id)
         XCTAssertNotNil(fetchedMarkerParametersByEntityKey)
@@ -451,6 +475,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(mock.distanceToClosestLocationCalls, ["marker-1"])
         XCTAssertEqual(mock.referenceMetadataByIDCalls, ["marker-1"])
         XCTAssertEqual(mock.markerParametersByIDCalls, ["marker-1"])
+        XCTAssertEqual(mock.markerParametersByCoordinateCalls, ["47.62,-122.35"])
         XCTAssertEqual(mock.referenceMetadataByEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(mock.markerParametersByEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(mock.markerParametersForBackupCalls, 1)
@@ -483,6 +508,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                        from: unknownMarkerLocation)
         let referenceMetadata = await DataContractRegistry.spatialRead.referenceMetadata(byID: "missing-marker")
         let markerParameters = await DataContractRegistry.spatialRead.markerParameters(byID: "missing-marker")
+        let markerParametersByCoordinate = await DataContractRegistry.spatialRead.markerParameters(byCoordinate: SSGeoCoordinate(latitude: 47.62,
+                                                                                                                longitude: -122.35))
         let referenceMetadataByEntityKey = await DataContractRegistry.spatialRead.referenceMetadata(byEntityKey: "missing-entity-key")
         let markerParametersByEntityKey = await DataContractRegistry.spatialRead.markerParameters(byEntityKey: "missing-entity-key")
 
@@ -494,6 +521,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertNil(distance)
         XCTAssertNil(referenceMetadata)
         XCTAssertNil(markerParameters)
+        XCTAssertNil(markerParametersByCoordinate)
         XCTAssertNil(referenceMetadataByEntityKey)
         XCTAssertNil(markerParametersByEntityKey)
         XCTAssertEqual(mock.routeByKeyCalls, ["missing-route"])
@@ -504,6 +532,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(mock.distanceToClosestLocationCalls, ["missing-marker"])
         XCTAssertEqual(mock.referenceMetadataByIDCalls, ["missing-marker"])
         XCTAssertEqual(mock.markerParametersByIDCalls, ["missing-marker"])
+        XCTAssertEqual(mock.markerParametersByCoordinateCalls, ["47.62,-122.35"])
         XCTAssertEqual(mock.referenceMetadataByEntityKeyCalls, ["missing-entity-key"])
         XCTAssertEqual(mock.markerParametersByEntityKeyCalls, ["missing-entity-key"])
     }
@@ -533,6 +562,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         mock.distanceToClosestLocationByMarkerID[reference.id] = 5.67
         mock.referenceMetadataByID[reference.id] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
         mock.markerParametersByID[reference.id] = MarkerParameters(name: "Marker Sync", latitude: 47.62, longitude: -122.35)
+        mock.markerParametersByCoordinate["47.62,-122.35"] = MarkerParameters(name: "Marker Coordinate Sync", latitude: 47.62, longitude: -122.35)
         mock.referenceMetadataByEntityKey["entity-sync"] = ReferenceReadMetadata(id: reference.id, lastUpdatedDate: reference.lastUpdatedDate)
         mock.markerParametersByEntityKey["entity-sync"] = MarkerParameters(name: "Marker Entity Sync", latitude: 47.62, longitude: -122.35)
         mock.markerParametersToReturn = [MarkerParameters(name: "Marker Sync", latitude: 47.62, longitude: -122.35)]
@@ -554,6 +584,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                                      from: markerLocation)
         let fetchedReferenceMetadata = DataContractRegistry.spatialReadCompatibility.referenceMetadata(byID: reference.id)
         _ = DataContractRegistry.spatialReadCompatibility.markerParameters(byID: reference.id)
+        let fetchedMarkerParametersByCoordinate = DataContractRegistry.spatialReadCompatibility.markerParameters(byCoordinate: SSGeoCoordinate(latitude: 47.62,
+                                                                                                                             longitude: -122.35))
         let fetchedReferenceMetadataByEntityKey = DataContractRegistry.spatialReadCompatibility.referenceMetadata(byEntityKey: "entity-sync")
         let fetchedMarkerParametersByEntityKey = DataContractRegistry.spatialReadCompatibility.markerParameters(byEntityKey: "entity-sync")
         let fetchedMarkerParameters = DataContractRegistry.spatialReadCompatibility.markerParametersForBackup()
@@ -565,6 +597,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(fetchedReference?.id, reference.id)
         XCTAssertEqual(fetchedReferenceCallout?.name, "Marker Sync")
         XCTAssertEqual(fetchedDistance ?? -1, 5.67, accuracy: 0.0001)
+        XCTAssertEqual(fetchedMarkerParametersByCoordinate?.location.coordinate.latitude ?? -1, 47.62, accuracy: 0.0001)
+        XCTAssertEqual(fetchedMarkerParametersByCoordinate?.location.coordinate.longitude ?? -1, -122.35, accuracy: 0.0001)
         XCTAssertEqual(fetchedReferenceMetadata?.id, reference.id)
         XCTAssertEqual(fetchedReferenceMetadataByEntityKey?.id, reference.id)
         XCTAssertNotNil(fetchedMarkerParametersByEntityKey)
@@ -578,6 +612,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(mock.distanceToClosestLocationSyncCalls, [reference.id])
         XCTAssertEqual(mock.referenceMetadataByIDSyncCalls, [reference.id])
         XCTAssertEqual(mock.markerParametersByIDSyncCalls, [reference.id])
+        XCTAssertEqual(mock.markerParametersByCoordinateSyncCalls, ["47.62,-122.35"])
         XCTAssertEqual(mock.referenceMetadataByEntityKeySyncCalls, ["entity-sync"])
         XCTAssertEqual(mock.markerParametersByEntityKeySyncCalls, ["entity-sync"])
         XCTAssertEqual(mock.markerParametersForBackupSyncCalls, 1)

@@ -136,6 +136,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         (self as SpatialReadCompatibilityContract).markerParameters(byID: id)
     }
 
+    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) -> MarkerParameters? {
+        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate.clCoordinate) else {
+            return nil
+        }
+
+        return MarkerParameters(marker: marker)
+    }
+
+    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? {
+        (self as SpatialReadCompatibilityContract).markerParameters(byCoordinate: coordinate)
+    }
+
     func markerParameters(byEntityKey key: String) -> MarkerParameters? {
         guard let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key) else {
             return nil

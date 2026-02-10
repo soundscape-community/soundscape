@@ -77,6 +77,10 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             nil
         }
 
+        func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? {
+            nil
+        }
+
         func markerParameters(byEntityKey key: String) async -> MarkerParameters? {
             nil
         }
