@@ -166,35 +166,6 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         }
     }
     
-    //MARK: HELPER Methods/Functions
-
-    private func usesImperialUnits(_ localeIdentifier: String) -> Bool {
-        let locale = Locale.autoupdatingCurrent
-        if #available(iOS 16.0, *) {
-            switch locale.measurementSystem {
-            case .metric:
-                return false
-            case .us, .uk:
-                return true
-            default:
-                return !locale.usesMetricSystem
-            }
-        } else {
-            // Pre iOS 16 best way to check
-            return !locale.usesMetricSystem
-        }
-    }
-
-
-    private func accuracyValue(forMeters acc: CLLocationAccuracy, localeIdentifier: String) -> Int {
-        //converts to feet
-        let feet = Measurement(value: acc, unit: UnitLength.meters).converted(to: UnitLength.feet).value
-        if usesImperialUnits(localeIdentifier) {
-            return Int(feet.rounded()) // feet
-        } else {
-            return Int(acc.rounded()) // meters
-        }
-    }
 
     // MARK: - First announcement (startup / wake)
 
@@ -205,78 +176,72 @@ final class GPSAccuracyAnnouncementGenerator: AutomaticGenerator {
         let acc = event.location.horizontalAccuracy
         guard acc.isFinite else { return .noAction }
 
-        let value = accuracyValue(forMeters: acc, localeIdentifier: localeIdentifier)
-        let isImperial = usesImperialUnits(localeIdentifier)
-
+        let value = LanguageFormatter.string(from: acc)
         let message: String
         if (acc >= 10.0) && (acc <= 20.0) {
-            if isImperial {
-                let tmpl = GDLocalizedString("gps.accuracy.ok.feet")
-                message = String(format: tmpl, value)
-            } else {
-                let tmpl = GDLocalizedString("gps.accuracy.ok.meters")
-                message = String(format: tmpl, value)
-            }
+            //OK temperature
+            let tmpl = GDLocalizedString("gps.accuracy.ok")
+            message = String(format: tmpl, value)
             markDone(for: reason)
             pending = nil
-            
         }else if acc > Self.poorAccuracyThreashold {
             // POOR accuracy
-            if isImperial {
-                let tmpl = GDLocalizedString("gps.accuracy.poor.feet")
-                message = String(format: tmpl, value)
-            } else {
-                let tmpl = GDLocalizedString("gps.accuracy.poor.meters")
-                message = String(format: tmpl, value)
+            let locale = Locale.autoupdatingCurrent
+            var tf = false
+            if #available(iOS 16.0, *) {
+                if( locale.measurementSystem == .metric){
+                    tf = false
+                }else{
+                    tf = true
+                }
+            }else{
+                if(locale.usesMetricSystem){
+                    tf = false
+                }else{
+                    tf = true
+                }
+            }
+            let tmpl = GDLocalizedString("gps.accuracy.poor")
+            if(tf == false){
+                message = String(format: tmpl, "meters")
+            }else{
+                message = String(format: tmpl, "feet")
             }
             pending = .accurate
         } else {
             // GOOD accuracy
-            if isImperial {
-                let tmpl = GDLocalizedString("gps.accuracy.good.feet")
-                message = String(format: tmpl, value)
-            } else {
-                let tmpl = GDLocalizedString("gps.accuracy.good.meters")
-                message = String(format: tmpl, value)
-            }
+            let tmpl = GDLocalizedString("gps.accuracy.good")
+            message = String(format: tmpl, value)
             markDone(for: reason)
             pending = nil
         }
-
         let callout = StringCallout(.system, message)
         return .playCallouts(CalloutGroup([callout], action: .enqueue, logContext: "gps-accuracy"))
     }
 
     // MARK: -  improvements GPS annoucnement
-
     private func handleImprovedGPSAnnouncement(_ event: LocationUpdatedEvent) -> HandledEventAction? {
+        
         let acc = event.location.horizontalAccuracy
+        
         guard acc.isFinite else { return .noAction }
         guard settings.gpsAnnouncementsEnabled else { return .noAction }
         guard acc <= Self.poorAccuracyThreashold, !hasAnnouncedAccurate else { return .noAction }
-
-        let value = accuracyValue(forMeters: acc, localeIdentifier: localeIdentifier)
-        let isImperial = usesImperialUnits(localeIdentifier)
-
+        
+        let value = LanguageFormatter.string(from: acc)
         let message: String
-        if isImperial {
-            let tmpl = GDLocalizedString("gps.accuracy.improved.feet",
-                                         "GPS accuracy has improved to about %d feet.")
-            message = String(format: tmpl, value)
-        } else {
-            let tmpl = GDLocalizedString("gps.accuracy.improved.meters",
-                                         "GPS accuracy has improved to about %d meters.")
-            message = String(format: tmpl, value)
-        }
-
+        let tmpl = GDLocalizedString("gps.accuracy.improved","GPS accuracy has improved to about %d feet.")
+        
+        message = String(format: tmpl, value)
+        
         let callout = StringCallout(.system, message, position: 180.0)
-
+        
         markDone(for: .accurate)
         pending = nil
-
         return .playCallouts(CalloutGroup([callout], action: .enqueue, logContext: "gps-accuracy"))
     }
 
+    
     //marks the appropirate flags once a announcement is made
     private func markDone(for reason: Pending) {
         switch reason {
