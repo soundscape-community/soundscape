@@ -20,7 +20,7 @@ class GenericLocationSearchProvider: POISearchProviderProtocol {
             }
             
             // Search the cache
-            return database.object(ofType: ReferenceEntity.self, forPrimaryKey: key)?.getPOI()
+            return database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: key)?.getPOI()
         }
     }
     
@@ -35,7 +35,7 @@ class GenericLocationSearchProvider: POISearchProviderProtocol {
             let entityPredicate = NSPredicate(format: "entityKey == nil AND isTemp == false")
             let predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [entityPredicate, predicate])
             
-            return database.objects(ReferenceEntity.self).filter(predicates).map { $0.getPOI() }
+            return database.objects(RealmReferenceEntity.self).filter(predicates).map { $0.getPOI() }
         }
     }
 }

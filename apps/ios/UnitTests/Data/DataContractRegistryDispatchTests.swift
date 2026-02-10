@@ -19,7 +19,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var routeParametersByLookupKey: [String: RouteParameters] = [:]
         var routeParametersToReturn: [RouteParameters] = []
         var routesContainingByMarkerID: [String: [Route]] = [:]
-        var referenceByID: [String: ReferenceEntity] = [:]
+        var referenceByID: [String: RealmReferenceEntity] = [:]
         var referenceCalloutByID: [String: ReferenceCalloutReadData] = [:]
         var distanceToClosestLocationByMarkerID: [String: Double] = [:]
         var referenceMetadataByID: [String: ReferenceReadMetadata] = [:]
@@ -28,7 +28,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var referenceMetadataByEntityKey: [String: ReferenceReadMetadata] = [:]
         var markerParametersByEntityKey: [String: MarkerParameters] = [:]
         var markerParametersToReturn: [MarkerParameters] = []
-        var referenceByEntityKey: [String: ReferenceEntity] = [:]
+        var referenceByEntityKey: [String: RealmReferenceEntity] = [:]
 
         private(set) var routeByKeyCalls: [String] = []
         private(set) var routeMetadataByKeyCalls: [String] = []
@@ -118,14 +118,14 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             return routesContainingByMarkerID[markerID] ?? []
         }
 
-        func referenceEntity(byID id: String) -> ReferenceEntity? {
+        func referenceEntity(byID id: String) -> RealmReferenceEntity? {
             referenceByIDSyncCalls.append(id)
             return referenceByID[id]
         }
 
         func referenceEntity(byID id: String) async -> ReferenceEntity? {
             referenceByIDCalls.append(id)
-            return referenceByID[id]
+            return referenceByID[id]?.domainEntity
         }
 
         func referenceCallout(byID id: String) -> ReferenceCalloutReadData? {
@@ -210,16 +210,16 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             return markerParametersToReturn
         }
 
-        func referenceEntity(byEntityKey key: String) -> ReferenceEntity? {
+        func referenceEntity(byEntityKey key: String) -> RealmReferenceEntity? {
             referenceByEntityKey[key]
         }
 
         func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? {
             referenceByEntityKeyCalls.append(key)
-            return referenceByEntityKey[key]
+            return referenceByEntityKey[key]?.domainEntity
         }
 
-        func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> ReferenceEntity? {
+        func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> RealmReferenceEntity? {
             nil
         }
 
@@ -227,7 +227,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             nil
         }
 
-        func referenceEntity(byGenericLocation location: GenericLocation) -> ReferenceEntity? {
+        func referenceEntity(byGenericLocation location: GenericLocation) -> RealmReferenceEntity? {
             nil
         }
 
@@ -235,7 +235,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             nil
         }
 
-        func referenceEntities() -> [ReferenceEntity] {
+        func referenceEntities() -> [RealmReferenceEntity] {
             []
         }
 
@@ -243,7 +243,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             []
         }
 
-        func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) -> [ReferenceEntity] {
+        func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) -> [RealmReferenceEntity] {
             []
         }
 
@@ -291,7 +291,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             nil
         }
 
-        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile> {
+        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile> {
             []
         }
 
@@ -413,7 +413,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                        lastSelectedDate: nil)]
         mock.routesContainingByMarkerID["marker-1"] = [route]
 
-        let reference = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.62, longitude: -122.35))
+        let reference = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.62, longitude: -122.35))
         reference.id = "marker-1"
         mock.referenceByID[reference.id] = reference
         mock.referenceCalloutByID[reference.id] = ReferenceCalloutReadData(name: "Marker 1", superCategory: "undefined")
@@ -556,7 +556,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                        createdDate: nil,
                                                        lastUpdatedDate: route.lastUpdatedDate,
                                                        lastSelectedDate: nil)]
-        let reference = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.62, longitude: -122.35))
+        let reference = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.62, longitude: -122.35))
         reference.id = "marker-sync"
         mock.referenceCalloutByID[reference.id] = ReferenceCalloutReadData(name: "Marker Sync", superCategory: "undefined")
         mock.distanceToClosestLocationByMarkerID[reference.id] = 5.67

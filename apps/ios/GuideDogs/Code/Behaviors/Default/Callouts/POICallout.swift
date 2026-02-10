@@ -75,7 +75,7 @@ struct POICallout: POICalloutProtocol {
         return poi
     }
     
-    var marker: ReferenceEntity? {
+    var marker: RealmReferenceEntity? {
         // Check by both entity key and key in case this is a generic location marker
         return SpatialDataCache.referenceEntityByEntityKey(key)
     }

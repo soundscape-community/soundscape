@@ -26,9 +26,9 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var routeRemoved: [Route] = []
 
         var referenceLocation: CLLocation?
-        var referenceStored: [ReferenceEntity] = []
-        var referenceUpdated: [ReferenceEntity] = []
-        var referenceRemoved: [ReferenceEntity] = []
+        var referenceStored: [RealmReferenceEntity] = []
+        var referenceUpdated: [RealmReferenceEntity] = []
+        var referenceRemoved: [RealmReferenceEntity] = []
         var referenceSetDestinationResult = false
         var referenceSetDestinationError: Error?
         var referenceClearError: Error?
@@ -82,15 +82,15 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             referenceLocation
         }
 
-        func referenceStoreInCloud(_ entity: ReferenceEntity) {
+        func referenceStoreInCloud(_ entity: RealmReferenceEntity) {
             referenceStored.append(entity)
         }
 
-        func referenceUpdateInCloud(_ entity: ReferenceEntity) {
+        func referenceUpdateInCloud(_ entity: RealmReferenceEntity) {
             referenceUpdated.append(entity)
         }
 
-        func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
+        func referenceRemoveFromCloud(_ entity: RealmReferenceEntity) {
             referenceRemoved.append(entity)
         }
 
@@ -203,7 +203,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         provider.referenceSetDestinationResult = true
         DataRuntimeProviderRegistry.configure(with: provider)
 
-        let entity = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.60, longitude: -122.34))
+        let entity = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.60, longitude: -122.34))
 
         XCTAssertEqual(ReferenceEntityRuntime.currentUserLocation(), location)
         XCTAssertTrue((try? ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID("destination-1")) ?? false)

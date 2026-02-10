@@ -104,7 +104,7 @@ class UniversalLinkManager {
 extension UniversalLinkManager {
     
     @MainActor
-    static func shareMarker(_ marker: ReferenceEntity) -> URL? {
+    static func shareMarker(_ marker: RealmReferenceEntity) -> URL? {
         guard let parameters = MarkerParameters(marker: marker) else {
             return nil
         }

@@ -36,7 +36,7 @@ class MarkerModel: ObservableObject {
         self.location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         tokens.append(NotificationCenter.default.publisher(for: .markerUpdated).sink { [weak self] notification in
-            guard id == notification.userInfo?[ReferenceEntity.Keys.entityId] as? String else {
+            guard id == notification.userInfo?[RealmReferenceEntity.Keys.entityId] as? String else {
                 return
             }
             
@@ -62,7 +62,7 @@ class MarkerModel: ObservableObject {
         updateDistance(for: marker)
     }
     
-    private func updateDistance(for marker: ReferenceEntity) {
+    private func updateDistance(for marker: RealmReferenceEntity) {
         // Initialize `distance` and `direction` to an invalid value
         var distance = -1.0
         var direction = -1.0
@@ -150,8 +150,8 @@ struct MarkerCell_Previews: PreviewProvider {
         Realm.bootstrap()
         
         return Group {
-            MarkerCell(model: MarkerModel(id: ReferenceEntity.sample.id))
-            MarkerCell(model: MarkerModel(id: ReferenceEntity.sample3.id))
+            MarkerCell(model: MarkerModel(id: RealmReferenceEntity.sample.id))
+            MarkerCell(model: MarkerModel(id: RealmReferenceEntity.sample3.id))
         }
     }
 }

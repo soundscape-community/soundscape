@@ -87,7 +87,7 @@ class LocationDetailViewController: UIViewController {
         
         if let markerId = locationDetail.markerId {
             cancellable = NotificationCenter.default.publisher(for: .markerUpdated).sink { notification in
-                guard let id = notification.userInfo?[ReferenceEntity.Keys.entityId] as? String, id == markerId else {
+                guard let id = notification.userInfo?[RealmReferenceEntity.Keys.entityId] as? String, id == markerId else {
                     return
                 }
                 

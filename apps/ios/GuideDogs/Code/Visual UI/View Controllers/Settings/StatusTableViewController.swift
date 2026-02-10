@@ -331,7 +331,7 @@ extension StatusTableViewController {
         if deletePORs {
             do {
                 // Remove the reference entities (regardless of type)
-                try ReferenceEntity.removeAll()
+                try RealmReferenceEntity.removeAll()
                 
                 // Remove all routes
                 try Route.deleteAll()
@@ -340,7 +340,7 @@ extension StatusTableViewController {
             }
         } else {
             // Preserve addresses since they can't be reloaded like POI reference points can
-            for por in database.objects(ReferenceEntity.self) {
+            for por in database.objects(RealmReferenceEntity.self) {
                 if let entity = por.getPOI() as? Address, storedAddresses.contains(where: { $0.key == entity.key }) == false {
                     // Copy the address
                     storedAddresses.append(Address(value: entity))
@@ -425,7 +425,7 @@ extension StatusTableViewController {
         }
         
         do {
-            try ReferenceEntity.cleanCorruptEntities()
+            try RealmReferenceEntity.cleanCorruptEntities()
             GDLogAppVerbose("Successfully removed any corrupted Reference Entity objects (if any existed)")
         } catch {
             GDLogAppError("Unable to remove corrupted Reference Entity objects")

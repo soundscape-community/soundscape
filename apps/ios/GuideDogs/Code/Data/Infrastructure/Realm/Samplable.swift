@@ -24,27 +24,27 @@ extension CLLocation: Samplable {
     }
 }
 
-extension ReferenceEntity: Samplable {
-    static var samples: [ReferenceEntity] { [sample, sample2, sample3, sample4] }
+extension RealmReferenceEntity: Samplable {
+    static var samples: [RealmReferenceEntity] { [sample, sample2, sample3, sample4] }
     
-    static var sample: ReferenceEntity {
-        ReferenceEntity(location: .init(lat: 47.622918, lon: -122.338521, name: "Republic"),
+    static var sample: RealmReferenceEntity {
+        RealmReferenceEntity(location: .init(lat: 47.622918, lon: -122.338521, name: "Republic"),
                         name: "Republic",
                         estimatedAddress: "429 Westlake Ave N, Seattle, WA 98109",
                         annotation: "This is my favorite restaurant",
                         temp: false)
     }
     
-    static var sample2: ReferenceEntity {
-        ReferenceEntity(location: .init(lat: 47.618433, lon: -122.338346, name: "Whole Foods"),
+    static var sample2: RealmReferenceEntity {
+        RealmReferenceEntity(location: .init(lat: 47.618433, lon: -122.338346, name: "Whole Foods"),
                         name: "Grocery Store",
                         estimatedAddress: nil,
                         annotation: nil,
                         temp: false)
     }
     
-    static var sample3: ReferenceEntity {
-        let entity = ReferenceEntity(location: .init(lat: 47.620226, lon: -122.349204),
+    static var sample3: RealmReferenceEntity {
+        let entity = RealmReferenceEntity(location: .init(lat: 47.620226, lon: -122.349204),
                                      name: "Space Needle",
                                      estimatedAddress: "400 Broad St, Seattle, WA 98109",
                                      annotation: nil,
@@ -53,8 +53,8 @@ extension ReferenceEntity: Samplable {
         return entity
     }
     
-    static var sample4: ReferenceEntity {
-        let entity = ReferenceEntity(location: .init(lat: 47.627578, lon: -122.337055),
+    static var sample4: RealmReferenceEntity {
+        let entity = RealmReferenceEntity(location: .init(lat: 47.627578, lon: -122.337055),
                                      name: "Museum of History & Industry",
                                      estimatedAddress: nil,
                                      annotation: nil,
@@ -70,22 +70,22 @@ extension RouteWaypoint: Samplable {
     
     @MainActor
     static var sample: RouteWaypoint {
-        RouteWaypoint(index: 0, markerId: ReferenceEntity.sample.id)!
+        RouteWaypoint(index: 0, markerId: RealmReferenceEntity.sample.id)!
     }
     
     @MainActor
     static var sample2: RouteWaypoint {
-        RouteWaypoint(index: 1, markerId: ReferenceEntity.sample2.id)!
+        RouteWaypoint(index: 1, markerId: RealmReferenceEntity.sample2.id)!
     }
     
     @MainActor
     static var sample3: RouteWaypoint {
-        RouteWaypoint(index: 2, markerId: ReferenceEntity.sample3.id)!
+        RouteWaypoint(index: 2, markerId: RealmReferenceEntity.sample3.id)!
     }
     
     @MainActor
     static var sample4: RouteWaypoint {
-        RouteWaypoint(index: 3, markerId: ReferenceEntity.sample4.id)!
+        RouteWaypoint(index: 3, markerId: RealmReferenceEntity.sample4.id)!
     }
 }
 
@@ -108,7 +108,7 @@ extension Realm: Samplable {
             let realm = try Realm(configuration: RealmHelper.databaseConfig)
             try realm.write {
                 realm.deleteAll()
-                ReferenceEntity.samples.forEach { entity in
+                RealmReferenceEntity.samples.forEach { entity in
                     realm.add(entity)
                 }
                 
@@ -133,7 +133,7 @@ extension Realm: Samplable {
             let realm = try Realm(configuration: RealmHelper.databaseConfig)
             try realm.write {
                 realm.deleteAll()
-                realm.add(ReferenceEntity.samples)
+                realm.add(RealmReferenceEntity.samples)
                 realm.add(Route.samples)
             }
         } catch {

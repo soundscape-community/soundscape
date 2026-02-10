@@ -13,7 +13,7 @@ import RealmSwift
  Represents the waypoints belonging to a route.
  
  Each waypoint in the `Route` object is represented by
- an existing `ReferenceEntity` (e.g., `markerId`) and an
+ an existing `RealmReferenceEntity` (e.g., `markerId`) and an
  index that reflects the waypoint's ordering within the
  route.
  */
@@ -26,7 +26,7 @@ class RouteWaypoint: EmbeddedObject {
     // Represents the order that this waypoint will appear
     // in the `Route` object
     @Persisted var index: Int = -1
-    // `markerId` is the primary key for a `ReferenceEntity`
+    // `markerId` is the primary key for a `RealmReferenceEntity`
     // object
     @Persisted var markerId: String = ""
     // Use `locationDetail` to persist waypoint and marker data that is

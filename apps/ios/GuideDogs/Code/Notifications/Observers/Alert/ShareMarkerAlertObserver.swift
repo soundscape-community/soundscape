@@ -59,7 +59,7 @@ class ShareMarkerAlertObserver: NotificationObserver {
         self.delegate?.performSegue(self, destination: destination)
     }
     
-    private func segueToEditExistingMarker(marker: ReferenceEntity, nickname: String?, annotation: String?) {
+    private func segueToEditExistingMarker(marker: RealmReferenceEntity, nickname: String?, annotation: String?) {
         let destination = MarkerEditViewRepresentable(marker: marker, nickname: nickname, annotation: annotation, telemetryContext: "universal_link.existing")
         
         // Segue to edit marker view
@@ -91,7 +91,7 @@ class ShareMarkerAlertObserver: NotificationObserver {
             
             // Search for an existing reference entity at the given
             // location
-            let existingMarker: ReferenceEntity?
+            let existingMarker: RealmReferenceEntity?
             
             if let location = location as? GenericLocation {
                 existingMarker = SpatialDataCache.referenceEntityByGenericLocation(location)
@@ -143,7 +143,7 @@ class ShareMarkerAlertObserver: NotificationObserver {
         delegate?.stateDidChange(self)
     }
     
-    private func presentImportExistingMarkerAlert(existingMarker: ReferenceEntity, nickname: String?, annotation: String?) {
+    private func presentImportExistingMarkerAlert(existingMarker: RealmReferenceEntity, nickname: String?, annotation: String?) {
         GDATelemetry.track("deeplink.share_marker.alert_existing")
         
         let replaceHandler: (UIAlertAction) -> Void = { [weak self] (_) in

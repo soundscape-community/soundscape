@@ -714,7 +714,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     ///   - location: User's current location
     ///   - tiles: The set of tiles currently downloaded around the user
     /// - Returns: The set of tiles currently downloaded that should still be tracked, and a list of new tiles to download and track.
-    public class func checkForTiles(location: CLLocation, tiles: Set<VectorTile>, includePORs: Bool, prioritizeCurrent: Bool = false, destination: ReferenceEntity? = nil) -> (Set<VectorTile>, [VectorTile]) {
+    public class func checkForTiles(location: CLLocation, tiles: Set<VectorTile>, includePORs: Bool, prioritizeCurrent: Bool = false, destination: RealmReferenceEntity? = nil) -> (Set<VectorTile>, [VectorTile]) {
         guard !prioritizeCurrent else {
             var needed = [VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)]
             

@@ -78,7 +78,7 @@ struct ShareMarkerAlert: ShareAlertFactory {
         return UIActivityViewController(activityItems: items, applicationActivities: nil)
     }
     
-    static func shareMarker(_ marker: ReferenceEntity) -> UIActivityViewController? {
+    static func shareMarker(_ marker: RealmReferenceEntity) -> UIActivityViewController? {
         guard let url = UniversalLinkManager.shareMarker(marker) else {
             return nil
         }

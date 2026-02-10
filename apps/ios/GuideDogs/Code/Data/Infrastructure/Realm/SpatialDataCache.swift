@@ -12,14 +12,14 @@ import MapKit
 
 @MainActor
 protocol SpatialDataStore {
-    func referenceEntityByKey(_ key: String) -> ReferenceEntity?
-    func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity?
-    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity?
-    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity]
-    func referenceEntities() -> [ReferenceEntity]
+    func referenceEntityByKey(_ key: String) -> RealmReferenceEntity?
+    func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity?
+    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity?
+    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity]
+    func referenceEntities() -> [RealmReferenceEntity]
     func searchByKey(_ key: String) -> POI?
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
-    func referenceEntityByGenericLocation(_ location: GenericLocation) -> ReferenceEntity?
+    func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity?
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
@@ -31,30 +31,30 @@ protocol SpatialDataStore {
     func intersections(forRoadKey key: String) -> [Intersection]
     func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection?
     func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]?
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile>
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile>
     func tileData(for tiles: [VectorTile]) -> [TileData]
     func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI]
 }
 
 @MainActor
 struct DefaultSpatialDataStore: SpatialDataStore {
-    func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
+    func referenceEntityByKey(_ key: String) -> RealmReferenceEntity? {
         SpatialDataCache.referenceEntityByKey(key)
     }
 
-    func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity? {
+    func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity? {
         SpatialDataCache.referenceEntityByEntityKey(key)
     }
 
-    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity? {
+    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity? {
         SpatialDataCache.referenceEntityByLocation(coordinate)
     }
 
-    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity] {
+    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity] {
         SpatialDataCache.referenceEntitiesNear(coordinate, range: range)
     }
 
-    func referenceEntities() -> [ReferenceEntity] {
+    func referenceEntities() -> [RealmReferenceEntity] {
         SpatialDataCache.referenceEntities()
     }
 
@@ -63,27 +63,27 @@ struct DefaultSpatialDataStore: SpatialDataStore {
     }
 
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
-        try ReferenceEntity.add(detail: detail, telemetryContext: telemetryContext, notify: notify)
+        try RealmReferenceEntity.add(detail: detail, telemetryContext: telemetryContext, notify: notify)
     }
 
-    func referenceEntityByGenericLocation(_ location: GenericLocation) -> ReferenceEntity? {
+    func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity? {
         SpatialDataCache.referenceEntityByGenericLocation(location)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
-        try ReferenceEntity.add(location: location, estimatedAddress: estimatedAddress, temporary: true)
+        try RealmReferenceEntity.add(location: location, estimatedAddress: estimatedAddress, temporary: true)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
-        try ReferenceEntity.add(location: location, nickname: nickname, estimatedAddress: estimatedAddress, temporary: true)
+        try RealmReferenceEntity.add(location: location, nickname: nickname, estimatedAddress: estimatedAddress, temporary: true)
     }
 
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
-        try ReferenceEntity.add(entityKey: entityKey, nickname: nil, estimatedAddress: estimatedAddress, temporary: true)
+        try RealmReferenceEntity.add(entityKey: entityKey, nickname: nil, estimatedAddress: estimatedAddress, temporary: true)
     }
 
     func removeAllTemporaryReferenceEntities() throws {
-        try ReferenceEntity.removeAllTemporary()
+        try RealmReferenceEntity.removeAllTemporary()
     }
 
     func routes() -> [Route] {
@@ -114,7 +114,7 @@ struct DefaultSpatialDataStore: SpatialDataStore {
         SpatialDataCache.intersections(forRoadKey: key, inRegion: region)
     }
 
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile> {
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile> {
         SpatialDataCache.tiles(forDestinations: forDestinations,
                                forReferences: forReferences,
                                at: zoomLevel,
@@ -333,13 +333,13 @@ class SpatialDataCache: NSObject {
         return referenceEntityByKey(key) != nil
     }
     
-    static func referenceEntities(with predicate: NSPredicate) -> [ReferenceEntity] {
+    static func referenceEntities(with predicate: NSPredicate) -> [RealmReferenceEntity] {
         return autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 return []
             }
             
-            return Array(database.objects(ReferenceEntity.self).filter(predicate))
+            return Array(database.objects(RealmReferenceEntity.self).filter(predicate))
         }
     }
     
@@ -348,21 +348,21 @@ class SpatialDataCache: NSObject {
     ///
     /// Parameter: isTemp true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
     ///
-    static func referenceEntities(isTemp: Bool = false) -> [ReferenceEntity] {
+    static func referenceEntities(isTemp: Bool = false) -> [RealmReferenceEntity] {
         return referenceEntities(with: Predicates.isTemporary(isTemp))
     }
     
-    static func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
+    static func referenceEntityByKey(_ key: String) -> RealmReferenceEntity? {
         return autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 return nil
             }
             
-            return database.object(ofType: ReferenceEntity.self, forPrimaryKey: key)
+            return database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: key)
         }
     }
     
-    static func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity? {
+    static func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity? {
         return referenceEntities(with: NSPredicate(format: "entityKey = %@", key)).first ?? referenceEntityByKey(key)
     }
     
@@ -373,7 +373,7 @@ class SpatialDataCache: NSObject {
     /// - coordinate returns objects near the given coordiante
     /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
     ///
-    static func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D, isTemp: Bool? = false) -> ReferenceEntity? {
+    static func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D, isTemp: Bool? = false) -> RealmReferenceEntity? {
         return referenceEntitiesNear(coordinate, range: 1.0, isTemp: isTemp).first
     }
     
@@ -384,7 +384,7 @@ class SpatialDataCache: NSObject {
     /// - location returns objects near the given location
     /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
     ///
-    static func referenceEntityByGenericLocation(_ location: GenericLocation, isTemp: Bool? = false) -> ReferenceEntity? {
+    static func referenceEntityByGenericLocation(_ location: GenericLocation, isTemp: Bool? = false) -> RealmReferenceEntity? {
         return referenceEntityByLocation(location.location.coordinate, isTemp: isTemp)
     }
     
@@ -395,8 +395,8 @@ class SpatialDataCache: NSObject {
     /// - source defines what the reference entity is based on
     /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
     ///
-    static func referenceEntity(source: LocationDetail.Source, isTemp: Bool? = false) -> ReferenceEntity? {
-        var marker: ReferenceEntity?
+    static func referenceEntity(source: LocationDetail.Source, isTemp: Bool? = false) -> RealmReferenceEntity? {
+        var marker: RealmReferenceEntity?
         
         switch source {
         case .entity(let id): marker = SpatialDataCache.referenceEntityByEntityKey(id)
@@ -422,7 +422,7 @@ class SpatialDataCache: NSObject {
     /// - range search distance in meters
     /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
     ///
-    static func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance, isTemp: Bool? = false) -> [ReferenceEntity] {
+    static func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance, isTemp: Bool? = false) -> [RealmReferenceEntity] {
         var predicate: NSPredicate
         
         if let isTemp = isTemp {
@@ -505,7 +505,7 @@ class SpatialDataCache: NSObject {
     // MARK: VectorTile Tools
     
     @MainActor
-    static func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity? = nil) -> Set<VectorTile> {
+    static func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity? = nil) -> Set<VectorTile> {
         var tiles: Set<VectorTile> = []
         
         if forReferences {

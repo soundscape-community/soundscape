@@ -52,7 +52,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.titleLabel.accessibilityLabel = poi.localizedName
     }
     
-    private func configureTitle(_ cell: POITableViewCell, marker: ReferenceEntity) {
+    private func configureTitle(_ cell: POITableViewCell, marker: RealmReferenceEntity) {
         let name = marker.name
         
         cell.titleLabel.text = name
@@ -68,7 +68,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.detailLabel.text = poi.addressLine
     }
     
-    private func configureDetail(_ cell: POITableViewCell, marker: ReferenceEntity) {
+    private func configureDetail(_ cell: POITableViewCell, marker: RealmReferenceEntity) {
         cell.detailLabel.text = marker.displayAddress
     }
     
@@ -115,7 +115,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.imageViewType = .place
     }
     
-    private func configureImageView(_ cell: POITableViewCell, marker: ReferenceEntity) {
+    private func configureImageView(_ cell: POITableViewCell, marker: RealmReferenceEntity) {
         cell.imageViewType = .marker
     }
     

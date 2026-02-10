@@ -293,7 +293,7 @@ class MockSpatialData: SpatialDataProtocol {
 class MockDestinationManager: DestinationManagerProtocol {
     var destinationKey: String?
     var isDestinationSet: Bool = false
-    var destination: ReferenceEntity?
+    var destination: RealmReferenceEntity?
     var isAudioEnabled: Bool = false
     var isBeaconInBounds: Bool = false
     var isCurrentBeaconAsyncFinishable: Bool = false

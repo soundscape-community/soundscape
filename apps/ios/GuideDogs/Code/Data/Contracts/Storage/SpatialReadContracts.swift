@@ -93,7 +93,7 @@ protocol RouteReadCompatibilityContract {
 @MainActor
 @available(*, deprecated, message: "Temporary compatibility seam. Use async ReferenceReadContract APIs instead.")
 protocol ReferenceReadCompatibilityContract {
-    func referenceEntity(byID id: String) -> ReferenceEntity?
+    func referenceEntity(byID id: String) -> RealmReferenceEntity?
     func referenceCallout(byID id: String) -> ReferenceCalloutReadData?
     func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) -> Double?
     func referenceMetadata(byID id: String) -> ReferenceReadMetadata?
@@ -102,11 +102,11 @@ protocol ReferenceReadCompatibilityContract {
     func markerParameters(byCoordinate coordinate: SSGeoCoordinate) -> MarkerParameters?
     func markerParameters(byEntityKey key: String) -> MarkerParameters?
     func markerParametersForBackup() -> [MarkerParameters]
-    func referenceEntity(byEntityKey key: String) -> ReferenceEntity?
-    func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> ReferenceEntity?
-    func referenceEntity(byGenericLocation location: GenericLocation) -> ReferenceEntity?
-    func referenceEntities() -> [ReferenceEntity]
-    func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) -> [ReferenceEntity]
+    func referenceEntity(byEntityKey key: String) -> RealmReferenceEntity?
+    func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> RealmReferenceEntity?
+    func referenceEntity(byGenericLocation location: GenericLocation) -> RealmReferenceEntity?
+    func referenceEntities() -> [RealmReferenceEntity]
+    func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) -> [RealmReferenceEntity]
     func poi(byKey key: String) -> POI?
 }
 
@@ -122,7 +122,7 @@ protocol RoadGraphReadCompatibilityContract {
 @MainActor
 @available(*, deprecated, message: "Temporary compatibility seam. Use async TileReadContract APIs instead.")
 protocol TileReadCompatibilityContract {
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile>
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile>
     func tileData(for tiles: [VectorTile]) -> [TileData]
     func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) -> [POI]
 }

@@ -82,7 +82,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     }
     
     private var selectedPOI: POI?
-    private var referenceEntity: ReferenceEntity? {
+    private var referenceEntity: RealmReferenceEntity? {
         guard let selectedPOI = selectedPOI else { return nil }
         return SpatialDataCache.referenceEntityByEntityKey(selectedPOI.key)
     }

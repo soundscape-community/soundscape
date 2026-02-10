@@ -32,12 +32,12 @@ extension Array where Element: Hashable {
 }
 
 @MainActor
-extension Array where Element == ReferenceEntity {
+extension Array where Element == RealmReferenceEntity {
     private struct SortedEntity {
-        let entity: ReferenceEntity
+        let entity: RealmReferenceEntity
         let distance: CLLocationDistance
         
-        init(_ refEntity: ReferenceEntity, _ dist: CLLocationDistance) {
+        init(_ refEntity: RealmReferenceEntity, _ dist: CLLocationDistance) {
             entity = refEntity
             distance = dist
         }
@@ -50,7 +50,7 @@ extension Array where Element == ReferenceEntity {
     ///   - maxItems: Maximum number of items to be returned
     ///   - location: User's location
     /// - Returns: Sorted array of markers
-    func sort(maxItems: Int, location: CLLocation) -> [ReferenceEntity] {
+    func sort(maxItems: Int, location: CLLocation) -> [RealmReferenceEntity] {
         let queue = MarkerQueue(maxItems: maxItems, location: location)
         // Sort all elements in `self`
         queue.append(self)
@@ -60,7 +60,7 @@ extension Array where Element == ReferenceEntity {
     func selectNearestInEachQuadrant(location: CLLocation,
                                      heading: CLLocationDirection,
                                      maxDistance range: CLLocationDistance? = nil,
-                                     excludeEntitiesContainingLocation excluding: Bool = true) -> [CompassDirection: ReferenceEntity] {
+                                     excludeEntitiesContainingLocation excluding: Bool = true) -> [CompassDirection: RealmReferenceEntity] {
         // Get the quadrants (based on the user's current heading) used for grouping POIs
         let quadrants = SpatialDataView.getQuadrants(heading: heading)
         
@@ -98,7 +98,7 @@ extension Array where Element == ReferenceEntity {
             }
         }
         
-        var results: [CompassDirection: ReferenceEntity] = [:]
+        var results: [CompassDirection: RealmReferenceEntity] = [:]
         
         if let north = north?.entity {
             results[.north] = north

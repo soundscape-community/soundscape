@@ -31,7 +31,7 @@ class MarkerEditViewRepresentable: ViewControllerRepresentable {
     }
     
     @MainActor
-    init(marker: ReferenceEntity, nickname: String?, annotation: String?, telemetryContext: String) {
+    init(marker: RealmReferenceEntity, nickname: String?, annotation: String?, telemetryContext: String) {
         let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
         let locationDetail = LocationDetail(marker: marker, imported: importedDetail)
         

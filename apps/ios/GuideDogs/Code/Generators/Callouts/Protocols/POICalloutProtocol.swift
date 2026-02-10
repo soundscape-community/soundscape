@@ -13,7 +13,7 @@ protocol POICalloutProtocol: CalloutProtocol {
     
     var poi: POI? { get }
     
-    var marker: ReferenceEntity? { get }
+    var marker: RealmReferenceEntity? { get }
 }
 
 extension POICalloutProtocol {

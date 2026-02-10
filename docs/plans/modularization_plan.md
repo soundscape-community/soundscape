@@ -275,6 +275,14 @@ Phase 1 complete:
 - 2026-02-10: Extended contract seam tests for coordinate marker DTO dispatch (`DataContractRegistryDispatchTests` async + compatibility paths) and updated cloud contract mocks for protocol conformance.
 - 2026-02-10: Validation for coordinate marker DTO slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 - 2026-02-10: Reverted adjacent-marker subset DTO slice (`ReferenceAdjacentMarkerReadData`) to avoid proliferation of per-callsite partial models; plan direction now favors a canonical app-facing domain `ReferenceEntity` with Realm-specific persistence types isolated under infrastructure.
+- 2026-02-10: Renamed the existing Realm-backed entity class and callsites from `ReferenceEntity` to `RealmReferenceEntity` across app and tests, opening the `ReferenceEntity` type name for a domain model without introducing subset DTO sprawl.
+- 2026-02-10: Added an initial non-Realm `ReferenceEntity` value struct plus a `RealmReferenceEntity -> ReferenceEntity` mapping helper (`domainEntity`) as groundwork for boundary migration.
+- 2026-02-10: Updated `check_data_contract_infra_type_allowlist.sh` to track `RealmReferenceEntity` so contract leakage checks remain effective after the rename.
+- 2026-02-10: Validation for Realm-rename slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-10: Migrated async `Data/Contracts` marker entity surfaces to the app-facing domain type (`ReferenceReadContract` now returns `ReferenceEntity`; async tile reads now accept optional `ReferenceEntity` destination), while keeping deprecated sync compatibility contracts on `RealmReferenceEntity` to avoid broad caller churn in one slice.
+- 2026-02-10: Updated `RealmSpatialReadContract` async implementations to map `RealmReferenceEntity` values to domain `ReferenceEntity` (`domainEntity`) and resolve async tile destinations back to Realm via id lookup inside the adapter boundary.
+- 2026-02-10: Extended contract seam tests to conform to the new async domain entity signatures (`DataContractRegistryDispatchTests` and `CloudSyncContractBridgeTests`), preserving compatibility dispatch coverage for deprecated sync seams.
+- 2026-02-10: Validation for async domain-entity contract slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_realm_infrastructure_boundary.sh`, and `check_spatial_data_cache_seam.sh` pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -401,6 +409,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Introduce a canonical domain `ReferenceEntity` value type (non-Realm) in `Data/Domain` and keep it as the app-facing type across contracts and higher layers.
-2. Rename Realm persistence model to `RealmReferenceEntity` under `Data/Infrastructure/Realm`, add explicit mapping between domain and persistence types, and migrate repository/contract edges to return domain `ReferenceEntity` (not subset DTOs).
+1. Continue migrating deprecated sync compatibility reads from `RealmReferenceEntity` to the domain `ReferenceEntity` (starting with low-risk compatibility call chains in `DestinationManager`, `SpatialDataView`, and preview marker readers), then shrink the infra-type allowlist as each compatibility surface flips.
+2. Move persistence-heavy static operations off `RealmReferenceEntity` into infrastructure store/repository types so UI/behavior layers stop depending on Realm object semantics directly.
 3. Keep compatibility APIs temporary and explicit; only add specialized value shapes when they represent true independent concepts (for example serialized payload types), not narrow per-callsite field subsets.

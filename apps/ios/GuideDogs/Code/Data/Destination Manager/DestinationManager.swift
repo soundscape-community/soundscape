@@ -48,9 +48,9 @@ enum DestinationManagerRuntime {
 
 @MainActor
 protocol DestinationEntityStore {
-    func referenceEntity(forReferenceID id: String) -> ReferenceEntity?
-    func referenceEntity(forGenericLocation location: GenericLocation) -> ReferenceEntity?
-    func referenceEntity(forEntityKey key: String) -> ReferenceEntity?
+    func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity?
+    func referenceEntity(forGenericLocation location: GenericLocation) -> RealmReferenceEntity?
+    func referenceEntity(forEntityKey key: String) -> RealmReferenceEntity?
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
@@ -59,15 +59,15 @@ protocol DestinationEntityStore {
 
 @MainActor
 struct SpatialDataDestinationEntityStore: DestinationEntityStore {
-    func referenceEntity(forReferenceID id: String) -> ReferenceEntity? {
+    func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
         DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id)
     }
 
-    func referenceEntity(forGenericLocation location: GenericLocation) -> ReferenceEntity? {
+    func referenceEntity(forGenericLocation location: GenericLocation) -> RealmReferenceEntity? {
         DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: location)
     }
 
-    func referenceEntity(forEntityKey key: String) -> ReferenceEntity? {
+    func referenceEntity(forEntityKey key: String) -> RealmReferenceEntity? {
         DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)
     }
 
@@ -129,7 +129,7 @@ class DestinationManager: DestinationManagerProtocol {
         return destinationKey != nil
     }
     
-    var destination: ReferenceEntity? {
+    var destination: RealmReferenceEntity? {
         guard let destinationKey = self.destinationKey else {
             return nil
         }
@@ -296,10 +296,10 @@ class DestinationManager: DestinationManagerProtocol {
         return true
     }
     
-    /// Sets the provided ReferenceEntity as the current destination.
+    /// Sets the provided RealmReferenceEntity as the current destination.
     ///
     /// - Parameters:
-    ///   - referenceID: ID of the ReferenceEntity to set as the destination
+    ///   - referenceID: ID of the RealmReferenceEntity to set as the destination
     ///   - enableAudio: Flag indicating if the beacon should be turned on automatically for the destination
     ///   - userLocation: The user's current location
     ///   - logContext: The context of the call that will be passed to the telemetry service

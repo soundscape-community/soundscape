@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 import SSGeo
 
-/// Generic Location POIs act as the underlying POI for a ReferenceEntity that doesn't
+/// Generic Location POIs act as the underlying POI for a RealmReferenceEntity that doesn't
 /// refer to any of the other standard POI types (GDASpatialDataResultEntity or Address).
 /// This is used for POIs that were created based on the user's current location.
 @MainActor
@@ -72,7 +72,7 @@ class GenericLocation: SelectablePOI {
     
     // MARK: Initialization
 
-    init(ref: ReferenceEntity) {
+    init(ref: RealmReferenceEntity) {
         key = ref.id
         name = ref.nickname ?? ref.estimatedAddress ?? ""
         

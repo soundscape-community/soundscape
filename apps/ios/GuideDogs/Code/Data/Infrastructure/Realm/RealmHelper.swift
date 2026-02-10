@@ -38,7 +38,7 @@ class RealmHelper {
             }
         }
 
-        databaseConfig.objectTypes = [ReferenceEntity.self, Route.self, RouteWaypoint.self]
+        databaseConfig.objectTypes = [RealmReferenceEntity.self, Route.self, RouteWaypoint.self]
         
         self.databaseConfig = databaseConfig
     }

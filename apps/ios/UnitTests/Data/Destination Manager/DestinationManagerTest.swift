@@ -39,23 +39,23 @@ final class DestinationManagerTest: XCTestCase {
 
     @MainActor
     final class MockDestinationEntityStore: DestinationEntityStore {
-        var referenceEntityForReferenceIDHandler: ((String) -> ReferenceEntity?)?
-        var referenceEntityForGenericLocationHandler: ((GenericLocation) -> ReferenceEntity?)?
-        var referenceEntityForEntityKeyHandler: ((String) -> ReferenceEntity?)?
+        var referenceEntityForReferenceIDHandler: ((String) -> RealmReferenceEntity?)?
+        var referenceEntityForGenericLocationHandler: ((GenericLocation) -> RealmReferenceEntity?)?
+        var referenceEntityForEntityKeyHandler: ((String) -> RealmReferenceEntity?)?
         var addTemporaryReferenceEntityHandler: ((GenericLocation, String?) throws -> String)?
         var addTemporaryReferenceEntityWithNicknameHandler: ((GenericLocation, String?, String?) throws -> String)?
         var addTemporaryReferenceEntityForEntityKeyHandler: ((String, String?) throws -> String)?
         var removeAllTemporaryReferenceEntitiesHandler: (() throws -> Void)?
 
-        func referenceEntity(forReferenceID id: String) -> ReferenceEntity? {
+        func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
             referenceEntityForReferenceIDHandler?(id) ?? nil
         }
 
-        func referenceEntity(forGenericLocation location: GenericLocation) -> ReferenceEntity? {
+        func referenceEntity(forGenericLocation location: GenericLocation) -> RealmReferenceEntity? {
             referenceEntityForGenericLocationHandler?(location) ?? nil
         }
 
-        func referenceEntity(forEntityKey key: String) -> ReferenceEntity? {
+        func referenceEntity(forEntityKey key: String) -> RealmReferenceEntity? {
             referenceEntityForEntityKeyHandler?(key) ?? nil
         }
 
@@ -145,7 +145,7 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationUsesInjectedEntityStoreLookup() throws {
-        let testID = try ReferenceEntity.add(location: GenericLocation(lat: 42.7290570, lon: -73.6726370, name: "Test"), estimatedAddress: nil, temporary: true)
+        let testID = try RealmReferenceEntity.add(location: GenericLocation(lat: 42.7290570, lon: -73.6726370, name: "Test"), estimatedAddress: nil, temporary: true)
         let store = MockDestinationEntityStore()
         var lookedUpIDs: [String] = []
         var removeAllTemporaryCallCount = 0
@@ -156,7 +156,7 @@ final class DestinationManagerTest: XCTestCase {
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
             removeAllTemporaryCallCount += 1
-            try ReferenceEntity.removeAllTemporary()
+            try RealmReferenceEntity.removeAllTemporary()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)

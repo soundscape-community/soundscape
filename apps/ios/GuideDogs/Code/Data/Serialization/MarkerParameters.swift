@@ -20,7 +20,7 @@ struct MarkerParameters: Codable {
     
     // MARK: Properties
     
-    /// Refers to the `ReferenceEntity` id, if applicable
+    /// Refers to the `RealmReferenceEntity` id, if applicable
     let id: String?
     let nickname: String?
     let annotation: String?
@@ -81,7 +81,7 @@ struct MarkerParameters: Codable {
         self.location = location
     }
     
-    init?(marker: ReferenceEntity) {
+    init?(marker: RealmReferenceEntity) {
         let entity = marker.getPOI()
         let markerId = marker.id
         let estimatedAddress = marker.estimatedAddress

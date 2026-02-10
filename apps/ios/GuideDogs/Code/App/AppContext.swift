@@ -43,9 +43,9 @@ protocol RouteRuntimeProviding {
 @MainActor
 protocol ReferenceEntityRuntimeProviding {
     func referenceCurrentUserLocation() -> CLLocation?
-    func referenceStoreInCloud(_ entity: ReferenceEntity)
-    func referenceUpdateInCloud(_ entity: ReferenceEntity)
-    func referenceRemoveFromCloud(_ entity: ReferenceEntity)
+    func referenceStoreInCloud(_ entity: RealmReferenceEntity)
+    func referenceUpdateInCloud(_ entity: RealmReferenceEntity)
+    func referenceRemoveFromCloud(_ entity: RealmReferenceEntity)
     func referenceProcessEvent(_ event: Event)
     func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool
     func referenceClearDestinationForCacheReset() throws
@@ -147,15 +147,15 @@ private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
         return nil
     }
 
-    func referenceStoreInCloud(_ entity: ReferenceEntity) {
+    func referenceStoreInCloud(_ entity: RealmReferenceEntity) {
         debugAssertUnconfigured(#function)
     }
 
-    func referenceUpdateInCloud(_ entity: ReferenceEntity) {
+    func referenceUpdateInCloud(_ entity: RealmReferenceEntity) {
         debugAssertUnconfigured(#function)
     }
 
-    func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
+    func referenceRemoveFromCloud(_ entity: RealmReferenceEntity) {
         debugAssertUnconfigured(#function)
     }
 
@@ -281,15 +281,15 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
         context.geolocationManager.location
     }
 
-    func referenceStoreInCloud(_ entity: ReferenceEntity) {
+    func referenceStoreInCloud(_ entity: RealmReferenceEntity) {
         context.cloudKeyValueStore.store(referenceEntity: entity)
     }
 
-    func referenceUpdateInCloud(_ entity: ReferenceEntity) {
+    func referenceUpdateInCloud(_ entity: RealmReferenceEntity) {
         context.cloudKeyValueStore.update(referenceEntity: entity)
     }
 
-    func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
+    func referenceRemoveFromCloud(_ entity: RealmReferenceEntity) {
         context.cloudKeyValueStore.remove(referenceEntity: entity)
     }
 

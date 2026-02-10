@@ -290,7 +290,7 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
     }
     
     private func getCalloutsForMarkers(location: CLLocation, requiredMarkerKeys: [String]) -> [CalloutProtocol] {
-        var markers: [ReferenceEntity] = []
+        var markers: [RealmReferenceEntity] = []
         var range = spatialDataType.initialPOISearchDistance
         while range <= spatialDataType.cacheDistance {
             defer {

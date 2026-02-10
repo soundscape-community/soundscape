@@ -14,12 +14,12 @@ import MapKit
 @MainActor
 final class RouteStorageProviderDispatchTests: XCTestCase {
     final class MockSpatialDataStore: SpatialDataStore {
-        var referenceEntitiesByKey: [String: ReferenceEntity] = [:]
-        var referenceEntitiesByEntityKey: [String: ReferenceEntity] = [:]
-        var referenceEntitiesByLocation: [String: ReferenceEntity] = [:]
-        var referenceEntitiesNearByLocation: [String: [ReferenceEntity]] = [:]
-        var referenceEntitiesByGenericLocation: [String: ReferenceEntity] = [:]
-        var referenceEntitiesToReturn: [ReferenceEntity] = []
+        var referenceEntitiesByKey: [String: RealmReferenceEntity] = [:]
+        var referenceEntitiesByEntityKey: [String: RealmReferenceEntity] = [:]
+        var referenceEntitiesByLocation: [String: RealmReferenceEntity] = [:]
+        var referenceEntitiesNearByLocation: [String: [RealmReferenceEntity]] = [:]
+        var referenceEntitiesByGenericLocation: [String: RealmReferenceEntity] = [:]
+        var referenceEntitiesToReturn: [RealmReferenceEntity] = []
         var searchResultsByKey: [String: POI] = [:]
         var addedReferenceEntityID = "mock-added-reference-entity-id"
         var addedTemporaryReferenceEntityID = "mock-temp-reference-entity-id"
@@ -57,29 +57,29 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var tileDataCallQuadKeys: [[String]] = []
         private(set) var genericLocationsNearCallKeys: [String] = []
 
-        func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
+        func referenceEntityByKey(_ key: String) -> RealmReferenceEntity? {
             referenceEntityByKeyCallKeys.append(key)
             return referenceEntitiesByKey[key]
         }
 
-        func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity? {
+        func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity? {
             referenceEntityByEntityKeyCallKeys.append(key)
             return referenceEntitiesByEntityKey[key]
         }
 
-        func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> ReferenceEntity? {
+        func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity? {
             let key = locationKey(for: coordinate)
             referenceEntityByLocationCallKeys.append(key)
             return referenceEntitiesByLocation[key]
         }
 
-        func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity] {
+        func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity] {
             let key = "\(locationKey(for: coordinate))@\(range)"
             referenceEntitiesNearCallKeys.append(key)
             return referenceEntitiesNearByLocation[key] ?? []
         }
 
-        func referenceEntities() -> [ReferenceEntity] {
+        func referenceEntities() -> [RealmReferenceEntity] {
             referenceEntitiesCallCount += 1
             return referenceEntitiesToReturn
         }
@@ -94,7 +94,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             return addedReferenceEntityID
         }
 
-        func referenceEntityByGenericLocation(_ location: GenericLocation) -> ReferenceEntity? {
+        func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity? {
             let key = locationKey(for: location.location.coordinate)
             referenceEntityByGenericLocationCallKeys.append(key)
             return referenceEntitiesByGenericLocation[key]
@@ -156,7 +156,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             return intersectionsByRoadRegionKey[lookupKey]
         }
 
-        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) -> Set<VectorTile> {
+        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile> {
             let destinationKey: String
             if let destination = destination {
                 destinationKey = "\(destination.latitude),\(destination.longitude)"
@@ -269,7 +269,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     func testMarkerParametersInitMarkerIDUsesInjectedSpatialStoreLookup() {
         let markerID = "marker-id"
-        let marker = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
         marker.id = markerID
 
         let store = MockSpatialDataStore()
@@ -286,7 +286,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let genericLocation = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Generic")
         let expectedCoordinate = genericLocation.location.coordinate
         let locationLookupKey = "\(expectedCoordinate.latitude),\(expectedCoordinate.longitude)"
-        let marker = ReferenceEntity(coordinate: expectedCoordinate, entityKey: nil)
+        let marker = RealmReferenceEntity(coordinate: expectedCoordinate, entityKey: nil)
 
         let store = MockSpatialDataStore()
         store.referenceEntitiesByLocation[locationLookupKey] = marker
@@ -299,7 +299,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     }
 
     func testSpatialDataStoreReferenceEntityByEntityKeyDispatchesToInjectedStore() {
-        let marker = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
         let entityKey = "entity-key"
         let store = MockSpatialDataStore()
         store.referenceEntitiesByEntityKey[entityKey] = marker
@@ -313,7 +313,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     func testSpatialDataStoreReferenceEntityByGenericLocationDispatchesToInjectedStore() {
         let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Generic")
-        let marker = ReferenceEntity(coordinate: location.location.coordinate)
+        let marker = RealmReferenceEntity(coordinate: location.location.coordinate)
         let key = "\(location.location.coordinate.latitude),\(location.location.coordinate.longitude)"
 
         let store = MockSpatialDataStore()
@@ -329,7 +329,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     func testSpatialDataStoreReferenceEntitiesNearDispatchesToInjectedStore() {
         let coordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
         let range = CalloutRangeContext.streetPreview.searchDistance
-        let marker = ReferenceEntity(coordinate: coordinate)
+        let marker = RealmReferenceEntity(coordinate: coordinate)
         let locationLookupKey = "\(coordinate.latitude),\(coordinate.longitude)@\(range)"
 
         let store = MockSpatialDataStore()
@@ -487,7 +487,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     func testSpatialDataStoreTilesDispatchesToInjectedStore() {
         let zoomLevel: UInt = 16
-        let destination = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        let destination = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
         let expectedTile = VectorTile(latitude: 47.6205, longitude: -122.3493, zoom: zoomLevel)
         let expectedCallKey = "true|true|\(zoomLevel)|\(destination.latitude),\(destination.longitude)"
 
@@ -547,7 +547,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         store.searchResultsByKey[key] = poi
         SpatialDataStoreRegistry.configure(with: store)
 
-        let reference = ReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493),
+        let reference = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493),
                                         entityKey: key)
         _ = reference.getPOI()
 
@@ -559,7 +559,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let store = MockSpatialDataStore()
         SpatialDataStoreRegistry.configure(with: store)
 
-        XCTAssertThrowsError(try ReferenceEntity.add(entityKey: missingKey,
+        XCTAssertThrowsError(try RealmReferenceEntity.add(entityKey: missingKey,
                                                      nickname: nil,
                                                      estimatedAddress: nil,
                                                      annotation: nil,
@@ -578,7 +578,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     func testReferenceEntityAddLocationUsesInjectedSpatialStoreGenericLocationLookup() throws {
         let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Lookup")
-        let existingMarker = ReferenceEntity(coordinate: location.location.coordinate,
+        let existingMarker = RealmReferenceEntity(coordinate: location.location.coordinate,
                                              entityKey: nil,
                                              name: "Existing")
         existingMarker.nickname = "Existing"
@@ -588,7 +588,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         store.referenceEntitiesByGenericLocation[key] = existingMarker
         SpatialDataStoreRegistry.configure(with: store)
 
-        let id = try ReferenceEntity.add(location: location,
+        let id = try RealmReferenceEntity.add(location: location,
                                          nickname: nil,
                                          estimatedAddress: nil,
                                          annotation: nil,

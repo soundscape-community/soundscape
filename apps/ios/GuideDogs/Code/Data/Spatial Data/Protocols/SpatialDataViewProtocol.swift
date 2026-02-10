@@ -8,7 +8,7 @@
 
 protocol SpatialDataViewProtocol {
     var pois: [POI] { get }
-    var markedPoints: [ReferenceEntity] { get }
+    var markedPoints: [RealmReferenceEntity] { get }
     var intersections: [Intersection] { get }
     var roads: [Road] { get }
     

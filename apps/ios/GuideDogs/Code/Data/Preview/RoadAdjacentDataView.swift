@@ -310,8 +310,8 @@ extension RoadAdjacentDataView {
     }
     
     /// Returns the markers that can be called out whaile walking along a path
-    private static func markersAlongPath(_ coordinates: [CLLocationCoordinate2D]) -> [ReferenceEntity] {
-        var markers: [ReferenceEntity] = []
+    private static func markersAlongPath(_ coordinates: [CLLocationCoordinate2D]) -> [RealmReferenceEntity] {
+        var markers: [RealmReferenceEntity] = []
         
         let updateFilter = LocationUpdateFilter(minTime: 0.0, minDistance: 5.0)
         
@@ -351,7 +351,7 @@ extension RoadAdjacentDataView {
     /// Returns the valid markers that can be called out along a path.
     /// This takes into account the marker callout history from previous roads (if given).
     private static func validMarkersAlongPath(_ coordinates: [CLLocationCoordinate2D],
-                                              from: RoadAdjacentDataView? = nil) -> [ReferenceEntity] {
+                                              from: RoadAdjacentDataView? = nil) -> [RealmReferenceEntity] {
         let allMarkers = RoadAdjacentDataView.markersAlongPath(coordinates)
         
         guard !allMarkers.isEmpty else {
@@ -363,7 +363,7 @@ extension RoadAdjacentDataView {
             return allMarkers
         }
             
-        var validMarkers: [ReferenceEntity] = []
+        var validMarkers: [RealmReferenceEntity] = []
         
         // The previous endpoint location (which is the current origin position)
         let endpointLocation = from.endpoint.coordinate
@@ -386,7 +386,7 @@ extension RoadAdjacentDataView {
     }
     
     /// Returns a marker callout history based on new found markers and marker callout history.
-    private static func updatedMarkerHistory(newMarkers: [ReferenceEntity],
+    private static func updatedMarkerHistory(newMarkers: [RealmReferenceEntity],
                                              targetLocation: CLLocationCoordinate2D,
                                              from: RoadAdjacentDataView? = nil) -> [ReferenceEntityID: CLLocationCoordinate2D] {
         var updatedHistory: [ReferenceEntityID: CLLocationCoordinate2D] = [:]

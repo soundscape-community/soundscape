@@ -20,7 +20,7 @@ class SpatialDataView: SpatialDataViewProtocol {
     private let tiles: [TileData]
     
     /// The current destination
-    private let destination: ReferenceEntity?
+    private let destination: RealmReferenceEntity?
     
     // The current set of user defined PORs
     private let genericLocations: [POI]
@@ -30,7 +30,7 @@ class SpatialDataView: SpatialDataViewProtocol {
     
     // MARK: Public Properties
     
-    let markedPoints: [ReferenceEntity]
+    let markedPoints: [RealmReferenceEntity]
     
     /// Aggregated list of all POIs in the current spatial data view
     lazy var pois: [POI] = {

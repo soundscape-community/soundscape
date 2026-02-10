@@ -29,7 +29,7 @@ class MarkerLoader: ObservableObject {
         loadTask?.cancel()
         
         loadTask = Task {
-            let sortedKeys = await ReferenceEntity.asyncObjectKeys(sortedBy: sort)
+            let sortedKeys = await RealmReferenceEntity.asyncObjectKeys(sortedBy: sort)
             
             guard !Task.isCancelled else { return }
             
@@ -47,7 +47,7 @@ class MarkerLoader: ObservableObject {
         
         markerIDs.remove(at: index)
         
-        try ReferenceEntity.remove(id: id)
+        try RealmReferenceEntity.remove(id: id)
         UIAccessibility.post(notification: .announcement, argument: GDLocalizedString("markers.action.deleted"))
     }
     

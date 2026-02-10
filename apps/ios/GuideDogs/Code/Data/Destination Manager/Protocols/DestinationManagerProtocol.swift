@@ -17,7 +17,7 @@ protocol DestinationManagerProtocol: AnyObject {
     
     var isDestinationSet: Bool { get }
     
-    var destination: ReferenceEntity? { get }
+    var destination: RealmReferenceEntity? { get }
     
     var isAudioEnabled: Bool { get }
     

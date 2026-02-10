@@ -23,7 +23,7 @@ class DestinationTutorialPage: BaseTutorialViewController {
     
     weak var delegate: DestinationTutorialPageDelegate?
     
-    var entity: ReferenceEntity? {
+    var entity: RealmReferenceEntity? {
         guard let key = delegate?.getEntityKey() else {
             return nil
         }

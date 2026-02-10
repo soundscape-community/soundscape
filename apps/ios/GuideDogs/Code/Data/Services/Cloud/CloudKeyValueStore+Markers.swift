@@ -52,7 +52,7 @@ extension CloudKeyValueStore {
     // MARK: Individual Set/Get
     
     /// Returns "marker.object_id"
-    private static func key(for referenceEntity: ReferenceEntity) -> String {
+    private static func key(for referenceEntity: RealmReferenceEntity) -> String {
         return CloudKeyValueStore.markerKeyPrefix + "." + referenceEntity.id
     }
 
@@ -66,7 +66,7 @@ extension CloudKeyValueStore {
         return referenceEntityKey.replacingOccurrences(of: CloudKeyValueStore.markerKeyPrefix + ".", with: "")
     }
     
-    func store(referenceEntity: ReferenceEntity) {
+    func store(referenceEntity: RealmReferenceEntity) {
         if let markerParameters = MarkerParameters(marker: referenceEntity) {
             store(markerParameters: markerParameters)
         } else {
@@ -77,12 +77,12 @@ extension CloudKeyValueStore {
         }
     }
     
-    func update(referenceEntity: ReferenceEntity) {
+    func update(referenceEntity: RealmReferenceEntity) {
         // For iCloud key-value store we override the current value
         store(referenceEntity: referenceEntity)
     }
     
-    func remove(referenceEntity: ReferenceEntity) {
+    func remove(referenceEntity: RealmReferenceEntity) {
         removeObject(forKey: CloudKeyValueStore.key(for: referenceEntity))
     }
     
@@ -151,10 +151,10 @@ extension CloudKeyValueStore {
 
         switch result {
         case .success(let entity):
-            if let referenceEntity = ReferenceEntity(markerParameters: markerParameters, entity: entity) {
+            if let referenceEntity = RealmReferenceEntity(markerParameters: markerParameters, entity: entity) {
                 importChanges(referenceEntity: referenceEntity)
             } else {
-                GDLogCloudInfo("Error initializing `ReferenceEntity` object for marker with id: \(markerParameters.id ?? "none")")
+                GDLogCloudInfo("Error initializing `RealmReferenceEntity` object for marker with id: \(markerParameters.id ?? "none")")
             }
         case .failure(let error):
             GDLogCloudInfo("Error loading underlying entity: \(error)")
@@ -162,7 +162,7 @@ extension CloudKeyValueStore {
     }
     
     /// Import reference entities from cloud store to database
-    private func importChanges(referenceEntity: ReferenceEntity) {
+    private func importChanges(referenceEntity: RealmReferenceEntity) {
         autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else { return }
             

@@ -14,7 +14,7 @@ import UIKit
 class MarkerTableViewCellConfigurator: TableViewCellConfigurator {
     
     typealias TableViewCell = POITableViewCell
-    typealias Model = ReferenceEntity
+    typealias Model = RealmReferenceEntity
     
     // MARK: Properties
     
@@ -44,7 +44,7 @@ class MarkerTableViewCellConfigurator: TableViewCellConfigurator {
     
     // MARK: `TableViewCellConfigurator`
     
-    func configure(_ cell: POITableViewCell, forDisplaying model: ReferenceEntity) {
+    func configure(_ cell: POITableViewCell, forDisplaying model: RealmReferenceEntity) {
         // Use the default configuration for a POI
         poiCellConfigurator.configure(cell, forDisplaying: model.getPOI())
         

@@ -1,5 +1,5 @@
 //
-//  ReferenceEntity.swift
+//  RealmReferenceEntity.swift
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
@@ -11,21 +11,80 @@ import CoreLocation
 import RealmSwift
 import SSGeo
 
+struct ReferenceEntity: Identifiable, Equatable {
+    let id: String
+    let entityKey: String?
+    let lastUpdatedDate: Date?
+    let lastSelectedDate: Date?
+    let isNew: Bool
+    let isTemp: Bool
+    let coordinate: SSGeoCoordinate
+    let nickname: String?
+    let estimatedAddress: String?
+    let annotation: String?
+
+    var latitude: Double {
+        coordinate.latitude
+    }
+
+    var longitude: Double {
+        coordinate.longitude
+    }
+
+    init(
+        id: String,
+        entityKey: String?,
+        lastUpdatedDate: Date?,
+        lastSelectedDate: Date?,
+        isNew: Bool,
+        isTemp: Bool,
+        coordinate: SSGeoCoordinate,
+        nickname: String?,
+        estimatedAddress: String?,
+        annotation: String?
+    ) {
+        self.id = id
+        self.entityKey = entityKey
+        self.lastUpdatedDate = lastUpdatedDate
+        self.lastSelectedDate = lastSelectedDate
+        self.isNew = isNew
+        self.isTemp = isTemp
+        self.coordinate = coordinate
+        self.nickname = nickname
+        self.estimatedAddress = estimatedAddress
+        self.annotation = annotation
+    }
+
+    @MainActor
+    init(realmEntity: RealmReferenceEntity) {
+        self.init(id: realmEntity.id,
+                  entityKey: realmEntity.entityKey,
+                  lastUpdatedDate: realmEntity.lastUpdatedDate,
+                  lastSelectedDate: realmEntity.lastSelectedDate,
+                  isNew: realmEntity.isNew,
+                  isTemp: realmEntity.isTemp,
+                  coordinate: realmEntity.geoCoordinate,
+                  nickname: realmEntity.nickname,
+                  estimatedAddress: realmEntity.estimatedAddress,
+                  annotation: realmEntity.annotation)
+    }
+}
+
 @MainActor
 enum ReferenceEntityRuntime {
     static func currentUserLocation() -> CLLocation? {
         DataRuntimeProviderRegistry.providers.referenceCurrentUserLocation()
     }
 
-    static func storeReferenceInCloud(_ entity: ReferenceEntity) {
+    static func storeReferenceInCloud(_ entity: RealmReferenceEntity) {
         DataRuntimeProviderRegistry.providers.referenceStoreInCloud(entity)
     }
 
-    static func updateReferenceInCloud(_ entity: ReferenceEntity) {
+    static func updateReferenceInCloud(_ entity: RealmReferenceEntity) {
         DataRuntimeProviderRegistry.providers.referenceUpdateInCloud(entity)
     }
 
-    static func removeReferenceFromCloud(_ entity: ReferenceEntity) {
+    static func removeReferenceFromCloud(_ entity: RealmReferenceEntity) {
         DataRuntimeProviderRegistry.providers.referenceRemoveFromCloud(entity)
     }
 
@@ -60,7 +119,7 @@ extension Notification.Name {
 }
 
 @MainActor
-class ReferenceEntity: Object, ObjectKeyIdentifiable {
+class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     // MARK: Constants
     
     struct Keys {
@@ -266,7 +325,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     
     // MARK: Methods
     
-    /// Helper method for calculating the distance from this ReferenceEntity to
+    /// Helper method for calculating the distance from this RealmReferenceEntity to
     /// another coordinate.
     ///
     /// - Parameter from: The other location
@@ -292,10 +351,10 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     }
     
     /// Helper method for calculating the closest location on the underlying POI for this
-    /// ReferenceEntity. Uses entrances on the entity if any exist.
+    /// RealmReferenceEntity. Uses entrances on the entity if any exist.
     ///
     /// - Parameter location: The user's location
-    /// - Returns: Closest location on the ReferenceEntity
+    /// - Returns: Closest location on the RealmReferenceEntity
     func closestLocation(from location: CLLocation) -> CLLocation {
         if let poi = _poi {
             return poi.closestLocation(from: location, useEntranceIfAvailable: true)
@@ -306,7 +365,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     
     /// Gets the POI for the reference entity.
     ///
-    /// - Returns: A POI referenced by this ReferenceEntity
+    /// - Returns: A POI referenced by this RealmReferenceEntity
     func getPOI() -> POI {
         return _poi ?? GenericLocation(ref: self)
     }
@@ -331,7 +390,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             }
         }
         
-        ReferenceEntity.notifyEntityUpdated(id)
+        RealmReferenceEntity.notifyEntityUpdated(id)
     }
     
     func setTemporary(_ flag: Bool) throws {
@@ -343,7 +402,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             self.isNew = newFlag
         }
         
-        ReferenceEntity.notifyEntityUpdated(id)
+        RealmReferenceEntity.notifyEntityUpdated(id)
     }
     
     // MARK: Static Methods
@@ -405,7 +464,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             }
             
             // Add reference entity
-            let reference = ReferenceEntity(coordinate: entity.centroidCoordinate,
+            let reference = RealmReferenceEntity(coordinate: entity.centroidCoordinate,
                                             entityKey: entityKey,
                                             name: nickname,
                                             estimatedAddress: addr,
@@ -457,7 +516,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     ///   - annotation: annotation of the reference entity
     ///   - isTemp: `true` if the reference entity is temporary (e.g. audio beacon), otherwise `false`
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
-    static func update(entity: ReferenceEntity, location: CLLocationCoordinate2D? = nil, nickname: String?, address: String?, annotation: String?, context: String? = nil, isTemp: Bool) throws {
+    static func update(entity: RealmReferenceEntity, location: CLLocationCoordinate2D? = nil, nickname: String?, address: String?, annotation: String?, context: String? = nil, isTemp: Bool) throws {
         var locChanged: Bool = false
         if let loc = location, loc != entity.coordinate {
             locChanged = true
@@ -522,7 +581,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
             GDATelemetry.track("markers.edited", with: ["includesAnnotation": includesAnnotation, "context": context ?? "none"])
             
-            ReferenceEntity.notifyEntityUpdated(entity.id)
+            RealmReferenceEntity.notifyEntityUpdated(entity.id)
             
             if locChanged {
                 // Update all routes whose first waypoint is the given entity
@@ -582,7 +641,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
                 address = estimatedAddress
             }
             
-            let reference = ReferenceEntity(location: location, name: name, estimatedAddress: address, annotation: annotation, temp: temporary)
+            let reference = RealmReferenceEntity(location: location, name: name, estimatedAddress: address, annotation: annotation, temp: temporary)
             reference.lastUpdatedDate = Date()
             
             try database.write {
@@ -609,7 +668,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     
     private static func notifyEntityAdded(_ id: String) {
         ReferenceEntityRuntime.processEvent(MarkerAddedEvent(id))
-        NotificationCenter.default.post(name: Notification.Name.markerAdded, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
+        NotificationCenter.default.post(name: Notification.Name.markerAdded, object: self, userInfo: [RealmReferenceEntity.Keys.entityId: id])
     }
     
     private static func notifyEntityUpdated(_ id: String) {
@@ -627,13 +686,13 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Throws: If the database/cache cannot be accessed or no reference entity exists for the provided ID
     static func remove(id: String) throws {
         if try ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID(id) {
-            ReferenceEntity.notifyEntityRemoved(id)
+            RealmReferenceEntity.notifyEntityRemoved(id)
             return
         }
         
         let database = try RealmHelper.getDatabaseRealm()
         
-        guard let entity = database.object(ofType: ReferenceEntity.self, forPrimaryKey: id) else {
+        guard let entity = database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: id) else {
             return
         }
         
@@ -655,7 +714,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         GDATelemetry.track("markers.removed")
         GDATelemetry.helper?.markerCountRemoved += 1
         
-        ReferenceEntity.notifyEntityRemoved(id)
+        RealmReferenceEntity.notifyEntityRemoved(id)
     }
     
     /// Removes all reference entities. Because the destination is a marker, this also clears the destination.
@@ -668,10 +727,10 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         let database = try RealmHelper.getDatabaseRealm()
         
         // There is no code to remove corresponding route waypoints
-        // because `ReferenceEntity.removeAll` is only called from `StatusTableViewController`
+        // because `RealmReferenceEntity.removeAll` is only called from `StatusTableViewController`
         // which separately calls `Route.deleteAll`
         
-        for entity in database.objects(ReferenceEntity.self) {
+        for entity in database.objects(RealmReferenceEntity.self) {
             let id = entity.id
             
             ReferenceEntityRuntime.removeReferenceFromCloud(entity)
@@ -682,7 +741,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
                 GDATelemetry.track("markers.removed")
                 GDATelemetry.helper?.markerCountRemoved += 1
                 
-                ReferenceEntity.notifyEntityRemoved(id)
+                RealmReferenceEntity.notifyEntityRemoved(id)
             }
         }
     }
@@ -693,7 +752,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     static func removeAllTemporary() throws {
         let database = try RealmHelper.getDatabaseRealm()
         
-        for entity in database.objects(ReferenceEntity.self).filter("isTemp == true") {
+        for entity in database.objects(RealmReferenceEntity.self).filter("isTemp == true") {
             try database.write {
                 database.delete(entity)
             }
@@ -704,7 +763,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         // Create the action buttons for the alert.
         let deleteAction = UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive) { (_) in
             do {
-                try ReferenceEntity.remove(id: id)
+                try RealmReferenceEntity.remove(id: id)
             } catch {
                 GDLogAppError("Unable to successfully delete the reference entity (id: \(id))")
             }
@@ -735,9 +794,9 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             
             switch sortedBy {
             case .alphanumeric:
-                return database.objects(ReferenceEntity.self)
+                return database.objects(RealmReferenceEntity.self)
                     .filter("isTemp == false")
-                    .map({ entity -> (ref: ReferenceEntity, name: String) in
+                    .map({ entity -> (ref: RealmReferenceEntity, name: String) in
                         return (ref: entity, name: entity.name)
                     })
                     .sorted(by: { $0.name < $1.name })
@@ -746,9 +805,9 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             case .distance:
                 let loc = ReferenceEntityRuntime.currentUserLocation() ?? CLLocation(latitude: 0.0, longitude: 0.0)
                 
-                return database.objects(ReferenceEntity.self)
+                return database.objects(RealmReferenceEntity.self)
                     .filter("isTemp == false")
-                    .map({ entity -> (ref: ReferenceEntity, dist: CLLocationDistance) in
+                    .map({ entity -> (ref: RealmReferenceEntity, dist: CLLocationDistance) in
                         return (ref: entity, dist: entity.distanceToClosestLocation(from: loc))
                     })
                     .sorted(by: { $0.dist < $1.dist })
@@ -768,12 +827,19 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     
     static func cleanCorruptEntities() throws {
         try autoreleasepool {
-            let entities = try RealmHelper.getDatabaseRealm().objects(ReferenceEntity.self).filter("isTemp == false")
+            let entities = try RealmHelper.getDatabaseRealm().objects(RealmReferenceEntity.self).filter("isTemp == false")
             
             for ref in entities where ref.nickname == nil && ref._poi == nil {
                 // If the backing POI doesn't exist and this isn't a generic location (no nickname), remove the POR
-                try ReferenceEntity.remove(id: ref.id)
+                try RealmReferenceEntity.remove(id: ref.id)
             }
         }
+    }
+}
+
+extension RealmReferenceEntity {
+    @MainActor
+    var domainEntity: ReferenceEntity {
+        ReferenceEntity(realmEntity: self)
     }
 }

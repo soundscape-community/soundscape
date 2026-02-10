@@ -210,7 +210,7 @@ extension SearchWaypointViewController: POITableViewDelegate {
             // Listen for a marker to be added
             cancellable = NotificationCenter.default.publisher(for: .markerAdded)
                 .first()
-                .compactMap({ $0.userInfo?[ReferenceEntity.Keys.entityId] as? String })
+                .compactMap({ $0.userInfo?[RealmReferenceEntity.Keys.entityId] as? String })
                 .sink(receiveValue: { [weak self] markerId in
                     self?.addedMarker(id: markerId)
                 })

@@ -306,7 +306,7 @@ struct EditMarkerView: View {
                                annotation: finalAnnotation)
         } else if case .entity(let id) = locationDetail.source, updatedLocation == nil {
             // If this is a new marker that refers to an underlying POI, create a new reference point
-            markerId = try ReferenceEntity.add(entityKey: id,
+            markerId = try RealmReferenceEntity.add(entityKey: id,
                                                nickname: finalNickname,
                                                estimatedAddress: detail.estimatedAddress,
                                                annotation: finalAnnotation,
@@ -316,7 +316,7 @@ struct EditMarkerView: View {
             // a reference point to the generic location
             let loc = GenericLocation(lat: detail.location.coordinate.latitude,
                                       lon: detail.location.coordinate.longitude)
-            markerId = try ReferenceEntity.add(location: loc,
+            markerId = try RealmReferenceEntity.add(location: loc,
                                                nickname: finalNickname,
                                                estimatedAddress: detail.estimatedAddress,
                                                annotation: finalAnnotation,
@@ -337,7 +337,7 @@ struct EditMarkerView: View {
                 return
             }
             
-            try ReferenceEntity.update(entity: entity, location: coordinate, nickname: nickname, address: address, annotation: annotation, context: config.context, isTemp: false)
+            try RealmReferenceEntity.update(entity: entity, location: coordinate, nickname: nickname, address: address, annotation: annotation, context: config.context, isTemp: false)
             
             GDATelemetry.track("markers.edited", with: [
                 "includesAnnotation": String(!(annotation?.isEmpty ?? true)),
@@ -353,7 +353,7 @@ struct EditMarkerView: View {
         }
         
         do {
-            try ReferenceEntity.remove(id: id)
+            try RealmReferenceEntity.remove(id: id)
         } catch {
             GDLogAppError("Unable to successfully delete the reference entity (id: \(id))")
         }

@@ -41,7 +41,7 @@ struct DestinationCallout: POICalloutProtocol {
         return entityKey
     }
     
-    var marker: ReferenceEntity? {
+    var marker: RealmReferenceEntity? {
         return SpatialDataCache.referenceEntityByEntityKey(key)
     }
     

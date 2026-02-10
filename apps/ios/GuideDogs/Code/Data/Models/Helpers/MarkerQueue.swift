@@ -12,7 +12,7 @@ import CoreLocation
 @MainActor
 class MarkerQueue {
     
-    private typealias SortedMarker = (distance: CLLocationDistance, marker: ReferenceEntity)
+    private typealias SortedMarker = (distance: CLLocationDistance, marker: RealmReferenceEntity)
     
     // MARK: Properties
     
@@ -20,13 +20,13 @@ class MarkerQueue {
     private let location: CLLocation
     private var sortedMarkers: [SortedMarker] = []
     
-    var markers: [ReferenceEntity] {
+    var markers: [RealmReferenceEntity] {
         return sortedMarkers.map({ return $0.marker })
     }
     
     // MARK: Initialization
     
-    init(maxItems max: Int, location userLocation: CLLocation, sortedItems: [ReferenceEntity] = []) {
+    init(maxItems max: Int, location userLocation: CLLocation, sortedItems: [RealmReferenceEntity] = []) {
         guard max > 0 else {
             fatalError("maxItems must be greater than zero")
         }
@@ -55,7 +55,7 @@ class MarkerQueue {
         return left
     }
     
-    func insert(_ marker: ReferenceEntity) {
+    func insert(_ marker: RealmReferenceEntity) {
         let item = (distance: marker.distanceToClosestLocation(from: location), marker: marker)
         
         // Short-circuit the insertion index algorithm if we know this POI won't be inserted
@@ -91,7 +91,7 @@ class MarkerQueue {
         }
     }
     
-    func append(_ sortedMarkers: [ReferenceEntity]) {
+    func append(_ sortedMarkers: [RealmReferenceEntity]) {
         for marker in sortedMarkers {
             insert(marker)
         }

@@ -147,7 +147,7 @@ struct LocationDetail {
         return beaconId != nil
     }
     
-    private var marker: ReferenceEntity? {
+    private var marker: RealmReferenceEntity? {
         // Search for markers (including temporary markers) at the given location
         return SpatialDataCache.referenceEntity(source: source, isTemp: nil)
     }
@@ -356,7 +356,7 @@ struct LocationDetail {
 
 extension LocationDetail {
     
-    init(marker: ReferenceEntity, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
+    init(marker: RealmReferenceEntity, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         self.init(entity: marker.getPOI(), imported: imported, telemetryContext: telemetryContext)
     }
     
