@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -76,14 +77,6 @@ struct ShareMarkerAlert: ShareAlertFactory {
         let items: [Any] = [message, url]
         
         return UIActivityViewController(activityItems: items, applicationActivities: nil)
-    }
-    
-    static func shareMarker(_ marker: RealmReferenceEntity) -> UIActivityViewController? {
-        guard let url = UniversalLinkManager.shareMarker(marker) else {
-            return nil
-        }
-        
-        return shareMarker(url, markerName: marker.name)
     }
     
     static func shareMarker(name: String, latitude: Double, longitude: Double) -> UIActivityViewController? {
