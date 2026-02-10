@@ -225,9 +225,9 @@ extension Route {
                 
                 // Update first waypoint latitude and longitude
                 if let first = waypoints.ordered.first,
-                   let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: first.markerId) {
-                    route.firstWaypointLatitude = marker.latitude
-                    route.firstWaypointLongitude = marker.longitude
+                   let marker = DataContractRegistry.spatialReadCompatibility.markerParameters(byID: first.markerId) {
+                    route.firstWaypointLatitude = marker.location.coordinate.latitude
+                    route.firstWaypointLongitude = marker.location.coordinate.longitude
                 } else {
                     route.firstWaypointLatitude = nil
                     route.firstWaypointLongitude = nil

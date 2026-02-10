@@ -260,6 +260,8 @@ Phase 1 complete:
 - 2026-02-10: Extended keyed serialization contract reads with entity-key DTO methods (`referenceMetadata(byEntityKey:)`, `markerParameters(byEntityKey:)`) and implemented Realm adapter support to avoid full `ReferenceEntity` loads in marker serialization paths.
 - 2026-02-10: Migrated `MarkerParameters` entity/detail initializers to use keyed metadata/parameter contract methods and expanded dispatch/bridge tests (`DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) for the new methods.
 - 2026-02-10: Validation for keyed-serialization follow-up slice: `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, and `check_realm_infrastructure_boundary.sh` pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-10: Migrated route first-waypoint coordinate hydration (`Route.init(from:)`, `Route.update(...)`) from full marker entity reads to `markerParameters(byID:)` DTO contract reads, reducing serialization-oriented full-model contract usage in Realm route persistence paths.
+- 2026-02-10: Validation for route first-waypoint DTO slice: boundary scripts pass, `xcodebuild build-for-testing` passes, and targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
