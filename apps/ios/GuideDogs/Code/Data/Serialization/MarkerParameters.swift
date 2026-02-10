@@ -93,11 +93,11 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: markerId) else {
+        guard let markerParameters = DataContractRegistry.spatialReadCompatibility.markerParameters(byID: markerId) else {
             return nil
         }
-        
-        self.init(marker: marker)
+
+        self = markerParameters
     }
     
     init?(entity: POI) {

@@ -40,6 +40,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         (self as SpatialReadCompatibilityContract).routeMetadata(byKey: key)
     }
 
+    func routeParameters(byKey key: String, context: RouteParameters.Context) -> RouteParameters? {
+        guard let route = SpatialDataStoreRegistry.store.routeByKey(key) else {
+            return nil
+        }
+
+        return RouteParameters(route: route, context: context)
+    }
+
+    func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters? {
+        (self as SpatialReadCompatibilityContract).routeParameters(byKey: key, context: context)
+    }
+
     func routeParametersForBackup() -> [RouteParameters] {
         SpatialDataStoreRegistry.store.routes().compactMap { RouteParameters(route: $0, context: .backup) }
     }
@@ -74,6 +86,18 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
 
     func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
         (self as SpatialReadCompatibilityContract).referenceMetadata(byID: id)
+    }
+
+    func markerParameters(byID id: String) -> MarkerParameters? {
+        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+            return nil
+        }
+
+        return MarkerParameters(marker: marker)
+    }
+
+    func markerParameters(byID id: String) async -> MarkerParameters? {
+        (self as SpatialReadCompatibilityContract).markerParameters(byID: id)
     }
 
     func markerParametersForBackup() -> [MarkerParameters] {

@@ -61,12 +61,12 @@ extension RouteParameters {
             return nil
         }
         
-        guard let route = DataContractRegistry.spatialReadCompatibility.route(byKey: id) else {
-            GDLogURLResourceError("Failed to encode - Failed to fetch route from Realm")
+        guard let routeParameters = DataContractRegistry.spatialReadCompatibility.routeParameters(byKey: id, context: context) else {
+            GDLogURLResourceError("Failed to encode - Failed to fetch route parameters from Realm")
             return nil
         }
-        
-        return encode(from: route, context: context)
+
+        return encode(routeParameters)
     }
     
     // MARK: File URLs

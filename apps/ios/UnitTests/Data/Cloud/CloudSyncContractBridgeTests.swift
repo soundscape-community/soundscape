@@ -40,6 +40,10 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             return routeMetadataByKey[key]
         }
 
+        func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters? {
+            nil
+        }
+
         func routeParametersForBackup() async -> [RouteParameters] {
             routeParametersForBackupCalls += 1
             return routeParametersForBackupResults
@@ -54,6 +58,10 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         }
 
         func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
+            nil
+        }
+
+        func markerParameters(byID id: String) async -> MarkerParameters? {
             nil
         }
 
