@@ -105,7 +105,7 @@ protocol SpatialWriteContract {
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String
-    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) async throws
+    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, isTemp: Bool) async throws
     func removeAllReferenceEntities() async throws
     func removeAllRoutes() async throws
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws

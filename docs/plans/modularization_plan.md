@@ -427,6 +427,9 @@ Phase 1 complete:
 - 2026-02-11: Expanded non-Realm route write-contract parity coverage in `InMemorySpatialContractStoreTests` with focused add/update/import pathway assertions (`testRouteWriteContractParityAcrossAddUpdateAndImportWithoutRealmPersistence`, `testRouteWritesHydrateFirstWaypointCoordinateAcrossAddUpdateAndImportWithoutRealmPersistence`) to lock in route metadata + first-waypoint coordinate behavior without Realm coupling.
 - 2026-02-11: Updated `InMemorySpatialContractStore` route write semantics to mirror contract parity expectations: `addRoute(_:)` now follows update-style behavior for existing IDs, `updateRoute(_:)` throws `RouteRealmError.doesNotExist` for missing routes, local updates preserve existing created/selected metadata, and add/update/import all hydrate first-waypoint coordinates from marker/read context.
 - 2026-02-11: Validation for route write-contract parity test expansion slice: `check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`, and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `CloudSyncContractBridgeTests`, `DataContractRegistryDispatchTests`, and `InMemorySpatialContractStoreTests` pass (`46` tests, `0` failures).
+- 2026-02-11: Tightened write contract surface by removing infrastructure context from marker update API (`SpatialWriteContract.updateReferenceEntity` no longer accepts `context`), keeping canonical mutation inputs to marker state (`id`, optional coordinate/nickname/address/annotation, `isTemp`).
+- 2026-02-11: Updated marker update callsites and conformance types for this API shape (`RealmSpatialWriteContract`, `EditMarkerView`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) while keeping telemetry emission infrastructure-local.
+- 2026-02-11: Validation for marker-update contract context-decoupling slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `LocationActionHandlerTests` pass (`13` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -555,7 +558,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue tightening contract surfaces to canonical domain operations by removing any remaining API parameters that encode infrastructure concerns instead of route-domain state.
+1. Continue tightening contract surfaces by removing remaining infrastructure-context parameters from marker add APIs (`addReferenceEntity(entityKey:...)`, `addReferenceEntity(location:...)`) while preserving telemetry behavior within infrastructure.
 2. Evaluate whether first-waypoint marker coordinate lookup can move from `SpatialDataStoreRegistry.store` helper internals to an async contract-backed read path without forcing wide call-graph churn.
 3. If an async read path is viable without broad call-graph churn, prototype it behind route-focused helper boundaries and extend route write/read parity tests to cover the new path.
 

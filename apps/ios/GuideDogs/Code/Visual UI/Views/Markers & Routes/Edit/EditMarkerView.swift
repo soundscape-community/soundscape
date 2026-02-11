@@ -347,7 +347,6 @@ struct EditMarkerView: View {
                                                                           nickname: nickname,
                                                                           estimatedAddress: address,
                                                                           annotation: annotation,
-                                                                          context: config.context,
                                                                           isTemp: false)
 
         GDATelemetry.track("markers.edited", with: [

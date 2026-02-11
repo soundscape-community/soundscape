@@ -72,7 +72,7 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
                                                                        estimatedAddress: estimatedAddress)
     }
 
-    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) async throws {
+    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, isTemp: Bool) async throws {
         guard let entity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return
         }
@@ -82,7 +82,7 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
                                         nickname: nickname,
                                         address: estimatedAddress,
                                         annotation: annotation,
-                                        context: context,
+                                        context: nil,
                                         isTemp: isTemp)
     }
 
