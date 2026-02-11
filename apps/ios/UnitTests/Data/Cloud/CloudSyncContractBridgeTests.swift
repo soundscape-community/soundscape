@@ -178,14 +178,6 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {}
 
-        func removeAllReferenceEntities() async throws {}
-
-        func removeAllRoutes() async throws {}
-
-        func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {}
-
-        func cleanCorruptReferenceEntities() async throws {}
-
         func removeReferenceEntity(id: String) async throws {}
     }
 

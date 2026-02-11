@@ -487,6 +487,8 @@ Phase 1 complete:
 - 2026-02-11: Removed dead synchronous route helper overloads (`Route.removeWaypoint(from:markerId:)` and `Route.removeWaypointFromAllRoutes(markerId:)`) after marker-removal flows moved to async `ReferenceReadContract` hydration paths.
 - 2026-02-11: Updated route storage dispatch coverage to exercise async route-removal helper dispatch (`testRemoveWaypointFromAllRoutesUsesInjectedSpatialStoreLookup` now calls `Route.removeWaypointFromAllRoutes(markerId:using:)`).
 - 2026-02-11: Validation for dead sync route-helper cleanup slice: `bash apps/common/Scripts/check_forbidden_imports.sh` and `swift test --package-path apps/common` pass; iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`49` tests, `0` failures).
+- 2026-02-11: Removed stale maintenance-only methods from `CloudSyncContractBridgeTests.MockSpatialWriteContract` so cloud-sync write mock shape matches the narrowed `SpatialWriteContract` surface.
+- 2026-02-11: Validation for cloud-sync write-mock contract cleanup slice: `bash apps/common/Scripts/check_forbidden_imports.sh` and `swift test --package-path apps/common` pass; iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`49` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
