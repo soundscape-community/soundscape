@@ -6,16 +6,19 @@
 //
 
 import Foundation
+import CoreLocation
 import SSGeo
 
 @MainActor
 struct RealmSpatialWriteContract: SpatialWriteContract {
     func addRoute(_ route: Route) async throws {
-        try Route.add(route)
+        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route)
+        try Route.add(route, firstWaypointCoordinate: firstWaypointCoordinate)
     }
 
     func importRouteFromCloud(_ route: Route) async throws {
-        try Route.importFromCloud(route)
+        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route)
+        try Route.importFromCloud(route, firstWaypointCoordinate: firstWaypointCoordinate)
     }
 
     func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
@@ -27,10 +30,12 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
     }
 
     func updateRoute(_ route: Route) async throws {
+        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route)
         try Route.update(id: route.id,
                          name: route.name,
                          description: route.routeDescription,
-                         waypoints: route.waypoints.asLocationDetail)
+                         waypoints: route.waypoints.asLocationDetail,
+                         firstWaypointCoordinate: firstWaypointCoordinate)
     }
 
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
@@ -121,6 +126,10 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
 
     func removeAllTemporaryReferenceEntities() async throws {
         try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+    }
+
+    private func resolveFirstWaypointCoordinate(for route: Route) async -> CLLocationCoordinate2D? {
+        await Route.firstWaypointCoordinate(for: route.waypoints, using: DataContractRegistry.spatialRead)
     }
 }
 

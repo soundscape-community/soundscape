@@ -519,6 +519,58 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeAllTemporaryCalls, 1)
     }
+
+    func testDefaultSpatialWriteImportHydratesFirstWaypointFromConfiguredAsyncRead() async throws {
+        let readMock = MockSpatialReadContract()
+        let markerID = "contract-read-marker-\(UUID().uuidString)"
+        let markerCoordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        let fallbackCoordinate = CLLocationCoordinate2D(latitude: 10.0, longitude: 20.0)
+        let marker = RealmReferenceEntity(coordinate: markerCoordinate)
+        marker.id = markerID
+        readMock.referenceByID[markerID] = marker
+
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let imported = ImportedLocationDetail(nickname: "Imported Waypoint", annotation: "Fallback Coordinate")
+        let importedDetail = LocationDetail(location: CLLocation(latitude: fallbackCoordinate.latitude,
+                                                                 longitude: fallbackCoordinate.longitude),
+                                            imported: imported,
+                                            telemetryContext: nil)
+        let waypoint = RouteWaypoint(index: 0, markerId: markerID, importedLocationDetail: importedDetail)
+        let routeID = "contract-read-route-\(UUID().uuidString)"
+        var route = Route()
+        route.id = routeID
+        route.name = "Contract Read Hydration"
+        route.waypoints = [waypoint]
+
+        defer {
+            deletePersistedRouteIfPresent(id: routeID)
+        }
+
+        try await DataContractRegistry.spatialWrite.importRouteFromCloud(route)
+
+        guard let persistedRoute = Route.object(forPrimaryKey: routeID) else {
+            XCTFail("Expected imported route to be persisted")
+            return
+        }
+
+        XCTAssertEqual(readMock.referenceByIDCalls, [markerID])
+        XCTAssertEqual(persistedRoute.firstWaypointLatitude ?? 0, markerCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(persistedRoute.firstWaypointLongitude ?? 0, markerCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertNotEqual(persistedRoute.firstWaypointLatitude ?? 0, fallbackCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertNotEqual(persistedRoute.firstWaypointLongitude ?? 0, fallbackCoordinate.longitude, accuracy: 0.000_001)
+    }
+
+    private func deletePersistedRouteIfPresent(id: String) {
+        guard let database = try? RealmHelper.getDatabaseRealm(),
+              let route = database.object(ofType: RealmRoute.self, forPrimaryKey: id) else {
+            return
+        }
+
+        try? database.write {
+            database.delete(route)
+        }
+    }
 }
 
 @MainActor

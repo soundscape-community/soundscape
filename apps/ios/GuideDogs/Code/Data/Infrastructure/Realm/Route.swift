@@ -10,6 +10,7 @@
 import Foundation
 import RealmSwift
 import CoreLocation
+import SSGeo
 
 private func detachedWaypoints<S: Sequence>(from waypoints: S) -> [RouteWaypoint] where S.Element == RouteWaypoint {
     var detached: [RouteWaypoint] = []
@@ -216,8 +217,30 @@ struct Route: Identifiable {
     }
 
     @MainActor
+    static func firstWaypointCoordinate(for waypoints: [RouteWaypoint], using spatialRead: ReferenceReadContract) async -> CLLocationCoordinate2D? {
+        guard let first = waypoints.ordered.first else {
+            return nil
+        }
+
+        if let markerCoordinate = await markerCoordinate(forMarkerID: first.markerId, using: spatialRead) {
+            return markerCoordinate
+        }
+
+        return first.asLocationDetail?.location.coordinate
+    }
+
+    @MainActor
     static func markerCoordinate(forMarkerID markerID: String) -> CLLocationCoordinate2D? {
         SpatialDataStoreRegistry.store.referenceEntityByKey(markerID)?.coordinate
+    }
+
+    @MainActor
+    static func markerCoordinate(forMarkerID markerID: String, using spatialRead: ReferenceReadContract) async -> CLLocationCoordinate2D? {
+        guard let marker = await spatialRead.referenceEntity(byID: markerID) else {
+            return nil
+        }
+
+        return marker.coordinate.clCoordinate
     }
 }
 

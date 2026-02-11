@@ -435,6 +435,9 @@ Phase 1 complete:
 - 2026-02-11: Validation for marker-add contract context-decoupling slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `LocationActionHandlerTests` pass (`13` tests, `0` failures).
 - 2026-02-11: Continued write-contract surface tightening by removing the telemetry/detail marker add API from the app-facing contract (`SpatialWriteContract.addReferenceEntity(detail:telemetryContext:notify:)`) and adapter/mocks (`RealmSpatialWriteContract`, `CloudSyncContractBridgeTests`, `DataContractRegistryDispatchTests`), leaving this mutation shape infrastructure-local on `SpatialDataStore`.
 - 2026-02-11: Validation for telemetry-detail marker-add contract removal slice: `check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`, and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `LocationActionHandlerTests` pass (`13` tests, `0` failures).
+- 2026-02-11: Prototyped async first-waypoint coordinate hydration behind route-focused helper boundaries by adding async helper variants (`Route.firstWaypointCoordinate(..., using:)`, `Route.markerCoordinate(..., using:)`), threading optional pre-resolved first-waypoint coordinates through route persistence entry points (`Route.add`, `Route.update`, `Route.importFromCloud`), and updating `RealmSpatialWriteContract` add/update/import paths to resolve first-waypoint marker coordinates via `DataContractRegistry.spatialRead` before route persistence.
+- 2026-02-11: Added focused contract-path coverage (`DataContractRegistryDispatchTests.testDefaultSpatialWriteImportHydratesFirstWaypointFromConfiguredAsyncRead`) to pin that default async write contract import prefers configured async read marker coordinates over fallback imported coordinate payloads.
+- 2026-02-11: Validation for async first-waypoint contract-path prototype slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`42` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -563,8 +566,8 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Evaluate whether first-waypoint marker coordinate lookup can move from `SpatialDataStoreRegistry.store` helper internals to an async contract-backed read path without forcing wide call-graph churn.
-2. If an async read path is viable without broad call-graph churn, prototype it behind route-focused helper boundaries and extend route write/read parity tests to cover the new path.
+1. Evaluate extending async first-waypoint contract hydration beyond write-contract paths (route initialization/read-heavy helper callsites) without forcing broad async call-graph churn.
+2. If low-churn migration is viable, move selected initialization/read callsites behind async route-focused helpers and extend route parity coverage for those paths.
 3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and narrowing signatures where behavior can stay unchanged.
 
 ## Session Handoff (2026-02-10)

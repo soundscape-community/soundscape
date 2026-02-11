@@ -13,6 +13,18 @@ import CoreLocation
 
 @MainActor
 extension Route {
+    private static func resolvedFirstWaypointCoordinate(for route: Route, preferredCoordinate: CLLocationCoordinate2D?) -> CLLocationCoordinate2D? {
+        if let preferredCoordinate {
+            return preferredCoordinate
+        }
+
+        if let routeCoordinate = route.firstWaypointLocation?.coordinate {
+            return routeCoordinate
+        }
+
+        return firstWaypointCoordinate(for: route.waypoints)
+    }
+
     private static func resolvedReversedRouteName(for reversedRoute: Route) -> (name: String, existingRoute: Route?) {
         var finalName = reversedRoute.name
         var index = 2
@@ -100,14 +112,16 @@ extension Route {
 
     /// Imports a route payload from cloud sync without route mutation side effects
     /// such as telemetry, notifications, or cloud write-back.
-    static func importFromCloud(_ route: Route) throws {
+    static func importFromCloud(_ route: Route, firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 throw RouteRealmError.databaseError
             }
 
-            let firstWaypointCoordinate = firstWaypointCoordinate(for: route.waypoints)
-            let persistedRoute = RealmRoute(route: route, firstWaypointCoordinate: firstWaypointCoordinate)
+            let persistedFirstWaypointCoordinate = resolvedFirstWaypointCoordinate(for: route,
+                                                                                  preferredCoordinate: firstWaypointCoordinate)
+            let persistedRoute = RealmRoute(route: route,
+                                            firstWaypointCoordinate: persistedFirstWaypointCoordinate)
 
             try database.write {
                 database.add(persistedRoute, update: .modified)
@@ -115,7 +129,7 @@ extension Route {
         }
     }
     
-    static func add(_ route: Route) throws {
+    static func add(_ route: Route, firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 throw RouteRealmError.databaseError
@@ -138,12 +152,17 @@ extension Route {
                 route.waypoints[index].markerId = markerId
             }
 
-            let persistedFirstWaypointCoordinate = firstWaypointCoordinate(for: route.waypoints)
+            let persistedFirstWaypointCoordinate = resolvedFirstWaypointCoordinate(for: route,
+                                                                                  preferredCoordinate: firstWaypointCoordinate)
             route.firstWaypointLatitude = persistedFirstWaypointCoordinate?.latitude
             route.firstWaypointLongitude = persistedFirstWaypointCoordinate?.longitude
             
             if let existingRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: route.id) {
-                try update(id: existingRoute.id, name: route.name, description: route.routeDescription, waypoints: route.waypoints)
+                try update(id: existingRoute.id,
+                           name: route.name,
+                           description: route.routeDescription,
+                           waypoints: route.waypoints,
+                           firstWaypointCoordinate: persistedFirstWaypointCoordinate)
                 
                 RouteRuntime.updateRouteInCloud(route)
             } else {
@@ -229,7 +248,11 @@ extension Route {
         }
     }
     
-    static func update(id: String, name: String, description: String?, waypoints: [RouteWaypoint]) throws {
+    static func update(id: String,
+                       name: String,
+                       description: String?,
+                       waypoints: [RouteWaypoint],
+                       firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 throw RouteRealmError.databaseError
@@ -246,7 +269,8 @@ extension Route {
                 RouteRuntime.deactivateActiveBehavior()
             }
 
-            let firstWaypointCoordinate = firstWaypointCoordinate(for: waypoints)
+            let persistedFirstWaypointCoordinate = firstWaypointCoordinate
+                ?? self.firstWaypointCoordinate(for: waypoints)
             
             try database.write {
                 // Unlink reversed route if waypoints have changed
@@ -259,7 +283,7 @@ extension Route {
                 route.applyRouteUpdate(name: name,
                                        routeDescription: description,
                                        waypoints: waypoints,
-                                       firstWaypointCoordinate: firstWaypointCoordinate,
+                                       firstWaypointCoordinate: persistedFirstWaypointCoordinate,
                                        at: Date())
             }
             
@@ -267,11 +291,19 @@ extension Route {
         }
     }
     
-    static func update(id: String, name: String, description: String?, waypoints: [LocationDetail]) throws {
+    static func update(id: String,
+                       name: String,
+                       description: String?,
+                       waypoints: [LocationDetail],
+                       firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
         // `LocationDetail` -> `RouteWaypoint`
         let wRealmObjects = waypoints.enumerated().compactMap({ return RouteWaypoint(index: $0, locationDetail: $1) })
 
-        try update(id: id, name: name, description: description, waypoints: wRealmObjects)
+        try update(id: id,
+                   name: name,
+                   description: description,
+                   waypoints: wRealmObjects,
+                   firstWaypointCoordinate: firstWaypointCoordinate)
     }
     
     // MARK: Add, Delete or Update Route Waypoints
