@@ -385,7 +385,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         }
 
         let beaconContext: (location: CLLocation, distance: CLLocationDistance, arrived: Bool)?
-        if let key = beaconKey, let beacon = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: key)?.domainEntity {
+        if let key = beaconKey, let beacon = SpatialDataStoreRegistry.store.referenceEntityByKey(key)?.domainEntity {
             let location = beacon.closestLocation(from: to.node.location)
             let distance = to.node.location.coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
             beaconContext = (location, distance, distance < 15.0)

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -151,29 +152,22 @@ extension CloudKeyValueStore {
 
         switch result {
         case .success(let entity):
-            if let referenceEntity = RealmReferenceEntity(markerParameters: markerParameters, entity: entity) {
-                importChanges(referenceEntity: referenceEntity)
-            } else {
-                GDLogCloudInfo("Error initializing `RealmReferenceEntity` object for marker with id: \(markerParameters.id ?? "none")")
-            }
+            await importChanges(markerParameters: markerParameters, entity: entity)
         case .failure(let error):
             GDLogCloudInfo("Error loading underlying entity: \(error)")
         }
     }
     
     /// Import reference entities from cloud store to database
-    private func importChanges(referenceEntity: RealmReferenceEntity) {
-        autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else { return }
-            
-            do {
-                try database.write {
-                    database.add(referenceEntity, update: .modified)
-                }
-                GDLogCloudInfo("Imported reference entity with id: \(referenceEntity.id), name: \(referenceEntity.name)")
-            } catch {
-                GDLogCloudInfo("Could not import reference entity with id: \(referenceEntity.id), name: \(referenceEntity.name), error: \(error)")
-            }
+    private func importChanges(markerParameters: MarkerParameters, entity: POI) async {
+        let markerID = markerParameters.id ?? "none"
+        let markerName = markerParameters.nickname ?? entity.localizedName
+
+        do {
+            try await DataContractRegistry.spatialWrite.importReferenceEntityFromCloud(markerParameters: markerParameters, entity: entity)
+            GDLogCloudInfo("Imported reference entity with id: \(markerID), name: \(markerName)")
+        } catch {
+            GDLogCloudInfo("Could not import reference entity with id: \(markerID), name: \(markerName), error: \(error)")
         }
     }
     

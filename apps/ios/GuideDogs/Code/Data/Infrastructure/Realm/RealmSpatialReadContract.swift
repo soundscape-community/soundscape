@@ -11,24 +11,16 @@ import MapKit
 import SSGeo
 
 @MainActor
-struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityContract {
-    func routes() -> [Route] {
+struct RealmSpatialReadContract: SpatialReadContract {
+    func routes() async -> [Route] {
         SpatialDataStoreRegistry.store.routes()
     }
 
-    func routes() async -> [Route] {
-        (self as SpatialReadCompatibilityContract).routes()
-    }
-
-    func route(byKey key: String) -> Route? {
+    func route(byKey key: String) async -> Route? {
         SpatialDataStoreRegistry.store.routeByKey(key)
     }
 
-    func route(byKey key: String) async -> Route? {
-        (self as SpatialReadCompatibilityContract).route(byKey: key)
-    }
-
-    func routeMetadata(byKey key: String) -> RouteReadMetadata? {
+    func routeMetadata(byKey key: String) async -> RouteReadMetadata? {
         guard let route = SpatialDataStoreRegistry.store.routeByKey(key) else {
             return nil
         }
@@ -36,11 +28,7 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return RouteReadMetadata(id: route.id, lastUpdatedDate: route.lastUpdatedDate)
     }
 
-    func routeMetadata(byKey key: String) async -> RouteReadMetadata? {
-        (self as SpatialReadCompatibilityContract).routeMetadata(byKey: key)
-    }
-
-    func routeParameters(byKey key: String, context: RouteParameters.Context) -> RouteParameters? {
+    func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters? {
         guard let route = SpatialDataStoreRegistry.store.routeByKey(key) else {
             return nil
         }
@@ -48,35 +36,19 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return RouteParameters(route: route, context: context)
     }
 
-    func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters? {
-        (self as SpatialReadCompatibilityContract).routeParameters(byKey: key, context: context)
-    }
-
-    func routeParametersForBackup() -> [RouteParameters] {
+    func routeParametersForBackup() async -> [RouteParameters] {
         SpatialDataStoreRegistry.store.routes().compactMap { RouteParameters(route: $0, context: .backup) }
     }
 
-    func routeParametersForBackup() async -> [RouteParameters] {
-        (self as SpatialReadCompatibilityContract).routeParametersForBackup()
-    }
-
-    func routes(containingMarkerID markerID: String) -> [Route] {
+    func routes(containingMarkerID markerID: String) async -> [Route] {
         SpatialDataStoreRegistry.store.routesContaining(markerId: markerID)
     }
 
-    func routes(containingMarkerID markerID: String) async -> [Route] {
-        (self as SpatialReadCompatibilityContract).routes(containingMarkerID: markerID)
-    }
-
-    func referenceEntity(byID id: String) -> RealmReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByKey(id)
-    }
-
     func referenceEntity(byID id: String) async -> ReferenceEntity? {
-        (self as SpatialReadCompatibilityContract).referenceEntity(byID: id)?.domainEntity
+        SpatialDataStoreRegistry.store.referenceEntityByKey(id)?.domainEntity
     }
 
-    func referenceCallout(byID id: String) -> ReferenceCalloutReadData? {
+    func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? {
         guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return nil
         }
@@ -84,11 +56,7 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return ReferenceCalloutReadData(name: marker.name, superCategory: marker.getPOI().superCategory)
     }
 
-    func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? {
-        (self as SpatialReadCompatibilityContract).referenceCallout(byID: id)
-    }
-
-    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) -> Double? {
+    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? {
         guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return nil
         }
@@ -96,11 +64,7 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return marker.distanceToClosestLocation(from: location.clLocation)
     }
 
-    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? {
-        (self as SpatialReadCompatibilityContract).distanceToClosestLocation(forMarkerID: id, from: location)
-    }
-
-    func referenceMetadata(byID id: String) -> ReferenceReadMetadata? {
+    func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
         guard let referenceEntity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return nil
         }
@@ -108,11 +72,7 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return ReferenceReadMetadata(id: referenceEntity.id, lastUpdatedDate: referenceEntity.lastUpdatedDate)
     }
 
-    func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
-        (self as SpatialReadCompatibilityContract).referenceMetadata(byID: id)
-    }
-
-    func referenceMetadata(byEntityKey key: String) -> ReferenceReadMetadata? {
+    func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata? {
         guard let referenceEntity = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key) else {
             return nil
         }
@@ -120,11 +80,7 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return ReferenceReadMetadata(id: referenceEntity.id, lastUpdatedDate: referenceEntity.lastUpdatedDate)
     }
 
-    func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata? {
-        (self as SpatialReadCompatibilityContract).referenceMetadata(byEntityKey: key)
-    }
-
-    func markerParameters(byID id: String) -> MarkerParameters? {
+    func markerParameters(byID id: String) async -> MarkerParameters? {
         guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return nil
         }
@@ -132,11 +88,7 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return MarkerParameters(marker: marker)
     }
 
-    func markerParameters(byID id: String) async -> MarkerParameters? {
-        (self as SpatialReadCompatibilityContract).markerParameters(byID: id)
-    }
-
-    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) -> MarkerParameters? {
+    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? {
         guard let marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate.clCoordinate) else {
             return nil
         }
@@ -144,11 +96,7 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return MarkerParameters(marker: marker)
     }
 
-    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? {
-        (self as SpatialReadCompatibilityContract).markerParameters(byCoordinate: coordinate)
-    }
-
-    func markerParameters(byEntityKey key: String) -> MarkerParameters? {
+    func markerParameters(byEntityKey key: String) async -> MarkerParameters? {
         guard let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key) else {
             return nil
         }
@@ -156,91 +104,47 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return MarkerParameters(marker: marker)
     }
 
-    func markerParameters(byEntityKey key: String) async -> MarkerParameters? {
-        (self as SpatialReadCompatibilityContract).markerParameters(byEntityKey: key)
-    }
-
-    func markerParametersForBackup() -> [MarkerParameters] {
+    func markerParametersForBackup() async -> [MarkerParameters] {
         SpatialDataStoreRegistry.store.referenceEntities().compactMap { MarkerParameters(marker: $0) }
     }
 
-    func markerParametersForBackup() async -> [MarkerParameters] {
-        (self as SpatialReadCompatibilityContract).markerParametersForBackup()
-    }
-
-    func referenceEntity(byEntityKey key: String) -> RealmReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)
-    }
-
     func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? {
-        (self as SpatialReadCompatibilityContract).referenceEntity(byEntityKey: key)?.domainEntity
-    }
-
-    func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> RealmReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate.clCoordinate)
+        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
     }
 
     func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity? {
-        (self as SpatialReadCompatibilityContract).referenceEntity(byCoordinate: coordinate)?.domainEntity
-    }
-
-    func referenceEntity(byGenericLocation location: GenericLocation) -> RealmReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location)
+        SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate.clCoordinate)?.domainEntity
     }
 
     func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity? {
-        (self as SpatialReadCompatibilityContract).referenceEntity(byGenericLocation: location)?.domainEntity
-    }
-
-    func referenceEntities() -> [RealmReferenceEntity] {
-        SpatialDataStoreRegistry.store.referenceEntities()
+        SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location)?.domainEntity
     }
 
     func referenceEntities() async -> [ReferenceEntity] {
-        (self as SpatialReadCompatibilityContract).referenceEntities().map(\.domainEntity)
-    }
-
-    func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) -> [RealmReferenceEntity] {
-        SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate.clCoordinate, range: rangeMeters)
+        SpatialDataStoreRegistry.store.referenceEntities().map(\.domainEntity)
     }
 
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {
-        (self as SpatialReadCompatibilityContract).referenceEntities(near: coordinate, rangeMeters: rangeMeters).map(\.domainEntity)
-    }
-
-    func poi(byKey key: String) -> POI? {
-        SpatialDataStoreRegistry.store.searchByKey(key)
+        SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate.clCoordinate, range: rangeMeters).map(\.domainEntity)
     }
 
     func poi(byKey key: String) async -> POI? {
-        (self as SpatialReadCompatibilityContract).poi(byKey: key)
-    }
-
-    func road(byKey key: String) -> Road? {
-        SpatialDataStoreRegistry.store.roadByKey(key)
+        SpatialDataStoreRegistry.store.searchByKey(key)
     }
 
     func road(byKey key: String) async -> Road? {
-        (self as SpatialReadCompatibilityContract).road(byKey: key)
-    }
-
-    func intersections(forRoadKey key: String) -> [Intersection] {
-        SpatialDataStoreRegistry.store.intersections(forRoadKey: key)
+        SpatialDataStoreRegistry.store.roadByKey(key)
     }
 
     func intersections(forRoadKey key: String) async -> [Intersection] {
-        (self as SpatialReadCompatibilityContract).intersections(forRoadKey: key)
-    }
-
-    func intersection(forRoadKey key: String, at coordinate: SSGeoCoordinate) -> Intersection? {
-        SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate.clCoordinate)
+        SpatialDataStoreRegistry.store.intersections(forRoadKey: key)
     }
 
     func intersection(forRoadKey key: String, at coordinate: SSGeoCoordinate) async -> Intersection? {
-        (self as SpatialReadCompatibilityContract).intersection(forRoadKey: key, at: coordinate)
+        SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate.clCoordinate)
     }
 
-    func intersections(forRoadKey key: String, in region: SpatialIntersectionRegion) -> [Intersection]? {
+    func intersections(forRoadKey key: String, in region: SpatialIntersectionRegion) async -> [Intersection]? {
         let mapRegion = MKCoordinateRegion(center: region.center.clCoordinate,
                                            span: MKCoordinateSpan(latitudeDelta: region.latitudeDelta,
                                                                   longitudeDelta: region.longitudeDelta))
@@ -248,41 +152,22 @@ struct RealmSpatialReadContract: SpatialReadContract, SpatialReadCompatibilityCo
         return SpatialDataStoreRegistry.store.intersections(forRoadKey: key, inRegion: mapRegion)
     }
 
-    func intersections(forRoadKey key: String, in region: SpatialIntersectionRegion) async -> [Intersection]? {
-        (self as SpatialReadCompatibilityContract).intersections(forRoadKey: key, in: region)
-    }
-
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile> {
-        SpatialDataStoreRegistry.store.tiles(forDestinations: forDestinations,
-                                             forReferences: forReferences,
-                                             at: zoomLevel,
-                                             destination: destination)
-    }
-
     func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<VectorTile> {
         let realmDestination = destination.flatMap { destination in
             SpatialDataStoreRegistry.store.referenceEntityByKey(destination.id)
         }
 
-        return (self as SpatialReadCompatibilityContract).tiles(forDestinations: forDestinations,
-                                                                forReferences: forReferences,
-                                                                at: zoomLevel,
-                                                                destination: realmDestination)
-    }
-
-    func tileData(for tiles: [VectorTile]) -> [TileData] {
-        SpatialDataStoreRegistry.store.tileData(for: tiles)
+        return SpatialDataStoreRegistry.store.tiles(forDestinations: forDestinations,
+                                                    forReferences: forReferences,
+                                                    at: zoomLevel,
+                                                    destination: realmDestination)
     }
 
     func tileData(for tiles: [VectorTile]) async -> [TileData] {
-        (self as SpatialReadCompatibilityContract).tileData(for: tiles)
-    }
-
-    func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) -> [POI] {
-        SpatialDataStoreRegistry.store.genericLocationsNear(location.clLocation, range: rangeMeters)
+        SpatialDataStoreRegistry.store.tileData(for: tiles)
     }
 
     func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [POI] {
-        (self as SpatialReadCompatibilityContract).genericLocations(near: location, rangeMeters: rangeMeters)
+        SpatialDataStoreRegistry.store.genericLocationsNear(location.clLocation, range: rangeMeters)
     }
 }

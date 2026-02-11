@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -42,14 +43,14 @@ class RouteLoader: ObservableObject {
         }
     }
     
-    func remove(id: String) throws {
+    func remove(id: String) async throws {
         guard let index = routeIDs.firstIndex(where: { $0 == id }) else {
             return
         }
         
         routeIDs.remove(at: index)
         
-        try DataContractRegistry.spatialWriteCompatibility.deleteRoute(id: id)
+        try await DataContractRegistry.spatialWrite.deleteRoute(id: id)
         UIAccessibility.post(notification: .announcement, argument: GDLocalizedString("routes.action.deleted"))
     }
     

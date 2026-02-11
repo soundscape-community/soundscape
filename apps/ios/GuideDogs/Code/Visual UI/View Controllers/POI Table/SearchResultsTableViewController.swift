@@ -63,6 +63,7 @@ class SearchResultsTableViewController: UITableViewController {
     private var recentDataSource: UITableViewDataSource = TableViewDataSource<ListItem, ListItemTableViewCellConfigurator>(header: nil, models: [], cellConfigurator: ListItemTableViewCellConfigurator())
     private var recentDelegate: UITableViewDelegate = TableViewDelegate()
     private(set) var wasSearchCancelled = false
+    private var recentCalloutsTask: Task<Void, Never>?
     
     private var searchController: UISearchController? {
         if isPresentedModally {
@@ -128,37 +129,19 @@ class SearchResultsTableViewController: UITableViewController {
         
         // Initialize recent selections
         let selections = SpatialDataCache.recentlySelectedObjects()
-        
-        // Initialize recent callouts
-        let callouts: [POI] = UIRuntimeProviderRegistry.providers.uiCalloutHistoryCallouts()
+        let calloutHistory = UIRuntimeProviderRegistry.providers.uiCalloutHistoryCallouts()
             .sorted(by: { return $0.timestamp > $1.timestamp })
-            .compactMap({
-                var poi: POI?
-            
-                if let callout = $0 as? POICallout {
-                    poi = callout.poi
-                } else if let callout = $0 as? IntersectionCallout, let intersection = callout.intersection {
-                    let latitude = intersection.location.coordinate.latitude
-                    let longitude = intersection.location.coordinate.longitude
-                    let name = GDLocalizedString("intersection.named_intersection", intersection.localizedName)
-                    
-                    poi = GenericLocation(lat: latitude, lon: longitude, name: name)
-                } else if let callout = $0 as? WaypointArrivalCallout,
-                          let id = callout.waypoint.markerId,
-                          let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id)?.domainEntity {
-                    poi = marker.getPOI()
-                }
-                
-                return poi
-            })
         
         let selectionDataSource = TableViewDataSource(header: nil, models: selections.asListItemWithoutIndex, cellConfigurator: configurator)
-        let calloutDataSource = TableViewDataSource(header: GDLocalizedString("poi_screen.header.recent.callouts"), models: callouts.asListItemWithoutIndex, cellConfigurator: configurator)
+        let calloutDataSource = TableViewDataSource(header: GDLocalizedString("poi_screen.header.recent.callouts"),
+                                                    models: [POI]().asListItemWithoutIndex,
+                                                    cellConfigurator: configurator)
         
         recentDataSource = SectionedTableViewDataSource(dataSources: [selectionDataSource, calloutDataSource])
         recentDelegate = GenericTableViewDelegate.make(selectDelegate: self)
         
         updateTableView(dataSource: recentDataSource, delegate: recentDelegate, voiceoverAnnoucement: nil, isDefaultResults: true)
+        loadRecentCallouts(from: calloutHistory, cellConfigurator: configurator, selectionDataSource: selectionDataSource)
         
         searchResultsUpdater.delegate = self
     }
@@ -166,6 +149,7 @@ class SearchResultsTableViewController: UITableViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        recentCalloutsTask?.cancel()
         searchResultsUpdater.delegate = nil
     }
     
@@ -296,6 +280,61 @@ class SearchResultsTableViewController: UITableViewController {
     
     private func dismissActivityIndicator() {
         activityIndicatorView.removeFromSuperview()
+    }
+
+    private func loadRecentCallouts(from history: [CalloutProtocol],
+                                    cellConfigurator: ListItemTableViewCellConfigurator,
+                                    selectionDataSource: UITableViewDataSource) {
+        recentCalloutsTask?.cancel()
+        recentCalloutsTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            let callouts = await self.recentCallouts(from: history)
+
+            guard !Task.isCancelled else {
+                return
+            }
+
+            let calloutDataSource = TableViewDataSource(header: GDLocalizedString("poi_screen.header.recent.callouts"),
+                                                        models: callouts.asListItemWithoutIndex,
+                                                        cellConfigurator: cellConfigurator)
+            self.recentDataSource = SectionedTableViewDataSource(dataSources: [selectionDataSource, calloutDataSource])
+            self.recentDelegate = GenericTableViewDelegate.make(selectDelegate: self)
+
+            guard self.isPresentingDefaultResults else {
+                return
+            }
+
+            self.updateTableView(dataSource: self.recentDataSource,
+                                 delegate: self.recentDelegate,
+                                 voiceoverAnnoucement: nil,
+                                 isDefaultResults: true)
+        }
+    }
+
+    private func recentCallouts(from history: [CalloutProtocol]) async -> [POI] {
+        var callouts: [POI] = []
+
+        for callout in history {
+            if let poiCallout = callout as? POICallout,
+               let poi = poiCallout.poi {
+                callouts.append(poi)
+            } else if let intersectionCallout = callout as? IntersectionCallout,
+                      let intersection = intersectionCallout.intersection {
+                let latitude = intersection.location.coordinate.latitude
+                let longitude = intersection.location.coordinate.longitude
+                let name = GDLocalizedString("intersection.named_intersection", intersection.localizedName)
+                callouts.append(GenericLocation(lat: latitude, lon: longitude, name: name))
+            } else if let waypointCallout = callout as? WaypointArrivalCallout,
+                      let markerId = waypointCallout.waypoint.markerId,
+                      let marker = await DataContractRegistry.spatialRead.referenceEntity(byID: markerId) {
+                callouts.append(marker.getPOI())
+            }
+        }
+
+        return callouts
     }
     
     // MARK: Helpers

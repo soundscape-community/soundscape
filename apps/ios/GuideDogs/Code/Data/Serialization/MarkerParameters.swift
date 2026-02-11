@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -93,7 +94,8 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let markerParameters = DataContractRegistry.spatialReadCompatibility.markerParameters(byID: markerId) else {
+        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(markerId),
+              let markerParameters = MarkerParameters(marker: marker) else {
             return nil
         }
 
@@ -102,9 +104,11 @@ struct MarkerParameters: Codable {
     
     init?(entity: POI) {
         if let entity = entity as? GenericLocation,
-           let marker = DataContractRegistry.spatialReadCompatibility.markerParameters(byCoordinate: entity.location.coordinate.ssGeoCoordinate) {
-            self = marker
-        } else if let markerParameters = DataContractRegistry.spatialReadCompatibility.markerParameters(byEntityKey: entity.key) {
+           let marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(entity.location.coordinate),
+           let markerParameters = MarkerParameters(marker: marker) {
+            self = markerParameters
+        } else if let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entity.key),
+                  let markerParameters = MarkerParameters(marker: marker) {
             self = markerParameters
         } else {
             self.init(entity: entity, markerId: nil, estimatedAddress: nil, nickname: nil, annotation: nil, lastUpdatedDate: nil)
@@ -117,7 +121,7 @@ struct MarkerParameters: Codable {
         
         switch detail.source {
         case .entity(let id):
-            guard let cachedEntity = DataContractRegistry.spatialReadCompatibility.poi(byKey: id) else {
+            guard let cachedEntity = SpatialDataStoreRegistry.store.searchByKey(id) else {
                 return nil
             }
             
@@ -143,8 +147,8 @@ struct MarkerParameters: Codable {
         
         let lastUpdatedDate: Date?
         
-        if let markerId = markerId, let metadata = DataContractRegistry.spatialReadCompatibility.referenceMetadata(byEntityKey: markerId) {
-            lastUpdatedDate = metadata.lastUpdatedDate
+        if let markerId = markerId {
+            lastUpdatedDate = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(markerId)?.lastUpdatedDate
         } else {
             lastUpdatedDate = nil
         }

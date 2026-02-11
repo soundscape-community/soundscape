@@ -266,7 +266,9 @@ extension StatusTableViewController {
                 }
                 
                 // Clear the cache and keep the markers
-                self?.clearCache(false)
+                Task { @MainActor [weak self] in
+                    await self?.clearCache(false)
+                }
             }
         }))
         
@@ -314,29 +316,32 @@ extension StatusTableViewController {
                 }
                 
                 // Clear the cache and delete the markers
-                self?.clearCache(true)
+                Task { @MainActor [weak self] in
+                    await self?.clearCache(true)
+                }
             }
         }))
         
         present(alert, animated: true, completion: nil)
     }
     
-    private func clearCache(_ deletePORs: Bool) {
+    @MainActor
+    private func clearCache(_ deletePORs: Bool) async {
         var storedAddresses: [AddressCacheRecord] = []
         
         if deletePORs {
             do {
                 // Remove the reference entities (regardless of type)
-                try DataContractRegistry.spatialWriteCompatibility.removeAllReferenceEntities()
+                try await DataContractRegistry.spatialWrite.removeAllReferenceEntities()
                 
                 // Remove all routes
-                try DataContractRegistry.spatialWriteCompatibility.removeAllRoutes()
+                try await DataContractRegistry.spatialWrite.removeAllRoutes()
             } catch {
                 GDLogAppError("Failed to remove all Reference Entities!")
             }
         } else {
             // Preserve addresses since they can't be reloaded like POI reference points can
-            let markers = DataContractRegistry.spatialReadCompatibility.referenceEntities().map(\.domainEntity)
+            let markers = await DataContractRegistry.spatialRead.referenceEntities()
             for marker in markers {
                 if let entity = marker.getPOI() as? Address, storedAddresses.contains(where: { $0.key == entity.key }) == false {
                     // Copy the address
@@ -369,7 +374,7 @@ extension StatusTableViewController {
         }
         
         do {
-            try DataContractRegistry.spatialWriteCompatibility.restoreCachedAddresses(storedAddresses)
+            try await DataContractRegistry.spatialWrite.restoreCachedAddresses(storedAddresses)
         } catch {
             GDLogSpatialDataError("Cached data deleted, but couldn't restore addresses!")
             return
@@ -420,13 +425,15 @@ extension StatusTableViewController {
             SettingsContext.shared.automaticCalloutsEnabled = true
         }
         
-        do {
-            try DataContractRegistry.spatialWriteCompatibility.cleanCorruptReferenceEntities()
-            GDLogAppVerbose("Successfully removed any corrupted Reference Entity objects (if any existed)")
-        } catch {
-            GDLogAppError("Unable to remove corrupted Reference Entity objects")
+        Task { @MainActor in
+            do {
+                try await DataContractRegistry.spatialWrite.cleanCorruptReferenceEntities()
+                GDLogAppVerbose("Successfully removed any corrupted Reference Entity objects (if any existed)")
+            } catch {
+                GDLogAppError("Unable to remove corrupted Reference Entity objects")
+            }
+
+            dismiss(animated: true, completion: nil)
         }
-        
-        dismiss(animated: true, completion: nil)
     }
 }

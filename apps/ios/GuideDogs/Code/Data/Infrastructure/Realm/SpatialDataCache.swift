@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -271,38 +272,46 @@ class SpatialDataCache: NSObject {
     }
     
     // MARK: Routes
-    
-    static func routeByKey(_ key: String) -> Route? {
+
+    private static func realmRouteByKey(_ key: String) -> RealmRoute? {
         return autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 return nil
             }
             
-            return database.object(ofType: Route.self, forPrimaryKey: key)
+            return database.object(ofType: RealmRoute.self, forPrimaryKey: key)
         }
     }
-    
-    static func routes(withPredicate predicate: NSPredicate? = nil) -> [Route] {
+
+    static func routeByKey(_ key: String) -> Route? {
+        realmRouteByKey(key)?.domainModel
+    }
+
+    private static func realmRoutes(withPredicate predicate: NSPredicate? = nil) -> [RealmRoute] {
         return autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 return []
             }
             
-            let results: Results<Route>
+            let results: Results<RealmRoute>
             
             if let predicate = predicate {
-                results = database.objects(Route.self).filter(predicate)
+                results = database.objects(RealmRoute.self).filter(predicate)
             } else {
-                results = database.objects(Route.self)
+                results = database.objects(RealmRoute.self)
             }
             
             return Array(results)
         }
     }
+
+    static func routes(withPredicate predicate: NSPredicate? = nil) -> [Route] {
+        realmRoutes(withPredicate: predicate).map(\.domainModel)
+    }
     
     /// Loops through all Routes with `isNew == true` and sets `isNew` to false
     static func clearNewRoutes() throws {
-        let newRoutes = routes(withPredicate: NSPredicate(format: "isNew == true"))
+        let newRoutes = realmRoutes(withPredicate: NSPredicate(format: "isNew == true"))
 
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {

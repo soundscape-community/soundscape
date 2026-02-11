@@ -83,10 +83,8 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     }
     
     private var selectedPOI: POI?
-    private var referenceEntity: ReferenceEntity? {
-        guard let selectedPOI = selectedPOI else { return nil }
-        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: selectedPOI.key)?.domainEntity
-    }
+    private var referenceEntity: ReferenceEntity?
+    private var referenceEntityLookupTask: Task<Void, Never>?
     
     var player: FadeableAudioPlayer?
     private var presentedAlertController: UIAlertController?
@@ -147,6 +145,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         super.viewWillAppear(animated)
         
         navigationController?.setNavigationBarHidden(true, animated: true)
+        refreshReferenceEntityIfNeeded()
 
         showNextPage()
     }
@@ -164,6 +163,10 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         presentedAlertController = nil
         
         super.dismiss(animated: true, completion: completion)
+    }
+
+    deinit {
+        referenceEntityLookupTask?.cancel()
     }
     
     // MARK: Audio Player
@@ -212,6 +215,31 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     }
     
     // MARK: Tutorial Flow
+
+    private func refreshReferenceEntityIfNeeded() {
+        guard referenceEntity == nil, selectedPOI != nil else {
+            return
+        }
+
+        refreshReferenceEntity()
+    }
+
+    private func refreshReferenceEntity() {
+        referenceEntityLookupTask?.cancel()
+
+        guard let selectedPOI else {
+            referenceEntity = nil
+            return
+        }
+
+        referenceEntityLookupTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: selectedPOI.key)
+        }
+    }
 
     private func showNextPage() {
         guard !hasFinishedTutorial() else {
@@ -492,7 +520,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     // MARK: Audio Beacon
     
     private func setAudioBeacon() {
-        guard let entityKey = referenceEntity?.entityKey else { return }
+        guard let entityKey = referenceEntity?.entityKey ?? selectedPOI?.key else { return }
         guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else { return }
         
         player?.fadeOut({
@@ -576,6 +604,7 @@ extension MarkerTutorialViewController: POITableViewDelegate {
         if selectedPOI == nil {
             selectedPOI = poi
             markerAdded = true
+            refreshReferenceEntity()
         }
 
         navigationController?.popToViewController(self, animated: true)

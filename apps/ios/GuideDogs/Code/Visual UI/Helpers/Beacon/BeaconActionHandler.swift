@@ -21,12 +21,12 @@ struct BeaconActionHandler {
     ///
     /// returns `UIViewController` if a view controller is returned, then the calling view or view controller should present the view controller
     ///
-    static func createMarker(detail: BeaconDetail) -> UIViewController? {
+    static func createMarker(detail: BeaconDetail) async -> UIViewController? {
         guard let key = detail.locationDetail.beaconId else {
             return nil
         }
         
-        guard let beacon = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: key)?.domainEntity else {
+        guard let beacon = await DataContractRegistry.spatialRead.referenceEntity(byID: key) else {
             // Failed to fetch beacon
             return nil
         }

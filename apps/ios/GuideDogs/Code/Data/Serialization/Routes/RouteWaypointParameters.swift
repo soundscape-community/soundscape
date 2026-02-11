@@ -3,13 +3,14 @@
 //  SoundscapeUnitTests
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 
 /*
- Supports serialization of the Realm `RouteWaypoint` object
+ Supports serialization of the app-facing `RouteWaypoint` value
  */
 @MainActor
 struct RouteWaypointParameters: Codable {

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -69,11 +70,13 @@ struct BeaconTitleView: View {
             // If the given location is not a marker, add an accessibility action
             // to create a marker at the location
             view.accessibilityAction(named: Text(BeaconAction.createMarker.text), {
-                guard let viewController = BeaconActionHandler.createMarker(detail: beacon) else {
-                    return
+                Task { @MainActor in
+                    guard let viewController = await BeaconActionHandler.createMarker(detail: beacon) else {
+                        return
+                    }
+
+                    navHelper.pushViewController(viewController, animated: true)
                 }
-                
-                navHelper.pushViewController(viewController, animated: true)
             })
         }
         .if(beacon.routeDetail == nil) { view in

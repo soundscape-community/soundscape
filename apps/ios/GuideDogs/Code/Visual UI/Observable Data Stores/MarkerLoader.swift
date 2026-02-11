@@ -43,14 +43,14 @@ class MarkerLoader: ObservableObject {
         }
     }
     
-    func remove(id: String) throws {
+    func remove(id: String) async throws {
         guard let index = markerIDs.firstIndex(where: { $0 == id }) else {
             return
         }
         
         markerIDs.remove(at: index)
         
-        try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: id)
+        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: id)
         UIAccessibility.post(notification: .announcement, argument: GDLocalizedString("markers.action.deleted"))
     }
 

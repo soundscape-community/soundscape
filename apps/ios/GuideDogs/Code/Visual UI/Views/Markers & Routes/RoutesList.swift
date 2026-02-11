@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -180,11 +181,13 @@ struct RoutesList: View {
     }
     
     private func delete(_ id: String) {
-        do {
-            try loader.remove(id: id)
-        } catch {
-            alert = errorAlert()
-            showAlert = true
+        Task { @MainActor in
+            do {
+                try await loader.remove(id: id)
+            } catch {
+                alert = errorAlert()
+                showAlert = true
+            }
         }
     }
 }

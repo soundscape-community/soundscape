@@ -119,11 +119,13 @@ struct EditMarkerView: View {
             
         ToolbarItem(placement: .navigationBarTrailing) {
             Button(GDLocalizedString("general.alert.done")) {
-                do {
-                    try save()
-                } catch {
-                    alert = .saveError
-                    showAlert = true
+                Task { @MainActor in
+                    do {
+                        try await save()
+                    } catch {
+                        alert = .saveError
+                        showAlert = true
+                    }
                 }
             }
             .foregroundColor(Color.white)
@@ -277,7 +279,7 @@ struct EditMarkerView: View {
         beaconDemo.updateBeaconLocation(newValue.location)
     }
     
-    private func save() throws {
+    private func save() async throws {
         let markerId: String
         
         // Clean up the text fields
@@ -295,34 +297,41 @@ struct EditMarkerView: View {
         let finalAnnotation = annotation.isEmpty ? nil : annotation
         let detail = updatedLocation ?? locationDetail
         
-        if let id = locationDetail.markerId ?? temporaryMarkerId(for: locationDetail.source) {
+        let existingMarkerId: String?
+        if let markerId = locationDetail.markerId {
+            existingMarkerId = markerId
+        } else {
+            existingMarkerId = await temporaryMarkerId(for: locationDetail.source)
+        }
+
+        if let id = existingMarkerId {
             // Save marker ID
             markerId = id
             
             // If this is an existing marker (or in the same location as an existing marker), then update it
-            try updateExisting(id: id,
-                               coordinate: detail.location.coordinate,
-                               nickname: finalNickname,
-                               address: detail.estimatedAddress,
-                               annotation: finalAnnotation)
+            try await updateExisting(id: id,
+                                     coordinate: detail.location.coordinate,
+                                     nickname: finalNickname,
+                                     address: detail.estimatedAddress,
+                                     annotation: finalAnnotation)
         } else if case .entity(let id) = locationDetail.source, updatedLocation == nil {
             // If this is a new marker that refers to an underlying POI, create a new reference point
-            markerId = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(entityKey: id,
-                                                                                             nickname: finalNickname,
-                                                                                             estimatedAddress: detail.estimatedAddress,
-                                                                                             annotation: finalAnnotation,
-                                                                                             context: config.context)
+            markerId = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: id,
+                                                                                       nickname: finalNickname,
+                                                                                       estimatedAddress: detail.estimatedAddress,
+                                                                                       annotation: finalAnnotation,
+                                                                                       context: config.context)
         } else {
             // If this is a new marker in some generic location (not referencing an underlying POI), create
             // a reference point to the generic location
             let loc = GenericLocation(lat: detail.location.coordinate.latitude,
                                       lon: detail.location.coordinate.longitude)
-            markerId = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(location: loc,
-                                                                                             nickname: finalNickname,
-                                                                                             estimatedAddress: detail.estimatedAddress,
-                                                                                             annotation: finalAnnotation,
-                                                                                             temporary: false,
-                                                                                             context: config.context)
+            markerId = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: loc,
+                                                                                       nickname: finalNickname,
+                                                                                       estimatedAddress: detail.estimatedAddress,
+                                                                                       annotation: finalAnnotation,
+                                                                                       temporary: false,
+                                                                                       context: config.context)
         }
         
         if let marker = LocationDetail(markerId: markerId) {
@@ -332,52 +341,52 @@ struct EditMarkerView: View {
         navHelper.onNavigationAction(config.addOrUpdateAction)
     }
     
-    private func updateExisting(id: String, coordinate: CLLocationCoordinate2D?, nickname: String?, address: String?, annotation: String?) throws {
-        try autoreleasepool {
-            try DataContractRegistry.spatialWriteCompatibility.updateReferenceEntity(id: id,
-                                                                                     location: coordinate?.ssGeoCoordinate,
-                                                                                     nickname: nickname,
-                                                                                     estimatedAddress: address,
-                                                                                     annotation: annotation,
-                                                                                     context: config.context,
-                                                                                     isTemp: false)
-            
-            GDATelemetry.track("markers.edited", with: [
-                "includesAnnotation": String(!(annotation?.isEmpty ?? true)),
-                "updatedLocation": String(coordinate != nil),
-                "context": config.context ?? "none"
-            ])
-        }
+    private func updateExisting(id: String, coordinate: CLLocationCoordinate2D?, nickname: String?, address: String?, annotation: String?) async throws {
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: id,
+                                                                          location: coordinate?.ssGeoCoordinate,
+                                                                          nickname: nickname,
+                                                                          estimatedAddress: address,
+                                                                          annotation: annotation,
+                                                                          context: config.context,
+                                                                          isTemp: false)
+
+        GDATelemetry.track("markers.edited", with: [
+            "includesAnnotation": String(!(annotation?.isEmpty ?? true)),
+            "updatedLocation": String(coordinate != nil),
+            "context": config.context ?? "none"
+        ])
     }
     
     private func delete() {
         guard let id = locationDetail.markerId else {
             return
         }
-        
-        do {
-            try DataContractRegistry.spatialWriteCompatibility.removeReferenceEntity(id: id)
-        } catch {
-            GDLogAppError("Unable to successfully delete the reference entity (id: \(id))")
+
+        Task { @MainActor in
+            do {
+                try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: id)
+            } catch {
+                GDLogAppError("Unable to successfully delete the reference entity (id: \(id))")
+            }
+
+            // TODO: Notify the rest of the app that the deletion has been completed
+
+            navHelper.onNavigationAction(config.deleteAction ?? .popViewController)
         }
-        
-        // TODO: Notify the rest of the app that the deletion has been completed
-        
-        navHelper.onNavigationAction(config.deleteAction ?? .popViewController)
     }
 
-    private func temporaryMarkerId(for source: LocationDetail.Source) -> String? {
+    private func temporaryMarkerId(for source: LocationDetail.Source) async -> String? {
         let marker: ReferenceEntity?
 
         switch source {
         case .entity(let id):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: id)?.domainEntity
+            marker = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: id)
         case .coordinate(let location):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)?.domainEntity
+            marker = await DataContractRegistry.spatialRead.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
         case .designData(let location, _):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)?.domainEntity
+            marker = await DataContractRegistry.spatialRead.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
         case .screenshots(let poi):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: poi)?.domainEntity
+            marker = await DataContractRegistry.spatialRead.referenceEntity(byGenericLocation: poi)
         }
 
         guard let marker, marker.isTemp else {

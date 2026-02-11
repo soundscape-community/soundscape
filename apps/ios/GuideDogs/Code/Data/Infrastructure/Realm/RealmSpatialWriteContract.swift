@@ -9,47 +9,37 @@ import Foundation
 import SSGeo
 
 @MainActor
-struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilityContract {
-    func addRoute(_ route: Route, context: String?) throws {
-        try Route.add(route, context: context)
+struct RealmSpatialWriteContract: SpatialWriteContract {
+    func addRoute(_ route: Route) async throws {
+        try Route.add(route)
     }
 
-    func addRoute(_ route: Route, context: String?) async throws {
-        try (self as SpatialWriteCompatibilityContract).addRoute(route, context: context)
+    func importRouteFromCloud(_ route: Route) async throws {
+        try Route.importFromCloud(route)
     }
 
-    func deleteRoute(id: String) throws {
-        try Route.delete(id)
+    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
+        try RealmReferenceEntity.importFromCloud(markerParameters: markerParameters, entity: entity)
     }
 
     func deleteRoute(id: String) async throws {
-        try (self as SpatialWriteCompatibilityContract).deleteRoute(id: id)
+        try Route.delete(id)
     }
 
-    func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) throws {
-        try Route.update(id: id, name: name, description: description, waypoints: waypoints)
+    func updateRoute(_ route: Route) async throws {
+        try Route.update(id: route.id,
+                         name: route.name,
+                         description: route.routeDescription,
+                         waypoints: route.waypoints.asLocationDetail)
     }
 
-    func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) async throws {
-        try (self as SpatialWriteCompatibilityContract).updateRoute(id: id,
-                                                                    name: name,
-                                                                    description: description,
-                                                                    waypoints: waypoints)
-    }
-
-    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
+    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
         try SpatialDataStoreRegistry.store.addReferenceEntity(detail: detail,
                                                               telemetryContext: telemetryContext,
                                                               notify: notify)
     }
 
-    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
-        try (self as SpatialWriteCompatibilityContract).addReferenceEntity(detail: detail,
-                                                                           telemetryContext: telemetryContext,
-                                                                           notify: notify)
-    }
-
-    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) throws -> String {
+    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String {
         try RealmReferenceEntity.add(entityKey: entityKey,
                                      nickname: nickname,
                                      estimatedAddress: estimatedAddress,
@@ -57,15 +47,7 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
                                      context: context)
     }
 
-    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String {
-        try (self as SpatialWriteCompatibilityContract).addReferenceEntity(entityKey: entityKey,
-                                                                           nickname: nickname,
-                                                                           estimatedAddress: estimatedAddress,
-                                                                           annotation: annotation,
-                                                                           context: context)
-    }
-
-    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) throws -> String {
+    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String {
         try RealmReferenceEntity.add(location: location,
                                      nickname: nickname,
                                      estimatedAddress: estimatedAddress,
@@ -74,48 +56,23 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
                                      context: context)
     }
 
-    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String {
-        try (self as SpatialWriteCompatibilityContract).addReferenceEntity(location: location,
-                                                                           nickname: nickname,
-                                                                           estimatedAddress: estimatedAddress,
-                                                                           annotation: annotation,
-                                                                           temporary: temporary,
-                                                                           context: context)
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
         try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
                                                                        estimatedAddress: estimatedAddress)
     }
 
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
-        try (self as SpatialWriteCompatibilityContract).addTemporaryReferenceEntity(location: location,
-                                                                                    estimatedAddress: estimatedAddress)
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
         try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
                                                                        nickname: nickname,
                                                                        estimatedAddress: estimatedAddress)
     }
 
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
-        try (self as SpatialWriteCompatibilityContract).addTemporaryReferenceEntity(location: location,
-                                                                                    nickname: nickname,
-                                                                                    estimatedAddress: estimatedAddress)
-    }
-
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
         try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey,
                                                                        estimatedAddress: estimatedAddress)
     }
 
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
-        try (self as SpatialWriteCompatibilityContract).addTemporaryReferenceEntity(entityKey: entityKey,
-                                                                                    estimatedAddress: estimatedAddress)
-    }
-
-    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) throws {
+    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) async throws {
         guard let entity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return
         }
@@ -129,33 +86,15 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
                                         isTemp: isTemp)
     }
 
-    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) async throws {
-        try (self as SpatialWriteCompatibilityContract).updateReferenceEntity(id: id,
-                                                                              location: location,
-                                                                              nickname: nickname,
-                                                                              estimatedAddress: estimatedAddress,
-                                                                              annotation: annotation,
-                                                                              context: context,
-                                                                              isTemp: isTemp)
-    }
-
-    func removeAllReferenceEntities() throws {
+    func removeAllReferenceEntities() async throws {
         try RealmReferenceEntity.removeAll()
     }
 
-    func removeAllReferenceEntities() async throws {
-        try (self as SpatialWriteCompatibilityContract).removeAllReferenceEntities()
-    }
-
-    func removeAllRoutes() throws {
+    func removeAllRoutes() async throws {
         try Route.deleteAll()
     }
 
-    func removeAllRoutes() async throws {
-        try (self as SpatialWriteCompatibilityContract).removeAllRoutes()
-    }
-
-    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) throws {
+    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {
         guard let cache = try? RealmHelper.getCacheRealm() else {
             throw RouteRealmError.databaseError
         }
@@ -178,31 +117,50 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialWriteCompatibilit
         }
     }
 
-    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {
-        try (self as SpatialWriteCompatibilityContract).restoreCachedAddresses(addresses)
-    }
-
-    func cleanCorruptReferenceEntities() throws {
+    func cleanCorruptReferenceEntities() async throws {
         try RealmReferenceEntity.cleanCorruptEntities()
     }
 
-    func cleanCorruptReferenceEntities() async throws {
-        try (self as SpatialWriteCompatibilityContract).cleanCorruptReferenceEntities()
-    }
-
-    func removeReferenceEntity(id: String) throws {
+    func removeReferenceEntity(id: String) async throws {
         try RealmReferenceEntity.remove(id: id)
     }
 
-    func removeReferenceEntity(id: String) async throws {
-        try (self as SpatialWriteCompatibilityContract).removeReferenceEntity(id: id)
+    func removeAllTemporaryReferenceEntities() async throws {
+        try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+    }
+}
+
+@MainActor
+struct SpatialDataDestinationEntityStore: DestinationEntityStore {
+    func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
+        SpatialDataStoreRegistry.store.referenceEntityByKey(id)
+    }
+
+    func referenceEntityID(forGenericLocation location: GenericLocation) -> String? {
+        SpatialDataStoreRegistry.store.referenceEntityByLocation(location.location.coordinate)?.id
+    }
+
+    func referenceEntityID(forEntityKey key: String) -> String? {
+        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.id
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
+                                                                       estimatedAddress: estimatedAddress)
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
+                                                                       nickname: nickname,
+                                                                       estimatedAddress: estimatedAddress)
+    }
+
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey,
+                                                                       estimatedAddress: estimatedAddress)
     }
 
     func removeAllTemporaryReferenceEntities() throws {
         try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
-    }
-
-    func removeAllTemporaryReferenceEntities() async throws {
-        try (self as SpatialWriteCompatibilityContract).removeAllTemporaryReferenceEntities()
     }
 }

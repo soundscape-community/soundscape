@@ -58,41 +58,6 @@ protocol DestinationEntityStore {
 }
 
 @MainActor
-struct SpatialDataDestinationEntityStore: DestinationEntityStore {
-    func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
-        DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id)
-    }
-
-    func referenceEntityID(forGenericLocation location: GenericLocation) -> String? {
-        DataContractRegistry.spatialReadCompatibility.markerParameters(byCoordinate: location.geoCoordinate)?.id
-    }
-
-    func referenceEntityID(forEntityKey key: String) -> String? {
-        DataContractRegistry.spatialReadCompatibility.markerParameters(byEntityKey: key)?.id
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
-        try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(location: location,
-                                                                                       estimatedAddress: estimatedAddress)
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
-        try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(location: location,
-                                                                                       nickname: nickname,
-                                                                                       estimatedAddress: estimatedAddress)
-    }
-
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
-        try DataContractRegistry.spatialWriteCompatibility.addTemporaryReferenceEntity(entityKey: entityKey,
-                                                                                       estimatedAddress: estimatedAddress)
-    }
-
-    func removeAllTemporaryReferenceEntities() throws {
-        try DataContractRegistry.spatialWriteCompatibility.removeAllTemporaryReferenceEntities()
-    }
-}
-
-@MainActor
 class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Notification Keys

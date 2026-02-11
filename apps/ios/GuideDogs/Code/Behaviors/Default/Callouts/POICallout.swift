@@ -69,7 +69,7 @@ struct POICallout: POICalloutProtocol {
             return storedPOI
         }
         
-        guard let poi = DataContractRegistry.spatialReadCompatibility.poi(byKey: key) else {
+        guard let poi = SpatialDataStoreRegistry.store.searchByKey(key) else {
             return nil
         }
         
@@ -78,7 +78,7 @@ struct POICallout: POICalloutProtocol {
     
     var marker: ReferenceEntity? {
         // Check by both entity key and key in case this is a generic location marker
-        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)?.domainEntity
+        return SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
     }
     
     /// Constructor for the POI callout

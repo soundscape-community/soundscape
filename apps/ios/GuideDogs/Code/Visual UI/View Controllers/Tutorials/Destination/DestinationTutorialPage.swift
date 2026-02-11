@@ -23,18 +23,46 @@ class DestinationTutorialPage: BaseTutorialViewController {
     // MARK: Properties
     
     weak var delegate: DestinationTutorialPageDelegate?
+    private var entityLookupTask: Task<Void, Never>?
+    private var resolvedEntity: ReferenceEntity?
     
     var entity: ReferenceEntity? {
+        return resolvedEntity
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshEntity()
+    }
+
+    private func refreshEntity() {
+        entityLookupTask?.cancel()
+
         guard let key = delegate?.getEntityKey() else {
-            return nil
+            resolvedEntity = nil
+            return
         }
 
-        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)?.domainEntity
+        entityLookupTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            resolvedEntity = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: key)
+        }
+    }
+
+    deinit {
+        entityLookupTask?.cancel()
     }
     
     // MARK: BaseTutorialViewController Overrides
     
     override internal func play(delay: TimeInterval = 0.0, text: String, _ completion: ((Bool) -> Void)? = nil) {
+        if entity == nil {
+            refreshEntity()
+        }
+
         var textToPlay = text
         
         if text.contains("@!destination!!") {

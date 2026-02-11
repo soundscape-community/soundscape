@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -689,7 +690,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                 // Remove the existing tiles before storing the updated tile so that we remove old (bad)
                 // intersection data from before we fixed the server intersection code (where multiple versions
                 // of the same intersection were being returned in adjacent tiles)
-                if let existingTile = DataContractRegistry.spatialReadCompatibility.tileData(for: [tile]).first {
+                if let existingTile = SpatialDataStoreRegistry.store.tileData(for: [tile]).first {
                     try cache.write {
                         cache.delete(existingTile.intersections)
                     }
@@ -719,10 +720,10 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             var needed = [VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)]
             
             if includePORs {
-                needed = Array(DataContractRegistry.spatialReadCompatibility.tiles(forDestinations: true,
-                                                                                   forReferences: true,
-                                                                                   at: zoomLevel,
-                                                                                   destination: destination).union(needed))
+                needed = Array(SpatialDataStoreRegistry.store.tiles(forDestinations: true,
+                                                                    forReferences: true,
+                                                                    at: zoomLevel,
+                                                                    destination: destination).union(needed))
             }
             
             return (Set<VectorTile>(), needed)
@@ -731,10 +732,10 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         var neededTiles = VectorTile.tilesForRegion(location, radius: SpatialDataContext.cacheDistance, zoom: SpatialDataContext.zoomLevel)
         
         if includePORs {
-            neededTiles = Array(DataContractRegistry.spatialReadCompatibility.tiles(forDestinations: true,
-                                                                                    forReferences: true,
-                                                                                    at: zoomLevel,
-                                                                                    destination: destination).union(neededTiles))
+            neededTiles = Array(SpatialDataStoreRegistry.store.tiles(forDestinations: true,
+                                                                     forReferences: true,
+                                                                     at: zoomLevel,
+                                                                     destination: destination).union(neededTiles))
         }
         
         let remainingTiles = Set(tiles.filter { neededTiles.contains($0) }) // Remove tile we don't need anymore

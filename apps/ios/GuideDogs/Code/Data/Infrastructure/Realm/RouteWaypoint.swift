@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -17,33 +18,34 @@ import RealmSwift
  index that reflects the waypoint's ordering within the
  route.
  */
-class RouteWaypoint: EmbeddedObject {
-    
+struct RouteWaypoint {
     typealias Completion = (Result<RouteWaypoint, Error>) -> Void
-    
+
     // MARK: Properties
-    
+
     // Represents the order that this waypoint will appear
     // in the `Route` object
-    @Persisted var index: Int = -1
+    var index: Int = -1
     // `markerId` is the primary key for a `RealmReferenceEntity`
     // object
-    @Persisted var markerId: String = ""
+    var markerId: String = ""
     // Use `locationDetail` to persist waypoint and marker data that is
     // being imported from a URL resource and has not been added to the
     // Realm database (e.g., sharing activity)
     private var importedLocationDetail: LocationDetail?
-    
+
     // This value should never be `nil`
     @MainActor
     var asLocationDetail: LocationDetail? {
         // If there is imported data, return it
         // Otherwise, return Realm data
-        return importedLocationDetail ?? LocationDetail(markerId: markerId)
+        importedLocationDetail ?? LocationDetail(markerId: markerId)
     }
-    
+
     // MARK: Initialization
-    
+
+    init() {}
+
     /**
      * Initializes a waypoint from a marker that exists in the Realm database.
      *
@@ -52,19 +54,17 @@ class RouteWaypoint: EmbeddedObject {
      *     - markerId: ID for a marker that exists in Realm database
      */
     @MainActor
-    convenience init?(index: Int, markerId: String) {
-        self.init()
-        
+    init?(index: Int, markerId: String) {
         guard LocationDetail(markerId: markerId) != nil else {
             // Marker does not exist
             return nil
         }
-        
+
         self.index = index
         self.markerId = markerId
-        self.importedLocationDetail = nil
+        importedLocationDetail = nil
     }
-    
+
     /**
      * Initializes a waypoint from a marker that exists in the Realm database.
      *
@@ -73,19 +73,17 @@ class RouteWaypoint: EmbeddedObject {
      *     - locationDetail: Data for a marker that exists in Realm database
      */
     @MainActor
-    convenience init?(index: Int, locationDetail: LocationDetail) {
-        self.init()
-        
+    init?(index: Int, locationDetail: LocationDetail) {
         guard let markerId = locationDetail.markerId else {
             // Location is not a marker
             return nil
         }
-        
+
         self.index = index
         self.markerId = markerId
-        self.importedLocationDetail = nil
+        importedLocationDetail = nil
     }
-    
+
     /**
      * Initializes a waypoint from a marker that is being imported from a URL resource (e.g.,
      * sharing activity) and has not been added to the Realm database.
@@ -97,40 +95,60 @@ class RouteWaypoint: EmbeddedObject {
      *     - markerId: ID for imported marker
      *     - importedLocationDetail: Data for marker that is being imported
      */
-    convenience init(index: Int, markerId: String, importedLocationDetail: LocationDetail) {
-        self.init()
-        
+    init(index: Int, markerId: String, importedLocationDetail: LocationDetail) {
         self.index = index
         self.markerId = markerId
         self.importedLocationDetail = importedLocationDetail
     }
-    
-    convenience init(from parameters: RouteWaypointParameters) {
-        self.init()
-        
+
+    init(from parameters: RouteWaypointParameters) {
         index = parameters.index
         markerId = parameters.markerId
+        importedLocationDetail = nil
     }
-    
+
+    init(realmWaypoint: RealmRouteWaypoint) {
+        index = realmWaypoint.index
+        markerId = realmWaypoint.markerId
+        importedLocationDetail = nil
+    }
+
+    var realmObject: RealmRouteWaypoint {
+        RealmRouteWaypoint(waypoint: self)
+    }
 }
 
-extension List where Element == RouteWaypoint {
-    
-    var ordered: [RouteWaypoint] {
-        return self.sorted(by: { return $0.index < $1.index })
+@objc(RouteWaypoint)
+class RealmRouteWaypoint: EmbeddedObject {
+    // MARK: Properties
+
+    @Persisted var index: Int = -1
+    @Persisted var markerId: String = ""
+
+    convenience init(waypoint: RouteWaypoint) {
+        self.init()
+        index = waypoint.index
+        markerId = waypoint.markerId
     }
-    
+
+    var domainModel: RouteWaypoint {
+        RouteWaypoint(realmWaypoint: self)
+    }
+}
+
+extension List where Element == RealmRouteWaypoint {
+    var ordered: [RealmRouteWaypoint] {
+        sorted(by: { $0.index < $1.index })
+    }
 }
 
 extension Array where Element == RouteWaypoint {
-    
     var ordered: [RouteWaypoint] {
-        return self.sorted(by: { return $0.index < $1.index })
+        sorted(by: { $0.index < $1.index })
     }
-    
+
     @MainActor
     var asLocationDetail: [LocationDetail] {
-        return self.compactMap({ return $0.asLocationDetail })
+        compactMap({ $0.asLocationDetail })
     }
-    
 }

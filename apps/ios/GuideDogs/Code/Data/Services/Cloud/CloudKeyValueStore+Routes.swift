@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -134,30 +135,24 @@ extension CloudKeyValueStore {
     /// Import route parameters from cloud store to database
     private func importRouteChanges(routeParametersObjects: [RouteParameters]) async {
         for routeParameters in routeParametersObjects {
-            importChanges(routeParameters: routeParameters)
+            await importChanges(routeParameters: routeParameters)
         }
 
         await notifyOfInvalidRoutesIfNeeded(routeParametersObjects: routeParametersObjects)
     }
     
-    private func importChanges(routeParameters: RouteParameters) {
+    private func importChanges(routeParameters: RouteParameters) async {
         let route = Route(from: routeParameters)
-        importChanges(route: route)
+        await importChanges(route: route)
     }
     
     /// Import route entities from cloud store to database
-    private func importChanges(route: Route) {
-        autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else { return }
-            
-            do {
-                try database.write {
-                    database.add(route, update: .modified)
-                }
-                GDLogCloudInfo("Imported route with id: \(route.id), name: \(route.name)")
-            } catch {
-                GDLogCloudInfo("Could not import route with id: \(route.id), name: \(route.name), error: \(error)")
-            }
+    private func importChanges(route: Route) async {
+        do {
+            try await DataContractRegistry.spatialWrite.importRouteFromCloud(route)
+            GDLogCloudInfo("Imported route with id: \(route.id), name: \(route.name)")
+        } catch {
+            GDLogCloudInfo("Could not import route with id: \(route.id), name: \(route.name), error: \(error)")
         }
     }
     

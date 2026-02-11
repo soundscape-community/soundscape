@@ -32,16 +32,24 @@ class BeaconDetailStore: ObservableObject {
             
             // Active audio beacon is following a route
             self.init(beacon: beacon)
-        } else if let manager,
-                  let key = manager.destinationKey,
-                  let beacon = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: key)?.domainEntity {
-            let beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: manager.isAudioEnabled)
-            
-            // Active audio beacon is set on a location
-            self.init(beacon: beacon)
         } else {
             // There is no active audio beacon
             self.init(beacon: nil)
+
+            guard let manager,
+                  let key = manager.destinationKey else {
+                return
+            }
+
+            Task { @MainActor [weak self] in
+                guard let self,
+                      let beacon = await DataContractRegistry.spatialRead.referenceEntity(byID: key) else {
+                    return
+                }
+
+                // Active audio beacon is set on a location.
+                self.beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: manager.isAudioEnabled)
+            }
         }
     }
     
@@ -101,10 +109,16 @@ class BeaconDetailStore: ObservableObject {
                 // are following a route
                 if let userInfo = notification.userInfo as? [String: Any],
                    let key = userInfo[DestinationManager.Keys.destinationKey] as? String,
-                   let beacon = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: key)?.domainEntity,
                    let isAudioEnabled = userInfo[DestinationManager.Keys.isAudioEnabled] as? Bool {
-                    // Beacon was set - Update beacon so that it is placed on the new location
-                    self.beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: isAudioEnabled)
+                    Task { @MainActor [weak self] in
+                        guard let self,
+                              let beacon = await DataContractRegistry.spatialRead.referenceEntity(byID: key) else {
+                            return
+                        }
+
+                        // Beacon was set - Update beacon so that it is placed on the new location.
+                        self.beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: isAudioEnabled)
+                    }
                 } else {
                     // Beacon was removed
                     self.beacon = nil

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -83,7 +84,7 @@ class RouteParametersHandler {
                 completion(.failure(error))
             } else {
                 // Initialize new value
-                let value = Route(name: parameters.name, description: parameters.routeDescription, waypoints: current.success)
+                var value = Route(name: parameters.name, description: parameters.routeDescription, waypoints: current.success)
                 
                 // Save ID
                 value.id = parameters.id

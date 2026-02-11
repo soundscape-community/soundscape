@@ -61,9 +61,7 @@ struct MarkersList: View {
                     MarkerCell(model: MarkerModel(id: id))
                         .accessibilityAddTraits(.isButton)
                         .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.beacon.text)) {
-                            if let poi = entity(for: id) {
-                                navHelper.didSelectLocationAction(.beacon, entity: poi)
-                            }
+                            didSelectLocationAction(.beacon, for: id)
                         }
                         .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.edit.text)) {
                             selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
@@ -74,14 +72,10 @@ struct MarkersList: View {
                             showAlert = true
                         }
                         .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.preview.text)) {
-                            if let poi = entity(for: id) {
-                                navHelper.didSelectLocationAction(.preview, entity: poi)
-                            }
+                            didSelectLocationAction(.preview, for: id)
                         }
                         .accessibilityAction(named: Text(LocationAction.share(isEnabled: true).text), {
-                            if let poi = entity(for: id) {
-                                navHelper.didSelectLocationAction(.share(isEnabled: true), entity: poi)
-                            }
+                            didSelectLocationAction(.share(isEnabled: true), for: id)
                         })
                         .if(routeIsActive == false, transform: {
                             $0.onDelete {
@@ -118,8 +112,18 @@ struct MarkersList: View {
         }
     }
     
-    func entity(for markerID: String) -> POI? {
-        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: markerID)?.domainEntity.getPOI()
+    private func entity(for markerID: String) async -> POI? {
+        await DataContractRegistry.spatialRead.referenceEntity(byID: markerID)?.getPOI()
+    }
+
+    private func didSelectLocationAction(_ action: LocationAction, for markerID: String) {
+        Task { @MainActor in
+            guard let poi = await entity(for: markerID) else {
+                return
+            }
+
+            navHelper.didSelectLocationAction(action, entity: poi)
+        }
     }
     
     private func confirmationAlert(for markerID: String) -> Alert {
@@ -135,11 +139,13 @@ struct MarkersList: View {
     }
     
     private func delete(_ id: String) {
-        do {
-            try loader.remove(id: id)
-        } catch {
-            alert = errorAlert()
-            showAlert = true
+        Task { @MainActor in
+            do {
+                try await loader.remove(id: id)
+            } catch {
+                alert = errorAlert()
+                showAlert = true
+            }
         }
     }
 }

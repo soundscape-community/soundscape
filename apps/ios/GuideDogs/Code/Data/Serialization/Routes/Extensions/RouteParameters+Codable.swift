@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -61,7 +62,8 @@ extension RouteParameters {
             return nil
         }
         
-        guard let routeParameters = DataContractRegistry.spatialReadCompatibility.routeParameters(byKey: id, context: context) else {
+        guard let route = SpatialDataStoreRegistry.store.routeByKey(id),
+              let routeParameters = RouteParameters(route: route, context: context) else {
             GDLogURLResourceError("Failed to encode - Failed to fetch route parameters from Realm")
             return nil
         }

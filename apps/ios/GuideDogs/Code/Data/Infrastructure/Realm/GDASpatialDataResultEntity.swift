@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -117,7 +118,7 @@ class GDASpatialDataResultEntity: Object {
         
         var entranceObjects = [POI]()
         for entranceID in entranceIDs {
-            if let entrance = DataContractRegistry.spatialReadCompatibility.poi(byKey: entranceID) {
+            if let entrance = SpatialDataStoreRegistry.store.searchByKey(entranceID) {
                 entranceObjects.append(entrance)
             }
         }

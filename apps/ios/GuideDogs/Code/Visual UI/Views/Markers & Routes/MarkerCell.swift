@@ -25,6 +25,7 @@ class MarkerModel: ObservableObject {
     @Published private(set) var distanceAccessibilityLabel: String = ""
     
     private var tokens: [AnyCancellable] = []
+    private var updateTask: Task<Void, Never>?
     
     var nameAccessibilityLabel: String {
         return isNew ? GDLocalizedString("markers.new_badge.acc_label", name) :  name
@@ -49,18 +50,26 @@ class MarkerModel: ObservableObject {
     
     deinit {
         tokens.cancelAndRemoveAll()
+        updateTask?.cancel()
     }
     
     private func update() {
-        guard let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id)?.domainEntity else {
-            return
+        updateTask?.cancel()
+        updateTask = Task { @MainActor in
+            guard let marker = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
+                return
+            }
+
+            guard !Task.isCancelled else {
+                return
+            }
+
+            isNew = marker.isNew
+            name = marker.name
+            address = marker.displayAddress
+
+            updateDistance(for: marker)
         }
-        
-        isNew = marker.isNew
-        name = marker.name
-        address = marker.displayAddress
-        
-        updateDistance(for: marker)
     }
     
     private func updateDistance(for marker: ReferenceEntity) {

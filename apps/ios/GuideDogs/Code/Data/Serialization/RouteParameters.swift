@@ -3,13 +3,14 @@
 //  SoundscapeUnitTests
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 
 /*
- Supports serialization of the Realm `Route` object
+ Supports serialization of the app-facing `Route` value
  */
 @MainActor
 struct RouteParameters: Codable {
@@ -47,7 +48,7 @@ struct RouteParameters: Codable {
         let id = route.id
         let name = route.name
         let routeDescription = route.routeDescription
-        let waypoints = Array(route.waypoints).compactMap({ return RouteWaypointParameters(waypoint: $0) })
+        let waypoints = route.waypoints.map({ RouteWaypointParameters(waypoint: $0) })
         // Ignore `createdDate`, `lastUpdatedDate` and `lastSelectedDate` unless encoding data for iCloud backup
         let createdDate = context == .backup ? route.createdDate : nil
         let lastUpdatedDate = context == .backup ? route.lastUpdatedDate : nil

@@ -160,6 +160,20 @@ Historical planning docs are valuable context, but commands and tooling details 
 - **NEVER** add Microsoft copyright notices to any files.
 - **do** add copyright notice for "Soundscape Community Contributers" to modified or new files
 
+## Domain Model and Abstraction Policy
+- Prefer canonical domain models over DTO proliferation. Do not introduce DTO families when existing readable domain/value types can be used directly.
+- Keep app-facing names stable and readable. Preserve existing API names/shapes for client code unless a change is strictly necessary for modularization or async correctness.
+- For route modularization, the exposed model should remain `Route` and be a value type (`struct`). Realm object types must stay infrastructure-local under `Data/Infrastructure/Realm` and use explicit Realm-prefixed names (for example `RealmRoute`).
+- Use async APIs where appropriate, but migrate incrementally with minimal client churn and explicit deprecation only for temporary compatibility seams.
+- Add abstractions/patterns only when they clearly improve code organization, readability, and local reasoning boundaries. Do not add patterns from irrelevant contexts (for example distributed-systems patterns) when they are not required for this modularization work.
+
+## Modularization Checkpoint (2026-02-11)
+- Data read/write contract compatibility surfaces are removed from production (`spatialReadCompatibility`/`spatialWriteCompatibility` usage in `apps/ios/GuideDogs/Code` is zero); use async `DataContractRegistry.spatialRead` and `DataContractRegistry.spatialWrite`.
+- Canonical route write APIs are now domain-shaped: `SpatialWriteContract.addRoute(_ route: Route)` and `SpatialWriteContract.updateRoute(_ route: Route)`.
+- Route add telemetry remains infrastructure-local in `Data/Infrastructure/Realm/Route+Realm.swift`; do not re-introduce telemetry-context parameters into app-facing contracts.
+- First-waypoint coordinate hydration for route initialization is centralized behind route-focused helpers in `Data/Infrastructure/Realm/Route.swift` (`firstWaypointCoordinate(for:)`, `markerCoordinate(forMarkerID:)`).
+- When validating route modularization slices locally, prefer clean derived data (for example `/tmp/soundscape-modularization-dd2`) before `xcodebuild build-for-testing` and targeted suites (`RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) to avoid stale test artifacts.
+
 ## Compatibility Seam Policy
 - Temporary compatibility APIs (for example sync wrappers around async-first contracts) must be explicitly marked deprecated with `@available(*, deprecated, message: "...")`.
 - Deprecation messages should point to the preferred replacement API (for example async contract surface) so callsites are easy to migrate.

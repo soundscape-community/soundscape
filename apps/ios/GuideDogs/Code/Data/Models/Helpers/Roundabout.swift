@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -176,10 +177,7 @@ extension Roundabout {
             
             // Get the list of intersections that lie on that road (except the given intersection)
             let region = MKCoordinateRegion(center: intersection.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-            let intersectionRegion = SpatialIntersectionRegion(center: region.center.ssGeoCoordinate,
-                                                               latitudeDelta: region.span.latitudeDelta,
-                                                               longitudeDelta: region.span.longitudeDelta)
-            guard let roadIntersections = DataContractRegistry.spatialReadCompatibility.intersections(forRoadKey: road.key, in: intersectionRegion),
+            guard let roadIntersections = SpatialDataStoreRegistry.store.intersections(forRoadKey: road.key, inRegion: region),
                 !roadIntersections.isEmpty else {
                     continue
             }

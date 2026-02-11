@@ -322,7 +322,7 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
             }
             
             // Transform entity keys to entity objects
-            markers.append(contentsOf: filtered.compactMap { DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: $0)?.domainEntity })
+            markers.append(contentsOf: filtered.compactMap { SpatialDataStoreRegistry.store.referenceEntityByEntityKey($0)?.domainEntity })
         }
         
         return markers.map { POICallout(.nearbyMarkers, key: $0.getPOI().key, includeDistance: true) }

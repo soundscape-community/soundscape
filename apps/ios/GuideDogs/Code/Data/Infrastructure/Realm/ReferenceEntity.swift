@@ -82,7 +82,7 @@ extension ReferenceEntity {
             return nil
         }
 
-        return DataContractRegistry.spatialReadCompatibility.poi(byKey: entityKey)
+        return SpatialDataStoreRegistry.store.searchByKey(entityKey)
     }
 
     var name: String {
@@ -225,7 +225,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             return nil
         }
         
-        return DataContractRegistry.spatialReadCompatibility.poi(byKey: key)
+        return SpatialDataStoreRegistry.store.searchByKey(key)
     }()
     
     // MARK: Computed Properties
@@ -484,9 +484,23 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     }
     
     // MARK: Static Methods
+
+    static func importFromCloud(markerParameters: MarkerParameters, entity: POI) throws {
+        guard let referenceEntity = RealmReferenceEntity(markerParameters: markerParameters, entity: entity) else {
+            throw ReferenceEntityError.cannotAddMarker
+        }
+
+        try autoreleasepool {
+            let database = try RealmHelper.getDatabaseRealm()
+
+            try database.write {
+                database.add(referenceEntity, update: .modified)
+            }
+        }
+    }
     
     static func add(detail: LocationDetail, telemetryContext: String?, isTemporary: Bool = false, notify: Bool = true) throws -> String {
-        if let id = detail.markerId, let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: id) {
+        if let id = detail.markerId, let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) {
             try update(entity: marker, location: detail.location.coordinate, nickname: detail.nickname, address: detail.estimatedAddress, annotation: detail.annotation, context: telemetryContext, isTemp: isTemporary)
             
             return id
@@ -522,14 +536,14 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             let database = try RealmHelper.getDatabaseRealm()
             let cache = try RealmHelper.getCacheRealm()
             
-            if let existingMarker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: entityKey) {
+            if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey) {
                 // Update and return the existing marker
                 try update(entity: existingMarker, nickname: nickname, address: estimatedAddress, annotation: annotation, context: context, isTemp: temporary)
                 
                 return existingMarker.id
             }
             
-            guard let entity = DataContractRegistry.spatialReadCompatibility.poi(byKey: entityKey) else {
+            guard let entity = SpatialDataStoreRegistry.store.searchByKey(entityKey) else {
                 // Return if entity does not exist (or doesn't exist in Realm)
                 throw ReferenceEntityError.entityDoesNotExist
             }
@@ -688,7 +702,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             // match, then we can also update the marker to set `isTemp` to false. This covers the only edge case where
             // we allow permanent markers to become temporary: when a marker is deleted and there is currently a beacon
             // set on the location of that marker.
-            if let existingMarker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: location) {
+            if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location) {
                 let tempStatusMatches = existingMarker.isTemp == temporary
                 let propertiesMatch = existingMarker.nickname == nickname &&
                                       existingMarker.estimatedAddress == estimatedAddress &&

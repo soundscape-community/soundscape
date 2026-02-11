@@ -89,23 +89,27 @@ class ShareMarkerAlertObserver: NotificationObserver {
             
             // Reset `currentAlert` after it has been presented
             self.currentAlert = nil
-            
-            // Search for an existing reference entity at the given
-            // location
-            let existingMarker: ReferenceEntity?
-            
-            if let location = location as? GenericLocation {
-                existingMarker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byGenericLocation: location)?.domainEntity
-            } else {
-                existingMarker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: location.key)?.domainEntity
-            }
-            
-            if let existingMarker = existingMarker {
-                // A marker already exists at the given location
-                // Present another alert to ask the user what to do
-                self.presentImportExistingMarkerAlert(existingMarker: existingMarker, nickname: nickname, annotation: annotation)
-            } else {
-                self.segueToEditImportedMarker(location: location, nickname: nickname, annotation: annotation)
+
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    return
+                }
+
+                // Search for an existing reference entity at the given location.
+                let existingMarker: ReferenceEntity?
+                if let location = location as? GenericLocation {
+                    existingMarker = await DataContractRegistry.spatialRead.referenceEntity(byGenericLocation: location)
+                } else {
+                    existingMarker = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: location.key)
+                }
+
+                if let existingMarker = existingMarker {
+                    // A marker already exists at the given location.
+                    // Present another alert to ask the user what to do.
+                    self.presentImportExistingMarkerAlert(existingMarker: existingMarker, nickname: nickname, annotation: annotation)
+                } else {
+                    self.segueToEditImportedMarker(location: location, nickname: nickname, annotation: annotation)
+                }
             }
         }
         

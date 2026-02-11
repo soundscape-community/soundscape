@@ -43,7 +43,7 @@ struct DestinationCallout: POICalloutProtocol {
     }
     
     var marker: ReferenceEntity? {
-        return DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: key)?.domainEntity
+        return SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
     }
     
     /// A computed property for accessing the POI referenced by the key stored in this Callout object. Note

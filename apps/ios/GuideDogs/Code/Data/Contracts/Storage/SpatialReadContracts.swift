@@ -93,65 +93,12 @@ protocol SpatialReadContract: RouteReadContract,
                               TileReadContract {}
 
 @MainActor
-@available(*, deprecated, message: "Temporary compatibility seam. Use async RouteReadContract APIs instead.")
-protocol RouteReadCompatibilityContract {
-    func routes() -> [Route]
-    func route(byKey key: String) -> Route?
-    func routeMetadata(byKey key: String) -> RouteReadMetadata?
-    func routeParameters(byKey key: String, context: RouteParameters.Context) -> RouteParameters?
-    func routeParametersForBackup() -> [RouteParameters]
-    func routes(containingMarkerID markerID: String) -> [Route]
-}
-
-@MainActor
-@available(*, deprecated, message: "Temporary compatibility seam. Use async ReferenceReadContract APIs instead.")
-protocol ReferenceReadCompatibilityContract {
-    func referenceEntity(byID id: String) -> RealmReferenceEntity?
-    func referenceCallout(byID id: String) -> ReferenceCalloutReadData?
-    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) -> Double?
-    func referenceMetadata(byID id: String) -> ReferenceReadMetadata?
-    func referenceMetadata(byEntityKey key: String) -> ReferenceReadMetadata?
-    func markerParameters(byID id: String) -> MarkerParameters?
-    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) -> MarkerParameters?
-    func markerParameters(byEntityKey key: String) -> MarkerParameters?
-    func markerParametersForBackup() -> [MarkerParameters]
-    func referenceEntity(byEntityKey key: String) -> RealmReferenceEntity?
-    func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) -> RealmReferenceEntity?
-    func referenceEntity(byGenericLocation location: GenericLocation) -> RealmReferenceEntity?
-    func referenceEntities() -> [RealmReferenceEntity]
-    func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) -> [RealmReferenceEntity]
-    func poi(byKey key: String) -> POI?
-}
-
-@MainActor
-@available(*, deprecated, message: "Temporary compatibility seam. Use async RoadGraphReadContract APIs instead.")
-protocol RoadGraphReadCompatibilityContract {
-    func road(byKey key: String) -> Road?
-    func intersections(forRoadKey key: String) -> [Intersection]
-    func intersection(forRoadKey key: String, at coordinate: SSGeoCoordinate) -> Intersection?
-    func intersections(forRoadKey key: String, in region: SpatialIntersectionRegion) -> [Intersection]?
-}
-
-@MainActor
-@available(*, deprecated, message: "Temporary compatibility seam. Use async TileReadContract APIs instead.")
-protocol TileReadCompatibilityContract {
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile>
-    func tileData(for tiles: [VectorTile]) -> [TileData]
-    func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) -> [POI]
-}
-
-@MainActor
-@available(*, deprecated, message: "Temporary compatibility seam. Use async SpatialReadContract APIs instead.")
-protocol SpatialReadCompatibilityContract: RouteReadCompatibilityContract,
-                                           ReferenceReadCompatibilityContract,
-                                           RoadGraphReadCompatibilityContract,
-                                           TileReadCompatibilityContract {}
-
-@MainActor
 protocol SpatialWriteContract {
-    func addRoute(_ route: Route, context: String?) async throws
+    func addRoute(_ route: Route) async throws
+    func importRouteFromCloud(_ route: Route) async throws
+    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws
     func deleteRoute(id: String) async throws
-    func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) async throws
+    func updateRoute(_ route: Route) async throws
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String
     func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String
@@ -165,25 +112,4 @@ protocol SpatialWriteContract {
     func cleanCorruptReferenceEntities() async throws
     func removeReferenceEntity(id: String) async throws
     func removeAllTemporaryReferenceEntities() async throws
-}
-
-@MainActor
-@available(*, deprecated, message: "Temporary compatibility seam. Use async SpatialWriteContract APIs instead.")
-protocol SpatialWriteCompatibilityContract {
-    func addRoute(_ route: Route, context: String?) throws
-    func deleteRoute(id: String) throws
-    func updateRoute(id: String, name: String, description: String?, waypoints: [LocationDetail]) throws
-    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
-    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) throws -> String
-    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) throws -> String
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
-    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) throws
-    func removeAllReferenceEntities() throws
-    func removeAllRoutes() throws
-    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) throws
-    func cleanCorruptReferenceEntities() throws
-    func removeReferenceEntity(id: String) throws
-    func removeAllTemporaryReferenceEntities() throws
 }

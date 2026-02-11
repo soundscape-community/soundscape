@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -113,7 +114,7 @@ extension Realm: Samplable {
                 }
                 
                 Route.samples.forEach { route in
-                    realm.add(route)
+                    realm.add(route.realmObject)
                 }
             }
             return realm
@@ -134,7 +135,7 @@ extension Realm: Samplable {
             try realm.write {
                 realm.deleteAll()
                 realm.add(RealmReferenceEntity.samples)
-                realm.add(Route.samples)
+                realm.add(Route.samples.map(\.realmObject))
             }
         } catch {
             print("Failed to bootstrap the default realm")

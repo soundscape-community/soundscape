@@ -3,6 +3,7 @@
 //  UnitTests
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -265,6 +266,28 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         _ = Route(from: parameters)
 
         XCTAssertEqual(store.referenceEntityByKeyCallKeys.first, firstMarkerID)
+    }
+
+    func testRouteInitFromParametersHydratesFirstWaypointCoordinatesFromMarker() throws {
+        let markerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
+        let markerID = "hydration-marker-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: markerID, coordinate: markerCoordinate)
+
+        let parameters = RouteParameters(id: "hydration-route-\(UUID().uuidString)",
+                                         name: "Hydration Route",
+                                         routeDescription: nil,
+                                         waypoints: [RouteWaypointParameters(index: 0, markerId: markerID, marker: nil)],
+                                         createdDate: nil,
+                                         lastUpdatedDate: nil,
+                                         lastSelectedDate: nil)
+
+        let route = Route(from: parameters)
+
+        let firstLatitude = try XCTUnwrap(route.firstWaypointLatitude)
+        let firstLongitude = try XCTUnwrap(route.firstWaypointLongitude)
+        XCTAssertEqual(firstLatitude, markerCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(firstLongitude, markerCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertEqual(route.waypoints.ordered.first?.markerId, markerID)
     }
 
     func testMarkerParametersInitMarkerIDUsesInjectedSpatialStoreLookup() {
@@ -642,10 +665,99 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         store.addedReferenceEntityID = expectedMarkerID
         SpatialDataStoreRegistry.configure(with: store)
 
-        try Route.add(route, context: "test")
+        try Route.add(route)
 
         XCTAssertEqual(store.addReferenceEntityCallCount, 1)
-        XCTAssertEqual(route.waypoints.ordered.first?.markerId, expectedMarkerID)
+        let persistedRoute = Route.object(forPrimaryKey: route.id)
+        XCTAssertEqual(persistedRoute?.waypoints.ordered.first?.markerId, expectedMarkerID)
+    }
+
+    func testRouteUpdatePersistsFirstWaypointCoordinatesFromUpdatedWaypointOrder() throws {
+        let firstMarkerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
+        let secondMarkerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6301, baseLongitude: -122.3402)
+        let firstMarkerID = "update-first-\(UUID().uuidString)"
+        let secondMarkerID = "update-second-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: firstMarkerID, coordinate: firstMarkerCoordinate)
+        _ = try createPersistedMarker(id: secondMarkerID, coordinate: secondMarkerCoordinate)
+
+        let route = try createPersistedRoute(name: "FirstWaypointUpdate-\(UUID().uuidString)", markerIDs: [firstMarkerID, secondMarkerID])
+
+        guard let reorderedFirst = RouteWaypoint(index: 0, markerId: secondMarkerID),
+              let reorderedSecond = RouteWaypoint(index: 1, markerId: firstMarkerID) else {
+            XCTFail("Expected persisted marker-backed waypoints")
+            return
+        }
+
+        try Route.update(id: route.id,
+                         name: route.name,
+                         description: route.routeDescription,
+                         waypoints: [reorderedFirst, reorderedSecond])
+
+        guard let updatedRoute = Route.object(forPrimaryKey: route.id) else {
+            XCTFail("Expected updated route to be persisted")
+            return
+        }
+
+        XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, secondMarkerID)
+        let updatedLatitude = try XCTUnwrap(updatedRoute.firstWaypointLatitude)
+        let updatedLongitude = try XCTUnwrap(updatedRoute.firstWaypointLongitude)
+        XCTAssertEqual(updatedLatitude, secondMarkerCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(updatedLongitude, secondMarkerCoordinate.longitude, accuracy: 0.000_001)
+    }
+
+    func testCreateReversedRoutePersistsBidirectionalReverseLink() throws {
+        let firstMarkerID = "reverse-first-\(UUID().uuidString)"
+        let secondMarkerID = "reverse-second-\(UUID().uuidString)"
+        let firstCoordinate = makeUniqueCoordinate(baseLatitude: 46.6205, baseLongitude: -121.3493)
+        let secondCoordinate = makeUniqueCoordinate(baseLatitude: 46.6301, baseLongitude: -121.3402)
+        _ = try createPersistedMarker(id: firstMarkerID,
+                                      coordinate: firstCoordinate)
+        _ = try createPersistedMarker(id: secondMarkerID,
+                                      coordinate: secondCoordinate)
+        let route = try createPersistedRoute(name: "ReverseLink-\(UUID().uuidString)", markerIDs: [firstMarkerID, secondMarkerID])
+
+        guard let reversedRoute = try Route.createReversedRoute(from: route),
+              let persistedRoute = Route.object(forPrimaryKey: route.id) else {
+            XCTFail("Expected reversed route and persisted original route")
+            return
+        }
+
+        XCTAssertNotEqual(reversedRoute.id, persistedRoute.id)
+        XCTAssertEqual(persistedRoute.reversedRouteId, reversedRoute.id)
+        XCTAssertEqual(reversedRoute.reversedRouteId, persistedRoute.id)
+    }
+
+    func testCreateReversedRouteResolvesNameConflictWithNumericSuffix() throws {
+        let originalFirstMarkerID = "reverse-conflict-original-first-\(UUID().uuidString)"
+        let originalSecondMarkerID = "reverse-conflict-original-second-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: originalFirstMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 45.6205, baseLongitude: -120.3493))
+        _ = try createPersistedMarker(id: originalSecondMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 45.6301, baseLongitude: -120.3402))
+        let route = try createPersistedRoute(name: "ReverseConflict-\(UUID().uuidString)",
+                                             markerIDs: [originalFirstMarkerID, originalSecondMarkerID])
+
+        let reversedBaseName = GDLocalizedString("routes.reverse_name_format", route.name)
+        let conflictFirstMarkerID = "reverse-conflict-existing-first-\(UUID().uuidString)"
+        let conflictSecondMarkerID = "reverse-conflict-existing-second-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: conflictFirstMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 45.6405, baseLongitude: -120.3293))
+        _ = try createPersistedMarker(id: conflictSecondMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 45.6501, baseLongitude: -120.3202))
+        let conflictingRoute = try createPersistedRoute(name: reversedBaseName,
+                                                        markerIDs: [conflictFirstMarkerID, conflictSecondMarkerID])
+
+        guard let reversedRoute = try Route.createReversedRoute(from: route),
+              let persistedRoute = Route.object(forPrimaryKey: route.id),
+              let persistedConflictingRoute = Route.object(forPrimaryKey: conflictingRoute.id) else {
+            XCTFail("Expected reversed route and persisted original route")
+            return
+        }
+
+        XCTAssertEqual(reversedRoute.name, "\(reversedBaseName) (2)")
+        XCTAssertEqual(persistedRoute.reversedRouteId, reversedRoute.id)
+        XCTAssertEqual(reversedRoute.reversedRouteId, persistedRoute.id)
+        XCTAssertNil(persistedConflictingRoute.reversedRouteId)
     }
 
     private func createPersistedRoute(name: String) throws -> Route {
@@ -659,10 +771,47 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         let database = try RealmHelper.getDatabaseRealm()
         try database.write {
-            database.add(route, update: .modified)
+            database.add(route.realmObject, update: .modified)
         }
 
         return route
+    }
+
+    private func createPersistedRoute(name: String, markerIDs: [String]) throws -> Route {
+        var waypoints: [RouteWaypoint] = []
+        for (index, markerID) in markerIDs.enumerated() {
+            guard let waypoint = RouteWaypoint(index: index, markerId: markerID) else {
+                throw ReferenceEntityError.entityDoesNotExist
+            }
+            waypoints.append(waypoint)
+        }
+
+        let route = Route(name: name, description: nil, waypoints: waypoints)
+        let database = try RealmHelper.getDatabaseRealm()
+        try database.write {
+            database.add(route.realmObject, update: .modified)
+        }
+
+        return route
+    }
+
+    private func createPersistedMarker(id: String, coordinate: CLLocationCoordinate2D) throws -> RealmReferenceEntity {
+        let marker = RealmReferenceEntity(coordinate: coordinate, entityKey: nil, name: "Marker \(id)")
+        marker.id = id
+        marker.lastUpdatedDate = Date()
+        marker.isTemp = false
+
+        let database = try RealmHelper.getDatabaseRealm()
+        try database.write {
+            database.add(marker, update: .modified)
+        }
+
+        return marker
+    }
+
+    private func makeUniqueCoordinate(baseLatitude: Double, baseLongitude: Double) -> CLLocationCoordinate2D {
+        let offset = Double(abs(UUID().uuidString.hashValue % 1_000)) / 1_000_000.0
+        return CLLocationCoordinate2D(latitude: baseLatitude + offset, longitude: baseLongitude - offset)
     }
 
     private func createRoadEntity(key: String) -> GDASpatialDataResultEntity {
@@ -688,7 +837,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     private func clearAllRoutes() throws {
         let database = try RealmHelper.getDatabaseRealm()
-        let routes = database.objects(Route.self)
+        let routes = database.objects(RealmRoute.self)
 
         guard !routes.isEmpty else {
             return

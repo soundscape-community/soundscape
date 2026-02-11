@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -284,13 +285,16 @@ class BeaconTitleViewController: UIViewController {
                     guard let `self` = self else {
                         return false
                     }
-                    
-                    guard let viewController = BeaconActionHandler.createMarker(detail: beacon) else {
-                        return false
+
+                    Task { @MainActor [weak self] in
+                        guard let self,
+                              let viewController = await BeaconActionHandler.createMarker(detail: beacon) else {
+                            return
+                        }
+
+                        self.navigationController?.pushViewController(viewController, animated: true)
                     }
-                    
-                    self.navigationController?.pushViewController(viewController, animated: true)
-                    
+
                     return true
                 })
             }

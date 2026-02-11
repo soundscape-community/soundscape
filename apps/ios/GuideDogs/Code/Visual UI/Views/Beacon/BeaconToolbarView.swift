@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -118,11 +119,13 @@ struct BeaconToolbarView: View {
                 } else {
                     // Create marker
                     Button(action: {
-                        guard let viewController = BeaconActionHandler.createMarker(detail: beacon) else {
-                            return
+                        Task { @MainActor in
+                            guard let viewController = await BeaconActionHandler.createMarker(detail: beacon) else {
+                                return
+                            }
+
+                            navHelper.pushViewController(viewController, animated: true)
                         }
-                        
-                        navHelper.pushViewController(viewController, animated: true)
                     }, label: {
                         Image("AddMarker_iconW")
                             .resizable()

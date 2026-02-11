@@ -25,7 +25,7 @@ struct LocationDetail {
         
         fileprivate var entity: POI? {
             if case .entity(let id) = self {
-                return DataContractRegistry.spatialReadCompatibility.poi(byKey: id)
+                return SpatialDataStoreRegistry.store.searchByKey(id)
             } else if case .screenshots(let poi) = self {
                 return poi
             }
@@ -241,13 +241,13 @@ struct LocationDetail {
 
         switch source {
         case .entity(let id):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: id)?.domainEntity
+            marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(id)?.domainEntity
         case .coordinate(let location):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)?.domainEntity
+            marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(location.coordinate)?.domainEntity
         case .designData:
             marker = nil
         case .screenshots(let poi):
-            marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: poi.key)?.domainEntity
+            marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(poi.key)?.domainEntity
         }
 
         guard let isTemp, let marker else {
@@ -356,7 +356,7 @@ struct LocationDetail {
     func updateLastSelectedDate() {
         do {
             if let marker = self.marker {
-                guard let realmMarker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: marker.id) else {
+                guard let realmMarker = SpatialDataStoreRegistry.store.referenceEntityByKey(marker.id) else {
                     return
                 }
 
@@ -390,7 +390,7 @@ extension LocationDetail {
     }
     
     init?(markerId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: markerId)?.domainEntity else {
+        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(markerId)?.domainEntity else {
             return nil
         }
         
@@ -421,7 +421,7 @@ extension LocationDetail {
     }
     
     init?(entityId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let entity = DataContractRegistry.spatialReadCompatibility.poi(byKey: entityId) else {
+        guard let entity = SpatialDataStoreRegistry.store.searchByKey(entityId) else {
             return nil
         }
         

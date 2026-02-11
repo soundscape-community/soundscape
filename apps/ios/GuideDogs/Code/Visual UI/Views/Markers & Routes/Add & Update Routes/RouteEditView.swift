@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -36,14 +37,9 @@ struct RouteEditView: View {
             switch self {
             case .add: return GDLocalizedString("route_detail.action.create")
             case .edit: return GDLocalizedString("route_detail.action.edit")
-            case .import(let route):
-                if DataContractRegistry.spatialReadCompatibility.route(byKey: route.id) == nil {
-                    // Import a new route
-                    return GDLocalizedString("route_detail.action.create")
-                } else {
-                    // Import an existing route
-                    return GDLocalizedString("route_detail.action.edit")
-                }
+            case .import:
+                // Route existence is resolved asynchronously by the view.
+                return GDLocalizedString("route_detail.action.create")
             }
         }
     }
@@ -57,6 +53,7 @@ struct RouteEditView: View {
     @State private var name = ""
     @State private var description = ""
     @State private var identifiableWaypoints: [IdentifiableLocationDetail] = []
+    @State private var importRouteExists: Bool?
     @StateObject private var userLocationStore = UserLocationStore()
     
     // Alerts
@@ -82,6 +79,18 @@ struct RouteEditView: View {
         case .import:
             return true
         }
+    }
+
+    private var navigationTitle: String {
+        guard case .import = style else {
+            return style.title
+        }
+
+        if importRouteExists == true {
+            return GDLocalizedString("route_detail.action.edit")
+        }
+
+        return GDLocalizedString("route_detail.action.create")
     }
     
     // MARK: Initialization
@@ -123,14 +132,15 @@ struct RouteEditView: View {
         guard case .database(let id) = detail.source else {
             return
         }
-        
-        do {
-            try DataContractRegistry.spatialWriteCompatibility.deleteRoute(id: id)
-            
-            navHelper.onNavigationAction(deleteAction ?? .popViewController)
-        } catch {
-            alert = .error
-            showAlert = true
+
+        Task { @MainActor in
+            do {
+                try await DataContractRegistry.spatialWrite.deleteRoute(id: id)
+                navHelper.onNavigationAction(deleteAction ?? .popViewController)
+            } catch {
+                alert = .error
+                showAlert = true
+            }
         }
     }
     
@@ -138,40 +148,49 @@ struct RouteEditView: View {
         // Remove leading and trailing whitespaces and new lines
         _name.wrappedValue = name.trimmingCharacters(in: .whitespacesAndNewlines)
         _description.wrappedValue = description.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        do {
-            switch style {
-            case .add: try onAddRoute()
-            case .edit(let detail): try onUpdateRoute(detail)
-            case .import(let route): try onImportRoute(route)
+
+        Task { @MainActor in
+            do {
+                switch style {
+                case .add:
+                    try await onAddRoute()
+                case .edit(let detail):
+                    try await onUpdateRoute(detail)
+                case .import(let route):
+                    try await onImportRoute(route)
+                }
+
+                navHelper.popViewController(animated: true)
+            } catch {
+                alert = .error
+                showAlert = true
             }
-            
-            navHelper.popViewController(animated: true)
-        } catch {
-            alert = .error
-            showAlert = true
         }
     }
     
-    private func onAddRoute() throws {
+    private func onAddRoute() async throws {
         let route = Route(name: name, description: description, waypoints: identifiableWaypoints.asRouteWaypoint)
         
-        try DataContractRegistry.spatialWriteCompatibility.addRoute(route, context: nil)
+        try await DataContractRegistry.spatialWrite.addRoute(route)
     }
     
-    private func onUpdateRoute(_ detail: RouteDetail) throws {
+    private func onUpdateRoute(_ detail: RouteDetail) async throws {
         guard case .database(let id) = detail.source else {
             // Route does not exist in database
             throw RouteRealmError.doesNotExist
         }
+
+        var updatedRoute = Route(name: name,
+                                 description: description,
+                                 waypoints: identifiableWaypoints.asRouteWaypoint)
+        updatedRoute.id = id
         
-        try DataContractRegistry.spatialWriteCompatibility.updateRoute(id: id,
-                                                                       name: name,
-                                                                       description: description,
-                                                                       waypoints: identifiableWaypoints.asLocationDetail)
+        try await DataContractRegistry.spatialWrite.updateRoute(updatedRoute)
     }
     
-    private func onImportRoute(_ route: Route) throws {
+    private func onImportRoute(_ route: Route) async throws {
+        var route = route
+
         if name != route.name {
             // If the name has changed from what was imported,
             // update it
@@ -186,10 +205,20 @@ struct RouteEditView: View {
         if route.waypoints.ordered.asLocationDetail.compactMap({ return $0.source }) != identifiableWaypoints.compactMap({ return $0.locationDetail.source }) {
             // Update waypoints
             route.waypoints.removeAll()
-            route.waypoints.append(objectsIn: identifiableWaypoints.asRouteWaypoint)
+            route.waypoints.append(contentsOf: identifiableWaypoints.asRouteWaypoint)
         }
         
-        try DataContractRegistry.spatialWriteCompatibility.addRoute(route, context: nil)
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+    }
+
+    private func refreshImportRouteExists() {
+        guard case .import(let route) = style else {
+            return
+        }
+
+        Task { @MainActor in
+            importRouteExists = await DataContractRegistry.spatialRead.route(byKey: route.id) != nil
+        }
     }
     
     private var alertView: Alert {
@@ -281,7 +310,7 @@ struct RouteEditView: View {
             }
             
         }
-        .navigationBarTitle(style.title, displayMode: .inline)
+        .navigationBarTitle(navigationTitle, displayMode: .inline)
         // Hide `Back` button and present `Cancel` button
         .navigationBarBackButtonHidden(true)
         .toolbar(content: {
@@ -308,6 +337,7 @@ struct RouteEditView: View {
         .alert(isPresented: $showAlert, content: { alertView })
         .onAppear {
             GDATelemetry.trackScreenView("route_edit")
+            refreshImportRouteExists()
         }
     }
 }

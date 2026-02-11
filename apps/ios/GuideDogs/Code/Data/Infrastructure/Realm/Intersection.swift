@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -180,7 +181,7 @@ class Intersection: Object, Locatable, Localizable {
     /// The set of roads that participate in this intersection
     @MainActor
     var roads: [Road] {
-        roadIds.compactMap { DataContractRegistry.spatialReadCompatibility.road(byKey: $0.id) }
+        roadIds.compactMap { SpatialDataStoreRegistry.store.roadByKey($0.id) }
     }
     
     // Some intersections can contain the same road more than once, for example if one road loops back to the intersection.
@@ -190,7 +191,7 @@ class Intersection: Object, Locatable, Localizable {
         return roadIds
             .map { $0.id }
             .dropDuplicates()
-            .compactMap { DataContractRegistry.spatialReadCompatibility.road(byKey: $0) }
+            .compactMap { SpatialDataStoreRegistry.store.roadByKey($0) }
     }
     
     @MainActor

@@ -29,7 +29,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
     // MARK: `TableViewCellConfigurator`
     
     func configure(_ cell: TableViewCell, forDisplaying model: Model) {
-        if let marker = DataContractRegistry.spatialReadCompatibility.referenceEntity(byEntityKey: model.key)?.domainEntity,
+        if let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(model.key)?.domainEntity,
            marker.isTemp == false {
             configureTitle(cell, marker: marker)
             configureDetail(cell, marker: marker)

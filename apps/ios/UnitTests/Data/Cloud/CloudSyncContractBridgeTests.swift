@@ -143,6 +143,65 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         }
     }
 
+    private final class MockSpatialWriteContract: SpatialWriteContract {
+        private(set) var importedRouteIDs: [String] = []
+        private(set) var importedMarkerIDs: [String] = []
+
+        func addRoute(_ route: Route) async throws {}
+
+        func importRouteFromCloud(_ route: Route) async throws {
+            importedRouteIDs.append(route.id)
+        }
+
+        func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
+            if let markerID = markerParameters.id {
+                importedMarkerIDs.append(markerID)
+            }
+        }
+
+        func deleteRoute(id: String) async throws {}
+
+        func updateRoute(_ route: Route) async throws {}
+
+        func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
+            detail.markerId ?? "generated-marker-id"
+        }
+
+        func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String {
+            "generated-marker-id"
+        }
+
+        func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String {
+            "generated-marker-id"
+        }
+
+        func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
+            "temp-marker-id"
+        }
+
+        func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
+            "temp-marker-id"
+        }
+
+        func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
+            "temp-marker-id"
+        }
+
+        func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?, isTemp: Bool) async throws {}
+
+        func removeAllReferenceEntities() async throws {}
+
+        func removeAllRoutes() async throws {}
+
+        func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {}
+
+        func cleanCorruptReferenceEntities() async throws {}
+
+        func removeReferenceEntity(id: String) async throws {}
+
+        func removeAllTemporaryReferenceEntities() async throws {}
+    }
+
     private final class TestCloudKeyValueStore: CloudKeyValueStore {
         var storage: [String: Any] = [:]
 
@@ -191,14 +250,15 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         let id = "route-1"
         let routeKey = "routes.\(id)"
 
-        let localRoute = Route()
+        var localRoute = Route()
         localRoute.id = id
         localRoute.lastUpdatedDate = Date(timeIntervalSince1970: 1_000)
 
         let mock = MockSpatialReadContract()
         mock.routesByKey[id] = localRoute
         mock.routeMetadataByKey[id] = RouteReadMetadata(id: id, lastUpdatedDate: localRoute.lastUpdatedDate)
-        DataContractRegistry.configure(spatialRead: mock)
+        let writeMock = MockSpatialWriteContract()
+        DataContractRegistry.configure(spatialRead: mock, spatialWrite: writeMock)
 
         let store = TestCloudKeyValueStore()
         store.storage[routeKey] = makeRouteData(id: id, lastUpdatedDate: Date(timeIntervalSince1970: 1_000))
@@ -219,7 +279,8 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
     func testSyncRoutesFallbackWhenCloudDataIsInvalid() async {
         let mock = MockSpatialReadContract()
-        DataContractRegistry.configure(spatialRead: mock)
+        let writeMock = MockSpatialWriteContract()
+        DataContractRegistry.configure(spatialRead: mock, spatialWrite: writeMock)
 
         let store = TestCloudKeyValueStore()
         store.storage["routes.invalid"] = Data("invalid-json".utf8)
@@ -241,7 +302,8 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         let mock = MockSpatialReadContract()
         mock.routeParametersForBackupResults = [routeParameters]
-        DataContractRegistry.configure(spatialRead: mock)
+        let writeMock = MockSpatialWriteContract()
+        DataContractRegistry.configure(spatialRead: mock, spatialWrite: writeMock)
 
         let store = TestCloudKeyValueStore()
         await store.syncRoutesAsync(reason: .initialSync, changedKeys: nil)
@@ -253,12 +315,49 @@ final class CloudSyncContractBridgeTests: XCTestCase {
     func testSyncReferenceEntitiesInitialSyncUsesContractBackupParameters() async {
         let mock = MockSpatialReadContract()
         mock.markerParametersForBackupResults = []
-        DataContractRegistry.configure(spatialRead: mock)
+        let writeMock = MockSpatialWriteContract()
+        DataContractRegistry.configure(spatialRead: mock, spatialWrite: writeMock)
 
         let store = TestCloudKeyValueStore()
         await store.syncReferenceEntitiesAsync(reason: .initialSync, changedKeys: nil)
 
         XCTAssertEqual(mock.markerParametersForBackupCalls, 1)
+    }
+
+    func testSyncRoutesChangedKeyImportUsesWriteContractRouteImport() async {
+        let id = "route-import-1"
+        let routeKey = "routes.\(id)"
+
+        let readMock = MockSpatialReadContract()
+        let writeMock = MockSpatialWriteContract()
+        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+
+        let store = TestCloudKeyValueStore()
+        store.storage[routeKey] = makeRouteData(id: id, lastUpdatedDate: Date(timeIntervalSince1970: 2_000))
+
+        await store.syncRoutesAsync(reason: .serverChanged, changedKeys: [routeKey])
+
+        XCTAssertEqual(writeMock.importedRouteIDs, [id])
+    }
+
+    func testSyncReferenceEntitiesChangedKeyImportUsesWriteContractMarkerImport() async {
+        let id = "marker-import-1"
+        let markerKey = "marker.\(id)"
+
+        let readMock = MockSpatialReadContract()
+        let writeMock = MockSpatialWriteContract()
+        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+
+        let store = TestCloudKeyValueStore()
+        store.storage[markerKey] = makeMarkerData(id: id,
+                                                  name: "Marker \(id)",
+                                                  latitude: 47.62,
+                                                  longitude: -122.35,
+                                                  lastUpdatedDate: Date(timeIntervalSince1970: 2_000))
+
+        await store.syncReferenceEntitiesAsync(reason: .serverChanged, changedKeys: [markerKey])
+
+        XCTAssertEqual(writeMock.importedMarkerIDs, [id])
     }
 
     private func makeRouteData(id: String, lastUpdatedDate: Date?) -> Data {
@@ -274,6 +373,47 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             return try JSONEncoder().encode(routeParameters)
         } catch {
             XCTFail("Failed to encode route parameters: \(error)")
+            return Data()
+        }
+    }
+
+    private func makeMarkerData(id: String, name: String, latitude: Double, longitude: Double, lastUpdatedDate: Date?) -> Data {
+        struct MarkerPayload: Encodable {
+            struct LocationPayload: Encodable {
+                struct CoordinatePayload: Encodable {
+                    let latitude: Double
+                    let longitude: Double
+                }
+
+                let name: String
+                let address: String?
+                let coordinate: CoordinatePayload
+                let entity: EntityParameters?
+            }
+
+            let id: String
+            let nickname: String?
+            let annotation: String?
+            let estimatedAddress: String?
+            let lastUpdatedDate: Date?
+            let location: LocationPayload
+        }
+
+        let payload = MarkerPayload(id: id,
+                                    nickname: name,
+                                    annotation: nil,
+                                    estimatedAddress: nil,
+                                    lastUpdatedDate: lastUpdatedDate,
+                                    location: MarkerPayload.LocationPayload(name: name,
+                                                                           address: nil,
+                                                                           coordinate: MarkerPayload.LocationPayload.CoordinatePayload(latitude: latitude,
+                                                                                                                                      longitude: longitude),
+                                                                           entity: nil))
+
+        do {
+            return try JSONEncoder().encode(payload)
+        } catch {
+            XCTFail("Failed to encode marker parameters: \(error)")
             return Data()
         }
     }

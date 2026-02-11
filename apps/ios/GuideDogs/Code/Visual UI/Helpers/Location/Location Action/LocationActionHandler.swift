@@ -21,7 +21,7 @@ struct LocationActionHandler {
     
     // MARK: `LocationAction` Methods
     
-    static func save(locationDetail: LocationDetail) throws {
+    static func save(locationDetail: LocationDetail) async throws {
         let markerId: String?
         
         switch locationDetail.source {
@@ -30,11 +30,11 @@ struct LocationActionHandler {
             let estimatedAddress = locationDetail.estimatedAddress
             let annotation = locationDetail.annotation
             
-            markerId = try? DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(entityKey: id,
-                                                                                               nickname: nickname,
-                                                                                               estimatedAddress: estimatedAddress,
-                                                                                               annotation: annotation,
-                                                                                               context: "location_action")
+            markerId = try? await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: id,
+                                                                                        nickname: nickname,
+                                                                                        estimatedAddress: estimatedAddress,
+                                                                                        annotation: annotation,
+                                                                                        context: "location_action")
         case .coordinate:
             let latitude = locationDetail.location.coordinate.latitude
             let longitude = locationDetail.location.coordinate.longitude
@@ -44,12 +44,12 @@ struct LocationActionHandler {
             
             let genericLocation = GenericLocation(lat: latitude, lon: longitude)
             
-            markerId = try? DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(location: genericLocation,
-                                                                                               nickname: nickname,
-                                                                                               estimatedAddress: estimatedAddress,
-                                                                                               annotation: annotation,
-                                                                                               temporary: false,
-                                                                                               context: "location_action")
+            markerId = try? await DataContractRegistry.spatialWrite.addReferenceEntity(location: genericLocation,
+                                                                                        nickname: nickname,
+                                                                                        estimatedAddress: estimatedAddress,
+                                                                                        annotation: annotation,
+                                                                                        temporary: false,
+                                                                                        context: "location_action")
             
         case .designData:
             markerId = nil
@@ -59,7 +59,7 @@ struct LocationActionHandler {
         }
         
         guard let markerId = markerId,
-              DataContractRegistry.spatialReadCompatibility.referenceEntity(byID: markerId) != nil else {
+              await DataContractRegistry.spatialRead.referenceEntity(byID: markerId) != nil else {
             throw LocationActionError.failedToSaveMarker
         }
         

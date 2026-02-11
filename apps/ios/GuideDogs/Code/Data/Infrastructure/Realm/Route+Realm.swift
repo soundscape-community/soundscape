@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -12,6 +13,21 @@ import CoreLocation
 
 @MainActor
 extension Route {
+    private static func resolvedReversedRouteName(for reversedRoute: Route) -> (name: String, existingRoute: Route?) {
+        var finalName = reversedRoute.name
+        var index = 2
+
+        while let existing = Route.routeWithName(finalName) {
+            if isWaypointsEqual(existing, reversedRoute) {
+                return (name: finalName, existingRoute: existing)
+            }
+
+            finalName = "\(reversedRoute.name) (\(index))"
+            index += 1
+        }
+
+        return (name: finalName, existingRoute: nil)
+    }
     
     // MARK: Query All Routes
     
@@ -21,7 +37,7 @@ extension Route {
                 return nil
             }
             
-            return database.object(ofType: Route.self, forPrimaryKey: key)
+            return database.object(ofType: RealmRoute.self, forPrimaryKey: key)?.domainModel
         }
     }
     
@@ -33,21 +49,21 @@ extension Route {
             
             switch sortedBy {
             case .alphanumeric:
-                return database.objects(Route.self)
+                return database.objects(RealmRoute.self)
                     .sorted(by: { $0.name < $1.name })
                     .compactMap({ $0.id })
                 
             case .distance:
                 let userLocation = RouteRuntime.currentUserLocation() ?? CLLocation(latitude: 0.0, longitude: 0.0)
                 
-                return database.objects(Route.self)
+                return database.objects(RealmRoute.self)
                     .compactMap { route -> (id: String, distance: CLLocationDistance)? in
                         guard let start = route.waypoints.ordered.first else {
                             return (id: route.id, distance: CLLocationDistance.greatestFiniteMagnitude)
                         }
 
-                        let distance = DataContractRegistry.spatialReadCompatibility.distanceToClosestLocation(forMarkerID: start.markerId,
-                                                                                                             from: userLocation.ssGeoLocation)
+                        let distance = SpatialDataStoreRegistry.store.referenceEntityByKey(start.markerId)?
+                            .distanceToClosestLocation(from: userLocation)
                             ?? CLLocationDistance.greatestFiniteMagnitude
 
                         return (id: route.id, distance: distance)
@@ -74,42 +90,65 @@ extension Route {
                 return nil
             }
             
-            return database.objects(Route.self)
+            return database.objects(RealmRoute.self)
                 .filter("name == %@", name)
-                .first
+                .first?.domainModel
         }
     }
     
     // MARK: Add or Delete Routes
-    
-    static func add(_ route: Route, context: String? = nil) throws {
+
+    /// Imports a route payload from cloud sync without route mutation side effects
+    /// such as telemetry, notifications, or cloud write-back.
+    static func importFromCloud(_ route: Route) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 throw RouteRealmError.databaseError
             }
+
+            let firstWaypointCoordinate = firstWaypointCoordinate(for: route.waypoints)
+            let persistedRoute = RealmRoute(route: route, firstWaypointCoordinate: firstWaypointCoordinate)
+
+            try database.write {
+                database.add(persistedRoute, update: .modified)
+            }
+        }
+    }
+    
+    static func add(_ route: Route) throws {
+        try autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                throw RouteRealmError.databaseError
+            }
+
+            var route = route
             
             // If necessary, save a marker for each waypoint
-            try route.waypoints.forEach({
-                guard let locationDetail = $0.asLocationDetail else {
-                    return
+            for index in route.waypoints.indices {
+                guard let locationDetail = route.waypoints[index].asLocationDetail else {
+                    continue
                 }
                 
-                let markerId = try DataContractRegistry.spatialWriteCompatibility.addReferenceEntity(detail: locationDetail,
-                                                                                                      telemetryContext: "add_route",
-                                                                                                      notify: false)
+                let markerId = try SpatialDataStoreRegistry.store.addReferenceEntity(detail: locationDetail,
+                                                                                      telemetryContext: "add_route",
+                                                                                      notify: false)
                 
                 // `markerId` will change when adding a new Realm object
                 // `markerId` will not change when updating an existing Realm object
-                $0.markerId = markerId
-            })
+                route.waypoints[index].markerId = markerId
+            }
+
+            let persistedFirstWaypointCoordinate = firstWaypointCoordinate(for: route.waypoints)
+            route.firstWaypointLatitude = persistedFirstWaypointCoordinate?.latitude
+            route.firstWaypointLongitude = persistedFirstWaypointCoordinate?.longitude
             
-            if let existingRoute = database.object(ofType: Route.self, forPrimaryKey: route.id) {
+            if let existingRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: route.id) {
                 try update(id: existingRoute.id, name: route.name, description: route.routeDescription, waypoints: route.waypoints)
                 
                 RouteRuntime.updateRouteInCloud(route)
             } else {
                 try database.write {
-                    database.add(route, update: .modified)
+                    database.add(RealmRoute(route: route, firstWaypointCoordinate: persistedFirstWaypointCoordinate), update: .modified)
                 }
                 
                 RouteRuntime.storeRouteInCloud(route)
@@ -117,7 +156,7 @@ extension Route {
                 let id = route.id
                 
                 NotificationCenter.default.post(name: .routeAdded, object: self, userInfo: [Route.Keys.id: id])
-                GDATelemetry.track("routes.added", with: ["context": context ?? "none", "activity": RouteRuntime.currentMotionActivityRawValue()])
+                GDATelemetry.track("routes.added", with: ["context": "none", "activity": RouteRuntime.currentMotionActivityRawValue()])
             }
         }
     }
@@ -128,15 +167,15 @@ extension Route {
                 throw RouteRealmError.databaseError
             }
             
-            guard let route = database.object(ofType: Route.self, forPrimaryKey: id) else {
+            guard let route = database.object(ofType: RealmRoute.self, forPrimaryKey: id) else {
                 throw RouteRealmError.doesNotExist
             }
             
             // Unlink reversed route if it exists
             if let reversedId = route.reversedRouteId,
-               let reversedRoute = database.object(ofType: Route.self, forPrimaryKey: reversedId) {
+               let reversedRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: reversedId) {
                 try database.write {
-                    reversedRoute.reversedRouteId = nil
+                    route.unlinkReversedRoute(reversedRoute)
                 }
             }
             
@@ -146,7 +185,7 @@ extension Route {
                 RouteRuntime.deactivateActiveBehavior()
             }
             
-            RouteRuntime.removeRouteFromCloud(route)
+            RouteRuntime.removeRouteFromCloud(route.domainModel)
             
             try database.write {
                 database.delete(route)
@@ -158,15 +197,15 @@ extension Route {
     }
     
     static func deleteAll() throws {
-        try DataContractRegistry.spatialReadCompatibility.routes().forEach({
+        try SpatialDataStoreRegistry.store.routes().forEach({
             try delete($0.id)
         })
     }
     
     // MARK: Update Routes
     
-    private static func onRouteDidUpdate(_ route: Route) {
-        RouteRuntime.updateRouteInCloud(route)
+    private static func onRouteDidUpdate(_ route: RealmRoute) {
+        RouteRuntime.updateRouteInCloud(route.domainModel)
 
         NotificationCenter.default.post(name: .routeUpdated, object: self, userInfo: [Route.Keys.id: route.id])
         GDATelemetry.track("routes.edited", with: ["activity": RouteRuntime.currentMotionActivityRawValue()])
@@ -178,7 +217,7 @@ extension Route {
                 throw RouteRealmError.databaseError
             }
             
-            guard let route = database.object(ofType: Route.self, forPrimaryKey: id) else {
+            guard let route = database.object(ofType: RealmRoute.self, forPrimaryKey: id) else {
                 throw RouteRealmError.doesNotExist
             }
             
@@ -190,13 +229,13 @@ extension Route {
         }
     }
     
-    static func update(id: String, name: String, description: String?, waypoints: List<RouteWaypoint>) throws {
+    static func update(id: String, name: String, description: String?, waypoints: [RouteWaypoint]) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 throw RouteRealmError.databaseError
             }
             
-            guard let route = database.object(ofType: Route.self, forPrimaryKey: id) else {
+            guard let route = database.object(ofType: RealmRoute.self, forPrimaryKey: id) else {
                 throw RouteRealmError.doesNotExist
             }
             
@@ -206,35 +245,22 @@ extension Route {
             if route.isActive {
                 RouteRuntime.deactivateActiveBehavior()
             }
+
+            let firstWaypointCoordinate = firstWaypointCoordinate(for: waypoints)
             
             try database.write {
                 // Unlink reversed route if waypoints have changed
                 if let existingReversedId = route.reversedRouteId,
-                   let reversedRoute = database.object(ofType: Route.self, forPrimaryKey: existingReversedId),
-                   !isWaypointsEqual(route, reversedRoute) {
-
-                    // Unlink both routes
-                    route.reversedRouteId = nil
-                    reversedRoute.reversedRouteId = nil
+                   let reversedRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: existingReversedId),
+                   !isWaypointsEqual(route.domainModel, reversedRoute.domainModel) {
+                    route.unlinkReversedRoute(reversedRoute)
                 }
                 
-                route.name = name
-                route.routeDescription = description
-                route.waypoints = waypoints
-                // Update `lastSelectedDate` and `lastUpdatedDate`
-                let lastSelectedAndUpdatedDate = Date()
-                route.lastSelectedDate = lastSelectedAndUpdatedDate
-                route.lastUpdatedDate = lastSelectedAndUpdatedDate
-                
-                // Update first waypoint latitude and longitude
-                if let first = waypoints.ordered.first,
-                   let marker = DataContractRegistry.spatialReadCompatibility.markerParameters(byID: first.markerId) {
-                    route.firstWaypointLatitude = marker.location.coordinate.latitude
-                    route.firstWaypointLongitude = marker.location.coordinate.longitude
-                } else {
-                    route.firstWaypointLatitude = nil
-                    route.firstWaypointLongitude = nil
-                }
+                route.applyRouteUpdate(name: name,
+                                       routeDescription: description,
+                                       waypoints: waypoints,
+                                       firstWaypointCoordinate: firstWaypointCoordinate,
+                                       at: Date())
             }
             
             onRouteDidUpdate(route)
@@ -244,12 +270,8 @@ extension Route {
     static func update(id: String, name: String, description: String?, waypoints: [LocationDetail]) throws {
         // `LocationDetail` -> `RouteWaypoint`
         let wRealmObjects = waypoints.enumerated().compactMap({ return RouteWaypoint(index: $0, locationDetail: $1) })
-        
-        // Append waypoints to a Realm list
-        let wList = List<RouteWaypoint>()
-        wRealmObjects.forEach({ wList.append($0) })
-        
-        try update(id: id, name: name, description: description, waypoints: wList)
+
+        try update(id: id, name: name, description: description, waypoints: wRealmObjects)
     }
     
     // MARK: Add, Delete or Update Route Waypoints
@@ -262,10 +284,7 @@ extension Route {
         }
         
         // Create a copy of the route waypoints
-        let waypoints: List<RouteWaypoint> = List<RouteWaypoint>()
-        route.waypoints.forEach({
-            waypoints.append(RouteWaypoint(value: $0))
-        })
+        var waypoints = route.waypoints
         
         // Save the waypoint index
         let waypointIndex = waypoints[index].index
@@ -273,23 +292,23 @@ extension Route {
         waypoints.remove(at: index)
         
         // Update the remaining waypoint indices
-        waypoints.forEach({
-            if $0.index > waypointIndex {
-                $0.index -= 1
+        for i in waypoints.indices {
+            if waypoints[i].index > waypointIndex {
+                waypoints[i].index -= 1
             }
-        })
+        }
         
         try update(id: route.id, name: route.name, description: route.routeDescription, waypoints: waypoints)
     }
     
     static func removeWaypointFromAllRoutes(markerId: String) throws {
-        try DataContractRegistry.spatialReadCompatibility.routes(containingMarkerID: markerId).forEach({
+        try SpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
             try removeWaypoint(from: $0, markerId: markerId)
         })
     }
     
     static func updateWaypointInAllRoutes(markerId: String) throws {
-        try DataContractRegistry.spatialReadCompatibility.routes(containingMarkerID: markerId).forEach({
+        try SpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
             guard let first = $0.waypoints.ordered.first else {
                 return
             }
@@ -336,32 +355,32 @@ extension Route {
             return existing
         }
 
-        guard let reversed = reversedRoute(from: route) else { return nil }
+        guard var reversed = reversedRoute(from: route) else { return nil }
 
-        // Resolve naming conflicts
-        var finalName = reversed.name
-        var index = 2
-        while let existing = Route.routeWithName(finalName) {
-            if isWaypointsEqual(existing, reversed) {
-                return existing
-            }
-            finalName = "\(reversed.name) (\(index))"
-            index += 1
+        let nameResolution = resolvedReversedRouteName(for: reversed)
+        if let existingRoute = nameResolution.existingRoute {
+            return existingRoute
         }
-        reversed.name = finalName
+
+        reversed.name = nameResolution.name
 
         // Add and link reversed route
-        try Route.add(reversed)
+        try add(reversed)
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 throw RouteRealmError.databaseError
             }
+
+            guard let persistedRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: route.id),
+                  let persistedReversed = database.object(ofType: RealmRoute.self, forPrimaryKey: reversed.id) else {
+                return
+            }
+
             try database.write {
-                route.reversedRouteId = reversed.id
-                reversed.reversedRouteId = route.id
+                persistedRoute.linkReversedRoute(persistedReversed)
             }
         }
 
-        return reversed
+        return object(forPrimaryKey: reversed.id)
     }
 }

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -96,11 +97,11 @@ extension Road {
     }
     
     var intersections: [Intersection] {
-        return DataContractRegistry.spatialReadCompatibility.intersections(forRoadKey: key)
+        return SpatialDataStoreRegistry.store.intersections(forRoadKey: key)
     }
     
     func intersection(atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
-        return DataContractRegistry.spatialReadCompatibility.intersection(forRoadKey: key, at: coordinate.ssGeoCoordinate)
+        return SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate)
     }
     
     func isMainRoad(context: SecondaryRoadsContext = .standard, detectionType: MainRoadDetectionType = .roadName) -> Bool {

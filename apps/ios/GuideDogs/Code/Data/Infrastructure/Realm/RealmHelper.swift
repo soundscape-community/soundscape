@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -38,7 +39,7 @@ class RealmHelper {
             }
         }
 
-        databaseConfig.objectTypes = [RealmReferenceEntity.self, Route.self, RouteWaypoint.self]
+        databaseConfig.objectTypes = [RealmReferenceEntity.self, RealmRoute.self, RealmRouteWaypoint.self]
         
         self.databaseConfig = databaseConfig
     }
