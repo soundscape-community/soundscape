@@ -232,9 +232,9 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             return markerIDsByEntityKey[entityKey] ?? nextTemporaryID
         }
 
-        func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool) async throws -> String {
+        func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
             let coordinate = location.location.coordinate
-            addReferenceEntityByLocationCalls.append("\(coordinate.latitude),\(coordinate.longitude)|\(temporary)")
+            addReferenceEntityByLocationCalls.append("\(coordinate.latitude),\(coordinate.longitude)")
             return nextTemporaryID
         }
 
@@ -458,8 +458,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                                          lon: -122.35),
                                                                                                 nickname: "Nearby",
                                                                                                 estimatedAddress: "1st Ave",
-                                                                                                annotation: nil,
-                                                                                                temporary: false)
+                                                                                                annotation: nil)
         let markerID = try await DataContractRegistry.spatialWrite.addTemporaryReferenceEntity(entityKey: "entity-1",
                                                                                                 estimatedAddress: "123 Main")
         try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: markerFromEntity,
@@ -502,7 +501,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.updateRouteCalls, [route.id])
         XCTAssertEqual(writeMock.deleteRouteCalls, [route.id])
         XCTAssertEqual(writeMock.addReferenceEntityByEntityKeyCalls, ["entity-1"])
-        XCTAssertEqual(writeMock.addReferenceEntityByLocationCalls, ["47.62,-122.35|false"])
+        XCTAssertEqual(writeMock.addReferenceEntityByLocationCalls, ["47.62,-122.35"])
         XCTAssertEqual(writeMock.addTemporaryEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(writeMock.updateReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeAllReferenceEntitiesCalls, 1)
@@ -842,32 +841,40 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         return reference.id
     }
 
-    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool) async throws -> String {
+    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
         let reference = makeReferenceEntity(id: UUID().uuidString,
                                             entityKey: nil,
                                             coordinate: location.location.coordinate.ssGeoCoordinate,
                                             nickname: nickname,
                                             estimatedAddress: estimatedAddress,
                                             annotation: annotation,
-                                            isTemp: temporary)
+                                            isTemp: false)
         store(reference)
         return reference.id
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
-        try await addReferenceEntity(location: location,
-                                     nickname: nil,
-                                     estimatedAddress: estimatedAddress,
-                                     annotation: nil,
-                                     temporary: true)
+        let reference = makeReferenceEntity(id: UUID().uuidString,
+                                            entityKey: nil,
+                                            coordinate: location.location.coordinate.ssGeoCoordinate,
+                                            nickname: nil,
+                                            estimatedAddress: estimatedAddress,
+                                            annotation: nil,
+                                            isTemp: true)
+        store(reference)
+        return reference.id
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
-        try await addReferenceEntity(location: location,
-                                     nickname: nickname,
-                                     estimatedAddress: estimatedAddress,
-                                     annotation: nil,
-                                     temporary: true)
+        let reference = makeReferenceEntity(id: UUID().uuidString,
+                                            entityKey: nil,
+                                            coordinate: location.location.coordinate.ssGeoCoordinate,
+                                            nickname: nickname,
+                                            estimatedAddress: estimatedAddress,
+                                            annotation: nil,
+                                            isTemp: true)
+        store(reference)
+        return reference.id
     }
 
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
@@ -1156,13 +1163,11 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         let firstMarkerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: firstMarkerLocation,
                                                                                             nickname: "First Marker",
                                                                                             estimatedAddress: nil,
-                                                                                            annotation: nil,
-                                                                                            temporary: false)
+                                                                                            annotation: nil)
         let secondMarkerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: secondMarkerLocation,
                                                                                              nickname: "Second Marker",
                                                                                              estimatedAddress: nil,
-                                                                                             annotation: nil,
-                                                                                             temporary: false)
+                                                                                             annotation: nil)
 
         var firstWaypoint = RouteWaypoint()
         firstWaypoint.index = 0
@@ -1227,13 +1232,11 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         let nearID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: nearLocation,
                                                                                      nickname: "Near",
                                                                                      estimatedAddress: "Near Address",
-                                                                                     annotation: nil,
-                                                                                     temporary: false)
+                                                                                     annotation: nil)
         let farID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: farLocation,
                                                                                     nickname: "Far",
                                                                                     estimatedAddress: "Far Address",
-                                                                                    annotation: nil,
-                                                                                    temporary: false)
+                                                                                    annotation: nil)
 
         let nearby = await DataContractRegistry.spatialRead.referenceEntities(near: SSGeoCoordinate(latitude: 47.6205,
                                                                                                      longitude: -122.3493),

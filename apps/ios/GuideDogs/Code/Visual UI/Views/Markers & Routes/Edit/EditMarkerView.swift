@@ -328,8 +328,7 @@ struct EditMarkerView: View {
             markerId = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: loc,
                                                                                        nickname: finalNickname,
                                                                                        estimatedAddress: detail.estimatedAddress,
-                                                                                       annotation: finalAnnotation,
-                                                                                       temporary: false)
+                                                                                       annotation: finalAnnotation)
         }
         
         if let marker = LocationDetail(markerId: markerId) {

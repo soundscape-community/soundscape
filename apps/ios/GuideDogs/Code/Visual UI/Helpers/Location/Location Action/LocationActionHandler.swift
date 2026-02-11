@@ -46,8 +46,7 @@ struct LocationActionHandler {
             markerId = try? await DataContractRegistry.spatialWrite.addReferenceEntity(location: genericLocation,
                                                                                         nickname: nickname,
                                                                                         estimatedAddress: estimatedAddress,
-                                                                                        annotation: annotation,
-                                                                                        temporary: false)
+                                                                                        annotation: annotation)
             
         case .designData:
             markerId = nil
