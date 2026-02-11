@@ -40,6 +40,22 @@ extension Route {
 
         return (name: finalName, existingRoute: nil)
     }
+
+    private static func makeReversedRoute(from route: Route,
+                                          firstWaypointCoordinate: CLLocationCoordinate2D?) -> Route? {
+        guard !route.waypoints.isEmpty else { return nil }
+
+        let orderedWaypoints = route.waypoints.ordered
+        let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
+            RouteWaypoint(index: index, markerId: waypoint.markerId)
+        }
+
+        let newName = GDLocalizedString("routes.reverse_name_format", route.name)
+        return Route(name: newName,
+                     description: route.routeDescription,
+                     waypoints: reversedWaypoints,
+                     firstWaypointCoordinate: firstWaypointCoordinate)
+    }
     
     // MARK: Query All Routes
     
@@ -358,18 +374,25 @@ extension Route {
     
     /// Creates a new Route instance with the order of waypoints reversed.
     static func reversedRoute(from route: Route) -> Route? {
-        // Ensure there is at least one waypoint.
+        makeReversedRoute(from: route, firstWaypointCoordinate: nil)
+    }
+
+    /// Async-first reversed-route construction that hydrates first-waypoint coordinates
+    /// through the read contract before route persistence.
+    static func reversedRoute(from route: Route, using spatialRead: ReferenceReadContract) async -> Route? {
         guard !route.waypoints.isEmpty else { return nil }
 
         let orderedWaypoints = route.waypoints.ordered
         let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
-            return RouteWaypoint(index: index, markerId: waypoint.markerId)
+            RouteWaypoint(index: index, markerId: waypoint.markerId)
         }
-        
-        let newName = GDLocalizedString("routes.reverse_name_format", route.name)
 
-        let newRoute = Route(name: newName, description: route.routeDescription, waypoints: reversedWaypoints)
-        return newRoute
+        let firstWaypointCoordinate = await firstWaypointCoordinate(for: reversedWaypoints, using: spatialRead)
+        let newName = GDLocalizedString("routes.reverse_name_format", route.name)
+        return Route(name: newName,
+                     description: route.routeDescription,
+                     waypoints: reversedWaypoints,
+                     firstWaypointCoordinate: firstWaypointCoordinate)
     }
 
     /// Checks whether two routes have the same ordered waypoints.
@@ -397,6 +420,42 @@ extension Route {
         reversed.name = nameResolution.name
 
         // Add and link reversed route
+        try add(reversed)
+        try autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                throw RouteRealmError.databaseError
+            }
+
+            guard let persistedRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: route.id),
+                  let persistedReversed = database.object(ofType: RealmRoute.self, forPrimaryKey: reversed.id) else {
+                return
+            }
+
+            try database.write {
+                persistedRoute.linkReversedRoute(persistedReversed)
+            }
+        }
+
+        return object(forPrimaryKey: reversed.id)
+    }
+
+    static func createReversedRoute(from route: Route, using spatialRead: ReferenceReadContract) async throws -> Route? {
+        if let reversedId = route.reversedRouteId,
+           let existing = Route.object(forPrimaryKey: reversedId) {
+            return existing
+        }
+
+        guard var reversed = await reversedRoute(from: route, using: spatialRead) else {
+            return nil
+        }
+
+        let nameResolution = resolvedReversedRouteName(for: reversed)
+        if let existingRoute = nameResolution.existingRoute {
+            return existingRoute
+        }
+
+        reversed.name = nameResolution.name
+
         try add(reversed)
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {

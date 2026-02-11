@@ -450,6 +450,10 @@ Phase 1 complete:
 - 2026-02-11: Extended route-share initialization first-waypoint hydration in `RouteParametersHandler.makeRoute(from:)` by preserving payload-first coordinate selection and adding async `DataContractRegistry.spatialRead` fallback before `Route` initialization when marker payload coordinates are missing.
 - 2026-02-11: Added focused coverage in `RouteStorageProviderDispatchTests` (`testRouteParametersHandlerHydratesMissingFirstWaypointCoordinateViaAsyncReadContract`) to verify route-parameter initialization hydrates first-waypoint coordinates through the async read contract path.
 - 2026-02-11: Validation for route-parameter async first-waypoint hydration slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`45` tests, `0` failures).
+- 2026-02-11: Added async reverse-route construction/persistence path (`Route.createReversedRoute(from:using:)`) that hydrates reversed first-waypoint coordinates through `DataContractRegistry.spatialRead` before persistence, while preserving existing sync reverse-route APIs for compatibility.
+- 2026-02-11: Updated reverse-route UI flow in `RouteDetailsView` (`startRouteReverse`) to call the async reverse-route contract-hydration path and keep existing error handling behavior unchanged.
+- 2026-02-11: Extended route storage dispatch coverage with async reverse-route hydration assertions (`RouteStorageProviderDispatchTests.testCreateReversedRouteAsyncHydratesFirstWaypointFromReadContract`).
+- 2026-02-11: Validation for async reverse-route hydration slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`46` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -578,7 +582,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue extending async first-waypoint contract hydration in low-churn initialization/read callsites where async context already exists (for example remaining route construction pathways such as reverse-route creation/update flows).
+1. Continue extending async first-waypoint contract hydration in remaining low-churn route mutation paths that still rely on sync first-waypoint resolution (for example waypoint reorder/update flows where async context can be introduced without broad caller churn).
 2. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
 3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and narrowing signatures where behavior can stay unchanged (for example maintenance-oriented writes currently exposed on `SpatialWriteContract`).
 

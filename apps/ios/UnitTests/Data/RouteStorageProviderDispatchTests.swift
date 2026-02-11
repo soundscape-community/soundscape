@@ -893,6 +893,38 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertNil(persistedConflictingRoute.reversedRouteId)
     }
 
+    func testCreateReversedRouteAsyncHydratesFirstWaypointFromReadContract() async throws {
+        let firstMarkerID = "reverse-async-first-\(UUID().uuidString)"
+        let secondMarkerID = "reverse-async-second-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: firstMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 44.6205, baseLongitude: -119.3493))
+        _ = try createPersistedMarker(id: secondMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 44.6301, baseLongitude: -119.3402))
+        let route = try createPersistedRoute(name: "ReverseAsync-\(UUID().uuidString)",
+                                             markerIDs: [firstMarkerID, secondMarkerID])
+
+        let asyncCoordinate = CLLocationCoordinate2D(latitude: 49.1234, longitude: -123.4567)
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[secondMarkerID] = ReferenceEntity(id: secondMarkerID,
+                                                                         entityKey: nil,
+                                                                         lastUpdatedDate: nil,
+                                                                         lastSelectedDate: nil,
+                                                                         isNew: false,
+                                                                         isTemp: false,
+                                                                         coordinate: asyncCoordinate.ssGeoCoordinate,
+                                                                         nickname: nil,
+                                                                         estimatedAddress: nil,
+                                                                         annotation: nil)
+
+        let reversedRoute = try await Route.createReversedRoute(from: route, using: readMock)
+
+        let persistedReversedRoute = try XCTUnwrap(reversedRoute)
+        XCTAssertEqual(persistedReversedRoute.waypoints.ordered.first?.markerId, secondMarkerID)
+        XCTAssertEqual(persistedReversedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(persistedReversedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertEqual(readMock.referenceEntityByIDCalls, [secondMarkerID])
+    }
+
     private func createPersistedRoute(name: String) throws -> Route {
         let waypointLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
         let imported = ImportedLocationDetail(nickname: "Waypoint", annotation: "Test waypoint")

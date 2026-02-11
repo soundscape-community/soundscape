@@ -286,17 +286,20 @@ extension RouteDetailsView {
             guard case .database = route.detail.source,
                       let existingRoute = Route.object(forPrimaryKey: route.detail.id) else { return }
 
-            do {
-                if let reversedRoute = try Route.createReversedRoute(from: existingRoute) {
-                    let targetDetail = RouteDetail(source: .cache(route: reversedRoute))
-                    guard let guidance = makeRouteGuidance(targetDetail) else {
-                        return
+            Task { @MainActor in
+                do {
+                    if let reversedRoute = try await Route.createReversedRoute(from: existingRoute,
+                                                                               using: DataContractRegistry.spatialRead) {
+                        let targetDetail = RouteDetail(source: .cache(route: reversedRoute))
+                        guard let guidance = makeRouteGuidance(targetDetail) else {
+                            return
+                        }
+                        startGuidance(guidance)
                     }
-                    startGuidance(guidance)
+                } catch {
+                    alert = .reverseRouteError
+                    showAlert = true
                 }
-            } catch {
-                alert = .reverseRouteError
-                showAlert = true
             }
             
         case .stopRoute, .stopTrailActivity:
