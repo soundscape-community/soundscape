@@ -79,48 +79,56 @@ class RouteParametersHandler {
             }
         }
         
-        current.group.notify(queue: DispatchQueue.main, execute: {
+        current.group.notify(queue: DispatchQueue.main, execute: { [weak self] in
+            guard let self else {
+                return
+            }
+
             if let error = current.failure {
                 // Failed to fetch and initialize one or more waypoints
                 completion(.failure(error))
-            } else {
-                // Initialize new value
+                self.current = nil
+                return
+            }
+
+            Task { @MainActor in
+                // Preserve payload-first behavior, but use async contract fallback
+                // before route initialization to avoid sync marker lookups.
                 let firstWaypointCoordinate: CLLocationCoordinate2D?
                 if let firstWaypoint = parameters.waypoints.min(by: { $0.index < $1.index }),
                    let markerCoordinate = firstWaypoint.marker?.location.coordinate {
                     firstWaypointCoordinate = CLLocationCoordinate2D(latitude: markerCoordinate.latitude,
                                                                      longitude: markerCoordinate.longitude)
                 } else {
-                    firstWaypointCoordinate = nil
+                    firstWaypointCoordinate = await Route.firstWaypointCoordinate(for: parameters.waypoints,
+                                                                                  using: DataContractRegistry.spatialRead)
                 }
 
                 var value = Route(name: parameters.name,
                                   description: parameters.routeDescription,
                                   waypoints: current.success,
                                   firstWaypointCoordinate: firstWaypointCoordinate)
-                
+
                 // Save ID
                 value.id = parameters.id
-                
+
                 // Optional Parameters
-                
+
                 if let pCreatedDate = parameters.createdDate {
                     value.createdDate = pCreatedDate
                 }
-                
+
                 if let pLastUpdatedDate = parameters.lastUpdatedDate {
                     value.lastUpdatedDate = pLastUpdatedDate
                 }
-                
+
                 if let pLastSelectedDate = parameters.lastSelectedDate {
                     value.lastSelectedDate = pLastSelectedDate
                 }
-                
+
                 completion(.success(value))
+                self.current = nil
             }
-            
-            // Clean-up
-            self.current = nil
         })
     }
     

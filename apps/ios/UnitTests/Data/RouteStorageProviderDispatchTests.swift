@@ -10,6 +10,7 @@
 import XCTest
 import CoreLocation
 import MapKit
+import SSGeo
 @testable import Soundscape
 
 @MainActor
@@ -198,8 +199,68 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         }
     }
 
+    final class MockSpatialReadContract: SpatialReadContract {
+        var referenceEntitiesByID: [String: ReferenceEntity] = [:]
+        private(set) var referenceEntityByIDCalls: [String] = []
+
+        func routes() async -> [Route] { [] }
+        func route(byKey key: String) async -> Route? { nil }
+        func routeMetadata(byKey key: String) async -> RouteReadMetadata? { nil }
+        func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters? { nil }
+        func routeParametersForBackup() async -> [RouteParameters] { [] }
+        func routes(containingMarkerID markerID: String) async -> [Route] { [] }
+
+        func referenceEntity(byID id: String) async -> ReferenceEntity? {
+            referenceEntityByIDCalls.append(id)
+            return referenceEntitiesByID[id]
+        }
+
+        func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? { nil }
+
+        func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? { nil }
+
+        func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? { nil }
+
+        func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata? { nil }
+
+        func markerParameters(byID id: String) async -> MarkerParameters? { nil }
+
+        func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? { nil }
+
+        func markerParameters(byEntityKey key: String) async -> MarkerParameters? { nil }
+
+        func markerParametersForBackup() async -> [MarkerParameters] { [] }
+
+        func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? { nil }
+
+        func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity? { nil }
+
+        func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity? { nil }
+
+        func referenceEntities() async -> [ReferenceEntity] { [] }
+
+        func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] { [] }
+
+        func poi(byKey key: String) async -> POI? { nil }
+
+        func road(byKey key: String) async -> Road? { nil }
+
+        func intersections(forRoadKey key: String) async -> [Intersection] { [] }
+
+        func intersection(forRoadKey key: String, at coordinate: SSGeoCoordinate) async -> Intersection? { nil }
+
+        func intersections(forRoadKey key: String, in region: SpatialIntersectionRegion) async -> [Intersection]? { nil }
+
+        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<VectorTile> { [] }
+
+        func tileData(for tiles: [VectorTile]) async -> [TileData] { [] }
+
+        func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [POI] { [] }
+    }
+
     override func tearDownWithError() throws {
         SpatialDataStoreRegistry.resetForTesting()
+        DataContractRegistry.resetForTesting()
         try clearAllRoutes()
     }
 
@@ -309,6 +370,57 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(firstLatitude, markerCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(firstLongitude, markerCoordinate.longitude, accuracy: 0.000_001)
         XCTAssertEqual(route.waypoints.ordered.first?.markerId, markerID)
+    }
+
+    func testRouteParametersHandlerHydratesMissingFirstWaypointCoordinateViaAsyncReadContract() {
+        let markerID = "handler-marker-\(UUID().uuidString)"
+        let storeCoordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        let asyncReadCoordinate = CLLocationCoordinate2D(latitude: 48.1122, longitude: -122.7711)
+
+        let store = MockSpatialDataStore()
+        let marker = RealmReferenceEntity(coordinate: storeCoordinate)
+        marker.id = markerID
+        store.referenceEntitiesByKey[markerID] = marker
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[markerID] = ReferenceEntity(id: markerID,
+                                                                   entityKey: nil,
+                                                                   lastUpdatedDate: nil,
+                                                                   lastSelectedDate: nil,
+                                                                   isNew: false,
+                                                                   isTemp: false,
+                                                                   coordinate: asyncReadCoordinate.ssGeoCoordinate,
+                                                                   nickname: nil,
+                                                                   estimatedAddress: nil,
+                                                                   annotation: nil)
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let parameters = RouteParameters(id: "handler-route-\(UUID().uuidString)",
+                                         name: "Handler Route",
+                                         routeDescription: nil,
+                                         waypoints: [RouteWaypointParameters(index: 0, markerId: markerID, marker: nil)],
+                                         createdDate: nil,
+                                         lastUpdatedDate: nil,
+                                         lastSelectedDate: nil)
+
+        let handler = RouteParametersHandler()
+        let expectation = expectation(description: "hydrate first waypoint via async read contract")
+
+        handler.makeRoute(from: parameters) { result in
+            switch result {
+            case .success(let route):
+                XCTAssertEqual(route.firstWaypointLatitude ?? 0, asyncReadCoordinate.latitude, accuracy: 0.000_001)
+                XCTAssertEqual(route.firstWaypointLongitude ?? 0, asyncReadCoordinate.longitude, accuracy: 0.000_001)
+            case .failure(let error):
+                XCTFail("Expected route initialization to succeed, received error: \(error)")
+            }
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(readMock.referenceEntityByIDCalls, [markerID])
     }
 
     func testMarkerParametersInitMarkerIDUsesInjectedSpatialStoreLookup() {
