@@ -441,6 +441,9 @@ Phase 1 complete:
 - 2026-02-11: Extended async first-waypoint contract hydration into route initialization for cloud-import read paths by adding `Route.init(from:firstWaypointCoordinate:)` plus `Route.firstWaypointCoordinate(for: [RouteWaypointParameters], using:)`, and updating `CloudKeyValueStore+Routes.importChanges(routeParameters:)` to resolve first-waypoint marker coordinates through `DataContractRegistry.spatialRead` before route construction.
 - 2026-02-11: Added focused cloud-sync bridge coverage (`CloudSyncContractBridgeTests.testSyncRoutesChangedKeyImportHydratesFirstWaypointFromAsyncReadContract`) to assert route import hydration now uses async read-contract marker lookup.
 - 2026-02-11: Validation for cloud-import route-initialization async hydration slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`43` tests, `0` failures).
+- 2026-02-11: Extended first-waypoint explicit hydration to route-share initialization by adding `Route.init(name:description:waypoints:firstWaypointCoordinate:)` and updating `RouteParametersHandler.makeRoute(from:)` to pass first-waypoint coordinates from serialized waypoint marker payloads when available.
+- 2026-02-11: Added focused route initialization coverage (`RouteStorageProviderDispatchTests.testRouteInitFromParametersUsesProvidedFirstWaypointCoordinateWithoutStoreLookup`) to pin that explicit first-waypoint coordinates bypass marker store lookups.
+- 2026-02-11: Validation for route-share initialization first-waypoint hydration slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`44` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -569,8 +572,8 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue extending async first-waypoint contract hydration in low-churn initialization/read callsites (for example route-share import/resource handlers) where async context already exists.
-2. For each migrated callsite, prefer route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
+1. Continue extending async first-waypoint contract hydration in low-churn initialization/read callsites where async context already exists (for example additional route construction pathways beyond cloud/share import).
+2. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
 3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and narrowing signatures where behavior can stay unchanged.
 
 ## Session Handoff (2026-02-10)

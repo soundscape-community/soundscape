@@ -268,6 +268,27 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.referenceEntityByKeyCallKeys.first, firstMarkerID)
     }
 
+    func testRouteInitFromParametersUsesProvidedFirstWaypointCoordinateWithoutStoreLookup() {
+        let markerID = "explicit-first-waypoint-\(UUID().uuidString)"
+        let explicitCoordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        let parameters = RouteParameters(id: "explicit-route-\(UUID().uuidString)",
+                                         name: "Explicit First Waypoint",
+                                         routeDescription: nil,
+                                         waypoints: [RouteWaypointParameters(index: 0, markerId: markerID, marker: nil)],
+                                         createdDate: nil,
+                                         lastUpdatedDate: nil,
+                                         lastSelectedDate: nil)
+
+        let store = MockSpatialDataStore()
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let route = Route(from: parameters, firstWaypointCoordinate: explicitCoordinate)
+
+        XCTAssertEqual(route.firstWaypointLatitude ?? 0, explicitCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(route.firstWaypointLongitude ?? 0, explicitCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertTrue(store.referenceEntityByKeyCallKeys.isEmpty)
+    }
+
     func testRouteInitFromParametersHydratesFirstWaypointCoordinatesFromMarker() throws {
         let markerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
         let markerID = "hydration-marker-\(UUID().uuidString)"

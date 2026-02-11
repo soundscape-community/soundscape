@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 enum RouteParametersHandlerError: Error {
     case tasksInProgress
@@ -84,7 +85,19 @@ class RouteParametersHandler {
                 completion(.failure(error))
             } else {
                 // Initialize new value
-                var value = Route(name: parameters.name, description: parameters.routeDescription, waypoints: current.success)
+                let firstWaypointCoordinate: CLLocationCoordinate2D?
+                if let firstWaypoint = parameters.waypoints.min(by: { $0.index < $1.index }),
+                   let markerCoordinate = firstWaypoint.marker?.location.coordinate {
+                    firstWaypointCoordinate = CLLocationCoordinate2D(latitude: markerCoordinate.latitude,
+                                                                     longitude: markerCoordinate.longitude)
+                } else {
+                    firstWaypointCoordinate = nil
+                }
+
+                var value = Route(name: parameters.name,
+                                  description: parameters.routeDescription,
+                                  waypoints: current.success,
+                                  firstWaypointCoordinate: firstWaypointCoordinate)
                 
                 // Save ID
                 value.id = parameters.id

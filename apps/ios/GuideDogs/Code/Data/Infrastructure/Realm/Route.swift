@@ -144,13 +144,22 @@ struct Route: Identifiable {
      */
     @MainActor
     init(name: String, description: String?, waypoints: [RouteWaypoint]) {
+        self.init(name: name,
+                  description: description,
+                  waypoints: waypoints,
+                  firstWaypointCoordinate: nil)
+    }
+
+    @MainActor
+    init(name: String, description: String?, waypoints: [RouteWaypoint], firstWaypointCoordinate: CLLocationCoordinate2D?) {
         self.name = name
         self.routeDescription = description
         self.waypoints = detachedWaypoints(from: waypoints)
 
-        if let firstWaypointCoordinate = Self.firstWaypointCoordinate(for: waypoints) {
-            firstWaypointLatitude = firstWaypointCoordinate.latitude
-            firstWaypointLongitude = firstWaypointCoordinate.longitude
+        if let resolvedFirstWaypointCoordinate = firstWaypointCoordinate
+            ?? Self.firstWaypointCoordinate(for: waypoints) {
+            firstWaypointLatitude = resolvedFirstWaypointCoordinate.latitude
+            firstWaypointLongitude = resolvedFirstWaypointCoordinate.longitude
         }
     }
 
