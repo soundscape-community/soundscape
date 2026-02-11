@@ -206,7 +206,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var restoreCachedAddressCounts: [Int] = []
         private(set) var cleanCorruptReferenceEntitiesCalls = 0
         private(set) var removeReferenceEntityCalls: [String] = []
-        private(set) var removeAllTemporaryCalls = 0
 
         func addRoute(_ route: Route) async throws {
             addRouteCalls.append(route.id)
@@ -274,10 +273,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         func removeReferenceEntity(id: String) async throws {
             removeReferenceEntityCalls.append(id)
-        }
-
-        func removeAllTemporaryReferenceEntities() async throws {
-            removeAllTemporaryCalls += 1
         }
     }
 
@@ -498,7 +493,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         try await DataContractRegistry.spatialWrite.restoreCachedAddresses([firstAddress, secondAddress])
         try await DataContractRegistry.spatialWrite.cleanCorruptReferenceEntities()
         try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: markerID)
-        try await DataContractRegistry.spatialWrite.removeAllTemporaryReferenceEntities()
 
         XCTAssertEqual(markerFromEntity, "marker-1")
         XCTAssertEqual(markerFromLocation, "temp-marker-id")
@@ -517,7 +511,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.restoreCachedAddressCounts, [2])
         XCTAssertEqual(writeMock.cleanCorruptReferenceEntitiesCalls, 1)
         XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
-        XCTAssertEqual(writeMock.removeAllTemporaryCalls, 1)
     }
 
     func testDefaultSpatialWriteImportHydratesFirstWaypointFromConfiguredAsyncRead() async throws {
@@ -952,12 +945,6 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         }
     }
 
-    func removeAllTemporaryReferenceEntities() async throws {
-        for reference in referenceByID.values where reference.isTemp {
-            try await removeReferenceEntity(id: reference.id)
-        }
-    }
-
     // MARK: - Helpers
 
     private func makeReferenceEntity(id: String,
@@ -1271,7 +1258,7 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         let updatedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: nearID)
         XCTAssertEqual(updatedReference?.nickname, "Near Updated")
 
-        try await DataContractRegistry.spatialWrite.removeAllTemporaryReferenceEntities()
+        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: nearID)
         let removedTemporaryReference = await DataContractRegistry.spatialRead.referenceEntity(byID: nearID)
         let retainedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: farID)
         XCTAssertNil(removedTemporaryReference)

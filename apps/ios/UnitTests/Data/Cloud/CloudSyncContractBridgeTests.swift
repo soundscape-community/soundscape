@@ -199,8 +199,6 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         func cleanCorruptReferenceEntities() async throws {}
 
         func removeReferenceEntity(id: String) async throws {}
-
-        func removeAllTemporaryReferenceEntities() async throws {}
     }
 
     private final class TestCloudKeyValueStore: CloudKeyValueStore {

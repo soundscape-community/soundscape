@@ -110,5 +110,4 @@ protocol SpatialWriteContract {
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws
     func cleanCorruptReferenceEntities() async throws
     func removeReferenceEntity(id: String) async throws
-    func removeAllTemporaryReferenceEntities() async throws
 }
