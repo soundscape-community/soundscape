@@ -991,6 +991,17 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             }
         }
     }
+
+    static func cleanCorruptEntities(using spatialRead: ReferenceReadContract) async throws {
+        let entities = try RealmHelper.getDatabaseRealm().objects(RealmReferenceEntity.self).filter("isTemp == false")
+        let corruptIDs = entities
+            .filter { $0.nickname == nil && $0._poi == nil }
+            .map(\.id)
+
+        for id in corruptIDs {
+            try await RealmReferenceEntity.remove(id: id, using: spatialRead)
+        }
+    }
 }
 
 extension RealmReferenceEntity {

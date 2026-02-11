@@ -462,6 +462,9 @@ Phase 1 complete:
 - 2026-02-11: Migrated `RealmSpatialWriteContract.updateReferenceEntity(...)` to use async marker-update routing so first-waypoint recomputation for location-changing marker edits resolves through `DataContractRegistry.spatialRead` instead of synchronous store lookups.
 - 2026-02-11: Extended route storage dispatch coverage with default write-contract marker-update hydration assertions (`RouteStorageProviderDispatchTests.testDefaultSpatialWriteUpdateReferenceEntityHydratesFirstWaypointFromAsyncReadContract`).
 - 2026-02-11: Validation for async marker-update route-hydration slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`48` tests, `0` failures).
+- 2026-02-11: Extended corrupt-marker cleanup with async contract-backed route hydration by adding `RealmReferenceEntity.cleanCorruptEntities(using:)` and migrating `RealmSpatialWriteContract.cleanCorruptReferenceEntities()` to that async path.
+- 2026-02-11: Extended route storage dispatch coverage for cleanup routing (`RouteStorageProviderDispatchTests.testDefaultSpatialWriteCleanCorruptReferenceEntitiesHydratesRemainingRouteWaypointFromAsyncReadContract`) to verify corrupt-marker removal recomputes remaining route first-waypoint coordinates via async read contract.
+- 2026-02-11: Validation for async corrupt-marker cleanup hydration slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`49` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -590,7 +593,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue extending async first-waypoint contract hydration in remaining route mutation paths that still rely on synchronous helpers for compatibility (for example non-contract synchronous marker update/delete callsites that still route through `RealmReferenceEntity.update/remove` sync internals).
+1. Continue extending async first-waypoint contract hydration in remaining route mutation paths that still rely on synchronous helpers for compatibility (for example non-contract synchronous marker update/delete/cleanup callsites in `RealmReferenceEntity` convenience action helpers).
 2. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
 3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and narrowing signatures where behavior can stay unchanged (for example maintenance-oriented writes currently exposed on `SpatialWriteContract`).
 

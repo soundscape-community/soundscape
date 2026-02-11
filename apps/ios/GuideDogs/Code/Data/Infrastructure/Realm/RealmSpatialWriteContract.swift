@@ -118,7 +118,7 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
     }
 
     func cleanCorruptReferenceEntities() async throws {
-        try RealmReferenceEntity.cleanCorruptEntities()
+        try await RealmReferenceEntity.cleanCorruptEntities(using: DataContractRegistry.spatialRead)
     }
 
     func removeReferenceEntity(id: String) async throws {

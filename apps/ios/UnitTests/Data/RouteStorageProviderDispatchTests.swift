@@ -997,6 +997,58 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [firstMarkerID])
     }
 
+    func testDefaultSpatialWriteCleanCorruptReferenceEntitiesHydratesRemainingRouteWaypointFromAsyncReadContract() async throws {
+        let corruptMarkerID = "clean-corrupt-first-\(UUID().uuidString)"
+        let remainingMarkerID = "clean-corrupt-second-\(UUID().uuidString)"
+        let corruptCoordinate = makeUniqueCoordinate(baseLatitude: 41.6205, baseLongitude: -116.3493)
+        let remainingCoordinate = makeUniqueCoordinate(baseLatitude: 41.6301, baseLongitude: -116.3402)
+
+        let corruptMarker = RealmReferenceEntity(coordinate: corruptCoordinate, entityKey: nil, name: nil)
+        corruptMarker.id = corruptMarkerID
+        corruptMarker.isTemp = false
+        corruptMarker.lastUpdatedDate = Date()
+
+        let remainingMarker = RealmReferenceEntity(coordinate: remainingCoordinate, entityKey: nil, name: "Remaining")
+        remainingMarker.id = remainingMarkerID
+        remainingMarker.isTemp = false
+        remainingMarker.lastUpdatedDate = Date()
+
+        let database = try RealmHelper.getDatabaseRealm()
+        try database.write {
+            database.add(corruptMarker, update: .modified)
+            database.add(remainingMarker, update: .modified)
+        }
+
+        let route = try createPersistedRoute(name: "CleanCorruptAsync-\(UUID().uuidString)",
+                                             markerIDs: [corruptMarkerID, remainingMarkerID])
+
+        let asyncCoordinate = CLLocationCoordinate2D(latitude: 52.1234, longitude: -126.4567)
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[remainingMarkerID] = ReferenceEntity(id: remainingMarkerID,
+                                                                            entityKey: nil,
+                                                                            lastUpdatedDate: nil,
+                                                                            lastSelectedDate: nil,
+                                                                            isNew: false,
+                                                                            isTemp: false,
+                                                                            coordinate: asyncCoordinate.ssGeoCoordinate,
+                                                                            nickname: nil,
+                                                                            estimatedAddress: nil,
+                                                                            annotation: nil)
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        try await DataContractRegistry.spatialWrite.cleanCorruptReferenceEntities()
+
+        let updatedRoute = try XCTUnwrap(Route.object(forPrimaryKey: route.id))
+        XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, remainingMarkerID)
+        XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertEqual(readMock.referenceEntityByIDCalls, [remainingMarkerID])
+
+        let refreshedDatabase = try RealmHelper.getDatabaseRealm()
+        let deletedCorruptMarker = refreshedDatabase.object(ofType: RealmReferenceEntity.self, forPrimaryKey: corruptMarkerID)
+        XCTAssertNil(deletedCorruptMarker)
+    }
+
     private func createPersistedRoute(name: String) throws -> Route {
         let waypointLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
         let imported = ImportedLocationDetail(nickname: "Waypoint", annotation: "Test waypoint")
