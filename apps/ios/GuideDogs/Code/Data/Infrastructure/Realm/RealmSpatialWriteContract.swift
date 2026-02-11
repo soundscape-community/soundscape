@@ -39,21 +39,21 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
                                                               notify: notify)
     }
 
-    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String {
+    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
         try RealmReferenceEntity.add(entityKey: entityKey,
                                      nickname: nickname,
                                      estimatedAddress: estimatedAddress,
                                      annotation: annotation,
-                                     context: context)
+                                     context: nil)
     }
 
-    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String {
+    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool) async throws -> String {
         try RealmReferenceEntity.add(location: location,
                                      nickname: nickname,
                                      estimatedAddress: estimatedAddress,
                                      annotation: annotation,
                                      temporary: temporary,
-                                     context: context)
+                                     context: nil)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {

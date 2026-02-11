@@ -430,6 +430,9 @@ Phase 1 complete:
 - 2026-02-11: Tightened write contract surface by removing infrastructure context from marker update API (`SpatialWriteContract.updateReferenceEntity` no longer accepts `context`), keeping canonical mutation inputs to marker state (`id`, optional coordinate/nickname/address/annotation, `isTemp`).
 - 2026-02-11: Updated marker update callsites and conformance types for this API shape (`RealmSpatialWriteContract`, `EditMarkerView`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) while keeping telemetry emission infrastructure-local.
 - 2026-02-11: Validation for marker-update contract context-decoupling slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `LocationActionHandlerTests` pass (`13` tests, `0` failures).
+- 2026-02-11: Continued write-contract surface tightening by removing infrastructure context parameters from marker add APIs (`SpatialWriteContract.addReferenceEntity(entityKey:...)` and `addReferenceEntity(location:...)`), keeping app-facing write inputs focused on marker domain state.
+- 2026-02-11: Updated async write adapter and app/test callsites for context-free marker add APIs (`RealmSpatialWriteContract`, `LocationActionHandler`, `EditMarkerView`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) while preserving infrastructure-owned telemetry emission.
+- 2026-02-11: Validation for marker-add contract context-decoupling slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `LocationActionHandlerTests` pass (`13` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -558,9 +561,9 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue tightening contract surfaces by removing remaining infrastructure-context parameters from marker add APIs (`addReferenceEntity(entityKey:...)`, `addReferenceEntity(location:...)`) while preserving telemetry behavior within infrastructure.
-2. Evaluate whether first-waypoint marker coordinate lookup can move from `SpatialDataStoreRegistry.store` helper internals to an async contract-backed read path without forcing wide call-graph churn.
-3. If an async read path is viable without broad call-graph churn, prototype it behind route-focused helper boundaries and extend route write/read parity tests to cover the new path.
+1. Evaluate whether first-waypoint marker coordinate lookup can move from `SpatialDataStoreRegistry.store` helper internals to an async contract-backed read path without forcing wide call-graph churn.
+2. If an async read path is viable without broad call-graph churn, prototype it behind route-focused helper boundaries and extend route write/read parity tests to cover the new path.
+3. Continue tightening contract APIs by evaluating whether the remaining telemetry-oriented write parameters (`addReferenceEntity(detail:telemetryContext:notify:)`) can be narrowed without introducing behavior drift.
 
 ## Session Handoff (2026-02-10)
 - Latest landed commits for this slice sequence:

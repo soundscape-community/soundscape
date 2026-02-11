@@ -167,11 +167,11 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             detail.markerId ?? "generated-marker-id"
         }
 
-        func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?, context: String?) async throws -> String {
+        func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
             "generated-marker-id"
         }
 
-        func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool, context: String?) async throws -> String {
+        func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?, temporary: Bool) async throws -> String {
             "generated-marker-id"
         }
 

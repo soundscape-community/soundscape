@@ -319,8 +319,7 @@ struct EditMarkerView: View {
             markerId = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: id,
                                                                                        nickname: finalNickname,
                                                                                        estimatedAddress: detail.estimatedAddress,
-                                                                                       annotation: finalAnnotation,
-                                                                                       context: config.context)
+                                                                                       annotation: finalAnnotation)
         } else {
             // If this is a new marker in some generic location (not referencing an underlying POI), create
             // a reference point to the generic location
@@ -330,8 +329,7 @@ struct EditMarkerView: View {
                                                                                        nickname: finalNickname,
                                                                                        estimatedAddress: detail.estimatedAddress,
                                                                                        annotation: finalAnnotation,
-                                                                                       temporary: false,
-                                                                                       context: config.context)
+                                                                                       temporary: false)
         }
         
         if let marker = LocationDetail(markerId: markerId) {

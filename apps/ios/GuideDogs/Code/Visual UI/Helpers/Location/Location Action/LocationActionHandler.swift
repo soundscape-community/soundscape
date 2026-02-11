@@ -33,8 +33,7 @@ struct LocationActionHandler {
             markerId = try? await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: id,
                                                                                         nickname: nickname,
                                                                                         estimatedAddress: estimatedAddress,
-                                                                                        annotation: annotation,
-                                                                                        context: "location_action")
+                                                                                        annotation: annotation)
         case .coordinate:
             let latitude = locationDetail.location.coordinate.latitude
             let longitude = locationDetail.location.coordinate.longitude
@@ -48,8 +47,7 @@ struct LocationActionHandler {
                                                                                         nickname: nickname,
                                                                                         estimatedAddress: estimatedAddress,
                                                                                         annotation: annotation,
-                                                                                        temporary: false,
-                                                                                        context: "location_action")
+                                                                                        temporary: false)
             
         case .designData:
             markerId = nil
