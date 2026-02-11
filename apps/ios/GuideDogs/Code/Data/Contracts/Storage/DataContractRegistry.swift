@@ -10,11 +10,10 @@ import Foundation
 @MainActor
 enum DataContractRegistry {
     private static let defaultSpatialRead = RealmSpatialReadContract()
-    private static let defaultSpatialWrite = RealmSpatialWriteContract()
-    private static let defaultSpatialMaintenanceWrite = RealmSpatialWriteContract()
+    private static let defaultSpatialWriteAdapter = RealmSpatialWriteContract()
     private(set) static var spatialRead: SpatialReadContract = defaultSpatialRead
-    private(set) static var spatialWrite: SpatialWriteContract = defaultSpatialWrite
-    private(set) static var spatialMaintenanceWrite: SpatialMaintenanceWriteContract = defaultSpatialMaintenanceWrite
+    private(set) static var spatialWrite: SpatialWriteContract = defaultSpatialWriteAdapter
+    private(set) static var spatialMaintenanceWrite: SpatialMaintenanceWriteContract = defaultSpatialWriteAdapter
 
     static func configure(
         spatialRead: SpatialReadContract,
@@ -26,19 +25,19 @@ enum DataContractRegistry {
         if let spatialWrite {
             self.spatialWrite = spatialWrite
         } else {
-            self.spatialWrite = defaultSpatialWrite
+            self.spatialWrite = defaultSpatialWriteAdapter
         }
 
         if let spatialMaintenanceWrite {
             self.spatialMaintenanceWrite = spatialMaintenanceWrite
         } else {
-            self.spatialMaintenanceWrite = defaultSpatialMaintenanceWrite
+            self.spatialMaintenanceWrite = defaultSpatialWriteAdapter
         }
     }
 
     static func resetForTesting() {
         spatialRead = defaultSpatialRead
-        spatialWrite = defaultSpatialWrite
-        spatialMaintenanceWrite = defaultSpatialMaintenanceWrite
+        spatialWrite = defaultSpatialWriteAdapter
+        spatialMaintenanceWrite = defaultSpatialWriteAdapter
     }
 }
