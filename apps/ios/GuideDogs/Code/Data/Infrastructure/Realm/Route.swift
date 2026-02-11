@@ -160,6 +160,11 @@ struct Route: Identifiable {
      */
     @MainActor
     init(from parameters: RouteParameters) {
+        self.init(from: parameters, firstWaypointCoordinate: nil)
+    }
+
+    @MainActor
+    init(from parameters: RouteParameters, firstWaypointCoordinate: CLLocationCoordinate2D?) {
         // Required Parameters
         id = parameters.id
         name = parameters.name
@@ -169,9 +174,10 @@ struct Route: Identifiable {
         let parameterWaypoints = parameters.waypoints.map { RouteWaypoint(from: $0) }
         waypoints = detachedWaypoints(from: parameterWaypoints)
 
-        if let firstWaypointCoordinate = Self.firstWaypointCoordinate(for: parameterWaypoints) {
-            firstWaypointLatitude = firstWaypointCoordinate.latitude
-            firstWaypointLongitude = firstWaypointCoordinate.longitude
+        if let resolvedFirstWaypointCoordinate = firstWaypointCoordinate
+            ?? Self.firstWaypointCoordinate(for: parameterWaypoints) {
+            firstWaypointLatitude = resolvedFirstWaypointCoordinate.latitude
+            firstWaypointLongitude = resolvedFirstWaypointCoordinate.longitude
         }
 
         // Optional Parameters
@@ -227,6 +233,24 @@ struct Route: Identifiable {
         }
 
         return first.asLocationDetail?.location.coordinate
+    }
+
+    @MainActor
+    static func firstWaypointCoordinate(for waypoints: [RouteWaypointParameters], using spatialRead: ReferenceReadContract) async -> CLLocationCoordinate2D? {
+        guard let first = waypoints.min(by: { $0.index < $1.index }) else {
+            return nil
+        }
+
+        if let markerCoordinate = await markerCoordinate(forMarkerID: first.markerId, using: spatialRead) {
+            return markerCoordinate
+        }
+
+        guard let markerCoordinate = first.marker?.location.coordinate else {
+            return nil
+        }
+
+        return CLLocationCoordinate2D(latitude: markerCoordinate.latitude,
+                                      longitude: markerCoordinate.longitude)
     }
 
     @MainActor

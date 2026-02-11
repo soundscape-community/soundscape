@@ -16,10 +16,12 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         var routeMetadataByKey: [String: RouteReadMetadata] = [:]
         var routeParametersForBackupResults: [RouteParameters] = []
         var markerParametersForBackupResults: [MarkerParameters] = []
+        var referenceByID: [String: ReferenceEntity] = [:]
         private(set) var routeByKeyCalls: [String] = []
         private(set) var routeMetadataByKeyCalls: [String] = []
         private(set) var routeParametersForBackupCalls = 0
         private(set) var markerParametersForBackupCalls = 0
+        private(set) var referenceByIDCalls: [String] = []
 
         var onRouteByKey: ((String) -> Void)?
         var onRouteMetadataByKey: ((String) -> Void)?
@@ -54,7 +56,8 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         }
 
         func referenceEntity(byID id: String) async -> ReferenceEntity? {
-            nil
+            referenceByIDCalls.append(id)
+            return referenceByID[id]
         }
 
         func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? {
@@ -146,11 +149,13 @@ final class CloudSyncContractBridgeTests: XCTestCase {
     private final class MockSpatialWriteContract: SpatialWriteContract {
         private(set) var importedRouteIDs: [String] = []
         private(set) var importedMarkerIDs: [String] = []
+        private(set) var importedRoutes: [Route] = []
 
         func addRoute(_ route: Route) async throws {}
 
         func importRouteFromCloud(_ route: Route) async throws {
             importedRouteIDs.append(route.id)
+            importedRoutes.append(route)
         }
 
         func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
@@ -356,11 +361,48 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         XCTAssertEqual(writeMock.importedMarkerIDs, [id])
     }
 
-    private func makeRouteData(id: String, lastUpdatedDate: Date?) -> Data {
+    func testSyncRoutesChangedKeyImportHydratesFirstWaypointFromAsyncReadContract() async {
+        let id = "route-import-hydrate-1"
+        let markerID = "route-import-marker-1"
+        let routeKey = "routes.\(id)"
+        let expectedCoordinate = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+
+        let readMock = MockSpatialReadContract()
+        readMock.referenceByID[markerID] = ReferenceEntity(id: markerID,
+                                                           entityKey: nil,
+                                                           lastUpdatedDate: nil,
+                                                           lastSelectedDate: nil,
+                                                           isNew: false,
+                                                           isTemp: false,
+                                                           coordinate: expectedCoordinate,
+                                                           nickname: nil,
+                                                           estimatedAddress: nil,
+                                                           annotation: nil)
+        let writeMock = MockSpatialWriteContract()
+        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+
+        let store = TestCloudKeyValueStore()
+        store.storage[routeKey] = makeRouteData(id: id,
+                                                lastUpdatedDate: Date(timeIntervalSince1970: 2_000),
+                                                waypoints: [RouteWaypointParameters(index: 0, markerId: markerID, marker: nil)])
+
+        await store.syncRoutesAsync(reason: .serverChanged, changedKeys: [routeKey])
+
+        XCTAssertEqual(writeMock.importedRouteIDs, [id])
+        XCTAssertEqual(readMock.referenceByIDCalls, [markerID])
+        XCTAssertEqual(writeMock.importedRoutes.first?.firstWaypointLatitude ?? 0,
+                       expectedCoordinate.latitude,
+                       accuracy: 0.000_001)
+        XCTAssertEqual(writeMock.importedRoutes.first?.firstWaypointLongitude ?? 0,
+                       expectedCoordinate.longitude,
+                       accuracy: 0.000_001)
+    }
+
+    private func makeRouteData(id: String, lastUpdatedDate: Date?, waypoints: [RouteWaypointParameters] = []) -> Data {
         let routeParameters = RouteParameters(id: id,
                                               name: "Route \(id)",
                                               routeDescription: nil,
-                                              waypoints: [],
+                                              waypoints: waypoints,
                                               createdDate: nil,
                                               lastUpdatedDate: lastUpdatedDate,
                                               lastSelectedDate: nil)

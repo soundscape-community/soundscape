@@ -142,7 +142,9 @@ extension CloudKeyValueStore {
     }
     
     private func importChanges(routeParameters: RouteParameters) async {
-        let route = Route(from: routeParameters)
+        let firstWaypointCoordinate = await Route.firstWaypointCoordinate(for: routeParameters.waypoints,
+                                                                          using: DataContractRegistry.spatialRead)
+        let route = Route(from: routeParameters, firstWaypointCoordinate: firstWaypointCoordinate)
         await importChanges(route: route)
     }
     
