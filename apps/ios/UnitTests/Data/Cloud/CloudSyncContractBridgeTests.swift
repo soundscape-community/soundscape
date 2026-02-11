@@ -163,10 +163,6 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         func updateRoute(_ route: Route) async throws {}
 
-        func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
-            detail.markerId ?? "generated-marker-id"
-        }
-
         func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
             "generated-marker-id"
         }

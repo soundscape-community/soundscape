@@ -433,6 +433,8 @@ Phase 1 complete:
 - 2026-02-11: Continued write-contract surface tightening by removing infrastructure context parameters from marker add APIs (`SpatialWriteContract.addReferenceEntity(entityKey:...)` and `addReferenceEntity(location:...)`), keeping app-facing write inputs focused on marker domain state.
 - 2026-02-11: Updated async write adapter and app/test callsites for context-free marker add APIs (`RealmSpatialWriteContract`, `LocationActionHandler`, `EditMarkerView`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) while preserving infrastructure-owned telemetry emission.
 - 2026-02-11: Validation for marker-add contract context-decoupling slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `LocationActionHandlerTests` pass (`13` tests, `0` failures).
+- 2026-02-11: Continued write-contract surface tightening by removing the telemetry/detail marker add API from the app-facing contract (`SpatialWriteContract.addReferenceEntity(detail:telemetryContext:notify:)`) and adapter/mocks (`RealmSpatialWriteContract`, `CloudSyncContractBridgeTests`, `DataContractRegistryDispatchTests`), leaving this mutation shape infrastructure-local on `SpatialDataStore`.
+- 2026-02-11: Validation for telemetry-detail marker-add contract removal slice: `check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`, and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `LocationActionHandlerTests` pass (`13` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -563,7 +565,7 @@ Acceptance criteria:
 ## Immediate Next Steps
 1. Evaluate whether first-waypoint marker coordinate lookup can move from `SpatialDataStoreRegistry.store` helper internals to an async contract-backed read path without forcing wide call-graph churn.
 2. If an async read path is viable without broad call-graph churn, prototype it behind route-focused helper boundaries and extend route write/read parity tests to cover the new path.
-3. Continue tightening contract APIs by evaluating whether the remaining telemetry-oriented write parameters (`addReferenceEntity(detail:telemetryContext:notify:)`) can be narrowed without introducing behavior drift.
+3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and narrowing signatures where behavior can stay unchanged.
 
 ## Session Handoff (2026-02-10)
 - Latest landed commits for this slice sequence:

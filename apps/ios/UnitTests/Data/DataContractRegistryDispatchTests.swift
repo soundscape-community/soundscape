@@ -197,7 +197,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var importReferenceEntityFromCloudCalls: [String?] = []
         private(set) var deleteRouteCalls: [String] = []
         private(set) var updateRouteCalls: [String] = []
-        private(set) var addReferenceEntityCalls: [String?] = []
         private(set) var addReferenceEntityByEntityKeyCalls: [String] = []
         private(set) var addReferenceEntityByLocationCalls: [String] = []
         private(set) var addTemporaryEntityKeyCalls: [String] = []
@@ -227,11 +226,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         func updateRoute(_ route: Route) async throws {
             updateRouteCalls.append(route.id)
-        }
-
-        func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
-            addReferenceEntityCalls.append(telemetryContext)
-            return detail.markerId ?? "generated-marker-id"
         }
 
         func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
@@ -778,29 +772,6 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         routesByID[route.id] = updatedRouteSnapshot(existing: existingRoute,
                                                     incoming: route,
                                                     updatedAt: Date())
-    }
-
-    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
-        let entityKey: String?
-        switch detail.source {
-        case .entity(let id):
-            entityKey = id
-        case .screenshots(let poi):
-            entityKey = poi.key
-        case .coordinate, .designData:
-            entityKey = nil
-        }
-
-        let id = detail.markerId ?? UUID().uuidString
-        let reference = makeReferenceEntity(id: id,
-                                            entityKey: entityKey,
-                                            coordinate: detail.location.coordinate.ssGeoCoordinate,
-                                            nickname: detail.nickname,
-                                            estimatedAddress: detail.estimatedAddress,
-                                            annotation: detail.annotation,
-                                            isTemp: false)
-        store(reference)
-        return id
     }
 
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {

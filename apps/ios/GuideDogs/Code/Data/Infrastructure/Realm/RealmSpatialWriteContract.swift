@@ -33,12 +33,6 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
                          waypoints: route.waypoints.asLocationDetail)
     }
 
-    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
-        try SpatialDataStoreRegistry.store.addReferenceEntity(detail: detail,
-                                                              telemetryContext: telemetryContext,
-                                                              notify: notify)
-    }
-
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
         try RealmReferenceEntity.add(entityKey: entityKey,
                                      nickname: nickname,
