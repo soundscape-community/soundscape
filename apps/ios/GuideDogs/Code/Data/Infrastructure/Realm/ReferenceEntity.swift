@@ -918,13 +918,15 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     static func deleteActionMake(id: String, deleted: (() -> Void)? = nil, canceled: (() -> Void)? = nil) -> UIAlertController {
         // Create the action buttons for the alert.
         let deleteAction = UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive) { (_) in
-            do {
-                try RealmReferenceEntity.remove(id: id)
-            } catch {
-                GDLogAppError("Unable to successfully delete the reference entity (id: \(id))")
+            Task { @MainActor in
+                do {
+                    try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: id)
+                } catch {
+                    GDLogAppError("Unable to successfully delete the reference entity (id: \(id))")
+                }
+
+                deleted?()
             }
-            
-            deleted?()
         }
         
         let cancelAction = UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel) { (_) in
@@ -981,17 +983,6 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         }.value
     }
     
-    static func cleanCorruptEntities() throws {
-        try autoreleasepool {
-            let entities = try RealmHelper.getDatabaseRealm().objects(RealmReferenceEntity.self).filter("isTemp == false")
-            
-            for ref in entities where ref.nickname == nil && ref._poi == nil {
-                // If the backing POI doesn't exist and this isn't a generic location (no nickname), remove the POR
-                try RealmReferenceEntity.remove(id: ref.id)
-            }
-        }
-    }
-
     static func cleanCorruptEntities(using spatialRead: ReferenceReadContract) async throws {
         let entities = try RealmHelper.getDatabaseRealm().objects(RealmReferenceEntity.self).filter("isTemp == false")
         let corruptIDs = entities
