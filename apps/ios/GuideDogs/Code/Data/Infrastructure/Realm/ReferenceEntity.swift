@@ -810,39 +810,6 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     ///
     /// - Parameter id: ID of the reference entity to remove
     /// - Throws: If the database/cache cannot be accessed or no reference entity exists for the provided ID
-    static func remove(id: String) throws {
-        if try ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID(id) {
-            RealmReferenceEntity.notifyEntityRemoved(id)
-            return
-        }
-        
-        let database = try RealmHelper.getDatabaseRealm()
-        
-        guard let entity = database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: id) else {
-            return
-        }
-        
-        // If the marker doesn't have an underlying entity it refers to, remove from the
-        // callout history so there isn't an empty card in the history
-        if entity.entityKey == nil {
-            ReferenceEntityRuntime.removeCalloutHistoryForMarkerID(entity.id)
-        }
-        
-        // Remove the marker from corresponding routes
-        try Route.removeWaypointFromAllRoutes(markerId: id)
-        
-        ReferenceEntityRuntime.removeReferenceFromCloud(entity)
-        
-        try database.write {
-            database.delete(entity)
-        }
-        
-        GDATelemetry.track("markers.removed")
-        GDATelemetry.helper?.markerCountRemoved += 1
-        
-        RealmReferenceEntity.notifyEntityRemoved(id)
-    }
-
     static func remove(id: String, using spatialRead: ReferenceReadContract) async throws {
         if try ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID(id) {
             RealmReferenceEntity.notifyEntityRemoved(id)
