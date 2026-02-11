@@ -987,8 +987,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                           location: updatedMarkerCoordinate,
                                                                           nickname: "Updated Marker",
                                                                           estimatedAddress: nil,
-                                                                          annotation: nil,
-                                                                          isTemp: false)
+                                                                          annotation: nil)
 
         let updatedRoute = try XCTUnwrap(Route.object(forPrimaryKey: route.id))
         XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, firstMarkerID)

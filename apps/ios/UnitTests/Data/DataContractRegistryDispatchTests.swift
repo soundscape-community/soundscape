@@ -251,7 +251,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             return markerIDsByEntityKey[entityKey] ?? nextTemporaryID
         }
 
-        func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, isTemp: Bool) async throws {
+        func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {
             updateReferenceEntityCalls.append(id)
         }
 
@@ -466,8 +466,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                           location: SSGeoCoordinate(latitude: 47.62, longitude: -122.35),
                                                                           nickname: "Updated",
                                                                           estimatedAddress: "1st Ave",
-                                                                          annotation: nil,
-                                                                          isTemp: false)
+                                                                          annotation: nil)
         try await DataContractRegistry.spatialWrite.removeAllReferenceEntities()
         try await DataContractRegistry.spatialWrite.removeAllRoutes()
         let firstAddress = AddressCacheRecord(key: "address-1",
@@ -895,7 +894,7 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         return reference.id
     }
 
-    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, isTemp: Bool) async throws {
+    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {
         guard let existing = referenceByID[id] else {
             return
         }
@@ -906,7 +905,7 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
                                           nickname: nickname ?? existing.nickname,
                                           estimatedAddress: estimatedAddress ?? existing.estimatedAddress,
                                           annotation: annotation ?? existing.annotation,
-                                          isTemp: isTemp)
+                                          isTemp: false)
         store(updated)
     }
 
@@ -1253,8 +1252,7 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
                                                                           location: nil,
                                                                           nickname: "Near Updated",
                                                                           estimatedAddress: nil,
-                                                                          annotation: nil,
-                                                                          isTemp: true)
+                                                                          annotation: nil)
         let updatedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: nearID)
         XCTAssertEqual(updatedReference?.nickname, "Near Updated")
 

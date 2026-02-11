@@ -188,7 +188,7 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             "temp-marker-id"
         }
 
-        func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?, isTemp: Bool) async throws {}
+        func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {}
 
         func removeAllReferenceEntities() async throws {}
 
