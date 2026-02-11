@@ -608,7 +608,14 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     ///   - annotation: annotation of the reference entity
     ///   - isTemp: `true` if the reference entity is temporary (e.g. audio beacon), otherwise `false`
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
-    static func update(entity: RealmReferenceEntity, location: CLLocationCoordinate2D? = nil, nickname: String?, address: String?, annotation: String?, context: String? = nil, isTemp: Bool) throws {
+    static func update(entity: RealmReferenceEntity,
+                       location: CLLocationCoordinate2D? = nil,
+                       nickname: String?,
+                       address: String?,
+                       annotation: String?,
+                       context: String? = nil,
+                       isTemp: Bool,
+                       updateRoutesSynchronously: Bool = true) throws {
         var locChanged: Bool = false
         if let loc = location, loc != entity.coordinate {
             locChanged = true
@@ -675,10 +682,37 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             
             RealmReferenceEntity.notifyEntityUpdated(entity.id)
             
-            if locChanged {
+            if locChanged, updateRoutesSynchronously {
                 // Update all routes whose first waypoint is the given entity
                 try Route.updateWaypointInAllRoutes(markerId: entity.id)
             }
+        }
+    }
+
+    static func update(entity: RealmReferenceEntity,
+                       location: CLLocationCoordinate2D? = nil,
+                       nickname: String?,
+                       address: String?,
+                       annotation: String?,
+                       context: String? = nil,
+                       isTemp: Bool,
+                       using spatialRead: ReferenceReadContract) async throws {
+        var locChanged: Bool = false
+        if let loc = location, loc != entity.coordinate {
+            locChanged = true
+        }
+
+        try update(entity: entity,
+                   location: location,
+                   nickname: nickname,
+                   address: address,
+                   annotation: annotation,
+                   context: context,
+                   isTemp: isTemp,
+                   updateRoutesSynchronously: false)
+
+        if locChanged {
+            try await Route.updateWaypointInAllRoutes(markerId: entity.id, using: spatialRead)
         }
     }
     

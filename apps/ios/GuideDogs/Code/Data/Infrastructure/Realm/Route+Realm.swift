@@ -418,6 +418,25 @@ extension Route {
             try update(id: $0.id, name: $0.name, description: $0.routeDescription, waypoints: $0.waypoints)
         })
     }
+
+    static func updateWaypointInAllRoutes(markerId: String,
+                                          using spatialRead: ReferenceReadContract) async throws {
+        for route in SpatialDataStoreRegistry.store.routesContaining(markerId: markerId) {
+            guard let first = route.waypoints.ordered.first else {
+                continue
+            }
+
+            guard first.markerId == markerId else {
+                continue
+            }
+
+            try await update(id: route.id,
+                             name: route.name,
+                             description: route.routeDescription,
+                             waypoints: route.waypoints,
+                             using: spatialRead)
+        }
+    }
     
     // MARK: Reverse a route
     

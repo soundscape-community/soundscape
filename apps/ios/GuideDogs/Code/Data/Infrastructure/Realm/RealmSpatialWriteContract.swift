@@ -76,13 +76,14 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
             return
         }
 
-        try RealmReferenceEntity.update(entity: entity,
-                                        location: location?.clCoordinate,
-                                        nickname: nickname,
-                                        address: estimatedAddress,
-                                        annotation: annotation,
-                                        context: nil,
-                                        isTemp: isTemp)
+        try await RealmReferenceEntity.update(entity: entity,
+                                              location: location?.clCoordinate,
+                                              nickname: nickname,
+                                              address: estimatedAddress,
+                                              annotation: annotation,
+                                              context: nil,
+                                              isTemp: isTemp,
+                                              using: DataContractRegistry.spatialRead)
     }
 
     func removeAllReferenceEntities() async throws {

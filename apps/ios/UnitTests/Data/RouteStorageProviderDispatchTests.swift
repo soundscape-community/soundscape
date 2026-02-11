@@ -958,6 +958,45 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [remainingMarkerID])
     }
 
+    func testDefaultSpatialWriteUpdateReferenceEntityHydratesFirstWaypointFromAsyncReadContract() async throws {
+        let firstMarkerID = "update-write-first-\(UUID().uuidString)"
+        let secondMarkerID = "update-write-second-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: firstMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 42.6205, baseLongitude: -117.3493))
+        _ = try createPersistedMarker(id: secondMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 42.6301, baseLongitude: -117.3402))
+        let route = try createPersistedRoute(name: "UpdateWriteAsync-\(UUID().uuidString)",
+                                             markerIDs: [firstMarkerID, secondMarkerID])
+
+        let asyncCoordinate = CLLocationCoordinate2D(latitude: 51.1234, longitude: -125.4567)
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[firstMarkerID] = ReferenceEntity(id: firstMarkerID,
+                                                                        entityKey: nil,
+                                                                        lastUpdatedDate: nil,
+                                                                        lastSelectedDate: nil,
+                                                                        isNew: false,
+                                                                        isTemp: false,
+                                                                        coordinate: asyncCoordinate.ssGeoCoordinate,
+                                                                        nickname: nil,
+                                                                        estimatedAddress: nil,
+                                                                        annotation: nil)
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let updatedMarkerCoordinate = SSGeoCoordinate(latitude: 41.1111, longitude: -116.2222)
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: firstMarkerID,
+                                                                          location: updatedMarkerCoordinate,
+                                                                          nickname: "Updated Marker",
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil,
+                                                                          isTemp: false)
+
+        let updatedRoute = try XCTUnwrap(Route.object(forPrimaryKey: route.id))
+        XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, firstMarkerID)
+        XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertEqual(readMock.referenceEntityByIDCalls, [firstMarkerID])
+    }
+
     private func createPersistedRoute(name: String) throws -> Route {
         let waypointLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
         let imported = ImportedLocationDetail(nickname: "Waypoint", annotation: "Test waypoint")
