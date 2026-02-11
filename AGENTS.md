@@ -36,6 +36,7 @@ This file is the canonical instruction source for coding agents in this reposito
 - Modularization progress is tracked in `docs/plans/modularization_plan.md`.
 - Each active plan must include: summary, scope, current status, progress updates, and next steps.
 - After each implementation in plan scope, update the plan document in the same change with current progress and immediate next steps.
+- After each plan step is complete and validation tests/scripts are successful, stage and commit the scoped changes before starting the next plan step.
 - When modularization lands a new module, update both `docs/plans/modularization_plan.md` and this file's modularization status section (concisely).
 
 ## Build, Test, and Lint Commands

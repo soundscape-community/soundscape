@@ -15,6 +15,9 @@ Out of scope (for early phases):
 - Localization/resource migration.
 - Large behavior pipeline refactors beyond boundary prep.
 
+## Plan Execution Rules
+- After each plan step is implemented and validation checks/tests pass, stage and commit that scoped slice before proceeding to the next plan step.
+
 ## Boundary Rules
 - `apps/common/Sources` must stay platform-agnostic.
 - No imports of Apple UI/platform frameworks in `apps/common/Sources`.
@@ -421,6 +424,9 @@ Phase 1 complete:
 - 2026-02-11: Validation for route-add telemetry-decoupling slice: iOS boundary/seam scripts and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 - 2026-02-11: Reduced direct `SpatialDataStoreRegistry.store` coupling in `Route` initialization by moving first-waypoint coordinate hydration in `Route.init(from:)` behind route-focused helpers (`Route.firstWaypointCoordinate(for:)`, `Route.markerCoordinate(forMarkerID:)`) and reusing the same helper path from route create/update flows.
 - 2026-02-11: Validation for route-initializer read-seam cleanup slice: iOS boundary/seam scripts and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-11: Expanded non-Realm route write-contract parity coverage in `InMemorySpatialContractStoreTests` with focused add/update/import pathway assertions (`testRouteWriteContractParityAcrossAddUpdateAndImportWithoutRealmPersistence`, `testRouteWritesHydrateFirstWaypointCoordinateAcrossAddUpdateAndImportWithoutRealmPersistence`) to lock in route metadata + first-waypoint coordinate behavior without Realm coupling.
+- 2026-02-11: Updated `InMemorySpatialContractStore` route write semantics to mirror contract parity expectations: `addRoute(_:)` now follows update-style behavior for existing IDs, `updateRoute(_:)` throws `RouteRealmError.doesNotExist` for missing routes, local updates preserve existing created/selected metadata, and add/update/import all hydrate first-waypoint coordinates from marker/read context.
+- 2026-02-11: Validation for route write-contract parity test expansion slice: `check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`, and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `CloudSyncContractBridgeTests`, `DataContractRegistryDispatchTests`, and `InMemorySpatialContractStoreTests` pass (`46` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -549,9 +555,9 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Expand nontrivial tests only where behavior is complex: add focused coverage for route write-contract parity (add/update/import pathways) to ensure no regressions while removing remaining Realm-coupled assumptions.
-2. Continue tightening contract surfaces to canonical domain operations by removing any remaining API parameters that encode infrastructure concerns instead of route-domain state.
-3. Evaluate whether first-waypoint marker coordinate lookup can move from `SpatialDataStoreRegistry.store` helper internals to an async contract-backed read path without forcing wide call-graph churn.
+1. Continue tightening contract surfaces to canonical domain operations by removing any remaining API parameters that encode infrastructure concerns instead of route-domain state.
+2. Evaluate whether first-waypoint marker coordinate lookup can move from `SpatialDataStoreRegistry.store` helper internals to an async contract-backed read path without forcing wide call-graph churn.
+3. If an async read path is viable without broad call-graph churn, prototype it behind route-focused helper boundaries and extend route write/read parity tests to cover the new path.
 
 ## Session Handoff (2026-02-10)
 - Latest landed commits for this slice sequence:

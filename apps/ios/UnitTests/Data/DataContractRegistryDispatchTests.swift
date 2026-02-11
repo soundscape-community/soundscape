@@ -739,11 +739,18 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
     // MARK: - Writes
 
     func addRoute(_ route: Route) async throws {
-        routesByID[route.id] = route
+        if let existingRoute = routesByID[route.id] {
+            routesByID[route.id] = updatedRouteSnapshot(existing: existingRoute,
+                                                        incoming: route,
+                                                        updatedAt: Date())
+            return
+        }
+
+        routesByID[route.id] = routeSnapshot(route)
     }
 
     func importRouteFromCloud(_ route: Route) async throws {
-        routesByID[route.id] = route
+        routesByID[route.id] = routeSnapshot(route)
     }
 
     func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
@@ -767,13 +774,13 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
     }
 
     func updateRoute(_ route: Route) async throws {
-        guard routesByID[route.id] != nil else {
-            return
+        guard let existingRoute = routesByID[route.id] else {
+            throw RouteRealmError.doesNotExist
         }
 
-        var updatedRoute = route
-        updatedRoute.lastUpdatedDate = Date()
-        routesByID[route.id] = updatedRoute
+        routesByID[route.id] = updatedRouteSnapshot(existing: existingRoute,
+                                                    incoming: route,
+                                                    updatedAt: Date())
     }
 
     func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) async throws -> String {
@@ -980,6 +987,45 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
 
         return "Marker"
     }
+
+    private func routeSnapshot(_ route: Route) -> Route {
+        var snapshot = route
+        applyFirstWaypointCoordinate(to: &snapshot, waypoints: route.waypoints)
+        return snapshot
+    }
+
+    private func updatedRouteSnapshot(existing: Route, incoming: Route, updatedAt: Date) -> Route {
+        var updated = existing
+        updated.name = incoming.name
+        updated.routeDescription = incoming.routeDescription
+        updated.waypoints = incoming.waypoints
+        updated.lastUpdatedDate = updatedAt
+        applyFirstWaypointCoordinate(to: &updated, waypoints: incoming.waypoints)
+        return updated
+    }
+
+    private func applyFirstWaypointCoordinate(to route: inout Route, waypoints: [RouteWaypoint]) {
+        guard let firstWaypointCoordinate = firstWaypointCoordinate(for: waypoints) else {
+            route.firstWaypointLatitude = nil
+            route.firstWaypointLongitude = nil
+            return
+        }
+
+        route.firstWaypointLatitude = firstWaypointCoordinate.latitude
+        route.firstWaypointLongitude = firstWaypointCoordinate.longitude
+    }
+
+    private func firstWaypointCoordinate(for waypoints: [RouteWaypoint]) -> SSGeoCoordinate? {
+        guard let firstWaypoint = waypoints.ordered.first else {
+            return nil
+        }
+
+        if let markerCoordinate = referenceByID[firstWaypoint.markerId]?.coordinate {
+            return markerCoordinate
+        }
+
+        return firstWaypoint.asLocationDetail?.location.coordinate.ssGeoCoordinate
+    }
 }
 
 @MainActor
@@ -1020,6 +1066,153 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         let routesAfterDelete = await DataContractRegistry.spatialRead.routes()
         XCTAssertNil(deletedRoute)
         XCTAssertTrue(routesAfterDelete.isEmpty)
+    }
+
+    func testRouteWriteContractParityAcrossAddUpdateAndImportWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store, spatialWrite: store)
+
+        var route = Route()
+        route.id = "route-write-parity-1"
+        route.name = "Initial Route"
+        route.routeDescription = "Initial Description"
+        route.createdDate = Date(timeIntervalSince1970: 1_000)
+        route.lastSelectedDate = Date(timeIntervalSince1970: 1_100)
+        route.lastUpdatedDate = Date(timeIntervalSince1970: 1_200)
+
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+
+        var importedRoute = route
+        importedRoute.name = "Cloud Route"
+        importedRoute.routeDescription = "Cloud Description"
+        importedRoute.createdDate = Date(timeIntervalSince1970: 2_000)
+        importedRoute.lastSelectedDate = Date(timeIntervalSince1970: 2_100)
+        importedRoute.lastUpdatedDate = Date(timeIntervalSince1970: 2_200)
+        try await DataContractRegistry.spatialWrite.importRouteFromCloud(importedRoute)
+
+        guard let cloudPersistedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id) else {
+            XCTFail("Expected imported route to be persisted")
+            return
+        }
+        XCTAssertEqual(cloudPersistedRoute.name, "Cloud Route")
+        XCTAssertEqual(cloudPersistedRoute.routeDescription, "Cloud Description")
+        XCTAssertEqual(cloudPersistedRoute.createdDate, importedRoute.createdDate)
+        XCTAssertEqual(cloudPersistedRoute.lastSelectedDate, importedRoute.lastSelectedDate)
+        XCTAssertEqual(cloudPersistedRoute.lastUpdatedDate, importedRoute.lastUpdatedDate)
+
+        var localUpdateRoute = importedRoute
+        localUpdateRoute.name = "Local Updated Route"
+        localUpdateRoute.routeDescription = "Local Updated Description"
+        localUpdateRoute.createdDate = Date(timeIntervalSince1970: 3_000)
+        localUpdateRoute.lastSelectedDate = Date(timeIntervalSince1970: 3_100)
+        localUpdateRoute.lastUpdatedDate = Date(timeIntervalSince1970: 3_200)
+        let localUpdateStart = Date()
+        try await DataContractRegistry.spatialWrite.updateRoute(localUpdateRoute)
+        let localUpdateEnd = Date()
+
+        guard let localUpdatedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id) else {
+            XCTFail("Expected local update route to be persisted")
+            return
+        }
+        XCTAssertEqual(localUpdatedRoute.name, "Local Updated Route")
+        XCTAssertEqual(localUpdatedRoute.routeDescription, "Local Updated Description")
+        XCTAssertEqual(localUpdatedRoute.createdDate, importedRoute.createdDate)
+        XCTAssertEqual(localUpdatedRoute.lastSelectedDate, importedRoute.lastSelectedDate)
+        XCTAssertGreaterThanOrEqual(localUpdatedRoute.lastUpdatedDate, localUpdateStart)
+        XCTAssertLessThanOrEqual(localUpdatedRoute.lastUpdatedDate, localUpdateEnd)
+
+        var existingAddRoute = localUpdateRoute
+        existingAddRoute.name = "Add Existing Route"
+        existingAddRoute.routeDescription = "Add Existing Description"
+        existingAddRoute.createdDate = Date(timeIntervalSince1970: 4_000)
+        existingAddRoute.lastSelectedDate = Date(timeIntervalSince1970: 4_100)
+        existingAddRoute.lastUpdatedDate = Date(timeIntervalSince1970: 4_200)
+        let addExistingStart = Date()
+        try await DataContractRegistry.spatialWrite.addRoute(existingAddRoute)
+        let addExistingEnd = Date()
+
+        guard let addUpdatedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id) else {
+            XCTFail("Expected add(existing) route update to be persisted")
+            return
+        }
+        XCTAssertEqual(addUpdatedRoute.name, "Add Existing Route")
+        XCTAssertEqual(addUpdatedRoute.routeDescription, "Add Existing Description")
+        XCTAssertEqual(addUpdatedRoute.createdDate, importedRoute.createdDate)
+        XCTAssertEqual(addUpdatedRoute.lastSelectedDate, importedRoute.lastSelectedDate)
+        XCTAssertGreaterThanOrEqual(addUpdatedRoute.lastUpdatedDate, addExistingStart)
+        XCTAssertLessThanOrEqual(addUpdatedRoute.lastUpdatedDate, addExistingEnd)
+    }
+
+    func testRouteWritesHydrateFirstWaypointCoordinateAcrossAddUpdateAndImportWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store, spatialWrite: store)
+
+        let firstMarkerLocation = GenericLocation(lat: 47.6205, lon: -122.3493)
+        let secondMarkerLocation = GenericLocation(lat: 47.6301, lon: -122.3402)
+        let firstMarkerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: firstMarkerLocation,
+                                                                                            nickname: "First Marker",
+                                                                                            estimatedAddress: nil,
+                                                                                            annotation: nil,
+                                                                                            temporary: false,
+                                                                                            context: "unit-test")
+        let secondMarkerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: secondMarkerLocation,
+                                                                                             nickname: "Second Marker",
+                                                                                             estimatedAddress: nil,
+                                                                                             annotation: nil,
+                                                                                             temporary: false,
+                                                                                             context: "unit-test")
+
+        var firstWaypoint = RouteWaypoint()
+        firstWaypoint.index = 0
+        firstWaypoint.markerId = firstMarkerID
+
+        var secondWaypoint = RouteWaypoint()
+        secondWaypoint.index = 1
+        secondWaypoint.markerId = secondMarkerID
+
+        var route = Route()
+        route.id = "route-waypoint-coordinate-parity"
+        route.name = "Waypoint Coordinate Route"
+        route.waypoints = [firstWaypoint, secondWaypoint]
+        route.firstWaypointLatitude = nil
+        route.firstWaypointLongitude = nil
+
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+
+        guard let addedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id) else {
+            XCTFail("Expected added route to be persisted")
+            return
+        }
+        XCTAssertEqual(addedRoute.firstWaypointLatitude ?? 0, firstMarkerLocation.location.coordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(addedRoute.firstWaypointLongitude ?? 0, firstMarkerLocation.location.coordinate.longitude, accuracy: 0.000_001)
+
+        firstWaypoint.index = 1
+        secondWaypoint.index = 0
+        var updatedRoute = route
+        updatedRoute.waypoints = [secondWaypoint, firstWaypoint]
+        updatedRoute.firstWaypointLatitude = nil
+        updatedRoute.firstWaypointLongitude = nil
+        try await DataContractRegistry.spatialWrite.updateRoute(updatedRoute)
+
+        guard let locallyUpdatedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id) else {
+            XCTFail("Expected locally updated route to be persisted")
+            return
+        }
+        XCTAssertEqual(locallyUpdatedRoute.firstWaypointLatitude ?? 0, secondMarkerLocation.location.coordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(locallyUpdatedRoute.firstWaypointLongitude ?? 0, secondMarkerLocation.location.coordinate.longitude, accuracy: 0.000_001)
+
+        var importedRoute = route
+        importedRoute.waypoints = [firstWaypoint, secondWaypoint]
+        importedRoute.firstWaypointLatitude = 0
+        importedRoute.firstWaypointLongitude = 0
+        try await DataContractRegistry.spatialWrite.importRouteFromCloud(importedRoute)
+
+        guard let cloudImportedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id) else {
+            XCTFail("Expected cloud imported route to be persisted")
+            return
+        }
+        XCTAssertEqual(cloudImportedRoute.firstWaypointLatitude ?? 0, secondMarkerLocation.location.coordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(cloudImportedRoute.firstWaypointLongitude ?? 0, secondMarkerLocation.location.coordinate.longitude, accuracy: 0.000_001)
     }
 
     func testMarkerReadWriteAndRangeQueriesWithoutRealmPersistence() async throws {
