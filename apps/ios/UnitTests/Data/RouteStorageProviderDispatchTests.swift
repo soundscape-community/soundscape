@@ -1035,7 +1035,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                             annotation: nil)
         DataContractRegistry.configure(spatialRead: readMock)
 
-        try await DataContractRegistry.spatialWrite.cleanCorruptReferenceEntities()
+        try await DataContractRegistry.spatialMaintenanceWrite.cleanCorruptReferenceEntities()
 
         let updatedRoute = try XCTUnwrap(Route.object(forPrimaryKey: route.id))
         XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, remainingMarkerID)

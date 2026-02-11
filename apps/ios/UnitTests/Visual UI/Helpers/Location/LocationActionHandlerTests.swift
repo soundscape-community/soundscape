@@ -21,7 +21,7 @@ final class LocationActionHandlerTests: XCTestCase {
     }
 
     func testSaveCoordinatePersistsMarkerThroughAsyncWriteContract() async throws {
-        try await DataContractRegistry.spatialWrite.removeAllReferenceEntities()
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
 
         let coordinate = CLLocation(latitude: 47.6205, longitude: -122.3493)
         let detail = LocationDetail(location: coordinate, telemetryContext: "unit-test")
@@ -31,7 +31,7 @@ final class LocationActionHandlerTests: XCTestCase {
         let marker = await DataContractRegistry.spatialRead.markerParameters(byCoordinate: coordinate.coordinate.ssGeoCoordinate)
         XCTAssertNotNil(marker)
 
-        try await DataContractRegistry.spatialWrite.removeAllReferenceEntities()
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
     }
 
     func testSaveDesignDataThrowsFailedToSaveMarker() async throws {

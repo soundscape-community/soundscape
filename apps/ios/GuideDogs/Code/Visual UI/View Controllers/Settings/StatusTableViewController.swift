@@ -332,10 +332,10 @@ extension StatusTableViewController {
         if deletePORs {
             do {
                 // Remove the reference entities (regardless of type)
-                try await DataContractRegistry.spatialWrite.removeAllReferenceEntities()
+                try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
                 
                 // Remove all routes
-                try await DataContractRegistry.spatialWrite.removeAllRoutes()
+                try await DataContractRegistry.spatialMaintenanceWrite.removeAllRoutes()
             } catch {
                 GDLogAppError("Failed to remove all Reference Entities!")
             }
@@ -374,7 +374,7 @@ extension StatusTableViewController {
         }
         
         do {
-            try await DataContractRegistry.spatialWrite.restoreCachedAddresses(storedAddresses)
+            try await DataContractRegistry.spatialMaintenanceWrite.restoreCachedAddresses(storedAddresses)
         } catch {
             GDLogSpatialDataError("Cached data deleted, but couldn't restore addresses!")
             return
@@ -427,7 +427,7 @@ extension StatusTableViewController {
         
         Task { @MainActor in
             do {
-                try await DataContractRegistry.spatialWrite.cleanCorruptReferenceEntities()
+                try await DataContractRegistry.spatialMaintenanceWrite.cleanCorruptReferenceEntities()
                 GDLogAppVerbose("Successfully removed any corrupted Reference Entity objects (if any existed)")
             } catch {
                 GDLogAppError("Unable to remove corrupted Reference Entity objects")

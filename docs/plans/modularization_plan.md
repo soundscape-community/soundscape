@@ -479,6 +479,9 @@ Phase 1 complete:
 - 2026-02-11: Tightened the async write-contract surface by removing unused temporary-marker add APIs from `SpatialWriteContract` (`addTemporaryReferenceEntity` overloads), keeping temporary-marker creation routed through the existing destination/infrastructure sync seam (`DestinationEntityStore`/`SpatialDataStoreRegistry`).
 - 2026-02-11: Updated async write adapter/tests to match the narrowed surface (`RealmSpatialWriteContract`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) while preserving existing temporary-marker behavior via infrastructure seams.
 - 2026-02-11: Validation for temporary-marker async contract de-scope slice: `bash apps/common/Scripts/check_forbidden_imports.sh` and `swift test --package-path apps/common` pass; iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`49` tests, `0` failures).
+- 2026-02-11: Split maintenance operations out of `SpatialWriteContract` by introducing `SpatialMaintenanceWriteContract` (`removeAllReferenceEntities`, `removeAllRoutes`, `restoreCachedAddresses`, `cleanCorruptReferenceEntities`) and wiring `DataContractRegistry.spatialMaintenanceWrite` with `RealmSpatialWriteContract` conformance.
+- 2026-02-11: Migrated maintenance callsites and dispatch coverage to the new contract surface (`StatusTableViewController`, `LocationActionHandlerTests`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`) and updated registry reset/configure behavior assertions to include `spatialMaintenanceWrite`.
+- 2026-02-11: Validation for maintenance-write contract split slice: `bash apps/common/Scripts/check_forbidden_imports.sh` and `swift test --package-path apps/common` pass; iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`49` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -609,7 +612,7 @@ Acceptance criteria:
 ## Immediate Next Steps
 1. Continue narrowing legacy `RealmReferenceEntity` synchronous convenience APIs by auditing remaining non-contract write helpers and migrating/removing sync-only variants where async contract dispatch already exists.
 2. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
-3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and narrowing signatures where behavior can stay unchanged (for example maintenance-oriented writes currently exposed on `SpatialWriteContract`).
+3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
 
 ## Session Handoff (2026-02-10)
 - Latest landed commits for this slice sequence:

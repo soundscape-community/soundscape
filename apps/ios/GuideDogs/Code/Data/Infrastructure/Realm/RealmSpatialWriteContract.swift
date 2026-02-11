@@ -10,7 +10,7 @@ import CoreLocation
 import SSGeo
 
 @MainActor
-struct RealmSpatialWriteContract: SpatialWriteContract {
+struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteContract {
     func addRoute(_ route: Route) async throws {
         let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route)
         try Route.add(route, firstWaypointCoordinate: firstWaypointCoordinate)

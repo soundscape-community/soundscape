@@ -200,10 +200,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var addReferenceEntityByEntityKeyCalls: [String] = []
         private(set) var addReferenceEntityByLocationCalls: [String] = []
         private(set) var updateReferenceEntityCalls: [String] = []
-        private(set) var removeAllReferenceEntitiesCalls = 0
-        private(set) var removeAllRoutesCalls = 0
-        private(set) var restoreCachedAddressCounts: [Int] = []
-        private(set) var cleanCorruptReferenceEntitiesCalls = 0
         private(set) var removeReferenceEntityCalls: [String] = []
 
         func addRoute(_ route: Route) async throws {
@@ -241,6 +237,17 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             updateReferenceEntityCalls.append(id)
         }
 
+        func removeReferenceEntity(id: String) async throws {
+            removeReferenceEntityCalls.append(id)
+        }
+    }
+
+    private final class MockSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
+        private(set) var removeAllReferenceEntitiesCalls = 0
+        private(set) var removeAllRoutesCalls = 0
+        private(set) var restoreCachedAddressCounts: [Int] = []
+        private(set) var cleanCorruptReferenceEntitiesCalls = 0
+
         func removeAllReferenceEntities() async throws {
             removeAllReferenceEntitiesCalls += 1
         }
@@ -255,10 +262,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         func cleanCorruptReferenceEntities() async throws {
             cleanCorruptReferenceEntitiesCalls += 1
-        }
-
-        func removeReferenceEntity(id: String) async throws {
-            removeReferenceEntityCalls.append(id)
         }
     }
 
@@ -364,11 +367,13 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         DataContractRegistry.configure(spatialRead: mock)
         XCTAssertFalse(DataContractRegistry.spatialRead is RealmSpatialReadContract)
         XCTAssertTrue(DataContractRegistry.spatialWrite is RealmSpatialWriteContract)
+        XCTAssertTrue(DataContractRegistry.spatialMaintenanceWrite is RealmSpatialWriteContract)
 
         DataContractRegistry.resetForTesting()
 
         XCTAssertTrue(DataContractRegistry.spatialRead is RealmSpatialReadContract)
         XCTAssertTrue(DataContractRegistry.spatialWrite is RealmSpatialWriteContract)
+        XCTAssertTrue(DataContractRegistry.spatialMaintenanceWrite is RealmSpatialWriteContract)
     }
 
     func testNilPropagationForMissingEntities() async {
@@ -417,12 +422,15 @@ final class DataContractRegistryDispatchTests: XCTestCase {
     func testSpatialWriteAsyncDispatchesToConfiguredContract() async throws {
         let readMock = MockSpatialReadContract()
         let writeMock = MockSpatialWriteContract()
+        let maintenanceMock = MockSpatialMaintenanceWriteContract()
         writeMock.markerIDsByEntityKey["entity-1"] = "marker-1"
         writeMock.nextTemporaryID = "temp-marker-id"
         var route = Route()
         route.id = "route-async-1"
 
-        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+        DataContractRegistry.configure(spatialRead: readMock,
+                                       spatialWrite: writeMock,
+                                       spatialMaintenanceWrite: maintenanceMock)
 
         try await DataContractRegistry.spatialWrite.addRoute(route)
         try await DataContractRegistry.spatialWrite.importRouteFromCloud(route)
@@ -450,8 +458,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                           nickname: "Updated",
                                                                           estimatedAddress: "1st Ave",
                                                                           annotation: nil)
-        try await DataContractRegistry.spatialWrite.removeAllReferenceEntities()
-        try await DataContractRegistry.spatialWrite.removeAllRoutes()
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllRoutes()
         let firstAddress = AddressCacheRecord(key: "address-1",
                                               lastSelectedDate: nil,
                                               name: "Address 1",
@@ -472,8 +480,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                centroidLatitude: 47.63,
                                                centroidLongitude: -122.36,
                                                searchString: nil)
-        try await DataContractRegistry.spatialWrite.restoreCachedAddresses([firstAddress, secondAddress])
-        try await DataContractRegistry.spatialWrite.cleanCorruptReferenceEntities()
+        try await DataContractRegistry.spatialMaintenanceWrite.restoreCachedAddresses([firstAddress, secondAddress])
+        try await DataContractRegistry.spatialMaintenanceWrite.cleanCorruptReferenceEntities()
         try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: markerFromEntity)
 
         XCTAssertEqual(markerFromEntity, "marker-1")
@@ -486,10 +494,10 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.addReferenceEntityByEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(writeMock.addReferenceEntityByLocationCalls, ["47.62,-122.35"])
         XCTAssertEqual(writeMock.updateReferenceEntityCalls, ["marker-1"])
-        XCTAssertEqual(writeMock.removeAllReferenceEntitiesCalls, 1)
-        XCTAssertEqual(writeMock.removeAllRoutesCalls, 1)
-        XCTAssertEqual(writeMock.restoreCachedAddressCounts, [2])
-        XCTAssertEqual(writeMock.cleanCorruptReferenceEntitiesCalls, 1)
+        XCTAssertEqual(maintenanceMock.removeAllReferenceEntitiesCalls, 1)
+        XCTAssertEqual(maintenanceMock.removeAllRoutesCalls, 1)
+        XCTAssertEqual(maintenanceMock.restoreCachedAddressCounts, [2])
+        XCTAssertEqual(maintenanceMock.cleanCorruptReferenceEntitiesCalls, 1)
         XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
     }
 
@@ -547,7 +555,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 }
 
 @MainActor
-private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWriteContract {
+private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWriteContract, SpatialMaintenanceWriteContract {
     private var routesByID: [String: Route] = [:]
     private var referenceByID: [String: ReferenceEntity] = [:]
     private var referenceIDByEntityKey: [String: String] = [:]
@@ -982,7 +990,9 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
 
     func testRouteRoundTripWithoutRealmPersistence() async throws {
         let store = InMemorySpatialContractStore()
-        DataContractRegistry.configure(spatialRead: store, spatialWrite: store)
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
 
         var route = Route()
         route.id = "route-in-memory-1"
@@ -1015,7 +1025,9 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
 
     func testRouteWriteContractParityAcrossAddUpdateAndImportWithoutRealmPersistence() async throws {
         let store = InMemorySpatialContractStore()
-        DataContractRegistry.configure(spatialRead: store, spatialWrite: store)
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
 
         var route = Route()
         route.id = "route-write-parity-1"
@@ -1090,7 +1102,9 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
 
     func testRouteWritesHydrateFirstWaypointCoordinateAcrossAddUpdateAndImportWithoutRealmPersistence() async throws {
         let store = InMemorySpatialContractStore()
-        DataContractRegistry.configure(spatialRead: store, spatialWrite: store)
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
 
         let firstMarkerLocation = GenericLocation(lat: 47.6205, lon: -122.3493)
         let secondMarkerLocation = GenericLocation(lat: 47.6301, lon: -122.3402)
@@ -1158,7 +1172,9 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
 
     func testMarkerReadWriteAndRangeQueriesWithoutRealmPersistence() async throws {
         let store = InMemorySpatialContractStore()
-        DataContractRegistry.configure(spatialRead: store, spatialWrite: store)
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
 
         let nearLocation = GenericLocation(lat: 47.6205, lon: -122.3493)
         let farLocation = GenericLocation(lat: 47.7010, lon: -122.3500)
@@ -1202,7 +1218,9 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
 
     func testRouteContainsMarkerAndAddressRestoreWithoutRealmPersistence() async throws {
         let store = InMemorySpatialContractStore()
-        DataContractRegistry.configure(spatialRead: store, spatialWrite: store)
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
 
         let markerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: "entity-marker-1",
                                                                                        nickname: "Marker",
@@ -1241,7 +1259,7 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
                                                centroidLatitude: 47.63,
                                                centroidLongitude: -122.36,
                                                searchString: nil)
-        try await DataContractRegistry.spatialWrite.restoreCachedAddresses([firstAddress, secondAddress])
+        try await DataContractRegistry.spatialMaintenanceWrite.restoreCachedAddresses([firstAddress, secondAddress])
         XCTAssertEqual(store.restoredAddressCount, 2)
     }
 }

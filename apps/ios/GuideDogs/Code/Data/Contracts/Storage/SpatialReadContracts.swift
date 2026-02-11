@@ -102,9 +102,13 @@ protocol SpatialWriteContract {
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String
     func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String
     func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws
+    func removeReferenceEntity(id: String) async throws
+}
+
+@MainActor
+protocol SpatialMaintenanceWriteContract {
     func removeAllReferenceEntities() async throws
     func removeAllRoutes() async throws
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws
     func cleanCorruptReferenceEntities() async throws
-    func removeReferenceEntity(id: String) async throws
 }
