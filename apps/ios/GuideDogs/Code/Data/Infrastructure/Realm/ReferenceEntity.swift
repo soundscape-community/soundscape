@@ -915,35 +915,6 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         }
     }
     
-    static func deleteActionMake(id: String, deleted: (() -> Void)? = nil, canceled: (() -> Void)? = nil) -> UIAlertController {
-        // Create the action buttons for the alert.
-        let deleteAction = UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive) { (_) in
-            Task { @MainActor in
-                do {
-                    try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: id)
-                } catch {
-                    GDLogAppError("Unable to successfully delete the reference entity (id: \(id))")
-                }
-
-                deleted?()
-            }
-        }
-        
-        let cancelAction = UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel) { (_) in
-            canceled?()
-        }
-        
-        // Create and configure the alert controller.
-        let alert = UIAlertController(title: GDLocalizedString("markers.destructive_delete_message"),
-                                      message: GDLocalizedString("general.alert.destructive_undone_message"),
-                                      preferredStyle: .alert)
-        
-        alert.addAction(deleteAction)
-        alert.addAction(cancelAction)
-        
-        return alert
-    }
-    
     static func objectKeys(sortedBy: SortStyle) -> [String] {
         return autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
