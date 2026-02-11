@@ -176,18 +176,6 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             "generated-marker-id"
         }
 
-        func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
-            "temp-marker-id"
-        }
-
-        func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
-            "temp-marker-id"
-        }
-
-        func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
-            "temp-marker-id"
-        }
-
         func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {}
 
         func removeAllReferenceEntities() async throws {}

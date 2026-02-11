@@ -55,22 +55,6 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
                                      context: nil)
     }
 
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
-                                                                       estimatedAddress: estimatedAddress)
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
-                                                                       nickname: nickname,
-                                                                       estimatedAddress: estimatedAddress)
-    }
-
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey,
-                                                                       estimatedAddress: estimatedAddress)
-    }
-
     func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {
         guard let entity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
             return

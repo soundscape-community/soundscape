@@ -101,9 +101,6 @@ protocol SpatialWriteContract {
     func updateRoute(_ route: Route) async throws
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String
     func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String
     func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws
     func removeAllReferenceEntities() async throws
     func removeAllRoutes() async throws

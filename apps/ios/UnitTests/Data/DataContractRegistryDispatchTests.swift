@@ -199,7 +199,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var updateRouteCalls: [String] = []
         private(set) var addReferenceEntityByEntityKeyCalls: [String] = []
         private(set) var addReferenceEntityByLocationCalls: [String] = []
-        private(set) var addTemporaryEntityKeyCalls: [String] = []
         private(set) var updateReferenceEntityCalls: [String] = []
         private(set) var removeAllReferenceEntitiesCalls = 0
         private(set) var removeAllRoutesCalls = 0
@@ -236,19 +235,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             let coordinate = location.location.coordinate
             addReferenceEntityByLocationCalls.append("\(coordinate.latitude),\(coordinate.longitude)")
             return nextTemporaryID
-        }
-
-        func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
-            nextTemporaryID
-        }
-
-        func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
-            nextTemporaryID
-        }
-
-        func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
-            addTemporaryEntityKeyCalls.append(entityKey)
-            return markerIDsByEntityKey[entityKey] ?? nextTemporaryID
         }
 
         func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {
@@ -459,8 +445,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                                                 nickname: "Nearby",
                                                                                                 estimatedAddress: "1st Ave",
                                                                                                 annotation: nil)
-        let markerID = try await DataContractRegistry.spatialWrite.addTemporaryReferenceEntity(entityKey: "entity-1",
-                                                                                                estimatedAddress: "123 Main")
         try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: markerFromEntity,
                                                                           location: SSGeoCoordinate(latitude: 47.62, longitude: -122.35),
                                                                           nickname: "Updated",
@@ -490,11 +474,10 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                searchString: nil)
         try await DataContractRegistry.spatialWrite.restoreCachedAddresses([firstAddress, secondAddress])
         try await DataContractRegistry.spatialWrite.cleanCorruptReferenceEntities()
-        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: markerID)
+        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: markerFromEntity)
 
         XCTAssertEqual(markerFromEntity, "marker-1")
         XCTAssertEqual(markerFromLocation, "temp-marker-id")
-        XCTAssertEqual(markerID, "marker-1")
         XCTAssertEqual(writeMock.addRouteCalls, [route.id])
         XCTAssertEqual(writeMock.importRouteFromCloudCalls, [route.id])
         XCTAssertEqual(writeMock.importReferenceEntityFromCloudCalls.count, 1)
@@ -502,7 +485,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.deleteRouteCalls, [route.id])
         XCTAssertEqual(writeMock.addReferenceEntityByEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(writeMock.addReferenceEntityByLocationCalls, ["47.62,-122.35"])
-        XCTAssertEqual(writeMock.addTemporaryEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(writeMock.updateReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(writeMock.removeAllReferenceEntitiesCalls, 1)
         XCTAssertEqual(writeMock.removeAllRoutesCalls, 1)
@@ -849,54 +831,6 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
                                             estimatedAddress: estimatedAddress,
                                             annotation: annotation,
                                             isTemp: false)
-        store(reference)
-        return reference.id
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
-        let reference = makeReferenceEntity(id: UUID().uuidString,
-                                            entityKey: nil,
-                                            coordinate: location.location.coordinate.ssGeoCoordinate,
-                                            nickname: nil,
-                                            estimatedAddress: estimatedAddress,
-                                            annotation: nil,
-                                            isTemp: true)
-        store(reference)
-        return reference.id
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
-        let reference = makeReferenceEntity(id: UUID().uuidString,
-                                            entityKey: nil,
-                                            coordinate: location.location.coordinate.ssGeoCoordinate,
-                                            nickname: nickname,
-                                            estimatedAddress: estimatedAddress,
-                                            annotation: nil,
-                                            isTemp: true)
-        store(reference)
-        return reference.id
-    }
-
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
-        if let existingID = referenceIDByEntityKey[entityKey], let existing = referenceByID[existingID] {
-            let updated = makeReferenceEntity(id: existing.id,
-                                              entityKey: entityKey,
-                                              coordinate: existing.coordinate,
-                                              nickname: existing.nickname,
-                                              estimatedAddress: estimatedAddress ?? existing.estimatedAddress,
-                                              annotation: existing.annotation,
-                                              isTemp: true)
-            store(updated)
-            return updated.id
-        }
-
-        let reference = makeReferenceEntity(id: UUID().uuidString,
-                                            entityKey: entityKey,
-                                            coordinate: SSGeoCoordinate(latitude: 0, longitude: 0),
-                                            nickname: nil,
-                                            estimatedAddress: estimatedAddress,
-                                            annotation: nil,
-                                            isTemp: true)
         store(reference)
         return reference.id
     }
