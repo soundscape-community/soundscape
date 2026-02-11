@@ -915,45 +915,6 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         }
     }
     
-    static func objectKeys(sortedBy: SortStyle) -> [String] {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return []
-            }
-            
-            switch sortedBy {
-            case .alphanumeric:
-                return database.objects(RealmReferenceEntity.self)
-                    .filter("isTemp == false")
-                    .map({ entity -> (ref: RealmReferenceEntity, name: String) in
-                        return (ref: entity, name: entity.name)
-                    })
-                    .sorted(by: { $0.name < $1.name })
-                    .compactMap({ $0.ref.id })
-                
-            case .distance:
-                let loc = ReferenceEntityRuntime.currentUserLocation() ?? CLLocation(latitude: 0.0, longitude: 0.0)
-                
-                return database.objects(RealmReferenceEntity.self)
-                    .filter("isTemp == false")
-                    .map({ entity -> (ref: RealmReferenceEntity, dist: CLLocationDistance) in
-                        return (ref: entity, dist: entity.distanceToClosestLocation(from: loc))
-                    })
-                    .sorted(by: { $0.dist < $1.dist })
-                    .compactMap({ $0.ref.id })
-            }
-        }
-    }
-    
-    /// Async version of objectKeys for background sorting/filtering without blocking main actor
-    static func asyncObjectKeys(sortedBy: SortStyle) async -> [String] {
-        return await Task.detached(priority: .utility) {
-            await MainActor.run {
-                objectKeys(sortedBy: sortedBy)
-            }
-        }.value
-    }
-    
     static func cleanCorruptEntities(using spatialRead: ReferenceReadContract) async throws {
         let entities = try RealmHelper.getDatabaseRealm().objects(RealmReferenceEntity.self).filter("isTemp == false")
         let corruptIDs = entities
