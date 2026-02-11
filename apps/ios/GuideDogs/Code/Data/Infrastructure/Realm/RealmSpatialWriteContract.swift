@@ -121,7 +121,7 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
     }
 
     func removeReferenceEntity(id: String) async throws {
-        try RealmReferenceEntity.remove(id: id)
+        try await RealmReferenceEntity.remove(id: id, using: DataContractRegistry.spatialRead)
     }
 
     private func resolveFirstWaypointCoordinate(for route: Route) async -> CLLocationCoordinate2D? {

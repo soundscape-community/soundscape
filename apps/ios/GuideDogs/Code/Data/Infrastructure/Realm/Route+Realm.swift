@@ -306,6 +306,26 @@ extension Route {
             onRouteDidUpdate(route)
         }
     }
+
+    static func update(id: String,
+                       name: String,
+                       description: String?,
+                       waypoints: [RouteWaypoint],
+                       firstWaypointCoordinate: CLLocationCoordinate2D? = nil,
+                       using spatialRead: ReferenceReadContract) async throws {
+        let resolvedFirstWaypointCoordinate: CLLocationCoordinate2D?
+        if let firstWaypointCoordinate {
+            resolvedFirstWaypointCoordinate = firstWaypointCoordinate
+        } else {
+            resolvedFirstWaypointCoordinate = await self.firstWaypointCoordinate(for: waypoints, using: spatialRead)
+        }
+
+        try update(id: id,
+                   name: name,
+                   description: description,
+                   waypoints: waypoints,
+                   firstWaypointCoordinate: resolvedFirstWaypointCoordinate)
+    }
     
     static func update(id: String,
                        name: String,
@@ -348,11 +368,40 @@ extension Route {
         
         try update(id: route.id, name: route.name, description: route.routeDescription, waypoints: waypoints)
     }
+
+    static func removeWaypoint(from route: Route,
+                               markerId: String,
+                               using spatialRead: ReferenceReadContract) async throws {
+        guard let index = route.waypoints.firstIndex(where: { $0.markerId == markerId }) else {
+            return
+        }
+
+        var waypoints = route.waypoints
+        let waypointIndex = waypoints[index].index
+        waypoints.remove(at: index)
+
+        for i in waypoints.indices where waypoints[i].index > waypointIndex {
+            waypoints[i].index -= 1
+        }
+
+        try await update(id: route.id,
+                         name: route.name,
+                         description: route.routeDescription,
+                         waypoints: waypoints,
+                         using: spatialRead)
+    }
     
     static func removeWaypointFromAllRoutes(markerId: String) throws {
         try SpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
             try removeWaypoint(from: $0, markerId: markerId)
         })
+    }
+
+    static func removeWaypointFromAllRoutes(markerId: String,
+                                            using spatialRead: ReferenceReadContract) async throws {
+        for route in SpatialDataStoreRegistry.store.routesContaining(markerId: markerId) {
+            try await removeWaypoint(from: route, markerId: markerId, using: spatialRead)
+        }
     }
     
     static func updateWaypointInAllRoutes(markerId: String) throws {

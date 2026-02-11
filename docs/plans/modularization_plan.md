@@ -454,6 +454,10 @@ Phase 1 complete:
 - 2026-02-11: Updated reverse-route UI flow in `RouteDetailsView` (`startRouteReverse`) to call the async reverse-route contract-hydration path and keep existing error handling behavior unchanged.
 - 2026-02-11: Extended route storage dispatch coverage with async reverse-route hydration assertions (`RouteStorageProviderDispatchTests.testCreateReversedRouteAsyncHydratesFirstWaypointFromReadContract`).
 - 2026-02-11: Validation for async reverse-route hydration slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`46` tests, `0` failures).
+- 2026-02-11: Extended route mutation helpers with async first-waypoint hydration for marker-removal flows (`Route.update(..., using:)`, `Route.removeWaypoint(from:using:)`, `Route.removeWaypointFromAllRoutes(markerId:using:)`) so first-waypoint recomputation can use `SpatialReadContract` when async context is available.
+- 2026-02-11: Added async marker-removal adapter path (`RealmReferenceEntity.remove(id:using:)`) and migrated `RealmSpatialWriteContract.removeReferenceEntity(id:)` to route marker deletion through async contract-backed first-waypoint hydration.
+- 2026-02-11: Extended route storage dispatch coverage with default write-contract marker-removal hydration assertions (`RouteStorageProviderDispatchTests.testDefaultSpatialWriteRemoveReferenceEntityHydratesRemainingRouteWaypointFromAsyncReadContract`).
+- 2026-02-11: Validation for async marker-removal route-hydration slice: iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`47` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -582,7 +586,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue extending async first-waypoint contract hydration in remaining low-churn route mutation paths that still rely on sync first-waypoint resolution (for example waypoint reorder/update flows where async context can be introduced without broad caller churn).
+1. Continue extending async first-waypoint contract hydration in remaining route mutation paths that still rely on sync first-waypoint resolution (for example marker-location update flows that currently call `Route.updateWaypointInAllRoutes(markerId:)` through synchronous `RealmReferenceEntity.update` internals).
 2. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
 3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and narrowing signatures where behavior can stay unchanged (for example maintenance-oriented writes currently exposed on `SpatialWriteContract`).
 

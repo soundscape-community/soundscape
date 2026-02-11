@@ -808,6 +808,36 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         
         RealmReferenceEntity.notifyEntityRemoved(id)
     }
+
+    static func remove(id: String, using spatialRead: ReferenceReadContract) async throws {
+        if try ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID(id) {
+            RealmReferenceEntity.notifyEntityRemoved(id)
+            return
+        }
+
+        let database = try RealmHelper.getDatabaseRealm()
+
+        guard let entity = database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: id) else {
+            return
+        }
+
+        if entity.entityKey == nil {
+            ReferenceEntityRuntime.removeCalloutHistoryForMarkerID(entity.id)
+        }
+
+        try await Route.removeWaypointFromAllRoutes(markerId: id, using: spatialRead)
+
+        ReferenceEntityRuntime.removeReferenceFromCloud(entity)
+
+        try database.write {
+            database.delete(entity)
+        }
+
+        GDATelemetry.track("markers.removed")
+        GDATelemetry.helper?.markerCountRemoved += 1
+
+        RealmReferenceEntity.notifyEntityRemoved(id)
+    }
     
     /// Removes all reference entities. Because the destination is a marker, this also clears the destination.
     ///
