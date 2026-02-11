@@ -344,31 +344,6 @@ extension Route {
     
     // MARK: Add, Delete or Update Route Waypoints
     
-    static func removeWaypoint(from route: Route, markerId: String) throws {
-        // Currently, a marker cannot be added to a route more than once, so `firstIndex`
-        // will return the only instance of `markerId`
-        guard let index = route.waypoints.firstIndex(where: { $0.markerId == markerId }) else {
-            return
-        }
-        
-        // Create a copy of the route waypoints
-        var waypoints = route.waypoints
-        
-        // Save the waypoint index
-        let waypointIndex = waypoints[index].index
-        
-        waypoints.remove(at: index)
-        
-        // Update the remaining waypoint indices
-        for i in waypoints.indices {
-            if waypoints[i].index > waypointIndex {
-                waypoints[i].index -= 1
-            }
-        }
-        
-        try update(id: route.id, name: route.name, description: route.routeDescription, waypoints: waypoints)
-    }
-
     static func removeWaypoint(from route: Route,
                                markerId: String,
                                using spatialRead: ReferenceReadContract) async throws {
@@ -391,12 +366,6 @@ extension Route {
                          using: spatialRead)
     }
     
-    static func removeWaypointFromAllRoutes(markerId: String) throws {
-        try SpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
-            try removeWaypoint(from: $0, markerId: markerId)
-        })
-    }
-
     static func removeWaypointFromAllRoutes(markerId: String,
                                             using spatialRead: ReferenceReadContract) async throws {
         for route in SpatialDataStoreRegistry.store.routesContaining(markerId: markerId) {

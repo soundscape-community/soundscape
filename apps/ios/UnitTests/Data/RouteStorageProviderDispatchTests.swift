@@ -278,12 +278,13 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.referenceEntityByKeyCallKeys.first, markerID)
     }
 
-    func testRemoveWaypointFromAllRoutesUsesInjectedSpatialStoreLookup() throws {
+    func testRemoveWaypointFromAllRoutesUsesInjectedSpatialStoreLookup() async throws {
         let store = MockSpatialDataStore()
         store.routesContainingToReturn["marker-id"] = []
         SpatialDataStoreRegistry.configure(with: store)
+        let readMock = MockSpatialReadContract()
 
-        try Route.removeWaypointFromAllRoutes(markerId: "marker-id")
+        try await Route.removeWaypointFromAllRoutes(markerId: "marker-id", using: readMock)
 
         XCTAssertEqual(store.routesContainingCallKeys, ["marker-id"])
     }
