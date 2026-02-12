@@ -82,21 +82,21 @@ struct LocationDetail {
                     return false
                 }
                 
-                return lhsAt.coordinate == rhsAt.coordinate
-                
+                return lhsAt.coordinate.isNear(to: rhsAt.coordinate
+)
             case let .designData(lhsAt, lhsAddress):
                 guard case let .designData(rhsAt, rhsAddress) = rhs else {
                     return false
                 }
                 
-                return lhsAt.coordinate == rhsAt.coordinate && lhsAddress == rhsAddress
+                return lhsAt.coordinate.isNear(to: rhsAt.coordinate) && lhsAddress == rhsAddress
                 
             case let .screenshots(lhsPoi):
                 guard case let .screenshots(rhsPoi) = rhs else {
                     return false
                 }
                 
-                return lhsPoi.location.coordinate == rhsPoi.location.coordinate && lhsPoi.name == rhsPoi.name && lhsPoi.addressLine == rhsPoi.addressLine
+                return lhsPoi.location.coordinate.isNear(to: rhsPoi.location.coordinate) && lhsPoi.name == rhsPoi.name && lhsPoi.addressLine == rhsPoi.addressLine
             }
         }
         
