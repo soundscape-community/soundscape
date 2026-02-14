@@ -148,7 +148,7 @@ class GeoJsonGeometry {
         guard let parsedType = GeometryType(rawValue: typeString) else {
             return nil
         }
-        
+         
         type = parsedType
         
         // Save the coordinates JSON

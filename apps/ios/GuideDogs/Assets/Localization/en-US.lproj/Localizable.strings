@@ -3751,3 +3751,30 @@
 
 /* Donation link title */
 "donation.link" = "Go to Fundraising Page";
+
+// MARK: GPS Accuracy Announcement
+
+/* GPS accuracy announcement.
+   %@ is a localized distance string, e.g. "10 meters" or "30 feet". */
+"gps.accuracy.announce" = "GPS accuracy is about %@";
+
+/* GPS accuracy improved announcement.
+   %@ is a localized distance string, e.g. "8 meters" or "25 feet". */
+"gps.accuracy.improved" = "GPS accuracy has improved to about %@";
+
+/* Announce when GPS accuracy information is unavailable. */
+"gps.accuracy.unavailable" = "GPS accuracy is unavailable.";
+
+// MARK: GPS Accuracy Button Accessibility
+
+"settings.callouts.gps_announcements.title" = "GPS Accuracy";
+"settings.callouts.gps_announcements.info" = "Announces GPS accuracy when the app is launched";
+
+// MARK: Announcements: poor / ok / good (first announcement flow)
+
+/* %@ is a localized distance string for the current accuracy. */
+"gps.accuracy.good" = "GPS accuracy is good, about %@";
+"gps.accuracy.ok" = "GPS accuracy is ok, about %@";
+
+/* %@ is a localized distance string for the threshold, e.g. "20 meters" or "60 feet". */
+"gps.accuracy.poor" = "GPS accuracy is poor and above %@, move for better accuracy";

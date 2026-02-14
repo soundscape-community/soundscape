@@ -13,7 +13,7 @@ protocol CalloutSettingsCellViewDelegate: AnyObject {
 }
 
 internal enum CalloutSettingCellType {
-    case all, poi, mobility, beacon, shake
+    case all, poi, mobility, beacon, shake, gpsAnnouncements
 }
 
 class CalloutSettingsCellView: UITableViewCell {
@@ -44,6 +44,8 @@ class CalloutSettingsCellView: UITableViewCell {
                 return
             case .shake:
                 settingSwitch.isOn = SettingsContext.shared.shakeCalloutsEnabled
+            case .gpsAnnouncements:
+                settingSwitch.isOn = SettingsContext.shared.gpsAnnouncementsEnabled
             }
         }
     }
@@ -97,6 +99,9 @@ class CalloutSettingsCellView: UITableViewCell {
         case .shake:
             SettingsContext.shared.shakeCalloutsEnabled = isOn
             GDATelemetry.track("settings.shake_callouts", value: isOn.description)
+        case .gpsAnnouncements:
+            SettingsContext.shared.gpsAnnouncementsEnabled = isOn
+            GDATelemetry.track("settings.gps_announcements", value: isOn.description)
         }
     }
 }
