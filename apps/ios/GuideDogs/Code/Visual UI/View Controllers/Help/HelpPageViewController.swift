@@ -51,17 +51,6 @@ class HelpPageViewController: UIViewController {
     func loadContent(_ content: SectionedHelpPage) {
         title = content.title
         
-        if content.title.lowercased().contains("callout") {
-            let titleLabel = UILabel(frame: CGRect.zero)
-            titleLabel.text = content.title
-            titleLabel.accessibilityLabel = content.title.lowercased().replacingOccurrences(of: "callout", with: "call out")
-            titleLabel.textColor = UIColor.white
-            titleLabel.textAlignment = .natural
-            titleLabel.font = UIFont.systemFont(ofSize: 17.0, weight: .semibold)
-            
-            navigationItem.titleView = titleLabel
-        }
-        
         what = content.what
         when = content.when
         how = content.how
@@ -70,7 +59,6 @@ class HelpPageViewController: UIViewController {
     
     func showParagraphs(stackView: UIStackView, stub: UILabel, paragraphs: [String]) {
         stub.attributedText = paragraphs.first?.getFormattedString() ?? NSAttributedString(string: GDLocalizedString("text.coming_soon"))
-        stub.accessibilityLabel = paragraphs.first?.getVoiceOverLabel()
         
         guard paragraphs.count > 1 else {
             return
@@ -79,7 +67,6 @@ class HelpPageViewController: UIViewController {
         for paragraph in paragraphs.suffix(from: 1) {
             let label = UILabel(frame: CGRect.zero)
             label.attributedText = paragraph.getFormattedString()
-            label.accessibilityLabel = paragraph.getVoiceOverLabel()
             label.numberOfLines = 0
             
             stackView.addArrangedSubview(label)
@@ -120,10 +107,6 @@ extension String {
         return try? NSAttributedString(data: html.data, options: options, documentAttributes: nil)
     }
     
-    func getVoiceOverLabel() -> String? {
-        let lowercase = self.getFormattedString()?.string.replacingOccurrences(of: "callout", with: "call out")
-        return lowercase?.replacingOccurrences(of: "Callout", with: "Call out")
-    }
 }
 
 extension HelpPageViewController: LargeBannerContainerView {

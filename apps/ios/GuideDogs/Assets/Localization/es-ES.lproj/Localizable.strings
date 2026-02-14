@@ -1979,11 +1979,11 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Esto usa Localización pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa el botón siguiente para reactivar ahora.";
+"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Usa Localización pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa el botón siguiente para reactivar ahora.";
 
 
 /*  */
-"sleep.sleeping.message" = "Soundscape se encuentra actualmente en modo de suspensión. Esto evita que Soundscape use Localización o descargue datos y ahorra batería cuando no se usa Soundscape. Pulsa el botón siguiente para reactivar Soundscape.";
+"sleep.sleeping.message" = "Soundscape se encuentra actualmente en el modo de suspensión. Evita que Soundscape use Localización o descargue datos y ahorra batería cuando no se usa Soundscape. Pulsa el botón siguiente para reactivar Soundscape.";
 
 
 /*  */
@@ -3782,11 +3782,11 @@
 
 
 /*  */
-"help.text.routes.content.how.3" = "<b>Uso compartido de una ruta</b>:<br/> selecciona tu ruta en la página \"Marcadores y rutas\" y, a continuación, la opción \"Compartir ruta\" utilizando todas las opciones de uso compartido habituales disponibles para ti.";
+"help.text.routes.content.how.3" = "<b>Uso compartido de una ruta</b>:<br/> selecciona tu ruta en la página \"Marcadores y rutas\" y, a continuación, \"Compartir\". Ahora puedes utilizar cualquiera de las opciones de uso compartido habituales disponibles para ti.";
 
 
 /*  */
-"help.using_headsets.airpods.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar AirPods compatibles. Cuando se conecten, los sensores de los AirPods indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con los AirPods conectados, no es necesario sostener el teléfono para que Soundscape funcione bien.";
+"help.using_headsets.airpods.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar AirPods compatibles. Cuando se conecten, los sensores de los AirPods indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con los AirPods conectados, no es necesario sostener el teléfono para que la aplicación funcione bien.";
 
 
 /*  */
@@ -4210,7 +4210,7 @@
 
 
 /*  */
-"faq.road_names.answer" = "Para adaptarse a una variedad de formas de intersecciones, Soundscape describe los cruces como segmentos de carreteras que parten de un punto común. Soundscape usa audio espacial para indicar el nombre de la carretera que va a la izquierda, el nombre de la carretera que continúa de frente y el nombre de la carretera que va a la derecha, en ese orden. Si la descripción del cruce comienza con la carretera en la que te encuentras en lugar de una a la izquierda, la intersección es una T con la carretera en la que te encuentras continuando adelante y una carretera que cruza desde la derecha. De manera similar, si la descripción solo incluye una carretera a la izquierda y a la derecha, sabrás que la carretera en la que te encuentras termina en una T delante de ti. Este método de describir cruces también admite la situación de una carretera que cambia de nombre en un cruce.";
+"faq.road_names.answer" = "Para adaptarse a una variedad de formas de intersecciones, Soundscape describe los cruces como segmentos de carreteras que parten de un punto común. Soundscape usa audio espacial para indicar los nombres de las carreteras que van hacia la izquierda, hacia adelante y hacia la derecha, en ese orden. Si la descripción del cruce comienza con la carretera en la que te encuentras en lugar de una a la izquierda, la intersección forma una T lateral con la carretera en la que te encuentras continuando adelante y una carretera que cruza desde la derecha. De manera similar, si la descripción solo incluye una carretera a la izquierda y a la derecha, sabrás que la carretera en la que te encuentras termina en una T delante de ti. Este método de describir cruces también admite la situación de una carretera que cambia de nombre en un cruce.";
 
 
 /*  */
@@ -4234,7 +4234,7 @@
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Soundscape tiene una lista de tus avisoss recientes para que puedas volver a visitar los avisos que te hayas perdido. Para ello, pulsa en la barra de búsqueda de la pantalla principal de Soundscape. En la parte inferior de esta página, hay una sección de \"Avisos recientes\" donde aparecerá el aviso que te perdiste. También puedes agitar el teléfono para repetir el último aviso. En la sección \"Administrar avisos\" de la pantalla \"Ajustes\", activa la opción \"Repetir avisos\".";
+"faq.miss_a_callout.answer" = "Soundscape tiene una lista de tus avisoss recientes para que puedas volver a visitar los avisos que te hayas perdido. Para ello, pulsa en la barra de búsqueda de la pantalla principal. En la parte inferior de esta página, hay una sección de \"Avisos recientes\" donde aparecerá el aviso que te perdiste. También puedes agitar tu teléfono para repetir el último aviso. Para habilitar esta función, ve a la sección \"Administrar avisos\" de la pantalla \"Ajustes\" y activa \"Repetir avisos\".";
 
 
 /*  */
@@ -4302,7 +4302,7 @@
 
 
 /*  */
-"faq.mobile_data_use.answer" = "La cantidad de datos móviles que use dependerá de cómo utilices Soundscape. Hemos diseñado Soundscape para que consuma solo una pequeña cantidad de datos cuando estés fuera; por ejemplo, guardando puntos mientras caminas, a fin de que no tengas que volver a descargarlos cada vez que regreses a un sitio donde ya hayas estado. Para usar menos datos móviles, conéctate siempre que puedas a una red Wi-Fi, en especial cuando descargues la aplicación. Cuando no uses Soundscape, pulsa el botón \"Suspender\" para suspender Soundscape, o bien cierra totalmente la aplicación.";
+"faq.mobile_data_use.answer" = "La cantidad de datos móviles que use dependerá de cómo utilices Soundscape. Hemos diseñado la aplicación para que consuma solo una pequeña cantidad de datos cuando estés fuera; por ejemplo, guardando puntos mientras caminas, a fin de que no tengas que volver a descargarlos cada vez que regreses a un sitio donde ya hayas estado. Para usar menos datos móviles, conéctate siempre que puedas a una red Wi-Fi, en especial cuando descargues la aplicación. Cuando no uses Soundscape, pulsa el botón \"Suspender\" para poner Soundscape en suspensión, o bien cierra totalmente la aplicación.";
 
 
 /*  */
@@ -4310,7 +4310,7 @@
 
 
 /*  */
-"faq.difference_from_map_apps.answer" = "Soundscape ofrece una descripción de tu entorno mediante la exploración y la orientación. Usando el sonido espacial, Soundscape avisará de puntos de interés, parques, carreteras y cruces desde la dirección en la que se encuentran físicamente en tu entorno inmediato mientras caminas. Por ejemplo, si pasas por una tienda que se encuentre a tu derecha, oirás el nombre de la tienda sonando a tu derecha. Cuando te acerques a un cruce, oirás el sonido del nombre de cada carretera proveniente de la dirección a la que se dirige, comenzando por la izquierda, adelante y a la derecha.\n\nEn lugar de indicaciones paso a paso, a menudo proporcionadas por aplicaciones de mapas o GPS tradicionales, Soundscape reproducirá una señal de audio en la dirección de tu destino, lo que te permitirá llegar allí en tus condiciones con el mejor conocimiento posible de tu entorno y de la ubicación de tu destino. Soundscape se ha diseñado para ejecutarse en segundo plano, lo que te permite usar una aplicación de indicaciones paso a paso, y seguirá proporcionando todo el tiempo información del entorno mientras llegas a tu destino.";
+"faq.difference_from_map_apps.answer" = "Soundscape ofrece una descripción de tu entorno mediante la exploración y la orientación. Usando el sonido espacial, Soundscape avisará de puntos de interés, parques, carreteras y cruces desde la dirección en la que se encuentran físicamente en tu entorno inmediato mientras caminas. Por ejemplo, si pasas por una tienda que se encuentre a tu derecha, oirás el nombre de la tienda sonando a tu derecha. Cuando te acerques a un cruce, oirás el sonido del nombre de cada carretera proveniente de la dirección a la que se dirige, comenzando por la izquierda, adelante y a la derecha.\n\nEn lugar de indicaciones paso a paso, a menudo proporcionadas por otras aplicaciones de mapas, Soundscape reproducirá una señal de audio en la dirección de tu destino, lo que te permitirá llegar allí en tus condiciones con el mejor conocimiento posible de tu entorno y de la ubicación de tu destino. Soundscape se ha diseñado para ejecutarse en segundo plano, lo que te permite usar una aplicación de indicaciones paso a paso, y seguirá proporcionando todo el tiempo información del entorno mientras llegas a tu destino.";
 
 
 /*  */
@@ -4436,11 +4436,11 @@
 "help.using_headsets.bose_frames.when" = "Puedes usar Bose Frames en cualquier momento con Soundscape. El uso de Bose Frames te proporciona un audio de alta calidad que no dificulta la audición ambiental y te permite tener una experiencia mayor de manos libres.";
 "help.using_headsets.bose_frames.how.3" = "<b>Uso de los controles multimedia en los auriculares</b>:<br/> cuando los controles multimedia estén habilitados en la configuración de Soundscape, podrás usarlos en las Bose Frames para silenciar o reactivar la señal, avisar de tu ubicación o repetir el último aviso de llamada. Para obtener más información, ve la sección de ayuda \"Uso de controles multimedia\".";
 "help.using_headsets.bose_frames.how.1" = "<b>Conexión de un dispositivo</b>:<br/> ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
-"help.using_headsets.bose_frames.how.4" = "<b>Solución de problemas de los auriculares</b>:<br/> Si tienes problemas para conectar las Bose Frames a Soundscape, asegúrate de que son de uno de los modelos compatibles: Altos o Rondos. Si son uno de estos modelos, asegúrate de que las Frames aparecen en la aplicación de Bose Connect. Si se muestran y sigues teniendo problemas con la conexión, intenta desemparejar y volver a emparejar los auriculares a través del menú Bluetooth del teléfono.<br>La compatibilidad con las Bose Frames es nueva y nos encantaría escuchar tus comentarios. Puedes contactarnos eligiendo la opción \"Enviar comentarios\" en el menú.";
+"help.using_headsets.bose_frames.how.4" = "<b>Solución de problemas de los auriculares</b>:<br/> Si tienes problemas para conectar las Bose Frames a Soundscape, asegúrate de que son de uno de los modelos compatibles: Altos o Rondos. Si son uno de estos modelos, asegúrate de que las Frames aparecen en la aplicación de Bose Connect. Si se muestran y sigues teniendo problemas con la conexión, intenta desemparejar y volver a emparejar los auriculares a través del menú Bluetooth del teléfono.<br>Nos encantaría escuchar tus comentarios sobre la compatibilidad con las Bose Frames. Puedes contactarnos eligiendo la opción \"Enviar comentarios\" en el menú.";
 "help.using_headsets.bose_frames.how.2" = "<b>Calibración de los auriculares</b>:<br/> tus Bose Frames tendrán que calibrarse para saber con precisión hacia dónde estás mirando. cada vez que las conectes a Soundscape, se te informará que se las necesitan calibrar mediante un timbre de audio. Para calibrar las Bose Frames, sigue las instrucciones que aparecen en la pantalla. Cuando el timbre deje de sonar, las Bose Frames estarán calibradas. Soundscape seguirá ahora la dirección de tu cabeza para que no tengas que llevar el teléfono en la mano. Puedes repetir esta calibración, en cualquier momento, incluso si no está sonando el timbre, si crees que la precisión del audio espacial no es buena.";
-"help.using_headsets.bose_frames.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con las Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione bien.";
+"help.using_headsets.bose_frames.what" = "Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con las Bose Frames conectadas, no es necesario sostener el teléfono para que la aplicación funcione bien.";
 "whats_new.1_3_0.0.title" = "Compatibilidad con Bose Frames";
-"whats_new.1_3_0.0.description" = "Ahora Soundscape admite audio espacial con seguimiento dinámico de la cabeza al usar las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames indican a Soundscape la dirección en la que estás mirando. Esto ayuda a Soundscape a mejorar tu experiencia de audio, al hacerla más natural mientras te desplazas por el mundo. Cuando uses Soundscape con los Bose Frames conectadas, no es necesario sostener el teléfono para que Soundscape funcione bien. Para empezar, ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
+"whats_new.1_3_0.0.description" = "Ahora Soundscape admite seguimiento de cabeza con las versiones Alto o Rondo de Bose Frames. Cuando se conecten, tus Bose Frames indicarán a Soundscape hacia dónde estás mirando, lo que ayudará a Soundscape a mejorar tu experiencia de audio. Para conectar tus Bose Frames a Soundscape, ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape.";
 "whats_new.1_3_0.1.description" = "Si vives en las áreas de Austin o San Antonio en Texas y deseas ayudarnos a probar una función en la que estamos trabajando con NaviLens, comuníquate con nosotros a través del botón \"Enviar comentarios\" del menú principal.";
 "whats_new.1_3_0.1.title" = "Prueba en Texas";
 "beacon.action.navilens" = "Iniciar NaviLens";

@@ -107,14 +107,11 @@ struct MarkersAndRoutesList: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                ScrollView {
-                    if selectedList == .markers {
-                        MarkersList(sort: $sort)
-                    } else {
-                        RoutesList(sort: $sort)
-                    }
+                if selectedList == .markers {
+                    MarkersList(sort: $sort)
+                } else {
+                    RoutesList(sort: $sort)
                 }
-                .padding([.top], 1)
                 
                 HStack {
                     MarkerRouteTabButton(name: GDLocalizedString("markers.title"),

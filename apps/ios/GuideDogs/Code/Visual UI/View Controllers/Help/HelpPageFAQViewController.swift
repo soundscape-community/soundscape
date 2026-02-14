@@ -33,7 +33,6 @@ class HelpPageFAQViewController: UIViewController {
     
     func showParagraphs(stackView: UIStackView, stub: UILabel, paragraphs: [String]) {
         stub.attributedText = paragraphs.first?.getFormattedString() ?? NSAttributedString(string: GDLocalizedString("text.coming_soon"))
-        stub.accessibilityLabel = paragraphs.first?.getVoiceOverLabel()
         
         guard paragraphs.count > 1 else {
             return
@@ -42,7 +41,6 @@ class HelpPageFAQViewController: UIViewController {
         for paragraph in paragraphs.suffix(from: 1) {
             let label = UILabel(frame: CGRect.zero)
             label.attributedText = paragraph.getFormattedString()
-            label.accessibilityLabel = paragraph.getVoiceOverLabel()
             label.numberOfLines = 0
             
             stackView.addArrangedSubview(label)

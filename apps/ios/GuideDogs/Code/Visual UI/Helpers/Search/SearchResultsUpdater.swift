@@ -38,6 +38,7 @@ class SearchResultsUpdater: NSObject {
     private(set) var searchBarButtonClicked = false
     private var location: CLLocation?
     var context: Context = .partialSearchText
+    private var localSearch: MKLocalSearch?
     
     // MARK: Initialization
     
@@ -125,9 +126,9 @@ extension SearchResultsUpdater: UISearchResultsUpdating {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = searchText
         let coordinate = self.location!.coordinate
-        request.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 75000, longitudinalMeters: 75000)
-        let search = MKLocalSearch(request: request)
-        search.start(completionHandler: searchWithTextCallback)
+        request.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        localSearch = MKLocalSearch(request: request)
+        localSearch!.start(completionHandler: searchWithTextCallback)
     }
 }
 
@@ -170,12 +171,13 @@ extension SearchResultsUpdater: UISearchBarDelegate {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = searchText
         let coordinate = self.location!.coordinate
-        request.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 75000, longitudinalMeters: 75000)
-        let search = MKLocalSearch(request: request)
-        search.start(completionHandler: searchWithTextCallback)
+        request.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 5000, longitudinalMeters: 5000)
+        localSearch = MKLocalSearch(request: request)
+        localSearch!.start(completionHandler: searchWithTextCallback)
     }
     
     private func searchWithTextCallback(using response: MKLocalSearch.Response?, error: Error?) -> Void {
+        localSearch = nil // finished with the MKLocalSearch instance
         guard error == nil else {
             return
         }

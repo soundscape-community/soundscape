@@ -131,10 +131,6 @@ extension String {
         
         return output
     }
-
-    func accessibilityString() -> String {
-        return self.lowercased().replacingOccurrences(of: "callout", with: "call out")
-    }
     
     public func urlEncoded(plusForSpace: Bool = true) -> String? {
         let allowed = NSMutableCharacterSet.alphanumeric()

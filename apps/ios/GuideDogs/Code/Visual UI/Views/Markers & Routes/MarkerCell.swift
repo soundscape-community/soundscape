@@ -137,6 +137,7 @@ struct MarkerCell: View {
                 .padding([.trailing])
                 .accessibilityHidden(true)
         }
+        .contentShape(Rectangle())
         .background(Color.primaryBackground)
         .accessibilityElement(children: .combine)
     }

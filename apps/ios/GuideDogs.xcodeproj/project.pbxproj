@@ -290,7 +290,6 @@
 		28E60D461FE490D900EAB5C0 /* POICallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D451FE490D900EAB5C0 /* POICallout.swift */; };
 		28E60D551FE9816500EAB5C0 /* POI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D541FE9816500EAB5C0 /* POI.swift */; };
 		28E60D5A1FE99BBE00EAB5C0 /* RealmMigrationTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D591FE99BBE00EAB5C0 /* RealmMigrationTools.swift */; };
-		28EB441426B4A16700D5BBE4 /* DeleteModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EB441326B4A16700D5BBE4 /* DeleteModifier.swift */; };
 		28EB9C75237CBA3A0064E7EF /* ExperimentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EB9C74237CBA3A0064E7EF /* ExperimentConfiguration.swift */; };
 		28EB9C79237CC7D90064E7EF /* ExperimentServiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EB9C78237CC7D90064E7EF /* ExperimentServiceModel.swift */; };
 		28F0F9251F85A39D00B6A64F /* DestinationTutorialIntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F9241F85A39C00B6A64F /* DestinationTutorialIntroViewController.swift */; };
@@ -569,7 +568,6 @@
 		B9533FF924B4DB2400605B07 /* IntersectionFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9533FF824B4DB2400605B07 /* IntersectionFinder.swift */; };
 		B9533FFB24B4DCC100605B07 /* IntersectionSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9533FFA24B4DCC100605B07 /* IntersectionSearchResult.swift */; };
 		B954678A24EB2B02006866EF /* SecondaryRoadsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B954678924EB2B02006866EF /* SecondaryRoadsContext.swift */; };
-		B962DD792914E39A00CED854 /* GDAStateMachine.m in Sources */ = {isa = PBXBuildFile; fileRef = B962DD772914E39900CED854 /* GDAStateMachine.m */; };
 		B96755A3251D21AF00B366F6 /* TintedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96755A2251D21AF00B366F6 /* TintedImageView.swift */; };
 		B97140DA204835BC00B15BD0 /* Roundabout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97140D9204835BB00B15BD0 /* Roundabout.swift */; };
 		B97140DE2048896800B15BD0 /* RoadDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97140DD2048896800B15BD0 /* RoadDirection.swift */; };
@@ -1063,7 +1061,6 @@
 		28E60D451FE490D900EAB5C0 /* POICallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POICallout.swift; sourceTree = "<group>"; };
 		28E60D541FE9816500EAB5C0 /* POI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = POI.swift; path = Code/Data/Models/Protocols/POI.swift; sourceTree = "<group>"; };
 		28E60D591FE99BBE00EAB5C0 /* RealmMigrationTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RealmMigrationTools.swift; path = Code/Data/Models/Helpers/RealmMigrationTools.swift; sourceTree = "<group>"; };
-		28EB441326B4A16700D5BBE4 /* DeleteModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteModifier.swift; sourceTree = "<group>"; };
 		28EB9C74237CBA3A0064E7EF /* ExperimentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExperimentConfiguration.swift; path = "Code/App/Feature Flags/Experiment Flighting/ExperimentConfiguration.swift"; sourceTree = "<group>"; };
 		28EB9C78237CC7D90064E7EF /* ExperimentServiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExperimentServiceModel.swift; path = "Code/App/Feature Flags/Experiment Flighting/ExperimentServiceModel.swift"; sourceTree = "<group>"; };
 		28F0F9241F85A39C00B6A64F /* DestinationTutorialIntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DestinationTutorialIntroViewController.swift; path = "Code/Visual UI/View Controllers/Tutorials/Destination/DestinationTutorialIntroViewController.swift"; sourceTree = "<group>"; };
@@ -1136,6 +1133,8 @@
 		31F12C4122569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = StreetSuffixAbbreviations_fr.plist; path = Assets/PropertyLists/StreetSuffixAbbreviations_fr.plist; sourceTree = "<group>"; };
 		31F1370322B867B800FC1860 /* GeolocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeolocationManager.swift; path = "Code/Sensors/Geolocation/Geolocation Manager/GeolocationManager.swift"; sourceTree = "<group>"; };
 		31FE6C77233A7B760098D8C5 /* TelemetryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TelemetryHelper.swift; path = Code/App/Logging/TelemetryHelper.swift; sourceTree = "<group>"; };
+		3247AF49E74F47A3BC0C066E /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4BB00625C9264FD5ACF0ED5F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5684808F1CBC975E004B4227 /* Soundscape-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = "Soundscape-Bridging-Header.h"; path = "Code/App/Soundscape-Bridging-Header.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		568480901CBC9C94004B4227 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = HomeViewController.swift; path = "Code/Visual UI/View Controllers/Home/HomeViewController.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		568480921CBC9CEE004B4227 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = SettingsViewController.swift; path = "Code/Visual UI/View Controllers/Settings/SettingsViewController.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1367,9 +1366,6 @@
 		B954678924EB2B02006866EF /* SecondaryRoadsContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SecondaryRoadsContext.swift; path = "Code/Data/Spatial Data/SecondaryRoadsContext.swift"; sourceTree = "<group>"; };
 		B9546B211E54AB36002776D4 /* Soundscape.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Soundscape.entitlements; path = Assets/PropertyLists/Soundscape.entitlements; sourceTree = "<group>"; };
 		B958961125536F01005B1AE8 /* MixAudioSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MixAudioSettingCell.swift; path = "Code/Visual UI/Controls/Settings/MixAudioSettingCell.swift"; sourceTree = "<group>"; };
-		B962DD732914E39900CED854 /* GDAStateMachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDAStateMachine.h; sourceTree = "<group>"; };
-		B962DD762914E39900CED854 /* GDAStateMachineDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDAStateMachineDelegate.h; sourceTree = "<group>"; };
-		B962DD772914E39900CED854 /* GDAStateMachine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GDAStateMachine.m; sourceTree = "<group>"; };
 		B96755A2251D21AF00B366F6 /* TintedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TintedImageView.swift; path = "Code/Visual UI/Controls/TintedImageView.swift"; sourceTree = "<group>"; };
 		B97140D9204835BB00B15BD0 /* Roundabout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Roundabout.swift; path = Code/Data/Models/Helpers/Roundabout.swift; sourceTree = "<group>"; };
 		B97140DD2048896800B15BD0 /* RoadDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RoadDirection.swift; path = Code/Data/Models/Helpers/RoadDirection.swift; sourceTree = "<group>"; };
@@ -2031,7 +2027,6 @@
 		286DC6AC21E6B5F9001CD88A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				B962DD722914E39900CED854 /* GDAStateMachine */,
 				28F94F5D2485AE0A0010D2B3 /* BehaviorBase.swift */,
 				286DC6AA21E6857D001CD88A /* Events.swift */,
 				286DC6AD21E6B61B001CD88A /* Verbosity.swift */,
@@ -3216,7 +3211,6 @@
 				629F53E326CB28F400796B23 /* List */,
 				629F53BE26BDEDA200796B23 /* Text */,
 				624C96B62852983C001F84F8 /* Navigation */,
-				28EB441326B4A16700D5BBE4 /* DeleteModifier.swift */,
 				288E5FE1269FA78400F7D4CD /* GeometryPreferenceReader.swift */,
 				288E5FDF269504D500F7D4CD /* ConditionalAccessibilityAction.swift */,
 			);
@@ -3630,16 +3624,6 @@
 			);
 			name = "GPX Simulator";
 			path = "Code/Sensors/Geolocation/GPX Simulator";
-			sourceTree = "<group>";
-		};
-		B962DD722914E39900CED854 /* GDAStateMachine */ = {
-			isa = PBXGroup;
-			children = (
-				B962DD732914E39900CED854 /* GDAStateMachine.h */,
-				B962DD772914E39900CED854 /* GDAStateMachine.m */,
-				B962DD762914E39900CED854 /* GDAStateMachineDelegate.h */,
-			);
-			path = GDAStateMachine;
 			sourceTree = "<group>";
 		};
 		B998914920305A34000E2220 /* Motion */ = {
@@ -4580,6 +4564,7 @@
 				"nl-NL",
 				"pt-PT",
 				"fa-IR",
+				ru,
 			);
 			mainGroup = D3D7CFBF1B3D96460020B5E9;
 			packageReferences = (
@@ -5134,7 +5119,6 @@
 				C34333B0221E2C1800D9CECD /* TableViewHeaderFooterViewConfigurator.swift in Sources */,
 				C30EF62320894AD400BEA785 /* VoiceTableViewCell.swift in Sources */,
 				626789B026F540CF0007E566 /* RouteDetailLocalizedLabel.swift in Sources */,
-				28EB441426B4A16700D5BBE4 /* DeleteModifier.swift in Sources */,
 				622CAFA226AB815300F804D6 /* BeaconTitleContentView.swift in Sources */,
 				B97791511E8ED1B100498320 /* UINavigationBar+Extentions.swift in Sources */,
 				623E0103244767BB0081CA5B /* MarkerParameters.swift in Sources */,
@@ -5284,7 +5268,6 @@
 				6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */,
 				623E0104244767BB0081CA5B /* LocationParameters.swift in Sources */,
 				622AB2F6263767A8006BB729 /* MKMapViewDelegate+Extensions.swift in Sources */,
-				B962DD792914E39A00CED854 /* GDAStateMachine.m in Sources */,
 				6258B38A2469DB220051F60B /* UniversalLinkVersion.swift in Sources */,
 				628855462656F98B00EFFB91 /* Route+Realm.swift in Sources */,
 				62B3FE3225A8D5D300FCCA4B /* FeatureFlag.swift in Sources */,
@@ -5428,6 +5411,7 @@
 				62CFAC6628E3A7B300BE504D /* nl-NL */,
 				62CFAC6728E3A7BE00BE504D /* pt-PT */,
 				DCE09DD72E54AE7400B66BDF /* fa-IR */,
+				3247AF49E74F47A3BC0C066E /* ru */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -5452,6 +5436,7 @@
 				62CFAC6128E3A75200BE504D /* nl-NL */,
 				62CFAC6228E3A76D00BE504D /* pt-PT */,
 				DCE09DD62E54AC9500B66BDF /* fa-IR */,
+				4BB00625C9264FD5ACF0ED5F /* ru */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -5533,7 +5518,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/SoundscapeDF.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5555,7 +5540,7 @@
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5564,7 +5549,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.8.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DADHOC";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-adhoc";
@@ -5572,6 +5557,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "GuideDogs/Code/App/Soundscape-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -5822,7 +5810,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
@@ -5845,7 +5833,7 @@
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5854,7 +5842,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.8.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-debug";
@@ -5862,6 +5850,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "GuideDogs/Code/App/Soundscape-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -5882,7 +5873,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5903,7 +5894,7 @@
 				INFOPLIST_FILE = GuideDogs/Assets/PropertyLists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Soundscape;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5912,7 +5903,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.8.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = services.soundscape;
@@ -5920,6 +5911,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "GuideDogs/Code/App/Soundscape-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

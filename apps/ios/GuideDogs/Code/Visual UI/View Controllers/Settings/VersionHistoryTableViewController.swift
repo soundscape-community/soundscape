@@ -56,10 +56,7 @@ class VersionHistoryTableViewController: BaseTableViewController {
         let feature = features(for: indexPath.section)[indexPath.row]
         
         cell.textLabel?.text = feature.localizedTitle
-        cell.textLabel?.accessibilityLabel = feature.localizedTitle.accessibilityString()
-
         cell.detailTextLabel?.text = feature.localizedDescription
-        cell.detailTextLabel?.accessibilityLabel = feature.localizedAccessibilityDescription.accessibilityString()
 
         return cell
     }

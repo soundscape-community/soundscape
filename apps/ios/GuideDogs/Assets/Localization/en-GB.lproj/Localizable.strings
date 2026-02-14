@@ -3337,7 +3337,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the higher quality \"Enhanced\" voices, but you will need to download it first. You can download voices in the iOS Settings app by going to Accessibility > Read & Speak > Voices and tapping on a voice. (In IOS Versions before 26, \"Read & Speak\" is called \"Spoken Content\".) Within the Soundscape App, you can select the voice you want to use by tapping \"Settings\" on the main menu and then from \"General Settings\" selecting \"Voice\".";
+"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the higher quality \"Enhanced\" voices, but you will need to download it first. You can download voices in the iOS Settings app by going to Accessibility > Read & Speak > Voices and tapping on a voice. (In iOS Versions before 26, \"Read & Speak\" is called \"Spoken Content\".) Within the Soundscape App, you can select the voice you want to use by tapping \"Settings\" on the main menu and then from \"General Settings\" selecting \"Voice\".";
 
 
 /*  */
@@ -3793,7 +3793,7 @@
 
 
 /*  */
-"help.text.creating_markers.content.2" = "You will now have the option to customise this marker. You can change its name, as well as add an annotation that will be called out along with the marker to provide extra information. Then select the \"Done\" button to save your marker.";
+"help.text.creating_markers.content.2" = "You will now have the option to customise this marker. You can change its name and also add an annotation that will be called out along with the marker to provide extra information. Then select the \"Done\" button to save your marker.";
 
 
 /*  */
@@ -3825,11 +3825,11 @@
 
 
 /*  */
-"help.text.routes.content.how.3" = "<b>Sharing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select the option to \"Share\" using all of the usual share options available to you.";
+"help.text.routes.content.how.3" = "<b>Sharing a route</b>:<br/> Select your route on the \"Markers & Routes\" page and then select \"Share\". You can now use any of the usual share options available to you.";
 
 
 /*  */
-"help.using_headsets.airpods.what" = "Soundscape supports spatial audio with dynamic head tracking when using compatible AirPods. Once they're connected, sensors in the AirPods tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with AirPods connected, you do not need to hold your phone for Soundscape to work correctly.";
+"help.using_headsets.airpods.what" = "Soundscape supports spatial audio with dynamic head tracking when using compatible AirPods. Once they're connected, sensors in the AirPods tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with AirPods connected, you do not need to hold your phone for the app to work correctly.";
 
 
 /*  */
@@ -4253,7 +4253,7 @@
 
 
 /*  */
-"faq.road_names.answer" = "To accommodate a variety of intersection layouts, Soundscape describes intersections as segments of roadways that depart from a common point. Soundscape uses spatial audio to indicate the name of the road that goes to the left, the name of the road that continues straight ahead, and the name of the road that goes to the right, in that order. If the description of the intersection begins with the road you are on rather than one to the left, then the intersection is a T with the road you are on continuing ahead and a road intersecting from the right. Similarly, if the description only includes a road to the left and to the right, you will know that the road you are on ends at a T ahead of you. This method of describing intersections also supports the case when a road changes name at an intersection.";
+"faq.road_names.answer" = "To accommodate a variety of intersection layouts, Soundscape describes intersections as segments of roadways that depart from a common point. Soundscape uses spatial audio to indicate the names of the roads that go to the left, straight ahead, and to the right, in that order. If the description of the intersection begins with the road you are on rather than one to the left, then the intersection forms a sideways T with the road you are on continuing ahead and a road intersecting from the right. Similarly, if the description only includes a road to the left and to the right, you will know that the road you are on ends at a T ahead of you. This method of describing intersections also supports the case when a road changes name at an intersection.";
 
 
 /*  */
@@ -4277,7 +4277,7 @@
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Soundscape has a list of your recent callouts so that you can revisit callouts that you might have missed. To find this, tap on the search bar on the Soundscape home screen. At the bottom of this page, there is a section for \"Recent Callouts\" where the callout you missed will be listed. Alternatively, you can shake your phone to repeat the last callout. From the \"Manage Callouts\" section of the \"Settings\" screen, turn on \"Repeat Callouts\".";
+"faq.miss_a_callout.answer" = "Soundscape has a list of your recent callouts so that you can revisit callouts you might have missed. To find this, tap the search bar on the home screen. At the bottom of this page, there is a section for \"Recent Callouts\" where the callout you missed will be listed. Alternatively, you can shake your phone to repeat the last callout. To enable this, go to the \"Manage Callouts\" section of the \"Settings\" screen and then turn on \"Repeat Callouts\".";
 
 
 /*  */
@@ -4345,7 +4345,7 @@
 
 
 /*  */
-"faq.mobile_data_use.answer" = "The amount of mobile data used depends on how you use Soundscape. We have designed Soundscape to use only a small amount of data when you’re out and about by doing things like saving points as you walk around so you don’t need to download them again every time you go back to somewhere you’ve already been. To reduce the amount of mobile data you use, make sure you are connected to Wi-Fi whenever possible, particularly to download the app. When you are not using Soundscape, you should use the \"Sleep\" button to put Soundscape to sleep or force close the app.";
+"faq.mobile_data_use.answer" = "The amount of mobile data used depends on how you use Soundscape. We have designed the app to use only a small amount of data when you’re out and about by doing things like saving points as you walk around so you don’t need to redownload them every time you go back to somewhere you’ve been before. To reduce the amount of mobile data you use, make sure you are connected to Wi-Fi whenever possible, particularly to download the app. When you are not using Soundscape, you should use the \"Sleep\" button to put Soundscape to sleep or force close the app.";
 
 
 /*  */
@@ -4353,7 +4353,7 @@
 
 
 /*  */
-"faq.difference_from_map_apps.answer" = "Soundscape provides an ambient description of your surroundings in aid of exploration and way-finding. Using spatial audio, Soundscape will call out points of interest, parks, roads, and intersections from the direction they physically are in your immediate environment as you walk. For example, if you pass a shop on your right, you will hear the name of the shop sounding from your right. As you approach an intersection, you will hear each road name sounding from the direction it goes in, beginning to your left, ahead and to the right.\n\nInstead of turn-by-turn directions as often provided by other map applications, Soundscape will play an audible beacon in the direction of your destination, empowering you to make your way there on your terms using your increased awareness of your surroundings and the location of your destination. Soundscape is designed to run in the background, enabling you to use a turn-by-turn directions app, all the while continuing to provide environmental awareness as you make your way to your destination.";
+"faq.difference_from_map_apps.answer" = "Soundscape provides an ambient description of your surroundings in aid of exploration and wayfinding. Using spatial audio, Soundscape will call out points of interest, parks, roads, and intersections from the direction they physically are in your immediate environment as you walk. For example, if you pass a shop on your right, you will hear the name of the shop sounding from your right. As you approach an intersection, you will hear each road name sounding from the direction it goes in, beginning to your left, ahead and to the right.\n\nInstead of turn-by-turn directions as often provided by other map applications, Soundscape will play an audible beacon in the direction of your destination, empowering you to make your way there on your terms using your increased awareness of your surroundings and the location of your destination. Soundscape is designed to run in the background, enabling you to use a turn-by-turn directions app, all the while continuing to provide environmental awareness as you make your way to your destination.";
 
 
 /*  */
@@ -4478,10 +4478,10 @@
 "help.using_headsets.bose_frames.title" = "Using Bose Frames";
 "help.using_headsets.bose_frames.how.2" = "<b>Calibrating your Headphones</b>:<br/> Your Bose Frames will need to be calibrated to accurately know which way you are facing. Each time you connect them to Soundscape, you will be informed that calibration is needed by an audio chime. To calibrate your Bose Frames, follow the instructions provided on the screen. When the chime stops playing, Your Bose Frames are calibrated, and Soundscape will now track the direction of your head so you do not need to hold the phone in your hand. You can repeat this calibration at any time, even if the chime isn't playing, if you think the accuracy of your spatial audio is poor.";
 "help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
-"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>Support for the Bose Frames is new and we would love to hear your feedback. You can contact us by choosing the \"Send Feedback\" option in the menu.";
-"help.using_headsets.bose_frames.what" = "Soundscape supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. Once they're connected, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly.";
+"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br/>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>We would love to hear your feedback about the Bose Frames support. You can contact us by choosing the \"Send Feedback\" option in the menu.";
+"help.using_headsets.bose_frames.what" = "Soundscape supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. Once they're connected, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for the app to work correctly.";
 "whats_new.1_3_0.0.title" = "Bose Frames Support";
-"whats_new.1_3_0.0.description" = "Soundscape now supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. Once they're connected, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for Soundscape to work correctly. To get started, go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your Bose Frames and follow the instructions on screen. Note that you will need to pair your Bose Frames to your phone in the Bluetooth settings before connecting them in Soundscape.";
+"whats_new.1_3_0.0.description" = "Soundscape now supports head tracking with the Alto or Rondo versions of the Bose Frames. Once they're connected, your Bose Frames will tell Soundscape where you are facing, helping Soundscape to improve your audio experience. To connect your Bose Frames to Soundscape, go to the \"Head Tracking Headphones\" item in the Soundscape menu.";
 "whats_new.1_3_0.1.title" = "Testing in Texas";
 "whats_new.1_3_0.1.description" = "If you live in the Austin or San Antonio areas in Texas and would like to help us test a feature we are working on with NaviLens, please get in touch via the \"Send Feedback\" button from the main menu.";
 "beacon.action.navilens" = "Launch NaviLens";

@@ -28,23 +28,11 @@ class HelpPageGenericViewController: UIViewController {
     func loadContent(_ content: TextHelpPage) {
         title = content.title
         
-        if content.title.lowercased().contains("callout") {
-            let titleLabel = UILabel(frame: CGRect.zero)
-            titleLabel.text = content.title
-            titleLabel.accessibilityLabel = content.title.lowercased().replacingOccurrences(of: "callout", with: "call out")
-            titleLabel.textColor = UIColor.white
-            titleLabel.textAlignment = .natural
-            titleLabel.font = UIFont.systemFont(ofSize: 17.0, weight: .semibold)
-            
-            navigationItem.titleView = titleLabel
-        }
-        
         self.content = content
     }
     
     func showParagraphs(stackView: UIStackView, stub: UILabel, paragraphs: [String]) {
         stub.attributedText = paragraphs.first?.getFormattedString() ?? NSAttributedString(string: GDLocalizedString("text.coming_soon"))
-        stub.accessibilityLabel = paragraphs.first?.getVoiceOverLabel()
         
         guard paragraphs.count > 1 else {
             return
@@ -53,7 +41,6 @@ class HelpPageGenericViewController: UIViewController {
         for paragraph in paragraphs.suffix(from: 1) {
             let label = UILabel(frame: CGRect.zero)
             label.attributedText = paragraph.getFormattedString()
-            label.accessibilityLabel = paragraph.getVoiceOverLabel()
             label.numberOfLines = 0
             
             stackView.addArrangedSubview(label)

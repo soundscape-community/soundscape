@@ -376,7 +376,7 @@ extension AppContext {
     
     struct Links {
         static func privacyPolicyURL(for locale: Locale) -> URL {
-            return URL(string: "https://ialabs.ie/privacy-policy")!
+            return URL(string: "https://vially.io/privacy-policy")!
         }
         
         static func servicesAgreementURL(for locale: Locale) -> URL {
