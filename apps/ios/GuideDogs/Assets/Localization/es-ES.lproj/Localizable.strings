@@ -4461,4 +4461,3 @@
 "troubleshooting.user_data" = "Datos del usuario";
 "troubleshooting.user_data.button" = "Eliminar todos los marcadores y rutas";
 "troubleshooting.user_data.explanation" = "Borra todos los datos del mapa, incluidos los marcadores y rutas guardados. Esta acción no se puede deshacer.";
-

@@ -3754,35 +3754,27 @@
 
 // MARK: GPS Accuracy Announcement
 
-/* Announce GPS accuracy in feet (for en_US locale).
-   {NumberedPlaceholder="%d"} represents the accuracy value in feet. */
-"gps.accuracy.announce.feet" = "GPS accuracy is about %d feet";
+/* GPS accuracy announcement.
+   %@ is a localized distance string, e.g. "10 meters" or "30 feet". */
+"gps.accuracy.announce" = "GPS accuracy is about %@";
 
-/* Announce GPS accuracy in meters (for non-US locales).
-   {NumberedPlaceholder="%d"} represents the accuracy value in meters. */
-"gps.accuracy.announce.meters" = "GPS accuracy is about %d meters";
-
-/* Announce improved GPS accuracy in feet (for en_US locale).
-   {NumberedPlaceholder="%d"} represents the improved accuracy in feet. */
-"gps.accuracy.improved.feet" = "GPS accuracy has improved to about %d feet";
-
-/* Announce improved GPS accuracy in meters (for non-US locales).
-   {NumberedPlaceholder="%d"} represents the improved accuracy in meters. */
-"gps.accuracy.improved.meters" = "GPS accuracy has improved to about %d meters";
+/* GPS accuracy improved announcement.
+   %@ is a localized distance string, e.g. "8 meters" or "25 feet". */
+"gps.accuracy.improved" = "GPS accuracy has improved to about %@";
 
 /* Announce when GPS accuracy information is unavailable. */
 "gps.accuracy.unavailable" = "GPS accuracy is unavailable.";
+
+// MARK: GPS Accuracy Button Accessibility
+
 "settings.callouts.gps_announcements.title" = "GPS Accuracy";
 "settings.callouts.gps_announcements.info" = "Announces GPS accuracy when the app is launched";
 
-/* Announcements: poor / good (first announcement flow) */
-"gps.accuracy.good.feet" = "GPS accuracy is good, about %d feet";
-"gps.accuracy.poor.feet" = "GPS accuracy is poor and above 60 feet, move for better accuracy";
-"gps.accuracy.ok.feet" = "GPS accuracy is ok, about %d feet";
-"gps.accuracy.good.meters" = "GPS accuracy is good, about %d meters";
-"gps.accuracy.poor.meters" = "GPS accuracy is poor and above 20 meters, move for better accuracy";
-"gps.accuracy.ok.meters" = "GPS accuracy is ok, about %d meters";
+// MARK: Announcements: poor / ok / good (first announcement flow)
+
+/* %@ is a localized distance string for the current accuracy. */
 "gps.accuracy.good" = "GPS accuracy is good, about %@";
 "gps.accuracy.ok" = "GPS accuracy is ok, about %@";
-"gps.accuracy.poor" = "GPS accuracy is poor and above 60 %@, move for better accuracy";
-"gps.accuracy.improved" = "GPS accuracy has improved to about %@";
+
+/* %@ is a localized distance string for the threshold, e.g. "20 meters" or "60 feet". */
+"gps.accuracy.poor" = "GPS accuracy is poor and above %@, move for better accuracy";

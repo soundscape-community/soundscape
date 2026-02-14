@@ -4526,5 +4526,3 @@
 "gps.accuracy.good.meters" = "GPS accuracy is good, about %d metres";
 "gps.accuracy.poor.meters" = "GPS accuracy is poor and above 20 metres, move for better accuracy";
 "gps.accuracy.ok.meters" = "GPS accuracy is ok, about %d metres";
-
-
