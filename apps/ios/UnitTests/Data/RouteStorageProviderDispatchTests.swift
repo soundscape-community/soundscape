@@ -895,6 +895,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     }
 
     func testCreateReversedRouteAsyncHydratesFirstWaypointFromReadContract() async throws {
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
+
         let firstMarkerID = "reverse-async-first-\(UUID().uuidString)"
         let secondMarkerID = "reverse-async-second-\(UUID().uuidString)"
         _ = try createPersistedMarker(id: firstMarkerID,
