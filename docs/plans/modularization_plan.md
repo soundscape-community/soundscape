@@ -1,6 +1,6 @@
 # Modularization Plan
 
-Last updated: 2026-02-11
+Last updated: 2026-02-15
 
 ## Summary
 Modularize the iOS codebase incrementally to maximize platform-agnostic reuse for future multi-platform clients. Extract leaf modules first, enforce strict boundaries, and keep behavior changes out of structural moves.
@@ -491,6 +491,8 @@ Phase 1 complete:
 - 2026-02-11: Validation for cloud-sync write-mock contract cleanup slice: `bash apps/common/Scripts/check_forbidden_imports.sh` and `swift test --package-path apps/common` pass; iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`49` tests, `0` failures).
 - 2026-02-11: Unified `DataContractRegistry` default write wiring so `spatialWrite` and `spatialMaintenanceWrite` both reset/configure back to one shared default `RealmSpatialWriteContract` adapter instance.
 - 2026-02-11: Validation for default write-adapter unification slice: `bash apps/common/Scripts/check_forbidden_imports.sh` and `swift test --package-path apps/common` pass; iOS seam/boundary scripts and localization linter pass; `xcodebuild build-for-testing` passes; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`49` tests, `0` failures).
+- 2026-02-15: Continued narrowing legacy synchronous `RealmReferenceEntity` convenience write APIs by removing `RealmReferenceEntity.add(detail:telemetryContext:isTemporary:notify:)` and moving the detail-source upsert branching into `DefaultSpatialDataStore.addReferenceEntity(detail:telemetryContext:notify:)`, keeping route persistence writes scoped to infrastructure seams.
+- 2026-02-15: Validation for this sync-helper narrowing slice: `bash apps/common/Scripts/check_forbidden_imports.sh`, iOS seam/boundary scripts, and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `UnitTests/RouteStorageProviderDispatchTests`, `UnitTests/DataContractRegistryDispatchTests`, and `UnitTests/CloudSyncContractBridgeTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

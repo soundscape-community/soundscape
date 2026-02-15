@@ -499,26 +499,6 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         }
     }
     
-    static func add(detail: LocationDetail, telemetryContext: String?, isTemporary: Bool = false, notify: Bool = true) throws -> String {
-        if let id = detail.markerId, let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) {
-            try update(entity: marker, location: detail.location.coordinate, nickname: detail.nickname, address: detail.estimatedAddress, annotation: detail.annotation, context: telemetryContext, isTemp: isTemporary)
-            
-            return id
-        }
-        
-        switch detail.source {
-        case .coordinate(let at):
-            let location = GenericLocation(lat: at.coordinate.latitude, lon: at.coordinate.longitude)
-            return try add(location: location, nickname: detail.nickname, estimatedAddress: detail.estimatedAddress, annotation: detail.annotation, temporary: isTemporary, context: telemetryContext, notify: notify)
-        case .entity(let id):
-            return try add(entityKey: id, nickname: detail.nickname, estimatedAddress: detail.estimatedAddress, annotation: detail.annotation, temporary: isTemporary, context: telemetryContext, notify: notify)
-        case .designData:
-            throw ReferenceEntityError.cannotAddMarker
-        case .screenshots:
-            throw ReferenceEntityError.cannotAddMarker
-        }
-    }
-        
     /// Constructs and saves a reference point with the POI referred to by the supplied
     /// entity key. A nickname can optionally be set for the new reference entity. If the
     /// entityKey parameter corresponds to an Address entity, the estimatedAddress property
