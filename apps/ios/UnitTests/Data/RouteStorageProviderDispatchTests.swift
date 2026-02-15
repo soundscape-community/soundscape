@@ -999,6 +999,84 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [firstMarkerID])
     }
 
+    func testDefaultSpatialWriteImportReferenceEntityFromCloudHydratesFirstWaypointFromAsyncReadContract() async throws {
+        SpatialDataCache.removeAllProviders()
+        SpatialDataCache.register(provider: OSMPOISearchProvider())
+        SpatialDataCache.register(provider: AddressSearchProvider())
+        SpatialDataCache.register(provider: GenericLocationSearchProvider())
+        defer { SpatialDataCache.removeAllProviders() }
+
+        struct MarkerPayload: Encodable {
+            struct LocationPayload: Encodable {
+                struct CoordinatePayload: Encodable {
+                    let latitude: Double
+                    let longitude: Double
+                }
+
+                let name: String
+                let address: String?
+                let coordinate: CoordinatePayload
+                let entity: EntityParameters?
+            }
+
+            let id: String
+            let nickname: String?
+            let annotation: String?
+            let estimatedAddress: String?
+            let lastUpdatedDate: Date?
+            let location: LocationPayload
+        }
+
+        let firstMarkerID = "import-write-first-\(UUID().uuidString)"
+        let secondMarkerID = "import-write-second-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: firstMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 40.6205, baseLongitude: -115.3493))
+        _ = try createPersistedMarker(id: secondMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 40.6301, baseLongitude: -115.3402))
+        let route = try createPersistedRoute(name: "ImportWriteAsync-\(UUID().uuidString)",
+                                             markerIDs: [firstMarkerID, secondMarkerID])
+
+        let importedCoordinate = CLLocationCoordinate2D(latitude: 54.9876, longitude: -128.5432)
+        let importPayload = MarkerPayload(id: firstMarkerID,
+                                          nickname: "Imported Marker",
+                                          annotation: nil,
+                                          estimatedAddress: nil,
+                                          lastUpdatedDate: Date(),
+                                          location: MarkerPayload.LocationPayload(name: "Imported Marker",
+                                                                                 address: nil,
+                                                                                 coordinate: MarkerPayload.LocationPayload.CoordinatePayload(latitude: importedCoordinate.latitude,
+                                                                                                                                             longitude: importedCoordinate.longitude),
+                                                                                 entity: nil))
+        let markerData = try JSONEncoder().encode(importPayload)
+        let markerParameters = try JSONDecoder().decode(MarkerParameters.self, from: markerData)
+        let importedEntity = GenericLocation(lat: importedCoordinate.latitude,
+                                             lon: importedCoordinate.longitude,
+                                             name: "Imported Marker")
+
+        let asyncCoordinate = CLLocationCoordinate2D(latitude: 53.1234, longitude: -127.4567)
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[firstMarkerID] = ReferenceEntity(id: firstMarkerID,
+                                                                        entityKey: nil,
+                                                                        lastUpdatedDate: nil,
+                                                                        lastSelectedDate: nil,
+                                                                        isNew: false,
+                                                                        isTemp: false,
+                                                                        coordinate: asyncCoordinate.ssGeoCoordinate,
+                                                                        nickname: nil,
+                                                                        estimatedAddress: nil,
+                                                                        annotation: nil)
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        try await DataContractRegistry.spatialWrite.importReferenceEntityFromCloud(markerParameters: markerParameters,
+                                                                                    entity: importedEntity)
+
+        let updatedRoute = try XCTUnwrap(Route.object(forPrimaryKey: route.id))
+        XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, firstMarkerID)
+        XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertEqual(readMock.referenceEntityByIDCalls, [firstMarkerID])
+    }
+
     func testDefaultSpatialWriteCleanCorruptReferenceEntitiesHydratesRemainingRouteWaypointFromAsyncReadContract() async throws {
         let corruptMarkerID = "clean-corrupt-first-\(UUID().uuidString)"
         let remainingMarkerID = "clean-corrupt-second-\(UUID().uuidString)"

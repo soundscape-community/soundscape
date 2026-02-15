@@ -375,7 +375,11 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         self.init()
 
         self.id = id
-        self.entityKey = entity.key
+        if entity is GenericLocation {
+            self.entityKey = nil
+        } else {
+            self.entityKey = entity.key
+        }
         self.isNew = true
         self.isTemp = false
         
@@ -485,10 +489,14 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     
     // MARK: Static Methods
 
-    static func importFromCloud(markerParameters: MarkerParameters, entity: POI) throws {
+    static func importFromCloud(markerParameters: MarkerParameters,
+                                entity: POI,
+                                using spatialRead: ReferenceReadContract) async throws {
         guard let referenceEntity = RealmReferenceEntity(markerParameters: markerParameters, entity: entity) else {
             throw ReferenceEntityError.cannotAddMarker
         }
+
+        let markerID = referenceEntity.id
 
         try autoreleasepool {
             let database = try RealmHelper.getDatabaseRealm()
@@ -497,6 +505,8 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                 database.add(referenceEntity, update: .modified)
             }
         }
+
+        try await Route.updateWaypointInAllRoutes(markerId: markerID, using: spatialRead)
     }
     
     /// Constructs and saves a reference point with the POI referred to by the supplied

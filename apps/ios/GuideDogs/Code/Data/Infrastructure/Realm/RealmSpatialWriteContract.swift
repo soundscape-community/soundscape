@@ -22,7 +22,9 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
     }
 
     func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
-        try RealmReferenceEntity.importFromCloud(markerParameters: markerParameters, entity: entity)
+        try await RealmReferenceEntity.importFromCloud(markerParameters: markerParameters,
+                                                       entity: entity,
+                                                       using: DataContractRegistry.spatialRead)
     }
 
     func deleteRoute(id: String) async throws {
