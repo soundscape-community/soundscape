@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -1470,10 +1471,16 @@ class AppContext {
         
         // If the user killed the app during the headset test, remove the temporary beacon
         if spatialDataContext.destinationManager.destination?.nickname == "HeadsetTest" {
-            do {
-                try spatialDataContext.destinationManager.clearDestination()
-            } catch {
-                GDLogAppError("Tried to clear test beacon but couldn't...")
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    return
+                }
+
+                do {
+                    try await self.spatialDataContext.destinationManager.clearDestinationAsync(logContext: nil)
+                } catch {
+                    GDLogAppError("Tried to clear test beacon but couldn't...")
+                }
             }
         }
         

@@ -4,6 +4,7 @@
 //
 //  Created by Daniel W. Steinbrook on 2/25/25.
 //  Copyright © 2025 Soundscape community. All rights reserved.
+//  Copyright (c) Soundscape Community Contributers.
 //
 
 import SSGeo
@@ -27,7 +28,7 @@ func launchNaviLens(detail: LocationDetail) {
 }
 
 @MainActor
-func guideToNaviLens(detail: LocationDetail) throws {
+func guideToNaviLens(detail: LocationDetail) async throws {
     // Launch NaviLens if close enough, otherwise start beacon
     guard let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
         // Location is unknown
@@ -36,7 +37,7 @@ func guideToNaviLens(detail: LocationDetail) throws {
 
     // If our GPS is more precise than we are close, use a beacon
     if location.coordinate.ssGeoCoordinate.distance(to: detail.location.coordinate.ssGeoCoordinate) > location.horizontalAccuracy {
-        try LocationActionHandler.beacon(locationDetail: detail)
+        try await LocationActionHandler.beacon(locationDetail: detail)
     } else {
         launchNaviLens(detail: detail)
     }
@@ -46,9 +47,11 @@ func guideToNaviLens(detail: LocationDetail) throws {
 func safeGuideToNaviLens(poi: POI) {
     // Launch NaviLens if starting a beacon throws an error
     let detail = LocationDetail(entity: poi)
-    do {
-        try guideToNaviLens(detail: detail)
-    } catch {
-        launchNaviLens(detail: detail)
+    Task { @MainActor in
+        do {
+            try await guideToNaviLens(detail: detail)
+        } catch {
+            launchNaviLens(detail: detail)
+        }
     }
 }

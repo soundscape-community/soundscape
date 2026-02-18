@@ -64,12 +64,12 @@ struct LocationActionHandler {
         locationDetail.updateLastSelectedDate()
     }
     
-    static func beacon(locationDetail: LocationDetail) throws {
+    static func beacon(locationDetail: LocationDetail) async throws {
         do {
             switch locationDetail.source {
             case .entity(let id):
                 // Set a beacon on the given entity
-                try beacon(entityId: id)
+                try await beacon(entityId: id)
                 
             case .coordinate:
                 let location = locationDetail.location
@@ -77,13 +77,13 @@ struct LocationActionHandler {
                 let address = locationDetail.estimatedAddress
                 
                 // Set a beacon on the given coordinate
-                try beacon(location: location, name: name, address: address)
+                try await beacon(location: location, name: name, address: address)
                 
             case .designData:
                 break
                 
             case .screenshots(let poi):
-                try beacon(location: poi.location, name: poi.name, address: poi.addressLine)
+                try await beacon(location: poi.location, name: poi.name, address: poi.addressLine)
             }
         } catch {
             throw LocationActionError.failedToSetBeacon
@@ -93,23 +93,31 @@ struct LocationActionHandler {
         locationDetail.updateLastSelectedDate()
     }
     
-    static private func beacon(entityId: String) throws {
+    static private func beacon(entityId: String) async throws {
         guard let manager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
             throw LocationActionError.failedToSetBeacon
         }
         let userLocation = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
-        try manager.setDestination(entityKey: entityId, enableAudio: true, userLocation: userLocation, estimatedAddress: nil, logContext: "location_action")
+        _ = try await manager.setDestinationAsync(entityKey: entityId,
+                                                  enableAudio: true,
+                                                  userLocation: userLocation,
+                                                  estimatedAddress: nil,
+                                                  logContext: "location_action")
     }
     
-    static private func beacon(location: CLLocation, name: String, address: String?) throws {
+    static private func beacon(location: CLLocation, name: String, address: String?) async throws {
         guard let manager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
             throw LocationActionError.failedToSetBeacon
         }
         let userLocation = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         
         let gLocation = GenericLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude, name: name)
-        try manager.setDestination(location: gLocation, address: address, enableAudio: true, userLocation: userLocation, logContext: "location_action")
+        _ = try await manager.setDestinationAsync(location: gLocation,
+                                                  address: address,
+                                                  enableAudio: true,
+                                                  userLocation: userLocation,
+                                                  logContext: "location_action")
     }
     
     static func preview(locationDetail: LocationDetail, completion: @escaping PreviewCompletion) -> Progress? {

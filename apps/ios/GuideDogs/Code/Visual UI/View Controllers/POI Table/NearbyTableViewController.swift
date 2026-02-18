@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -322,8 +323,22 @@ extension NearbyTableViewController: LocationAccessibilityActionDelegate {
                 case .beacon:
                     // Set a beacon on the given location
                     // and segue to the home view
-                    try LocationActionHandler.beacon(locationDetail: detail)
-                    self.navigationController?.popToRootViewController(animated: true)
+                    Task { @MainActor [weak self] in
+                        guard let self else {
+                            return
+                        }
+
+                        do {
+                            try await LocationActionHandler.beacon(locationDetail: detail)
+                            self.navigationController?.popToRootViewController(animated: true)
+                        } catch let error as LocationActionError {
+                            let alert = LocationActionAlert.alert(for: error)
+                            self.present(alert, animated: true, completion: nil)
+                        } catch {
+                            let alert = LocationActionAlert.alert(for: error)
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                    }
                 case .preview:
                     if UIRuntimeProviderRegistry.providers.uiIsStreetPreviewing() {
                         let alert = LocationActionAlert.restartPreview { [weak self] (_) in
@@ -358,8 +373,22 @@ extension NearbyTableViewController: LocationAccessibilityActionDelegate {
                 case .navilens:
                     // Set a beacon on the given location
                     // and segue to the home view
-                    try guideToNaviLens(detail: detail)
-                    self.navigationController?.popToRootViewController(animated: true)
+                    Task { @MainActor [weak self] in
+                        guard let self else {
+                            return
+                        }
+
+                        do {
+                            try await guideToNaviLens(detail: detail)
+                            self.navigationController?.popToRootViewController(animated: true)
+                        } catch let error as LocationActionError {
+                            let alert = LocationActionAlert.alert(for: error)
+                            self.present(alert, animated: true, completion: nil)
+                        } catch {
+                            let alert = LocationActionAlert.alert(for: error)
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                    }
                 }
                 
             } catch let error as LocationActionError {
