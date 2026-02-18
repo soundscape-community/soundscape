@@ -170,8 +170,8 @@ enum ReferenceEntityRuntime {
         try DataRuntimeProviderRegistry.providers.referenceSetDestinationTemporaryIfMatchingID(id)
     }
 
-    static func clearDestinationForCacheReset() throws {
-        try DataRuntimeProviderRegistry.providers.referenceClearDestinationForCacheReset()
+    static func clearDestinationForCacheReset() async throws {
+        try await DataRuntimeProviderRegistry.providers.referenceClearDestinationForCacheReset()
     }
 
     static func removeCalloutHistoryForMarkerID(_ markerID: String) {

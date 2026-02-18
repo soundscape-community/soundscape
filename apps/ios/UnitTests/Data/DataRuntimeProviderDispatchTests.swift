@@ -3,6 +3,7 @@
 //  UnitTests
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -106,7 +107,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             return referenceSetDestinationResult
         }
 
-        func referenceClearDestinationForCacheReset() throws {
+        func referenceClearDestinationForCacheReset() async throws {
             if let referenceClearError {
                 throw referenceClearError
             }
@@ -196,7 +197,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.routeRemoved.count, 1)
     }
 
-    func testReferenceEntityRuntimeDispatchesAndPropagatesErrors() {
+    func testReferenceEntityRuntimeDispatchesAndPropagatesErrors() async {
         let provider = MockDataRuntimeProviders()
         let location = CLLocation(latitude: 47.61, longitude: -122.33)
         provider.referenceLocation = location
@@ -224,7 +225,12 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertThrowsError(try ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID("destination-2"))
 
         provider.referenceClearError = MockError.expected
-        XCTAssertThrowsError(try ReferenceEntityRuntime.clearDestinationForCacheReset())
+        do {
+            try await ReferenceEntityRuntime.clearDestinationForCacheReset()
+            XCTFail("Expected clearDestinationForCacheReset to throw")
+        } catch {
+            // expected
+        }
     }
 
     func testSpatialDataEntityAndDestinationRuntimeDispatch() {

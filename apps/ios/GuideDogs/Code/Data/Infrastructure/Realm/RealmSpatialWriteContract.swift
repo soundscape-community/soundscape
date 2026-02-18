@@ -81,7 +81,7 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
 
     func removeAllReferenceEntities() async throws {
         // Clear the destination before deleting markers to preserve existing cache-reset behavior.
-        try ReferenceEntityRuntime.clearDestinationForCacheReset()
+        try await ReferenceEntityRuntime.clearDestinationForCacheReset()
 
         let database = try RealmHelper.getDatabaseRealm()
 

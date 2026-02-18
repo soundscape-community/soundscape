@@ -528,6 +528,10 @@ Phase 1 complete:
 - 2026-02-18: Preserved existing navigation and alert behavior for beacon/navilens actions by executing async destination operations in `@MainActor` tasks at the current action points, keeping post-success pop/dismiss behavior and error alert presentation unchanged.
 - 2026-02-18: Updated app startup headset-test cleanup in `AppContext.start(...)` to use `clearDestinationAsync(...)` so that callsite no longer depends on synchronous destination clearing.
 - 2026-02-18: Validation for location-action async callsite slice: `bash apps/common/Scripts/check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`), and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd12`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, `DestinationManagerTest`, and `LocationActionHandlerTests` pass.
+- 2026-02-18: Completed remaining helper/app destination async callsite migration by moving `BeaconDemoHelper` destination set/clear/restore paths to async destination APIs (`setDestinationAsync(...)`, `clearDestinationAsync(...)`) while keeping existing helper method signatures stable for current callers.
+- 2026-02-18: Migrated cache-reset runtime provider seam to async by changing `ReferenceEntityRuntimeProviding.referenceClearDestinationForCacheReset` and downstream runtime usage (`ReferenceEntityRuntime.clearDestinationForCacheReset`, `RealmSpatialWriteContract.removeAllReferenceEntities`) to `async throws`, preserving marker-cache reset behavior while removing synchronous destination clear dependency.
+- 2026-02-18: Updated runtime-provider dispatch coverage for the async cache-reset seam (`DataRuntimeProviderDispatchTests`) to validate error propagation through `await` calls.
+- 2026-02-18: Validation for helper/cache-reset destination async slice: `bash apps/common/Scripts/check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`), and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd13`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, `DestinationManagerTest`, `LocationActionHandlerTests`, and `DataRuntimeProviderDispatchTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -656,10 +660,9 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue migrating remaining destination set/clear callsites to async destination surfaces (`setDestinationAsync(...)`, `clearDestinationAsync(...)`) in helper/app flows (`BeaconDemoHelper` and cache-reset/runtime provider paths in `AppContext`) where task-based sequencing can preserve existing callout/audio ordering.
-2. Once async callsite coverage is broad enough, deprecate destination-only synchronous temporary-marker APIs on `DestinationEntityStore` and narrow sync usage to compatibility shims only.
-3. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
-4. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
+1. Deprecate destination-only synchronous temporary-marker APIs on `DestinationEntityStore` and narrow sync usage to compatibility shims only now that destination set/clear callsites are async-migrated across behavior, tutorial, helper, and app runtime paths.
+2. For each deprecation/removal slice, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
+3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
 
 ## Session Handoff (2026-02-10)
 - Latest landed commits for this slice sequence:

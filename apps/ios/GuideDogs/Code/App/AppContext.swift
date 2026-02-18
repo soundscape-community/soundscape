@@ -49,7 +49,7 @@ protocol ReferenceEntityRuntimeProviding {
     func referenceRemoveFromCloud(_ entity: RealmReferenceEntity)
     func referenceProcessEvent(_ event: Event)
     func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool
-    func referenceClearDestinationForCacheReset() throws
+    func referenceClearDestinationForCacheReset() async throws
     func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String)
 }
 
@@ -169,7 +169,7 @@ private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
         return false
     }
 
-    func referenceClearDestinationForCacheReset() throws {
+    func referenceClearDestinationForCacheReset() async throws {
         debugAssertUnconfigured(#function)
     }
 
@@ -308,8 +308,8 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
         return true
     }
 
-    func referenceClearDestinationForCacheReset() throws {
-        try context.spatialDataContext.destinationManager.clearDestination(logContext: "settings.clear_cache")
+    func referenceClearDestinationForCacheReset() async throws {
+        try await context.spatialDataContext.destinationManager.clearDestinationAsync(logContext: "settings.clear_cache")
     }
 
     func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {

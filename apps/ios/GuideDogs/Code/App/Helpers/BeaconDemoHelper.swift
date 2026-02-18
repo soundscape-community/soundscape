@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -93,12 +94,19 @@ class BeaconDemoHelper {
             if styleChanged, let beaconLocation = currentBeaconLocation {
                 // If the beacon is currently on and the style changed, toggle it off and then back on so that the change in beacon takes place.
                 AppContext.shared.eventProcessor.hush(playSound: false)
-                
-                _ = try? beaconManager.setDestination(location: beaconLocation,
-                                                      address: nil,
-                                                      enableAudio: true,
-                                                      userLocation: userLocation,
-                                                      logContext: logContext)
+
+                Task { @MainActor [weak self] in
+                    guard let self else {
+                        return
+                    }
+
+                    await self.setDestinationAsync(beaconManager: beaconManager,
+                                                   location: beaconLocation,
+                                                   address: nil,
+                                                   enableAudio: true,
+                                                   userLocation: self.userLocation,
+                                                   logContext: logContext)
+                }
             }
             
             if shouldTimeOut {
@@ -125,12 +133,19 @@ class BeaconDemoHelper {
         }
         
         shouldRestoreState = true
-        
-        _ = try? beaconManager.setDestination(location: currentBeaconLocation,
-                                              address: nil,
-                                              enableAudio: true,
-                                              userLocation: userLocation,
-                                              logContext: logContext)
+
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            await self.setDestinationAsync(beaconManager: beaconManager,
+                                           location: currentBeaconLocation,
+                                           address: nil,
+                                           enableAudio: true,
+                                           userLocation: self.userLocation,
+                                           logContext: logContext)
+        }
         
         if shouldTimeOut {
             beaconTimer = Timer.publish(every: 8.0, on: RunLoop.main, in: .common)
@@ -173,32 +188,66 @@ class BeaconDemoHelper {
         AppContext.shared.eventProcessor.hush(playSound: false)
         
         let beaconManager = AppContext.shared.spatialDataContext.destinationManager
-        try? beaconManager.clearDestination(logContext: logContext)
-        
-        guard let originalBeacon = systemState.originalBeacon else {
-            return
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            try? await beaconManager.clearDestinationAsync(logContext: logContext)
+
+            guard let originalBeacon = systemState.originalBeacon else {
+                return
+            }
+
+            let user = AppContext.shared.geolocationManager.location
+            await self.restoreOriginalBeacon(originalBeacon,
+                                             beaconManager: beaconManager,
+                                             systemState: systemState,
+                                             user: user,
+                                             logContext: logContext)
         }
-        
-        let user = AppContext.shared.geolocationManager.location
-        
+    }
+
+    private func setDestinationAsync(beaconManager: DestinationManagerProtocol,
+                                     location: CLLocation,
+                                     address: String?,
+                                     enableAudio: Bool,
+                                     userLocation: CLLocation?,
+                                     logContext: String) async {
+        let genericLocation = GenericLocation(lat: location.coordinate.latitude,
+                                              lon: location.coordinate.longitude)
+        _ = try? await beaconManager.setDestinationAsync(location: genericLocation,
+                                                         address: address,
+                                                         enableAudio: enableAudio,
+                                                         userLocation: userLocation,
+                                                         logContext: logContext)
+    }
+
+    private func restoreOriginalBeacon(_ originalBeacon: BeaconType,
+                                       beaconManager: DestinationManagerProtocol,
+                                       systemState: AudioSystemState,
+                                       user: CLLocation?,
+                                       logContext: String) async {
+        let restoreContext = logContext + ".restoring_original"
+
         switch originalBeacon {
         case .location(loc: let loc, address: let address):
-            _ = try? beaconManager.setDestination(location: loc,
-                                                  address: address,
-                                                  enableAudio: systemState.wasBeaconEnabled,
-                                                  userLocation: user,
-                                                  logContext: logContext + ".restoring_original")
+            _ = try? await beaconManager.setDestinationAsync(location: loc,
+                                                             address: address,
+                                                             enableAudio: systemState.wasBeaconEnabled,
+                                                             userLocation: user,
+                                                             logContext: restoreContext)
         case .entity(id: let id, address: let address):
-            _ = try? beaconManager.setDestination(entityKey: id,
-                                                  enableAudio: systemState.wasBeaconEnabled,
-                                                  userLocation: user,
-                                                  estimatedAddress: address,
-                                                  logContext: logContext + ".restoring_original")
+            _ = try? await beaconManager.setDestinationAsync(entityKey: id,
+                                                             enableAudio: systemState.wasBeaconEnabled,
+                                                             userLocation: user,
+                                                             estimatedAddress: address,
+                                                             logContext: restoreContext)
         case .ref(id: let id):
-            _ = try? beaconManager.setDestination(referenceID: id,
-                                                  enableAudio: systemState.wasBeaconEnabled,
-                                                  userLocation: user,
-                                                  logContext: logContext + ".restoring_original")
+            try? await beaconManager.setDestinationAsync(referenceID: id,
+                                                         enableAudio: systemState.wasBeaconEnabled,
+                                                         userLocation: user,
+                                                         logContext: restoreContext)
         }
     }
 }
