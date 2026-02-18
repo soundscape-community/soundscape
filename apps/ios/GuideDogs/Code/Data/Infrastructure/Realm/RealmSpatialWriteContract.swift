@@ -73,7 +73,28 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
     }
 
     func removeAllReferenceEntities() async throws {
-        try RealmReferenceEntity.removeAll()
+        // Clear the destination before deleting markers to preserve existing cache-reset behavior.
+        try ReferenceEntityRuntime.clearDestinationForCacheReset()
+
+        let database = try RealmHelper.getDatabaseRealm()
+
+        // Route cleanup is handled separately by callers that invoke `removeAllRoutes`.
+        for entity in database.objects(RealmReferenceEntity.self) {
+            let id = entity.id
+
+            ReferenceEntityRuntime.removeReferenceFromCloud(entity)
+
+            try database.write {
+                database.delete(entity)
+
+                GDATelemetry.track("markers.removed")
+                GDATelemetry.helper?.markerCountRemoved += 1
+
+                NotificationCenter.default.post(name: .markerRemoved,
+                                                object: RealmReferenceEntity.self,
+                                                userInfo: [ReferenceEntity.Keys.entityId: id])
+            }
+        }
     }
 
     func removeAllRoutes() async throws {

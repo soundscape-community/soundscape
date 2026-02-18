@@ -1,6 +1,6 @@
 # Modularization Plan
 
-Last updated: 2026-02-15
+Last updated: 2026-02-18
 
 ## Summary
 Modularize the iOS codebase incrementally to maximize platform-agnostic reuse for future multi-platform clients. Extract leaf modules first, enforce strict boundaries, and keep behavior changes out of structural moves.
@@ -497,6 +497,8 @@ Phase 1 complete:
 - 2026-02-15: Hardened cloud-import marker mapping in infrastructure by preserving generic-location imports as marker-only entities (`RealmReferenceEntity.entityKey = nil` for `GenericLocation`) to avoid forcing cache-key lookups for non-POI marker imports.
 - 2026-02-15: Added focused route-hydration regression coverage for marker cloud import (`RouteStorageProviderDispatchTests.testDefaultSpatialWriteImportReferenceEntityFromCloudHydratesFirstWaypointFromAsyncReadContract`) and kept adapter wiring on async contracts (`RealmSpatialWriteContract.importReferenceEntityFromCloud` now awaits the async helper with `DataContractRegistry.spatialRead`).
 - 2026-02-15: Validation for async marker-cloud-import hydration slice: `bash apps/common/Scripts/check_forbidden_imports.sh`, `bash Scripts/ci/check_spatial_data_cache_seam.sh`, `bash Scripts/ci/check_realm_infrastructure_boundary.sh`, `bash Scripts/ci/check_data_contract_boundaries.sh`, `bash Scripts/ci/check_data_contract_infra_type_allowlist.sh`, `bash Scripts/ci/check_route_mutation_seam.sh`, and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using `/tmp/soundscape-modularization-dd2`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass (`50` tests, `0` failures).
+- 2026-02-18: Continued narrowing legacy synchronous `RealmReferenceEntity` write helpers by removing `RealmReferenceEntity.removeAll()` and moving marker bulk-delete behavior into the async maintenance adapter (`RealmSpatialWriteContract.removeAllReferenceEntities()`), keeping destination-clear/cloud-removal/telemetry/notification behavior scoped to the contract-owned infrastructure path.
+- 2026-02-18: Validation for this maintenance-helper narrowing slice: `bash apps/common/Scripts/check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`), and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd3`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -625,7 +627,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue narrowing legacy `RealmReferenceEntity` synchronous convenience APIs by auditing remaining non-contract write helpers and migrating/removing sync-only variants where async contract dispatch already exists.
+1. Continue narrowing legacy `RealmReferenceEntity` synchronous convenience APIs by auditing remaining non-contract write helpers (`add(entityKey:...)`, `add(location:...)`, `removeAllTemporary()`) and migrating/removing sync-only variants where async contract dispatch already exists.
 2. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
 3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
 

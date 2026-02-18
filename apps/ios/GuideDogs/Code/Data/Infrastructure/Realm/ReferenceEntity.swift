@@ -830,35 +830,6 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         RealmReferenceEntity.notifyEntityRemoved(id)
     }
     
-    /// Removes all reference entities. Because the destination is a marker, this also clears the destination.
-    ///
-    /// - Throws: If the database/cache cannot be accessed or any reference entity cannot be removed
-    static func removeAll() throws {
-        // Remove the destination
-        try ReferenceEntityRuntime.clearDestinationForCacheReset()
-        
-        let database = try RealmHelper.getDatabaseRealm()
-        
-        // There is no code to remove corresponding route waypoints
-        // because `RealmReferenceEntity.removeAll` is only called from `StatusTableViewController`
-        // which separately calls `Route.deleteAll`
-        
-        for entity in database.objects(RealmReferenceEntity.self) {
-            let id = entity.id
-            
-            ReferenceEntityRuntime.removeReferenceFromCloud(entity)
-            
-            try database.write {
-                database.delete(entity)
-                
-                GDATelemetry.track("markers.removed")
-                GDATelemetry.helper?.markerCountRemoved += 1
-                
-                RealmReferenceEntity.notifyEntityRemoved(id)
-            }
-        }
-    }
-    
     /// Removes all temporary reference entities.
     ///
     /// - Throws: If the database/cache cannot be accessed or any reference entity cannot be removed
