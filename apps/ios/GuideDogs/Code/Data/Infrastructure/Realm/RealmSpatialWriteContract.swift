@@ -41,20 +41,22 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
     }
 
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
-        try RealmReferenceEntity.add(entityKey: entityKey,
-                                     nickname: nickname,
-                                     estimatedAddress: estimatedAddress,
-                                     annotation: annotation,
-                                     context: nil)
+        try await RealmReferenceEntity.add(entityKey: entityKey,
+                                           nickname: nickname,
+                                           estimatedAddress: estimatedAddress,
+                                           annotation: annotation,
+                                           context: nil,
+                                           using: DataContractRegistry.spatialRead)
     }
 
     func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String {
-        try RealmReferenceEntity.add(location: location,
-                                     nickname: nickname,
-                                     estimatedAddress: estimatedAddress,
-                                     annotation: annotation,
-                                     temporary: false,
-                                     context: nil)
+        try await RealmReferenceEntity.add(location: location,
+                                           nickname: nickname,
+                                           estimatedAddress: estimatedAddress,
+                                           annotation: annotation,
+                                           temporary: false,
+                                           context: nil,
+                                           using: DataContractRegistry.spatialRead)
     }
 
     func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {

@@ -146,7 +146,10 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationUsesInjectedEntityStoreLookup() throws {
-        let testID = try RealmReferenceEntity.add(location: GenericLocation(lat: 42.7290570, lon: -73.6726370, name: "Test"), estimatedAddress: nil, temporary: true)
+        let testID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
+                                                                                                              lon: -73.6726370,
+                                                                                                              name: "Test"),
+                                                                                    estimatedAddress: nil)
         let store = MockDestinationEntityStore()
         var lookedUpIDs: [String] = []
         var removeAllTemporaryCallCount = 0
@@ -185,11 +188,10 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationGenericLocationUsesInjectedEntityIDLookup() throws {
-        let existingID = try RealmReferenceEntity.add(location: GenericLocation(lat: 42.7290570,
-                                                                                lon: -73.6726370,
-                                                                                name: "Test Generic"),
-                                                      estimatedAddress: nil,
-                                                      temporary: true)
+        let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
+                                                                                                                  lon: -73.6726370,
+                                                                                                                  name: "Test Generic"),
+                                                                                        estimatedAddress: nil)
         let store = MockDestinationEntityStore()
         var lookedUpLocations: [SSGeoCoordinate] = []
         var addTemporaryCallCount = 0
@@ -225,11 +227,10 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationEntityKeyUsesInjectedEntityIDLookup() throws {
-        let existingID = try RealmReferenceEntity.add(location: GenericLocation(lat: 42.7292000,
-                                                                                lon: -73.6727000,
-                                                                                name: "Test Entity Key"),
-                                                      estimatedAddress: nil,
-                                                      temporary: true)
+        let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7292000,
+                                                                                                                  lon: -73.6727000,
+                                                                                                                  name: "Test Entity Key"),
+                                                                                        estimatedAddress: nil)
         let store = MockDestinationEntityStore()
         var lookedUpEntityKeys: [String] = []
         var addTemporaryCallCount = 0

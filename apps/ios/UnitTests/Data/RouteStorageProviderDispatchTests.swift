@@ -711,18 +711,23 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.searchByKeyCallKeys, [key])
     }
 
-    func testReferenceEntityAddEntityKeyUsesInjectedSpatialStoreLookups() {
+    func testReferenceEntityAddEntityKeyUsesInjectedSpatialStoreLookups() async {
         let missingKey = "missing-entity-key"
         let store = MockSpatialDataStore()
+        let spatialRead = MockSpatialReadContract()
         SpatialDataStoreRegistry.configure(with: store)
 
-        XCTAssertThrowsError(try RealmReferenceEntity.add(entityKey: missingKey,
-                                                     nickname: nil,
-                                                     estimatedAddress: nil,
-                                                     annotation: nil,
-                                                     temporary: false,
-                                                     context: nil,
-                                                     notify: false)) { error in
+        do {
+            _ = try await RealmReferenceEntity.add(entityKey: missingKey,
+                                                   nickname: nil,
+                                                   estimatedAddress: nil,
+                                                   annotation: nil,
+                                                   temporary: false,
+                                                   context: nil,
+                                                   notify: false,
+                                                   using: spatialRead)
+            XCTFail("Expected entityDoesNotExist error")
+        } catch {
             guard case ReferenceEntityError.entityDoesNotExist = error else {
                 XCTFail("Expected entityDoesNotExist, received: \(error)")
                 return
@@ -733,7 +738,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.searchByKeyCallKeys, [missingKey])
     }
 
-    func testReferenceEntityAddLocationUsesInjectedSpatialStoreGenericLocationLookup() throws {
+    func testReferenceEntityAddLocationUsesInjectedSpatialStoreGenericLocationLookup() async throws {
         let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Lookup")
         let existingMarker = RealmReferenceEntity(coordinate: location.location.coordinate,
                                              entityKey: nil,
@@ -742,16 +747,18 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         let key = "\(location.location.coordinate.latitude),\(location.location.coordinate.longitude)"
         let store = MockSpatialDataStore()
+        let spatialRead = MockSpatialReadContract()
         store.referenceEntitiesByGenericLocation[key] = existingMarker
         SpatialDataStoreRegistry.configure(with: store)
 
-        let id = try RealmReferenceEntity.add(location: location,
-                                         nickname: nil,
-                                         estimatedAddress: nil,
-                                         annotation: nil,
-                                         temporary: true,
-                                         context: "test",
-                                         notify: false)
+        let id = try await RealmReferenceEntity.add(location: location,
+                                                    nickname: nil,
+                                                    estimatedAddress: nil,
+                                                    annotation: nil,
+                                                    temporary: true,
+                                                    context: "test",
+                                                    notify: false,
+                                                    using: spatialRead)
 
         XCTAssertEqual(id, existingMarker.id)
         XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [key])

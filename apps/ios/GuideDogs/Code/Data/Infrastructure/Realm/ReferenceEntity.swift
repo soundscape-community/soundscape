@@ -522,71 +522,53 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Returns: ID of the new reference point
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
     static func add(entityKey: String, nickname: String? = nil, estimatedAddress: String? = nil, annotation: String? = nil, temporary: Bool = false, context: String? = nil, notify: Bool = true) throws -> String {
-        return try autoreleasepool {
-            let database = try RealmHelper.getDatabaseRealm()
-            let cache = try RealmHelper.getCacheRealm()
-            
-            if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey) {
-                // Update and return the existing marker
-                try update(entity: existingMarker, nickname: nickname, address: estimatedAddress, annotation: annotation, context: context, isTemp: temporary)
-                
-                return existingMarker.id
-            }
-            
-            guard let entity = SpatialDataStoreRegistry.store.searchByKey(entityKey) else {
-                // Return if entity does not exist (or doesn't exist in Realm)
-                throw ReferenceEntityError.entityDoesNotExist
-            }
-            
-            // In the case that the new entity is an address, backup the address in the estimated address
-            // field of the Reference Entity
-            var addr = estimatedAddress
-            if let addrEntity = entity as? Address {
-                addr = addrEntity.addressLine
-            }
-            
-            // Add reference entity
-            let reference = RealmReferenceEntity(coordinate: entity.centroidCoordinate,
-                                            entityKey: entityKey,
-                                            name: nickname,
-                                            estimatedAddress: addr,
-                                            annotation: annotation,
-                                            temp: temporary)
-            reference.lastUpdatedDate = Date()
+        if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey) {
+            // Update and return the existing marker
+            try update(entity: existingMarker,
+                       nickname: nickname,
+                       address: estimatedAddress,
+                       annotation: annotation,
+                       context: context,
+                       isTemp: temporary)
 
-            // Set the last selected date on the POI
-            if let rlmEntity = entity as? Object {
-                try cache.write {
-                    rlmEntity[POI.Keys.lastSelectedDate] = reference.lastSelectedDate
-                }
-            }
-            
-            try database.write {
-                database.add(reference, update: .modified)
-            }
-            
-            if !temporary {
-                ReferenceEntityRuntime.storeReferenceInCloud(reference)
-                
-                let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-                
-                if entity is Address {
-                    GDATelemetry.track("markers.added", with: ["type": "address", "includesAnnotation": includesAnnotation, "context": context ?? "none"])
-                    GDATelemetry.helper?.markerCountAddress += 1
-                } else {
-                    GDATelemetry.track("markers.added", with: ["type": "poi", "includesAnnotation": includesAnnotation, "context": context ?? "none"])
-                    GDATelemetry.helper?.markerCountPOI += 1
-                }
-                
-                NSUserActivity(userAction: .saveMarker).becomeCurrent()
-            }
-            
-            if notify {
-                notifyEntityAdded(reference.id)
-            }
-            
-            return reference.id
+            return existingMarker.id
         }
+
+        return try addNewReferenceEntityForEntityKey(entityKey,
+                                                     nickname: nickname,
+                                                     estimatedAddress: estimatedAddress,
+                                                     annotation: annotation,
+                                                     temporary: temporary,
+                                                     context: context,
+                                                     notify: notify)
+    }
+
+    static func add(entityKey: String,
+                    nickname: String? = nil,
+                    estimatedAddress: String? = nil,
+                    annotation: String? = nil,
+                    temporary: Bool = false,
+                    context: String? = nil,
+                    notify: Bool = true,
+                    using spatialRead: ReferenceReadContract) async throws -> String {
+        if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey) {
+            try await update(entity: existingMarker,
+                             nickname: nickname,
+                             address: estimatedAddress,
+                             annotation: annotation,
+                             context: context,
+                             isTemp: temporary,
+                             using: spatialRead)
+            return existingMarker.id
+        }
+
+        return try addNewReferenceEntityForEntityKey(entityKey,
+                                                     nickname: nickname,
+                                                     estimatedAddress: estimatedAddress,
+                                                     annotation: annotation,
+                                                     temporary: temporary,
+                                                     context: context,
+                                                     notify: notify)
     }
     
     /// Updates the given reference entity
@@ -717,67 +699,202 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Returns: ID of the new reference point
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
     static func add(location: GenericLocation, nickname: String? = nil, estimatedAddress: String? = nil, annotation: String? = nil, temporary: Bool = false, context: String? = nil, notify: Bool = true) throws -> String {
-        return try autoreleasepool {
-            let database = try RealmHelper.getDatabaseRealm()
-            
-            // If an existing marker is found at the same location, then return that marker's id. In the case that
-            // `existingFlag.isTemp` matches `temporary`, then we can also update the underlying marker in case any
-            // of it's info has changed. If `existingFlag.isTemp` is false, `temporary` is true, and all other properties
-            // match, then we can also update the marker to set `isTemp` to false. This covers the only edge case where
-            // we allow permanent markers to become temporary: when a marker is deleted and there is currently a beacon
-            // set on the location of that marker.
-            if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location) {
-                let tempStatusMatches = existingMarker.isTemp == temporary
-                let propertiesMatch = existingMarker.nickname == nickname &&
-                                      existingMarker.estimatedAddress == estimatedAddress &&
-                                      existingMarker.annotation == annotation
-                let shouldDowngradeMarker = !existingMarker.isTemp && temporary && propertiesMatch
-                
-                if tempStatusMatches || shouldDowngradeMarker {
-                    try update(entity: existingMarker, nickname: nickname, address: estimatedAddress, annotation: annotation, context: context, isTemp: temporary)
-                }
-                
-                return existingMarker.id
+        // If an existing marker is found at the same location, then return that marker's id. In the case that
+        // `existingFlag.isTemp` matches `temporary`, then we can also update the underlying marker in case any
+        // of it's info has changed. If `existingFlag.isTemp` is false, `temporary` is true, and all other properties
+        // match, then we can also update the marker to set `isTemp` to false. This covers the only edge case where
+        // we allow permanent markers to become temporary: when a marker is deleted and there is currently a beacon
+        // set on the location of that marker.
+        if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location) {
+            let tempStatusMatches = existingMarker.isTemp == temporary
+            let propertiesMatch = existingMarker.nickname == nickname &&
+                                  existingMarker.estimatedAddress == estimatedAddress &&
+                                  existingMarker.annotation == annotation
+            let shouldDowngradeMarker = !existingMarker.isTemp && temporary && propertiesMatch
+
+            if tempStatusMatches || shouldDowngradeMarker {
+                try update(entity: existingMarker,
+                           nickname: nickname,
+                           address: estimatedAddress,
+                           annotation: annotation,
+                           context: context,
+                           isTemp: temporary)
             }
-            
-            var name: String?
-            
-            if let nickname = nickname, nickname.isEmpty == false {
+
+            return existingMarker.id
+        }
+
+        return try addNewReferenceEntityForLocation(location,
+                                                    nickname: nickname,
+                                                    estimatedAddress: estimatedAddress,
+                                                    annotation: annotation,
+                                                    temporary: temporary,
+                                                    context: context,
+                                                    notify: notify)
+    }
+
+    static func add(location: GenericLocation,
+                    nickname: String? = nil,
+                    estimatedAddress: String? = nil,
+                    annotation: String? = nil,
+                    temporary: Bool = false,
+                    context: String? = nil,
+                    notify: Bool = true,
+                    using spatialRead: ReferenceReadContract) async throws -> String {
+        if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location) {
+            let tempStatusMatches = existingMarker.isTemp == temporary
+            let propertiesMatch = existingMarker.nickname == nickname &&
+                                  existingMarker.estimatedAddress == estimatedAddress &&
+                                  existingMarker.annotation == annotation
+            let shouldDowngradeMarker = !existingMarker.isTemp && temporary && propertiesMatch
+
+            if tempStatusMatches || shouldDowngradeMarker {
+                try await update(entity: existingMarker,
+                                 nickname: nickname,
+                                 address: estimatedAddress,
+                                 annotation: annotation,
+                                 context: context,
+                                 isTemp: temporary,
+                                 using: spatialRead)
+            }
+
+            return existingMarker.id
+        }
+
+        return try addNewReferenceEntityForLocation(location,
+                                                    nickname: nickname,
+                                                    estimatedAddress: estimatedAddress,
+                                                    annotation: annotation,
+                                                    temporary: temporary,
+                                                    context: context,
+                                                    notify: notify)
+    }
+
+    private static func addNewReferenceEntityForEntityKey(_ entityKey: String,
+                                                           nickname: String?,
+                                                           estimatedAddress: String?,
+                                                           annotation: String?,
+                                                           temporary: Bool,
+                                                           context: String?,
+                                                           notify: Bool) throws -> String {
+        try autoreleasepool {
+            let database = try RealmHelper.getDatabaseRealm()
+            let cache = try RealmHelper.getCacheRealm()
+
+            guard let entity = SpatialDataStoreRegistry.store.searchByKey(entityKey) else {
+                // Return if entity does not exist (or doesn't exist in Realm)
+                throw ReferenceEntityError.entityDoesNotExist
+            }
+
+            // In the case that the new entity is an address, backup the address in the estimated address
+            // field of the Reference Entity
+            var address = estimatedAddress
+            if let addrEntity = entity as? Address {
+                address = addrEntity.addressLine
+            }
+
+            // Add reference entity
+            let reference = RealmReferenceEntity(coordinate: entity.centroidCoordinate,
+                                                 entityKey: entityKey,
+                                                 name: nickname,
+                                                 estimatedAddress: address,
+                                                 annotation: annotation,
+                                                 temp: temporary)
+            reference.lastUpdatedDate = Date()
+
+            // Set the last selected date on the POI
+            if let rlmEntity = entity as? Object {
+                try cache.write {
+                    rlmEntity[POI.Keys.lastSelectedDate] = reference.lastSelectedDate
+                }
+            }
+
+            try database.write {
+                database.add(reference, update: .modified)
+            }
+
+            if !temporary {
+                ReferenceEntityRuntime.storeReferenceInCloud(reference)
+
+                let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
+                if entity is Address {
+                    GDATelemetry.track("markers.added",
+                                       with: ["type": "address",
+                                              "includesAnnotation": includesAnnotation,
+                                              "context": context ?? "none"])
+                    GDATelemetry.helper?.markerCountAddress += 1
+                } else {
+                    GDATelemetry.track("markers.added",
+                                       with: ["type": "poi",
+                                              "includesAnnotation": includesAnnotation,
+                                              "context": context ?? "none"])
+                    GDATelemetry.helper?.markerCountPOI += 1
+                }
+
+                NSUserActivity(userAction: .saveMarker).becomeCurrent()
+            }
+
+            if notify {
+                notifyEntityAdded(reference.id)
+            }
+
+            return reference.id
+        }
+    }
+
+    private static func addNewReferenceEntityForLocation(_ location: GenericLocation,
+                                                         nickname: String?,
+                                                         estimatedAddress: String?,
+                                                         annotation: String?,
+                                                         temporary: Bool,
+                                                         context: String?,
+                                                         notify: Bool) throws -> String {
+        try autoreleasepool {
+            let database = try RealmHelper.getDatabaseRealm()
+
+            let name: String?
+            if let nickname, nickname.isEmpty == false {
                 name = nickname
             } else {
                 name = location.name
             }
-            
+
             let address: String?
-            
             // If an address was provided by the generic location, use it
             if let addressLine = location.addressLine, addressLine.isEmpty == false {
                 address = addressLine
             } else {
                 address = estimatedAddress
             }
-            
-            let reference = RealmReferenceEntity(location: location, name: name, estimatedAddress: address, annotation: annotation, temp: temporary)
+
+            let reference = RealmReferenceEntity(location: location,
+                                                 name: name,
+                                                 estimatedAddress: address,
+                                                 annotation: annotation,
+                                                 temp: temporary)
             reference.lastUpdatedDate = Date()
-            
+
             try database.write {
                 database.add(reference, update: .modified)
             }
-            
+
             if !temporary {
                 ReferenceEntityRuntime.storeReferenceInCloud(reference)
-                
+
                 let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-                GDATelemetry.track("markers.added", with: ["type": "generic_location", "includesAnnotation": includesAnnotation, "context": context ?? "none"])
+                GDATelemetry.track("markers.added",
+                                   with: ["type": "generic_location",
+                                          "includesAnnotation": includesAnnotation,
+                                          "context": context ?? "none"])
                 GDATelemetry.helper?.markerCountLocation += 1
-                
+
                 NSUserActivity(userAction: .saveMarker).becomeCurrent()
             }
-            
+
             if notify {
                 notifyEntityAdded(reference.id)
             }
-            
+
             return reference.id
         }
     }
