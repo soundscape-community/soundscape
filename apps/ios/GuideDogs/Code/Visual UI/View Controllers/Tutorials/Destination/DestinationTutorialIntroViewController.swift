@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -59,7 +60,9 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
         UIRuntimeProviderRegistry.providers.uiSetTutorialMode(true)
         
         // Clear destination if needed
-        try? UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.clearDestination(logContext: "tutorial.beacon.start_tutorial")
+        Task { @MainActor in
+            try? await UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.clearDestinationAsync(logContext: "tutorial.beacon.start_tutorial")
+        }
 
         navigationController?.setNavigationBarHidden(true, animated: true)
         
@@ -167,17 +170,22 @@ extension DestinationTutorialIntroViewController: POITableViewDelegate {
             return
         }
 
-        do {
-            entityKey = try destinationManager.setDestination(entityKey: poi.key,
-                                                             enableAudio: false,
-                                                             userLocation: UIRuntimeProviderRegistry.providers.uiCurrentUserLocation(),
-                                                             estimatedAddress: nil,
-                                                             logContext: "tutorial.beacon")
-        } catch {
-            GDLogAppError("Unable to set destination in Destination tutorial")
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            do {
+                self.entityKey = try await destinationManager.setDestinationAsync(entityKey: poi.key,
+                                                                                  enableAudio: false,
+                                                                                  userLocation: UIRuntimeProviderRegistry.providers.uiCurrentUserLocation(),
+                                                                                  estimatedAddress: nil,
+                                                                                  logContext: "tutorial.beacon")
+                self.pageComplete()
+            } catch {
+                GDLogAppError("Unable to set destination in Destination tutorial")
+            }
         }
-        
-        pageComplete()
     }
     
     func didSelect(currentLocation location: CLLocation) {

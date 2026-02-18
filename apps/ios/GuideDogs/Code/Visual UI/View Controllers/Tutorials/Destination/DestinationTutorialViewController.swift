@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -107,7 +108,9 @@ class DestinationTutorialViewController: CustomPageViewController, AVAudioPlayer
         }
 
         // Remove destination by clearing from cache
-        try? UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.clearDestination(logContext: "tutorial.beacon.clear_test_beacon")
+        Task { @MainActor in
+            try? await UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.clearDestinationAsync(logContext: "tutorial.beacon.clear_test_beacon")
+        }
     }
 
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
