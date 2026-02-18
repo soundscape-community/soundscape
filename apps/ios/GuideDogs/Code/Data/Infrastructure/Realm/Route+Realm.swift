@@ -56,6 +56,121 @@ extension Route {
                      waypoints: reversedWaypoints,
                      firstWaypointCoordinate: firstWaypointCoordinate)
     }
+
+    private static func addReferenceEntity(for locationDetail: LocationDetail,
+                                           telemetryContext: String?,
+                                           notify: Bool) throws -> String {
+        if let id = locationDetail.markerId,
+           let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) {
+            try RealmReferenceEntity.update(entity: marker,
+                                            location: locationDetail.location.coordinate,
+                                            nickname: locationDetail.nickname,
+                                            address: locationDetail.estimatedAddress,
+                                            annotation: locationDetail.annotation,
+                                            context: telemetryContext,
+                                            isTemp: false)
+            return id
+        }
+
+        switch locationDetail.source {
+        case .coordinate(let at):
+            let location = GenericLocation(lat: at.coordinate.latitude,
+                                           lon: at.coordinate.longitude)
+            return try RealmReferenceEntity.add(location: location,
+                                                nickname: locationDetail.nickname,
+                                                estimatedAddress: locationDetail.estimatedAddress,
+                                                annotation: locationDetail.annotation,
+                                                context: telemetryContext,
+                                                notify: notify)
+        case .entity(let id):
+            return try RealmReferenceEntity.add(entityKey: id,
+                                                nickname: locationDetail.nickname,
+                                                estimatedAddress: locationDetail.estimatedAddress,
+                                                annotation: locationDetail.annotation,
+                                                context: telemetryContext,
+                                                notify: notify)
+        case .designData, .screenshots:
+            throw ReferenceEntityError.cannotAddMarker
+        }
+    }
+
+    private static func addReferenceEntity(for locationDetail: LocationDetail,
+                                           telemetryContext: String?,
+                                           notify: Bool,
+                                           using spatialRead: ReferenceReadContract) async throws -> String {
+        if let id = locationDetail.markerId,
+           let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) {
+            try await RealmReferenceEntity.update(entity: marker,
+                                                  location: locationDetail.location.coordinate,
+                                                  nickname: locationDetail.nickname,
+                                                  address: locationDetail.estimatedAddress,
+                                                  annotation: locationDetail.annotation,
+                                                  context: telemetryContext,
+                                                  isTemp: false,
+                                                  using: spatialRead)
+            return id
+        }
+
+        switch locationDetail.source {
+        case .coordinate(let at):
+            let location = GenericLocation(lat: at.coordinate.latitude,
+                                           lon: at.coordinate.longitude)
+            return try await RealmReferenceEntity.add(location: location,
+                                                      nickname: locationDetail.nickname,
+                                                      estimatedAddress: locationDetail.estimatedAddress,
+                                                      annotation: locationDetail.annotation,
+                                                      temporary: false,
+                                                      context: telemetryContext,
+                                                      notify: notify,
+                                                      using: spatialRead)
+        case .entity(let id):
+            return try await RealmReferenceEntity.add(entityKey: id,
+                                                      nickname: locationDetail.nickname,
+                                                      estimatedAddress: locationDetail.estimatedAddress,
+                                                      annotation: locationDetail.annotation,
+                                                      context: telemetryContext,
+                                                      notify: notify,
+                                                      using: spatialRead)
+        case .designData, .screenshots:
+            throw ReferenceEntityError.cannotAddMarker
+        }
+    }
+
+    private static func persistAddedRoute(_ route: Route,
+                                          firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
+        try autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                throw RouteRealmError.databaseError
+            }
+
+            var route = route
+            let persistedFirstWaypointCoordinate = resolvedFirstWaypointCoordinate(for: route,
+                                                                                  preferredCoordinate: firstWaypointCoordinate)
+            route.firstWaypointLatitude = persistedFirstWaypointCoordinate?.latitude
+            route.firstWaypointLongitude = persistedFirstWaypointCoordinate?.longitude
+
+            if let existingRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: route.id) {
+                try update(id: existingRoute.id,
+                           name: route.name,
+                           description: route.routeDescription,
+                           waypoints: route.waypoints,
+                           firstWaypointCoordinate: persistedFirstWaypointCoordinate)
+
+                RouteRuntime.updateRouteInCloud(route)
+            } else {
+                try database.write {
+                    database.add(RealmRoute(route: route, firstWaypointCoordinate: persistedFirstWaypointCoordinate), update: .modified)
+                }
+
+                RouteRuntime.storeRouteInCloud(route)
+
+                let id = route.id
+
+                NotificationCenter.default.post(name: .routeAdded, object: self, userInfo: [Route.Keys.id: id])
+                GDATelemetry.track("routes.added", with: ["context": "none", "activity": RouteRuntime.currentMotionActivityRawValue()])
+            }
+        }
+    }
     
     // MARK: Query All Routes
     
@@ -146,54 +261,44 @@ extension Route {
     }
     
     static func add(_ route: Route, firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
-        try autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                throw RouteRealmError.databaseError
+        var route = route
+
+        // If necessary, save a marker for each waypoint
+        for index in route.waypoints.indices {
+            guard let locationDetail = route.waypoints[index].asLocationDetail else {
+                continue
             }
 
-            var route = route
-            
-            // If necessary, save a marker for each waypoint
-            for index in route.waypoints.indices {
-                guard let locationDetail = route.waypoints[index].asLocationDetail else {
-                    continue
-                }
-                
-                let markerId = try SpatialDataStoreRegistry.store.addReferenceEntity(detail: locationDetail,
-                                                                                      telemetryContext: "add_route",
-                                                                                      notify: false)
-                
-                // `markerId` will change when adding a new Realm object
-                // `markerId` will not change when updating an existing Realm object
-                route.waypoints[index].markerId = markerId
-            }
+            let markerId = try addReferenceEntity(for: locationDetail,
+                                                  telemetryContext: "add_route",
+                                                  notify: false)
 
-            let persistedFirstWaypointCoordinate = resolvedFirstWaypointCoordinate(for: route,
-                                                                                  preferredCoordinate: firstWaypointCoordinate)
-            route.firstWaypointLatitude = persistedFirstWaypointCoordinate?.latitude
-            route.firstWaypointLongitude = persistedFirstWaypointCoordinate?.longitude
-            
-            if let existingRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: route.id) {
-                try update(id: existingRoute.id,
-                           name: route.name,
-                           description: route.routeDescription,
-                           waypoints: route.waypoints,
-                           firstWaypointCoordinate: persistedFirstWaypointCoordinate)
-                
-                RouteRuntime.updateRouteInCloud(route)
-            } else {
-                try database.write {
-                    database.add(RealmRoute(route: route, firstWaypointCoordinate: persistedFirstWaypointCoordinate), update: .modified)
-                }
-                
-                RouteRuntime.storeRouteInCloud(route)
-                
-                let id = route.id
-                
-                NotificationCenter.default.post(name: .routeAdded, object: self, userInfo: [Route.Keys.id: id])
-                GDATelemetry.track("routes.added", with: ["context": "none", "activity": RouteRuntime.currentMotionActivityRawValue()])
-            }
+            // `markerId` will change when adding a new Realm object
+            // `markerId` will not change when updating an existing Realm object
+            route.waypoints[index].markerId = markerId
         }
+
+        try persistAddedRoute(route, firstWaypointCoordinate: firstWaypointCoordinate)
+    }
+
+    static func add(_ route: Route,
+                    firstWaypointCoordinate: CLLocationCoordinate2D? = nil,
+                    using spatialRead: ReferenceReadContract) async throws {
+        var route = route
+
+        for index in route.waypoints.indices {
+            guard let locationDetail = route.waypoints[index].asLocationDetail else {
+                continue
+            }
+
+            let markerId = try await addReferenceEntity(for: locationDetail,
+                                                        telemetryContext: "add_route",
+                                                        notify: false,
+                                                        using: spatialRead)
+            route.waypoints[index].markerId = markerId
+        }
+
+        try persistAddedRoute(route, firstWaypointCoordinate: firstWaypointCoordinate)
     }
     
     static func delete(_ id: String) throws {
@@ -493,7 +598,7 @@ extension Route {
 
         reversed.name = nameResolution.name
 
-        try add(reversed)
+        try await add(reversed, using: spatialRead)
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
                 throw RouteRealmError.databaseError

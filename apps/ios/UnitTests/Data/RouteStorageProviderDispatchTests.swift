@@ -23,7 +23,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         var referenceEntitiesByGenericLocation: [String: RealmReferenceEntity] = [:]
         var referenceEntitiesToReturn: [RealmReferenceEntity] = []
         var searchResultsByKey: [String: POI] = [:]
-        var addedReferenceEntityID = "mock-added-reference-entity-id"
         var addedTemporaryReferenceEntityID = "mock-temp-reference-entity-id"
         var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
@@ -43,7 +42,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var referenceEntityByGenericLocationCallKeys: [String] = []
         private(set) var referenceEntitiesCallCount = 0
         private(set) var searchByKeyCallKeys: [String] = []
-        private(set) var addReferenceEntityCallCount = 0
         private(set) var addTemporaryReferenceEntityLocationCallCount = 0
         private(set) var addTemporaryReferenceEntityLocationWithNicknameCallCount = 0
         private(set) var addTemporaryReferenceEntityEntityKeyCallKeys: [String] = []
@@ -89,11 +87,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func searchByKey(_ key: String) -> POI? {
             searchByKeyCallKeys.append(key)
             return searchResultsByKey[key]
-        }
-
-        func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
-            addReferenceEntityCallCount += 1
-            return addedReferenceEntityID
         }
 
         func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity? {
@@ -792,8 +785,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.searchByKeyCallKeys, [lookupID])
     }
 
-    func testRouteAddUsesInjectedSpatialStoreReferenceEntityAdd() throws {
-        let expectedMarkerID = "added-from-injected-store"
+    func testRouteAddAsyncUsesInjectedSpatialStoreLocationLookup() async throws {
         let waypointLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
         let imported = ImportedLocationDetail(nickname: "Waypoint", annotation: "Test waypoint")
         let waypointDetail = LocationDetail(location: waypointLocation, imported: imported, telemetryContext: nil)
@@ -802,15 +794,19 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                      importedLocationDetail: waypointDetail)
         let route = Route(name: "RouteAddInjectedStore-\(UUID().uuidString)", description: nil, waypoints: [waypoint])
 
+        let existingMarker = RealmReferenceEntity(coordinate: waypointLocation.coordinate,
+                                                  entityKey: nil,
+                                                  name: "Existing marker")
+        let locationKey = "\(waypointLocation.coordinate.latitude),\(waypointLocation.coordinate.longitude)"
         let store = MockSpatialDataStore()
-        store.addedReferenceEntityID = expectedMarkerID
+        store.referenceEntitiesByGenericLocation[locationKey] = existingMarker
         SpatialDataStoreRegistry.configure(with: store)
 
-        try Route.add(route)
+        try await Route.add(route, using: MockSpatialReadContract())
 
-        XCTAssertEqual(store.addReferenceEntityCallCount, 1)
         let persistedRoute = Route.object(forPrimaryKey: route.id)
-        XCTAssertEqual(persistedRoute?.waypoints.ordered.first?.markerId, expectedMarkerID)
+        XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [locationKey])
+        XCTAssertEqual(persistedRoute?.waypoints.ordered.first?.markerId, existingMarker.id)
     }
 
     func testRouteUpdatePersistsFirstWaypointCoordinatesFromUpdatedWaypointOrder() throws {

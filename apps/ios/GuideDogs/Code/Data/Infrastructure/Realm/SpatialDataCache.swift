@@ -19,7 +19,6 @@ protocol SpatialDataStore {
     func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity]
     func referenceEntities() -> [RealmReferenceEntity]
     func searchByKey(_ key: String) -> POI?
-    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String
     func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity?
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
@@ -61,41 +60,6 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func searchByKey(_ key: String) -> POI? {
         SpatialDataCache.searchByKey(key: key)
-    }
-
-    func addReferenceEntity(detail: LocationDetail, telemetryContext: String?, notify: Bool) throws -> String {
-        if let id = detail.markerId,
-           let marker = referenceEntityByKey(id) {
-            try RealmReferenceEntity.update(entity: marker,
-                                            location: detail.location.coordinate,
-                                            nickname: detail.nickname,
-                                            address: detail.estimatedAddress,
-                                            annotation: detail.annotation,
-                                            context: telemetryContext,
-                                            isTemp: false)
-
-            return id
-        }
-
-        switch detail.source {
-        case .coordinate(let at):
-            let location = GenericLocation(lat: at.coordinate.latitude, lon: at.coordinate.longitude)
-            return try RealmReferenceEntity.add(location: location,
-                                                nickname: detail.nickname,
-                                                estimatedAddress: detail.estimatedAddress,
-                                                annotation: detail.annotation,
-                                                context: telemetryContext,
-                                                notify: notify)
-        case .entity(let id):
-            return try RealmReferenceEntity.add(entityKey: id,
-                                                nickname: detail.nickname,
-                                                estimatedAddress: detail.estimatedAddress,
-                                                annotation: detail.annotation,
-                                                context: telemetryContext,
-                                                notify: notify)
-        case .designData, .screenshots:
-            throw ReferenceEntityError.cannotAddMarker
-        }
     }
 
     func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity? {

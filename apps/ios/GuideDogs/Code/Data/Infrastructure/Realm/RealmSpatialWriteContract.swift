@@ -12,12 +12,16 @@ import SSGeo
 @MainActor
 struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteContract {
     func addRoute(_ route: Route) async throws {
-        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route)
-        try Route.add(route, firstWaypointCoordinate: firstWaypointCoordinate)
+        let spatialRead = DataContractRegistry.spatialRead
+        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route, using: spatialRead)
+        try await Route.add(route,
+                            firstWaypointCoordinate: firstWaypointCoordinate,
+                            using: spatialRead)
     }
 
     func importRouteFromCloud(_ route: Route) async throws {
-        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route)
+        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route,
+                                                                           using: DataContractRegistry.spatialRead)
         try Route.importFromCloud(route, firstWaypointCoordinate: firstWaypointCoordinate)
     }
 
@@ -32,7 +36,8 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
     }
 
     func updateRoute(_ route: Route) async throws {
-        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route)
+        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route,
+                                                                           using: DataContractRegistry.spatialRead)
         try Route.update(id: route.id,
                          name: route.name,
                          description: route.routeDescription,
@@ -134,8 +139,9 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
         try await RealmReferenceEntity.remove(id: id, using: DataContractRegistry.spatialRead)
     }
 
-    private func resolveFirstWaypointCoordinate(for route: Route) async -> CLLocationCoordinate2D? {
-        await Route.firstWaypointCoordinate(for: route.waypoints, using: DataContractRegistry.spatialRead)
+    private func resolveFirstWaypointCoordinate(for route: Route,
+                                                using spatialRead: ReferenceReadContract) async -> CLLocationCoordinate2D? {
+        await Route.firstWaypointCoordinate(for: route.waypoints, using: spatialRead)
     }
 }
 
