@@ -115,7 +115,13 @@ struct DefaultSpatialDataStore: SpatialDataStore {
     }
 
     func removeAllTemporaryReferenceEntities() throws {
-        try RealmReferenceEntity.removeAllTemporary()
+        let database = try RealmHelper.getDatabaseRealm()
+
+        for entity in database.objects(RealmReferenceEntity.self).filter("isTemp == true") {
+            try database.write {
+                database.delete(entity)
+            }
+        }
     }
 
     func routes() -> [Route] {

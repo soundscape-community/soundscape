@@ -830,19 +830,6 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         RealmReferenceEntity.notifyEntityRemoved(id)
     }
     
-    /// Removes all temporary reference entities.
-    ///
-    /// - Throws: If the database/cache cannot be accessed or any reference entity cannot be removed
-    static func removeAllTemporary() throws {
-        let database = try RealmHelper.getDatabaseRealm()
-        
-        for entity in database.objects(RealmReferenceEntity.self).filter("isTemp == true") {
-            try database.write {
-                database.delete(entity)
-            }
-        }
-    }
-    
     static func cleanCorruptEntities(using spatialRead: ReferenceReadContract) async throws {
         let entities = try RealmHelper.getDatabaseRealm().objects(RealmReferenceEntity.self).filter("isTemp == false")
         let corruptIDs = entities

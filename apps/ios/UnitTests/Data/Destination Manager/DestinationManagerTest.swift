@@ -157,7 +157,7 @@ final class DestinationManagerTest: XCTestCase {
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
             removeAllTemporaryCallCount += 1
-            try RealmReferenceEntity.removeAllTemporary()
+            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -206,7 +206,7 @@ final class DestinationManagerTest: XCTestCase {
             return UUID().uuidString
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
-            try RealmReferenceEntity.removeAllTemporary()
+            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -246,7 +246,7 @@ final class DestinationManagerTest: XCTestCase {
             return UUID().uuidString
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
-            try RealmReferenceEntity.removeAllTemporary()
+            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
