@@ -67,15 +67,18 @@ struct DefaultSpatialDataStore: SpatialDataStore {
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
-        try RealmReferenceEntity.add(location: location, estimatedAddress: estimatedAddress, temporary: true)
+        try RealmReferenceEntity.addTemporary(location: location, estimatedAddress: estimatedAddress)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
-        try RealmReferenceEntity.add(location: location, nickname: nickname, estimatedAddress: estimatedAddress, temporary: true)
+        try RealmReferenceEntity.addTemporary(location: location,
+                                              nickname: nickname,
+                                              estimatedAddress: estimatedAddress)
     }
 
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
-        try RealmReferenceEntity.add(entityKey: entityKey, nickname: nil, estimatedAddress: estimatedAddress, temporary: true)
+        try RealmReferenceEntity.addTemporary(entityKey: entityKey,
+                                              estimatedAddress: estimatedAddress)
     }
 
     func removeAllTemporaryReferenceEntities() throws {

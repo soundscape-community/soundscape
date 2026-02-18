@@ -842,7 +842,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedLongitude, secondMarkerCoordinate.longitude, accuracy: 0.000_001)
     }
 
-    func testCreateReversedRoutePersistsBidirectionalReverseLink() throws {
+    func testCreateReversedRoutePersistsBidirectionalReverseLink() async throws {
         let firstMarkerID = "reverse-first-\(UUID().uuidString)"
         let secondMarkerID = "reverse-second-\(UUID().uuidString)"
         let firstCoordinate = makeUniqueCoordinate(baseLatitude: 46.6205, baseLongitude: -121.3493)
@@ -853,7 +853,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                       coordinate: secondCoordinate)
         let route = try createPersistedRoute(name: "ReverseLink-\(UUID().uuidString)", markerIDs: [firstMarkerID, secondMarkerID])
 
-        guard let reversedRoute = try Route.createReversedRoute(from: route),
+        guard let reversedRoute = try await Route.createReversedRoute(from: route, using: DataContractRegistry.spatialRead),
               let persistedRoute = Route.object(forPrimaryKey: route.id) else {
             XCTFail("Expected reversed route and persisted original route")
             return
@@ -864,7 +864,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(reversedRoute.reversedRouteId, persistedRoute.id)
     }
 
-    func testCreateReversedRouteResolvesNameConflictWithNumericSuffix() throws {
+    func testCreateReversedRouteResolvesNameConflictWithNumericSuffix() async throws {
         let originalFirstMarkerID = "reverse-conflict-original-first-\(UUID().uuidString)"
         let originalSecondMarkerID = "reverse-conflict-original-second-\(UUID().uuidString)"
         _ = try createPersistedMarker(id: originalFirstMarkerID,
@@ -884,7 +884,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let conflictingRoute = try createPersistedRoute(name: reversedBaseName,
                                                         markerIDs: [conflictFirstMarkerID, conflictSecondMarkerID])
 
-        guard let reversedRoute = try Route.createReversedRoute(from: route),
+        guard let reversedRoute = try await Route.createReversedRoute(from: route, using: DataContractRegistry.spatialRead),
               let persistedRoute = Route.object(forPrimaryKey: route.id),
               let persistedConflictingRoute = Route.object(forPrimaryKey: conflictingRoute.id) else {
             XCTFail("Expected reversed route and persisted original route")

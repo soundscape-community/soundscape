@@ -510,6 +510,9 @@ Phase 1 complete:
 - 2026-02-18: Migrated async route write callsites to the new path (`RealmSpatialWriteContract.addRoute` and `Route.createReversedRoute(from:using:)`) so async-capable route persistence no longer depends on the synchronous `DefaultSpatialDataStore` detail helper.
 - 2026-02-18: Updated route storage seam coverage for this slice by replacing the sync route-add dispatch assertion with async lookup coverage (`RouteStorageProviderDispatchTests.testRouteAddAsyncUsesInjectedSpatialStoreLocationLookup`).
 - 2026-02-18: Validation for async route-add seam narrowing slice: `bash apps/common/Scripts/check_forbidden_imports.sh` and `swift test --package-path apps/common` pass; iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`) and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd7`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, and `CloudSyncContractBridgeTests` pass.
+- 2026-02-18: Continued narrowing legacy sync add-helper seams by removing unused synchronous route persistence/reversal APIs in `Route+Realm` (`Route.add(_:)` and `Route.createReversedRoute(from:)`) and migrating remaining reverse-route coverage to async `Route.createReversedRoute(from:using:)`.
+- 2026-02-18: Narrowed synchronous `RealmReferenceEntity` add convenience APIs to destination-only temporary marker operations by replacing `DefaultSpatialDataStore` callsites with explicit temporary helper surfaces (`RealmReferenceEntity.addTemporary(...)`), leaving async `add(entityKey:..., using:)`/`add(location:..., using:)` as the canonical non-temporary add path.
+- 2026-02-18: Validation for async route-reversal + temporary-add seam narrowing slice: `bash apps/common/Scripts/check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`), and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd8`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `DestinationManagerTest` pass.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -639,8 +642,9 @@ Acceptance criteria:
 
 ## Immediate Next Steps
 1. Continue narrowing legacy `RealmReferenceEntity` synchronous convenience APIs by auditing the remaining temporary-marker add helper callsites (`add(entityKey:...)`, `add(location:...)`) in `DefaultSpatialDataStore` destination/non-contract paths and migrating/removing sync-only variants where async boundaries are available.
-2. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
-3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
+2. Continue narrowing destination-only synchronous seams by auditing `DestinationEntityStore` temporary marker add/remove boundaries and migrating those operations to async contracts where callsites can adopt async flow safely.
+3. For each migrated callsite, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
+4. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
 
 ## Session Handoff (2026-02-10)
 - Latest landed commits for this slice sequence:

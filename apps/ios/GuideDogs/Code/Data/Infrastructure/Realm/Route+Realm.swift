@@ -41,59 +41,6 @@ extension Route {
         return (name: finalName, existingRoute: nil)
     }
 
-    private static func makeReversedRoute(from route: Route,
-                                          firstWaypointCoordinate: CLLocationCoordinate2D?) -> Route? {
-        guard !route.waypoints.isEmpty else { return nil }
-
-        let orderedWaypoints = route.waypoints.ordered
-        let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
-            RouteWaypoint(index: index, markerId: waypoint.markerId)
-        }
-
-        let newName = GDLocalizedString("routes.reverse_name_format", route.name)
-        return Route(name: newName,
-                     description: route.routeDescription,
-                     waypoints: reversedWaypoints,
-                     firstWaypointCoordinate: firstWaypointCoordinate)
-    }
-
-    private static func addReferenceEntity(for locationDetail: LocationDetail,
-                                           telemetryContext: String?,
-                                           notify: Bool) throws -> String {
-        if let id = locationDetail.markerId,
-           let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) {
-            try RealmReferenceEntity.update(entity: marker,
-                                            location: locationDetail.location.coordinate,
-                                            nickname: locationDetail.nickname,
-                                            address: locationDetail.estimatedAddress,
-                                            annotation: locationDetail.annotation,
-                                            context: telemetryContext,
-                                            isTemp: false)
-            return id
-        }
-
-        switch locationDetail.source {
-        case .coordinate(let at):
-            let location = GenericLocation(lat: at.coordinate.latitude,
-                                           lon: at.coordinate.longitude)
-            return try RealmReferenceEntity.add(location: location,
-                                                nickname: locationDetail.nickname,
-                                                estimatedAddress: locationDetail.estimatedAddress,
-                                                annotation: locationDetail.annotation,
-                                                context: telemetryContext,
-                                                notify: notify)
-        case .entity(let id):
-            return try RealmReferenceEntity.add(entityKey: id,
-                                                nickname: locationDetail.nickname,
-                                                estimatedAddress: locationDetail.estimatedAddress,
-                                                annotation: locationDetail.annotation,
-                                                context: telemetryContext,
-                                                notify: notify)
-        case .designData, .screenshots:
-            throw ReferenceEntityError.cannotAddMarker
-        }
-    }
-
     private static func addReferenceEntity(for locationDetail: LocationDetail,
                                            telemetryContext: String?,
                                            notify: Bool,
@@ -260,27 +207,6 @@ extension Route {
         }
     }
     
-    static func add(_ route: Route, firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
-        var route = route
-
-        // If necessary, save a marker for each waypoint
-        for index in route.waypoints.indices {
-            guard let locationDetail = route.waypoints[index].asLocationDetail else {
-                continue
-            }
-
-            let markerId = try addReferenceEntity(for: locationDetail,
-                                                  telemetryContext: "add_route",
-                                                  notify: false)
-
-            // `markerId` will change when adding a new Realm object
-            // `markerId` will not change when updating an existing Realm object
-            route.waypoints[index].markerId = markerId
-        }
-
-        try persistAddedRoute(route, firstWaypointCoordinate: firstWaypointCoordinate)
-    }
-
     static func add(_ route: Route,
                     firstWaypointCoordinate: CLLocationCoordinate2D? = nil,
                     using spatialRead: ReferenceReadContract) async throws {
@@ -514,11 +440,6 @@ extension Route {
     
     // MARK: Reverse a route
     
-    /// Creates a new Route instance with the order of waypoints reversed.
-    static func reversedRoute(from route: Route) -> Route? {
-        makeReversedRoute(from: route, firstWaypointCoordinate: nil)
-    }
-
     /// Async-first reversed-route construction that hydrates first-waypoint coordinates
     /// through the read contract before route persistence.
     static func reversedRoute(from route: Route, using spatialRead: ReferenceReadContract) async -> Route? {
@@ -544,43 +465,6 @@ extension Route {
         return route1IDs == route2IDs
     }
     
-    /// Generates and adds a reversed version of the route, handling duplicate name conflicts.
-    static func createReversedRoute(from route: Route) throws -> Route? {
-        // If route already has a reversedRouteId, return that route
-        if let reversedId = route.reversedRouteId,
-           let existing = Route.object(forPrimaryKey: reversedId) {
-            return existing
-        }
-
-        guard var reversed = reversedRoute(from: route) else { return nil }
-
-        let nameResolution = resolvedReversedRouteName(for: reversed)
-        if let existingRoute = nameResolution.existingRoute {
-            return existingRoute
-        }
-
-        reversed.name = nameResolution.name
-
-        // Add and link reversed route
-        try add(reversed)
-        try autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                throw RouteRealmError.databaseError
-            }
-
-            guard let persistedRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: route.id),
-                  let persistedReversed = database.object(ofType: RealmRoute.self, forPrimaryKey: reversed.id) else {
-                return
-            }
-
-            try database.write {
-                persistedRoute.linkReversedRoute(persistedReversed)
-            }
-        }
-
-        return object(forPrimaryKey: reversed.id)
-    }
-
     static func createReversedRoute(from route: Route, using spatialRead: ReferenceReadContract) async throws -> Route? {
         if let reversedId = route.reversedRouteId,
            let existing = Route.object(forPrimaryKey: reversedId) {

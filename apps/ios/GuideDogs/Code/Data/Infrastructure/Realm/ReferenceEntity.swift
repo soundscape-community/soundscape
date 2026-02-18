@@ -521,7 +521,47 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     ///   - temporary: flag indicating if the new reference entity is temporary (an audio beacon) or not
     /// - Returns: ID of the new reference point
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
-    static func add(entityKey: String, nickname: String? = nil, estimatedAddress: String? = nil, annotation: String? = nil, temporary: Bool = false, context: String? = nil, notify: Bool = true) throws -> String {
+    static func addTemporary(entityKey: String,
+                             estimatedAddress: String?) throws -> String {
+        try addSynchronously(entityKey: entityKey,
+                             nickname: nil,
+                             estimatedAddress: estimatedAddress,
+                             annotation: nil,
+                             temporary: true,
+                             context: nil,
+                             notify: true)
+    }
+
+    static func addTemporary(location: GenericLocation,
+                             estimatedAddress: String?) throws -> String {
+        try addSynchronously(location: location,
+                             nickname: nil,
+                             estimatedAddress: estimatedAddress,
+                             annotation: nil,
+                             temporary: true,
+                             context: nil,
+                             notify: true)
+    }
+
+    static func addTemporary(location: GenericLocation,
+                             nickname: String?,
+                             estimatedAddress: String?) throws -> String {
+        try addSynchronously(location: location,
+                             nickname: nickname,
+                             estimatedAddress: estimatedAddress,
+                             annotation: nil,
+                             temporary: true,
+                             context: nil,
+                             notify: true)
+    }
+
+    private static func addSynchronously(entityKey: String,
+                                         nickname: String? = nil,
+                                         estimatedAddress: String? = nil,
+                                         annotation: String? = nil,
+                                         temporary: Bool = false,
+                                         context: String? = nil,
+                                         notify: Bool = true) throws -> String {
         if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey) {
             // Update and return the existing marker
             try update(entity: existingMarker,
@@ -698,7 +738,13 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     ///   - temporary: flag indicating if the new reference entity is temporary (an audio beacon) or not
     /// - Returns: ID of the new reference point
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
-    static func add(location: GenericLocation, nickname: String? = nil, estimatedAddress: String? = nil, annotation: String? = nil, temporary: Bool = false, context: String? = nil, notify: Bool = true) throws -> String {
+    private static func addSynchronously(location: GenericLocation,
+                                         nickname: String? = nil,
+                                         estimatedAddress: String? = nil,
+                                         annotation: String? = nil,
+                                         temporary: Bool = false,
+                                         context: String? = nil,
+                                         notify: Bool = true) throws -> String {
         // If an existing marker is found at the same location, then return that marker's id. In the case that
         // `existingFlag.isTemp` matches `temporary`, then we can also update the underlying marker in case any
         // of it's info has changed. If `existingFlag.isTemp` is false, `temporary` is true, and all other properties
