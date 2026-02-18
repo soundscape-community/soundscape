@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -50,11 +51,17 @@ enum DestinationManagerRuntime {
 protocol DestinationEntityStore {
     func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity?
     func referenceEntityID(forGenericLocation location: GenericLocation) -> String?
+    func referenceEntityID(forGenericLocation location: GenericLocation) async -> String?
     func referenceEntityID(forEntityKey key: String) -> String?
+    func referenceEntityID(forEntityKey key: String) async -> String?
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String
     func removeAllTemporaryReferenceEntities() throws
+    func removeAllTemporaryReferenceEntities() async throws
 }
 
 @MainActor
@@ -351,6 +358,18 @@ class DestinationManager: DestinationManagerProtocol {
         
         return refID
     }
+
+    @discardableResult
+    func setDestinationAsync(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String {
+        if let referenceID = await destinationStore.referenceEntityID(forGenericLocation: location) {
+            try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+            return referenceID
+        }
+
+        let refID = try await destinationStore.addTemporaryReferenceEntity(location: location, estimatedAddress: address)
+        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+        return refID
+    }
     
     /// Creates a temporary reference entity for the location specified and sets it as the current
     /// destination. When this destination is later cleared, the temporary reference entity will be removed.
@@ -375,6 +394,18 @@ class DestinationManager: DestinationManagerProtocol {
         // Set the newly created generic location as the destination
         try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
         
+        return refID
+    }
+
+    @discardableResult
+    func setDestinationAsync(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String {
+        let genericLoc: GenericLocation = GenericLocation(lat: location.coordinate.latitude,
+                                                          lon: location.coordinate.longitude,
+                                                          name: GDLocalizationUnnecessary(""))
+        let refID = try await destinationStore.addTemporaryReferenceEntity(location: genericLoc,
+                                                                            nickname: behavior,
+                                                                            estimatedAddress: nil)
+        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
         return refID
     }
     
@@ -405,6 +436,18 @@ class DestinationManager: DestinationManagerProtocol {
         
         return refID
     }
+
+    @discardableResult
+    func setDestinationAsync(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) async throws -> String {
+        if let referenceID = await destinationStore.referenceEntityID(forEntityKey: entityKey) {
+            try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+            return referenceID
+        }
+
+        let refID = try await destinationStore.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: estimatedAddress)
+        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+        return refID
+    }
     
     /// Clears the current destination and removes all temporary reference entities
     /// from the database. If the audio beacon is enabled, it will be turned off.
@@ -415,7 +458,16 @@ class DestinationManager: DestinationManagerProtocol {
     func clearDestination(logContext: String?) throws {
         // Remove all temporary reference entities
         try destinationStore.removeAllTemporaryReferenceEntities()
-        
+
+        clearDestinationState(logContext: logContext)
+    }
+
+    func clearDestinationAsync(logContext: String?) async throws {
+        try await destinationStore.removeAllTemporaryReferenceEntities()
+        clearDestinationState(logContext: logContext)
+    }
+
+    private func clearDestinationState(logContext: String?) {
         beaconClosestLocation = nil
         temporaryBeaconClosestLocation = nil
         

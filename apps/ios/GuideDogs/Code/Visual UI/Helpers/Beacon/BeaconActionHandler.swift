@@ -128,15 +128,15 @@ struct BeaconActionHandler {
                 // There is no beacon to clear
                 return
             }
-            
-            do {
-                // Try to remove the beacon
-                try destinationManager.clearDestination(logContext: "home_screen")
-            } catch {
-                return
+
+            Task { @MainActor in
+                do {
+                    try await destinationManager.clearDestinationAsync(logContext: "home_screen")
+                    GDLogActionInfo("Clear destination")
+                } catch {
+                    return
+                }
             }
-            
-            GDLogActionInfo("Clear destination")
         }
     }
     

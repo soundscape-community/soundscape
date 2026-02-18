@@ -123,20 +123,34 @@ class ShareMarkerAlertObserver: NotificationObserver {
             
             // Reset `currentAlert` after it has been presented
             self.currentAlert = nil
-            
-            let manager = AppContext.shared.spatialDataContext.destinationManager
-            let userLocation = AppContext.shared.geolocationManager.location
-            
-            do {
-                if let location = location as? GenericLocation {
-                    try manager.setDestination(location: location, address: nil, enableAudio: true, userLocation: userLocation, logContext: "universal_link")
-                } else {
-                    try manager.setDestination(entityKey: location.key, enableAudio: true, userLocation: userLocation, estimatedAddress: nil, logContext: "universal_link")
+
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    return
                 }
-                
-                self.delegate?.popToRootViewController(self)
-            } catch {
-                self.presentErrorAlert()
+
+                let manager = AppContext.shared.spatialDataContext.destinationManager
+                let userLocation = AppContext.shared.geolocationManager.location
+
+                do {
+                    if let location = location as? GenericLocation {
+                        _ = try await manager.setDestinationAsync(location: location,
+                                                                  address: nil,
+                                                                  enableAudio: true,
+                                                                  userLocation: userLocation,
+                                                                  logContext: "universal_link")
+                    } else {
+                        _ = try await manager.setDestinationAsync(entityKey: location.key,
+                                                                  enableAudio: true,
+                                                                  userLocation: userLocation,
+                                                                  estimatedAddress: nil,
+                                                                  logContext: "universal_link")
+                    }
+
+                    self.delegate?.popToRootViewController(self)
+                } catch {
+                    self.presentErrorAlert()
+                }
             }
         }
         

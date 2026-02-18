@@ -155,11 +155,24 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
         SpatialDataStoreRegistry.store.referenceEntityByLocation(location.location.coordinate)?.id
     }
 
+    func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
+        SpatialDataStoreRegistry.store.referenceEntityByLocation(location.location.coordinate)?.id
+    }
+
     func referenceEntityID(forEntityKey key: String) -> String? {
         SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.id
     }
 
+    func referenceEntityID(forEntityKey key: String) async -> String? {
+        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.id
+    }
+
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
+                                                                       estimatedAddress: estimatedAddress)
+    }
+
+    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
         try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
                                                                        estimatedAddress: estimatedAddress)
     }
@@ -170,12 +183,27 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
                                                                        estimatedAddress: estimatedAddress)
     }
 
+    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
+                                                                       nickname: nickname,
+                                                                       estimatedAddress: estimatedAddress)
+    }
+
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
         try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey,
                                                                        estimatedAddress: estimatedAddress)
     }
 
+    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
+        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey,
+                                                                       estimatedAddress: estimatedAddress)
+    }
+
     func removeAllTemporaryReferenceEntities() throws {
+        try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+    }
+
+    func removeAllTemporaryReferenceEntities() async throws {
         try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
     }
 }

@@ -516,6 +516,30 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
     }
 
+    func testSpatialDataDestinationEntityStoreAsyncTemporaryReferenceEntityOperationsDispatchToInjectedStore() async throws {
+        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Temp Async")
+        let entityKey = "entity-key-async"
+        let expectedID = "temp-id-async"
+
+        let store = MockSpatialDataStore()
+        store.addedTemporaryReferenceEntityID = expectedID
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let destinationStore = SpatialDataDestinationEntityStore()
+        let idFromLocation = try await destinationStore.addTemporaryReferenceEntity(location: location, estimatedAddress: "Address")
+        let idFromNickname = try await destinationStore.addTemporaryReferenceEntity(location: location, nickname: "Nickname", estimatedAddress: "Address")
+        let idFromEntityKey = try await destinationStore.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: "Address")
+        try await destinationStore.removeAllTemporaryReferenceEntities()
+
+        XCTAssertEqual(idFromLocation, expectedID)
+        XCTAssertEqual(idFromNickname, expectedID)
+        XCTAssertEqual(idFromEntityKey, expectedID)
+        XCTAssertEqual(store.addTemporaryReferenceEntityLocationCallCount, 1)
+        XCTAssertEqual(store.addTemporaryReferenceEntityLocationWithNicknameCallCount, 1)
+        XCTAssertEqual(store.addTemporaryReferenceEntityEntityKeyCallKeys, [entityKey])
+        XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
+    }
+
     func testSpatialDataStoreRoadByKeyDispatchesToInjectedStore() {
         let roadKey = "road-key"
         let roadEntity = createRoadEntity(key: roadKey)

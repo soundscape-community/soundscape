@@ -3,6 +3,7 @@
 //  UnitTests
 //
 //  Created for Soundscape concurrency migration.
+//  Copyright (c) Soundscape Community Contributers.
 //
 
 import XCTest
@@ -305,9 +306,13 @@ class MockDestinationManager: DestinationManagerProtocol {
     func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws {}
     func setDestination(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String { "" }
     func setDestination(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String { "" }
+    func setDestinationAsync(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String { "" }
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) throws -> String { "" }
+    func setDestinationAsync(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) async throws -> String { "" }
     func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String { "" }
+    func setDestinationAsync(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String { "" }
     func clearDestination(logContext: String?) throws {}
+    func clearDestinationAsync(logContext: String?) async throws {}
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool { false }
     func updateDestinationLocation(_ newLocation: CLLocation, userLocation: CLLocation) -> Bool { false }
 }

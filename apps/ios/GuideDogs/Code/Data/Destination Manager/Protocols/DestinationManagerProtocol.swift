@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -41,14 +42,24 @@ protocol DestinationManagerProtocol: AnyObject {
     
     @discardableResult
     func setDestination(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
+
+    @discardableResult
+    func setDestinationAsync(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String
     
     @discardableResult
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) throws -> String
+
+    @discardableResult
+    func setDestinationAsync(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) async throws -> String
     
     @discardableResult
     func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
 
+    @discardableResult
+    func setDestinationAsync(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String
+
     func clearDestination(logContext: String?) throws
+    func clearDestinationAsync(logContext: String?) async throws
     
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool
@@ -76,9 +87,23 @@ extension DestinationManagerProtocol {
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?) throws -> String {
         return try setDestination(entityKey: entityKey, enableAudio: enableAudio, userLocation: userLocation, estimatedAddress: estimatedAddress, logContext: nil)
     }
+
+    @discardableResult
+    func setDestinationAsync(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?) async throws -> String {
+        try await setDestinationAsync(location: location, address: address, enableAudio: enableAudio, userLocation: userLocation, logContext: nil)
+    }
+
+    @discardableResult
+    func setDestinationAsync(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?) async throws -> String {
+        try await setDestinationAsync(entityKey: entityKey, enableAudio: enableAudio, userLocation: userLocation, estimatedAddress: estimatedAddress, logContext: nil)
+    }
     
     func clearDestination() throws {
         return try clearDestination(logContext: nil)
+    }
+
+    func clearDestinationAsync() async throws {
+        try await clearDestinationAsync(logContext: nil)
     }
     
     @discardableResult
