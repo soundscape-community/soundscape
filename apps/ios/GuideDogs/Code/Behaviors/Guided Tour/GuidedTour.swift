@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -198,18 +199,27 @@ class GuidedTour: BehaviorBase {
             return
         }
         
-        // Make sure there isn't an existing beacon when we start the first route beacon
-        if spatialDataContext.destinationManager.isDestinationSet {
-            do {
-                try spatialDataContext.destinationManager.clearDestination()
-            } catch {
-                GDLogError(.routeGuidance, "Unable to stop the existing beacon!")
+        let destinationManager = spatialDataContext.destinationManager
+        if destinationManager.isDestinationSet {
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    return
+                }
+
+                do {
+                    try await destinationManager.clearDestinationAsync(logContext: nil)
+                } catch {
+                    GDLogError(.routeGuidance, "Unable to stop the existing beacon!")
+                }
+
+                self.nearestIntersectionKey = self.findNearestIntersection()
+                self.setOrTransitionBeacon(to: current.waypoint)
             }
+        } else {
+            nearestIntersectionKey = findNearestIntersection()
+            setOrTransitionBeacon(to: current.waypoint)
         }
-        
-        nearestIntersectionKey = findNearestIntersection()
-        
-        setOrTransitionBeacon(to: current.waypoint)
+
         saveState()
         lastSaveTime = Date()
         
@@ -361,12 +371,18 @@ class GuidedTour: BehaviorBase {
         
         // start the pending beacon
         self.pendingBeaconArgs = nil
-        self.completeSetBeacon(waypoint: args.waypoint, enableAudio: args.enableAudio)
-        
-        // Only send the departure event if the user tapped next/previous. Otherwise this will be handled
-        // when the user actually departs the waypoint they just arrived at.
-        if !automatic {
-            self.delegate?.process(TourWaypointDepartureEvent(progress))
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            await self.completeSetBeacon(waypoint: args.waypoint, enableAudio: args.enableAudio)
+
+            // Only send the departure event if the user tapped next/previous. Otherwise this will be handled
+            // when the user actually departs the waypoint they just arrived at.
+            if !automatic {
+                self.delegate?.process(TourWaypointDepartureEvent(self.progress))
+            }
         }
     }
     
@@ -467,7 +483,9 @@ class GuidedTour: BehaviorBase {
         
         // Check if a beacon has already been set - meaning that we are transitioning from one waypoint to another
         guard spatialDataContext.destinationManager.isDestinationSet else {
-            completeSetBeacon(waypoint: waypoint, enableAudio: enableAudio)
+            Task { @MainActor [weak self] in
+                await self?.completeSetBeacon(waypoint: waypoint, enableAudio: enableAudio)
+            }
             return
         }
         
@@ -483,20 +501,23 @@ class GuidedTour: BehaviorBase {
                 spatialDataContext.destinationManager.toggleDestinationAudio(false, forceMelody: true)
             }
             
-            let event: Event
             if isArrivingAtWaypoint {
                 // If arriving when the beacon is muted, then kick off the arrival callouts immediately
                 pendingBeaconArgs = .init(id: UUID(), waypoint: waypoint, enableAudio: enableAudio)
-                event = TourWaypointArrivalEvent(progress)
+                self.delegate?.process(TourWaypointArrivalEvent(progress))
             } else {
                 // If pressing the next button when the beacon is muted, then kick off the waypoint
                 // departure callouts for the next waypoint immediately
-                completeSetBeacon(waypoint: waypoint, enableAudio: enableAudio)
-                event = TourWaypointDepartureEvent(progress)
+                Task { @MainActor [weak self] in
+                    guard let self else {
+                        return
+                    }
+
+                    await self.completeSetBeacon(waypoint: waypoint, enableAudio: enableAudio)
+                    self.delegate?.process(TourWaypointDepartureEvent(self.progress))
+                }
             }
-            
-            self.delegate?.process(event)
-            
+
             return
         }
         
@@ -508,15 +529,21 @@ class GuidedTour: BehaviorBase {
         
         GDLogInfo(.routeGuidance, "Start transition to next tour beacon...")
         
-        do {
-            try spatialDataContext.destinationManager.clearDestination(logContext: "tourguide.set_beacon")
-            GDLogInfo(.routeGuidance, "Awaiting finish of current tour beacon...")
-        } catch {
-            GDLogError(.routeGuidance, "Error: Unable to remove current beacon in Tour Guidance!")
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            do {
+                try await self.spatialDataContext.destinationManager.clearDestinationAsync(logContext: "tourguide.set_beacon")
+                GDLogInfo(.routeGuidance, "Awaiting finish of current tour beacon...")
+            } catch {
+                GDLogError(.routeGuidance, "Error: Unable to remove current beacon in Tour Guidance!")
+            }
         }
     }
     
-    private func completeSetBeacon(waypoint: LocationDetail, enableAudio: Bool) {
+    private func completeSetBeacon(waypoint: LocationDetail, enableAudio: Bool) async {
         guard let userLocation = GuidedTourRuntime.currentUserLocation() else {
             return
         }
@@ -532,9 +559,9 @@ class GuidedTour: BehaviorBase {
             let manager = spatialDataContext.destinationManager
             
             if let markerId = waypoint.markerId {
-                try manager.setDestination(referenceID: markerId, enableAudio: enableAudio, userLocation: userLocation, logContext: "route")
+                try await manager.setDestinationAsync(referenceID: markerId, enableAudio: enableAudio, userLocation: userLocation, logContext: "route")
             } else {
-                try manager.setDestination(location: location, behavior: waypoint.displayName, enableAudio: enableAudio, userLocation: userLocation, logContext: "route")
+                try await manager.setDestinationAsync(location: location, behavior: waypoint.displayName, enableAudio: enableAudio, userLocation: userLocation, logContext: "route")
             }
             
             // Ensure the beacon audio turns on when the waypoint changes
@@ -557,11 +584,17 @@ class GuidedTour: BehaviorBase {
     
     private func clearBeacon() {
         if spatialDataContext.destinationManager.isDestinationSet {
-            do {
-                try spatialDataContext.destinationManager.clearDestination(logContext: "route")
-                GDLogInfo(.routeGuidance, "Cleared route beacon")
-            } catch {
-                GDLogError(.routeGuidance, "Error: Unable to clear beacon in Route Guidance!")
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    return
+                }
+
+                do {
+                    try await self.spatialDataContext.destinationManager.clearDestinationAsync(logContext: "route")
+                    GDLogInfo(.routeGuidance, "Cleared route beacon")
+                } catch {
+                    GDLogError(.routeGuidance, "Error: Unable to clear beacon in Route Guidance!")
+                }
             }
         }
     }

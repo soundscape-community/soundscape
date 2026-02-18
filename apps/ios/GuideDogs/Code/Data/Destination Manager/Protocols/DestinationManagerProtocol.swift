@@ -36,6 +36,8 @@ protocol DestinationManagerProtocol: AnyObject {
     func isDestination(key: String) -> Bool
     
     func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws
+
+    func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws
     
     @discardableResult
     func setDestination(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
@@ -77,6 +79,10 @@ extension DestinationManagerProtocol {
     func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?) throws {
         try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: nil)
     }
+
+    func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?) async throws {
+        try await setDestinationAsync(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: nil)
+    }
     
     @discardableResult
     func setDestination(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?) throws -> String {
@@ -86,6 +92,10 @@ extension DestinationManagerProtocol {
     @discardableResult
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?) throws -> String {
         return try setDestination(entityKey: entityKey, enableAudio: enableAudio, userLocation: userLocation, estimatedAddress: estimatedAddress, logContext: nil)
+    }
+
+    func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws {
+        try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
     }
 
     @discardableResult
