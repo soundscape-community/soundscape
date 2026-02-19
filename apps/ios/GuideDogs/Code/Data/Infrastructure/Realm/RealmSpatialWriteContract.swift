@@ -10,7 +10,7 @@ import CoreLocation
 import SSGeo
 
 @MainActor
-struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteContract {
+struct RealmSpatialWriteContract: SpatialWriteContract {
     func addRoute(_ route: Route) async throws {
         let spatialRead = DataContractRegistry.spatialRead
         let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route, using: spatialRead)
@@ -79,6 +79,18 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
                                               using: DataContractRegistry.spatialRead)
     }
 
+    func removeReferenceEntity(id: String) async throws {
+        try await RealmReferenceEntity.remove(id: id, using: DataContractRegistry.spatialRead)
+    }
+
+    private func resolveFirstWaypointCoordinate(for route: Route,
+                                                using spatialRead: ReferenceReadContract) async -> CLLocationCoordinate2D? {
+        await Route.firstWaypointCoordinate(for: route.waypoints, using: spatialRead)
+    }
+}
+
+@MainActor
+struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
     func removeAllReferenceEntities() async throws {
         // Clear the destination before deleting markers to preserve existing cache-reset behavior.
         try await ReferenceEntityRuntime.clearDestinationForCacheReset()
@@ -133,15 +145,6 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
 
     func cleanCorruptReferenceEntities() async throws {
         try await RealmReferenceEntity.cleanCorruptEntities(using: DataContractRegistry.spatialRead)
-    }
-
-    func removeReferenceEntity(id: String) async throws {
-        try await RealmReferenceEntity.remove(id: id, using: DataContractRegistry.spatialRead)
-    }
-
-    private func resolveFirstWaypointCoordinate(for route: Route,
-                                                using spatialRead: ReferenceReadContract) async -> CLLocationCoordinate2D? {
-        await Route.firstWaypointCoordinate(for: route.waypoints, using: spatialRead)
     }
 }
 

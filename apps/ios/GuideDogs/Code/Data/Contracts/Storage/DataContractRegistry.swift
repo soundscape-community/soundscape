@@ -11,9 +11,10 @@ import Foundation
 enum DataContractRegistry {
     private static let defaultSpatialRead = RealmSpatialReadContract()
     private static let defaultSpatialWriteAdapter = RealmSpatialWriteContract()
+    private static let defaultSpatialMaintenanceWriteAdapter = RealmSpatialMaintenanceWriteContract()
     private(set) static var spatialRead: SpatialReadContract = defaultSpatialRead
     private(set) static var spatialWrite: SpatialWriteContract = defaultSpatialWriteAdapter
-    private(set) static var spatialMaintenanceWrite: SpatialMaintenanceWriteContract = defaultSpatialWriteAdapter
+    private(set) static var spatialMaintenanceWrite: SpatialMaintenanceWriteContract = defaultSpatialMaintenanceWriteAdapter
 
     static func configure(
         spatialRead: SpatialReadContract,
@@ -31,13 +32,13 @@ enum DataContractRegistry {
         if let spatialMaintenanceWrite {
             self.spatialMaintenanceWrite = spatialMaintenanceWrite
         } else {
-            self.spatialMaintenanceWrite = defaultSpatialWriteAdapter
+            self.spatialMaintenanceWrite = defaultSpatialMaintenanceWriteAdapter
         }
     }
 
     static func resetForTesting() {
         spatialRead = defaultSpatialRead
         spatialWrite = defaultSpatialWriteAdapter
-        spatialMaintenanceWrite = defaultSpatialWriteAdapter
+        spatialMaintenanceWrite = defaultSpatialMaintenanceWriteAdapter
     }
 }

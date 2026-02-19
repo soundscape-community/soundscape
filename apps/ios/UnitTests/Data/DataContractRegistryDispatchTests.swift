@@ -367,13 +367,13 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         DataContractRegistry.configure(spatialRead: mock)
         XCTAssertFalse(DataContractRegistry.spatialRead is RealmSpatialReadContract)
         XCTAssertTrue(DataContractRegistry.spatialWrite is RealmSpatialWriteContract)
-        XCTAssertTrue(DataContractRegistry.spatialMaintenanceWrite is RealmSpatialWriteContract)
+        XCTAssertTrue(DataContractRegistry.spatialMaintenanceWrite is RealmSpatialMaintenanceWriteContract)
 
         DataContractRegistry.resetForTesting()
 
         XCTAssertTrue(DataContractRegistry.spatialRead is RealmSpatialReadContract)
         XCTAssertTrue(DataContractRegistry.spatialWrite is RealmSpatialWriteContract)
-        XCTAssertTrue(DataContractRegistry.spatialMaintenanceWrite is RealmSpatialWriteContract)
+        XCTAssertTrue(DataContractRegistry.spatialMaintenanceWrite is RealmSpatialMaintenanceWriteContract)
     }
 
     func testNilPropagationForMissingEntities() async {
