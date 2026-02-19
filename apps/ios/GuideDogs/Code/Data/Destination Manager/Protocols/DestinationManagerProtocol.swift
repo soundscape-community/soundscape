@@ -69,22 +69,6 @@ protocol DestinationManagerProtocol: AnyObject {
 
 // This extension adds the ability to not pass the `logContext` argument
 extension DestinationManagerProtocol {
-    @MainActor var destinationPOI: POI? {
-        destination?.getPOI()
-    }
-
-    @MainActor var destinationIsTemporary: Bool {
-        destination?.isTemp ?? false
-    }
-
-    @MainActor var destinationNickname: String? {
-        destination?.nickname
-    }
-
-    @MainActor var destinationEstimatedAddress: String? {
-        destination?.estimatedAddress
-    }
-
     func isUserWithinGeofence(_ userLocation: SSGeoLocation) -> Bool {
         return isUserWithinGeofence(userLocation.clLocation)
     }
@@ -115,16 +99,6 @@ extension DestinationManagerProtocol {
 
     func clearDestinationAsync() async throws {
         try await clearDestinationAsync(logContext: nil)
-    }
-
-    @MainActor @discardableResult
-    func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
-        guard let destination, destination.id == id else {
-            return false
-        }
-
-        try destination.setTemporary(true)
-        return true
     }
     
     @discardableResult

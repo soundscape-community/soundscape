@@ -151,10 +151,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             return intersectionsByRoadRegionKey[lookupKey]
         }
 
-        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile> {
+        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destinationCoordinate: CLLocationCoordinate2D?) -> Set<VectorTile> {
             let destinationKey: String
-            if let destination = destination {
-                destinationKey = "\(destination.latitude),\(destination.longitude)"
+            if let destinationCoordinate = destinationCoordinate {
+                destinationKey = "\(destinationCoordinate.latitude),\(destinationCoordinate.longitude)"
             } else {
                 destinationKey = "nil"
             }
@@ -661,9 +661,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     func testSpatialDataStoreTilesDispatchesToInjectedStore() {
         let zoomLevel: UInt = 16
-        let destination = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        let destinationCoordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
         let expectedTile = VectorTile(latitude: 47.6205, longitude: -122.3493, zoom: zoomLevel)
-        let expectedCallKey = "true|true|\(zoomLevel)|\(destination.latitude),\(destination.longitude)"
+        let expectedCallKey = "true|true|\(zoomLevel)|\(destinationCoordinate.latitude),\(destinationCoordinate.longitude)"
 
         let store = MockSpatialDataStore()
         store.tilesToReturn = [expectedTile]
@@ -672,7 +672,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let tiles = SpatialDataStoreRegistry.store.tiles(forDestinations: true,
                                                          forReferences: true,
                                                          at: zoomLevel,
-                                                         destination: destination)
+                                                         destinationCoordinate: destinationCoordinate)
 
         XCTAssertEqual(tiles.count, 1)
         XCTAssertEqual(tiles.first?.quadKey, expectedTile.quadKey)

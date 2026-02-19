@@ -153,14 +153,10 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<VectorTile> {
-        let realmDestination = destination.flatMap { destination in
-            SpatialDataStoreRegistry.store.referenceEntityByKey(destination.id)
-        }
-
         return SpatialDataStoreRegistry.store.tiles(forDestinations: forDestinations,
                                                     forReferences: forReferences,
                                                     at: zoomLevel,
-                                                    destination: realmDestination)
+                                                    destinationCoordinate: destination?.coordinate.clCoordinate)
     }
 
     func tileData(for tiles: [VectorTile]) async -> [TileData] {

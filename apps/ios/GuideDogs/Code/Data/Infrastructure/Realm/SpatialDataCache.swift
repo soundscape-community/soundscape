@@ -31,7 +31,7 @@ protocol SpatialDataStore {
     func intersections(forRoadKey key: String) -> [Intersection]
     func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection?
     func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]?
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile>
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destinationCoordinate: CLLocationCoordinate2D?) -> Set<VectorTile>
     func tileData(for tiles: [VectorTile]) -> [TileData]
     func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI]
 }
@@ -119,11 +119,11 @@ struct DefaultSpatialDataStore: SpatialDataStore {
         SpatialDataCache.intersections(forRoadKey: key, inRegion: region)
     }
 
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity?) -> Set<VectorTile> {
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destinationCoordinate: CLLocationCoordinate2D?) -> Set<VectorTile> {
         SpatialDataCache.tiles(forDestinations: forDestinations,
                                forReferences: forReferences,
                                at: zoomLevel,
-                               destination: destination)
+                               destinationCoordinate: destinationCoordinate)
     }
 
     func tileData(for tiles: [VectorTile]) -> [TileData] {
@@ -518,7 +518,7 @@ class SpatialDataCache: NSObject {
     // MARK: VectorTile Tools
     
     @MainActor
-    static func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: RealmReferenceEntity? = nil) -> Set<VectorTile> {
+    static func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destinationCoordinate: CLLocationCoordinate2D? = nil) -> Set<VectorTile> {
         var tiles: Set<VectorTile> = []
         
         if forReferences {
@@ -528,8 +528,10 @@ class SpatialDataCache: NSObject {
             }
         }
         
-        if forDestinations, let destination {
-            tiles.insert(VectorTile(latitude: destination.latitude, longitude: destination.longitude, zoom: zoomLevel))
+        if forDestinations, let destinationCoordinate {
+            tiles.insert(VectorTile(latitude: destinationCoordinate.latitude,
+                                    longitude: destinationCoordinate.longitude,
+                                    zoom: zoomLevel))
         }
         
         return tiles

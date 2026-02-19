@@ -295,6 +295,10 @@ class MockDestinationManager: DestinationManagerProtocol {
     var destinationKey: String?
     var isDestinationSet: Bool = false
     var destination: RealmReferenceEntity?
+    var destinationPOI: POI?
+    var destinationIsTemporary: Bool = false
+    var destinationNickname: String?
+    var destinationEstimatedAddress: String?
     var isAudioEnabled: Bool = false
     var isBeaconInBounds: Bool = false
     var isCurrentBeaconAsyncFinishable: Bool = false
@@ -309,6 +313,7 @@ class MockDestinationManager: DestinationManagerProtocol {
     func setDestinationAsync(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) async throws -> String { "" }
     func setDestinationAsync(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String { "" }
     func clearDestinationAsync(logContext: String?) async throws {}
+    func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool { false }
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool { false }
     func updateDestinationLocation(_ newLocation: CLLocation, userLocation: CLLocation) -> Bool { false }
     func clearStartupTemporaryDestinationIfNeeded() async {}

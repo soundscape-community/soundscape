@@ -435,7 +435,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                                                                tiles: tiles,
                                                                includePORs: reloadPORs,
                                                                prioritizeCurrent: prioritize,
-                                                               destination: destinationManager.destination)
+                                                               destinationCoordinate: destinationManager.destinationPOI?.centroidCoordinate)
             
             // Update tile fetching state
             fetchingTiles = true
@@ -715,7 +715,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     ///   - location: User's current location
     ///   - tiles: The set of tiles currently downloaded around the user
     /// - Returns: The set of tiles currently downloaded that should still be tracked, and a list of new tiles to download and track.
-    public class func checkForTiles(location: CLLocation, tiles: Set<VectorTile>, includePORs: Bool, prioritizeCurrent: Bool = false, destination: RealmReferenceEntity? = nil) -> (Set<VectorTile>, [VectorTile]) {
+    public class func checkForTiles(location: CLLocation, tiles: Set<VectorTile>, includePORs: Bool, prioritizeCurrent: Bool = false, destinationCoordinate: CLLocationCoordinate2D? = nil) -> (Set<VectorTile>, [VectorTile]) {
         guard !prioritizeCurrent else {
             var needed = [VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)]
             
@@ -723,7 +723,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                 needed = Array(SpatialDataStoreRegistry.store.tiles(forDestinations: true,
                                                                     forReferences: true,
                                                                     at: zoomLevel,
-                                                                    destination: destination).union(needed))
+                                                                    destinationCoordinate: destinationCoordinate).union(needed))
             }
             
             return (Set<VectorTile>(), needed)
@@ -735,7 +735,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             neededTiles = Array(SpatialDataStoreRegistry.store.tiles(forDestinations: true,
                                                                      forReferences: true,
                                                                      at: zoomLevel,
-                                                                     destination: destination).union(neededTiles))
+                                                                     destinationCoordinate: destinationCoordinate).union(neededTiles))
         }
         
         let remainingTiles = Set(tiles.filter { neededTiles.contains($0) }) // Remove tile we don't need anymore
