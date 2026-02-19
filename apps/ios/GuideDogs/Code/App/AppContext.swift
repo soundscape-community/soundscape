@@ -1469,13 +1469,15 @@ class AppContext {
         
         startBLE()
         
-        // If the user killed the app during the headset test, remove the temporary beacon
-        if spatialDataContext.destinationManager.destination?.nickname == "HeadsetTest" {
-            Task { @MainActor [weak self] in
-                guard let self else {
-                    return
-                }
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
 
+            await self.spatialDataContext.destinationManager.clearStartupTemporaryDestinationIfNeeded()
+
+            // If the user killed the app during the headset test, remove the temporary beacon.
+            if self.spatialDataContext.destinationManager.destination?.nickname == "HeadsetTest" {
                 do {
                     try await self.spatialDataContext.destinationManager.clearDestinationAsync(logContext: nil)
                 } catch {

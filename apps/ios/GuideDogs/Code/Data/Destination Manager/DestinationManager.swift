@@ -212,15 +212,6 @@ class DestinationManager: DestinationManagerProtocol {
             destinationKey = nil
         }
         
-        // If the current destination is temp and doesn't have a name, remove it (it was from the scavenger hunt)
-        if let destination = destination, destination.isTemp, destination.name == RouteGuidance.name {
-            do {
-                try clearDestination(logContext: "startup")
-            } catch {
-                GDLogAppError("Failed to clear temp/unnamed beacon on startup")
-            }
-        }
-        
         if let poi = destination?.getPOI(), let userLocation = userLocation {
             // Determine if user is within geofence
             isWithinGeofence = isLocationWithinGeofence(origin: poi, location: userLocation)
@@ -547,6 +538,19 @@ class DestinationManager: DestinationManagerProtocol {
     func updateDestinationLocation(_ newLocation: CLLocation, userLocation: CLLocation) -> Bool {
         temporaryBeaconClosestLocation = newLocation
         return enableDestinationAudio(beaconLocation: newLocation, userLocation: userLocation, isUnmuting: false, notify: false)
+    }
+
+    func clearStartupTemporaryDestinationIfNeeded() async {
+        // Legacy scavenger-hunt beacons were stored as temporary destinations with the route-guidance placeholder name.
+        guard let destination = destination, destination.isTemp, destination.name == RouteGuidance.name else {
+            return
+        }
+
+        do {
+            try await clearDestinationAsync(logContext: "startup")
+        } catch {
+            GDLogAppError("Failed to clear temp/unnamed beacon on startup")
+        }
     }
     
     /// Enables the audio beacon sound for the current destination, if one is set.

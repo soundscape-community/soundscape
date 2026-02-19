@@ -238,6 +238,23 @@ final class DestinationManagerTest: XCTestCase {
         XCTAssertEqual(removeAllTemporaryCallCount, 1)
     }
 
+    func testClearStartupTemporaryDestinationIfNeededClearsLegacyTemporaryRouteGuidanceBeacon() async throws {
+        let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading)
+        let location = GenericLocation(lat: 42.7290570, lon: -73.6726370, name: RouteGuidance.name)
+
+        _ = try await dm.setDestinationAsync(location: location,
+                                             address: nil,
+                                             enableAudio: false,
+                                             userLocation: nil,
+                                             logContext: nil)
+        XCTAssertTrue(dm.isDestinationSet)
+
+        await dm.clearStartupTemporaryDestinationIfNeeded()
+
+        XCTAssertFalse(dm.isDestinationSet)
+        XCTAssertNil(dm.destinationKey)
+    }
+
     func testSetDestinationGenericLocationUsesInjectedEntityIDLookup() throws {
         let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                                   lon: -73.6726370,

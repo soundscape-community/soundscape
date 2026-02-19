@@ -535,6 +535,9 @@ Phase 1 complete:
 - 2026-02-19: Deprecated destination-only synchronous temporary-marker APIs on `DestinationEntityStore` (`addTemporaryReferenceEntity` overloads and `removeAllTemporaryReferenceEntities`) and marked corresponding `SpatialDataDestinationEntityStore` sync implementations as compatibility shims in favor of async variants.
 - 2026-02-19: Deprecated synchronous destination temporary-marker entrypoints on `DestinationManagerProtocol`/`DestinationManager` (`setDestination` location/entityKey/behavior variants and `clearDestination`) to keep remaining sync calls explicitly scoped to temporary compatibility pathways while async destination APIs remain canonical.
 - 2026-02-19: Validation for destination sync-shim deprecation slice: `bash apps/common/Scripts/check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`), and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd14`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `DestinationManagerTest` pass (`61` tests, `0` failures).
+- 2026-02-19: Migrated the remaining startup-only synchronous destination cleanup out of `DestinationManager` initialization into an async-safe boot seam by adding `DestinationManagerProtocol.clearStartupTemporaryDestinationIfNeeded()` and invoking it in `AppContext.start(...)` before headset-test cleanup.
+- 2026-02-19: Removed direct init-time sync `clearDestination(logContext: "startup")` usage in `DestinationManager`; legacy temporary route-guidance placeholder beacon cleanup now runs through the async destination API (`clearDestinationAsync(logContext:)`) inside the new startup seam.
+- 2026-02-19: Added focused destination startup-seam coverage (`DestinationManagerTest.testClearStartupTemporaryDestinationIfNeededClearsLegacyTemporaryRouteGuidanceBeacon`) and validated this slice with `bash apps/common/Scripts/check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`), and `swift Scripts/LocalizationLinter/main.swift` passing; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd15`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `DestinationManagerTest` pass (`62` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -663,9 +666,9 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. For each destination sync deprecation/removal slice, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
-2. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
-3. Migrate the remaining startup-only destination cleanup sync path to an async-safe boot seam so deprecated destination sync shims can be removed cleanly.
+1. Remove deprecated destination synchronous compatibility shims (`DestinationEntityStore` temporary-marker sync methods plus `DestinationManagerProtocol` sync destination set/clear variants) now that startup and runtime destination cleanup flows are async-seamed.
+2. For each destination sync removal slice, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
+3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
 
 ## Session Handoff (2026-02-10)
 - Latest landed commits for this slice sequence:
