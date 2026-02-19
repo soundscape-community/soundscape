@@ -54,12 +54,16 @@ protocol DestinationEntityStore {
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String?
     func referenceEntityID(forEntityKey key: String) -> String?
     func referenceEntityID(forEntityKey key: String) async -> String?
+    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(location:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
+    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(location:nickname:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String
+    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(entityKey:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String
+    @available(*, deprecated, message: "Use async `removeAllTemporaryReferenceEntities()`; this sync API is a temporary compatibility shim.")
     func removeAllTemporaryReferenceEntities() throws
     func removeAllTemporaryReferenceEntities() async throws
 }
@@ -332,6 +336,7 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - logSource: The context of the call that will be passed to the telemetry service
     /// - Returns: The id of the reference entity set as the destination
     /// - Throws: If the temp reference entity cannot be created or if destination cannot be set
+    @available(*, deprecated, message: "Use async `setDestinationAsync(location:address:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
     func setDestination(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
         // The generic location cannot already exist if this method is called, so go ahead and create one
@@ -342,6 +347,7 @@ class DestinationManager: DestinationManagerProtocol {
         return try setDestination(location: genericLoc, address: address, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
     }
     
+    @available(*, deprecated, message: "Use async `setDestinationAsync(location:address:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
     func setDestination(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
         // If the reference entity already exists, just set the destination to that
@@ -383,6 +389,7 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - logSource: The context of the call that will be passed to the telemetry service
     /// - Returns: The id of the reference entity set as the destination
     /// - Throws: If the temp reference entity cannot be created or if destination cannot be set
+    @available(*, deprecated, message: "Use async `setDestinationAsync(location:behavior:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
     func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
         // The generic location cannot already exist if this method is called, so go ahead and create one
@@ -422,6 +429,7 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - logContext: The context of the call that will be passed to the telemetry service
     /// - Returns: The id of the reference entity set as the destination
     /// - Throws: If the temp reference entity cannot be created or if destination cannot be set
+    @available(*, deprecated, message: "Use async `setDestinationAsync(entityKey:enableAudio:userLocation:estimatedAddress:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) throws -> String {
         // If the reference entity already exists, just set the destination to that
@@ -455,6 +463,7 @@ class DestinationManager: DestinationManagerProtocol {
     /// after the destination has been cleared.
     ///
     /// - Throws: If temporary reference entities can not be deleted
+    @available(*, deprecated, message: "Use async `clearDestinationAsync(logContext:)`; this sync API is a temporary compatibility shim.")
     func clearDestination(logContext: String?) throws {
         // Remove all temporary reference entities
         try destinationStore.removeAllTemporaryReferenceEntities()

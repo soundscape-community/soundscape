@@ -39,27 +39,32 @@ protocol DestinationManagerProtocol: AnyObject {
 
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws
     
+    @available(*, deprecated, message: "Use async `setDestinationAsync(location:address:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
     func setDestination(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
     
+    @available(*, deprecated, message: "Use async `setDestinationAsync(location:address:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
     func setDestination(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
 
     @discardableResult
     func setDestinationAsync(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String
     
+    @available(*, deprecated, message: "Use async `setDestinationAsync(entityKey:enableAudio:userLocation:estimatedAddress:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) throws -> String
 
     @discardableResult
     func setDestinationAsync(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) async throws -> String
     
+    @available(*, deprecated, message: "Use async `setDestinationAsync(location:behavior:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
     func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
 
     @discardableResult
     func setDestinationAsync(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String
 
+    @available(*, deprecated, message: "Use async `clearDestinationAsync(logContext:)`; this sync API is a temporary compatibility shim.")
     func clearDestination(logContext: String?) throws
     func clearDestinationAsync(logContext: String?) async throws
     
@@ -85,11 +90,13 @@ extension DestinationManagerProtocol {
     }
     
     @discardableResult
+    @available(*, deprecated, message: "Use async `setDestinationAsync(location:address:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
     func setDestination(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?) throws -> String {
         return try setDestination(location: location, address: address, enableAudio: enableAudio, userLocation: userLocation, logContext: nil)
     }
     
     @discardableResult
+    @available(*, deprecated, message: "Use async `setDestinationAsync(entityKey:enableAudio:userLocation:estimatedAddress:logContext:)`; this sync API is a temporary compatibility shim.")
     func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?) throws -> String {
         return try setDestination(entityKey: entityKey, enableAudio: enableAudio, userLocation: userLocation, estimatedAddress: estimatedAddress, logContext: nil)
     }
@@ -108,6 +115,7 @@ extension DestinationManagerProtocol {
         try await setDestinationAsync(entityKey: entityKey, enableAudio: enableAudio, userLocation: userLocation, estimatedAddress: estimatedAddress, logContext: nil)
     }
     
+    @available(*, deprecated, message: "Use async `clearDestinationAsync(logContext:)`; this sync API is a temporary compatibility shim.")
     func clearDestination() throws {
         return try clearDestination(logContext: nil)
     }

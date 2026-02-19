@@ -167,6 +167,7 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
         SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.id
     }
 
+    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(location:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
         try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
                                                                        estimatedAddress: estimatedAddress)
@@ -177,6 +178,7 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
                                                                        estimatedAddress: estimatedAddress)
     }
 
+    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(location:nickname:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
         try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
                                                                        nickname: nickname,
@@ -189,6 +191,7 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
                                                                        estimatedAddress: estimatedAddress)
     }
 
+    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(entityKey:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
         try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey,
                                                                        estimatedAddress: estimatedAddress)
@@ -199,6 +202,7 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
                                                                        estimatedAddress: estimatedAddress)
     }
 
+    @available(*, deprecated, message: "Use async `removeAllTemporaryReferenceEntities()`; this sync API is a temporary compatibility shim.")
     func removeAllTemporaryReferenceEntities() throws {
         try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
     }
