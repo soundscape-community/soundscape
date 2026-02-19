@@ -56,6 +56,7 @@ Phase 1 complete:
 - 2026-02-19: Destination tile-selection seam now uses coordinate input (`destinationCoordinate`) instead of Realm entities.
 - 2026-02-19: Removed `DestinationManagerProtocol.destination` and `DestinationEntityStore.referenceEntity(forReferenceID:)` from app-facing surfaces; `DestinationManager.isDestination(key:)` now uses `destinationEntityKey(forReferenceID:)`.
 - 2026-02-19: Current destination-slice validation baseline is green across common package checks, iOS seam/boundary scripts, localization linting, `xcodebuild build-for-testing`, and targeted suites (`RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, `DestinationManagerTest`, `EventProcessorTest`, `DataRuntimeProviderDispatchTests`).
+- 2026-02-19: First-waypoint hydration precedence is now aligned as payload-first with async read fallback across cloud route import and `RouteParametersHandler` through shared `Route` helpers; targeted parity coverage was added in `CloudSyncContractBridgeTests` and `RouteStorageProviderDispatchTests`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -184,6 +185,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. For each destination seam-tightening slice, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
-2. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
-3. Continue destination seam tightening by auditing remaining full-entity lookups inside destination infrastructure adapters and migrate any app-facing flows to focused destination seams (POI/metadata/entity-key), while preserving startup/cache-reset behavior.
+1. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
+2. Continue destination seam tightening by auditing remaining full-entity lookups inside destination infrastructure adapters and migrate any app-facing flows to focused destination seams (POI/metadata/entity-key), while preserving startup/cache-reset behavior.
+3. As additional destination seam slices land, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to preserve first-waypoint hydration parity.

@@ -376,6 +376,48 @@ final class CloudSyncContractBridgeTests: XCTestCase {
                        accuracy: 0.000_001)
     }
 
+    func testSyncRoutesChangedKeyImportPrefersWaypointPayloadCoordinateOverAsyncReadContract() async {
+        let id = "route-import-payload-first-1"
+        let markerID = "route-import-payload-marker-1"
+        let routeKey = "routes.\(id)"
+        let payloadCoordinate = MarkerParameters(name: "Payload Marker",
+                                                 latitude: 47.6205,
+                                                 longitude: -122.3493)
+        let readCoordinate = SSGeoCoordinate(latitude: 48.1122, longitude: -122.7711)
+
+        let readMock = MockSpatialReadContract()
+        readMock.referenceByID[markerID] = ReferenceEntity(id: markerID,
+                                                           entityKey: nil,
+                                                           lastUpdatedDate: nil,
+                                                           lastSelectedDate: nil,
+                                                           isNew: false,
+                                                           isTemp: false,
+                                                           coordinate: readCoordinate,
+                                                           nickname: nil,
+                                                           estimatedAddress: nil,
+                                                           annotation: nil)
+        let writeMock = MockSpatialWriteContract()
+        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+
+        let store = TestCloudKeyValueStore()
+        store.storage[routeKey] = makeRouteData(id: id,
+                                                lastUpdatedDate: Date(timeIntervalSince1970: 2_000),
+                                                waypoints: [RouteWaypointParameters(index: 0,
+                                                                                    markerId: markerID,
+                                                                                    marker: payloadCoordinate)])
+
+        await store.syncRoutesAsync(reason: .serverChanged, changedKeys: [routeKey])
+
+        XCTAssertEqual(writeMock.importedRouteIDs, [id])
+        XCTAssertTrue(readMock.referenceByIDCalls.isEmpty)
+        XCTAssertEqual(writeMock.importedRoutes.first?.firstWaypointLatitude ?? 0,
+                       payloadCoordinate.location.coordinate.latitude,
+                       accuracy: 0.000_001)
+        XCTAssertEqual(writeMock.importedRoutes.first?.firstWaypointLongitude ?? 0,
+                       payloadCoordinate.location.coordinate.longitude,
+                       accuracy: 0.000_001)
+    }
+
     private func makeRouteData(id: String, lastUpdatedDate: Date?, waypoints: [RouteWaypointParameters] = []) -> Data {
         let routeParameters = RouteParameters(id: id,
                                               name: "Route \(id)",

@@ -92,17 +92,8 @@ class RouteParametersHandler {
             }
 
             Task { @MainActor in
-                // Preserve payload-first behavior, but use async contract fallback
-                // before route initialization to avoid sync marker lookups.
-                let firstWaypointCoordinate: CLLocationCoordinate2D?
-                if let firstWaypoint = parameters.waypoints.min(by: { $0.index < $1.index }),
-                   let markerCoordinate = firstWaypoint.marker?.location.coordinate {
-                    firstWaypointCoordinate = CLLocationCoordinate2D(latitude: markerCoordinate.latitude,
-                                                                     longitude: markerCoordinate.longitude)
-                } else {
-                    firstWaypointCoordinate = await Route.firstWaypointCoordinate(for: parameters.waypoints,
+                let firstWaypointCoordinate = await Route.firstWaypointCoordinate(for: parameters.waypoints,
                                                                                   using: DataContractRegistry.spatialRead)
-                }
 
                 var value = Route(name: parameters.name,
                                   description: parameters.routeDescription,

@@ -417,6 +417,55 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [markerID])
     }
 
+    func testRouteParametersHandlerPrefersWaypointPayloadCoordinateOverAsyncReadContract() {
+        let markerID = "handler-payload-marker-\(UUID().uuidString)"
+        let payloadCoordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
+        let asyncReadCoordinate = CLLocationCoordinate2D(latitude: 48.1122, longitude: -122.7711)
+
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[markerID] = ReferenceEntity(id: markerID,
+                                                                   entityKey: nil,
+                                                                   lastUpdatedDate: nil,
+                                                                   lastSelectedDate: nil,
+                                                                   isNew: false,
+                                                                   isTemp: false,
+                                                                   coordinate: asyncReadCoordinate.ssGeoCoordinate,
+                                                                   nickname: nil,
+                                                                   estimatedAddress: nil,
+                                                                   annotation: nil)
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let parameters = RouteParameters(id: "handler-route-\(UUID().uuidString)",
+                                         name: "Handler Route Payload First",
+                                         routeDescription: nil,
+                                         waypoints: [RouteWaypointParameters(index: 0,
+                                                                             markerId: markerID,
+                                                                             marker: MarkerParameters(name: "Payload Marker",
+                                                                                                      latitude: payloadCoordinate.latitude,
+                                                                                                      longitude: payloadCoordinate.longitude))],
+                                         createdDate: nil,
+                                         lastUpdatedDate: nil,
+                                         lastSelectedDate: nil)
+
+        let handler = RouteParametersHandler()
+        let expectation = expectation(description: "hydrate first waypoint from payload")
+
+        handler.makeRoute(from: parameters) { result in
+            switch result {
+            case .success(let route):
+                XCTAssertEqual(route.firstWaypointLatitude ?? 0, payloadCoordinate.latitude, accuracy: 0.000_001)
+                XCTAssertEqual(route.firstWaypointLongitude ?? 0, payloadCoordinate.longitude, accuracy: 0.000_001)
+            case .failure(let error):
+                XCTFail("Expected route initialization to succeed, received error: \(error)")
+            }
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertTrue(readMock.referenceEntityByIDCalls.isEmpty)
+    }
+
     func testMarkerParametersInitMarkerIDUsesInjectedSpatialStoreLookup() {
         let markerID = "marker-id"
         let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))

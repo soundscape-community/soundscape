@@ -250,16 +250,12 @@ struct Route: Identifiable {
             return nil
         }
 
-        if let markerCoordinate = await markerCoordinate(forMarkerID: first.markerId, using: spatialRead) {
-            return markerCoordinate
+        if let markerCoordinate = first.marker?.location.coordinate {
+            return CLLocationCoordinate2D(latitude: markerCoordinate.latitude,
+                                          longitude: markerCoordinate.longitude)
         }
 
-        guard let markerCoordinate = first.marker?.location.coordinate else {
-            return nil
-        }
-
-        return CLLocationCoordinate2D(latitude: markerCoordinate.latitude,
-                                      longitude: markerCoordinate.longitude)
+        return await markerCoordinate(forMarkerID: first.markerId, using: spatialRead)
     }
 
     @MainActor
