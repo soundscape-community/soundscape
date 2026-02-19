@@ -69,28 +69,12 @@ final class DestinationManagerTest: XCTestCase {
             referenceEntityIDForEntityKeyHandler?(key) ?? nil
         }
 
-        func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
-            guard let handler = addTemporaryReferenceEntityHandler else {
-                XCTFail("addTemporaryReferenceEntityHandler was not set")
-                throw DestinationManagerError.referenceEntityDoesNotExist
-            }
-            return try handler(location, estimatedAddress)
-        }
-
         func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
             guard let handler = addTemporaryReferenceEntityHandler else {
                 XCTFail("addTemporaryReferenceEntityHandler was not set")
                 throw DestinationManagerError.referenceEntityDoesNotExist
             }
             return try handler(location, estimatedAddress)
-        }
-
-        func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
-            guard let handler = addTemporaryReferenceEntityWithNicknameHandler else {
-                XCTFail("addTemporaryReferenceEntityWithNicknameHandler was not set")
-                throw DestinationManagerError.referenceEntityDoesNotExist
-            }
-            return try handler(location, nickname, estimatedAddress)
         }
 
         func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
@@ -101,24 +85,12 @@ final class DestinationManagerTest: XCTestCase {
             return try handler(location, nickname, estimatedAddress)
         }
 
-        func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
-            guard let handler = addTemporaryReferenceEntityForEntityKeyHandler else {
-                XCTFail("addTemporaryReferenceEntityForEntityKeyHandler was not set")
-                throw DestinationManagerError.referenceEntityDoesNotExist
-            }
-            return try handler(entityKey, estimatedAddress)
-        }
-
         func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
             guard let handler = addTemporaryReferenceEntityForEntityKeyHandler else {
                 XCTFail("addTemporaryReferenceEntityForEntityKeyHandler was not set")
                 throw DestinationManagerError.referenceEntityDoesNotExist
             }
             return try handler(entityKey, estimatedAddress)
-        }
-
-        func removeAllTemporaryReferenceEntities() throws {
-            try removeAllTemporaryReferenceEntitiesHandler?()
         }
 
         func removeAllTemporaryReferenceEntities() async throws {
@@ -144,10 +116,14 @@ final class DestinationManagerTest: XCTestCase {
         XCTAssertNil(dm.beaconPlayerId)
     }
     
-    func testBasicDestination() throws {
+    func testBasicDestination() async throws {
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading)
         XCTAssertFalse(dm.isDestinationSet)
-        let ref_entity = try dm.setDestination(location: sage_burdett_coord, address: nil, enableAudio: false, userLocation: barton_front_coord)
+        let ref_entity = try await dm.setDestinationAsync(location: sage_burdett_coord,
+                                                          address: nil,
+                                                          enableAudio: false,
+                                                          userLocation: barton_front_coord,
+                                                          logContext: nil)
         XCTAssertFalse(dm.isUserWithinGeofence(barton_front_coord)) // we are not at the destination
         XCTAssertTrue(dm.isDestinationSet)
         XCTAssertTrue(dm.isDestination(key: ref_entity))
@@ -156,17 +132,28 @@ final class DestinationManagerTest: XCTestCase {
         
         // clear destination
         
-        try dm.clearDestination()
+        try await dm.clearDestinationAsync(logContext: nil)
         XCTAssertFalse(dm.isDestinationSet)
         XCTAssertFalse(dm.isAudioEnabled)
         // clearing should delete our temporary destination location, meaning this should error:
-        XCTAssertThrowsError(try dm.setDestination(referenceID: ref_entity, enableAudio: false, userLocation: nil, logContext: nil))
+        do {
+            try await dm.setDestinationAsync(referenceID: ref_entity, enableAudio: false, userLocation: nil, logContext: nil)
+            XCTFail("Expected setting destination for a removed temporary reference entity to throw")
+        } catch DestinationManagerError.referenceEntityDoesNotExist {
+            // Expected for deleted temporary destination entities.
+        } catch {
+            XCTFail("Expected DestinationManagerError.referenceEntityDoesNotExist, got \(error)")
+        }
     }
     
     /// geofence is within `EnterImmediateVicinityDistance` and `LeaveImmediateVicinityDistance` of the destination
-    func testDestinationInGeoFence() throws {
+    func testDestinationInGeoFence() async throws {
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading)
-        _ = try dm.setDestination(location: rpi_bridge_east, address: nil, enableAudio: true, userLocation: rpi_bridge_east)
+        _ = try await dm.setDestinationAsync(location: rpi_bridge_east,
+                                             address: nil,
+                                             enableAudio: true,
+                                             userLocation: rpi_bridge_east,
+                                             logContext: nil)
         XCTAssertFalse(dm.isAudioEnabled) // since we are already at the destination, audio should be disabled
         XCTAssertTrue(dm.isUserWithinGeofence(rpi_bridge_east)) // we are at the destination
         XCTAssertFalse(dm.isUserWithinGeofence(rpi_bridge_west)) // if we were across the bridge we would not be
@@ -175,14 +162,14 @@ final class DestinationManagerTest: XCTestCase {
         
         // clear destination
         
-        try dm.clearDestination()
+        try await dm.clearDestinationAsync(logContext: nil)
         XCTAssertFalse(dm.isDestinationSet)
         XCTAssertFalse(dm.isAudioEnabled)
         XCTAssertFalse(dm.isUserWithinGeofence(rpi_bridge_east)) // no longer in geofence as it is gone
         XCTAssertFalse(dm.isUserWithinGeofence(rpi_bridge_west)) // and still across the bridge isn't either
     }
 
-    func testSetDestinationUsesInjectedEntityStoreLookup() throws {
+    func testSetDestinationUsesInjectedEntityStoreLookup() async throws {
         let testID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                               lon: -73.6726370,
                                                                                                               name: "Test"),
@@ -201,16 +188,16 @@ final class DestinationManagerTest: XCTestCase {
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
-        try dm.setDestination(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
+        try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
 
         XCTAssertEqual(lookedUpIDs.first, testID)
         XCTAssertTrue(dm.isDestinationSet)
 
-        try dm.clearDestination()
+        try await dm.clearDestinationAsync(logContext: nil)
         XCTAssertEqual(removeAllTemporaryCallCount, 1)
     }
 
-    func testClearDestinationUsesInjectedEntityStoreCleanup() throws {
+    func testClearDestinationUsesInjectedEntityStoreCleanup() async throws {
         let store = MockDestinationEntityStore()
         var removeAllTemporaryCallCount = 0
 
@@ -219,7 +206,7 @@ final class DestinationManagerTest: XCTestCase {
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
-        try dm.clearDestination()
+        try await dm.clearDestinationAsync(logContext: nil)
 
         XCTAssertEqual(removeAllTemporaryCallCount, 1)
     }
@@ -255,7 +242,7 @@ final class DestinationManagerTest: XCTestCase {
         XCTAssertNil(dm.destinationKey)
     }
 
-    func testSetDestinationGenericLocationUsesInjectedEntityIDLookup() throws {
+    func testSetDestinationGenericLocationUsesInjectedEntityIDLookup() async throws {
         let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                                   lon: -73.6726370,
                                                                                                                   name: "Test Generic"),
@@ -281,17 +268,17 @@ final class DestinationManagerTest: XCTestCase {
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
         let location = GenericLocation(lat: 42.7290570, lon: -73.6726370, name: "Test Generic")
-        let returnedID = try dm.setDestination(location: location,
-                                               address: nil,
-                                               enableAudio: false,
-                                               userLocation: nil,
-                                               logContext: nil)
+        let returnedID = try await dm.setDestinationAsync(location: location,
+                                                          address: nil,
+                                                          enableAudio: false,
+                                                          userLocation: nil,
+                                                          logContext: nil)
 
         XCTAssertEqual(returnedID, existingID)
         XCTAssertEqual(lookedUpLocations.count, 1)
         XCTAssertEqual(addTemporaryCallCount, 0)
 
-        try dm.clearDestination()
+        try await dm.clearDestinationAsync(logContext: nil)
     }
 
     func testSetDestinationGenericLocationAsyncUsesInjectedEntityIDLookup() async throws {
@@ -333,7 +320,7 @@ final class DestinationManagerTest: XCTestCase {
         try await dm.clearDestinationAsync(logContext: nil)
     }
 
-    func testSetDestinationEntityKeyUsesInjectedEntityIDLookup() throws {
+    func testSetDestinationEntityKeyUsesInjectedEntityIDLookup() async throws {
         let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7292000,
                                                                                                                   lon: -73.6727000,
                                                                                                                   name: "Test Entity Key"),
@@ -358,17 +345,17 @@ final class DestinationManagerTest: XCTestCase {
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
-        let returnedID = try dm.setDestination(entityKey: "entity-key-123",
-                                               enableAudio: false,
-                                               userLocation: nil,
-                                               estimatedAddress: nil,
-                                               logContext: nil)
+        let returnedID = try await dm.setDestinationAsync(entityKey: "entity-key-123",
+                                                          enableAudio: false,
+                                                          userLocation: nil,
+                                                          estimatedAddress: nil,
+                                                          logContext: nil)
 
         XCTAssertEqual(returnedID, existingID)
         XCTAssertEqual(lookedUpEntityKeys, ["entity-key-123"])
         XCTAssertEqual(addTemporaryCallCount, 0)
 
-        try dm.clearDestination()
+        try await dm.clearDestinationAsync(logContext: nil)
     }
 
     func testSetDestinationEntityKeyAsyncUsesInjectedEntityIDLookup() async throws {

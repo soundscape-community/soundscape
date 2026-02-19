@@ -54,17 +54,9 @@ protocol DestinationEntityStore {
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String?
     func referenceEntityID(forEntityKey key: String) -> String?
     func referenceEntityID(forEntityKey key: String) async -> String?
-    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(location:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
-    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(location:nickname:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String
-    @available(*, deprecated, message: "Use async `addTemporaryReferenceEntity(entityKey:estimatedAddress:)`; this sync API is a temporary compatibility shim.")
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String
-    @available(*, deprecated, message: "Use async `removeAllTemporaryReferenceEntities()`; this sync API is a temporary compatibility shim.")
-    func removeAllTemporaryReferenceEntities() throws
     func removeAllTemporaryReferenceEntities() async throws
 }
 
@@ -252,7 +244,7 @@ class DestinationManager: DestinationManagerProtocol {
     
     /// Checks whether the current destination is the specified key.
     /// - Parameters:
-    ///   - key: the destination's entity key in the `SpatialDataCache`. Same as the referenceID in `setDestination()`.
+    ///   - key: the destination's entity key in the `SpatialDataCache`. Same as the referenceID in `setDestinationAsync(...)`.
     /// - Returns: `false` if the destination isn't set or the entity key doesn't match the destination
     func isDestination(key: String) -> Bool {
         guard destinationKey == key || destination?.entityKey == key else {
@@ -271,7 +263,14 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - userLocation: The user's current location
     ///   - logContext: The context of the call that will be passed to the telemetry service
     /// - Throws: If the destination cannot be set
-    func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws {
+    func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws {
+        try setDestination(referenceID: referenceID,
+                           enableAudio: enableAudio,
+                           userLocation: userLocation,
+                           logContext: logContext)
+    }
+
+    private func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws {
         guard let entity = destinationStore.referenceEntity(forReferenceID: referenceID) else {
             throw DestinationManagerError.referenceEntityDoesNotExist
         }
@@ -327,44 +326,39 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - logSource: The context of the call that will be passed to the telemetry service
     /// - Returns: The id of the reference entity set as the destination
     /// - Throws: If the temp reference entity cannot be created or if destination cannot be set
-    @available(*, deprecated, message: "Use async `setDestinationAsync(location:address:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
     @discardableResult
-    func setDestination(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
+    func setDestinationAsync(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String {
         // The generic location cannot already exist if this method is called, so go ahead and create one
         let genericLoc: GenericLocation = GenericLocation(lat: location.coordinate.latitude,
                                                           lon: location.coordinate.longitude,
                                                           name: address == nil ? GDLocalizedString("beacon.audio_beacon") : GDLocalizationUnnecessary(""))
         
-        return try setDestination(location: genericLoc, address: address, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+        return try await setDestinationAsync(location: genericLoc,
+                                             address: address,
+                                             enableAudio: enableAudio,
+                                             userLocation: userLocation,
+                                             logContext: logContext)
     }
     
-    @available(*, deprecated, message: "Use async `setDestinationAsync(location:address:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
-    @discardableResult
-    func setDestination(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
-        // If the reference entity already exists, just set the destination to that
-        if let referenceID = destinationStore.referenceEntityID(forGenericLocation: location) {
-            try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
-            
-            return referenceID
-        }
-        
-        let refID = try destinationStore.addTemporaryReferenceEntity(location: location, estimatedAddress: address)
-        
-        // Set the newly created generic location as the destination
-        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
-        
-        return refID
-    }
-
     @discardableResult
     func setDestinationAsync(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String {
+        // If the reference entity already exists, just set the destination to that
         if let referenceID = await destinationStore.referenceEntityID(forGenericLocation: location) {
-            try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+            try await setDestinationAsync(referenceID: referenceID,
+                                          enableAudio: enableAudio,
+                                          userLocation: userLocation,
+                                          logContext: logContext)
             return referenceID
         }
-
+        
         let refID = try await destinationStore.addTemporaryReferenceEntity(location: location, estimatedAddress: address)
-        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+        
+        // Set the newly created generic location as the destination
+        try await setDestinationAsync(referenceID: refID,
+                                      enableAudio: enableAudio,
+                                      userLocation: userLocation,
+                                      logContext: logContext)
+        
         return refID
     }
     
@@ -378,23 +372,6 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - enableAudio: Flag indicating if the beacon should be turned on automatically for the destination
     ///   - userLocation: The user's current location
     ///   - logSource: The context of the call that will be passed to the telemetry service
-    /// - Returns: The id of the reference entity set as the destination
-    /// - Throws: If the temp reference entity cannot be created or if destination cannot be set
-    @available(*, deprecated, message: "Use async `setDestinationAsync(location:behavior:enableAudio:userLocation:logContext:)`; this sync API is a temporary compatibility shim.")
-    @discardableResult
-    func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String {
-        // The generic location cannot already exist if this method is called, so go ahead and create one
-        let genericLoc: GenericLocation = GenericLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude, name: GDLocalizationUnnecessary(""))
-        let refID = try destinationStore.addTemporaryReferenceEntity(location: genericLoc,
-                                                                     nickname: behavior,
-                                                                     estimatedAddress: nil)
-        
-        // Set the newly created generic location as the destination
-        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
-        
-        return refID
-    }
-
     @discardableResult
     func setDestinationAsync(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String {
         let genericLoc: GenericLocation = GenericLocation(lat: location.coordinate.latitude,
@@ -403,7 +380,10 @@ class DestinationManager: DestinationManagerProtocol {
         let refID = try await destinationStore.addTemporaryReferenceEntity(location: genericLoc,
                                                                             nickname: behavior,
                                                                             estimatedAddress: nil)
-        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+        try await setDestinationAsync(referenceID: refID,
+                                      enableAudio: enableAudio,
+                                      userLocation: userLocation,
+                                      logContext: logContext)
         return refID
     }
     
@@ -418,33 +398,21 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - userLocation: The user's current location
     ///   - estimatedAddress: Estimated address of the POI. Ignored if the entityKey corresponds to a marker
     ///   - logContext: The context of the call that will be passed to the telemetry service
-    /// - Returns: The id of the reference entity set as the destination
-    /// - Throws: If the temp reference entity cannot be created or if destination cannot be set
-    @available(*, deprecated, message: "Use async `setDestinationAsync(entityKey:enableAudio:userLocation:estimatedAddress:logContext:)`; this sync API is a temporary compatibility shim.")
-    @discardableResult
-    func setDestination(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) throws -> String {
-        // If the reference entity already exists, just set the destination to that
-        if let referenceID = destinationStore.referenceEntityID(forEntityKey: entityKey) {
-            try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
-            
-            return referenceID
-        }
-        
-        let refID = try destinationStore.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: estimatedAddress)
-        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
-        
-        return refID
-    }
-
     @discardableResult
     func setDestinationAsync(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) async throws -> String {
         if let referenceID = await destinationStore.referenceEntityID(forEntityKey: entityKey) {
-            try setDestination(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+            try await setDestinationAsync(referenceID: referenceID,
+                                          enableAudio: enableAudio,
+                                          userLocation: userLocation,
+                                          logContext: logContext)
             return referenceID
         }
 
         let refID = try await destinationStore.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: estimatedAddress)
-        try setDestination(referenceID: refID, enableAudio: enableAudio, userLocation: userLocation, logContext: logContext)
+        try await setDestinationAsync(referenceID: refID,
+                                      enableAudio: enableAudio,
+                                      userLocation: userLocation,
+                                      logContext: logContext)
         return refID
     }
     
@@ -454,14 +422,6 @@ class DestinationManager: DestinationManagerProtocol {
     /// after the destination has been cleared.
     ///
     /// - Throws: If temporary reference entities can not be deleted
-    @available(*, deprecated, message: "Use async `clearDestinationAsync(logContext:)`; this sync API is a temporary compatibility shim.")
-    func clearDestination(logContext: String?) throws {
-        // Remove all temporary reference entities
-        try destinationStore.removeAllTemporaryReferenceEntities()
-
-        clearDestinationState(logContext: logContext)
-    }
-
     func clearDestinationAsync(logContext: String?) async throws {
         try await destinationStore.removeAllTemporaryReferenceEntities()
         clearDestinationState(logContext: logContext)
