@@ -20,6 +20,13 @@ protocol SpatialDataStore {
     func referenceEntities() -> [RealmReferenceEntity]
     func searchByKey(_ key: String) -> POI?
     func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity?
+    func destinationPOI(forReferenceID id: String) -> POI?
+    func destinationEntityKey(forReferenceID id: String) -> String?
+    func destinationIsTemporary(forReferenceID id: String) -> Bool
+    func destinationNickname(forReferenceID id: String) -> String?
+    func destinationEstimatedAddress(forReferenceID id: String) -> String?
+    func markReferenceEntitySelected(forReferenceID id: String) throws
+    func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
@@ -64,6 +71,34 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity? {
         SpatialDataCache.referenceEntityByGenericLocation(location)
+    }
+
+    func destinationPOI(forReferenceID id: String) -> POI? {
+        referenceEntityByKey(id)?.getPOI()
+    }
+
+    func destinationEntityKey(forReferenceID id: String) -> String? {
+        referenceEntityByKey(id)?.entityKey
+    }
+
+    func destinationIsTemporary(forReferenceID id: String) -> Bool {
+        referenceEntityByKey(id)?.isTemp ?? false
+    }
+
+    func destinationNickname(forReferenceID id: String) -> String? {
+        referenceEntityByKey(id)?.nickname
+    }
+
+    func destinationEstimatedAddress(forReferenceID id: String) -> String? {
+        referenceEntityByKey(id)?.estimatedAddress
+    }
+
+    func markReferenceEntitySelected(forReferenceID id: String) throws {
+        try referenceEntityByKey(id)?.updateLastSelectedDate()
+    }
+
+    func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws {
+        try referenceEntityByKey(id)?.setTemporary(temporary)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {

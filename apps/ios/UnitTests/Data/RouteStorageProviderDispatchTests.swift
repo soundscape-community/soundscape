@@ -42,6 +42,13 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var referenceEntityByGenericLocationCallKeys: [String] = []
         private(set) var referenceEntitiesCallCount = 0
         private(set) var searchByKeyCallKeys: [String] = []
+        private(set) var destinationPOICallKeys: [String] = []
+        private(set) var destinationEntityKeyCallKeys: [String] = []
+        private(set) var destinationIsTemporaryCallKeys: [String] = []
+        private(set) var destinationNicknameCallKeys: [String] = []
+        private(set) var destinationEstimatedAddressCallKeys: [String] = []
+        private(set) var markReferenceEntitySelectedCallKeys: [String] = []
+        private(set) var setReferenceEntityTemporaryCalls: [(id: String, temporary: Bool)] = []
         private(set) var addTemporaryReferenceEntityLocationCallCount = 0
         private(set) var addTemporaryReferenceEntityLocationWithNicknameCallCount = 0
         private(set) var addTemporaryReferenceEntityEntityKeyCallKeys: [String] = []
@@ -93,6 +100,40 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             let key = locationKey(for: location.location.coordinate)
             referenceEntityByGenericLocationCallKeys.append(key)
             return referenceEntitiesByGenericLocation[key]
+        }
+
+        func destinationPOI(forReferenceID id: String) -> POI? {
+            destinationPOICallKeys.append(id)
+            return referenceEntitiesByKey[id]?.getPOI()
+        }
+
+        func destinationEntityKey(forReferenceID id: String) -> String? {
+            destinationEntityKeyCallKeys.append(id)
+            return referenceEntitiesByKey[id]?.entityKey
+        }
+
+        func destinationIsTemporary(forReferenceID id: String) -> Bool {
+            destinationIsTemporaryCallKeys.append(id)
+            return referenceEntitiesByKey[id]?.isTemp ?? false
+        }
+
+        func destinationNickname(forReferenceID id: String) -> String? {
+            destinationNicknameCallKeys.append(id)
+            return referenceEntitiesByKey[id]?.nickname
+        }
+
+        func destinationEstimatedAddress(forReferenceID id: String) -> String? {
+            destinationEstimatedAddressCallKeys.append(id)
+            return referenceEntitiesByKey[id]?.estimatedAddress
+        }
+
+        func markReferenceEntitySelected(forReferenceID id: String) throws {
+            markReferenceEntitySelectedCallKeys.append(id)
+        }
+
+        func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws {
+            setReferenceEntityTemporaryCalls.append((id: id, temporary: temporary))
+            referenceEntitiesByKey[id]?.isTemp = temporary
         }
 
         func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
@@ -587,6 +628,46 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.addTemporaryReferenceEntityLocationWithNicknameCallCount, 1)
         XCTAssertEqual(store.addTemporaryReferenceEntityEntityKeyCallKeys, [entityKey])
         XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
+    }
+
+    func testSpatialDataDestinationEntityStoreFocusedReadsAndMutationsDispatchToInjectedStore() throws {
+        let referenceID = "destination-reference-id"
+        let entityKey = "destination-entity-key"
+        let nickname = "Destination nickname"
+        let estimatedAddress = "123 Main St"
+        let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
+        marker.entityKey = entityKey
+        marker.isTemp = true
+        marker.nickname = nickname
+        marker.estimatedAddress = estimatedAddress
+
+        let store = MockSpatialDataStore()
+        store.referenceEntitiesByKey[referenceID] = marker
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let destinationStore = SpatialDataDestinationEntityStore()
+        let destinationPOI = destinationStore.destinationPOI(forReferenceID: referenceID)
+        let destinationEntityKey = destinationStore.destinationEntityKey(forReferenceID: referenceID)
+        let destinationIsTemporary = destinationStore.destinationIsTemporary(forReferenceID: referenceID)
+        let destinationNickname = destinationStore.destinationNickname(forReferenceID: referenceID)
+        let destinationEstimatedAddress = destinationStore.destinationEstimatedAddress(forReferenceID: referenceID)
+        try destinationStore.markReferenceEntitySelected(forReferenceID: referenceID)
+        try destinationStore.setReferenceEntityTemporary(forReferenceID: referenceID, temporary: false)
+
+        XCTAssertNotNil(destinationPOI)
+        XCTAssertEqual(destinationEntityKey, entityKey)
+        XCTAssertTrue(destinationIsTemporary)
+        XCTAssertEqual(destinationNickname, nickname)
+        XCTAssertEqual(destinationEstimatedAddress, estimatedAddress)
+        XCTAssertEqual(store.destinationPOICallKeys, [referenceID])
+        XCTAssertEqual(store.destinationEntityKeyCallKeys, [referenceID])
+        XCTAssertEqual(store.destinationIsTemporaryCallKeys, [referenceID])
+        XCTAssertEqual(store.destinationNicknameCallKeys, [referenceID])
+        XCTAssertEqual(store.destinationEstimatedAddressCallKeys, [referenceID])
+        XCTAssertEqual(store.markReferenceEntitySelectedCallKeys, [referenceID])
+        XCTAssertEqual(store.setReferenceEntityTemporaryCalls.count, 1)
+        XCTAssertEqual(store.setReferenceEntityTemporaryCalls.first?.id, referenceID)
+        XCTAssertFalse(store.setReferenceEntityTemporaryCalls.first?.temporary ?? true)
     }
 
     func testSpatialDataStoreRoadByKeyDispatchesToInjectedStore() {

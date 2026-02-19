@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -52,14 +53,14 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
     }
     
     private func playCallout() {
-        guard let entity = self.entity,
+        guard let destinationPOI = self.destinationPOI,
               let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
             // Return if destination could not be retrieved
             return
         }
         
-        let distance = entity.distanceToClosestLocation(from: location)
-        let loc = CLLocation(latitude: entity.latitude, longitude: entity.longitude)
+        let distance = destinationPOI.distanceToClosestLocation(from: location)
+        let loc = destinationPOI.closestLocation(from: location, useEntranceIfAvailable: true)
         let callout = LanguageFormatter.string(from: distance,
                                                accuracy: location.horizontalAccuracy,
                                                name: GDLocalizedString("beacon.generic_name"))

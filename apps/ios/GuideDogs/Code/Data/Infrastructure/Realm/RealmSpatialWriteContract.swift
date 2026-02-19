@@ -156,31 +156,32 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
 @MainActor
 struct SpatialDataDestinationEntityStore: DestinationEntityStore {
     func destinationPOI(forReferenceID id: String) -> POI? {
-        referenceEntity(forReferenceID: id)?.getPOI()
+        SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: id)
     }
 
     func destinationEntityKey(forReferenceID id: String) -> String? {
-        referenceEntity(forReferenceID: id)?.entityKey
+        SpatialDataStoreRegistry.store.destinationEntityKey(forReferenceID: id)
     }
 
     func destinationIsTemporary(forReferenceID id: String) -> Bool {
-        referenceEntity(forReferenceID: id)?.isTemp ?? false
+        SpatialDataStoreRegistry.store.destinationIsTemporary(forReferenceID: id)
     }
 
     func destinationNickname(forReferenceID id: String) -> String? {
-        referenceEntity(forReferenceID: id)?.nickname
+        SpatialDataStoreRegistry.store.destinationNickname(forReferenceID: id)
     }
 
     func destinationEstimatedAddress(forReferenceID id: String) -> String? {
-        referenceEntity(forReferenceID: id)?.estimatedAddress
+        SpatialDataStoreRegistry.store.destinationEstimatedAddress(forReferenceID: id)
     }
 
     func markReferenceEntitySelected(forReferenceID id: String) throws {
-        try referenceEntity(forReferenceID: id)?.updateLastSelectedDate()
+        try SpatialDataStoreRegistry.store.markReferenceEntitySelected(forReferenceID: id)
     }
 
     func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws {
-        try referenceEntity(forReferenceID: id)?.setTemporary(temporary)
+        try SpatialDataStoreRegistry.store.setReferenceEntityTemporary(forReferenceID: id,
+                                                                       temporary: temporary)
     }
 
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
@@ -209,9 +210,5 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
 
     func removeAllTemporaryReferenceEntities() async throws {
         try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
-    }
-
-    private func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByKey(id)
     }
 }

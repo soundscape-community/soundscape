@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -43,11 +44,11 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        guard let entity = entity else {
+        guard let destinationName = destinationName else {
             return
         }
         
-        let entityName = entity.name.isEmpty ? GDLocalizedString("poi.unknown") : entity.name
+        let entityName = destinationName.isEmpty ? GDLocalizedString("poi.unknown") : destinationName
         pageTextLabel.text = GDLocalizedString("tutorial.beacon.poi_selected", entityName)
     }
     
@@ -70,13 +71,13 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
             return
         }
         
-        guard let entity = entity else {
+        guard let destinationName = destinationName else {
             return
         }
         
         demoStarted = true
         
-        let entityName = entity.name.isEmpty ? GDLocalizedString("poi.unknown") : entity.name
+        let entityName = destinationName.isEmpty ? GDLocalizedString("poi.unknown") : destinationName
 
         play(delay: 1.0, text: GDLocalizedString("tutorial.beacon.poi_selected", entityName)) { [weak self] (finished) in
             guard finished else {

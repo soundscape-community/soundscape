@@ -23,11 +23,23 @@ class DestinationTutorialPage: BaseTutorialViewController {
     // MARK: Properties
     
     weak var delegate: DestinationTutorialPageDelegate?
-    private var entityLookupTask: Task<Void, Never>?
-    private var resolvedEntity: ReferenceEntity?
-    
-    var entity: ReferenceEntity? {
-        return resolvedEntity
+    private var resolvedDestinationPOI: POI?
+    private var resolvedDestinationName: String?
+
+    var destinationPOI: POI? {
+        if resolvedDestinationPOI == nil {
+            refreshEntity()
+        }
+
+        return resolvedDestinationPOI
+    }
+
+    var destinationName: String? {
+        if resolvedDestinationName == nil {
+            refreshEntity()
+        }
+
+        return resolvedDestinationName
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -36,37 +48,29 @@ class DestinationTutorialPage: BaseTutorialViewController {
     }
 
     private func refreshEntity() {
-        entityLookupTask?.cancel()
-
-        guard let key = delegate?.getEntityKey() else {
-            resolvedEntity = nil
+        guard delegate?.getEntityKey() != nil,
+              let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+            resolvedDestinationPOI = nil
+            resolvedDestinationName = nil
             return
         }
 
-        entityLookupTask = Task { @MainActor [weak self] in
-            guard let self else {
-                return
-            }
-
-            resolvedEntity = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: key)
-        }
-    }
-
-    deinit {
-        entityLookupTask?.cancel()
+        resolvedDestinationPOI = destinationManager.destinationPOI
+        resolvedDestinationName = destinationManager.destinationNickname ?? resolvedDestinationPOI?.localizedName
     }
     
     // MARK: BaseTutorialViewController Overrides
     
     override internal func play(delay: TimeInterval = 0.0, text: String, _ completion: ((Bool) -> Void)? = nil) {
-        if entity == nil {
+        if destinationName == nil {
             refreshEntity()
         }
 
         var textToPlay = text
         
         if text.contains("@!destination!!") {
-            textToPlay = text.replacingOccurrences(of: "@!destination!!", with: entity?.name ?? GDLocalizedString("tutorial.beacon.your_destination"))
+            textToPlay = text.replacingOccurrences(of: "@!destination!!",
+                                                   with: destinationName ?? GDLocalizedString("tutorial.beacon.your_destination"))
         }
         
         super.play(delay: delay, text: textToPlay, completion)
