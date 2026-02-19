@@ -1075,7 +1075,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [firstMarkerID])
     }
 
-    func testDefaultSpatialWriteImportReferenceEntityFromCloudHydratesFirstWaypointFromAsyncReadContract() async throws {
+    func testDefaultSpatialMaintenanceWriteImportReferenceEntityFromCloudHydratesFirstWaypointFromAsyncReadContract() async throws {
         SpatialDataCache.removeAllProviders()
         SpatialDataCache.register(provider: OSMPOISearchProvider())
         SpatialDataCache.register(provider: AddressSearchProvider())
@@ -1143,8 +1143,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                         annotation: nil)
         DataContractRegistry.configure(spatialRead: readMock)
 
-        try await DataContractRegistry.spatialWrite.importReferenceEntityFromCloud(markerParameters: markerParameters,
-                                                                                    entity: importedEntity)
+        try await DataContractRegistry.spatialMaintenanceWrite.importReferenceEntityFromCloud(markerParameters: markerParameters,
+                                                                                               entity: importedEntity)
 
         let updatedRoute = try XCTUnwrap(Route.object(forPrimaryKey: route.id))
         XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, firstMarkerID)
@@ -1153,7 +1153,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [firstMarkerID])
     }
 
-    func testDefaultSpatialWriteCleanCorruptReferenceEntitiesHydratesRemainingRouteWaypointFromAsyncReadContract() async throws {
+    func testDefaultSpatialMaintenanceWriteCleanCorruptReferenceEntitiesHydratesRemainingRouteWaypointFromAsyncReadContract() async throws {
         let corruptMarkerID = "clean-corrupt-first-\(UUID().uuidString)"
         let remainingMarkerID = "clean-corrupt-second-\(UUID().uuidString)"
         let corruptCoordinate = makeUniqueCoordinate(baseLatitude: 41.6205, baseLongitude: -116.3493)

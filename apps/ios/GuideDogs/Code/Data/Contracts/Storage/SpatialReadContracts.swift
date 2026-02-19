@@ -95,8 +95,6 @@ protocol SpatialReadContract: RouteReadContract,
 @MainActor
 protocol SpatialWriteContract {
     func addRoute(_ route: Route) async throws
-    func importRouteFromCloud(_ route: Route) async throws
-    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws
     func deleteRoute(id: String) async throws
     func updateRoute(_ route: Route) async throws
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String
@@ -107,6 +105,8 @@ protocol SpatialWriteContract {
 
 @MainActor
 protocol SpatialMaintenanceWriteContract {
+    func importRouteFromCloud(_ route: Route) async throws
+    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws
     func removeAllReferenceEntities() async throws
     func removeAllRoutes() async throws
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws

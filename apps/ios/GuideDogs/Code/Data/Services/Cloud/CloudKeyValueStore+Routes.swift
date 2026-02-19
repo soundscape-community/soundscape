@@ -151,7 +151,7 @@ extension CloudKeyValueStore {
     /// Import route entities from cloud store to database
     private func importChanges(route: Route) async {
         do {
-            try await DataContractRegistry.spatialWrite.importRouteFromCloud(route)
+            try await DataContractRegistry.spatialMaintenanceWrite.importRouteFromCloud(route)
             GDLogCloudInfo("Imported route with id: \(route.id), name: \(route.name)")
         } catch {
             GDLogCloudInfo("Could not import route with id: \(route.id), name: \(route.name), error: \(error)")

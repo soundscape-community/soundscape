@@ -19,18 +19,6 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
                             using: spatialRead)
     }
 
-    func importRouteFromCloud(_ route: Route) async throws {
-        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route,
-                                                                           using: DataContractRegistry.spatialRead)
-        try Route.importFromCloud(route, firstWaypointCoordinate: firstWaypointCoordinate)
-    }
-
-    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
-        try await RealmReferenceEntity.importFromCloud(markerParameters: markerParameters,
-                                                       entity: entity,
-                                                       using: DataContractRegistry.spatialRead)
-    }
-
     func deleteRoute(id: String) async throws {
         try Route.delete(id)
     }
@@ -91,6 +79,18 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
 
 @MainActor
 struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
+    func importRouteFromCloud(_ route: Route) async throws {
+        let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route,
+                                                                           using: DataContractRegistry.spatialRead)
+        try Route.importFromCloud(route, firstWaypointCoordinate: firstWaypointCoordinate)
+    }
+
+    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
+        try await RealmReferenceEntity.importFromCloud(markerParameters: markerParameters,
+                                                       entity: entity,
+                                                       using: DataContractRegistry.spatialRead)
+    }
+
     func removeAllReferenceEntities() async throws {
         // Clear the destination before deleting markers to preserve existing cache-reset behavior.
         try await ReferenceEntityRuntime.clearDestinationForCacheReset()
@@ -145,6 +145,11 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
 
     func cleanCorruptReferenceEntities() async throws {
         try await RealmReferenceEntity.cleanCorruptEntities(using: DataContractRegistry.spatialRead)
+    }
+
+    private func resolveFirstWaypointCoordinate(for route: Route,
+                                                using spatialRead: ReferenceReadContract) async -> CLLocationCoordinate2D? {
+        await Route.firstWaypointCoordinate(for: route.waypoints, using: spatialRead)
     }
 }
 

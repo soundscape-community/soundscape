@@ -164,7 +164,7 @@ extension CloudKeyValueStore {
         let markerName = markerParameters.nickname ?? entity.localizedName
 
         do {
-            try await DataContractRegistry.spatialWrite.importReferenceEntityFromCloud(markerParameters: markerParameters, entity: entity)
+            try await DataContractRegistry.spatialMaintenanceWrite.importReferenceEntityFromCloud(markerParameters: markerParameters, entity: entity)
             GDLogCloudInfo("Imported reference entity with id: \(markerID), name: \(markerName)")
         } catch {
             GDLogCloudInfo("Could not import reference entity with id: \(markerID), name: \(markerName), error: \(error)")

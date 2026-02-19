@@ -147,22 +147,7 @@ final class CloudSyncContractBridgeTests: XCTestCase {
     }
 
     private final class MockSpatialWriteContract: SpatialWriteContract {
-        private(set) var importedRouteIDs: [String] = []
-        private(set) var importedMarkerIDs: [String] = []
-        private(set) var importedRoutes: [Route] = []
-
         func addRoute(_ route: Route) async throws {}
-
-        func importRouteFromCloud(_ route: Route) async throws {
-            importedRouteIDs.append(route.id)
-            importedRoutes.append(route)
-        }
-
-        func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
-            if let markerID = markerParameters.id {
-                importedMarkerIDs.append(markerID)
-            }
-        }
 
         func deleteRoute(id: String) async throws {}
 
@@ -179,6 +164,31 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {}
 
         func removeReferenceEntity(id: String) async throws {}
+    }
+
+    private final class MockSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
+        private(set) var importedRouteIDs: [String] = []
+        private(set) var importedMarkerIDs: [String] = []
+        private(set) var importedRoutes: [Route] = []
+
+        func importRouteFromCloud(_ route: Route) async throws {
+            importedRouteIDs.append(route.id)
+            importedRoutes.append(route)
+        }
+
+        func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
+            if let markerID = markerParameters.id {
+                importedMarkerIDs.append(markerID)
+            }
+        }
+
+        func removeAllReferenceEntities() async throws {}
+
+        func removeAllRoutes() async throws {}
+
+        func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {}
+
+        func cleanCorruptReferenceEntities() async throws {}
     }
 
     private final class TestCloudKeyValueStore: CloudKeyValueStore {
@@ -303,29 +313,35 @@ final class CloudSyncContractBridgeTests: XCTestCase {
         XCTAssertEqual(mock.markerParametersForBackupCalls, 1)
     }
 
-    func testSyncRoutesChangedKeyImportUsesWriteContractRouteImport() async {
+    func testSyncRoutesChangedKeyImportUsesMaintenanceContractRouteImport() async {
         let id = "route-import-1"
         let routeKey = "routes.\(id)"
 
         let readMock = MockSpatialReadContract()
         let writeMock = MockSpatialWriteContract()
-        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+        let maintenanceMock = MockSpatialMaintenanceWriteContract()
+        DataContractRegistry.configure(spatialRead: readMock,
+                                       spatialWrite: writeMock,
+                                       spatialMaintenanceWrite: maintenanceMock)
 
         let store = TestCloudKeyValueStore()
         store.storage[routeKey] = makeRouteData(id: id, lastUpdatedDate: Date(timeIntervalSince1970: 2_000))
 
         await store.syncRoutesAsync(reason: .serverChanged, changedKeys: [routeKey])
 
-        XCTAssertEqual(writeMock.importedRouteIDs, [id])
+        XCTAssertEqual(maintenanceMock.importedRouteIDs, [id])
     }
 
-    func testSyncReferenceEntitiesChangedKeyImportUsesWriteContractMarkerImport() async {
+    func testSyncReferenceEntitiesChangedKeyImportUsesMaintenanceContractMarkerImport() async {
         let id = "marker-import-1"
         let markerKey = "marker.\(id)"
 
         let readMock = MockSpatialReadContract()
         let writeMock = MockSpatialWriteContract()
-        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+        let maintenanceMock = MockSpatialMaintenanceWriteContract()
+        DataContractRegistry.configure(spatialRead: readMock,
+                                       spatialWrite: writeMock,
+                                       spatialMaintenanceWrite: maintenanceMock)
 
         let store = TestCloudKeyValueStore()
         store.storage[markerKey] = makeMarkerData(id: id,
@@ -336,7 +352,7 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         await store.syncReferenceEntitiesAsync(reason: .serverChanged, changedKeys: [markerKey])
 
-        XCTAssertEqual(writeMock.importedMarkerIDs, [id])
+        XCTAssertEqual(maintenanceMock.importedMarkerIDs, [id])
     }
 
     func testSyncRoutesChangedKeyImportHydratesFirstWaypointFromAsyncReadContract() async {
@@ -357,7 +373,10 @@ final class CloudSyncContractBridgeTests: XCTestCase {
                                                            estimatedAddress: nil,
                                                            annotation: nil)
         let writeMock = MockSpatialWriteContract()
-        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+        let maintenanceMock = MockSpatialMaintenanceWriteContract()
+        DataContractRegistry.configure(spatialRead: readMock,
+                                       spatialWrite: writeMock,
+                                       spatialMaintenanceWrite: maintenanceMock)
 
         let store = TestCloudKeyValueStore()
         store.storage[routeKey] = makeRouteData(id: id,
@@ -366,12 +385,12 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         await store.syncRoutesAsync(reason: .serverChanged, changedKeys: [routeKey])
 
-        XCTAssertEqual(writeMock.importedRouteIDs, [id])
+        XCTAssertEqual(maintenanceMock.importedRouteIDs, [id])
         XCTAssertEqual(readMock.referenceByIDCalls, [markerID])
-        XCTAssertEqual(writeMock.importedRoutes.first?.firstWaypointLatitude ?? 0,
+        XCTAssertEqual(maintenanceMock.importedRoutes.first?.firstWaypointLatitude ?? 0,
                        expectedCoordinate.latitude,
                        accuracy: 0.000_001)
-        XCTAssertEqual(writeMock.importedRoutes.first?.firstWaypointLongitude ?? 0,
+        XCTAssertEqual(maintenanceMock.importedRoutes.first?.firstWaypointLongitude ?? 0,
                        expectedCoordinate.longitude,
                        accuracy: 0.000_001)
     }
@@ -397,7 +416,10 @@ final class CloudSyncContractBridgeTests: XCTestCase {
                                                            estimatedAddress: nil,
                                                            annotation: nil)
         let writeMock = MockSpatialWriteContract()
-        DataContractRegistry.configure(spatialRead: readMock, spatialWrite: writeMock)
+        let maintenanceMock = MockSpatialMaintenanceWriteContract()
+        DataContractRegistry.configure(spatialRead: readMock,
+                                       spatialWrite: writeMock,
+                                       spatialMaintenanceWrite: maintenanceMock)
 
         let store = TestCloudKeyValueStore()
         store.storage[routeKey] = makeRouteData(id: id,
@@ -408,12 +430,12 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         await store.syncRoutesAsync(reason: .serverChanged, changedKeys: [routeKey])
 
-        XCTAssertEqual(writeMock.importedRouteIDs, [id])
+        XCTAssertEqual(maintenanceMock.importedRouteIDs, [id])
         XCTAssertTrue(readMock.referenceByIDCalls.isEmpty)
-        XCTAssertEqual(writeMock.importedRoutes.first?.firstWaypointLatitude ?? 0,
+        XCTAssertEqual(maintenanceMock.importedRoutes.first?.firstWaypointLatitude ?? 0,
                        payloadCoordinate.location.coordinate.latitude,
                        accuracy: 0.000_001)
-        XCTAssertEqual(writeMock.importedRoutes.first?.firstWaypointLongitude ?? 0,
+        XCTAssertEqual(maintenanceMock.importedRoutes.first?.firstWaypointLongitude ?? 0,
                        payloadCoordinate.location.coordinate.longitude,
                        accuracy: 0.000_001)
     }

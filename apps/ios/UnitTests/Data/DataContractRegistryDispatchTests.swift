@@ -193,8 +193,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         var markerIDsByEntityKey: [String: String] = [:]
         var nextTemporaryID = "temp-marker-id"
         private(set) var addRouteCalls: [String] = []
-        private(set) var importRouteFromCloudCalls: [String] = []
-        private(set) var importReferenceEntityFromCloudCalls: [String?] = []
         private(set) var deleteRouteCalls: [String] = []
         private(set) var updateRouteCalls: [String] = []
         private(set) var addReferenceEntityByEntityKeyCalls: [String] = []
@@ -204,14 +202,6 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         func addRoute(_ route: Route) async throws {
             addRouteCalls.append(route.id)
-        }
-
-        func importRouteFromCloud(_ route: Route) async throws {
-            importRouteFromCloudCalls.append(route.id)
-        }
-
-        func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
-            importReferenceEntityFromCloudCalls.append(markerParameters.id)
         }
 
         func deleteRoute(id: String) async throws {
@@ -243,10 +233,20 @@ final class DataContractRegistryDispatchTests: XCTestCase {
     }
 
     private final class MockSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
+        private(set) var importRouteFromCloudCalls: [String] = []
+        private(set) var importReferenceEntityFromCloudCalls: [String?] = []
         private(set) var removeAllReferenceEntitiesCalls = 0
         private(set) var removeAllRoutesCalls = 0
         private(set) var restoreCachedAddressCounts: [Int] = []
         private(set) var cleanCorruptReferenceEntitiesCalls = 0
+
+        func importRouteFromCloud(_ route: Route) async throws {
+            importRouteFromCloudCalls.append(route.id)
+        }
+
+        func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
+            importReferenceEntityFromCloudCalls.append(markerParameters.id)
+        }
 
         func removeAllReferenceEntities() async throws {
             removeAllReferenceEntitiesCalls += 1
@@ -433,12 +433,12 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                        spatialMaintenanceWrite: maintenanceMock)
 
         try await DataContractRegistry.spatialWrite.addRoute(route)
-        try await DataContractRegistry.spatialWrite.importRouteFromCloud(route)
-        try await DataContractRegistry.spatialWrite.importReferenceEntityFromCloud(markerParameters: MarkerParameters(name: "Marker Import",
-                                                                                                                       latitude: 47.62,
-                                                                                                                       longitude: -122.35),
-                                                                                   entity: GenericLocation(lat: 47.62,
-                                                                                                           lon: -122.35))
+        try await DataContractRegistry.spatialMaintenanceWrite.importRouteFromCloud(route)
+        try await DataContractRegistry.spatialMaintenanceWrite.importReferenceEntityFromCloud(markerParameters: MarkerParameters(name: "Marker Import",
+                                                                                                                                  latitude: 47.62,
+                                                                                                                                  longitude: -122.35),
+                                                                                              entity: GenericLocation(lat: 47.62,
+                                                                                                                      lon: -122.35))
         var updatedRoute = route
         updatedRoute.name = "Updated Route"
         updatedRoute.routeDescription = "Updated Description"
@@ -487,8 +487,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(markerFromEntity, "marker-1")
         XCTAssertEqual(markerFromLocation, "temp-marker-id")
         XCTAssertEqual(writeMock.addRouteCalls, [route.id])
-        XCTAssertEqual(writeMock.importRouteFromCloudCalls, [route.id])
-        XCTAssertEqual(writeMock.importReferenceEntityFromCloudCalls.count, 1)
+        XCTAssertEqual(maintenanceMock.importRouteFromCloudCalls, [route.id])
+        XCTAssertEqual(maintenanceMock.importReferenceEntityFromCloudCalls.count, 1)
         XCTAssertEqual(writeMock.updateRouteCalls, [route.id])
         XCTAssertEqual(writeMock.deleteRouteCalls, [route.id])
         XCTAssertEqual(writeMock.addReferenceEntityByEntityKeyCalls, ["entity-1"])
@@ -501,7 +501,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
     }
 
-    func testDefaultSpatialWriteImportHydratesFirstWaypointFromConfiguredAsyncRead() async throws {
+    func testDefaultSpatialMaintenanceWriteImportHydratesFirstWaypointFromConfiguredAsyncRead() async throws {
         let readMock = MockSpatialReadContract()
         let markerID = "contract-read-marker-\(UUID().uuidString)"
         let markerCoordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
@@ -528,7 +528,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             deletePersistedRouteIfPresent(id: routeID)
         }
 
-        try await DataContractRegistry.spatialWrite.importRouteFromCloud(route)
+        try await DataContractRegistry.spatialMaintenanceWrite.importRouteFromCloud(route)
 
         guard let persistedRoute = Route.object(forPrimaryKey: routeID) else {
             XCTFail("Expected imported route to be persisted")
@@ -773,26 +773,6 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         routesByID[route.id] = routeSnapshot(route)
     }
 
-    func importRouteFromCloud(_ route: Route) async throws {
-        routesByID[route.id] = routeSnapshot(route)
-    }
-
-    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
-        guard let markerID = markerParameters.id else {
-            return
-        }
-
-        let reference = makeReferenceEntity(id: markerID,
-                                            entityKey: entity.key,
-                                            coordinate: SSGeoCoordinate(latitude: markerParameters.location.coordinate.latitude,
-                                                                        longitude: markerParameters.location.coordinate.longitude),
-                                            nickname: markerParameters.nickname,
-                                            estimatedAddress: markerParameters.estimatedAddress,
-                                            annotation: markerParameters.annotation,
-                                            isTemp: false)
-        store(reference)
-    }
-
     func deleteRoute(id: String) async throws {
         routesByID.removeValue(forKey: id)
     }
@@ -862,6 +842,26 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         referenceByID.removeAll()
         referenceIDByEntityKey.removeAll()
         poiByEntityKey.removeAll()
+    }
+
+    func importRouteFromCloud(_ route: Route) async throws {
+        routesByID[route.id] = routeSnapshot(route)
+    }
+
+    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws {
+        guard let markerID = markerParameters.id else {
+            return
+        }
+
+        let reference = makeReferenceEntity(id: markerID,
+                                            entityKey: entity.key,
+                                            coordinate: SSGeoCoordinate(latitude: markerParameters.location.coordinate.latitude,
+                                                                        longitude: markerParameters.location.coordinate.longitude),
+                                            nickname: markerParameters.nickname,
+                                            estimatedAddress: markerParameters.estimatedAddress,
+                                            annotation: markerParameters.annotation,
+                                            isTemp: false)
+        store(reference)
     }
 
     func removeAllRoutes() async throws {
@@ -1045,7 +1045,7 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         importedRoute.createdDate = Date(timeIntervalSince1970: 2_000)
         importedRoute.lastSelectedDate = Date(timeIntervalSince1970: 2_100)
         importedRoute.lastUpdatedDate = Date(timeIntervalSince1970: 2_200)
-        try await DataContractRegistry.spatialWrite.importRouteFromCloud(importedRoute)
+        try await DataContractRegistry.spatialMaintenanceWrite.importRouteFromCloud(importedRoute)
 
         guard let cloudPersistedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id) else {
             XCTFail("Expected imported route to be persisted")
@@ -1160,7 +1160,7 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         importedRoute.waypoints = [firstWaypoint, secondWaypoint]
         importedRoute.firstWaypointLatitude = 0
         importedRoute.firstWaypointLongitude = 0
-        try await DataContractRegistry.spatialWrite.importRouteFromCloud(importedRoute)
+        try await DataContractRegistry.spatialMaintenanceWrite.importRouteFromCloud(importedRoute)
 
         guard let cloudImportedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id) else {
             XCTFail("Expected cloud imported route to be persisted")
