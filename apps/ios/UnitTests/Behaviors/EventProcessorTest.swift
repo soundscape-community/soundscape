@@ -294,7 +294,6 @@ class MockSpatialData: SpatialDataProtocol {
 class MockDestinationManager: DestinationManagerProtocol {
     var destinationKey: String?
     var isDestinationSet: Bool = false
-    var destination: RealmReferenceEntity?
     var destinationPOI: POI?
     var destinationIsTemporary: Bool = false
     var destinationNickname: String?

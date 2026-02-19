@@ -49,8 +49,8 @@ enum DestinationManagerRuntime {
 
 @MainActor
 protocol DestinationEntityStore {
-    func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity?
     func destinationPOI(forReferenceID id: String) -> POI?
+    func destinationEntityKey(forReferenceID id: String) -> String?
     func destinationIsTemporary(forReferenceID id: String) -> Bool
     func destinationNickname(forReferenceID id: String) -> String?
     func destinationEstimatedAddress(forReferenceID id: String) -> String?
@@ -99,14 +99,6 @@ class DestinationManager: DestinationManagerProtocol {
     
     var isDestinationSet: Bool {
         return destinationKey != nil
-    }
-    
-    var destination: RealmReferenceEntity? {
-        guard let destinationKey = self.destinationKey else {
-            return nil
-        }
-        
-        return destinationStore.referenceEntity(forReferenceID: destinationKey)
     }
 
     var destinationPOI: POI? {
@@ -283,9 +275,14 @@ class DestinationManager: DestinationManagerProtocol {
     ///   - key: the destination's entity key in the `SpatialDataCache`. Same as the referenceID in `setDestinationAsync(...)`.
     /// - Returns: `false` if the destination isn't set or the entity key doesn't match the destination
     func isDestination(key: String) -> Bool {
-        guard destinationKey == key || destination?.entityKey == key else {
-            // Return false if the destination isn't set or the entityKey doesn't match the destination
-            return false
+        guard destinationKey == key else {
+            guard let destinationKey,
+                  destinationStore.destinationEntityKey(forReferenceID: destinationKey) == key else {
+                // Return false if the destination isn't set or the entityKey doesn't match the destination
+                return false
+            }
+
+            return true
         }
         
         return true

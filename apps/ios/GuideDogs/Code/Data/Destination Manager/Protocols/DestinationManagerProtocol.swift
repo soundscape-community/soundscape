@@ -17,8 +17,6 @@ protocol DestinationManagerProtocol: AnyObject {
     var destinationKey: String? { get }
     
     var isDestinationSet: Bool { get }
-    
-    var destination: RealmReferenceEntity? { get }
     @MainActor var destinationPOI: POI? { get }
     @MainActor var destinationIsTemporary: Bool { get }
     @MainActor var destinationNickname: String? { get }

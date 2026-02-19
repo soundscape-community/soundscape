@@ -147,12 +147,12 @@ struct RealmSpatialWriteContract: SpatialWriteContract, SpatialMaintenanceWriteC
 
 @MainActor
 struct SpatialDataDestinationEntityStore: DestinationEntityStore {
-    func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByKey(id)
-    }
-
     func destinationPOI(forReferenceID id: String) -> POI? {
         referenceEntity(forReferenceID: id)?.getPOI()
+    }
+
+    func destinationEntityKey(forReferenceID id: String) -> String? {
+        referenceEntity(forReferenceID: id)?.entityKey
     }
 
     func destinationIsTemporary(forReferenceID id: String) -> Bool {
@@ -201,5 +201,9 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
 
     func removeAllTemporaryReferenceEntities() async throws {
         try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+    }
+
+    private func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
+        SpatialDataStoreRegistry.store.referenceEntityByKey(id)
     }
 }

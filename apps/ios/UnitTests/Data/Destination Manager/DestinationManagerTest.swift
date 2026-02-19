@@ -41,8 +41,8 @@ final class DestinationManagerTest: XCTestCase {
 
     @MainActor
     final class MockDestinationEntityStore: DestinationEntityStore {
-        var referenceEntityForReferenceIDHandler: ((String) -> RealmReferenceEntity?)?
         var destinationPOIForReferenceIDHandler: ((String) -> POI?)?
+        var destinationEntityKeyForReferenceIDHandler: ((String) -> String?)?
         var destinationIsTemporaryForReferenceIDHandler: ((String) -> Bool)?
         var destinationNicknameForReferenceIDHandler: ((String) -> String?)?
         var destinationEstimatedAddressForReferenceIDHandler: ((String) -> String?)?
@@ -55,24 +55,24 @@ final class DestinationManagerTest: XCTestCase {
         var addTemporaryReferenceEntityForEntityKeyHandler: ((String, String?) throws -> String)?
         var removeAllTemporaryReferenceEntitiesHandler: (() throws -> Void)?
 
-        func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
-            referenceEntityForReferenceIDHandler?(id) ?? nil
+        func destinationPOI(forReferenceID id: String) -> POI? {
+            destinationPOIForReferenceIDHandler?(id)
         }
 
-        func destinationPOI(forReferenceID id: String) -> POI? {
-            destinationPOIForReferenceIDHandler?(id) ?? referenceEntityForReferenceIDHandler?(id)?.getPOI()
+        func destinationEntityKey(forReferenceID id: String) -> String? {
+            destinationEntityKeyForReferenceIDHandler?(id)
         }
 
         func destinationIsTemporary(forReferenceID id: String) -> Bool {
-            destinationIsTemporaryForReferenceIDHandler?(id) ?? referenceEntityForReferenceIDHandler?(id)?.isTemp ?? false
+            destinationIsTemporaryForReferenceIDHandler?(id) ?? false
         }
 
         func destinationNickname(forReferenceID id: String) -> String? {
-            destinationNicknameForReferenceIDHandler?(id) ?? referenceEntityForReferenceIDHandler?(id)?.nickname
+            destinationNicknameForReferenceIDHandler?(id)
         }
 
         func destinationEstimatedAddress(forReferenceID id: String) -> String? {
-            destinationEstimatedAddressForReferenceIDHandler?(id) ?? referenceEntityForReferenceIDHandler?(id)?.estimatedAddress
+            destinationEstimatedAddressForReferenceIDHandler?(id)
         }
 
         func markReferenceEntitySelected(forReferenceID id: String) throws {
@@ -82,10 +82,7 @@ final class DestinationManagerTest: XCTestCase {
         func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws {
             if let setReferenceEntityTemporaryHandler {
                 try setReferenceEntityTemporaryHandler(id, temporary)
-                return
             }
-
-            try referenceEntityForReferenceIDHandler?(id)?.setTemporary(temporary)
         }
 
         func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
@@ -204,7 +201,6 @@ final class DestinationManagerTest: XCTestCase {
         let store = MockDestinationEntityStore()
         var lookedUpPOIIDs: [String] = []
         var selectedIDs: [String] = []
-        var referenceEntityLookupCount = 0
         var removeAllTemporaryCallCount = 0
 
         store.destinationPOIForReferenceIDHandler = { id in
@@ -213,10 +209,6 @@ final class DestinationManagerTest: XCTestCase {
         }
         store.markReferenceEntitySelectedHandler = { id in
             selectedIDs.append(id)
-        }
-        store.referenceEntityForReferenceIDHandler = { id in
-            referenceEntityLookupCount += 1
-            return SpatialDataCache.referenceEntityByKey(id)
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
             removeAllTemporaryCallCount += 1
@@ -228,11 +220,37 @@ final class DestinationManagerTest: XCTestCase {
 
         XCTAssertEqual(lookedUpPOIIDs.first, testID)
         XCTAssertEqual(selectedIDs, [testID])
-        XCTAssertEqual(referenceEntityLookupCount, 0)
         XCTAssertTrue(dm.isDestinationSet)
 
         try await dm.clearDestinationAsync(logContext: nil)
         XCTAssertEqual(removeAllTemporaryCallCount, 1)
+    }
+
+    func testIsDestinationUsesInjectedEntityStoreEntityKeyLookup() async throws {
+        let testID = "test-reference-id"
+        let expectedEntityKey = "entity-key-123"
+        let store = MockDestinationEntityStore()
+        var lookedUpEntityKeyIDs: [String] = []
+
+        store.destinationPOIForReferenceIDHandler = { _ in
+            GenericLocation(lat: 42.7290570, lon: -73.6726370, name: "Test Destination")
+        }
+        store.destinationEntityKeyForReferenceIDHandler = { id in
+            lookedUpEntityKeyIDs.append(id)
+            return expectedEntityKey
+        }
+        store.markReferenceEntitySelectedHandler = { _ in }
+        store.removeAllTemporaryReferenceEntitiesHandler = { }
+
+        let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
+        try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
+
+        XCTAssertTrue(dm.isDestination(key: testID))
+        XCTAssertTrue(dm.isDestination(key: expectedEntityKey))
+        XCTAssertFalse(dm.isDestination(key: "other-entity-key"))
+        XCTAssertEqual(lookedUpEntityKeyIDs, [testID, testID])
+
+        try await dm.clearDestinationAsync(logContext: nil)
     }
 
     func testDestinationPOIUsesInjectedEntityStorePOILookup() async throws {
@@ -242,15 +260,10 @@ final class DestinationManagerTest: XCTestCase {
                                                                                     estimatedAddress: nil)
         let store = MockDestinationEntityStore()
         var lookedUpPOIIDs: [String] = []
-        var referenceEntityLookupCount = 0
 
         store.destinationPOIForReferenceIDHandler = { id in
             lookedUpPOIIDs.append(id)
             return SpatialDataCache.referenceEntityByKey(id)?.getPOI()
-        }
-        store.referenceEntityForReferenceIDHandler = { id in
-            referenceEntityLookupCount += 1
-            return SpatialDataCache.referenceEntityByKey(id)
         }
         store.markReferenceEntitySelectedHandler = { _ in }
         store.removeAllTemporaryReferenceEntitiesHandler = {
@@ -262,7 +275,6 @@ final class DestinationManagerTest: XCTestCase {
 
         XCTAssertNotNil(dm.destinationPOI)
         XCTAssertEqual(lookedUpPOIIDs, [testID, testID])
-        XCTAssertEqual(referenceEntityLookupCount, 0)
 
         try await dm.clearDestinationAsync(logContext: nil)
     }
@@ -276,7 +288,6 @@ final class DestinationManagerTest: XCTestCase {
         var temporaryLookupIDs: [String] = []
         var nicknameLookupIDs: [String] = []
         var estimatedAddressLookupIDs: [String] = []
-        var referenceEntityLookupCount = 0
 
         store.destinationPOIForReferenceIDHandler = { id in
             SpatialDataCache.referenceEntityByKey(id)?.getPOI()
@@ -293,10 +304,6 @@ final class DestinationManagerTest: XCTestCase {
             estimatedAddressLookupIDs.append(id)
             return "123 Test St"
         }
-        store.referenceEntityForReferenceIDHandler = { id in
-            referenceEntityLookupCount += 1
-            return SpatialDataCache.referenceEntityByKey(id)
-        }
         store.markReferenceEntitySelectedHandler = { _ in }
         store.removeAllTemporaryReferenceEntitiesHandler = {
             try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
@@ -311,7 +318,6 @@ final class DestinationManagerTest: XCTestCase {
         XCTAssertEqual(temporaryLookupIDs, [testID])
         XCTAssertEqual(nicknameLookupIDs, [testID])
         XCTAssertEqual(estimatedAddressLookupIDs, [testID])
-        XCTAssertEqual(referenceEntityLookupCount, 0)
 
         try await dm.clearDestinationAsync(logContext: nil)
     }
@@ -323,17 +329,12 @@ final class DestinationManagerTest: XCTestCase {
                                                                                     estimatedAddress: nil)
         let store = MockDestinationEntityStore()
         var setTemporaryCalls: [(id: String, temporary: Bool)] = []
-        var referenceEntityLookupCount = 0
 
         store.destinationPOIForReferenceIDHandler = { id in
             SpatialDataCache.referenceEntityByKey(id)?.getPOI()
         }
         store.setReferenceEntityTemporaryHandler = { id, temporary in
             setTemporaryCalls.append((id: id, temporary: temporary))
-        }
-        store.referenceEntityForReferenceIDHandler = { id in
-            referenceEntityLookupCount += 1
-            return SpatialDataCache.referenceEntityByKey(id)
         }
         store.markReferenceEntitySelectedHandler = { _ in }
         store.removeAllTemporaryReferenceEntitiesHandler = {
@@ -348,7 +349,6 @@ final class DestinationManagerTest: XCTestCase {
         XCTAssertEqual(setTemporaryCalls.count, 1)
         XCTAssertEqual(setTemporaryCalls.first?.id, testID)
         XCTAssertEqual(setTemporaryCalls.first?.temporary, true)
-        XCTAssertEqual(referenceEntityLookupCount, 0)
 
         try await dm.clearDestinationAsync(logContext: nil)
     }
@@ -411,8 +411,9 @@ final class DestinationManagerTest: XCTestCase {
             lookedUpLocations.append(location.geoCoordinate)
             return existingID
         }
-        store.referenceEntityForReferenceIDHandler = { id in
-            SpatialDataCache.referenceEntityByKey(id)
+        store.destinationPOIForReferenceIDHandler = { id in
+            XCTAssertEqual(id, existingID)
+            return GenericLocation(lat: 42.7292000, lon: -73.6727000, name: "Existing Entity Key Destination")
         }
         store.addTemporaryReferenceEntityHandler = { _, _ in
             addTemporaryCallCount += 1
@@ -450,8 +451,9 @@ final class DestinationManagerTest: XCTestCase {
             lookedUpLocations.append(location.geoCoordinate)
             return existingID
         }
-        store.referenceEntityForReferenceIDHandler = { id in
-            SpatialDataCache.referenceEntityByKey(id)
+        store.destinationPOIForReferenceIDHandler = { id in
+            XCTAssertEqual(id, existingID)
+            return GenericLocation(lat: 42.7292000, lon: -73.6727000, name: "Existing Entity Key Destination Async")
         }
         store.addTemporaryReferenceEntityHandler = { _, _ in
             addTemporaryCallCount += 1
@@ -489,8 +491,9 @@ final class DestinationManagerTest: XCTestCase {
             lookedUpEntityKeys.append(key)
             return existingID
         }
-        store.referenceEntityForReferenceIDHandler = { id in
-            SpatialDataCache.referenceEntityByKey(id)
+        store.destinationPOIForReferenceIDHandler = { id in
+            XCTAssertEqual(id, existingID)
+            return GenericLocation(lat: 42.7292000, lon: -73.6727000, name: "Existing Entity Key Destination")
         }
         store.addTemporaryReferenceEntityForEntityKeyHandler = { _, _ in
             addTemporaryCallCount += 1
@@ -527,8 +530,9 @@ final class DestinationManagerTest: XCTestCase {
             lookedUpEntityKeys.append(key)
             return existingID
         }
-        store.referenceEntityForReferenceIDHandler = { id in
-            SpatialDataCache.referenceEntityByKey(id)
+        store.destinationPOIForReferenceIDHandler = { id in
+            XCTAssertEqual(id, existingID)
+            return GenericLocation(lat: 42.7292000, lon: -73.6727000, name: "Existing Entity Key Destination Async")
         }
         store.addTemporaryReferenceEntityForEntityKeyHandler = { _, _ in
             addTemporaryCallCount += 1
