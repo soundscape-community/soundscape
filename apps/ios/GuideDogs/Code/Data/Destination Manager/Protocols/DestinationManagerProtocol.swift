@@ -99,5 +99,4 @@ extension DestinationManagerProtocol {
         return toggleDestinationAudio(sendNotfication, automatic: automatic, forceMelody: forceMelody)
     }
 
-    func clearStartupTemporaryDestinationIfNeeded() async {}
 }
