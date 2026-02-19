@@ -42,6 +42,8 @@ final class DestinationManagerTest: XCTestCase {
     @MainActor
     final class MockDestinationEntityStore: DestinationEntityStore {
         var referenceEntityForReferenceIDHandler: ((String) -> RealmReferenceEntity?)?
+        var destinationPOIForReferenceIDHandler: ((String) -> POI?)?
+        var markReferenceEntitySelectedHandler: ((String) throws -> Void)?
         var referenceEntityIDForGenericLocationHandler: ((GenericLocation) -> String?)?
         var referenceEntityIDForEntityKeyHandler: ((String) -> String?)?
         var addTemporaryReferenceEntityHandler: ((GenericLocation, String?) throws -> String)?
@@ -51,6 +53,14 @@ final class DestinationManagerTest: XCTestCase {
 
         func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity? {
             referenceEntityForReferenceIDHandler?(id) ?? nil
+        }
+
+        func destinationPOI(forReferenceID id: String) -> POI? {
+            destinationPOIForReferenceIDHandler?(id) ?? referenceEntityForReferenceIDHandler?(id)?.getPOI()
+        }
+
+        func markReferenceEntitySelected(forReferenceID id: String) throws {
+            try markReferenceEntitySelectedHandler?(id)
         }
 
         func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
@@ -167,11 +177,20 @@ final class DestinationManagerTest: XCTestCase {
                                                                                                               name: "Test"),
                                                                                     estimatedAddress: nil)
         let store = MockDestinationEntityStore()
-        var lookedUpIDs: [String] = []
+        var lookedUpPOIIDs: [String] = []
+        var selectedIDs: [String] = []
+        var referenceEntityLookupCount = 0
         var removeAllTemporaryCallCount = 0
 
+        store.destinationPOIForReferenceIDHandler = { id in
+            lookedUpPOIIDs.append(id)
+            return SpatialDataCache.referenceEntityByKey(id)?.getPOI()
+        }
+        store.markReferenceEntitySelectedHandler = { id in
+            selectedIDs.append(id)
+        }
         store.referenceEntityForReferenceIDHandler = { id in
-            lookedUpIDs.append(id)
+            referenceEntityLookupCount += 1
             return SpatialDataCache.referenceEntityByKey(id)
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
@@ -182,7 +201,9 @@ final class DestinationManagerTest: XCTestCase {
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
         try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
 
-        XCTAssertEqual(lookedUpIDs.first, testID)
+        XCTAssertEqual(lookedUpPOIIDs.first, testID)
+        XCTAssertEqual(selectedIDs, [testID])
+        XCTAssertEqual(referenceEntityLookupCount, 0)
         XCTAssertTrue(dm.isDestinationSet)
 
         try await dm.clearDestinationAsync(logContext: nil)

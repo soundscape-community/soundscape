@@ -50,6 +50,8 @@ enum DestinationManagerRuntime {
 @MainActor
 protocol DestinationEntityStore {
     func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity?
+    func destinationPOI(forReferenceID id: String) -> POI?
+    func markReferenceEntitySelected(forReferenceID id: String) throws
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String?
     func referenceEntityID(forEntityKey key: String) async -> String?
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
@@ -269,7 +271,7 @@ class DestinationManager: DestinationManagerProtocol {
     }
 
     private func setDestination(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws {
-        guard let entity = destinationStore.referenceEntity(forReferenceID: referenceID) else {
+        guard let destinationPOI = destinationStore.destinationPOI(forReferenceID: referenceID) else {
             throw DestinationManagerError.referenceEntityDoesNotExist
         }
         
@@ -289,7 +291,7 @@ class DestinationManager: DestinationManagerProtocol {
         
         // If user location is known, is user within geofence?
         if let userLocation = userLocation {
-            isWithinGeofence = isLocationWithinGeofence(origin: entity.getPOI(), location: userLocation)
+            isWithinGeofence = isLocationWithinGeofence(origin: destinationPOI, location: userLocation)
         }
         
         // Start audio if enabled and user is not within geofence
@@ -300,7 +302,7 @@ class DestinationManager: DestinationManagerProtocol {
             disableDestinationAudio()
         }
         
-        try entity.updateLastSelectedDate()
+        try destinationStore.markReferenceEntitySelected(forReferenceID: referenceID)
         
         notifyDestinationChanged(id: referenceID)
         

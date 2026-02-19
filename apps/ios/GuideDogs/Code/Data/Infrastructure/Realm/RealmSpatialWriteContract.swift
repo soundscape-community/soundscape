@@ -151,6 +151,14 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
         SpatialDataStoreRegistry.store.referenceEntityByKey(id)
     }
 
+    func destinationPOI(forReferenceID id: String) -> POI? {
+        referenceEntity(forReferenceID: id)?.getPOI()
+    }
+
+    func markReferenceEntitySelected(forReferenceID id: String) throws {
+        try referenceEntity(forReferenceID: id)?.updateLastSelectedDate()
+    }
+
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
         SpatialDataStoreRegistry.store.referenceEntityByLocation(location.location.coordinate)?.id
     }
