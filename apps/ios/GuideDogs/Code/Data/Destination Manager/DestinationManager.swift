@@ -51,7 +51,11 @@ enum DestinationManagerRuntime {
 protocol DestinationEntityStore {
     func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity?
     func destinationPOI(forReferenceID id: String) -> POI?
+    func destinationIsTemporary(forReferenceID id: String) -> Bool
+    func destinationNickname(forReferenceID id: String) -> String?
+    func destinationEstimatedAddress(forReferenceID id: String) -> String?
     func markReferenceEntitySelected(forReferenceID id: String) throws
+    func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String?
     func referenceEntityID(forEntityKey key: String) async -> String?
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
@@ -103,6 +107,38 @@ class DestinationManager: DestinationManagerProtocol {
         }
         
         return destinationStore.referenceEntity(forReferenceID: destinationKey)
+    }
+
+    var destinationPOI: POI? {
+        guard let destinationKey = self.destinationKey else {
+            return nil
+        }
+
+        return destinationStore.destinationPOI(forReferenceID: destinationKey)
+    }
+
+    var destinationIsTemporary: Bool {
+        guard let destinationKey = self.destinationKey else {
+            return false
+        }
+
+        return destinationStore.destinationIsTemporary(forReferenceID: destinationKey)
+    }
+
+    var destinationNickname: String? {
+        guard let destinationKey = self.destinationKey else {
+            return nil
+        }
+
+        return destinationStore.destinationNickname(forReferenceID: destinationKey)
+    }
+
+    var destinationEstimatedAddress: String? {
+        guard let destinationKey = self.destinationKey else {
+            return nil
+        }
+
+        return destinationStore.destinationEstimatedAddress(forReferenceID: destinationKey)
     }
 
     // All continuous audio should be disabled on launch
@@ -200,11 +236,11 @@ class DestinationManager: DestinationManagerProtocol {
         audioEngine = engine
         
         // Verify that destination exists
-        if destinationKey != nil && destination == nil {
+        if destinationKey != nil && destinationPOI == nil {
             destinationKey = nil
         }
         
-        if let poi = destination?.getPOI(), let userLocation = userLocation {
+        if let poi = destinationPOI, let userLocation = userLocation {
             // Determine if user is within geofence
             isWithinGeofence = isLocationWithinGeofence(origin: poi, location: userLocation)
         }
@@ -450,6 +486,16 @@ class DestinationManager: DestinationManagerProtocol {
         
         updateNowPlayingDisplay()
     }
+
+    @discardableResult
+    func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
+        guard destinationKey == id else {
+            return false
+        }
+
+        try destinationStore.setReferenceEntityTemporary(forReferenceID: id, temporary: true)
+        return true
+    }
     
     // MARK: Manage Audio Methods
     
@@ -459,7 +505,7 @@ class DestinationManager: DestinationManagerProtocol {
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool {
         let isRouteBeacon = DestinationManagerRuntime.isRouteGuidanceActive()
-        guard destination != nil else {
+        guard destinationPOI != nil else {
             // Return if destination does not exist
             return false
         }
@@ -502,7 +548,7 @@ class DestinationManager: DestinationManagerProtocol {
 
     func clearStartupTemporaryDestinationIfNeeded() async {
         // Legacy scavenger-hunt beacons were stored as temporary destinations with the route-guidance placeholder name.
-        guard let destination = destination, destination.isTemp, destination.name == RouteGuidance.name else {
+        guard destinationIsTemporary, destinationNickname == RouteGuidance.name else {
             return
         }
 
@@ -524,12 +570,12 @@ class DestinationManager: DestinationManagerProtocol {
     /// - Returns: True is the audio beacon was turned on, false otherwise (e.g. no destination is set).
     @discardableResult
     private func enableDestinationAudio(beaconLocation: CLLocation? = nil, userLocation: CLLocation, isUnmuting: Bool = false, notify sendNotfication: Bool = false) -> Bool {
-        guard let destination = destination else {
+        guard let destinationPOI = destinationPOI else {
             // Return if destination could not be retrieved
             return false
         }
         
-        var args = BeaconArgs(loc: beaconLocation ?? destination.closestLocation(from: userLocation),
+        var args = BeaconArgs(loc: beaconLocation ?? destinationPOI.closestLocation(from: userLocation),
                               heading: Heading(from: collectionHeading),
                               startMelody: SettingsContext.shared.playBeaconStartAndEndMelodies && !isUnmuting,
                               endMelody: SettingsContext.shared.playBeaconStartAndEndMelodies)
@@ -604,7 +650,7 @@ class DestinationManager: DestinationManagerProtocol {
     /// - Returns: True if the audio beacon was turned off, false otherwise (e.g. no destination is set).
     @discardableResult
     private func disableDestinationAudio(_ sendNotfication: Bool = false) -> Bool {
-        guard destination != nil else {
+        guard destinationPOI != nil else {
             // Return if destination does not exist
             return false
         }
@@ -624,7 +670,7 @@ class DestinationManager: DestinationManagerProtocol {
     }
     
     private func updateBeaconClosestLocation(for location: CLLocation) {
-        guard let poi = destination?.getPOI() else {
+        guard let poi = destinationPOI else {
             return
         }
         
@@ -660,7 +706,7 @@ class DestinationManager: DestinationManagerProtocol {
     }
     
     func isUserWithinGeofence(_ userLocation: CLLocation) -> Bool {
-        guard let poi = destination?.getPOI() else {
+        guard let poi = destinationPOI else {
             return false
         }
         
@@ -776,7 +822,7 @@ class DestinationManager: DestinationManagerProtocol {
             }
         }
         
-        guard let location = location, let destination = destination else {
+        guard let location = location, let destination = destinationPOI else {
             AudioSessionManager.removeNowPlayingInfo()
             return
         }

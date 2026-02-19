@@ -79,7 +79,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        guard let marker = OnboardingRuntime.destinationManager()?.destination else {
+        guard let destinationPOI = OnboardingRuntime.destinationManager()?.destinationPOI else {
             return nil
         }
 
@@ -101,7 +101,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             case .haptic: localizedString = GDLocalizedString("first_launch.beacon.callout.headtracking.haptic")
             }
 
-            return [TTSSound(localizedString, at: marker.closestLocation(from: location))]
+            return [TTSSound(localizedString, at: destinationPOI.closestLocation(from: location))]
         })]
 
         let group = CalloutGroup(callouts, logContext: "onboarding.beacon.first_selection")
@@ -118,7 +118,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        guard let marker = OnboardingRuntime.destinationManager()?.destination else {
+        guard let destinationPOI = OnboardingRuntime.destinationManager()?.destinationPOI else {
             return nil
         }
 
@@ -128,7 +128,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             }
 
             let localizedString = isAhead ? GDLocalizedString("first_launch.beacon.callout.ahead") : GDLocalizedString("first_launch.beacon.callout.behind")
-            return [TTSSound(localizedString, at: marker.closestLocation(from: location))]
+            return [TTSSound(localizedString, at: destinationPOI.closestLocation(from: location))]
         })]
 
         return CalloutGroup(callouts, action: .clear, logContext: "onboarding.beacon.orientation")

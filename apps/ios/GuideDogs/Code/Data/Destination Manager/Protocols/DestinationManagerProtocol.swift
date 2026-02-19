@@ -19,6 +19,10 @@ protocol DestinationManagerProtocol: AnyObject {
     var isDestinationSet: Bool { get }
     
     var destination: RealmReferenceEntity? { get }
+    @MainActor var destinationPOI: POI? { get }
+    @MainActor var destinationIsTemporary: Bool { get }
+    @MainActor var destinationNickname: String? { get }
+    @MainActor var destinationEstimatedAddress: String? { get }
     
     var isAudioEnabled: Bool { get }
     
@@ -50,6 +54,9 @@ protocol DestinationManagerProtocol: AnyObject {
     func setDestinationAsync(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String
 
     func clearDestinationAsync(logContext: String?) async throws
+
+    @MainActor @discardableResult
+    func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool
     
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool
@@ -62,6 +69,22 @@ protocol DestinationManagerProtocol: AnyObject {
 
 // This extension adds the ability to not pass the `logContext` argument
 extension DestinationManagerProtocol {
+    @MainActor var destinationPOI: POI? {
+        destination?.getPOI()
+    }
+
+    @MainActor var destinationIsTemporary: Bool {
+        destination?.isTemp ?? false
+    }
+
+    @MainActor var destinationNickname: String? {
+        destination?.nickname
+    }
+
+    @MainActor var destinationEstimatedAddress: String? {
+        destination?.estimatedAddress
+    }
+
     func isUserWithinGeofence(_ userLocation: SSGeoLocation) -> Bool {
         return isUserWithinGeofence(userLocation.clLocation)
     }
@@ -92,6 +115,16 @@ extension DestinationManagerProtocol {
 
     func clearDestinationAsync() async throws {
         try await clearDestinationAsync(logContext: nil)
+    }
+
+    @MainActor @discardableResult
+    func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
+        guard let destination, destination.id == id else {
+            return false
+        }
+
+        try destination.setTemporary(true)
+        return true
     }
     
     @discardableResult

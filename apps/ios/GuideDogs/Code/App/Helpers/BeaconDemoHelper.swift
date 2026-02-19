@@ -55,17 +55,14 @@ class BeaconDemoHelper {
         let beaconManager = AppContext.shared.spatialDataContext.destinationManager
         
         var originalBeacon: BeaconType?
-        if let ref = beaconManager.destination {
-            if !ref.isTemp {
-                originalBeacon = .ref(id: ref.id)
+        if let destinationID = beaconManager.destinationKey,
+           let destinationPOI = beaconManager.destinationPOI {
+            if !beaconManager.destinationIsTemporary {
+                originalBeacon = .ref(id: destinationID)
+            } else if let location = destinationPOI as? GenericLocation {
+                originalBeacon = .location(loc: location, address: beaconManager.destinationEstimatedAddress)
             } else {
-                let poi = ref.getPOI()
-                
-                if let loc = poi as? GenericLocation {
-                    originalBeacon = .location(loc: loc, address: ref.estimatedAddress)
-                } else {
-                    originalBeacon = .entity(id: poi.key, address: ref.estimatedAddress)
-                }
+                originalBeacon = .entity(id: destinationPOI.key, address: beaconManager.destinationEstimatedAddress)
             }
         }
         

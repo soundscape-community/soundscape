@@ -80,7 +80,7 @@ class InteractiveBeaconViewModel: ObservableObject {
         }
         
         guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
-              let bearingToLocation = destinationManager.destination?.bearingToClosestLocation(from: location) else {
+              let bearingToLocation = destinationManager.destinationPOI?.bearingToClosestLocation(from: location) else {
             return
         }
         

@@ -305,14 +305,14 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         }
         
         // If the callout is not coming from .auto, there are no additional checks to make
-        if origin == .auto, let destination = spatialData.destinationManager.destination {
+        if origin == .auto, let destinationPOI = spatialData.destinationManager.destinationPOI {
             // Check the update filter (if this callout is coming from auto callouts)
             guard beaconUpdateFilter.shouldUpdate(location: location) else {
                 return nil
             }
             
             // Don't do a location update for the destination if we have already entered the immediate vicinity
-            guard destination.distanceToClosestLocation(from: location) > SettingsContext.shared.enterImmediateVicinityDistance else {
+            guard destinationPOI.distanceToClosestLocation(from: location) > SettingsContext.shared.enterImmediateVicinityDistance else {
                 return nil
             }
         }
@@ -330,7 +330,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
     
     private func configureDestinationUpdates() {
         guard let location = userLocation else { return }
-        guard let poi = spatialData.destinationManager.destination?.getPOI() else { return }
+        guard let poi = spatialData.destinationManager.destinationPOI else { return }
         
         let distance = poi.distanceToClosestLocation(from: location)
         

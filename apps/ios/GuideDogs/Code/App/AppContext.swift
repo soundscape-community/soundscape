@@ -299,13 +299,7 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
     }
 
     func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
-        guard let destination = context.spatialDataContext.destinationManager.destination,
-              destination.id == id else {
-            return false
-        }
-
-        try destination.setTemporary(true)
-        return true
+        try context.spatialDataContext.destinationManager.setDestinationTemporaryIfMatchingID(id)
     }
 
     func referenceClearDestinationForCacheReset() async throws {
@@ -1477,7 +1471,7 @@ class AppContext {
             await self.spatialDataContext.destinationManager.clearStartupTemporaryDestinationIfNeeded()
 
             // If the user killed the app during the headset test, remove the temporary beacon.
-            if self.spatialDataContext.destinationManager.destination?.nickname == "HeadsetTest" {
+            if self.spatialDataContext.destinationManager.destinationNickname == "HeadsetTest" {
                 do {
                     try await self.spatialDataContext.destinationManager.clearDestinationAsync(logContext: nil)
                 } catch {

@@ -155,8 +155,24 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
         referenceEntity(forReferenceID: id)?.getPOI()
     }
 
+    func destinationIsTemporary(forReferenceID id: String) -> Bool {
+        referenceEntity(forReferenceID: id)?.isTemp ?? false
+    }
+
+    func destinationNickname(forReferenceID id: String) -> String? {
+        referenceEntity(forReferenceID: id)?.nickname
+    }
+
+    func destinationEstimatedAddress(forReferenceID id: String) -> String? {
+        referenceEntity(forReferenceID: id)?.estimatedAddress
+    }
+
     func markReferenceEntitySelected(forReferenceID id: String) throws {
         try referenceEntity(forReferenceID: id)?.updateLastSelectedDate()
+    }
+
+    func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws {
+        try referenceEntity(forReferenceID: id)?.setTemporary(temporary)
     }
 
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {

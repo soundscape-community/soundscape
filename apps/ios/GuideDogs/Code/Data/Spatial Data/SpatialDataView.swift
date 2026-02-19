@@ -21,7 +21,7 @@ class SpatialDataView: SpatialDataViewProtocol {
     private let tiles: [TileData]
     
     /// The current destination
-    private let destination: ReferenceEntity?
+    private let destination: POI?
     
     // The current set of user defined PORs
     private let genericLocations: [POI]
@@ -54,7 +54,7 @@ class SpatialDataView: SpatialDataViewProtocol {
         }
         
         // Make sure any destinations not in the current tiles still get added to the list of POIs
-        if let destinationEntity = destination?.getPOI(), !ids.contains(destinationEntity.key) {
+        if let destinationEntity = destination, !ids.contains(destinationEntity.key) {
             ids.insert(destinationEntity.key)
             pois.append(destinationEntity)
             
@@ -170,7 +170,7 @@ class SpatialDataView: SpatialDataViewProtocol {
         motionActivityContext = motionActivity
         
         // Retrieve destination
-        destination = destinationManager.destination?.domainEntity
+        destination = destinationManager.destinationPOI
     }
     
     // MARK: - Class Methods
