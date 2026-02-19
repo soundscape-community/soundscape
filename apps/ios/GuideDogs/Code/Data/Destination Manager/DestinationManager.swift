@@ -50,9 +50,7 @@ enum DestinationManagerRuntime {
 @MainActor
 protocol DestinationEntityStore {
     func referenceEntity(forReferenceID id: String) -> RealmReferenceEntity?
-    func referenceEntityID(forGenericLocation location: GenericLocation) -> String?
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String?
-    func referenceEntityID(forEntityKey key: String) -> String?
     func referenceEntityID(forEntityKey key: String) async -> String?
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String

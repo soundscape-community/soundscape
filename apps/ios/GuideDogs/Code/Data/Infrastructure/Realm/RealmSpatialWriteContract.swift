@@ -151,16 +151,8 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
         SpatialDataStoreRegistry.store.referenceEntityByKey(id)
     }
 
-    func referenceEntityID(forGenericLocation location: GenericLocation) -> String? {
-        SpatialDataStoreRegistry.store.referenceEntityByLocation(location.location.coordinate)?.id
-    }
-
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
         SpatialDataStoreRegistry.store.referenceEntityByLocation(location.location.coordinate)?.id
-    }
-
-    func referenceEntityID(forEntityKey key: String) -> String? {
-        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.id
     }
 
     func referenceEntityID(forEntityKey key: String) async -> String? {

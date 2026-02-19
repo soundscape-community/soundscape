@@ -541,6 +541,8 @@ Phase 1 complete:
 - 2026-02-19: Removed deprecated destination sync compatibility shims from production APIs by making `DestinationManagerProtocol` async-only for destination set/clear operations and removing synchronous temporary-marker mutation methods from `DestinationEntityStore`/`SpatialDataDestinationEntityStore`.
 - 2026-02-19: Kept destination async API parity after sync-shim removal by adding explicit async `CLLocation`+address destination set surface (`setDestinationAsync(location:address:...)`) and routing destination manager internals/tests through async-only entrypoints.
 - 2026-02-19: Updated destination-related test seams to match async-only APIs (`DestinationManagerTest`, `EventProcessorTest.MockDestinationManager`) and validated this slice with `bash apps/common/Scripts/check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`), and `swift Scripts/LocalizationLinter/main.swift` passing; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd16`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `DestinationManagerTest` pass (`62` tests, `0` failures).
+- 2026-02-19: Continued destination seam tightening by removing now-unused synchronous destination lookup helpers from `DestinationEntityStore` (`referenceEntityID(forGenericLocation:)`, `referenceEntityID(forEntityKey:)`), removing matching sync implementations from `SpatialDataDestinationEntityStore`, and deleting sync test-mock variants in `DestinationManagerTest`; async lookup variants remain the canonical id-lookup seam.
+- 2026-02-19: Validation for sync destination-id helper removal slice: `bash apps/common/Scripts/check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS seam/boundary scripts (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`), and `swift Scripts/LocalizationLinter/main.swift` pass; `xcodebuild -quiet build-for-testing` passes using clean derived data path `/tmp/soundscape-modularization-dd17`; targeted suites `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`, and `DestinationManagerTest` pass (`62` tests, `0` failures).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -669,9 +671,9 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue tightening destination store surfaces by removing now-unused synchronous lookup helpers (`DestinationEntityStore.referenceEntityID(forGenericLocation:)` and `referenceEntityID(forEntityKey:)`) so destination manager/store seams are fully async for destination write paths.
-2. For each destination seam-tightening slice, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
-3. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
+1. For each destination seam-tightening slice, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to lock first-waypoint hydration parity.
+2. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns and keeping route/marker mutations on `SpatialWriteContract` while maintenance-only operations stay isolated on `SpatialMaintenanceWriteContract`.
+3. Audit destination manager/storage seams for additional dead compatibility helpers and remove them only when async callsite coverage plus targeted dispatch tests are in place.
 
 ## Session Handoff (2026-02-10)
 - Latest landed commits for this slice sequence:

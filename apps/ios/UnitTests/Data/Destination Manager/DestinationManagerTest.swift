@@ -53,16 +53,8 @@ final class DestinationManagerTest: XCTestCase {
             referenceEntityForReferenceIDHandler?(id) ?? nil
         }
 
-        func referenceEntityID(forGenericLocation location: GenericLocation) -> String? {
-            referenceEntityIDForGenericLocationHandler?(location) ?? nil
-        }
-
         func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
             referenceEntityIDForGenericLocationHandler?(location) ?? nil
-        }
-
-        func referenceEntityID(forEntityKey key: String) -> String? {
-            referenceEntityIDForEntityKeyHandler?(key) ?? nil
         }
 
         func referenceEntityID(forEntityKey key: String) async -> String? {
