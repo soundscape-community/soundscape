@@ -438,7 +438,6 @@
 
 /* Title of the slider that controls the volume level of all audio other than beacon or speech audio */
 "settings.volume.other" = "Sound Effects";
-
 //------------------------------------------------------------------------------
 // MARK: Settings (Voice)
 //------------------------------------------------------------------------------
@@ -2291,6 +2290,9 @@
 
 /* List of the two supported AirPods versions, {NumberedPlaceholder="Apple AirPods"} */
 "devices.airpods.supported_versions" = "Apple AirPods with spatial audio";
+
+/* Device model name shown in UI */
+"devices.Bose.model_name" = "Bose Frames Alto or Rondo";
 
 /* Title of the screen displayed to users before they connect to their head tracking headphones which indicates that they need to first pair the device's audio in the iOS settings app */
 "devices.title.pair_audio" = "Pair Headphones Audio";
