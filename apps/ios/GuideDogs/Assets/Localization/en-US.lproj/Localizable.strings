@@ -600,7 +600,7 @@
 "settings.about.title.whats_new" = "What's New?";
 
 /* Settings About Title, Privacy and Cookies */
-"settings.about.title.privacy" = "Soundscape Community Privacy Statement";
+"settings.about.title.privacy" = "Privacy Policy";
 
 /* Settings About Title, Service Agreement */
 "settings.about.title.service_agreement" = "Services Agreement";
@@ -610,6 +610,12 @@
 
 /* Settings About Title, Copyright Notices */
 "settings.about.title.copyright" = "Copyright Notices";
+
+/* Settings About Title, YouTube */
+"settings.about.title.youtube" = "YouTube Channel";
+
+/* Settings About Title, Accessibility (France) */
+"settings.about.title.accessibility_fr_fr" = "Accessibilité: partiellement conforme";
 
 //------------------------------------------------------------------------------
 // MARK: Settings (New Feature)
