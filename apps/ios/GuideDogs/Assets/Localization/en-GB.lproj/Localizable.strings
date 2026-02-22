@@ -267,11 +267,11 @@
 
 
 /*  */
-"general.error.location_services_enable_instructions.2" = "Turn Location Services On in the Settings app to continue.\n\n1. Press the back button (titled Settings)\n2. Select Privacy & Security\n3. Select Location Services\n4. Turn On Location Services";
+"general.error.location_services_enable_instructions.2" = "Turn Location Services On in the Settings app to continue.\n\n1. Press the back button until you get to the main settings\n2. Select Privacy & Security\n3. Select Location Services\n4. Turn On Location Services";
 
 
 /*  */
-"general.error.location_services_enable_instructions.3" = "Turn Location Services On in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the back button (titled Settings)\n3. Select Privacy & Security\n4. Select Location Services\n5. Turn On Location Services";
+"general.error.location_services_enable_instructions.3" = "Turn Location Services On in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the back button until you get to the main settings\n3. Select Privacy & Security\n4. Select Location Services\n5. Turn On Location Services";
 
 
 /*  */
@@ -335,7 +335,7 @@
 
 
 /*  */
-"device_motion.enable.instructions" = "Turn On Fitness Tracking in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the Back button (titled Settings)\n3. Select Privacy & Security\n4. Select Motion & Fitness\n5. Turn on Fitness Tracking\n6. Restart Soundscape";
+"device_motion.enable.instructions" = "Turn On Fitness Tracking in the Settings app to continue.\n\n1. Press Open Settings\n2. Press the back button until you get to the main settings\n3. Select Privacy & Security\n4. Select Motion & Fitness\n5. Turn on Fitness Tracking\n6. Restart Soundscape";
 
 
 /*  */
@@ -1897,7 +1897,7 @@
 
 
 /*  */
-"filter.not_available" = "Some category filters are not available. You can still browse nearby places by selecting \"%@\".";
+"filter.not_available" = "Some category filters are not available. You can still browse nearby places by selecting \"%@\"";
 
 
 /*  */
@@ -3337,7 +3337,7 @@
 
 
 /*  */
-"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the higher quality \"Enhanced\" voices, but you will need to download it first. You can download voices in the iOS Settings app by going to Accessibility > Read & Speak > Voices and tapping on a voice. (In iOS Versions before 26, \"Read & Speak\" is called \"Spoken Content\".) Within the Soundscape App, you can select the voice you want to use by tapping \"Settings\" on the main menu and then from \"General Settings\" selecting \"Voice\".";
+"help.config.voices.content" = "Soundscape can use any of the voices you have downloaded in the iOS Settings app except for the Siri voices which are not available to Soundscape. We recommend choosing one of the higher quality \"Enhanced\" voices, but you will need to download it first. You can download voices in the iOS Settings app by going to Accessibility > Read & Speak > Voices and tapping on a voice. (In iOS Versions before 26, \"Read & Speak\" is called \"Spoken Content\".) Within the Soundscape App, you can select the voice you want to use by going to \"Settings\" from the menu and then from \"General Settings\" selecting \"Voice\".";
 
 
 /*  */
@@ -3573,7 +3573,7 @@
 
 
 /*  */
-"first_launch.callouts.listen.accessibility_hint" = "Double tap to listen to an example of what Soundscape might call out on your next walk";
+"first_launch.callouts.listen.accessibility_hint" = "Double tap to listen to an example of Soundscape's automatic callouts";
 
 
 /*  */
@@ -3713,7 +3713,7 @@
 
 
 /*  */
-"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen within the main menu. The \"Manage Callouts\" section of the \"Settings\" screen contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
+"help.text.automatic_callouts.how.2" = "<b>Managing which callouts you hear</b>:<br/> To choose the types of things Soundscape will automatically call out, go to the \"Settings\" screen from the menu on the home screen. The \"Manage Callouts\" section of the \"Settings\" screen contains a list of types of things the app can call out. Each item has a toggle button that you can turn on or off. If you wish to turn off all callouts, tap the \"Allow Callouts\" toggle at the top of the list.";
 
 
 /*  */
@@ -3769,11 +3769,11 @@
 
 
 /*  */
-"help.text.remote_control.when" = "Headphone media controls can be used while Soundscape is running. This is true whether you are currently in Soundscape or while Soundscape is in the background and even while your device is locked. Note however that headphone media control buttons will not work with Soundscape if you are playing audio like music, podcasts or videos with another app.";
+"help.text.remote_control.when" = "Headphone media controls can be used while Soundscape is running. This is true whether you are currently in Soundscape or while the app runs in the background and even while your device is locked. Note however that headphone media control buttons will not work with Soundscape if you are playing audio like music, podcasts or videos with another app.";
 
 
 /*  */
-"help.text.remote_control.how" = "<p>You can access the following features in Soundscape using the media control buttons on your headphones:<p><br>&#x23EF Play/Pause: Mute any current callouts and if the audio beacon is set, toggle the beacon audio. </p><p>&#x23ED Next: Callout <em>\"My Location\"</em>.</p><p>&#x23EE Previous: Repeat last callout.</p><p>&#x23E9 Skip Forward: Toggle callouts On and Off.</p><p>&#x23EA Skip Backward: Callout <em>\"Around Me\"</em>.</p>";
+"help.text.remote_control.how" = "<p>You can access the following features in Soundscape using the media control buttons on your headphones:<p><br>&#x23EF Play/Pause: Mute any current callouts and if the audio beacon is set, toggle the beacon audio.</p><p>&#x23ED Next: Callout <em>\"My Location\"</em>.</p><p>&#x23EE Previous: Repeat last callout.</p><p>&#x23E9 Skip Forward: Toggle callouts On and Off.</p><p>&#x23EA Skip Backward: Callout <em>\"Around Me\"</em>.</p>";
 
 
 /*  */
@@ -4237,7 +4237,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several metres, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust when the beacon goes silent by going to \"Audio Beacon\" from the \"Settings\" screen and then moving the \"Audio Mute Distance\" slider up or down.";
+"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several metres, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust the distance at which the beacon goes silent by going to \"Audio Beacon\" from the \"Settings\" screen and then moving the \"Audio Mute Distance\" slider up or down.";
 
 
 /*  */
@@ -4413,7 +4413,7 @@
 
 
 /*  */
-"faq.tip.turning_off_auto_callouts" = "If you still want to interact with Soundscape but don’t want to hear automatic callouts, you can turn them off by going to the \"Manage Callouts\" section of the \"Settings\" screen from the menu and then turn off \"Allow Callouts\". Or, if you aren’t going to be using Soundscape, you can put it in either Sleep or Snooze mode using the \"Sleep\" button on the home screen.";
+"faq.tip.turning_off_auto_callouts" = "If you still want to interact with Soundscape but don’t want to hear automatic callouts, you can turn callouts off by going to the \"Manage Callouts\" section of the \"Settings\" screen from the menu. Or, if you aren’t going to be using Soundscape, you can put it in either Sleep or Snooze mode using the \"Sleep\" button on the home screen.";
 
 
 /*  */
@@ -4468,7 +4468,7 @@
 "mail.gmail" = "Gmail";
 "mail.spark" = "Spark";
 "mail.airmail" = "Airmail";
-"donation.body" = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to information on their surroundings through  our life-enhancing technology.";
+"donation.body" = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to information on their surroundings through our life-enhancing technology.";
 "menu.donate" = "Donate";
 "donation.title" = "Donate to Soundscape Community";
 "donation.link" = "Go to Fundraising Page";
@@ -4482,7 +4482,7 @@
 "whats_new.1_3_0.0.title" = "Bose Frames Support";
 "whats_new.1_3_0.0.description" = "Soundscape now supports head tracking with the Alto or Rondo versions of the Bose Frames. Once they're connected, your Bose Frames will tell Soundscape where you are facing, helping Soundscape to improve your audio experience. To connect your Bose Frames to Soundscape, go to the \"Head Tracking Headphones\" item in the Soundscape menu.";
 "whats_new.1_3_0.1.title" = "Testing in Texas";
-"whats_new.1_3_0.1.description" = "If you live in the Austin or San Antonio areas in Texas and would like to help us test a feature we are working on with NaviLens, please get in touch via the \"Send Feedback\" button from the main menu.";
+"whats_new.1_3_0.1.description" = "If you live in the Austin or San Antonio areas in Texas and would like to help us test a feature we are working on with NaviLens, please get in touch via the \"Send Feedback\" button from the menu.";
 "beacon.action.navilens" = "Launch NaviLens";
 "location_detail.action.beacon_or_navilens.hint" = "Double tap to launch NaviLens or set an audio beacon, based on how close this location is";
 "troubleshooting.tile_server_url.explanation" = "This is the server from which Soundscape retrieves map data. You normally should not need to change this unless you are developing or testing Soundscape.";
