@@ -25,17 +25,18 @@ struct BeaconActionHandler {
         guard let key = detail.locationDetail.beaconId else {
             return nil
         }
-        
-        guard let beacon = await DataContractRegistry.spatialRead.referenceEntity(byID: key) else {
-            // Failed to fetch beacon
+
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
+              destinationManager.destinationKey == key,
+              destinationManager.destinationIsTemporary else {
             return nil
         }
-        
-        guard beacon.isTemp else {
+
+        guard let destinationPOI = destinationManager.destinationPOI else {
             return nil
         }
-        
-        let config = EditMarkerConfig(detail: LocationDetail(marker: beacon),
+
+        let config = EditMarkerConfig(detail: LocationDetail(entity: destinationPOI),
                                       route: nil,
                                       context: "beacon_view",
                                       addOrUpdateAction: .popViewController,

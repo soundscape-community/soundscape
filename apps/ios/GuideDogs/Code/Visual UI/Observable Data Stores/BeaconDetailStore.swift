@@ -37,19 +37,13 @@ class BeaconDetailStore: ObservableObject {
             self.init(beacon: nil)
 
             guard let manager,
-                  let key = manager.destinationKey else {
+                  manager.destinationKey != nil,
+                  let destinationPOI = manager.destinationPOI else {
                 return
             }
 
-            Task { @MainActor [weak self] in
-                guard let self,
-                      let beacon = await DataContractRegistry.spatialRead.referenceEntity(byID: key) else {
-                    return
-                }
-
-                // Active audio beacon is set on a location.
-                self.beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: manager.isAudioEnabled)
-            }
+            // Active audio beacon is set on a location.
+            self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: manager.isAudioEnabled)
         }
     }
     
@@ -109,16 +103,12 @@ class BeaconDetailStore: ObservableObject {
                 // are following a route
                 if let userInfo = notification.userInfo as? [String: Any],
                    let key = userInfo[DestinationManager.Keys.destinationKey] as? String,
-                   let isAudioEnabled = userInfo[DestinationManager.Keys.isAudioEnabled] as? Bool {
-                    Task { @MainActor [weak self] in
-                        guard let self,
-                              let beacon = await DataContractRegistry.spatialRead.referenceEntity(byID: key) else {
-                            return
-                        }
-
-                        // Beacon was set - Update beacon so that it is placed on the new location.
-                        self.beacon = BeaconDetail(locationDetail: LocationDetail(marker: beacon), isAudioEnabled: isAudioEnabled)
-                    }
+                   let isAudioEnabled = userInfo[DestinationManager.Keys.isAudioEnabled] as? Bool,
+                   let manager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
+                   manager.destinationKey == key,
+                   let destinationPOI = manager.destinationPOI {
+                    // Beacon was set - Update beacon so that it is placed on the new location.
+                    self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
                 } else {
                     // Beacon was removed
                     self.beacon = nil
