@@ -241,8 +241,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     final class MockSpatialReadContract: SpatialReadContract {
         var routesByKey: [String: Route] = [:]
+        var poisByKey: [String: POI] = [:]
         var referenceEntitiesByID: [String: ReferenceEntity] = [:]
         private(set) var routeByKeyCalls: [String] = []
+        private(set) var poiByKeyCalls: [String] = []
         private(set) var referenceEntityByIDCalls: [String] = []
 
         func routes() async -> [Route] { [] }
@@ -286,7 +288,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] { [] }
 
-        func poi(byKey key: String) async -> POI? { nil }
+        func poi(byKey key: String) async -> POI? {
+            poiByKeyCalls.append(key)
+            return poisByKey[key]
+        }
 
         func road(byKey key: String) async -> Road? { nil }
 
@@ -922,7 +927,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [key])
     }
 
-    func testLocationParametersFetchEntityUsesInjectedSpatialStoreSearchLookup() {
+    func testLocationParametersFetchEntityUsesSpatialReadContractPOILookup() {
         let lookupID = "osm-lookup-id"
         let locationParameters = LocationParameters(name: "Test Entity",
                                                     address: nil,
@@ -930,9 +935,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                     entity: EntityParameters(source: .osm, lookupInformation: lookupID))
         let cachedEntity = GDASpatialDataResultEntity(id: lookupID, parameters: locationParameters)
 
-        let store = MockSpatialDataStore()
-        store.searchResultsByKey[lookupID] = cachedEntity
-        SpatialDataStoreRegistry.configure(with: store)
+        let readMock = MockSpatialReadContract()
+        readMock.poisByKey[lookupID] = cachedEntity
+        DataContractRegistry.configure(spatialRead: readMock)
 
         let expectation = expectation(description: "fetch cached entity")
         locationParameters.fetchEntity { result in
@@ -947,7 +952,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(store.searchByKeyCallKeys, [lookupID])
+        XCTAssertEqual(readMock.poiByKeyCalls, [lookupID])
     }
 
     func testRouteAddAsyncUsesInjectedSpatialStoreLocationLookup() async throws {

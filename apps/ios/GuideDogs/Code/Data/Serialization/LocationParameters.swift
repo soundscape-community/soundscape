@@ -49,24 +49,28 @@ extension LocationParameters {
     
     @MainActor
     private func addOrUpdateOSMEntity(id: String, completion: @escaping Completion) {
-        if let entity = SpatialDataStoreRegistry.store.searchByKey(id) as? GDASpatialDataResultEntity {
-            // Data for the OSM entity has already been cached on the device
-            completion(.success(entity))
-        } else {
+        Task { @MainActor in
+            if let entity = await DataContractRegistry.spatialRead.poi(byKey: id) as? GDASpatialDataResultEntity {
+                // Data for the OSM entity has already been cached on the device
+                completion(.success(entity))
+                return
+            }
+
             // Create a new OSM entity and cache on the device
             let entity = GDASpatialDataResultEntity(id: id, parameters: self)
-            
+
             do {
                 try autoreleasepool {
                     let cache = try RealmHelper.getCacheRealm()
-                    
+
                     try cache.write {
                         cache.add(entity, update: .modified)
                     }
-                    
+
                     completion(.success(entity))
                 }
-            } catch {
+            }
+            catch {
                 // Failed to save the entity
                 completion(.failure(error))
             }
