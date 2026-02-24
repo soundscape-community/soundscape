@@ -376,11 +376,7 @@ struct LocationDetail {
     func updateLastSelectedDate() {
         do {
             if let marker = self.marker {
-                guard let realmMarker = SpatialDataStoreRegistry.store.referenceEntityByKey(marker.id) else {
-                    return
-                }
-
-                try realmMarker.updateLastSelectedDate()
+                try SpatialDataStoreRegistry.store.markReferenceEntitySelected(forReferenceID: marker.id)
             } else if var entity = self.source.entity as? SelectablePOI {
                 try autoreleasepool {
                     let cache = try RealmHelper.getCacheRealm()
@@ -410,11 +406,11 @@ extension LocationDetail {
     }
     
     init?(markerId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(markerId)?.domainEntity else {
+        guard let marker = SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: markerId) else {
             return nil
         }
         
-        self.init(marker: marker, imported: imported, telemetryContext: telemetryContext)
+        self.init(entity: marker, imported: imported, telemetryContext: telemetryContext)
     }
     
     init(location: CLLocation, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
