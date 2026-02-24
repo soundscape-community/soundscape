@@ -56,7 +56,8 @@ class MarkerModel: ObservableObject {
     private func update() {
         updateTask?.cancel()
         updateTask = Task { @MainActor in
-            guard let marker = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
+            guard let detail = LocationDetail(markerId: id),
+                  let poi = detail.source.entity else {
                 return
             }
 
@@ -64,22 +65,22 @@ class MarkerModel: ObservableObject {
                 return
             }
 
-            isNew = marker.isNew
-            name = marker.name
-            address = marker.displayAddress
+            isNew = detail.isNew
+            name = detail.displayName
+            address = detail.displayAddress
 
-            updateDistance(for: marker)
+            updateDistance(for: poi)
         }
     }
     
-    private func updateDistance(for marker: ReferenceEntity) {
+    private func updateDistance(for poi: POI) {
         // Initialize `distance` and `direction` to an invalid value
         var distance = -1.0
         var direction = -1.0
         
         if let userLocation = location {
-            distance = marker.distanceToClosestLocation(from: userLocation)
-            direction = marker.bearingToClosestLocation(from: userLocation)
+            distance = poi.distanceToClosestLocation(from: userLocation)
+            direction = poi.bearingToClosestLocation(from: userLocation)
         }
         
         if distance > 0, direction.isValid {

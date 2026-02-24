@@ -131,6 +131,10 @@ struct LocationDetail {
     var isMarker: Bool {
         return markerId != nil
     }
+
+    var isNew: Bool {
+        marker?.isNew ?? false
+    }
     
     var beaconId: String? {
         guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
