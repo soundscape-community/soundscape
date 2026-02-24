@@ -43,14 +43,14 @@ struct DestinationCallout: POICalloutProtocol {
     }
     
     var marker: ReferenceEntity? {
-        return SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
+        return nil
     }
     
     /// A computed property for accessing the POI referenced by the key stored in this Callout object. Note
     /// that we only store the POI's key and not the POI itself due to threading constraints with Realm.
-    /// Also note that destinations are always markers, so the POI is obtained through the marker object.
+    /// Destination callouts resolve POI data through the focused destination seam.
     var poi: POI? {
-        return marker?.getPOI()
+        return SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: key)
     }
     
     init(_ calloutOrigin: CalloutOrigin, _ entityKey: String, _ causedAudioDisabled: Bool = false) {
@@ -64,22 +64,22 @@ struct DestinationCallout: POICalloutProtocol {
     }
     
     func sounds(for location: CLLocation?, isRepeat: Bool, automotive: Bool = false) -> Sounds {
-        guard let marker = marker, let location = location else {
+        guard let poi = poi, let location = location else {
             return Sounds.empty
         }
         
-        let markerLocation = marker.closestLocation(from: location)
+        let markerLocation = poi.closestLocation(from: location)
         
         switch origin {
         case .auto, .beaconChanged, .preview:
             var sounds = [Sound]()
             
             if includePrefixSound {
-                let category = SuperCategory(rawValue: marker.getPOI().superCategory) ?? SuperCategory.undefined
+                let category = SuperCategory(rawValue: poi.superCategory) ?? SuperCategory.undefined
                 sounds.append(GlyphSound(category.glyph, at: markerLocation))
             }
             
-            let formattedDistance = LanguageFormatter.string(from: marker.distanceToClosestLocation(from: location),
+            let formattedDistance = LanguageFormatter.string(from: poi.distanceToClosestLocation(from: location),
                                                              accuracy: location.horizontalAccuracy,
                                                              name: GDLocalizedString("beacon.generic_name"))
             sounds.append(TTSSound(formattedDistance, at: markerLocation))
@@ -94,7 +94,7 @@ struct DestinationCallout: POICalloutProtocol {
                 let earcon = GlyphSound(.beaconFound)
                 var text = GDLocalizedString("beacon.beacon_location_within_audio_beacon_muted", formattedDistance)
                 // Append suggestion to launch NaviLens if available at location
-                if (poi != nil) && LocationDetail(entity: poi!).source.hasNaviLens {
+                if LocationDetail(entity: poi).source.hasNaviLens {
                     text += " " + GDLocalizedString("beacon.suggest_navilens")
                 }
                 let tts = TTSSound(text, at: markerLocation)

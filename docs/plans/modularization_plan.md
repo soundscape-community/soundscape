@@ -61,7 +61,9 @@ Phase 1 complete:
 - 2026-02-19: Spatial write defaults are now split by responsibility in `DataContractRegistry` (`RealmSpatialWriteContract` for route/marker mutations, `RealmSpatialMaintenanceWriteContract` for maintenance-only operations), with dispatch tests updated to enforce the default adapter boundary.
 - 2026-02-19: Cloud import entry points were moved from `SpatialWriteContract` to `SpatialMaintenanceWriteContract`, and cloud sync callers (`CloudKeyValueStore+Routes`, `CloudKeyValueStore+Markers`) now route imports through maintenance-scoped contracts with updated bridge/dispatch coverage.
 - 2026-02-24: Destination beacon UI flows were tightened to use focused destination seams (`DestinationManager.destinationPOI`/`destinationIsTemporary`) instead of full `ReferenceEntity` reads in `BeaconDetailStore` and `BeaconActionHandler`, preserving behavior while reducing app-facing full-entity dependency.
+- 2026-02-24: Destination beacon callout playback now resolves destination POI data through `SpatialDataStore.destinationPOI(forReferenceID:)` in `DestinationCallout` instead of app-facing `ReferenceEntity` lookups, preserving existing beacon callout behavior for automatic, preview, and geofence-triggered flows.
 - 2026-02-24: Validation baseline for this slice is green across common boundary/package checks, iOS seam guardrail scripts, `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-24: Destination callout seam validation is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -192,4 +194,4 @@ Acceptance criteria:
 ## Immediate Next Steps
 1. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns beyond cloud import entry points, while keeping route/marker mutations on `SpatialWriteContract` and maintenance-only operations isolated on `SpatialMaintenanceWriteContract`.
 2. As additional destination seam slices land, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to preserve first-waypoint hydration parity.
-3. Continue auditing destination behavior/callout flows (beyond beacon-detail/edit flows) for remaining full-entity reads where focused POI/metadata/entity-key seams can preserve behavior without `ReferenceEntity` dependence.
+3. Continue auditing destination behavior/callout flows for remaining full-entity reads outside the beacon detail/edit/callout path (for example history/location-detail surfaces) where focused POI/metadata/entity-key seams can preserve behavior without `ReferenceEntity` dependence.
