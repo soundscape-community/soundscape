@@ -307,13 +307,22 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
     }
 
     func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {
+        let markerEntityKey = SpatialDataStoreRegistry.store.destinationEntityKey(forReferenceID: markerID)
+
         context.calloutHistory.remove { callout in
-            if let poiCallout = callout as? POICallout,
-               let calloutMarker = poiCallout.marker {
-                return calloutMarker.id == markerID
+            guard let poiCallout = callout as? POICallout else {
+                return false
             }
 
-            return false
+            if poiCallout.key == markerID {
+                return true
+            }
+
+            guard let markerEntityKey else {
+                return false
+            }
+
+            return poiCallout.key == markerEntityKey
         }
     }
 

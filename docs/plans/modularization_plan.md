@@ -68,6 +68,8 @@ Phase 1 complete:
 - 2026-02-24: Preview destination-seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`PreviewGeneratorTests`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-24: `LocationDetail.beaconId` now prefers destination manager seams (`isDestination(key:)` + `destinationKey`) for entity-backed location details, keeping coordinate/design-data fallback behavior while reducing destination checks that depended on marker entity resolution.
 - 2026-02-24: Location-detail destination-seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`LocationActionHandlerTests`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-24: Marker callout-history cleanup in `AppContext` now matches marker-backed POI callouts by marker ID/entity-key seams (`destinationEntityKey(forReferenceID:)`) instead of resolving full callout marker entities, reducing app-facing full-entity dependency in history maintenance paths.
+- 2026-02-24: History-cleanup seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`DataRuntimeProviderDispatchTests`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -198,4 +200,4 @@ Acceptance criteria:
 ## Immediate Next Steps
 1. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns beyond cloud import entry points, while keeping route/marker mutations on `SpatialWriteContract` and maintenance-only operations isolated on `SpatialMaintenanceWriteContract`.
 2. As additional destination seam slices land, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to preserve first-waypoint hydration parity.
-3. Continue auditing destination behavior/callout flows for remaining full-entity reads outside the beacon detail/edit/callout and preview beacon-update path (for example history/location-detail surfaces) where focused POI/metadata/entity-key seams can preserve behavior without `ReferenceEntity` dependence.
+3. Continue auditing destination behavior/callout flows for remaining full-entity reads outside the beacon detail/edit/callout, preview beacon-update, and callout-history cleanup paths (for example recent-callout hydration/location-detail surfaces) where focused POI/metadata/entity-key seams can preserve behavior without `ReferenceEntity` dependence.
