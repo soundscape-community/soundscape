@@ -15,7 +15,6 @@ readonly STORE_REGISTRY_PATTERN='SpatialDataStoreRegistry\.store\.'
 readonly ALLOWED_SPATIAL_DATA_STORE_CALLERS=(
   "${CODE_DIR}/Behaviors/Default/AutoCalloutGenerator.swift"
   "${CODE_DIR}/Behaviors/Default/Callouts/POICallout.swift"
-  "${CODE_DIR}/Behaviors/Default/ExplorationGenerator.swift"
   "${CODE_DIR}/Data/Models/Helpers/Roundabout.swift"
   "${CODE_DIR}/Data/Models/Protocols/Road.swift"
   "${CODE_DIR}/Data/Preview/RoadAdjacentDataView.swift"

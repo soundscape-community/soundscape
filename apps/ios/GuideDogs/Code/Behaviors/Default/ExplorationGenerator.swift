@@ -162,7 +162,7 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
         
         log(toggle, toggledOn: true)
         let shouldPlayHush = currentMode != nil
-        var callouts = makeCallouts(for: toggle, location: location)
+        var callouts = await makeCallouts(for: toggle, location: location)
         
         if callouts.isEmpty {
             callouts.append(RelativeStringCallout(toggle.mode.origin, toggle.mode.noCalloutsMessage, position: 0.0))
@@ -290,7 +290,7 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
         return poisByQuad.flatMap { $0.value.map { POICallout(origin, key: $0.key, includeDistance: true) }}
     }
     
-    private func getCalloutsForMarkers(location: CLLocation, requiredMarkerKeys: [String]) -> [CalloutProtocol] {
+    private func getCalloutsForMarkers(location: CLLocation, requiredMarkerKeys: [String]) async -> [CalloutProtocol] {
         var markers: [ReferenceEntity] = []
         var range = spatialDataType.initialPOISearchDistance
         while range <= spatialDataType.cacheDistance {
@@ -315,14 +315,18 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
         
         // Append the entities for `entityKeysToInclude`
         if !requiredMarkerKeys.isEmpty {
-            // Filter out existing markers
-            let filtered = requiredMarkerKeys.filter { (key) -> Bool in
-                // Check if `markers` contain the reference entity with the same key
-                return !markers.contains { $0.entityKey == key }
+            var existingMarkerKeys = Set(markers.compactMap { $0.entityKey })
+
+            for key in requiredMarkerKeys where !existingMarkerKeys.contains(key) {
+                guard let marker = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: key) else {
+                    continue
+                }
+
+                markers.append(marker)
+                if let markerKey = marker.entityKey {
+                    existingMarkerKeys.insert(markerKey)
+                }
             }
-            
-            // Transform entity keys to entity objects
-            markers.append(contentsOf: filtered.compactMap { SpatialDataStoreRegistry.store.referenceEntityByEntityKey($0)?.domainEntity })
         }
         
         return markers.map { POICallout(.nearbyMarkers, key: $0.getPOI().key, includeDistance: true) }
@@ -417,7 +421,7 @@ private extension ExplorationGenerator {
         }
     }
     
-    func makeCallouts(for event: ExplorationModeToggled, location loc: CLLocation) -> [CalloutProtocol] {
+    func makeCallouts(for event: ExplorationModeToggled, location loc: CLLocation) async -> [CalloutProtocol] {
         switch event.mode {
         case .locate:
             if let dataView = data.getDataView(for: loc, searchDistance: SpatialDataContext.initialPOISearchDistance) {
@@ -447,7 +451,7 @@ private extension ExplorationGenerator {
             
         case .nearbyMarkers:
             setUserActivityIfNeeded(for: event)
-            return getCalloutsForMarkers(location: loc, requiredMarkerKeys: event.requiredMarkerKeys)
+            return await getCalloutsForMarkers(location: loc, requiredMarkerKeys: event.requiredMarkerKeys)
         }
     }
     
