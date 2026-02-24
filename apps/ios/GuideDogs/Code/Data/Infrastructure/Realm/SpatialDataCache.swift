@@ -15,6 +15,7 @@ import MapKit
 protocol SpatialDataStore {
     func referenceEntityByKey(_ key: String) -> RealmReferenceEntity?
     func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity?
+    func hasReferenceEntity(forEntityKey key: String) -> Bool
     func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity?
     func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity]
     func referenceEntities() -> [RealmReferenceEntity]
@@ -51,6 +52,10 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity? {
         SpatialDataCache.referenceEntityByEntityKey(key)
+    }
+
+    func hasReferenceEntity(forEntityKey key: String) -> Bool {
+        referenceEntityByEntityKey(key) != nil
     }
 
     func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity? {

@@ -37,6 +37,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         private(set) var referenceEntityByKeyCallKeys: [String] = []
         private(set) var referenceEntityByEntityKeyCallKeys: [String] = []
+        private(set) var hasReferenceEntityCallKeys: [String] = []
         private(set) var referenceEntityByLocationCallKeys: [String] = []
         private(set) var referenceEntitiesNearCallKeys: [String] = []
         private(set) var referenceEntityByGenericLocationCallKeys: [String] = []
@@ -72,6 +73,11 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity? {
             referenceEntityByEntityKeyCallKeys.append(key)
             return referenceEntitiesByEntityKey[key]
+        }
+
+        func hasReferenceEntity(forEntityKey key: String) -> Bool {
+            hasReferenceEntityCallKeys.append(key)
+            return referenceEntitiesByEntityKey[key] != nil
         }
 
         func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity? {

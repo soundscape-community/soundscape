@@ -420,7 +420,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
             let category = SuperCategory(rawValue: poi.superCategory) ?? SuperCategory.undefined
             
             // We make sure the geocoded result has a POI that is a landmark or a marker
-            guard category == SuperCategory.landmarks || SpatialDataStoreRegistry.store.referenceEntityByEntityKey(poi.key) != nil else {
+            guard category == SuperCategory.landmarks || SpatialDataStoreRegistry.store.hasReferenceEntity(forEntityKey: poi.key) else {
                 GDLogAutoCalloutVerbose("Skipping location sense. GenericGeocoderResult error: POI is not a landmark or a marker. ")
                 return nil
             }
@@ -499,7 +499,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
                    .filter { poi in
                        // Skip this POI if it's sense is turned off and it's not a marker
                        let senseIsOn = categoryStates[poi.category, default: false]
-                       guard senseIsOn || SpatialDataStoreRegistry.store.referenceEntityByEntityKey(poi.key) != nil else {
+                       guard senseIsOn || SpatialDataStoreRegistry.store.hasReferenceEntity(forEntityKey: poi.key) else {
                            // Filter callout because category is disabled
                            return false
                        }
