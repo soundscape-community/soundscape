@@ -173,16 +173,23 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
             self.configureCalloutCategories()
         })
         
-        cancellables.append(NotificationCenter.default.publisher(for: .routeWaypointArrived).sink { [unowned self] notification in
+        cancellables.append(NotificationCenter.default.publisher(for: .routeWaypointArrived).sink { [weak self] notification in
             guard let id = notification.userInfo?[RouteGuidanceGenerator.Key.markerId] as? String else {
                 return
             }
-            
-            guard let markerEntityKey = SpatialDataStoreRegistry.store.destinationEntityKey(forReferenceID: id) else {
-                return
+
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    return
+                }
+
+                guard let marker = await DataContractRegistry.spatialRead.referenceEntity(byID: id),
+                      let markerEntityKey = marker.entityKey else {
+                    return
+                }
+
+                await self.cancelCalloutsForEntityAsync(id: markerEntityKey)
             }
-            
-            self.cancelCalloutsForEntity(id: markerEntityKey)
         })
         
         cancellables.append(NotificationCenter.default.publisher(for: .audioEngineStateChanged).sink { [unowned self] notification in
@@ -252,7 +259,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
     func handle(event: UserInitiatedEvent,
                 verbosity: Verbosity,
                 delegate: BehaviorDelegate) async -> [HandledEventAction]? {
-        guard let group = manualCalloutGroup(for: event) else {
+        guard let group = await manualCalloutGroup(for: event) else {
             return nil
         }
 
@@ -283,14 +290,20 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
     /// Temporarily blocks callouts for a particular POI
     /// - Parameter id: ID of the POI
     func cancelCalloutsForEntity(id: String) {
-        guard SpatialDataCache.searchByKey(key: id) != nil else {
+        Task { @MainActor [weak self] in
+            await self?.cancelCalloutsForEntityAsync(id: id)
+        }
+    }
+
+    private func cancelCalloutsForEntityAsync(id: String) async {
+        guard await DataContractRegistry.spatialRead.poi(byKey: id) != nil else {
             return
         }
         
         history.append(TrackedCallout(POICallout(.auto, key: id, location: geo.location)))
     }
     
-    private func manualCalloutGroup(for event: UserInitiatedEvent) -> CalloutGroup? {
+    private func manualCalloutGroup(for event: UserInitiatedEvent) async -> CalloutGroup? {
         switch event {
         case let event as ToggleAutoCalloutsEvent:
             if settings.automaticCalloutsEnabled == true {
@@ -305,13 +318,14 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
             
         case let event as MarkerAddedEvent:
             guard let id = event.markerId,
-                  let markerEntityKey = SpatialDataStoreRegistry.store.destinationEntityKey(forReferenceID: id) else {
+                  let marker = await DataContractRegistry.spatialRead.referenceEntity(byID: id),
+                  let markerEntityKey = marker.entityKey else {
                 return nil
             }
             
-            cancelCalloutsForEntity(id: markerEntityKey)
+            await cancelCalloutsForEntityAsync(id: markerEntityKey)
             
-            guard !SpatialDataStoreRegistry.store.destinationIsTemporary(forReferenceID: id) else {
+            guard !marker.isTemp else {
                 return nil
             }
             
@@ -678,13 +692,11 @@ private extension POI {
                     return GDLocalizedString("markers.marker_with_name", marker.name)
                 }
             }
-        } else if let poi = SpatialDataStoreRegistry.store.searchByKey(key) {
-            if poi.localizedName.isEmpty {
-                // Use a default name
-                return GDLocalizedString("location")
-            } else {
-                return poi.localizedName
-            }
+        } else if localizedName.isEmpty {
+            // Use a default name
+            return GDLocalizedString("location")
+        } else {
+            return localizedName
         }
         
         return ""

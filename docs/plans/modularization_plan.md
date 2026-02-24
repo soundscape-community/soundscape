@@ -89,6 +89,9 @@ Phase 1 complete:
 - 2026-02-24: Data storage API review snapshot from fresh dependency analysis (`7d741fa`) confirmed persistent split ingress (`DataContractRegistry`, `SpatialDataStoreRegistry`, `DestinationEntityStore`) and Realm-bound domain model leakage; added `docs/plans/data_storage_api_north_star.md` to define a single app-facing contract direction before additional seam slices.
 - 2026-02-24: Preview destination beacon context lookup in `PreviewBehavior` now resolves through `DataContractRegistry.spatialRead` (`referenceEntity(byID:)` + `poi(byKey:)`) instead of direct `SpatialDataStoreRegistry.store.destinationPOI(...)`, reducing one non-infrastructure storage-registry ingress point while preserving preview beacon distance/arrival behavior.
 - 2026-02-24: Added staged guardrail to `check_spatial_data_cache_seam.sh` so non-infrastructure `SpatialDataStoreRegistry.store` usage must stay within an explicit allowlist while migration to contract ingress proceeds.
+- 2026-02-24: `AutoCalloutGenerator` waypoint-arrival and marker-added flows now resolve marker state through `DataContractRegistry.spatialRead.referenceEntity(byID:)` and validate marker POIs through `DataContractRegistry.spatialRead.poi(byKey:)`, replacing direct destination/entity-key store reads in those paths while preserving callout cancellation and temporary-marker behavior.
+- 2026-02-24: Auto-callout contract-ingress validation is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (all seam boundary scripts including realm/route checks), `xcodebuild build-for-testing`, and targeted suites (`EventProcessorTest`, `BehaviorEventStreamsTest`, `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`).
+- 2026-02-24: Refreshed dependency-analysis artifact from the same validation build index store (`docs/plans/artifacts/dependency-analysis/latest.txt`, report `20260224-210029Z-ssindex-9cb6701.txt`) to keep edge-baseline tracking current for this slice.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -217,6 +220,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue API ingress consolidation in `docs/plans/data_storage_api_north_star.md` by migrating remaining allowlisted non-infrastructure `SpatialDataStoreRegistry.store` call sites (prioritizing `LocationDetail` and auto-callout/debug-description marker resolution paths) to `DataContractRegistry` contracts before adding new seam-specific APIs.
+1. Continue API ingress consolidation in `docs/plans/data_storage_api_north_star.md` by migrating remaining allowlisted non-infrastructure `SpatialDataStoreRegistry.store` call sites (`DestinationCallout`, `POICallout`, `ExplorationGenerator`, serialization helpers, and `AppContext`/`LocationDetail` leftovers) to `DataContractRegistry` contracts before adding new seam-specific APIs.
 2. Start domain model de-coupling for extraction readiness by moving `Route`, `RouteWaypoint`, and `ReferenceEntity` value models out of `Data/Infrastructure/Realm`, preserving canonical app-facing names and behavior.
 3. Tighten CI guardrails in stages: block new `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**`, then remove temporary `Data/Contracts` infrastructure-type allowlist entries as each type is replaced.
