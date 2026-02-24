@@ -307,7 +307,7 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
     }
 
     func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {
-        let markerEntityKey = SpatialDataStoreRegistry.store.destinationEntityKey(forReferenceID: markerID)
+        let markerEntityKey = context.spatialDataContext.destinationManager.destinationEntityKey(forReferenceID: markerID)
 
         context.calloutHistory.remove { callout in
             guard let poiCallout = callout as? POICallout else {

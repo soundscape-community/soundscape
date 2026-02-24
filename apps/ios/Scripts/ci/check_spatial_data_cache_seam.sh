@@ -13,7 +13,6 @@ readonly STORE_REGISTRY_PATTERN='SpatialDataStoreRegistry\.store\.'
 # Staged allowlist while non-infrastructure callers are migrated to
 # DataContractRegistry contracts.
 readonly ALLOWED_SPATIAL_DATA_STORE_CALLERS=(
-  "${CODE_DIR}/App/AppContext.swift"
   "${CODE_DIR}/Behaviors/Default/AutoCalloutGenerator.swift"
   "${CODE_DIR}/Behaviors/Default/Callouts/DestinationCallout.swift"
   "${CODE_DIR}/Behaviors/Default/Callouts/POICallout.swift"

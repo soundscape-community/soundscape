@@ -36,6 +36,7 @@ protocol DestinationManagerProtocol: AnyObject {
     func isUserWithinGeofence(_ userLocation: CLLocation) -> Bool
     
     func isDestination(key: String) -> Bool
+    func destinationEntityKey(forReferenceID id: String) -> String?
 
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws
     
