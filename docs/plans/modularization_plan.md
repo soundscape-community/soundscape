@@ -66,6 +66,8 @@ Phase 1 complete:
 - 2026-02-24: Destination callout seam validation is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-24: Preview destination beacon update flow now resolves the active destination through `SpatialDataStore.destinationPOI(forReferenceID:)` in `PreviewBehavior` instead of reading full `ReferenceEntity` data, preserving preview beacon distance/arrival callouts while further reducing app-facing full-entity dependencies.
 - 2026-02-24: Preview destination-seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`PreviewGeneratorTests`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-24: `LocationDetail.beaconId` now prefers destination manager seams (`isDestination(key:)` + `destinationKey`) for entity-backed location details, keeping coordinate/design-data fallback behavior while reducing destination checks that depended on marker entity resolution.
+- 2026-02-24: Location-detail destination-seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`LocationActionHandlerTests`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

@@ -133,15 +133,35 @@ struct LocationDetail {
     }
     
     var beaconId: String? {
-        guard let marker = marker else {
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
             return nil
         }
-        
-        guard UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.destinationKey == marker.id else {
-            return nil
+
+        switch source {
+        case .entity(let id):
+            guard destinationManager.isDestination(key: id),
+                  let destinationKey = destinationManager.destinationKey else {
+                return nil
+            }
+
+            return destinationKey
+
+        case .screenshots(let poi):
+            guard destinationManager.isDestination(key: poi.key),
+                  let destinationKey = destinationManager.destinationKey else {
+                return nil
+            }
+
+            return destinationKey
+
+        case .coordinate, .designData:
+            guard let marker = marker,
+                  destinationManager.destinationKey == marker.id else {
+                return nil
+            }
+
+            return marker.id
         }
-        
-        return marker.id
     }
     
     var isBeacon: Bool {
