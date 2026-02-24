@@ -178,11 +178,11 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
                 return
             }
             
-            guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+            guard let markerEntityKey = SpatialDataStoreRegistry.store.destinationEntityKey(forReferenceID: id) else {
                 return
             }
             
-            self.cancelCalloutsForEntity(id: marker.getPOI().key)
+            self.cancelCalloutsForEntity(id: markerEntityKey)
         })
         
         cancellables.append(NotificationCenter.default.publisher(for: .audioEngineStateChanged).sink { [unowned self] notification in
@@ -304,13 +304,14 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
             return event.playSound ? callouts : nil
             
         case let event as MarkerAddedEvent:
-            guard let id = event.markerId, let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+            guard let id = event.markerId,
+                  let markerEntityKey = SpatialDataStoreRegistry.store.destinationEntityKey(forReferenceID: id) else {
                 return nil
             }
             
-            cancelCalloutsForEntity(id: marker.getPOI().key)
+            cancelCalloutsForEntity(id: markerEntityKey)
             
-            guard !marker.isTemp else {
+            guard !SpatialDataStoreRegistry.store.destinationIsTemporary(forReferenceID: id) else {
                 return nil
             }
             
