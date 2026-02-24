@@ -36,6 +36,22 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DestinationManager` storage operations route through app-facing contracts (or a contract-backed adapter), not a separate long-lived parallel API surface.
 - App-facing contracts expose domain/value types only; no Realm object types or Realm-local model families.
 
+## 2026-02-24 Checkpoint: Remaining Sync Callers
+- Remaining staged `SpatialDataStoreRegistry.store` callers are concentrated in sync-heavy paths:
+  - `POICallout`, `AutoCalloutGenerator`
+  - `LocationDetail`, `MarkerParameters`
+  - `Road`, `Roundabout`, `RoadAdjacentDataView`, `SpatialDataView`
+- These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
+- Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
+
+## Decision for Sync Paths
+- Keep the three async-first contracts as the only app-facing ingress surface.
+- Do not introduce a parallel sync read protocol.
+- Migrate remaining sync callers by one of two patterns:
+  - Move lookup earlier to an async producer and pass resolved value data into sync callout/rendering structs.
+  - Convert the owning API boundary to async when the call chain can absorb it without broad churn.
+- If neither pattern is feasible for a caller, treat it as a temporary compatibility seam and track it explicitly in `modularization_plan.md`.
+
 ## Scope Control Rules
 - New storage behavior required by `App`, `Behaviors`, `Visual UI`, or `Notifications` must be added to `DataContractRegistry` contracts first.
 - Do not add new global registries for data access.
@@ -60,4 +76,3 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DataContractRegistry` contracts contain no Realm infrastructure types.
 - `RealmSwift` imports are confined to adapter/infrastructure files.
 - A non-Realm in-memory adapter passes contract behavior tests without special-case shims.
-

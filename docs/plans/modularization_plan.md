@@ -102,6 +102,7 @@ Phase 1 complete:
 - 2026-02-24: Route-serialization contract-ingress validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`); staged seam allowlist now removes `RouteParameters+Codable.swift`.
 - 2026-02-24: `LocationParameters` OSM cache lookup now resolves cached entities through `DataContractRegistry.spatialRead.poi(byKey:)` before fallback cache insertion, removing direct `SpatialDataStoreRegistry.store.searchByKey(...)` ingress in universal-link marker/location hydration.
 - 2026-02-24: Location-parameters contract-ingress validation is green across iOS seam guardrails, `xcodebuild build-for-testing`, and targeted suites (`RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`); staged seam allowlist now removes `LocationParameters.swift`.
+- 2026-02-24: Data API north-star checkpoint updated with explicit policy for remaining sync-heavy callers: keep async-first contracts as the only app-facing ingress and avoid introducing a parallel sync read protocol; migrate via async producer pre-resolution or targeted async boundary conversion.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
