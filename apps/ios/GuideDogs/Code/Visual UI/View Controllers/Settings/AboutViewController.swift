@@ -48,18 +48,36 @@ class AboutApplicationViewController: BaseTableViewController {
     
     private var aboutLinks: [AboutLinkCellModel] {
         var links = [
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), segue: "ShowVersionHistorySegue"),
-            AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Privacy Policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale), event: "about.privacy_policy"),
-            AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Services Agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale), event: "about.services_agreement"),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), segue: "ShowThirdPartyNoticesSegue"),
-            AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("YouTube Channel"), url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale), event: "about.youtube_channel")
+            AboutLinkCellModel(
+                localizedTitle: GDLocalizedString("settings.about.title.whats_new"),
+                segue: "ShowVersionHistorySegue"
+            ),
+
+            AboutLinkCellModel(
+                localizedTitle: GDLocalizedString("settings.about.title.privacy"),
+                url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale),
+                event: "about.privacy_policy"
+            ),
+
+            AboutLinkCellModel(
+                localizedTitle: GDLocalizedString("settings.about.title.service_agreement"),
+                url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale),
+                event: "about.services_agreement"
+            ),
+
+            AboutLinkCellModel(
+                localizedTitle: GDLocalizedString("settings.about.title.third_party"),
+                segue: "ShowThirdPartyNoticesSegue"
+            ),
+
+        
+            AboutLinkCellModel(
+                localizedTitle: GDLocalizedString("settings.about.title.youtube"),
+                url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale),
+                event: "about.youtube_channel"
+            )
         ]
-        
-        if LocalizationContext.currentAppLocale == Locale.frFr {
-            // If the app is localized in fr-FR, include a link to the France Accessibility landing page
-            links.append(AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Accessibilité: partiellement conforme"), url: AppContext.Links.accessibilityFrance, event: "about.accessibility_fr_fr"))
-        }
-        
+
         return links
     }
     
