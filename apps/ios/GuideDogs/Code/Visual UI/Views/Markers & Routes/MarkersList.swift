@@ -112,13 +112,18 @@ struct MarkersList: View {
         }
     }
     
-    private func entity(for markerID: String) async -> POI? {
-        await DataContractRegistry.spatialRead.referenceEntity(byID: markerID)?.getPOI()
+    @MainActor
+    private func entity(for markerID: String) -> POI? {
+        guard let detail = LocationDetail(markerId: markerID) else {
+            return nil
+        }
+
+        return detail.source.entity
     }
 
     private func didSelectLocationAction(_ action: LocationAction, for markerID: String) {
         Task { @MainActor in
-            guard let poi = await entity(for: markerID) else {
+            guard let poi = entity(for: markerID) else {
                 return
             }
 

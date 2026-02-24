@@ -72,6 +72,8 @@ Phase 1 complete:
 - 2026-02-24: History-cleanup seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`DataRuntimeProviderDispatchTests`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-24: Search recent-callout hydration now resolves route waypoint arrivals through `WaypointArrivalCallout.waypoint.source.entity` in `SearchResultsTableViewController`, removing app-facing `SpatialReadContract.referenceEntity(byID:)` full-entity reads from this history path.
 - 2026-02-24: Recent-callout hydration seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`UIRuntimeProviderDispatchTests`, `LocationActionHandlerTests`, `DataRuntimeProviderDispatchTests`).
+- 2026-02-24: Marker-list location actions now hydrate selected marker POIs through `LocationDetail(markerId:)` + `LocationDetail.Source.entity` in `MarkersList`, removing app-facing `SpatialReadContract.referenceEntity(byID:)` full-entity reads from that UI action path.
+- 2026-02-24: Marker-list seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`UIRuntimeProviderDispatchTests`, `LocationActionHandlerTests`, `DataRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -202,4 +204,4 @@ Acceptance criteria:
 ## Immediate Next Steps
 1. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns beyond cloud import entry points, while keeping route/marker mutations on `SpatialWriteContract` and maintenance-only operations isolated on `SpatialMaintenanceWriteContract`.
 2. As additional destination seam slices land, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to preserve first-waypoint hydration parity.
-3. Continue auditing destination behavior/callout flows for remaining full-entity reads outside the beacon detail/edit/callout, preview beacon-update, and recent-callout/callout-history cleanup paths (for example remaining location-detail surfaces) where focused POI/metadata/entity-key seams can preserve behavior without `ReferenceEntity` dependence.
+3. Continue auditing destination behavior/callout flows for remaining full-entity reads outside the beacon detail/edit/callout, preview beacon-update, recent-callout/callout-history cleanup, and marker-list action paths (for example remaining location-detail/marker-detail surfaces) where focused POI/metadata/entity-key seams can preserve behavior without `ReferenceEntity` dependence.
