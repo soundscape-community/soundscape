@@ -384,17 +384,11 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
             previousEdgeData = previous[previous.count - 2].selectedEdge
         }
 
-        let beaconContext: (location: CLLocation, distance: CLLocationDistance, arrived: Bool)?
-        if let key = beaconKey, let destinationPOI = SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: key) {
-            let location = destinationPOI.closestLocation(from: to.node.location)
-            let distance = to.node.location.coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
-            beaconContext = (location, distance, distance < 15.0)
-        } else {
-            beaconContext = nil
-        }
+        let activeBeaconKey = beaconKey
 
         Task { @MainActor [weak self] in
             guard let self = self else { return }
+            let beaconContext = await self.beaconContext(for: activeBeaconKey, relativeTo: to.node.location)
 
             let event = PreviewNodeChangedEvent(from: from, to: to, along: along, previousEdgeData: previousEdgeData, isUndo: isUndo)
             await self.playPreviewCallouts(for: event)
@@ -412,6 +406,30 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
                 self.startWands()
             }
         }
+    }
+
+    private func beaconContext(for beaconKey: String?,
+                               relativeTo location: CLLocation) async -> (location: CLLocation, distance: CLLocationDistance, arrived: Bool)? {
+        guard let beaconKey, let destinationPOI = await destinationPOI(forReferenceID: beaconKey) else {
+            return nil
+        }
+
+        let destinationLocation = destinationPOI.closestLocation(from: location)
+        let distance = location.coordinate.ssGeoCoordinate.distance(to: destinationLocation.coordinate.ssGeoCoordinate)
+        return (destinationLocation, distance, distance < 15.0)
+    }
+
+    private func destinationPOI(forReferenceID id: String) async -> POI? {
+        guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
+            return nil
+        }
+
+        if let entityKey = referenceEntity.entityKey,
+           let poi = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return poi
+        }
+
+        return GenericLocation(ref: referenceEntity)
     }
 
     private func sendBeaconUpdateEvent(location: CLLocation, distance: CLLocationDistance, arrived: Bool) async {

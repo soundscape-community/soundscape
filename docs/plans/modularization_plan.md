@@ -86,6 +86,9 @@ Phase 1 complete:
 - 2026-02-24: POI table-cell seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`LocationActionHandlerTests`, `DataRuntimeProviderDispatchTests`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-24: Auto-callout marker-existence checks now use focused `SpatialDataStore.hasReferenceEntity(forEntityKey:)` seams in `AutoCalloutGenerator` (`GenericGeocoderResult` marker/landmark gate and category-disabled marker bypass) instead of app-facing full entity fetches used only for existence checks.
 - 2026-02-24: Auto-callout marker-existence seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`EventProcessorTest`, `UIRuntimeProviderDispatchTests`, `DataRuntimeProviderDispatchTests`).
+- 2026-02-24: Data storage API review snapshot from fresh dependency analysis (`7d741fa`) confirmed persistent split ingress (`DataContractRegistry`, `SpatialDataStoreRegistry`, `DestinationEntityStore`) and Realm-bound domain model leakage; added `docs/plans/data_storage_api_north_star.md` to define a single app-facing contract direction before additional seam slices.
+- 2026-02-24: Preview destination beacon context lookup in `PreviewBehavior` now resolves through `DataContractRegistry.spatialRead` (`referenceEntity(byID:)` + `poi(byKey:)`) instead of direct `SpatialDataStoreRegistry.store.destinationPOI(...)`, reducing one non-infrastructure storage-registry ingress point while preserving preview beacon distance/arrival behavior.
+- 2026-02-24: Added staged guardrail to `check_spatial_data_cache_seam.sh` so non-infrastructure `SpatialDataStoreRegistry.store` usage must stay within an explicit allowlist while migration to contract ingress proceeds.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -214,6 +217,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns beyond cloud import entry points and save-path existence checks, while keeping route/marker mutations on `SpatialWriteContract` and maintenance-only operations isolated on `SpatialMaintenanceWriteContract`.
-2. As additional destination seam slices land, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to preserve first-waypoint hydration parity.
-3. Continue auditing destination behavior/callout flows for remaining full-entity reads outside the beacon detail/edit/callout, preview beacon-update, recent-callout/callout-history cleanup, marker-list action paths, auto-callout marker-key routing/existence paths, location-detail marker hydration/selection paths, marker-list display updates, and POI list-cell marker rendering paths (for example remaining marker-detail edit surfaces and callout debug-description marker reads) where focused POI/metadata/entity-key seams can preserve behavior without `ReferenceEntity` dependence.
+1. Continue API ingress consolidation in `docs/plans/data_storage_api_north_star.md` by migrating remaining allowlisted non-infrastructure `SpatialDataStoreRegistry.store` call sites (prioritizing `LocationDetail` and auto-callout/debug-description marker resolution paths) to `DataContractRegistry` contracts before adding new seam-specific APIs.
+2. Start domain model de-coupling for extraction readiness by moving `Route`, `RouteWaypoint`, and `ReferenceEntity` value models out of `Data/Infrastructure/Realm`, preserving canonical app-facing names and behavior.
+3. Tighten CI guardrails in stages: block new `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**`, then remove temporary `Data/Contracts` infrastructure-type allowlist entries as each type is replaced.
