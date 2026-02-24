@@ -94,6 +94,8 @@ Phase 1 complete:
 - 2026-02-24: Refreshed dependency-analysis artifact from the same validation build index store (`docs/plans/artifacts/dependency-analysis/latest.txt`, report `20260224-210029Z-ssindex-9cb6701.txt`) to keep edge-baseline tracking current for this slice.
 - 2026-02-24: `AppContextDataRuntimeProviders.referenceRemoveCalloutHistoryForMarkerID(_:)` now resolves destination marker entity keys through `DestinationManagerProtocol.destinationEntityKey(forReferenceID:)` instead of direct `SpatialDataStoreRegistry.store` access, keeping callout-history cleanup behavior while reducing a non-infrastructure storage-registry ingress point.
 - 2026-02-24: Added `DestinationManagerProtocol.destinationEntityKey(forReferenceID:)` and updated the staged seam guardrail allowlist to remove `AppContext.swift`; validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`DataRuntimeProviderDispatchTests`, `DestinationManagerTest`, `EventProcessorTest`, `RouteStorageProviderDispatchTests`).
+- 2026-02-24: `DestinationCallout` now consumes pre-resolved POI context (`storedPOI`) supplied by beacon/destination event producers instead of reading destination POIs via `SpatialDataStoreRegistry.store` inside the callout, reducing non-infrastructure storage-registry ingress in beacon/preview callout rendering.
+- 2026-02-24: Beacon event payloads now carry optional destination POI context (`BeaconChangedEvent.destinationPOI`, `BeaconCalloutEvent.destinationPOI`) from `DestinationManager`/beacon generators, and the staged seam guardrail allowlist removes `DestinationCallout.swift`; validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`, `DataRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -222,6 +224,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue API ingress consolidation in `docs/plans/data_storage_api_north_star.md` by migrating remaining allowlisted non-infrastructure `SpatialDataStoreRegistry.store` call sites (`DestinationCallout`, `POICallout`, `ExplorationGenerator`, serialization helpers, and `LocationDetail` leftovers) to `DataContractRegistry` contracts before adding new seam-specific APIs.
+1. Continue API ingress consolidation in `docs/plans/data_storage_api_north_star.md` by migrating remaining allowlisted non-infrastructure `SpatialDataStoreRegistry.store` call sites (`POICallout`, `ExplorationGenerator`, serialization helpers, and `LocationDetail` leftovers) to `DataContractRegistry` contracts before adding new seam-specific APIs.
 2. Start domain model de-coupling for extraction readiness by moving `Route`, `RouteWaypoint`, and `ReferenceEntity` value models out of `Data/Infrastructure/Realm`, preserving canonical app-facing names and behavior.
 3. Tighten CI guardrails in stages: block new `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**`, then remove temporary `Data/Contracts` infrastructure-type allowlist entries as each type is replaced.

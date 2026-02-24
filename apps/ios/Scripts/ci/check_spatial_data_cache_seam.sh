@@ -14,7 +14,6 @@ readonly STORE_REGISTRY_PATTERN='SpatialDataStoreRegistry\.store\.'
 # DataContractRegistry contracts.
 readonly ALLOWED_SPATIAL_DATA_STORE_CALLERS=(
   "${CODE_DIR}/Behaviors/Default/AutoCalloutGenerator.swift"
-  "${CODE_DIR}/Behaviors/Default/Callouts/DestinationCallout.swift"
   "${CODE_DIR}/Behaviors/Default/Callouts/POICallout.swift"
   "${CODE_DIR}/Behaviors/Default/ExplorationGenerator.swift"
   "${CODE_DIR}/Data/Models/Helpers/Roundabout.swift"

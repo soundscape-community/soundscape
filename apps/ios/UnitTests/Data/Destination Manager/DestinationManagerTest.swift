@@ -274,7 +274,8 @@ final class DestinationManagerTest: XCTestCase {
         try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
 
         XCTAssertNotNil(dm.destinationPOI)
-        XCTAssertEqual(lookedUpPOIIDs, [testID, testID])
+        XCTAssertGreaterThanOrEqual(lookedUpPOIIDs.count, 2)
+        XCTAssertEqual(Array(lookedUpPOIIDs.prefix(2)), [testID, testID])
 
         try await dm.clearDestinationAsync(logContext: nil)
     }

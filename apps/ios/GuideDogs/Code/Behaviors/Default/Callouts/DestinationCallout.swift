@@ -46,17 +46,21 @@ struct DestinationCallout: POICalloutProtocol {
         return nil
     }
     
-    /// A computed property for accessing the POI referenced by the key stored in this Callout object. Note
-    /// that we only store the POI's key and not the POI itself due to threading constraints with Realm.
-    /// Destination callouts resolve POI data through the focused destination seam.
+    /// The destination POI resolved before creating the callout.
+    let storedPOI: POI?
+
     var poi: POI? {
-        return SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: key)
+        return storedPOI
     }
     
-    init(_ calloutOrigin: CalloutOrigin, _ entityKey: String, _ causedAudioDisabled: Bool = false) {
+    init(_ calloutOrigin: CalloutOrigin,
+         _ entityKey: String,
+         _ causedAudioDisabled: Bool = false,
+         poi: POI? = nil) {
         self.origin = calloutOrigin
         self.entityKey = entityKey
         self.causedAudioDisabled = causedAudioDisabled
+        self.storedPOI = poi
     }
     
     func hasSameEntity(_ rhs: POICallout) -> Bool {

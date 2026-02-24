@@ -341,7 +341,7 @@ class DestinationManager: DestinationManagerProtocol {
         
         try destinationStore.markReferenceEntitySelected(forReferenceID: referenceID)
         
-        notifyDestinationChanged(id: referenceID)
+        notifyDestinationChanged(id: referenceID, destinationPOI: destinationPOI)
         
         if FirstUseExperience.didComplete(.oobe) {
             updateNowPlayingDisplay(for: userLocation)
@@ -855,7 +855,7 @@ class DestinationManager: DestinationManagerProtocol {
         appDidInitialize = true
     }
     
-    private func notifyDestinationChanged(id: String?) {
+    private func notifyDestinationChanged(id: String?, destinationPOI: POI? = nil) {
         var userInfo: [String: Any]?
         
         if let id = id {
@@ -863,7 +863,11 @@ class DestinationManager: DestinationManagerProtocol {
                         DestinationManager.Keys.isAudioEnabled: isAudioEnabled]
         }
         
-        DestinationManagerRuntime.processEvent(BeaconChangedEvent(id: id, audioEnabled: self.isAudioEnabled))
+        DestinationManagerRuntime.processEvent(
+            BeaconChangedEvent(id: id,
+                               audioEnabled: self.isAudioEnabled,
+                               destinationPOI: destinationPOI)
+        )
         NotificationCenter.default.post(name: Notification.Name.destinationChanged, object: self, userInfo: userInfo)
     }
     

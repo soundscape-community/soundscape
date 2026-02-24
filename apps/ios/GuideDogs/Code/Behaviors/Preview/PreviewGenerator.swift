@@ -109,7 +109,9 @@ struct PreviewGenerator<DecisionPoint: RootedPreviewGraph>: ManualGenerator {
                 return nil
             }
 
-            return CalloutGroup([DestinationCallout(.preview, key)], action: .interruptAndClear, logContext: "preview.beacon_set")
+            return CalloutGroup([DestinationCallout(.preview, key, poi: event.destinationPOI)],
+                                action: .interruptAndClear,
+                                logContext: "preview.beacon_set")
 
         case let event as PreviewBeaconUpdatedEvent:
             var callouts: [CalloutProtocol] = []

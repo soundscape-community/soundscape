@@ -13,15 +13,24 @@ import Combine
 struct BeaconCalloutEvent: UserInitiatedEvent {
     let beaconId: String
     let logContext: String
+    let destinationPOI: POI?
+
+    init(beaconId: String, logContext: String, destinationPOI: POI? = nil) {
+        self.beaconId = beaconId
+        self.logContext = logContext
+        self.destinationPOI = destinationPOI
+    }
 }
 
 struct BeaconChangedEvent: UserInitiatedEvent {
     let audioEnabled: Bool
     let markerId: String?
+    let destinationPOI: POI?
     
-    init(id: String?, audioEnabled: Bool) {
+    init(id: String?, audioEnabled: Bool, destinationPOI: POI? = nil) {
         self.audioEnabled = audioEnabled
         markerId = id
+        self.destinationPOI = destinationPOI
     }
 }
 
@@ -156,7 +165,9 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
     private func manualCalloutGroup(for event: UserInitiatedEvent) -> CalloutGroup? {
         switch event {
         case let event as BeaconCalloutEvent:
-            return CalloutGroup([DestinationCallout(.auto, event.beaconId)], action: .interruptAndClear, logContext: event.logContext)
+            return CalloutGroup([DestinationCallout(.auto, event.beaconId, poi: event.destinationPOI)],
+                                action: .interruptAndClear,
+                                logContext: event.logContext)
             
         case let event as BeaconChangedEvent:
             guard settings.automaticCalloutsEnabled else {
@@ -225,7 +236,9 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
             return nil
         }
         
-        guard let destinations = getCalloutsForBeacon(nearby: location, origin: .beaconChanged) else {
+        guard let destinations = getCalloutsForBeacon(nearby: location,
+                                                      origin: .beaconChanged,
+                                                      destinationPOIOverride: event.destinationPOI) else {
             return nil
         }
         
@@ -282,7 +295,11 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         return group
     }
     
-    private func getCalloutsForBeacon(nearby location: CLLocation, origin: CalloutOrigin, causedAudioDisable: Bool = false, didExitGeofence: Bool = false) -> [DestinationCallout]? {
+    private func getCalloutsForBeacon(nearby location: CLLocation,
+                                      origin: CalloutOrigin,
+                                      causedAudioDisable: Bool = false,
+                                      didExitGeofence: Bool = false,
+                                      destinationPOIOverride: POI? = nil) -> [DestinationCallout]? {
         // Check if destination callouts are enabled
         guard settings.destinationSenseEnabled else {
             GDLogAutoCalloutInfo("Skipping beacon auto callouts. Beacon callouts are not enabled.")
@@ -293,6 +310,8 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         guard let key = destinationKey else {
             return nil
         }
+
+        let destinationPOI = destinationPOIOverride ?? spatialData.destinationManager.destinationPOI
         
         /// Only play "Beacon within x units" callouts when entering (not exitinhg) beacon geofence. For large values of
         /// enterImmediateVicinityDistance, when exiting a geofence, the auto callouts will immediately announce a
@@ -305,7 +324,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         }
         
         // If the callout is not coming from .auto, there are no additional checks to make
-        if origin == .auto, let destinationPOI = spatialData.destinationManager.destinationPOI {
+        if origin == .auto, let destinationPOI {
             // Check the update filter (if this callout is coming from auto callouts)
             guard beaconUpdateFilter.shouldUpdate(location: location) else {
                 return nil
@@ -323,7 +342,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         configureDestinationUpdates()
         
         // Build the destination callout
-        return [DestinationCallout(origin, key, causedAudioDisable)]
+        return [DestinationCallout(origin, key, causedAudioDisable, poi: destinationPOI)]
     }
     
     // MARK: - Helper Methods
