@@ -29,11 +29,12 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
     // MARK: `TableViewCellConfigurator`
     
     func configure(_ cell: TableViewCell, forDisplaying model: Model) {
-        if let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(model.key)?.domainEntity,
-           marker.isTemp == false {
-            configureTitle(cell, marker: marker)
-            configureDetail(cell, marker: marker)
-            configureImageView(cell, marker: marker)
+        let detail = LocationDetail(entity: model)
+
+        if detail.isMarker {
+            configureTitle(cell, marker: detail, poi: model)
+            configureDetail(cell, marker: detail)
+            configureImageView(cell, marker: detail)
         } else {
             configureTitle(cell, poi: model)
             configureDetail(cell, poi: model)
@@ -54,12 +55,12 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.titleLabel.accessibilityLabel = poi.localizedName
     }
     
-    private func configureTitle(_ cell: POITableViewCell, marker: ReferenceEntity) {
-        let name = marker.name
+    private func configureTitle(_ cell: POITableViewCell, marker: LocationDetail, poi: POI) {
+        let name = marker.displayName
         
         cell.titleLabel.text = name
         
-        if marker.getPOI() is Address, marker.nickname == nil {
+        if poi is Address, marker.nickname == nil {
             cell.titleLabel.accessibilityLabel = GDLocalizedString("markers.generic_name")
         } else {
             cell.titleLabel.accessibilityLabel = GDLocalizedString("markers.marker_with_name", name)
@@ -70,7 +71,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.detailLabel.text = poi.addressLine
     }
     
-    private func configureDetail(_ cell: POITableViewCell, marker: ReferenceEntity) {
+    private func configureDetail(_ cell: POITableViewCell, marker: LocationDetail) {
         cell.detailLabel.text = marker.displayAddress
     }
     
@@ -117,7 +118,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.imageViewType = .place
     }
     
-    private func configureImageView(_ cell: POITableViewCell, marker: ReferenceEntity) {
+    private func configureImageView(_ cell: POITableViewCell, marker _: LocationDetail) {
         cell.imageViewType = .marker
     }
     
