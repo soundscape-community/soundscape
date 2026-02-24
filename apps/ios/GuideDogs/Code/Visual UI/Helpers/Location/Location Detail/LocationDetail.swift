@@ -23,7 +23,7 @@ struct LocationDetail {
         case designData(at: CLLocation, address: String)
         case screenshots(poi: GenericLocation)
         
-        fileprivate var entity: POI? {
+        var entity: POI? {
             if case .entity(let id) = self {
                 return SpatialDataStoreRegistry.store.searchByKey(id)
             } else if case .screenshots(let poi) = self {
