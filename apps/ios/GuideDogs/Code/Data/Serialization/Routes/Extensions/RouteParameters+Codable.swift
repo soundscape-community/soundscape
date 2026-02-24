@@ -56,13 +56,13 @@ extension RouteParameters {
     }
     
     @MainActor
-    static func encode(from detail: RouteDetail, context: RouteParameters.Context) -> Data? {
+    static func encode(from detail: RouteDetail, context: RouteParameters.Context) async -> Data? {
         guard case .database(let id) = detail.source else {
             GDLogURLResourceError("Encoding is only supported for Realm routes")
             return nil
         }
         
-        guard let route = SpatialDataStoreRegistry.store.routeByKey(id),
+        guard let route = await DataContractRegistry.spatialRead.route(byKey: id),
               let routeParameters = RouteParameters(route: route, context: context) else {
             GDLogURLResourceError("Failed to encode - Failed to fetch route parameters from Realm")
             return nil
@@ -101,8 +101,8 @@ extension RouteParameters {
     }
     
     @MainActor
-    static func encodeAndWriteToTemporaryFile(from detail: RouteDetail, context: RouteParameters.Context) -> URL? {
-        return writeToTemporaryFile(encode(from: detail, context: context))
+    static func encodeAndWriteToTemporaryFile(from detail: RouteDetail, context: RouteParameters.Context) async -> URL? {
+        return writeToTemporaryFile(await encode(from: detail, context: context))
     }
     
 }

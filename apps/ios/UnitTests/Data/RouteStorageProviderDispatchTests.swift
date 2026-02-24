@@ -240,11 +240,16 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     }
 
     final class MockSpatialReadContract: SpatialReadContract {
+        var routesByKey: [String: Route] = [:]
         var referenceEntitiesByID: [String: ReferenceEntity] = [:]
+        private(set) var routeByKeyCalls: [String] = []
         private(set) var referenceEntityByIDCalls: [String] = []
 
         func routes() async -> [Route] { [] }
-        func route(byKey key: String) async -> Route? { nil }
+        func route(byKey key: String) async -> Route? {
+            routeByKeyCalls.append(key)
+            return routesByKey[key]
+        }
         func routeMetadata(byKey key: String) async -> RouteReadMetadata? { nil }
         func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters? { nil }
         func routeParametersForBackup() async -> [RouteParameters] { [] }
@@ -339,17 +344,17 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.routesCallCount, 1)
     }
 
-    func testEncodeFromDetailUsesInjectedSpatialStoreRouteLookup() throws {
+    func testEncodeFromDetailUsesSpatialReadContractRouteLookup() async throws {
         let route = try createPersistedRoute(name: "EncodeRoute")
-        let store = MockSpatialDataStore()
-        store.routesByKey[route.id] = route
-        SpatialDataStoreRegistry.configure(with: store)
+        let readMock = MockSpatialReadContract()
+        readMock.routesByKey[route.id] = route
+        DataContractRegistry.configure(spatialRead: readMock)
 
         let detail = RouteDetail(source: .database(id: route.id))
-        let data = RouteParameters.encode(from: detail, context: .backup)
+        let data = await RouteParameters.encode(from: detail, context: .backup)
 
         XCTAssertNotNil(data)
-        XCTAssertEqual(store.routeByKeyCallKeys, [route.id])
+        XCTAssertEqual(readMock.routeByKeyCalls, [route.id])
     }
 
     func testRouteInitFromParametersUsesInjectedSpatialStoreMarkerLookup() throws {

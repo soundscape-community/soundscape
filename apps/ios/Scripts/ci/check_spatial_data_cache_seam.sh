@@ -20,7 +20,6 @@ readonly ALLOWED_SPATIAL_DATA_STORE_CALLERS=(
   "${CODE_DIR}/Data/Preview/RoadAdjacentDataView.swift"
   "${CODE_DIR}/Data/Serialization/LocationParameters.swift"
   "${CODE_DIR}/Data/Serialization/MarkerParameters.swift"
-  "${CODE_DIR}/Data/Serialization/Routes/Extensions/RouteParameters+Codable.swift"
   "${CODE_DIR}/Data/Spatial Data/SpatialDataView.swift"
   "${CODE_DIR}/Visual UI/Helpers/Location/Location Detail/LocationDetail.swift"
 )
