@@ -78,16 +78,6 @@ class AboutApplicationViewController: BaseTableViewController {
             )
         ]
 
-        if LocalizationContext.currentAppLocale == Locale.frFr {
-            links.append(
-                AboutLinkCellModel(
-                    localizedTitle: GDLocalizedString("settings.about.title.accessibility_fr_fr"),
-                    url: AppContext.Links.accessibilityFrance,
-                    event: "about.accessibility_fr_fr"
-                )
-            )
-        }
-
         return links
     }
     

@@ -613,8 +613,7 @@
 /* Settings About Title, YouTube */
 "settings.about.title.youtube" = "YouTube Channel";
 
-/* Settings About Title, Accessibility (France) */
-"settings.about.title.accessibility_fr_fr" = "Accessibilité: partiellement conforme";
+
 
 //------------------------------------------------------------------------------
 // MARK: Settings (New Feature)
