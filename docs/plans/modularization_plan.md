@@ -74,6 +74,8 @@ Phase 1 complete:
 - 2026-02-24: Recent-callout hydration seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`UIRuntimeProviderDispatchTests`, `LocationActionHandlerTests`, `DataRuntimeProviderDispatchTests`).
 - 2026-02-24: Marker-list location actions now hydrate selected marker POIs through `LocationDetail(markerId:)` + `LocationDetail.Source.entity` in `MarkersList`, removing app-facing `SpatialReadContract.referenceEntity(byID:)` full-entity reads from that UI action path.
 - 2026-02-24: Marker-list seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`UIRuntimeProviderDispatchTests`, `LocationActionHandlerTests`, `DataRuntimeProviderDispatchTests`).
+- 2026-02-24: `LocationActionHandler.save(locationDetail:)` now verifies persisted marker existence via `SpatialReadContract.referenceMetadata(byID:)` instead of `referenceEntity(byID:)`, tightening an app-facing write path away from full-entity reads while preserving save-failure behavior.
+- 2026-02-24: Location-action save seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`LocationActionHandlerTests`, `DataRuntimeProviderDispatchTests`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -202,6 +204,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns beyond cloud import entry points, while keeping route/marker mutations on `SpatialWriteContract` and maintenance-only operations isolated on `SpatialMaintenanceWriteContract`.
+1. Continue tightening contract APIs by auditing remaining app-facing write methods for infrastructure concerns beyond cloud import entry points and save-path existence checks, while keeping route/marker mutations on `SpatialWriteContract` and maintenance-only operations isolated on `SpatialMaintenanceWriteContract`.
 2. As additional destination seam slices land, keep route-focused helper boundaries and extend targeted route/cloud bridge coverage to preserve first-waypoint hydration parity.
 3. Continue auditing destination behavior/callout flows for remaining full-entity reads outside the beacon detail/edit/callout, preview beacon-update, recent-callout/callout-history cleanup, and marker-list action paths (for example remaining location-detail/marker-detail surfaces) where focused POI/metadata/entity-key seams can preserve behavior without `ReferenceEntity` dependence.

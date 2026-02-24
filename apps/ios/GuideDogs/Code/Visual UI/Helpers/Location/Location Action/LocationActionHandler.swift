@@ -56,7 +56,7 @@ struct LocationActionHandler {
         }
         
         guard let markerId = markerId,
-              await DataContractRegistry.spatialRead.referenceEntity(byID: markerId) != nil else {
+              await DataContractRegistry.spatialRead.referenceMetadata(byID: markerId) != nil else {
             throw LocationActionError.failedToSaveMarker
         }
         
