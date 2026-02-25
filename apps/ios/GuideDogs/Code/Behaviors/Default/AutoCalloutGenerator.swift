@@ -416,6 +416,8 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
         guard let dataView = spatialData.getDataView(for: location, searchDistance: spatialDataType.initialPOISearchDistance) else {
             return nil
         }
+
+        let markerKeys = Set(dataView.markedPoints.map { $0.getPOI().key })
         
         GDLogGeocoderInfo("Reverse Geocode - from location updated (\(location.description))")
         
@@ -434,7 +436,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
             let category = SuperCategory(rawValue: poi.superCategory) ?? SuperCategory.undefined
             
             // We make sure the geocoded result has a POI that is a landmark or a marker
-            guard category == SuperCategory.landmarks || SpatialDataStoreRegistry.store.hasReferenceEntity(forEntityKey: poi.key) else {
+            guard category == SuperCategory.landmarks || markerKeys.contains(poi.key) else {
                 GDLogAutoCalloutVerbose("Skipping location sense. GenericGeocoderResult error: POI is not a landmark or a marker. ")
                 return nil
             }
@@ -490,15 +492,16 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
         GDLogVerbose(.autoCallout, "Searching for nearest POIs... (Limited to 10 nearest)")
         
         // Get the POIs sorted by distance, and filtered for duplicate names
-        let prioritizedCallouts = filterAnnounceablePOIs(prioritizedPOIs, near: location, context: context) {
-            return POICallout(.auto, poi: $0, location: location)
-        }
-
         let markerByKey = dataView.markedPoints.reduce(into: [String: ReferenceEntity]()) { result, marker in
             result[marker.getPOI().key] = marker
         }
+        let markerKeys = Set(markerByKey.keys)
 
-        let defaultCallouts = !settings.automaticCalloutsEnabled ? [] : filterAnnounceablePOIs(dataView.pois, near: location, context: context) {
+        let prioritizedCallouts = filterAnnounceablePOIs(prioritizedPOIs, near: location, context: context, markerKeys: markerKeys) {
+            return POICallout(.auto, poi: $0, location: location)
+        }
+        
+        let defaultCallouts = !settings.automaticCalloutsEnabled ? [] : filterAnnounceablePOIs(dataView.pois, near: location, context: context, markerKeys: markerKeys) {
             return POICallout(.auto, poi: $0, marker: markerByKey[$0.key], location: location)
         }
 
@@ -510,14 +513,14 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
         return prioritizedCallouts + defaultCallouts
     }
     
-    private func filterAnnounceablePOIs(_ pois: [POI], near location: CLLocation, context: CalloutRangeContext, calloutBuilder: (POI) -> POICallout) -> [POICallout] {
+    private func filterAnnounceablePOIs(_ pois: [POI], near location: CLLocation, context: CalloutRangeContext, markerKeys: Set<String> = [], calloutBuilder: (POI) -> POICallout) -> [POICallout] {
         return pois.sorted(by: Sort.distance(origin: location), // Sort POIs by distance from the user's location
                            filteredBy: motionContextFilterPredicate, // Limit to transit and landmarks when in a car
                            maxLength: 10)
                    .filter { poi in
                        // Skip this POI if it's sense is turned off and it's not a marker
                        let senseIsOn = categoryStates[poi.category, default: false]
-                       guard senseIsOn || SpatialDataStoreRegistry.store.hasReferenceEntity(forEntityKey: poi.key) else {
+                       guard senseIsOn || markerKeys.contains(poi.key) else {
                            // Filter callout because category is disabled
                            return false
                        }
@@ -680,29 +683,5 @@ private extension POI {
         } else {
             return key
         }
-    }
-    
-    var debugDescription: String {
-        if let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key) {
-            if marker.name.isEmpty {
-                // Use a default name
-                return GDLocalizedString("markers.generic_name")
-            } else {
-                let containsMarkerInName = marker.name.lowercasedWithAppLocale().contains(GDLocalizedString("markers.generic_name").lowercasedWithAppLocale())
-                
-                if containsMarkerInName || marker.isTemp {
-                    return marker.name
-                } else {
-                    return GDLocalizedString("markers.marker_with_name", marker.name)
-                }
-            }
-        } else if localizedName.isEmpty {
-            // Use a default name
-            return GDLocalizedString("location")
-        } else {
-            return localizedName
-        }
-        
-        return ""
     }
 }
