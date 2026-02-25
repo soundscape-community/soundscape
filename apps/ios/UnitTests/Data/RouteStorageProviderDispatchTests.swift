@@ -523,19 +523,23 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertTrue(readMock.referenceEntityByIDCalls.isEmpty)
     }
 
-    func testMarkerParametersInitMarkerIDUsesInjectedSpatialStoreLookup() {
+    func testMarkerParametersInitMarkerIDUsesDestinationPOILookup() {
         let markerID = "marker-id"
         let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
         marker.id = markerID
 
         let store = MockSpatialDataStore()
         store.referenceEntitiesByKey[markerID] = marker
+        let locationLookupKey = "\(marker.latitude),\(marker.longitude)"
+        store.referenceEntitiesByLocation[locationLookupKey] = marker
         SpatialDataStoreRegistry.configure(with: store)
 
         let parameters = MarkerParameters(markerId: markerID)
 
         XCTAssertNotNil(parameters)
-        XCTAssertEqual(store.referenceEntityByKeyCallKeys, [markerID])
+        XCTAssertEqual(parameters?.id, markerID)
+        XCTAssertEqual(store.destinationPOICallKeys, [markerID])
+        XCTAssertTrue(store.referenceEntityByLocationCallKeys.contains(locationLookupKey))
     }
 
     func testMarkerParametersInitGenericLocationUsesInjectedSpatialStoreLocationLookup() {
@@ -551,7 +555,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let parameters = MarkerParameters(entity: genericLocation)
 
         XCTAssertNotNil(parameters)
-        XCTAssertEqual(store.referenceEntityByLocationCallKeys, [locationLookupKey])
+        XCTAssertTrue(store.referenceEntityByLocationCallKeys.contains(locationLookupKey))
     }
 
     func testSpatialDataStoreReferenceEntityByEntityKeyDispatchesToInjectedStore() {

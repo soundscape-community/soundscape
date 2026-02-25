@@ -94,8 +94,8 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(markerId),
-              let markerParameters = MarkerParameters(marker: marker) else {
+        guard let detail = LocationDetail(markerId: markerId),
+              let markerParameters = MarkerParameters(location: detail, fallbackMarkerID: markerId) else {
             return nil
         }
 
@@ -103,12 +103,9 @@ struct MarkerParameters: Codable {
     }
     
     init?(entity: POI) {
-        if let entity = entity as? GenericLocation,
-           let marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(entity.location.coordinate),
-           let markerParameters = MarkerParameters(marker: marker) {
-            self = markerParameters
-        } else if let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entity.key),
-                  let markerParameters = MarkerParameters(marker: marker) {
+        let detail = LocationDetail(entity: entity)
+
+        if let markerParameters = MarkerParameters(location: detail, fallbackMarkerID: nil) {
             self = markerParameters
         } else {
             self.init(entity: entity, markerId: nil, estimatedAddress: nil, nickname: nil, annotation: nil, lastUpdatedDate: nil)
@@ -117,11 +114,16 @@ struct MarkerParameters: Codable {
     
     @MainActor
     init?(location detail: LocationDetail) {
+        self.init(location: detail, fallbackMarkerID: nil)
+    }
+
+    @MainActor
+    private init?(location detail: LocationDetail, fallbackMarkerID: String?) {
         let entity: POI
         
         switch detail.source {
-        case .entity(let id):
-            guard let cachedEntity = SpatialDataStoreRegistry.store.searchByKey(id) else {
+        case .entity:
+            guard let cachedEntity = detail.source.entity else {
                 return nil
             }
             
@@ -140,18 +142,11 @@ struct MarkerParameters: Codable {
             entity = poi
         }
         
-        let markerId = detail.markerId
+        let markerId = detail.markerId ?? fallbackMarkerID
         let estimatedAddress = detail.estimatedAddress
         let nickname = detail.nickname
         let annotation = detail.annotation
-        
-        let lastUpdatedDate: Date?
-        
-        if let markerId = markerId {
-            lastUpdatedDate = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(markerId)?.lastUpdatedDate
-        } else {
-            lastUpdatedDate = nil
-        }
+        let lastUpdatedDate = detail.lastUpdatedDate
         
         self.init(entity: entity, markerId: markerId, estimatedAddress: estimatedAddress, nickname: nickname, annotation: annotation, lastUpdatedDate: lastUpdatedDate)
     }
