@@ -13,9 +13,6 @@ import CoreLocation
 class SpatialDataView: SpatialDataViewProtocol {
     
     // MARK: Private Properties
-    
-    private weak var geolocationManager: GeolocationManagerProtocol?
-    private weak var motionActivityContext: MotionActivityProtocol?
 
     /// Tile data encompassed by the current spatial data view
     private let tiles: [TileData]
@@ -145,32 +142,15 @@ class SpatialDataView: SpatialDataViewProtocol {
     /// Initializer
     ///
     /// - Parameters:
-    ///   - location: User's current location
-    ///   - range: The distance to search for POI within
-    ///   - zoom: The tile zoom level (generally locked to 16)
-    ///   - geolocation: The GeolocationContext object
-    ///   - motionActivity: The MotionActivityContext object
-    ///   - destinationManager: The DestinationManager object
-    init(location: CLLocation, range: CLLocationDistance, zoom: UInt, geolocation: GeolocationManagerProtocol?, motionActivity: MotionActivityProtocol?, destinationManager: DestinationManagerProtocol) {
-        let vectorTiles = VectorTile.tilesForRegion(location, radius: range, zoom: zoom)
-        
-        // Get the tile data for the specified tiles
-        tiles = SpatialDataStoreRegistry.store.tileData(for: vectorTiles)
-        
-        // Get the marked points
-        markedPoints = SpatialDataStoreRegistry.store.referenceEntitiesNear(location.coordinate,
-                                                                            range: range).map(\.domainEntity)
-        
-        // Get the generic locations (these will get merged with the regular POIs)
-        genericLocations = SpatialDataStoreRegistry.store.genericLocationsNear(location,
-                                                                               range: range)
-        
-        // Store references to context objects
-        geolocationManager = geolocation
-        motionActivityContext = motionActivity
-        
-        // Retrieve destination
-        destination = destinationManager.destinationPOI
+    ///   - tiles: Tile data in the current view window
+    ///   - markedPoints: Marker entities in the current view window
+    ///   - genericLocations: Generic locations in the current view window
+    ///   - destination: Current destination, if set
+    init(tiles: [TileData], markedPoints: [ReferenceEntity], genericLocations: [POI], destination: POI?) {
+        self.tiles = tiles
+        self.markedPoints = markedPoints
+        self.genericLocations = genericLocations
+        self.destination = destination
     }
     
     // MARK: - Class Methods

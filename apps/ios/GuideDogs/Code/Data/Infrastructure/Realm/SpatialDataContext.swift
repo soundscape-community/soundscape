@@ -303,12 +303,16 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         guard SpatialDataContext.isCached(tile: tile) else {
             return nil
         }
-        results = SpatialDataView(location: location,
-                                  range: searchDistance,
-                                  zoom: SpatialDataContext.zoomLevel,
-                                  geolocation: geolocationManager,
-                                  motionActivity: motionActivityContext,
-                                  destinationManager: destinationManager)
+        
+        let vectorTiles = VectorTile.tilesForRegion(location, radius: searchDistance, zoom: SpatialDataContext.zoomLevel)
+        let tileData = SpatialDataStoreRegistry.store.tileData(for: vectorTiles)
+        let markedPoints = SpatialDataStoreRegistry.store.referenceEntitiesNear(location.coordinate, range: searchDistance).map(\.domainEntity)
+        let genericLocations = SpatialDataStoreRegistry.store.genericLocationsNear(location, range: searchDistance)
+        
+        results = SpatialDataView(tiles: tileData,
+                                  markedPoints: markedPoints,
+                                  genericLocations: genericLocations,
+                                  destination: destinationManager.destinationPOI)
         
         return results
     }

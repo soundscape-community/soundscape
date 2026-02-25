@@ -15,7 +15,6 @@ readonly STORE_REGISTRY_PATTERN='SpatialDataStoreRegistry\.store\.'
 readonly ALLOWED_SPATIAL_DATA_STORE_CALLERS=(
   "${CODE_DIR}/Data/Models/Protocols/Road.swift"
   "${CODE_DIR}/Data/Preview/RoadAdjacentDataView.swift"
-  "${CODE_DIR}/Data/Spatial Data/SpatialDataView.swift"
   "${CODE_DIR}/Visual UI/Helpers/Location/Location Detail/LocationDetail.swift"
 )
 

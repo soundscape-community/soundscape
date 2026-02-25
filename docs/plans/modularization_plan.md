@@ -113,6 +113,8 @@ Phase 1 complete:
 - 2026-02-25: POICallout seam validation is green across iOS seam guardrails, `xcodebuild build-for-testing`, and targeted suites (`EventProcessorTest`, `BehaviorEventStreamsTest`); staged seam allowlist now removes `POICallout.swift`.
 - 2026-02-25: `AutoCalloutGenerator` marker-existence gates now consume marker context from the current `SpatialDataView` (`markedPoints`) in both road-sense and category-filtering paths, removing direct `SpatialDataStoreRegistry.store.hasReferenceEntity(...)` lookups while preserving marker bypass behavior for disabled categories.
 - 2026-02-25: Auto-callout contract-ingress validation is green across iOS seam guardrails, `xcodebuild build-for-testing`, and targeted suites (`EventProcessorTest`, `BehaviorEventStreamsTest`); staged seam allowlist now removes `AutoCalloutGenerator.swift`.
+- 2026-02-25: `SpatialDataView` now receives pre-resolved tile/marker/generic-location payloads from `SpatialDataContext` instead of reading `SpatialDataStoreRegistry.store` directly, moving store-backed lookup mechanics into infrastructure while preserving `SpatialDataViewProtocol` behavior.
+- 2026-02-25: Spatial-data-view seam validation is green across iOS seam guardrails, `xcodebuild build-for-testing`, and targeted suites (`PreviewGeneratorTests`, `UIRuntimeProviderDispatchTests`); staged seam allowlist now removes `SpatialDataView.swift`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -241,6 +243,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue API ingress consolidation in `docs/plans/data_storage_api_north_star.md` by migrating remaining allowlisted non-infrastructure `SpatialDataStoreRegistry.store` call sites (`LocationDetail`, `Road`, `RoadAdjacentDataView`, `SpatialDataView`) to `DataContractRegistry` contracts before adding new seam-specific APIs.
+1. Continue API ingress consolidation in `docs/plans/data_storage_api_north_star.md` by migrating remaining allowlisted non-infrastructure `SpatialDataStoreRegistry.store` call sites (`LocationDetail`, `Road`, `RoadAdjacentDataView`) to `DataContractRegistry` contracts before adding new seam-specific APIs.
 2. Start domain model de-coupling for extraction readiness by moving `Route`, `RouteWaypoint`, and `ReferenceEntity` value models out of `Data/Infrastructure/Realm`, preserving canonical app-facing names and behavior.
 3. Tighten CI guardrails in stages: block new `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**`, then remove temporary `Data/Contracts` infrastructure-type allowlist entries as each type is replaced.
