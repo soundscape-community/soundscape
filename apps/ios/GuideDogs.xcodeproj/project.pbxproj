@@ -724,6 +724,7 @@
 		C3DA72C2224D41EC0062DB81 /* RequestToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA72C1224D41EC0062DB81 /* RequestToken.swift */; };
 		C3DC32C11F3A8D18004D29EF /* DeviceMotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC32C01F3A8D18004D29EF /* DeviceMotionManager.swift */; };
 		C3DC32C61F4250F7004D29EF /* ReferenceEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC32C51F4250F6004D29EF /* ReferenceEntity.swift */; };
+		A1C0D1362F0D000100000001 /* RealmReferenceEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1352F0D000100000001 /* RealmReferenceEntity.swift */; };
 		C3E9B80F224948B700E1E0E0 /* LargeBannerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E9B80E224948B700E1E0E0 /* LargeBannerContainerView.swift */; };
 		C3E9B811224948F600E1E0E0 /* SmallBannerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E9B810224948F600E1E0E0 /* SmallBannerContainerView.swift */; };
 		C3F06A911FFC41FF00EDDB42 /* Geocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F06A901FFC41FF00EDDB42 /* Geocoder.swift */; };
@@ -1515,7 +1516,8 @@
 		C3D6BAE41F7329BE009EEDE6 /* OSMServiceModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OSMServiceModelProtocol.swift; path = Code/Data/Services/OSM/OSMServiceModelProtocol.swift; sourceTree = "<group>"; };
 		C3DA72C1224D41EC0062DB81 /* RequestToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RequestToken.swift; path = Code/Data/Services/Helpers/RequestToken.swift; sourceTree = "<group>"; };
 		C3DC32C01F3A8D18004D29EF /* DeviceMotionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeviceMotionManager.swift; path = Code/Sensors/Motion/DeviceMotionManager.swift; sourceTree = "<group>"; };
-		C3DC32C51F4250F6004D29EF /* ReferenceEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReferenceEntity.swift; path = Code/Data/Infrastructure/Realm/ReferenceEntity.swift; sourceTree = "<group>"; };
+		C3DC32C51F4250F6004D29EF /* ReferenceEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReferenceEntity.swift; path = "Code/Data/Models/Temp Models/ReferenceEntity.swift"; sourceTree = "<group>"; };
+		A1C0D1352F0D000100000001 /* RealmReferenceEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RealmReferenceEntity.swift; path = Code/Data/Infrastructure/Realm/RealmReferenceEntity.swift; sourceTree = "<group>"; };
 		C3E9B80E224948B700E1E0E0 /* LargeBannerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LargeBannerContainerView.swift; path = "Code/Notifications/Containers/Banner Container View/LargeBannerContainerView.swift"; sourceTree = "<group>"; };
 		C3E9B810224948F600E1E0E0 /* SmallBannerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SmallBannerContainerView.swift; path = "Code/Notifications/Containers/Banner Container View/SmallBannerContainerView.swift"; sourceTree = "<group>"; };
 		C3F06A901FFC41FF00EDDB42 /* Geocoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Geocoder.swift; path = Code/Generators/Geocoding/Geocoder.swift; sourceTree = "<group>"; };
@@ -2378,7 +2380,7 @@
 			isa = PBXGroup;
 			children = (
 				623D3C2B264C58FE0005F405 /* Routes */,
-				C3DC32C51F4250F6004D29EF /* ReferenceEntity.swift */,
+				A1C0D1352F0D000100000001 /* RealmReferenceEntity.swift */,
 			);
 			name = "Database Models";
 			sourceTree = "<group>";
@@ -2442,6 +2444,7 @@
 			isa = PBXGroup;
 			children = (
 				28D07BF320B4C2BF00F314C5 /* GenericLocation.swift */,
+				C3DC32C51F4250F6004D29EF /* ReferenceEntity.swift */,
 			);
 			name = "Temp Models";
 			sourceTree = "<group>";
@@ -4957,6 +4960,7 @@
 				62549239243BE98F00DC49E5 /* UniversalLinkHandler.swift in Sources */,
 				B93C5F8A24AA8AB600ED4066 /* IntersectionRoadId.swift in Sources */,
 				C3DC32C61F4250F7004D29EF /* ReferenceEntity.swift in Sources */,
+				A1C0D1362F0D000100000001 /* RealmReferenceEntity.swift in Sources */,
 				28306C9F1FB3D1E600EB3F6B /* SpatialDataView.swift in Sources */,
 				2880BBF91F22BA8E00E25DC3 /* EnableLocationServicesViewController.swift in Sources */,
 				28F0F9321F86CD0600B6A64F /* DestinationTutorialPage.swift in Sources */,

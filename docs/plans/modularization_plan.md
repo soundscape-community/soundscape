@@ -121,6 +121,8 @@ Phase 1 complete:
 - 2026-02-25: Road-adjacent seam validation is green across iOS seam guardrails, `xcodebuild build-for-testing`, and targeted suites (`DataContractRegistryDispatchTests`, `PreviewGeneratorTests`); staged seam allowlist now removes `RoadAdjacentDataView.swift`.
 - 2026-02-25: `LocationDetail` entity/marker lookup and marker-selection writes now route through infrastructure adapter helpers (`LocationDetailStoreAdapter` in `RealmSpatialWriteContract.swift`) instead of direct `SpatialDataStoreRegistry.store` usage, preserving existing sync `LocationDetail` APIs while removing the final non-infrastructure storage-registry ingress.
 - 2026-02-25: Location-detail seam validation is green across iOS seam/boundary guardrails (including realm boundary + route seam checks), `xcodebuild build-for-testing`, and targeted suites (`LocationActionHandlerTests`, `UIRuntimeProviderDispatchTests`, `DataRuntimeProviderDispatchTests`); staged `SpatialDataStoreRegistry.store` allowlist is now empty.
+- 2026-02-25: `ReferenceEntity` domain value model moved out of `Data/Infrastructure/Realm` into `Data/Models/Temp Models/ReferenceEntity.swift`; Realm-specific persistence/runtime behavior now lives in `RealmReferenceEntity.swift`, keeping app-facing canonical type naming stable while tightening Realm boundary isolation.
+- 2026-02-25: Reference-entity extraction slice validation is green across iOS seam/boundary guardrails (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`) and `xcodebuild build-for-testing`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -250,5 +252,5 @@ Acceptance criteria:
 
 ## Immediate Next Steps
 1. With non-infrastructure `SpatialDataStoreRegistry.store` usage now at zero (guardrail allowlist empty), continue API ingress consolidation by migrating temporary sync infrastructure adapters (`LocationDetailStoreAdapter`, `RoadAdjacentDataStoreAdapter`) toward async producer pre-resolution or contract-backed async boundaries.
-2. Start domain model de-coupling for extraction readiness by moving `Route`, `RouteWaypoint`, and `ReferenceEntity` value models out of `Data/Infrastructure/Realm`, preserving canonical app-facing names and behavior.
+2. Continue domain model de-coupling for extraction readiness by moving `Route` and `RouteWaypoint` value models out of `Data/Infrastructure/Realm`, preserving canonical app-facing names and behavior and mirroring the completed `ReferenceEntity` split.
 3. Tighten CI guardrails in stages: block new `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**`, then remove temporary `Data/Contracts` infrastructure-type allowlist entries as each type is replaced.

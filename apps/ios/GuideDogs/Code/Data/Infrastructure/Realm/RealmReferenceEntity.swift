@@ -12,54 +12,7 @@ import CoreLocation
 import RealmSwift
 import SSGeo
 
-struct ReferenceEntity: Identifiable, Equatable {
-    struct Keys {
-        static let entityId = "GDAReferenceEntityID"
-    }
-
-    let id: String
-    let entityKey: String?
-    let lastUpdatedDate: Date?
-    let lastSelectedDate: Date?
-    let isNew: Bool
-    let isTemp: Bool
-    let coordinate: SSGeoCoordinate
-    let nickname: String?
-    let estimatedAddress: String?
-    let annotation: String?
-
-    var latitude: Double {
-        coordinate.latitude
-    }
-
-    var longitude: Double {
-        coordinate.longitude
-    }
-
-    init(
-        id: String,
-        entityKey: String?,
-        lastUpdatedDate: Date?,
-        lastSelectedDate: Date?,
-        isNew: Bool,
-        isTemp: Bool,
-        coordinate: SSGeoCoordinate,
-        nickname: String?,
-        estimatedAddress: String?,
-        annotation: String?
-    ) {
-        self.id = id
-        self.entityKey = entityKey
-        self.lastUpdatedDate = lastUpdatedDate
-        self.lastSelectedDate = lastSelectedDate
-        self.isNew = isNew
-        self.isTemp = isTemp
-        self.coordinate = coordinate
-        self.nickname = nickname
-        self.estimatedAddress = estimatedAddress
-        self.annotation = annotation
-    }
-
+extension ReferenceEntity {
     @MainActor
     init(realmEntity: RealmReferenceEntity) {
         self.init(id: realmEntity.id,
