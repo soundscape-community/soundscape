@@ -212,3 +212,26 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
         try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
     }
 }
+
+@MainActor
+enum LocationDetailStoreAdapter {
+    static func poi(byKey key: String) -> POI? {
+        SpatialDataStoreRegistry.store.searchByKey(key)
+    }
+
+    static func referenceEntity(byEntityKey key: String) -> ReferenceEntity? {
+        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
+    }
+
+    static func referenceEntity(byLocation coordinate: CLLocationCoordinate2D) -> ReferenceEntity? {
+        SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate)?.domainEntity
+    }
+
+    static func destinationPOI(forReferenceID id: String) -> POI? {
+        SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: id)
+    }
+
+    static func markReferenceEntitySelected(forReferenceID id: String) throws {
+        try SpatialDataStoreRegistry.store.markReferenceEntitySelected(forReferenceID: id)
+    }
+}

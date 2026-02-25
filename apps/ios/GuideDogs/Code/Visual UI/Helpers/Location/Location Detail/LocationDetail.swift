@@ -25,7 +25,7 @@ struct LocationDetail {
         
         var entity: POI? {
             if case .entity(let id) = self {
-                return SpatialDataStoreRegistry.store.searchByKey(id)
+                return LocationDetailStoreAdapter.poi(byKey: id)
             } else if case .screenshots(let poi) = self {
                 return poi
             }
@@ -269,13 +269,13 @@ struct LocationDetail {
 
         switch source {
         case .entity(let id):
-            marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(id)?.domainEntity
+            marker = LocationDetailStoreAdapter.referenceEntity(byEntityKey: id)
         case .coordinate(let location):
-            marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(location.coordinate)?.domainEntity
+            marker = LocationDetailStoreAdapter.referenceEntity(byLocation: location.coordinate)
         case .designData:
             marker = nil
         case .screenshots(let poi):
-            marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(poi.key)?.domainEntity
+            marker = LocationDetailStoreAdapter.referenceEntity(byEntityKey: poi.key)
         }
 
         guard let isTemp, let marker else {
@@ -384,7 +384,7 @@ struct LocationDetail {
     func updateLastSelectedDate() {
         do {
             if let marker = self.marker {
-                try SpatialDataStoreRegistry.store.markReferenceEntitySelected(forReferenceID: marker.id)
+                try LocationDetailStoreAdapter.markReferenceEntitySelected(forReferenceID: marker.id)
             } else if var entity = self.source.entity as? SelectablePOI {
                 try autoreleasepool {
                     let cache = try RealmHelper.getCacheRealm()
@@ -414,7 +414,7 @@ extension LocationDetail {
     }
     
     init?(markerId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let marker = SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: markerId) else {
+        guard let marker = LocationDetailStoreAdapter.destinationPOI(forReferenceID: markerId) else {
             return nil
         }
         
@@ -445,7 +445,7 @@ extension LocationDetail {
     }
     
     init?(entityId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let entity = SpatialDataStoreRegistry.store.searchByKey(entityId) else {
+        guard let entity = LocationDetailStoreAdapter.poi(byKey: entityId) else {
             return nil
         }
         

@@ -119,6 +119,8 @@ Phase 1 complete:
 - 2026-02-25: Road seam validation is green across iOS seam guardrails, `xcodebuild build-for-testing`, and targeted suites (`DataContractRegistryDispatchTests`, `PreviewGeneratorTests`); staged seam allowlist now removes `Road.swift`.
 - 2026-02-25: `RoadAdjacentDataView` marker hydration/callout lookups now route through infrastructure adapter helpers (`RoadAdjacentDataStoreAdapter` in `RealmSpatialReadContract.swift`) instead of direct `SpatialDataStoreRegistry.store` usage in preview-layer code, preserving sync preview APIs while moving storage ingress to infrastructure.
 - 2026-02-25: Road-adjacent seam validation is green across iOS seam guardrails, `xcodebuild build-for-testing`, and targeted suites (`DataContractRegistryDispatchTests`, `PreviewGeneratorTests`); staged seam allowlist now removes `RoadAdjacentDataView.swift`.
+- 2026-02-25: `LocationDetail` entity/marker lookup and marker-selection writes now route through infrastructure adapter helpers (`LocationDetailStoreAdapter` in `RealmSpatialWriteContract.swift`) instead of direct `SpatialDataStoreRegistry.store` usage, preserving existing sync `LocationDetail` APIs while removing the final non-infrastructure storage-registry ingress.
+- 2026-02-25: Location-detail seam validation is green across iOS seam/boundary guardrails (including realm boundary + route seam checks), `xcodebuild build-for-testing`, and targeted suites (`LocationActionHandlerTests`, `UIRuntimeProviderDispatchTests`, `DataRuntimeProviderDispatchTests`); staged `SpatialDataStoreRegistry.store` allowlist is now empty.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -247,6 +249,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue API ingress consolidation in `docs/plans/data_storage_api_north_star.md` by migrating the last allowlisted non-infrastructure `SpatialDataStoreRegistry.store` call site (`LocationDetail`) to `DataContractRegistry` contracts before adding new seam-specific APIs.
+1. With non-infrastructure `SpatialDataStoreRegistry.store` usage now at zero (guardrail allowlist empty), continue API ingress consolidation by migrating temporary sync infrastructure adapters (`LocationDetailStoreAdapter`, `RoadAdjacentDataStoreAdapter`) toward async producer pre-resolution or contract-backed async boundaries.
 2. Start domain model de-coupling for extraction readiness by moving `Route`, `RouteWaypoint`, and `ReferenceEntity` value models out of `Data/Infrastructure/Realm`, preserving canonical app-facing names and behavior.
 3. Tighten CI guardrails in stages: block new `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**`, then remove temporary `Data/Contracts` infrastructure-type allowlist entries as each type is replaced.

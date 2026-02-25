@@ -12,8 +12,7 @@ readonly STORE_REGISTRY_PATTERN='SpatialDataStoreRegistry\.store\.'
 
 # Staged allowlist while non-infrastructure callers are migrated to
 # DataContractRegistry contracts.
-readonly ALLOWED_SPATIAL_DATA_STORE_CALLERS=(
-  "${CODE_DIR}/Visual UI/Helpers/Location/Location Detail/LocationDetail.swift"
+declare -ra ALLOWED_SPATIAL_DATA_STORE_CALLERS=(
 )
 
 # Direct SpatialDataCache usage is allowed only in:
@@ -50,9 +49,11 @@ done <<< "${store_registry_output}"
 
 declare -a disallowed_callers=()
 
-for caller in "${store_registry_callers[@]}"; do
+for caller in "${store_registry_callers[@]:-}"; do
+  [[ -z "${caller}" ]] && continue
   allowed=0
-  for allowed_caller in "${ALLOWED_SPATIAL_DATA_STORE_CALLERS[@]}"; do
+  for allowed_caller in "${ALLOWED_SPATIAL_DATA_STORE_CALLERS[@]:-}"; do
+    [[ -z "${allowed_caller}" ]] && continue
     if [[ "${caller}" == "${allowed_caller}" ]]; then
       allowed=1
       break
@@ -69,7 +70,11 @@ if [[ ${#disallowed_callers[@]} -gt 0 ]]; then
   echo "Disallowed callers:" >&2
   printf "  %s\n" "${disallowed_callers[@]}" >&2
   echo "Staged allowlist callers:" >&2
-  printf "  %s\n" "${ALLOWED_SPATIAL_DATA_STORE_CALLERS[@]}" >&2
+  if [[ ${#ALLOWED_SPATIAL_DATA_STORE_CALLERS[@]} -gt 0 ]]; then
+    printf "  %s\n" "${ALLOWED_SPATIAL_DATA_STORE_CALLERS[@]}" >&2
+  else
+    echo "  (none)" >&2
+  fi
   exit 1
 fi
 
