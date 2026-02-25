@@ -95,13 +95,7 @@ struct RoadAdjacentDataView: AdjacentDataView, Equatable {
     ///
     /// - Returns: Array of callouts for adjacent markers
     func makeCalloutsForAdjacents() -> [CalloutProtocol] {
-        let markers: [(name: String, superCategory: String)] = adjacent.compactMap {
-            guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey($0) else {
-                return nil
-            }
-
-            return (name: marker.name, superCategory: marker.getPOI().superCategory)
-        }
+        let markers = RoadAdjacentDataStoreAdapter.markerCalloutData(for: adjacent)
         
         return markers.enumerated().flatMap { (item) -> [CalloutProtocol] in
             let position = direction.bearing
@@ -329,9 +323,8 @@ extension RoadAdjacentDataView {
                 continue
             }
             
-            let markersAtCoordinate = SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate,
-                                                                                           range: CalloutRangeContext.streetPreview.searchDistance)
-                .map(\.domainEntity)
+            let markersAtCoordinate = RoadAdjacentDataStoreAdapter.markersNear(coordinate,
+                                                                                range: CalloutRangeContext.streetPreview.searchDistance)
             
             for marker in markersAtCoordinate {
                 guard !markers.contains(where: { $0.id == marker.id }) else {

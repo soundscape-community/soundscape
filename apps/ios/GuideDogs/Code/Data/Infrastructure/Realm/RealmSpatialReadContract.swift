@@ -178,3 +178,20 @@ extension Road {
         SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate)
     }
 }
+
+@MainActor
+enum RoadAdjacentDataStoreAdapter {
+    static func markerCalloutData(for ids: [String]) -> [(name: String, superCategory: String)] {
+        ids.compactMap {
+            guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey($0) else {
+                return nil
+            }
+
+            return (name: marker.name, superCategory: marker.getPOI().superCategory)
+        }
+    }
+
+    static func markersNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity] {
+        SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate, range: range).map(\.domainEntity)
+    }
+}
