@@ -167,3 +167,14 @@ struct RealmSpatialReadContract: SpatialReadContract {
         SpatialDataStoreRegistry.store.genericLocationsNear(location.clLocation, range: rangeMeters)
     }
 }
+
+@MainActor
+extension Road {
+    var intersections: [Intersection] {
+        SpatialDataStoreRegistry.store.intersections(forRoadKey: key)
+    }
+
+    func intersection(atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
+        SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate)
+    }
+}

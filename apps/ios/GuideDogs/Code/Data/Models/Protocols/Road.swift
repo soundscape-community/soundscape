@@ -13,6 +13,8 @@ import CoreLocation
 protocol Road: POI {
     
     var roundabout: Bool { get set }
+    @MainActor var intersections: [Intersection] { get }
+    @MainActor func intersection(atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection?
     
 }
 
@@ -94,14 +96,6 @@ extension Road {
         guard let osmEntity = self as? GDASpatialDataResultEntity else { return nil }
         guard let points = osmEntity.coordinates as? GALine else { return nil }
         return points.toCoordinates()
-    }
-    
-    var intersections: [Intersection] {
-        return SpatialDataStoreRegistry.store.intersections(forRoadKey: key)
-    }
-    
-    func intersection(atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
-        return SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate)
     }
     
     func isMainRoad(context: SecondaryRoadsContext = .standard, detectionType: MainRoadDetectionType = .roadName) -> Bool {
