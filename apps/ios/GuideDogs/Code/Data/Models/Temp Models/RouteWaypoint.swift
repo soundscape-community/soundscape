@@ -2,17 +2,14 @@
 //  RouteWaypoint.swift
 //  Soundscape
 //
-//  Copyright (c) Microsoft Corporation.
 //  Copyright (c) Soundscape Community Contributers.
-//  Licensed under the MIT License.
 //
 
 import Foundation
-import RealmSwift
 
 /*
  Represents the waypoints belonging to a route.
- 
+
  Each waypoint in the `Route` object is represented by
  an existing `RealmReferenceEntity` (e.g., `markerId`) and an
  index that reflects the waypoint's ordering within the
@@ -105,40 +102,6 @@ struct RouteWaypoint {
         index = parameters.index
         markerId = parameters.markerId
         importedLocationDetail = nil
-    }
-
-    init(realmWaypoint: RealmRouteWaypoint) {
-        index = realmWaypoint.index
-        markerId = realmWaypoint.markerId
-        importedLocationDetail = nil
-    }
-
-    var realmObject: RealmRouteWaypoint {
-        RealmRouteWaypoint(waypoint: self)
-    }
-}
-
-@objc(RouteWaypoint)
-class RealmRouteWaypoint: EmbeddedObject {
-    // MARK: Properties
-
-    @Persisted var index: Int = -1
-    @Persisted var markerId: String = ""
-
-    convenience init(waypoint: RouteWaypoint) {
-        self.init()
-        index = waypoint.index
-        markerId = waypoint.markerId
-    }
-
-    var domainModel: RouteWaypoint {
-        RouteWaypoint(realmWaypoint: self)
-    }
-}
-
-extension List where Element == RealmRouteWaypoint {
-    var ordered: [RealmRouteWaypoint] {
-        sorted(by: { $0.index < $1.index })
     }
 }
 

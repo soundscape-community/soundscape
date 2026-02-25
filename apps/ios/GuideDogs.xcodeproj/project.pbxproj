@@ -725,6 +725,8 @@
 		C3DC32C11F3A8D18004D29EF /* DeviceMotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC32C01F3A8D18004D29EF /* DeviceMotionManager.swift */; };
 		C3DC32C61F4250F7004D29EF /* ReferenceEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC32C51F4250F6004D29EF /* ReferenceEntity.swift */; };
 		A1C0D1362F0D000100000001 /* RealmReferenceEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1352F0D000100000001 /* RealmReferenceEntity.swift */; };
+		A1C0D13D2F0D000100000001 /* RealmRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D13B2F0D000100000001 /* RealmRoute.swift */; };
+		A1C0D13E2F0D000100000001 /* RealmRouteWaypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D13C2F0D000100000001 /* RealmRouteWaypoint.swift */; };
 		C3E9B80F224948B700E1E0E0 /* LargeBannerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E9B80E224948B700E1E0E0 /* LargeBannerContainerView.swift */; };
 		C3E9B811224948F600E1E0E0 /* SmallBannerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3E9B810224948F600E1E0E0 /* SmallBannerContainerView.swift */; };
 		C3F06A911FFC41FF00EDDB42 /* Geocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F06A901FFC41FF00EDDB42 /* Geocoder.swift */; };
@@ -1169,8 +1171,10 @@
 		623ADD6B24EDECE80002C889 /* ImportedLocationDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedLocationDetail.swift; sourceTree = "<group>"; };
 		623ADD6D24EF41EF0002C889 /* PreviewTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewTutorialViewController.swift; path = "Code/Visual UI/View Controllers/Preview/PreviewTutorialViewController.swift"; sourceTree = "<group>"; };
 		623D3B25263B29640005F405 /* FirstUseExperience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FirstUseExperience.swift; path = Code/App/Settings/FirstUseExperience.swift; sourceTree = "<group>"; };
-		623D3C2C264C59150005F405 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Route.swift; path = Code/Data/Infrastructure/Realm/Route.swift; sourceTree = "<group>"; };
-		623D3C34264C592F0005F405 /* RouteWaypoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteWaypoint.swift; path = Code/Data/Infrastructure/Realm/RouteWaypoint.swift; sourceTree = "<group>"; };
+		623D3C2C264C59150005F405 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Route.swift; path = "Code/Data/Models/Temp Models/Route.swift"; sourceTree = "<group>"; };
+		623D3C34264C592F0005F405 /* RouteWaypoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteWaypoint.swift; path = "Code/Data/Models/Temp Models/RouteWaypoint.swift"; sourceTree = "<group>"; };
+		A1C0D13B2F0D000100000001 /* RealmRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RealmRoute.swift; path = Code/Data/Infrastructure/Realm/RealmRoute.swift; sourceTree = "<group>"; };
+		A1C0D13C2F0D000100000001 /* RealmRouteWaypoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RealmRouteWaypoint.swift; path = Code/Data/Infrastructure/Realm/RealmRouteWaypoint.swift; sourceTree = "<group>"; };
 		623E00FE244767BB0081CA5B /* CoordinateParameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoordinateParameters.swift; path = Code/Data/Serialization/CoordinateParameters.swift; sourceTree = "<group>"; };
 		623E00FF244767BB0081CA5B /* MarkerParameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MarkerParameters.swift; path = Code/Data/Serialization/MarkerParameters.swift; sourceTree = "<group>"; };
 		623E0100244767BB0081CA5B /* LocationParameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationParameters.swift; path = Code/Data/Serialization/LocationParameters.swift; sourceTree = "<group>"; };
@@ -2445,6 +2449,8 @@
 			children = (
 				28D07BF320B4C2BF00F314C5 /* GenericLocation.swift */,
 				C3DC32C51F4250F6004D29EF /* ReferenceEntity.swift */,
+				623D3C2C264C59150005F405 /* Route.swift */,
+				623D3C34264C592F0005F405 /* RouteWaypoint.swift */,
 			);
 			name = "Temp Models";
 			sourceTree = "<group>";
@@ -2857,8 +2863,8 @@
 		623D3C2B264C58FE0005F405 /* Routes */ = {
 			isa = PBXGroup;
 			children = (
-				623D3C2C264C59150005F405 /* Route.swift */,
-				623D3C34264C592F0005F405 /* RouteWaypoint.swift */,
+				A1C0D13B2F0D000100000001 /* RealmRoute.swift */,
+				A1C0D13C2F0D000100000001 /* RealmRouteWaypoint.swift */,
 				629F53CE26BDF06A00796B23 /* RouteRealmError.swift */,
 			);
 			name = Routes;
@@ -4961,6 +4967,7 @@
 				B93C5F8A24AA8AB600ED4066 /* IntersectionRoadId.swift in Sources */,
 				C3DC32C61F4250F7004D29EF /* ReferenceEntity.swift in Sources */,
 				A1C0D1362F0D000100000001 /* RealmReferenceEntity.swift in Sources */,
+				A1C0D13D2F0D000100000001 /* RealmRoute.swift in Sources */,
 				28306C9F1FB3D1E600EB3F6B /* SpatialDataView.swift in Sources */,
 				2880BBF91F22BA8E00E25DC3 /* EnableLocationServicesViewController.swift in Sources */,
 				28F0F9321F86CD0600B6A64F /* DestinationTutorialPage.swift in Sources */,
@@ -5112,6 +5119,7 @@
 				C37E33CD2367BC1F0033D640 /* OfflineAlertObserver.swift in Sources */,
 				2870DA7B20447E4B00971F75 /* ReusableView.swift in Sources */,
 				623D3C35264C592F0005F405 /* RouteWaypoint.swift in Sources */,
+				A1C0D13E2F0D000100000001 /* RealmRouteWaypoint.swift in Sources */,
 				31ACEE4E20B776D700916B9B /* VersionHistoryTableViewController.swift in Sources */,
 				622CAFA026AB38A900F804D6 /* BeaconTitleViewController.swift in Sources */,
 				C30EF6212089481100BEA785 /* SpeakingRateTableViewCell.swift in Sources */,
