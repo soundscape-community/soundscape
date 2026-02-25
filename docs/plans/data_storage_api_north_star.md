@@ -2,7 +2,7 @@
 
 # Data Storage API North Star
 
-Last updated: 2026-02-24
+Last updated: 2026-02-25
 
 ## Purpose
 Define a stable, minimal, app-facing data API before deeper Realm extraction work so incremental seams do not produce a fragmented contract surface.
@@ -36,11 +36,12 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DestinationManager` storage operations route through app-facing contracts (or a contract-backed adapter), not a separate long-lived parallel API surface.
 - App-facing contracts expose domain/value types only; no Realm object types or Realm-local model families.
 
-## 2026-02-24 Checkpoint: Remaining Sync Callers
+## 2026-02-25 Checkpoint: Remaining Sync Callers
 - Remaining staged `SpatialDataStoreRegistry.store` callers are concentrated in sync-heavy paths:
   - `POICallout`, `AutoCalloutGenerator`
   - `LocationDetail`
-  - `Road`, `Roundabout`, `RoadAdjacentDataView`, `SpatialDataView`
+  - `Road`, `RoadAdjacentDataView`, `SpatialDataView`
+- `Roundabout` now routes region filtering through `road.intersections` and no longer calls `SpatialDataStoreRegistry.store` directly.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

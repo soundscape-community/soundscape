@@ -177,8 +177,8 @@ extension Roundabout {
             
             // Get the list of intersections that lie on that road (except the given intersection)
             let region = MKCoordinateRegion(center: intersection.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-            guard let roadIntersections = SpatialDataStoreRegistry.store.intersections(forRoadKey: road.key, inRegion: region),
-                !roadIntersections.isEmpty else {
+            let roadIntersections = road.intersections.filter { region.contains($0.coordinate) }
+            guard !roadIntersections.isEmpty else {
                     continue
             }
             
@@ -236,5 +236,17 @@ extension Roundabout {
         }
         
         return maxDistance
+    }
+}
+
+private extension MKCoordinateRegion {
+    func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
+        let topLeft = northWest
+        let bottomRight = southEast
+
+        return coordinate.latitude < topLeft.latitude
+            && coordinate.latitude > bottomRight.latitude
+            && coordinate.longitude > topLeft.longitude
+            && coordinate.longitude < bottomRight.longitude
     }
 }
