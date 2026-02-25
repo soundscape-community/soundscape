@@ -38,9 +38,10 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 
 ## 2026-02-25 Checkpoint: Remaining Sync Callers
 - Remaining staged `SpatialDataStoreRegistry.store` callers are concentrated in sync-heavy paths:
-  - `POICallout`, `AutoCalloutGenerator`
+  - `AutoCalloutGenerator`
   - `LocationDetail`
   - `Road`, `RoadAdjacentDataView`, `SpatialDataView`
+- `POICallout` now consumes pre-resolved POI/marker context from behavior producers and no longer calls `SpatialDataStoreRegistry.store` directly.
 - `Roundabout` now routes region filtering through `road.intersections` and no longer calls `SpatialDataStoreRegistry.store` directly.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.

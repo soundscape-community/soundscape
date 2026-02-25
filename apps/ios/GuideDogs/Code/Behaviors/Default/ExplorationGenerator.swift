@@ -237,6 +237,7 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
                                  origin: CalloutOrigin) -> [CalloutProtocol] {
         let poiCategories = [SuperCategory.places, SuperCategory.landmarks, SuperCategory.authoredActivity]
         var poisByQuad: [CompassDirection: [POI]] = [:]
+        var markerByKey: [String: ReferenceEntity] = [:]
         var range = spatialDataType.initialPOISearchDistance
         
         // Quadrant cases:
@@ -251,15 +252,19 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
             }
             
             // Get the spatial data view and filter POIs into quadrants
-            guard let view = data.getDataView(for: loc, searchDistance: range)?.pois else {
+            guard let view = data.getDataView(for: loc, searchDistance: range) else {
                 continue
             }
+
+            markerByKey = view.markedPoints.reduce(into: [:]) { result, marker in
+                result[marker.getPOI().key] = marker
+            }
             
-            poisByQuad = view.quadrants(quadrants,
-                                        location: loc,
-                                        heading: heading,
-                                        categories: poiCategories,
-                                        maxLengthPerQuadrant: max)
+            poisByQuad = view.pois.quadrants(quadrants,
+                                             location: loc,
+                                             heading: heading,
+                                             categories: poiCategories,
+                                             maxLengthPerQuadrant: max)
             
             if prioritizedPOIs.count > 0 {
                 let prioritizedPOIsByQuad = prioritizedPOIs.quadrants(quadrants,
@@ -287,7 +292,11 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
             return []
         }
         
-        return poisByQuad.flatMap { $0.value.map { POICallout(origin, key: $0.key, includeDistance: true) }}
+        return poisByQuad.flatMap {
+            $0.value.map { poi in
+                POICallout(origin, poi: poi, marker: markerByKey[poi.key], includeDistance: true)
+            }
+        }
     }
     
     private func getCalloutsForMarkers(location: CLLocation, requiredMarkerKeys: [String]) async -> [CalloutProtocol] {
@@ -329,7 +338,7 @@ final class ExplorationGenerator: ManualGenerator, AutomaticGenerator, BehaviorE
             }
         }
         
-        return markers.map { POICallout(.nearbyMarkers, key: $0.getPOI().key, includeDistance: true) }
+        return markers.map { POICallout(.nearbyMarkers, poi: $0.getPOI(), marker: $0, includeDistance: true) }
     }
     
     private func log(_ event: ExplorationModeToggled, toggledOn: Bool) {

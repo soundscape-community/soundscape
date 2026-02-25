@@ -60,54 +60,31 @@ struct POICallout: POICalloutProtocol {
     
     let includePrefixSound: Bool
     
-    let storedPOI: POI?
+    let storedPOI: POI
+    let storedMarker: ReferenceEntity?
     
-    /// A computed property for accessing the POI referenced by this poiKey stored in this Callout object. Note
-    /// that we only store the POI's key and not the POI itself due to threading constraints with Realm
+    /// Pre-resolved POI context captured when the callout is created.
     var poi: POI? {
-        if let storedPOI = storedPOI {
-            return storedPOI
-        }
-        
-        guard let poi = SpatialDataStoreRegistry.store.searchByKey(key) else {
-            return nil
-        }
-        
-        return poi
+        storedPOI
     }
     
     var marker: ReferenceEntity? {
-        // Check by both entity key and key in case this is a generic location marker
-        return SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
+        storedMarker
     }
     
-    /// Constructor for the POI callout
-    ///
-    /// - Parameters:
-    ///   - entityKey: The primary key for the POI this callout refers to
-    ///   - location: The user's current location
-    ///   - includeDistance: True if the callout should include distance information
-    init(_ calloutOrigin: CalloutOrigin, key entityKey: String, location: CLLocation? = nil, includeDistance: Bool = false, includePrefixSound: Bool = true) {
-        self.origin = calloutOrigin
-        self.storedPOI = nil
-        self.key = entityKey
-        self.location = location
-        self.includeDistance = includeDistance
-        self.includePrefixSound = includePrefixSound
-    }
-    
-    /// Constructor for the POI callout. This version of the initializer should only be used for POI types that are NOT stored in Realm. For any underlying POI
-    /// types stored in Realm, use the constructor that takes a key for the Realm object instead
+    /// Constructor for the POI callout with pre-resolved POI context.
     ///
     /// - Parameters:
     ///   - calloutOrigin: Origin of the callout
     ///   - poi: The POI to callout
+    ///   - marker: Optional marker metadata for marker-backed POIs
     ///   - location: Location of the user when the callout was generated
     ///   - includeDistance: True if the callout should include distance information
     ///   - includePrefixSound: True if the callout should include a prefix sound
-    init(_ calloutOrigin: CalloutOrigin, poi: POI, location: CLLocation? = nil, includeDistance: Bool = false, includePrefixSound: Bool = true) {
+    init(_ calloutOrigin: CalloutOrigin, poi: POI, marker: ReferenceEntity? = nil, location: CLLocation? = nil, includeDistance: Bool = false, includePrefixSound: Bool = true) {
         self.origin = calloutOrigin
         self.storedPOI = poi
+        self.storedMarker = marker
         self.key = poi.key
         self.location = location
         self.includeDistance = includeDistance

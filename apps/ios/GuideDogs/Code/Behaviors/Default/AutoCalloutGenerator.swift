@@ -296,11 +296,11 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
     }
 
     private func cancelCalloutsForEntityAsync(id: String) async {
-        guard await DataContractRegistry.spatialRead.poi(byKey: id) != nil else {
+        guard let poi = await DataContractRegistry.spatialRead.poi(byKey: id) else {
             return
         }
         
-        history.append(TrackedCallout(POICallout(.auto, key: id, location: geo.location)))
+        history.append(TrackedCallout(POICallout(.auto, poi: poi, location: geo.location)))
     }
     
     private func manualCalloutGroup(for event: UserInitiatedEvent) async -> CalloutGroup? {
@@ -493,9 +493,13 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
         let prioritizedCallouts = filterAnnounceablePOIs(prioritizedPOIs, near: location, context: context) {
             return POICallout(.auto, poi: $0, location: location)
         }
-        
+
+        let markerByKey = dataView.markedPoints.reduce(into: [String: ReferenceEntity]()) { result, marker in
+            result[marker.getPOI().key] = marker
+        }
+
         let defaultCallouts = !settings.automaticCalloutsEnabled ? [] : filterAnnounceablePOIs(dataView.pois, near: location, context: context) {
-            return POICallout(.auto, key: $0.key, location: location)
+            return POICallout(.auto, poi: $0, marker: markerByKey[$0.key], location: location)
         }
 
         if defaultCallouts.count + prioritizedCallouts.count == 0 {
