@@ -291,7 +291,7 @@ struct EditMarkerView: View {
         if updatedLocation != nil {
             finalNickname = nickname.isEmpty ? updatedLocation?.nickname : nickname
         } else {
-            finalNickname = nickname.isEmpty || nickname == locationDetail.source.name ? nil : nickname
+            finalNickname = nickname.isEmpty || nickname == locationDetail.entity?.localizedName ? nil : nickname
         }
         
         let finalAnnotation = annotation.isEmpty ? nil : annotation
@@ -331,7 +331,7 @@ struct EditMarkerView: View {
                                                                                        annotation: finalAnnotation)
         }
         
-        if let marker = LocationDetail(markerId: markerId) {
+        if let marker = await LocationDetail.load(markerId: markerId) {
             config.onLocationDidUpdate?(marker)
         }
         

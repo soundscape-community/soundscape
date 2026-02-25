@@ -125,6 +125,8 @@ Phase 1 complete:
 - 2026-02-25: Reference-entity extraction slice validation is green across iOS seam/boundary guardrails (`check_spatial_data_cache_seam.sh`, `check_realm_infrastructure_boundary.sh`, `check_data_contract_boundaries.sh`, `check_data_contract_infra_type_allowlist.sh`, `check_route_mutation_seam.sh`) and `xcodebuild build-for-testing`.
 - 2026-02-25: `Route` and `RouteWaypoint` canonical value models moved out of `Data/Infrastructure/Realm` into `Data/Models/Temp Models` (`Route.swift`, `RouteWaypoint.swift`); Realm persistence/runtime types and mappings now live in infrastructure files (`RealmRoute.swift`, `RealmRouteWaypoint.swift`) while preserving existing app-facing names/behavior.
 - 2026-02-25: Route model extraction slice validation is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (all seam boundary scripts including realm/route checks), and `xcodebuild build-for-testing`.
+- 2026-02-25: `LocationDetail` now has a contract-backed async marker loader (`LocationDetail.load(markerId:)`) and carries pre-resolved marker/entity context so async-loaded marker details can avoid immediate sync adapter fallback; async-capable marker flows (`MarkerModel`, `MarkersList` location-action lookup, `EditMarkerView` post-save refresh, `LocationDetailViewController` marker-update refresh) were migrated to this boundary while preserving existing sync APIs for compatibility paths.
+- 2026-02-25: Async location-detail seam validation is green across common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, and targeted suites (`LocationActionHandlerTests`, `UIRuntimeProviderDispatchTests`, `DataRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
@@ -253,6 +255,6 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. With non-infrastructure `SpatialDataStoreRegistry.store` usage now at zero (guardrail allowlist empty), continue API ingress consolidation by migrating temporary sync infrastructure adapters (`LocationDetailStoreAdapter`, `RoadAdjacentDataStoreAdapter`) toward async producer pre-resolution or contract-backed async boundaries.
+1. Continue API ingress consolidation by migrating remaining sync-only `LocationDetailStoreAdapter` and `RoadAdjacentDataStoreAdapter` call sites to async producer pre-resolution or contract-backed async boundaries now that `LocationDetail.load(markerId:)` is in place for async marker-detail refresh paths.
 2. With `ReferenceEntity`, `Route`, and `RouteWaypoint` value models now outside Realm infrastructure, converge their storage-facing adapters behind contract surfaces so these canonical models can be moved into package-ready domain/contracts targets without introducing parallel DTO/protocol families.
 3. Tighten CI guardrails in stages: block new `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**`, then remove temporary `Data/Contracts` infrastructure-type allowlist entries as each type is replaced.

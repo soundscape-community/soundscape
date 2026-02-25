@@ -56,8 +56,8 @@ class MarkerModel: ObservableObject {
     private func update() {
         updateTask?.cancel()
         updateTask = Task { @MainActor in
-            guard let detail = LocationDetail(markerId: id),
-                  let poi = detail.source.entity else {
+            guard let detail = await LocationDetail.load(markerId: id),
+                  let poi = detail.entity else {
                 return
             }
 

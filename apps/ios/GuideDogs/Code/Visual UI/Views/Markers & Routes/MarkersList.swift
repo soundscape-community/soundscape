@@ -113,17 +113,17 @@ struct MarkersList: View {
     }
     
     @MainActor
-    private func entity(for markerID: String) -> POI? {
-        guard let detail = LocationDetail(markerId: markerID) else {
+    private func entity(for markerID: String) async -> POI? {
+        guard let detail = await LocationDetail.load(markerId: markerID) else {
             return nil
         }
 
-        return detail.source.entity
+        return detail.entity
     }
 
     private func didSelectLocationAction(_ action: LocationAction, for markerID: String) {
         Task { @MainActor in
-            guard let poi = entity(for: markerID) else {
+            guard let poi = await entity(for: markerID) else {
                 return
             }
 

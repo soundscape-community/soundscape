@@ -91,12 +91,14 @@ class LocationDetailViewController: UIViewController {
                 guard let id = notification.userInfo?[ReferenceEntity.Keys.entityId] as? String, id == markerId else {
                     return
                 }
-                
-                guard let detail = LocationDetail(markerId: id) else {
-                    return
+
+                Task { @MainActor in
+                    guard let detail = await LocationDetail.load(markerId: id) else {
+                        return
+                    }
+
+                    self.locationDetail = detail
                 }
-                
-                self.locationDetail = detail
             }
         }
         

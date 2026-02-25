@@ -219,6 +219,10 @@ enum LocationDetailStoreAdapter {
         SpatialDataStoreRegistry.store.searchByKey(key)
     }
 
+    static func referenceEntity(byID id: String) -> ReferenceEntity? {
+        SpatialDataStoreRegistry.store.referenceEntityByKey(id)?.domainEntity
+    }
+
     static func referenceEntity(byEntityKey key: String) -> ReferenceEntity? {
         SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
     }
