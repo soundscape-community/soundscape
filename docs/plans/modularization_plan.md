@@ -235,6 +235,8 @@ Phase 1 complete:
 - 2026-02-26: Location-detail selection-write seam refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: Removed unused app-layer universal-link helper `UniversalLinkManager.shareMarker(_ marker: RealmReferenceEntity)` to reduce remaining app-surface `RealmReferenceEntity` exposure; sharing entry points remain `shareEntity` / `shareLocation`.
 - 2026-02-26: Universal-link helper cleanup is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Marker cloud-sync runtime-provider seams (`ReferenceEntityRuntimeProviding`, `AppContextDataRuntimeProviders`, `ReferenceEntityRuntime`, `CloudKeyValueStore+Markers`) now use canonical `ReferenceEntity` instead of `RealmReferenceEntity`; Realm-to-domain conversion is confined to infrastructure call sites.
+- 2026-02-26: Marker cloud-sync domain-surface refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

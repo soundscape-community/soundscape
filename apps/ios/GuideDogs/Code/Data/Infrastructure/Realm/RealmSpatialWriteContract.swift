@@ -103,7 +103,7 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
         for entity in database.objects(RealmReferenceEntity.self) {
             let id = entity.id
 
-            ReferenceEntityRuntime.removeReferenceFromCloud(entity)
+            ReferenceEntityRuntime.removeReferenceFromCloud(entity.domainEntity)
 
             try database.write {
                 database.delete(entity)

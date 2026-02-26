@@ -21,7 +21,7 @@ struct MarkerParameters: Codable {
     
     // MARK: Properties
     
-    /// Refers to the `RealmReferenceEntity` id, if applicable
+    /// Refers to the saved marker id, if applicable.
     let id: String?
     let nickname: String?
     let annotation: String?
@@ -82,7 +82,7 @@ struct MarkerParameters: Codable {
         self.location = location
     }
     
-    init?(marker: RealmReferenceEntity) {
+    init?(marker: ReferenceEntity) {
         let entity = marker.getPOI()
         let markerId = marker.id
         let estimatedAddress = marker.estimatedAddress
@@ -91,6 +91,10 @@ struct MarkerParameters: Codable {
         let lastUpdatedDate = marker.lastUpdatedDate
         
         self.init(entity: entity, markerId: markerId, estimatedAddress: estimatedAddress, nickname: nickname, annotation: annotation, lastUpdatedDate: lastUpdatedDate)
+    }
+
+    init?(marker: RealmReferenceEntity) {
+        self.init(marker: marker.domainEntity)
     }
     
     init?(markerId: String) {

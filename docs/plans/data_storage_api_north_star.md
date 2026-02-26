@@ -80,6 +80,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `AppDelegate` startup migration now routes through non-infrastructure adapter `SpatialDataMigration.migrateIfNeeded()` instead of direct `RealmMigrationTools.migrate(database:cache:)` + `RealmHelper` configuration access in app layer startup wiring.
 - `LocationDetail.updateLastSelectedDate()` now routes non-marker POI selection updates through infrastructure helper `LocationDetailStoreAdapter.markPOISelected(_:)` instead of direct Visual UI `RealmHelper` cache writes, and the unused `LocationDetail.init(marker: RealmReferenceEntity, ...)` overload was removed.
 - Removed unused app-layer universal-link helper `UniversalLinkManager.shareMarker(_ marker: RealmReferenceEntity)`; marker sharing continues through POI/location entry points (`shareEntity`, `shareLocation`).
+- App/runtime marker cloud-sync dispatch now carries canonical `ReferenceEntity` values across `ReferenceEntityRuntimeProviding`, `AppContextDataRuntimeProviders`, and `CloudKeyValueStore+Markers`; Realm object conversion is kept infrastructure-local via `RealmReferenceEntity.domainEntity`.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

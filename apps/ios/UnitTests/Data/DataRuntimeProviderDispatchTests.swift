@@ -9,6 +9,7 @@
 
 import XCTest
 import CoreLocation
+import SSGeo
 @testable import Soundscape
 
 @MainActor
@@ -27,9 +28,9 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var routeRemoved: [Route] = []
 
         var referenceLocation: CLLocation?
-        var referenceStored: [RealmReferenceEntity] = []
-        var referenceUpdated: [RealmReferenceEntity] = []
-        var referenceRemoved: [RealmReferenceEntity] = []
+        var referenceStored: [ReferenceEntity] = []
+        var referenceUpdated: [ReferenceEntity] = []
+        var referenceRemoved: [ReferenceEntity] = []
         var referenceSetDestinationResult = false
         var referenceSetDestinationError: Error?
         var referenceClearError: Error?
@@ -83,15 +84,15 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             referenceLocation
         }
 
-        func referenceStoreInCloud(_ entity: RealmReferenceEntity) {
+        func referenceStoreInCloud(_ entity: ReferenceEntity) {
             referenceStored.append(entity)
         }
 
-        func referenceUpdateInCloud(_ entity: RealmReferenceEntity) {
+        func referenceUpdateInCloud(_ entity: ReferenceEntity) {
             referenceUpdated.append(entity)
         }
 
-        func referenceRemoveFromCloud(_ entity: RealmReferenceEntity) {
+        func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
             referenceRemoved.append(entity)
         }
 
@@ -204,7 +205,16 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         provider.referenceSetDestinationResult = true
         DataRuntimeProviderRegistry.configure(with: provider)
 
-        let entity = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.60, longitude: -122.34))
+        let entity = ReferenceEntity(id: UUID().uuidString,
+                                     entityKey: nil,
+                                     lastUpdatedDate: nil,
+                                     lastSelectedDate: nil,
+                                     isNew: false,
+                                     isTemp: false,
+                                     coordinate: SSGeoCoordinate(latitude: 47.60, longitude: -122.34),
+                                     nickname: nil,
+                                     estimatedAddress: nil,
+                                     annotation: nil)
 
         XCTAssertEqual(ReferenceEntityRuntime.currentUserLocation(), location)
         XCTAssertTrue((try? ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID("destination-1")) ?? false)

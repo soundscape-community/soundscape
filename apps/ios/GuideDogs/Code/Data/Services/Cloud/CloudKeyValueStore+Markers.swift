@@ -53,7 +53,7 @@ extension CloudKeyValueStore {
     // MARK: Individual Set/Get
     
     /// Returns "marker.object_id"
-    private static func key(for referenceEntity: RealmReferenceEntity) -> String {
+    private static func key(for referenceEntity: ReferenceEntity) -> String {
         return CloudKeyValueStore.markerKeyPrefix + "." + referenceEntity.id
     }
 
@@ -67,7 +67,7 @@ extension CloudKeyValueStore {
         return referenceEntityKey.replacingOccurrences(of: CloudKeyValueStore.markerKeyPrefix + ".", with: "")
     }
     
-    func store(referenceEntity: RealmReferenceEntity) {
+    func store(referenceEntity: ReferenceEntity) {
         if let markerParameters = MarkerParameters(marker: referenceEntity) {
             store(markerParameters: markerParameters)
         } else {
@@ -78,12 +78,12 @@ extension CloudKeyValueStore {
         }
     }
     
-    func update(referenceEntity: RealmReferenceEntity) {
+    func update(referenceEntity: ReferenceEntity) {
         // For iCloud key-value store we override the current value
         store(referenceEntity: referenceEntity)
     }
     
-    func remove(referenceEntity: RealmReferenceEntity) {
+    func remove(referenceEntity: ReferenceEntity) {
         removeObject(forKey: CloudKeyValueStore.key(for: referenceEntity))
     }
     

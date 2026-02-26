@@ -107,15 +107,15 @@ enum ReferenceEntityRuntime {
         DataRuntimeProviderRegistry.providers.referenceCurrentUserLocation()
     }
 
-    static func storeReferenceInCloud(_ entity: RealmReferenceEntity) {
+    static func storeReferenceInCloud(_ entity: ReferenceEntity) {
         DataRuntimeProviderRegistry.providers.referenceStoreInCloud(entity)
     }
 
-    static func updateReferenceInCloud(_ entity: RealmReferenceEntity) {
+    static func updateReferenceInCloud(_ entity: ReferenceEntity) {
         DataRuntimeProviderRegistry.providers.referenceUpdateInCloud(entity)
     }
 
-    static func removeReferenceFromCloud(_ entity: RealmReferenceEntity) {
+    static func removeReferenceFromCloud(_ entity: ReferenceEntity) {
         DataRuntimeProviderRegistry.providers.referenceRemoveFromCloud(entity)
     }
 
@@ -640,7 +640,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             // Update the lastSelectedDate to support recents
             try entity.updateLastSelectedDate(to: now)
             
-            ReferenceEntityRuntime.updateReferenceInCloud(entity)
+            ReferenceEntityRuntime.updateReferenceInCloud(entity.domainEntity)
             
             let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
             GDATelemetry.track("markers.edited", with: ["includesAnnotation": includesAnnotation, "context": context ?? "none"])
@@ -813,7 +813,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             }
 
             if !temporary {
-                ReferenceEntityRuntime.storeReferenceInCloud(reference)
+                ReferenceEntityRuntime.storeReferenceInCloud(reference.domainEntity)
 
                 let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
                 if entity is Address {
@@ -878,7 +878,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             }
 
             if !temporary {
-                ReferenceEntityRuntime.storeReferenceInCloud(reference)
+                ReferenceEntityRuntime.storeReferenceInCloud(reference.domainEntity)
 
                 let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
                 GDATelemetry.track("markers.added",
@@ -934,7 +934,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
 
         try await Route.removeWaypointFromAllRoutes(markerId: id, using: spatialRead)
 
-        ReferenceEntityRuntime.removeReferenceFromCloud(entity)
+        ReferenceEntityRuntime.removeReferenceFromCloud(entity.domainEntity)
 
         try database.write {
             database.delete(entity)
