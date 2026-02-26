@@ -10,11 +10,6 @@ readonly CODE_DIR="${IOS_DIR}/GuideDogs/Code"
 readonly PATTERN='SpatialDataCache\.'
 readonly STORE_REGISTRY_PATTERN='SpatialDataStoreRegistry\.store\.'
 
-# Staged allowlist while non-infrastructure callers are migrated to
-# DataContractRegistry contracts.
-declare -ra ALLOWED_SPATIAL_DATA_STORE_CALLERS=(
-)
-
 # Direct SpatialDataCache usage is allowed only in:
 # the cache implementation itself
 if rg --line-number --no-heading \
@@ -47,35 +42,13 @@ while IFS= read -r caller; do
   store_registry_callers+=("${caller}")
 done <<< "${store_registry_output}"
 
-declare -a disallowed_callers=()
-
-for caller in "${store_registry_callers[@]:-}"; do
-  [[ -z "${caller}" ]] && continue
-  allowed=0
-  for allowed_caller in "${ALLOWED_SPATIAL_DATA_STORE_CALLERS[@]:-}"; do
-    [[ -z "${allowed_caller}" ]] && continue
-    if [[ "${caller}" == "${allowed_caller}" ]]; then
-      allowed=1
-      break
-    fi
-  done
-
-  if [[ ${allowed} -eq 0 ]]; then
-    disallowed_callers+=("${caller}")
-  fi
-done
-
-if [[ ${#disallowed_callers[@]} -gt 0 ]]; then
-  echo "SpatialDataStoreRegistry.store usage found outside staged allowlist." >&2
+if [[ ${#store_registry_callers[@]} -gt 0 ]]; then
+  echo "SpatialDataStoreRegistry.store usage found outside infrastructure boundary." >&2
   echo "Disallowed callers:" >&2
-  printf "  %s\n" "${disallowed_callers[@]}" >&2
-  echo "Staged allowlist callers:" >&2
-  if [[ ${#ALLOWED_SPATIAL_DATA_STORE_CALLERS[@]} -gt 0 ]]; then
-    printf "  %s\n" "${ALLOWED_SPATIAL_DATA_STORE_CALLERS[@]}" >&2
-  else
-    echo "  (none)" >&2
-  fi
+  printf "  %s\n" "${store_registry_callers[@]}" >&2
+  echo "Allowed path prefix:" >&2
+  echo "  GuideDogs/Code/Data/Infrastructure/Realm/" >&2
   exit 1
 fi
 
-echo "SpatialDataStoreRegistry.store usage outside infrastructure is confined to staged allowlist."
+echo "SpatialDataStoreRegistry.store usage is confined to Data/Infrastructure/Realm."

@@ -195,6 +195,8 @@ Phase 1 complete:
 - 2026-02-26: Realm import boundary guardrail now runs with an empty non-infrastructure allowlist and remains green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `check_realm_infrastructure_boundary.sh` now enforces strict infrastructure-only `RealmSwift` imports across `GuideDogs/Code/**` and removes staged non-infrastructure allowlist branching from the guardrail script.
 - 2026-02-26: Strict Realm import-boundary guardrail enforcement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: `check_spatial_data_cache_seam.sh` now enforces strict infrastructure-only `SpatialDataStoreRegistry.store` usage across `GuideDogs/Code/**` and removes staged allowlist branching from the registry guardrail path.
+- 2026-02-26: Strict `SpatialDataStoreRegistry.store` guardrail enforcement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

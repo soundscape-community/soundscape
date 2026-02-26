@@ -59,6 +59,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DestinationManager` no longer exposes concrete `isDestinationSet`; destination-set checks now read `destinationKey != nil` directly in remaining concrete/test callers.
 - Realm import boundary guardrail now scans all `GuideDogs/Code` files and strictly enforces `RealmSwift` usage to `Data/Infrastructure/Realm/**` (no non-infrastructure allowlist path).
 - Non-infrastructure `RealmSwift` imports are now zero: preview/bootstrap callsites in marker/route UI views use infrastructure-local helper `RealmSampleDataBootstrap.bootstrap()`.
+- `SpatialDataStoreRegistry.store` seam guardrail now enforces strict infrastructure-only usage (no staged allowlist path) across `GuideDogs/Code/**`.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 
@@ -78,7 +79,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 ## Migration Sequence
 1. Lock ingress (completed for non-infrastructure callers; keep enforced):
    - Migrate non-infrastructure `SpatialDataStoreRegistry.store` usages to `DataContractRegistry` contracts or infrastructure-local sync adapter seams.
-   - Keep CI guardrail blocking `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**` (allowlist empty).
+   - Keep CI guardrail blocking `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**` with strict infrastructure-only enforcement.
 2. Unify storage-facing domain models (completed for first set):
    - Move `Route`, `RouteWaypoint`, `ReferenceEntity` value models out of Realm infrastructure files.
    - Keep Realm object models (`RealmRoute`, `RealmRouteWaypoint`, `RealmReferenceEntity`) infrastructure-local.
