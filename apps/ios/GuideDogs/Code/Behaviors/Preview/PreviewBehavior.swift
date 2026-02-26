@@ -425,6 +425,11 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
             return destinationPOI
         }
 
+        if let entityKey = destinationManager.destinationEntityKey(forReferenceID: id),
+           let poi = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return poi
+        }
+
         guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
             return nil
         }
