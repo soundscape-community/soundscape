@@ -9,7 +9,6 @@
 import UIKit
 import SwiftUI
 import CoreLocation
-import RealmSwift
 
 struct MarkerRouteTabButton: View {
     let name: String
@@ -160,7 +159,7 @@ struct MarkersAndRoutesList_Previews: PreviewProvider {
     static let previewUserLocationStore = UserLocationStore(designValue: CLLocation.sample.ssGeoLocation)
     
     static var previews: some View {
-        Realm.bootstrap()
+        RealmSampleDataBootstrap.bootstrap()
         
         return NavigationView {
             MarkersAndRoutesList().navigationBarTitleDisplayMode(.inline)

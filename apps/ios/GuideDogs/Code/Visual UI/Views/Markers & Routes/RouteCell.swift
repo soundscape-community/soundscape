@@ -8,7 +8,6 @@
 
 import SwiftUI
 import Combine
-import RealmSwift
 
 @MainActor
 class RouteModel: ObservableObject {
@@ -108,7 +107,7 @@ struct RouteCell: View {
 
 struct RouteCell_Previews: PreviewProvider {
     static var previews: some View {
-        Realm.bootstrap()
+        RealmSampleDataBootstrap.bootstrap()
         
         return Group {
             RouteCell(model: RouteModel(id: Route.sample.id))

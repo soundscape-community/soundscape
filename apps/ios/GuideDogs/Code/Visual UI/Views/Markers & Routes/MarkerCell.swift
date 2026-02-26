@@ -9,7 +9,6 @@
 
 import SwiftUI
 import Combine
-import RealmSwift
 import CoreLocation
 
 @MainActor
@@ -158,7 +157,7 @@ struct MarkerCell_Previews: PreviewProvider {
     static var userLocationStore = UserLocationStore(designValue: CLLocation.sample.ssGeoLocation)
     
     static var previews: some View {
-        Realm.bootstrap()
+        RealmSampleDataBootstrap.bootstrap()
         
         return Group {
             MarkerCell(model: MarkerModel(id: RealmReferenceEntity.sample.id))

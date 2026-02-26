@@ -8,7 +8,6 @@
 
 import SwiftUI
 import CoreLocation
-import RealmSwift
 import SSGeo
 
 struct LocationDetailLabelView: View {

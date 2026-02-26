@@ -9,7 +9,6 @@
 
 import SwiftUI
 import CoreLocation
-import RealmSwift
 import SSGeo
 
 @MainActor

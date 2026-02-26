@@ -142,3 +142,10 @@ extension Realm: Samplable {
         }
     }
 }
+
+@MainActor
+enum RealmSampleDataBootstrap {
+    static func bootstrap() {
+        Realm.bootstrap()
+    }
+}

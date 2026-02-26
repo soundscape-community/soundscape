@@ -58,6 +58,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DestinationManagerProtocol` no longer exposes `isDestinationSet`; protocol-driven callers now derive destination-set state from `destinationKey != nil`.
 - `DestinationManager` no longer exposes concrete `isDestinationSet`; destination-set checks now read `destinationKey != nil` directly in remaining concrete/test callers.
 - Realm import boundary guardrail now scans all `GuideDogs/Code` files and enforces `RealmSwift` usage to `Data/Infrastructure/Realm/**` plus an explicit staged non-infrastructure allowlist.
+- Non-infrastructure `RealmSwift` imports are now zero: preview/bootstrap callsites in marker/route UI views use infrastructure-local helper `RealmSampleDataBootstrap.bootstrap()` and the staged non-infrastructure allowlist is empty.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

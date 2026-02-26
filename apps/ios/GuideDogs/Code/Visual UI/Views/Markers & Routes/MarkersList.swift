@@ -8,7 +8,6 @@
 //
 
 import SwiftUI
-import RealmSwift
 
 struct MarkersList: View {
     @EnvironmentObject var navHelper: MarkersAndRoutesListNavigationHelper
@@ -178,7 +177,7 @@ struct MarkersList: View {
 
 struct MarkersList_Previews: PreviewProvider {
     static var previews: some View {
-        Realm.bootstrap()
+        RealmSampleDataBootstrap.bootstrap()
         
         return Group {
             MarkersList(sort: .constant(.distance))

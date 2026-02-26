@@ -8,7 +8,6 @@
 
 import SwiftUI
 import CoreLocation
-import RealmSwift
 import SSGeo
 
 struct WaypointAddList: View {
@@ -98,7 +97,7 @@ struct WaypointAddList_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        Realm.bootstrap()
+        RealmSampleDataBootstrap.bootstrap()
         
         let markerIds = SpatialDataCache.referenceEntities().compactMap({ return $0.id })
         let waypoints: [IdentifiableLocationDetail]

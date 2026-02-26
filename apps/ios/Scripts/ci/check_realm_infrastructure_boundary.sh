@@ -9,14 +9,6 @@ readonly CODE_DIR="${IOS_DIR}/GuideDogs/Code"
 readonly REALM_IMPORT_PATTERN='^\s*import\s+RealmSwift\b'
 
 declare -ra ALLOWED_NON_INFRA_REALM_IMPORT_CALLERS=(
-  "GuideDogs/Code/Visual UI/Views/Location/Detail/LocationDetailLabelView.swift"
-  "GuideDogs/Code/Visual UI/Views/Markers & Routes/MarkersAndRoutesList.swift"
-  "GuideDogs/Code/Visual UI/Views/Markers & Routes/MarkerCell.swift"
-  "GuideDogs/Code/Visual UI/Views/Markers & Routes/MarkersList.swift"
-  "GuideDogs/Code/Visual UI/Views/Markers & Routes/RoutesList.swift"
-  "GuideDogs/Code/Visual UI/Views/Markers & Routes/RouteCell.swift"
-  "GuideDogs/Code/Visual UI/Views/Markers & Routes/Add & Update Routes/RouteEditView.swift"
-  "GuideDogs/Code/Visual UI/Views/Markers & Routes/Add & Update Routes/WaypointAddList.swift"
 )
 
 realm_import_output="$(
@@ -69,4 +61,4 @@ if [[ ${#disallowed_callers[@]} -gt 0 ]]; then
   exit 1
 fi
 
-echo "RealmSwift imports are confined to Data/Infrastructure/Realm or staged allowlist."
+echo "RealmSwift imports are confined to Data/Infrastructure/Realm (staged allowlist empty)."
