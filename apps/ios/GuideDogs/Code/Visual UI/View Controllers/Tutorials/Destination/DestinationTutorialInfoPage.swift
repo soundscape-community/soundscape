@@ -53,20 +53,20 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
     }
     
     private func playCallout() {
-        guard let destinationPOI = self.destinationPOI,
-              let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
-            // Return if destination could not be retrieved
-            return
-        }
-        
-        let distance = destinationPOI.distanceToClosestLocation(from: location)
-        let loc = destinationPOI.closestLocation(from: location, useEntranceIfAvailable: true)
-        let callout = LanguageFormatter.string(from: distance,
-                                               accuracy: location.horizontalAccuracy,
-                                               name: GDLocalizedString("beacon.generic_name"))
-        
         Task { @MainActor [weak self] in
             guard let self = self else { return }
+            guard let destinationPOI = await self.resolveDestinationPOIForCallout(),
+                  let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
+                // Return if destination could not be retrieved
+                return
+            }
+
+            let distance = destinationPOI.distanceToClosestLocation(from: location)
+            let loc = destinationPOI.closestLocation(from: location, useEntranceIfAvailable: true)
+            let callout = LanguageFormatter.string(from: distance,
+                                                   accuracy: location.horizontalAccuracy,
+                                                   name: GDLocalizedString("beacon.generic_name"))
+
             let finished = await self.tutorialCalloutPlayer.play(text: callout,
                                                                  glyph: StaticAudioEngineAsset.poiSense,
                                                                  location: loc,
@@ -78,6 +78,20 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
             self.delegate?.resumeBackgroundTrack()
             self.calloutCompleted()
         }
+    }
+
+    private func resolveDestinationPOIForCallout() async -> POI? {
+        guard let destinationKey = delegate?.getEntityKey(),
+              let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+            return destinationPOI
+        }
+
+        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
+           let resolvedPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            return resolvedPOI
+        }
+
+        return destinationManager.destinationPOI(forReferenceID: destinationKey) ?? destinationPOI
     }
     
     private func calloutCompleted() {
