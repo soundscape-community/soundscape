@@ -378,7 +378,7 @@ final class DestinationManagerTest: XCTestCase {
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
         try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
 
-        XCTAssertTrue(dm.destinationIsTemporary)
+        XCTAssertTrue(dm.destinationIsTemporary(forReferenceID: testID))
         XCTAssertEqual(dm.destinationNickname, "HeadsetTest")
         XCTAssertEqual(dm.destinationEstimatedAddress, "123 Test St")
         XCTAssertEqual(temporaryLookupIDs, [testID])

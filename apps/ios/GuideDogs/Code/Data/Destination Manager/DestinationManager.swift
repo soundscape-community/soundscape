@@ -111,14 +111,6 @@ class DestinationManager: DestinationManagerProtocol {
         return destinationStore.destinationPOI(forReferenceID: destinationKey)
     }
 
-    var destinationIsTemporary: Bool {
-        guard let destinationKey = self.destinationKey else {
-            return false
-        }
-
-        return destinationStore.destinationIsTemporary(forReferenceID: destinationKey)
-    }
-
     var destinationNickname: String? {
         guard let destinationKey = self.destinationKey else {
             return nil
@@ -292,6 +284,10 @@ class DestinationManager: DestinationManagerProtocol {
 
     func destinationEntityKey(forReferenceID id: String) -> String? {
         destinationStore.destinationEntityKey(forReferenceID: id)
+    }
+
+    func destinationIsTemporary(forReferenceID id: String) -> Bool {
+        destinationStore.destinationIsTemporary(forReferenceID: id)
     }
 
     func destinationPOI(forReferenceID id: String) -> POI? {
@@ -555,7 +551,9 @@ class DestinationManager: DestinationManagerProtocol {
 
     func clearStartupTemporaryDestinationIfNeeded() async {
         // Legacy scavenger-hunt beacons were stored as temporary destinations with the route-guidance placeholder name.
-        guard destinationIsTemporary, destinationNickname == RouteGuidance.name else {
+        guard let destinationKey,
+              destinationIsTemporary(forReferenceID: destinationKey),
+              destinationNickname == RouteGuidance.name else {
             return
         }
 

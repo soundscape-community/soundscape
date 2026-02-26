@@ -295,7 +295,6 @@ class MockDestinationManager: DestinationManagerProtocol {
     var destinationKey: String?
     var isDestinationSet: Bool = false
     var destinationPOI: POI?
-    var destinationIsTemporary: Bool = false
     var destinationNickname: String?
     var destinationEstimatedAddress: String?
     var isAudioEnabled: Bool = false
@@ -306,6 +305,7 @@ class MockDestinationManager: DestinationManagerProtocol {
     
     func isUserWithinGeofence(_ userLocation: CLLocation) -> Bool { false }
     func isDestination(key: String) -> Bool { false }
+    func destinationIsTemporary(forReferenceID id: String) -> Bool { false }
     func destinationPOI(forReferenceID id: String) -> POI? { nil }
     func destinationEntityKey(forReferenceID id: String) -> String? { nil }
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws {}

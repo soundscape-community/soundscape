@@ -28,7 +28,7 @@ struct BeaconActionHandler {
 
         guard let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
               destinationManager.destinationKey == key,
-              destinationManager.destinationIsTemporary else {
+              destinationManager.destinationIsTemporary(forReferenceID: key) else {
             return nil
         }
 

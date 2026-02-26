@@ -17,7 +17,6 @@ protocol DestinationManagerProtocol: AnyObject {
     var destinationKey: String? { get }
     
     var isDestinationSet: Bool { get }
-    @MainActor var destinationIsTemporary: Bool { get }
     @MainActor var destinationNickname: String? { get }
     @MainActor var destinationEstimatedAddress: String? { get }
     
@@ -35,6 +34,7 @@ protocol DestinationManagerProtocol: AnyObject {
     func isUserWithinGeofence(_ userLocation: CLLocation) -> Bool
     
     func isDestination(key: String) -> Bool
+    func destinationIsTemporary(forReferenceID id: String) -> Bool
     func destinationPOI(forReferenceID id: String) -> POI?
     func destinationEntityKey(forReferenceID id: String) -> String?
 
