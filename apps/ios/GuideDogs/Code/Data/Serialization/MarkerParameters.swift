@@ -94,8 +94,13 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let detail = LocationDetail(markerId: markerId),
-              let markerParameters = MarkerParameters(location: detail, fallbackMarkerID: markerId) else {
+        guard let marker = LocationDetailStoreAdapter.destinationPOI(forReferenceID: markerId) else {
+            return nil
+        }
+
+        let detail = LocationDetail(entity: marker)
+
+        guard let markerParameters = MarkerParameters(location: detail, fallbackMarkerID: markerId) else {
             return nil
         }
 

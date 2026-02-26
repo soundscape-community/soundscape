@@ -39,6 +39,25 @@ struct RouteWaypoint {
         importedLocationDetail ?? LocationDetail(markerId: markerId)
     }
 
+    @MainActor
+    func locationDetail(using spatialRead: ReferenceReadContract) async -> LocationDetail? {
+        if let importedLocationDetail {
+            return importedLocationDetail
+        }
+
+        // Preserve existing behavior for persisted markers that can still be resolved
+        // through the current sync compatibility seam.
+        if let persistedLocationDetail = LocationDetail(markerId: markerId) {
+            return persistedLocationDetail
+        }
+
+        guard let marker = await spatialRead.referenceEntity(byID: markerId) else {
+            return nil
+        }
+
+        return LocationDetail(marker: marker)
+    }
+
     // MARK: Initialization
 
     init() {}
@@ -113,5 +132,20 @@ extension Array where Element == RouteWaypoint {
     @MainActor
     var asLocationDetail: [LocationDetail] {
         compactMap({ $0.asLocationDetail })
+    }
+
+    @MainActor
+    func locationDetails(using spatialRead: ReferenceReadContract) async -> [LocationDetail] {
+        var details: [LocationDetail] = []
+
+        for waypoint in self {
+            guard let detail = await waypoint.locationDetail(using: spatialRead) else {
+                continue
+            }
+
+            details.append(detail)
+        }
+
+        return details
     }
 }

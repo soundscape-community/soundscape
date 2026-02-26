@@ -213,7 +213,7 @@ extension Route {
         var route = route
 
         for index in route.waypoints.indices {
-            guard let locationDetail = route.waypoints[index].asLocationDetail else {
+            guard let locationDetail = await route.waypoints[index].locationDetail(using: spatialRead) else {
                 continue
             }
 

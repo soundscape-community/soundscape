@@ -96,7 +96,7 @@ extension Route {
             return markerCoordinate
         }
 
-        return first.asLocationDetail?.location.coordinate
+        return await first.locationDetail(using: spatialRead)?.location.coordinate
     }
 
     @MainActor

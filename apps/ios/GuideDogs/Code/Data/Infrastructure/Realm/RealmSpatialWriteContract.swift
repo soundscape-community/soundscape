@@ -24,12 +24,14 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
     }
 
     func updateRoute(_ route: Route) async throws {
+        let spatialRead = DataContractRegistry.spatialRead
         let firstWaypointCoordinate = await resolveFirstWaypointCoordinate(for: route,
-                                                                           using: DataContractRegistry.spatialRead)
+                                                                           using: spatialRead)
+        let waypointDetails = await route.waypoints.locationDetails(using: spatialRead)
         try Route.update(id: route.id,
                          name: route.name,
                          description: route.routeDescription,
-                         waypoints: route.waypoints.asLocationDetail,
+                         waypoints: waypointDetails,
                          firstWaypointCoordinate: firstWaypointCoordinate)
     }
 
