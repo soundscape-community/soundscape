@@ -81,25 +81,28 @@ struct BeaconActionHandler {
             return
         }
 
-        let destinationPOI: POI?
         if let detailEntity = detail.entity {
-            destinationPOI = detailEntity
-        } else if let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
-                  destinationManager.destinationKey == key {
+            processCallout(beaconID: key, destinationPOI: detailEntity)
+            return
+        }
+
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
+              destinationManager.destinationKey == key else {
+            processCallout(beaconID: key, destinationPOI: nil)
+            return
+        }
+
+        Task { @MainActor in
+            let destinationPOI: POI?
             if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: key),
-               let destinationEntityPOI = LocationDetailStoreAdapter.poi(byKey: destinationEntityKey) {
+               let destinationEntityPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
                 destinationPOI = destinationEntityPOI
             } else {
                 destinationPOI = destinationManager.destinationPOI(forReferenceID: key)
             }
-        } else {
-            destinationPOI = nil
-        }
 
-        UIRuntimeProviderRegistry.providers.uiProcessEvent(BeaconCalloutEvent(beaconId: key,
-                                                                               logContext: "home_screen",
-                                                                               destinationPOI: destinationPOI))
-        GDATelemetry.track("beacon.callout")
+            processCallout(beaconID: key, destinationPOI: destinationPOI)
+        }
     }
     
     ///
@@ -168,6 +171,13 @@ struct BeaconActionHandler {
                 }
             }
         }
+    }
+
+    private static func processCallout(beaconID: String, destinationPOI: POI?) {
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(BeaconCalloutEvent(beaconId: beaconID,
+                                                                               logContext: "home_screen",
+                                                                               destinationPOI: destinationPOI))
+        GDATelemetry.track("beacon.callout")
     }
     
 }
