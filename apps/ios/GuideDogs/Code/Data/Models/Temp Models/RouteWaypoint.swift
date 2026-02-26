@@ -62,6 +62,12 @@ struct RouteWaypoint {
 
     init() {}
 
+    private init(index: Int, markerId: String, importedLocationDetailValue: LocationDetail?) {
+        self.index = index
+        self.markerId = markerId
+        self.importedLocationDetail = importedLocationDetailValue
+    }
+
     /**
      * Initializes a waypoint from a marker that exists in the Realm database.
      *
@@ -76,9 +82,7 @@ struct RouteWaypoint {
             return nil
         }
 
-        self.index = index
-        self.markerId = markerId
-        importedLocationDetail = nil
+        self.init(index: index, markerId: markerId, importedLocationDetailValue: nil)
     }
 
     /**
@@ -95,9 +99,7 @@ struct RouteWaypoint {
             return nil
         }
 
-        self.index = index
-        self.markerId = markerId
-        importedLocationDetail = nil
+        self.init(index: index, markerId: markerId, importedLocationDetailValue: nil)
     }
 
     /**
@@ -112,9 +114,21 @@ struct RouteWaypoint {
      *     - importedLocationDetail: Data for marker that is being imported
      */
     init(index: Int, markerId: String, importedLocationDetail: LocationDetail) {
-        self.index = index
-        self.markerId = markerId
-        self.importedLocationDetail = importedLocationDetail
+        self.init(index: index, markerId: markerId, importedLocationDetailValue: importedLocationDetail)
+    }
+
+    @MainActor
+    static func validated(index: Int, markerId: String, using spatialRead: ReferenceReadContract) async -> RouteWaypoint? {
+        if let waypoint = RouteWaypoint(index: index, markerId: markerId) {
+            return waypoint
+        }
+
+        guard let marker = await spatialRead.referenceEntity(byID: markerId) else {
+            return nil
+        }
+
+        let detail = LocationDetail(marker: marker)
+        return RouteWaypoint(index: index, markerId: markerId, importedLocationDetailValue: detail)
     }
 
     init(from parameters: RouteWaypointParameters) {

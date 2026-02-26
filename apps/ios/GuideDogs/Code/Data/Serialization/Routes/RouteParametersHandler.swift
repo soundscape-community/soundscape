@@ -141,12 +141,16 @@ class RouteParametersHandler {
                 }
             }
         } else {
-            guard let value = RouteWaypoint(index: parameters.index, markerId: parameters.markerId) else {
-                completion(.failure(ImportMarkerError.failedToFetchMarker))
-                return
+            Task { @MainActor in
+                guard let value = await RouteWaypoint.validated(index: parameters.index,
+                                                                markerId: parameters.markerId,
+                                                                using: DataContractRegistry.spatialRead) else {
+                    completion(.failure(ImportMarkerError.failedToFetchMarker))
+                    return
+                }
+
+                completion(.success(value))
             }
-            
-            completion(.success(value))
         }
     }
     

@@ -446,8 +446,10 @@ extension Route {
         guard !route.waypoints.isEmpty else { return nil }
 
         let orderedWaypoints = route.waypoints.ordered
-        let reversedWaypoints = orderedWaypoints.reversed().enumerated().compactMap { (index, waypoint) -> RouteWaypoint? in
-            RouteWaypoint(index: index, markerId: waypoint.markerId)
+        let reversedWaypoints = orderedWaypoints.reversed().enumerated().map { index, waypoint -> RouteWaypoint in
+            var reversed = waypoint
+            reversed.index = index
+            return reversed
         }
 
         let firstWaypointCoordinate = await firstWaypointCoordinate(for: reversedWaypoints, using: spatialRead)
