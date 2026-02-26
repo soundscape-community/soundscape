@@ -39,7 +39,7 @@ struct BeaconActionHandler {
                   let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
             markerPOI = destinationPOI
         } else {
-            markerPOI = destinationManager.destinationPOI
+            markerPOI = destinationManager.destinationPOI(forReferenceID: key)
         }
 
         guard let markerPOI else {
@@ -90,7 +90,7 @@ struct BeaconActionHandler {
                let destinationEntityPOI = LocationDetailStoreAdapter.poi(byKey: destinationEntityKey) {
                 destinationPOI = destinationEntityPOI
             } else {
-                destinationPOI = destinationManager.destinationPOI
+                destinationPOI = destinationManager.destinationPOI(forReferenceID: key)
             }
         } else {
             destinationPOI = nil

@@ -37,8 +37,8 @@ class BeaconDetailStore: ObservableObject {
             self.init(beacon: nil)
 
             guard let manager,
-                  manager.destinationKey != nil,
-                  let destinationPOI = manager.destinationPOI else {
+                  let destinationKey = manager.destinationKey,
+                  let destinationPOI = manager.destinationPOI(forReferenceID: destinationKey) else {
                 return
             }
 
@@ -106,7 +106,7 @@ class BeaconDetailStore: ObservableObject {
                    let isAudioEnabled = userInfo[DestinationManager.Keys.isAudioEnabled] as? Bool,
                    let manager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
                    manager.destinationKey == key,
-                   let destinationPOI = (userInfo[DestinationManager.Keys.destinationPOI] as? POI) ?? manager.destinationPOI {
+                   let destinationPOI = (userInfo[DestinationManager.Keys.destinationPOI] as? POI) ?? manager.destinationPOI(forReferenceID: key) {
                     // Beacon was set - Update beacon so that it is placed on the new location.
                     self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
                 } else {

@@ -432,7 +432,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         }
 
         if destinationManager.destinationKey == id,
-           let destinationPOI = destinationManager.destinationPOI {
+           let destinationPOI = destinationManager.destinationPOI(forReferenceID: id) {
             return destinationPOI
         }
 
