@@ -49,24 +49,12 @@ class BeaconDemoHelper {
     /// for the demo to be configured slightly different from the system's current settings.
     ///
     /// - Parameter disableMelodies: This value overrides the system setting for `SettingsContext.shared.playBeaconStartAndEndMelodies`
-    func prepare(disableMelodies: Bool = true) {
+    func prepare(disableMelodies: Bool = true) async {
         let calloutsEnabled = SettingsContext.shared.automaticCalloutsEnabled
         let beaconMelodiesEnabled = SettingsContext.shared.playBeaconStartAndEndMelodies
         let beaconManager = AppContext.shared.spatialDataContext.destinationManager
         
-        var originalBeacon: BeaconType?
-        if let destinationID = beaconManager.destinationKey,
-           let destinationPOI = beaconManager.destinationPOI(forReferenceID: destinationID) {
-            if !beaconManager.destinationIsTemporary(forReferenceID: destinationID) {
-                originalBeacon = .ref(id: destinationID)
-            } else if let location = destinationPOI as? GenericLocation {
-                originalBeacon = .location(loc: location,
-                                           address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
-            } else {
-                originalBeacon = .entity(id: destinationPOI.key,
-                                         address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
-            }
-        }
+        let originalBeacon = await originalBeacon(beaconManager: beaconManager)
         
         systemState = AudioSystemState(originalBeacon: originalBeacon,
                                        wasBeaconEnabled: beaconManager.isAudioEnabled,
@@ -247,6 +235,36 @@ class BeaconDemoHelper {
                                                          enableAudio: systemState.wasBeaconEnabled,
                                                          userLocation: user,
                                                          logContext: restoreContext)
+        }
+    }
+
+    private func originalBeacon(beaconManager: DestinationManagerProtocol) async -> BeaconType? {
+        guard let destinationID = beaconManager.destinationKey else {
+            return nil
+        }
+
+        if !beaconManager.destinationIsTemporary(forReferenceID: destinationID) {
+            return .ref(id: destinationID)
+        }
+
+        let destinationPOI: POI?
+        if let destinationEntityKey = beaconManager.destinationEntityKey(forReferenceID: destinationID),
+           let resolvedPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            destinationPOI = resolvedPOI
+        } else {
+            destinationPOI = beaconManager.destinationPOI(forReferenceID: destinationID)
+        }
+
+        guard let destinationPOI else {
+            return nil
+        }
+
+        if let location = destinationPOI as? GenericLocation {
+            return .location(loc: location,
+                             address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
+        } else {
+            return .entity(id: destinationPOI.key,
+                           address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
         }
     }
 }

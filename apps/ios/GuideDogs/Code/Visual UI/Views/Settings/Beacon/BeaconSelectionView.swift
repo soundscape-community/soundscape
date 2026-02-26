@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -103,7 +104,9 @@ struct BeaconSelectionView: View {
         }
         .navigationTitle(GDLocalizedString("beacon.settings_title"))
         .onAppear {
-            beaconDemo.prepare(disableMelodies: false)
+            Task { @MainActor in
+                await beaconDemo.prepare(disableMelodies: false)
+            }
             
             GDATelemetry.trackScreenView("beacon_settings")
             
@@ -136,7 +139,9 @@ struct BeaconSelectionView: View {
                 return
             }
             
-            beaconDemo.prepare(disableMelodies: false)
+            Task { @MainActor in
+                await beaconDemo.prepare(disableMelodies: false)
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             guard isPresented else {

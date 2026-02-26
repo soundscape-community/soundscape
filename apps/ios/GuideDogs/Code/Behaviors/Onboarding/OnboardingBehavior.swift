@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -160,11 +161,17 @@ private extension OnboardingBehavior {
             return false
         }
 
-        beaconDemo.prepare()
-
         let location = CLLocation(userLocation.coordinate.destination(distance: 100.0,
                                                                       bearing: heading.add(degrees: beacon.style.defaultBearing)))
-        beaconDemo.play(shouldTimeOut: false, newBeaconLocation: location, logContext: "onboarding")
+
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            await self.beaconDemo.prepare()
+            self.beaconDemo.play(shouldTimeOut: false, newBeaconLocation: location, logContext: "onboarding")
+        }
         return true
     }
 }

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -49,7 +50,9 @@ struct VolumeControls: View {
         }
         .navigationTitle(GDLocalizedTextView("general.volume"))
         .onAppear {
-            beaconDemo.prepare()
+            Task { @MainActor in
+                await beaconDemo.prepare()
+            }
         }
         .onDisappear {
             ttsTimer?.cancel()
@@ -69,7 +72,9 @@ struct VolumeControls: View {
             GDATelemetry.track("volume_settings.changed", with: properties)
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-            beaconDemo.prepare()
+            Task { @MainActor in
+                await beaconDemo.prepare()
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             beaconDemo.restoreState()

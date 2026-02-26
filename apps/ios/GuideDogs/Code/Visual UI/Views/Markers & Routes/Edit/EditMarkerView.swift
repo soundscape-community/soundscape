@@ -202,8 +202,10 @@ struct EditMarkerView: View {
                             
                             if isAccessibilityEditing {
                                 if isPlayingBeacon == false {
-                                    beaconDemo.prepare()
-                                    beaconDemo.play(shouldTimeOut: false, newBeaconLocation: newValue.location)
+                                    Task { @MainActor in
+                                        await beaconDemo.prepare()
+                                        beaconDemo.play(shouldTimeOut: false, newBeaconLocation: newValue.location)
+                                    }
                                     
                                     isPlayingBeacon = true
                                     
