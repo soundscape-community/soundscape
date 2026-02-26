@@ -189,6 +189,8 @@ Phase 1 complete:
 - 2026-02-26: Destination-set protocol-surface tightening is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `DestinationManager` no longer exposes concrete `isDestinationSet`; destination-set assertions and checks now read `destinationKey != nil` directly where concrete manager state is needed.
 - 2026-02-26: Destination-manager concrete destination-set surface tightening is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Expanded `check_realm_infrastructure_boundary.sh` guardrail scope from `GuideDogs/Code/Data/**` to all `GuideDogs/Code/**`, enforcing `RealmSwift` imports to `Data/Infrastructure/Realm/**` with an explicit staged non-infrastructure allowlist for remaining UI files.
+- 2026-02-26: Realm boundary-guardrail scope expansion is green (`bash apps/ios/Scripts/ci/check_realm_infrastructure_boundary.sh`) and remains green within the full iOS seam-guardrail validation run.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
