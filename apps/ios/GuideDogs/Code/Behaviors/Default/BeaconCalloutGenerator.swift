@@ -96,7 +96,9 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         beaconUpdateFilter = MotionActivityUpdateFilter(minTime: 5.0, minDistance: 50.0, motionActivity: data.motionActivityContext)
         
         destinationKey = data.destinationManager.destinationKey
-        destinationPOI = data.destinationManager.destinationPOI
+        if let destinationKey {
+            destinationPOI = data.destinationManager.destinationPOI(forReferenceID: destinationKey)
+        }
         configureDestinationUpdates()
     }
     
@@ -172,7 +174,8 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
             if let eventDestinationPOI = event.destinationPOI {
                 destinationPOI = eventDestinationPOI
             } else if destinationKey == event.beaconId {
-                destinationPOI = self.destinationPOI ?? spatialData.destinationManager.destinationPOI
+                destinationPOI = self.destinationPOI
+                    ?? spatialData.destinationManager.destinationPOI(forReferenceID: event.beaconId)
             } else {
                 destinationPOI = nil
             }
@@ -247,7 +250,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         if let destinationPOI = event.destinationPOI {
             self.destinationPOI = destinationPOI
         } else if spatialData.destinationManager.destinationKey == event.markerId {
-            destinationPOI = spatialData.destinationManager.destinationPOI
+            destinationPOI = event.markerId.flatMap { spatialData.destinationManager.destinationPOI(forReferenceID: $0) }
         } else {
             destinationPOI = nil
         }
@@ -331,7 +334,9 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
             return nil
         }
 
-        let destinationPOI = destinationPOIOverride ?? self.destinationPOI ?? spatialData.destinationManager.destinationPOI
+        let destinationPOI = destinationPOIOverride
+            ?? self.destinationPOI
+            ?? spatialData.destinationManager.destinationPOI(forReferenceID: key)
         
         /// Only play "Beacon within x units" callouts when entering (not exitinhg) beacon geofence. For large values of
         /// enterImmediateVicinityDistance, when exiting a geofence, the auto callouts will immediately announce a
@@ -369,7 +374,8 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
     
     private func configureDestinationUpdates() {
         guard let location = userLocation else { return }
-        guard let poi = destinationPOI ?? spatialData.destinationManager.destinationPOI else { return }
+        guard let destinationKey else { return }
+        guard let poi = destinationPOI ?? spatialData.destinationManager.destinationPOI(forReferenceID: destinationKey) else { return }
         
         let distance = poi.distanceToClosestLocation(from: location)
         
