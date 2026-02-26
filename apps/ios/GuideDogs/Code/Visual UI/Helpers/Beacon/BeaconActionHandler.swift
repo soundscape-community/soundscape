@@ -86,7 +86,12 @@ struct BeaconActionHandler {
             destinationPOI = detailEntity
         } else if let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
                   destinationManager.destinationKey == key {
-            destinationPOI = destinationManager.destinationPOI
+            if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: key),
+               let destinationEntityPOI = LocationDetailStoreAdapter.poi(byKey: destinationEntityKey) {
+                destinationPOI = destinationEntityPOI
+            } else {
+                destinationPOI = destinationManager.destinationPOI
+            }
         } else {
             destinationPOI = nil
         }
