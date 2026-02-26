@@ -30,6 +30,7 @@ class InteractiveBeaconViewModel: ObservableObject {
     private var heading: CLLocationDegrees?
     private let location: CLLocation?
     private var destinationPOI: POI?
+    private var destinationEntityKey: String?
     private var listeners: [AnyCancellable] = []
     
     // MARK: Initialization
@@ -40,7 +41,13 @@ class InteractiveBeaconViewModel: ObservableObject {
         // Save initial values
         heading = publisher.value
         location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
-        destinationPOI = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.destinationPOI
+        if let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager {
+            destinationPOI = destinationManager.destinationPOI
+
+            if let destinationKey = destinationManager.destinationKey {
+                destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey)
+            }
+        }
         
         updateCurrentValues()
         
@@ -64,9 +71,12 @@ class InteractiveBeaconViewModel: ObservableObject {
             if let key = notification.userInfo?[DestinationManager.Keys.destinationKey] as? String,
                let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
                destinationManager.destinationKey == key {
-                self.destinationPOI = (notification.userInfo?[DestinationManager.Keys.destinationPOI] as? POI) ?? destinationManager.destinationPOI
+                self.destinationPOI = notification.userInfo?[DestinationManager.Keys.destinationPOI] as? POI
+                self.destinationEntityKey = (notification.userInfo?[DestinationManager.Keys.destinationEntityKey] as? String)
+                    ?? destinationManager.destinationEntityKey(forReferenceID: key)
             } else {
                 self.destinationPOI = nil
+                self.destinationEntityKey = nil
             }
             
             self.updateCurrentValues()
@@ -89,9 +99,16 @@ class InteractiveBeaconViewModel: ObservableObject {
         guard let heading = heading else {
             return
         }
+
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+            return
+        }
+
+        let resolvedDestinationPOI = destinationPOI
+            ?? destinationEntityKey.flatMap { LocationDetailStoreAdapter.poi(byKey: $0) }
+            ?? destinationManager.destinationPOI
         
-        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
-              let bearingToLocation = (destinationPOI ?? destinationManager.destinationPOI)?.bearingToClosestLocation(from: location) else {
+        guard let bearingToLocation = resolvedDestinationPOI?.bearingToClosestLocation(from: location) else {
             return
         }
         
