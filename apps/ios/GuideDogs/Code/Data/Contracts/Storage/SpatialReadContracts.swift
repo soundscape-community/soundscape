@@ -72,24 +72,14 @@ protocol ReferenceReadContract {
 }
 
 @MainActor
-protocol RoadGraphReadContract {
-    func road(byKey key: String) async -> Road?
-    func intersections(forRoadKey key: String) async -> [Intersection]
-    func intersection(forRoadKey key: String, at coordinate: SSGeoCoordinate) async -> Intersection?
-    func intersections(forRoadKey key: String, in region: SpatialIntersectionRegion) async -> [Intersection]?
-}
-
-@MainActor
 protocol TileReadContract {
     func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<VectorTile>
-    func tileData(for tiles: [VectorTile]) async -> [TileData]
     func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [POI]
 }
 
 @MainActor
 protocol SpatialReadContract: RouteReadContract,
                               ReferenceReadContract,
-                              RoadGraphReadContract,
                               TileReadContract {}
 
 @MainActor

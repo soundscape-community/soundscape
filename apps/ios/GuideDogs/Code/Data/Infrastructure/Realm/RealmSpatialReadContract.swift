@@ -7,7 +7,6 @@
 
 import Foundation
 import CoreLocation
-import MapKit
 import SSGeo
 
 @MainActor
@@ -132,35 +131,11 @@ struct RealmSpatialReadContract: SpatialReadContract {
         SpatialDataStoreRegistry.store.searchByKey(key)
     }
 
-    func road(byKey key: String) async -> Road? {
-        SpatialDataStoreRegistry.store.roadByKey(key)
-    }
-
-    func intersections(forRoadKey key: String) async -> [Intersection] {
-        SpatialDataStoreRegistry.store.intersections(forRoadKey: key)
-    }
-
-    func intersection(forRoadKey key: String, at coordinate: SSGeoCoordinate) async -> Intersection? {
-        SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate.clCoordinate)
-    }
-
-    func intersections(forRoadKey key: String, in region: SpatialIntersectionRegion) async -> [Intersection]? {
-        let mapRegion = MKCoordinateRegion(center: region.center.clCoordinate,
-                                           span: MKCoordinateSpan(latitudeDelta: region.latitudeDelta,
-                                                                  longitudeDelta: region.longitudeDelta))
-
-        return SpatialDataStoreRegistry.store.intersections(forRoadKey: key, inRegion: mapRegion)
-    }
-
     func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<VectorTile> {
         return SpatialDataStoreRegistry.store.tiles(forDestinations: forDestinations,
                                                     forReferences: forReferences,
                                                     at: zoomLevel,
                                                     destinationCoordinate: destination?.coordinate.clCoordinate)
-    }
-
-    func tileData(for tiles: [VectorTile]) async -> [TileData] {
-        SpatialDataStoreRegistry.store.tileData(for: tiles)
     }
 
     func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [POI] {

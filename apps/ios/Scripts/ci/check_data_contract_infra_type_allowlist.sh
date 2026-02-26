@@ -20,10 +20,7 @@ readonly KNOWN_INFRA_TYPES=(
 )
 
 # Temporary allowlist while contracts are still being migrated to domain/value types.
-readonly ALLOWED_INFRA_TYPES_IN_CONTRACTS=(
-  Intersection
-  TileData
-)
+readonly ALLOWED_INFRA_TYPES_IN_CONTRACTS=()
 
 if [[ ! -d "${CONTRACTS_DIR}" ]]; then
   echo "Contracts directory not found; skipping infrastructure type allowlist check."
