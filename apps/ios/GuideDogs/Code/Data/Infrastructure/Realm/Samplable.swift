@@ -9,6 +9,7 @@
 
 import RealmSwift
 import CoreLocation
+import SwiftUI
 
 protocol Samplable {
     associatedtype Item
@@ -147,5 +148,12 @@ extension Realm: Samplable {
 enum RealmSampleDataBootstrap {
     static func bootstrap() {
         Realm.bootstrap()
+    }
+}
+
+@MainActor
+enum RealmPreviewEnvironment {
+    static func configure<Content: View>(_ view: Content) -> some View {
+        view.environment(\.realmConfiguration, RealmHelper.databaseConfig)
     }
 }

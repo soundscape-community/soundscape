@@ -112,12 +112,13 @@ struct WaypointAddList_Previews: PreviewProvider {
             waypoints = RouteDetailsView_Previews.testOMRoute.waypoints.asIdenfifiable
         }
         
-        return Group {
-            WaypointAddList(waypoints: .constant(waypoints), userLocation: userLocation.ssGeoLocation)
-            
-            WaypointAddList(waypoints: .constant([]), userLocation: userLocation.ssGeoLocation)
-        }
-        .environment(\.realmConfiguration, RealmHelper.databaseConfig)
+        return SpatialPreviewEnvironment.configure(
+            Group {
+                WaypointAddList(waypoints: .constant(waypoints), userLocation: userLocation.ssGeoLocation)
+                
+                WaypointAddList(waypoints: .constant([]), userLocation: userLocation.ssGeoLocation)
+            }
+        )
         
     }
     

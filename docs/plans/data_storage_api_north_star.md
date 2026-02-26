@@ -76,6 +76,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `ReverseGeocoderResultTypes` keyed road/POI/intersection lookups and estimated-address fetch now route through infrastructure helper `RealmReverseGeocoderLookup` instead of direct non-infrastructure `SpatialDataCache` access in geocoder result models.
 - `DynamicLaunchViewController` and `ReverseGeocoderResultTypes` now consume non-infrastructure bootstrap/lookup adapters (`SpatialSearchBootstrap`, `ReverseGeocoderLookup`) from `Data/Spatial Data`, removing direct `Realm*` infrastructure helper references from UI/behavior layers.
 - Marker/route SwiftUI preview providers (`WaypointAddList`, `MarkersAndRoutesList`, `MarkersList`, `MarkerCell`, `RouteCell`) now consume non-infrastructure sample adapter `SpatialPreviewSamples` from `Data/Spatial Data` instead of direct `RealmSampleDataBootstrap`/`RealmReferenceEntity.sample*` references.
+- Marker/route SwiftUI preview and host environment wiring (`WaypointAddList`, `MarkersAndRoutesList`, `MarkersAndRoutesListHostViewController`) now routes `\.realmConfiguration` through non-infrastructure adapter `SpatialPreviewEnvironment` instead of direct `RealmHelper.databaseConfig` usage in Visual UI.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

@@ -9,6 +9,7 @@
 
 import Foundation
 import CoreLocation
+import SwiftUI
 
 /// Represents secondary road types.
 ///
@@ -102,5 +103,12 @@ enum SpatialPreviewSamples {
 
     static func secondarySampleMarkerID() -> String {
         RealmReferenceEntity.sample3.id
+    }
+}
+
+@MainActor
+enum SpatialPreviewEnvironment {
+    static func configure<Content: View>(_ view: Content) -> some View {
+        RealmPreviewEnvironment.configure(view)
     }
 }

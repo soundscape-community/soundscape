@@ -162,11 +162,12 @@ struct MarkersAndRoutesList_Previews: PreviewProvider {
     static var previews: some View {
         SpatialPreviewSamples.bootstrap()
         
-        return NavigationView {
-            MarkersAndRoutesList().navigationBarTitleDisplayMode(.inline)
-        }
-        .environment(\.realmConfiguration, RealmHelper.databaseConfig)
-        .environmentObject(previewUserLocationStore)
-        .environmentObject(MarkersAndRoutesListNavigationHelper())
+        return SpatialPreviewEnvironment.configure(
+            NavigationView {
+                MarkersAndRoutesList().navigationBarTitleDisplayMode(.inline)
+            }
+            .environmentObject(previewUserLocationStore)
+            .environmentObject(MarkersAndRoutesListNavigationHelper())
+        )
     }
 }

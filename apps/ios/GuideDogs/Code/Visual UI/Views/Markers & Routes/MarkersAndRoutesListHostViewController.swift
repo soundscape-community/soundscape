@@ -12,10 +12,11 @@ import SwiftUI
 class MarkersAndRoutesListHostViewController: UIHostingController<AnyView> {
     required init?(coder aDecoder: NSCoder) {
         let navHelper = MarkersAndRoutesListNavigationHelper()
-        let root = MarkersAndRoutesList()
-            .environmentObject(navHelper)
-            .environmentObject(UserLocationStore())
-            .environment(\.realmConfiguration, RealmHelper.databaseConfig)
+        let root = SpatialPreviewEnvironment.configure(
+            MarkersAndRoutesList()
+                .environmentObject(navHelper)
+                .environmentObject(UserLocationStore())
+        )
         
         super.init(coder: aDecoder, rootView: AnyView(root))
         
