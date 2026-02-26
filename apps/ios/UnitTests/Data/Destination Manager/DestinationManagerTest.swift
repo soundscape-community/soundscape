@@ -338,7 +338,7 @@ final class DestinationManagerTest: XCTestCase {
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
         try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
 
-        XCTAssertNotNil(dm.destinationPOI)
+        XCTAssertNotNil(dm.destinationPOI(forReferenceID: testID))
         XCTAssertGreaterThanOrEqual(lookedUpPOIIDs.count, 2)
         XCTAssertEqual(Array(lookedUpPOIIDs.prefix(2)), [testID, testID])
 

@@ -103,7 +103,7 @@ class DestinationManager: DestinationManagerProtocol {
         return destinationKey != nil
     }
 
-    var destinationPOI: POI? {
+    private var activeDestinationPOI: POI? {
         guard let destinationKey = self.destinationKey else {
             return nil
         }
@@ -230,11 +230,11 @@ class DestinationManager: DestinationManagerProtocol {
         audioEngine = engine
         
         // Verify that destination exists
-        if destinationKey != nil && destinationPOI == nil {
+        if destinationKey != nil && activeDestinationPOI == nil {
             destinationKey = nil
         }
         
-        if let poi = destinationPOI, let userLocation = userLocation {
+        if let poi = activeDestinationPOI, let userLocation = userLocation {
             // Determine if user is within geofence
             isWithinGeofence = isLocationWithinGeofence(origin: poi, location: userLocation)
         }
@@ -512,7 +512,7 @@ class DestinationManager: DestinationManagerProtocol {
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool {
         let isRouteBeacon = DestinationManagerRuntime.isRouteGuidanceActive()
-        guard destinationPOI != nil else {
+        guard activeDestinationPOI != nil else {
             // Return if destination does not exist
             return false
         }
@@ -577,7 +577,7 @@ class DestinationManager: DestinationManagerProtocol {
     /// - Returns: True is the audio beacon was turned on, false otherwise (e.g. no destination is set).
     @discardableResult
     private func enableDestinationAudio(beaconLocation: CLLocation? = nil, userLocation: CLLocation, isUnmuting: Bool = false, notify sendNotfication: Bool = false) -> Bool {
-        guard let destinationPOI = destinationPOI else {
+        guard let destinationPOI = activeDestinationPOI else {
             // Return if destination could not be retrieved
             return false
         }
@@ -657,7 +657,7 @@ class DestinationManager: DestinationManagerProtocol {
     /// - Returns: True if the audio beacon was turned off, false otherwise (e.g. no destination is set).
     @discardableResult
     private func disableDestinationAudio(_ sendNotfication: Bool = false) -> Bool {
-        guard destinationPOI != nil else {
+        guard activeDestinationPOI != nil else {
             // Return if destination does not exist
             return false
         }
@@ -677,7 +677,7 @@ class DestinationManager: DestinationManagerProtocol {
     }
     
     private func updateBeaconClosestLocation(for location: CLLocation) {
-        guard let poi = destinationPOI else {
+        guard let poi = activeDestinationPOI else {
             return
         }
         
@@ -713,7 +713,7 @@ class DestinationManager: DestinationManagerProtocol {
     }
     
     func isUserWithinGeofence(_ userLocation: CLLocation) -> Bool {
-        guard let poi = destinationPOI else {
+        guard let poi = activeDestinationPOI else {
             return false
         }
         
@@ -829,7 +829,7 @@ class DestinationManager: DestinationManagerProtocol {
             }
         }
         
-        guard let location = location, let destination = destinationPOI else {
+        guard let location = location, let destination = activeDestinationPOI else {
             AudioSessionManager.removeNowPlayingInfo()
             return
         }

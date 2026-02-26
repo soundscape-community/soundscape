@@ -52,6 +52,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `BeaconDemoHelper` now snapshots/restores destination context using keyed destination POI lookup (`destinationPOI(forReferenceID:)`) instead of direct `destinationPOI` property reads.
 - `SpatialDataContext` now resolves active destination POI context for data-view composition and destination-tile selection via keyed lookup (`destinationPOI(forReferenceID:)`) instead of direct `destinationPOI` property reads.
 - `DestinationManagerProtocol` no longer requires `destinationPOI` as an app-facing property; callers use keyed destination lookup (`destinationPOI(forReferenceID:)`) for destination POI reads.
+- `DestinationManager` now keeps active-destination POI hydration as an internal helper (`activeDestinationPOI`) and keeps keyed lookup (`destinationPOI(forReferenceID:)`) as the explicit destination POI read surface.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 
