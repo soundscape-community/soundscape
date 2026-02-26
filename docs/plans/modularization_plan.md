@@ -241,6 +241,8 @@ Phase 1 complete:
 - 2026-02-26: Marker cloud-sync domain-surface refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `OnboardingCalloutGenerator` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) when a destination entity key is available, with keyed destination-manager lookup retained as compatibility fallback for sync destination presentation flows.
 - 2026-02-26: Onboarding beacon-callout contract-ingress refinement is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `BehaviorEventStreamsTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: `InteractiveBeaconViewModel` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) on destination changes, with keyed destination-manager lookup retained as compatibility fallback only when contract reads are unavailable.
+- 2026-02-26: Interactive-beacon destination hydration contract-ingress refinement is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails, `LocalizationLinter`, `xcodebuild build-for-testing`, targeted suites `BehaviorEventStreamsTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

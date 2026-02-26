@@ -31,6 +31,7 @@ class InteractiveBeaconViewModel: ObservableObject {
     private let location: CLLocation?
     private var destinationPOI: POI?
     private var destinationEntityKey: String?
+    private var destinationResolutionTask: Task<Void, Never>?
     private var listeners: [AnyCancellable] = []
     
     // MARK: Initialization
@@ -43,8 +44,8 @@ class InteractiveBeaconViewModel: ObservableObject {
         location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         if let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
            let destinationKey = destinationManager.destinationKey {
-            destinationPOI = destinationManager.destinationPOI(forReferenceID: destinationKey)
             destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey)
+            resolveDestinationPOI(forReferenceID: destinationKey, destinationManager: destinationManager)
         }
         
         updateCurrentValues()
@@ -72,7 +73,14 @@ class InteractiveBeaconViewModel: ObservableObject {
                 self.destinationPOI = notification.userInfo?[DestinationManager.Keys.destinationPOI] as? POI
                 self.destinationEntityKey = (notification.userInfo?[DestinationManager.Keys.destinationEntityKey] as? String)
                     ?? destinationManager.destinationEntityKey(forReferenceID: key)
+
+                if self.destinationPOI == nil {
+                    self.resolveDestinationPOI(forReferenceID: key, destinationManager: destinationManager)
+                } else {
+                    self.destinationResolutionTask?.cancel()
+                }
             } else {
+                self.destinationResolutionTask?.cancel()
                 self.destinationPOI = nil
                 self.destinationEntityKey = nil
             }
@@ -82,6 +90,8 @@ class InteractiveBeaconViewModel: ObservableObject {
     }
     
     deinit {
+        destinationResolutionTask?.cancel()
+
         // Remove handler
         publisher.onHeadingDidUpdate(nil)
         
@@ -102,11 +112,7 @@ class InteractiveBeaconViewModel: ObservableObject {
             return
         }
 
-        let resolvedDestinationPOI = destinationPOI
-            ?? destinationEntityKey.flatMap { LocationDetailStoreAdapter.poi(byKey: $0) }
-            ?? destinationManager.destinationKey.flatMap { destinationManager.destinationPOI(forReferenceID: $0) }
-        
-        guard let bearingToLocation = resolvedDestinationPOI?.bearingToClosestLocation(from: location) else {
+        guard let bearingToLocation = destinationPOI?.bearingToClosestLocation(from: location) else {
             return
         }
         
@@ -119,6 +125,36 @@ class InteractiveBeaconViewModel: ObservableObject {
             beaconOrientation = .behind
         } else {
             beaconOrientation = .other
+        }
+    }
+
+    private func resolveDestinationPOI(forReferenceID id: String,
+                                       destinationManager: DestinationManagerProtocol) {
+        destinationResolutionTask?.cancel()
+        let destinationEntityKey = self.destinationEntityKey
+
+        destinationResolutionTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            if let destinationEntityKey,
+               let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+                guard !Task.isCancelled, destinationManager.destinationKey == id else {
+                    return
+                }
+
+                self.destinationPOI = destinationPOI
+                self.updateCurrentValues()
+                return
+            }
+
+            guard !Task.isCancelled, destinationManager.destinationKey == id else {
+                return
+            }
+
+            self.destinationPOI = destinationManager.destinationPOI(forReferenceID: id)
+            self.updateCurrentValues()
         }
     }
     
