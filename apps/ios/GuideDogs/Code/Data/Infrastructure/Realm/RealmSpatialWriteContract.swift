@@ -245,4 +245,15 @@ enum LocationDetailStoreAdapter {
     static func markReferenceEntitySelected(forReferenceID id: String) throws {
         try SpatialDataStoreRegistry.store.markReferenceEntitySelected(forReferenceID: id)
     }
+
+    static func markPOISelected(_ entity: SelectablePOI) throws {
+        var selectablePOI = entity
+
+        try autoreleasepool {
+            let cache = try RealmHelper.getCacheRealm()
+            try cache.write {
+                selectablePOI.lastSelectedDate = Date()
+            }
+        }
+    }
 }

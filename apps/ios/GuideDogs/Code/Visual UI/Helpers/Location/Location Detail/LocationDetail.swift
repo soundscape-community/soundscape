@@ -434,14 +434,8 @@ struct LocationDetail {
         do {
             if let marker = self.marker {
                 try LocationDetailStoreAdapter.markReferenceEntitySelected(forReferenceID: marker.id)
-            } else if var entity = self.entity as? SelectablePOI {
-                try autoreleasepool {
-                    let cache = try RealmHelper.getCacheRealm()
-                     
-                    try cache.write {
-                        entity.lastSelectedDate = Date()
-                    }
-                }
+            } else if let entity = self.entity as? SelectablePOI {
+                try LocationDetailStoreAdapter.markPOISelected(entity)
             }
         } catch {
             DDLogError("Failed to update last selected date in Realm")
@@ -497,10 +491,6 @@ extension LocationDetail {
                   resolvedMarker: marker)
     }
 
-    init(marker: RealmReferenceEntity, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        self.init(marker: marker.domainEntity, imported: imported, telemetryContext: telemetryContext)
-    }
-    
     init?(markerId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId) else {
             return nil

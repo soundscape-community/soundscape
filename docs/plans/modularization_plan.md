@@ -231,6 +231,8 @@ Phase 1 complete:
 - 2026-02-26: Preview environment adapter refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: Added non-infrastructure startup migration adapter `SpatialDataMigration` in `Data/Spatial Data`, and migrated `AppDelegate` launch migration setup to remove direct `RealmMigrationTools` + `RealmHelper` usage from app-layer startup wiring.
 - 2026-02-26: Startup migration adapter refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: `LocationDetail.updateLastSelectedDate()` now routes non-marker POI selection updates through `LocationDetailStoreAdapter.markPOISelected(_:)` (infrastructure seam) instead of direct Visual UI `RealmHelper` cache writes, and the unused Realm-specific `LocationDetail` initializer overload was removed.
+- 2026-02-26: Location-detail selection-write seam refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
