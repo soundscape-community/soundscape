@@ -379,8 +379,8 @@ final class DestinationManagerTest: XCTestCase {
         try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
 
         XCTAssertTrue(dm.destinationIsTemporary(forReferenceID: testID))
-        XCTAssertEqual(dm.destinationNickname, "HeadsetTest")
-        XCTAssertEqual(dm.destinationEstimatedAddress, "123 Test St")
+        XCTAssertEqual(dm.destinationNickname(forReferenceID: testID), "HeadsetTest")
+        XCTAssertEqual(dm.destinationEstimatedAddress(forReferenceID: testID), "123 Test St")
         XCTAssertEqual(temporaryLookupIDs, [testID])
         XCTAssertEqual(nicknameLookupIDs, [testID])
         XCTAssertEqual(estimatedAddressLookupIDs, [testID])

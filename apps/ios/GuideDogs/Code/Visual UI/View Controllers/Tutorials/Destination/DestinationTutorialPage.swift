@@ -56,7 +56,7 @@ class DestinationTutorialPage: BaseTutorialViewController {
         }
 
         resolvedDestinationPOI = destinationManager.destinationPOI(forReferenceID: destinationKey)
-        resolvedDestinationName = destinationManager.destinationNickname ?? resolvedDestinationPOI?.localizedName
+        resolvedDestinationName = destinationManager.destinationNickname(forReferenceID: destinationKey) ?? resolvedDestinationPOI?.localizedName
     }
     
     // MARK: BaseTutorialViewController Overrides

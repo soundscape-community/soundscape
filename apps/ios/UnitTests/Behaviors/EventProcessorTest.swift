@@ -295,8 +295,6 @@ class MockDestinationManager: DestinationManagerProtocol {
     var destinationKey: String?
     var isDestinationSet: Bool = false
     var destinationPOI: POI?
-    var destinationNickname: String?
-    var destinationEstimatedAddress: String?
     var isAudioEnabled: Bool = false
     var isBeaconInBounds: Bool = false
     var isCurrentBeaconAsyncFinishable: Bool = false
@@ -308,6 +306,8 @@ class MockDestinationManager: DestinationManagerProtocol {
     func destinationIsTemporary(forReferenceID id: String) -> Bool { false }
     func destinationPOI(forReferenceID id: String) -> POI? { nil }
     func destinationEntityKey(forReferenceID id: String) -> String? { nil }
+    func destinationNickname(forReferenceID id: String) -> String? { nil }
+    func destinationEstimatedAddress(forReferenceID id: String) -> String? { nil }
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws {}
     func setDestinationAsync(location: CLLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String { "" }
     func setDestinationAsync(location: GenericLocation, address: String?, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String { "" }

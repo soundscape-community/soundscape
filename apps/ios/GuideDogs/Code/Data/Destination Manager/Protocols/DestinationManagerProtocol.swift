@@ -17,8 +17,6 @@ protocol DestinationManagerProtocol: AnyObject {
     var destinationKey: String? { get }
     
     var isDestinationSet: Bool { get }
-    @MainActor var destinationNickname: String? { get }
-    @MainActor var destinationEstimatedAddress: String? { get }
     
     var isAudioEnabled: Bool { get }
     
@@ -37,6 +35,8 @@ protocol DestinationManagerProtocol: AnyObject {
     func destinationIsTemporary(forReferenceID id: String) -> Bool
     func destinationPOI(forReferenceID id: String) -> POI?
     func destinationEntityKey(forReferenceID id: String) -> String?
+    func destinationNickname(forReferenceID id: String) -> String?
+    func destinationEstimatedAddress(forReferenceID id: String) -> String?
 
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws
     

@@ -60,9 +60,11 @@ class BeaconDemoHelper {
             if !beaconManager.destinationIsTemporary(forReferenceID: destinationID) {
                 originalBeacon = .ref(id: destinationID)
             } else if let location = destinationPOI as? GenericLocation {
-                originalBeacon = .location(loc: location, address: beaconManager.destinationEstimatedAddress)
+                originalBeacon = .location(loc: location,
+                                           address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
             } else {
-                originalBeacon = .entity(id: destinationPOI.key, address: beaconManager.destinationEstimatedAddress)
+                originalBeacon = .entity(id: destinationPOI.key,
+                                         address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
             }
         }
         

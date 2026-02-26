@@ -111,22 +111,6 @@ class DestinationManager: DestinationManagerProtocol {
         return destinationStore.destinationPOI(forReferenceID: destinationKey)
     }
 
-    var destinationNickname: String? {
-        guard let destinationKey = self.destinationKey else {
-            return nil
-        }
-
-        return destinationStore.destinationNickname(forReferenceID: destinationKey)
-    }
-
-    var destinationEstimatedAddress: String? {
-        guard let destinationKey = self.destinationKey else {
-            return nil
-        }
-
-        return destinationStore.destinationEstimatedAddress(forReferenceID: destinationKey)
-    }
-
     // All continuous audio should be disabled on launch
     var isAudioEnabled: Bool {
         return beaconPlayerId != nil || hapticBeacon != nil
@@ -292,6 +276,14 @@ class DestinationManager: DestinationManagerProtocol {
 
     func destinationPOI(forReferenceID id: String) -> POI? {
         destinationStore.destinationPOI(forReferenceID: id)
+    }
+
+    func destinationNickname(forReferenceID id: String) -> String? {
+        destinationStore.destinationNickname(forReferenceID: id)
+    }
+
+    func destinationEstimatedAddress(forReferenceID id: String) -> String? {
+        destinationStore.destinationEstimatedAddress(forReferenceID: id)
     }
     
     /// Sets the provided RealmReferenceEntity as the current destination.
@@ -553,7 +545,7 @@ class DestinationManager: DestinationManagerProtocol {
         // Legacy scavenger-hunt beacons were stored as temporary destinations with the route-guidance placeholder name.
         guard let destinationKey,
               destinationIsTemporary(forReferenceID: destinationKey),
-              destinationNickname == RouteGuidance.name else {
+              destinationNickname(forReferenceID: destinationKey) == RouteGuidance.name else {
             return
         }
 
