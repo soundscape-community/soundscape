@@ -61,6 +61,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - Non-infrastructure `RealmSwift` imports are now zero: preview/bootstrap callsites in marker/route UI views use infrastructure-local helper `RealmSampleDataBootstrap.bootstrap()`.
 - `SpatialDataStoreRegistry.store` seam guardrail now enforces strict infrastructure-only usage (no staged allowlist path) across `GuideDogs/Code/**`.
 - `ShareRouteAlertObserver` route-import existing-route check now uses async contract ingress (`DataContractRegistry.spatialRead.route(byKey:)`) instead of direct `SpatialDataCache.routeByKey(...)` from Notifications-layer alert flow.
+- `RouteCell` route-row hydration now uses async contract ingress (`DataContractRegistry.spatialRead.route(byKey:)`) in `RouteModel.update()` instead of direct `SpatialDataCache.routeByKey(...)` from Visual UI list-model flow.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

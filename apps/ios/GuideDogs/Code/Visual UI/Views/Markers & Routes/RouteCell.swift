@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -19,6 +20,7 @@ class RouteModel: ObservableObject {
     @Published private(set) var description: String?
     
     private var tokens: [AnyCancellable] = []
+    private var updateTask: Task<Void, Never>?
     
     var nameAccessibilityLabel: String {
         return isNew ? GDLocalizedString("markers.new_badge.acc_label", name) :  name
@@ -40,17 +42,29 @@ class RouteModel: ObservableObject {
     
     deinit {
         tokens.cancelAndRemoveAll()
+        updateTask?.cancel()
     }
     
     private func update() {
-        guard let route = SpatialDataCache.routeByKey(id) else {
-            return
+        updateTask?.cancel()
+        updateTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            guard let route = await DataContractRegistry.spatialRead.route(byKey: id) else {
+                return
+            }
+
+            guard !Task.isCancelled else {
+                return
+            }
+
+            isNew = route.isNew
+            isActive = route.isActive
+            name = route.name
+            description = route.routeDescription
         }
-        
-        isNew = route.isNew
-        isActive = route.isActive
-        name = route.name
-        description = route.routeDescription
     }
 }
 

@@ -199,6 +199,8 @@ Phase 1 complete:
 - 2026-02-26: Strict `SpatialDataStoreRegistry.store` guardrail enforcement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `ShareRouteAlertObserver` route-import existence check now uses `DataContractRegistry.spatialRead.route(byKey:)` (async contract ingress) instead of direct `SpatialDataCache.routeByKey(...)` from Notifications-layer alert flow.
 - 2026-02-26: Share-route alert ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: `RouteCell` list-model hydration now uses `DataContractRegistry.spatialRead.route(byKey:)` in `RouteModel.update()` with cancellation-safe task handling instead of direct `SpatialDataCache.routeByKey(...)`.
+- 2026-02-26: Route-cell async contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
