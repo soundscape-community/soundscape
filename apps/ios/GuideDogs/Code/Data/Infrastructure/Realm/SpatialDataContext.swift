@@ -138,6 +138,14 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         
         return VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)
     }
+
+    private var activeDestinationPOI: POI? {
+        guard let destinationKey = destinationManager.destinationKey else {
+            return nil
+        }
+
+        return destinationManager.destinationPOI(forReferenceID: destinationKey)
+    }
     
     var loadedSpatialData: Bool {
         !fetchingTiles && superCategories != nil && !tiles.isEmpty
@@ -312,7 +320,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         results = SpatialDataView(tiles: tileData,
                                   markedPoints: markedPoints,
                                   genericLocations: genericLocations,
-                                  destination: destinationManager.destinationPOI)
+                                  destination: activeDestinationPOI)
         
         return results
     }
@@ -439,7 +447,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                                                                tiles: tiles,
                                                                includePORs: reloadPORs,
                                                                prioritizeCurrent: prioritize,
-                                                               destinationCoordinate: destinationManager.destinationPOI?.centroidCoordinate)
+                                                               destinationCoordinate: activeDestinationPOI?.centroidCoordinate)
             
             // Update tile fetching state
             fetchingTiles = true
