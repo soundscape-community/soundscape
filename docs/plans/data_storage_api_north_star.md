@@ -63,6 +63,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `ShareRouteAlertObserver` route-import existing-route check now uses async contract ingress (`DataContractRegistry.spatialRead.route(byKey:)`) instead of direct `SpatialDataCache.routeByKey(...)` from Notifications-layer alert flow.
 - `RouteCell` route-row hydration now uses async contract ingress (`DataContractRegistry.spatialRead.route(byKey:)`) in `RouteModel.update()` instead of direct `SpatialDataCache.routeByKey(...)` from Visual UI list-model flow.
 - `WaypointAddList` preview marker-ID seeding now uses `RealmReferenceEntity.samples` instead of `SpatialDataCache.referenceEntities()`, removing one preview-layer cache ingress.
+- `SoundscapeDocumentAlert.shareRoute(_ routeDetail:)` now builds a `Route` from `RouteDetail` data (`displayName`, `description`, `waypoints.asRouteWaypoint`) instead of direct `SpatialDataCache.routeByKey(...)` lookup.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

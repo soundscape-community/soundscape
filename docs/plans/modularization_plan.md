@@ -203,6 +203,8 @@ Phase 1 complete:
 - 2026-02-26: Route-cell async contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `WaypointAddList` preview marker-ID seeding now uses `RealmReferenceEntity.samples` instead of `SpatialDataCache.referenceEntities()`, removing one preview-only non-Data cache ingress.
 - 2026-02-26: Waypoint-add preview cache-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: `SoundscapeDocumentAlert.shareRoute(_ routeDetail:)` now derives a shareable `Route` from `RouteDetail` values (`displayName`, `description`, `waypoints.asRouteWaypoint`) instead of direct `SpatialDataCache.routeByKey(...)` lookup.
+- 2026-02-26: Share-route alert route-derivation refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

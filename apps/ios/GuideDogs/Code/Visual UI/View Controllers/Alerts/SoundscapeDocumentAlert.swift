@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -95,10 +96,11 @@ struct SoundscapeDocumentAlert: ShareAlertFactory {
             return nil
         }
         
-        guard let route = SpatialDataCache.routeByKey(id) else {
-            return nil
-        }
-        
+        var route = Route(name: routeDetail.displayName,
+                          description: routeDetail.description,
+                          waypoints: routeDetail.waypoints.asRouteWaypoint)
+        route.id = id
+
         return shareRoute(route)
     }
     
