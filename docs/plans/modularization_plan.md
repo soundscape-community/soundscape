@@ -215,6 +215,8 @@ Phase 1 complete:
 - 2026-02-26: Reverse-geocoder nearest-road helper refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: Intersection arrival/callout flow now carries resolved `Intersection` context in `IntersectionArrivalEvent` and `IntersectionCallout`, removing direct `SpatialDataCache.intersectionByKey(...)` reads in `IntersectionGenerator`, `RouteGuidanceGenerator`, and `TourGenerator`.
 - 2026-02-26: Intersection-arrival context-carrying refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Launch-time spatial search/bootstrap setup now routes through infrastructure helper `RealmSpatialSearchBootstrap.configureDefaults()` in `DynamicLaunchViewController`, removing direct UI-layer `SpatialDataCache.useDefaultSearchProviders()/useDefaultGeocoder()` calls.
+- 2026-02-26: Launch bootstrap helper refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

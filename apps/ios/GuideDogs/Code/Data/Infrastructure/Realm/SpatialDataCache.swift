@@ -199,6 +199,14 @@ enum SpatialDataStoreRegistry {
     }
 }
 
+@MainActor
+enum RealmSpatialSearchBootstrap {
+    static func configureDefaults() {
+        SpatialDataCache.useDefaultSearchProviders()
+        SpatialDataCache.useDefaultGeocoder()
+    }
+}
+
 extension SpatialDataCache {
     
     struct Predicates {

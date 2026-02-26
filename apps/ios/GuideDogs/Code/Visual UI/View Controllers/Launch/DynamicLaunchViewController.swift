@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -36,8 +37,7 @@ class DynamicLaunchViewController: UIViewController {
         
         // If we aren't in the test environment, register search providers for SpatialDataSearch
         if !testEnvironment {
-            SpatialDataCache.useDefaultSearchProviders()
-            SpatialDataCache.useDefaultGeocoder()
+            RealmSpatialSearchBootstrap.configureDefaults()
         }
         
     }
