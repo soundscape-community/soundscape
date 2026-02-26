@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -33,7 +34,8 @@ struct EstimatedLocationDetail {
         
         let atEntity = nearbyEntities?.first(where: { $0.contains(location: value.location.coordinate) })
         
-        SpatialDataCache.fetchEstimatedAddress(location: value.location) { (address) in
+        Task { @MainActor in
+            let address = await DataContractRegistry.spatialRead.estimatedAddress(near: value.location.ssGeoLocation)
             let estimatedName: String
             let estimatedAddress: String?
             

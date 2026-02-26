@@ -29,6 +29,12 @@ struct ReferenceCalloutReadData: Sendable {
     let superCategory: String
 }
 
+struct EstimatedAddressReadData: Sendable {
+    let addressLine: String?
+    let streetName: String?
+    let subThoroughfare: String?
+}
+
 struct AddressCacheRecord: Sendable {
     let key: String
     let lastSelectedDate: Date?
@@ -68,6 +74,7 @@ protocol ReferenceReadContract {
     func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity?
     func referenceEntities() async -> [ReferenceEntity]
     func recentlySelectedPOIs() async -> [POI]
+    func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData?
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity]
     func poi(byKey key: String) async -> POI?
 }

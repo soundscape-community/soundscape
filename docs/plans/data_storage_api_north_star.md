@@ -71,6 +71,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - Intersection arrival/callout flow now carries resolved `Intersection` context in `IntersectionArrivalEvent` and `IntersectionCallout`, removing direct `SpatialDataCache.intersectionByKey(...)` lookups from default/route-guidance/tour intersection callout paths.
 - `DynamicLaunchViewController` now uses infrastructure helper `RealmSpatialSearchBootstrap.configureDefaults()` for default search-provider/geocoder bootstrap instead of direct `SpatialDataCache.useDefaultSearchProviders()/useDefaultGeocoder()` UI-layer calls.
 - `SearchResultsTableViewController` now resolves recent selections via async contract ingress (`DataContractRegistry.spatialRead.recentlySelectedPOIs()`) instead of direct `SpatialDataCache.recentlySelectedObjects()` reads.
+- `EstimatedLocationDetail` now resolves reverse-geocoded address data via async contract ingress (`DataContractRegistry.spatialRead.estimatedAddress(near:)`) instead of direct `SpatialDataCache.fetchEstimatedAddress(...)` reads.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

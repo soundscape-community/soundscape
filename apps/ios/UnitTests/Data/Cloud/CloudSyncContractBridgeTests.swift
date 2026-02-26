@@ -113,6 +113,10 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             []
         }
 
+        func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? {
+            nil
+        }
+
         func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {
             []
         }

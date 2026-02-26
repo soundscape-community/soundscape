@@ -127,6 +127,18 @@ struct RealmSpatialReadContract: SpatialReadContract {
         SpatialDataStoreRegistry.store.recentlySelectedObjects()
     }
 
+    func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? {
+        await withCheckedContinuation { continuation in
+            SpatialDataStoreRegistry.store.fetchEstimatedAddress(for: location.clLocation) { address in
+                continuation.resume(returning: address.map {
+                    EstimatedAddressReadData(addressLine: $0.addressLine,
+                                             streetName: $0.streetName,
+                                             subThoroughfare: $0.subThoroughfare)
+                })
+            }
+        }
+    }
+
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {
         SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate.clCoordinate, range: rangeMeters).map(\.domainEntity)
     }

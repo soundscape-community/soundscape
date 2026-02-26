@@ -143,6 +143,10 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             []
         }
 
+        func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? {
+            nil
+        }
+
         func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {
             []
         }
@@ -720,6 +724,10 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
 
     func recentlySelectedPOIs() async -> [POI] {
         []
+    }
+
+    func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? {
+        nil
     }
 
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {

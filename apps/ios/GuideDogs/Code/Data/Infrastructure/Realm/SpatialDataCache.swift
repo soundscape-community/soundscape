@@ -20,6 +20,7 @@ protocol SpatialDataStore {
     func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity]
     func referenceEntities() -> [RealmReferenceEntity]
     func recentlySelectedObjects() -> [POI]
+    func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void)
     func searchByKey(_ key: String) -> POI?
     func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity?
     func destinationPOI(forReferenceID id: String) -> POI?
@@ -75,6 +76,10 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func recentlySelectedObjects() -> [POI] {
         SpatialDataCache.recentlySelectedObjects()
+    }
+
+    func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void) {
+        SpatialDataCache.fetchEstimatedAddress(location: location, completionHandler: completion)
     }
 
     func searchByKey(_ key: String) -> POI? {

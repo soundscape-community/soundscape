@@ -43,6 +43,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var referenceEntityByGenericLocationCallKeys: [String] = []
         private(set) var referenceEntitiesCallCount = 0
         private(set) var recentlySelectedObjectsCallCount = 0
+        private(set) var fetchEstimatedAddressCallCount = 0
         private(set) var searchByKeyCallKeys: [String] = []
         private(set) var destinationPOICallKeys: [String] = []
         private(set) var destinationEntityKeyCallKeys: [String] = []
@@ -103,6 +104,11 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func recentlySelectedObjects() -> [POI] {
             recentlySelectedObjectsCallCount += 1
             return []
+        }
+
+        func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void) {
+            fetchEstimatedAddressCallCount += 1
+            completion(nil)
         }
 
         func searchByKey(_ key: String) -> POI? {
@@ -303,6 +309,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func referenceEntities() async -> [ReferenceEntity] { [] }
 
         func recentlySelectedPOIs() async -> [POI] { [] }
+
+        func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? { nil }
 
         func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] { [] }
 
