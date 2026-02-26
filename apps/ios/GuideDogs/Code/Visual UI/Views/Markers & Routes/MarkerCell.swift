@@ -157,11 +157,11 @@ struct MarkerCell_Previews: PreviewProvider {
     static var userLocationStore = UserLocationStore(designValue: CLLocation.sample.ssGeoLocation)
     
     static var previews: some View {
-        RealmSampleDataBootstrap.bootstrap()
+        SpatialPreviewSamples.bootstrap()
         
         return Group {
-            MarkerCell(model: MarkerModel(id: RealmReferenceEntity.sample.id))
-            MarkerCell(model: MarkerModel(id: RealmReferenceEntity.sample3.id))
+            MarkerCell(model: MarkerModel(id: SpatialPreviewSamples.sampleMarkerID()))
+            MarkerCell(model: MarkerModel(id: SpatialPreviewSamples.secondarySampleMarkerID()))
         }
     }
 }

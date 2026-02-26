@@ -186,7 +186,7 @@ struct MarkersList: View {
 
 struct MarkersList_Previews: PreviewProvider {
     static var previews: some View {
-        RealmSampleDataBootstrap.bootstrap()
+        SpatialPreviewSamples.bootstrap()
         
         return Group {
             MarkersList(sort: .constant(.distance))

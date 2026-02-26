@@ -121,7 +121,7 @@ struct RouteCell: View {
 
 struct RouteCell_Previews: PreviewProvider {
     static var previews: some View {
-        RealmSampleDataBootstrap.bootstrap()
+        SpatialPreviewSamples.bootstrap()
         
         return Group {
             RouteCell(model: RouteModel(id: Route.sample.id))

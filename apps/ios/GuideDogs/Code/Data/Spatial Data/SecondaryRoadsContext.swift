@@ -85,3 +85,22 @@ enum ReverseGeocoderLookup {
         RealmReverseGeocoderLookup.fetchEstimatedAddress(for: location, completion: completion)
     }
 }
+
+@MainActor
+enum SpatialPreviewSamples {
+    static func bootstrap() {
+        RealmSampleDataBootstrap.bootstrap()
+    }
+
+    static func markerIDs() -> [String] {
+        RealmReferenceEntity.samples.map(\.id)
+    }
+
+    static func sampleMarkerID() -> String {
+        RealmReferenceEntity.sample.id
+    }
+
+    static func secondarySampleMarkerID() -> String {
+        RealmReferenceEntity.sample3.id
+    }
+}

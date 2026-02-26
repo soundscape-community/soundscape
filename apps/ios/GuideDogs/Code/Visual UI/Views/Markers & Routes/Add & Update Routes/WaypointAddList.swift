@@ -98,9 +98,9 @@ struct WaypointAddList_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        RealmSampleDataBootstrap.bootstrap()
+        SpatialPreviewSamples.bootstrap()
         
-        let markerIds = RealmReferenceEntity.samples.map(\.id)
+        let markerIds = SpatialPreviewSamples.markerIDs()
         let waypoints: [IdentifiableLocationDetail]
         
         if let id = markerIds.first, let detail = LocationDetail(markerId: id) {

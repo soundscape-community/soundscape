@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -159,7 +160,7 @@ struct MarkersAndRoutesList_Previews: PreviewProvider {
     static let previewUserLocationStore = UserLocationStore(designValue: CLLocation.sample.ssGeoLocation)
     
     static var previews: some View {
-        RealmSampleDataBootstrap.bootstrap()
+        SpatialPreviewSamples.bootstrap()
         
         return NavigationView {
             MarkersAndRoutesList().navigationBarTitleDisplayMode(.inline)

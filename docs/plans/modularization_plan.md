@@ -225,6 +225,8 @@ Phase 1 complete:
 - 2026-02-26: Reverse-geocoder lookup helper refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: Added non-infrastructure bootstrap/lookup adapters (`SpatialSearchBootstrap`, `ReverseGeocoderLookup`) in `Data/Spatial Data`, and migrated `DynamicLaunchViewController` + `ReverseGeocoderResultTypes` to those adapters to avoid direct `Realm*` infrastructure helper references from UI/behavior layers.
 - 2026-02-26: Bootstrap/lookup adapter indirection refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Added non-infrastructure preview sample adapter `SpatialPreviewSamples` in `Data/Spatial Data`, and migrated marker/route preview providers (`WaypointAddList`, `MarkersAndRoutesList`, `MarkersList`, `MarkerCell`, `RouteCell`) to remove direct `RealmSampleDataBootstrap` / `RealmReferenceEntity.sample*` references from Visual UI previews.
+- 2026-02-26: Preview sample adapter refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
