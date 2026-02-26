@@ -44,7 +44,13 @@ class DestinationTutorialPage: BaseTutorialViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        refreshEntity()
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            await self.refreshEntityFromContract()
+        }
     }
 
     private func refreshEntity() {
@@ -56,6 +62,24 @@ class DestinationTutorialPage: BaseTutorialViewController {
         }
 
         resolvedDestinationPOI = destinationManager.destinationPOI(forReferenceID: destinationKey)
+        resolvedDestinationName = destinationManager.destinationNickname(forReferenceID: destinationKey) ?? resolvedDestinationPOI?.localizedName
+    }
+
+    private func refreshEntityFromContract() async {
+        guard let destinationKey = delegate?.getEntityKey(),
+              let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+            resolvedDestinationPOI = nil
+            resolvedDestinationName = nil
+            return
+        }
+
+        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            resolvedDestinationPOI = destinationPOI
+        } else {
+            resolvedDestinationPOI = destinationManager.destinationPOI(forReferenceID: destinationKey)
+        }
+
         resolvedDestinationName = destinationManager.destinationNickname(forReferenceID: destinationKey) ?? resolvedDestinationPOI?.localizedName
     }
     
