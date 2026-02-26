@@ -73,8 +73,20 @@ struct BeaconActionHandler {
         guard let key = detail.beaconId else {
             return
         }
-        
-        UIRuntimeProviderRegistry.providers.uiProcessEvent(BeaconCalloutEvent(beaconId: key, logContext: "home_screen"))
+
+        let destinationPOI: POI?
+        if let detailEntity = detail.entity {
+            destinationPOI = detailEntity
+        } else if let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
+                  destinationManager.destinationKey == key {
+            destinationPOI = destinationManager.destinationPOI
+        } else {
+            destinationPOI = nil
+        }
+
+        UIRuntimeProviderRegistry.providers.uiProcessEvent(BeaconCalloutEvent(beaconId: key,
+                                                                               logContext: "home_screen",
+                                                                               destinationPOI: destinationPOI))
         GDATelemetry.track("beacon.callout")
     }
     
