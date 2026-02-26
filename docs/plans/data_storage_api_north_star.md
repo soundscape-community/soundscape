@@ -60,6 +60,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - Realm import boundary guardrail now scans all `GuideDogs/Code` files and strictly enforces `RealmSwift` usage to `Data/Infrastructure/Realm/**` (no non-infrastructure allowlist path).
 - Non-infrastructure `RealmSwift` imports are now zero: preview/bootstrap callsites in marker/route UI views use infrastructure-local helper `RealmSampleDataBootstrap.bootstrap()`.
 - `SpatialDataStoreRegistry.store` seam guardrail now enforces strict infrastructure-only usage (no staged allowlist path) across `GuideDogs/Code/**`.
+- `ShareRouteAlertObserver` route-import existing-route check now uses async contract ingress (`DataContractRegistry.spatialRead.route(byKey:)`) instead of direct `SpatialDataCache.routeByKey(...)` from Notifications-layer alert flow.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 
