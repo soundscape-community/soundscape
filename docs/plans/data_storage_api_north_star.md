@@ -48,6 +48,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `SpatialReadContract` no longer exposes unused road-graph/tile-data methods that returned infrastructure types (`Intersection`, `TileData`), and infra-type guardrails now report zero contract-side Realm model references.
 - `RoadAdjacentDataView` now resolves marker callout data and nearby marker scans through infrastructure adapter helpers (`RoadAdjacentDataStoreAdapter`) instead of direct store access in preview-layer code.
 - `LocationDetail` now resolves POI/marker lookup and marker-selection writes through infrastructure adapter helpers (`LocationDetailStoreAdapter`) instead of direct store access in UI-layer code.
+- `OnboardingCalloutGenerator` and destination tutorial-page hydration now resolve destination POIs via keyed lookup (`destinationPOI(forReferenceID:)`) rather than direct `destinationPOI` property reads.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

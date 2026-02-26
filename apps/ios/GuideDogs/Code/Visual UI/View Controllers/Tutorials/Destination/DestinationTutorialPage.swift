@@ -48,14 +48,14 @@ class DestinationTutorialPage: BaseTutorialViewController {
     }
 
     private func refreshEntity() {
-        guard delegate?.getEntityKey() != nil,
+        guard let destinationKey = delegate?.getEntityKey(),
               let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
             resolvedDestinationPOI = nil
             resolvedDestinationName = nil
             return
         }
 
-        resolvedDestinationPOI = destinationManager.destinationPOI
+        resolvedDestinationPOI = destinationManager.destinationPOI(forReferenceID: destinationKey)
         resolvedDestinationName = destinationManager.destinationNickname ?? resolvedDestinationPOI?.localizedName
     }
     

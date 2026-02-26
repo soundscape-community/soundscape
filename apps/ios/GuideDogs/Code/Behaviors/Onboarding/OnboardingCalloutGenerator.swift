@@ -79,7 +79,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        guard let destinationPOI = OnboardingRuntime.destinationManager()?.destinationPOI else {
+        guard let destinationPOI = destinationPOIForCurrentDestination() else {
             return nil
         }
 
@@ -118,7 +118,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        guard let destinationPOI = OnboardingRuntime.destinationManager()?.destinationPOI else {
+        guard let destinationPOI = destinationPOIForCurrentDestination() else {
             return nil
         }
 
@@ -132,6 +132,15 @@ final class OnboardingCalloutGenerator: ManualGenerator {
         })]
 
         return CalloutGroup(callouts, action: .clear, logContext: "onboarding.beacon.orientation")
+    }
+
+    private func destinationPOIForCurrentDestination() -> POI? {
+        guard let destinationManager = OnboardingRuntime.destinationManager(),
+              let destinationKey = destinationManager.destinationKey else {
+            return nil
+        }
+
+        return destinationManager.destinationPOI(forReferenceID: destinationKey)
     }
 }
 

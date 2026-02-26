@@ -171,6 +171,8 @@ Phase 1 complete:
 - 2026-02-26: `SpatialReadContract` no longer includes unused road-graph/tile-data methods returning infrastructure types (`Intersection`, `TileData`); `RealmSpatialReadContract` dropped those app-facing contract entry points while retaining infrastructure-local road helpers.
 - 2026-02-26: `check_data_contract_infra_type_allowlist.sh` now runs with an empty temporary allowlist and reports zero Realm infrastructure model type references under `Data/Contracts`.
 - 2026-02-26: Contract leakage removal validation is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`).
+- 2026-02-26: Onboarding destination callout and destination tutorial-page hydration now use keyed destination lookup (`DestinationManager.destinationPOI(forReferenceID:)`) in `OnboardingCalloutGenerator` and `DestinationTutorialPage`, removing direct `destinationPOI` property reads in these onboarding/tutorial compatibility paths.
+- 2026-02-26: Onboarding keyed-destination lookup refinement is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`EventProcessorTest`, `UIRuntimeProviderDispatchTests`, `DestinationManagerTest`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

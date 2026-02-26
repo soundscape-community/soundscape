@@ -313,7 +313,7 @@ final class DestinationManagerTest: XCTestCase {
         XCTAssertTrue(dm.isDestination(key: testID))
         XCTAssertTrue(dm.isDestination(key: expectedEntityKey))
         XCTAssertFalse(dm.isDestination(key: "other-entity-key"))
-        XCTAssertEqual(lookedUpEntityKeyIDs, [testID, testID])
+        XCTAssertEqual(lookedUpEntityKeyIDs, [testID, testID, testID])
 
         try await dm.clearDestinationAsync(logContext: nil)
     }
