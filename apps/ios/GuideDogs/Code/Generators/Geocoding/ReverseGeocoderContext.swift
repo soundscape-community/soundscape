@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -222,7 +223,7 @@ class ReverseGeocoderContext: ReverseGeocoder {
         }
         
         // If the closest existing location isn't actually an intersection, then create a synthesized one and return it
-        guard let intersection = SpatialDataCache.intersection(forRoadKey: closestRoad.key, atCoordinate: closestLocation.coordinate) else {
+        guard let intersection = closestRoad.intersection(atCoordinate: closestLocation.coordinate) else {
             let synthesized = Intersection()
             
             synthesized.key = UUID().uuidString
@@ -260,7 +261,7 @@ class ReverseGeocoderContext: ReverseGeocoder {
         // Look up the sticky road
         var stickyRoad: Road?
         if let key = stickyRoadKey {
-            stickyRoad = SpatialDataCache.searchByKey(key: key) as? Road
+            stickyRoad = roads.first(where: { $0.key == key })
         }
         
         // Find the nearest road

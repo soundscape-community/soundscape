@@ -67,6 +67,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `RouteRecommender` now resolves candidate routes through async contract ingress (`DataContractRegistry.spatialRead.routes()`), then applies the same nearby-distance and recency sort behavior in-memory instead of direct `SpatialDataCache.routesNear(...)` reads.
 - `MarkersAndRoutesListHostViewController` now clears marker/route `isNew` flags via `DataContractRegistry.spatialMaintenanceWrite.clearNewReferenceEntitiesAndRoutes()` instead of direct `SpatialDataCache.clearNewReferenceEntities()/clearNewRoutes()` calls.
 - Marker delete-alert route-name hydration now resolves via async contract ingress (`DataContractRegistry.spatialRead.routes(containingMarkerID:)`) in `EditMarkerView` and `MarkersList`, and `Alert.deleteMarkerAlert` now consumes pre-resolved route names instead of direct `SpatialDataCache.routesContaining(...)` reads.
+- `ReverseGeocoderContext` nearest-road helpers now use road-local intersection/keyed lookup (`closestRoad.intersection(atCoordinate:)`, in-scope road-key match) instead of direct `SpatialDataCache.intersection(...)` / `SpatialDataCache.searchByKey(...)` reads.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

@@ -211,6 +211,8 @@ Phase 1 complete:
 - 2026-02-26: Marker/route new-flag cleanup contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: Marker delete-alert route-name hydration now resolves through `DataContractRegistry.spatialRead.routes(containingMarkerID:)` in `EditMarkerView` and `MarkersList`, and `Alert.deleteMarkerAlert` now receives pre-resolved route names instead of querying `SpatialDataCache.routesContaining(...)`.
 - 2026-02-26: Marker delete-alert contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: `ReverseGeocoderContext` nearest-road helpers now use road-local lookup (`closestRoad.intersection(atCoordinate:)`, in-scope `roads.first(where: { $0.key == stickyRoadKey })`) instead of direct `SpatialDataCache.intersection(...)` / `searchByKey(...)` calls.
+- 2026-02-26: Reverse-geocoder nearest-road helper refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
