@@ -66,8 +66,7 @@ struct MarkersList: View {
                             didSelectEditAction(for: id)
                         }
                         .conditionalAccessibilityAction(routeIsActive == false, named: GDLocalizedTextView("general.alert.delete")) {
-                            alert = confirmationAlert(for: id)
-                            showAlert = true
+                            presentDeleteConfirmation(for: id)
                         }
                         .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.preview.text)) {
                             didSelectLocationAction(.preview, for: id)
@@ -151,8 +150,18 @@ struct MarkersList: View {
         }
     }
     
-    private func confirmationAlert(for markerID: String) -> Alert {
-        return Alert.deleteMarkerAlert(markerId: markerID,
+    private func presentDeleteConfirmation(for markerID: String) {
+        Task { @MainActor in
+            let routeNames = await DataContractRegistry.spatialRead
+                .routes(containingMarkerID: markerID)
+                .map(\.name)
+            alert = confirmationAlert(for: markerID, routeNames: routeNames)
+            showAlert = true
+        }
+    }
+
+    private func confirmationAlert(for markerID: String, routeNames: [String]) -> Alert {
+        return Alert.deleteMarkerAlert(routeNames: routeNames,
                                        deleteAction: { delete(markerID) },
                                        cancelAction: { selectedDetail = nil })
     }

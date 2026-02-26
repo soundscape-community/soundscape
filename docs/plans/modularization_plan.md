@@ -209,6 +209,8 @@ Phase 1 complete:
 - 2026-02-26: Route-recommender async contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: Added maintenance contract seam `SpatialMaintenanceWriteContract.clearNewReferenceEntitiesAndRoutes()` and migrated `MarkersAndRoutesListHostViewController` to clear marker/route `isNew` flags via `DataContractRegistry.spatialMaintenanceWrite` instead of direct `SpatialDataCache` calls.
 - 2026-02-26: Marker/route new-flag cleanup contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Marker delete-alert route-name hydration now resolves through `DataContractRegistry.spatialRead.routes(containingMarkerID:)` in `EditMarkerView` and `MarkersList`, and `Alert.deleteMarkerAlert` now receives pre-resolved route names instead of querying `SpatialDataCache.routesContaining(...)`.
+- 2026-02-26: Marker delete-alert contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

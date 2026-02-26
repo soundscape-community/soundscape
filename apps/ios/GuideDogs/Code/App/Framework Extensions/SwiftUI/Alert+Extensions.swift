@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -11,16 +12,15 @@ import SwiftUI
 @MainActor
 extension Alert {
     
-    static func deleteMarkerAlert(markerId: String,
+    static func deleteMarkerAlert(routeNames: [String],
                                   deleteAction: @escaping (() -> Void),
                                   cancelAction: @escaping (() -> Void) = {}) -> Alert {
         let message: Text
-        let routes = SpatialDataCache.routesContaining(markerId: markerId)
-        if routes.isEmpty {
+        if routeNames.isEmpty {
             message = GDLocalizedTextView("general.alert.destructive_undone_message")
         } else {
-            let routNames = routes.map { $0.name }.joined(separator: "\n")
-            message = GDLocalizedTextView("markers.destructive_delete_message.routes", routNames)
+            let joinedRouteNames = routeNames.joined(separator: "\n")
+            message = GDLocalizedTextView("markers.destructive_delete_message.routes", joinedRouteNames)
         }
         
         return Alert(title: GDLocalizedTextView("markers.destructive_delete_message"),

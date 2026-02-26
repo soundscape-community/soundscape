@@ -65,6 +65,7 @@ struct EditMarkerView: View {
     
     @State private var alert: EditViewAlert?
     @State private var showAlert: Bool = false
+    @State private var deleteAlertRouteNames: [String] = []
     
     private var deleteIsEnabled: Bool {
         // Delete is enabled when editing an existing marker
@@ -85,13 +86,13 @@ struct EditMarkerView: View {
     private var alertView: Alert {
         switch alert {
         case .delete:
-            guard let markerId = locationDetail.markerId else {
+            guard locationDetail.markerId != nil else {
                 return Alert(title: GDLocalizedTextView("general.error.error_occurred"),
                              message: GDLocalizedTextView("markers.action.update_error"),
                              dismissButton: .default(GDLocalizedTextView("general.alert.dismiss")))
             }
             
-            return Alert.deleteMarkerAlert(markerId: markerId, deleteAction: { delete() })
+            return Alert.deleteMarkerAlert(routeNames: deleteAlertRouteNames, deleteAction: { delete() })
         default:
             return Alert(title: GDLocalizedTextView("general.error.error_occurred"),
                          message: GDLocalizedTextView("markers.action.update_error"),
@@ -217,8 +218,7 @@ struct EditMarkerView: View {
                     
                     if deleteIsEnabled {
                         Button {
-                            alert = .delete
-                            showAlert = true
+                            presentDeleteAlert()
                         } label: {
                             HStack {
                                 Spacer()
@@ -258,6 +258,22 @@ struct EditMarkerView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             beaconDemo.restoreState()
             isPlayingBeacon = false
+        }
+    }
+
+    private func presentDeleteAlert() {
+        Task { @MainActor in
+            guard let markerID = locationDetail.markerId else {
+                alert = .saveError
+                showAlert = true
+                return
+            }
+
+            deleteAlertRouteNames = await DataContractRegistry.spatialRead
+                .routes(containingMarkerID: markerID)
+                .map(\.name)
+            alert = .delete
+            showAlert = true
         }
     }
     
