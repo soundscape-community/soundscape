@@ -32,11 +32,16 @@ struct BeaconActionHandler {
             return nil
         }
 
-        guard let destinationPOI = destinationManager.destinationPOI else {
+        let markerDetail: LocationDetail
+        if let detailEntity = detail.locationDetail.entity {
+            markerDetail = LocationDetail(entity: detailEntity)
+        } else if let destinationPOI = destinationManager.destinationPOI {
+            markerDetail = LocationDetail(entity: destinationPOI)
+        } else {
             return nil
         }
 
-        let config = EditMarkerConfig(detail: LocationDetail(entity: destinationPOI),
+        let config = EditMarkerConfig(detail: markerDetail,
                                       route: nil,
                                       context: "beacon_view",
                                       addOrUpdateAction: .popViewController,
