@@ -106,7 +106,7 @@ class BeaconDetailStore: ObservableObject {
                    let isAudioEnabled = userInfo[DestinationManager.Keys.isAudioEnabled] as? Bool,
                    let manager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
                    manager.destinationKey == key,
-                   let destinationPOI = manager.destinationPOI {
+                   let destinationPOI = (userInfo[DestinationManager.Keys.destinationPOI] as? POI) ?? manager.destinationPOI {
                     // Beacon was set - Update beacon so that it is placed on the new location.
                     self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
                 } else {

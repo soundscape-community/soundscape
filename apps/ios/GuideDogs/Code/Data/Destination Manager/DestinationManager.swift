@@ -74,6 +74,7 @@ class DestinationManager: DestinationManagerProtocol {
         static let wasAudioEnabled = "GDADestinationAudioWasEnabled"
         static let geofenceDidEnter = "GDADestinationGeofenceDidEnterKey"
         static let destinationKey = "DestinationReferenceKey"
+        static let destinationPOI = "GDADestinationPOI"
         static let isBeaconInBounds = "IsBeaconInBounds"
     }
     
@@ -859,8 +860,12 @@ class DestinationManager: DestinationManagerProtocol {
         var userInfo: [String: Any]?
         
         if let id = id {
-            userInfo = [DestinationManager.Keys.destinationKey: id,
-                        DestinationManager.Keys.isAudioEnabled: isAudioEnabled]
+            var destinationUserInfo: [String: Any] = [DestinationManager.Keys.destinationKey: id,
+                                                      DestinationManager.Keys.isAudioEnabled: isAudioEnabled]
+            if let destinationPOI {
+                destinationUserInfo[DestinationManager.Keys.destinationPOI] = destinationPOI
+            }
+            userInfo = destinationUserInfo
         }
         
         DestinationManagerRuntime.processEvent(

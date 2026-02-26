@@ -169,6 +169,34 @@ final class DestinationManagerTest: XCTestCase {
             XCTFail("Expected DestinationManagerError.referenceEntityDoesNotExist, got \(error)")
         }
     }
+
+    func testDestinationChangedNotificationIncludesDestinationPOI() async throws {
+        let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading)
+        let destinationSetExpectation = expectation(description: "destination changed includes destination POI")
+        var receivedDestinationPOIKey: String?
+        let token = NotificationCenter.default.addObserver(forName: .destinationChanged, object: dm, queue: .main) { notification in
+            guard notification.userInfo?[DestinationManager.Keys.destinationKey] as? String != nil else {
+                return
+            }
+
+            receivedDestinationPOIKey = (notification.userInfo?[DestinationManager.Keys.destinationPOI] as? POI)?.key
+            destinationSetExpectation.fulfill()
+        }
+        defer {
+            NotificationCenter.default.removeObserver(token)
+        }
+
+        let destinationID = try await dm.setDestinationAsync(location: sage_burdett_coord,
+                                                             address: nil,
+                                                             enableAudio: false,
+                                                             userLocation: barton_front_coord,
+                                                             logContext: nil)
+
+        await fulfillment(of: [destinationSetExpectation], timeout: 1.0)
+        XCTAssertEqual(receivedDestinationPOIKey, destinationID)
+
+        try await dm.clearDestinationAsync(logContext: nil)
+    }
     
     /// geofence is within `EnterImmediateVicinityDistance` and `LeaveImmediateVicinityDistance` of the destination
     func testDestinationInGeoFence() async throws {
