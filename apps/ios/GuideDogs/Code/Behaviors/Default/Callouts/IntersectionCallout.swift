@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -32,25 +33,20 @@ struct IntersectionCallout: CalloutProtocol {
         return GlyphSound(SuperCategory.intersections.glyph)
     }
     
-    let key: String
-    let heading: CLLocationDirection
-    
-    var intersection: Intersection? {
-        return SpatialDataCache.intersectionByKey(key)
+    let intersection: Intersection
+    var key: String {
+        intersection.key
     }
-    
-    init(_ calloutOrigin: CalloutOrigin, _ intersectionKey: String, _ isRoundabout: Bool = false, _ userHeading: CLLocationDirection) {
+    let heading: CLLocationDirection
+
+    init(_ calloutOrigin: CalloutOrigin, _ intersection: Intersection, _ isRoundabout: Bool = false, _ userHeading: CLLocationDirection) {
         self.origin = calloutOrigin
-        self.key = intersectionKey
+        self.intersection = intersection
         self.isRoundabout = isRoundabout
         self.heading = userHeading
     }
     
     func sounds(for location: CLLocation?, isRepeat: Bool, automotive: Bool = false) -> Sounds {
-        guard let intersection = intersection else {
-            return Sounds.empty
-        }
-        
         // Construct the output phrase
         var sounds: [Sound] = []
         
@@ -93,10 +89,6 @@ struct IntersectionCallout: CalloutProtocol {
     
     func distanceDescription(for location: CLLocation?, tts: Bool = false) -> String? {
         guard let location = location else {
-            return nil
-        }
-        
-        guard let intersection = intersection else {
             return nil
         }
         

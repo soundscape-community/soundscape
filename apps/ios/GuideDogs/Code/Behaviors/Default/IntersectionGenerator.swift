@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -14,16 +15,15 @@ import SSGeo
 
 @MainActor
 class IntersectionArrivalEvent: StateChangedEvent {
-    let key: String
+    let intersection: Intersection
+    var key: String {
+        intersection.key
+    }
     let isRoundabout: Bool
     let heading: CLLocationDirection
-    
-    var  intersection: Intersection? {
-        return SpatialDataCache.intersectionByKey(key)
-    }
-    
-    init(_ intersectionKey: String, isRoundabout: Bool, heading: CLLocationDirection) {
-        self.key = intersectionKey
+
+    init(_ intersection: Intersection, isRoundabout: Bool, heading: CLLocationDirection) {
+        self.intersection = intersection
         self.isRoundabout = isRoundabout
         self.heading = heading
     }
@@ -106,16 +106,7 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
     /// Tracks whether an interruption is currently taking place. Assumed to be false initially
     private var isAutomaticCalloutsInterrupted = false
     
-    private var currentIntersectionKey: String?
-    private var currentIntersection: Intersection? {
-        if let key = currentIntersectionKey, let intersection = SpatialDataCache.intersectionByKey(key) {
-            return intersection
-        } else {
-            // Failed to find intersection data... Remove corresponding key
-            currentIntersectionKey = nil
-            return nil
-        }
-    }
+    private var currentIntersection: Intersection?
     
     init(_ owner: SoundscapeBehavior,
          geoManager: GeolocationManagerProtocol,
@@ -168,7 +159,7 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
             return .noAction
 
         case let event as IntersectionArrivalEvent:
-            let callout = IntersectionCallout(.intersection, event.key, event.isRoundabout, event.heading)
+            let callout = IntersectionCallout(.intersection, event.intersection, event.isRoundabout, event.heading)
             
             GDATelemetry.track("callout", with: ["context": "intersection.arrival",
                                                  "type": callout.logCategory,
@@ -341,7 +332,7 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
             "collectionHeading: \(String(format: "%.2f", geoManager.collectionHeading.value ?? -1.0))°, " +
             "id: \(intersection.key)")
 
-        currentIntersectionKey = intersection.key
+        currentIntersection = intersection
         
         // Add to callout history
         localCalloutHistory[intersection.key] = Date()
@@ -350,7 +341,7 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
                                         object: self,
                                         userInfo: [IntersectionGenerator.Keys.intersectionKey: intersection.key])
         
-        owner.delegate?.process(IntersectionArrivalEvent(intersection.key, isRoundabout: isRoundabout, heading: heading))
+        owner.delegate?.process(IntersectionArrivalEvent(intersection, isRoundabout: isRoundabout, heading: heading))
     }
     
     private func hasCalledOut(_ intersection: Intersection, within timeInterval: TimeInterval) -> Bool {
@@ -381,7 +372,7 @@ class IntersectionGenerator: AutomaticGenerator, BehaviorEventStreamSubscribing 
     
     /// Release the nearest intersecion
     private func clearCurrentIntersection() {
-        currentIntersectionKey = nil
+        currentIntersection = nil
     }
     
     /// Release the roundabout intersecion

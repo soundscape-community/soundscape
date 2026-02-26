@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -239,7 +240,7 @@ class TourGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventStreamSub
                 return .noAction
             }
             
-            let callout = IntersectionCallout(.intersection, event.key, event.isRoundabout, event.heading)
+            let callout = IntersectionCallout(.intersection, event.intersection, event.isRoundabout, event.heading)
             
             GDATelemetry.track("callout", with: ["context": "intersection.arrival",
                                                  "type": callout.logCategory,

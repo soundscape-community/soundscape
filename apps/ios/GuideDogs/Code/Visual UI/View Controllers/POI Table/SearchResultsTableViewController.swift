@@ -321,8 +321,8 @@ class SearchResultsTableViewController: UITableViewController {
             if let poiCallout = callout as? POICallout,
                let poi = poiCallout.poi {
                 callouts.append(poi)
-            } else if let intersectionCallout = callout as? IntersectionCallout,
-                      let intersection = intersectionCallout.intersection {
+            } else if let intersectionCallout = callout as? IntersectionCallout {
+                let intersection = intersectionCallout.intersection
                 let latitude = intersection.location.coordinate.latitude
                 let longitude = intersection.location.coordinate.longitude
                 let name = GDLocalizedString("intersection.named_intersection", intersection.localizedName)
