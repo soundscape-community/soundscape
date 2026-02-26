@@ -123,6 +123,10 @@ struct RealmSpatialReadContract: SpatialReadContract {
         SpatialDataStoreRegistry.store.referenceEntities().map(\.domainEntity)
     }
 
+    func recentlySelectedPOIs() async -> [POI] {
+        SpatialDataStoreRegistry.store.recentlySelectedObjects()
+    }
+
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {
         SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate.clCoordinate, range: rangeMeters).map(\.domainEntity)
     }

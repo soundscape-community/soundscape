@@ -67,6 +67,7 @@ protocol ReferenceReadContract {
     func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity?
     func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity?
     func referenceEntities() async -> [ReferenceEntity]
+    func recentlySelectedPOIs() async -> [POI]
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity]
     func poi(byKey key: String) async -> POI?
 }

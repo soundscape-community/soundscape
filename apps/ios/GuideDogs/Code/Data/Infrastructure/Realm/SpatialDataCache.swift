@@ -19,6 +19,7 @@ protocol SpatialDataStore {
     func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity?
     func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity]
     func referenceEntities() -> [RealmReferenceEntity]
+    func recentlySelectedObjects() -> [POI]
     func searchByKey(_ key: String) -> POI?
     func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity?
     func destinationPOI(forReferenceID id: String) -> POI?
@@ -70,6 +71,10 @@ struct DefaultSpatialDataStore: SpatialDataStore {
 
     func referenceEntities() -> [RealmReferenceEntity] {
         SpatialDataCache.referenceEntities()
+    }
+
+    func recentlySelectedObjects() -> [POI] {
+        SpatialDataCache.recentlySelectedObjects()
     }
 
     func searchByKey(_ key: String) -> POI? {

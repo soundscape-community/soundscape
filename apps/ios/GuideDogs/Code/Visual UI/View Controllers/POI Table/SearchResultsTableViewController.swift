@@ -63,6 +63,7 @@ class SearchResultsTableViewController: UITableViewController {
     private var recentDataSource: UITableViewDataSource = TableViewDataSource<ListItem, ListItemTableViewCellConfigurator>(header: nil, models: [], cellConfigurator: ListItemTableViewCellConfigurator())
     private var recentDelegate: UITableViewDelegate = TableViewDelegate()
     private(set) var wasSearchCancelled = false
+    private var recentSelectionsTask: Task<Void, Never>?
     private var recentCalloutsTask: Task<Void, Never>?
     
     private var searchController: UISearchController? {
@@ -127,28 +128,17 @@ class SearchResultsTableViewController: UITableViewController {
         let isAccessibilityActionsEnabled = delegate?.isAccessibilityActionsEnabled ?? false
         configurator.accessibilityActionDelegate = isAccessibilityActionsEnabled ? self :  nil
         
-        // Initialize recent selections
-        let selections = SpatialDataCache.recentlySelectedObjects()
         let calloutHistory = UIRuntimeProviderRegistry.providers.uiCalloutHistoryCallouts()
             .sorted(by: { return $0.timestamp > $1.timestamp })
-        
-        let selectionDataSource = TableViewDataSource(header: nil, models: selections.asListItemWithoutIndex, cellConfigurator: configurator)
-        let calloutDataSource = TableViewDataSource(header: GDLocalizedString("poi_screen.header.recent.callouts"),
-                                                    models: [POI]().asListItemWithoutIndex,
-                                                    cellConfigurator: configurator)
-        
-        recentDataSource = SectionedTableViewDataSource(dataSources: [selectionDataSource, calloutDataSource])
-        recentDelegate = GenericTableViewDelegate.make(selectDelegate: self)
-        
-        updateTableView(dataSource: recentDataSource, delegate: recentDelegate, voiceoverAnnoucement: nil, isDefaultResults: true)
-        loadRecentCallouts(from: calloutHistory, cellConfigurator: configurator, selectionDataSource: selectionDataSource)
-        
         searchResultsUpdater.delegate = self
+
+        loadRecentSelections(from: calloutHistory, cellConfigurator: configurator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        recentSelectionsTask?.cancel()
         recentCalloutsTask?.cancel()
         searchResultsUpdater.delegate = nil
     }
@@ -280,6 +270,31 @@ class SearchResultsTableViewController: UITableViewController {
     
     private func dismissActivityIndicator() {
         activityIndicatorView.removeFromSuperview()
+    }
+
+    private func loadRecentSelections(from history: [CalloutProtocol], cellConfigurator: ListItemTableViewCellConfigurator) {
+        recentSelectionsTask?.cancel()
+        recentSelectionsTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            let selections = await DataContractRegistry.spatialRead.recentlySelectedPOIs()
+
+            guard !Task.isCancelled else {
+                return
+            }
+
+            let selectionDataSource = TableViewDataSource(header: nil, models: selections.asListItemWithoutIndex, cellConfigurator: cellConfigurator)
+            let calloutDataSource = TableViewDataSource(header: GDLocalizedString("poi_screen.header.recent.callouts"),
+                                                        models: [POI]().asListItemWithoutIndex,
+                                                        cellConfigurator: cellConfigurator)
+
+            self.recentDataSource = SectionedTableViewDataSource(dataSources: [selectionDataSource, calloutDataSource])
+            self.recentDelegate = GenericTableViewDelegate.make(selectDelegate: self)
+            self.updateTableView(dataSource: self.recentDataSource, delegate: self.recentDelegate, voiceoverAnnoucement: nil, isDefaultResults: true)
+            self.loadRecentCallouts(from: history, cellConfigurator: cellConfigurator, selectionDataSource: selectionDataSource)
+        }
     }
 
     private func loadRecentCallouts(from history: [CalloutProtocol],

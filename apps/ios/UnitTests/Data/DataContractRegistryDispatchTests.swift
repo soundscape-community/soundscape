@@ -139,6 +139,10 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             []
         }
 
+        func recentlySelectedPOIs() async -> [POI] {
+            []
+        }
+
         func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {
             []
         }
@@ -712,6 +716,10 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
 
     func referenceEntities() async -> [ReferenceEntity] {
         referenceByID.values.sorted(by: { $0.id < $1.id })
+    }
+
+    func recentlySelectedPOIs() async -> [POI] {
+        []
     }
 
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {

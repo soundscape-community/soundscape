@@ -109,6 +109,10 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             []
         }
 
+        func recentlySelectedPOIs() async -> [POI] {
+            []
+        }
+
         func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {
             []
         }

@@ -217,6 +217,8 @@ Phase 1 complete:
 - 2026-02-26: Intersection-arrival context-carrying refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: Launch-time spatial search/bootstrap setup now routes through infrastructure helper `RealmSpatialSearchBootstrap.configureDefaults()` in `DynamicLaunchViewController`, removing direct UI-layer `SpatialDataCache.useDefaultSearchProviders()/useDefaultGeocoder()` calls.
 - 2026-02-26: Launch bootstrap helper refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Search recents list hydration now uses async contract ingress (`DataContractRegistry.spatialRead.recentlySelectedPOIs()`) via `SearchResultsTableViewController.loadRecentSelections(...)`, removing direct `SpatialDataCache.recentlySelectedObjects()` reads from POI search UI.
+- 2026-02-26: Search recents contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

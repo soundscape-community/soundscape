@@ -42,6 +42,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var referenceEntitiesNearCallKeys: [String] = []
         private(set) var referenceEntityByGenericLocationCallKeys: [String] = []
         private(set) var referenceEntitiesCallCount = 0
+        private(set) var recentlySelectedObjectsCallCount = 0
         private(set) var searchByKeyCallKeys: [String] = []
         private(set) var destinationPOICallKeys: [String] = []
         private(set) var destinationEntityKeyCallKeys: [String] = []
@@ -97,6 +98,11 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func referenceEntities() -> [RealmReferenceEntity] {
             referenceEntitiesCallCount += 1
             return referenceEntitiesToReturn
+        }
+
+        func recentlySelectedObjects() -> [POI] {
+            recentlySelectedObjectsCallCount += 1
+            return []
         }
 
         func searchByKey(_ key: String) -> POI? {
@@ -295,6 +301,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity? { nil }
 
         func referenceEntities() async -> [ReferenceEntity] { [] }
+
+        func recentlySelectedPOIs() async -> [POI] { [] }
 
         func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] { [] }
 
