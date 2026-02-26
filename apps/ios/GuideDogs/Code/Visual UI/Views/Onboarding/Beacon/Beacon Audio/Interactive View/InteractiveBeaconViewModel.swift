@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -28,6 +29,7 @@ class InteractiveBeaconViewModel: ObservableObject {
     private let publisher: Heading
     private var heading: CLLocationDegrees?
     private let location: CLLocation?
+    private var destinationPOI: POI?
     private var listeners: [AnyCancellable] = []
     
     // MARK: Initialization
@@ -38,6 +40,7 @@ class InteractiveBeaconViewModel: ObservableObject {
         // Save initial values
         heading = publisher.value
         location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
+        destinationPOI = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.destinationPOI
         
         updateCurrentValues()
         
@@ -53,9 +56,17 @@ class InteractiveBeaconViewModel: ObservableObject {
         
         listeners.append(NotificationCenter.default.publisher(for: .destinationChanged)
                             .receive(on: DispatchQueue.main)
-                            .sink(receiveValue: { [weak self] _ in
+                            .sink(receiveValue: { [weak self] notification in
             guard let `self` = self else {
                 return
+            }
+
+            if let key = notification.userInfo?[DestinationManager.Keys.destinationKey] as? String,
+               let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
+               destinationManager.destinationKey == key {
+                self.destinationPOI = (notification.userInfo?[DestinationManager.Keys.destinationPOI] as? POI) ?? destinationManager.destinationPOI
+            } else {
+                self.destinationPOI = nil
             }
             
             self.updateCurrentValues()
@@ -80,7 +91,7 @@ class InteractiveBeaconViewModel: ObservableObject {
         }
         
         guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
-              let bearingToLocation = destinationManager.destinationPOI?.bearingToClosestLocation(from: location) else {
+              let bearingToLocation = (destinationPOI ?? destinationManager.destinationPOI)?.bearingToClosestLocation(from: location) else {
             return
         }
         
