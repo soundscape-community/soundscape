@@ -32,14 +32,21 @@ struct BeaconActionHandler {
             return nil
         }
 
-        let markerDetail: LocationDetail
+        let markerPOI: POI?
         if let detailEntity = detail.locationDetail.entity {
-            markerDetail = LocationDetail(entity: detailEntity)
-        } else if let destinationPOI = destinationManager.destinationPOI {
-            markerDetail = LocationDetail(entity: destinationPOI)
+            markerPOI = detailEntity
+        } else if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: key),
+                  let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            markerPOI = destinationPOI
         } else {
+            markerPOI = destinationManager.destinationPOI
+        }
+
+        guard let markerPOI else {
             return nil
         }
+
+        let markerDetail = LocationDetail(entity: markerPOI)
 
         let config = EditMarkerConfig(detail: markerDetail,
                                       route: nil,
