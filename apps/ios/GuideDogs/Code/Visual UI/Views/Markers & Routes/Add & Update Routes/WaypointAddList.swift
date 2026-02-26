@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -99,7 +100,7 @@ struct WaypointAddList_Previews: PreviewProvider {
         
         RealmSampleDataBootstrap.bootstrap()
         
-        let markerIds = SpatialDataCache.referenceEntities().compactMap({ return $0.id })
+        let markerIds = RealmReferenceEntity.samples.map(\.id)
         let waypoints: [IdentifiableLocationDetail]
         
         if let id = markerIds.first, let detail = LocationDetail(markerId: id) {
