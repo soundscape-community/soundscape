@@ -293,7 +293,6 @@ class MockSpatialData: SpatialDataProtocol {
 @MainActor
 class MockDestinationManager: DestinationManagerProtocol {
     var destinationKey: String?
-    var isDestinationSet: Bool = false
     var destinationPOI: POI?
     var isAudioEnabled: Bool = false
     var isBeaconInBounds: Bool = false

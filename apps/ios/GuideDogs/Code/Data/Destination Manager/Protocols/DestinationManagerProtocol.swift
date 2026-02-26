@@ -16,8 +16,6 @@ protocol DestinationManagerProtocol: AnyObject {
     
     var destinationKey: String? { get }
     
-    var isDestinationSet: Bool { get }
-    
     var isAudioEnabled: Bool { get }
     
     var isBeaconInBounds: Bool { get }

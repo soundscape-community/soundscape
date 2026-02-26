@@ -482,7 +482,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         isStartedSubject.value = false
         
         // If there is a beacon set, mute it
-        if destinationManager.isDestinationSet, destinationManager.isAudioEnabled {
+        if destinationManager.destinationKey != nil, destinationManager.isAudioEnabled {
             destinationManager.toggleDestinationAudio(true)
             didPauseBeaconOnPause = true
         }
@@ -515,7 +515,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         isStartedSubject.value = true
         
         // If there was a beacon set and not muted, unmute it
-        if destinationManager.isDestinationSet, !destinationManager.isAudioEnabled, didPauseBeaconOnPause {
+        if destinationManager.destinationKey != nil, !destinationManager.isAudioEnabled, didPauseBeaconOnPause {
             destinationManager.toggleDestinationAudio(true)
             didPauseBeaconOnPause = false
         }

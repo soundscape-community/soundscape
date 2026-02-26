@@ -103,7 +103,7 @@ class DestinationTutorialViewController: CustomPageViewController, AVAudioPlayer
             UIRuntimeProviderRegistry.providers.uiProcessEvent(ToggleAutoCalloutsEvent(playSound: false))
         }
         
-        guard UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.isDestinationSet == true else {
+        guard UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.destinationKey != nil else {
             return
         }
 

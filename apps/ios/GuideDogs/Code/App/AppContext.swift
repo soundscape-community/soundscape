@@ -1046,7 +1046,7 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
     }
 
     func uiIsDestinationSet() -> Bool {
-        context.spatialDataContext.destinationManager.isDestinationSet
+        context.spatialDataContext.destinationManager.destinationKey != nil
     }
 
     func uiIsDestinationAudioEnabled() -> Bool {

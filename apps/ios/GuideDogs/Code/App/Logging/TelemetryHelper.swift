@@ -47,14 +47,14 @@ class TelemetryHelper {
     
     /// Possible values: "none", "muted", "unmuted"
     private var beaconState: String {
-        if appContext.spatialDataContext.destinationManager.isDestinationSet {
+        if appContext.spatialDataContext.destinationManager.destinationKey != nil {
             return appContext.spatialDataContext.destinationManager.isAudioEnabled ? "unmuted" : "muted"
         }
         return "none"
     }
     
     private var isBeaconSet: Bool {
-        return appContext.spatialDataContext.destinationManager.isDestinationSet
+        return appContext.spatialDataContext.destinationManager.destinationKey != nil
     }
     
     private var isBeaconPlaying: Bool {

@@ -187,7 +187,7 @@ class RouteGuidance: BehaviorBase {
         }
         
         let destinationManager = spatialDataContext.destinationManager
-        if destinationManager.isDestinationSet {
+        if destinationManager.destinationKey != nil {
             Task { @MainActor [weak self] in
                 guard let self else {
                     return
@@ -452,7 +452,7 @@ class RouteGuidance: BehaviorBase {
         NotificationCenter.default.post(name: .routeGuidanceTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: true])
         
         // Check if a beacon has already been set - meaning that we are transitioning from one waypoint to another
-        guard spatialDataContext.destinationManager.isDestinationSet else {
+        guard spatialDataContext.destinationManager.destinationKey != nil else {
             Task { @MainActor [weak self] in
                 await self?.completeSetBeacon(waypoint: waypoint, enableAudio: enableAudio)
             }
@@ -553,7 +553,7 @@ class RouteGuidance: BehaviorBase {
     }
     
     private func clearBeacon() {
-        if spatialDataContext.destinationManager.isDestinationSet {
+        if spatialDataContext.destinationManager.destinationKey != nil {
             Task { @MainActor [weak self] in
                 guard let self else {
                     return
