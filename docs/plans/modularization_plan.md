@@ -207,6 +207,8 @@ Phase 1 complete:
 - 2026-02-26: Share-route alert route-derivation refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `RouteRecommender` nearby-route hydration now uses `DataContractRegistry.spatialRead.routes()` (async contract ingress) with in-memory nearby-distance filtering (5 km) and existing distance/recency sort behavior, replacing direct `SpatialDataCache.routesNear(...)` usage.
 - 2026-02-26: Route-recommender async contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Added maintenance contract seam `SpatialMaintenanceWriteContract.clearNewReferenceEntitiesAndRoutes()` and migrated `MarkersAndRoutesListHostViewController` to clear marker/route `isNew` flags via `DataContractRegistry.spatialMaintenanceWrite` instead of direct `SpatialDataCache` calls.
+- 2026-02-26: Marker/route new-flag cleanup contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

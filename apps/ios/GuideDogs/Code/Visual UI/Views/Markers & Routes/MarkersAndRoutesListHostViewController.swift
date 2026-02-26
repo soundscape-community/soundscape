@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -57,11 +58,12 @@ class MarkersAndRoutesListHostViewController: UIHostingController<AnyView> {
         
         // If the user has returned to the Home screen from Saved Markers, remove the
         // isNew flag from all marked points.
-        do {
-            try SpatialDataCache.clearNewReferenceEntities()
-            try SpatialDataCache.clearNewRoutes()
-        } catch {
-            GDLogAppError("Unable to clear isNew flag for reference entities!")
+        Task { @MainActor in
+            do {
+                try await DataContractRegistry.spatialMaintenanceWrite.clearNewReferenceEntitiesAndRoutes()
+            } catch {
+                GDLogAppError("Unable to clear isNew flag for reference entities!")
+            }
         }
     }
 }

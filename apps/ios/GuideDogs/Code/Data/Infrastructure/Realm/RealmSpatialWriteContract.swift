@@ -122,6 +122,11 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
         try Route.deleteAll()
     }
 
+    func clearNewReferenceEntitiesAndRoutes() async throws {
+        try SpatialDataStoreRegistry.store.clearNewReferenceEntities()
+        try SpatialDataStoreRegistry.store.clearNewRoutes()
+    }
+
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {
         guard let cache = try? RealmHelper.getCacheRealm() else {
             throw RouteRealmError.databaseError

@@ -186,6 +186,8 @@ final class CloudSyncContractBridgeTests: XCTestCase {
 
         func removeAllRoutes() async throws {}
 
+        func clearNewReferenceEntitiesAndRoutes() async throws {}
+
         func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {}
 
         func cleanCorruptReferenceEntities() async throws {}

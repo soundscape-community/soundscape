@@ -32,6 +32,8 @@ protocol SpatialDataStore {
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
     func removeAllTemporaryReferenceEntities() throws
+    func clearNewReferenceEntities() throws
+    func clearNewRoutes() throws
     func routes() -> [Route]
     func routeByKey(_ key: String) -> Route?
     func routesContaining(markerId: String) -> [Route]
@@ -129,6 +131,14 @@ struct DefaultSpatialDataStore: SpatialDataStore {
                 database.delete(entity)
             }
         }
+    }
+
+    func clearNewReferenceEntities() throws {
+        try SpatialDataCache.clearNewReferenceEntities()
+    }
+
+    func clearNewRoutes() throws {
+        try SpatialDataCache.clearNewRoutes()
     }
 
     func routes() -> [Route] {

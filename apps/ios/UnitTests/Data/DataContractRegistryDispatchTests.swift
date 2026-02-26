@@ -237,6 +237,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var importReferenceEntityFromCloudCalls: [String?] = []
         private(set) var removeAllReferenceEntitiesCalls = 0
         private(set) var removeAllRoutesCalls = 0
+        private(set) var clearNewReferenceEntitiesAndRoutesCalls = 0
         private(set) var restoreCachedAddressCounts: [Int] = []
         private(set) var cleanCorruptReferenceEntitiesCalls = 0
 
@@ -254,6 +255,10 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         func removeAllRoutes() async throws {
             removeAllRoutesCalls += 1
+        }
+
+        func clearNewReferenceEntitiesAndRoutes() async throws {
+            clearNewReferenceEntitiesAndRoutesCalls += 1
         }
 
         func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {
@@ -460,6 +465,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                           annotation: nil)
         try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
         try await DataContractRegistry.spatialMaintenanceWrite.removeAllRoutes()
+        try await DataContractRegistry.spatialMaintenanceWrite.clearNewReferenceEntitiesAndRoutes()
         let firstAddress = AddressCacheRecord(key: "address-1",
                                               lastSelectedDate: nil,
                                               name: "Address 1",
@@ -496,6 +502,7 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.updateReferenceEntityCalls, ["marker-1"])
         XCTAssertEqual(maintenanceMock.removeAllReferenceEntitiesCalls, 1)
         XCTAssertEqual(maintenanceMock.removeAllRoutesCalls, 1)
+        XCTAssertEqual(maintenanceMock.clearNewReferenceEntitiesAndRoutesCalls, 1)
         XCTAssertEqual(maintenanceMock.restoreCachedAddressCounts, [2])
         XCTAssertEqual(maintenanceMock.cleanCorruptReferenceEntitiesCalls, 1)
         XCTAssertEqual(writeMock.removeReferenceEntityCalls, ["marker-1"])
@@ -866,6 +873,28 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
 
     func removeAllRoutes() async throws {
         routesByID.removeAll()
+    }
+
+    func clearNewReferenceEntitiesAndRoutes() async throws {
+        routesByID = Dictionary(uniqueKeysWithValues: routesByID.map { key, route in
+            var clearedRoute = route
+            clearedRoute.isNew = false
+            return (key, clearedRoute)
+        })
+
+        referenceByID = Dictionary(uniqueKeysWithValues: referenceByID.map { key, reference in
+            let clearedReference = ReferenceEntity(id: reference.id,
+                                                   entityKey: reference.entityKey,
+                                                   lastUpdatedDate: reference.lastUpdatedDate,
+                                                   lastSelectedDate: reference.lastSelectedDate,
+                                                   isNew: false,
+                                                   isTemp: reference.isTemp,
+                                                   coordinate: reference.coordinate,
+                                                   nickname: reference.nickname,
+                                                   estimatedAddress: reference.estimatedAddress,
+                                                   annotation: reference.annotation)
+            return (key, clearedReference)
+        })
     }
 
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {

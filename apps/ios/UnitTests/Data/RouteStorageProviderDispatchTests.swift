@@ -54,6 +54,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         private(set) var addTemporaryReferenceEntityLocationWithNicknameCallCount = 0
         private(set) var addTemporaryReferenceEntityEntityKeyCallKeys: [String] = []
         private(set) var removeAllTemporaryReferenceEntitiesCallCount = 0
+        private(set) var clearNewReferenceEntitiesCallCount = 0
+        private(set) var clearNewRoutesCallCount = 0
         private(set) var routesCallCount = 0
         private(set) var routeByKeyCallKeys: [String] = []
         private(set) var routesContainingCallKeys: [String] = []
@@ -159,6 +161,14 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         func removeAllTemporaryReferenceEntities() throws {
             removeAllTemporaryReferenceEntitiesCallCount += 1
+        }
+
+        func clearNewReferenceEntities() throws {
+            clearNewReferenceEntitiesCallCount += 1
+        }
+
+        func clearNewRoutes() throws {
+            clearNewRoutesCallCount += 1
         }
 
         func routes() -> [Route] {
