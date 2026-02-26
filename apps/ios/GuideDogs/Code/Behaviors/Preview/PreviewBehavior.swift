@@ -113,6 +113,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
     /// Key for looking up the beacon (if one is set)
     private var beaconKey: String?
     private var beaconDestinationPOI: POI?
+    private var beaconDestinationEntityKey: String?
     
     private var didPauseBeaconOnPause: Bool = false
     
@@ -181,11 +182,13 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
             guard let key = notification.userInfo?[DestinationManager.Keys.destinationKey] as? String else {
                 self.beaconKey = nil
                 self.beaconDestinationPOI = nil
+                self.beaconDestinationEntityKey = nil
                 return
             }
             
             self.beaconKey = key
             self.beaconDestinationPOI = notification.userInfo?[DestinationManager.Keys.destinationPOI] as? POI
+            self.beaconDestinationEntityKey = notification.userInfo?[DestinationManager.Keys.destinationEntityKey] as? String
         })
         
         cancellationTokens.append(NotificationCenter.default.publisher(for: .previewIntersectionsIncludeUnnamedRoadsDidChange).sink(receiveValue: { [weak self] (_) in
@@ -431,6 +434,12 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         if destinationManager.destinationKey == id,
            let destinationPOI = destinationManager.destinationPOI {
             return destinationPOI
+        }
+
+        if destinationManager.destinationKey == id,
+           let entityKey = beaconDestinationEntityKey,
+           let poi = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return poi
         }
 
         if let entityKey = destinationManager.destinationEntityKey(forReferenceID: id),

@@ -75,6 +75,7 @@ class DestinationManager: DestinationManagerProtocol {
         static let geofenceDidEnter = "GDADestinationGeofenceDidEnterKey"
         static let destinationKey = "DestinationReferenceKey"
         static let destinationPOI = "GDADestinationPOI"
+        static let destinationEntityKey = "GDADestinationEntityKey"
         static let isBeaconInBounds = "IsBeaconInBounds"
     }
     
@@ -864,6 +865,9 @@ class DestinationManager: DestinationManagerProtocol {
                                                       DestinationManager.Keys.isAudioEnabled: isAudioEnabled]
             if let destinationPOI {
                 destinationUserInfo[DestinationManager.Keys.destinationPOI] = destinationPOI
+            }
+            if let destinationEntityKey = destinationStore.destinationEntityKey(forReferenceID: id) {
+                destinationUserInfo[DestinationManager.Keys.destinationEntityKey] = destinationEntityKey
             }
             userInfo = destinationUserInfo
         }

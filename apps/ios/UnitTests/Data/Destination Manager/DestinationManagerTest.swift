@@ -197,6 +197,43 @@ final class DestinationManagerTest: XCTestCase {
 
         try await dm.clearDestinationAsync(logContext: nil)
     }
+
+    func testDestinationChangedNotificationIncludesDestinationEntityKey() async throws {
+        let testID = "test-reference-id"
+        let expectedEntityKey = "entity-key-123"
+        let store = MockDestinationEntityStore()
+        let destinationSetExpectation = expectation(description: "destination changed includes destination entity key")
+        var receivedDestinationEntityKey: String?
+
+        store.destinationPOIForReferenceIDHandler = { _ in
+            GenericLocation(lat: 42.7290570, lon: -73.6726370, name: "Test Destination")
+        }
+        store.destinationEntityKeyForReferenceIDHandler = { _ in
+            expectedEntityKey
+        }
+        store.markReferenceEntitySelectedHandler = { _ in }
+        store.removeAllTemporaryReferenceEntitiesHandler = { }
+
+        let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
+        let token = NotificationCenter.default.addObserver(forName: .destinationChanged, object: dm, queue: .main) { notification in
+            guard notification.userInfo?[DestinationManager.Keys.destinationKey] as? String != nil else {
+                return
+            }
+
+            receivedDestinationEntityKey = notification.userInfo?[DestinationManager.Keys.destinationEntityKey] as? String
+            destinationSetExpectation.fulfill()
+        }
+        defer {
+            NotificationCenter.default.removeObserver(token)
+        }
+
+        try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
+
+        await fulfillment(of: [destinationSetExpectation], timeout: 1.0)
+        XCTAssertEqual(receivedDestinationEntityKey, expectedEntityKey)
+
+        try await dm.clearDestinationAsync(logContext: nil)
+    }
     
     /// geofence is within `EnterImmediateVicinityDistance` and `LeaveImmediateVicinityDistance` of the destination
     func testDestinationInGeoFence() async throws {
