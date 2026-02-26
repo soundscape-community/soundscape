@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -102,16 +103,7 @@ class UniversalLinkManager {
 }
 
 extension UniversalLinkManager {
-    
-    @MainActor
-    static func shareMarker(_ marker: RealmReferenceEntity) -> URL? {
-        guard let parameters = MarkerParameters(marker: marker) else {
-            return nil
-        }
-        
-        return UniversalLinkComponents(path: .shareMarker, parameters: parameters).url
-    }
-    
+
     @MainActor
     static func shareEntity(_ entity: POI) -> URL? {
         guard let parameters = MarkerParameters(entity: entity) else {
