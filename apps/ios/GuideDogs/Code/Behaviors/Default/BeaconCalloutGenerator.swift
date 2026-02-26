@@ -168,7 +168,16 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
     private func manualCalloutGroup(for event: UserInitiatedEvent) -> CalloutGroup? {
         switch event {
         case let event as BeaconCalloutEvent:
-            return CalloutGroup([DestinationCallout(.auto, event.beaconId, poi: event.destinationPOI)],
+            let destinationPOI: POI?
+            if let eventDestinationPOI = event.destinationPOI {
+                destinationPOI = eventDestinationPOI
+            } else if destinationKey == event.beaconId {
+                destinationPOI = self.destinationPOI ?? spatialData.destinationManager.destinationPOI
+            } else {
+                destinationPOI = nil
+            }
+
+            return CalloutGroup([DestinationCallout(.auto, event.beaconId, poi: destinationPOI)],
                                 action: .interruptAndClear,
                                 logContext: event.logContext)
             
