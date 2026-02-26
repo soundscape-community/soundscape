@@ -112,3 +112,9 @@ enum SpatialPreviewEnvironment {
         RealmPreviewEnvironment.configure(view)
     }
 }
+
+enum SpatialDataMigration {
+    static func migrateIfNeeded() {
+        RealmMigrationTools.migrate(database: RealmHelper.databaseConfig, cache: RealmHelper.cacheConfig)
+    }
+}

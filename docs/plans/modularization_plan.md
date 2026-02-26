@@ -229,6 +229,8 @@ Phase 1 complete:
 - 2026-02-26: Preview sample adapter refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: Added non-infrastructure preview environment adapter `SpatialPreviewEnvironment` in `Data/Spatial Data`, and migrated marker/route preview + host wiring (`WaypointAddList`, `MarkersAndRoutesList`, `MarkersAndRoutesListHostViewController`) to remove direct `RealmHelper.databaseConfig` usage from Visual UI.
 - 2026-02-26: Preview environment adapter refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Added non-infrastructure startup migration adapter `SpatialDataMigration` in `Data/Spatial Data`, and migrated `AppDelegate` launch migration setup to remove direct `RealmMigrationTools` + `RealmHelper` usage from app-layer startup wiring.
+- 2026-02-26: Startup migration adapter refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

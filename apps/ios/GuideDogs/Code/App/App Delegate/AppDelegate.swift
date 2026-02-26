@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -34,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Check if we need to migrate Realm before we do anything else
-        RealmMigrationTools.migrate(database: RealmHelper.databaseConfig, cache: RealmHelper.cacheConfig)
+        SpatialDataMigration.migrateIfNeeded()
         
         if FirstUseExperience.didComplete(.oobe) {
             // Only increment app use count if the user has completed onboarding
