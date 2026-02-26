@@ -94,15 +94,15 @@ enum SpatialPreviewSamples {
     }
 
     static func markerIDs() -> [String] {
-        RealmReferenceEntity.samples.map(\.id)
+        RealmPreviewSamples.markerIDs()
     }
 
     static func sampleMarkerID() -> String {
-        RealmReferenceEntity.sample.id
+        RealmPreviewSamples.sampleMarkerID()
     }
 
     static func secondarySampleMarkerID() -> String {
-        RealmReferenceEntity.sample3.id
+        RealmPreviewSamples.secondarySampleMarkerID()
     }
 }
 

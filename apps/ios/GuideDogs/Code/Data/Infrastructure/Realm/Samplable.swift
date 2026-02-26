@@ -152,6 +152,21 @@ enum RealmSampleDataBootstrap {
 }
 
 @MainActor
+enum RealmPreviewSamples {
+    static func markerIDs() -> [String] {
+        RealmReferenceEntity.samples.map(\.id)
+    }
+
+    static func sampleMarkerID() -> String {
+        RealmReferenceEntity.sample.id
+    }
+
+    static func secondarySampleMarkerID() -> String {
+        RealmReferenceEntity.sample3.id
+    }
+}
+
+@MainActor
 enum RealmPreviewEnvironment {
     static func configure<Content: View>(_ view: Content) -> some View {
         view.environment(\.realmConfiguration, RealmHelper.databaseConfig)
