@@ -16,18 +16,12 @@ readonly KNOWN_INFRA_TYPES=(
   IntersectionRoadId
   OsmTag
   RealmReferenceEntity
-  Road
-  Route
-  RouteWaypoint
   TileData
 )
 
-# Temporary allowlist while contracts are still being migrated to DTO/value types.
+# Temporary allowlist while contracts are still being migrated to domain/value types.
 readonly ALLOWED_INFRA_TYPES_IN_CONTRACTS=(
   Intersection
-  RealmReferenceEntity
-  Road
-  Route
   TileData
 )
 

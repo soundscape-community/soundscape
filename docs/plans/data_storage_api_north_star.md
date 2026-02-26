@@ -20,7 +20,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
   - `Data -> Visual UI`: 66
   - `Behaviors -> Visual UI`: 126
   - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
-- Contract boundary checks still temporarily allow infrastructure types in `Data/Contracts` (`Intersection`, `RealmReferenceEntity`, `Road`, `Route`, `TileData`); currently detected usage is `Intersection`, `Road`, `Route`, `TileData`.
+- Contract boundary checks now temporarily allow only remaining infrastructure types in `Data/Contracts` (`Intersection`, `TileData`); currently detected usage is `Intersection`, `TileData`.
 
 ## Design Principles
 - Keep a single app-facing storage ingress: `DataContractRegistry` contracts.
@@ -45,6 +45,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `POICallout` now consumes pre-resolved POI/marker context from behavior producers and no longer calls `SpatialDataStoreRegistry.store` directly.
 - `Roundabout` now routes region filtering through `road.intersections` and no longer calls `SpatialDataStoreRegistry.store` directly.
 - `Road` now declares intersection lookup requirements while infrastructure provides the default store-backed implementations (`RealmSpatialReadContract.swift`), removing direct store ingress from `Road.swift` without changing sync callers.
+- `Data/Contracts` infrastructure-type guardrails now treat `Road` and `Route` as canonical app-facing protocol/value types, narrowing temporary infra allowlist coverage to `Intersection` and `TileData`.
 - `RoadAdjacentDataView` now resolves marker callout data and nearby marker scans through infrastructure adapter helpers (`RoadAdjacentDataStoreAdapter`) instead of direct store access in preview-layer code.
 - `LocationDetail` now resolves POI/marker lookup and marker-selection writes through infrastructure adapter helpers (`LocationDetailStoreAdapter`) instead of direct store access in UI-layer code.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
