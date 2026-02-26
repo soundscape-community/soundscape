@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -25,11 +26,12 @@ class RouteRecommender: Recommender {
     
     let publisher: CurrentValueSubject<(() -> AnyView)?, Never> = .init(nil)
     private var listeners: [AnyCancellable] = []
+    private var publishTask: Task<Void, Never>?
     
     // MARK: Initialization
     
     init() {
-        self.publishCurrentValue()
+        self.refreshCurrentValue()
         
         listeners.append(NotificationCenter.default.publisher(for: .locationUpdated)
                             // Location updates occur more frequently than required by the recommender
@@ -41,22 +43,36 @@ class RouteRecommender: Recommender {
                                     return
                                 }
                                 
-                                self.publishCurrentValue()
+                                self.refreshCurrentValue()
                             }))
     }
     
     deinit {
         listeners.cancelAndRemoveAll()
+        publishTask?.cancel()
     }
     
     // MARK: Manage Publisher
     
-    private func publishCurrentValue() {
+    private func refreshCurrentValue() {
+        publishTask?.cancel()
+        publishTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            await self.publishCurrentValue()
+        }
+    }
+
+    private func publishCurrentValue() async {
         var currentValue: (() -> AnyView)?
         
         defer {
-            // Publish the current value
-            self.publisher.value = currentValue
+            if !Task.isCancelled {
+                // Publish the current value
+                self.publisher.value = currentValue
+            }
         }
         
         guard let location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation() else {
@@ -65,16 +81,19 @@ class RouteRecommender: Recommender {
         }
         
         // Search for routes near the given location and sort
-        // by `lastSelectedDate`
-        let nearby = SpatialDataCache.routesNear(location.coordinate, range: 5000)
+        // by `lastSelectedDate`.
+        let nearby = await DataContractRegistry.spatialRead.routes()
             .compactMap({ route -> (route: Route, distance: CLLocationDistance, selected: Date, created: Date)? in
-                // Because these routes were returned by `SpatialDataCache.routesNear`, the first waypoint location
-                // should never be `nil`
                 guard let wLocation = route.firstWaypointLocation else {
                     return nil
                 }
+
+                let distance = location.coordinate.ssGeoCoordinate.distance(to: wLocation.coordinate.ssGeoCoordinate)
+                guard distance <= 5000 else {
+                    return nil
+                }
                 
-                return (route: route, distance: location.coordinate.ssGeoCoordinate.distance(to: wLocation.coordinate.ssGeoCoordinate), selected: route.lastSelectedDate, created: route.createdDate)
+                return (route: route, distance: distance, selected: route.lastSelectedDate, created: route.createdDate)
             })
             .sorted(by: {
                 if $0.distance != $1.distance {
