@@ -8,9 +8,6 @@ readonly IOS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 readonly CODE_DIR="${IOS_DIR}/GuideDogs/Code"
 readonly REALM_IMPORT_PATTERN='^\s*import\s+RealmSwift\b'
 
-declare -ra ALLOWED_NON_INFRA_REALM_IMPORT_CALLERS=(
-)
-
 realm_import_output="$(
   rg --line-number --no-heading \
     --glob '*.swift' \
@@ -32,33 +29,16 @@ while IFS= read -r caller; do
     continue
   fi
 
-  allowed=0
-  for allowed_caller in "${ALLOWED_NON_INFRA_REALM_IMPORT_CALLERS[@]:-}"; do
-    [[ -z "${allowed_caller}" ]] && continue
-    if [[ "${relative_caller}" == "${allowed_caller}" ]]; then
-      allowed=1
-      break
-    fi
-  done
-
-  if [[ ${allowed} -eq 0 ]]; then
-    disallowed_callers+=("${relative_caller}")
-  fi
+  disallowed_callers+=("${relative_caller}")
 done <<< "${realm_import_output}"
 
 if [[ ${#disallowed_callers[@]} -gt 0 ]]; then
-  echo "RealmSwift import found outside infrastructure/allowlist boundary." >&2
+  echo "RealmSwift import found outside infrastructure boundary." >&2
   echo "Disallowed callers:" >&2
   printf "  %s\n" "${disallowed_callers[@]}" >&2
   echo "Allowed path prefix:" >&2
   echo "  GuideDogs/Code/Data/Infrastructure/Realm/" >&2
-  echo "Staged non-infrastructure allowlist:" >&2
-  if [[ ${#ALLOWED_NON_INFRA_REALM_IMPORT_CALLERS[@]} -gt 0 ]]; then
-    printf "  %s\n" "${ALLOWED_NON_INFRA_REALM_IMPORT_CALLERS[@]}" >&2
-  else
-    echo "  (none)" >&2
-  fi
   exit 1
 fi
 
-echo "RealmSwift imports are confined to Data/Infrastructure/Realm (staged allowlist empty)."
+echo "RealmSwift imports are confined to Data/Infrastructure/Realm."

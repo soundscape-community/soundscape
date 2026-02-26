@@ -57,8 +57,8 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DestinationManagerProtocol` now exposes keyed destination metadata lookup (`destinationNickname(forReferenceID:)`, `destinationEstimatedAddress(forReferenceID:)`), and destination metadata reads in `AppContext`, `BeaconDemoHelper`, and `DestinationTutorialPage` now use keyed destination ID reads instead of active-destination metadata properties.
 - `DestinationManagerProtocol` no longer exposes `isDestinationSet`; protocol-driven callers now derive destination-set state from `destinationKey != nil`.
 - `DestinationManager` no longer exposes concrete `isDestinationSet`; destination-set checks now read `destinationKey != nil` directly in remaining concrete/test callers.
-- Realm import boundary guardrail now scans all `GuideDogs/Code` files and enforces `RealmSwift` usage to `Data/Infrastructure/Realm/**` plus an explicit staged non-infrastructure allowlist.
-- Non-infrastructure `RealmSwift` imports are now zero: preview/bootstrap callsites in marker/route UI views use infrastructure-local helper `RealmSampleDataBootstrap.bootstrap()` and the staged non-infrastructure allowlist is empty.
+- Realm import boundary guardrail now scans all `GuideDogs/Code` files and strictly enforces `RealmSwift` usage to `Data/Infrastructure/Realm/**` (no non-infrastructure allowlist path).
+- Non-infrastructure `RealmSwift` imports are now zero: preview/bootstrap callsites in marker/route UI views use infrastructure-local helper `RealmSampleDataBootstrap.bootstrap()`.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 
@@ -84,8 +84,8 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
    - Keep Realm object models (`RealmRoute`, `RealmRouteWaypoint`, `RealmReferenceEntity`) infrastructure-local.
 3. Shrink contract leakage (completed for current known infrastructure model types; keep enforced):
    - Keep `Data/Contracts` infrastructure-type allowlist empty and reject regressions via `check_data_contract_infra_type_allowlist.sh`.
-4. Realm isolation hardening (in progress):
-   - Expand Realm import boundary checks to whole `GuideDogs/Code` (with explicit temporary allowlist only if needed).
+4. Realm isolation hardening (completed for import-boundary enforcement; keep enforced):
+   - Realm import boundary checks now run across whole `GuideDogs/Code` with strict infrastructure-only `RealmSwift` import policy.
 5. Extractable adapter boundary (in progress):
    - Ensure swapping persistence backend only requires a new adapter conforming to the three app-facing contracts.
 
