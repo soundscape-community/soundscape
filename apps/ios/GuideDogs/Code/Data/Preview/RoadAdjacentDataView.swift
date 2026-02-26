@@ -18,6 +18,12 @@ struct RoadAdjacentDataView: AdjacentDataView, Equatable {
     
     typealias ReferenceEntityID = String
 
+    struct AdjacentMarkerCalloutData: Equatable {
+        let id: ReferenceEntityID
+        let name: String
+        let superCategory: String
+    }
+
     /// Used to check if an adjacent has been called out within this threshold
     private static var adjacentCalloutThreshold: CLLocationDistance = CLLocationDistance.averageWalkingSpeed * 30 // 42 meters
     
@@ -30,6 +36,8 @@ struct RoadAdjacentDataView: AdjacentDataView, Equatable {
     
     /// All valid markers that can be called out along the path to the endpoint
     let adjacent: [ReferenceEntityID]
+    /// Marker callout context resolved during path scanning to avoid re-hydrating marker state later.
+    let adjacentCalloutData: [AdjacentMarkerCalloutData]
     
     /// All valid markers and all previous markers that have been called out
     /// leading up to this path, that are still within a valid range.
@@ -73,6 +81,11 @@ struct RoadAdjacentDataView: AdjacentDataView, Equatable {
         // Calculate the valid markers
         let validMarkersAlongPath = RoadAdjacentDataView.validMarkersAlongPath(walkingPathToIntersection, from: from)
         adjacent = validMarkersAlongPath.map { $0.id }
+        adjacentCalloutData = validMarkersAlongPath.map { marker in
+            AdjacentMarkerCalloutData(id: marker.id,
+                                      name: marker.name,
+                                      superCategory: marker.getPOI().superCategory)
+        }
         
         // Process the updated markers history
         adjacentCalloutLocationsHistory = RoadAdjacentDataView.updatedMarkerHistory(newMarkers: validMarkersAlongPath,
@@ -95,7 +108,7 @@ struct RoadAdjacentDataView: AdjacentDataView, Equatable {
     ///
     /// - Returns: Array of callouts for adjacent markers
     func makeCalloutsForAdjacents() -> [CalloutProtocol] {
-        let markers = RoadAdjacentDataStoreAdapter.markerCalloutData(for: adjacent)
+        let markers = adjacentCalloutData
         
         return markers.enumerated().flatMap { (item) -> [CalloutProtocol] in
             let position = direction.bearing
