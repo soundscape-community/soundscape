@@ -420,6 +420,11 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
     }
 
     private func destinationPOI(forReferenceID id: String) async -> POI? {
+        if destinationManager.destinationKey == id,
+           let destinationPOI = destinationManager.destinationPOI {
+            return destinationPOI
+        }
+
         guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
             return nil
         }
