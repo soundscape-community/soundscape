@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -82,6 +83,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
     
     private var userLocation: CLLocation?
     private var destinationKey: String?
+    private var destinationPOI: POI?
     private var beaconUpdateFilter: MotionActivityUpdateFilter
     
     // MARK: - Initialization
@@ -94,6 +96,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         beaconUpdateFilter = MotionActivityUpdateFilter(minTime: 5.0, minDistance: 50.0, motionActivity: data.motionActivityContext)
         
         destinationKey = data.destinationManager.destinationKey
+        destinationPOI = data.destinationManager.destinationPOI
         configureDestinationUpdates()
     }
     
@@ -227,10 +230,18 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         // look up the destination key).
         guard event.markerId != nil else {
             destinationKey = nil
+            destinationPOI = nil
             return nil
         }
         
         destinationKey = event.markerId
+        if let destinationPOI = event.destinationPOI {
+            self.destinationPOI = destinationPOI
+        } else if spatialData.destinationManager.destinationKey == event.markerId {
+            destinationPOI = spatialData.destinationManager.destinationPOI
+        } else {
+            destinationPOI = nil
+        }
         
         guard let location = userLocation else {
             return nil
@@ -311,7 +322,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
             return nil
         }
 
-        let destinationPOI = destinationPOIOverride ?? spatialData.destinationManager.destinationPOI
+        let destinationPOI = destinationPOIOverride ?? self.destinationPOI ?? spatialData.destinationManager.destinationPOI
         
         /// Only play "Beacon within x units" callouts when entering (not exitinhg) beacon geofence. For large values of
         /// enterImmediateVicinityDistance, when exiting a geofence, the auto callouts will immediately announce a
@@ -349,7 +360,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
     
     private func configureDestinationUpdates() {
         guard let location = userLocation else { return }
-        guard let poi = spatialData.destinationManager.destinationPOI else { return }
+        guard let poi = destinationPOI ?? spatialData.destinationManager.destinationPOI else { return }
         
         let distance = poi.distanceToClosestLocation(from: location)
         
