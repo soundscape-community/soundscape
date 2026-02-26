@@ -223,6 +223,8 @@ Phase 1 complete:
 - 2026-02-26: Estimated-location-detail contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `ReverseGeocoderResultTypes` now resolves keyed road/POI/intersection lookups and estimated-address fetch via infrastructure helper `RealmReverseGeocoderLookup` instead of direct non-infrastructure `SpatialDataCache` calls.
 - 2026-02-26: Reverse-geocoder lookup helper refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: Added non-infrastructure bootstrap/lookup adapters (`SpatialSearchBootstrap`, `ReverseGeocoderLookup`) in `Data/Spatial Data`, and migrated `DynamicLaunchViewController` + `ReverseGeocoderResultTypes` to those adapters to avoid direct `Realm*` infrastructure helper references from UI/behavior layers.
+- 2026-02-26: Bootstrap/lookup adapter indirection refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

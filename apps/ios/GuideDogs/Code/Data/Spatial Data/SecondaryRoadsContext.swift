@@ -3,10 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
+import CoreLocation
 
 /// Represents secondary road types.
 ///
@@ -56,4 +58,30 @@ extension SecondaryRoadsContext {
         return secondaryRoadTypes.map { GDLocalizedString("osm.tag.\($0)") }
     }
     
+}
+
+@MainActor
+enum SpatialSearchBootstrap {
+    static func configureDefaults() {
+        RealmSpatialSearchBootstrap.configureDefaults()
+    }
+}
+
+@MainActor
+enum ReverseGeocoderLookup {
+    static func road(by key: String?) -> Road? {
+        RealmReverseGeocoderLookup.road(by: key)
+    }
+
+    static func poi(by key: String?) -> POI? {
+        RealmReverseGeocoderLookup.poi(by: key)
+    }
+
+    static func intersection(by key: String?) -> Intersection? {
+        RealmReverseGeocoderLookup.intersection(by: key)
+    }
+
+    static func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void) {
+        RealmReverseGeocoderLookup.fetchEstimatedAddress(for: location, completion: completion)
+    }
 }

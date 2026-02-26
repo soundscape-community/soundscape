@@ -37,7 +37,7 @@ class DynamicLaunchViewController: UIViewController {
         
         // If we aren't in the test environment, register search providers for SpatialDataSearch
         if !testEnvironment {
-            RealmSpatialSearchBootstrap.configureDefaults()
+            SpatialSearchBootstrap.configureDefaults()
         }
         
     }

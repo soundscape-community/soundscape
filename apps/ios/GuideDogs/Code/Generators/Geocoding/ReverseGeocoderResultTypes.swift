@@ -61,15 +61,15 @@ struct GenericGeocoderResult: ReverseGeocoderResult {
     // MARK: Computed Properties
     
     var road: Road? {
-        RealmReverseGeocoderLookup.road(by: roadKey)
+        ReverseGeocoderLookup.road(by: roadKey)
     }
     
     var closestRoad: Road? {
-        RealmReverseGeocoderLookup.road(by: closestRoadKey)
+        ReverseGeocoderLookup.road(by: closestRoadKey)
     }
     
     var poi: POI? {
-        RealmReverseGeocoderLookup.poi(by: poiKey)
+        ReverseGeocoderLookup.poi(by: poiKey)
     }
     
     // MARK: Methods
@@ -171,7 +171,7 @@ struct InsideGeocoderResult: ReverseGeocoderResult {
     // MARK: Computed Properties
     
     var poi: POI? {
-        RealmReverseGeocoderLookup.poi(by: poiKey)
+        ReverseGeocoderLookup.poi(by: poiKey)
     }
     
     // MARK: Methods
@@ -246,15 +246,15 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
     // MARK: Computed Properties
     
     var road: Road? {
-        RealmReverseGeocoderLookup.road(by: roadKey)
+        ReverseGeocoderLookup.road(by: roadKey)
     }
     
     var closestRoad: Road? {
-        RealmReverseGeocoderLookup.road(by: closestRoadKey)
+        ReverseGeocoderLookup.road(by: closestRoadKey)
     }
     
     var intersection: Intersection? {
-        RealmReverseGeocoderLookup.intersection(by: intersectionKey)
+        ReverseGeocoderLookup.intersection(by: intersectionKey)
     }
     
     // MARK: Methods
@@ -278,7 +278,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
             guard let self = self else {
                 return
             }
-            RealmReverseGeocoderLookup.fetchEstimatedAddress(for: self.location) { [weak self] address in
+            ReverseGeocoderLookup.fetchEstimatedAddress(for: self.location) { [weak self] address in
                 guard let self = self else {
                     return
                 }

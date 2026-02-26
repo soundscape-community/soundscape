@@ -74,6 +74,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `SearchResultsTableViewController` now resolves recent selections via async contract ingress (`DataContractRegistry.spatialRead.recentlySelectedPOIs()`) instead of direct `SpatialDataCache.recentlySelectedObjects()` reads.
 - `EstimatedLocationDetail` now resolves reverse-geocoded address data via async contract ingress (`DataContractRegistry.spatialRead.estimatedAddress(near:)`) instead of direct `SpatialDataCache.fetchEstimatedAddress(...)` reads.
 - `ReverseGeocoderResultTypes` keyed road/POI/intersection lookups and estimated-address fetch now route through infrastructure helper `RealmReverseGeocoderLookup` instead of direct non-infrastructure `SpatialDataCache` access in geocoder result models.
+- `DynamicLaunchViewController` and `ReverseGeocoderResultTypes` now consume non-infrastructure bootstrap/lookup adapters (`SpatialSearchBootstrap`, `ReverseGeocoderLookup`) from `Data/Spatial Data`, removing direct `Realm*` infrastructure helper references from UI/behavior layers.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 
