@@ -50,6 +50,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `RoadAdjacentDataView` now resolves marker callout data and nearby marker scans through infrastructure adapter helpers (`RoadAdjacentDataStoreAdapter`) instead of direct store access in preview-layer code.
 - `LocationDetail` now resolves POI/marker lookup and marker-selection writes through infrastructure adapter helpers (`LocationDetailStoreAdapter`) instead of direct store access in UI-layer code.
 - `OnboardingCalloutGenerator` and destination tutorial-page hydration now resolve destination POIs via keyed lookup (`destinationPOI(forReferenceID:)`) rather than direct `destinationPOI` property reads.
+- `OnboardingCalloutGenerator` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) when a destination entity key is available, with keyed destination-manager lookup kept as compatibility fallback.
 - `BeaconDemoHelper` now snapshots/restores destination context using keyed destination POI lookup (`destinationPOI(forReferenceID:)`) instead of direct `destinationPOI` property reads.
 - `SpatialDataContext` now resolves active destination POI context for data-view composition and destination-tile selection via keyed lookup (`destinationPOI(forReferenceID:)`) instead of direct `destinationPOI` property reads.
 - `DestinationManagerProtocol` no longer requires `destinationPOI` as an app-facing property; callers use keyed destination lookup (`destinationPOI(forReferenceID:)`) for destination POI reads.

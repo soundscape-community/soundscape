@@ -6,6 +6,7 @@
 //  so the behavior no longer needs to inline delegate interactions.
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -34,7 +35,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
 
         case let selected as SelectedBeaconCalloutEvent:
-            guard let group = makeBeaconCallouts(completion: selected.completion) else {
+            guard let group = await makeBeaconCallouts(completion: selected.completion) else {
                 selected.completion?(false)
                 return nil
             }
@@ -43,7 +44,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
 
         case let orientation as SelectedBeaconOrientationCalloutEvent:
-            guard let group = makeBeaconOrientationCallouts(isAhead: orientation.isAhead) else {
+            guard let group = await makeBeaconOrientationCallouts(isAhead: orientation.isAhead) else {
                 return nil
             }
 
@@ -74,12 +75,12 @@ final class OnboardingCalloutGenerator: ManualGenerator {
         return group
     }
 
-    private func makeBeaconCallouts(completion: ((Bool) -> Void)?) -> CalloutGroup? {
+    private func makeBeaconCallouts(completion: ((Bool) -> Void)?) async -> CalloutGroup? {
         guard let beacon = BeaconOption(id: SettingsContext.shared.selectedBeacon) else {
             return nil
         }
 
-        guard let destinationPOI = destinationPOIForCurrentDestination() else {
+        guard let destinationPOI = await destinationPOIForCurrentDestination() else {
             return nil
         }
 
@@ -109,7 +110,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
         return group
     }
 
-    private func makeBeaconOrientationCallouts(isAhead: Bool) -> CalloutGroup? {
+    private func makeBeaconOrientationCallouts(isAhead: Bool) async -> CalloutGroup? {
         guard let beacon = BeaconOption(id: SettingsContext.shared.selectedBeacon) else {
             return nil
         }
@@ -118,7 +119,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        guard let destinationPOI = destinationPOIForCurrentDestination() else {
+        guard let destinationPOI = await destinationPOIForCurrentDestination() else {
             return nil
         }
 
@@ -134,10 +135,15 @@ final class OnboardingCalloutGenerator: ManualGenerator {
         return CalloutGroup(callouts, action: .clear, logContext: "onboarding.beacon.orientation")
     }
 
-    private func destinationPOIForCurrentDestination() -> POI? {
+    private func destinationPOIForCurrentDestination() async -> POI? {
         guard let destinationManager = OnboardingRuntime.destinationManager(),
               let destinationKey = destinationManager.destinationKey else {
             return nil
+        }
+
+        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            return destinationPOI
         }
 
         return destinationManager.destinationPOI(forReferenceID: destinationKey)
