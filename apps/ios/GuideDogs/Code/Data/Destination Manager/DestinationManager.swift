@@ -99,10 +99,6 @@ class DestinationManager: DestinationManagerProtocol {
         }
     }
     
-    var isDestinationSet: Bool {
-        return destinationKey != nil
-    }
-
     private var activeDestinationPOI: POI? {
         guard let destinationKey = self.destinationKey else {
             return nil

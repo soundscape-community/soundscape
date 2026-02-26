@@ -187,6 +187,8 @@ Phase 1 complete:
 - 2026-02-26: Destination metadata keyed-lookup refinement is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `DestinationManagerProtocol` no longer exposes `isDestinationSet`; protocol-driven callers in `TelemetryHelper`, `RouteGuidance`, `GuidedTour`, `PreviewBehavior`, `AppContext`, and destination tutorial flow now derive destination-set state from `destinationKey != nil`.
 - 2026-02-26: Destination-set protocol-surface tightening is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: `DestinationManager` no longer exposes concrete `isDestinationSet`; destination-set assertions and checks now read `destinationKey != nil` directly where concrete manager state is needed.
+- 2026-02-26: Destination-manager concrete destination-set surface tightening is green across common checks (`check_forbidden_imports.sh`, `swift test --package-path apps/common`), iOS lint/guardrails (`LocalizationLinter`, seam boundary scripts), `xcodebuild build-for-testing`, and targeted suites (`DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

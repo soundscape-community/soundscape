@@ -56,6 +56,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DestinationManagerProtocol` now exposes keyed temporary-state lookup (`destinationIsTemporary(forReferenceID:)`), and active-beacon temporary checks in `BeaconActionHandler`/`BeaconDemoHelper` now use keyed destination ID reads instead of active-destination temporary property reads.
 - `DestinationManagerProtocol` now exposes keyed destination metadata lookup (`destinationNickname(forReferenceID:)`, `destinationEstimatedAddress(forReferenceID:)`), and destination metadata reads in `AppContext`, `BeaconDemoHelper`, and `DestinationTutorialPage` now use keyed destination ID reads instead of active-destination metadata properties.
 - `DestinationManagerProtocol` no longer exposes `isDestinationSet`; protocol-driven callers now derive destination-set state from `destinationKey != nil`.
+- `DestinationManager` no longer exposes concrete `isDestinationSet`; destination-set checks now read `destinationKey != nil` directly in remaining concrete/test callers.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

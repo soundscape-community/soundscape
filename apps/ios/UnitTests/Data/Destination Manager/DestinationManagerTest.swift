@@ -134,7 +134,7 @@ final class DestinationManagerTest: XCTestCase {
     
     func test_empty_init() throws {
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading)
-        // nope? XCTAssertFalse(dm.isDestinationSet)
+        // nope? XCTAssertNil(dm.destinationKey)
         XCTAssertFalse(dm.isAudioEnabled)
         XCTAssertFalse(dm.isBeaconInBounds)
         XCTAssertNil(dm.beaconPlayerId)
@@ -142,14 +142,14 @@ final class DestinationManagerTest: XCTestCase {
     
     func testBasicDestination() async throws {
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading)
-        XCTAssertFalse(dm.isDestinationSet)
+        XCTAssertNil(dm.destinationKey)
         let ref_entity = try await dm.setDestinationAsync(location: sage_burdett_coord,
                                                           address: nil,
                                                           enableAudio: false,
                                                           userLocation: barton_front_coord,
                                                           logContext: nil)
         XCTAssertFalse(dm.isUserWithinGeofence(barton_front_coord)) // we are not at the destination
-        XCTAssertTrue(dm.isDestinationSet)
+        XCTAssertNotNil(dm.destinationKey)
         XCTAssertTrue(dm.isDestination(key: ref_entity))
         XCTAssertFalse(dm.isDestination(key: "asdf (:"))
         XCTAssertFalse(dm.isDestination(key: ref_entity + "AA"))
@@ -157,7 +157,7 @@ final class DestinationManagerTest: XCTestCase {
         // clear destination
         
         try await dm.clearDestinationAsync(logContext: nil)
-        XCTAssertFalse(dm.isDestinationSet)
+        XCTAssertNil(dm.destinationKey)
         XCTAssertFalse(dm.isAudioEnabled)
         // clearing should delete our temporary destination location, meaning this should error:
         do {
@@ -252,7 +252,7 @@ final class DestinationManagerTest: XCTestCase {
         // clear destination
         
         try await dm.clearDestinationAsync(logContext: nil)
-        XCTAssertFalse(dm.isDestinationSet)
+        XCTAssertNil(dm.destinationKey)
         XCTAssertFalse(dm.isAudioEnabled)
         XCTAssertFalse(dm.isUserWithinGeofence(rpi_bridge_east)) // no longer in geofence as it is gone
         XCTAssertFalse(dm.isUserWithinGeofence(rpi_bridge_west)) // and still across the bridge isn't either
@@ -285,7 +285,7 @@ final class DestinationManagerTest: XCTestCase {
 
         XCTAssertEqual(lookedUpPOIIDs.first, testID)
         XCTAssertEqual(selectedIDs, [testID])
-        XCTAssertTrue(dm.isDestinationSet)
+        XCTAssertNotNil(dm.destinationKey)
 
         try await dm.clearDestinationAsync(logContext: nil)
         XCTAssertEqual(removeAllTemporaryCallCount, 1)
@@ -456,11 +456,11 @@ final class DestinationManagerTest: XCTestCase {
                                              enableAudio: false,
                                              userLocation: nil,
                                              logContext: nil)
-        XCTAssertTrue(dm.isDestinationSet)
+        XCTAssertNotNil(dm.destinationKey)
 
         await dm.clearStartupTemporaryDestinationIfNeeded()
 
-        XCTAssertFalse(dm.isDestinationSet)
+        XCTAssertNil(dm.destinationKey)
         XCTAssertNil(dm.destinationKey)
     }
 
