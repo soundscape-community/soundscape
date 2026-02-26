@@ -19,6 +19,7 @@ class BeaconDetailStore: ObservableObject {
     
     @Published var isRouteTransitioning: Bool = false
     
+    private var destinationResolutionTask: Task<Void, Never>?
     private var listeners: [AnyCancellable] = []
     
     // MARK: Initialization
@@ -37,13 +38,15 @@ class BeaconDetailStore: ObservableObject {
             self.init(beacon: nil)
 
             guard let manager,
-                  let destinationKey = manager.destinationKey,
-                  let destinationPOI = manager.destinationPOI(forReferenceID: destinationKey) else {
+                  let destinationKey = manager.destinationKey else {
                 return
             }
 
-            // Active audio beacon is set on a location.
-            self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: manager.isAudioEnabled)
+            resolveDestinationBeacon(forReferenceID: destinationKey,
+                                     manager: manager,
+                                     isAudioEnabled: manager.isAudioEnabled,
+                                     destinationPOIOverride: nil,
+                                     destinationEntityKeyOverride: manager.destinationEntityKey(forReferenceID: destinationKey))
         }
     }
     
@@ -105,12 +108,15 @@ class BeaconDetailStore: ObservableObject {
                    let key = userInfo[DestinationManager.Keys.destinationKey] as? String,
                    let isAudioEnabled = userInfo[DestinationManager.Keys.isAudioEnabled] as? Bool,
                    let manager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
-                   manager.destinationKey == key,
-                   let destinationPOI = (userInfo[DestinationManager.Keys.destinationPOI] as? POI) ?? manager.destinationPOI(forReferenceID: key) {
-                    // Beacon was set - Update beacon so that it is placed on the new location.
-                    self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
+                   manager.destinationKey == key {
+                    self.resolveDestinationBeacon(forReferenceID: key,
+                                                  manager: manager,
+                                                  isAudioEnabled: isAudioEnabled,
+                                                  destinationPOIOverride: userInfo[DestinationManager.Keys.destinationPOI] as? POI,
+                                                  destinationEntityKeyOverride: userInfo[DestinationManager.Keys.destinationEntityKey] as? String)
                 } else {
                     // Beacon was removed
+                    self.destinationResolutionTask?.cancel()
                     self.beacon = nil
                 }
             } else {
@@ -202,7 +208,45 @@ class BeaconDetailStore: ObservableObject {
     }
     
     deinit {
+        destinationResolutionTask?.cancel()
         listeners.cancelAndRemoveAll()
+    }
+
+    private func resolveDestinationBeacon(forReferenceID id: String,
+                                          manager: DestinationManagerProtocol,
+                                          isAudioEnabled: Bool,
+                                          destinationPOIOverride: POI?,
+                                          destinationEntityKeyOverride: String?) {
+        destinationResolutionTask?.cancel()
+
+        if let destinationPOIOverride {
+            beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOIOverride), isAudioEnabled: isAudioEnabled)
+            return
+        }
+
+        let destinationEntityKey = destinationEntityKeyOverride ?? manager.destinationEntityKey(forReferenceID: id)
+        destinationResolutionTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            if let destinationEntityKey,
+               let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+                guard !Task.isCancelled, manager.destinationKey == id else {
+                    return
+                }
+
+                self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
+                return
+            }
+
+            guard !Task.isCancelled, manager.destinationKey == id,
+                  let destinationPOI = manager.destinationPOI(forReferenceID: id) else {
+                return
+            }
+
+            self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
+        }
     }
     
 }
