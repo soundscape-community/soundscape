@@ -171,10 +171,10 @@ Phase 1 complete:
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
-- Reverse edges indicating layering violations:
-  - `Behaviors -> Visual UI`
-  - `Data -> Visual UI`
-  - `Data -> Behaviors`
+- Latest tracked reverse-edge snapshot (report `20260226-114625Z-ssindex-4aab0d0`):
+  - `Behaviors -> Visual UI`: 126
+  - `Data -> Visual UI`: 66
+  - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
 - `Data` currently mixes domain logic with infrastructure concerns (`RealmSwift`, `CoreLocation`, GPX parsing, file I/O).
 
 ## Decoupling Plan (Phase 2: Data-First)
@@ -296,6 +296,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue API ingress consolidation by migrating remaining sync-heavy compatibility reads (for example preview/road-adjacent call chains that still depend on sync hydration) to async producer pre-resolution or contract-backed async boundaries where call chains can absorb async, while keeping compatibility fallbacks infrastructure-local.
+1. Continue API ingress consolidation by migrating remaining sync-heavy compatibility reads (for example beacon/onboarding destination presentation paths) to async producer pre-resolution or contract-backed async boundaries where call chains can absorb async, while keeping compatibility fallbacks infrastructure-local.
 2. With `ReferenceEntity`, `Route`, and `RouteWaypoint` value models now outside Realm infrastructure, converge their storage-facing adapters behind contract surfaces so these canonical models can be moved into package-ready domain/contracts targets without introducing parallel DTO/protocol families.
-3. Tighten CI guardrails in stages: block new `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**`, then remove temporary `Data/Contracts` infrastructure-type allowlist entries as each type is replaced.
+3. Keep `SpatialDataStoreRegistry.store` guardrails strict (`Data/Infrastructure/Realm/**` only, allowlist empty) and continue shrinking temporary `Data/Contracts` infrastructure-type allowlist entries as each contract surface is replaced with domain/value equivalents.
+4. Continue refreshing dependency-analysis artifacts from deterministic index builds and recording tracked edge deltas (`Data -> App`, `Data -> Visual UI`, `Behaviors -> Visual UI`) in plan updates and PR descriptions.

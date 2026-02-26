@@ -2,23 +2,25 @@
 
 # Data Storage API North Star
 
-Last updated: 2026-02-25
+Last updated: 2026-02-26
 
 ## Purpose
 Define a stable, minimal, app-facing data API before deeper Realm extraction work so incremental seams do not produce a fragmented contract surface.
 
 ## Current State (Observed)
-- Storage access is split across multiple entry points:
+- App-facing ingress is now mostly consolidated:
+  - Non-infrastructure `SpatialDataStoreRegistry.store` usage is zero, and the staged allowlist is empty.
+  - `SpatialDataStoreRegistry.store` remains an infrastructure adapter detail under `Data/Infrastructure/Realm/**`.
+- Storage behavior is still split across multiple abstractions:
   - `DataContractRegistry` async contracts for app/runtime callers.
-  - `SpatialDataStoreRegistry.store` sync storage seam used in many non-adapter paths.
-  - `DestinationEntityStore` as a parallel destination-specific abstraction.
-- Domain-looking models are still defined in Realm infrastructure files (`Route`, `RouteWaypoint`, `ReferenceEntity`) that import `RealmSwift`.
-- Dependency analysis still shows reverse layering pressure:
-  - `Data -> App`: 712
-  - `Data -> Visual UI`: 90
-  - `Data -> Behaviors`: 62
-  - `Behaviors -> Visual UI`: 217
-- Contract boundary checks still temporarily allow infrastructure types in `Data/Contracts` (`Route`, `Road`, `Intersection`, `TileData`, `RealmReferenceEntity`).
+  - `DestinationEntityStore` destination-focused seam used by `DestinationManager`.
+- Canonical domain value models (`Route`, `RouteWaypoint`, `ReferenceEntity`) are now outside Realm infrastructure (`Data/Models/Temp Models`), with Realm-prefixed object models retained infrastructure-local.
+- Dependency analysis (report `20260226-114625Z-ssindex-4aab0d0`) still shows reverse layering pressure:
+  - `Data -> App`: 278
+  - `Data -> Visual UI`: 66
+  - `Behaviors -> Visual UI`: 126
+  - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
+- Contract boundary checks still temporarily allow infrastructure types in `Data/Contracts` (`Intersection`, `RealmReferenceEntity`, `Road`, `Route`, `TileData`); currently detected usage is `Intersection`, `Road`, `Route`, `TileData`.
 
 ## Design Principles
 - Keep a single app-facing storage ingress: `DataContractRegistry` contracts.
@@ -36,7 +38,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DestinationManager` storage operations route through app-facing contracts (or a contract-backed adapter), not a separate long-lived parallel API surface.
 - App-facing contracts expose domain/value types only; no Realm object types or Realm-local model families.
 
-## 2026-02-25 Checkpoint: Remaining Sync Callers
+## 2026-02-26 Checkpoint: Remaining Sync Callers
 - Remaining staged non-infrastructure `SpatialDataStoreRegistry.store` callers: none (allowlist is empty).
 - `AutoCalloutGenerator` now uses current `SpatialDataView.markedPoints` marker context instead of direct `SpatialDataStoreRegistry.store` marker-existence lookups.
 - `SpatialDataView` now consumes pre-resolved storage payloads from infrastructure (`SpatialDataContext`) and no longer calls `SpatialDataStoreRegistry.store` directly.
@@ -62,17 +64,17 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - Do not add protocol layers unless they replace an existing larger seam and reduce total surface area.
 
 ## Migration Sequence
-1. Lock ingress:
+1. Lock ingress (completed for non-infrastructure callers; keep enforced):
    - Migrate non-infrastructure `SpatialDataStoreRegistry.store` usages to `DataContractRegistry` contracts or infrastructure-local sync adapter seams.
    - Keep CI guardrail blocking `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**` (allowlist empty).
-2. Unify storage-facing domain models:
+2. Unify storage-facing domain models (completed for first set):
    - Move `Route`, `RouteWaypoint`, `ReferenceEntity` value models out of Realm infrastructure files.
    - Keep Realm object models (`RealmRoute`, `RealmRouteWaypoint`, `RealmReferenceEntity`) infrastructure-local.
-3. Shrink contract leakage:
+3. Shrink contract leakage (in progress):
    - Remove temporary infrastructure type allowlist entries from `Data/Contracts` as each type is replaced with domain/value equivalents.
-4. Realm isolation hardening:
+4. Realm isolation hardening (in progress):
    - Expand Realm import boundary checks to whole `GuideDogs/Code` (with explicit temporary allowlist only if needed).
-5. Extractable adapter boundary:
+5. Extractable adapter boundary (in progress):
    - Ensure swapping persistence backend only requires a new adapter conforming to the three app-facing contracts.
 
 ## Done Criteria for “Realm Split Ready”
