@@ -40,6 +40,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 
 ## 2026-02-26 Checkpoint: Remaining Sync Callers
 - Remaining staged non-infrastructure `SpatialDataStoreRegistry.store` callers: none (allowlist is empty).
+- Remaining non-infrastructure direct `SpatialDataCache.*` callers: none (all direct usage is now confined to `Data/Infrastructure/Realm/SpatialDataCache.swift`).
 - `AutoCalloutGenerator` now uses current `SpatialDataView.markedPoints` marker context instead of direct `SpatialDataStoreRegistry.store` marker-existence lookups.
 - `SpatialDataView` now consumes pre-resolved storage payloads from infrastructure (`SpatialDataContext`) and no longer calls `SpatialDataStoreRegistry.store` directly.
 - `POICallout` now consumes pre-resolved POI/marker context from behavior producers and no longer calls `SpatialDataStoreRegistry.store` directly.
@@ -72,6 +73,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DynamicLaunchViewController` now uses infrastructure helper `RealmSpatialSearchBootstrap.configureDefaults()` for default search-provider/geocoder bootstrap instead of direct `SpatialDataCache.useDefaultSearchProviders()/useDefaultGeocoder()` UI-layer calls.
 - `SearchResultsTableViewController` now resolves recent selections via async contract ingress (`DataContractRegistry.spatialRead.recentlySelectedPOIs()`) instead of direct `SpatialDataCache.recentlySelectedObjects()` reads.
 - `EstimatedLocationDetail` now resolves reverse-geocoded address data via async contract ingress (`DataContractRegistry.spatialRead.estimatedAddress(near:)`) instead of direct `SpatialDataCache.fetchEstimatedAddress(...)` reads.
+- `ReverseGeocoderResultTypes` keyed road/POI/intersection lookups and estimated-address fetch now route through infrastructure helper `RealmReverseGeocoderLookup` instead of direct non-infrastructure `SpatialDataCache` access in geocoder result models.
 - These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 

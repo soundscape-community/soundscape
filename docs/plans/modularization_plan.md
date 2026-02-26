@@ -221,6 +221,8 @@ Phase 1 complete:
 - 2026-02-26: Search recents contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-26: `EstimatedLocationDetail.make(for:completion:)` now resolves estimated-address metadata through async contract ingress (`DataContractRegistry.spatialRead.estimatedAddress(near:)`), removing direct `SpatialDataCache.fetchEstimatedAddress(...)` from location-detail UI flow.
 - 2026-02-26: Estimated-location-detail contract-ingress refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
+- 2026-02-26: `ReverseGeocoderResultTypes` now resolves keyed road/POI/intersection lookups and estimated-address fetch via infrastructure helper `RealmReverseGeocoderLookup` instead of direct non-infrastructure `SpatialDataCache` calls.
+- 2026-02-26: Reverse-geocoder lookup helper refinement is green across full validation (common checks, iOS lint/guardrails, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `UIRuntimeProviderDispatchTests`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

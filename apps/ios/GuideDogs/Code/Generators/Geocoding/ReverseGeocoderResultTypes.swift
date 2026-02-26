@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -60,27 +61,15 @@ struct GenericGeocoderResult: ReverseGeocoderResult {
     // MARK: Computed Properties
     
     var road: Road? {
-        guard let key = roadKey else {
-            return nil
-        }
-        
-        return SpatialDataCache.searchByKey(key: key) as? Road
+        RealmReverseGeocoderLookup.road(by: roadKey)
     }
     
     var closestRoad: Road? {
-        guard let key = closestRoadKey else {
-            return nil
-        }
-        
-        return SpatialDataCache.searchByKey(key: key) as? Road
+        RealmReverseGeocoderLookup.road(by: closestRoadKey)
     }
     
     var poi: POI? {
-        guard let key = poiKey else {
-            return nil
-        }
-        
-        return SpatialDataCache.searchByKey(key: key)
+        RealmReverseGeocoderLookup.poi(by: poiKey)
     }
     
     // MARK: Methods
@@ -182,7 +171,7 @@ struct InsideGeocoderResult: ReverseGeocoderResult {
     // MARK: Computed Properties
     
     var poi: POI? {
-        return SpatialDataCache.searchByKey(key: poiKey)
+        RealmReverseGeocoderLookup.poi(by: poiKey)
     }
     
     // MARK: Methods
@@ -257,19 +246,15 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
     // MARK: Computed Properties
     
     var road: Road? {
-        return SpatialDataCache.searchByKey(key: roadKey) as? Road
+        RealmReverseGeocoderLookup.road(by: roadKey)
     }
     
     var closestRoad: Road? {
-        return SpatialDataCache.searchByKey(key: closestRoadKey) as? Road
+        RealmReverseGeocoderLookup.road(by: closestRoadKey)
     }
     
     var intersection: Intersection? {
-        guard let key = intersectionKey else {
-            return nil
-        }
-        
-        return SpatialDataCache.intersectionByKey(key)
+        RealmReverseGeocoderLookup.intersection(by: intersectionKey)
     }
     
     // MARK: Methods
@@ -293,7 +278,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
             guard let self = self else {
                 return
             }
-            SpatialDataCache.fetchEstimatedAddress(location: self.location) { [weak self] address in
+            RealmReverseGeocoderLookup.fetchEstimatedAddress(for: self.location) { [weak self] address in
                 guard let self = self else {
                     return
                 }

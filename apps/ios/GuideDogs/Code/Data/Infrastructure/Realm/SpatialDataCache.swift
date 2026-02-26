@@ -217,6 +217,37 @@ enum RealmSpatialSearchBootstrap {
     }
 }
 
+@MainActor
+enum RealmReverseGeocoderLookup {
+    static func road(by key: String?) -> Road? {
+        guard let key else {
+            return nil
+        }
+
+        return SpatialDataCache.searchByKey(key: key) as? Road
+    }
+
+    static func poi(by key: String?) -> POI? {
+        guard let key else {
+            return nil
+        }
+
+        return SpatialDataCache.searchByKey(key: key)
+    }
+
+    static func intersection(by key: String?) -> Intersection? {
+        guard let key else {
+            return nil
+        }
+
+        return SpatialDataCache.intersectionByKey(key)
+    }
+
+    static func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void) {
+        SpatialDataCache.fetchEstimatedAddress(location: location, completionHandler: completion)
+    }
+}
+
 extension SpatialDataCache {
     
     struct Predicates {
