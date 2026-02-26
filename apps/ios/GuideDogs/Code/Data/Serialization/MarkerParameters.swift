@@ -123,7 +123,7 @@ struct MarkerParameters: Codable {
         
         switch detail.source {
         case .entity:
-            guard let cachedEntity = detail.source.entity else {
+            guard let cachedEntity = detail.entity else {
                 return nil
             }
             

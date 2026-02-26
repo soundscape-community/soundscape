@@ -98,7 +98,7 @@ struct DestinationCallout: POICalloutProtocol {
                 let earcon = GlyphSound(.beaconFound)
                 var text = GDLocalizedString("beacon.beacon_location_within_audio_beacon_muted", formattedDistance)
                 // Append suggestion to launch NaviLens if available at location
-                if LocationDetail(entity: poi).source.hasNaviLens {
+                if LocationDetail(entity: poi).hasNaviLens {
                     text += " " + GDLocalizedString("beacon.suggest_navilens")
                 }
                 let tts = TTSSound(text, at: markerLocation)

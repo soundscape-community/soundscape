@@ -137,7 +137,7 @@ struct BeaconToolbarView: View {
             }
 
             // Launch NaviLens (applies to both beacon and route waypoint)
-            if beacon.locationDetail.source.hasNaviLens {
+            if beacon.locationDetail.hasNaviLens {
                 Button(action: {
                         launchNaviLens(detail: beacon.locationDetail)
                     }, label: {

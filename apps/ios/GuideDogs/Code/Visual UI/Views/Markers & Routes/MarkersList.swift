@@ -64,8 +64,7 @@ struct MarkersList: View {
                             didSelectLocationAction(.beacon, for: id)
                         }
                         .conditionalAccessibilityAction(routeIsActive == false, named: Text(LocationAction.edit.text)) {
-                            selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
-                            goToNavDestination = true
+                            didSelectEditAction(for: id)
                         }
                         .conditionalAccessibilityAction(routeIsActive == false, named: GDLocalizedTextView("general.alert.delete")) {
                             alert = confirmationAlert(for: id)
@@ -83,19 +82,7 @@ struct MarkersList: View {
                             }
                         })
                         .onTapGesture {
-                            selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
-                            
-                            let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-                            
-                            guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
-                                return
-                            }
-                            
-                            viewController.locationDetail = selectedDetail
-                            viewController.deleteAction = .popToViewController(type: MarkersAndRoutesListHostViewController.self)
-                            viewController.onDismissPreviewHandler = navHelper.onDismissPreviewHandler
-                            
-                            navHelper.pushViewController(viewController, animated: true)
+                            didSelectMarker(for: id)
                         }
                 }
             }
@@ -119,6 +106,40 @@ struct MarkersList: View {
         }
 
         return detail.entity
+    }
+
+    private func didSelectEditAction(for markerID: String) {
+        Task { @MainActor in
+            guard let detail = await LocationDetail.load(markerId: markerID,
+                                                         telemetryContext: "markers_list") else {
+                return
+            }
+
+            selectedDetail = detail
+            goToNavDestination = true
+        }
+    }
+
+    private func didSelectMarker(for markerID: String) {
+        Task { @MainActor in
+            guard let detail = await LocationDetail.load(markerId: markerID,
+                                                         telemetryContext: "markers_list") else {
+                return
+            }
+
+            let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
+
+            guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
+                return
+            }
+
+            selectedDetail = detail
+            viewController.locationDetail = detail
+            viewController.deleteAction = .popToViewController(type: MarkersAndRoutesListHostViewController.self)
+            viewController.onDismissPreviewHandler = navHelper.onDismissPreviewHandler
+
+            navHelper.pushViewController(viewController, animated: true)
+        }
     }
 
     private func didSelectLocationAction(_ action: LocationAction, for markerID: String) {

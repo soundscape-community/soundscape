@@ -126,12 +126,13 @@ class SearchWaypointViewController: UIViewController {
         }
     }
     
-    private func addedMarker(id: String) {
+    @MainActor
+    private func addedMarker(id: String) async {
         guard var waypoints = waypoints else {
             return
         }
         
-        guard let detail = LocationDetail(markerId: id) else {
+        guard let detail = await LocationDetail.load(markerId: id) else {
             return
         }
         
@@ -185,17 +186,19 @@ extension SearchWaypointViewController: POITableViewDelegate {
     
     private func didSelect(detail: LocationDetail) {
         if let markerId = detail.markerId {
-            self.addedMarker(id: markerId)
-            
-            guard let navigationController = navigationController else {
-                return
+            Task { @MainActor in
+                await self.addedMarker(id: markerId)
+
+                guard let navigationController = self.navigationController else {
+                    return
+                }
+
+                guard navigationController.topViewController != navigationController.viewControllers.first else {
+                    return
+                }
+
+                navigationController.popToRootViewController(animated: true)
             }
-            
-            guard navigationController.topViewController != navigationController.viewControllers.first else {
-                return
-            }
-            
-            navigationController.popToRootViewController(animated: true)
         } else {
             let config = EditMarkerConfig(detail: detail,
                                           route: routeName,
@@ -213,7 +216,9 @@ extension SearchWaypointViewController: POITableViewDelegate {
                 .first()
                 .compactMap({ $0.userInfo?[ReferenceEntity.Keys.entityId] as? String })
                 .sink(receiveValue: { [weak self] markerId in
-                    self?.addedMarker(id: markerId)
+                    Task { @MainActor in
+                        await self?.addedMarker(id: markerId)
+                    }
                 })
         }
     }

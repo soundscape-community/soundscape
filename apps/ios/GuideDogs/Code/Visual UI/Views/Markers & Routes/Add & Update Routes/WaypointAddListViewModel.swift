@@ -20,6 +20,7 @@ class WaypointAddListViewModel: ObservableObject {
     
     let markerStore = MarkerLoader()
     private var listeners: [AnyCancellable] = []
+    private var markerUpdateTask: Task<Void, Never>?
     
     // MARK: Initialization
     
@@ -40,26 +41,45 @@ class WaypointAddListViewModel: ObservableObject {
         
         markerStore.load(sort: .distance)
     }
+
+    deinit {
+        markerUpdateTask?.cancel()
+    }
     
     private func onMarkersDidChange(newMarkerIds: [String]) {
-        markers = newMarkerIds
-            .compactMap({ markerId in
+        markerUpdateTask?.cancel()
+        markerUpdateTask = Task { @MainActor in
+            var updatedMarkers: [IdentifiableLocationDetail] = []
+
+            for markerId in newMarkerIds {
+                guard !Task.isCancelled else {
+                    return
+                }
+
                 // If the marker is an existing waypoint, update the index
                 let index = waypoints.firstIndex(where: { $0.locationDetail.markerId == markerId })
                 
                 // If the marker is an existing waypoint, return it
                 if let value = waypoints.first(where: { $0.locationDetail.markerId == markerId }) {
                     value.index = index
-                    return value
+                    updatedMarkers.append(value)
+                    continue
                 }
-                
-                guard let detail = LocationDetail(markerId: markerId) else {
-                    return nil
+
+                guard let detail = await LocationDetail.load(markerId: markerId) else {
+                    continue
                 }
-                
+
                 // Create a new element and add it to the marker list
-                return IdentifiableLocationDetail(locationDetail: detail, index: index)
-            })
+                updatedMarkers.append(IdentifiableLocationDetail(locationDetail: detail, index: index))
+            }
+
+            guard !Task.isCancelled else {
+                return
+            }
+
+            markers = updatedMarkers
+        }
     }
     
     // MARK: Manage Waypoints

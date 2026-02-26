@@ -33,7 +33,7 @@ enum LocationAction {
     
     static func actions(for detail: LocationDetail) -> [LocationAction] {
         var result: [LocationAction] = [.beacon]
-        if detail.source.hasNaviLens {
+        if detail.hasNaviLens {
             // NaviLens action replaces beacon action
             result = [.navilens]
         }
