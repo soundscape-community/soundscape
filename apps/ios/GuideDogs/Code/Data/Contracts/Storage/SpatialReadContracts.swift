@@ -39,18 +39,13 @@ protocol SpatialReadContract: RouteReadContract,
                               TileReadContract {}
 
 @MainActor
-protocol SpatialWriteContract: SpatialRouteWriteContract {
-    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String
-    func addReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String
-    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws
-    func removeReferenceEntity(id: String) async throws
-}
+protocol SpatialWriteContract: SpatialRouteWriteContract,
+                               SpatialReferenceWriteContract
+where GenericLocationValue == GenericLocation {}
 
 @MainActor
 protocol SpatialMaintenanceWriteContract: SpatialRouteMaintenanceWriteContract,
-                                          SpatialAddressMaintenanceWriteContract {
-    func importReferenceEntityFromCloud(markerParameters: MarkerParameters, entity: POI) async throws
-    func removeAllReferenceEntities() async throws
-    func clearNewReferenceEntitiesAndRoutes() async throws
-    func cleanCorruptReferenceEntities() async throws
-}
+                                          SpatialAddressMaintenanceWriteContract,
+                                          SpatialReferenceMaintenanceWriteContract
+where MarkerParametersValue == MarkerParameters,
+      PointOfInterestValue == POI {}

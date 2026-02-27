@@ -27,6 +27,8 @@ private struct NearbyLocationStub {}
 
 private func acceptsReferenceMarkerReadContract<Contract: SpatialReferenceMarkerReadContract>(_ contract: Contract) {}
 private func acceptsPointOfInterestReadContract<Contract: SpatialPointOfInterestReadContract>(_ contract: Contract) {}
+private func acceptsReferenceWriteContract<Contract: SpatialReferenceWriteContract>(_ contract: Contract) {}
+private func acceptsReferenceMaintenanceWriteContract<Contract: SpatialReferenceMaintenanceWriteContract>(_ contract: Contract) {}
 
 @MainActor
 private final class StorageContractMock: SpatialRouteReadContract,
@@ -35,7 +37,9 @@ private final class StorageContractMock: SpatialRouteReadContract,
                                          SpatialPointOfInterestReadContract,
                                          SpatialTileReadContract,
                                          SpatialRouteWriteContract,
+                                         SpatialReferenceWriteContract,
                                          SpatialRouteMaintenanceWriteContract,
+                                         SpatialReferenceMaintenanceWriteContract,
                                          SpatialAddressMaintenanceWriteContract {
     func routes() async -> [Route] { [] }
     func route(byKey key: String) async -> Route? { nil }
@@ -68,9 +72,17 @@ private final class StorageContractMock: SpatialRouteReadContract,
     func addRoute(_ route: Route) async throws {}
     func deleteRoute(id: String) async throws {}
     func updateRoute(_ route: Route) async throws {}
+    func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String { "marker-1" }
+    func addReferenceEntity(location: GenericLocationStub, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String { "marker-2" }
+    func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {}
+    func removeReferenceEntity(id: String) async throws {}
 
     func importRouteFromCloud(_ route: Route) async throws {}
     func removeAllRoutes() async throws {}
+    func importReferenceEntityFromCloud(markerParameters: MarkerParametersStub, entity: PointOfInterestStub) async throws {}
+    func removeAllReferenceEntities() async throws {}
+    func clearNewReferenceEntitiesAndRoutes() async throws {}
+    func cleanCorruptReferenceEntities() async throws {}
 
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {}
 }
@@ -133,6 +145,8 @@ struct SSDataContractsTests {
         let mock = StorageContractMock()
         acceptsReferenceMarkerReadContract(mock)
         acceptsPointOfInterestReadContract(mock)
+        acceptsReferenceWriteContract(mock)
+        acceptsReferenceMaintenanceWriteContract(mock)
 
         let routeRead: any SpatialRouteReadContract = mock
         let referenceRead: any SpatialReferenceReadContract = mock
@@ -163,7 +177,29 @@ struct SSDataContractsTests {
         #expect(nearbyLocations.isEmpty)
 
         try await routeWrite.deleteRoute(id: "route-1")
+        let createdMarkerFromEntity = try await mock.addReferenceEntity(entityKey: "entity-1",
+                                                                        nickname: nil,
+                                                                        estimatedAddress: nil,
+                                                                        annotation: nil)
+        let createdMarkerFromLocation = try await mock.addReferenceEntity(location: .init(id: "location-1"),
+                                                                          nickname: nil,
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil)
+        try await mock.updateReferenceEntity(id: "marker-1",
+                                             location: nil,
+                                             nickname: nil,
+                                             estimatedAddress: nil,
+                                             annotation: nil)
+        try await mock.removeReferenceEntity(id: "marker-1")
         try await routeMaintenance.removeAllRoutes()
+        try await mock.importReferenceEntityFromCloud(markerParameters: .init(id: "marker-1"),
+                                                      entity: .init(id: "poi-1"))
+        try await mock.removeAllReferenceEntities()
+        try await mock.clearNewReferenceEntitiesAndRoutes()
+        try await mock.cleanCorruptReferenceEntities()
         try await addressMaintenance.restoreCachedAddresses([])
+
+        #expect(createdMarkerFromEntity == "marker-1")
+        #expect(createdMarkerFromLocation == "marker-2")
     }
 }
