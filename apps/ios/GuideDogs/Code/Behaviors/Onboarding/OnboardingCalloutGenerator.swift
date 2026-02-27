@@ -149,11 +149,6 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
-           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            return destinationPOI
-        }
-
         guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: destinationKey) else {
             return nil
         }

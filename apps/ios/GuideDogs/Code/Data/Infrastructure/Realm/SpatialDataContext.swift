@@ -144,7 +144,8 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             return nil
         }
 
-        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
+        if let destinationEntity = SpatialDataStoreRegistry.store.referenceEntityByKey(destinationKey),
+           let destinationEntityKey = destinationEntity.entityKey,
            let destinationPOI = SpatialDataStoreRegistry.store.searchByKey(destinationEntityKey) {
             return destinationPOI
         }

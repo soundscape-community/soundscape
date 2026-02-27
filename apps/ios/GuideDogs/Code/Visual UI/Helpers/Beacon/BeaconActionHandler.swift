@@ -40,7 +40,7 @@ struct BeaconActionHandler {
         if let detailEntity = detail.locationDetail.entity {
             markerPOI = detailEntity
         } else {
-            markerPOI = await resolveDestinationPOI(forReferenceID: key, destinationManager: destinationManager)
+            markerPOI = await resolveDestinationPOI(forReferenceID: key)
         }
 
         guard let markerPOI else {
@@ -94,8 +94,7 @@ struct BeaconActionHandler {
         }
 
         Task { @MainActor in
-            let destinationPOI = await resolveDestinationPOI(forReferenceID: key,
-                                                             destinationManager: destinationManager)
+            let destinationPOI = await resolveDestinationPOI(forReferenceID: key)
             processCallout(beaconID: key, destinationPOI: destinationPOI)
         }
     }
@@ -175,13 +174,7 @@ struct BeaconActionHandler {
         GDATelemetry.track("beacon.callout")
     }
 
-    private static func resolveDestinationPOI(forReferenceID id: String,
-                                              destinationManager: DestinationManagerProtocol) async -> POI? {
-        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: id),
-           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            return destinationPOI
-        }
-
+    private static func resolveDestinationPOI(forReferenceID id: String) async -> POI? {
         guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
             return nil
         }

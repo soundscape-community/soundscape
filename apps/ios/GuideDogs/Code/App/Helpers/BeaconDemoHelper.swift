@@ -247,7 +247,7 @@ class BeaconDemoHelper {
             return .ref(id: destinationID)
         }
 
-        let destinationPOI = await resolveDestinationPOI(forReferenceID: destinationID, beaconManager: beaconManager)
+        let destinationPOI = await resolveDestinationPOI(forReferenceID: destinationID)
         let destinationEstimatedAddress = await resolveDestinationEstimatedAddress(forReferenceID: destinationID)
 
         guard let destinationPOI else {
@@ -263,13 +263,7 @@ class BeaconDemoHelper {
         }
     }
 
-    private func resolveDestinationPOI(forReferenceID id: String,
-                                       beaconManager: DestinationManagerProtocol) async -> POI? {
-        if let destinationEntityKey = beaconManager.destinationEntityKey(forReferenceID: id),
-           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            return destinationPOI
-        }
-
+    private func resolveDestinationPOI(forReferenceID id: String) async -> POI? {
         guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
             return nil
         }

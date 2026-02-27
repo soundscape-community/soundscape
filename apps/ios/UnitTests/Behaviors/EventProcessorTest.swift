@@ -304,7 +304,6 @@ class MockDestinationManager: DestinationManagerProtocol {
     func isDestination(key: String) -> Bool { false }
     func destinationIsTemporary(forReferenceID id: String) -> Bool { false }
     func destinationPOI(forReferenceID id: String) -> POI? { nil }
-    func destinationEntityKey(forReferenceID id: String) -> String? { nil }
     func destinationNickname(forReferenceID id: String) -> String? { nil }
     func destinationEstimatedAddress(forReferenceID id: String) -> String? { nil }
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws {}

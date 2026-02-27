@@ -46,7 +46,7 @@ class BeaconDetailStore: ObservableObject {
                                      manager: manager,
                                      isAudioEnabled: manager.isAudioEnabled,
                                      destinationPOIOverride: nil,
-                                     destinationEntityKeyOverride: manager.destinationEntityKey(forReferenceID: destinationKey))
+                                     destinationEntityKeyOverride: nil)
         }
     }
     
@@ -224,7 +224,7 @@ class BeaconDetailStore: ObservableObject {
             return
         }
 
-        let destinationEntityKey = destinationEntityKeyOverride ?? manager.destinationEntityKey(forReferenceID: id)
+        let destinationEntityKey = destinationEntityKeyOverride
         destinationResolutionTask = Task { @MainActor [weak self] in
             guard let self else {
                 return
@@ -245,7 +245,7 @@ class BeaconDetailStore: ObservableObject {
     private func resolveDestinationPOI(forReferenceID id: String,
                                        manager: DestinationManagerProtocol,
                                        destinationEntityKeyOverride: String?) async -> POI? {
-        let destinationEntityKey = destinationEntityKeyOverride ?? manager.destinationEntityKey(forReferenceID: id)
+        let destinationEntityKey = destinationEntityKeyOverride
         if let destinationEntityKey,
            let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
             return destinationPOI

@@ -262,10 +262,6 @@ class DestinationManager: DestinationManagerProtocol {
         return true
     }
 
-    func destinationEntityKey(forReferenceID id: String) -> String? {
-        destinationStore.destinationEntityKey(forReferenceID: id)
-    }
-    
     /// Sets the provided RealmReferenceEntity as the current destination.
     ///
     /// - Parameters:

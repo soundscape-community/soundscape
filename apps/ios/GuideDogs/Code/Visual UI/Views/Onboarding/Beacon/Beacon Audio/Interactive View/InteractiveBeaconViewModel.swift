@@ -45,7 +45,7 @@ class InteractiveBeaconViewModel: ObservableObject {
         location = UIRuntimeProviderRegistry.providers.uiCurrentUserLocation()
         if let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
            let destinationKey = destinationManager.destinationKey {
-            destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey)
+            destinationEntityKey = nil
             resolveDestinationPOI(forReferenceID: destinationKey, destinationManager: destinationManager)
         }
         
@@ -72,8 +72,7 @@ class InteractiveBeaconViewModel: ObservableObject {
                let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager,
                destinationManager.destinationKey == key {
                 self.destinationPOI = notification.userInfo?[DestinationManager.Keys.destinationPOI] as? POI
-                self.destinationEntityKey = (notification.userInfo?[DestinationManager.Keys.destinationEntityKey] as? String)
-                    ?? destinationManager.destinationEntityKey(forReferenceID: key)
+                self.destinationEntityKey = notification.userInfo?[DestinationManager.Keys.destinationEntityKey] as? String
 
                 if self.destinationPOI == nil {
                     self.resolveDestinationPOI(forReferenceID: key, destinationManager: destinationManager)

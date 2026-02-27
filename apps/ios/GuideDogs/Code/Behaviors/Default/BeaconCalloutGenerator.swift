@@ -436,11 +436,6 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
     }
 
     private func resolveDestinationPOI(forReferenceID id: String) async -> POI? {
-        if let destinationEntityKey = spatialData.destinationManager.destinationEntityKey(forReferenceID: id),
-           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            return destinationPOI
-        }
-
         guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
             return nil
         }
