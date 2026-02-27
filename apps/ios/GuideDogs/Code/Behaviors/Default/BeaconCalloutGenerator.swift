@@ -430,16 +430,27 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEvent
         isRefreshingDestinationPOI = true
         defer { isRefreshingDestinationPOI = false }
 
-        if let destinationEntityKey = spatialData.destinationManager.destinationEntityKey(forReferenceID: destinationID),
-           let resolvedPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            destinationPOI = resolvedPOI
-            return resolvedPOI
+        let resolvedPOI = await resolveDestinationPOI(forReferenceID: destinationID)
+        destinationPOI = resolvedPOI
+        return resolvedPOI
+    }
+
+    private func resolveDestinationPOI(forReferenceID id: String) async -> POI? {
+        if let destinationEntityKey = spatialData.destinationManager.destinationEntityKey(forReferenceID: id),
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            return destinationPOI
         }
 
-        // Compatibility fallback for sync call sites without an entity-key-backed POI.
-        let fallbackPOI = spatialData.destinationManager.destinationPOI(forReferenceID: destinationID)
-        destinationPOI = fallbackPOI
-        return fallbackPOI
+        guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
+            return nil
+        }
+
+        if let entityKey = referenceEntity.entityKey,
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return destinationPOI
+        }
+
+        return GenericLocation(ref: referenceEntity)
     }
 }
 
