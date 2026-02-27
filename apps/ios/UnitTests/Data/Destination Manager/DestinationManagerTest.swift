@@ -318,33 +318,6 @@ final class DestinationManagerTest: XCTestCase {
         try await dm.clearDestinationAsync(logContext: nil)
     }
 
-    func testDestinationPOIUsesInjectedEntityStorePOILookup() async throws {
-        let testID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
-                                                                                                              lon: -73.6726370,
-                                                                                                              name: "Test POI"),
-                                                                                    estimatedAddress: nil)
-        let store = MockDestinationEntityStore()
-        var lookedUpPOIIDs: [String] = []
-
-        store.destinationPOIForReferenceIDHandler = { id in
-            lookedUpPOIIDs.append(id)
-            return SpatialDataCache.referenceEntityByKey(id)?.getPOI()
-        }
-        store.markReferenceEntitySelectedHandler = { _ in }
-        store.removeAllTemporaryReferenceEntitiesHandler = {
-            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
-        }
-
-        let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
-        try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
-
-        XCTAssertNotNil(dm.destinationPOI(forReferenceID: testID))
-        XCTAssertGreaterThanOrEqual(lookedUpPOIIDs.count, 2)
-        XCTAssertEqual(Array(lookedUpPOIIDs.prefix(2)), [testID, testID])
-
-        try await dm.clearDestinationAsync(logContext: nil)
-    }
-
     func testDestinationMetadataUsesInjectedEntityStoreMetadataLookup() async throws {
         let testID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                               lon: -73.6726370,

@@ -270,10 +270,6 @@ class DestinationManager: DestinationManagerProtocol {
         destinationStore.destinationIsTemporary(forReferenceID: id)
     }
 
-    func destinationPOI(forReferenceID id: String) -> POI? {
-        destinationStore.destinationPOI(forReferenceID: id)
-    }
-
     func destinationNickname(forReferenceID id: String) -> String? {
         destinationStore.destinationNickname(forReferenceID: id)
     }
