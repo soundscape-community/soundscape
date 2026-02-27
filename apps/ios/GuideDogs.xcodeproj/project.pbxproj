@@ -27,6 +27,7 @@
 		281BCBFF262638290031298D /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 281BCBFE262638290031298D /* RealmSwift */; };
 		A1C0D0012F0A000100000001 /* SSDataStructures in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0032F0A000100000001 /* SSDataStructures */; };
 		A1C0D0042F0A000100000001 /* SSGeo in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0052F0A000100000001 /* SSGeo */; };
+		A1C0D0062F0A000100000001 /* SSDataDomain in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0072F0A000100000001 /* SSDataDomain */; };
 		A1C0D1212F0C000100000001 /* SpatialReadContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1112F0C000100000001 /* SpatialReadContracts.swift */; };
 		A1C0D1222F0C000100000001 /* DataContractRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1122F0C000100000001 /* DataContractRegistry.swift */; };
 		A1C0D1232F0C000100000001 /* RealmSpatialReadContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1132F0C000100000001 /* RealmSpatialReadContract.swift */; };
@@ -1584,20 +1585,21 @@
 		};
 		D3D7CFC51B3D96460020B5E9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A1C0D0012F0A000100000001 /* SSDataStructures in Frameworks */,
-				A1C0D0042F0A000100000001 /* SSGeo in Frameworks */,
-				283B0307264B03920092F74F /* SDWebImageSwiftUI in Frameworks */,
-				2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
-				286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */,
-				2866A7D5262502D500EBA2D8 /* CocoaLumberjackSwift in Frameworks */,
-				91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */,
-				286145EB2625099F000E5525 /* SDWebImage in Frameworks */,
-				281BCBFF262638290031298D /* RealmSwift in Frameworks */,
-				28F1ECE2262505DC00E964C0 /* Realm in Frameworks */,
-				2866A7C12625013400EBA2D8 /* DZNEmptyDataSet in Frameworks */,
-			);
+				buildActionMask = 2147483647;
+				files = (
+					A1C0D0012F0A000100000001 /* SSDataStructures in Frameworks */,
+					A1C0D0042F0A000100000001 /* SSGeo in Frameworks */,
+					A1C0D0062F0A000100000001 /* SSDataDomain in Frameworks */,
+					283B0307264B03920092F74F /* SDWebImageSwiftUI in Frameworks */,
+					2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
+					286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */,
+					2866A7D5262502D500EBA2D8 /* CocoaLumberjackSwift in Frameworks */,
+					91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */,
+					286145EB2625099F000E5525 /* SDWebImage in Frameworks */,
+					281BCBFF262638290031298D /* RealmSwift in Frameworks */,
+					28F1ECE2262505DC00E964C0 /* Realm in Frameworks */,
+					2866A7C12625013400EBA2D8 /* DZNEmptyDataSet in Frameworks */,
+				);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -4381,20 +4383,21 @@
 			fileSystemSynchronizedGroups = (
 				DC207DED2D4AAB1E00124E8A /* Views */,
 			);
-			name = Soundscape;
-			packageProductDependencies = (
-				A1C0D0032F0A000100000001 /* SSDataStructures */,
-				A1C0D0052F0A000100000001 /* SSGeo */,
-				286F409C2624FF6000C3F80B /* NVActivityIndicatorView */,
-				2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
-				2866A7CE2625028600EBA2D8 /* Reachability */,
-				2866A7D4262502D500EBA2D8 /* CocoaLumberjackSwift */,
-				28F1ECE1262505DC00E964C0 /* Realm */,
-				286145EA2625099F000E5525 /* SDWebImage */,
-				281BCBFE262638290031298D /* RealmSwift */,
-				283B0306264B03920092F74F /* SDWebImageSwiftUI */,
-				91172A722AD8D56D00E6E8E9 /* CoreGPX */,
-			);
+				name = Soundscape;
+				packageProductDependencies = (
+					A1C0D0032F0A000100000001 /* SSDataStructures */,
+					A1C0D0052F0A000100000001 /* SSGeo */,
+					A1C0D0072F0A000100000001 /* SSDataDomain */,
+					286F409C2624FF6000C3F80B /* NVActivityIndicatorView */,
+					2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
+					2866A7CE2625028600EBA2D8 /* Reachability */,
+					2866A7D4262502D500EBA2D8 /* CocoaLumberjackSwift */,
+					28F1ECE1262505DC00E964C0 /* Realm */,
+					286145EA2625099F000E5525 /* SDWebImage */,
+					281BCBFE262638290031298D /* RealmSwift */,
+					283B0306264B03920092F74F /* SDWebImageSwiftUI */,
+					91172A722AD8D56D00E6E8E9 /* CoreGPX */,
+				);
 			productName = GuideDogs;
 			productReference = D3D7CFC81B3D96470020B5E9 /* Soundscape.app */;
 			productType = "com.apple.product-type.application";
@@ -5933,6 +5936,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A1C0D0022F0A000100000001 /* XCLocalSwiftPackageReference "../common" */;
 			productName = SSGeo;
+		};
+		A1C0D0072F0A000100000001 /* SSDataDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0D0022F0A000100000001 /* XCLocalSwiftPackageReference "../common" */;
+			productName = SSDataDomain;
 		};
 		281BCBFE262638290031298D /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;

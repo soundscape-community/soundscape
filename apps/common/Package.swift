@@ -1,4 +1,6 @@
 // swift-tools-version: 6.0
+// Copyright (c) Soundscape Community Contributers.
+
 import PackageDescription
 
 let package = Package(
@@ -12,6 +14,10 @@ let package = Package(
             name: "SSGeo",
             targets: ["SSGeo"]
         ),
+        .library(
+            name: "SSDataDomain",
+            targets: ["SSDataDomain"]
+        ),
     ],
     targets: [
         .target(
@@ -20,6 +26,10 @@ let package = Package(
         .target(
             name: "SSGeo"
         ),
+        .target(
+            name: "SSDataDomain",
+            dependencies: ["SSGeo"]
+        ),
         .testTarget(
             name: "SSDataStructuresTests",
             dependencies: ["SSDataStructures"]
@@ -27,6 +37,10 @@ let package = Package(
         .testTarget(
             name: "SSGeoTests",
             dependencies: ["SSGeo"]
+        ),
+        .testTarget(
+            name: "SSDataDomainTests",
+            dependencies: ["SSDataDomain"]
         ),
     ]
 )

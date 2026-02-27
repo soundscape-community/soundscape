@@ -60,17 +60,17 @@ extension Route {
     }
 
     init(realmRoute: RealmRoute) {
-        id = realmRoute.id
-        name = realmRoute.name
-        routeDescription = realmRoute.routeDescription
-        waypoints = realmRoute.waypoints.map(\.domainModel)
-        firstWaypointLatitude = realmRoute.firstWaypointLatitude
-        firstWaypointLongitude = realmRoute.firstWaypointLongitude
-        isNew = realmRoute.isNew
-        createdDate = realmRoute.createdDate
-        lastUpdatedDate = realmRoute.lastUpdatedDate
-        lastSelectedDate = realmRoute.lastSelectedDate
-        reversedRouteId = realmRoute.reversedRouteId
+        self.init(id: realmRoute.id,
+                  name: realmRoute.name,
+                  routeDescription: realmRoute.routeDescription,
+                  waypoints: realmRoute.waypoints.map(\.domainModel),
+                  firstWaypointLatitude: realmRoute.firstWaypointLatitude,
+                  firstWaypointLongitude: realmRoute.firstWaypointLongitude,
+                  isNew: realmRoute.isNew,
+                  createdDate: realmRoute.createdDate,
+                  lastUpdatedDate: realmRoute.lastUpdatedDate,
+                  lastSelectedDate: realmRoute.lastSelectedDate,
+                  reversedRouteId: realmRoute.reversedRouteId)
     }
 
     @MainActor

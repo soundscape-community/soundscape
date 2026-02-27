@@ -38,7 +38,7 @@ Out of scope (current phase):
 
 ## Current Status
 Completed foundations:
-- `SSDataStructures` and `SSGeo` extracted to `apps/common` with package tests.
+- `SSDataStructures`, `SSGeo`, and initial `SSDataDomain` extraction are in `apps/common` with package tests.
 - Data seam guardrails active in CI:
   - `check_spatial_data_cache_seam.sh`
   - `check_realm_infrastructure_boundary.sh`
@@ -51,9 +51,9 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260227-094942Z-ssindex-b721053`):
-- `Data -> App`: 245
-- `Data -> Visual UI`: 34
+Current architecture baseline (latest report `20260227-102553Z-ssindex-9ea4fca`):
+- `Data -> App`: 248
+- `Data -> Visual UI`: 51
 - `Behaviors -> Visual UI`: 126
 - `Sensors -> App`: 74
 
@@ -66,8 +66,11 @@ Milestone ledger:
 - 2026-02-18 to 2026-02-26: Destination and storage-ingress migration moved app callers onto async contracts; strict infra-only guardrails landed.
 - 2026-02-27: `Data -> Visual UI` reduced to 34 via marker-parameter serializer boundary cleanup; `Data -> App` reduced to 245 via GPX/data helper decouplings.
 - 2026-02-27: Remaining small `Sensors -> App` `AppContext` seams were reduced via runtime-integration hooks in geolocation/headphone paths.
+- 2026-02-27: Milestone 1 first extraction slice landed: `Route`, `RouteWaypoint`, and `ReferenceEntity` now live in `apps/common/Sources/SSDataDomain` with iOS bridge extensions preserved in `Temp Models`.
+- 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-02-27: Added shared `SSDataDomain` module and migrated canonical route/reference models (`Route`, `RouteWaypoint`, `ReferenceEntity`) behind compile-safe iOS aliases/extensions.
 - 2026-02-27: `BoseFramesMotionManager` event dispatch decoupled from direct `AppContext.process(...)` via runtime integration hook.
 - 2026-02-27: `HeadphoneCalibrator` heading source decoupled from direct `AppContext.shared.geolocationManager`.
 - 2026-02-27: `HeadphoneMotionManager` event dispatch decoupled from direct `AppContext.process(...)`.
@@ -122,20 +125,20 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Start Milestone 1 by extracting the first `SSDataDomain` slice (`Route`, `RouteWaypoint`, `ReferenceEntity`) with compile-safe import updates.
-2. Add/adjust package tests for the moved models under `apps/common/Tests`.
-3. Run full validation baseline, refresh dependency report, and commit the slice.
+1. Start Milestone 2 by extracting storage contracts and shared contract-side types into `apps/common/Sources/SSDataContracts`.
+2. Replace iOS-local contract declarations with shared-contract imports while keeping Realm adapters infrastructure-local.
+3. Keep running the validation baseline plus dependency-report export for each slice; if `xcodebuild test-without-building` remains flaky, track the failing suites explicitly alongside targeted pass suites.
 
 ## Context-Clear Handoff
 Current branch state:
-- Working tree clean after commit `7f8d74b`.
+- Milestone 1 first extraction slice is in progress (`SSDataDomain` + iOS bridge files).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260227-094942Z-ssindex-b721053.txt`
+- `docs/plans/artifacts/dependency-analysis/20260227-102553Z-ssindex-9ea4fca.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Start `SSDataDomain` extraction slice for canonical route/reference models.
+2. Begin Milestone 2 `SSDataContracts` extraction slice (protocols + contract-side shared types).
 3. Run validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore`.
 4. Update this plan's `Progress Updates` and commit.

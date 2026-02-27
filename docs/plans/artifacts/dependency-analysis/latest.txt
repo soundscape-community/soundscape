@@ -1,8 +1,8 @@
 SSIndexAnalyzer Report
-Generated (UTC): 20260227-094942Z
-Git commit: b721053
+Generated (UTC): 20260227-102553Z
+Git commit: 9ea4fca
 Repository: /Users/robbie/src/soundscape
-Command: swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25
+Command: swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --store-path /tmp/ss-index-derived/Index.noindex/DataStore
 
 SSIndexAnalyzer
 Store path: /tmp/ss-index-derived/Index.noindex/DataStore
@@ -10,24 +10,24 @@ Database path: /tmp/ss-index-analyzer-db
 Source root: /Users/robbie/src/soundscape/apps/ios/GuideDogs/Code
 libIndexStore: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libIndexStore.dylib
 Swift files scanned: 733
-Reference occurrences: 96565
-Resolved cross-subsystem refs: 8940
-Resolved external refs: 27678
+Reference occurrences: 96746
+Resolved cross-subsystem refs: 9019
+Resolved external refs: 28083
 
 Top cross-subsystem dependency edges:
-  1.   1539  Visual UI -> App
-  2.   1123  Visual UI -> Data
-  3.   1070  Visual UI -> Language
-  4.    518  Behaviors -> Data
-  5.    441  Behaviors -> Audio
-  6.    377  Visual UI -> Behaviors
+  1.   1566  Visual UI -> App
+  2.   1070  Visual UI -> Language
+  3.   1061  Visual UI -> Data
+  4.    510  Visual UI -> Behaviors
+  5.    498  Behaviors -> Data
+  6.    441  Behaviors -> Audio
   7.    288  Behaviors -> App
   8.    276  Behaviors -> Generators
-  9.    245  Data -> App
+  9.    248  Data -> App
  10.    234  Audio -> App
  11.    211  Behaviors -> Sensors
- 12.    199  App -> Data
- 13.    166  App -> Visual UI
+ 12.    179  App -> Visual UI
+ 13.    160  App -> Data
  14.    148  Generators -> Data
  15.    143  Behaviors -> Language
  16.    134  Visual UI -> Sensors
@@ -37,90 +37,43 @@ Top cross-subsystem dependency edges:
  20.     92  App -> Language
  21.     91  Notifications -> App
  22.     78  Generators -> Language
- 23.     74  Sensors -> App
- 24.     68  Data -> Language
- 25.     63  Notifications -> Visual UI
+ 23.     78  Notifications -> Visual UI
+ 24.     74  Sensors -> App
+ 25.     68  Data -> Language
  26.     52  Data -> Generators
  27.     52  Visual UI -> Devices
- 28.     51  Generators -> Audio
- 29.     49  Generators -> App
- 30.     47  App -> Sensors
- 31.     43  Generators -> Sensors
- 32.     41  Haptics -> Audio
- 33.     41  Haptics -> Sensors
- 34.     39  Audio -> Language
- 35.     37  Behaviors -> Devices
- 36.     36  Audio -> Sensors
- 37.     34  Data -> Visual UI
+ 28.     51  Data -> Visual UI
+ 29.     51  Generators -> Audio
+ 30.     49  Generators -> App
+ 31.     47  App -> Sensors
+ 32.     43  Generators -> Sensors
+ 33.     41  Haptics -> Audio
+ 34.     41  Haptics -> Sensors
+ 35.     39  Audio -> Language
+ 36.     37  Behaviors -> Devices
+ 37.     36  Audio -> Sensors
  38.     32  Devices -> Sensors
- 39.     31  Visual UI -> Notifications
+ 39.     32  Visual UI -> Notifications
  40.     29  Haptics -> Behaviors
-
-Top cross-file edges:
-  1.    145  Visual UI/View Controllers/Help/HelpViewController.swift -> Language/Localization/LocalizationContext.swift
-  2.     84  Visual UI/Controls/Settings/CalloutSettingsCellView.swift -> App/Settings/SettingsContext.swift
-  3.     72  Visual UI/View Controllers/Settings/StatusTableViewController.swift -> App/Settings/SettingsContext.swift
-  4.     71  Visual UI/View Controllers/Devices/DevicesViewController.swift -> Sensors/Motion/Headphone Motion/BoseFramesMotionManager.swift
-  5.     56  Visual UI/View Controllers/Devices/DevicesViewController.swift -> Language/Localization/LocalizationContext.swift
-  6.     50  Visual UI/Views/Authored Activities/AuthoredActivitiesList.swift -> Data/Authored Activities/AuthoredActivityContent.swift
-  7.     48  Visual UI/Views/Settings/Volume/VolumeControls.swift -> App/Settings/SettingsContext.swift
-  8.     47  Visual UI/Views/Authored Activities/AuthoredActivityCell.swift -> Data/Authored Activities/AuthoredActivityContent.swift
-  9.     47  Visual UI/Views/Settings/Beacon/BeaconSelectionView.swift -> App/Settings/SettingsContext.swift
- 10.     46  Visual UI/View Controllers/Settings/StatusTableViewController.swift -> Language/Localization/LocalizationContext.swift
- 11.     45  Visual UI/View Controllers/Settings/Voice/VoiceSettingsTableViewController.swift -> App/Settings/SettingsContext.swift
- 12.     43  Visual UI/Views/Route Details/RouteDetailsView.swift -> Data/Authored Activities/AuthoredActivityContent.swift
- 13.     41  Generators/Geocoding/ReverseGeocoderContext.swift -> Data/Models/Protocols/POI.swift
- 14.     40  Behaviors/Default/AutoCalloutGenerator.swift -> Data/Models/Protocols/POI.swift
- 15.     36  Behaviors/Default/AutoCalloutGenerator.swift -> App/Settings/AutoCalloutSettingsProvider.swift
- 16.     35  Behaviors/Default/IntersectionGenerator.swift -> Data/Infrastructure/Realm/Intersection.swift
- 17.     35  Visual UI/View Controllers/Settings/Voice/VoiceSettingsTableViewController.swift -> Language/Localization/LocalizationContext.swift
- 18.     33  Visual UI/View Controllers/Devices/DevicesViewController.swift -> Devices/Protocols/Device.swift
- 19.     31  Visual UI/Helpers/Location/Location Detail/LocationDetail.swift -> Data/Models/Temp Models/ReferenceEntity.swift
- 20.     31  Visual UI/View Controllers/Settings/LanguageTableViewController.swift -> Language/Localization/LocalizationContext.swift
- 21.     30  Behaviors/Preview/PreviewGenerator.swift -> Generators/Callouts/Protocols/CalloutOrigin.swift
- 22.     30  Visual UI/View Controllers/Alerts/ErrorAlerts.swift -> Language/Localization/LocalizationContext.swift
- 23.     29  Sensors/Motion/Headphone Motion/HeadphoneMotionManagerWrapper.swift -> Devices/Protocols/Device.swift
- 24.     29  Visual UI/View Controllers/Devices/DevicesViewController.swift -> Sensors/Motion/Headphone Motion/HeadphoneMotionManagerWrapper.swift
- 25.     29  Visual UI/Views/Route Details/RouteDetailsView.swift -> Language/Localization/LocalizationContext.swift
- 26.     27  Behaviors/Default/AutoCalloutGenerator.swift -> Data/Models/Helpers/SuperCategory.swift
- 27.     27  Behaviors/Default/Callouts/IntersectionCallout.swift -> Data/Infrastructure/Realm/Intersection.swift
- 28.     27  Generators/Geocoding/ReverseGeocoderResultTypes.swift -> Sensors/Geolocation/Heading/Heading.swift
- 29.     27  Visual UI/Views/Authored Activities/AuthoredActivitiesList.swift -> Language/Localization/LocalizationContext.swift
- 30.     27  Visual UI/Views/Color/Palette.swift -> App/Framework Extensions/SwiftUI/Color+Theme.swift
- 31.     27  Visual UI/Views/Markers & Routes/Edit/EditMarkerView.swift -> Data/Contracts/Storage/DataContractRegistry.swift
- 32.     26  Behaviors/Guided Tour/TourDetail.swift -> Data/Authored Activities/AuthoredActivityContent.swift
- 33.     26  Visual UI/Helpers/Location/Location Detail/LocationDetail.swift -> Data/Models/Protocols/POI.swift
- 34.     26  Visual UI/Helpers/Location/Location Detail/LocationDetail.swift -> Data/Models/Temp Models/GenericLocation.swift
- 35.     26  Visual UI/View Controllers/Settings/SettingsViewController.swift -> App/Settings/SettingsContext.swift
- 36.     25  Behaviors/Default/HeadsetTestGenerator.swift -> Audio/Engine Assets/DynamicAudioEngineAssets.swift
- 37.     25  Behaviors/Default/HeadsetTestGenerator.swift -> Audio/Protocols/DynamicAudioEngineAsset.swift
- 38.     25  Behaviors/Default/IntersectionGenerator.swift -> App/Settings/SettingsContext.swift
- 39.     25  Visual UI/Views/Authored Activities/AuthoredActivityStorage.swift -> Data/Authored Activities/AuthoredActivityLoader.swift
- 40.     25  Visual UI/Views/Authored Activities/GuidedTourDetailsView.swift -> Data/Authored Activities/AuthoredActivityContent.swift
 
 Top external module edges:
   1.   4718  Visual UI -> SwiftUICore
-  2.   1069  Visual UI -> Swift
-  3.    876  Visual UI -> CoreFoundation
+  2.   1074  Visual UI -> Swift
+  3.    886  Visual UI -> CoreFoundation
   4.    693  Behaviors -> Swift
-  5.    674  Visual UI -> Foundation
-  6.    609  Visual UI -> UIKit.UIViewController
-  7.    586  Data -> Swift
-  8.    542  Visual UI -> UIKit.UIView
+  5.    677  Visual UI -> Foundation
+  6.    618  Visual UI -> UIKit.UIViewController
+  7.    577  Data -> Swift
+  8.    545  Visual UI -> UIKit.UIView
   9.    509  App -> Swift
- 10.    486  Visual UI -> Foundation.NSNotification
+ 10.    490  Visual UI -> Foundation.NSNotification
  11.    450  Audio -> Swift
- 12.    442  Data -> Foundation
+ 12.    433  Data -> Foundation
  13.    424  App -> Foundation
  14.    419  App -> _LocationEssentials.CLLocationEssentials
  15.    411  Visual UI -> UIKit.UIAlertController
- 16.    381  Data -> _LocationEssentials.CLLocationEssentials
- 17.    341  Visual UI -> UIKit.UILabel
+ 16.    385  Data -> _LocationEssentials.CLLocationEssentials
+ 17.    344  Visual UI -> UIKit.UILabel
  18.    332  Visual UI -> _Concurrency
  19.    287  Behaviors -> _Concurrency
  20.    254  Behaviors -> _LocationEssentials.CLLocationEssentials
- 21.    245  App -> CoreGPX
- 22.    239  App -> Foundation.NSNotification
- 23.    232  Data -> RealmSwift
- 24.    225  Sensors -> Swift
- 25.    220  Visual UI -> UIKit

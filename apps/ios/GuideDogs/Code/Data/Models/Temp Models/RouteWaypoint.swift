@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SSDataDomain
+import SSGeo
 
 /*
  Represents the waypoints belonging to a route.
@@ -15,34 +17,24 @@ import Foundation
  index that reflects the waypoint's ordering within the
  route.
  */
-struct RouteWaypoint {
-    typealias Completion = (Result<RouteWaypoint, Error>) -> Void
+typealias RouteWaypoint = SSDataDomain.RouteWaypoint
 
-    // MARK: Properties
-
-    // Represents the order that this waypoint will appear
-    // in the `Route` object
-    var index: Int = -1
-    // `markerId` is the primary key for a `RealmReferenceEntity`
-    // object
-    var markerId: String = ""
-    // Use `locationDetail` to persist waypoint and marker data that is
-    // being imported from a URL resource and has not been added to the
-    // Realm database (e.g., sharing activity)
-    private var importedLocationDetail: LocationDetail?
-
+@MainActor
+extension RouteWaypoint {
     // This value should never be `nil`
-    @MainActor
     var asLocationDetail: LocationDetail? {
-        // If there is imported data, return it
-        // Otherwise, return Realm data
-        importedLocationDetail ?? LocationDetail(markerId: markerId)
+        // If there is imported marker data, return it.
+        if let importedReferenceEntity {
+            return LocationDetail(marker: importedReferenceEntity)
+        }
+
+        // Otherwise, return Realm data.
+        return LocationDetail(markerId: markerId)
     }
 
-    @MainActor
     func locationDetail(using spatialRead: ReferenceReadContract) async -> LocationDetail? {
-        if let importedLocationDetail {
-            return importedLocationDetail
+        if let importedReferenceEntity {
+            return LocationDetail(marker: importedReferenceEntity)
         }
 
         // Preserve existing behavior for persisted markers that can still be resolved
@@ -58,16 +50,6 @@ struct RouteWaypoint {
         return LocationDetail(marker: marker)
     }
 
-    // MARK: Initialization
-
-    init() {}
-
-    private init(index: Int, markerId: String, importedLocationDetailValue: LocationDetail?) {
-        self.index = index
-        self.markerId = markerId
-        self.importedLocationDetail = importedLocationDetailValue
-    }
-
     /**
      * Initializes a waypoint from a marker that exists in the Realm database.
      *
@@ -75,14 +57,13 @@ struct RouteWaypoint {
      *     - index: Index of the waypoint
      *     - markerId: ID for a marker that exists in Realm database
      */
-    @MainActor
     init?(index: Int, markerId: String) {
         guard LocationDetail(markerId: markerId) != nil else {
             // Marker does not exist
             return nil
         }
 
-        self.init(index: index, markerId: markerId, importedLocationDetailValue: nil)
+        self.init(index: index, markerId: markerId, importedReferenceEntity: nil)
     }
 
     /**
@@ -92,14 +73,13 @@ struct RouteWaypoint {
      *     - index: Index of the waypoint
      *     - locationDetail: Data for a marker that exists in Realm database
      */
-    @MainActor
     init?(index: Int, locationDetail: LocationDetail) {
         guard let markerId = locationDetail.markerId else {
             // Location is not a marker
             return nil
         }
 
-        self.init(index: index, markerId: markerId, importedLocationDetailValue: nil)
+        self.init(index: index, markerId: markerId, importedReferenceEntity: nil)
     }
 
     /**
@@ -114,10 +94,12 @@ struct RouteWaypoint {
      *     - importedLocationDetail: Data for marker that is being imported
      */
     init(index: Int, markerId: String, importedLocationDetail: LocationDetail) {
-        self.init(index: index, markerId: markerId, importedLocationDetailValue: importedLocationDetail)
+        self.init(index: index,
+                  markerId: markerId,
+                  importedReferenceEntity: Self.importedReferenceEntity(from: importedLocationDetail,
+                                                                        markerId: markerId))
     }
 
-    @MainActor
     static func validated(index: Int, markerId: String, using spatialRead: ReferenceReadContract) async -> RouteWaypoint? {
         if let waypoint = RouteWaypoint(index: index, markerId: markerId) {
             return waypoint
@@ -127,28 +109,39 @@ struct RouteWaypoint {
             return nil
         }
 
-        let detail = LocationDetail(marker: marker)
-        return RouteWaypoint(index: index, markerId: markerId, importedLocationDetailValue: detail)
+        return RouteWaypoint(index: index,
+                             markerId: markerId,
+                             importedReferenceEntity: marker)
     }
 
     init(from parameters: RouteWaypointParameters) {
-        index = parameters.index
-        markerId = parameters.markerId
-        importedLocationDetail = nil
+        self.init(index: parameters.index,
+                  markerId: parameters.markerId,
+                  importedReferenceEntity: nil)
+    }
+
+    private static func importedReferenceEntity(from detail: LocationDetail, markerId: String) -> ReferenceEntity {
+        let coordinate = SSGeoCoordinate(latitude: detail.location.coordinate.latitude,
+                                         longitude: detail.location.coordinate.longitude)
+        return ReferenceEntity(id: markerId,
+                               entityKey: detail.entity?.key,
+                               lastUpdatedDate: detail.lastUpdatedDate,
+                               lastSelectedDate: nil,
+                               isNew: detail.isNew,
+                               isTemp: true,
+                               coordinate: coordinate,
+                               nickname: detail.nickname,
+                               estimatedAddress: detail.estimatedAddress,
+                               annotation: detail.annotation)
     }
 }
 
+@MainActor
 extension Array where Element == RouteWaypoint {
-    var ordered: [RouteWaypoint] {
-        sorted(by: { $0.index < $1.index })
-    }
-
-    @MainActor
     var asLocationDetail: [LocationDetail] {
         compactMap({ $0.asLocationDetail })
     }
 
-    @MainActor
     func locationDetails(using spatialRead: ReferenceReadContract) async -> [LocationDetail] {
         var details: [LocationDetail] = []
 
