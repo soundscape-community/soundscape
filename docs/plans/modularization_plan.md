@@ -2,7 +2,7 @@
 
 # Modularization Plan
 
-Last updated: 2026-02-26
+Last updated: 2026-02-27
 
 ## Summary
 Modularize the iOS codebase incrementally to maximize platform-agnostic reuse for future multi-platform clients. Extract leaf modules first, enforce strict boundaries, and keep behavior changes out of structural moves.
@@ -381,7 +381,7 @@ Acceptance criteria:
 - No extra protocol/service layer introduced solely to wrap `CoreGPX`.
 
 ## Immediate Next Steps
-1. Continue API ingress consolidation by migrating remaining sync-heavy compatibility reads (for example destination tutorial/preview presentation paths) to async producer pre-resolution or contract-backed async boundaries where call chains can absorb async, while keeping compatibility fallbacks infrastructure-local.
+1. Continue API ingress consolidation by migrating remaining sync-heavy compatibility reads (for example preview destination presentation paths) to async producer pre-resolution or contract-backed async boundaries where call chains can absorb async, while keeping compatibility fallbacks infrastructure-local.
 2. With `ReferenceEntity`, `Route`, and `RouteWaypoint` value models now outside Realm infrastructure, converge their storage-facing adapters behind contract surfaces so these canonical models can be moved into package-ready domain/contracts targets without introducing parallel DTO/protocol families.
 3. Keep `SpatialDataStoreRegistry.store` guardrails strict (`Data/Infrastructure/Realm/**` only, allowlist empty) and keep the `Data/Contracts` infrastructure-type allowlist empty by routing any future storage additions through domain/value contract shapes.
 4. Continue refreshing dependency-analysis artifacts from deterministic index builds and recording tracked edge deltas (`Data -> App`, `Data -> Visual UI`, `Behaviors -> Visual UI`) in plan updates and PR descriptions.

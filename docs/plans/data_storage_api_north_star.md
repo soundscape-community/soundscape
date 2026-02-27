@@ -2,7 +2,7 @@
 
 # Data Storage API North Star
 
-Last updated: 2026-02-26
+Last updated: 2026-02-27
 
 ## Purpose
 Define a stable, minimal, app-facing data API before deeper Realm extraction work so incremental seams do not produce a fragmented contract surface.
@@ -38,7 +38,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DestinationManager` storage operations route through app-facing contracts (or a contract-backed adapter), not a separate long-lived parallel API surface.
 - App-facing contracts expose domain/value types only; no Realm object types or Realm-local model families.
 
-## 2026-02-26 Checkpoint: Remaining Sync Callers
+## 2026-02-27 Checkpoint: Sync-Compatibility Migration
 - Remaining staged non-infrastructure `SpatialDataStoreRegistry.store` callers: none (allowlist is empty).
 - Remaining non-infrastructure direct `SpatialDataCache.*` callers: none (all direct usage is now confined to `Data/Infrastructure/Realm/SpatialDataCache.swift`).
 - `AutoCalloutGenerator` now uses current `SpatialDataView.markedPoints` marker context instead of direct `SpatialDataStoreRegistry.store` marker-existence lookups.
@@ -49,7 +49,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `SpatialReadContract` no longer exposes unused road-graph/tile-data methods that returned infrastructure types (`Intersection`, `TileData`), and infra-type guardrails now report zero contract-side Realm model references.
 - `RoadAdjacentDataView` now resolves marker callout data and nearby marker scans through infrastructure adapter helpers (`RoadAdjacentDataStoreAdapter`) instead of direct store access in preview-layer code.
 - `LocationDetail` now resolves POI/marker lookup and marker-selection writes through infrastructure adapter helpers (`LocationDetailStoreAdapter`) instead of direct store access in UI-layer code.
-- `OnboardingCalloutGenerator` and destination tutorial-page hydration now resolve destination POIs via keyed lookup (`destinationPOI(forReferenceID:)`) rather than direct `destinationPOI` property reads.
+- `OnboardingCalloutGenerator` now resolves destination POIs via keyed lookup (`destinationPOI(forReferenceID:)`) rather than direct `destinationPOI` property reads.
 - `OnboardingCalloutGenerator` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) when a destination entity key is available, with keyed destination-manager lookup kept as compatibility fallback.
 - `InteractiveBeaconViewModel` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) on destination changes, and no longer performs repeated sync keyed destination-POI fallback reads while processing heading updates.
 - `BeaconActionHandler.callout(detail:)` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) when beacon destination entity key context is available, with keyed destination-manager lookup retained as compatibility fallback.
@@ -89,7 +89,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `LocationDetail.updateLastSelectedDate()` now routes non-marker POI selection updates through infrastructure helper `LocationDetailStoreAdapter.markPOISelected(_:)` instead of direct Visual UI `RealmHelper` cache writes, and the unused `LocationDetail.init(marker: RealmReferenceEntity, ...)` overload was removed.
 - Removed unused app-layer universal-link helper `UniversalLinkManager.shareMarker(_ marker: RealmReferenceEntity)`; marker sharing continues through POI/location entry points (`shareEntity`, `shareLocation`).
 - App/runtime marker cloud-sync dispatch now carries canonical `ReferenceEntity` values across `ReferenceEntityRuntimeProviding`, `AppContextDataRuntimeProviders`, and `CloudKeyValueStore+Markers`; Realm object conversion is kept infrastructure-local via `RealmReferenceEntity.domainEntity`.
-- These paths are sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
+- Some compatibility paths are still sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
 - Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
 
 ## Decision for Sync Paths
@@ -124,3 +124,8 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `DataContractRegistry` contracts contain no Realm infrastructure types.
 - `RealmSwift` imports are confined to adapter/infrastructure files.
 - A non-Realm in-memory adapter passes contract behavior tests without special-case shims.
+
+## Immediate Next Steps
+1. Continue API ingress consolidation by migrating remaining sync-heavy compatibility reads (for example preview destination presentation paths) to async producer pre-resolution or contract-backed async boundaries where call chains can absorb async, while keeping compatibility fallbacks infrastructure-local.
+2. Keep strict guardrail enforcement in place (`SpatialDataStoreRegistry.store`, `SpatialDataCache`, `RealmSwift`, and contract infra-type boundaries) while reducing compatibility fallbacks.
+3. Refresh dependency-analysis artifacts from deterministic index builds and continue tracking edge deltas (`Data -> App`, `Data -> Visual UI`, `Behaviors -> Visual UI`) in plan updates.
