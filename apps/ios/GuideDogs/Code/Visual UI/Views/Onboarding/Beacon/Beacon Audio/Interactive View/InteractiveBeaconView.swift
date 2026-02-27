@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -55,9 +56,11 @@ struct InteractiveBeaconView: View {
             
             switch newValue {
             case .ahead:
-                event = SelectedBeaconOrientationCalloutEvent(isAhead: true)
+                event = SelectedBeaconOrientationCalloutEvent(isAhead: true,
+                                                              destinationPOI: viewModel.currentDestinationPOI)
             case .behind:
-                event = SelectedBeaconOrientationCalloutEvent(isAhead: false)
+                event = SelectedBeaconOrientationCalloutEvent(isAhead: false,
+                                                              destinationPOI: viewModel.currentDestinationPOI)
             case .other:
                 // no-op
                 return
@@ -77,7 +80,8 @@ struct InteractiveBeaconView: View {
             
             Task {
                 try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-                UIRuntimeProviderRegistry.providers.uiProcessEvent(SelectedBeaconCalloutEvent(completion: { _ in
+                UIRuntimeProviderRegistry.providers.uiProcessEvent(SelectedBeaconCalloutEvent(destinationPOI: viewModel.currentDestinationPOI,
+                                                                                              completion: { _ in
                     didFirstCalloutComplete = true
                 }))
             }

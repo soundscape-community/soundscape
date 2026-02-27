@@ -119,11 +119,13 @@ struct StartSelectedBeaconAudioEvent: UserInitiatedEvent { }
 struct StopSelectedBeaconAudioEvent: UserInitiatedEvent { }
 
 struct SelectedBeaconCalloutEvent: UserInitiatedEvent {
+    var destinationPOI: POI? = nil
     var completion: ((Bool) -> Void)?
 }
 
 struct SelectedBeaconOrientationCalloutEvent: UserInitiatedEvent {
     var isAhead: Bool
+    var destinationPOI: POI? = nil
 }
 
 // MARK: - Private helpers

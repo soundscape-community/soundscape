@@ -25,6 +25,7 @@ class InteractiveBeaconViewModel: ObservableObject {
     @Published var isBeaconInBounds = false
     @Published var bearingToBeacon = 0.0
     @Published var beaconOrientation: Orientation = .other
+    var currentDestinationPOI: POI? { destinationPOI }
     
     private let publisher: Heading
     private var heading: CLLocationDegrees?

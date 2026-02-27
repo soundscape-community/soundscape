@@ -35,7 +35,8 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
 
         case let selected as SelectedBeaconCalloutEvent:
-            guard let group = await makeBeaconCallouts(completion: selected.completion) else {
+            guard let group = await makeBeaconCallouts(destinationPOI: selected.destinationPOI,
+                                                       completion: selected.completion) else {
                 selected.completion?(false)
                 return nil
             }
@@ -44,7 +45,8 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
 
         case let orientation as SelectedBeaconOrientationCalloutEvent:
-            guard let group = await makeBeaconOrientationCallouts(isAhead: orientation.isAhead) else {
+            guard let group = await makeBeaconOrientationCallouts(isAhead: orientation.isAhead,
+                                                                  destinationPOI: orientation.destinationPOI) else {
                 return nil
             }
 
@@ -75,12 +77,13 @@ final class OnboardingCalloutGenerator: ManualGenerator {
         return group
     }
 
-    private func makeBeaconCallouts(completion: ((Bool) -> Void)?) async -> CalloutGroup? {
+    private func makeBeaconCallouts(destinationPOI: POI?,
+                                    completion: ((Bool) -> Void)?) async -> CalloutGroup? {
         guard let beacon = BeaconOption(id: SettingsContext.shared.selectedBeacon) else {
             return nil
         }
 
-        guard let destinationPOI = await destinationPOIForCurrentDestination() else {
+        guard let destinationPOI = await destinationPOIForCurrentDestination(destinationPOI: destinationPOI) else {
             return nil
         }
 
@@ -110,7 +113,8 @@ final class OnboardingCalloutGenerator: ManualGenerator {
         return group
     }
 
-    private func makeBeaconOrientationCallouts(isAhead: Bool) async -> CalloutGroup? {
+    private func makeBeaconOrientationCallouts(isAhead: Bool,
+                                               destinationPOI: POI?) async -> CalloutGroup? {
         guard let beacon = BeaconOption(id: SettingsContext.shared.selectedBeacon) else {
             return nil
         }
@@ -119,7 +123,7 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return nil
         }
 
-        guard let destinationPOI = await destinationPOIForCurrentDestination() else {
+        guard let destinationPOI = await destinationPOIForCurrentDestination(destinationPOI: destinationPOI) else {
             return nil
         }
 
@@ -135,7 +139,11 @@ final class OnboardingCalloutGenerator: ManualGenerator {
         return CalloutGroup(callouts, action: .clear, logContext: "onboarding.beacon.orientation")
     }
 
-    private func destinationPOIForCurrentDestination() async -> POI? {
+    private func destinationPOIForCurrentDestination(destinationPOI: POI?) async -> POI? {
+        if let destinationPOI {
+            return destinationPOI
+        }
+
         guard let destinationManager = OnboardingRuntime.destinationManager(),
               let destinationKey = destinationManager.destinationKey else {
             return nil
