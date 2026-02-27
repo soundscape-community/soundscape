@@ -154,9 +154,22 @@ class InteractiveBeaconViewModel: ObservableObject {
                 return
             }
 
-            self.destinationPOI = destinationManager.destinationPOI(forReferenceID: id)
+            self.destinationPOI = await resolveDestinationPOIContractFallback(forReferenceID: id)
             self.updateCurrentValues()
         }
+    }
+
+    private func resolveDestinationPOIContractFallback(forReferenceID id: String) async -> POI? {
+        guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
+            return nil
+        }
+
+        if let entityKey = referenceEntity.entityKey,
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return destinationPOI
+        }
+
+        return GenericLocation(ref: referenceEntity)
     }
     
 }

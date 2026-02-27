@@ -35,11 +35,8 @@ struct BeaconActionHandler {
         let markerPOI: POI?
         if let detailEntity = detail.locationDetail.entity {
             markerPOI = detailEntity
-        } else if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: key),
-                  let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            markerPOI = destinationPOI
         } else {
-            markerPOI = destinationManager.destinationPOI(forReferenceID: key)
+            markerPOI = await resolveDestinationPOI(forReferenceID: key, destinationManager: destinationManager)
         }
 
         guard let markerPOI else {
@@ -93,14 +90,8 @@ struct BeaconActionHandler {
         }
 
         Task { @MainActor in
-            let destinationPOI: POI?
-            if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: key),
-               let destinationEntityPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-                destinationPOI = destinationEntityPOI
-            } else {
-                destinationPOI = destinationManager.destinationPOI(forReferenceID: key)
-            }
-
+            let destinationPOI = await resolveDestinationPOI(forReferenceID: key,
+                                                             destinationManager: destinationManager)
             processCallout(beaconID: key, destinationPOI: destinationPOI)
         }
     }
@@ -178,6 +169,25 @@ struct BeaconActionHandler {
                                                                                logContext: "home_screen",
                                                                                destinationPOI: destinationPOI))
         GDATelemetry.track("beacon.callout")
+    }
+
+    private static func resolveDestinationPOI(forReferenceID id: String,
+                                              destinationManager: DestinationManagerProtocol) async -> POI? {
+        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: id),
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            return destinationPOI
+        }
+
+        guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
+            return nil
+        }
+
+        if let entityKey = referenceEntity.entityKey,
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return destinationPOI
+        }
+
+        return GenericLocation(ref: referenceEntity)
     }
     
 }

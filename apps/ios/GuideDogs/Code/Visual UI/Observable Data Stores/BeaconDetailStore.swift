@@ -230,23 +230,37 @@ class BeaconDetailStore: ObservableObject {
                 return
             }
 
-            if let destinationEntityKey,
-               let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-                guard !Task.isCancelled, manager.destinationKey == id else {
-                    return
-                }
-
-                self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
-                return
-            }
-
-            guard !Task.isCancelled, manager.destinationKey == id,
-                  let destinationPOI = manager.destinationPOI(forReferenceID: id) else {
+            guard let destinationPOI = await self.resolveDestinationPOI(forReferenceID: id,
+                                                                        manager: manager,
+                                                                        destinationEntityKeyOverride: destinationEntityKey),
+                  !Task.isCancelled,
+                  manager.destinationKey == id else {
                 return
             }
 
             self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
         }
+    }
+
+    private func resolveDestinationPOI(forReferenceID id: String,
+                                       manager: DestinationManagerProtocol,
+                                       destinationEntityKeyOverride: String?) async -> POI? {
+        let destinationEntityKey = destinationEntityKeyOverride ?? manager.destinationEntityKey(forReferenceID: id)
+        if let destinationEntityKey,
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            return destinationPOI
+        }
+
+        guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
+            return nil
+        }
+
+        if let entityKey = referenceEntity.entityKey,
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return destinationPOI
+        }
+
+        return GenericLocation(ref: referenceEntity)
     }
     
 }
