@@ -304,7 +304,11 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
     }
     
     private func isBeaconInBounds() -> Bool {
-        return UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager.isBeaconInBounds ?? false
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager as? DestinationManager else {
+            return false
+        }
+
+        return destinationManager.isBeaconInBounds
     }
     
 }

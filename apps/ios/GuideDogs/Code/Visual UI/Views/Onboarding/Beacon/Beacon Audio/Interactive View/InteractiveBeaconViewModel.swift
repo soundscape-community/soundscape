@@ -108,7 +108,7 @@ class InteractiveBeaconViewModel: ObservableObject {
             return
         }
 
-        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+        guard let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager as? DestinationManager else {
             return
         }
 

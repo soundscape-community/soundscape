@@ -295,7 +295,6 @@ class MockDestinationManager: DestinationManagerProtocol {
     var destinationKey: String?
     var destinationPOI: POI?
     var isAudioEnabled: Bool = false
-    var isBeaconInBounds: Bool = false
     
     func destinationIsTemporary(forReferenceID id: String) -> Bool { false }
     func destinationPOI(forReferenceID id: String) -> POI? { nil }
