@@ -311,13 +311,17 @@ Phase 1 complete:
 - 2026-02-27: `GPXSimulator` now uses local location mutation/bearing/distance helpers (`updatedLocation`, `bearing`, `coordinateDistance`) and direct `SSGeoMath` calls instead of App-layer `CoreLocation+Extensions.swift` members (`with(course:)`, `with(speed:)`, `CLLocation.bearing(to:)`, `ssGeoCoordinate`, direction/speed `isValid`), removing another `Sensors -> App` GPX helper seam.
 - 2026-02-27: GPX-simulator CoreLocation-helper decoupling is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails including seam boundary scripts + `LocalizationLinter`, deterministic `xcodebuild build-for-testing -derivedDataPath /tmp/ss-index-derived`, and targeted suites `RouteStorageProviderDispatchTests`, `DataRuntimeProviderDispatchTests`, `DestinationManagerTest`, `EventProcessorTest`, `BehaviorEventStreamsTest`, `UIRuntimeProviderDispatchTests`, `PreviewGeneratorTests`).
 - 2026-02-27: Refreshed dependency-analysis artifact after GPX-simulator CoreLocation-helper decoupling via deterministic index workflow (`xcodebuild build-for-testing` with `-derivedDataPath /tmp/ss-index-derived` + `export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`), producing report `20260227-021515Z-ssindex-f2d1b88` (tracked edge snapshot unchanged: `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126; prior `GPXSimulator.swift -> App/.../CoreLocation+Extensions.swift` top edge removed).
+- 2026-02-27: `GPXSimulator` motion-state output now publishes through an injected callback (`simulatedActivityDidChange`) and `GeolocationManager` now consumes simulator lifecycle/state via injected `GPXIntegration` hooks (`onSimulationStarted`, `setSimulatedActivity`, `isInMotion`, `currentActivityRawValue`) instead of direct `AppContext` reads/writes in sensors geolocation paths.
+- 2026-02-27: GPX-simulator AppContext-seam decoupling is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails including seam boundary scripts + `LocalizationLinter`, deterministic `xcodebuild build-for-testing -derivedDataPath /tmp/ss-index-derived`, and targeted suites `GeolocationManagerTest`, `RouteStorageProviderDispatchTests`, `DataRuntimeProviderDispatchTests`, `DestinationManagerTest`, `EventProcessorTest`, `BehaviorEventStreamsTest`, `UIRuntimeProviderDispatchTests`, `PreviewGeneratorTests`).
+- 2026-02-27: Refreshed dependency-analysis artifact after GPX simulator/runtime AppContext decoupling via deterministic index workflow (`xcodebuild build-for-testing` with `-derivedDataPath /tmp/ss-index-derived` + `export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`), producing report `20260227-022108Z-ssindex-d28880c` (tracked edge snapshot unchanged: `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, `Sensors -> App` 74).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
-- Latest tracked reverse-edge snapshot (report `20260227-020036Z-ssindex-95ef481`):
-  - `Data -> App`: 279
+- Latest tracked reverse-edge snapshot (report `20260227-022108Z-ssindex-d28880c`):
+  - `Data -> App`: 245
   - `Behaviors -> Visual UI`: 126
   - `Data -> Visual UI`: 34
+  - `Sensors -> App`: 74
   - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
 - `Data` currently mixes domain logic with infrastructure concerns (`RealmSwift`, `CoreLocation`, GPX parsing, file I/O).
 

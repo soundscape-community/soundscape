@@ -131,6 +131,8 @@ class GPXSimulator {
             setupAudioPlayer()
         }
     }
+
+    var simulatedActivityDidChange: ((ActivityType?) -> Void)?
     
     // MARK: Computed Properties
     
@@ -251,12 +253,12 @@ class GPXSimulator {
     private func startSimulatingActivity() {
         guard let activity = activity,
             let motionActivity = ActivityType(rawValue: activity) else { return }
-        
-        AppContext.shared.motionActivityContext.gpxSimulatedActivity = motionActivity
+
+        simulatedActivityDidChange?(motionActivity)
     }
     
     private func stopSimulatingActivity() {
-        AppContext.shared.motionActivityContext.gpxSimulatedActivity = nil
+        simulatedActivityDidChange?(nil)
     }
     
     func startLocationUpdates() {
@@ -473,7 +475,7 @@ class GPXSimulator {
         GDLogLocationInfo("Reached end of simulated locations")
 
         didReachSimulationEnd = true
-        AppContext.shared.motionActivityContext.gpxSimulatedActivity = ActivityType.stationary
+        simulatedActivityDidChange?(.stationary)
     }
     
     // MARK: Simulation state

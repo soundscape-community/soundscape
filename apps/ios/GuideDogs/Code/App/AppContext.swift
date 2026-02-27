@@ -1415,8 +1415,21 @@ class AppContext {
 
     init() {
         audioEngine = AudioEngine(envSettings: DebugSettingsContext.shared, mixWithOthers: SettingsContext.shared.audioSessionMixesWithOthers)
-        
-        geolocationManager = GeolocationManager(isInMotion: motionActivityContext.isInMotion)
+
+        let motionActivity = motionActivityContext
+        let geolocationGPXIntegration = GeolocationManager.GPXIntegration(
+            onSimulationStarted: { AppContext.process(GPXSimulationStartedEvent()) },
+            setSimulatedActivity: { simulatedActivity in
+                motionActivity.gpxSimulatedActivity = simulatedActivity
+            },
+            isInMotion: { motionActivity.isInMotion },
+            currentActivityRawValue: { motionActivity.currentActivity.rawValue }
+        )
+
+        geolocationManager = GeolocationManager(
+            isInMotion: motionActivity.isInMotion,
+            gpxIntegration: geolocationGPXIntegration
+        )
         
         deviceManager = DeviceManager(geolocationManager: geolocationManager)
         

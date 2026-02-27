@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -21,6 +22,20 @@ class GeolocationManager: NSObject, GeolocationManagerProtocol {
         static let type = "Type"
         static let value = "Value"
         static let accuracy = "Accuracy"
+    }
+
+    struct GPXIntegration {
+        let onSimulationStarted: () -> Void
+        let setSimulatedActivity: (ActivityType?) -> Void
+        let isInMotion: () -> Bool
+        let currentActivityRawValue: () -> String
+
+        static let disabled = GPXIntegration(
+            onSimulationStarted: {},
+            setSimulatedActivity: { _ in },
+            isInMotion: { false },
+            currentActivityRawValue: { ActivityType.unknown.rawValue }
+        )
     }
     
     // MARK: Properties
@@ -42,6 +57,7 @@ class GeolocationManager: NSObject, GeolocationManagerProtocol {
     
     private var clManager: CoreLocationManager
     private var clCourseProvider: FilteredCourseProvider
+    private let gpxIntegration: GPXIntegration
     
     weak var updateDelegate: GeolocationManagerUpdateDelegate?
     weak var snoozeDelegate: GeolocationManagerSnoozeDelegate?
@@ -120,9 +136,10 @@ class GeolocationManager: NSObject, GeolocationManagerProtocol {
     
     // MARK: Initialization
     
-    init(isInMotion: Bool) {
+    init(isInMotion: Bool, gpxIntegration: GPXIntegration = .disabled) {
         clManager = CoreLocationManager()
         clCourseProvider = FilteredCourseProvider(rawCourseProvider: clManager, isInMotion: isInMotion)
+        self.gpxIntegration = gpxIntegration
         
         // Initialize `CoreLocation` providers
         locationProvider = clManager
@@ -293,7 +310,7 @@ class GeolocationManager: NSObject, GeolocationManagerProtocol {
         }
         
         // Reset callouts and intersections
-        AppContext.process(GPXSimulationStartedEvent())
+        gpxIntegration.onSimulationStarted()
         
         if gpxSimulator.isBackgroundExecutionEnabled {
             // If the simulator should continue to run in the background,
@@ -302,11 +319,12 @@ class GeolocationManager: NSObject, GeolocationManagerProtocol {
         }
         
         self.gpxSimulator = gpxSimulator
+        gpxSimulator.simulatedActivityDidChange = gpxIntegration.setSimulatedActivity
         
         // Update the location provider
         add(gpxSimulator)
         
-        let isInMotion = AppContext.shared.motionActivityContext.isInMotion
+        let isInMotion = gpxIntegration.isInMotion()
         let simulatorCourseProvider = FilteredCourseProvider(rawCourseProvider: gpxSimulator, isInMotion: isInMotion)
         // Update the course provider
         add(simulatorCourseProvider)
@@ -327,6 +345,8 @@ class GeolocationManager: NSObject, GeolocationManagerProtocol {
         
         // Update the course provider
         add(clCourseProvider)
+
+        gpxSimulator.simulatedActivityDidChange = nil
         
         self.gpxSimulator = nil
     }
@@ -403,7 +423,7 @@ extension GeolocationManager: LocationProviderDelegate {
         }
         
         if let gpxTracker = self.gpxTracker, gpxTracker.isTracking {
-            let activity = AppContext.shared.motionActivityContext.currentActivity.rawValue
+            let activity = gpxIntegration.currentActivityRawValue()
             let gpxLocation = GPXLocation(location: location, deviceHeading: deviceHeading?.value, activity: activity)
             // Add to GPX file
             gpxTracker.track(location: gpxLocation)

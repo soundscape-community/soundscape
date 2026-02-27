@@ -15,10 +15,11 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
   - `DataContractRegistry` async contracts for app/runtime callers.
   - `DestinationEntityStore` destination-focused seam used by `DestinationManager`.
 - Canonical domain value models (`Route`, `RouteWaypoint`, `ReferenceEntity`) are now outside Realm infrastructure (`Data/Models/Temp Models`), with Realm-prefixed object models retained infrastructure-local.
-- Dependency analysis (report `20260227-021515Z-ssindex-f2d1b88`) still shows reverse layering pressure:
+- Dependency analysis (report `20260227-022108Z-ssindex-d28880c`) still shows reverse layering pressure:
   - `Data -> App`: 245
   - `Data -> Visual UI`: 34
   - `Behaviors -> Visual UI`: 126
+  - `Sensors -> App`: 74
   - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
 - Contract boundary checks now detect no Realm infrastructure model type references in `Data/Contracts` (temporary infra-type allowlist is empty).
 
@@ -70,6 +71,9 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-021158Z-ssindex-61d9d9a` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
 - `GPXSimulator` now uses local location mutation/bearing/distance helpers (`updatedLocation`, `bearing`, `coordinateDistance`) plus direct `SSGeoMath` calls instead of App-layer `CoreLocation+Extensions.swift` members (`with(course:)`, `with(speed:)`, `CLLocation.bearing(to:)`, `ssGeoCoordinate`, direction/speed `isValid`), removing top cross-file `Sensors/Geolocation/GPX Simulator/GPXSimulator.swift -> App/Framework Extensions/Geo Extensions/CoreLocation+Extensions.swift` from the top-40 report list.
 - Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-021515Z-ssindex-f2d1b88` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
+- `GPXSimulator` simulation motion-state propagation now emits through an injected callback (`simulatedActivityDidChange`) instead of direct `AppContext.shared.motionActivityContext` writes, and `GeolocationManager` now consumes this via injected `GPXIntegration` hooks (`onSimulationStarted`, `setSimulatedActivity`, `isInMotion`, `currentActivityRawValue`) rather than direct `AppContext` reads.
+- `AppContext` now composes `GeolocationManager.GPXIntegration` with the existing `motionActivity` and event-process wiring, keeping startup/simulation behavior unchanged while reducing `Sensors -> App` coupling in geolocation simulator paths.
+- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-022108Z-ssindex-d28880c` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, and `Sensors -> App` 74.
 - `MarkerParameters` storage serialization now keeps `LocationDetail`-dependent APIs in Visual UI (`MarkerParameters+LocationDetail.swift`) while `Data/Serialization/MarkerParameters.swift` resolves marker metadata through `LocationDetailStoreAdapter` keyed/entity/location lookups, removing direct `Data -> Visual UI` serializer dependency.
 - `DestinationTutorialInfoPage.playCallout()` now resolves destination POI context through tutorial destination contract context (`DataContractRegistry.spatialRead.referenceEntity(byID:)` + `poi(byKey:)`) with cached tutorial destination fallback.
 - `DestinationTutorialPage` now resolves destination POI/name context through contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)` + `poi(byKey:)`) for tutorial page refresh, removing keyed destination-manager nickname fallback from tutorial destination presentation flow.
