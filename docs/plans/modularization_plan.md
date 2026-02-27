@@ -51,7 +51,7 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260227-105231Z-ssindex-b3d7a50`):
+Current architecture baseline (latest report `20260227-105500Z-ssindex-06da977`):
 - `Data -> App`: 248
 - `Data -> Visual UI`: 51
 - `Behaviors -> Visual UI`: 126
@@ -73,9 +73,11 @@ Milestone ledger:
 - 2026-02-27: Milestone 2 fourth extraction slice landed: shared marker-parameter read surface introduced as `SpatialReferenceMarkerReadContract` in `SSDataContracts` with iOS specialization (`MarkerParametersValue == MarkerParameters`).
 - 2026-02-27: Milestone 2 fifth extraction slice landed: shared POI/generic-location read surface introduced as `SpatialPointOfInterestReadContract` in `SSDataContracts` with iOS specialization (`PointOfInterestValue == POI`, `GenericLocationValue == GenericLocation`).
 - 2026-02-27: Milestone 2 sixth extraction slice landed: shared reference write/maintenance surfaces introduced as `SpatialReferenceWriteContract` and `SpatialReferenceMaintenanceWriteContract` in `SSDataContracts` with iOS constrained specializations.
+- 2026-02-27: Milestone 2 seventh extraction slice landed: shared route-parameter read surface introduced as `SpatialRouteParametersReadContract` in `SSDataContracts` with iOS specialization (`RouteParametersValue == RouteParameters`, `RouteParametersContextValue == RouteParameters.Context`).
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-02-27: Added shared `SpatialRouteParametersReadContract` in `SSDataContracts` and rewired iOS `RouteReadContract` to inherit it via constrained specialization.
 - 2026-02-27: Added shared `SpatialReferenceWriteContract` and `SpatialReferenceMaintenanceWriteContract` in `SSDataContracts` and rewired iOS `SpatialWriteContract`/`SpatialMaintenanceWriteContract` to inherit them via constrained specializations.
 - 2026-02-27: Added shared `SpatialPointOfInterestReadContract` in `SSDataContracts` and rewired iOS `ReferenceReadContract` to inherit it via constrained specialization.
 - 2026-02-27: Added shared `SpatialReferenceMarkerReadContract` in `SSDataContracts` and rewired iOS `ReferenceReadContract` to inherit it while keeping `POI`/`GenericLocation` reads iOS-local.
@@ -137,20 +139,20 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Continue Milestone 2 by addressing the remaining iOS-local route-parameter read signatures in `RouteReadContract` (`routeParameters` and backup APIs).
-2. Evaluate whether `RouteParameters`/`MarkerParameters`/`POI` families should move to `apps/common` (domain-shaped and minimal) or remain iOS-local behind constrained shared protocols; avoid DTO proliferation either way.
+1. Decide Milestone 2 closure criteria now that storage-contract method surfaces are shared: either (a) keep constrained iOS specializations for `RouteParameters`/`MarkerParameters`/`POI`/`VectorTile`/`GenericLocation`, or (b) migrate selected model families to `apps/common`.
+2. If staying with constrained specializations, update Milestone 2 acceptance status and start Milestone 3 Realm-adapter isolation hardening tasks.
 3. Keep running the validation baseline plus dependency-report export for each slice; keep tracking full-suite `AudioEngineTest` failures explicitly alongside targeted pass suites.
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 2 sixth extraction slice is complete (shared reference write/maintenance surfaces extracted; remaining work is route-parameter read-surface cleanup).
+- Milestone 2 seventh extraction slice is complete (shared storage-contract method surfaces extracted; remaining decision is constrained-specialization end-state vs additional model extraction).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260227-105231Z-ssindex-b3d7a50.txt`
+- `docs/plans/artifacts/dependency-analysis/20260227-105500Z-ssindex-06da977.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Continue Milestone 2 by extracting/normalizing remaining route-parameter read signatures that still depend on iOS-local types.
+2. Decide whether to keep constrained iOS-specialized shared protocols as Milestone 2 end-state or migrate selected iOS model families to `apps/common`.
 3. Run validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore`.
 4. Update this plan's `Progress Updates` and commit.

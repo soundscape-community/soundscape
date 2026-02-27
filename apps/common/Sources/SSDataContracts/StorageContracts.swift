@@ -13,6 +13,16 @@ public protocol SpatialRouteReadContract {
 }
 
 @MainActor
+public protocol SpatialRouteParametersReadContract {
+    associatedtype RouteParametersValue
+    associatedtype RouteParametersContextValue
+
+    func routeParameters(byKey key: String,
+                         context: RouteParametersContextValue) async -> RouteParametersValue?
+    func routeParametersForBackup() async -> [RouteParametersValue]
+}
+
+@MainActor
 public protocol SpatialReferenceReadContract {
     func referenceEntity(byID id: String) async -> ReferenceEntity?
     func referenceCallout(byID id: String) async -> ReferenceCalloutReadData?

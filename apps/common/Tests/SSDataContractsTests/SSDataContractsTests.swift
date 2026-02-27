@@ -11,6 +11,14 @@ private struct TileStub: Hashable {
     let id: Int
 }
 
+private struct RouteParametersContextStub: Equatable {
+    let includeWaypoints: Bool
+}
+
+private struct RouteParametersStub: Equatable {
+    let id: String
+}
+
 private struct MarkerParametersStub: Equatable {
     let id: String
 }
@@ -25,6 +33,7 @@ private struct GenericLocationStub: Equatable {
 
 private struct NearbyLocationStub {}
 
+private func acceptsRouteParametersReadContract<Contract: SpatialRouteParametersReadContract>(_ contract: Contract) {}
 private func acceptsReferenceMarkerReadContract<Contract: SpatialReferenceMarkerReadContract>(_ contract: Contract) {}
 private func acceptsPointOfInterestReadContract<Contract: SpatialPointOfInterestReadContract>(_ contract: Contract) {}
 private func acceptsReferenceWriteContract<Contract: SpatialReferenceWriteContract>(_ contract: Contract) {}
@@ -32,6 +41,7 @@ private func acceptsReferenceMaintenanceWriteContract<Contract: SpatialReference
 
 @MainActor
 private final class StorageContractMock: SpatialRouteReadContract,
+                                         SpatialRouteParametersReadContract,
                                          SpatialReferenceReadContract,
                                          SpatialReferenceMarkerReadContract,
                                          SpatialPointOfInterestReadContract,
@@ -45,6 +55,8 @@ private final class StorageContractMock: SpatialRouteReadContract,
     func route(byKey key: String) async -> Route? { nil }
     func routeMetadata(byKey key: String) async -> RouteReadMetadata? { nil }
     func routes(containingMarkerID markerID: String) async -> [Route] { [] }
+    func routeParameters(byKey key: String, context: RouteParametersContextStub) async -> RouteParametersStub? { nil }
+    func routeParametersForBackup() async -> [RouteParametersStub] { [] }
 
     func referenceEntity(byID id: String) async -> ReferenceEntity? { nil }
     func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? { nil }
@@ -143,6 +155,7 @@ struct SSDataContractsTests {
     @Test
     func storageContractProtocolsSupportUnifiedConformance() async throws {
         let mock = StorageContractMock()
+        acceptsRouteParametersReadContract(mock)
         acceptsReferenceMarkerReadContract(mock)
         acceptsPointOfInterestReadContract(mock)
         acceptsReferenceWriteContract(mock)
@@ -155,6 +168,9 @@ struct SSDataContractsTests {
         let addressMaintenance: any SpatialAddressMaintenanceWriteContract = mock
 
         let routes = await routeRead.routes()
+        let routeParameters = await mock.routeParameters(byKey: "route-1",
+                                                         context: .init(includeWaypoints: true))
+        let routeParametersBackup = await mock.routeParametersForBackup()
         let references = await referenceRead.referenceEntities()
         let markerParameters = await mock.markerParameters(byID: "marker-1")
         let markerParametersBackup = await mock.markerParametersForBackup()
@@ -167,6 +183,8 @@ struct SSDataContractsTests {
                                                           rangeMeters: 10)
 
         #expect(routes.isEmpty)
+        #expect(routeParameters == nil)
+        #expect(routeParametersBackup.isEmpty)
         #expect(references.isEmpty)
         #expect(markerParameters == nil)
         #expect(markerParametersBackup.isEmpty)

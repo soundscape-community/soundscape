@@ -17,10 +17,10 @@ typealias EstimatedAddressReadData = SSDataContracts.EstimatedAddressReadData
 typealias AddressCacheRecord = SSDataContracts.AddressCacheRecord
 
 @MainActor
-protocol RouteReadContract: SpatialRouteReadContract {
-    func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters?
-    func routeParametersForBackup() async -> [RouteParameters]
-}
+protocol RouteReadContract: SpatialRouteReadContract,
+                            SpatialRouteParametersReadContract
+where RouteParametersValue == RouteParameters,
+      RouteParametersContextValue == RouteParameters.Context {}
 
 @MainActor
 protocol ReferenceReadContract: SpatialReferenceReadContract,
