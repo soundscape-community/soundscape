@@ -247,13 +247,7 @@ class BeaconDemoHelper {
             return .ref(id: destinationID)
         }
 
-        let destinationPOI: POI?
-        if let destinationEntityKey = beaconManager.destinationEntityKey(forReferenceID: destinationID),
-           let resolvedPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            destinationPOI = resolvedPOI
-        } else {
-            destinationPOI = beaconManager.destinationPOI(forReferenceID: destinationID)
-        }
+        let destinationPOI = await resolveDestinationPOI(forReferenceID: destinationID, beaconManager: beaconManager)
 
         guard let destinationPOI else {
             return nil
@@ -266,5 +260,24 @@ class BeaconDemoHelper {
             return .entity(id: destinationPOI.key,
                            address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
         }
+    }
+
+    private func resolveDestinationPOI(forReferenceID id: String,
+                                       beaconManager: DestinationManagerProtocol) async -> POI? {
+        if let destinationEntityKey = beaconManager.destinationEntityKey(forReferenceID: id),
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            return destinationPOI
+        }
+
+        guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: id) else {
+            return nil
+        }
+
+        if let entityKey = referenceEntity.entityKey,
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return destinationPOI
+        }
+
+        return GenericLocation(ref: referenceEntity)
     }
 }

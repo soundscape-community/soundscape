@@ -432,11 +432,6 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         }
 
         if destinationManager.destinationKey == id,
-           let destinationPOI = destinationManager.destinationPOI(forReferenceID: id) {
-            return destinationPOI
-        }
-
-        if destinationManager.destinationKey == id,
            let entityKey = beaconDestinationEntityKey,
            let poi = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
             return poi
