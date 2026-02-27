@@ -1445,6 +1445,15 @@ class AppContext {
                                                 device: device,
                                                 destinationManager: destinationManager,
                                                 settings: SettingsContext.shared)
+
+        let spatialData = spatialDataContext
+        SignificantChangeMonitoringOrigin.configure(
+            with: SignificantChangeMonitoringOrigin.POIIntegration(
+                poisNear: { location, searchDistance in
+                    spatialData.getDataView(for: location, searchDistance: searchDistance)?.pois
+                }
+            )
+        )
         
         reverseGeocoder = ReverseGeocoderContext(spatialDataContext: spatialDataContext)
         

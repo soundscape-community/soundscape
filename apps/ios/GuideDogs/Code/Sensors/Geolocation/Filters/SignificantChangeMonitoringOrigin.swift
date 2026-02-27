@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -12,16 +13,32 @@ import SSGeo
 
 @MainActor
 class SignificantChangeMonitoringOrigin {
+
+    struct POIIntegration {
+        let poisNear: (CLLocation, CLLocationDistance) -> [POI]?
+
+        static let disabled = POIIntegration(poisNear: { _, _ in nil })
+    }
     
     // MARK: Properties
+
+    private static var poiIntegration: POIIntegration = .disabled
     
     let poi: POI?
     let location: CLLocation?
+
+    static func configure(with poiIntegration: POIIntegration) {
+        self.poiIntegration = poiIntegration
+    }
+
+    static func resetForTesting() {
+        poiIntegration = .disabled
+    }
     
     // MARK: Initialization
     
     init(_ location: CLLocation) {
-        let pois = AppContext.shared.spatialDataContext.getDataView(for: location, searchDistance: 50.0)?.pois
+        let pois = Self.poiIntegration.poisNear(location, 50.0)
         let poi = pois?.first(where: { $0.contains(location: location.coordinate) })
         
         if let poi = poi {
