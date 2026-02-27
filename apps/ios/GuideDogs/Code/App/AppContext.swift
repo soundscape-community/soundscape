@@ -1430,6 +1430,15 @@ class AppContext {
             isInMotion: motionActivity.isInMotion,
             gpxIntegration: geolocationGPXIntegration
         )
+
+        let geolocation = geolocationManager
+        HeadphoneCalibrator.configure(
+            with: HeadphoneCalibrator.RuntimeIntegration(
+                heading: { headingTypes in
+                    geolocation.heading(orderedBy: headingTypes)
+                }
+            )
+        )
         
         deviceManager = DeviceManager(geolocationManager: geolocationManager)
         

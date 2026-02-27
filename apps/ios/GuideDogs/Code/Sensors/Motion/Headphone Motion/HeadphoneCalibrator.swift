@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -12,6 +13,19 @@ import SSDataStructures
 
 @MainActor
 class HeadphoneCalibrator: ComponentHeadphoneCalibrator {
+
+    struct RuntimeIntegration {
+        let heading: ([HeadingType]) -> Heading
+
+        static let disabled = RuntimeIntegration(
+            heading: { headingTypes in
+                Heading(orderedBy: headingTypes,
+                        course: nil,
+                        deviceHeading: nil,
+                        userHeading: nil)
+            }
+        )
+    }
     
     private struct Sample: CustomStringConvertible {
         
@@ -34,6 +48,7 @@ class HeadphoneCalibrator: ComponentHeadphoneCalibrator {
     // MARK: Properties
     
     private(set) var isActive = false
+    private static var runtimeIntegration: RuntimeIntegration = .disabled
     private let nSamples: Int
     private let referenceHeadingType: HeadingType
     private var samples: [Sample] = []
@@ -50,6 +65,14 @@ class HeadphoneCalibrator: ComponentHeadphoneCalibrator {
         self.nSamples = nSamples
         self.referenceHeadingType = referenceHeadingType
     }
+
+    static func configure(with runtimeIntegration: RuntimeIntegration) {
+        self.runtimeIntegration = runtimeIntegration
+    }
+
+    static func resetForTesting() {
+        runtimeIntegration = .disabled
+    }
     
     // MARK: `ComponentHeadphoneCalibrator`
     
@@ -59,7 +82,7 @@ class HeadphoneCalibrator: ComponentHeadphoneCalibrator {
         }
         
         // Create a heading observer
-        headingObserver = AppContext.shared.geolocationManager.heading(orderedBy: [referenceHeadingType])
+        headingObserver = Self.runtimeIntegration.heading([referenceHeadingType])
         
         // Initialize heading and samples
         headingInDegrees.value = headingObserver?.value
