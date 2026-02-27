@@ -86,12 +86,8 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
             return destinationPOI
         }
 
-        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
-           let resolvedPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            return resolvedPOI
-        }
-
-        return destinationManager.destinationPOI(forReferenceID: destinationKey) ?? destinationPOI
+        return await resolveDestinationPOI(destinationKey: destinationKey,
+                                           destinationManager: destinationManager) ?? destinationPOI
     }
     
     private func calloutCompleted() {

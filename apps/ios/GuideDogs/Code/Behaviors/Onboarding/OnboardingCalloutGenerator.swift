@@ -154,7 +154,16 @@ final class OnboardingCalloutGenerator: ManualGenerator {
             return destinationPOI
         }
 
-        return destinationManager.destinationPOI(forReferenceID: destinationKey)
+        guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: destinationKey) else {
+            return nil
+        }
+
+        if let entityKey = referenceEntity.entityKey,
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return destinationPOI
+        }
+
+        return GenericLocation(ref: referenceEntity)
     }
 }
 

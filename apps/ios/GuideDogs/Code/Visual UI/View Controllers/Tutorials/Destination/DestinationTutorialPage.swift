@@ -25,6 +25,7 @@ class DestinationTutorialPage: BaseTutorialViewController {
     weak var delegate: DestinationTutorialPageDelegate?
     private var resolvedDestinationPOI: POI?
     private var resolvedDestinationName: String?
+    private var isRefreshingEntity = false
 
     var destinationPOI: POI? {
         if resolvedDestinationPOI == nil {
@@ -61,11 +62,22 @@ class DestinationTutorialPage: BaseTutorialViewController {
             return
         }
 
-        resolvedDestinationPOI = destinationManager.destinationPOI(forReferenceID: destinationKey)
         resolvedDestinationName = destinationManager.destinationNickname(forReferenceID: destinationKey) ?? resolvedDestinationPOI?.localizedName
+
+        guard resolvedDestinationPOI == nil, !isRefreshingEntity else {
+            return
+        }
+
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            await self.refreshEntityFromContract()
+        }
     }
 
-    private func refreshEntityFromContract() async {
+    func refreshEntityFromContract() async {
         guard let destinationKey = delegate?.getEntityKey(),
               let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
             resolvedDestinationPOI = nil
@@ -73,14 +85,32 @@ class DestinationTutorialPage: BaseTutorialViewController {
             return
         }
 
-        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
-           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            resolvedDestinationPOI = destinationPOI
-        } else {
-            resolvedDestinationPOI = destinationManager.destinationPOI(forReferenceID: destinationKey)
-        }
+        isRefreshingEntity = true
+        defer { isRefreshingEntity = false }
+
+        resolvedDestinationPOI = await resolveDestinationPOI(destinationKey: destinationKey,
+                                                             destinationManager: destinationManager)
 
         resolvedDestinationName = destinationManager.destinationNickname(forReferenceID: destinationKey) ?? resolvedDestinationPOI?.localizedName
+    }
+
+    func resolveDestinationPOI(destinationKey: String,
+                               destinationManager: DestinationManagerProtocol) async -> POI? {
+        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
+            return destinationPOI
+        }
+
+        guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: destinationKey) else {
+            return nil
+        }
+
+        if let entityKey = referenceEntity.entityKey,
+           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
+            return destinationPOI
+        }
+
+        return GenericLocation(ref: referenceEntity)
     }
     
     // MARK: BaseTutorialViewController Overrides
