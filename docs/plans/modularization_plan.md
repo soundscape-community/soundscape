@@ -281,10 +281,11 @@ Phase 1 complete:
 - 2026-02-27: Destination `isDestination` protocol-seam removal is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails including seam boundary scripts + `LocalizationLinter`, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `BehaviorEventStreamsTest`, `UIRuntimeProviderDispatchTests`).
 - 2026-02-27: Removed now-unused concrete `DestinationManager.isDestination(key:)`; destination identity checks now validate destination ID/entity-key context through destination-change metadata test coverage and direct `destinationKey` assertions.
 - 2026-02-27: Concrete `isDestination` removal is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails including seam boundary scripts + `LocalizationLinter`, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `BehaviorEventStreamsTest`, `UIRuntimeProviderDispatchTests`, `PreviewGeneratorTests`).
+- 2026-02-27: Refreshed dependency-analysis artifact after destination `isDestination` seam removals via deterministic index workflow (`xcodebuild build-for-testing` with `-derivedDataPath /tmp/ss-index-derived` + `export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`), producing report `20260227-013548Z-ssindex-d390777` (tracked edge snapshot unchanged: `Data -> App` 279, `Data -> Visual UI` 66, `Behaviors -> Visual UI` 126).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
-- Latest tracked reverse-edge snapshot (report `20260227-012247Z-ssindex-8dc8855`):
+- Latest tracked reverse-edge snapshot (report `20260227-013548Z-ssindex-d390777`):
   - `Data -> App`: 279
   - `Behaviors -> Visual UI`: 126
   - `Data -> Visual UI`: 66
