@@ -150,9 +150,7 @@ final class DestinationManagerTest: XCTestCase {
                                                           logContext: nil)
         XCTAssertFalse(dm.isUserWithinGeofence(barton_front_coord)) // we are not at the destination
         XCTAssertNotNil(dm.destinationKey)
-        XCTAssertTrue(dm.isDestination(key: ref_entity))
-        XCTAssertFalse(dm.isDestination(key: "asdf (:"))
-        XCTAssertFalse(dm.isDestination(key: ref_entity + "AA"))
+        XCTAssertEqual(dm.destinationKey, ref_entity)
         
         // clear destination
         
@@ -289,33 +287,6 @@ final class DestinationManagerTest: XCTestCase {
 
         try await dm.clearDestinationAsync(logContext: nil)
         XCTAssertEqual(removeAllTemporaryCallCount, 1)
-    }
-
-    func testIsDestinationUsesInjectedEntityStoreEntityKeyLookup() async throws {
-        let testID = "test-reference-id"
-        let expectedEntityKey = "entity-key-123"
-        let store = MockDestinationEntityStore()
-        var lookedUpEntityKeyIDs: [String] = []
-
-        store.destinationPOIForReferenceIDHandler = { _ in
-            GenericLocation(lat: 42.7290570, lon: -73.6726370, name: "Test Destination")
-        }
-        store.destinationEntityKeyForReferenceIDHandler = { id in
-            lookedUpEntityKeyIDs.append(id)
-            return expectedEntityKey
-        }
-        store.markReferenceEntitySelectedHandler = { _ in }
-        store.removeAllTemporaryReferenceEntitiesHandler = { }
-
-        let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
-        try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
-
-        XCTAssertTrue(dm.isDestination(key: testID))
-        XCTAssertTrue(dm.isDestination(key: expectedEntityKey))
-        XCTAssertFalse(dm.isDestination(key: "other-entity-key"))
-        XCTAssertEqual(lookedUpEntityKeyIDs, [testID, testID, testID])
-
-        try await dm.clearDestinationAsync(logContext: nil)
     }
 
     func testDestinationMetadataUsesInjectedEntityStoreMetadataLookup() async throws {

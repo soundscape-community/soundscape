@@ -244,24 +244,6 @@ class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Manage Destination Methods
     
-    /// Checks whether the current destination is the specified key.
-    /// - Parameters:
-    ///   - key: the destination's entity key in the `SpatialDataCache`. Same as the referenceID in `setDestinationAsync(...)`.
-    /// - Returns: `false` if the destination isn't set or the entity key doesn't match the destination
-    func isDestination(key: String) -> Bool {
-        guard destinationKey == key else {
-            guard let destinationKey,
-                  destinationStore.destinationEntityKey(forReferenceID: destinationKey) == key else {
-                // Return false if the destination isn't set or the entityKey doesn't match the destination
-                return false
-            }
-
-            return true
-        }
-        
-        return true
-    }
-
     /// Sets the provided RealmReferenceEntity as the current destination.
     ///
     /// - Parameters:
