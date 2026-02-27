@@ -51,7 +51,7 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260227-104744Z-ssindex-5edb20d`):
+Current architecture baseline (latest report `20260227-104958Z-ssindex-34a06c4`):
 - `Data -> App`: 248
 - `Data -> Visual UI`: 51
 - `Behaviors -> Visual UI`: 126
@@ -71,9 +71,11 @@ Milestone ledger:
 - 2026-02-27: Milestone 2 second extraction slice landed: shared route/reference/write/maintenance storage protocol surfaces moved into `apps/common/Sources/SSDataContracts` and iOS storage contracts now inherit shared protocols while retaining iOS-only members.
 - 2026-02-27: Milestone 2 third extraction slice landed: shared tile-read surface introduced as `SpatialTileReadContract` in `SSDataContracts` with iOS constrained specialization (`Tile == VectorTile`, `NearbyLocation == POI`).
 - 2026-02-27: Milestone 2 fourth extraction slice landed: shared marker-parameter read surface introduced as `SpatialReferenceMarkerReadContract` in `SSDataContracts` with iOS specialization (`MarkerParametersValue == MarkerParameters`).
+- 2026-02-27: Milestone 2 fifth extraction slice landed: shared POI/generic-location read surface introduced as `SpatialPointOfInterestReadContract` in `SSDataContracts` with iOS specialization (`PointOfInterestValue == POI`, `GenericLocationValue == GenericLocation`).
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-02-27: Added shared `SpatialPointOfInterestReadContract` in `SSDataContracts` and rewired iOS `ReferenceReadContract` to inherit it via constrained specialization.
 - 2026-02-27: Added shared `SpatialReferenceMarkerReadContract` in `SSDataContracts` and rewired iOS `ReferenceReadContract` to inherit it while keeping `POI`/`GenericLocation` reads iOS-local.
 - 2026-02-27: Added shared `SpatialTileReadContract` in `SSDataContracts` and rewired iOS `TileReadContract` to a constrained specialization while keeping `POI`/`VectorTile` iOS-local.
 - 2026-02-27: Added shared storage protocol surfaces in `SSDataContracts` (`SpatialRouteReadContract`, `SpatialReferenceReadContract`, `SpatialRouteWriteContract`, `SpatialRouteMaintenanceWriteContract`, `SpatialAddressMaintenanceWriteContract`) and rewired iOS `Spatial*Contract` protocols to inherit from them.
@@ -133,20 +135,20 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Continue Milestone 2 by addressing remaining iOS-local signatures in `ReferenceReadContract`/related read APIs that still return or accept `POI`/`GenericLocation`.
+1. Continue Milestone 2 by addressing remaining iOS-local contract signatures outside read surfaces, especially write/maintenance signatures that still depend on `POI`/`GenericLocation`/`MarkerParameters`.
 2. Evaluate whether `POI`-family abstractions should move to `apps/common` (domain-shaped and minimal) or remain iOS-local behind constrained shared protocols; avoid DTO proliferation either way.
 3. Keep running the validation baseline plus dependency-report export for each slice; keep tracking full-suite `AudioEngineTest` failures explicitly alongside targeted pass suites.
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 2 fourth extraction slice is complete (shared marker-parameter read contract added; remaining work is `POI`/`GenericLocation` read-surface cleanup).
+- Milestone 2 fifth extraction slice is complete (shared POI/generic-location read contract surface added; remaining work is write/maintenance iOS-local signature cleanup).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260227-104744Z-ssindex-5edb20d.txt`
+- `docs/plans/artifacts/dependency-analysis/20260227-104958Z-ssindex-34a06c4.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Continue Milestone 2 by extracting/normalizing remaining `POI`/`GenericLocation`-bound read signatures.
+2. Continue Milestone 2 by extracting/normalizing remaining write/maintenance signatures that depend on iOS-local `POI`/`GenericLocation`/`MarkerParameters` types.
 3. Run validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore`.
 4. Update this plan's `Progress Updates` and commit.

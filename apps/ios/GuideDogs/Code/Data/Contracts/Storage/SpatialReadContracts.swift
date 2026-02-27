@@ -24,12 +24,11 @@ protocol RouteReadContract: SpatialRouteReadContract {
 
 @MainActor
 protocol ReferenceReadContract: SpatialReferenceReadContract,
-                                SpatialReferenceMarkerReadContract
-where MarkerParametersValue == MarkerParameters {
-    func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity?
-    func recentlySelectedPOIs() async -> [POI]
-    func poi(byKey key: String) async -> POI?
-}
+                                SpatialReferenceMarkerReadContract,
+                                SpatialPointOfInterestReadContract
+where MarkerParametersValue == MarkerParameters,
+      PointOfInterestValue == POI,
+      GenericLocationValue == GenericLocation {}
 
 @MainActor
 protocol TileReadContract: SpatialTileReadContract where Tile == VectorTile, NearbyLocation == POI {}

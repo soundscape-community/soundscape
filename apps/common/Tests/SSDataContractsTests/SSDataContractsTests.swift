@@ -15,14 +15,24 @@ private struct MarkerParametersStub: Equatable {
     let id: String
 }
 
+private struct PointOfInterestStub: Equatable {
+    let id: String
+}
+
+private struct GenericLocationStub: Equatable {
+    let id: String
+}
+
 private struct NearbyLocationStub {}
 
 private func acceptsReferenceMarkerReadContract<Contract: SpatialReferenceMarkerReadContract>(_ contract: Contract) {}
+private func acceptsPointOfInterestReadContract<Contract: SpatialPointOfInterestReadContract>(_ contract: Contract) {}
 
 @MainActor
 private final class StorageContractMock: SpatialRouteReadContract,
                                          SpatialReferenceReadContract,
                                          SpatialReferenceMarkerReadContract,
+                                         SpatialPointOfInterestReadContract,
                                          SpatialTileReadContract,
                                          SpatialRouteWriteContract,
                                          SpatialRouteMaintenanceWriteContract,
@@ -47,6 +57,10 @@ private final class StorageContractMock: SpatialRouteReadContract,
     func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParametersStub? { nil }
     func markerParameters(byEntityKey key: String) async -> MarkerParametersStub? { nil }
     func markerParametersForBackup() async -> [MarkerParametersStub] { [] }
+
+    func referenceEntity(byGenericLocation location: GenericLocationStub) async -> ReferenceEntity? { nil }
+    func recentlySelectedPOIs() async -> [PointOfInterestStub] { [] }
+    func poi(byKey key: String) async -> PointOfInterestStub? { nil }
 
     func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<TileStub> { [] }
     func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [NearbyLocationStub] { [] }
@@ -118,6 +132,7 @@ struct SSDataContractsTests {
     func storageContractProtocolsSupportUnifiedConformance() async throws {
         let mock = StorageContractMock()
         acceptsReferenceMarkerReadContract(mock)
+        acceptsPointOfInterestReadContract(mock)
 
         let routeRead: any SpatialRouteReadContract = mock
         let referenceRead: any SpatialReferenceReadContract = mock
@@ -129,6 +144,9 @@ struct SSDataContractsTests {
         let references = await referenceRead.referenceEntities()
         let markerParameters = await mock.markerParameters(byID: "marker-1")
         let markerParametersBackup = await mock.markerParametersForBackup()
+        let genericLocationEntity = await mock.referenceEntity(byGenericLocation: .init(id: "location-1"))
+        let recentlySelectedPOIs = await mock.recentlySelectedPOIs()
+        let poi = await mock.poi(byKey: "poi-1")
         let tiles = await mock.tiles(forDestinations: true, forReferences: true, at: 16, destination: nil)
         let nearbyLocations = await mock.genericLocations(near: .init(coordinate: .init(latitude: 47.6205,
                                                                                           longitude: -122.3493)),
@@ -138,6 +156,9 @@ struct SSDataContractsTests {
         #expect(references.isEmpty)
         #expect(markerParameters == nil)
         #expect(markerParametersBackup.isEmpty)
+        #expect(genericLocationEntity == nil)
+        #expect(recentlySelectedPOIs.isEmpty)
+        #expect(poi == nil)
         #expect(tiles.isEmpty)
         #expect(nearbyLocations.isEmpty)
 

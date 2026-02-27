@@ -37,6 +37,16 @@ public protocol SpatialReferenceMarkerReadContract {
 }
 
 @MainActor
+public protocol SpatialPointOfInterestReadContract {
+    associatedtype PointOfInterestValue
+    associatedtype GenericLocationValue
+
+    func referenceEntity(byGenericLocation location: GenericLocationValue) async -> ReferenceEntity?
+    func recentlySelectedPOIs() async -> [PointOfInterestValue]
+    func poi(byKey key: String) async -> PointOfInterestValue?
+}
+
+@MainActor
 public protocol SpatialTileReadContract {
     associatedtype Tile: Hashable
     associatedtype NearbyLocation
