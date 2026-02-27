@@ -113,7 +113,11 @@ class RouteGuidance: BehaviorBase {
     }
     
     private var isBeaconAsync: Bool {
-        return spatialDataContext.destinationManager.isCurrentBeaconAsyncFinishable
+        guard let destinationManager = spatialDataContext.destinationManager as? DestinationManager else {
+            return false
+        }
+
+        return destinationManager.isCurrentBeaconAsyncFinishable
     }
     
     private var isBeaconAudioEnabled: Bool {

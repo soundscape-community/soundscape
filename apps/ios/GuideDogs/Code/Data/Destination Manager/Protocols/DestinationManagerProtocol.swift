@@ -20,8 +20,6 @@ protocol DestinationManagerProtocol: AnyObject {
     
     var isBeaconInBounds: Bool { get }
     
-    var isCurrentBeaconAsyncFinishable: Bool { get }
-    
     var beaconPlayerId: AudioPlayerIdentifier? { get }
     
     // MARK: Methods
