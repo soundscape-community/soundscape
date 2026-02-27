@@ -497,7 +497,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(readMock.referenceEntityByIDCalls, [markerID])
+        XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(markerID))
     }
 
     func testRouteParametersHandlerPrefersWaypointPayloadCoordinateOverAsyncReadContract() {

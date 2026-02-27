@@ -238,10 +238,6 @@ enum LocationDetailStoreAdapter {
         SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate)?.domainEntity
     }
 
-    static func destinationPOI(forReferenceID id: String) -> POI? {
-        SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: id)
-    }
-
     static func markReferenceEntitySelected(forReferenceID id: String) throws {
         try SpatialDataStoreRegistry.store.markReferenceEntitySelected(forReferenceID: id)
     }
