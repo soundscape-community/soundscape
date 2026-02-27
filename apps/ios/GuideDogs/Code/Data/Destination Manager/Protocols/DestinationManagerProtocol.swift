@@ -48,7 +48,6 @@ protocol DestinationManagerProtocol: AnyObject {
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool
     
-    func clearStartupTemporaryDestinationIfNeeded() async
 }
 
 // This extension adds the ability to not pass the `logContext` argument

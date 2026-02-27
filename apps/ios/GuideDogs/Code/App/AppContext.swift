@@ -1485,7 +1485,9 @@ class AppContext {
                 return
             }
 
-            await self.spatialDataContext.destinationManager.clearStartupTemporaryDestinationIfNeeded()
+            if let destinationManager = self.spatialDataContext.destinationManager as? DestinationManager {
+                await destinationManager.clearStartupTemporaryDestinationIfNeeded()
+            }
 
             // If the user killed the app during the headset test, remove the temporary beacon.
             if let destinationKey = self.spatialDataContext.destinationManager.destinationKey,
