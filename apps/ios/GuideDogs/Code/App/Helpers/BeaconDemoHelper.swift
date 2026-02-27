@@ -149,8 +149,12 @@ class BeaconDemoHelper {
         guard let userLocation = userLocation else {
             return
         }
-        
-        AppContext.shared.spatialDataContext.destinationManager.updateDestinationLocation(newBeaconLocation, userLocation: userLocation)
+
+        guard let destinationManager = AppContext.shared.spatialDataContext.destinationManager as? DestinationManager else {
+            return
+        }
+
+        destinationManager.updateDestinationLocation(newBeaconLocation, userLocation: userLocation)
     }
     
     func restoreState(logContext: String = "volume_controls.demo") {

@@ -51,9 +51,6 @@ protocol DestinationManagerProtocol: AnyObject {
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool
     
-    @discardableResult
-    func updateDestinationLocation(_ newLocation: CLLocation, userLocation: CLLocation) -> Bool
-
     func clearStartupTemporaryDestinationIfNeeded() async
 }
 
