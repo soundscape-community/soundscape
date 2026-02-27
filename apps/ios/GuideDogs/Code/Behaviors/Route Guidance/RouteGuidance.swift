@@ -119,6 +119,14 @@ class RouteGuidance: BehaviorBase {
 
         return destinationManager.isCurrentBeaconAsyncFinishable
     }
+
+    private var beaconPlayerID: AudioPlayerIdentifier? {
+        guard let destinationManager = spatialDataContext.destinationManager as? DestinationManager else {
+            return nil
+        }
+
+        return destinationManager.beaconPlayerId
+    }
     
     private var isBeaconAudioEnabled: Bool {
         return spatialDataContext.destinationManager.isAudioEnabled
@@ -470,7 +478,7 @@ class RouteGuidance: BehaviorBase {
         }
         
         // Make sure the beacon is currently playing
-        guard isBeaconAsync, let id = spatialDataContext.destinationManager.beaconPlayerId else {
+        guard isBeaconAsync, let id = beaconPlayerID else {
             if !isBeaconAsync && isBeaconAudioEnabled {
                 spatialDataContext.destinationManager.toggleDestinationAudio(false, forceMelody: true)
             }

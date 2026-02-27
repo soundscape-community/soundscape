@@ -20,8 +20,6 @@ protocol DestinationManagerProtocol: AnyObject {
     
     var isBeaconInBounds: Bool { get }
     
-    var beaconPlayerId: AudioPlayerIdentifier? { get }
-    
     // MARK: Methods
     
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws
