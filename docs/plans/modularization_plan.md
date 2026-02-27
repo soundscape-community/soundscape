@@ -51,7 +51,7 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260227-105500Z-ssindex-06da977`):
+Current architecture baseline (latest report `20260227-105849Z-ssindex-a3a8f90`):
 - `Data -> App`: 248
 - `Data -> Visual UI`: 51
 - `Behaviors -> Visual UI`: 126
@@ -74,9 +74,11 @@ Milestone ledger:
 - 2026-02-27: Milestone 2 fifth extraction slice landed: shared POI/generic-location read surface introduced as `SpatialPointOfInterestReadContract` in `SSDataContracts` with iOS specialization (`PointOfInterestValue == POI`, `GenericLocationValue == GenericLocation`).
 - 2026-02-27: Milestone 2 sixth extraction slice landed: shared reference write/maintenance surfaces introduced as `SpatialReferenceWriteContract` and `SpatialReferenceMaintenanceWriteContract` in `SSDataContracts` with iOS constrained specializations.
 - 2026-02-27: Milestone 2 seventh extraction slice landed: shared route-parameter read surface introduced as `SpatialRouteParametersReadContract` in `SSDataContracts` with iOS specialization (`RouteParametersValue == RouteParameters`, `RouteParametersContextValue == RouteParameters.Context`).
+- 2026-02-27: Milestone 2 eighth extraction slice landed: shared aggregate contract surfaces (`SpatialReadContract`, `SpatialWriteContract`, `SpatialMaintenanceWriteContract`) introduced in `SSDataContracts` and iOS registry-facing protocols now inherit these shared aggregates via constrained specializations.
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-02-27: Added shared aggregate storage protocols in `SSDataContracts` (`SpatialReadContract`, `SpatialWriteContract`, `SpatialMaintenanceWriteContract`) and rewired iOS aggregate contracts to inherit them while preserving compatibility with existing local subprotocol expectations.
 - 2026-02-27: Added shared `SpatialRouteParametersReadContract` in `SSDataContracts` and rewired iOS `RouteReadContract` to inherit it via constrained specialization.
 - 2026-02-27: Added shared `SpatialReferenceWriteContract` and `SpatialReferenceMaintenanceWriteContract` in `SSDataContracts` and rewired iOS `SpatialWriteContract`/`SpatialMaintenanceWriteContract` to inherit them via constrained specializations.
 - 2026-02-27: Added shared `SpatialPointOfInterestReadContract` in `SSDataContracts` and rewired iOS `ReferenceReadContract` to inherit it via constrained specialization.
@@ -139,16 +141,16 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Decide Milestone 2 closure criteria now that storage-contract method surfaces are shared: either (a) keep constrained iOS specializations for `RouteParameters`/`MarkerParameters`/`POI`/`VectorTile`/`GenericLocation`, or (b) migrate selected model families to `apps/common`.
-2. If staying with constrained specializations, update Milestone 2 acceptance status and start Milestone 3 Realm-adapter isolation hardening tasks.
+1. Decide Milestone 2 closure explicitly now that both shared method and aggregate contract surfaces are in `SSDataContracts`: either (a) keep constrained iOS specializations as the end-state, or (b) migrate selected type families (`RouteParameters`/`MarkerParameters`/`POI`/`VectorTile`/`GenericLocation`) into `apps/common`.
+2. If choosing constrained specializations as final state, mark Milestone 2 complete and begin Milestone 3 Realm-adapter isolation hardening.
 3. Keep running the validation baseline plus dependency-report export for each slice; keep tracking full-suite `AudioEngineTest` failures explicitly alongside targeted pass suites.
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 2 seventh extraction slice is complete (shared storage-contract method surfaces extracted; remaining decision is constrained-specialization end-state vs additional model extraction).
+- Milestone 2 eighth extraction slice is complete (shared aggregate contract surfaces extracted; remaining decision is constrained-specialization end-state vs additional model extraction).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260227-105500Z-ssindex-06da977.txt`
+- `docs/plans/artifacts/dependency-analysis/20260227-105849Z-ssindex-a3a8f90.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:

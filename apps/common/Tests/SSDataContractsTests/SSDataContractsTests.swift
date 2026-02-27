@@ -34,10 +34,13 @@ private struct GenericLocationStub: Equatable {
 private struct NearbyLocationStub {}
 
 private func acceptsRouteParametersReadContract<Contract: SpatialRouteParametersReadContract>(_ contract: Contract) {}
+private func acceptsSpatialReadContract<Contract: SpatialReadContract>(_ contract: Contract) {}
 private func acceptsReferenceMarkerReadContract<Contract: SpatialReferenceMarkerReadContract>(_ contract: Contract) {}
 private func acceptsPointOfInterestReadContract<Contract: SpatialPointOfInterestReadContract>(_ contract: Contract) {}
 private func acceptsReferenceWriteContract<Contract: SpatialReferenceWriteContract>(_ contract: Contract) {}
+private func acceptsSpatialWriteContract<Contract: SpatialWriteContract>(_ contract: Contract) {}
 private func acceptsReferenceMaintenanceWriteContract<Contract: SpatialReferenceMaintenanceWriteContract>(_ contract: Contract) {}
+private func acceptsSpatialMaintenanceWriteContract<Contract: SpatialMaintenanceWriteContract>(_ contract: Contract) {}
 
 @MainActor
 private final class StorageContractMock: SpatialRouteReadContract,
@@ -50,7 +53,10 @@ private final class StorageContractMock: SpatialRouteReadContract,
                                          SpatialReferenceWriteContract,
                                          SpatialRouteMaintenanceWriteContract,
                                          SpatialReferenceMaintenanceWriteContract,
-                                         SpatialAddressMaintenanceWriteContract {
+                                         SpatialAddressMaintenanceWriteContract,
+                                         SpatialReadContract,
+                                         SpatialWriteContract,
+                                         SpatialMaintenanceWriteContract {
     func routes() async -> [Route] { [] }
     func route(byKey key: String) async -> Route? { nil }
     func routeMetadata(byKey key: String) async -> RouteReadMetadata? { nil }
@@ -155,10 +161,13 @@ struct SSDataContractsTests {
     @Test
     func storageContractProtocolsSupportUnifiedConformance() async throws {
         let mock = StorageContractMock()
+        acceptsSpatialReadContract(mock)
         acceptsRouteParametersReadContract(mock)
         acceptsReferenceMarkerReadContract(mock)
         acceptsPointOfInterestReadContract(mock)
+        acceptsSpatialWriteContract(mock)
         acceptsReferenceWriteContract(mock)
+        acceptsSpatialMaintenanceWriteContract(mock)
         acceptsReferenceMaintenanceWriteContract(mock)
 
         let routeRead: any SpatialRouteReadContract = mock

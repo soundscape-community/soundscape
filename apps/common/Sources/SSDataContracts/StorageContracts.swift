@@ -13,6 +13,14 @@ public protocol SpatialRouteReadContract {
 }
 
 @MainActor
+public protocol SpatialReadContract: SpatialRouteReadContract,
+                                     SpatialRouteParametersReadContract,
+                                     SpatialReferenceReadContract,
+                                     SpatialReferenceMarkerReadContract,
+                                     SpatialPointOfInterestReadContract,
+                                     SpatialTileReadContract {}
+
+@MainActor
 public protocol SpatialRouteParametersReadContract {
     associatedtype RouteParametersValue
     associatedtype RouteParametersContextValue
@@ -96,6 +104,10 @@ public protocol SpatialRouteWriteContract {
 }
 
 @MainActor
+public protocol SpatialWriteContract: SpatialRouteWriteContract,
+                                      SpatialReferenceWriteContract {}
+
+@MainActor
 public protocol SpatialReferenceMaintenanceWriteContract {
     associatedtype MarkerParametersValue
     associatedtype PointOfInterestValue
@@ -112,6 +124,11 @@ public protocol SpatialRouteMaintenanceWriteContract {
     func importRouteFromCloud(_ route: Route) async throws
     func removeAllRoutes() async throws
 }
+
+@MainActor
+public protocol SpatialMaintenanceWriteContract: SpatialRouteMaintenanceWriteContract,
+                                                 SpatialAddressMaintenanceWriteContract,
+                                                 SpatialReferenceMaintenanceWriteContract {}
 
 @MainActor
 public protocol SpatialAddressMaintenanceWriteContract {

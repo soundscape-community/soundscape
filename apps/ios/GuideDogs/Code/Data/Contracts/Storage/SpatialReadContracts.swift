@@ -34,17 +34,27 @@ where MarkerParametersValue == MarkerParameters,
 protocol TileReadContract: SpatialTileReadContract where Tile == VectorTile, NearbyLocation == POI {}
 
 @MainActor
-protocol SpatialReadContract: RouteReadContract,
+protocol SpatialReadContract: SSDataContracts.SpatialReadContract,
+                              RouteReadContract,
                               ReferenceReadContract,
-                              TileReadContract {}
+                              TileReadContract
+where RouteParametersValue == RouteParameters,
+      RouteParametersContextValue == RouteParameters.Context,
+      MarkerParametersValue == MarkerParameters,
+      PointOfInterestValue == POI,
+      GenericLocationValue == GenericLocation,
+      Tile == VectorTile,
+      NearbyLocation == POI {}
 
 @MainActor
-protocol SpatialWriteContract: SpatialRouteWriteContract,
+protocol SpatialWriteContract: SSDataContracts.SpatialWriteContract,
+                               SpatialRouteWriteContract,
                                SpatialReferenceWriteContract
 where GenericLocationValue == GenericLocation {}
 
 @MainActor
-protocol SpatialMaintenanceWriteContract: SpatialRouteMaintenanceWriteContract,
+protocol SpatialMaintenanceWriteContract: SSDataContracts.SpatialMaintenanceWriteContract,
+                                          SpatialRouteMaintenanceWriteContract,
                                           SpatialAddressMaintenanceWriteContract,
                                           SpatialReferenceMaintenanceWriteContract
 where MarkerParametersValue == MarkerParameters,
