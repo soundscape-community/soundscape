@@ -298,7 +298,6 @@ class MockDestinationManager: DestinationManagerProtocol {
     var isBeaconInBounds: Bool = false
     var isCurrentBeaconAsyncFinishable: Bool = false
     var beaconPlayerId: AudioPlayerIdentifier?
-    var proximityBeaconPlayerId: AudioPlayerIdentifier?
     
     func destinationIsTemporary(forReferenceID id: String) -> Bool { false }
     func destinationPOI(forReferenceID id: String) -> POI? { nil }

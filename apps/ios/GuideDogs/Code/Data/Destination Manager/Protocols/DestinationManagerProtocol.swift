@@ -23,7 +23,6 @@ protocol DestinationManagerProtocol: AnyObject {
     var isCurrentBeaconAsyncFinishable: Bool { get }
     
     var beaconPlayerId: AudioPlayerIdentifier? { get }
-    var proximityBeaconPlayerId: AudioPlayerIdentifier? { get }
     
     // MARK: Methods
     
