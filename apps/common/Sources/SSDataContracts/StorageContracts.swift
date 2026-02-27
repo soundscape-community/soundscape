@@ -27,6 +27,18 @@ public protocol SpatialReferenceReadContract {
 }
 
 @MainActor
+public protocol SpatialTileReadContract {
+    associatedtype Tile: Hashable
+    associatedtype NearbyLocation
+
+    func tiles(forDestinations: Bool,
+               forReferences: Bool,
+               at zoomLevel: UInt,
+               destination: ReferenceEntity?) async -> Set<Tile>
+    func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [NearbyLocation]
+}
+
+@MainActor
 public protocol SpatialRouteWriteContract {
     func addRoute(_ route: Route) async throws
     func deleteRoute(id: String) async throws

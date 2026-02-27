@@ -7,9 +7,16 @@ import Testing
 
 @testable import SSDataContracts
 
+private struct TileStub: Hashable {
+    let id: Int
+}
+
+private struct NearbyLocationStub {}
+
 @MainActor
 private final class StorageContractMock: SpatialRouteReadContract,
                                          SpatialReferenceReadContract,
+                                         SpatialTileReadContract,
                                          SpatialRouteWriteContract,
                                          SpatialRouteMaintenanceWriteContract,
                                          SpatialAddressMaintenanceWriteContract {
@@ -28,6 +35,9 @@ private final class StorageContractMock: SpatialRouteReadContract,
     func referenceEntities() async -> [ReferenceEntity] { [] }
     func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? { nil }
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] { [] }
+
+    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<TileStub> { [] }
+    func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [NearbyLocationStub] { [] }
 
     func addRoute(_ route: Route) async throws {}
     func deleteRoute(id: String) async throws {}
@@ -104,9 +114,15 @@ struct SSDataContractsTests {
 
         let routes = await routeRead.routes()
         let references = await referenceRead.referenceEntities()
+        let tiles = await mock.tiles(forDestinations: true, forReferences: true, at: 16, destination: nil)
+        let nearbyLocations = await mock.genericLocations(near: .init(coordinate: .init(latitude: 47.6205,
+                                                                                          longitude: -122.3493)),
+                                                          rangeMeters: 10)
 
         #expect(routes.isEmpty)
         #expect(references.isEmpty)
+        #expect(tiles.isEmpty)
+        #expect(nearbyLocations.isEmpty)
 
         try await routeWrite.deleteRoute(id: "route-1")
         try await routeMaintenance.removeAllRoutes()

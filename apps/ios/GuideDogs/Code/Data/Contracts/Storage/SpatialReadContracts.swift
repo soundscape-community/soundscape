@@ -34,10 +34,7 @@ protocol ReferenceReadContract: SpatialReferenceReadContract {
 }
 
 @MainActor
-protocol TileReadContract {
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<VectorTile>
-    func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [POI]
-}
+protocol TileReadContract: SpatialTileReadContract where Tile == VectorTile, NearbyLocation == POI {}
 
 @MainActor
 protocol SpatialReadContract: RouteReadContract,
