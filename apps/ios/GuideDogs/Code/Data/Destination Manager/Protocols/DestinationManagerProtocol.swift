@@ -31,7 +31,6 @@ protocol DestinationManagerProtocol: AnyObject {
     
     func isDestination(key: String) -> Bool
     func destinationIsTemporary(forReferenceID id: String) -> Bool
-    func destinationPOI(forReferenceID id: String) -> POI?
     func destinationEntityKey(forReferenceID id: String) -> String?
     func destinationNickname(forReferenceID id: String) -> String?
     func destinationEstimatedAddress(forReferenceID id: String) -> String?
