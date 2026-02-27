@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -211,6 +212,92 @@ fileprivate extension GPXWaypoint {
 }
 
 extension AuthoredActivityContent {
+    private struct SoundscapeMeta {
+        let id: String
+        let behavior: String
+        let version: String?
+        let locale: Locale
+        let availability: DateInterval
+        let expires: Bool
+    }
+
+    private enum SoundscapeGPXTag {
+        static let meta = "gpxsc:meta"
+        static let id = "gpxsc:id"
+        static let behavior = "gpxsc:behavior"
+        static let version = "gpxsc:version"
+        static let locale = "gpxsc:locale"
+        static let annotations = "gpxsc:annotations"
+        static let annotation = "gpxsc:annotation"
+        static let links = "gpxsc:links"
+        static let link = "gpxsc:link"
+
+        static let startDateAttribute = "start"
+        static let endDateAttribute = "end"
+        static let expiresAttribute = "expires"
+        static let annotationTypeAttribute = "type"
+        static let linkHrefAttribute = "href"
+    }
+
+    private static let soundscapeDateFormatter = ISO8601DateFormatter()
+
+    private static func childText(in parent: GPXExtensionsElement, named name: String) -> String? {
+        parent.children.first(where: { $0.name == name })?.text
+    }
+
+    private static func annotationContent(in waypoint: GPXWaypoint, type: String) -> String? {
+        guard let annotationsElement = waypoint.extensions?.children.first(where: { $0.name == SoundscapeGPXTag.annotations }) else {
+            return nil
+        }
+
+        return annotationsElement.children.first {
+            $0.name == SoundscapeGPXTag.annotation && $0.attributes[SoundscapeGPXTag.annotationTypeAttribute] == type
+        }?.text
+    }
+
+    private static func links(in waypoint: GPXWaypoint) -> [GPXLink] {
+        guard let linksElement = waypoint.extensions?.children.first(where: { $0.name == SoundscapeGPXTag.links }) else {
+            return []
+        }
+
+        return linksElement.children.compactMap { element in
+            guard element.name == SoundscapeGPXTag.link else {
+                return nil
+            }
+
+            let link = GPXLink()
+            link.href = element.attributes[SoundscapeGPXTag.linkHrefAttribute]
+            link.mimetype = childText(in: element, named: "type")
+            link.text = childText(in: element, named: "text")
+            return link
+        }
+    }
+
+    private static func soundscapeMeta(from metadataExtensions: GPXExtensions?) -> SoundscapeMeta? {
+        guard let metaElement = metadataExtensions?.children.first(where: { $0.name == SoundscapeGPXTag.meta }),
+              let id = childText(in: metaElement, named: SoundscapeGPXTag.id),
+              let behavior = childText(in: metaElement, named: SoundscapeGPXTag.behavior),
+              let localeID = childText(in: metaElement, named: SoundscapeGPXTag.locale) else {
+            return nil
+        }
+
+        let startDate = metaElement.attributes[SoundscapeGPXTag.startDateAttribute]
+            .flatMap(soundscapeDateFormatter.date(from:))
+        let endDate = metaElement.attributes[SoundscapeGPXTag.endDateAttribute]
+            .flatMap(soundscapeDateFormatter.date(from:))
+
+        let availability = DateInterval(start: startDate ?? Date.distantPast,
+                                        end: endDate ?? Date.distantFuture)
+        let expires = metaElement.attributes[SoundscapeGPXTag.expiresAttribute] == "true"
+
+        return SoundscapeMeta(id: id,
+                              behavior: behavior,
+                              version: childText(in: metaElement, named: SoundscapeGPXTag.version),
+                              locale: Locale(identifier: localeID),
+                              availability: availability,
+                              expires: expires)
+    }
+
     var hasSavedState: Bool {
         return AuthoredActivityLoader.shared.hasState(id)
     }
@@ -224,13 +311,15 @@ extension AuthoredActivityContent {
             return nil
         }
         
-        guard let ext = metadata.extensions?.soundscapeSCExtensions,
-              let id = ext.id, // required here
-              let behavior = ext.behavior, // required here
-              let locale = ext.locale, // required here
-              let actType = AuthoredActivityType.parse(behavior) else {
+        guard let ext = soundscapeMeta(from: metadata.extensions),
+              !ext.id.isEmpty,
+              !ext.behavior.isEmpty,
+              let actType = AuthoredActivityType.parse(ext.behavior) else {
             return nil
         }
+
+        let id = ext.id
+        let locale = ext.locale
         
         guard let name = metadata.name, !name.isEmpty else {
             return nil
@@ -324,10 +413,10 @@ extension AuthoredActivityContent {
         let audioMimeTypes = Set(["audio/mpeg", "audio/x-m4a"])
         
         return waypoints.compactMap { wpt in
-            let imageLinks: [GPXLink] = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
+            let imageLinks: [GPXLink] = links(in: wpt).filter({
                 guard let mimetype = $0.mimetype else { return false }
                 return imageMimeTypes.contains(mimetype)
-            }) ?? []
+            })
             
             let parsedImages: [ActivityWaypointImage] = imageLinks.compactMap { link in
                 guard let href = link.href,
@@ -338,10 +427,10 @@ extension AuthoredActivityContent {
                 return ActivityWaypointImage(url: url, altText: link.text)
             }
             
-            let audioLinks: [GPXLink] = wpt.extensions?.soundscapeLinkExtensions?.links.filter({
+            let audioLinks: [GPXLink] = links(in: wpt).filter({
                 guard let mimetype = $0.mimetype else { return false }
                 return audioMimeTypes.contains(mimetype)
-            }) ?? []
+            })
             
             let parsedAudioClips: [ActivityWaypointAudioClip] = audioLinks.compactMap { link in
                 guard let href = link.href,
@@ -352,9 +441,8 @@ extension AuthoredActivityContent {
                 return ActivityWaypointAudioClip(url: url, description: link.text)
             }
             
-            let annotations = wpt.extensions?.soundscapeAnnotationExtensions
-            let departure = annotations?.getFirstAnnotation(withType: "departure")?.content
-            let arrival = annotations?.getFirstAnnotation(withType: "arrival")?.content
+            let departure = annotationContent(in: wpt, type: "departure")
+            let arrival = annotationContent(in: wpt, type: "arrival")
             
             // Coordinate shouldn't be nil, but CoreGPX allows it to be so.
             // For now we just skip those points
