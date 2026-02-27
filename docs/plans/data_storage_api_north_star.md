@@ -15,8 +15,8 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
   - `DataContractRegistry` async contracts for app/runtime callers.
   - `DestinationEntityStore` destination-focused seam used by `DestinationManager`.
 - Canonical domain value models (`Route`, `RouteWaypoint`, `ReferenceEntity`) are now outside Realm infrastructure (`Data/Models/Temp Models`), with Realm-prefixed object models retained infrastructure-local.
-- Dependency analysis (report `20260226-114625Z-ssindex-4aab0d0`) still shows reverse layering pressure:
-  - `Data -> App`: 278
+- Dependency analysis (report `20260227-010245Z-ssindex-1a3f1a8`) still shows reverse layering pressure:
+  - `Data -> App`: 279
   - `Data -> Visual UI`: 66
   - `Behaviors -> Visual UI`: 126
   - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
@@ -63,6 +63,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `BeaconCalloutGenerator.refreshDestinationPOI(for:)` now uses contract-only fallback resolution (`referenceEntity(byID:)` + `poi(byKey:)` or `GenericLocation(ref:)`) when destination entity-key lookup is unavailable, removing keyed destination-manager POI fallback reads from automatic beacon callout refresh flow.
 - `MarkerParameters.init(markerId:)` now hydrates marker context via `LocationDetailStoreAdapter.referenceEntity(byID:)?.getPOI()` instead of `destinationPOI(forReferenceID:)`, removing keyed destination-POI helper usage from route waypoint marker-serialization hydration.
 - Removed unused infrastructure adapter helper `LocationDetailStoreAdapter.destinationPOI(forReferenceID:)` after marker-serialization migration to `referenceEntity(byID:)?.getPOI()`.
+- Dependency-analysis artifact was refreshed from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-010245Z-ssindex-1a3f1a8` (`latest.txt` updated), with tracked edge deltas: `Data -> App` 279, `Data -> Visual UI` 66, `Behaviors -> Visual UI` 126.
 - `DestinationTutorialInfoPage.playCallout()` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) when destination entity-key context is available, with keyed destination-manager lookup and cached tutorial destination fallback retained for compatibility.
 - `DestinationTutorialPage` now pre-resolves destination POI/name context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) during tutorial page appearance when destination entity-key context is available, with keyed destination-manager lookup retained as compatibility fallback for synchronous reads.
 - `BeaconDemoHelper` now snapshots/restores destination context using keyed destination POI lookup (`destinationPOI(forReferenceID:)`) instead of direct `destinationPOI` property reads.

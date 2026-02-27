@@ -269,10 +269,12 @@ Phase 1 complete:
 - 2026-02-27: Marker-parameters destination-helper refinement is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails including seam boundary scripts + `LocalizationLinter`, `xcodebuild build-for-testing`, targeted suites `RouteStorageProviderDispatchTests`, `BehaviorEventStreamsTest`, `EventProcessorTest`, `PreviewGeneratorTests`, `UIRuntimeProviderDispatchTests`, `DestinationManagerTest`).
 - 2026-02-27: Removed now-unused infrastructure adapter helper `LocationDetailStoreAdapter.destinationPOI(forReferenceID:)` after marker-parameter hydration moved to `referenceEntity(byID:)?.getPOI()`.
 - 2026-02-27: Location-detail adapter cleanup is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails including seam boundary scripts + `LocalizationLinter`, `xcodebuild build-for-testing`, targeted suite `RouteStorageProviderDispatchTests`).
+- 2026-02-27: Refreshed dependency-analysis artifact via deterministic index workflow (`xcodebuild build-for-testing` with `-derivedDataPath /tmp/ss-index-derived` + `export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`), producing report `20260227-010245Z-ssindex-1a3f1a8` and updating `latest.txt`.
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
-- Latest tracked reverse-edge snapshot (report `20260226-114625Z-ssindex-4aab0d0`):
+- Latest tracked reverse-edge snapshot (report `20260227-010245Z-ssindex-1a3f1a8`):
+  - `Data -> App`: 279
   - `Behaviors -> Visual UI`: 126
   - `Data -> Visual UI`: 66
   - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
