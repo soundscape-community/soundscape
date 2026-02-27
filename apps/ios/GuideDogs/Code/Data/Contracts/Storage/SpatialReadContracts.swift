@@ -6,47 +6,15 @@
 //
 
 import Foundation
+import SSDataContracts
 import SSGeo
 
-struct SpatialIntersectionRegion: Sendable {
-    let center: SSGeoCoordinate
-    let latitudeDelta: Double
-    let longitudeDelta: Double
-}
-
-struct RouteReadMetadata: Sendable {
-    let id: String
-    let lastUpdatedDate: Date?
-}
-
-struct ReferenceReadMetadata: Sendable {
-    let id: String
-    let lastUpdatedDate: Date?
-}
-
-struct ReferenceCalloutReadData: Sendable {
-    let name: String
-    let superCategory: String
-}
-
-struct EstimatedAddressReadData: Sendable {
-    let addressLine: String?
-    let streetName: String?
-    let subThoroughfare: String?
-}
-
-struct AddressCacheRecord: Sendable {
-    let key: String
-    let lastSelectedDate: Date?
-    let name: String
-    let addressLine: String?
-    let streetName: String?
-    let latitude: Double
-    let longitude: Double
-    let centroidLatitude: Double
-    let centroidLongitude: Double
-    let searchString: String?
-}
+typealias SpatialIntersectionRegion = SSDataContracts.SpatialIntersectionRegion
+typealias RouteReadMetadata = SSDataContracts.RouteReadMetadata
+typealias ReferenceReadMetadata = SSDataContracts.ReferenceReadMetadata
+typealias ReferenceCalloutReadData = SSDataContracts.ReferenceCalloutReadData
+typealias EstimatedAddressReadData = SSDataContracts.EstimatedAddressReadData
+typealias AddressCacheRecord = SSDataContracts.AddressCacheRecord
 
 @MainActor
 protocol RouteReadContract {

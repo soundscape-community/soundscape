@@ -6,7 +6,7 @@ This file is the canonical instruction source for coding agents in this reposito
 
 ## Repository Map
 - `apps/ios/`: iOS app (`GuideDogs.xcworkspace`, app code, unit tests, CI scripts).
-- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SSDataStructures`, `SSGeo`, `SSDataDomain`).
+- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SSDataStructures`, `SSGeo`, `SSDataDomain`, `SSDataContracts`).
 - `svcs/data/`: open-source data-plane ingestion/tile tooling (Python, Docker, SQL, Helm chart assets).
 - `docs/`: project documentation.
 - `.github/workflows/`: CI definitions (use these as command truth for automation-aligned docs).
@@ -21,11 +21,13 @@ This file is the canonical instruction source for coding agents in this reposito
 - `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
 - `SSGeo` now lives in `apps/common` and provides portable location payloads plus basic geodesic math without `CoreLocation`.
 - `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models shared with iOS.
+- `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries.
 
 ## Modularization Status (Phase 1)
 - First extraction is complete: core data-structure types moved from `apps/ios` into `apps/common/Sources/SSDataStructures`.
 - Shared geo primitives extraction is complete: portable coordinate/location/math types now live in `apps/common/Sources/SSGeo`.
 - Initial data-domain extraction is complete: canonical `Route`, `RouteWaypoint`, and `ReferenceEntity` models now live in `apps/common/Sources/SSDataDomain`.
+- Initial data-contract extraction is complete: shared contract-side value types now live in `apps/common/Sources/SSDataContracts` and are bridged in iOS contract files.
 - Boundary rule: keep `apps/common` platform-agnostic. Do not import Apple UI/platform frameworks in `apps/common/Sources`.
 - Boundary enforcement script: `bash apps/common/Scripts/check_forbidden_imports.sh`.
 - Package tests for extracted module: `swift test --package-path apps/common`.

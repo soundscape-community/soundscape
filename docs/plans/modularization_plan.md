@@ -51,7 +51,7 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260227-102553Z-ssindex-9ea4fca`):
+Current architecture baseline (latest report `20260227-103304Z-ssindex-86f9d48`):
 - `Data -> App`: 248
 - `Data -> Visual UI`: 51
 - `Behaviors -> Visual UI`: 126
@@ -67,9 +67,11 @@ Milestone ledger:
 - 2026-02-27: `Data -> Visual UI` reduced to 34 via marker-parameter serializer boundary cleanup; `Data -> App` reduced to 245 via GPX/data helper decouplings.
 - 2026-02-27: Remaining small `Sensors -> App` `AppContext` seams were reduced via runtime-integration hooks in geolocation/headphone paths.
 - 2026-02-27: Milestone 1 first extraction slice landed: `Route`, `RouteWaypoint`, and `ReferenceEntity` now live in `apps/common/Sources/SSDataDomain` with iOS bridge extensions preserved in `Temp Models`.
+- 2026-02-27: Milestone 2 first extraction slice landed: shared contract-side value types moved to `apps/common/Sources/SSDataContracts` and bridged in iOS via compile-safe typealiases.
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-02-27: Added `SSDataContracts` module and migrated `SpatialIntersectionRegion`/`RouteReadMetadata`/`ReferenceReadMetadata`/`ReferenceCalloutReadData`/`EstimatedAddressReadData`/`AddressCacheRecord`.
 - 2026-02-27: Added shared `SSDataDomain` module and migrated canonical route/reference models (`Route`, `RouteWaypoint`, `ReferenceEntity`) behind compile-safe iOS aliases/extensions.
 - 2026-02-27: `BoseFramesMotionManager` event dispatch decoupled from direct `AppContext.process(...)` via runtime integration hook.
 - 2026-02-27: `HeadphoneCalibrator` heading source decoupled from direct `AppContext.shared.geolocationManager`.
@@ -125,16 +127,16 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Start Milestone 2 by extracting storage contracts and shared contract-side types into `apps/common/Sources/SSDataContracts`.
-2. Replace iOS-local contract declarations with shared-contract imports while keeping Realm adapters infrastructure-local.
+1. Continue Milestone 2 by extracting protocol surfaces (`RouteReadContract`, `ReferenceReadContract`, `TileReadContract`, `Spatial*Contract`) into `apps/common/Sources/SSDataContracts` with minimal call-site churn.
+2. Introduce shared contract-side placeholder/value abstractions only where protocol signatures currently depend on iOS-local types, keeping canonical domain model names stable.
 3. Keep running the validation baseline plus dependency-report export for each slice; if `xcodebuild test-without-building` remains flaky, track the failing suites explicitly alongside targeted pass suites.
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 1 first extraction slice is in progress (`SSDataDomain` + iOS bridge files).
+- Milestone 2 first extraction slice is in progress (`SSDataContracts` shared value types + iOS typealias bridge).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260227-102553Z-ssindex-9ea4fca.txt`
+- `docs/plans/artifacts/dependency-analysis/20260227-103304Z-ssindex-86f9d48.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:

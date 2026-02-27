@@ -18,6 +18,10 @@ let package = Package(
             name: "SSDataDomain",
             targets: ["SSDataDomain"]
         ),
+        .library(
+            name: "SSDataContracts",
+            targets: ["SSDataContracts"]
+        ),
     ],
     targets: [
         .target(
@@ -28,6 +32,10 @@ let package = Package(
         ),
         .target(
             name: "SSDataDomain",
+            dependencies: ["SSGeo"]
+        ),
+        .target(
+            name: "SSDataContracts",
             dependencies: ["SSGeo"]
         ),
         .testTarget(
@@ -41,6 +49,10 @@ let package = Package(
         .testTarget(
             name: "SSDataDomainTests",
             dependencies: ["SSDataDomain"]
+        ),
+        .testTarget(
+            name: "SSDataContractsTests",
+            dependencies: ["SSDataContracts"]
         ),
     ]
 )
