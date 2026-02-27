@@ -4,6 +4,7 @@
 //
 //  Created by Niklas Mellegård on 2024-03-06.
 //  Copyright © 2024 Soundscape community. 
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -39,8 +40,15 @@ enum BoseFramesMotionManagerStatus: Int, Equatable, Comparable {
 class BoseFramesMotionManager: NSObject {
 
     static let DEVICE_MODEL_NAME: String = GDLocalizationUnnecessary("Bose Frames (Rondo)")
+
+    struct RuntimeIntegration {
+        let processEvent: (Event) -> Void
+
+        static let disabled = RuntimeIntegration(processEvent: { _ in })
+    }
         
     // MARK: Attributes
+    private static var runtimeIntegration: RuntimeIntegration = .disabled
     private let queue: OperationQueue
     private var bleBoseFrames: BoseFramesBLEDevice?
     private var connectionTimer: Timer?
@@ -98,6 +106,14 @@ class BoseFramesMotionManager: NSObject {
         _calibrationOverridden = false
         
         super.init()
+    }
+
+    static func configure(with runtimeIntegration: RuntimeIntegration) {
+        self.runtimeIntegration = runtimeIntegration
+    }
+
+    static func resetForTesting() {
+        runtimeIntegration = .disabled
     }
 }
 
@@ -265,7 +281,7 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
                 calibrationStateObservable.value = .calibrated
                 queue.addOperation {
                     NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidFinish, object: nil)
-                    AppContext.process(HeadsetCalibrationEvent(self.name, deviceType: .boseFramesRondo, callout: "", state: .calibrated))
+                    Self.runtimeIntegration.processEvent(HeadsetCalibrationEvent(self.name, deviceType: .boseFramesRondo, callout: "", state: .calibrated))
                 }
             }
             
@@ -279,7 +295,7 @@ extension BoseFramesMotionManager: BoseHeadingUpdateDelegate {
                 calibrationStateObservable.value = .calibrating
                 queue.addOperation {
                     NotificationCenter.default.post(name: Notification.Name.ARHeadsetCalibrationDidStart, object: nil)
-                    AppContext.process(HeadsetCalibrationEvent(self.name, deviceType: .boseFramesRondo, callout: "", state: .calibrating))
+                    Self.runtimeIntegration.processEvent(HeadsetCalibrationEvent(self.name, deviceType: .boseFramesRondo, callout: "", state: .calibrating))
                 }
             }
         }
@@ -348,7 +364,7 @@ extension BoseFramesMotionManager: BoseBLEStateChangeDelegate {
             /// Was connected, signal that we just disconnected
             if (oldManagerStatus > .disconnected) {
                 self.disconnect()
-                AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
+                Self.runtimeIntegration.processEvent(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
             }
 
         case .initializing:
@@ -362,7 +378,7 @@ extension BoseFramesMotionManager: BoseBLEStateChangeDelegate {
             connectionTimer = nil
 
             NotificationCenter.default.post(name: Notification.Name.boseFramesDeviceConnected, object: nil)
-            AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: isFirstConnection ? .firstConnection : .reconnected))
+            Self.runtimeIntegration.processEvent(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: isFirstConnection ? .firstConnection : .reconnected))
             
             self.status.value = .ready
             self.deviceDelegate?.didConnectDevice(self)

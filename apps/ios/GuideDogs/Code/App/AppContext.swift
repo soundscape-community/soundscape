@@ -1439,6 +1439,14 @@ class AppContext {
                 }
             )
         )
+
+        BoseFramesMotionManager.configure(
+            with: BoseFramesMotionManager.RuntimeIntegration(
+                processEvent: { event in
+                    AppContext.process(event)
+                }
+            )
+        )
         
         deviceManager = DeviceManager(geolocationManager: geolocationManager)
         
