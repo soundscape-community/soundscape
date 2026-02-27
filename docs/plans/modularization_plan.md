@@ -272,6 +272,7 @@ Phase 1 complete:
 - 2026-02-27: Refreshed dependency-analysis artifact via deterministic index workflow (`xcodebuild build-for-testing` with `-derivedDataPath /tmp/ss-index-derived` + `export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`), producing report `20260227-010245Z-ssindex-1a3f1a8` and updating `latest.txt`.
 - 2026-02-27: `DestinationManagerProtocol` no longer requires keyed destination POI reads (`destinationPOI(forReferenceID:)`); infrastructure destination context in `SpatialDataContext` now resolves active destination POI via `destinationEntityKey(forReferenceID:)` + store keyed lookup (`searchByKey`) with `referenceEntityByKey(...).getPOI()` fallback.
 - 2026-02-27: Removed now-unused concrete `DestinationManager.destinationPOI(forReferenceID:)`; destination POI lookup remains internal to `DestinationEntityStore` while app-facing callers continue through destination ID/entity-key metadata seams and async contract ingress.
+- 2026-02-27: `BeaconDemoHelper` destination snapshot/restore now resolves estimated-address metadata through async contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)`), and `DestinationManagerProtocol` no longer requires keyed estimated-address lookup (`destinationEstimatedAddress(forReferenceID:)`).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).

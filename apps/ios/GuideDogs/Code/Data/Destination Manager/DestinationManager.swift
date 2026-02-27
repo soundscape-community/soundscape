@@ -273,10 +273,6 @@ class DestinationManager: DestinationManagerProtocol {
     func destinationNickname(forReferenceID id: String) -> String? {
         destinationStore.destinationNickname(forReferenceID: id)
     }
-
-    func destinationEstimatedAddress(forReferenceID id: String) -> String? {
-        destinationStore.destinationEstimatedAddress(forReferenceID: id)
-    }
     
     /// Sets the provided RealmReferenceEntity as the current destination.
     ///

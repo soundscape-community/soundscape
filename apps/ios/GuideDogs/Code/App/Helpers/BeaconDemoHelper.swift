@@ -248,6 +248,7 @@ class BeaconDemoHelper {
         }
 
         let destinationPOI = await resolveDestinationPOI(forReferenceID: destinationID, beaconManager: beaconManager)
+        let destinationEstimatedAddress = await resolveDestinationEstimatedAddress(forReferenceID: destinationID)
 
         guard let destinationPOI else {
             return nil
@@ -255,10 +256,10 @@ class BeaconDemoHelper {
 
         if let location = destinationPOI as? GenericLocation {
             return .location(loc: location,
-                             address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
+                             address: destinationEstimatedAddress)
         } else {
             return .entity(id: destinationPOI.key,
-                           address: beaconManager.destinationEstimatedAddress(forReferenceID: destinationID))
+                           address: destinationEstimatedAddress)
         }
     }
 
@@ -279,5 +280,9 @@ class BeaconDemoHelper {
         }
 
         return GenericLocation(ref: referenceEntity)
+    }
+
+    private func resolveDestinationEstimatedAddress(forReferenceID id: String) async -> String? {
+        await DataContractRegistry.spatialRead.referenceEntity(byID: id)?.estimatedAddress
     }
 }
