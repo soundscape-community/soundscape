@@ -4,174 +4,66 @@
 
 Last updated: 2026-02-27
 
+## Document Contract
+- This document defines the target data API and boundary rules.
+- This document should change rarely.
+- Progress, checkpoints, metrics, and migration history belong in `docs/plans/modularization_plan.md`.
+
 ## Purpose
-Define a stable, minimal, app-facing data API before deeper Realm extraction work so incremental seams do not produce a fragmented contract surface.
+Define a stable, minimal, app-facing data API so storage and persistence can be modularized without proliferating seams or leaking Realm infrastructure details.
 
-## Current State (Observed)
-- App-facing ingress is now mostly consolidated:
-  - Non-infrastructure `SpatialDataStoreRegistry.store` usage is zero, and the staged allowlist is empty.
-  - `SpatialDataStoreRegistry.store` remains an infrastructure adapter detail under `Data/Infrastructure/Realm/**`.
-- Storage behavior is still split across multiple abstractions:
-  - `DataContractRegistry` async contracts for app/runtime callers.
-  - `DestinationEntityStore` destination-focused seam used by `DestinationManager`.
-- Canonical domain value models (`Route`, `RouteWaypoint`, `ReferenceEntity`) are now outside Realm infrastructure (`Data/Models/Temp Models`), with Realm-prefixed object models retained infrastructure-local.
-- Dependency analysis (report `20260227-094942Z-ssindex-b721053`) still shows reverse layering pressure:
-  - `Data -> App`: 245
-  - `Data -> Visual UI`: 34
-  - `Behaviors -> Visual UI`: 126
-  - `Sensors -> App`: 74
-  - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
-- Contract boundary checks now detect no Realm infrastructure model type references in `Data/Contracts` (temporary infra-type allowlist is empty).
+## Final App-Facing API (Stable)
+### Entry Point
+`DataContractRegistry` is the only app-facing storage ingress, exposing:
+- `spatialRead: SpatialReadContract`
+- `spatialWrite: SpatialWriteContract`
+- `spatialMaintenanceWrite: SpatialMaintenanceWriteContract`
 
-## Design Principles
-- Keep a single app-facing storage ingress: `DataContractRegistry` contracts.
-- Keep protocol count small and capability-oriented; avoid API growth via parallel seams.
-- Keep canonical domain/value models; avoid DTO proliferation.
-- Keep Realm object models and `RealmSwift` imports infrastructure-local.
-- Keep async-first contracts for all app/runtime call sites.
+### Contract Responsibilities
+- `SpatialReadContract`: async query/read operations for app/runtime consumers.
+- `SpatialWriteContract`: async user-driven domain writes (routes, markers, destination-affecting writes).
+- `SpatialMaintenanceWriteContract`: async maintenance/import/repair operations (for example cloud import and cleanup flows).
 
-## Target API Shape
-- App-facing storage protocols remain limited to:
-  - `SpatialReadContract`
-  - `SpatialWriteContract`
-  - `SpatialMaintenanceWriteContract`
-- `SpatialDataStoreRegistry.store` becomes adapter-internal only (Realm adapter implementation detail).
-- `DestinationManager` storage operations route through app-facing contracts (or a contract-backed adapter), not a separate long-lived parallel API surface.
-- App-facing contracts expose domain/value types only; no Realm object types or Realm-local model families.
+### Canonical Domain Surface
+App-facing contracts expose domain/value types only. Canonical examples:
+- `Route`
+- `RouteWaypoint`
+- `ReferenceEntity`
+- Existing readable domain/value models used by app features (`POI`, `GenericLocation`, etc.)
 
-## 2026-02-27 Checkpoint: Sync-Compatibility Migration
-- Remaining staged non-infrastructure `SpatialDataStoreRegistry.store` callers: none (allowlist is empty).
-- Remaining non-infrastructure direct `SpatialDataCache.*` callers: none (all direct usage is now confined to `Data/Infrastructure/Realm/SpatialDataCache.swift`).
-- `AutoCalloutGenerator` now uses current `SpatialDataView.markedPoints` marker context instead of direct `SpatialDataStoreRegistry.store` marker-existence lookups.
-- `SpatialDataView` now consumes pre-resolved storage payloads from infrastructure (`SpatialDataContext`) and no longer calls `SpatialDataStoreRegistry.store` directly.
-- `POICallout` now consumes pre-resolved POI/marker context from behavior producers and no longer calls `SpatialDataStoreRegistry.store` directly.
-- `Roundabout` now routes region filtering through `road.intersections` and no longer calls `SpatialDataStoreRegistry.store` directly.
-- `Road` now declares intersection lookup requirements while infrastructure provides the default store-backed implementations (`RealmSpatialReadContract.swift`), removing direct store ingress from `Road.swift` without changing sync callers.
-- `SpatialReadContract` no longer exposes unused road-graph/tile-data methods that returned infrastructure types (`Intersection`, `TileData`), and infra-type guardrails now report zero contract-side Realm model references.
-- `RoadAdjacentDataView` now resolves marker callout data and nearby marker scans through infrastructure adapter helpers (`RoadAdjacentDataStoreAdapter`) instead of direct store access in preview-layer code.
-- `LocationDetail` now resolves POI/marker lookup and marker-selection writes through infrastructure adapter helpers (`LocationDetailStoreAdapter`) instead of direct store access in UI-layer code.
-- `OnboardingCalloutGenerator` now resolves destination POIs via keyed lookup (`destinationPOI(forReferenceID:)`) rather than direct `destinationPOI` property reads.
-- `OnboardingCalloutGenerator` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) when a destination entity key is available, with keyed destination-manager lookup kept as compatibility fallback.
-- `InteractiveBeaconViewModel` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) on destination changes, and no longer performs repeated sync keyed destination-POI fallback reads while processing heading updates.
-- `BeaconActionHandler.callout(detail:)` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) when beacon destination entity key context is available, with keyed destination-manager lookup retained as compatibility fallback.
-- `BeaconDetailStore` now pre-resolves destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) for initial destination-backed beacon hydration and destination-change updates, with keyed destination-manager lookup retained as compatibility fallback.
-- `BeaconDemoHelper.prepare(disableMelodies:)` now pre-resolves temporary destination POI context through async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) when destination entity-key context is available, with keyed destination-manager lookup retained as compatibility fallback.
-- `BeaconCalloutGenerator` now hydrates destination POI cache via async contract ingress (`DataContractRegistry.spatialRead.poi(byKey:)`) for active-destination updates and initialization, so automatic location/geofence callout paths consume cached event/contract context instead of repeatedly performing sync destination-manager POI reads in hot loops.
-- Onboarding selected-beacon callout events now carry pre-resolved destination POI context from `InteractiveBeaconViewModel`, and `OnboardingCalloutGenerator` now consumes this payload first before contract/keyed-manager fallback lookup.
-- `OnboardingCalloutGenerator` and destination tutorial callout resolution (`DestinationTutorialPage`, `DestinationTutorialInfoPage`) now use contract-only fallback resolution (`referenceEntity(byID:)` + `poi(byKey:)` or `GenericLocation(ref:)`) when destination entity-key lookup is unavailable, removing app-layer keyed destination-manager POI fallback reads from these sync-compatibility paths.
-- Beacon UI destination resolution paths (`BeaconActionHandler.createMarker`, `BeaconActionHandler.callout(detail:)`, `BeaconDetailStore` destination hydration, and `InteractiveBeaconViewModel` destination refresh fallback) now use contract-only fallback resolution (`referenceEntity(byID:)` + `poi(byKey:)` or `GenericLocation(ref:)`) when destination entity-key lookup is unavailable, removing keyed destination-manager POI fallback reads from these app-layer beacon compatibility flows.
-- `PreviewBehavior.destinationPOI(forReferenceID:)` and `BeaconDemoHelper` temporary-destination snapshot hydration now use contract-only fallback resolution (`referenceEntity(byID:)` + `poi(byKey:)` or `GenericLocation(ref:)`) when destination entity-key lookup is unavailable, removing keyed destination-manager POI fallback reads from these compatibility flows.
-- `BeaconCalloutGenerator.refreshDestinationPOI(for:)` now uses contract-only fallback resolution (`referenceEntity(byID:)` + `poi(byKey:)` or `GenericLocation(ref:)`) when destination entity-key lookup is unavailable, removing keyed destination-manager POI fallback reads from automatic beacon callout refresh flow.
-- `MarkerParameters.init(markerId:)` now hydrates marker context via `LocationDetailStoreAdapter.referenceEntity(byID:)?.getPOI()` instead of `destinationPOI(forReferenceID:)`, removing keyed destination-POI helper usage from route waypoint marker-serialization hydration.
-- Removed unused infrastructure adapter helper `LocationDetailStoreAdapter.destinationPOI(forReferenceID:)` after marker-serialization migration to `referenceEntity(byID:)?.getPOI()`.
-- Dependency-analysis artifact was refreshed from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-020036Z-ssindex-95ef481` (`latest.txt` updated), with tracked edge deltas: `Data -> App` 279, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
-- `AuthoredActivityContent` GPX parsing now uses local CoreGPX extension-element parsing (`gpxsc:*`) instead of `App/Framework Extensions/Geo Extensions/GPXExtensions.swift` helpers, removing the top cross-file `Data/Authored Activities/AuthoredActivityContent.swift -> App/Framework Extensions/Geo Extensions/GPXExtensions.swift` dependency edge from the top-40 report list.
-- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-020642Z-ssindex-7a49df8` (`latest.txt` updated), with tracked edge deltas: `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
-- `GPXSimulator` now parses track-point extensions directly from CoreGPX extension elements (`gpxtpx:*`, `gpxgd:*`) and local helper structs instead of App-layer `GPXExtensions.swift` symbols (`gpxLocation()`, `hasSoundscapeExtension`, `garminExtensions`), removing top cross-file `Sensors/Geolocation/GPX Simulator/GPXSimulator.swift -> App/Framework Extensions/Geo Extensions/GPXExtensions.swift` from the top-40 report list.
-- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-021158Z-ssindex-61d9d9a` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
-- `GPXSimulator` now uses local location mutation/bearing/distance helpers (`updatedLocation`, `bearing`, `coordinateDistance`) plus direct `SSGeoMath` calls instead of App-layer `CoreLocation+Extensions.swift` members (`with(course:)`, `with(speed:)`, `CLLocation.bearing(to:)`, `ssGeoCoordinate`, direction/speed `isValid`), removing top cross-file `Sensors/Geolocation/GPX Simulator/GPXSimulator.swift -> App/Framework Extensions/Geo Extensions/CoreLocation+Extensions.swift` from the top-40 report list.
-- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-021515Z-ssindex-f2d1b88` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
-- `GPXSimulator` simulation motion-state propagation now emits through an injected callback (`simulatedActivityDidChange`) instead of direct `AppContext.shared.motionActivityContext` writes, and `GeolocationManager` now consumes this via injected `GPXIntegration` hooks (`onSimulationStarted`, `setSimulatedActivity`, `isInMotion`, `currentActivityRawValue`) rather than direct `AppContext` reads.
-- `AppContext` now composes `GeolocationManager.GPXIntegration` with the existing `motionActivity` and event-process wiring, keeping startup/simulation behavior unchanged while reducing `Sensors -> App` coupling in geolocation simulator paths.
-- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-022108Z-ssindex-d28880c` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, and `Sensors -> App` 74.
-- `SignificantChangeMonitoringOrigin` now resolves nearby POI context via injected `POIIntegration` lookup hook (`poisNear`) instead of direct `AppContext.shared.spatialDataContext` access when determining significant-change origins.
-- `AppContext` now wires `SignificantChangeMonitoringOrigin.POIIntegration` with `spatialDataContext.getDataView(for:searchDistance:)` POI lookup composition, preserving significant-change monitoring behavior while removing direct Sensors-layer `AppContext` reads in this geolocation filter path.
-- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-094129Z-ssindex-f9600c3` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, and `Sensors -> App` 74.
-- `HeadphoneMotionManager` headset-connection event dispatch now emits through injected runtime integration (`RuntimeIntegration.processEvent`) instead of direct `AppContext.process(...)` calls in motion-update and disconnect paths.
-- `AppContext` now composes `HeadphoneMotionManager.RuntimeIntegration` (`if #available(iOS 14.4, *)`) to preserve existing headset-connection event behavior while removing this direct Sensors-layer `AppContext` coupling.
-- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-094419Z-ssindex-49850e8` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, and `Sensors -> App` 74.
-- `HeadphoneCalibrator` heading-observer creation now resolves via injected runtime integration (`RuntimeIntegration.heading`) instead of direct `AppContext.shared.geolocationManager` access.
-- `AppContext` now composes `HeadphoneCalibrator.RuntimeIntegration` using `geolocationManager.heading(orderedBy:)`, preserving calibrator heading-source behavior while removing this direct Sensors-layer `AppContext` dependency.
-- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-094705Z-ssindex-c2c36e7` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, and `Sensors -> App` 74.
-- `BoseFramesMotionManager` headset calibration/connection event dispatch now emits through injected runtime integration (`RuntimeIntegration.processEvent`) instead of direct `AppContext.process(...)` calls in calibration-start/finish and connection-state transitions.
-- `AppContext` now composes `BoseFramesMotionManager.RuntimeIntegration` event processing, preserving Bose headset event behavior while removing this direct Sensors-layer `AppContext` event-dispatch coupling.
-- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-094942Z-ssindex-b721053` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, and `Sensors -> App` 74.
-- `MarkerParameters` storage serialization now keeps `LocationDetail`-dependent APIs in Visual UI (`MarkerParameters+LocationDetail.swift`) while `Data/Serialization/MarkerParameters.swift` resolves marker metadata through `LocationDetailStoreAdapter` keyed/entity/location lookups, removing direct `Data -> Visual UI` serializer dependency.
-- `DestinationTutorialInfoPage.playCallout()` now resolves destination POI context through tutorial destination contract context (`DataContractRegistry.spatialRead.referenceEntity(byID:)` + `poi(byKey:)`) with cached tutorial destination fallback.
-- `DestinationTutorialPage` now resolves destination POI/name context through contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)` + `poi(byKey:)`) for tutorial page refresh, removing keyed destination-manager nickname fallback from tutorial destination presentation flow.
-- `BeaconDemoHelper` now snapshots/restores destination context using keyed destination POI lookup (`destinationPOI(forReferenceID:)`) instead of direct `destinationPOI` property reads.
-- `SpatialDataContext` now resolves active destination POI context for data-view composition and destination-tile selection via keyed lookup (`destinationPOI(forReferenceID:)`) instead of direct `destinationPOI` property reads.
-- `DestinationManagerProtocol` no longer requires `destinationPOI` as an app-facing property; callers use keyed destination lookup (`destinationPOI(forReferenceID:)`) for destination POI reads.
-- `DestinationManager` now keeps active-destination POI hydration as an internal helper (`activeDestinationPOI`) and keeps keyed lookup (`destinationPOI(forReferenceID:)`) as the explicit destination POI read surface.
-- `DestinationManager` no longer exposes concrete keyed destination POI reads (`destinationPOI(forReferenceID:)`); destination POI lookup now remains internal to destination storage operations (`DestinationEntityStore`) while app/runtime callers continue using destination ID seams plus contract ingress.
-- `DestinationManagerProtocol` no longer requires keyed destination POI reads (`destinationPOI(forReferenceID:)`) for protocol-driven callers; infrastructure destination context in `SpatialDataContext` now resolves active destination POI via reference-entity keyed lookup (`referenceEntityByKey(...).entityKey` + `searchByKey`) with `referenceEntityByKey(...).getPOI()` fallback.
-- `DestinationManagerProtocol` no longer requires keyed destination entity-key reads (`destinationEntityKey(forReferenceID:)`); beacon/onboarding/preview destination resolution paths (`BeaconActionHandler`, `BeaconDetailStore`, `InteractiveBeaconViewModel`, `BeaconDemoHelper`, `OnboardingCalloutGenerator`, `BeaconCalloutGenerator`, `PreviewBehavior`) now resolve entity-key context through contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)`), and marker callout-history cleanup in `AppContext` now does async contract-based entity-key cleanup.
-- `DestinationManagerProtocol` no longer requires `isDestination(key:)`; protocol-driven destination checks in `AutoCalloutGenerator`, `ReverseGeocoderContext`, and `LocationDetail` now compare against destination ID/context carried via destination-change metadata (`destinationKey`, `destinationEntityKey`) with async contract/entity fallback hydration (`DataContractRegistry.spatialRead.referenceEntity(byID:)` / `LocationDetailStoreAdapter.referenceEntity(byID:)`) for sync compatibility paths.
-- `DestinationManager` no longer exposes concrete `isDestination(key:)`; destination identity assertions now validate destination ID/entity-key context through destination-change metadata tests (`destinationKey`, `destinationEntityKey`) and remaining destination state checks read `destinationKey` directly.
-- `DestinationManagerProtocol` no longer requires `updateDestinationLocation(_:userLocation:)`; `BeaconDemoHelper.updateBeaconLocation(_:)` now uses concrete `DestinationManager` fallback when available, while destination-audio repositioning behavior remains concrete-manager local.
-- `DestinationManagerProtocol` no longer requires `setDestinationTemporaryIfMatchingID(_:)`; runtime marker-removal dispatch now uses concrete `DestinationManager` fallback in `AppContextDataRuntimeProviders.referenceSetDestinationTemporaryIfMatchingID(_:)`, while temporary-destination mutation behavior remains concrete-manager local.
-- `DestinationManagerProtocol` no longer requires `clearStartupTemporaryDestinationIfNeeded()`; app startup now performs temporary-destination cleanup through concrete `DestinationManager` fallback in `AppContext.start(fromFirstLaunch:)`, while startup temporary-beacon cleanup behavior remains concrete-manager local.
-- `DestinationManagerProtocol` no longer requires `isUserWithinGeofence(_:)`; UI runtime geofence checks now use concrete `DestinationManager` fallback in `AppContextUIRuntimeProviders.beaconDetailIsUserWithinDestinationGeofence(_:)`, while destination geofence evaluation behavior remains concrete-manager local.
-- `DestinationManagerProtocol` no longer requires `proximityBeaconPlayerId`; proximity-hum playback identity remains concrete-manager local (`DestinationManager`) and is no longer exposed on the app-facing protocol surface.
-- `DestinationManagerProtocol` no longer requires `isCurrentBeaconAsyncFinishable`; route/tour transition async-beacon checks now use concrete `DestinationManager` fallback in `RouteGuidance`/`GuidedTour`, while async-finish beacon state remains concrete-manager local.
-- `DestinationManagerProtocol` no longer requires `beaconPlayerId`; route/tour transition beacon-stop identity now uses concrete `DestinationManager` fallback in `RouteGuidance`/`GuidedTour`, while active beacon player identity remains concrete-manager local.
-- `DestinationManagerProtocol` no longer requires `isBeaconInBounds`; onboarding/tutorial beacon-orientation checks now use concrete `DestinationManager` fallback in `InteractiveBeaconViewModel` and `DestinationTutorialBeaconPage`, while beacon in-bounds state remains concrete-manager local.
-- `DestinationManagerProtocol` no longer requires keyed temporary-state lookup (`destinationIsTemporary(forReferenceID:)`); active-beacon temporary checks in `BeaconActionHandler`/`BeaconDemoHelper` now resolve temporary-state context through contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)`), while startup temporary-beacon cleanup keeps temporary-state checks internal to `DestinationManager` storage.
-- `DestinationManagerProtocol` no longer requires keyed destination nickname reads (`destinationNickname(forReferenceID:)`); `AppContext` headset-test startup cleanup and destination tutorial name resolution now read nickname metadata through contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)`).
-- `BeaconDemoHelper` now resolves destination estimated-address context through contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)`) during destination snapshot/restore flows; `DestinationManagerProtocol` no longer requires `destinationEstimatedAddress(forReferenceID:)`.
-- `DestinationManagerProtocol` no longer exposes `isDestinationSet`; protocol-driven callers now derive destination-set state from `destinationKey != nil`.
-- `DestinationManager` no longer exposes concrete `isDestinationSet`; destination-set checks now read `destinationKey != nil` directly in remaining concrete/test callers.
-- Realm import boundary guardrail now scans all `GuideDogs/Code` files and strictly enforces `RealmSwift` usage to `Data/Infrastructure/Realm/**` (no non-infrastructure allowlist path).
-- Non-infrastructure `RealmSwift` imports are now zero: preview/bootstrap callsites in marker/route UI views use infrastructure-local helper `RealmSampleDataBootstrap.bootstrap()`.
-- `SpatialDataStoreRegistry.store` seam guardrail now enforces strict infrastructure-only usage (no staged allowlist path) across `GuideDogs/Code/**`.
-- `ShareRouteAlertObserver` route-import existing-route check now uses async contract ingress (`DataContractRegistry.spatialRead.route(byKey:)`) instead of direct `SpatialDataCache.routeByKey(...)` from Notifications-layer alert flow.
-- `RouteCell` route-row hydration now uses async contract ingress (`DataContractRegistry.spatialRead.route(byKey:)`) in `RouteModel.update()` instead of direct `SpatialDataCache.routeByKey(...)` from Visual UI list-model flow.
-- `WaypointAddList` preview marker-ID seeding now uses `RealmReferenceEntity.samples` instead of `SpatialDataCache.referenceEntities()`, removing one preview-layer cache ingress.
-- `SoundscapeDocumentAlert.shareRoute(_ routeDetail:)` now builds a `Route` from `RouteDetail` data (`displayName`, `description`, `waypoints.asRouteWaypoint`) instead of direct `SpatialDataCache.routeByKey(...)` lookup.
-- `RouteRecommender` now resolves candidate routes through async contract ingress (`DataContractRegistry.spatialRead.routes()`), then applies the same nearby-distance and recency sort behavior in-memory instead of direct `SpatialDataCache.routesNear(...)` reads.
-- `MarkersAndRoutesListHostViewController` now clears marker/route `isNew` flags via `DataContractRegistry.spatialMaintenanceWrite.clearNewReferenceEntitiesAndRoutes()` instead of direct `SpatialDataCache.clearNewReferenceEntities()/clearNewRoutes()` calls.
-- Marker delete-alert route-name hydration now resolves via async contract ingress (`DataContractRegistry.spatialRead.routes(containingMarkerID:)`) in `EditMarkerView` and `MarkersList`, and `Alert.deleteMarkerAlert` now consumes pre-resolved route names instead of direct `SpatialDataCache.routesContaining(...)` reads.
-- `ReverseGeocoderContext` nearest-road helpers now use road-local intersection/keyed lookup (`closestRoad.intersection(atCoordinate:)`, in-scope road-key match) instead of direct `SpatialDataCache.intersection(...)` / `SpatialDataCache.searchByKey(...)` reads.
-- Intersection arrival/callout flow now carries resolved `Intersection` context in `IntersectionArrivalEvent` and `IntersectionCallout`, removing direct `SpatialDataCache.intersectionByKey(...)` lookups from default/route-guidance/tour intersection callout paths.
-- `DynamicLaunchViewController` now uses infrastructure helper `RealmSpatialSearchBootstrap.configureDefaults()` for default search-provider/geocoder bootstrap instead of direct `SpatialDataCache.useDefaultSearchProviders()/useDefaultGeocoder()` UI-layer calls.
-- `SearchResultsTableViewController` now resolves recent selections via async contract ingress (`DataContractRegistry.spatialRead.recentlySelectedPOIs()`) instead of direct `SpatialDataCache.recentlySelectedObjects()` reads.
-- `EstimatedLocationDetail` now resolves reverse-geocoded address data via async contract ingress (`DataContractRegistry.spatialRead.estimatedAddress(near:)`) instead of direct `SpatialDataCache.fetchEstimatedAddress(...)` reads.
-- `ReverseGeocoderResultTypes` keyed road/POI/intersection lookups and estimated-address fetch now route through infrastructure helper `RealmReverseGeocoderLookup` instead of direct non-infrastructure `SpatialDataCache` access in geocoder result models.
-- `DynamicLaunchViewController` and `ReverseGeocoderResultTypes` now consume non-infrastructure bootstrap/lookup adapters (`SpatialSearchBootstrap`, `ReverseGeocoderLookup`) from `Data/Spatial Data`, removing direct `Realm*` infrastructure helper references from UI/behavior layers.
-- Marker/route SwiftUI preview providers (`WaypointAddList`, `MarkersAndRoutesList`, `MarkersList`, `MarkerCell`, `RouteCell`) now consume non-infrastructure sample adapter `SpatialPreviewSamples` from `Data/Spatial Data` instead of direct `RealmSampleDataBootstrap`/`RealmReferenceEntity.sample*` references.
-- `SpatialPreviewSamples` marker-ID helpers now route through infrastructure helper `RealmPreviewSamples` so non-infrastructure adapter code no longer references `RealmReferenceEntity.sample*` directly.
-- Marker/route SwiftUI preview and host environment wiring (`WaypointAddList`, `MarkersAndRoutesList`, `MarkersAndRoutesListHostViewController`) now routes `\.realmConfiguration` through non-infrastructure adapter `SpatialPreviewEnvironment` instead of direct `RealmHelper.databaseConfig` usage in Visual UI.
-- `AppDelegate` startup migration now routes through non-infrastructure adapter `SpatialDataMigration.migrateIfNeeded()` instead of direct `RealmMigrationTools.migrate(database:cache:)` + `RealmHelper` configuration access in app layer startup wiring.
-- `LocationDetail.updateLastSelectedDate()` now routes non-marker POI selection updates through infrastructure helper `LocationDetailStoreAdapter.markPOISelected(_:)` instead of direct Visual UI `RealmHelper` cache writes, and the unused `LocationDetail.init(marker: RealmReferenceEntity, ...)` overload was removed.
-- Removed unused app-layer universal-link helper `UniversalLinkManager.shareMarker(_ marker: RealmReferenceEntity)`; marker sharing continues through POI/location entry points (`shareEntity`, `shareLocation`).
-- App/runtime marker cloud-sync dispatch now carries canonical `ReferenceEntity` values across `ReferenceEntityRuntimeProviding`, `AppContextDataRuntimeProviders`, and `CloudKeyValueStore+Markers`; Realm object conversion is kept infrastructure-local via `RealmReferenceEntity.domainEntity`.
-- Some compatibility paths are still sync today because they sit behind sync callout/rendering helpers or model convenience APIs.
-- Forcing ad-hoc sync wrappers around async contracts would fragment the API and create hidden scheduling behavior.
+No app-facing contract may expose Realm object models or Realm-local type families.
 
-## Decision for Sync Paths
-- Keep the three async-first contracts as the only app-facing ingress surface.
-- Do not introduce a parallel sync read protocol.
-- Migrate remaining sync callers by one of two patterns:
-  - Move lookup earlier to an async producer and pass resolved value data into sync callout/rendering structs.
-  - Convert the owning API boundary to async when the call chain can absorb it without broad churn.
-- If neither pattern is feasible for a caller, treat it as a temporary compatibility seam and track it explicitly in `modularization_plan.md`.
+### Async Policy
+- Contracts are async-first (`async`/`await`) and explicit about failure (`throws`).
+- No parallel sync contract surface is introduced.
+- Sync compatibility is handled by targeted seams at call boundaries and must be temporary.
 
-## Scope Control Rules
-- New storage behavior required by `App`, `Behaviors`, `Visual UI`, or `Notifications` must be added to `DataContractRegistry` contracts first.
-- Do not add new global registries for data access.
-- Do not add protocol layers unless they replace an existing larger seam and reduce total surface area.
+## Infrastructure-Only APIs (Non App-Facing)
+The following are implementation details and must not be used by non-infrastructure code:
+- `SpatialDataStoreRegistry.store`
+- `SpatialDataCache`
+- `DestinationEntityStore`
+- Realm object models (`RealmRoute`, `RealmRouteWaypoint`, `RealmReferenceEntity`, etc.)
+- Any `RealmSwift`-dependent API
 
-## Migration Sequence
-1. Lock ingress (completed for non-infrastructure callers; keep enforced):
-   - Migrate non-infrastructure `SpatialDataStoreRegistry.store` usages to `DataContractRegistry` contracts or infrastructure-local sync adapter seams.
-   - Keep CI guardrail blocking `SpatialDataStoreRegistry.store` usage outside `Data/Infrastructure/Realm/**` with strict infrastructure-only enforcement.
-2. Unify storage-facing domain models (completed for first set):
-   - Move `Route`, `RouteWaypoint`, `ReferenceEntity` value models out of Realm infrastructure files.
-   - Keep Realm object models (`RealmRoute`, `RealmRouteWaypoint`, `RealmReferenceEntity`) infrastructure-local.
-3. Shrink contract leakage (completed for current known infrastructure model types; keep enforced):
-   - Keep `Data/Contracts` infrastructure-type allowlist empty and reject regressions via `check_data_contract_infra_type_allowlist.sh`.
-4. Realm isolation hardening (completed for import-boundary enforcement; keep enforced):
-   - Realm import boundary checks now run across whole `GuideDogs/Code` with strict infrastructure-only `RealmSwift` import policy.
-5. Extractable adapter boundary (in progress):
-   - Ensure swapping persistence backend only requires a new adapter conforming to the three app-facing contracts.
+## Boundary Rules
+- `Data/Contracts` must remain free of Realm and platform-bound infrastructure types.
+- `RealmSwift` imports are confined to `Data/Infrastructure/Realm/**`.
+- New storage behavior for `App`, `Behaviors`, `Visual UI`, or `Notifications` must be added through `DataContractRegistry` contracts first.
+- Do not add new global data registries.
+- Do not introduce DTO families when canonical domain models are already readable and sufficient.
 
-## Done Criteria for “Realm Split Ready”
-- `App`, `Behaviors`, `Visual UI`, and `Notifications` do not reference `Data/Infrastructure/Realm/**` directly.
-- `DataContractRegistry` contracts contain no Realm infrastructure types.
-- `RealmSwift` imports are confined to adapter/infrastructure files.
-- A non-Realm in-memory adapter passes contract behavior tests without special-case shims.
+## Target Extraction Shape
+- `apps/common/Sources/SSDataDomain`: platform-neutral canonical domain/value models.
+- `apps/common/Sources/SSDataContracts`: platform-neutral async data contract protocols and shared contract-side types.
+- `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm`: iOS-only persistence adapter and Realm mapping.
 
-## Immediate Next Steps
-1. Continue API ingress consolidation by targeting remaining `Sensors -> App` seams (for example simulator/runtime calls that still require `AppContext`-owned behavior wiring) with narrow provider seams where call chains can absorb incremental extraction.
-2. Keep strict guardrail enforcement in place (`SpatialDataStoreRegistry.store`, `SpatialDataCache`, `RealmSwift`, and contract infra-type boundaries) while reducing compatibility fallbacks.
-3. Refresh dependency-analysis artifacts from deterministic index builds and continue tracking edge deltas (`Data -> App`, `Data -> Visual UI`, `Behaviors -> Visual UI`) in plan updates.
+## Static Success Criteria
+- Non-infrastructure app code uses only `DataContractRegistry` contracts for storage ingress.
+- `Data/Contracts` contain no Realm infrastructure types.
+- `RealmSwift` imports remain confined to Realm infrastructure.
+- Canonical app-facing models remain stable and domain-shaped (`Route` stays a value type).
+- A non-Realm in-memory adapter can satisfy contract behavior tests without special-case shims.
+
+## Related Plan
+- Implementation status, metrics, and next execution slices: `docs/plans/modularization_plan.md`
