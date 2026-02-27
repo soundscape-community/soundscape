@@ -11,11 +11,18 @@ private struct TileStub: Hashable {
     let id: Int
 }
 
+private struct MarkerParametersStub: Equatable {
+    let id: String
+}
+
 private struct NearbyLocationStub {}
+
+private func acceptsReferenceMarkerReadContract<Contract: SpatialReferenceMarkerReadContract>(_ contract: Contract) {}
 
 @MainActor
 private final class StorageContractMock: SpatialRouteReadContract,
                                          SpatialReferenceReadContract,
+                                         SpatialReferenceMarkerReadContract,
                                          SpatialTileReadContract,
                                          SpatialRouteWriteContract,
                                          SpatialRouteMaintenanceWriteContract,
@@ -35,6 +42,11 @@ private final class StorageContractMock: SpatialRouteReadContract,
     func referenceEntities() async -> [ReferenceEntity] { [] }
     func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? { nil }
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] { [] }
+
+    func markerParameters(byID id: String) async -> MarkerParametersStub? { nil }
+    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParametersStub? { nil }
+    func markerParameters(byEntityKey key: String) async -> MarkerParametersStub? { nil }
+    func markerParametersForBackup() async -> [MarkerParametersStub] { [] }
 
     func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<TileStub> { [] }
     func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [NearbyLocationStub] { [] }
@@ -105,6 +117,7 @@ struct SSDataContractsTests {
     @Test
     func storageContractProtocolsSupportUnifiedConformance() async throws {
         let mock = StorageContractMock()
+        acceptsReferenceMarkerReadContract(mock)
 
         let routeRead: any SpatialRouteReadContract = mock
         let referenceRead: any SpatialReferenceReadContract = mock
@@ -114,6 +127,8 @@ struct SSDataContractsTests {
 
         let routes = await routeRead.routes()
         let references = await referenceRead.referenceEntities()
+        let markerParameters = await mock.markerParameters(byID: "marker-1")
+        let markerParametersBackup = await mock.markerParametersForBackup()
         let tiles = await mock.tiles(forDestinations: true, forReferences: true, at: 16, destination: nil)
         let nearbyLocations = await mock.genericLocations(near: .init(coordinate: .init(latitude: 47.6205,
                                                                                           longitude: -122.3493)),
@@ -121,6 +136,8 @@ struct SSDataContractsTests {
 
         #expect(routes.isEmpty)
         #expect(references.isEmpty)
+        #expect(markerParameters == nil)
+        #expect(markerParametersBackup.isEmpty)
         #expect(tiles.isEmpty)
         #expect(nearbyLocations.isEmpty)
 

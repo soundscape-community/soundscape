@@ -23,11 +23,9 @@ protocol RouteReadContract: SpatialRouteReadContract {
 }
 
 @MainActor
-protocol ReferenceReadContract: SpatialReferenceReadContract {
-    func markerParameters(byID id: String) async -> MarkerParameters?
-    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters?
-    func markerParameters(byEntityKey key: String) async -> MarkerParameters?
-    func markerParametersForBackup() async -> [MarkerParameters]
+protocol ReferenceReadContract: SpatialReferenceReadContract,
+                                SpatialReferenceMarkerReadContract
+where MarkerParametersValue == MarkerParameters {
     func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity?
     func recentlySelectedPOIs() async -> [POI]
     func poi(byKey key: String) async -> POI?

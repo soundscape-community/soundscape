@@ -27,6 +27,16 @@ public protocol SpatialReferenceReadContract {
 }
 
 @MainActor
+public protocol SpatialReferenceMarkerReadContract {
+    associatedtype MarkerParametersValue
+
+    func markerParameters(byID id: String) async -> MarkerParametersValue?
+    func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParametersValue?
+    func markerParameters(byEntityKey key: String) async -> MarkerParametersValue?
+    func markerParametersForBackup() async -> [MarkerParametersValue]
+}
+
+@MainActor
 public protocol SpatialTileReadContract {
     associatedtype Tile: Hashable
     associatedtype NearbyLocation

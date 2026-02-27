@@ -1,6 +1,6 @@
 SSIndexAnalyzer Report
-Generated (UTC): 20260227-104406Z
-Git commit: 01e156a
+Generated (UTC): 20260227-104744Z
+Git commit: 5edb20d
 Repository: /Users/robbie/src/soundscape
 Command: swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --store-path /tmp/ss-index-derived/Index.noindex/DataStore
 
@@ -12,7 +12,7 @@ libIndexStore: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefaul
 Swift files scanned: 733
 Reference occurrences: 96725
 Resolved cross-subsystem refs: 8975
-Resolved external refs: 28148
+Resolved external refs: 28149
 
 Top cross-subsystem dependency edges:
   1.   1566  Visual UI -> App

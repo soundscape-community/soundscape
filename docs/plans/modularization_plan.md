@@ -51,7 +51,7 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260227-104406Z-ssindex-01e156a`):
+Current architecture baseline (latest report `20260227-104744Z-ssindex-5edb20d`):
 - `Data -> App`: 248
 - `Data -> Visual UI`: 51
 - `Behaviors -> Visual UI`: 126
@@ -70,9 +70,11 @@ Milestone ledger:
 - 2026-02-27: Milestone 2 first extraction slice landed: shared contract-side value types moved to `apps/common/Sources/SSDataContracts` and bridged in iOS via compile-safe typealiases.
 - 2026-02-27: Milestone 2 second extraction slice landed: shared route/reference/write/maintenance storage protocol surfaces moved into `apps/common/Sources/SSDataContracts` and iOS storage contracts now inherit shared protocols while retaining iOS-only members.
 - 2026-02-27: Milestone 2 third extraction slice landed: shared tile-read surface introduced as `SpatialTileReadContract` in `SSDataContracts` with iOS constrained specialization (`Tile == VectorTile`, `NearbyLocation == POI`).
+- 2026-02-27: Milestone 2 fourth extraction slice landed: shared marker-parameter read surface introduced as `SpatialReferenceMarkerReadContract` in `SSDataContracts` with iOS specialization (`MarkerParametersValue == MarkerParameters`).
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-02-27: Added shared `SpatialReferenceMarkerReadContract` in `SSDataContracts` and rewired iOS `ReferenceReadContract` to inherit it while keeping `POI`/`GenericLocation` reads iOS-local.
 - 2026-02-27: Added shared `SpatialTileReadContract` in `SSDataContracts` and rewired iOS `TileReadContract` to a constrained specialization while keeping `POI`/`VectorTile` iOS-local.
 - 2026-02-27: Added shared storage protocol surfaces in `SSDataContracts` (`SpatialRouteReadContract`, `SpatialReferenceReadContract`, `SpatialRouteWriteContract`, `SpatialRouteMaintenanceWriteContract`, `SpatialAddressMaintenanceWriteContract`) and rewired iOS `Spatial*Contract` protocols to inherit from them.
 - 2026-02-27: Added `SSDataContracts` module and migrated `SpatialIntersectionRegion`/`RouteReadMetadata`/`ReferenceReadMetadata`/`ReferenceCalloutReadData`/`EstimatedAddressReadData`/`AddressCacheRecord`.
@@ -137,10 +139,10 @@ Acceptance:
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 2 third extraction slice is complete (shared tile/read contract surface added via constrained protocol specialization; remaining work is `POI`/`GenericLocation` read-surface cleanup).
+- Milestone 2 fourth extraction slice is complete (shared marker-parameter read contract added; remaining work is `POI`/`GenericLocation` read-surface cleanup).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260227-104406Z-ssindex-01e156a.txt`
+- `docs/plans/artifacts/dependency-analysis/20260227-104744Z-ssindex-5edb20d.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
