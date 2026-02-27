@@ -15,7 +15,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
   - `DataContractRegistry` async contracts for app/runtime callers.
   - `DestinationEntityStore` destination-focused seam used by `DestinationManager`.
 - Canonical domain value models (`Route`, `RouteWaypoint`, `ReferenceEntity`) are now outside Realm infrastructure (`Data/Models/Temp Models`), with Realm-prefixed object models retained infrastructure-local.
-- Dependency analysis (report `20260227-020642Z-ssindex-7a49df8`) still shows reverse layering pressure:
+- Dependency analysis (report `20260227-021158Z-ssindex-61d9d9a`) still shows reverse layering pressure:
   - `Data -> App`: 245
   - `Data -> Visual UI`: 34
   - `Behaviors -> Visual UI`: 126
@@ -66,6 +66,8 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - Dependency-analysis artifact was refreshed from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-020036Z-ssindex-95ef481` (`latest.txt` updated), with tracked edge deltas: `Data -> App` 279, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
 - `AuthoredActivityContent` GPX parsing now uses local CoreGPX extension-element parsing (`gpxsc:*`) instead of `App/Framework Extensions/Geo Extensions/GPXExtensions.swift` helpers, removing the top cross-file `Data/Authored Activities/AuthoredActivityContent.swift -> App/Framework Extensions/Geo Extensions/GPXExtensions.swift` dependency edge from the top-40 report list.
 - Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-020642Z-ssindex-7a49df8` (`latest.txt` updated), with tracked edge deltas: `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
+- `GPXSimulator` now parses track-point extensions directly from CoreGPX extension elements (`gpxtpx:*`, `gpxgd:*`) and local helper structs instead of App-layer `GPXExtensions.swift` symbols (`gpxLocation()`, `hasSoundscapeExtension`, `garminExtensions`), removing top cross-file `Sensors/Geolocation/GPX Simulator/GPXSimulator.swift -> App/Framework Extensions/Geo Extensions/GPXExtensions.swift` from the top-40 report list.
+- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-021158Z-ssindex-61d9d9a` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126.
 - `MarkerParameters` storage serialization now keeps `LocationDetail`-dependent APIs in Visual UI (`MarkerParameters+LocationDetail.swift`) while `Data/Serialization/MarkerParameters.swift` resolves marker metadata through `LocationDetailStoreAdapter` keyed/entity/location lookups, removing direct `Data -> Visual UI` serializer dependency.
 - `DestinationTutorialInfoPage.playCallout()` now resolves destination POI context through tutorial destination contract context (`DataContractRegistry.spatialRead.referenceEntity(byID:)` + `poi(byKey:)`) with cached tutorial destination fallback.
 - `DestinationTutorialPage` now resolves destination POI/name context through contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)` + `poi(byKey:)`) for tutorial page refresh, removing keyed destination-manager nickname fallback from tutorial destination presentation flow.
@@ -152,6 +154,6 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - A non-Realm in-memory adapter passes contract behavior tests without special-case shims.
 
 ## Immediate Next Steps
-1. Continue API ingress consolidation by targeting remaining App GPX helper dependencies in non-App layers (for example `Sensors/Geolocation/GPX Simulator/GPXSimulator.swift -> App/Framework Extensions/Geo Extensions/GPXExtensions.swift`) and move those call sites to local/CoreGPX parsing helpers.
+1. Continue API ingress consolidation by targeting remaining non-App-layer App helper dependencies in GPX simulator paths (for example `Sensors/Geolocation/GPX Simulator/GPXSimulator.swift -> App/Framework Extensions/Geo Extensions/CoreLocation+Extensions.swift`) and move those call sites to local/CoreLocation/CoreGPX helpers where feasible.
 2. Keep strict guardrail enforcement in place (`SpatialDataStoreRegistry.store`, `SpatialDataCache`, `RealmSwift`, and contract infra-type boundaries) while reducing compatibility fallbacks.
 3. Refresh dependency-analysis artifacts from deterministic index builds and continue tracking edge deltas (`Data -> App`, `Data -> Visual UI`, `Behaviors -> Visual UI`) in plan updates.

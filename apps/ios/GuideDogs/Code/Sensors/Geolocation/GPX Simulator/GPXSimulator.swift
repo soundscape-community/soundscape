@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -49,6 +50,28 @@ class GPXSimulator {
         static let transformAverageWalkingSpeed = "transform:average_walking_speed"
         static let timeInterval = "time_interval"
     }
+
+    private struct SimulatorLocation {
+        var location: CLLocation
+        let deviceHeading: Double?
+    }
+
+    private enum GPXTag {
+        static let speed = "speed"
+        static let course = "course"
+
+        static let garminTrackPointExtension = "gpxtpx:TrackPointExtension"
+        static let garminSpeed = "gpxtpx:speed"
+        static let garminCourse = "gpxtpx:course"
+
+        static let soundscapeTrackPointExtension = "gpxgd:TrackPointExtension"
+        static let soundscapeHorizontalAccuracy = "gpxgd:hor_acc"
+        static let soundscapeVerticalAccuracy = "gpxgd:ver_acc"
+        static let soundscapeTrueHeading = "gpxgd:hdg_tru"
+        static let soundscapeMagneticHeading = "gpxgd:hdg_mag"
+        static let soundscapeHeadingAccuracy = "gpxgd:hdg_acc"
+        static let soundscapeDeviceHeading = "gpxgd:hdg_dvc"
+    }
     
     struct AudioConfiguration {
         let filename: String
@@ -60,6 +83,7 @@ class GPXSimulator {
 
     /// Default time interval to use between simulated locations when timestamps are not present
     static let defaultTimeIntervalBetweenLocations: TimeInterval = 1.0
+    private static let missingTimestampIdentifier = Date(timeIntervalSince1970: 0)
     
     // MARK: - Properties
     
@@ -78,7 +102,7 @@ class GPXSimulator {
     private var isCourseActive = false
     private var isDeviceHeadingActive = false
     private(set) var isPaused = false // Only relevant if a simulation is in progress
-    private(set) var activity: GPXActivity?
+    private(set) var activity: String?
     private var currentIndex = GPXIndex.zero
     private var didReachSimulationEnd = false
     private var simulatedLocationTimer: Timer?
@@ -126,7 +150,7 @@ class GPXSimulator {
     
     var allTrackLocations: [CLLocation]? {
         guard let tracks = allTrackPoints else { return nil }
-        return tracks.map { $0.gpxLocation().location }
+        return tracks.map { simulatorLocation(for: $0).location }
     }
     
     // MARK: - Initialization
@@ -581,43 +605,43 @@ class GPXSimulator {
         return point
     }
     
-    private func location(at index: GPXIndex) -> GPXLocation? {
+    private func location(at index: GPXIndex) -> SimulatorLocation? {
         guard let trackPoint = trackPoint(at: index) else { return nil }
-        var gpxLocation = trackPoint.gpxLocation()
+        var simulatorLocation = simulatorLocation(for: trackPoint)
         
         // Synthesize the course if needed
-        if !gpxLocation.location.course.isValid && synthesizeCourse && !trackPoint.hasSoundscapeExtension {
+        if !simulatorLocation.location.course.isValid && synthesizeCourse && !hasSoundscapeExtension(trackPoint) {
             let course = self.course(for: index)
             if course.isValid {
-                gpxLocation.location = gpxLocation.location.with(course: course)
+                simulatorLocation.location = simulatorLocation.location.with(course: course)
             }
         }
         
         // Synthesize the speed if needed
-        if !gpxLocation.location.speed.isValid && synthesizeSpeed && !trackPoint.hasSoundscapeExtension {
+        if !simulatorLocation.location.speed.isValid && synthesizeSpeed && !hasSoundscapeExtension(trackPoint) {
             if let speed = self.speed(for: index), speed.isValid {
-                gpxLocation.location = gpxLocation.location.with(speed: speed)
+                simulatorLocation.location = simulatorLocation.location.with(speed: speed)
             }
         }
         
-        return gpxLocation
+        return simulatorLocation
     }
     
     private func course(for index: GPXIndex) -> CLLocationDirection {
         guard let trackPoint = self.trackPoint(at: index) else { return -1 }
         
         // Try to get existing track course
-        if let trackCourseStr = trackPoint.extensions?.children.first(where: { $0.name == "course"})?.text,
+        if let trackCourseStr = trackPoint.extensions?.children.first(where: { $0.name == GPXTag.course })?.text,
            let trackCourse = CLLocationDirection(trackCourseStr),
            trackCourse.isValid {
             // I am like 95% sure the previous code here meant the extensions course, but if that breaks you might want to look here first.
             return trackCourse
         }
         
-        if let extensions = trackPoint.extensions,
-            let garminExtensions = extensions.garminExtensions,
-            let trackCourse = garminExtensions.course,
-            (trackCourse as CLLocationDirection).isValid {
+        if let garminExtensions = extensionElement(named: GPXTag.garminTrackPointExtension, in: trackPoint.extensions),
+           let trackCourseStr = childText(in: garminExtensions, named: GPXTag.garminCourse),
+           let trackCourse = CLLocationDirection(trackCourseStr),
+           trackCourse.isValid {
             return trackCourse
         }
         
@@ -641,7 +665,7 @@ class GPXSimulator {
             return course(for: prevIndex)
         }
     
-        return trackPoint.gpxLocation().location.bearing(to: nextTrackPoint.gpxLocation().location)
+        return simulatorLocation(for: trackPoint).location.bearing(to: simulatorLocation(for: nextTrackPoint).location)
     }
 
     private func speed(for index: GPXIndex) -> CLLocationSpeed? {
@@ -650,16 +674,16 @@ class GPXSimulator {
         }
         
         // Try to get the existing speed value
-        if let trackSpeedStr = trackPoint.extensions?.children.first(where: {$0.name == "speed"})?.text,
+        if let trackSpeedStr = trackPoint.extensions?.children.first(where: { $0.name == GPXTag.speed })?.text,
            let trackSpeed = CLLocationSpeed(trackSpeedStr),
            trackSpeed.isValid {
             // I am like 95% sure the previous code here meant the extensions speed, but if that breaks you might want to look here first.
             return trackSpeed
         }
         
-        if let extensions = trackPoint.extensions,
-            let garminExtensions = extensions.garminExtensions,
-            let trackSpeed = garminExtensions.speed,
+        if let garminExtensions = extensionElement(named: GPXTag.garminTrackPointExtension, in: trackPoint.extensions),
+            let trackSpeedStr = childText(in: garminExtensions, named: GPXTag.garminSpeed),
+            let trackSpeed = CLLocationSpeed(trackSpeedStr),
             trackSpeed.isValid {
             return trackSpeed
         }
@@ -720,7 +744,7 @@ class GPXSimulator {
         var closestDistance: CLLocationDistance = CLLocationDistanceMax
 
         for trackPoint in allTrackPoints {
-            let distance = location.coordinate.ssGeoCoordinate.distance(to: trackPoint.gpxLocation().location.coordinate.ssGeoCoordinate)
+            let distance = location.coordinate.ssGeoCoordinate.distance(to: simulatorLocation(for: trackPoint).location.coordinate.ssGeoCoordinate)
             if distance > closestDistance {
                 continue
             }
@@ -729,6 +753,108 @@ class GPXSimulator {
             closestDistance = distance
         }
         return closestTrackPoint
+    }
+
+    private func extensionElement(named name: String, in extensions: GPXExtensions?) -> GPXExtensionsElement? {
+        extensions?.children.first(where: { $0.name == name })
+    }
+
+    private func childText(in element: GPXExtensionsElement, named name: String) -> String? {
+        element.children.first(where: { $0.name == name })?.text
+    }
+
+    private func hasSoundscapeExtension(_ trackPoint: GPXTrackPoint) -> Bool {
+        extensionElement(named: GPXTag.soundscapeTrackPointExtension, in: trackPoint.extensions) != nil
+    }
+
+    private func simulatorLocation(for trackPoint: GPXTrackPoint) -> SimulatorLocation {
+        var speed: CLLocationSpeed = -1
+        var course: CLLocationDirection = -1
+
+        var horizontalAccuracy: CLLocationAccuracy = -1
+        var verticalAccuracy: CLLocationAccuracy = -1
+
+        var trueHeading: CLLocationDirection = -1
+        var magneticHeading: CLLocationDirection = -1
+        var headingAccuracy: CLLocationDirection = -1
+
+        var deviceHeading: Double?
+
+        // Backwards compatibility: historically these dilution values were used for accuracy.
+        horizontalAccuracy = trackPoint.horizontalDilution ?? horizontalAccuracy
+        verticalAccuracy = trackPoint.verticalDilution ?? verticalAccuracy
+
+        if let extensions = trackPoint.extensions {
+            // Backwards compatibility: older files stored speed/course directly as extension children.
+            if let speedText = extensions.children.first(where: { $0.name == GPXTag.speed })?.text,
+               let parsedSpeed = CLLocationSpeed(speedText) {
+                speed = parsedSpeed
+            }
+            if let courseText = extensions.children.first(where: { $0.name == GPXTag.course })?.text,
+               let parsedCourse = CLLocationDirection(courseText) {
+                course = parsedCourse
+            }
+
+            if let garminExtensions = extensionElement(named: GPXTag.garminTrackPointExtension, in: extensions) {
+                if let garminSpeedText = childText(in: garminExtensions, named: GPXTag.garminSpeed),
+                   let parsedSpeed = CLLocationSpeed(garminSpeedText) {
+                    speed = parsedSpeed
+                }
+                if let garminCourseText = childText(in: garminExtensions, named: GPXTag.garminCourse),
+                   let parsedCourse = CLLocationDirection(garminCourseText) {
+                    course = parsedCourse
+                }
+            }
+
+            if let soundscapeExtensions = extensionElement(named: GPXTag.soundscapeTrackPointExtension, in: extensions) {
+                if let horizontalAccuracyText = childText(in: soundscapeExtensions, named: GPXTag.soundscapeHorizontalAccuracy),
+                   let parsedHorizontalAccuracy = CLLocationAccuracy(horizontalAccuracyText) {
+                    horizontalAccuracy = parsedHorizontalAccuracy
+                }
+                if let verticalAccuracyText = childText(in: soundscapeExtensions, named: GPXTag.soundscapeVerticalAccuracy),
+                   let parsedVerticalAccuracy = CLLocationAccuracy(verticalAccuracyText) {
+                    verticalAccuracy = parsedVerticalAccuracy
+                }
+
+                if let trueHeadingText = childText(in: soundscapeExtensions, named: GPXTag.soundscapeTrueHeading),
+                   let parsedTrueHeading = CLLocationDirection(trueHeadingText) {
+                    trueHeading = parsedTrueHeading
+                }
+                if let magneticHeadingText = childText(in: soundscapeExtensions, named: GPXTag.soundscapeMagneticHeading),
+                   let parsedMagneticHeading = CLLocationDirection(magneticHeadingText) {
+                    magneticHeading = parsedMagneticHeading
+                }
+                if let headingAccuracyText = childText(in: soundscapeExtensions, named: GPXTag.soundscapeHeadingAccuracy),
+                   let parsedHeadingAccuracy = CLLocationDirection(headingAccuracyText) {
+                    headingAccuracy = parsedHeadingAccuracy
+                }
+                if let deviceHeadingText = childText(in: soundscapeExtensions, named: GPXTag.soundscapeDeviceHeading),
+                   let parsedDeviceHeading = CLLocationDirection(deviceHeadingText) {
+                    deviceHeading = parsedDeviceHeading
+                }
+
+                // Backwards compatibility for older heading encodings.
+                if deviceHeading == nil {
+                    if trueHeading >= 0.0 {
+                        deviceHeading = trueHeading
+                    } else if headingAccuracy >= 0.0 {
+                        deviceHeading = magneticHeading
+                    }
+                }
+            }
+        }
+
+        let location = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: trackPoint.latitude!, longitude: trackPoint.longitude!),
+            altitude: trackPoint.elevation ?? 0,
+            horizontalAccuracy: horizontalAccuracy,
+            verticalAccuracy: verticalAccuracy,
+            course: course,
+            speed: speed,
+            timestamp: trackPoint.time ?? Self.missingTimestampIdentifier
+        )
+
+        return SimulatorLocation(location: location, deviceHeading: deviceHeading)
     }
 
 }
