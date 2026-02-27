@@ -610,17 +610,17 @@ class GPXSimulator {
         var simulatorLocation = simulatorLocation(for: trackPoint)
         
         // Synthesize the course if needed
-        if !simulatorLocation.location.course.isValid && synthesizeCourse && !hasSoundscapeExtension(trackPoint) {
+        if !isValidDirection(simulatorLocation.location.course) && synthesizeCourse && !hasSoundscapeExtension(trackPoint) {
             let course = self.course(for: index)
-            if course.isValid {
-                simulatorLocation.location = simulatorLocation.location.with(course: course)
+            if isValidDirection(course) {
+                simulatorLocation.location = updatedLocation(simulatorLocation.location, course: course)
             }
         }
         
         // Synthesize the speed if needed
-        if !simulatorLocation.location.speed.isValid && synthesizeSpeed && !hasSoundscapeExtension(trackPoint) {
-            if let speed = self.speed(for: index), speed.isValid {
-                simulatorLocation.location = simulatorLocation.location.with(speed: speed)
+        if !isValidSpeed(simulatorLocation.location.speed) && synthesizeSpeed && !hasSoundscapeExtension(trackPoint) {
+            if let speed = self.speed(for: index), isValidSpeed(speed) {
+                simulatorLocation.location = updatedLocation(simulatorLocation.location, speed: speed)
             }
         }
         
@@ -633,7 +633,7 @@ class GPXSimulator {
         // Try to get existing track course
         if let trackCourseStr = trackPoint.extensions?.children.first(where: { $0.name == GPXTag.course })?.text,
            let trackCourse = CLLocationDirection(trackCourseStr),
-           trackCourse.isValid {
+           isValidDirection(trackCourse) {
             // I am like 95% sure the previous code here meant the extensions course, but if that breaks you might want to look here first.
             return trackCourse
         }
@@ -641,7 +641,7 @@ class GPXSimulator {
         if let garminExtensions = extensionElement(named: GPXTag.garminTrackPointExtension, in: trackPoint.extensions),
            let trackCourseStr = childText(in: garminExtensions, named: GPXTag.garminCourse),
            let trackCourse = CLLocationDirection(trackCourseStr),
-           trackCourse.isValid {
+           isValidDirection(trackCourse) {
             return trackCourse
         }
         
@@ -665,7 +665,10 @@ class GPXSimulator {
             return course(for: prevIndex)
         }
     
-        return simulatorLocation(for: trackPoint).location.bearing(to: simulatorLocation(for: nextTrackPoint).location)
+        return bearing(
+            from: simulatorLocation(for: trackPoint).location.coordinate,
+            to: simulatorLocation(for: nextTrackPoint).location.coordinate
+        )
     }
 
     private func speed(for index: GPXIndex) -> CLLocationSpeed? {
@@ -676,7 +679,7 @@ class GPXSimulator {
         // Try to get the existing speed value
         if let trackSpeedStr = trackPoint.extensions?.children.first(where: { $0.name == GPXTag.speed })?.text,
            let trackSpeed = CLLocationSpeed(trackSpeedStr),
-           trackSpeed.isValid {
+           isValidSpeed(trackSpeed) {
             // I am like 95% sure the previous code here meant the extensions speed, but if that breaks you might want to look here first.
             return trackSpeed
         }
@@ -684,7 +687,7 @@ class GPXSimulator {
         if let garminExtensions = extensionElement(named: GPXTag.garminTrackPointExtension, in: trackPoint.extensions),
             let trackSpeedStr = childText(in: garminExtensions, named: GPXTag.garminSpeed),
             let trackSpeed = CLLocationSpeed(trackSpeedStr),
-            trackSpeed.isValid {
+            isValidSpeed(trackSpeed) {
             return trackSpeed
         }
         
@@ -706,7 +709,7 @@ class GPXSimulator {
         let location = CLLocation(latitude: currentLatitude, longitude: currentLongitude)
         let prevLocation = CLLocation(latitude: prevLatitude, longitude: prevLongitude)
         
-        let distance = location.coordinate.ssGeoCoordinate.distance(to: prevLocation.coordinate.ssGeoCoordinate)
+        let distance = coordinateDistance(from: location.coordinate, to: prevLocation.coordinate)
         let time = timeIntervalBetweenLocations
         
         return distance/time
@@ -744,7 +747,10 @@ class GPXSimulator {
         var closestDistance: CLLocationDistance = CLLocationDistanceMax
 
         for trackPoint in allTrackPoints {
-            let distance = location.coordinate.ssGeoCoordinate.distance(to: simulatorLocation(for: trackPoint).location.coordinate.ssGeoCoordinate)
+            let distance = coordinateDistance(
+                from: location.coordinate,
+                to: simulatorLocation(for: trackPoint).location.coordinate
+            )
             if distance > closestDistance {
                 continue
             }
@@ -765,6 +771,65 @@ class GPXSimulator {
 
     private func hasSoundscapeExtension(_ trackPoint: GPXTrackPoint) -> Bool {
         extensionElement(named: GPXTag.soundscapeTrackPointExtension, in: trackPoint.extensions) != nil
+    }
+
+    private func isValidDirection(_ direction: CLLocationDirection) -> Bool {
+        direction >= 0
+    }
+
+    private func isValidSpeed(_ speed: CLLocationSpeed) -> Bool {
+        speed >= 0
+    }
+
+    private func updatedLocation(_ location: CLLocation, course: CLLocationDirection) -> CLLocation {
+        CLLocation(
+            coordinate: location.coordinate,
+            altitude: location.altitude,
+            horizontalAccuracy: location.horizontalAccuracy,
+            verticalAccuracy: location.verticalAccuracy,
+            course: course,
+            speed: location.speed,
+            timestamp: location.timestamp
+        )
+    }
+
+    private func updatedLocation(_ location: CLLocation, speed: CLLocationSpeed) -> CLLocation {
+        CLLocation(
+            coordinate: location.coordinate,
+            altitude: location.altitude,
+            horizontalAccuracy: location.horizontalAccuracy,
+            verticalAccuracy: location.verticalAccuracy,
+            course: location.course,
+            speed: speed,
+            timestamp: location.timestamp
+        )
+    }
+
+    private func isValidLocationCoordinate(_ coordinate: CLLocationCoordinate2D) -> Bool {
+        CLLocationCoordinate2DIsValid(coordinate) &&
+            !(coordinate.latitude == 0.0 && coordinate.longitude == 0.0)
+    }
+
+    private func bearing(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) -> CLLocationDirection {
+        guard isValidLocationCoordinate(from), isValidLocationCoordinate(to) else {
+            return -1
+        }
+
+        guard from.latitude != to.latitude || from.longitude != to.longitude else {
+            return 0
+        }
+
+        return SSGeoMath.initialBearingDegrees(
+            from: SSGeoCoordinate(latitude: from.latitude, longitude: from.longitude),
+            to: SSGeoCoordinate(latitude: to.latitude, longitude: to.longitude)
+        )
+    }
+
+    private func coordinateDistance(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) -> CLLocationDistance {
+        SSGeoMath.distanceMeters(
+            from: SSGeoCoordinate(latitude: from.latitude, longitude: from.longitude),
+            to: SSGeoCoordinate(latitude: to.latitude, longitude: to.longitude)
+        )
     }
 
     private func simulatorLocation(for trackPoint: GPXTrackPoint) -> SimulatorLocation {
