@@ -51,7 +51,7 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260227-103304Z-ssindex-86f9d48`):
+Current architecture baseline (latest report `20260227-103940Z-ssindex-ed83b8b`):
 - `Data -> App`: 248
 - `Data -> Visual UI`: 51
 - `Behaviors -> Visual UI`: 126
@@ -68,9 +68,11 @@ Milestone ledger:
 - 2026-02-27: Remaining small `Sensors -> App` `AppContext` seams were reduced via runtime-integration hooks in geolocation/headphone paths.
 - 2026-02-27: Milestone 1 first extraction slice landed: `Route`, `RouteWaypoint`, and `ReferenceEntity` now live in `apps/common/Sources/SSDataDomain` with iOS bridge extensions preserved in `Temp Models`.
 - 2026-02-27: Milestone 2 first extraction slice landed: shared contract-side value types moved to `apps/common/Sources/SSDataContracts` and bridged in iOS via compile-safe typealiases.
+- 2026-02-27: Milestone 2 second extraction slice landed: shared route/reference/write/maintenance storage protocol surfaces moved into `apps/common/Sources/SSDataContracts` and iOS storage contracts now inherit shared protocols while retaining iOS-only members.
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-02-27: Added shared storage protocol surfaces in `SSDataContracts` (`SpatialRouteReadContract`, `SpatialReferenceReadContract`, `SpatialRouteWriteContract`, `SpatialRouteMaintenanceWriteContract`, `SpatialAddressMaintenanceWriteContract`) and rewired iOS `Spatial*Contract` protocols to inherit from them.
 - 2026-02-27: Added `SSDataContracts` module and migrated `SpatialIntersectionRegion`/`RouteReadMetadata`/`ReferenceReadMetadata`/`ReferenceCalloutReadData`/`EstimatedAddressReadData`/`AddressCacheRecord`.
 - 2026-02-27: Added shared `SSDataDomain` module and migrated canonical route/reference models (`Route`, `RouteWaypoint`, `ReferenceEntity`) behind compile-safe iOS aliases/extensions.
 - 2026-02-27: `BoseFramesMotionManager` event dispatch decoupled from direct `AppContext.process(...)` via runtime integration hook.
@@ -85,7 +87,7 @@ Validation baseline for each slice:
 - `swift Scripts/LocalizationLinter/main.swift`
 - iOS seam/boundary scripts listed above
 - deterministic `xcodebuild build-for-testing -derivedDataPath /tmp/ss-index-derived`
-- targeted suites: `GeolocationManagerTest`, `RouteStorageProviderDispatchTests`, `DataRuntimeProviderDispatchTests`, `DestinationManagerTest`, `EventProcessorTest`, `BehaviorEventStreamsTest`, `UIRuntimeProviderDispatchTests`, `PreviewGeneratorTests`
+- targeted suites: `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`
 
 ## Decoupling Plan (Data-First)
 ### Milestone 1: Extract Domain Models to `SSDataDomain`
@@ -127,20 +129,20 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Continue Milestone 2 by extracting protocol surfaces (`RouteReadContract`, `ReferenceReadContract`, `TileReadContract`, `Spatial*Contract`) into `apps/common/Sources/SSDataContracts` with minimal call-site churn.
-2. Introduce shared contract-side placeholder/value abstractions only where protocol signatures currently depend on iOS-local types, keeping canonical domain model names stable.
-3. Keep running the validation baseline plus dependency-report export for each slice; if `xcodebuild test-without-building` remains flaky, track the failing suites explicitly alongside targeted pass suites.
+1. Continue Milestone 2 by addressing remaining iOS-local read surfaces (notably `TileReadContract` and signatures that still depend on `POI`/`GenericLocation`/`VectorTile`) with minimal call-site churn.
+2. Introduce shared contract-side value abstractions only where required for platform-agnostic signatures, keeping canonical domain model names stable and avoiding DTO proliferation.
+3. Keep running the validation baseline plus dependency-report export for each slice; keep tracking full-suite `AudioEngineTest` failures explicitly alongside targeted pass suites.
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 2 first extraction slice is in progress (`SSDataContracts` shared value types + iOS typealias bridge).
+- Milestone 2 second extraction slice is complete (shared storage protocols extracted and iOS contract inheritance rewired; remaining work is iOS-local read surface cleanup).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260227-103304Z-ssindex-86f9d48.txt`
+- `docs/plans/artifacts/dependency-analysis/20260227-103940Z-ssindex-ed83b8b.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Begin Milestone 2 `SSDataContracts` extraction slice (protocols + contract-side shared types).
+2. Continue Milestone 2 by extracting/normalizing remaining iOS-local read contract signatures (`TileReadContract`, `POI`/`GenericLocation`/`VectorTile`-bound methods).
 3. Run validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore`.
 4. Update this plan's `Progress Updates` and commit.

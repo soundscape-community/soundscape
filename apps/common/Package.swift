@@ -36,7 +36,7 @@ let package = Package(
         ),
         .target(
             name: "SSDataContracts",
-            dependencies: ["SSGeo"]
+            dependencies: ["SSDataDomain", "SSGeo"]
         ),
         .testTarget(
             name: "SSDataStructuresTests",

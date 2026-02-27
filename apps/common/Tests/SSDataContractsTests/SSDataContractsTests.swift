@@ -1,9 +1,43 @@
 // Copyright (c) Soundscape Community Contributers.
 
 import Foundation
+import SSDataDomain
+import SSGeo
 import Testing
 
 @testable import SSDataContracts
+
+@MainActor
+private final class StorageContractMock: SpatialRouteReadContract,
+                                         SpatialReferenceReadContract,
+                                         SpatialRouteWriteContract,
+                                         SpatialRouteMaintenanceWriteContract,
+                                         SpatialAddressMaintenanceWriteContract {
+    func routes() async -> [Route] { [] }
+    func route(byKey key: String) async -> Route? { nil }
+    func routeMetadata(byKey key: String) async -> RouteReadMetadata? { nil }
+    func routes(containingMarkerID markerID: String) async -> [Route] { [] }
+
+    func referenceEntity(byID id: String) async -> ReferenceEntity? { nil }
+    func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? { nil }
+    func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? { nil }
+    func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? { nil }
+    func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata? { nil }
+    func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? { nil }
+    func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity? { nil }
+    func referenceEntities() async -> [ReferenceEntity] { [] }
+    func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? { nil }
+    func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] { [] }
+
+    func addRoute(_ route: Route) async throws {}
+    func deleteRoute(id: String) async throws {}
+    func updateRoute(_ route: Route) async throws {}
+
+    func importRouteFromCloud(_ route: Route) async throws {}
+    func removeAllRoutes() async throws {}
+
+    func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {}
+}
 
 struct SSDataContractsTests {
     @Test
@@ -55,5 +89,27 @@ struct SSDataContractsTests {
         #expect(region.center.longitude == -122.3493)
         #expect(region.latitudeDelta == 0.01)
         #expect(region.longitudeDelta == 0.02)
+    }
+
+    @MainActor
+    @Test
+    func storageContractProtocolsSupportUnifiedConformance() async throws {
+        let mock = StorageContractMock()
+
+        let routeRead: any SpatialRouteReadContract = mock
+        let referenceRead: any SpatialReferenceReadContract = mock
+        let routeWrite: any SpatialRouteWriteContract = mock
+        let routeMaintenance: any SpatialRouteMaintenanceWriteContract = mock
+        let addressMaintenance: any SpatialAddressMaintenanceWriteContract = mock
+
+        let routes = await routeRead.routes()
+        let references = await referenceRead.referenceEntities()
+
+        #expect(routes.isEmpty)
+        #expect(references.isEmpty)
+
+        try await routeWrite.deleteRoute(id: "route-1")
+        try await routeMaintenance.removeAllRoutes()
+        try await addressMaintenance.restoreCachedAddresses([])
     }
 }
