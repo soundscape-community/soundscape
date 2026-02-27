@@ -51,7 +51,7 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260227-105849Z-ssindex-a3a8f90`):
+Current architecture baseline (latest report `20260227-112829Z-ssindex-ddb5b4d`):
 - `Data -> App`: 248
 - `Data -> Visual UI`: 51
 - `Behaviors -> Visual UI`: 126
@@ -75,9 +75,13 @@ Milestone ledger:
 - 2026-02-27: Milestone 2 sixth extraction slice landed: shared reference write/maintenance surfaces introduced as `SpatialReferenceWriteContract` and `SpatialReferenceMaintenanceWriteContract` in `SSDataContracts` with iOS constrained specializations.
 - 2026-02-27: Milestone 2 seventh extraction slice landed: shared route-parameter read surface introduced as `SpatialRouteParametersReadContract` in `SSDataContracts` with iOS specialization (`RouteParametersValue == RouteParameters`, `RouteParametersContextValue == RouteParameters.Context`).
 - 2026-02-27: Milestone 2 eighth extraction slice landed: shared aggregate contract surfaces (`SpatialReadContract`, `SpatialWriteContract`, `SpatialMaintenanceWriteContract`) introduced in `SSDataContracts` and iOS registry-facing protocols now inherit these shared aggregates via constrained specializations.
+- 2026-02-27: Milestone 2 closure decision taken: constrained iOS-specialized shared protocols are the target end-state for current scope (no additional model-family extraction required for milestone completion).
+- 2026-02-27: Milestone 3 first hardening slice landed: `check_data_contract_boundaries.sh` now enforces `RealmSpatial*Contract` adapter symbols stay in `Data/Infrastructure/Realm/**` except `DataContractRegistry` seam wiring.
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-02-27: Hardened boundary guardrails so direct `RealmSpatialReadContract`/`RealmSpatialWriteContract`/`RealmSpatialMaintenanceWriteContract` usage outside Realm infrastructure and `DataContractRegistry` fails CI.
+- 2026-02-27: Milestone 2 closed with constrained-specialization end-state accepted for storage-contract signatures.
 - 2026-02-27: Added shared aggregate storage protocols in `SSDataContracts` (`SpatialReadContract`, `SpatialWriteContract`, `SpatialMaintenanceWriteContract`) and rewired iOS aggregate contracts to inherit them while preserving compatibility with existing local subprotocol expectations.
 - 2026-02-27: Added shared `SpatialRouteParametersReadContract` in `SSDataContracts` and rewired iOS `RouteReadContract` to inherit it via constrained specialization.
 - 2026-02-27: Added shared `SpatialReferenceWriteContract` and `SpatialReferenceMaintenanceWriteContract` in `SSDataContracts` and rewired iOS `SpatialWriteContract`/`SpatialMaintenanceWriteContract` to inherit them via constrained specializations.
@@ -113,6 +117,9 @@ Acceptance:
 - No new DTO family introduced for moved models.
 
 ### Milestone 2: Extract Contracts to `SSDataContracts`
+Status:
+- Complete (2026-02-27)
+
 Tasks:
 - Move contract protocols and contract-side shared types into `apps/common/Sources/SSDataContracts`.
 - Keep contracts async-first and Realm-free.
@@ -141,20 +148,20 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Decide Milestone 2 closure explicitly now that both shared method and aggregate contract surfaces are in `SSDataContracts`: either (a) keep constrained iOS specializations as the end-state, or (b) migrate selected type families (`RouteParameters`/`MarkerParameters`/`POI`/`VectorTile`/`GenericLocation`) into `apps/common`.
-2. If choosing constrained specializations as final state, mark Milestone 2 complete and begin Milestone 3 Realm-adapter isolation hardening.
+1. Continue Milestone 3 by tightening Realm-adapter seams beyond symbol usage (for example constructor/wiring seams and test-only override boundaries) while preserving current runtime behavior.
+2. Start Milestone 4 by expanding in-memory contract parity coverage using the now-shared aggregate contracts.
 3. Keep running the validation baseline plus dependency-report export for each slice; keep tracking full-suite `AudioEngineTest` failures explicitly alongside targeted pass suites.
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 2 eighth extraction slice is complete (shared aggregate contract surfaces extracted; remaining decision is constrained-specialization end-state vs additional model extraction).
+- Milestone 2 is complete; Milestone 3 hardening is active (latest slice added CI guardrails for Realm adapter symbol leakage).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260227-105849Z-ssindex-a3a8f90.txt`
+- `docs/plans/artifacts/dependency-analysis/20260227-112829Z-ssindex-ddb5b4d.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Decide whether to keep constrained iOS-specialized shared protocols as Milestone 2 end-state or migrate selected iOS model families to `apps/common`.
+2. Continue Milestone 3 adapter-isolation hardening or begin Milestone 4 in-memory parity expansion.
 3. Run validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore`.
 4. Update this plan's `Progress Updates` and commit.
