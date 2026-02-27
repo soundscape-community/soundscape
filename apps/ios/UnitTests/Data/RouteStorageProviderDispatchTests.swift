@@ -549,7 +549,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertTrue(readMock.referenceEntityByIDCalls.isEmpty)
     }
 
-    func testMarkerParametersInitMarkerIDUsesDestinationPOILookup() {
+    func testMarkerParametersInitMarkerIDUsesReferenceEntityLookup() {
         let markerID = "marker-id"
         let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
         marker.id = markerID
@@ -564,7 +564,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertNotNil(parameters)
         XCTAssertEqual(parameters?.id, markerID)
-        XCTAssertEqual(store.destinationPOICallKeys, [markerID])
+        XCTAssertEqual(store.referenceEntityByKeyCallKeys, [markerID])
+        XCTAssertTrue(store.destinationPOICallKeys.isEmpty)
         XCTAssertTrue(store.referenceEntityByLocationCallKeys.contains(locationLookupKey))
     }
 

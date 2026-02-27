@@ -98,7 +98,7 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let marker = LocationDetailStoreAdapter.destinationPOI(forReferenceID: markerId) else {
+        guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId)?.getPOI() else {
             return nil
         }
 
