@@ -27,8 +27,6 @@ protocol DestinationManagerProtocol: AnyObject {
     
     // MARK: Methods
     
-    func isUserWithinGeofence(_ userLocation: CLLocation) -> Bool
-    
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws
     
     @discardableResult
@@ -52,10 +50,6 @@ protocol DestinationManagerProtocol: AnyObject {
 
 // This extension adds the ability to not pass the `logContext` argument
 extension DestinationManagerProtocol {
-    func isUserWithinGeofence(_ userLocation: SSGeoLocation) -> Bool {
-        return isUserWithinGeofence(userLocation.clLocation)
-    }
-
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?) async throws {
         try await setDestinationAsync(referenceID: referenceID, enableAudio: enableAudio, userLocation: userLocation, logContext: nil)
     }

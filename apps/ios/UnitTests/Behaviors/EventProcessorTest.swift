@@ -300,7 +300,6 @@ class MockDestinationManager: DestinationManagerProtocol {
     var beaconPlayerId: AudioPlayerIdentifier?
     var proximityBeaconPlayerId: AudioPlayerIdentifier?
     
-    func isUserWithinGeofence(_ userLocation: CLLocation) -> Bool { false }
     func destinationIsTemporary(forReferenceID id: String) -> Bool { false }
     func destinationPOI(forReferenceID id: String) -> POI? { nil }
     func destinationNickname(forReferenceID id: String) -> String? { nil }

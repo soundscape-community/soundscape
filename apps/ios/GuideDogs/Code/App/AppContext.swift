@@ -846,7 +846,11 @@ final class AppContextUIRuntimeProviders: UIRuntimeProviders {
     }
 
     func beaconDetailIsUserWithinDestinationGeofence(_ userLocation: SSGeoLocation) -> Bool {
-        context.spatialDataContext.destinationManager.isUserWithinGeofence(userLocation)
+        guard let destinationManager = context.spatialDataContext.destinationManager as? DestinationManager else {
+            return false
+        }
+
+        return destinationManager.isUserWithinGeofence(userLocation.clLocation)
     }
 
     func beaconStoreDestinationManager() -> DestinationManagerProtocol? {
