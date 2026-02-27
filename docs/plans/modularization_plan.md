@@ -276,10 +276,11 @@ Phase 1 complete:
 - 2026-02-27: `DestinationManagerProtocol` no longer requires keyed destination nickname lookup (`destinationNickname(forReferenceID:)`); `AppContext` headset-test startup cleanup and `DestinationTutorialPage` destination naming now resolve nickname context through async contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)`), and startup temporary-beacon cleanup keeps nickname checks internal to `DestinationManager` storage.
 - 2026-02-27: `DestinationManagerProtocol` no longer requires keyed temporary-state lookup (`destinationIsTemporary(forReferenceID:)`); `BeaconActionHandler` and `BeaconDemoHelper` now resolve temporary-destination state through async contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)`), while startup temporary-beacon cleanup keeps temporary-state checks internal to `DestinationManager` storage.
 - 2026-02-27: `DestinationManagerProtocol` no longer requires keyed destination entity-key lookup (`destinationEntityKey(forReferenceID:)`); beacon/onboarding/preview destination-resolution paths now resolve entity-key context through async contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)`), and marker callout-history cleanup in `AppContext` now performs async contract-based entity-key cleanup.
+- 2026-02-27: Refreshed dependency-analysis artifact after destination entity-key seam removal via deterministic index workflow (`xcodebuild build-for-testing` with `-derivedDataPath /tmp/ss-index-derived` + `export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`), producing report `20260227-012247Z-ssindex-8dc8855` (edge snapshot unchanged: `Data -> App` 279, `Data -> Visual UI` 66, `Behaviors -> Visual UI` 126).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
-- Latest tracked reverse-edge snapshot (report `20260227-010245Z-ssindex-1a3f1a8`):
+- Latest tracked reverse-edge snapshot (report `20260227-012247Z-ssindex-8dc8855`):
   - `Data -> App`: 279
   - `Behaviors -> Visual UI`: 126
   - `Data -> Visual UI`: 66
