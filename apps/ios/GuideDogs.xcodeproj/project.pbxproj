@@ -403,6 +403,7 @@
 		623ADD6824EC5F750002C889 /* LocationDetailAnnotationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623ADD6724EC5F750002C889 /* LocationDetailAnnotationTableViewCell.swift */; };
 		623ADD6A24EDECBC0002C889 /* EstimatedLocationDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623ADD6924EDECBC0002C889 /* EstimatedLocationDetail.swift */; };
 		623ADD6C24EDECE80002C889 /* ImportedLocationDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623ADD6B24EDECE80002C889 /* ImportedLocationDetail.swift */; };
+		A1C0D2A22F12000100000001 /* MarkerParameters+LocationDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D2A12F12000100000001 /* MarkerParameters+LocationDetail.swift */; };
 		623ADD6E24EF41EF0002C889 /* PreviewTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623ADD6D24EF41EF0002C889 /* PreviewTutorialViewController.swift */; };
 		623D3B26263B29640005F405 /* FirstUseExperience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623D3B25263B29640005F405 /* FirstUseExperience.swift */; };
 		623D3C2D264C59150005F405 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623D3C2C264C59150005F405 /* Route.swift */; };
@@ -1169,6 +1170,7 @@
 		623ADD6724EC5F750002C889 /* LocationDetailAnnotationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LocationDetailAnnotationTableViewCell.swift; path = "Code/Visual UI/Controls/UITableView/LocationDetailAnnotationTableViewCell.swift"; sourceTree = "<group>"; };
 		623ADD6924EDECBC0002C889 /* EstimatedLocationDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimatedLocationDetail.swift; sourceTree = "<group>"; };
 		623ADD6B24EDECE80002C889 /* ImportedLocationDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedLocationDetail.swift; sourceTree = "<group>"; };
+		A1C0D2A12F12000100000001 /* MarkerParameters+LocationDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MarkerParameters+LocationDetail.swift"; sourceTree = "<group>"; };
 		623ADD6D24EF41EF0002C889 /* PreviewTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewTutorialViewController.swift; path = "Code/Visual UI/View Controllers/Preview/PreviewTutorialViewController.swift"; sourceTree = "<group>"; };
 		623D3B25263B29640005F405 /* FirstUseExperience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FirstUseExperience.swift; path = Code/App/Settings/FirstUseExperience.swift; sourceTree = "<group>"; };
 		623D3C2C264C59150005F405 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Route.swift; path = "Code/Data/Models/Temp Models/Route.swift"; sourceTree = "<group>"; };
@@ -2761,6 +2763,7 @@
 				62D73708249A935D00BA0A6D /* LocationDetail.swift */,
 				623ADD6924EDECBC0002C889 /* EstimatedLocationDetail.swift */,
 				623ADD6B24EDECE80002C889 /* ImportedLocationDetail.swift */,
+				A1C0D2A12F12000100000001 /* MarkerParameters+LocationDetail.swift */,
 				629F53CA26BDEEF300796B23 /* IdentifiableLocationDetail.swift */,
 				6211A5BD2847EA6500168599 /* AudioDetail.swift */,
 			);
@@ -4841,6 +4844,7 @@
 				28CC60A0254B63AB00A2ED18 /* EQParameters.swift in Sources */,
 				C3D6BAE51F7329BE009EEDE6 /* OSMServiceModelProtocol.swift in Sources */,
 				623ADD6C24EDECE80002C889 /* ImportedLocationDetail.swift in Sources */,
+				A1C0D2A22F12000100000001 /* MarkerParameters+LocationDetail.swift in Sources */,
 				286A251A22F2446F008F8327 /* DevicesViewController.swift in Sources */,
 				C3A5847622BAF8CD0014C55E /* LocationProvider.swift in Sources */,
 				28F0F9301F86C38400B6A64F /* DestinationTutorialViewController.swift in Sources */,

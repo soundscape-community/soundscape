@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 enum ImportMarkerError: Error {
     case invalidParameter
@@ -33,7 +34,7 @@ struct MarkerParameters: Codable {
     
     // MARK: Initialization
     
-    private init?(entity: POI, markerId: String?, estimatedAddress: String?, nickname: String?, annotation: String?, lastUpdatedDate: Date?) {
+    init?(entity: POI, markerId: String?, estimatedAddress: String?, nickname: String?, annotation: String?, lastUpdatedDate: Date?) {
         let location: LocationParameters
         
         if let entity = entity as? GDASpatialDataResultEntity {
@@ -98,66 +99,47 @@ struct MarkerParameters: Codable {
     }
     
     init?(markerId: String) {
-        guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId)?.getPOI() else {
+        guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId) else {
             return nil
         }
 
-        let detail = LocationDetail(entity: marker)
+        let locationCoordinate = CLLocationCoordinate2D(latitude: marker.latitude, longitude: marker.longitude)
+        let locationMarker = LocationDetailStoreAdapter.referenceEntity(byLocation: locationCoordinate)
+        let resolvedMarker = locationMarker ?? marker
 
-        guard let markerParameters = MarkerParameters(location: detail, fallbackMarkerID: markerId) else {
-            return nil
-        }
-
-        self = markerParameters
+        self.init(entity: resolvedMarker.getPOI(),
+                  markerId: markerId,
+                  estimatedAddress: resolvedMarker.estimatedAddress,
+                  nickname: resolvedMarker.nickname,
+                  annotation: resolvedMarker.annotation,
+                  lastUpdatedDate: resolvedMarker.lastUpdatedDate)
     }
     
     init?(entity: POI) {
-        let detail = LocationDetail(entity: entity)
-
-        if let markerParameters = MarkerParameters(location: detail, fallbackMarkerID: nil) {
-            self = markerParameters
+        let matchedMarker: ReferenceEntity?
+        if let location = entity as? GenericLocation {
+            matchedMarker = LocationDetailStoreAdapter.referenceEntity(byLocation: location.location.coordinate)
         } else {
-            self.init(entity: entity, markerId: nil, estimatedAddress: nil, nickname: nil, annotation: nil, lastUpdatedDate: nil)
+            matchedMarker = LocationDetailStoreAdapter.referenceEntity(byEntityKey: entity.key)
         }
-    }
-    
-    @MainActor
-    init?(location detail: LocationDetail) {
-        self.init(location: detail, fallbackMarkerID: nil)
-    }
 
-    @MainActor
-    private init?(location detail: LocationDetail, fallbackMarkerID: String?) {
-        let entity: POI
-        
-        switch detail.source {
-        case .entity:
-            guard let cachedEntity = detail.entity else {
-                return nil
-            }
-            
-            entity = cachedEntity
-        case .coordinate:
-            let latitude = detail.location.coordinate.latitude
-            let longitude = detail.location.coordinate.longitude
-            
-            // Initialize a `GenericLocation` entity
-            entity = GenericLocation(lat: latitude, lon: longitude)
-            
-        case .designData(let location, _):
-            entity = GenericLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
-            
-        case .screenshots(let poi):
-            entity = poi
+        if let matchedMarker {
+            let markerID = matchedMarker.isTemp ? nil : matchedMarker.id
+            self.init(entity: entity,
+                      markerId: markerID,
+                      estimatedAddress: matchedMarker.estimatedAddress,
+                      nickname: matchedMarker.nickname,
+                      annotation: matchedMarker.annotation,
+                      lastUpdatedDate: matchedMarker.lastUpdatedDate)
+            return
         }
-        
-        let markerId = detail.markerId ?? fallbackMarkerID
-        let estimatedAddress = detail.estimatedAddress
-        let nickname = detail.nickname
-        let annotation = detail.annotation
-        let lastUpdatedDate = detail.lastUpdatedDate
-        
-        self.init(entity: entity, markerId: markerId, estimatedAddress: estimatedAddress, nickname: nickname, annotation: annotation, lastUpdatedDate: lastUpdatedDate)
+
+        self.init(entity: entity,
+                  markerId: nil,
+                  estimatedAddress: nil,
+                  nickname: nil,
+                  annotation: nil,
+                  lastUpdatedDate: nil)
     }
     
     init(name: String, latitude: Double, longitude: Double) {
@@ -216,30 +198,6 @@ extension MarkerParameters: UniversalLinkParameters {
         self.estimatedAddress = nil
         self.lastUpdatedDate = nil
         self.location = location
-    }
-    
-}
-
-extension MarkerParameters {
-    
-    typealias Completion = (Result<LocationDetail, Error>) -> Void
-    
-    func fetchMarker(completion: @escaping Completion) {
-        // Fetch the underlying entity
-        //
-        // For OSM entities, add or update the entity in the cache
-        location.fetchEntity { (result) in
-            Task { @MainActor in
-                switch result {
-                case .success(let entity):
-                    let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
-                    let locationDetail = LocationDetail(entity: entity, imported: importedDetail, telemetryContext: nil)
-                    completion(.success(locationDetail))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-        }
     }
     
 }

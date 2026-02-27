@@ -299,13 +299,16 @@ Phase 1 complete:
 - 2026-02-27: `DestinationManagerProtocol` no longer requires `isBeaconInBounds`; onboarding/tutorial beacon-orientation checks now use concrete `DestinationManager` fallback in `InteractiveBeaconViewModel` and `DestinationTutorialBeaconPage`, keeping beacon in-bounds state concrete-manager local.
 - 2026-02-27: Beacon-in-bounds protocol-seam removal is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails including seam boundary scripts + `LocalizationLinter`, `xcodebuild build-for-testing`, targeted suites `DestinationManagerTest`, `EventProcessorTest`, `BehaviorEventStreamsTest`, `UIRuntimeProviderDispatchTests`, `PreviewGeneratorTests`, `DataRuntimeProviderDispatchTests`).
 - 2026-02-27: Refreshed dependency-analysis artifact after destination protocol seam reductions via deterministic index workflow (`xcodebuild build-for-testing` with `-derivedDataPath /tmp/ss-index-derived` + `export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`), producing report `20260227-015253Z-ssindex-51f023c` (tracked edge snapshot unchanged: `Data -> App` 279, `Data -> Visual UI` 66, `Behaviors -> Visual UI` 126).
+- 2026-02-27: `MarkerParameters` serializer decoupling moved `LocationDetail`-dependent initializers/helpers to Visual UI (`MarkerParameters+LocationDetail.swift`) while `Data/Serialization/MarkerParameters.swift` now resolves marker metadata through `LocationDetailStoreAdapter` keyed/entity/location lookups, removing direct `Data -> Visual UI` dependency from marker serialization paths and preserving dispatch behavior coverage.
+- 2026-02-27: Marker-parameter serialization decoupling is green across validation (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, iOS lint/guardrails including seam boundary scripts + `LocalizationLinter`, `xcodebuild build-for-testing`, targeted suites `RouteStorageProviderDispatchTests`, `DestinationManagerTest`, `EventProcessorTest`, `BehaviorEventStreamsTest`, `UIRuntimeProviderDispatchTests`, `PreviewGeneratorTests`, `DataRuntimeProviderDispatchTests`).
+- 2026-02-27: Refreshed dependency-analysis artifact after marker-parameter decoupling via deterministic index workflow (`xcodebuild build-for-testing` with `-derivedDataPath /tmp/ss-index-derived` + `export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`), producing report `20260227-020036Z-ssindex-95ef481` (tracked edge snapshot: `Data -> App` 279, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126).
 
 ## Architecture Baseline (from index analysis)
 - Most coupled hub: `App/AppContext.swift` (high fan-in from `Data`, `Behaviors`, and `Visual UI`).
-- Latest tracked reverse-edge snapshot (report `20260227-015253Z-ssindex-51f023c`):
+- Latest tracked reverse-edge snapshot (report `20260227-020036Z-ssindex-95ef481`):
   - `Data -> App`: 279
   - `Behaviors -> Visual UI`: 126
-  - `Data -> Visual UI`: 66
+  - `Data -> Visual UI`: 34
   - `Data -> Behaviors`: below top-40 edge threshold in this snapshot
 - `Data` currently mixes domain logic with infrastructure concerns (`RealmSwift`, `CoreLocation`, GPX parsing, file I/O).
 
