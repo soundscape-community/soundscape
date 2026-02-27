@@ -1485,6 +1485,16 @@ class AppContext {
         
         cloudKeyValueStore = CloudKeyValueStore()
 
+        if #available(iOS 14.4, *) {
+            HeadphoneMotionManager.configure(
+                with: HeadphoneMotionManager.RuntimeIntegration(
+                    processEvent: { event in
+                        AppContext.process(event)
+                    }
+                )
+            )
+        }
+
         DataRuntimeProviderRegistry.configure(with: AppContextDataRuntimeProviders(context: self))
         UIRuntimeProviderRegistry.configure(with: AppContextUIRuntimeProviders(context: self))
         BehaviorRuntimeProviderRegistry.configure(with: AppContextBehaviorRuntimeProviders(context: self))

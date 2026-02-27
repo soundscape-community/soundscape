@@ -15,7 +15,7 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
   - `DataContractRegistry` async contracts for app/runtime callers.
   - `DestinationEntityStore` destination-focused seam used by `DestinationManager`.
 - Canonical domain value models (`Route`, `RouteWaypoint`, `ReferenceEntity`) are now outside Realm infrastructure (`Data/Models/Temp Models`), with Realm-prefixed object models retained infrastructure-local.
-- Dependency analysis (report `20260227-094129Z-ssindex-f9600c3`) still shows reverse layering pressure:
+- Dependency analysis (report `20260227-094419Z-ssindex-49850e8`) still shows reverse layering pressure:
   - `Data -> App`: 245
   - `Data -> Visual UI`: 34
   - `Behaviors -> Visual UI`: 126
@@ -77,6 +77,9 @@ Define a stable, minimal, app-facing data API before deeper Realm extraction wor
 - `SignificantChangeMonitoringOrigin` now resolves nearby POI context via injected `POIIntegration` lookup hook (`poisNear`) instead of direct `AppContext.shared.spatialDataContext` access when determining significant-change origins.
 - `AppContext` now wires `SignificantChangeMonitoringOrigin.POIIntegration` with `spatialDataContext.getDataView(for:searchDistance:)` POI lookup composition, preserving significant-change monitoring behavior while removing direct Sensors-layer `AppContext` reads in this geolocation filter path.
 - Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-094129Z-ssindex-f9600c3` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, and `Sensors -> App` 74.
+- `HeadphoneMotionManager` headset-connection event dispatch now emits through injected runtime integration (`RuntimeIntegration.processEvent`) instead of direct `AppContext.process(...)` calls in motion-update and disconnect paths.
+- `AppContext` now composes `HeadphoneMotionManager.RuntimeIntegration` (`if #available(iOS 14.4, *)`) to preserve existing headset-connection event behavior while removing this direct Sensors-layer `AppContext` coupling.
+- Dependency-analysis artifact was refreshed again from deterministic index build output (`/tmp/ss-index-derived/Index.noindex/DataStore`) to report `20260227-094419Z-ssindex-49850e8` (`latest.txt` updated), with tracked edge deltas unchanged at `Data -> App` 245, `Data -> Visual UI` 34, `Behaviors -> Visual UI` 126, and `Sensors -> App` 74.
 - `MarkerParameters` storage serialization now keeps `LocationDetail`-dependent APIs in Visual UI (`MarkerParameters+LocationDetail.swift`) while `Data/Serialization/MarkerParameters.swift` resolves marker metadata through `LocationDetailStoreAdapter` keyed/entity/location lookups, removing direct `Data -> Visual UI` serializer dependency.
 - `DestinationTutorialInfoPage.playCallout()` now resolves destination POI context through tutorial destination contract context (`DataContractRegistry.spatialRead.referenceEntity(byID:)` + `poi(byKey:)`) with cached tutorial destination fallback.
 - `DestinationTutorialPage` now resolves destination POI/name context through contract ingress (`DataContractRegistry.spatialRead.referenceEntity(byID:)` + `poi(byKey:)`) for tutorial page refresh, removing keyed destination-manager nickname fallback from tutorial destination presentation flow.

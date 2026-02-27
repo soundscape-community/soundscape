@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -21,8 +22,16 @@ import CocoaLumberjackSwift
 // `NSObject` required for `CMHeadphoneMotionManagerDelegate`
 @MainActor
 class HeadphoneMotionManager: NSObject, UserHeadingProvider, Device {
+
+    struct RuntimeIntegration {
+        let processEvent: (Event) -> Void
+
+        static let disabled = RuntimeIntegration(processEvent: { _ in })
+    }
     
     // MARK: Properties
+
+    private static var runtimeIntegration: RuntimeIntegration = .disabled
     
     private let motionManager = CMHeadphoneMotionManager()
     private let queue: OperationQueue
@@ -39,6 +48,14 @@ class HeadphoneMotionManager: NSObject, UserHeadingProvider, Device {
     var isConnected = false
     var isFirstConnection = false
     weak var deviceDelegate: DeviceDelegate?
+
+    static func configure(with runtimeIntegration: RuntimeIntegration) {
+        self.runtimeIntegration = runtimeIntegration
+    }
+
+    static func resetForTesting() {
+        runtimeIntegration = .disabled
+    }
     
     private var heading: Double? {
         didSet {
@@ -153,7 +170,7 @@ class HeadphoneMotionManager: NSObject, UserHeadingProvider, Device {
                     self.deviceDelegate?.didConnectDevice(self)
                     
                     let state: HeadsetConnectionEvent.State = self.isFirstConnection ? .firstConnection : .reconnected
-                    AppContext.process(HeadsetConnectionEvent(self.model, state: state))
+                    Self.runtimeIntegration.processEvent(HeadsetConnectionEvent(self.model, state: state))
                 }
             } else {
                 if let error = error {
@@ -271,7 +288,7 @@ extension HeadphoneMotionManager: CMHeadphoneMotionManagerDelegate {
             isConnected = false
             deviceDelegate?.didDisconnectDevice(self)
             
-            AppContext.process(HeadsetConnectionEvent(model, state: .disconnected))
+            Self.runtimeIntegration.processEvent(HeadsetConnectionEvent(model, state: .disconnected))
         } else {
             // Update status
             status.value = .disconnected
