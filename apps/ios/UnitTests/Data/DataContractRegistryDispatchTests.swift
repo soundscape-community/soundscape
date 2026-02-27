@@ -1307,4 +1307,89 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         try await DataContractRegistry.spatialMaintenanceWrite.restoreCachedAddresses([firstAddress, secondAddress])
         XCTAssertEqual(store.restoredAddressCount, 2)
     }
+
+    func testRouteParametersContextParityWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let createdDate = Date(timeIntervalSince1970: 10_000)
+        let lastUpdatedDate = Date(timeIntervalSince1970: 11_000)
+        let lastSelectedDate = Date(timeIntervalSince1970: 12_000)
+
+        var waypoint = RouteWaypoint()
+        waypoint.index = 0
+        waypoint.markerId = "route-parameter-marker"
+
+        var route = Route()
+        route.id = "route-parameter-context"
+        route.name = "Route Parameter Context"
+        route.routeDescription = "Context parity route"
+        route.waypoints = [waypoint]
+        route.createdDate = createdDate
+        route.lastUpdatedDate = lastUpdatedDate
+        route.lastSelectedDate = lastSelectedDate
+
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+
+        let backupParameters = await DataContractRegistry.spatialRead.routeParameters(byKey: route.id, context: .backup)
+        let shareParameters = await DataContractRegistry.spatialRead.routeParameters(byKey: route.id, context: .share)
+
+        XCTAssertEqual(backupParameters?.id, route.id)
+        XCTAssertEqual(backupParameters?.createdDate, createdDate)
+        XCTAssertEqual(backupParameters?.lastUpdatedDate, lastUpdatedDate)
+        XCTAssertEqual(backupParameters?.lastSelectedDate, lastSelectedDate)
+
+        XCTAssertEqual(shareParameters?.id, route.id)
+        XCTAssertNil(shareParameters?.createdDate)
+        XCTAssertNil(shareParameters?.lastUpdatedDate)
+        XCTAssertNil(shareParameters?.lastSelectedDate)
+    }
+
+    func testReferenceLookupParityAcrossEntityKeyAndCoordinateReadsWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let coordinate = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+        let genericLocation = GenericLocation(coordinate: coordinate,
+                                              name: "Lookup Place",
+                                              address: "401 Pine St")
+        let locationMarkerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: genericLocation,
+                                                                                                nickname: "Lookup Nick",
+                                                                                                estimatedAddress: "401 Pine St",
+                                                                                                annotation: "North Entrance")
+        let entityKey = "lookup-entity-key"
+        let entityKeyMarkerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: entityKey,
+                                                                                                 nickname: "Entity Nick",
+                                                                                                 estimatedAddress: "Entity Address",
+                                                                                                 annotation: nil)
+
+        let referenceByID = await DataContractRegistry.spatialRead.referenceEntity(byID: locationMarkerID)
+        let referenceByCoordinate = await DataContractRegistry.spatialRead.referenceEntity(byCoordinate: coordinate)
+        let referenceByGenericLocation = await DataContractRegistry.spatialRead.referenceEntity(byGenericLocation: genericLocation)
+        let markerByCoordinate = await DataContractRegistry.spatialRead.markerParameters(byCoordinate: coordinate)
+        let callout = await DataContractRegistry.spatialRead.referenceCallout(byID: locationMarkerID)
+
+        XCTAssertEqual(referenceByID?.id, locationMarkerID)
+        XCTAssertEqual(referenceByCoordinate?.id, locationMarkerID)
+        XCTAssertEqual(referenceByGenericLocation?.id, locationMarkerID)
+        XCTAssertEqual(markerByCoordinate?.location.coordinate.latitude ?? -1, coordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(markerByCoordinate?.location.coordinate.longitude ?? -1, coordinate.longitude, accuracy: 0.000_001)
+        XCTAssertEqual(callout?.name, "Lookup Nick")
+        XCTAssertEqual(callout?.superCategory, "undefined")
+
+        let referenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: entityKey)
+        let markerByEntityKey = await DataContractRegistry.spatialRead.markerParameters(byEntityKey: entityKey)
+        let referenceMetadataByEntityKey = await DataContractRegistry.spatialRead.referenceMetadata(byEntityKey: entityKey)
+        let poiByEntityKey = await DataContractRegistry.spatialRead.poi(byKey: entityKey)
+
+        XCTAssertEqual(referenceByEntityKey?.id, entityKeyMarkerID)
+        XCTAssertEqual(referenceMetadataByEntityKey?.id, entityKeyMarkerID)
+        XCTAssertEqual(markerByEntityKey?.location.coordinate.latitude ?? -1, 0, accuracy: 0.000_001)
+        XCTAssertEqual(markerByEntityKey?.location.coordinate.longitude ?? -1, 0, accuracy: 0.000_001)
+        XCTAssertEqual(poiByEntityKey?.key, entityKey)
+    }
 }
