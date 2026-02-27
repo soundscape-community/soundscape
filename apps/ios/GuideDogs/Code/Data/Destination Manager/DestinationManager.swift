@@ -265,10 +265,6 @@ class DestinationManager: DestinationManagerProtocol {
     func destinationEntityKey(forReferenceID id: String) -> String? {
         destinationStore.destinationEntityKey(forReferenceID: id)
     }
-
-    func destinationIsTemporary(forReferenceID id: String) -> Bool {
-        destinationStore.destinationIsTemporary(forReferenceID: id)
-    }
     
     /// Sets the provided RealmReferenceEntity as the current destination.
     ///
@@ -528,7 +524,7 @@ class DestinationManager: DestinationManagerProtocol {
     func clearStartupTemporaryDestinationIfNeeded() async {
         // Legacy scavenger-hunt beacons were stored as temporary destinations with the route-guidance placeholder name.
         guard let destinationKey,
-              destinationIsTemporary(forReferenceID: destinationKey),
+              destinationStore.destinationIsTemporary(forReferenceID: destinationKey),
               destinationStore.destinationNickname(forReferenceID: destinationKey) == RouteGuidance.name else {
             return
         }

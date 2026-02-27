@@ -27,8 +27,12 @@ struct BeaconActionHandler {
         }
 
         guard let destinationManager = UIRuntimeProviderRegistry.providers.beaconStoreDestinationManager(),
-              destinationManager.destinationKey == key,
-              destinationManager.destinationIsTemporary(forReferenceID: key) else {
+              destinationManager.destinationKey == key else {
+            return nil
+        }
+
+        guard let destinationReferenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: key),
+              destinationReferenceEntity.isTemp else {
             return nil
         }
 

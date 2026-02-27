@@ -341,7 +341,7 @@ final class DestinationManagerTest: XCTestCase {
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
         try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
 
-        XCTAssertTrue(dm.destinationIsTemporary(forReferenceID: testID))
+        await dm.clearStartupTemporaryDestinationIfNeeded()
         XCTAssertEqual(temporaryLookupIDs, [testID])
 
         try await dm.clearDestinationAsync(logContext: nil)

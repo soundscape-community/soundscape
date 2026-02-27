@@ -243,7 +243,7 @@ class BeaconDemoHelper {
             return nil
         }
 
-        if !beaconManager.destinationIsTemporary(forReferenceID: destinationID) {
+        if !(await isTemporaryDestination(referenceID: destinationID)) {
             return .ref(id: destinationID)
         }
 
@@ -284,5 +284,9 @@ class BeaconDemoHelper {
 
     private func resolveDestinationEstimatedAddress(forReferenceID id: String) async -> String? {
         await DataContractRegistry.spatialRead.referenceEntity(byID: id)?.estimatedAddress
+    }
+
+    private func isTemporaryDestination(referenceID id: String) async -> Bool {
+        await DataContractRegistry.spatialRead.referenceEntity(byID: id)?.isTemp ?? false
     }
 }
