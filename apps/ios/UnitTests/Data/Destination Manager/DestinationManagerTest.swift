@@ -325,7 +325,6 @@ final class DestinationManagerTest: XCTestCase {
                                                                                     estimatedAddress: nil)
         let store = MockDestinationEntityStore()
         var temporaryLookupIDs: [String] = []
-        var nicknameLookupIDs: [String] = []
 
         store.destinationPOIForReferenceIDHandler = { id in
             SpatialDataCache.referenceEntityByKey(id)?.getPOI()
@@ -333,10 +332,6 @@ final class DestinationManagerTest: XCTestCase {
         store.destinationIsTemporaryForReferenceIDHandler = { id in
             temporaryLookupIDs.append(id)
             return true
-        }
-        store.destinationNicknameForReferenceIDHandler = { id in
-            nicknameLookupIDs.append(id)
-            return "HeadsetTest"
         }
         store.markReferenceEntitySelectedHandler = { _ in }
         store.removeAllTemporaryReferenceEntitiesHandler = {
@@ -347,9 +342,7 @@ final class DestinationManagerTest: XCTestCase {
         try await dm.setDestinationAsync(referenceID: testID, enableAudio: false, userLocation: nil, logContext: nil)
 
         XCTAssertTrue(dm.destinationIsTemporary(forReferenceID: testID))
-        XCTAssertEqual(dm.destinationNickname(forReferenceID: testID), "HeadsetTest")
         XCTAssertEqual(temporaryLookupIDs, [testID])
-        XCTAssertEqual(nicknameLookupIDs, [testID])
 
         try await dm.clearDestinationAsync(logContext: nil)
     }

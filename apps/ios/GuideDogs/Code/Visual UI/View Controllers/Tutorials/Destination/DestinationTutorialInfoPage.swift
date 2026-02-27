@@ -81,13 +81,11 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
     }
 
     private func resolveDestinationPOIForCallout() async -> POI? {
-        guard let destinationKey = delegate?.getEntityKey(),
-              let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+        guard let destinationKey = delegate?.getEntityKey() else {
             return destinationPOI
         }
 
-        return await resolveDestinationPOI(destinationKey: destinationKey,
-                                           destinationManager: destinationManager) ?? destinationPOI
+        return await resolveDestinationContext(destinationKey: destinationKey).poi ?? destinationPOI
     }
     
     private func calloutCompleted() {

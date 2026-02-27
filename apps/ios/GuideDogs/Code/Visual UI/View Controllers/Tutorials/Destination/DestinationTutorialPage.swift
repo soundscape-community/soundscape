@@ -55,14 +55,13 @@ class DestinationTutorialPage: BaseTutorialViewController {
     }
 
     private func refreshEntity() {
-        guard let destinationKey = delegate?.getEntityKey(),
-              let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+        guard delegate?.getEntityKey() != nil else {
             resolvedDestinationPOI = nil
             resolvedDestinationName = nil
             return
         }
 
-        resolvedDestinationName = destinationManager.destinationNickname(forReferenceID: destinationKey) ?? resolvedDestinationPOI?.localizedName
+        resolvedDestinationName = resolvedDestinationPOI?.localizedName
 
         guard resolvedDestinationPOI == nil, !isRefreshingEntity else {
             return
@@ -78,8 +77,7 @@ class DestinationTutorialPage: BaseTutorialViewController {
     }
 
     func refreshEntityFromContract() async {
-        guard let destinationKey = delegate?.getEntityKey(),
-              let destinationManager = UIRuntimeProviderRegistry.providers.uiSpatialDataContext()?.destinationManager else {
+        guard let destinationKey = delegate?.getEntityKey() else {
             resolvedDestinationPOI = nil
             resolvedDestinationName = nil
             return
@@ -88,29 +86,23 @@ class DestinationTutorialPage: BaseTutorialViewController {
         isRefreshingEntity = true
         defer { isRefreshingEntity = false }
 
-        resolvedDestinationPOI = await resolveDestinationPOI(destinationKey: destinationKey,
-                                                             destinationManager: destinationManager)
-
-        resolvedDestinationName = destinationManager.destinationNickname(forReferenceID: destinationKey) ?? resolvedDestinationPOI?.localizedName
+        let destinationContext = await resolveDestinationContext(destinationKey: destinationKey)
+        resolvedDestinationPOI = destinationContext.poi
+        resolvedDestinationName = destinationContext.nickname ?? destinationContext.poi?.localizedName
     }
 
-    func resolveDestinationPOI(destinationKey: String,
-                               destinationManager: DestinationManagerProtocol) async -> POI? {
-        if let destinationEntityKey = destinationManager.destinationEntityKey(forReferenceID: destinationKey),
-           let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: destinationEntityKey) {
-            return destinationPOI
-        }
-
+    func resolveDestinationContext(destinationKey: String) async -> (poi: POI?, nickname: String?) {
         guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: destinationKey) else {
-            return nil
+            return (nil, nil)
         }
 
+        let nickname = referenceEntity.nickname
         if let entityKey = referenceEntity.entityKey,
            let destinationPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) {
-            return destinationPOI
+            return (destinationPOI, nickname)
         }
 
-        return GenericLocation(ref: referenceEntity)
+        return (GenericLocation(ref: referenceEntity), nickname)
     }
     
     // MARK: BaseTutorialViewController Overrides
