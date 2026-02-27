@@ -29,8 +29,6 @@ protocol DestinationManagerProtocol: AnyObject {
     
     func isUserWithinGeofence(_ userLocation: CLLocation) -> Bool
     
-    func isDestination(key: String) -> Bool
-
     func setDestinationAsync(referenceID: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws
     
     @discardableResult

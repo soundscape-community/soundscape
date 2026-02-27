@@ -30,6 +30,9 @@ class ReverseGeocoderContext: ReverseGeocoder {
     private weak var spatialDataContext: SpatialDataProtocol?
     private var lastAnnouncedResult: ReverseGeocoderResult?
     private var previousRoadKey: String?
+    private var destinationReferenceID: String?
+    private var destinationEntityKey: String?
+    private var destinationChangedObserver: NSObjectProtocol?
     
     // MARK: Computed Properties
     
@@ -42,6 +45,22 @@ class ReverseGeocoderContext: ReverseGeocoder {
     init(spatialDataContext dataContext: SpatialDataProtocol) {
         // Store references to other contexts that we will need to observe notifications from
         spatialDataContext = dataContext
+        destinationReferenceID = dataContext.destinationManager.destinationKey
+        if let destinationReferenceID {
+            refreshDestinationEntityKey(for: destinationReferenceID)
+        }
+
+        destinationChangedObserver = NotificationCenter.default.addObserver(forName: .destinationChanged, object: nil, queue: .main) { [weak self] notification in
+            Task { @MainActor [weak self] in
+                self?.updateDestinationContext(from: notification.userInfo)
+            }
+        }
+    }
+
+    deinit {
+        if let destinationChangedObserver {
+            NotificationCenter.default.removeObserver(destinationChangedObserver)
+        }
     }
     
     /// Reverse geocodes a location into 1 of 4 possible states (within a POI, alongside a
@@ -76,7 +95,7 @@ class ReverseGeocoderContext: ReverseGeocoder {
         
         // Check to see if the user is inside a building
         for entity in entities where entity.contains(location: location.coordinate) {
-            let isDest = spatialDataContext?.destinationManager.isDestination(key: entity.key) ?? false
+            let isDest = isCurrentDestination(key: entity.key)
             let res = InsideGeocoderResult(location: location, heading: heading, key: entity.key, wasDestination: isDest)
             logState(res)
             
@@ -91,7 +110,7 @@ class ReverseGeocoderContext: ReverseGeocoder {
         var poiIsDestination: Bool = false
         if let entity = entities.first {
             poiKey = entity.key
-            poiIsDestination = spatialDataContext?.destinationManager.isDestination(key: entity.key) ?? false
+            poiIsDestination = isCurrentDestination(key: entity.key)
         }
         
         // We are not inside a building, so check if the user is alongside a road
@@ -165,6 +184,51 @@ class ReverseGeocoderContext: ReverseGeocoder {
     }
     
     // MARK: - Private API
+
+    private func isCurrentDestination(key: String) -> Bool {
+        return destinationReferenceID == key || destinationEntityKey == key
+    }
+
+    private func updateDestinationContext(from userInfo: [AnyHashable: Any]?) {
+        let referenceID = userInfo?[DestinationManager.Keys.destinationKey] as? String
+        destinationReferenceID = referenceID
+
+        guard let referenceID else {
+            destinationEntityKey = nil
+            return
+        }
+
+        if let entityKey = userInfo?[DestinationManager.Keys.destinationEntityKey] as? String {
+            destinationEntityKey = entityKey
+            return
+        }
+
+        refreshDestinationEntityKey(for: referenceID)
+    }
+
+    private func refreshDestinationEntityKey(for referenceID: String) {
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: referenceID),
+                  let entityKey = referenceEntity.entityKey else {
+                guard self.destinationReferenceID == referenceID else {
+                    return
+                }
+
+                self.destinationEntityKey = nil
+                return
+            }
+
+            guard self.destinationReferenceID == referenceID else {
+                return
+            }
+
+            self.destinationEntityKey = entityKey
+        }
+    }
     
     /// Logs the current state of the `ReverseGeocoderContext`
     private func logState(_ result: ReverseGeocoderResult) {

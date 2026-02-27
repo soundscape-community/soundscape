@@ -150,16 +150,16 @@ struct LocationDetail {
 
         switch source {
         case .entity(let id):
-            guard destinationManager.isDestination(key: id),
-                  let destinationKey = destinationManager.destinationKey else {
+            guard let destinationKey = destinationManager.destinationKey,
+                  isDestinationKeyMatch(id, destinationKey: destinationKey) else {
                 return nil
             }
 
             return destinationKey
 
         case .screenshots(let poi):
-            guard destinationManager.isDestination(key: poi.key),
-                  let destinationKey = destinationManager.destinationKey else {
+            guard let destinationKey = destinationManager.destinationKey,
+                  isDestinationKeyMatch(poi.key, destinationKey: destinationKey) else {
                 return nil
             }
 
@@ -189,6 +189,14 @@ struct LocationDetail {
 
     private var marker: ReferenceEntity? {
         resolvedMarker ?? referenceEntity(source: source, isTemp: nil)
+    }
+
+    private func isDestinationKeyMatch(_ key: String, destinationKey: String) -> Bool {
+        guard destinationKey != key else {
+            return true
+        }
+
+        return LocationDetailStoreAdapter.referenceEntity(byID: destinationKey)?.entityKey == key
     }
     
     // Name Properties

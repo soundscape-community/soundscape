@@ -138,6 +138,8 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
     private var didInterruptCallouts: Bool = false
     private var lastAnnouncedResult: ReverseGeocoderResult?
     private var prioritizedPOIs: [POI] = []
+    private var destinationReferenceID: String?
+    private var destinationEntityKey: String?
     
     private var spatialDataType: SpatialDataProtocol.Type {
         return type(of: spatialData)
@@ -168,9 +170,14 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
         poiUpdateFilter = MotionActivityUpdateFilter(minTime: 5.0, minDistance: 5.0, motionActivity: data.motionActivityContext)
         
         configureCalloutCategories()
+        refreshDestinationContext(referenceID: data.destinationManager.destinationKey)
         
         cancellables.append(NotificationCenter.default.publisher(for: .autoCalloutCategorySenseChanged).sink { [unowned self] _ in
             self.configureCalloutCategories()
+        })
+
+        cancellables.append(NotificationCenter.default.publisher(for: .destinationChanged).sink { [weak self] notification in
+            self?.updateDestinationContext(from: notification)
         })
         
         cancellables.append(NotificationCenter.default.publisher(for: .routeWaypointArrived).sink { [weak self] notification in
@@ -526,7 +533,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
                        }
                        
                        // Don't do regular automatic callouts for POIs with the audio beacon set on them, unless it's a NaviLens target
-                       if spatialData.destinationManager.isDestination(key: poi.key) && poi.superCategory != "navilens" {
+                       if isActiveDestinationPOIKey(poi.key) && poi.superCategory != "navilens" {
                            return false
                        }
                        
@@ -558,6 +565,62 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator, BehaviorEventSt
     }
     
     // MARK: - Helper Methods
+
+    private func isActiveDestinationPOIKey(_ key: String) -> Bool {
+        return destinationReferenceID == key || destinationEntityKey == key
+    }
+
+    private func refreshDestinationContext(referenceID: String?) {
+        destinationReferenceID = referenceID
+
+        guard let referenceID else {
+            destinationEntityKey = nil
+            return
+        }
+
+        refreshDestinationEntityKey(for: referenceID)
+    }
+
+    private func refreshDestinationEntityKey(for referenceID: String) {
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            guard let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: referenceID),
+                  let entityKey = referenceEntity.entityKey else {
+                guard self.destinationReferenceID == referenceID else {
+                    return
+                }
+
+                self.destinationEntityKey = nil
+                return
+            }
+
+            guard self.destinationReferenceID == referenceID else {
+                return
+            }
+
+            self.destinationEntityKey = entityKey
+        }
+    }
+
+    private func updateDestinationContext(from notification: Notification) {
+        let referenceID = notification.userInfo?[DestinationManager.Keys.destinationKey] as? String
+        destinationReferenceID = referenceID
+
+        guard let referenceID else {
+            destinationEntityKey = nil
+            return
+        }
+
+        if let entityKey = notification.userInfo?[DestinationManager.Keys.destinationEntityKey] as? String {
+            destinationEntityKey = entityKey
+            return
+        }
+
+        refreshDestinationEntityKey(for: referenceID)
+    }
     
     private func cleanupHistory(location: CLLocation, context: CalloutRangeContext) {
         // If the minimum time interval has passed OR the distance to the tracked POI is greater
