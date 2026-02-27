@@ -311,7 +311,6 @@ class MockDestinationManager: DestinationManagerProtocol {
     func setDestinationAsync(entityKey: String, enableAudio: Bool, userLocation: CLLocation?, estimatedAddress: String?, logContext: String?) async throws -> String { "" }
     func setDestinationAsync(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) async throws -> String { "" }
     func clearDestinationAsync(logContext: String?) async throws {}
-    func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool { false }
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool { false }
     func clearStartupTemporaryDestinationIfNeeded() async {}
 }

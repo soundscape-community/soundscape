@@ -299,7 +299,11 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
     }
 
     func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
-        try context.spatialDataContext.destinationManager.setDestinationTemporaryIfMatchingID(id)
+        guard let destinationManager = context.spatialDataContext.destinationManager as? DestinationManager else {
+            return false
+        }
+
+        return try destinationManager.setDestinationTemporaryIfMatchingID(id)
     }
 
     func referenceClearDestinationForCacheReset() async throws {

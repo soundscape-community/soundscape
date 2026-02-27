@@ -45,9 +45,6 @@ protocol DestinationManagerProtocol: AnyObject {
 
     func clearDestinationAsync(logContext: String?) async throws
 
-    @MainActor @discardableResult
-    func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool
-    
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool
     
