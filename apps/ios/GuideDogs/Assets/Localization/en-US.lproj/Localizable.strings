@@ -221,7 +221,7 @@
 "general.error.location_services_find_location_error" = "We are having trouble finding your current location.";
 
 /* Error message when Soundscape does not know the user's heading */
-"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again.";
+"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again";
 
 /* Error message Soundscape is having trouble determining current location. Try again later */
 "general.error.location_services_find_location_error.try_again" = "We are having trouble finding your current location. Try again later.";
@@ -1517,7 +1517,7 @@
 "search.no_results_found_with_hint" = "No results found. Try editing your search term.";
 
 /* Search results, No results found. */
-"searching.no_results_found_title" = "Oops! No results found";
+"searching.no_results_found_title" = "Oops! No results found.";
 
 /* Search results, No results found. */
 "searching.no_results_found_message" = "If you're looking for a specific place, you can try searching by name or address.";
@@ -1666,7 +1666,7 @@
 "callouts.marked_points" = "Marked Points";
 
 /* Callouts notification, There is nothing to call out right now */
-"callouts.nothing_to_call_out_now" = "There is nothing to call out right now.";
+"callouts.nothing_to_call_out_now" = "There is nothing to call out right now";
 
 /* Callouts Title, Nearby Markers */
 "callouts.nearby_markers" = "Nearby Markers";
@@ -2271,7 +2271,7 @@
 "location_callout_cell.marked_location" = "Marked Location";
 
 /* Location Callout Cell for the nearest road, %@ road name, "Nearest road, <27th Avenue West>" {NumberedPlaceholder="%@"} */
-"location_callout_cell.nearest_road" = "Nearest road, %@";
+"location_callout_cell.nearest_road" = "Nearest road, %@.";
 
 /* Location Callout Cell, Nearest road and beacon set on, %1$@ road name %2$@ location, "Nearest road, <27th Avenue West>. Beacon was set on <Woodland Park Zoo>." {NumberedPlaceholder="%1$@", "%2$@"} */
 "location_callout_cell.nearest_road.beacon_set_on" = "Nearest road, %1$@. Beacon was set on %2$@.";
@@ -3735,7 +3735,7 @@
 "faq.tip.hold_phone_flat" = "Soundscape works best when you hold the phone flat with the screen facing the sky and the top of the phone pointing away from you.";
 
 /* Marker - A location that has been marked as important by the user or application. This can be an address, a business or a custom place such as an entrance, a bus stop or a bench. The 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. 'Manage Markers' is the name of one of the options in the Soundscape menu. Quotes written as \" */
-"faq.tip.create_marker_at_bus_stop" = "If there is a bus route you take regularly, set your pickup and exit stops as markers. This way they will be saved so you can find them again easily, just go to \" Markers & Routes\" from the home screen and find them on the \"Markers\" page. You can set a beacon on them and you will get periodic updates on how close you are to your exit stop. Note: you can turn off the rhythmic sound and you will still get distance updates along the way.";
+"faq.tip.create_marker_at_bus_stop" = "If there is a bus route you take regularly, set your pickup and exit stops as markers. This way they will be saved so you can find them again easily, just go to \"Markers & Routes\" from the home screen and find them on the \"Markers\" page. You can set a beacon on them and you will get periodic updates on how close you are to your exit stop. Note: you can turn off the rhythmic sound and you will still get distance updates along the way.";
 
 /* Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. */
 "faq.tip.two_finger_double_tap" = "Tapping the screen twice with two fingers will silence any active callouts.";

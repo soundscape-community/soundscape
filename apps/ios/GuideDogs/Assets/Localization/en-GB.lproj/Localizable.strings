@@ -279,7 +279,7 @@
 
 
 /*  */
-"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again.";
+"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again";
 
 
 /*  */
@@ -1784,7 +1784,7 @@
 
 
 /*  */
-"searching.no_results_found_title" = "Oops! No results found";
+"searching.no_results_found_title" = "Oops! No results found.";
 
 
 /*  */
@@ -1971,7 +1971,7 @@
 
 
 /*  */
-"callouts.nothing_to_call_out_now" = "There is nothing to call out right now.";
+"callouts.nothing_to_call_out_now" = "There is nothing to call out right now";
 
 
 /*  */
@@ -2714,7 +2714,7 @@
 
 
 /*  */
-"location_callout_cell.nearest_road" = "Nearest road, %@";
+"location_callout_cell.nearest_road" = "Nearest road, %@.";
 
 
 /*  */
@@ -4421,7 +4421,7 @@
 
 
 /*  */
-"faq.tip.create_marker_at_bus_stop" = "If there is a bus route you take regularly, set your pickup and exit stops as markers. This way they will be saved so you can find them again easily, just go to \" Markers & Routes\" from the home screen and find them on the \"Markers\" page. You can set a beacon on them and you will get periodic updates on how close you are to your exit stop. Note: you can turn off the rhythmic sound and you will still get distance updates along the way.";
+"faq.tip.create_marker_at_bus_stop" = "If there is a bus route you take regularly, set your pickup and exit stops as markers. This way they will be saved so you can find them again easily, just go to \"Markers & Routes\" from the home screen and find them on the \"Markers\" page. You can set a beacon on them and you will get periodic updates on how close you are to your exit stop. Note: you can turn off the rhythmic sound and you will still get distance updates along the way.";
 
 
 /*  */
