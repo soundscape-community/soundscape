@@ -586,6 +586,21 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         destinationReferenceID = id
     }
 
+    func removeAllTemporaryReferenceEntities() async throws {
+        let temporaryReferenceIDs = referenceByID.values.filter(\.isTemp).map(\.id)
+        for id in temporaryReferenceIDs {
+            if let removed = referenceByID.removeValue(forKey: id),
+               let entityKey = removed.entityKey {
+                referenceIDByEntityKey.removeValue(forKey: entityKey)
+                poiByEntityKey.removeValue(forKey: entityKey)
+            }
+        }
+
+        if let destinationReferenceID, temporaryReferenceIDs.contains(destinationReferenceID) {
+            self.destinationReferenceID = nil
+        }
+    }
+
     // MARK: - Route Reads
 
     func routes() async -> [Route] {
@@ -1845,5 +1860,63 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         XCTAssertEqual(retainedRoute?.waypoints.ordered.first?.markerId, destinationReferenceID)
         XCTAssertEqual(retainedRoute?.firstWaypointLatitude ?? 0, firstMarkerLocation.location.coordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(retainedRoute?.firstWaypointLongitude ?? 0, firstMarkerLocation.location.coordinate.longitude, accuracy: 0.000_001)
+    }
+
+    func testRemoveAllTemporaryReferenceEntitiesRemovesTempMarkersAndRetainsRoutesWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let destinationCoordinate = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+        let destinationReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: "temp-destination-key",
+                                                                                                     nickname: "Temporary Destination",
+                                                                                                     estimatedAddress: "1 Main",
+                                                                                                     annotation: nil)
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: destinationReferenceID,
+                                                                          location: destinationCoordinate,
+                                                                          nickname: nil,
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil)
+        let persistentReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: GenericLocation(lat: 47.6301,
+                                                                                                                       lon: -122.3402),
+                                                                                                    nickname: "Persistent Marker",
+                                                                                                    estimatedAddress: "2 Main",
+                                                                                                    annotation: nil)
+
+        var destinationWaypoint = RouteWaypoint()
+        destinationWaypoint.index = 0
+        destinationWaypoint.markerId = destinationReferenceID
+        var persistentWaypoint = RouteWaypoint()
+        persistentWaypoint.index = 1
+        persistentWaypoint.markerId = persistentReferenceID
+        var route = Route()
+        route.id = "temp-destination-cleanup-route"
+        route.name = "Temp Destination Cleanup Route"
+        route.waypoints = [destinationWaypoint, persistentWaypoint]
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+
+        store.setDestinationReferenceIDForTesting(destinationReferenceID)
+        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: destinationReferenceID)
+        try await store.removeAllTemporaryReferenceEntities()
+
+        let removedTemporaryReference = await DataContractRegistry.spatialRead.referenceEntity(byID: destinationReferenceID)
+        let removedTemporaryReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: "temp-destination-key")
+        let removedTemporaryPOI = await DataContractRegistry.spatialRead.poi(byKey: "temp-destination-key")
+        let retainedPersistentReference = await DataContractRegistry.spatialRead.referenceEntity(byID: persistentReferenceID)
+        let retainedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id)
+        let shareParameters = await DataContractRegistry.spatialRead.routeParameters(byKey: route.id, context: .share)
+        let backupParameters = await DataContractRegistry.spatialRead.routeParameters(byKey: route.id, context: .backup)
+
+        XCTAssertNil(removedTemporaryReference)
+        XCTAssertNil(removedTemporaryReferenceByEntityKey)
+        XCTAssertNil(removedTemporaryPOI)
+        XCTAssertEqual(retainedPersistentReference?.id, persistentReferenceID)
+        XCTAssertEqual(retainedRoute?.waypoints.ordered.count, 2)
+        XCTAssertEqual(retainedRoute?.waypoints.ordered.first?.markerId, destinationReferenceID)
+        XCTAssertEqual(retainedRoute?.firstWaypointLatitude ?? 0, destinationCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(retainedRoute?.firstWaypointLongitude ?? 0, destinationCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertNil(shareParameters)
+        XCTAssertEqual(backupParameters?.id, route.id)
     }
 }
