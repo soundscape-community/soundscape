@@ -504,6 +504,68 @@ check_data_contract_registry_split_member_assignment_wiring() {
   fi
 }
 
+check_data_contract_registry_commented_assignment_wiring() {
+  local registry_file commented_assignment_output line_number
+  declare -a disallowed_registry_commented_assignments=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  commented_assignment_output="$(
+    awk '
+        BEGIN {
+          pending_lhs_line = 0
+        }
+
+        {
+          line = $0
+
+          if (pending_lhs_line > 0) {
+            if (line ~ /^[[:space:]]*$/ || line ~ /^[[:space:]]*\/\//) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*=[^=]/) {
+              print pending_lhs_line
+            }
+            pending_lhs_line = 0
+          }
+
+          if (line !~ /spatial(Read|Write|MaintenanceWrite)/) {
+            next
+          }
+
+          comment_index = index(line, "/*")
+          eq_index = index(line, "=")
+
+          if (comment_index > 0 && eq_index > 0 && comment_index < eq_index) {
+            print NR
+            next
+          }
+
+          if (comment_index > 0 && eq_index == 0) {
+            pending_lhs_line = NR
+          }
+        }
+      ' "${registry_file}"
+  )"
+
+  while IFS= read -r line_number; do
+    [[ -z "${line_number}" ]] && continue
+    disallowed_registry_commented_assignments+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${commented_assignment_output}"
+
+  if [[ ${#disallowed_registry_commented_assignments[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains block-comment-interleaved spatial adapter assignment wiring." >&2
+    echo "Disallowed block-comment assignment call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_commented_assignments[@]}" >&2
+    echo "Avoid block comments in spatial adapter assignment LHS expressions to preserve guardrail coverage." >&2
+    exit 1
+  fi
+}
+
 check_boundary_dir "${CONTRACTS_DIR}" "GuideDogs/Code/Data/Contracts"
 check_boundary_dir "${DOMAIN_DIR}" "GuideDogs/Code/Data/Domain"
 check_realm_adapter_boundary
@@ -514,5 +576,6 @@ check_data_contract_registry_assignment_wiring
 check_data_contract_registry_parenthesized_assignment_wiring
 check_data_contract_registry_multiline_assignment_wiring
 check_data_contract_registry_split_member_assignment_wiring
+check_data_contract_registry_commented_assignment_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member assignment detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved assignment detection, and test-only registry overrides)."
