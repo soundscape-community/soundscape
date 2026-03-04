@@ -51,6 +51,7 @@ The following are implementation details and must not be used by non-infrastruct
 - `Data/Contracts` must remain free of Realm and platform-bound infrastructure types.
 - `RealmSwift` imports are confined to `Data/Infrastructure/Realm/**`.
 - New storage behavior for `App`, `Behaviors`, `Visual UI`, or `Notifications` must be added through `DataContractRegistry` contracts first.
+- Production Realm adapter wiring remains centralized in `DataContractRegistry` default static declarations (`RealmSpatial*Contract()` is not used ad hoc in runtime methods).
 - `DataContractRegistry.configure/resetForTesting` seams are test-only (`UnitTests/**`).
 - Do not add new global data registries.
 - Do not introduce DTO families when canonical domain models are already readable and sufficient.

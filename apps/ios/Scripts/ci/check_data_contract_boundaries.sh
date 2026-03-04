@@ -12,6 +12,7 @@ readonly FORBIDDEN_IMPORT_PATTERN='^\s*import\s+(RealmSwift|CoreLocation|MapKit)
 readonly FORBIDDEN_RUNTIME_SYMBOL_PATTERN='\b(AppContext(\.shared)?|UIRuntimeProviderRegistry|BehaviorRuntimeProviderRegistry)\b'
 readonly REALM_ADAPTER_SYMBOL_PATTERN='\b(RealmSpatialReadContract|RealmSpatialWriteContract|RealmSpatialMaintenanceWriteContract)\b'
 readonly REALM_ADAPTER_CONSTRUCTOR_PATTERN='\b(RealmSpatialReadContract|RealmSpatialWriteContract|RealmSpatialMaintenanceWriteContract)\s*\('
+readonly REALM_ADAPTER_REGISTRY_DEFAULT_DECLARATION_PATTERN='^[[:space:]]*private[[:space:]]+static[[:space:]]+let[[:space:]]+defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*=[[:space:]]*RealmSpatial(Read|Write|MaintenanceWrite)Contract[[:space:]]*\([[:space:]]*\)[[:space:]]*$'
 readonly REALM_ADAPTER_ALLOWED_REGISTRY='GuideDogs/Code/Data/Contracts/Storage/DataContractRegistry.swift'
 readonly REALM_ADAPTER_ALLOWED_INFRA_PREFIX='GuideDogs/Code/Data/Infrastructure/Realm/'
 readonly REALM_ADAPTER_CONSTRUCTOR_ALLOWED_TEST_PREFIX='UnitTests/'
@@ -125,6 +126,44 @@ check_realm_adapter_constructor_boundary() {
   fi
 }
 
+check_data_contract_registry_realm_adapter_wiring() {
+  local registry_file constructor_output line_number line_content
+  declare -a disallowed_registry_wiring=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  constructor_output="$(
+    rg --line-number --no-heading --no-filename \
+      --regexp "${REALM_ADAPTER_CONSTRUCTOR_PATTERN}" \
+      "${registry_file}" \
+      || true
+  )"
+
+  while IFS= read -r constructor_line; do
+    [[ -z "${constructor_line}" ]] && continue
+    line_number="${constructor_line%%:*}"
+    line_content="${constructor_line#*:}"
+
+    if [[ "${line_content}" =~ ${REALM_ADAPTER_REGISTRY_DEFAULT_DECLARATION_PATTERN} ]]; then
+      continue
+    fi
+
+    disallowed_registry_wiring+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${constructor_output}"
+
+  if [[ ${#disallowed_registry_wiring[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains non-default Realm adapter constructor wiring." >&2
+    echo "Disallowed constructor call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_wiring[@]}" >&2
+    echo "Allowed constructor shape:" >&2
+    echo "  private static let defaultSpatial* = RealmSpatial*Contract()" >&2
+    exit 1
+  fi
+}
+
 check_data_contract_registry_test_override_boundary() {
   local test_override_output relative_caller
   declare -a disallowed_callers=()
@@ -164,6 +203,7 @@ check_boundary_dir "${CONTRACTS_DIR}" "GuideDogs/Code/Data/Contracts"
 check_boundary_dir "${DOMAIN_DIR}" "GuideDogs/Code/Data/Domain"
 check_realm_adapter_boundary
 check_realm_adapter_constructor_boundary
+check_data_contract_registry_realm_adapter_wiring
 check_data_contract_registry_test_override_boundary
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, and test-only registry overrides)."
