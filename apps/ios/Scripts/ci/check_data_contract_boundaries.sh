@@ -20,9 +20,9 @@ readonly DATA_CONTRACT_REGISTRY_TEST_OVERRIDE_PATTERN='DataContractRegistry\.(co
 readonly DATA_CONTRACT_REGISTRY_TEST_OVERRIDE_ALLOWED_PREFIX='UnitTests/'
 # Match assignment targets even when prefixed by punctuation (for example tuple assignment),
 # while avoiding member-access false positives like `foo.spatialRead =`.
-readonly DATA_CONTRACT_REGISTRY_ASSIGNMENT_PATTERN='(^|[^[:alnum:]_\.])((self|Self|DataContractRegistry)\.)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*='
+readonly DATA_CONTRACT_REGISTRY_ASSIGNMENT_PATTERN='(^|[^[:alnum:]_\.])((self|Self|DataContractRegistry)[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*='
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_ASSIGNMENT_DECLARATION_PATTERN='^[[:space:]]*private\(set\)[[:space:]]+static[[:space:]]+var[[:space:]]+spatial(Read|Write|MaintenanceWrite)[[:space:]]*:[[:space:]]*[A-Za-z0-9_\.]+[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
-readonly DATA_CONTRACT_REGISTRY_ALLOWED_CONFIGURE_ASSIGNMENT_PATTERN='^[[:space:]]*self\.spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*(spatialRead|spatialWrite|spatialMaintenanceWrite|defaultSpatialWriteAdapter|defaultSpatialMaintenanceWriteAdapter)[[:space:]]*$'
+readonly DATA_CONTRACT_REGISTRY_ALLOWED_CONFIGURE_ASSIGNMENT_PATTERN='^[[:space:]]*self[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*(spatialRead|spatialWrite|spatialMaintenanceWrite|defaultSpatialWriteAdapter|defaultSpatialMaintenanceWriteAdapter)[[:space:]]*$'
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_RESET_ASSIGNMENT_PATTERN='^[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
 readonly DATA_CONTRACT_REGISTRY_CONFIGURE_SIGNATURE_PATTERN='^[[:space:]]*static[[:space:]]+func[[:space:]]+configure\('
 readonly DATA_CONTRACT_REGISTRY_RESET_SIGNATURE_PATTERN='^[[:space:]]*static[[:space:]]+func[[:space:]]+resetForTesting\('
@@ -402,7 +402,7 @@ check_data_contract_registry_multiline_assignment_wiring() {
         {
           line = $0
 
-          if (line ~ /^[[:space:]]*((self|Self|DataContractRegistry)\.)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*(\/\/.*)?$/) {
+          if (line ~ /^[[:space:]]*((self|Self|DataContractRegistry)[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*(\/\/.*)?$/) {
             pending_lhs_line = NR
             next
           }
@@ -515,4 +515,4 @@ check_data_contract_registry_parenthesized_assignment_wiring
 check_data_contract_registry_multiline_assignment_wiring
 check_data_contract_registry_split_member_assignment_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member assignment detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member assignment detection, and test-only registry overrides)."
