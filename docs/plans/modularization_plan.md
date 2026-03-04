@@ -100,6 +100,7 @@ Milestone ledger:
 - 2026-03-04: Milestone 3 thirteenth hardening slice landed: `check_data_contract_boundaries.sh` parenthesized-assignment detection now includes split member-access forms (`self`/`Self`/`DataContractRegistry` plus `.spatial*` with optional whitespace), closing split-member tuple-assignment bypasses in registry seam checks.
 - 2026-03-04: Milestone 3 fourteenth hardening slice landed: `check_data_contract_boundaries.sh` now detects whitespace-before-dot member-access assignment forms (`self .spatial* =` and `DataContractRegistry .spatial* =`) across single-line and multiline wiring checks, closing spaced-member assignment bypasses in registry seam checks.
 - 2026-03-04: Milestone 3 fifteenth hardening slice landed: `check_data_contract_boundaries.sh` now detects block-comment-interleaved assignment forms (`self/*...*/.spatial* =`, `self.spatial*/*...*/=`, and multiline equivalents), closing comment-interleaved assignment bypasses in registry seam checks.
+- 2026-03-04: Milestone 3 sixteenth hardening slice landed: `check_data_contract_boundaries.sh` now detects block-comment-separated assignment fragments (for example `self`, then `/*...*/`, then `.spatial* =` or `spatial*`, `/*...*/`, `=`), closing block-comment-separated assignment bypasses in registry seam checks.
 - 2026-03-04: Dependency tracking normalization slice landed: exported SSIndex artifact `20260304-145500Z-ssindex-a7a05e5` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with explicit comparison args (`--top 40 --min-count 2 --file-top 40 --external-top 25`).
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 fourth hardening slice exported SSIndex artifact `20260304-150933Z-ssindex-741ce45` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 fifth hardening slice exported SSIndex artifact `20260304-151805Z-ssindex-48da232` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
@@ -113,6 +114,7 @@ Milestone ledger:
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 thirteenth hardening slice exported SSIndex artifact `20260304-175034Z-ssindex-9958bc3` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 fourteenth hardening slice exported SSIndex artifact `20260304-190247Z-ssindex-29435e0` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 fifteenth hardening slice exported SSIndex artifact `20260304-190720Z-ssindex-218b4f7` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
+- 2026-03-04: Dependency follow-up rerun after Milestone 3 sixteenth hardening slice exported SSIndex artifact `20260304-191219Z-ssindex-a070323` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Fixed `run_local_validation.sh` empty forwarded-arg handling under `set -u` so step 5 no longer errors before invoking `run_local_ios_build_test.sh`.
 - 2026-02-27: Milestone 4 first parity slice landed: in-memory contract tests now verify `RouteParameters` backup/share context behavior plus reference lookup parity across ID/entity-key/coordinate/generic-location read paths.
 - 2026-03-04: Milestone 4 second parity slice landed: in-memory maintenance tests now cover `clearNewReferenceEntitiesAndRoutes` behavior and `cleanCorruptReferenceEntities` entity-key lookup cleanup semantics.
@@ -127,6 +129,8 @@ Milestone ledger:
 - 2026-03-04: Local validation workflow streamlined with scripted simulator-aware build/test (`apps/ios/Scripts/ci/run_local_ios_build_test.sh`) and scripted full baseline runner (`apps/ios/Scripts/ci/run_local_validation.sh`) to reduce xcodebuild noise and command drift.
 
 Most recent completed slices (latest first):
+- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-191219Z-ssindex-a070323` (fixed args preserved) after the Milestone 3 sixteenth hardening slice; `latest.txt` now points to this report.
+- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so block-comment-separated fragments (`self`, `/*...*/`, `.spatialRead =`; `spatialWrite`, `/*...*/`, `=`) are detected by `check_data_contract_boundaries.sh`.
 - 2026-03-04: Re-exported normalized SSIndex artifact `20260304-190720Z-ssindex-218b4f7` (fixed args preserved) after the Milestone 3 fifteenth hardening slice; `latest.txt` now points to this report.
 - 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so block-comment-interleaved forms (`self/*...*/.spatialRead =`, `self.spatialWrite/*...*/=`, and multiline variants) are detected by `check_data_contract_boundaries.sh`.
 - 2026-03-04: Re-exported normalized SSIndex artifact `20260304-190247Z-ssindex-29435e0` (fixed args preserved) after the Milestone 3 fourteenth hardening slice; `latest.txt` now points to this report.
@@ -237,7 +241,7 @@ Acceptance:
 
 ## Immediate Next Steps
 1. Use normalized SSIndex baseline `20260304-155712Z-ssindex-eba4cdf` for Milestone 3 delta tracking; keep analyzer args fixed (`--top 40 --min-count 2 --file-top 40 --external-top 25`) on each follow-up export.
-2. Execute the next Milestone 3 hardening slice for adapter wiring beyond constructor/registry-default/assignment-scope/qualified-assignment/punctuation-assignment/parenthesized-assignment/multiline-assignment/split-member-assignment/split-member-multiline-assignment/parenthesized-split-member-assignment/spaced-member-assignment/comment-interleaved-assignment seams, keeping coverage comparable to existing symbol-boundary checks.
+2. Execute the next Milestone 3 hardening slice for adapter wiring beyond constructor/registry-default/assignment-scope/qualified-assignment/punctuation-assignment/parenthesized-assignment/multiline-assignment/split-member-assignment/split-member-multiline-assignment/parenthesized-split-member-assignment/spaced-member-assignment/comment-interleaved-assignment/block-comment-separated-assignment seams, keeping coverage comparable to existing symbol-boundary checks.
 3. Keep running the validation baseline plus dependency-report export for each slice, with dependency comparisons locked to the explicit analyzer arg set above.
 4. Keep known full-suite `AudioEngineTest` failures tracked as non-blocking for data-modularization slices until explicitly reprioritized.
 
@@ -249,16 +253,16 @@ Acceptance:
 ## Context-Clear Handoff
 Current branch state:
 - Milestone 2 is complete; Milestone 4 is complete; Milestone 3 hardening is now the primary active track.
-- Milestone 3 now includes constructor, registry-default, assignment-shape, assignment-method-scope, qualified-assignment-form, punctuation-prefixed-assignment-form, parenthesized-assignment-form, multiline-assignment-form, split-member-assignment-form, split-member-multiline-assignment-form, parenthesized-split-member-assignment-form, spaced-member-assignment-form, and comment-interleaved-assignment-form guardrails for `DataContractRegistry` Realm adapter wiring seams.
+- Milestone 3 now includes constructor, registry-default, assignment-shape, assignment-method-scope, qualified-assignment-form, punctuation-prefixed-assignment-form, parenthesized-assignment-form, multiline-assignment-form, split-member-assignment-form, split-member-multiline-assignment-form, parenthesized-split-member-assignment-form, spaced-member-assignment-form, comment-interleaved-assignment-form, and block-comment-separated-assignment-form guardrails for `DataContractRegistry` Realm adapter wiring seams.
 - In-memory parity now includes maintenance semantics for clear-new, corrupt-reference cleanup, remove-all flows, route-waypoint cleanup on reference removals, first-waypoint refresh on marker location updates, destination-marker temporary preservation on remove, temporary-marker cleanup parity, cloud marker import read round-trip, metadata/callout nickname fallback, and entity-key upsert after temporary-marker cleanup.
 - Local execution is now script-first via `run_local_validation.sh` (full baseline) and `run_local_ios_build_test.sh` (simulator-aware build/test with filtered output).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260304-190720Z-ssindex-218b4f7.txt`
+- `docs/plans/artifacts/dependency-analysis/20260304-191219Z-ssindex-a070323.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Continue Milestone 3 adapter-isolation hardening slices (constructor, registry-default wiring, registry assignment-shape, registry assignment-method-scope, registry qualified-assignment-form, registry punctuation-assignment-form, registry parenthesized-assignment-form, registry multiline-assignment-form, registry split-member-assignment-form, registry split-member-multiline-assignment-form, registry parenthesized-split-member-assignment-form, registry spaced-member-assignment-form, and registry comment-interleaved-assignment-form guardrails landed; proceed with next wiring-boundary hardening slice).
+2. Continue Milestone 3 adapter-isolation hardening slices (constructor, registry-default wiring, registry assignment-shape, registry assignment-method-scope, registry qualified-assignment-form, registry punctuation-assignment-form, registry parenthesized-assignment-form, registry multiline-assignment-form, registry split-member-assignment-form, registry split-member-multiline-assignment-form, registry parenthesized-split-member-assignment-form, registry spaced-member-assignment-form, registry comment-interleaved-assignment-form, and registry block-comment-separated-assignment-form guardrails landed; proceed with next wiring-boundary hardening slice).
 3. Run scripted validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore` with fixed analyzer args (`--top 40 --min-count 2 --file-top 40 --external-top 25`).
 4. Update this plan's `Progress Updates` and commit.

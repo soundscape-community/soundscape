@@ -566,6 +566,133 @@ check_data_contract_registry_commented_assignment_wiring() {
   fi
 }
 
+check_data_contract_registry_block_comment_separated_assignment_wiring() {
+  local registry_file block_comment_separated_output line_number
+  declare -a disallowed_registry_block_comment_separated_assignments=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  block_comment_separated_output="$(
+    awk '
+        BEGIN {
+          state = "none"
+          start_line = 0
+          in_block_comment = 0
+        }
+
+        {
+          line = $0
+
+          if (in_block_comment == 1) {
+            if (line ~ /\*\//) {
+              in_block_comment = 0
+            }
+            next
+          }
+
+          if (state == "lhs_wait_eq") {
+            if (line ~ /^[[:space:]]*$/ || line ~ /^[[:space:]]*\/\//) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\/\*/) {
+              if (line !~ /\*\//) {
+                in_block_comment = 1
+              }
+              next
+            }
+
+            if (line ~ /^[[:space:]]*=[^=]/) {
+              print start_line
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "owner_wait_member") {
+            if (line ~ /^[[:space:]]*$/ || line ~ /^[[:space:]]*\/\//) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\/\*/) {
+              if (line !~ /\*\//) {
+                in_block_comment = 1
+              }
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "member_wait_eq") {
+            if (line ~ /^[[:space:]]*$/ || line ~ /^[[:space:]]*\/\//) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\/\*/) {
+              if (line !~ /\*\//) {
+                in_block_comment = 1
+              }
+              next
+            }
+
+            if (line ~ /^[[:space:]]*=[^=]/) {
+              print start_line
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (line ~ /^[[:space:]]*((self|Self|DataContractRegistry)[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+            state = "lhs_wait_eq"
+            start_line = NR
+            next
+          }
+
+          if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)[[:space:]]*(\/\/.*)?$/) {
+            state = "owner_wait_member"
+            start_line = NR
+            next
+          }
+        }
+      ' "${registry_file}"
+  )"
+
+  while IFS= read -r line_number; do
+    [[ -z "${line_number}" ]] && continue
+    disallowed_registry_block_comment_separated_assignments+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${block_comment_separated_output}"
+
+  if [[ ${#disallowed_registry_block_comment_separated_assignments[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains block-comment-separated spatial adapter assignment wiring." >&2
+    echo "Disallowed block-comment-separated assignment call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_block_comment_separated_assignments[@]}" >&2
+    echo "Avoid separating spatial adapter assignment fragments with block-comment-only lines." >&2
+    exit 1
+  fi
+}
+
 check_boundary_dir "${CONTRACTS_DIR}" "GuideDogs/Code/Data/Contracts"
 check_boundary_dir "${DOMAIN_DIR}" "GuideDogs/Code/Data/Domain"
 check_realm_adapter_boundary
@@ -577,5 +704,6 @@ check_data_contract_registry_parenthesized_assignment_wiring
 check_data_contract_registry_multiline_assignment_wiring
 check_data_contract_registry_split_member_assignment_wiring
 check_data_contract_registry_commented_assignment_wiring
+check_data_contract_registry_block_comment_separated_assignment_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved assignment detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved/block-comment-separated assignment detection, and test-only registry overrides)."
