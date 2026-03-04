@@ -1,6 +1,6 @@
 SSIndexAnalyzer Report
-Generated (UTC): 20260227-113510Z
-Git commit: 7078509
+Generated (UTC): 20260304-112509Z
+Git commit: 2acf565
 Repository: /Users/robbie/src/soundscape
 Command: swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --store-path /tmp/ss-index-derived/Index.noindex/DataStore
 
@@ -10,70 +10,70 @@ Database path: /tmp/ss-index-analyzer-db
 Source root: /Users/robbie/src/soundscape/apps/ios/GuideDogs/Code
 libIndexStore: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libIndexStore.dylib
 Swift files scanned: 733
-Reference occurrences: 96725
-Resolved cross-subsystem refs: 8949
-Resolved external refs: 28166
+Reference occurrences: 111332
+Resolved cross-subsystem refs: 13955
+Resolved external refs: 42252
 
 Top cross-subsystem dependency edges:
-  1.   1566  Visual UI -> App
-  2.   1070  Visual UI -> Language
-  3.   1011  Visual UI -> Data
-  4.    510  Visual UI -> Behaviors
-  5.    489  Behaviors -> Data
-  6.    441  Behaviors -> Audio
-  7.    288  Behaviors -> App
-  8.    276  Behaviors -> Generators
-  9.    248  Data -> App
- 10.    234  Audio -> App
- 11.    211  Behaviors -> Sensors
- 12.    168  App -> Visual UI
- 13.    160  App -> Data
- 14.    148  Generators -> Data
- 15.    143  Behaviors -> Language
- 16.    134  Visual UI -> Sensors
- 17.    132  Visual UI -> Audio
- 18.    127  Sensors -> Devices
- 19.    126  Behaviors -> Visual UI
- 20.     92  App -> Language
- 21.     91  Notifications -> App
- 22.     78  Generators -> Language
- 23.     78  Notifications -> Visual UI
- 24.     74  Sensors -> App
- 25.     68  Data -> Language
- 26.     52  Data -> Generators
- 27.     52  Visual UI -> Devices
- 28.     51  Data -> Visual UI
- 29.     51  Generators -> Audio
- 30.     49  Generators -> App
- 31.     47  App -> Sensors
- 32.     43  Generators -> Sensors
- 33.     41  Haptics -> Audio
- 34.     41  Haptics -> Sensors
- 35.     39  Audio -> Language
- 36.     37  Behaviors -> Devices
- 37.     36  Audio -> Sensors
- 38.     32  Devices -> Sensors
- 39.     32  Visual UI -> Notifications
- 40.     29  Haptics -> Behaviors
+  1.   2914  Visual UI -> App
+  2.   1313  Visual UI -> Data
+  3.   1144  Visual UI -> Language
+  4.    878  Behaviors -> Data
+  5.    678  Data -> App
+  6.    665  Behaviors -> App
+  7.    563  Visual UI -> Behaviors
+  8.    513  Behaviors -> Audio
+  9.    408  Audio -> App
+ 10.    353  App -> Data
+ 11.    288  Behaviors -> Generators
+ 12.    249  Behaviors -> Sensors
+ 13.    218  Generators -> Data
+ 14.    215  Behaviors -> Visual UI
+ 15.    198  App -> Sensors
+ 16.    189  App -> Visual UI
+ 17.    184  Visual UI -> Sensors
+ 18.    165  Behaviors -> Language
+ 19.    154  Data -> Audio
+ 20.    150  App -> Behaviors
+ 21.    145  Sensors -> App
+ 22.    133  Sensors -> Devices
+ 23.    132  Visual UI -> Audio
+ 24.    120  Notifications -> App
+ 25.    117  Data -> Language
+ 26.    113  Generators -> App
+ 27.    108  Generators -> Language
+ 28.     97  Generators -> Audio
+ 29.     94  App -> Language
+ 30.     94  Data -> Visual UI
+ 31.     92  Visual UI -> Devices
+ 32.     84  Data -> Generators
+ 33.     84  Devices -> App
+ 34.     81  Notifications -> Visual UI
+ 35.     67  Haptics -> App
+ 36.     62  Data -> Behaviors
+ 37.     58  App -> Devices
+ 38.     55  Generators -> Sensors
+ 39.     48  App -> Audio
+ 40.     48  Behaviors -> Devices
 
 Top external module edges:
-  1.   4718  Visual UI -> SwiftUICore
-  2.   1074  Visual UI -> Swift
-  3.    886  Visual UI -> CoreFoundation
-  4.    693  Behaviors -> Swift
-  5.    677  Visual UI -> Foundation
-  6.    618  Visual UI -> UIKit.UIViewController
-  7.    577  Data -> Swift
-  8.    545  Visual UI -> UIKit.UIView
-  9.    509  App -> Swift
- 10.    490  Visual UI -> Foundation.NSNotification
- 11.    450  Audio -> Swift
- 12.    433  Data -> Foundation
- 13.    424  App -> Foundation
- 14.    419  App -> _LocationEssentials.CLLocationEssentials
- 15.    411  Visual UI -> UIKit.UIAlertController
- 16.    385  Data -> _LocationEssentials.CLLocationEssentials
- 17.    344  Visual UI -> UIKit.UILabel
- 18.    332  Visual UI -> _Concurrency
- 19.    287  Behaviors -> _Concurrency
- 20.    254  Behaviors -> _LocationEssentials.CLLocationEssentials
+  1.   4719  Visual UI -> SwiftUICore
+  2.   3839  Visual UI -> Swift
+  3.   3552  Data -> Swift
+  4.   2322  App -> Swift
+  5.   2163  Behaviors -> Swift
+  6.   1362  Audio -> Swift
+  7.   1019  Visual UI -> SwiftUI
+  8.    934  Devices -> Swift
+  9.    898  Visual UI -> CoreFoundation
+ 10.    792  Visual UI -> UIKit.UIViewController
+ 11.    761  Visual UI -> Foundation
+ 12.    631  Sensors -> Swift
+ 13.    586  Visual UI -> UIKit.UIView
+ 14.    554  Data -> _LocationEssentials.CLLocationEssentials
+ 15.    531  Data -> Foundation
+ 16.    477  App -> Foundation
+ 17.    458  App -> _LocationEssentials.CLLocationEssentials
+ 18.    447  Visual UI -> UIKit.UIAlertController
+ 19.    428  Visual UI -> _Concurrency
+ 20.    382  Visual UI -> UIKit.UILabel

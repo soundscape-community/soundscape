@@ -929,6 +929,17 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
             }
             return (entityKey, $0.id)
         })
+        poiByEntityKey = Dictionary(uniqueKeysWithValues: validReferences.compactMap { reference in
+            guard let entityKey = reference.entityKey else {
+                return nil
+            }
+
+            let poi = GenericLocation(coordinate: reference.coordinate,
+                                      name: reference.nickname ?? "",
+                                      address: reference.estimatedAddress)
+            poi.key = entityKey
+            return (entityKey, poi)
+        })
     }
 
     func removeReferenceEntity(id: String) async throws {
@@ -1391,5 +1402,81 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         XCTAssertEqual(markerByEntityKey?.location.coordinate.latitude ?? -1, 0, accuracy: 0.000_001)
         XCTAssertEqual(markerByEntityKey?.location.coordinate.longitude ?? -1, 0, accuracy: 0.000_001)
         XCTAssertEqual(poiByEntityKey?.key, entityKey)
+    }
+
+    func testClearNewReferenceEntitiesAndRoutesClearsRouteFlagsAndRetainsReferenceReadsWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        var route = Route()
+        route.id = "clear-new-route"
+        route.name = "Clear New Route"
+        route.isNew = true
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+
+        let entityKey = "clear-new-entity-key"
+        let referenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: entityKey,
+                                                                                          nickname: "Marker Before Clear",
+                                                                                          estimatedAddress: "1 Main",
+                                                                                          annotation: nil)
+
+        try await DataContractRegistry.spatialMaintenanceWrite.clearNewReferenceEntitiesAndRoutes()
+
+        let clearedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id)
+        let retainedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: referenceID)
+        let retainedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: entityKey)
+
+        XCTAssertEqual(clearedRoute?.id, route.id)
+        XCTAssertEqual(clearedRoute?.isNew, false)
+        XCTAssertEqual(retainedReference?.id, referenceID)
+        XCTAssertEqual(retainedReferenceByEntityKey?.id, referenceID)
+    }
+
+    func testCleanCorruptReferenceEntitiesRemovesInvalidEntityKeyLookupsWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let validEntityKey = "clean-valid-entity-key"
+        let validReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: validEntityKey,
+                                                                                               nickname: "Valid Marker",
+                                                                                               estimatedAddress: "2 Main",
+                                                                                               annotation: nil)
+
+        let corruptEntityKey = "clean-corrupt-entity-key"
+        let corruptReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: corruptEntityKey,
+                                                                                                 nickname: nil,
+                                                                                                 estimatedAddress: nil,
+                                                                                                 annotation: nil)
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: corruptReferenceID,
+                                                                          location: SSGeoCoordinate(latitude: 120,
+                                                                                                    longitude: 220),
+                                                                          nickname: nil,
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil)
+
+        let corruptReferenceByEntityKeyBeforeClean = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: corruptEntityKey)
+        let corruptPOIBeforeClean = await DataContractRegistry.spatialRead.poi(byKey: corruptEntityKey)
+        XCTAssertEqual(corruptReferenceByEntityKeyBeforeClean?.id, corruptReferenceID)
+        XCTAssertEqual(corruptPOIBeforeClean?.key, corruptEntityKey)
+
+        try await DataContractRegistry.spatialMaintenanceWrite.cleanCorruptReferenceEntities()
+
+        let validReference = await DataContractRegistry.spatialRead.referenceEntity(byID: validReferenceID)
+        let validReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: validEntityKey)
+        let validPOI = await DataContractRegistry.spatialRead.poi(byKey: validEntityKey)
+        let removedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: corruptReferenceID)
+        let removedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: corruptEntityKey)
+        let removedPOI = await DataContractRegistry.spatialRead.poi(byKey: corruptEntityKey)
+
+        XCTAssertEqual(validReference?.id, validReferenceID)
+        XCTAssertEqual(validReferenceByEntityKey?.id, validReferenceID)
+        XCTAssertEqual(validPOI?.key, validEntityKey)
+        XCTAssertNil(removedReference)
+        XCTAssertNil(removedReferenceByEntityKey)
+        XCTAssertNil(removedPOI)
     }
 }
