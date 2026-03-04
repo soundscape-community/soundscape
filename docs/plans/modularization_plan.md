@@ -51,7 +51,7 @@ Completed foundations:
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 
-Current architecture baseline (latest report `20260304-133250Z-ssindex-326265e`):
+Current architecture baseline (latest report `20260304-133649Z-ssindex-736ff5a`):
 - `Data -> App`: 678
 - `Data -> Visual UI`: 94
 - `Behaviors -> Visual UI`: 215
@@ -83,9 +83,11 @@ Milestone ledger:
 - 2026-03-04: Milestone 4 third parity slice landed: in-memory maintenance tests now cover `removeAllReferenceEntities` and `removeAllRoutes` flow semantics (reference cleanup first, route cleanup second).
 - 2026-03-04: Milestone 4 fourth parity slice landed: in-memory reference-removal parity now mirrors Realm route-maintenance side effects by removing affected route waypoints, reindexing remaining waypoints, and refreshing first-waypoint coordinates for `removeReferenceEntity` and `cleanCorruptReferenceEntities`.
 - 2026-03-04: Milestone 4 fifth parity slice landed: in-memory reference-location updates now mirror Realm first-waypoint maintenance by refreshing first-waypoint coordinates only for routes whose first waypoint matches the updated marker.
+- 2026-03-04: Milestone 4 sixth parity slice landed: in-memory destination-marker removal now mirrors Realm destination semantics by marking an active destination reference as temporary instead of deleting it, while retaining route waypoint linkage and reference/POI lookups.
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
 
 Most recent completed slices (latest first):
+- 2026-03-04: Expanded in-memory parity so removing an active destination reference marks it temporary (`isTemp == true`) without deleting the marker or removing route waypoints, matching Realm destination-maintenance behavior.
 - 2026-03-04: Expanded in-memory parity so `updateReferenceEntity` location changes refresh first-waypoint coordinates (and route update timestamps) only for routes whose first waypoint references the updated marker.
 - 2026-03-04: Expanded in-memory parity so `removeReferenceEntity` and `cleanCorruptReferenceEntities` remove impacted route waypoints, reindex waypoint order, and keep route first-waypoint coordinates aligned with remaining references.
 - 2026-03-04: Expanded maintenance parity with `removeAllReferenceEntities` and `removeAllRoutes` in-memory flow coverage, asserting reference/POI cleanup and route retention/removal order semantics.
@@ -160,16 +162,16 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Continue Milestone 4 by expanding in-memory parity coverage for remaining maintenance/read-write edges (for example destination-temporary marker removal semantics and related route/read side effects).
+1. Continue Milestone 4 by expanding in-memory parity coverage for remaining maintenance/read-write edges (for example destination-temporary follow-up cleanup flows and `removeAllTemporaryReferenceEntities` interactions with route/read semantics).
 2. Continue Milestone 3 by tightening Realm-adapter seams beyond symbol usage (for example constructor/wiring boundaries) while preserving current runtime behavior.
 3. Keep running the validation baseline plus dependency-report export for each slice; keep tracking full-suite `AudioEngineTest` failures explicitly alongside targeted pass suites.
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 2 is complete; Milestone 3 hardening is active and Milestone 4 parity expansion now includes maintenance semantics for clear-new, corrupt-reference cleanup, remove-all flows, route-waypoint cleanup on reference removals, and first-waypoint refresh on marker location updates.
+- Milestone 2 is complete; Milestone 3 hardening is active and Milestone 4 parity expansion now includes maintenance semantics for clear-new, corrupt-reference cleanup, remove-all flows, route-waypoint cleanup on reference removals, first-waypoint refresh on marker location updates, and destination-marker temporary preservation on remove.
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260304-133250Z-ssindex-326265e.txt`
+- `docs/plans/artifacts/dependency-analysis/20260304-133649Z-ssindex-736ff5a.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:

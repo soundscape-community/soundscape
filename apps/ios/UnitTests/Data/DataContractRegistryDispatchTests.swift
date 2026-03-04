@@ -576,9 +576,14 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
     private var referenceIDByEntityKey: [String: String] = [:]
     private var addressCacheRecords: [AddressCacheRecord] = []
     private var poiByEntityKey: [String: POI] = [:]
+    private var destinationReferenceID: String?
 
     var restoredAddressCount: Int {
         addressCacheRecords.count
+    }
+
+    func setDestinationReferenceIDForTesting(_ id: String?) {
+        destinationReferenceID = id
     }
 
     // MARK: - Route Reads
@@ -955,6 +960,22 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
     }
 
     func removeReferenceEntity(id: String) async throws {
+        if destinationReferenceID == id, let existing = referenceByID[id] {
+            if existing.isTemp == false {
+                referenceByID[id] = ReferenceEntity(id: existing.id,
+                                                    entityKey: existing.entityKey,
+                                                    lastUpdatedDate: existing.lastUpdatedDate,
+                                                    lastSelectedDate: existing.lastSelectedDate,
+                                                    isNew: false,
+                                                    isTemp: true,
+                                                    coordinate: existing.coordinate,
+                                                    nickname: existing.nickname,
+                                                    estimatedAddress: existing.estimatedAddress,
+                                                    annotation: existing.annotation)
+            }
+            return
+        }
+
         guard let removed = referenceByID.removeValue(forKey: id) else {
             return
         }
@@ -1771,5 +1792,58 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         XCTAssertEqual(retainedSecondMarkerRoute?.firstWaypointLatitude ?? 0, secondMarkerLocation.location.coordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(retainedSecondMarkerRoute?.firstWaypointLongitude ?? 0, secondMarkerLocation.location.coordinate.longitude, accuracy: 0.000_001)
         XCTAssertEqual(retainedSecondMarkerRoute?.waypoints.ordered.first?.markerId, secondMarkerID)
+    }
+
+    func testRemoveReferenceEntityForDestinationMarksTemporaryWithoutRemovingRouteWaypointWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let firstMarkerLocation = GenericLocation(lat: 47.6205, lon: -122.3493)
+        let secondMarkerLocation = GenericLocation(lat: 47.6301, lon: -122.3402)
+        let destinationReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: "destination-marker-key",
+                                                                                                     nickname: "Destination Marker",
+                                                                                                     estimatedAddress: "1 Main",
+                                                                                                     annotation: nil)
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: destinationReferenceID,
+                                                                          location: firstMarkerLocation.location.coordinate.ssGeoCoordinate,
+                                                                          nickname: nil,
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil)
+        let secondReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: secondMarkerLocation,
+                                                                                                nickname: "Second Marker",
+                                                                                                estimatedAddress: "2 Main",
+                                                                                                annotation: nil)
+
+        var firstWaypoint = RouteWaypoint()
+        firstWaypoint.index = 0
+        firstWaypoint.markerId = destinationReferenceID
+        var secondWaypoint = RouteWaypoint()
+        secondWaypoint.index = 1
+        secondWaypoint.markerId = secondReferenceID
+        var route = Route()
+        route.id = "destination-remove-route"
+        route.name = "Destination Remove Route"
+        route.waypoints = [firstWaypoint, secondWaypoint]
+        route.lastUpdatedDate = Date(timeIntervalSince1970: 300)
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+
+        store.setDestinationReferenceIDForTesting(destinationReferenceID)
+        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: destinationReferenceID)
+
+        let retainedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: destinationReferenceID)
+        let retainedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: "destination-marker-key")
+        let retainedPOI = await DataContractRegistry.spatialRead.poi(byKey: "destination-marker-key")
+        let retainedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id)
+
+        XCTAssertEqual(retainedReference?.id, destinationReferenceID)
+        XCTAssertTrue(retainedReference?.isTemp ?? false)
+        XCTAssertEqual(retainedReferenceByEntityKey?.id, destinationReferenceID)
+        XCTAssertEqual(retainedPOI?.key, "destination-marker-key")
+        XCTAssertEqual(retainedRoute?.waypoints.ordered.count, 2)
+        XCTAssertEqual(retainedRoute?.waypoints.ordered.first?.markerId, destinationReferenceID)
+        XCTAssertEqual(retainedRoute?.firstWaypointLatitude ?? 0, firstMarkerLocation.location.coordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(retainedRoute?.firstWaypointLongitude ?? 0, firstMarkerLocation.location.coordinate.longitude, accuracy: 0.000_001)
     }
 }
