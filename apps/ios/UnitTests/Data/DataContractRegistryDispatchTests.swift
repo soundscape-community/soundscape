@@ -604,13 +604,13 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
             return nil
         }
 
-        return RouteParameters(route: route, context: context)
+        return routeParameters(for: route, context: context)
     }
 
     func routeParametersForBackup() async -> [RouteParameters] {
         routesByID.values
             .sorted(by: { $0.id < $1.id })
-            .compactMap { RouteParameters(route: $0, context: .backup) }
+            .compactMap { routeParameters(for: $0, context: .backup) }
     }
 
     func routes(containingMarkerID markerID: String) async -> [Route] {
@@ -921,6 +921,8 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         let validReferences = referenceByID.values.filter {
             CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude).isValidLocationCoordinate
         }
+        let validReferenceIDs = Set(validReferences.map(\.id))
+        let removedReferenceIDs = referenceByID.keys.filter { validReferenceIDs.contains($0) == false }
 
         referenceByID = Dictionary(uniqueKeysWithValues: validReferences.map { ($0.id, $0) })
         referenceIDByEntityKey = Dictionary(uniqueKeysWithValues: validReferences.compactMap {
@@ -940,13 +942,24 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
             poi.key = entityKey
             return (entityKey, poi)
         })
+
+        let cleanedAt = Date()
+        removedReferenceIDs.forEach { referenceID in
+            removeWaypointFromAllRoutes(markerID: referenceID, updatedAt: cleanedAt)
+        }
     }
 
     func removeReferenceEntity(id: String) async throws {
-        if let removed = referenceByID.removeValue(forKey: id), let entityKey = removed.entityKey {
+        guard let removed = referenceByID.removeValue(forKey: id) else {
+            return
+        }
+
+        if let entityKey = removed.entityKey {
             referenceIDByEntityKey.removeValue(forKey: entityKey)
             poiByEntityKey.removeValue(forKey: entityKey)
         }
+
+        removeWaypointFromAllRoutes(markerID: id, updatedAt: Date())
     }
 
     // MARK: - Helpers
@@ -1003,6 +1016,39 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         return snapshot
     }
 
+    private func routeParameters(for route: Route,
+                                 context: RouteParameters.Context) -> RouteParameters? {
+        let waypointParameters = route.waypoints.compactMap { waypoint -> RouteWaypointParameters? in
+            if context == .backup {
+                return RouteWaypointParameters(index: waypoint.index, markerId: waypoint.markerId, marker: nil)
+            }
+
+            guard let reference = referenceByID[waypoint.markerId] else {
+                return nil
+            }
+
+            let marker = MarkerParameters(name: displayName(for: reference),
+                                          latitude: reference.latitude,
+                                          longitude: reference.longitude)
+            return RouteWaypointParameters(index: waypoint.index, markerId: waypoint.markerId, marker: marker)
+        }
+
+        guard waypointParameters.count == route.waypoints.count else {
+            return nil
+        }
+
+        let createdDate = context == .backup ? route.createdDate : nil
+        let lastUpdatedDate = context == .backup ? route.lastUpdatedDate : nil
+        let lastSelectedDate = context == .backup ? route.lastSelectedDate : nil
+        return RouteParameters(id: route.id,
+                               name: route.name,
+                               routeDescription: route.routeDescription,
+                               waypoints: waypointParameters,
+                               createdDate: createdDate,
+                               lastUpdatedDate: lastUpdatedDate,
+                               lastSelectedDate: lastSelectedDate)
+    }
+
     private func updatedRouteSnapshot(existing: Route, incoming: Route, updatedAt: Date) -> Route {
         var updated = existing
         updated.name = incoming.name
@@ -1034,6 +1080,43 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
         }
 
         return firstWaypoint.asLocationDetail?.location.coordinate.ssGeoCoordinate
+    }
+
+    private func removeWaypointFromAllRoutes(markerID: String, updatedAt: Date) {
+        let containingRouteIDs = routesByID.values
+            .filter { route in
+                route.waypoints.contains(where: { $0.markerId == markerID })
+            }
+            .map(\.id)
+
+        containingRouteIDs.forEach { routeID in
+            guard let route = routesByID[routeID],
+                  let updatedRoute = routeRemovingWaypoint(markerID: markerID,
+                                                           from: route,
+                                                           updatedAt: updatedAt) else {
+                return
+            }
+            routesByID[routeID] = updatedRoute
+        }
+    }
+
+    private func routeRemovingWaypoint(markerID: String,
+                                       from route: Route,
+                                       updatedAt: Date) -> Route? {
+        guard let waypointArrayIndex = route.waypoints.firstIndex(where: { $0.markerId == markerID }) else {
+            return nil
+        }
+
+        var updatedRoute = route
+        let removedWaypointIndex = updatedRoute.waypoints[waypointArrayIndex].index
+        updatedRoute.waypoints.remove(at: waypointArrayIndex)
+        for index in updatedRoute.waypoints.indices where updatedRoute.waypoints[index].index > removedWaypointIndex {
+            updatedRoute.waypoints[index].index -= 1
+        }
+
+        updatedRoute.lastUpdatedDate = updatedAt
+        applyFirstWaypointCoordinate(to: &updatedRoute, waypoints: updatedRoute.waypoints)
+        return updatedRoute
     }
 }
 
@@ -1329,9 +1412,14 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         let lastUpdatedDate = Date(timeIntervalSince1970: 11_000)
         let lastSelectedDate = Date(timeIntervalSince1970: 12_000)
 
+        let markerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: GenericLocation(lat: 47.6205,
+                                                                                                                lon: -122.3493),
+                                                                                       nickname: "Route Parameter Marker",
+                                                                                       estimatedAddress: "1 Main",
+                                                                                       annotation: nil)
         var waypoint = RouteWaypoint()
         waypoint.index = 0
-        waypoint.markerId = "route-parameter-marker"
+        waypoint.markerId = markerID
 
         var route = Route()
         route.id = "route-parameter-context"
@@ -1445,6 +1533,12 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
                                                                                                nickname: "Valid Marker",
                                                                                                estimatedAddress: "2 Main",
                                                                                                annotation: nil)
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: validReferenceID,
+                                                                          location: SSGeoCoordinate(latitude: 47.6205,
+                                                                                                    longitude: -122.3493),
+                                                                          nickname: nil,
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil)
 
         let corruptEntityKey = "clean-corrupt-entity-key"
         let corruptReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: corruptEntityKey,
@@ -1457,6 +1551,17 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
                                                                           nickname: nil,
                                                                           estimatedAddress: nil,
                                                                           annotation: nil)
+        var corruptWaypoint = RouteWaypoint()
+        corruptWaypoint.index = 0
+        corruptWaypoint.markerId = corruptReferenceID
+        var validWaypoint = RouteWaypoint()
+        validWaypoint.index = 1
+        validWaypoint.markerId = validReferenceID
+        var route = Route()
+        route.id = "clean-corrupt-route"
+        route.name = "Clean Corrupt Route"
+        route.waypoints = [corruptWaypoint, validWaypoint]
+        try await DataContractRegistry.spatialWrite.addRoute(route)
 
         let corruptReferenceByEntityKeyBeforeClean = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: corruptEntityKey)
         let corruptPOIBeforeClean = await DataContractRegistry.spatialRead.poi(byKey: corruptEntityKey)
@@ -1471,6 +1576,7 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         let removedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: corruptReferenceID)
         let removedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: corruptEntityKey)
         let removedPOI = await DataContractRegistry.spatialRead.poi(byKey: corruptEntityKey)
+        let updatedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id)
 
         XCTAssertEqual(validReference?.id, validReferenceID)
         XCTAssertEqual(validReferenceByEntityKey?.id, validReferenceID)
@@ -1478,6 +1584,9 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         XCTAssertNil(removedReference)
         XCTAssertNil(removedReferenceByEntityKey)
         XCTAssertNil(removedPOI)
+        XCTAssertEqual(updatedRoute?.waypoints.ordered.count, 1)
+        XCTAssertEqual(updatedRoute?.waypoints.ordered.first?.markerId, validReferenceID)
+        XCTAssertEqual(updatedRoute?.waypoints.ordered.first?.index, 0)
     }
 
     func testRemoveAllMaintenanceFlowsClearReferencesThenRoutesWithoutRealmPersistence() async throws {
@@ -1534,5 +1643,44 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         let removedRouteAfterRouteClear = await DataContractRegistry.spatialRead.route(byKey: route.id)
         XCTAssertTrue(routesAfterRouteClear.isEmpty)
         XCTAssertNil(removedRouteAfterRouteClear)
+    }
+
+    func testRemoveReferenceEntityRemovesRouteWaypointAndReindexesWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let firstLocation = GenericLocation(lat: 47.6205, lon: -122.3493)
+        let secondLocation = GenericLocation(lat: 47.6301, lon: -122.3402)
+        let firstReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: firstLocation,
+                                                                                               nickname: "First",
+                                                                                               estimatedAddress: "1 Main",
+                                                                                               annotation: nil)
+        let secondReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: secondLocation,
+                                                                                                nickname: "Second",
+                                                                                                estimatedAddress: "2 Main",
+                                                                                                annotation: nil)
+
+        var firstWaypoint = RouteWaypoint()
+        firstWaypoint.index = 0
+        firstWaypoint.markerId = firstReferenceID
+        var secondWaypoint = RouteWaypoint()
+        secondWaypoint.index = 1
+        secondWaypoint.markerId = secondReferenceID
+        var route = Route()
+        route.id = "remove-reference-route"
+        route.name = "Remove Reference Route"
+        route.waypoints = [firstWaypoint, secondWaypoint]
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+
+        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: firstReferenceID)
+
+        let updatedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id)
+        XCTAssertEqual(updatedRoute?.waypoints.ordered.count, 1)
+        XCTAssertEqual(updatedRoute?.waypoints.ordered.first?.markerId, secondReferenceID)
+        XCTAssertEqual(updatedRoute?.waypoints.ordered.first?.index, 0)
+        XCTAssertEqual(updatedRoute?.firstWaypointLatitude ?? 0, secondLocation.location.coordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(updatedRoute?.firstWaypointLongitude ?? 0, secondLocation.location.coordinate.longitude, accuracy: 0.000_001)
     }
 }
