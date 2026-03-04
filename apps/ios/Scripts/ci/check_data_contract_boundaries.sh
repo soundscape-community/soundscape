@@ -22,6 +22,42 @@ readonly DATA_CONTRACT_REGISTRY_ASSIGNMENT_PATTERN='(^|[[:space:]])(self\.)?spat
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_ASSIGNMENT_DECLARATION_PATTERN='^[[:space:]]*private\(set\)[[:space:]]+static[[:space:]]+var[[:space:]]+spatial(Read|Write|MaintenanceWrite)[[:space:]]*:[[:space:]]*[A-Za-z0-9_\.]+[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_CONFIGURE_ASSIGNMENT_PATTERN='^[[:space:]]*self\.spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*(spatialRead|spatialWrite|spatialMaintenanceWrite|defaultSpatialWriteAdapter|defaultSpatialMaintenanceWriteAdapter)[[:space:]]*$'
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_RESET_ASSIGNMENT_PATTERN='^[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
+readonly DATA_CONTRACT_REGISTRY_CONFIGURE_SIGNATURE_PATTERN='^[[:space:]]*static[[:space:]]+func[[:space:]]+configure\('
+readonly DATA_CONTRACT_REGISTRY_RESET_SIGNATURE_PATTERN='^[[:space:]]*static[[:space:]]+func[[:space:]]+resetForTesting\('
+
+resolve_swift_scope_end_line() {
+  local file_path="$1"
+  local start_line="$2"
+
+  awk -v start_line="${start_line}" '
+    NR < start_line {
+      next
+    }
+    {
+      line = $0
+      open_count = gsub(/\{/, "{", line)
+      close_count = gsub(/\}/, "}", line)
+
+      if (scope_started == 0) {
+        if (open_count > 0) {
+          scope_started = 1
+          scope_depth += open_count - close_count
+          if (scope_depth <= 0) {
+            print NR
+            exit
+          }
+        }
+        next
+      }
+
+      scope_depth += open_count - close_count
+      if (scope_depth <= 0) {
+        print NR
+        exit
+      }
+    }
+  ' "${file_path}"
+}
 
 check_boundary_dir() {
   local dir="$1"
@@ -205,11 +241,41 @@ check_data_contract_registry_test_override_boundary() {
 
 check_data_contract_registry_assignment_wiring() {
   local registry_file assignment_output line_number line_content
+  local configure_start_line configure_end_line reset_start_line reset_end_line
   declare -a disallowed_registry_assignments=()
 
   registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
   if [[ ! -f "${registry_file}" ]]; then
     return 0
+  fi
+
+  configure_start_line="$(
+    rg --line-number --no-heading --no-filename \
+      --regexp "${DATA_CONTRACT_REGISTRY_CONFIGURE_SIGNATURE_PATTERN}" \
+      "${registry_file}" \
+      | head -n1 \
+      | cut -d: -f1 \
+      || true
+  )"
+  reset_start_line="$(
+    rg --line-number --no-heading --no-filename \
+      --regexp "${DATA_CONTRACT_REGISTRY_RESET_SIGNATURE_PATTERN}" \
+      "${registry_file}" \
+      | head -n1 \
+      | cut -d: -f1 \
+      || true
+  )"
+
+  if [[ -n "${configure_start_line}" ]]; then
+    configure_end_line="$(resolve_swift_scope_end_line "${registry_file}" "${configure_start_line}")"
+  else
+    configure_end_line=""
+  fi
+
+  if [[ -n "${reset_start_line}" ]]; then
+    reset_end_line="$(resolve_swift_scope_end_line "${registry_file}" "${reset_start_line}")"
+  else
+    reset_end_line=""
   fi
 
   assignment_output="$(
@@ -229,10 +295,16 @@ check_data_contract_registry_assignment_wiring() {
     fi
 
     if [[ "${line_content}" =~ ${DATA_CONTRACT_REGISTRY_ALLOWED_CONFIGURE_ASSIGNMENT_PATTERN} ]]; then
+      if [[ -z "${configure_start_line}" || -z "${configure_end_line}" || "${line_number}" -lt "${configure_start_line}" || "${line_number}" -gt "${configure_end_line}" ]]; then
+        disallowed_registry_assignments+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+      fi
       continue
     fi
 
     if [[ "${line_content}" =~ ${DATA_CONTRACT_REGISTRY_ALLOWED_RESET_ASSIGNMENT_PATTERN} ]]; then
+      if [[ -z "${reset_start_line}" || -z "${reset_end_line}" || "${line_number}" -lt "${reset_start_line}" || "${line_number}" -gt "${reset_end_line}" ]]; then
+        disallowed_registry_assignments+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+      fi
       continue
     fi
 
@@ -245,9 +317,9 @@ check_data_contract_registry_assignment_wiring() {
     printf "  %s\n" "${disallowed_registry_assignments[@]}" >&2
     echo "Allowed assignment shapes:" >&2
     echo "  private(set) static var spatial* = defaultSpatial*" >&2
-    echo "  self.spatial* = spatial* (configure seam)" >&2
-    echo "  self.spatial* = defaultSpatial* (configure fallback seam)" >&2
-    echo "  spatial* = defaultSpatial* (resetForTesting seam)" >&2
+    echo "  self.spatial* = spatial* (inside configure seam only)" >&2
+    echo "  self.spatial* = defaultSpatial* (inside configure fallback seam only)" >&2
+    echo "  spatial* = defaultSpatial* (inside resetForTesting seam only)" >&2
     exit 1
   fi
 }
