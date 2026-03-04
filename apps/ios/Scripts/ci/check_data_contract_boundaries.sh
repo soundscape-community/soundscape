@@ -444,10 +444,24 @@ check_data_contract_registry_split_member_assignment_wiring() {
     awk '
         BEGIN {
           pending_owner_line = 0
+          pending_member_line = 0
         }
 
         {
           line = $0
+
+          if (pending_member_line > 0) {
+            if (line ~ /^[[:space:]]*$/ || line ~ /^[[:space:]]*\/\//) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*=[^=]/) {
+              print pending_owner_line
+            }
+
+            pending_owner_line = 0
+            pending_member_line = 0
+          }
 
           if (pending_owner_line == 0) {
             if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)[[:space:]]*(\/\/.*)?$/) {
@@ -462,6 +476,13 @@ check_data_contract_registry_split_member_assignment_wiring() {
 
           if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
             print pending_owner_line
+            pending_owner_line = 0
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*(\/\/.*)?$/) {
+            pending_member_line = NR
+            next
           }
 
           pending_owner_line = 0
