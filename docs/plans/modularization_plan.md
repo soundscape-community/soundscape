@@ -50,6 +50,7 @@ Completed foundations:
   - `SpatialWriteContract`
   - `SpatialMaintenanceWriteContract`
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
+- Realm adapter constructor wiring is guardrailed: `RealmSpatial*Contract()` construction is restricted to `DataContractRegistry` and `UnitTests/**`.
 
 Current architecture baseline (latest report `20260304-133939Z-ssindex-c328f60`):
 - `Data -> App`: 678
@@ -85,6 +86,7 @@ Milestone ledger:
 - 2026-02-27: Milestone 2 closure decision taken: constrained iOS-specialized shared protocols are the target end-state for current scope (no additional model-family extraction required for milestone completion).
 - 2026-02-27: Milestone 3 first hardening slice landed: `check_data_contract_boundaries.sh` now enforces `RealmSpatial*Contract` adapter symbols stay in `Data/Infrastructure/Realm/**` except `DataContractRegistry` seam wiring.
 - 2026-02-27: Milestone 3 second hardening slice landed: `check_data_contract_boundaries.sh` now enforces `DataContractRegistry.configure/resetForTesting` override seams are test-only (`UnitTests/**`).
+- 2026-03-04: Milestone 3 third hardening slice landed: `check_data_contract_boundaries.sh` now enforces `RealmSpatial*Contract()` constructor usage stays in `DataContractRegistry` (plus `UnitTests/**` seam coverage), tightening adapter wiring boundaries.
 - 2026-02-27: Milestone 4 first parity slice landed: in-memory contract tests now verify `RouteParameters` backup/share context behavior plus reference lookup parity across ID/entity-key/coordinate/generic-location read paths.
 - 2026-03-04: Milestone 4 second parity slice landed: in-memory maintenance tests now cover `clearNewReferenceEntitiesAndRoutes` behavior and `cleanCorruptReferenceEntities` entity-key lookup cleanup semantics.
 - 2026-03-04: Milestone 4 third parity slice landed: in-memory maintenance tests now cover `removeAllReferenceEntities` and `removeAllRoutes` flow semantics (reference cleanup first, route cleanup second).
@@ -98,6 +100,7 @@ Milestone ledger:
 - 2026-03-04: Local validation workflow streamlined with scripted simulator-aware build/test (`apps/ios/Scripts/ci/run_local_ios_build_test.sh`) and scripted full baseline runner (`apps/ios/Scripts/ci/run_local_validation.sh`) to reduce xcodebuild noise and command drift.
 
 Most recent completed slices (latest first):
+- 2026-03-04: Hardened Realm adapter wiring boundaries so direct `RealmSpatialReadContract`/`RealmSpatialWriteContract`/`RealmSpatialMaintenanceWriteContract` construction is limited to `DataContractRegistry` and `UnitTests/**` via `check_data_contract_boundaries.sh`.
 - 2026-03-04: Closed Milestone 4 by adding in-memory parity coverage for cloud marker import read round-trip, metadata/callout nickname fallback, and entity-key upsert after temporary-marker cleanup (`InMemorySpatialContractStoreTests`).
 - 2026-03-04: Added reusable local validation scripts for simulator selection plus build/test output control (`errors`, `xcpretty`, `raw`) and documented them in agent/onboarding docs to make common execution paths one-command and context-light.
 - 2026-03-04: Expanded in-memory parity with `removeAllTemporaryReferenceEntities` cleanup semantics, verifying temporary destination markers are purged from reference/POI lookups while routes remain and share-context route parameters fail when marker payloads can no longer hydrate.
@@ -165,6 +168,7 @@ Tasks:
 Acceptance:
 - No non-infrastructure `RealmSwift` imports.
 - No non-infrastructure `SpatialDataStoreRegistry.store` usage.
+- No non-registry/non-test Realm adapter construction (`RealmSpatial*Contract()` wiring remains centralized).
 
 ### Milestone 4: In-Memory Contract Parity
 Status:
@@ -179,7 +183,7 @@ Acceptance:
 
 ## Immediate Next Steps
 1. Normalize dependency tracking by exporting a fresh SSIndex report with explicit historical args (`--top 40 --min-count 2 --file-top 40 --external-top 25`) so trajectory deltas are comparable again.
-2. Execute Milestone 3 hardening slices that enforce Realm-adapter constructor/wiring boundaries with guardrail coverage comparable to existing symbol-boundary checks.
+2. Execute the next Milestone 3 hardening slice for adapter wiring (beyond constructor seams), keeping coverage comparable to existing symbol-boundary checks.
 3. Keep running the validation baseline plus dependency-report export for each slice, with dependency comparisons locked to the explicit analyzer arg set above.
 4. Keep known full-suite `AudioEngineTest` failures tracked as non-blocking for data-modularization slices until explicitly reprioritized.
 
@@ -200,6 +204,6 @@ Latest dependency artifact:
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Continue Milestone 3 adapter-isolation hardening slices (constructor/wiring seam enforcement).
+2. Continue Milestone 3 adapter-isolation hardening slices (constructor seam guardrail landed; proceed with next wiring-boundary hardening slice).
 3. Run scripted validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore` with fixed analyzer args (`--top 40 --min-count 2 --file-top 40 --external-top 25`).
 4. Update this plan's `Progress Updates` and commit.
