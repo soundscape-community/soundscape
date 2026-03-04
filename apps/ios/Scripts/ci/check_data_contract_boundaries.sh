@@ -18,6 +18,10 @@ readonly REALM_ADAPTER_ALLOWED_INFRA_PREFIX='GuideDogs/Code/Data/Infrastructure/
 readonly REALM_ADAPTER_CONSTRUCTOR_ALLOWED_TEST_PREFIX='UnitTests/'
 readonly DATA_CONTRACT_REGISTRY_TEST_OVERRIDE_PATTERN='DataContractRegistry\.(configure|resetForTesting)\('
 readonly DATA_CONTRACT_REGISTRY_TEST_OVERRIDE_ALLOWED_PREFIX='UnitTests/'
+readonly DATA_CONTRACT_REGISTRY_ASSIGNMENT_PATTERN='(^|[[:space:]])(self\.)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*='
+readonly DATA_CONTRACT_REGISTRY_ALLOWED_ASSIGNMENT_DECLARATION_PATTERN='^[[:space:]]*private\(set\)[[:space:]]+static[[:space:]]+var[[:space:]]+spatial(Read|Write|MaintenanceWrite)[[:space:]]*:[[:space:]]*[A-Za-z0-9_\.]+[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
+readonly DATA_CONTRACT_REGISTRY_ALLOWED_CONFIGURE_ASSIGNMENT_PATTERN='^[[:space:]]*self\.spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*(spatialRead|spatialWrite|spatialMaintenanceWrite|defaultSpatialWriteAdapter|defaultSpatialMaintenanceWriteAdapter)[[:space:]]*$'
+readonly DATA_CONTRACT_REGISTRY_ALLOWED_RESET_ASSIGNMENT_PATTERN='^[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
 
 check_boundary_dir() {
   local dir="$1"
@@ -199,11 +203,61 @@ check_data_contract_registry_test_override_boundary() {
   fi
 }
 
+check_data_contract_registry_assignment_wiring() {
+  local registry_file assignment_output line_number line_content
+  declare -a disallowed_registry_assignments=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  assignment_output="$(
+    rg --line-number --no-heading --no-filename \
+      --regexp "${DATA_CONTRACT_REGISTRY_ASSIGNMENT_PATTERN}" \
+      "${registry_file}" \
+      || true
+  )"
+
+  while IFS= read -r assignment_line; do
+    [[ -z "${assignment_line}" ]] && continue
+    line_number="${assignment_line%%:*}"
+    line_content="${assignment_line#*:}"
+
+    if [[ "${line_content}" =~ ${DATA_CONTRACT_REGISTRY_ALLOWED_ASSIGNMENT_DECLARATION_PATTERN} ]]; then
+      continue
+    fi
+
+    if [[ "${line_content}" =~ ${DATA_CONTRACT_REGISTRY_ALLOWED_CONFIGURE_ASSIGNMENT_PATTERN} ]]; then
+      continue
+    fi
+
+    if [[ "${line_content}" =~ ${DATA_CONTRACT_REGISTRY_ALLOWED_RESET_ASSIGNMENT_PATTERN} ]]; then
+      continue
+    fi
+
+    disallowed_registry_assignments+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${assignment_output}"
+
+  if [[ ${#disallowed_registry_assignments[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains non-seam spatial adapter assignment wiring." >&2
+    echo "Disallowed assignment call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_assignments[@]}" >&2
+    echo "Allowed assignment shapes:" >&2
+    echo "  private(set) static var spatial* = defaultSpatial*" >&2
+    echo "  self.spatial* = spatial* (configure seam)" >&2
+    echo "  self.spatial* = defaultSpatial* (configure fallback seam)" >&2
+    echo "  spatial* = defaultSpatial* (resetForTesting seam)" >&2
+    exit 1
+  fi
+}
+
 check_boundary_dir "${CONTRACTS_DIR}" "GuideDogs/Code/Data/Contracts"
 check_boundary_dir "${DOMAIN_DIR}" "GuideDogs/Code/Data/Domain"
 check_realm_adapter_boundary
 check_realm_adapter_constructor_boundary
 check_data_contract_registry_realm_adapter_wiring
 check_data_contract_registry_test_override_boundary
+check_data_contract_registry_assignment_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved, and test-only registry overrides)."

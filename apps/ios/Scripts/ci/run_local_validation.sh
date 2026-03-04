@@ -77,7 +77,11 @@ if [[ ${SKIP_IOS_BUILD_TEST} -eq 1 ]]; then
   echo "Step 5/5: iOS build/test skipped (--skip-ios-build-test)."
 else
   echo "Step 5/5: iOS build and test"
-  bash "${IOS_DIR}/Scripts/ci/run_local_ios_build_test.sh" "${IOS_BUILD_TEST_ARGS[@]}"
+  if [[ ${#IOS_BUILD_TEST_ARGS[@]} -gt 0 ]]; then
+    bash "${IOS_DIR}/Scripts/ci/run_local_ios_build_test.sh" "${IOS_BUILD_TEST_ARGS[@]}"
+  else
+    bash "${IOS_DIR}/Scripts/ci/run_local_ios_build_test.sh"
+  fi
 fi
 
 echo "Local validation baseline completed."
