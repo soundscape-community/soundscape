@@ -52,12 +52,12 @@ Completed foundations:
 - Strict infra-only enforcement in place for `SpatialDataStoreRegistry.store` and `RealmSwift` imports.
 - Realm adapter constructor wiring is guardrailed: `RealmSpatial*Contract()` construction is restricted to `DataContractRegistry` and `UnitTests/**`.
 
-Current architecture baseline (latest report `20260304-133939Z-ssindex-c328f60`):
+Current architecture baseline (latest report `20260304-145500Z-ssindex-a7a05e5`):
 - `Data -> App`: 678
 - `Data -> Visual UI`: 94
 - `Behaviors -> Visual UI`: 215
 - `Sensors -> App`: 145
-- Comparability note: this report was exported with `--store-path` only (no explicit `--top/--min-count/--file-top/--external-top` args), so direct trend comparison with 2026-02-27 snapshots is noisy; treat this as a fresh baseline unless re-exported with the historical arg set.
+- Comparability note: this report was exported with explicit historical analyzer args (`--top 40 --min-count 2 --file-top 40 --external-top 25`) from deterministic `/tmp/ss-index-derived` build output, so trend comparisons can use this as the normalized baseline.
 
 ## Trajectory Review (2026-03-04)
 - Direction remains correct: app ingress is unified at async `DataContractRegistry` contracts and Realm boundaries are guarded in CI.
@@ -87,6 +87,7 @@ Milestone ledger:
 - 2026-02-27: Milestone 3 first hardening slice landed: `check_data_contract_boundaries.sh` now enforces `RealmSpatial*Contract` adapter symbols stay in `Data/Infrastructure/Realm/**` except `DataContractRegistry` seam wiring.
 - 2026-02-27: Milestone 3 second hardening slice landed: `check_data_contract_boundaries.sh` now enforces `DataContractRegistry.configure/resetForTesting` override seams are test-only (`UnitTests/**`).
 - 2026-03-04: Milestone 3 third hardening slice landed: `check_data_contract_boundaries.sh` now enforces `RealmSpatial*Contract()` constructor usage stays in `DataContractRegistry` (plus `UnitTests/**` seam coverage), tightening adapter wiring boundaries.
+- 2026-03-04: Dependency tracking normalization slice landed: exported SSIndex artifact `20260304-145500Z-ssindex-a7a05e5` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with explicit comparison args (`--top 40 --min-count 2 --file-top 40 --external-top 25`).
 - 2026-02-27: Milestone 4 first parity slice landed: in-memory contract tests now verify `RouteParameters` backup/share context behavior plus reference lookup parity across ID/entity-key/coordinate/generic-location read paths.
 - 2026-03-04: Milestone 4 second parity slice landed: in-memory maintenance tests now cover `clearNewReferenceEntitiesAndRoutes` behavior and `cleanCorruptReferenceEntities` entity-key lookup cleanup semantics.
 - 2026-03-04: Milestone 4 third parity slice landed: in-memory maintenance tests now cover `removeAllReferenceEntities` and `removeAllRoutes` flow semantics (reference cleanup first, route cleanup second).
@@ -100,6 +101,7 @@ Milestone ledger:
 - 2026-03-04: Local validation workflow streamlined with scripted simulator-aware build/test (`apps/ios/Scripts/ci/run_local_ios_build_test.sh`) and scripted full baseline runner (`apps/ios/Scripts/ci/run_local_validation.sh`) to reduce xcodebuild noise and command drift.
 
 Most recent completed slices (latest first):
+- 2026-03-04: Normalized dependency tracking by running deterministic build-only index generation and exporting SSIndex report `20260304-145500Z-ssindex-a7a05e5` with fixed comparison args; `latest.txt` now points to this baseline.
 - 2026-03-04: Hardened Realm adapter wiring boundaries so direct `RealmSpatialReadContract`/`RealmSpatialWriteContract`/`RealmSpatialMaintenanceWriteContract` construction is limited to `DataContractRegistry` and `UnitTests/**` via `check_data_contract_boundaries.sh`.
 - 2026-03-04: Closed Milestone 4 by adding in-memory parity coverage for cloud marker import read round-trip, metadata/callout nickname fallback, and entity-key upsert after temporary-marker cleanup (`InMemorySpatialContractStoreTests`).
 - 2026-03-04: Added reusable local validation scripts for simulator selection plus build/test output control (`errors`, `xcpretty`, `raw`) and documented them in agent/onboarding docs to make common execution paths one-command and context-light.
@@ -182,7 +184,7 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Normalize dependency tracking by exporting a fresh SSIndex report with explicit historical args (`--top 40 --min-count 2 --file-top 40 --external-top 25`) so trajectory deltas are comparable again.
+1. Use normalized SSIndex baseline `20260304-145500Z-ssindex-a7a05e5` for Milestone 3 delta tracking; keep analyzer args fixed (`--top 40 --min-count 2 --file-top 40 --external-top 25`) on each follow-up export.
 2. Execute the next Milestone 3 hardening slice for adapter wiring (beyond constructor seams), keeping coverage comparable to existing symbol-boundary checks.
 3. Keep running the validation baseline plus dependency-report export for each slice, with dependency comparisons locked to the explicit analyzer arg set above.
 4. Keep known full-suite `AudioEngineTest` failures tracked as non-blocking for data-modularization slices until explicitly reprioritized.
@@ -199,7 +201,7 @@ Current branch state:
 - Local execution is now script-first via `run_local_validation.sh` (full baseline) and `run_local_ios_build_test.sh` (simulator-aware build/test with filtered output).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260304-133939Z-ssindex-c328f60.txt`
+- `docs/plans/artifacts/dependency-analysis/20260304-145500Z-ssindex-a7a05e5.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
