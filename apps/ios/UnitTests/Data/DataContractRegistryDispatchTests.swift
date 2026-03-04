@@ -1479,4 +1479,60 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         XCTAssertNil(removedReferenceByEntityKey)
         XCTAssertNil(removedPOI)
     }
+
+    func testRemoveAllMaintenanceFlowsClearReferencesThenRoutesWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let entityKey = "remove-all-entity-key"
+        let entityKeyReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: entityKey,
+                                                                                                   nickname: "Entity Marker",
+                                                                                                   estimatedAddress: "10 Main",
+                                                                                                   annotation: nil)
+        let locationReferenceID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: GenericLocation(lat: 47.62,
+                                                                                                                         lon: -122.35),
+                                                                                                  nickname: "Location Marker",
+                                                                                                  estimatedAddress: "11 Main",
+                                                                                                  annotation: nil)
+
+        var waypoint = RouteWaypoint()
+        waypoint.index = 0
+        waypoint.markerId = entityKeyReferenceID
+        var route = Route()
+        route.id = "remove-all-route"
+        route.name = "Remove All Route"
+        route.waypoints = [waypoint]
+        try await DataContractRegistry.spatialWrite.addRoute(route)
+
+        let routeBeforeReferenceClear = await DataContractRegistry.spatialRead.route(byKey: route.id)
+        let entityKeyReferenceBeforeClear = await DataContractRegistry.spatialRead.referenceEntity(byID: entityKeyReferenceID)
+        let locationReferenceBeforeClear = await DataContractRegistry.spatialRead.referenceEntity(byID: locationReferenceID)
+        let entityPOIBeforeClear = await DataContractRegistry.spatialRead.poi(byKey: entityKey)
+        XCTAssertNotNil(routeBeforeReferenceClear)
+        XCTAssertNotNil(entityKeyReferenceBeforeClear)
+        XCTAssertNotNil(locationReferenceBeforeClear)
+        XCTAssertNotNil(entityPOIBeforeClear)
+
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
+
+        let routeAfterReferenceClear = await DataContractRegistry.spatialRead.route(byKey: route.id)
+        let entityKeyReferenceAfterClear = await DataContractRegistry.spatialRead.referenceEntity(byID: entityKeyReferenceID)
+        let locationReferenceAfterClear = await DataContractRegistry.spatialRead.referenceEntity(byID: locationReferenceID)
+        let entityKeyReferenceByEntityAfterClear = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: entityKey)
+        let entityPOIAfterClear = await DataContractRegistry.spatialRead.poi(byKey: entityKey)
+        XCTAssertNotNil(routeAfterReferenceClear)
+        XCTAssertNil(entityKeyReferenceAfterClear)
+        XCTAssertNil(locationReferenceAfterClear)
+        XCTAssertNil(entityKeyReferenceByEntityAfterClear)
+        XCTAssertNil(entityPOIAfterClear)
+
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllRoutes()
+
+        let routesAfterRouteClear = await DataContractRegistry.spatialRead.routes()
+        let removedRouteAfterRouteClear = await DataContractRegistry.spatialRead.route(byKey: route.id)
+        XCTAssertTrue(routesAfterRouteClear.isEmpty)
+        XCTAssertNil(removedRouteAfterRouteClear)
+    }
 }
