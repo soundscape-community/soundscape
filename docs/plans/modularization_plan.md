@@ -56,6 +56,13 @@ Current architecture baseline (latest report `20260304-133939Z-ssindex-c328f60`)
 - `Data -> Visual UI`: 94
 - `Behaviors -> Visual UI`: 215
 - `Sensors -> App`: 145
+- Comparability note: this report was exported with `--store-path` only (no explicit `--top/--min-count/--file-top/--external-top` args), so direct trend comparison with 2026-02-27 snapshots is noisy; treat this as a fresh baseline unless re-exported with the historical arg set.
+
+## Trajectory Review (2026-03-04)
+- Direction remains correct: app ingress is unified at async `DataContractRegistry` contracts and Realm boundaries are guarded in CI.
+- Milestone 4 is approaching diminishing-return parity slices; close-out should now be criteria-driven rather than open-ended edge chasing.
+- Milestone 3 hardening still has meaningful payoff in constructor/wiring seam control and should become the primary track once Milestone 4 close-out criteria are met.
+- Dependency metrics need one normalized rerun before using deltas as steering signals.
 
 ## Progress Updates
 Historical micro-slice log was intentionally condensed to keep this plan context-clear-ready.
@@ -85,9 +92,14 @@ Milestone ledger:
 - 2026-03-04: Milestone 4 fifth parity slice landed: in-memory reference-location updates now mirror Realm first-waypoint maintenance by refreshing first-waypoint coordinates only for routes whose first waypoint matches the updated marker.
 - 2026-03-04: Milestone 4 sixth parity slice landed: in-memory destination-marker removal now mirrors Realm destination semantics by marking an active destination reference as temporary instead of deleting it, while retaining route waypoint linkage and reference/POI lookups.
 - 2026-03-04: Milestone 4 seventh parity slice landed: in-memory temporary-marker cleanup now mirrors destination follow-up semantics by removing `isTemp` references while preserving route waypoint snapshots and backup/share route-parameter behavior for unresolved temporary marker IDs.
+- 2026-03-04: Milestone 4 eighth parity (close-out) slice landed: in-memory parity now covers `importReferenceEntityFromCloud` read-surface round-trip, metadata/callout nickname-fallback semantics, and entity-key upsert behavior after temporary-marker cleanup.
+- 2026-03-04: Milestone 4 declared complete; primary execution focus moved to Milestone 3 Realm adapter isolation hardening.
 - 2026-02-27: Local `xcodebuild test-without-building` currently fails in `AudioEngineTest` (`testDiscreteAudio2DSeveral`, `testDiscreteAudio2DSimple`) while modularization-targeted data suites pass.
+- 2026-03-04: Local validation workflow streamlined with scripted simulator-aware build/test (`apps/ios/Scripts/ci/run_local_ios_build_test.sh`) and scripted full baseline runner (`apps/ios/Scripts/ci/run_local_validation.sh`) to reduce xcodebuild noise and command drift.
 
 Most recent completed slices (latest first):
+- 2026-03-04: Closed Milestone 4 by adding in-memory parity coverage for cloud marker import read round-trip, metadata/callout nickname fallback, and entity-key upsert after temporary-marker cleanup (`InMemorySpatialContractStoreTests`).
+- 2026-03-04: Added reusable local validation scripts for simulator selection plus build/test output control (`errors`, `xcpretty`, `raw`) and documented them in agent/onboarding docs to make common execution paths one-command and context-light.
 - 2026-03-04: Expanded in-memory parity with `removeAllTemporaryReferenceEntities` cleanup semantics, verifying temporary destination markers are purged from reference/POI lookups while routes remain and share-context route parameters fail when marker payloads can no longer hydrate.
 - 2026-03-04: Expanded in-memory parity so removing an active destination reference marks it temporary (`isTemp == true`) without deleting the marker or removing route waypoints, matching Realm destination-maintenance behavior.
 - 2026-03-04: Expanded in-memory parity so `updateReferenceEntity` location changes refresh first-waypoint coordinates (and route update timestamps) only for routes whose first waypoint references the updated marker.
@@ -114,11 +126,10 @@ Most recent completed slices (latest first):
 - 2026-02-27: `GeolocationManager`/`GPXSimulator` simulation integration decoupled from direct `AppContext` motion wiring.
 
 Validation baseline for each slice:
-- `bash apps/common/Scripts/check_forbidden_imports.sh`
-- `swift test --package-path apps/common`
-- `swift Scripts/LocalizationLinter/main.swift`
-- iOS seam/boundary scripts listed above
-- deterministic `xcodebuild build-for-testing -derivedDataPath /tmp/ss-index-derived`
+- primary runner: `bash apps/ios/Scripts/ci/run_local_validation.sh`
+- deterministic index build: `bash apps/ios/Scripts/ci/run_local_ios_build_test.sh --build-only --derived-data-path /tmp/ss-index-derived --output errors`
+- analyzer export (comparison-stable): `bash tools/SSIndexAnalyzer/Scripts/export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`
+- equivalent manual checks remain available (`check_forbidden_imports.sh`, `swift test --package-path apps/common`, localization linter, seam/boundary scripts)
 - targeted suites: `RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`
 
 ## Decoupling Plan (Data-First)
@@ -156,6 +167,9 @@ Acceptance:
 - No non-infrastructure `SpatialDataStoreRegistry.store` usage.
 
 ### Milestone 4: In-Memory Contract Parity
+Status:
+- Complete (2026-03-04)
+
 Tasks:
 - Expand non-Realm in-memory contract behavior coverage.
 - Verify contract semantics independent of Realm adapter specifics.
@@ -164,13 +178,21 @@ Acceptance:
 - In-memory adapter passes contract behavior suite without adapter-specific shims.
 
 ## Immediate Next Steps
-1. Continue Milestone 4 by expanding in-memory parity coverage for remaining maintenance/read-write edges (for example destination-temporary cleanup interactions across multi-route waypoint references and post-cleanup add/update marker flows).
-2. Continue Milestone 3 by tightening Realm-adapter seams beyond symbol usage (for example constructor/wiring boundaries) while preserving current runtime behavior.
-3. Keep running the validation baseline plus dependency-report export for each slice; keep tracking full-suite `AudioEngineTest` failures explicitly alongside targeted pass suites.
+1. Normalize dependency tracking by exporting a fresh SSIndex report with explicit historical args (`--top 40 --min-count 2 --file-top 40 --external-top 25`) so trajectory deltas are comparable again.
+2. Execute Milestone 3 hardening slices that enforce Realm-adapter constructor/wiring boundaries with guardrail coverage comparable to existing symbol-boundary checks.
+3. Keep running the validation baseline plus dependency-report export for each slice, with dependency comparisons locked to the explicit analyzer arg set above.
+4. Keep known full-suite `AudioEngineTest` failures tracked as non-blocking for data-modularization slices until explicitly reprioritized.
+
+## Decision Log (2026-03-04)
+1. Milestone 4 closure policy: complete Milestone 4 after one close-out parity slice for remaining high-value uncovered read/write behaviors, then move primary execution to Milestone 3.
+2. Dependency tracking policy: lock progress comparisons to explicit SSIndex args (`--top 40 --min-count 2 --file-top 40 --external-top 25`) to preserve comparability.
+3. Test-gating policy: known `AudioEngineTest` failures remain non-blocking for data-modularization slices in current scope.
 
 ## Context-Clear Handoff
 Current branch state:
-- Milestone 2 is complete; Milestone 3 hardening is active and Milestone 4 parity expansion now includes maintenance semantics for clear-new, corrupt-reference cleanup, remove-all flows, route-waypoint cleanup on reference removals, first-waypoint refresh on marker location updates, destination-marker temporary preservation on remove, and temporary-marker cleanup parity.
+- Milestone 2 is complete; Milestone 4 is complete; Milestone 3 hardening is now the primary active track.
+- In-memory parity now includes maintenance semantics for clear-new, corrupt-reference cleanup, remove-all flows, route-waypoint cleanup on reference removals, first-waypoint refresh on marker location updates, destination-marker temporary preservation on remove, temporary-marker cleanup parity, cloud marker import read round-trip, metadata/callout nickname fallback, and entity-key upsert after temporary-marker cleanup.
+- Local execution is now script-first via `run_local_validation.sh` (full baseline) and `run_local_ios_build_test.sh` (simulator-aware build/test with filtered output).
 
 Latest dependency artifact:
 - `docs/plans/artifacts/dependency-analysis/20260304-133939Z-ssindex-c328f60.txt`
@@ -178,6 +200,6 @@ Latest dependency artifact:
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Continue Milestone 4 in-memory parity expansion and/or Milestone 3 adapter-isolation hardening.
-3. Run validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore`.
+2. Continue Milestone 3 adapter-isolation hardening slices (constructor/wiring seam enforcement).
+3. Run scripted validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore` with fixed analyzer args (`--top 40 --min-count 2 --file-top 40 --external-top 25`).
 4. Update this plan's `Progress Updates` and commit.

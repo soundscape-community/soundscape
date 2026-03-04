@@ -2,7 +2,7 @@
 
 # Data Storage API North Star
 
-Last updated: 2026-02-27
+Last updated: 2026-03-04
 
 ## Document Contract
 - This document defines the target data API and boundary rules.
@@ -35,8 +35,9 @@ No app-facing contract may expose Realm object models or Realm-local type famili
 
 ### Async Policy
 - Contracts are async-first (`async`/`await`) and explicit about failure (`throws`).
-- No parallel sync contract surface is introduced.
-- Sync compatibility is handled by targeted seams at call boundaries and must be temporary.
+- No parallel sync contract surface is introduced or reintroduced.
+- Do not reintroduce removed compatibility surfaces (`spatialReadCompatibility`, `spatialWriteCompatibility`).
+- If a temporary compatibility seam is required, mark it deprecated with a clear replacement and intended removal direction.
 
 ## Infrastructure-Only APIs (Non App-Facing)
 The following are implementation details and must not be used by non-infrastructure code:
@@ -50,6 +51,7 @@ The following are implementation details and must not be used by non-infrastruct
 - `Data/Contracts` must remain free of Realm and platform-bound infrastructure types.
 - `RealmSwift` imports are confined to `Data/Infrastructure/Realm/**`.
 - New storage behavior for `App`, `Behaviors`, `Visual UI`, or `Notifications` must be added through `DataContractRegistry` contracts first.
+- `DataContractRegistry.configure/resetForTesting` seams are test-only (`UnitTests/**`).
 - Do not add new global data registries.
 - Do not introduce DTO families when canonical domain models are already readable and sufficient.
 

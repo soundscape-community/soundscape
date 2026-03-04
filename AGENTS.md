@@ -49,44 +49,22 @@ This file is the canonical instruction source for coding agents in this reposito
 Use commands aligned with `.github/workflows/ios-tests.yml`, but for local runs always use a simulator that is already installed on the current machine.
 
 Local session rule:
-- At the start of each session, check available simulators with `xcrun simctl list devices available`.
+- At the start of each session, check available simulators with `bash apps/ios/Scripts/ci/run_local_ios_build_test.sh --list-simulators` (or `xcrun simctl list devices available`).
 - Do not download simulator runtimes just to run local build/tests.
 - CI remains pinned in workflow config; do not edit workflow destinations for this.
 
 From repo root:
 
 ```bash
-bash apps/common/Scripts/check_forbidden_imports.sh
-swift test --package-path apps/common
+# Full common local baseline (default xcodebuild output mode: errors-only):
+bash apps/ios/Scripts/ci/run_local_validation.sh
 
-cd apps/ios
-swift Scripts/LocalizationLinter/main.swift
-bash Scripts/ci/check_spatial_data_cache_seam.sh
-bash Scripts/ci/check_realm_infrastructure_boundary.sh
-bash Scripts/ci/check_data_contract_boundaries.sh
-bash Scripts/ci/check_data_contract_infra_type_allowlist.sh
-bash Scripts/ci/check_route_mutation_seam.sh
+# Optional output modes for build/test stage:
+bash apps/ios/Scripts/ci/run_local_validation.sh -- --output xcpretty
+bash apps/ios/Scripts/ci/run_local_validation.sh -- --output raw
 
-# Per session: pick an installed iPhone simulator (first available).
-SIMULATOR_ID=$(xcrun simctl list devices available \
-  | rg "iPhone" \
-  | head -n 1 \
-  | sed -E 's/.*\(([0-9A-F-]+)\).*/\1/')
-
-if [ -z "$SIMULATOR_ID" ]; then
-  echo "No available iPhone simulator found. Create one locally in Xcode."
-  exit 1
-fi
-
-DESTINATION="platform=iOS Simulator,id=${SIMULATOR_ID}"
-
-xcodebuild build-for-testing -workspace GuideDogs.xcworkspace \
-  -scheme Soundscape \
-  -destination "$DESTINATION" \
-  CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-xcodebuild test-without-building -workspace GuideDogs.xcworkspace \
-  -scheme Soundscape \
-  -destination "$DESTINATION"
+# Build/test only (without running other baseline checks):
+bash apps/ios/Scripts/ci/run_local_ios_build_test.sh
 ```
 
 ## Dependency Analysis Tooling
@@ -106,24 +84,20 @@ bash tools/SSIndexAnalyzer/Scripts/export_analysis_report.sh
 - Run against latest `GuideDogs` DerivedData index store (auto-discovery defaults):
 
 ```bash
-swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --top 40 --min-count 2 --external-top 20
+swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --top 40 --min-count 2 --file-top 40 --external-top 25
 ```
 
 - Deterministic index freshness workflow (recommended before exporting a report):
 
 ```bash
-cd apps/ios
-SIMULATOR_ID=$(xcrun simctl list devices available | rg "iPhone" | head -n 1 | sed -E 's/.*\(([0-9A-F-]+)\).*/\1/')
-DESTINATION="platform=iOS Simulator,id=${SIMULATOR_ID}"
-xcodebuild build-for-testing -workspace GuideDogs.xcworkspace \
-  -scheme Soundscape \
-  -destination "$DESTINATION" \
-  -derivedDataPath /tmp/ss-index-derived \
-  CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+bash apps/ios/Scripts/ci/run_local_ios_build_test.sh \
+  --build-only \
+  --derived-data-path /tmp/ss-index-derived \
+  --output errors
 
-cd ../..
 bash tools/SSIndexAnalyzer/Scripts/export_analysis_report.sh \
-  --store-path /tmp/ss-index-derived/Index.noindex/DataStore
+  --store-path /tmp/ss-index-derived/Index.noindex/DataStore \
+  --top 40 --min-count 2 --file-top 40 --external-top 25
 ```
 
 - Override analyzer output scope by passing args through the export script:
@@ -180,6 +154,11 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Route add telemetry remains infrastructure-local in `Data/Infrastructure/Realm/Route+Realm.swift`; do not re-introduce telemetry-context parameters into app-facing contracts.
 - First-waypoint coordinate hydration for route initialization is centralized behind route-focused helpers in `Data/Infrastructure/Realm/Route.swift` (`firstWaypointCoordinate(for:)`, `markerCoordinate(forMarkerID:)`).
 - When validating route modularization slices locally, prefer clean derived data (for example `/tmp/soundscape-modularization-dd2`) before `xcodebuild build-for-testing` and targeted suites (`RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) to avoid stale test artifacts.
+
+## Modularization Checkpoint (2026-03-04)
+- Milestone 4 in-memory contract parity is complete; coverage now includes cloud marker import read round-trip, metadata/callout nickname-fallback semantics, and entity-key upsert behavior after temporary-marker cleanup.
+- Milestone 3 Realm adapter isolation hardening is now the primary active execution track.
+- For data-modularization slices, known full-suite `AudioEngineTest` failures (`testDiscreteAudio2DSimple`, `testDiscreteAudio2DSeveral`) are currently tracked as non-blocking.
 
 ## Compatibility Seam Policy
 - Temporary compatibility APIs (for example sync wrappers around async-first contracts) must be explicitly marked deprecated with `@available(*, deprecated, message: "...")`.

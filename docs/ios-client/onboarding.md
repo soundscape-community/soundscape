@@ -30,25 +30,20 @@ The iOS project entry point is:
 From repository root:
 
 ```sh
-cd apps/ios
-swift Scripts/LocalizationLinter/main.swift
+bash apps/ios/Scripts/ci/run_local_validation.sh
 ```
 
-Build for testing:
+Output modes:
 
 ```sh
-xcodebuild build-for-testing -workspace GuideDogs.xcworkspace \
-  -scheme Soundscape \
-  -destination "platform=iOS Simulator,OS=18.1,name=iPhone 16" \
-  CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+bash apps/ios/Scripts/ci/run_local_validation.sh -- --output xcpretty
+bash apps/ios/Scripts/ci/run_local_validation.sh -- --output raw
 ```
 
-Run tests:
+Build/test only (auto-selects an installed iPhone simulator, default output is errors-only):
 
 ```sh
-xcodebuild test-without-building -workspace GuideDogs.xcworkspace \
-  -scheme Soundscape \
-  -destination "platform=iOS Simulator,OS=18.1,name=iPhone 16"
+bash apps/ios/Scripts/ci/run_local_ios_build_test.sh
 ```
 
 ## Fastlane (Optional)

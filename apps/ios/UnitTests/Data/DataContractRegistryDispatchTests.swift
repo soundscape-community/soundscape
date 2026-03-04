@@ -1551,6 +1551,150 @@ final class InMemorySpatialContractStoreTests: XCTestCase {
         XCTAssertEqual(poiByEntityKey?.key, entityKey)
     }
 
+    func testImportReferenceEntityFromCloudRoundTripsReadSurfacesWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let importedEntityKey = "cloud-import-entity-key"
+        let importedMarkerID = "cloud-import-marker-id"
+        let importedCoordinate = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+        let importedLastUpdatedDate = Date(timeIntervalSince1970: 20_000)
+        let importStart = Date()
+
+        let importedEntity = GenericLocation(coordinate: importedCoordinate,
+                                             name: "Cloud Imported Name",
+                                             address: "1 Cloud Way")
+        importedEntity.key = importedEntityKey
+
+        guard let markerParameters = MarkerParameters(entity: importedEntity,
+                                                      markerId: importedMarkerID,
+                                                      estimatedAddress: "1 Cloud Way",
+                                                      nickname: "Cloud Nickname",
+                                                      annotation: "Cloud Annotation",
+                                                      lastUpdatedDate: importedLastUpdatedDate) else {
+            XCTFail("Expected MarkerParameters from imported entity")
+            return
+        }
+
+        try await DataContractRegistry.spatialMaintenanceWrite.importReferenceEntityFromCloud(markerParameters: markerParameters,
+                                                                                              entity: importedEntity)
+        let importEnd = Date()
+
+        let importedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: importedMarkerID)
+        let importedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: importedEntityKey)
+        let importedMarkerParametersByID = await DataContractRegistry.spatialRead.markerParameters(byID: importedMarkerID)
+        let importedMarkerParametersByEntityKey = await DataContractRegistry.spatialRead.markerParameters(byEntityKey: importedEntityKey)
+        let importedMetadataByID = await DataContractRegistry.spatialRead.referenceMetadata(byID: importedMarkerID)
+        let importedMetadataByEntityKey = await DataContractRegistry.spatialRead.referenceMetadata(byEntityKey: importedEntityKey)
+        let importedCallout = await DataContractRegistry.spatialRead.referenceCallout(byID: importedMarkerID)
+        let importedPOI = await DataContractRegistry.spatialRead.poi(byKey: importedEntityKey)
+
+        XCTAssertEqual(importedReference?.id, importedMarkerID)
+        XCTAssertEqual(importedReference?.entityKey, importedEntityKey)
+        XCTAssertEqual(importedReference?.coordinate.latitude ?? 0, importedCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(importedReference?.coordinate.longitude ?? 0, importedCoordinate.longitude, accuracy: 0.000_001)
+
+        XCTAssertEqual(importedReferenceByEntityKey?.id, importedMarkerID)
+        XCTAssertEqual(importedMarkerParametersByID?.location.coordinate.latitude ?? 0, importedCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(importedMarkerParametersByID?.location.coordinate.longitude ?? 0, importedCoordinate.longitude, accuracy: 0.000_001)
+        XCTAssertEqual(importedMarkerParametersByID?.location.name, "Cloud Nickname")
+        XCTAssertEqual(importedMarkerParametersByEntityKey?.location.coordinate.latitude ?? 0, importedCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(importedMarkerParametersByEntityKey?.location.coordinate.longitude ?? 0, importedCoordinate.longitude, accuracy: 0.000_001)
+
+        XCTAssertEqual(importedMetadataByID?.id, importedMarkerID)
+        XCTAssertEqual(importedMetadataByEntityKey?.id, importedMarkerID)
+        XCTAssertGreaterThanOrEqual(importedMetadataByID?.lastUpdatedDate ?? .distantPast, importStart)
+        XCTAssertLessThanOrEqual(importedMetadataByID?.lastUpdatedDate ?? .distantFuture, importEnd)
+
+        XCTAssertEqual(importedCallout?.name, "Cloud Nickname")
+        XCTAssertEqual(importedCallout?.superCategory, SuperCategory.places.rawValue)
+        XCTAssertEqual(importedPOI?.key, importedEntityKey)
+    }
+
+    func testReferenceMetadataAndCalloutParityAcrossNicknameFallbackWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let entityKey = "metadata-callout-entity-key"
+        let markerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: entityKey,
+                                                                                       nickname: nil,
+                                                                                       estimatedAddress: "Fallback Address",
+                                                                                       annotation: nil)
+
+        let fallbackCallout = await DataContractRegistry.spatialRead.referenceCallout(byID: markerID)
+        let metadataByID = await DataContractRegistry.spatialRead.referenceMetadata(byID: markerID)
+        let metadataByEntityKey = await DataContractRegistry.spatialRead.referenceMetadata(byEntityKey: entityKey)
+        let markerByID = await DataContractRegistry.spatialRead.markerParameters(byID: markerID)
+
+        XCTAssertEqual(fallbackCallout?.name, "Fallback Address")
+        XCTAssertEqual(fallbackCallout?.superCategory, SuperCategory.places.rawValue)
+        XCTAssertEqual(metadataByID?.id, markerID)
+        XCTAssertEqual(metadataByEntityKey?.id, markerID)
+        XCTAssertEqual(markerByID?.location.name, "Fallback Address")
+
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: markerID,
+                                                                          location: nil,
+                                                                          nickname: "Primary Nickname",
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil)
+
+        let nicknameCallout = await DataContractRegistry.spatialRead.referenceCallout(byID: markerID)
+        let markerByIDAfterUpdate = await DataContractRegistry.spatialRead.markerParameters(byID: markerID)
+        XCTAssertEqual(nicknameCallout?.name, "Primary Nickname")
+        XCTAssertEqual(markerByIDAfterUpdate?.location.name, "Primary Nickname")
+    }
+
+    func testEntityKeyUpsertCreatesFreshReferenceAfterTemporaryCleanupWithoutRealmPersistence() async throws {
+        let store = InMemorySpatialContractStore()
+        DataContractRegistry.configure(spatialRead: store,
+                                       spatialWrite: store,
+                                       spatialMaintenanceWrite: store)
+
+        let entityKey = "temp-cleanup-upsert-entity-key"
+        let firstMarkerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: entityKey,
+                                                                                            nickname: "Initial Marker",
+                                                                                            estimatedAddress: "1 Main",
+                                                                                            annotation: nil)
+
+        store.setDestinationReferenceIDForTesting(firstMarkerID)
+        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: firstMarkerID)
+        let temporaryReference = await DataContractRegistry.spatialRead.referenceEntity(byID: firstMarkerID)
+        let temporaryReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: entityKey)
+        XCTAssertTrue(temporaryReference?.isTemp ?? false)
+        XCTAssertEqual(temporaryReferenceByEntityKey?.id, firstMarkerID)
+
+        try await store.removeAllTemporaryReferenceEntities()
+        let removedReferenceByID = await DataContractRegistry.spatialRead.referenceEntity(byID: firstMarkerID)
+        let removedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: entityKey)
+        let removedPOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey)
+        XCTAssertNil(removedReferenceByID)
+        XCTAssertNil(removedReferenceByEntityKey)
+        XCTAssertNil(removedPOI)
+
+        let recreatedMarkerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: entityKey,
+                                                                                                nickname: "Recreated Marker",
+                                                                                                estimatedAddress: "2 Main",
+                                                                                                annotation: nil)
+
+        let recreatedReference = await DataContractRegistry.spatialRead.referenceEntity(byID: recreatedMarkerID)
+        let recreatedReferenceByEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: entityKey)
+        let recreatedCallout = await DataContractRegistry.spatialRead.referenceCallout(byID: recreatedMarkerID)
+        let recreatedMetadataByEntityKey = await DataContractRegistry.spatialRead.referenceMetadata(byEntityKey: entityKey)
+
+        XCTAssertNotEqual(recreatedMarkerID, firstMarkerID)
+        XCTAssertEqual(recreatedReference?.id, recreatedMarkerID)
+        XCTAssertEqual(recreatedReference?.entityKey, entityKey)
+        XCTAssertEqual(recreatedReferenceByEntityKey?.id, recreatedMarkerID)
+        XCTAssertEqual(recreatedCallout?.name, "Recreated Marker")
+        XCTAssertEqual(recreatedMetadataByEntityKey?.id, recreatedMarkerID)
+        let staleReferenceByOldID = await DataContractRegistry.spatialRead.referenceEntity(byID: firstMarkerID)
+        XCTAssertNil(staleReferenceByOldID)
+    }
+
     func testClearNewReferenceEntitiesAndRoutesClearsRouteFlagsAndRetainsReferenceReadsWithoutRealmPersistence() async throws {
         let store = InMemorySpatialContractStore()
         DataContractRegistry.configure(spatialRead: store,
