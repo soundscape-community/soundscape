@@ -53,7 +53,7 @@ Completed foundations:
 - Realm adapter constructor wiring is guardrailed: `RealmSpatial*Contract()` construction is restricted to `DataContractRegistry` and `UnitTests/**`.
 - `DataContractRegistry` adapter wiring is guardrailed: `RealmSpatial*Contract()` usage in the registry must stay in private static default-adapter declarations.
 
-Current architecture baseline (latest report `20260304-155712Z-ssindex-eba4cdf`):
+Current architecture baseline (normalized comparison baseline `20260304-155712Z-ssindex-eba4cdf`):
 - `Data -> App`: 678
 - `Data -> Visual UI`: 94
 - `Behaviors -> Visual UI`: 215
@@ -92,13 +92,15 @@ Milestone ledger:
 - 2026-03-04: Milestone 3 fifth hardening slice landed: `check_data_contract_boundaries.sh` now enforces `DataContractRegistry` spatial adapter reassignments stay limited to declaration/configure/reset seams, preventing ad-hoc runtime rewiring beyond approved seams.
 - 2026-03-04: Milestone 3 sixth hardening slice landed: `check_data_contract_boundaries.sh` now enforces `DataContractRegistry` spatial adapter reassignments to occur only inside `configure`/`resetForTesting` method scopes (in addition to declaration seams), preventing assignment-shape bypasses in ad-hoc runtime methods.
 - 2026-03-04: Milestone 3 seventh hardening slice landed: `check_data_contract_boundaries.sh` now enforces qualified `DataContractRegistry.`/`Self.` spatial-adapter reassignment forms in addition to `self.`/unqualified forms, closing qualified-assignment bypasses for registry seam checks.
-- 2026-03-04: Milestone 3 eighth hardening slice landed: `check_data_contract_boundaries.sh` now detects punctuation-prefixed `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms (for example tuple-style assignment contexts), closing non-whitespace assignment-prefix bypasses in registry seam checks.
+- 2026-03-04: Milestone 3 eighth hardening slice landed: `check_data_contract_boundaries.sh` now detects punctuation-prefixed `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms, closing non-whitespace assignment-prefix bypasses in registry seam checks.
+- 2026-03-04: Milestone 3 ninth hardening slice landed: `check_data_contract_boundaries.sh` now detects parenthesized/tuple `DataContractRegistry` `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms, closing tuple-assignment bypasses in registry seam checks.
 - 2026-03-04: Dependency tracking normalization slice landed: exported SSIndex artifact `20260304-145500Z-ssindex-a7a05e5` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with explicit comparison args (`--top 40 --min-count 2 --file-top 40 --external-top 25`).
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 fourth hardening slice exported SSIndex artifact `20260304-150933Z-ssindex-741ce45` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 fifth hardening slice exported SSIndex artifact `20260304-151805Z-ssindex-48da232` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 sixth hardening slice exported SSIndex artifact `20260304-154602Z-ssindex-94b1388` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 seventh hardening slice exported SSIndex artifact `20260304-155712Z-ssindex-eba4cdf` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Dependency follow-up rerun after Milestone 3 eighth hardening slice exported SSIndex artifact `20260304-162400Z-ssindex-9531c11` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
+- 2026-03-04: Dependency follow-up rerun after Milestone 3 ninth hardening slice exported SSIndex artifact `20260304-163225Z-ssindex-5458557` from deterministic `/tmp/ss-index-derived/Index.noindex/DataStore` with the same fixed comparison args.
 - 2026-03-04: Fixed `run_local_validation.sh` empty forwarded-arg handling under `set -u` so step 5 no longer errors before invoking `run_local_ios_build_test.sh`.
 - 2026-02-27: Milestone 4 first parity slice landed: in-memory contract tests now verify `RouteParameters` backup/share context behavior plus reference lookup parity across ID/entity-key/coordinate/generic-location read paths.
 - 2026-03-04: Milestone 4 second parity slice landed: in-memory maintenance tests now cover `clearNewReferenceEntitiesAndRoutes` behavior and `cleanCorruptReferenceEntities` entity-key lookup cleanup semantics.
@@ -113,8 +115,10 @@ Milestone ledger:
 - 2026-03-04: Local validation workflow streamlined with scripted simulator-aware build/test (`apps/ios/Scripts/ci/run_local_ios_build_test.sh`) and scripted full baseline runner (`apps/ios/Scripts/ci/run_local_validation.sh`) to reduce xcodebuild noise and command drift.
 
 Most recent completed slices (latest first):
+- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-163225Z-ssindex-5458557` (fixed args preserved) after the Milestone 3 ninth hardening slice; `latest.txt` now points to this report.
+- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so parenthesized/tuple `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms are detected by `check_data_contract_boundaries.sh`.
 - 2026-03-04: Re-exported normalized SSIndex artifact `20260304-162400Z-ssindex-9531c11` (fixed args preserved) after the Milestone 3 eighth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so punctuation-prefixed `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms are detected (for example tuple-style contexts) by `check_data_contract_boundaries.sh`.
+- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so punctuation-prefixed `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms are detected by `check_data_contract_boundaries.sh`.
 - 2026-03-04: Re-exported normalized SSIndex artifact `20260304-155712Z-ssindex-eba4cdf` (fixed args preserved) after the Milestone 3 seventh hardening slice; `latest.txt` now points to this report.
 - 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so qualified `Self.`/`DataContractRegistry.` `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` reassignment forms are also enforced by `check_data_contract_boundaries.sh`.
 - 2026-03-04: Re-exported normalized SSIndex artifact `20260304-154602Z-ssindex-94b1388` (fixed args preserved) after the Milestone 3 sixth hardening slice; `latest.txt` now points to this report.
@@ -209,7 +213,7 @@ Acceptance:
 
 ## Immediate Next Steps
 1. Use normalized SSIndex baseline `20260304-155712Z-ssindex-eba4cdf` for Milestone 3 delta tracking; keep analyzer args fixed (`--top 40 --min-count 2 --file-top 40 --external-top 25`) on each follow-up export.
-2. Execute the next Milestone 3 hardening slice for adapter wiring beyond constructor/registry-default/assignment-scope/qualified-assignment/punctuation-assignment seams, keeping coverage comparable to existing symbol-boundary checks.
+2. Execute the next Milestone 3 hardening slice for adapter wiring beyond constructor/registry-default/assignment-scope/qualified-assignment/punctuation-assignment/parenthesized-assignment seams, keeping coverage comparable to existing symbol-boundary checks.
 3. Keep running the validation baseline plus dependency-report export for each slice, with dependency comparisons locked to the explicit analyzer arg set above.
 4. Keep known full-suite `AudioEngineTest` failures tracked as non-blocking for data-modularization slices until explicitly reprioritized.
 
@@ -221,16 +225,16 @@ Acceptance:
 ## Context-Clear Handoff
 Current branch state:
 - Milestone 2 is complete; Milestone 4 is complete; Milestone 3 hardening is now the primary active track.
-- Milestone 3 now includes constructor, registry-default, assignment-shape, assignment-method-scope, qualified-assignment-form, and punctuation-prefixed-assignment-form guardrails for `DataContractRegistry` Realm adapter wiring seams.
+- Milestone 3 now includes constructor, registry-default, assignment-shape, assignment-method-scope, qualified-assignment-form, punctuation-prefixed-assignment-form, and parenthesized-assignment-form guardrails for `DataContractRegistry` Realm adapter wiring seams.
 - In-memory parity now includes maintenance semantics for clear-new, corrupt-reference cleanup, remove-all flows, route-waypoint cleanup on reference removals, first-waypoint refresh on marker location updates, destination-marker temporary preservation on remove, temporary-marker cleanup parity, cloud marker import read round-trip, metadata/callout nickname fallback, and entity-key upsert after temporary-marker cleanup.
 - Local execution is now script-first via `run_local_validation.sh` (full baseline) and `run_local_ios_build_test.sh` (simulator-aware build/test with filtered output).
 
 Latest dependency artifact:
-- `docs/plans/artifacts/dependency-analysis/20260304-162400Z-ssindex-9531c11.txt`
+- `docs/plans/artifacts/dependency-analysis/20260304-163225Z-ssindex-5458557.txt`
 - `docs/plans/artifacts/dependency-analysis/latest.txt` points to that report.
 
 Resume checklist:
 1. Re-open this file and `docs/plans/data_storage_api_north_star.md`.
-2. Continue Milestone 3 adapter-isolation hardening slices (constructor, registry-default wiring, registry assignment-shape, registry assignment-method-scope, registry qualified-assignment-form, and registry punctuation-assignment-form guardrails landed; proceed with next wiring-boundary hardening slice).
+2. Continue Milestone 3 adapter-isolation hardening slices (constructor, registry-default wiring, registry assignment-shape, registry assignment-method-scope, registry qualified-assignment-form, registry punctuation-assignment-form, and registry parenthesized-assignment-form guardrails landed; proceed with next wiring-boundary hardening slice).
 3. Run scripted validation baseline and export dependency report from `/tmp/ss-index-derived/Index.noindex/DataStore` with fixed analyzer args (`--top 40 --min-count 2 --file-top 40 --external-top 25`).
 4. Update this plan's `Progress Updates` and commit.

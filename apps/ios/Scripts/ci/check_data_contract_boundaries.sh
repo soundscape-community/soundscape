@@ -26,7 +26,6 @@ readonly DATA_CONTRACT_REGISTRY_ALLOWED_CONFIGURE_ASSIGNMENT_PATTERN='^[[:space:
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_RESET_ASSIGNMENT_PATTERN='^[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
 readonly DATA_CONTRACT_REGISTRY_CONFIGURE_SIGNATURE_PATTERN='^[[:space:]]*static[[:space:]]+func[[:space:]]+configure\('
 readonly DATA_CONTRACT_REGISTRY_RESET_SIGNATURE_PATTERN='^[[:space:]]*static[[:space:]]+func[[:space:]]+resetForTesting\('
-
 resolve_swift_scope_end_line() {
   local file_path="$1"
   local start_line="$2"
@@ -326,6 +325,65 @@ check_data_contract_registry_assignment_wiring() {
   fi
 }
 
+check_data_contract_registry_parenthesized_assignment_wiring() {
+  local registry_file parenthesized_assignment_output line_number
+  declare -a disallowed_registry_parenthesized_assignments=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  parenthesized_assignment_output="$(
+    awk '
+        BEGIN {
+          in_candidate = 0
+          candidate_start_line = 0
+          candidate = ""
+        }
+
+        {
+          line = $0
+
+          if (in_candidate == 0) {
+            if (line ~ /^[[:space:]]*\(/) {
+              in_candidate = 1
+              candidate_start_line = NR
+              candidate = ""
+            } else {
+              next
+            }
+          }
+
+          candidate = candidate line "\n"
+
+          if (line ~ /\)[[:space:]]*=/) {
+            if (candidate ~ /(^|[^[:alnum:]_\.])((self|Self|DataContractRegistry)\.)?spatial(Read|Write|MaintenanceWrite)([^[:alnum:]_]|$)/) {
+              print candidate_start_line
+            }
+
+            in_candidate = 0
+            candidate_start_line = 0
+            candidate = ""
+          }
+        }
+      ' "${registry_file}"
+  )"
+
+  while IFS= read -r line_number; do
+    [[ -z "${line_number}" ]] && continue
+    disallowed_registry_parenthesized_assignments+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${parenthesized_assignment_output}"
+
+  if [[ ${#disallowed_registry_parenthesized_assignments[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains parenthesized spatial adapter assignment wiring." >&2
+    echo "Disallowed parenthesized assignment call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_parenthesized_assignments[@]}" >&2
+    echo "Use explicit per-adapter assignments in configure/reset seams to preserve guardrail coverage." >&2
+    exit 1
+  fi
+}
+
 check_boundary_dir "${CONTRACTS_DIR}" "GuideDogs/Code/Data/Contracts"
 check_boundary_dir "${DOMAIN_DIR}" "GuideDogs/Code/Data/Domain"
 check_realm_adapter_boundary
@@ -333,5 +391,6 @@ check_realm_adapter_constructor_boundary
 check_data_contract_registry_realm_adapter_wiring
 check_data_contract_registry_test_override_boundary
 check_data_contract_registry_assignment_wiring
+check_data_contract_registry_parenthesized_assignment_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized assignment detection, and test-only registry overrides)."
