@@ -1,6 +1,6 @@
 SSIndexAnalyzer Report
-Generated (UTC): 20260304-123039Z
-Git commit: 46688c5
+Generated (UTC): 20260304-133250Z
+Git commit: 326265e
 Repository: /Users/robbie/src/soundscape
 Command: swift run --package-path tools/SSIndexAnalyzer SSIndexAnalyzer --store-path /tmp/ss-index-derived/Index.noindex/DataStore
 
