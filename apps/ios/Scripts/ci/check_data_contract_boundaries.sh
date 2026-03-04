@@ -358,7 +358,7 @@ check_data_contract_registry_parenthesized_assignment_wiring() {
           candidate = candidate line "\n"
 
           if (line ~ /\)[[:space:]]*=/) {
-            if (candidate ~ /(^|[^[:alnum:]_\.])((self|Self|DataContractRegistry)\.)?spatial(Read|Write|MaintenanceWrite)([^[:alnum:]_]|$)/) {
+            if (candidate ~ /(^|[^[:alnum:]_])(((self|Self|DataContractRegistry)[[:space:]]*\.[[:space:]]*)|(\.[[:space:]]*))?spatial(Read|Write|MaintenanceWrite)([^[:alnum:]_]|$)/) {
               print candidate_start_line
             }
 
