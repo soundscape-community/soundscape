@@ -816,6 +816,129 @@ check_data_contract_registry_inout_wiring() {
   fi
 }
 
+check_data_contract_registry_keypath_wiring() {
+  local registry_file keypath_output line_number
+  declare -a disallowed_registry_keypath_wiring=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  keypath_output="$(
+    awk '
+        BEGIN {
+          state = "none"
+          start_line = 0
+          in_block_comment = 0
+        }
+
+        function strip_block_comments(input,    out, rest, start, finish) {
+          out = ""
+          rest = input
+
+          while (length(rest) > 0) {
+            if (in_block_comment == 1) {
+              finish = index(rest, "*/")
+              if (finish == 0) {
+                return out
+              }
+              rest = substr(rest, finish + 2)
+              in_block_comment = 0
+              continue
+            }
+
+            start = index(rest, "/*")
+            if (start == 0) {
+              out = out rest
+              break
+            }
+
+            out = out substr(rest, 1, start - 1)
+            rest = substr(rest, start + 2)
+            finish = index(rest, "*/")
+            if (finish == 0) {
+              in_block_comment = 1
+              break
+            }
+
+            rest = substr(rest, finish + 2)
+          }
+
+          return out
+        }
+
+        {
+          line = strip_block_comments($0)
+          sub(/\/\/.*$/, "", line)
+          gsub(/"[^"]*"/, "", line)
+
+          if (state == "after_backslash") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)[[:space:]]*$/) {
+              state = "after_backslash_owner"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)[[:space:]]*\.[[:space:]]*)|(\.[[:space:]]*))spatial(Read|Write|MaintenanceWrite)([^[:alnum:]_]|$)/) {
+              print start_line
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "after_backslash_owner") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)([^[:alnum:]_]|$)/) {
+              print start_line
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (line ~ /\\[[:space:]]*(((self|Self|DataContractRegistry)[[:space:]]*\.[[:space:]]*)|(\.[[:space:]]*))spatial(Read|Write|MaintenanceWrite)([^[:alnum:]_]|$)/) {
+            print NR
+            next
+          }
+
+          if (line ~ /\\[[:space:]]*(self|Self|DataContractRegistry)[[:space:]]*$/) {
+            state = "after_backslash_owner"
+            start_line = NR
+            next
+          }
+
+          if (line ~ /\\[[:space:]]*$/) {
+            state = "after_backslash"
+            start_line = NR
+          }
+        }
+      ' "${registry_file}"
+  )"
+
+  while IFS= read -r line_number; do
+    [[ -z "${line_number}" ]] && continue
+    disallowed_registry_keypath_wiring+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${keypath_output}"
+
+  if [[ ${#disallowed_registry_keypath_wiring[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains spatial adapter key-path wiring." >&2
+    echo "Disallowed key-path wiring call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_keypath_wiring[@]}" >&2
+    echo "Avoid key-path access for spatial adapters; keep explicit adapter seams for guardrail visibility." >&2
+    exit 1
+  fi
+}
+
 check_boundary_dir "${CONTRACTS_DIR}" "GuideDogs/Code/Data/Contracts"
 check_boundary_dir "${DOMAIN_DIR}" "GuideDogs/Code/Data/Domain"
 check_realm_adapter_boundary
@@ -829,5 +952,6 @@ check_data_contract_registry_split_member_assignment_wiring
 check_data_contract_registry_commented_assignment_wiring
 check_data_contract_registry_block_comment_separated_assignment_wiring
 check_data_contract_registry_inout_wiring
+check_data_contract_registry_keypath_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved/block-comment-separated/inout wiring detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved/block-comment-separated/inout/key-path wiring detection, and test-only registry overrides)."
