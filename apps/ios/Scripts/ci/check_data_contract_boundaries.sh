@@ -1546,6 +1546,121 @@ check_data_contract_registry_typealias_metatype_alias_assignment_wiring() {
   fi
 }
 
+check_data_contract_registry_escaped_alias_owner_assignment_wiring() {
+  local registry_file escaped_alias_owner_output line_number
+  declare -a disallowed_registry_escaped_alias_owner_wiring=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  escaped_alias_owner_output="$(
+    awk '
+        BEGIN {
+          pending_owner_line = 0
+          pending_member_line = 0
+          in_block_comment = 0
+        }
+
+        function strip_block_comments(input,    out, rest, start, finish) {
+          out = ""
+          rest = input
+
+          while (length(rest) > 0) {
+            if (in_block_comment == 1) {
+              finish = index(rest, "*/")
+              if (finish == 0) {
+                return out
+              }
+              rest = substr(rest, finish + 2)
+              in_block_comment = 0
+              continue
+            }
+
+            start = index(rest, "/*")
+            if (start == 0) {
+              out = out rest
+              break
+            }
+
+            out = out substr(rest, 1, start - 1)
+            rest = substr(rest, start + 2)
+            finish = index(rest, "*/")
+            if (finish == 0) {
+              in_block_comment = 1
+              break
+            }
+
+            rest = substr(rest, finish + 2)
+          }
+
+          return out
+        }
+
+        {
+          line = strip_block_comments($0)
+          sub(/\/\/.*$/, "", line)
+          gsub(/"[^"]*"/, "", line)
+
+          if (pending_member_line > 0) {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*=[^=]/) {
+              print pending_owner_line
+            }
+
+            pending_owner_line = 0
+            pending_member_line = 0
+          }
+
+          if (pending_owner_line == 0) {
+            if (line ~ /^[[:space:]]*`[[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*`[[:space:]]*$/) {
+              pending_owner_line = NR
+              next
+            }
+          } else {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print pending_owner_line
+              pending_owner_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              pending_member_line = NR
+              next
+            }
+
+            pending_owner_line = 0
+          }
+
+          if (line ~ /`[[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*`[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+            print NR
+          }
+        }
+      ' "${registry_file}"
+  )"
+
+  while IFS= read -r line_number; do
+    [[ -z "${line_number}" ]] && continue
+    disallowed_registry_escaped_alias_owner_wiring+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${escaped_alias_owner_output}"
+
+  if [[ ${#disallowed_registry_escaped_alias_owner_wiring[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains escaped-alias-owner spatial adapter assignment wiring." >&2
+    echo "Disallowed escaped-alias-owner assignment call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_escaped_alias_owner_wiring[@]}" >&2
+    echo "Avoid assigning spatial adapters through backtick-escaped alias owners; keep direct canonical seam assignments for guardrail visibility." >&2
+    exit 1
+  fi
+}
+
 check_data_contract_registry_escaped_owner_wiring() {
   local registry_file escaped_owner_output line_number
   declare -a disallowed_registry_escaped_owner_wiring=()
@@ -1716,7 +1831,8 @@ check_data_contract_registry_keypath_wiring
 check_data_contract_registry_metatype_alias_assignment_wiring
 check_data_contract_registry_typealias_assignment_wiring
 check_data_contract_registry_typealias_metatype_alias_assignment_wiring
+check_data_contract_registry_escaped_alias_owner_assignment_wiring
 check_data_contract_registry_escaped_owner_wiring
 check_data_contract_registry_escaped_identifier_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/spaced-member/comment-interleaved/block-comment-separated/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/spaced-member/comment-interleaved/block-comment-separated/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
