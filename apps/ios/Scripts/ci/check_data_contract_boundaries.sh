@@ -674,6 +674,176 @@ check_data_contract_registry_parenthesized_owner_assignment_wiring() {
   fi
 }
 
+check_data_contract_registry_parenthesized_alias_owner_assignment_wiring() {
+  local registry_file parenthesized_alias_owner_output line_number
+  declare -a disallowed_registry_parenthesized_alias_owner_assignments=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  parenthesized_alias_owner_output="$(
+    awk '
+        BEGIN {
+          state = "none"
+          start_line = 0
+          in_block_comment = 0
+        }
+
+        function strip_block_comments(input,    out, rest, start, finish) {
+          out = ""
+          rest = input
+
+          while (length(rest) > 0) {
+            if (in_block_comment == 1) {
+              finish = index(rest, "*/")
+              if (finish == 0) {
+                return out
+              }
+              rest = substr(rest, finish + 2)
+              in_block_comment = 0
+              continue
+            }
+
+            start = index(rest, "/*")
+            if (start == 0) {
+              out = out rest
+              break
+            }
+
+            out = out substr(rest, 1, start - 1)
+            rest = substr(rest, start + 2)
+            finish = index(rest, "*/")
+            if (finish == 0) {
+              in_block_comment = 1
+              break
+            }
+
+            rest = substr(rest, finish + 2)
+          }
+
+          return out
+        }
+
+        {
+          line = strip_block_comments($0)
+          sub(/\/\/.*$/, "", line)
+          gsub(/"[^"]*"/, "", line)
+
+          if (line ~ /\([[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+            print NR
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "owner_ready") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "member_wait_eq") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*=[^=]/) {
+              print start_line
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "paren_wait_owner") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?[[:space:]]*$/) {
+              state = "paren_wait_close"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "paren_wait_close") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?[[:space:]]*\)[[:space:]]*$/) {
+            state = "owner_ready"
+            start_line = NR
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*$/) {
+            state = "paren_wait_owner"
+            start_line = NR
+          }
+        }
+      ' "${registry_file}"
+  )"
+
+  while IFS= read -r line_number; do
+    [[ -z "${line_number}" ]] && continue
+    disallowed_registry_parenthesized_alias_owner_assignments+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${parenthesized_alias_owner_output}"
+
+  if [[ ${#disallowed_registry_parenthesized_alias_owner_assignments[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains parenthesized-alias-owner spatial adapter assignment wiring." >&2
+    echo "Disallowed parenthesized-alias-owner assignment call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_parenthesized_alias_owner_assignments[@]}" >&2
+    echo "Avoid parenthesized alias-owner wrappers around spatial adapter assignments; keep direct canonical seam assignments for guardrail visibility." >&2
+    exit 1
+  fi
+}
+
 check_data_contract_registry_commented_assignment_wiring() {
   local registry_file commented_assignment_output line_number
   declare -a disallowed_registry_commented_assignments=()
@@ -1824,6 +1994,7 @@ check_data_contract_registry_parenthesized_assignment_wiring
 check_data_contract_registry_multiline_assignment_wiring
 check_data_contract_registry_split_member_assignment_wiring
 check_data_contract_registry_parenthesized_owner_assignment_wiring
+check_data_contract_registry_parenthesized_alias_owner_assignment_wiring
 check_data_contract_registry_commented_assignment_wiring
 check_data_contract_registry_block_comment_separated_assignment_wiring
 check_data_contract_registry_inout_wiring
@@ -1835,4 +2006,4 @@ check_data_contract_registry_escaped_alias_owner_assignment_wiring
 check_data_contract_registry_escaped_owner_wiring
 check_data_contract_registry_escaped_identifier_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/spaced-member/comment-interleaved/block-comment-separated/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/parenthesized-alias-owner/spaced-member/comment-interleaved/block-comment-separated/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
