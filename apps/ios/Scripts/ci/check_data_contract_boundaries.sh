@@ -561,7 +561,7 @@ check_data_contract_registry_parenthesized_owner_assignment_wiring() {
           sub(/\/\/.*$/, "", line)
           gsub(/"[^"]*"/, "", line)
 
-          if (line ~ /\([[:space:]]*(self|Self|DataContractRegistry)[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+          if (line ~ /\([[:space:]]*(self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)*[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
             print NR
             state = "none"
             start_line = 0
@@ -609,7 +609,7 @@ check_data_contract_registry_parenthesized_owner_assignment_wiring() {
               next
             }
 
-            if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)[[:space:]]*$/) {
+            if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)*[[:space:]]*$/) {
               state = "paren_wait_close"
               next
             }
@@ -646,7 +646,7 @@ check_data_contract_registry_parenthesized_owner_assignment_wiring() {
             next
           }
 
-          if (line ~ /^[[:space:]]*\([[:space:]]*(self|Self|DataContractRegistry)[[:space:]]*\)[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*\([[:space:]]*(self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)*[[:space:]]*\)[[:space:]]*$/) {
             state = "owner_ready"
             start_line = NR
             next
@@ -731,7 +731,7 @@ check_data_contract_registry_parenthesized_alias_owner_assignment_wiring() {
           sub(/\/\/.*$/, "", line)
           gsub(/"[^"]*"/, "", line)
 
-          if (line ~ /\([[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+          if (line ~ /\([[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
             print NR
             state = "none"
             start_line = 0
@@ -779,7 +779,7 @@ check_data_contract_registry_parenthesized_alias_owner_assignment_wiring() {
               next
             }
 
-            if (line ~ /^[[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?[[:space:]]*$/) {
+            if (line ~ /^[[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*[[:space:]]*$/) {
               state = "paren_wait_close"
               next
             }
@@ -816,7 +816,7 @@ check_data_contract_registry_parenthesized_alias_owner_assignment_wiring() {
             next
           }
 
-          if (line ~ /^[[:space:]]*\([[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?[[:space:]]*\)[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*\([[:space:]]*(([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*[[:space:]]*\)[[:space:]]*$/) {
             state = "owner_ready"
             start_line = NR
             next
@@ -901,7 +901,7 @@ check_data_contract_registry_nested_parenthesized_owner_assignment_wiring() {
           sub(/\/\/.*$/, "", line)
           gsub(/"[^"]*"/, "", line)
 
-          if (line ~ /\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]*\)[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+          if (line ~ /\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]*\)[[:space:]]*\)[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
             print NR
             state = "none"
             start_line = 0
@@ -944,7 +944,7 @@ check_data_contract_registry_nested_parenthesized_owner_assignment_wiring() {
             next
           }
 
-          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]*\)[[:space:]]*\)[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]*\)[[:space:]]*\)[[:space:]]*$/) {
             state = "owner_ready"
             start_line = NR
           }
@@ -2463,4 +2463,4 @@ check_data_contract_registry_escaped_alias_owner_assignment_wiring
 check_data_contract_registry_escaped_owner_wiring
 check_data_contract_registry_escaped_identifier_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/parenthesized-alias-owner/nested-parenthesized-owner/cast-owner/nested-cast-owner/forced-optional-cast-owner/optional-metatype-cast-owner/cast-coalescing-owner/spaced-member/comment-interleaved/block-comment-separated/metatype-self-owner/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/parenthesized-alias-owner/nested-parenthesized-owner/cast-owner/nested-cast-owner/forced-optional-cast-owner/optional-metatype-cast-owner/cast-coalescing-owner/spaced-member/comment-interleaved/block-comment-separated/metatype-self-owner/chained-metatype-self-owner/parenthesized-chained-metatype-self-owner/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
