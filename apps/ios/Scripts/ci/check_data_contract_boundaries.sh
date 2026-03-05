@@ -1170,6 +1170,92 @@ check_data_contract_registry_cast_owner_assignment_wiring() {
               next
             }
 
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*$/) {
+              state = "cast_wait_coalesce_rhs"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*$/) {
+              state = "cast_wait_coalesce_after_rhs"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "cast_wait_coalesce_rhs") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*[[:space:]]*$/) {
+              state = "cast_wait_coalesce_after_rhs"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "cast_wait_coalesce_after_rhs") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
             if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
               print start_line
               state = "none"
@@ -1468,6 +1554,107 @@ check_data_contract_registry_nested_cast_owner_assignment_wiring() {
           }
 
           if (state == "nested_cast_wait_close") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*$/) {
+              state = "nested_cast_wait_coalesce_rhs"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "nested_wait_outer_close"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*$/) {
+              state = "nested_cast_wait_coalesce_after_rhs"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "nested_wait_outer_close"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "nested_cast_wait_coalesce_rhs") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "nested_wait_outer_close"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*[[:space:]]*$/) {
+              state = "nested_cast_wait_coalesce_after_rhs"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "nested_cast_wait_coalesce_after_rhs") {
             if (line ~ /^[[:space:]]*$/) {
               next
             }
@@ -2753,4 +2940,4 @@ check_data_contract_registry_escaped_alias_owner_assignment_wiring
 check_data_contract_registry_escaped_owner_wiring
 check_data_contract_registry_escaped_identifier_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/parenthesized-alias-owner/nested-parenthesized-owner/cast-owner/nested-cast-owner/forced-optional-cast-owner/optional-metatype-cast-owner/cast-coalescing-owner/spaced-member/comment-interleaved/block-comment-separated/metatype-self-owner/chained-metatype-self-owner/parenthesized-chained-metatype-self-owner/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/parenthesized-alias-owner/nested-parenthesized-owner/cast-owner/nested-cast-owner/forced-optional-cast-owner/optional-metatype-cast-owner/cast-coalescing-owner/spaced-member/comment-interleaved/block-comment-separated/metatype-self-owner/chained-metatype-self-owner/parenthesized-chained-metatype-self-owner/chained-metatype-self-cast-owner/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
