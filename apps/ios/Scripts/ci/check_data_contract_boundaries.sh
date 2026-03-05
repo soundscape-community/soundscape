@@ -20,7 +20,7 @@ readonly DATA_CONTRACT_REGISTRY_TEST_OVERRIDE_PATTERN='DataContractRegistry\.(co
 readonly DATA_CONTRACT_REGISTRY_TEST_OVERRIDE_ALLOWED_PREFIX='UnitTests/'
 # Match assignment targets even when prefixed by punctuation (for example tuple assignment),
 # while avoiding member-access false positives like `foo.spatialRead =`.
-readonly DATA_CONTRACT_REGISTRY_ASSIGNMENT_PATTERN='(^|[^[:alnum:]_\.])((self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)?[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*='
+readonly DATA_CONTRACT_REGISTRY_ASSIGNMENT_PATTERN='(^|[^[:alnum:]_\.])((self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)*[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*='
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_ASSIGNMENT_DECLARATION_PATTERN='^[[:space:]]*private\(set\)[[:space:]]+static[[:space:]]+var[[:space:]]+spatial(Read|Write|MaintenanceWrite)[[:space:]]*:[[:space:]]*[A-Za-z0-9_\.]+[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_CONFIGURE_ASSIGNMENT_PATTERN='^[[:space:]]*self[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*(spatialRead|spatialWrite|spatialMaintenanceWrite|defaultSpatialWriteAdapter|defaultSpatialMaintenanceWriteAdapter)[[:space:]]*$'
 readonly DATA_CONTRACT_REGISTRY_ALLOWED_RESET_ASSIGNMENT_PATTERN='^[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=[[:space:]]*defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*$'
@@ -402,7 +402,7 @@ check_data_contract_registry_multiline_assignment_wiring() {
         {
           line = $0
 
-          if (line ~ /^[[:space:]]*((self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)?[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*(\/\/.*)?$/) {
+          if (line ~ /^[[:space:]]*((self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)*[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*(\/\/.*)?$/) {
             pending_lhs_line = NR
             next
           }
@@ -464,7 +464,7 @@ check_data_contract_registry_split_member_assignment_wiring() {
           }
 
           if (pending_owner_line == 0) {
-            if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)?[[:space:]]*(\/\/.*)?$/) {
+            if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)*[[:space:]]*(\/\/.*)?$/) {
               pending_owner_line = NR
             }
             next
@@ -1458,13 +1458,13 @@ check_data_contract_registry_block_comment_separated_assignment_wiring() {
             next
           }
 
-          if (line ~ /^[[:space:]]*((self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)?[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*((self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)*[[:space:]]*\.[[:space:]]*)?spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
             state = "lhs_wait_eq"
             start_line = NR
             next
           }
 
-          if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)?[[:space:]]*(\/\/.*)?$/) {
+          if (line ~ /^[[:space:]]*(self|Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*self)*[[:space:]]*(\/\/.*)?$/) {
             state = "owner_wait_member"
             start_line = NR
             next
