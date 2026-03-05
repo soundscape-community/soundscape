@@ -1381,10 +1381,13 @@ check_data_contract_registry_block_comment_separated_assignment_wiring() {
           line = $0
 
           if (in_block_comment == 1) {
-            if (line ~ /\*\//) {
-              in_block_comment = 0
+            comment_end = index(line, "*/")
+            if (comment_end == 0) {
+              next
             }
-            next
+
+            line = substr(line, comment_end + 2)
+            in_block_comment = 0
           }
 
           if (state == "lhs_wait_eq") {
