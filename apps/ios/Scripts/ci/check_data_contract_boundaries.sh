@@ -1023,7 +1023,7 @@ check_data_contract_registry_cast_owner_assignment_wiring() {
           sub(/\/\/.*$/, "", line)
           gsub(/"[^"]*"/, "", line)
 
-          if (line ~ /\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+          if (line ~ /\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
             print NR
             state = "none"
             start_line = 0
@@ -1066,6 +1066,73 @@ check_data_contract_registry_cast_owner_assignment_wiring() {
             next
           }
 
+          if (state == "paren_wait_owner") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]*$/) {
+              state = "cast_wait_as"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]*$/) {
+              state = "cast_wait_type"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*$/) {
+              state = "cast_wait_close"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "cast_wait_as") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]*$/) {
+              state = "cast_wait_type"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*$/) {
+              state = "cast_wait_close"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
           if (state == "cast_wait_type") {
             if (line ~ /^[[:space:]]*$/) {
               next
@@ -1088,25 +1155,69 @@ check_data_contract_registry_cast_owner_assignment_wiring() {
               next
             }
 
+            if (line ~ /^[[:space:]]*[^)]*Type[[:space:]]*\??[[:space:]]*$/) {
+              state = "cast_wait_close"
+              next
+            }
+
             state = "none"
             start_line = 0
             next
           }
 
-          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)[[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\)[[:space:]]*!?[[:space:]]*$/) {
+          if (state == "cast_wait_close") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)[[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\)[[:space:]]*!?[[:space:]]*$/) {
             state = "owner_ready"
             start_line = NR
             next
           }
 
-          if (line ~ /^[[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
             state = "owner_ready"
             start_line = NR
             next
           }
 
-          if (line ~ /^[[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]*$/) {
             state = "cast_wait_type"
+            start_line = NR
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]*$/) {
+            state = "cast_wait_as"
+            start_line = NR
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*$/) {
+            state = "paren_wait_owner"
             start_line = NR
           }
         }
@@ -1184,7 +1295,7 @@ check_data_contract_registry_nested_cast_owner_assignment_wiring() {
           sub(/\/\/.*$/, "", line)
           gsub(/"[^"]*"/, "", line)
 
-          if (line ~ /\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+          if (line ~ /\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
             print NR
             state = "none"
             start_line = 0
@@ -1227,6 +1338,98 @@ check_data_contract_registry_nested_cast_owner_assignment_wiring() {
             next
           }
 
+          if (state == "outer_paren_wait_inner_open") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\([[:space:]]*$/) {
+              state = "nested_paren_wait_owner"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "nested_paren_wait_owner") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]*$/) {
+              state = "nested_cast_wait_as"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]*$/) {
+              state = "nested_cast_wait_type"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "nested_wait_outer_close"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*$/) {
+              state = "nested_cast_wait_close"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "nested_cast_wait_as") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]*$/) {
+              state = "nested_cast_wait_type"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "nested_wait_outer_close"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*$/) {
+              state = "nested_cast_wait_close"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
           if (state == "nested_cast_wait_type") {
             if (line ~ /^[[:space:]]*$/) {
               next
@@ -1249,19 +1452,106 @@ check_data_contract_registry_nested_cast_owner_assignment_wiring() {
               next
             }
 
+            if (line ~ /^[[:space:]]*[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "nested_wait_outer_close"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*[^)]*Type[[:space:]]*\??[[:space:]]*$/) {
+              state = "nested_cast_wait_close"
+              next
+            }
+
             state = "none"
             start_line = 0
             next
           }
 
-          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
+          if (state == "nested_cast_wait_close") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*$/) {
+              state = "nested_wait_outer_close"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (state == "nested_wait_outer_close") {
+            if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+              print start_line
+              state = "none"
+              start_line = 0
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+              state = "member_wait_eq"
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
+              state = "owner_ready"
+              next
+            }
+
+            state = "none"
+            start_line = 0
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*$/) {
             state = "owner_ready"
             start_line = NR
             next
           }
 
-          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)?)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]*$/) {
             state = "nested_cast_wait_type"
+            start_line = NR
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]+as[[:space:]]*[!?]?[[:space:]]+[^)]*Type[[:space:]]*\??[[:space:]]*$/) {
+            state = "nested_cast_wait_close"
+            start_line = NR
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*\([[:space:]]*(((self|Self|DataContractRegistry)|([A-Za-z_][A-Za-z0-9_]*)|(`([[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*)`))([[:space:]]*\.[[:space:]]*self)*)[[:space:]]*$/) {
+            state = "nested_cast_wait_as"
+            start_line = NR
+            next
+          }
+
+          if (line ~ /^[[:space:]]*\([[:space:]]*$/) {
+            state = "outer_paren_wait_inner_open"
             start_line = NR
           }
         }
