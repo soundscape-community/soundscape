@@ -1205,6 +1205,82 @@ check_data_contract_registry_typealias_assignment_wiring() {
   fi
 }
 
+check_data_contract_registry_escaped_identifier_wiring() {
+  local registry_file escaped_identifier_output line_number
+  declare -a disallowed_registry_escaped_identifier_wiring=()
+
+  registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
+  if [[ ! -f "${registry_file}" ]]; then
+    return 0
+  fi
+
+  escaped_identifier_output="$(
+    awk '
+        BEGIN {
+          in_block_comment = 0
+        }
+
+        function strip_block_comments(input,    out, rest, start, finish) {
+          out = ""
+          rest = input
+
+          while (length(rest) > 0) {
+            if (in_block_comment == 1) {
+              finish = index(rest, "*/")
+              if (finish == 0) {
+                return out
+              }
+              rest = substr(rest, finish + 2)
+              in_block_comment = 0
+              continue
+            }
+
+            start = index(rest, "/*")
+            if (start == 0) {
+              out = out rest
+              break
+            }
+
+            out = out substr(rest, 1, start - 1)
+            rest = substr(rest, start + 2)
+            finish = index(rest, "*/")
+            if (finish == 0) {
+              in_block_comment = 1
+              break
+            }
+
+            rest = substr(rest, finish + 2)
+          }
+
+          return out
+        }
+
+        {
+          line = strip_block_comments($0)
+          sub(/\/\/.*$/, "", line)
+          gsub(/"[^"]*"/, "", line)
+
+          if (line ~ /`[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*`/) {
+            print NR
+          }
+        }
+      ' "${registry_file}"
+  )"
+
+  while IFS= read -r line_number; do
+    [[ -z "${line_number}" ]] && continue
+    disallowed_registry_escaped_identifier_wiring+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
+  done <<< "${escaped_identifier_output}"
+
+  if [[ ${#disallowed_registry_escaped_identifier_wiring[@]} -gt 0 ]]; then
+    echo "DataContractRegistry contains escaped-identifier spatial adapter wiring." >&2
+    echo "Disallowed escaped-identifier call sites:" >&2
+    printf "  %s\n" "${disallowed_registry_escaped_identifier_wiring[@]}" >&2
+    echo "Avoid backtick-escaped spatial adapter identifiers; keep canonical adapter seam names for guardrail visibility." >&2
+    exit 1
+  fi
+}
+
 check_boundary_dir "${CONTRACTS_DIR}" "GuideDogs/Code/Data/Contracts"
 check_boundary_dir "${DOMAIN_DIR}" "GuideDogs/Code/Data/Domain"
 check_realm_adapter_boundary
@@ -1221,5 +1297,6 @@ check_data_contract_registry_inout_wiring
 check_data_contract_registry_keypath_wiring
 check_data_contract_registry_metatype_alias_assignment_wiring
 check_data_contract_registry_typealias_assignment_wiring
+check_data_contract_registry_escaped_identifier_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved/block-comment-separated/inout/key-path/metatype-alias/typealias wiring detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved/block-comment-separated/inout/key-path/metatype-alias/typealias/escaped-identifier wiring detection, and test-only registry overrides)."
