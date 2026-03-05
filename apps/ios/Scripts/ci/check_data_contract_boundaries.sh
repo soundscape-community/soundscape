@@ -1175,6 +1175,11 @@ check_data_contract_registry_cast_owner_assignment_wiring() {
               next
             }
 
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*\([^)]*\)[[:space:]]*$/) {
+              state = "cast_wait_coalesce_after_rhs"
+              next
+            }
+
             if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
               print start_line
               state = "none"
@@ -1221,6 +1226,11 @@ check_data_contract_registry_cast_owner_assignment_wiring() {
 
           if (state == "cast_wait_coalesce_rhs") {
             if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\([^)]*\)[[:space:]]*$/) {
+              state = "cast_wait_coalesce_after_rhs"
               next
             }
 
@@ -1563,6 +1573,11 @@ check_data_contract_registry_nested_cast_owner_assignment_wiring() {
               next
             }
 
+            if (line ~ /^[[:space:]]*\?\?[[:space:]]*\([^)]*\)[[:space:]]*$/) {
+              state = "nested_cast_wait_coalesce_after_rhs"
+              next
+            }
+
             if (line ~ /^[[:space:]]*\?\?[[:space:]]*[^)]*\)([[:space:]]*\?\?[[:space:]]*[^)]*[[:space:]]*\))?[[:space:]]*!?[[:space:]]*\)[[:space:]]*\)?[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
               print start_line
               state = "none"
@@ -1619,6 +1634,11 @@ check_data_contract_registry_nested_cast_owner_assignment_wiring() {
 
           if (state == "nested_cast_wait_coalesce_rhs") {
             if (line ~ /^[[:space:]]*$/) {
+              next
+            }
+
+            if (line ~ /^[[:space:]]*\([^)]*\)[[:space:]]*$/) {
+              state = "nested_cast_wait_coalesce_after_rhs"
               next
             }
 
