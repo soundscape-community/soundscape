@@ -1129,13 +1129,21 @@ check_data_contract_registry_typealias_assignment_wiring() {
           sub(/\/\/.*$/, "", line)
           gsub(/"[^"]*"/, "", line)
 
-          if (line ~ /^[[:space:]]*typealias[[:space:]]+[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=[[:space:]]*(Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*Type)?[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*typealias[[:space:]]+[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=[[:space:]]*[A-Za-z_][A-Za-z0-9_]*([[:space:]]*\.[[:space:]]*Type)?[[:space:]]*$/) {
             alias_decl = line
             sub(/^[[:space:]]*typealias[[:space:]]+/, "", alias_decl)
             sub(/[[:space:]]*=.*/, "", alias_decl)
             gsub(/[[:space:]]+$/, "", alias_decl)
-            if (alias_decl != "Self" && alias_decl != "DataContractRegistry") {
-              type_aliases[alias_decl] = 1
+
+            rhs_owner = line
+            sub(/^[[:space:]]*typealias[[:space:]]+[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=[[:space:]]*/, "", rhs_owner)
+            sub(/[[:space:]]*(\.[[:space:]]*Type)?[[:space:]]*$/, "", rhs_owner)
+            gsub(/[[:space:]]+$/, "", rhs_owner)
+
+            if (rhs_owner == "Self" || rhs_owner == "DataContractRegistry" || (rhs_owner in type_aliases)) {
+              if (alias_decl != "Self" && alias_decl != "DataContractRegistry") {
+                type_aliases[alias_decl] = 1
+              }
             }
             next
           }
@@ -1262,13 +1270,21 @@ check_data_contract_registry_typealias_metatype_alias_assignment_wiring() {
           sub(/\/\/.*$/, "", line)
           gsub(/"[^"]*"/, "", line)
 
-          if (line ~ /^[[:space:]]*typealias[[:space:]]+[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=[[:space:]]*(Self|DataContractRegistry)([[:space:]]*\.[[:space:]]*Type)?[[:space:]]*$/) {
+          if (line ~ /^[[:space:]]*typealias[[:space:]]+[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=[[:space:]]*[A-Za-z_][A-Za-z0-9_]*([[:space:]]*\.[[:space:]]*Type)?[[:space:]]*$/) {
             alias_decl = line
             sub(/^[[:space:]]*typealias[[:space:]]+/, "", alias_decl)
             sub(/[[:space:]]*=.*/, "", alias_decl)
             gsub(/[[:space:]]+$/, "", alias_decl)
-            if (alias_decl != "Self" && alias_decl != "DataContractRegistry") {
-              type_aliases[alias_decl] = 1
+
+            rhs_owner = line
+            sub(/^[[:space:]]*typealias[[:space:]]+[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=[[:space:]]*/, "", rhs_owner)
+            sub(/[[:space:]]*(\.[[:space:]]*Type)?[[:space:]]*$/, "", rhs_owner)
+            gsub(/[[:space:]]+$/, "", rhs_owner)
+
+            if (rhs_owner == "Self" || rhs_owner == "DataContractRegistry" || (rhs_owner in type_aliases)) {
+              if (alias_decl != "Self" && alias_decl != "DataContractRegistry") {
+                type_aliases[alias_decl] = 1
+              }
             }
             next
           }
@@ -1455,4 +1471,4 @@ check_data_contract_registry_typealias_assignment_wiring
 check_data_contract_registry_typealias_metatype_alias_assignment_wiring
 check_data_contract_registry_escaped_identifier_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved/block-comment-separated/inout/key-path/metatype-alias/typealias/typealias-derived-metatype-alias/escaped-identifier wiring detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/spaced-member/comment-interleaved/block-comment-separated/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-identifier wiring detection, and test-only registry overrides)."
