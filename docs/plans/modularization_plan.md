@@ -60,14 +60,14 @@ Current architecture baseline (normalized comparison baseline `20260304-155712Z-
 - `Sensors -> App`: 145
 - Comparability note: this report was exported with explicit historical analyzer args (`--top 40 --min-count 2 --file-top 40 --external-top 25`) from deterministic `/tmp/ss-index-derived` build output, so trend comparisons can use this as the normalized baseline.
 
-## Trajectory Review (2026-03-04)
-- Direction remains correct: app ingress is unified at async `DataContractRegistry` contracts and Realm boundaries are guarded in CI.
-- Milestone 4 is approaching diminishing-return parity slices; close-out should now be criteria-driven rather than open-ended edge chasing.
-- Milestone 3 hardening still has meaningful payoff in constructor/wiring seam control and should become the primary track once Milestone 4 close-out criteria are met.
-- Dependency metrics now have a fresh normalized rerun (`20260304-155712Z-ssindex-eba4cdf`); follow-up deltas should be compared against that artifact with fixed args.
+## Trajectory Review (2026-03-05)
+- On track: app ingress remains unified at async `DataContractRegistry` contracts and Realm boundaries continue to be guarded in CI.
+- Milestone 4 remains complete; Milestone 3 Realm adapter isolation hardening is the active track and continues to close seam-bypass variants in small slices.
+- The north-star contract remains stable (no API/boundary policy drift detected in this review).
+- Dependency comparisons remain anchored to normalized baseline `20260304-155712Z-ssindex-eba4cdf` with fixed analyzer args.
 
 ## Progress Updates
-Historical micro-slice log was intentionally condensed to keep this plan context-clear-ready.
+Milestone history is retained in the ledger; the rolling `Most recent completed slices` summary is intentionally concise for context-clear handoffs.
 
 Milestone ledger:
 - 2026-02-06 to 2026-02-10: `SSDataStructures` and `SSGeo` extraction completed with package-test and boundary-check integration.
@@ -140,72 +140,12 @@ Milestone ledger:
 - 2026-03-04: Local validation workflow streamlined with scripted simulator-aware build/test (`apps/ios/Scripts/ci/run_local_ios_build_test.sh`) and scripted full baseline runner (`apps/ios/Scripts/ci/run_local_validation.sh`) to reduce xcodebuild noise and command drift.
 
 Most recent completed slices (latest first):
-- 2026-03-05: Hardened `DataContractRegistry` wiring seam checks so indirect typealias-chain owner forms (`typealias RegistryAlias = Registry` where `Registry` aliases `DataContractRegistry`) are detected across both typealias-owner and typealias-derived metatype-alias assignment paths in `check_data_contract_boundaries.sh`.
-- 2026-03-05: Hardened `DataContractRegistry` wiring seam checks so typealias-derived metatype-alias assignment forms (for example `typealias Registry = DataContractRegistry` then `let registry = Registry.self` then `registry.spatialRead = ...`) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-05: Hardened `DataContractRegistry` wiring seam checks so escaped-identifier spatial adapter forms (assignment/inout/key-path variants) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-193907Z-ssindex-4b03bd8` (fixed args preserved) after the Milestone 3 twentieth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` wiring seam checks so typealias-owner assignment forms (`typealias Registry = DataContractRegistry` then `Registry.spatialRead = ...`, plus split-member multiline variants) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-193557Z-ssindex-92f265e` (fixed args preserved) after the Milestone 3 nineteenth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` wiring seam checks so metatype-alias assignment forms (`let registry = Self.self` then `registry.spatialRead = ...`, plus split-member multiline variants) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-193136Z-ssindex-dc3a079` (fixed args preserved) after the Milestone 3 eighteenth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` wiring seam checks so key-path forms (`\\.spatialRead`, `\\Self.spatialWrite`, `\\DataContractRegistry.spatialMaintenanceWrite`, and multiline split-key-path variants) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-191600Z-ssindex-4d423ef` (fixed args preserved) after the Milestone 3 seventeenth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` wiring seam checks so inout mutation forms (`&spatialRead`, `&self.spatialWrite`, and multiline/comment-separated variants) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-191219Z-ssindex-a070323` (fixed args preserved) after the Milestone 3 sixteenth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so block-comment-separated fragments (`self`, `/*...*/`, `.spatialRead =`; `spatialWrite`, `/*...*/`, `=`) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-190720Z-ssindex-218b4f7` (fixed args preserved) after the Milestone 3 fifteenth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so block-comment-interleaved forms (`self/*...*/.spatialRead =`, `self.spatialWrite/*...*/=`, and multiline variants) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-190247Z-ssindex-29435e0` (fixed args preserved) after the Milestone 3 fourteenth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so whitespace-before-dot member access forms (`self .spatialRead =`, `Self .spatialWrite =`, `DataContractRegistry .spatialMaintenanceWrite =`) are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-175034Z-ssindex-9958bc3` (fixed args preserved) after the Milestone 3 thirteenth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` parenthesized-assignment seam checks so split member-access `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` forms are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-164235Z-ssindex-ce89e25` (fixed args preserved) after the Milestone 3 twelfth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so three-line split member-access `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-163935Z-ssindex-1591fdb` (fixed args preserved) after the Milestone 3 eleventh hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so split member-access `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-163645Z-ssindex-0b3d6e2` (fixed args preserved) after the Milestone 3 tenth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so multiline `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-163225Z-ssindex-5458557` (fixed args preserved) after the Milestone 3 ninth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so parenthesized/tuple `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-162400Z-ssindex-9531c11` (fixed args preserved) after the Milestone 3 eighth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so punctuation-prefixed `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` assignment forms are detected by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-155712Z-ssindex-eba4cdf` (fixed args preserved) after the Milestone 3 seventh hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seam checks so qualified `Self.`/`DataContractRegistry.` `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` reassignment forms are also enforced by `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-154602Z-ssindex-94b1388` (fixed args preserved) after the Milestone 3 sixth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seams so `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` reassignments are constrained to `configure`/`resetForTesting` method scopes (plus declarations) via `check_data_contract_boundaries.sh`.
-- 2026-03-04: Fixed `run_local_validation.sh` empty forwarded-arg handling under `set -u`, restoring no-arg baseline execution.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-151805Z-ssindex-48da232` (fixed args preserved) after the Milestone 3 fifth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` assignment seams so `spatialRead`/`spatialWrite`/`spatialMaintenanceWrite` reassignments are limited to declaration/configure/reset paths via `check_data_contract_boundaries.sh`.
-- 2026-03-04: Re-exported normalized SSIndex artifact `20260304-150933Z-ssindex-741ce45` (fixed args preserved) after the Milestone 3 fourth hardening slice; `latest.txt` now points to this report.
-- 2026-03-04: Hardened `DataContractRegistry` adapter wiring boundaries so `RealmSpatial*Contract()` usage in the registry is restricted to private static default-adapter declarations via `check_data_contract_boundaries.sh`.
-- 2026-03-04: Normalized dependency tracking by running deterministic build-only index generation and exporting SSIndex report `20260304-145500Z-ssindex-a7a05e5` with fixed comparison args; `latest.txt` now points to this baseline.
-- 2026-03-04: Hardened Realm adapter wiring boundaries so direct `RealmSpatialReadContract`/`RealmSpatialWriteContract`/`RealmSpatialMaintenanceWriteContract` construction is limited to `DataContractRegistry` and `UnitTests/**` via `check_data_contract_boundaries.sh`.
-- 2026-03-04: Closed Milestone 4 by adding in-memory parity coverage for cloud marker import read round-trip, metadata/callout nickname fallback, and entity-key upsert after temporary-marker cleanup (`InMemorySpatialContractStoreTests`).
-- 2026-03-04: Added reusable local validation scripts for simulator selection plus build/test output control (`errors`, `xcpretty`, `raw`) and documented them in agent/onboarding docs to make common execution paths one-command and context-light.
-- 2026-03-04: Expanded in-memory parity with `removeAllTemporaryReferenceEntities` cleanup semantics, verifying temporary destination markers are purged from reference/POI lookups while routes remain and share-context route parameters fail when marker payloads can no longer hydrate.
-- 2026-03-04: Expanded in-memory parity so removing an active destination reference marks it temporary (`isTemp == true`) without deleting the marker or removing route waypoints, matching Realm destination-maintenance behavior.
-- 2026-03-04: Expanded in-memory parity so `updateReferenceEntity` location changes refresh first-waypoint coordinates (and route update timestamps) only for routes whose first waypoint references the updated marker.
-- 2026-03-04: Expanded in-memory parity so `removeReferenceEntity` and `cleanCorruptReferenceEntities` remove impacted route waypoints, reindex waypoint order, and keep route first-waypoint coordinates aligned with remaining references.
-- 2026-03-04: Expanded maintenance parity with `removeAllReferenceEntities` and `removeAllRoutes` in-memory flow coverage, asserting reference/POI cleanup and route retention/removal order semantics.
-- 2026-03-04: Expanded `InMemorySpatialContractStore` maintenance parity by adding tests for clear-new route cleanup and corrupt-reference entity-key/POI lookup cleanup; rebuilt in-memory `poiByEntityKey` during corrupt-clean maintenance to avoid stale lookups.
-- 2026-02-27: Expanded `InMemorySpatialContractStore` parity coverage with route-parameter context assertions and cross-surface reference lookup assertions in `DataContractRegistryDispatchTests`.
-- 2026-02-27: Hardened boundary guardrails so `DataContractRegistry.configure` and `DataContractRegistry.resetForTesting` usage outside `UnitTests/**` fails CI.
-- 2026-02-27: Hardened boundary guardrails so direct `RealmSpatialReadContract`/`RealmSpatialWriteContract`/`RealmSpatialMaintenanceWriteContract` usage outside Realm infrastructure and `DataContractRegistry` fails CI.
-- 2026-02-27: Milestone 2 closed with constrained-specialization end-state accepted for storage-contract signatures.
-- 2026-02-27: Added shared aggregate storage protocols in `SSDataContracts` (`SpatialReadContract`, `SpatialWriteContract`, `SpatialMaintenanceWriteContract`) and rewired iOS aggregate contracts to inherit them while preserving compatibility with existing local subprotocol expectations.
-- 2026-02-27: Added shared `SpatialRouteParametersReadContract` in `SSDataContracts` and rewired iOS `RouteReadContract` to inherit it via constrained specialization.
-- 2026-02-27: Added shared `SpatialReferenceWriteContract` and `SpatialReferenceMaintenanceWriteContract` in `SSDataContracts` and rewired iOS `SpatialWriteContract`/`SpatialMaintenanceWriteContract` to inherit them via constrained specializations.
-- 2026-02-27: Added shared `SpatialPointOfInterestReadContract` in `SSDataContracts` and rewired iOS `ReferenceReadContract` to inherit it via constrained specialization.
-- 2026-02-27: Added shared `SpatialReferenceMarkerReadContract` in `SSDataContracts` and rewired iOS `ReferenceReadContract` to inherit it while keeping `POI`/`GenericLocation` reads iOS-local.
-- 2026-02-27: Added shared `SpatialTileReadContract` in `SSDataContracts` and rewired iOS `TileReadContract` to a constrained specialization while keeping `POI`/`VectorTile` iOS-local.
-- 2026-02-27: Added shared storage protocol surfaces in `SSDataContracts` (`SpatialRouteReadContract`, `SpatialReferenceReadContract`, `SpatialRouteWriteContract`, `SpatialRouteMaintenanceWriteContract`, `SpatialAddressMaintenanceWriteContract`) and rewired iOS `Spatial*Contract` protocols to inherit from them.
-- 2026-02-27: Added `SSDataContracts` module and migrated `SpatialIntersectionRegion`/`RouteReadMetadata`/`ReferenceReadMetadata`/`ReferenceCalloutReadData`/`EstimatedAddressReadData`/`AddressCacheRecord`.
-- 2026-02-27: Added shared `SSDataDomain` module and migrated canonical route/reference models (`Route`, `RouteWaypoint`, `ReferenceEntity`) behind compile-safe iOS aliases/extensions.
-- 2026-02-27: `BoseFramesMotionManager` event dispatch decoupled from direct `AppContext.process(...)` via runtime integration hook.
-- 2026-02-27: `HeadphoneCalibrator` heading source decoupled from direct `AppContext.shared.geolocationManager`.
-- 2026-02-27: `HeadphoneMotionManager` event dispatch decoupled from direct `AppContext.process(...)`.
-- 2026-02-27: `SignificantChangeMonitoringOrigin` POI lookup decoupled from direct `AppContext.shared.spatialDataContext`.
-- 2026-02-27: `GeolocationManager`/`GPXSimulator` simulation integration decoupled from direct `AppContext` motion wiring.
+- 2026-03-05: Hardened `DataContractRegistry` wiring seam checks for indirect typealias-chain owners (`typealias RegistryAlias = Registry` where `Registry` aliases `DataContractRegistry`) across direct typealias-owner and typealias-derived metatype-alias assignment paths.
+- 2026-03-05: Hardened `DataContractRegistry` wiring seam checks for typealias-derived metatype-alias assignment forms (`typealias Registry = DataContractRegistry` then `let registry = Registry.self` then `registry.spatialRead = ...`).
+- 2026-03-05: Hardened `DataContractRegistry` wiring seam checks for escaped-identifier spatial adapter forms (assignment/inout/key-path variants).
+- 2026-03-04: Last normalized dependency artifact remains `20260304-193907Z-ssindex-4b03bd8` (`latest.txt` points to this report).
+- 2026-03-04: Milestone 4 remained complete and execution focus moved to Milestone 3 hardening.
+- Older completed-slice details remain recorded in the milestone ledger above and git history.
 
 Validation baseline for each slice:
 - primary runner: `bash apps/ios/Scripts/ci/run_local_validation.sh`
