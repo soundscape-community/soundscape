@@ -1361,6 +1361,22 @@ check_data_contract_registry_block_comment_separated_assignment_wiring() {
           in_block_comment = 0
         }
 
+        function strip_leading_inline_block_comments(input,    rest, comment_end) {
+          rest = input
+          leading_comment_is_open = 0
+
+          while (rest ~ /^[[:space:]]*\/\*/) {
+            comment_end = index(rest, "*/")
+            if (comment_end == 0) {
+              leading_comment_is_open = 1
+              return ""
+            }
+            rest = substr(rest, comment_end + 2)
+          }
+
+          return rest
+        }
+
         {
           line = $0
 
@@ -1372,18 +1388,17 @@ check_data_contract_registry_block_comment_separated_assignment_wiring() {
           }
 
           if (state == "lhs_wait_eq") {
-            if (line ~ /^[[:space:]]*$/ || line ~ /^[[:space:]]*\/\//) {
+            normalized_line = strip_leading_inline_block_comments(line)
+            if (leading_comment_is_open == 1) {
+              in_block_comment = 1
               next
             }
 
-            if (line ~ /^[[:space:]]*\/\*/) {
-              if (line !~ /\*\//) {
-                in_block_comment = 1
-              }
+            if (normalized_line ~ /^[[:space:]]*$/ || normalized_line ~ /^[[:space:]]*\/\//) {
               next
             }
 
-            if (line ~ /^[[:space:]]*=[^=]/) {
+            if (normalized_line ~ /^[[:space:]]*=[^=]/) {
               print start_line
             }
 
@@ -1393,25 +1408,24 @@ check_data_contract_registry_block_comment_separated_assignment_wiring() {
           }
 
           if (state == "owner_wait_member") {
-            if (line ~ /^[[:space:]]*$/ || line ~ /^[[:space:]]*\/\//) {
+            normalized_line = strip_leading_inline_block_comments(line)
+            if (leading_comment_is_open == 1) {
+              in_block_comment = 1
               next
             }
 
-            if (line ~ /^[[:space:]]*\/\*/) {
-              if (line !~ /\*\//) {
-                in_block_comment = 1
-              }
+            if (normalized_line ~ /^[[:space:]]*$/ || normalized_line ~ /^[[:space:]]*\/\//) {
               next
             }
 
-            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
+            if (normalized_line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*=/) {
               print start_line
               state = "none"
               start_line = 0
               next
             }
 
-            if (line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
+            if (normalized_line ~ /^[[:space:]]*\.[[:space:]]*spatial(Read|Write|MaintenanceWrite)[[:space:]]*$/) {
               state = "member_wait_eq"
               next
             }
@@ -1422,18 +1436,17 @@ check_data_contract_registry_block_comment_separated_assignment_wiring() {
           }
 
           if (state == "member_wait_eq") {
-            if (line ~ /^[[:space:]]*$/ || line ~ /^[[:space:]]*\/\//) {
+            normalized_line = strip_leading_inline_block_comments(line)
+            if (leading_comment_is_open == 1) {
+              in_block_comment = 1
               next
             }
 
-            if (line ~ /^[[:space:]]*\/\*/) {
-              if (line !~ /\*\//) {
-                in_block_comment = 1
-              }
+            if (normalized_line ~ /^[[:space:]]*$/ || normalized_line ~ /^[[:space:]]*\/\//) {
               next
             }
 
-            if (line ~ /^[[:space:]]*=[^=]/) {
+            if (normalized_line ~ /^[[:space:]]*=[^=]/) {
               print start_line
             }
 
