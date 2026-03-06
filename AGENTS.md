@@ -67,6 +67,15 @@ bash apps/ios/Scripts/ci/run_local_validation.sh -- --output raw
 bash apps/ios/Scripts/ci/run_local_ios_build_test.sh
 ```
 
+## Tool Output and Context Hygiene
+- Watch for high-volume tools (especially `xcodebuild`) polluting agent/user context with low-signal logs.
+- Prefer concise output modes and wrappers for repeated actions:
+  - `--output errors` for routine local build/test loops.
+  - `--output xcpretty` when human-readable summaries are needed (`xcpretty` is available locally).
+- When a command is repeated often, prefer a small script in `apps/ios/Scripts/ci/` rather than re-issuing long raw commands.
+- Default to reporting key outcomes + log file locations instead of streaming full command output into the conversation.
+- Use raw output only when diagnosing a failure that requires full trace context.
+
 ## Dependency Analysis Tooling
 - Source-level dependency analysis is available via `tools/SSIndexAnalyzer` (SwiftPM executable using `swiftlang/indexstore-db`).
 - Build `SSIndexAnalyzer` locally:
