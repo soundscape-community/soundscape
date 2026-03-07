@@ -51,18 +51,13 @@ extension RouteWaypoint {
     }
 
     /**
-     * Initializes a waypoint from a marker that exists in the Realm database.
+     * Initializes a waypoint for a persisted marker id.
      *
      * - Parameters:
      *     - index: Index of the waypoint
-     *     - markerId: ID for a marker that exists in Realm database
+     *     - markerId: ID for the marker
      */
     init?(index: Int, markerId: String) {
-        guard LocationDetail(markerId: markerId) != nil else {
-            // Marker does not exist
-            return nil
-        }
-
         self.init(index: index, markerId: markerId, importedReferenceEntity: nil)
     }
 

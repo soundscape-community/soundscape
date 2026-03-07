@@ -110,6 +110,7 @@ Acceptance:
 - 2026-03-06: Guardrail policy changed from seam-permutation expansion to minimal high-signal boundary enforcement.
 - 2026-03-06: Added low-noise targeted-suite wrapper `apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh` to reduce repeated manual `xcodebuild` context pollution and standardize reruns.
 - 2026-03-06: Simplified async route waypoint validation by removing the pre-check dependency on sync `RouteWaypoint(index:markerId:)` in `RouteWaypoint.validated(...)`, keeping persisted-waypoint shape domain-first (`importedReferenceEntity: nil`).
+- 2026-03-06: Removed sync store-probe validation from `RouteWaypoint.init?(index:markerId:)`; existence checks now stay in async call paths that already receive `SpatialReadContract`.
 - 2026-03-05: Latest dependency artifact: `docs/plans/artifacts/dependency-analysis/20260305-120430Z-ssindex-d98603a.txt`.
 
 ## Immediate Next Steps
