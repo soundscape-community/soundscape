@@ -224,7 +224,14 @@ extension Route {
             route.waypoints[index].markerId = markerId
         }
 
-        try persistAddedRoute(route, firstWaypointCoordinate: firstWaypointCoordinate)
+        let resolvedFirstWaypointCoordinate: CLLocationCoordinate2D?
+        if let firstWaypointCoordinate {
+            resolvedFirstWaypointCoordinate = firstWaypointCoordinate
+        } else {
+            resolvedFirstWaypointCoordinate = await self.firstWaypointCoordinate(for: route.waypoints, using: spatialRead)
+        }
+
+        try persistAddedRoute(route, firstWaypointCoordinate: resolvedFirstWaypointCoordinate)
     }
     
     static func delete(_ id: String) throws {

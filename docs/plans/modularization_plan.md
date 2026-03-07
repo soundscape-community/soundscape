@@ -106,6 +106,7 @@ Acceptance:
 - Boundary checks stay green without additional parser-like complexity.
 
 ## Progress Updates
+- 2026-03-07: Updated async `Route.add(...using:)` to resolve first-waypoint coordinates via `Route.firstWaypointCoordinate(..., using:)` before persistence when no coordinate is provided, preventing fallback sync marker-ID lookups in that async path; extended `RouteStorageProviderDispatchTests` to assert only the initial marker-ID probe occurs.
 - 2026-03-07: Removed sync `LocationDetail(markerId:)` fallback from async `RouteWaypoint.locationDetail(using:)`; async waypoint location hydration now depends on `ReferenceReadContract` lookups (plus imported waypoint payloads) only, with dispatch regression coverage in `RouteStorageProviderDispatchTests` and targeted modularization suite validation via `run_data_modularization_targeted_tests.sh`.
 - 2026-03-06: Plan reset initiated to reduce complexity and token churn.
 - 2026-03-06: Guardrail policy changed from seam-permutation expansion to minimal high-signal boundary enforcement.

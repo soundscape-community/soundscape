@@ -1085,6 +1085,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         let persistedRoute = Route.object(forPrimaryKey: route.id)
         XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [locationKey])
+        XCTAssertEqual(store.referenceEntityByKeyCallKeys, [existingMarker.id])
         XCTAssertEqual(persistedRoute?.waypoints.ordered.first?.markerId, existingMarker.id)
     }
 
