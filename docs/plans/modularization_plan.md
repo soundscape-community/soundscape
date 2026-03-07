@@ -63,10 +63,7 @@ Default local workflow:
 1. `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output xcpretty`
 2. `bash apps/ios/Scripts/ci/run_local_ios_build_test.sh --build-only --derived-data-path /tmp/ss-index-derived --output errors`
 3. `bash tools/SSIndexAnalyzer/Scripts/export_analysis_report.sh --store-path /tmp/ss-index-derived/Index.noindex/DataStore --top 40 --min-count 2 --file-top 40 --external-top 25`
-4. Targeted suites:
-   - `RouteStorageProviderDispatchTests`
-   - `DataContractRegistryDispatchTests`
-   - `CloudSyncContractBridgeTests`
+4. `bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output xcpretty`
 
 Execution notes:
 - Prefer concise output modes (`errors`, `xcpretty`).
@@ -111,12 +108,13 @@ Acceptance:
 ## Progress Updates
 - 2026-03-06: Plan reset initiated to reduce complexity and token churn.
 - 2026-03-06: Guardrail policy changed from seam-permutation expansion to minimal high-signal boundary enforcement.
+- 2026-03-06: Added low-noise targeted-suite wrapper `apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh` to reduce repeated manual `xcodebuild` context pollution and standardize reruns.
 - 2026-03-05: Latest dependency artifact: `docs/plans/artifacts/dependency-analysis/20260305-120430Z-ssindex-d98603a.txt`.
 
 ## Immediate Next Steps
 1. Apply the same simplification principles to implementation slices (model-first, minimal seams, no new abstraction families).
 2. Review `DataContractRegistry` and related contracts for removable compatibility seams.
-3. Convert repeated high-noise validation actions to wrapper scripts with concise output defaults.
+3. Use `run_data_modularization_targeted_tests.sh` for targeted data-suite runs; add wrappers only where repetition/noise still hurts execution.
 4. Keep dependency tracking cadence but report only meaningful deltas.
 
 ## Context-Clear Handoff

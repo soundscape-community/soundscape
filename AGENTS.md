@@ -65,6 +65,9 @@ bash apps/ios/Scripts/ci/run_local_validation.sh -- --output raw
 
 # Build/test only (without running other baseline checks):
 bash apps/ios/Scripts/ci/run_local_ios_build_test.sh
+
+# Targeted data-modularization suites (low-noise wrapper):
+bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh
 ```
 
 ## Tool Output and Context Hygiene
