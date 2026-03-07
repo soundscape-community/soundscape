@@ -994,9 +994,23 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     
     static func cleanCorruptEntities(using spatialRead: ReferenceReadContract) async throws {
         let entities = try RealmHelper.getDatabaseRealm().objects(RealmReferenceEntity.self).filter("isTemp == false")
-        let corruptIDs = entities
-            .filter { $0.nickname == nil && $0._poi == nil }
-            .map(\.id)
+        let candidates = entities.map { entity in
+            (id: entity.id, entityKey: entity.entityKey, nickname: entity.nickname)
+        }
+        var corruptIDs: [String] = []
+
+        for candidate in candidates {
+            guard candidate.nickname == nil else {
+                continue
+            }
+
+            if let entityKey = candidate.entityKey,
+               await spatialRead.poi(byKey: entityKey) != nil {
+                continue
+            }
+
+            corruptIDs.append(candidate.id)
+        }
 
         for id in corruptIDs {
             try await RealmReferenceEntity.remove(id: id, using: spatialRead)

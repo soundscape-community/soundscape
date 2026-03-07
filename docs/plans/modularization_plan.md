@@ -106,6 +106,7 @@ Acceptance:
 - Boundary checks stay green without additional parser-like complexity.
 
 ## Progress Updates
+- 2026-03-07: Removed sync `_poi`/`SpatialDataStoreRegistry.store.searchByKey` dependence from async `RealmReferenceEntity.cleanCorruptEntities(using:)`; corruption detection now snapshots persisted marker state and resolves backing POIs through `ReferenceReadContract.poi(byKey:)` before async removal dispatch.
 - 2026-03-07: Removed sync-store dependency from async route distance sorting by switching `Route.asyncObjectKeys(sortedBy: .distance)` to contract-backed reads (`DataContractRegistry.spatialRead.routes()` + `distanceToClosestLocation(forMarkerID:from:)`) instead of `objectKeys(.distance)` store probes; added dispatch coverage asserting no `SpatialDataStoreRegistry.store.referenceEntityByKey` fallback calls.
 - 2026-03-07: Enforced contract-only route-containment in async route-wide waypoint mutation helpers (`Route.removeWaypointFromAllRoutes(..., using:)` and `Route.updateWaypointInAllRoutes(..., using:)`) by removing `SpatialDataStoreRegistry.store` fallback scans; both flows now require `SpatialReadContract.routes(containingMarkerID:)` and throw `RouteRealmError.invalidReadContract` for non-spatial read contracts, with dispatch coverage added for the invalid-contract path.
 - 2026-03-07: Stabilized `RouteStorageProviderDispatchTests` clean-corrupt route-containment assertion to avoid cross-test persistence noise while preserving verification that the corrupt marker ID is routed through contract-backed containment lookups.

@@ -1559,6 +1559,43 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertNil(deletedCorruptMarker)
     }
 
+    func testCleanCorruptReferenceEntitiesUsesSpatialReadPOILookupWithoutStoreFallback() async throws {
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
+
+        let markerID = "clean-corrupt-store-only-\(UUID().uuidString)"
+        let entityKey = "store-only-poi-key-\(UUID().uuidString)"
+        let markerCoordinate = makeUniqueCoordinate(baseLatitude: 39.6205, baseLongitude: -114.3493)
+
+        let marker = RealmReferenceEntity(coordinate: markerCoordinate, entityKey: entityKey, name: nil)
+        marker.id = markerID
+        marker.isTemp = false
+        marker.lastUpdatedDate = Date()
+
+        let database = try RealmHelper.getDatabaseRealm()
+        try database.write {
+            database.add(marker, update: .modified)
+        }
+
+        let store = MockSpatialDataStore()
+        let storeOnlyPOI = GenericLocation(lat: markerCoordinate.latitude,
+                                           lon: markerCoordinate.longitude,
+                                           name: "Store-Only POI")
+        storeOnlyPOI.key = entityKey
+        store.searchResultsByKey[entityKey] = storeOnlyPOI
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let readMock = MockSpatialReadContract()
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        try await DataContractRegistry.spatialMaintenanceWrite.cleanCorruptReferenceEntities()
+
+        let refreshedDatabase = try RealmHelper.getDatabaseRealm()
+        let deletedMarker = refreshedDatabase.object(ofType: RealmReferenceEntity.self, forPrimaryKey: markerID)
+        XCTAssertNil(deletedMarker)
+        XCTAssertTrue(readMock.poiByKeyCalls.contains(entityKey))
+        XCTAssertTrue(store.searchByKeyCallKeys.isEmpty)
+    }
+
     private func createPersistedRoute(name: String) throws -> Route {
         let waypointLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
         let imported = ImportedLocationDetail(nickname: "Waypoint", annotation: "Test waypoint")
