@@ -192,11 +192,11 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
     }
 
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
-        SpatialDataStoreRegistry.store.referenceEntityByLocation(location.location.coordinate)?.id
+        await DataContractRegistry.spatialRead.referenceEntity(byGenericLocation: location)?.id
     }
 
     func referenceEntityID(forEntityKey key: String) async -> String? {
-        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.id
+        await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: key)?.id
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {

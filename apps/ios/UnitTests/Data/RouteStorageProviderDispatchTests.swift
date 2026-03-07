@@ -265,9 +265,13 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         var routesByKey: [String: Route] = [:]
         var poisByKey: [String: POI] = [:]
         var referenceEntitiesByID: [String: ReferenceEntity] = [:]
+        var referenceEntitiesByEntityKey: [String: ReferenceEntity] = [:]
+        var referenceEntitiesByGenericLocation: [String: ReferenceEntity] = [:]
         private(set) var routeByKeyCalls: [String] = []
         private(set) var poiByKeyCalls: [String] = []
         private(set) var referenceEntityByIDCalls: [String] = []
+        private(set) var referenceEntityByEntityKeyCalls: [String] = []
+        private(set) var referenceEntityByGenericLocationCalls: [String] = []
 
         func routes() async -> [Route] { [] }
         func route(byKey key: String) async -> Route? {
@@ -300,11 +304,19 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         func markerParametersForBackup() async -> [MarkerParameters] { [] }
 
-        func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? { nil }
+        func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? {
+            referenceEntityByEntityKeyCalls.append(key)
+            return referenceEntitiesByEntityKey[key]
+        }
 
         func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity? { nil }
 
-        func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity? { nil }
+        func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity? {
+            let coordinate = location.location.coordinate
+            let key = "\(coordinate.latitude),\(coordinate.longitude)"
+            referenceEntityByGenericLocationCalls.append(key)
+            return referenceEntitiesByGenericLocation[key]
+        }
 
         func referenceEntities() async -> [ReferenceEntity] { [] }
 
@@ -675,6 +687,52 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.addTemporaryReferenceEntityLocationWithNicknameCallCount, 1)
         XCTAssertEqual(store.addTemporaryReferenceEntityEntityKeyCallKeys, [entityKey])
         XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
+    }
+
+    func testSpatialDataDestinationEntityStoreAsyncReferenceIDLookupsDispatchToSpatialReadContract() async {
+        let genericLocation = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Generic lookup")
+        let entityKey = "destination-entity-key-lookup"
+        let genericID = "generic-reference-id"
+        let entityID = "entity-reference-id"
+        let coordinate = genericLocation.location.coordinate
+        let coordinateKey = "\(coordinate.latitude),\(coordinate.longitude)"
+
+        let store = MockSpatialDataStore()
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByGenericLocation[coordinateKey] = ReferenceEntity(id: genericID,
+                                                                                      entityKey: nil,
+                                                                                      lastUpdatedDate: nil,
+                                                                                      lastSelectedDate: nil,
+                                                                                      isNew: false,
+                                                                                      isTemp: false,
+                                                                                      coordinate: coordinate.ssGeoCoordinate,
+                                                                                      nickname: nil,
+                                                                                      estimatedAddress: nil,
+                                                                                      annotation: nil)
+        readMock.referenceEntitiesByEntityKey[entityKey] = ReferenceEntity(id: entityID,
+                                                                            entityKey: entityKey,
+                                                                            lastUpdatedDate: nil,
+                                                                            lastSelectedDate: nil,
+                                                                            isNew: false,
+                                                                            isTemp: false,
+                                                                            coordinate: coordinate.ssGeoCoordinate,
+                                                                            nickname: nil,
+                                                                            estimatedAddress: nil,
+                                                                            annotation: nil)
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let destinationStore = SpatialDataDestinationEntityStore()
+        let genericLocationID = await destinationStore.referenceEntityID(forGenericLocation: genericLocation)
+        let entityKeyID = await destinationStore.referenceEntityID(forEntityKey: entityKey)
+
+        XCTAssertEqual(genericLocationID, genericID)
+        XCTAssertEqual(entityKeyID, entityID)
+        XCTAssertEqual(readMock.referenceEntityByGenericLocationCalls, [coordinateKey])
+        XCTAssertEqual(readMock.referenceEntityByEntityKeyCalls, [entityKey])
+        XCTAssertTrue(store.referenceEntityByLocationCallKeys.isEmpty)
+        XCTAssertTrue(store.referenceEntityByEntityKeyCallKeys.isEmpty)
     }
 
     func testSpatialDataDestinationEntityStoreFocusedReadsAndMutationsDispatchToInjectedStore() throws {
