@@ -37,12 +37,6 @@ extension RouteWaypoint {
             return LocationDetail(marker: importedReferenceEntity)
         }
 
-        // Preserve existing behavior for persisted markers that can still be resolved
-        // through the current sync compatibility seam.
-        if let persistedLocationDetail = LocationDetail(markerId: markerId) {
-            return persistedLocationDetail
-        }
-
         guard let marker = await spatialRead.referenceEntity(byID: markerId) else {
             return nil
         }

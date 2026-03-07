@@ -2,7 +2,7 @@
 
 # Modularization Plan
 
-Last updated: 2026-03-06
+Last updated: 2026-03-07
 
 ## Summary
 Simplify the data modularization plan around a small, stable model/API surface.
@@ -106,6 +106,7 @@ Acceptance:
 - Boundary checks stay green without additional parser-like complexity.
 
 ## Progress Updates
+- 2026-03-07: Removed sync `LocationDetail(markerId:)` fallback from async `RouteWaypoint.locationDetail(using:)`; async waypoint location hydration now depends on `ReferenceReadContract` lookups (plus imported waypoint payloads) only, with dispatch regression coverage in `RouteStorageProviderDispatchTests` and targeted modularization suite validation via `run_data_modularization_targeted_tests.sh`.
 - 2026-03-06: Plan reset initiated to reduce complexity and token churn.
 - 2026-03-06: Guardrail policy changed from seam-permutation expansion to minimal high-signal boundary enforcement.
 - 2026-03-06: Added low-noise targeted-suite wrapper `apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh` to reduce repeated manual `xcodebuild` context pollution and standardize reruns.
@@ -117,7 +118,7 @@ Acceptance:
 
 ## Immediate Next Steps
 1. Apply the same simplification principles to implementation slices (model-first, minimal seams, no new abstraction families).
-2. Continue removing sync compatibility lookups from async model/serialization paths where contract-based async reads already exist.
+2. Continue auditing async model/serialization paths for residual sync store lookups and remove them when contract reads already provide equivalent behavior.
 3. Use `run_data_modularization_targeted_tests.sh` for targeted data-suite runs; add wrappers only where repetition/noise still hurts execution.
 4. Keep dependency tracking cadence but report only meaningful deltas.
 

@@ -561,6 +561,26 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertTrue(readMock.referenceEntityByIDCalls.isEmpty)
     }
 
+    func testRouteWaypointLocationDetailUsesAsyncReadContractWithoutSyncFallback() async {
+        let markerID = "waypoint-async-marker-\(UUID().uuidString)"
+        let storeMarkerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
+        let storeMarker = RealmReferenceEntity(coordinate: storeMarkerCoordinate, entityKey: nil, name: "Store Marker")
+        storeMarker.id = markerID
+
+        let store = MockSpatialDataStore()
+        store.referenceEntitiesByKey[markerID] = storeMarker
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let readMock = MockSpatialReadContract()
+        let waypoint = RouteWaypoint(index: 0, markerId: markerID)
+
+        let detail = await waypoint.locationDetail(using: readMock)
+
+        XCTAssertNil(detail)
+        XCTAssertEqual(readMock.referenceEntityByIDCalls, [markerID])
+        XCTAssertTrue(store.referenceEntityByKeyCallKeys.isEmpty)
+    }
+
     func testMarkerParametersInitMarkerIDUsesReferenceEntityLookup() {
         let markerID = "marker-id"
         let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
@@ -1184,7 +1204,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(persistedReversedRoute.waypoints.ordered.first?.markerId, secondMarkerID)
         XCTAssertEqual(persistedReversedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(persistedReversedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
-        XCTAssertEqual(readMock.referenceEntityByIDCalls, [secondMarkerID])
+        XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(secondMarkerID))
     }
 
     func testDefaultSpatialWriteRemoveReferenceEntityHydratesRemainingRouteWaypointFromAsyncReadContract() async throws {
@@ -1217,7 +1237,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, remainingMarkerID)
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
-        XCTAssertEqual(readMock.referenceEntityByIDCalls, [remainingMarkerID])
+        XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(remainingMarkerID))
     }
 
     func testDefaultSpatialWriteUpdateReferenceEntityHydratesFirstWaypointFromAsyncReadContract() async throws {
@@ -1255,7 +1275,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, firstMarkerID)
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
-        XCTAssertEqual(readMock.referenceEntityByIDCalls, [firstMarkerID])
+        XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(firstMarkerID))
     }
 
     func testDefaultSpatialMaintenanceWriteImportReferenceEntityFromCloudHydratesFirstWaypointFromAsyncReadContract() async throws {
@@ -1333,7 +1353,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, firstMarkerID)
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
-        XCTAssertEqual(readMock.referenceEntityByIDCalls, [firstMarkerID])
+        XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(firstMarkerID))
     }
 
     func testDefaultSpatialMaintenanceWriteCleanCorruptReferenceEntitiesHydratesRemainingRouteWaypointFromAsyncReadContract() async throws {
@@ -1381,7 +1401,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.waypoints.ordered.first?.markerId, remainingMarkerID)
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
-        XCTAssertEqual(readMock.referenceEntityByIDCalls, [remainingMarkerID])
+        XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(remainingMarkerID))
 
         let refreshedDatabase = try RealmHelper.getDatabaseRealm()
         let deletedCorruptMarker = refreshedDatabase.object(ofType: RealmReferenceEntity.self, forPrimaryKey: corruptMarkerID)
