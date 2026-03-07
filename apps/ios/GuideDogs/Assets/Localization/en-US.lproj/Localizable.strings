@@ -221,7 +221,7 @@
 "general.error.location_services_find_location_error" = "We are having trouble finding your current location.";
 
 /* Error message when Soundscape does not know the user's heading */
-"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again.";
+"general.error.heading" = "Soundscape is not sure which direction you are facing. Please hold your phone flat or begin walking and try again";
 
 /* Error message Soundscape is having trouble determining current location. Try again later */
 "general.error.location_services_find_location_error.try_again" = "We are having trouble finding your current location. Try again later.";
@@ -1517,7 +1517,7 @@
 "search.no_results_found_with_hint" = "No results found. Try editing your search term.";
 
 /* Search results, No results found. */
-"searching.no_results_found_title" = "Oops! No results found";
+"searching.no_results_found_title" = "Oops! No results found.";
 
 /* Search results, No results found. */
 "searching.no_results_found_message" = "If you're looking for a specific place, you can try searching by name or address.";
@@ -1666,7 +1666,7 @@
 "callouts.marked_points" = "Marked Points";
 
 /* Callouts notification, There is nothing to call out right now */
-"callouts.nothing_to_call_out_now" = "There is nothing to call out right now.";
+"callouts.nothing_to_call_out_now" = "There is nothing to call out right now";
 
 /* Callouts Title, Nearby Markers */
 "callouts.nearby_markers" = "Nearby Markers";
@@ -2271,7 +2271,7 @@
 "location_callout_cell.marked_location" = "Marked Location";
 
 /* Location Callout Cell for the nearest road, %@ road name, "Nearest road, <27th Avenue West>" {NumberedPlaceholder="%@"} */
-"location_callout_cell.nearest_road" = "Nearest road, %@";
+"location_callout_cell.nearest_road" = "Nearest road, %@.";
 
 /* Location Callout Cell, Nearest road and beacon set on, %1$@ road name %2$@ location, "Nearest road, <27th Avenue West>. Beacon was set on <Woodland Park Zoo>." {NumberedPlaceholder="%1$@", "%2$@"} */
 "location_callout_cell.nearest_road.beacon_set_on" = "Nearest road, %1$@. Beacon was set on %2$@.";
@@ -3134,7 +3134,7 @@
 "help.text.ahead_of_me.how" = "As with all four of the buttons at the bottom of the home screen, hold your phone with the screen flat (facing toward the sky) and the top of the phone pointing in the direction you are facing before you press the <em>\"Ahead of Me\"</em> button. This acts like a compass telling the app which direction you are facing. Simply, tap the <em>\"Ahead of Me\"</em> button and you will hear several points of interest all roughly ahead of you.";
 
 /* Notification, Information about what headphone media controls do in Soundscape. Keep HTML tags. {NumberedPlaceholder="Soundscape", "<br>"} */
-"help.text.remote_control.what" = "You can access certain features in Soundscape with the media control buttons on your headphones. This functionality works with any wired or Bluetooth headphones that have media control buttons like Play, Pause, Next, Previous and others. Different headphones may include different buttons so please refer to the list of actions below to determine which ones are available to you.<br>Note that this feature only works with headphones that support Apple's media controls (such as play and pause).";
+"help.text.remote_control.what" = "You can access certain features in Soundscape with the media control buttons on your headphones. This functionality works with any wired or Bluetooth headphones that have media control buttons like Play, Pause, Next, Previous and others. Different headphones may include different buttons, so please refer to the list of actions below to determine which ones are available to you.<br>Note that this feature only works with headphones that support Apple's media controls (such as play and pause).";
 
 /* Notification, Information about when to use media controls on headphones. {NumberedPlaceholder="Soundscape"} */
 "help.text.remote_control.when" = "Headphone media controls can be used while Soundscape is running. This is true whether you are currently in Soundscape or while the app runs in the background and even while your device is locked. Note however that headphone media control buttons will not work with Soundscape if you are playing audio like music, podcasts or videos with another app.";
@@ -3194,7 +3194,7 @@
 "help.using_headsets.airpods.how.2" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your AirPods to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
 
 /* Help content describing how Bose Frames work with Soundscape and which versions are supported {NumberedPlaceholder="Soundscape","Bose Frames"} */
-"help.using_headsets.bose_frames.what" = "Soundscape supports spatial audio with dynamic head tracking when using the Alto or Rondo versions of the Bose Frames. Once they're connected, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for the app to work correctly.";
+"help.using_headsets.bose_frames.what" = "Soundscape supports spatial audio with head tracking when using the Alto or Rondo versions of the Bose Frames. Once they're connected, sensors in the Bose Frames tell Soundscape the direction your head is facing. This helps Soundscape to improve your audio experience, making it more natural as you move around in the world. When you use Soundscape with Bose Frames connected, you do not need to hold your phone for the app to work correctly.";
 
 /* Information on when users can use Bose Frames headphones with Soundscape, {NumberedPlaceholder="Soundscape","Bose Frames"} */
 "help.using_headsets.bose_frames.when" = "You can use Bose Frames with Soundscape anytime you would normally use Soundscape. Using Bose Frames provides you with high quality audio that does not occlude environmental audio and allows you to have a more hands-free experience.";
@@ -3209,7 +3209,7 @@
 "help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
 
 /* Trouble shooting information for Bose Frames */
-"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br/>If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>We would love to hear your feedback about the Bose Frames support. You can contact us by choosing the \"Send Feedback\" option in the menu.";
+"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br/> If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>We would love to hear your feedback about the Bose Frames support. You can contact us by choosing the \"Send Feedback\" option in the menu.";
 
 //------------------------------------------------------------------------------
 // MARK: - OSM Tags
@@ -3546,7 +3546,7 @@
 "faq.when_to_use_soundscape.question" = "When should I use Soundscape?";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. ’Lighting up your way with sound’ is a marketing tagline for the app. Intersection - A junction where two or more roads meet or cross. 3D sound is where the audio through your headphones sounds as though it is coming from a given direction, as if it was actually coming from a speaker. Quotes written as \" {NumberedPlaceholder="Soundscape"} */
-"faq.when_to_use_soundscape.answer" = "Soundscape has features and benefits that span a variety of scenarios and time scales. Furthermore, Soundscape’s value to you may evolve over time so how you use it today may differ from how you will use it in three months. People often think about apps in terms of \"what problem is this app good at solving?\" Soundscape certainly can be used on a case by case basis when you have a specific information need – such as keeping track of a destination as you make your way there, helping to orient yourself when you emerge from a metro station, getting your bearings when exiting a car, or finding the street names for, or distance to, the next intersection. However, the philosophy behind Soundscape is one of \"lighting up your world with sound\", designed to be used anytime you are out and about to provide ambient awareness of your surroundings, such as keeping you aware of the names of the streets you are on, the direction you are heading, and the names of businesses you are passing. In this use mode, our users have referred to Soundscape as a \"nice companion app\", which supports \"serendipity\", to \"fill in the gaps in your mental map\" and provide more \"confidence when walking\". Here are some other examples of how our users are incorporating Soundscape into their life:\n\n\"Soundscape helped me get back on track after I got off the bus and headed off in the wrong direction.\"\n\n\"Even in the town where I have lived for 3 years, I have built an improved picture of what is around me [with Soundscape].\"\n\n\"The 3D sound enhances my experience of a walk, as I feel more connected to my environment…I am more likely to try a new route now that I have the app to use.\"\n\n\"I miss the serendipity of walking around and noticing things. Having Soundscape is nice – it requires no effort to hear about things around me. The relational information is useful and is a great app for situational awareness and exploring commercial corridors.\"\n\n\"[I used Soundscape] to locate a pub in the middle of York. [I] used a range of its options to first locate and then actually find it. It took me to within 3 meters of the door – brilliant!\"";
+"faq.when_to_use_soundscape.answer" = "Soundscape has features and benefits that span a variety of scenarios and time scales. Furthermore, Soundscape’s value to you may evolve over time, so how you use it today may differ from how you will use it in three months. People often think about apps in terms of \"what problem is this app good at solving?\" Soundscape certainly can be used on a case by case basis when you have a specific information need – such as keeping track of a destination as you make your way there, helping to orient yourself when you emerge from a metro station, getting your bearings when exiting a car, or finding the street names for, or distance to, the next intersection. However, the philosophy behind Soundscape is one of \"lighting up your world with sound\", designed to be used anytime you are out and about to provide ambient awareness of your surroundings, such as keeping you aware of the names of the streets you are on, the direction you are heading, and the names of businesses you are passing. In this use mode, our users have referred to Soundscape as a \"nice companion app\", which supports \"serendipity\", to \"fill in the gaps in your mental map\" and provide more \"confidence when walking\". Here are some other examples of how our users are incorporating Soundscape into their life:\n\n\"Soundscape helped me get back on track after I got off the bus and headed off in the wrong direction.\"\n\n\"Even in the town where I have lived for 3 years, I have built an improved picture of what is around me [with Soundscape].\"\n\n\"The 3D sound enhances my experience of a walk, as I feel more connected to my environment…I am more likely to try a new route now that I have the app to use.\"\n\n\"I miss the serendipity of walking around and noticing things. Having Soundscape is nice – it requires no effort to hear about things around me. The relational information is useful and is a great app for situational awareness and exploring commercial corridors.\"\n\n\"[I used Soundscape] to locate a pub in the middle of York. [I] used a range of its options to first locate and then actually find it. It took me to within 3 meters of the door – brilliant!\"";
 
 /* Marker - A location that has been marked as important by the user or application. This can be an address, a business or a custom place such as an entrance, a bus stop or a bench. */
 "faq.markers_function.question" = "What are Markers and how do I get the most out of them?";
@@ -3735,7 +3735,7 @@
 "faq.tip.hold_phone_flat" = "Soundscape works best when you hold the phone flat with the screen facing the sky and the top of the phone pointing away from you.";
 
 /* Marker - A location that has been marked as important by the user or application. This can be an address, a business or a custom place such as an entrance, a bus stop or a bench. The 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. 'Manage Markers' is the name of one of the options in the Soundscape menu. Quotes written as \" */
-"faq.tip.create_marker_at_bus_stop" = "If there is a bus route you take regularly, set your pickup and exit stops as markers. This way they will be saved so you can find them again easily, just go to \" Markers & Routes\" from the home screen and find them on the \"Markers\" page. You can set a beacon on them and you will get periodic updates on how close you are to your exit stop. Note: you can turn off the rhythmic sound and you will still get distance updates along the way.";
+"faq.tip.create_marker_at_bus_stop" = "If there is a bus route you take regularly, set your pickup and exit stops as markers. This way they will be saved so you can find them again easily, just go to \"Markers & Routes\" from the home screen and find them on the \"Markers\" page. You can set a beacon on them and you will get periodic updates on how close you are to your exit stop. Note: you can turn off the rhythmic sound and you will still get distance updates along the way.";
 
 /* Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. */
 "faq.tip.two_finger_double_tap" = "Tapping the screen twice with two fingers will silence any active callouts.";
