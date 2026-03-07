@@ -544,8 +544,8 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                     context: String? = nil,
                     notify: Bool = true,
                     using spatialRead: ReferenceReadContract) async throws -> String {
-        if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey) {
-            try await update(entity: existingMarker,
+        if let existingMarker = await spatialRead.referenceEntity(byEntityKey: entityKey) {
+            try await update(id: existingMarker.id,
                              nickname: nickname,
                              address: estimatedAddress,
                              annotation: annotation,
@@ -764,7 +764,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                     context: String? = nil,
                     notify: Bool = true,
                     using spatialRead: ReferenceReadContract) async throws -> String {
-        if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location) {
+        if let existingMarker = await spatialRead.referenceEntity(byGenericLocation: location) {
             let tempStatusMatches = existingMarker.isTemp == temporary
             let propertiesMatch = existingMarker.nickname == nickname &&
                                   existingMarker.estimatedAddress == estimatedAddress &&
@@ -772,7 +772,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             let shouldDowngradeMarker = !existingMarker.isTemp && temporary && propertiesMatch
 
             if tempStatusMatches || shouldDowngradeMarker {
-                try await update(entity: existingMarker,
+                try await update(id: existingMarker.id,
                                  nickname: nickname,
                                  address: estimatedAddress,
                                  annotation: annotation,

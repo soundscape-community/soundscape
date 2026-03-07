@@ -983,7 +983,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.searchByKeyCallKeys, [key])
     }
 
-    func testReferenceEntityAddEntityKeyUsesInjectedSpatialStoreLookups() async {
+    func testReferenceEntityAddEntityKeyUsesSpatialReadContractLookup() async {
         let missingKey = "missing-entity-key"
         let store = MockSpatialDataStore()
         let spatialRead = MockSpatialReadContract()
@@ -1006,21 +1006,28 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             }
         }
 
-        XCTAssertEqual(store.referenceEntityByEntityKeyCallKeys, [missingKey])
+        XCTAssertEqual(spatialRead.referenceEntityByEntityKeyCalls, [missingKey])
+        XCTAssertTrue(store.referenceEntityByEntityKeyCallKeys.isEmpty)
         XCTAssertEqual(store.searchByKeyCallKeys, [missingKey])
     }
 
-    func testReferenceEntityAddLocationUsesInjectedSpatialStoreGenericLocationLookup() async throws {
+    func testReferenceEntityAddLocationUsesSpatialReadContractGenericLocationLookup() async throws {
         let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Lookup")
-        let existingMarker = RealmReferenceEntity(coordinate: location.location.coordinate,
-                                             entityKey: nil,
-                                             name: "Existing")
-        existingMarker.nickname = "Existing"
-
+        let existingMarkerID = "existing-location-marker-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: existingMarkerID, coordinate: location.location.coordinate)
         let key = "\(location.location.coordinate.latitude),\(location.location.coordinate.longitude)"
         let store = MockSpatialDataStore()
         let spatialRead = MockSpatialReadContract()
-        store.referenceEntitiesByGenericLocation[key] = existingMarker
+        spatialRead.referenceEntitiesByGenericLocation[key] = ReferenceEntity(id: existingMarkerID,
+                                                                              entityKey: nil,
+                                                                              lastUpdatedDate: nil,
+                                                                              lastSelectedDate: nil,
+                                                                              isNew: false,
+                                                                              isTemp: false,
+                                                                              coordinate: location.location.coordinate.ssGeoCoordinate,
+                                                                              nickname: nil,
+                                                                              estimatedAddress: nil,
+                                                                              annotation: nil)
         SpatialDataStoreRegistry.configure(with: store)
 
         let id = try await RealmReferenceEntity.add(location: location,
@@ -1032,8 +1039,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                     notify: false,
                                                     using: spatialRead)
 
-        XCTAssertEqual(id, existingMarker.id)
-        XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [key])
+        XCTAssertEqual(id, existingMarkerID)
+        XCTAssertEqual(spatialRead.referenceEntityByGenericLocationCalls, [key])
+        XCTAssertTrue(store.referenceEntityByGenericLocationCallKeys.isEmpty)
     }
 
     func testLocationParametersFetchEntityUsesSpatialReadContractPOILookup() {
@@ -1064,7 +1072,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.poiByKeyCalls, [lookupID])
     }
 
-    func testRouteAddAsyncUsesInjectedSpatialStoreLocationLookup() async throws {
+    func testRouteAddAsyncUsesSpatialReadContractLocationLookup() async throws {
         let waypointLocation = CLLocation(latitude: 47.6205, longitude: -122.3493)
         let imported = ImportedLocationDetail(nickname: "Waypoint", annotation: "Test waypoint")
         let waypointDetail = LocationDetail(location: waypointLocation, imported: imported, telemetryContext: nil)
@@ -1073,20 +1081,32 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                      importedLocationDetail: waypointDetail)
         let route = Route(name: "RouteAddInjectedStore-\(UUID().uuidString)", description: nil, waypoints: [waypoint])
 
-        let existingMarker = RealmReferenceEntity(coordinate: waypointLocation.coordinate,
-                                                  entityKey: nil,
-                                                  name: "Existing marker")
+        let existingMarkerID = "existing-route-add-marker-\(UUID().uuidString)"
+        _ = try createPersistedMarker(id: existingMarkerID, coordinate: waypointLocation.coordinate)
+        let existingMarker = ReferenceEntity(id: existingMarkerID,
+                                             entityKey: nil,
+                                             lastUpdatedDate: nil,
+                                             lastSelectedDate: nil,
+                                             isNew: false,
+                                             isTemp: false,
+                                             coordinate: waypointLocation.coordinate.ssGeoCoordinate,
+                                             nickname: nil,
+                                             estimatedAddress: nil,
+                                             annotation: nil)
         let locationKey = "\(waypointLocation.coordinate.latitude),\(waypointLocation.coordinate.longitude)"
         let store = MockSpatialDataStore()
-        store.referenceEntitiesByGenericLocation[locationKey] = existingMarker
         SpatialDataStoreRegistry.configure(with: store)
+        let spatialRead = MockSpatialReadContract()
+        spatialRead.referenceEntitiesByGenericLocation[locationKey] = existingMarker
+        spatialRead.referenceEntitiesByID[existingMarkerID] = existingMarker
 
-        try await Route.add(route, using: MockSpatialReadContract())
+        try await Route.add(route, using: spatialRead)
 
         let persistedRoute = Route.object(forPrimaryKey: route.id)
-        XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [locationKey])
-        XCTAssertEqual(store.referenceEntityByKeyCallKeys, [existingMarker.id])
-        XCTAssertEqual(persistedRoute?.waypoints.ordered.first?.markerId, existingMarker.id)
+        XCTAssertEqual(spatialRead.referenceEntityByGenericLocationCalls, [locationKey])
+        XCTAssertTrue(spatialRead.referenceEntityByIDCalls.contains(existingMarkerID))
+        XCTAssertTrue(store.referenceEntityByGenericLocationCallKeys.isEmpty)
+        XCTAssertEqual(persistedRoute?.waypoints.ordered.first?.markerId, existingMarkerID)
     }
 
     func testRouteAddAsyncUpdatesExistingMarkerByAsyncReadContractWhenInjectedStoreLookupIsEmpty() async throws {
