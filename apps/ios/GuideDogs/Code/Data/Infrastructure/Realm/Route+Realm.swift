@@ -166,11 +166,44 @@ extension Route {
     
     /// Async version of objectKeys for background sorting/filtering without blocking main actor
     static func asyncObjectKeys(sortedBy: SortStyle) async -> [String] {
+        if sortedBy == .distance {
+            return await distanceSortedRouteIDs(using: DataContractRegistry.spatialRead)
+        }
+
         return await Task.detached(priority: .utility) {
             await MainActor.run {
                 objectKeys(sortedBy: sortedBy)
             }
         }.value
+    }
+
+    private static func distanceSortedRouteIDs(using spatialRead: SpatialReadContract) async -> [String] {
+        let userLocation = RouteRuntime.currentUserLocation() ?? CLLocation(latitude: 0.0, longitude: 0.0)
+        let routes = await spatialRead.routes()
+
+        let routeDistances: [(id: String, distance: CLLocationDistance)] = await withTaskGroup(of: (id: String, distance: CLLocationDistance).self) { group in
+            for route in routes {
+                group.addTask {
+                    guard let start = route.waypoints.ordered.first else {
+                        return (id: route.id, distance: CLLocationDistance.greatestFiniteMagnitude)
+                    }
+
+                    let distance = await spatialRead.distanceToClosestLocation(forMarkerID: start.markerId,
+                                                                               from: userLocation.ssGeoLocation)
+                        ?? CLLocationDistance.greatestFiniteMagnitude
+
+                    return (id: route.id, distance: distance)
+                }
+            }
+
+            return await group.reduce(into: []) { results, routeDistance in
+                results.append(routeDistance)
+            }
+        }
+
+        return routeDistances
+            .sorted { $0.distance < $1.distance }
+            .map(\.id)
     }
     
     /// Finds a route by name in the Realm database

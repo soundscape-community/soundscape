@@ -262,20 +262,27 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     }
 
     final class MockSpatialReadContract: SpatialReadContract {
+        var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
         var routesContainingByMarkerID: [String: [Route]] = [:]
+        var distancesByMarkerID: [String: Double] = [:]
         var poisByKey: [String: POI] = [:]
         var referenceEntitiesByID: [String: ReferenceEntity] = [:]
         var referenceEntitiesByEntityKey: [String: ReferenceEntity] = [:]
         var referenceEntitiesByGenericLocation: [String: ReferenceEntity] = [:]
+        private(set) var routesCallCount = 0
         private(set) var routeByKeyCalls: [String] = []
         private(set) var routesContainingMarkerIDCalls: [String] = []
+        private(set) var distanceToClosestLocationCallIDs: [String] = []
         private(set) var poiByKeyCalls: [String] = []
         private(set) var referenceEntityByIDCalls: [String] = []
         private(set) var referenceEntityByEntityKeyCalls: [String] = []
         private(set) var referenceEntityByGenericLocationCalls: [String] = []
 
-        func routes() async -> [Route] { [] }
+        func routes() async -> [Route] {
+            routesCallCount += 1
+            return routesToReturn
+        }
         func route(byKey key: String) async -> Route? {
             routeByKeyCalls.append(key)
             return routesByKey[key]
@@ -295,7 +302,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? { nil }
 
-        func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? { nil }
+        func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? {
+            distanceToClosestLocationCallIDs.append(id)
+            return distancesByMarkerID[id]
+        }
 
         func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? { nil }
 
@@ -389,6 +399,30 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertTrue(keys.contains(route.id))
         XCTAssertEqual(store.referenceEntityByKeyCallKeys.first, markerID)
+    }
+
+    func testAsyncObjectKeysDistanceUsesSpatialReadContractDistanceLookup() async throws {
+        let markerIDNear = "async-distance-near-\(UUID().uuidString)"
+        let markerIDFar = "async-distance-far-\(UUID().uuidString)"
+        let nearRoute = try createPersistedRoute(name: "AsyncDistanceNear-\(UUID().uuidString)", markerIDs: [markerIDNear])
+        let farRoute = try createPersistedRoute(name: "AsyncDistanceFar-\(UUID().uuidString)", markerIDs: [markerIDFar])
+
+        let store = MockSpatialDataStore()
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let readMock = MockSpatialReadContract()
+        readMock.routesToReturn = [farRoute, nearRoute]
+        readMock.distancesByMarkerID[markerIDNear] = 10
+        readMock.distancesByMarkerID[markerIDFar] = 100
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let keys = await Route.asyncObjectKeys(sortedBy: .distance)
+
+        XCTAssertEqual(keys, [nearRoute.id, farRoute.id])
+        XCTAssertEqual(readMock.routesCallCount, 1)
+        XCTAssertEqual(readMock.distanceToClosestLocationCallIDs, [markerIDFar, markerIDNear])
+        XCTAssertTrue(store.referenceEntityByKeyCallKeys.isEmpty)
+        XCTAssertEqual(store.routesCallCount, 0)
     }
 
     func testRemoveWaypointFromAllRoutesUsesSpatialReadContractLookup() async throws {
