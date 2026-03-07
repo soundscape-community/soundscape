@@ -1089,6 +1089,39 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(persistedRoute?.waypoints.ordered.first?.markerId, existingMarker.id)
     }
 
+    func testRouteAddAsyncUpdatesExistingMarkerByAsyncReadContractWhenInjectedStoreLookupIsEmpty() async throws {
+        let existingMarkerID = "route-add-existing-\(UUID().uuidString)"
+        let markerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
+        _ = try createPersistedMarker(id: existingMarkerID, coordinate: markerCoordinate)
+
+        let waypoint = RouteWaypoint(index: 0, markerId: existingMarkerID)
+        let route = Route(name: "RouteAddContractMarker-\(UUID().uuidString)",
+                          description: nil,
+                          waypoints: [waypoint])
+
+        let store = MockSpatialDataStore()
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[existingMarkerID] = ReferenceEntity(id: existingMarkerID,
+                                                                           entityKey: nil,
+                                                                           lastUpdatedDate: nil,
+                                                                           lastSelectedDate: nil,
+                                                                           isNew: false,
+                                                                           isTemp: false,
+                                                                           coordinate: markerCoordinate.ssGeoCoordinate,
+                                                                           nickname: nil,
+                                                                           estimatedAddress: nil,
+                                                                           annotation: nil)
+
+        try await Route.add(route, using: readMock)
+
+        let persistedRoute = try XCTUnwrap(Route.object(forPrimaryKey: route.id))
+        XCTAssertEqual(persistedRoute.waypoints.ordered.first?.markerId, existingMarkerID)
+        XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(existingMarkerID))
+        XCTAssertTrue(store.referenceEntityByGenericLocationCallKeys.isEmpty)
+    }
+
     func testRouteUpdatePersistsFirstWaypointCoordinatesFromUpdatedWaypointOrder() throws {
         let firstMarkerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
         let secondMarkerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6301, baseLongitude: -122.3402)

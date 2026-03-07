@@ -46,8 +46,8 @@ extension Route {
                                            notify: Bool,
                                            using spatialRead: ReferenceReadContract) async throws -> String {
         if let id = locationDetail.markerId,
-           let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) {
-            try await RealmReferenceEntity.update(entity: marker,
+           await spatialRead.referenceEntity(byID: id) != nil {
+            try await RealmReferenceEntity.update(id: id,
                                                   location: locationDetail.location.coordinate,
                                                   nickname: locationDetail.nickname,
                                                   address: locationDetail.estimatedAddress,
