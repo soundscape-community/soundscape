@@ -263,11 +263,13 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     final class MockSpatialReadContract: SpatialReadContract {
         var routesByKey: [String: Route] = [:]
+        var routesContainingByMarkerID: [String: [Route]] = [:]
         var poisByKey: [String: POI] = [:]
         var referenceEntitiesByID: [String: ReferenceEntity] = [:]
         var referenceEntitiesByEntityKey: [String: ReferenceEntity] = [:]
         var referenceEntitiesByGenericLocation: [String: ReferenceEntity] = [:]
         private(set) var routeByKeyCalls: [String] = []
+        private(set) var routesContainingMarkerIDCalls: [String] = []
         private(set) var poiByKeyCalls: [String] = []
         private(set) var referenceEntityByIDCalls: [String] = []
         private(set) var referenceEntityByEntityKeyCalls: [String] = []
@@ -281,7 +283,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func routeMetadata(byKey key: String) async -> RouteReadMetadata? { nil }
         func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters? { nil }
         func routeParametersForBackup() async -> [RouteParameters] { [] }
-        func routes(containingMarkerID markerID: String) async -> [Route] { [] }
+        func routes(containingMarkerID markerID: String) async -> [Route] {
+            routesContainingMarkerIDCalls.append(markerID)
+            return routesContainingByMarkerID[markerID] ?? []
+        }
 
         func referenceEntity(byID id: String) async -> ReferenceEntity? {
             referenceEntityByIDCalls.append(id)
@@ -366,15 +371,16 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.referenceEntityByKeyCallKeys.first, markerID)
     }
 
-    func testRemoveWaypointFromAllRoutesUsesInjectedSpatialStoreLookup() async throws {
+    func testRemoveWaypointFromAllRoutesUsesSpatialReadContractLookup() async throws {
         let store = MockSpatialDataStore()
-        store.routesContainingToReturn["marker-id"] = []
         SpatialDataStoreRegistry.configure(with: store)
         let readMock = MockSpatialReadContract()
+        readMock.routesContainingByMarkerID["marker-id"] = []
 
         try await Route.removeWaypointFromAllRoutes(markerId: "marker-id", using: readMock)
 
-        XCTAssertEqual(store.routesContainingCallKeys, ["marker-id"])
+        XCTAssertEqual(readMock.routesContainingMarkerIDCalls, ["marker-id"])
+        XCTAssertTrue(store.routesContainingCallKeys.isEmpty)
     }
 
     func testDeleteAllUsesInjectedSpatialStoreRoutesList() throws {
@@ -1284,6 +1290,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                             nickname: nil,
                                                                             estimatedAddress: nil,
                                                                             annotation: nil)
+        readMock.routesContainingByMarkerID[removedMarkerID] = [route]
         DataContractRegistry.configure(spatialRead: readMock)
 
         try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: removedMarkerID)
@@ -1293,6 +1300,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
         XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(remainingMarkerID))
+        XCTAssertEqual(readMock.routesContainingMarkerIDCalls, [removedMarkerID])
     }
 
     func testDefaultSpatialWriteUpdateReferenceEntityHydratesFirstWaypointFromAsyncReadContract() async throws {
@@ -1304,10 +1312,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                       coordinate: makeUniqueCoordinate(baseLatitude: 42.6301, baseLongitude: -117.3402))
         let route = try createPersistedRoute(name: "UpdateWriteAsync-\(UUID().uuidString)",
                                              markerIDs: [firstMarkerID, secondMarkerID])
-
-        let store = MockSpatialDataStore()
-        store.routesContainingToReturn[firstMarkerID] = [route]
-        SpatialDataStoreRegistry.configure(with: store)
 
         let asyncCoordinate = CLLocationCoordinate2D(latitude: 51.1234, longitude: -125.4567)
         let readMock = MockSpatialReadContract()
@@ -1321,6 +1325,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                         nickname: nil,
                                                                         estimatedAddress: nil,
                                                                         annotation: nil)
+        readMock.routesContainingByMarkerID[firstMarkerID] = [route]
         DataContractRegistry.configure(spatialRead: readMock)
 
         let updatedMarkerCoordinate = SSGeoCoordinate(latitude: 41.1111, longitude: -116.2222)
@@ -1335,7 +1340,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
         XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(firstMarkerID))
-        XCTAssertEqual(store.routesContainingCallKeys, [firstMarkerID])
+        XCTAssertEqual(readMock.routesContainingMarkerIDCalls, [firstMarkerID])
     }
 
     func testDefaultSpatialMaintenanceWriteImportReferenceEntityFromCloudHydratesFirstWaypointFromAsyncReadContract() async throws {
@@ -1404,6 +1409,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                         nickname: nil,
                                                                         estimatedAddress: nil,
                                                                         annotation: nil)
+        readMock.routesContainingByMarkerID[firstMarkerID] = [route]
         DataContractRegistry.configure(spatialRead: readMock)
 
         try await DataContractRegistry.spatialMaintenanceWrite.importReferenceEntityFromCloud(markerParameters: markerParameters,
@@ -1414,6 +1420,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
         XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(firstMarkerID))
+        XCTAssertEqual(readMock.routesContainingMarkerIDCalls, [firstMarkerID])
     }
 
     func testDefaultSpatialMaintenanceWriteCleanCorruptReferenceEntitiesHydratesRemainingRouteWaypointFromAsyncReadContract() async throws {
@@ -1453,6 +1460,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                             nickname: nil,
                                                                             estimatedAddress: nil,
                                                                             annotation: nil)
+        readMock.routesContainingByMarkerID[corruptMarkerID] = [route]
         DataContractRegistry.configure(spatialRead: readMock)
 
         try await DataContractRegistry.spatialMaintenanceWrite.cleanCorruptReferenceEntities()
@@ -1462,6 +1470,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
         XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(remainingMarkerID))
+        XCTAssertEqual(readMock.routesContainingMarkerIDCalls, [corruptMarkerID])
 
         let refreshedDatabase = try RealmHelper.getDatabaseRealm()
         let deletedCorruptMarker = refreshedDatabase.object(ofType: RealmReferenceEntity.self, forPrimaryKey: corruptMarkerID)

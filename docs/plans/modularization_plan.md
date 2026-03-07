@@ -106,6 +106,7 @@ Acceptance:
 - Boundary checks stay green without additional parser-like complexity.
 
 ## Progress Updates
+- 2026-03-07: Updated async route-wide waypoint mutation helpers (`Route.removeWaypointFromAllRoutes(..., using:)` and `Route.updateWaypointInAllRoutes(..., using:)`) to resolve affected routes through `SpatialReadContract.routes(containingMarkerID:)` instead of direct sync store scans; refreshed dispatch tests to seed/verify contract route-containment lookups.
 - 2026-03-07: Removed sync `SpatialDataStoreRegistry.store.searchByKey` fallback from async `RealmReferenceEntity.add(entityKey:..., using:)`; async new-marker creation now resolves POIs through `ReferenceReadContract.poi(byKey:)` and reuses a shared persistence helper for entity-key marker writes, with dispatch tests updated to assert contract POI lookup usage.
 - 2026-03-07: Removed sync existence lookups from async `RealmReferenceEntity.add(entityKey:..., using:)` and `RealmReferenceEntity.add(location:..., using:)` by resolving existing markers through `ReferenceReadContract` and then applying async ID-based updates; refreshed dispatch tests to verify contract lookup usage and no injected-store fallback probes.
 - 2026-03-07: Removed sync marker-ID existence checks from async `Route.add(...)` marker update flow (`Route+Realm.addReferenceEntity(for:using:)`) by using `ReferenceReadContract.referenceEntity(byID:)` plus async ID-based marker updates; added dispatch coverage proving route add keeps existing marker IDs even when the injected sync store lookup map is empty.

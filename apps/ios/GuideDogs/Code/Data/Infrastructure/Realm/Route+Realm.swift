@@ -406,7 +406,14 @@ extension Route {
     
     static func removeWaypointFromAllRoutes(markerId: String,
                                             using spatialRead: ReferenceReadContract) async throws {
-        for route in SpatialDataStoreRegistry.store.routesContaining(markerId: markerId) {
+        let routesContainingMarker: [Route]
+        if let spatialRouteRead = spatialRead as? SpatialReadContract {
+            routesContainingMarker = await spatialRouteRead.routes(containingMarkerID: markerId)
+        } else {
+            routesContainingMarker = SpatialDataStoreRegistry.store.routesContaining(markerId: markerId)
+        }
+
+        for route in routesContainingMarker {
             try await removeWaypoint(from: route, markerId: markerId, using: spatialRead)
         }
     }
@@ -428,7 +435,14 @@ extension Route {
 
     static func updateWaypointInAllRoutes(markerId: String,
                                           using spatialRead: ReferenceReadContract) async throws {
-        for route in SpatialDataStoreRegistry.store.routesContaining(markerId: markerId) {
+        let routesContainingMarker: [Route]
+        if let spatialRouteRead = spatialRead as? SpatialReadContract {
+            routesContainingMarker = await spatialRouteRead.routes(containingMarkerID: markerId)
+        } else {
+            routesContainingMarker = SpatialDataStoreRegistry.store.routesContaining(markerId: markerId)
+        }
+
+        for route in routesContainingMarker {
             guard let first = route.waypoints.ordered.first else {
                 continue
             }
