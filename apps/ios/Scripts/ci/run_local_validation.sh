@@ -24,6 +24,7 @@ Runs the common local validation baseline:
 
 Examples:
   bash apps/ios/Scripts/ci/run_local_validation.sh
+  bash apps/ios/Scripts/ci/run_local_validation.sh -- --output summary
   bash apps/ios/Scripts/ci/run_local_validation.sh -- --output xcpretty
   bash apps/ios/Scripts/ci/run_local_validation.sh --skip-ios-build-test
 EOF

@@ -26,7 +26,7 @@ Usage: run_local_ios_build_test.sh [options]
 Options:
   --build-only                 Run build-for-testing only.
   --test-only                  Run test-without-building only.
-  --output <errors|xcpretty|raw>
+  --output <errors|xcpretty|raw|summary>
                                Output mode (default: errors).
   --destination "<xcode destination>"
                                Full xcodebuild destination string.
@@ -41,6 +41,7 @@ Options:
 
 Examples:
   bash apps/ios/Scripts/ci/run_local_ios_build_test.sh
+  bash apps/ios/Scripts/ci/run_local_ios_build_test.sh --output summary
   bash apps/ios/Scripts/ci/run_local_ios_build_test.sh --output xcpretty
   bash apps/ios/Scripts/ci/run_local_ios_build_test.sh --build-only --derived-data-path /tmp/ss-index-derived
 EOF
@@ -56,6 +57,41 @@ filter_xcodebuild_issues() {
     /^error: / { print; next }
     /:[0-9]+:[0-9]+: error: / { print; next }
   '
+}
+
+print_summary_from_log() {
+  local step_name="$1"
+  local log_file="$2"
+  local step_status="$3"
+
+  local test_summary
+  local error_count
+  local warning_count
+
+  test_summary="$(grep -E 'Executed [0-9]+ tests?, with [0-9]+ failures? \([0-9]+ unexpected\) in ' "${log_file}" | tail -n 1 || true)"
+  error_count="$(grep -E -c '^error: |:[0-9]+:[0-9]+: error: |\*\* BUILD FAILED \*\*|\*\* TEST FAILED \*\*|^Testing failed:' "${log_file}" || true)"
+  warning_count="$(grep -E -c '^warning: |:[0-9]+:[0-9]+: warning: ' "${log_file}" || true)"
+
+  if [[ "${step_status}" -eq 0 ]]; then
+    echo "${step_name} passed."
+    if [[ -n "${test_summary}" ]]; then
+      echo "${test_summary}"
+    fi
+    echo "Issue counts: errors=${error_count}, warnings=${warning_count}"
+    return 0
+  fi
+
+  echo "${step_name} failed (exit ${step_status}). See ${log_file}" >&2
+  echo "Failure summary (filtered):" >&2
+  local filtered_output
+  filtered_output="$(filter_xcodebuild_issues < "${log_file}" | tail -n 120 || true)"
+  if [[ -n "${filtered_output}" ]]; then
+    printf '%s\n' "${filtered_output}" >&2
+  else
+    tail -n 120 "${log_file}" >&2 || true
+  fi
+  echo "Issue counts: errors=${error_count}, warnings=${warning_count}" >&2
+  return 0
 }
 
 list_available_iphone_simulators() {
@@ -113,7 +149,10 @@ run_xcodebuild_step() {
 
   local step_status=0
   set +e
-  if [[ "${OUTPUT_MODE}" == "raw" ]]; then
+  if [[ "${OUTPUT_MODE}" == "summary" ]]; then
+    "${cmd[@]}" >"${log_file}" 2>&1
+    step_status=$?
+  elif [[ "${OUTPUT_MODE}" == "raw" ]]; then
     "${cmd[@]}" 2>&1 | tee "${log_file}"
     step_status=${PIPESTATUS[0]}
   elif [[ "${OUTPUT_MODE}" == "xcpretty" ]]; then
@@ -131,9 +170,20 @@ run_xcodebuild_step() {
   fi
   set -e
 
+  if [[ "${OUTPUT_MODE}" == "summary" ]]; then
+    print_summary_from_log "${step_name}" "${log_file}" "${step_status}"
+  fi
+
   if [[ ${step_status} -ne 0 ]]; then
+    if [[ "${OUTPUT_MODE}" == "summary" ]]; then
+      return "${step_status}"
+    fi
     echo "${step_name} failed (exit ${step_status}). See ${log_file}" >&2
     return "${step_status}"
+  fi
+
+  if [[ "${OUTPUT_MODE}" == "summary" ]]; then
+    return 0
   fi
 
   echo "${step_name} passed."
@@ -228,8 +278,8 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-if [[ "${OUTPUT_MODE}" != "errors" && "${OUTPUT_MODE}" != "xcpretty" && "${OUTPUT_MODE}" != "raw" ]]; then
-  echo "Invalid --output value: ${OUTPUT_MODE}. Expected errors, xcpretty, or raw." >&2
+if [[ "${OUTPUT_MODE}" != "errors" && "${OUTPUT_MODE}" != "xcpretty" && "${OUTPUT_MODE}" != "raw" && "${OUTPUT_MODE}" != "summary" ]]; then
+  echo "Invalid --output value: ${OUTPUT_MODE}. Expected errors, xcpretty, raw, or summary." >&2
   exit 1
 fi
 

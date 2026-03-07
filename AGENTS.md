@@ -60,6 +60,7 @@ From repo root:
 bash apps/ios/Scripts/ci/run_local_validation.sh
 
 # Optional output modes for build/test stage:
+bash apps/ios/Scripts/ci/run_local_validation.sh -- --output summary
 bash apps/ios/Scripts/ci/run_local_validation.sh -- --output xcpretty
 bash apps/ios/Scripts/ci/run_local_validation.sh -- --output raw
 
@@ -73,6 +74,7 @@ bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh
 ## Tool Output and Context Hygiene
 - Watch for high-volume tools (especially `xcodebuild`) polluting agent/user context with low-signal logs.
 - Prefer concise output modes and wrappers for repeated actions:
+  - `--output summary` for the lowest-noise local loop (step pass/fail + counts + log paths).
   - `--output errors` for routine local build/test loops.
   - `--output xcpretty` when human-readable summaries are needed (`xcpretty` is available locally).
 - When a command is repeated often, prefer a small script in `apps/ios/Scripts/ci/` rather than re-issuing long raw commands.
