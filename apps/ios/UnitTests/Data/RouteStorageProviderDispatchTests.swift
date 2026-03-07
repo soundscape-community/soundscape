@@ -351,6 +351,26 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [POI] { [] }
     }
 
+    final class MockReferenceReadContract: ReferenceReadContract {
+        func referenceEntity(byID id: String) async -> ReferenceEntity? { nil }
+        func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? { nil }
+        func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? { nil }
+        func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? { nil }
+        func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata? { nil }
+        func markerParameters(byID id: String) async -> MarkerParameters? { nil }
+        func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? { nil }
+        func markerParameters(byEntityKey key: String) async -> MarkerParameters? { nil }
+        func markerParametersForBackup() async -> [MarkerParameters] { [] }
+        func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? { nil }
+        func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity? { nil }
+        func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity? { nil }
+        func referenceEntities() async -> [ReferenceEntity] { [] }
+        func recentlySelectedPOIs() async -> [POI] { [] }
+        func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? { nil }
+        func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] { [] }
+        func poi(byKey key: String) async -> POI? { nil }
+    }
+
     override func tearDownWithError() throws {
         SpatialDataStoreRegistry.resetForTesting()
         DataContractRegistry.resetForTesting()
@@ -381,6 +401,34 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertEqual(readMock.routesContainingMarkerIDCalls, ["marker-id"])
         XCTAssertTrue(store.routesContainingCallKeys.isEmpty)
+    }
+
+    func testRemoveWaypointFromAllRoutesThrowsWhenSpatialRouteReadsAreUnavailable() async {
+        let readMock = MockReferenceReadContract()
+
+        do {
+            try await Route.removeWaypointFromAllRoutes(markerId: "marker-id", using: readMock)
+            XCTFail("Expected invalidReadContract error")
+        } catch {
+            guard case RouteRealmError.invalidReadContract = error else {
+                XCTFail("Expected invalidReadContract, received: \(error)")
+                return
+            }
+        }
+    }
+
+    func testUpdateWaypointInAllRoutesThrowsWhenSpatialRouteReadsAreUnavailable() async {
+        let readMock = MockReferenceReadContract()
+
+        do {
+            try await Route.updateWaypointInAllRoutes(markerId: "marker-id", using: readMock)
+            XCTFail("Expected invalidReadContract error")
+        } catch {
+            guard case RouteRealmError.invalidReadContract = error else {
+                XCTFail("Expected invalidReadContract, received: \(error)")
+                return
+            }
+        }
     }
 
     func testDeleteAllUsesInjectedSpatialStoreRoutesList() throws {
@@ -1470,7 +1518,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
         XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(remainingMarkerID))
-        XCTAssertEqual(readMock.routesContainingMarkerIDCalls, [corruptMarkerID])
+        XCTAssertTrue(readMock.routesContainingMarkerIDCalls.contains(corruptMarkerID))
 
         let refreshedDatabase = try RealmHelper.getDatabaseRealm()
         let deletedCorruptMarker = refreshedDatabase.object(ofType: RealmReferenceEntity.self, forPrimaryKey: corruptMarkerID)

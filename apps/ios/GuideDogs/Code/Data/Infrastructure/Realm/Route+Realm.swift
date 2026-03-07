@@ -403,15 +403,20 @@ extension Route {
                          waypoints: waypoints,
                          using: spatialRead)
     }
-    
+
+    private static func routesContaining(markerId: String,
+                                         using spatialRead: ReferenceReadContract) async throws -> [Route] {
+        guard let spatialRouteRead = spatialRead as? SpatialReadContract else {
+            throw RouteRealmError.invalidReadContract
+        }
+
+        return await spatialRouteRead.routes(containingMarkerID: markerId)
+    }
+
     static func removeWaypointFromAllRoutes(markerId: String,
                                             using spatialRead: ReferenceReadContract) async throws {
-        let routesContainingMarker: [Route]
-        if let spatialRouteRead = spatialRead as? SpatialReadContract {
-            routesContainingMarker = await spatialRouteRead.routes(containingMarkerID: markerId)
-        } else {
-            routesContainingMarker = SpatialDataStoreRegistry.store.routesContaining(markerId: markerId)
-        }
+        let routesContainingMarker = try await routesContaining(markerId: markerId,
+                                                                using: spatialRead)
 
         for route in routesContainingMarker {
             try await removeWaypoint(from: route, markerId: markerId, using: spatialRead)
@@ -435,12 +440,8 @@ extension Route {
 
     static func updateWaypointInAllRoutes(markerId: String,
                                           using spatialRead: ReferenceReadContract) async throws {
-        let routesContainingMarker: [Route]
-        if let spatialRouteRead = spatialRead as? SpatialReadContract {
-            routesContainingMarker = await spatialRouteRead.routes(containingMarkerID: markerId)
-        } else {
-            routesContainingMarker = SpatialDataStoreRegistry.store.routesContaining(markerId: markerId)
-        }
+        let routesContainingMarker = try await routesContaining(markerId: markerId,
+                                                                using: spatialRead)
 
         for route in routesContainingMarker {
             guard let first = route.waypoints.ordered.first else {
