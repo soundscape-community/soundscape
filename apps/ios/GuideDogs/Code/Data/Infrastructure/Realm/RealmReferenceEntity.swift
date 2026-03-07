@@ -555,13 +555,18 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             return existingMarker.id
         }
 
-        return try addNewReferenceEntityForEntityKey(entityKey,
-                                                     nickname: nickname,
-                                                     estimatedAddress: estimatedAddress,
-                                                     annotation: annotation,
-                                                     temporary: temporary,
-                                                     context: context,
-                                                     notify: notify)
+        guard let entity = await spatialRead.poi(byKey: entityKey) else {
+            throw ReferenceEntityError.entityDoesNotExist
+        }
+
+        return try addNewReferenceEntity(for: entity,
+                                         entityKey: entityKey,
+                                         nickname: nickname,
+                                         estimatedAddress: estimatedAddress,
+                                         annotation: annotation,
+                                         temporary: temporary,
+                                         context: context,
+                                         notify: notify)
     }
     
     /// Updates the given reference entity
@@ -801,68 +806,85 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                                                            context: String?,
                                                            notify: Bool) throws -> String {
         try autoreleasepool {
-            let database = try RealmHelper.getDatabaseRealm()
-            let cache = try RealmHelper.getCacheRealm()
-
             guard let entity = SpatialDataStoreRegistry.store.searchByKey(entityKey) else {
                 // Return if entity does not exist (or doesn't exist in Realm)
                 throw ReferenceEntityError.entityDoesNotExist
             }
 
-            // In the case that the new entity is an address, backup the address in the estimated address
-            // field of the Reference Entity
-            var address = estimatedAddress
-            if let addrEntity = entity as? Address {
-                address = addrEntity.addressLine
-            }
-
-            // Add reference entity
-            let reference = RealmReferenceEntity(coordinate: entity.centroidCoordinate,
-                                                 entityKey: entityKey,
-                                                 name: nickname,
-                                                 estimatedAddress: address,
-                                                 annotation: annotation,
-                                                 temp: temporary)
-            reference.lastUpdatedDate = Date()
-
-            // Set the last selected date on the POI
-            if let rlmEntity = entity as? Object {
-                try cache.write {
-                    rlmEntity[POI.Keys.lastSelectedDate] = reference.lastSelectedDate
-                }
-            }
-
-            try database.write {
-                database.add(reference, update: .modified)
-            }
-
-            if !temporary {
-                ReferenceEntityRuntime.storeReferenceInCloud(reference.domainEntity)
-
-                let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-                if entity is Address {
-                    GDATelemetry.track("markers.added",
-                                       with: ["type": "address",
-                                              "includesAnnotation": includesAnnotation,
-                                              "context": context ?? "none"])
-                    GDATelemetry.helper?.markerCountAddress += 1
-                } else {
-                    GDATelemetry.track("markers.added",
-                                       with: ["type": "poi",
-                                              "includesAnnotation": includesAnnotation,
-                                              "context": context ?? "none"])
-                    GDATelemetry.helper?.markerCountPOI += 1
-                }
-
-                NSUserActivity(userAction: .saveMarker).becomeCurrent()
-            }
-
-            if notify {
-                notifyEntityAdded(reference.id)
-            }
-
-            return reference.id
+            return try addNewReferenceEntity(for: entity,
+                                             entityKey: entityKey,
+                                             nickname: nickname,
+                                             estimatedAddress: estimatedAddress,
+                                             annotation: annotation,
+                                             temporary: temporary,
+                                             context: context,
+                                             notify: notify)
         }
+    }
+
+    private static func addNewReferenceEntity(for entity: POI,
+                                              entityKey: String,
+                                              nickname: String?,
+                                              estimatedAddress: String?,
+                                              annotation: String?,
+                                              temporary: Bool,
+                                              context: String?,
+                                              notify: Bool) throws -> String {
+        let database = try RealmHelper.getDatabaseRealm()
+        let cache = try RealmHelper.getCacheRealm()
+
+        // In the case that the new entity is an address, backup the address in the estimated address
+        // field of the Reference Entity.
+        var address = estimatedAddress
+        if let addrEntity = entity as? Address {
+            address = addrEntity.addressLine
+        }
+
+        let reference = RealmReferenceEntity(coordinate: entity.centroidCoordinate,
+                                             entityKey: entityKey,
+                                             name: nickname,
+                                             estimatedAddress: address,
+                                             annotation: annotation,
+                                             temp: temporary)
+        reference.lastUpdatedDate = Date()
+
+        // Set the last selected date on the POI.
+        if let rlmEntity = entity as? Object {
+            try cache.write {
+                rlmEntity[POI.Keys.lastSelectedDate] = reference.lastSelectedDate
+            }
+        }
+
+        try database.write {
+            database.add(reference, update: .modified)
+        }
+
+        if !temporary {
+            ReferenceEntityRuntime.storeReferenceInCloud(reference.domainEntity)
+
+            let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
+            if entity is Address {
+                GDATelemetry.track("markers.added",
+                                   with: ["type": "address",
+                                          "includesAnnotation": includesAnnotation,
+                                          "context": context ?? "none"])
+                GDATelemetry.helper?.markerCountAddress += 1
+            } else {
+                GDATelemetry.track("markers.added",
+                                   with: ["type": "poi",
+                                          "includesAnnotation": includesAnnotation,
+                                          "context": context ?? "none"])
+                GDATelemetry.helper?.markerCountPOI += 1
+            }
+
+            NSUserActivity(userAction: .saveMarker).becomeCurrent()
+        }
+
+        if notify {
+            notifyEntityAdded(reference.id)
+        }
+
+        return reference.id
     }
 
     private static func addNewReferenceEntityForLocation(_ location: GenericLocation,

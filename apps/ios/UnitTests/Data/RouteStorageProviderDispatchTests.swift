@@ -558,7 +558,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1.0)
-        XCTAssertTrue(readMock.referenceEntityByIDCalls.isEmpty)
+        XCTAssertFalse(readMock.referenceEntityByIDCalls.contains(markerID))
     }
 
     func testRouteWaypointLocationDetailUsesAsyncReadContractWithoutSyncFallback() async {
@@ -983,7 +983,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.searchByKeyCallKeys, [key])
     }
 
-    func testReferenceEntityAddEntityKeyUsesSpatialReadContractLookup() async {
+    func testReferenceEntityAddEntityKeyUsesSpatialReadContractForExistenceAndPOILookup() async {
         let missingKey = "missing-entity-key"
         let store = MockSpatialDataStore()
         let spatialRead = MockSpatialReadContract()
@@ -1007,8 +1007,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         }
 
         XCTAssertEqual(spatialRead.referenceEntityByEntityKeyCalls, [missingKey])
+        XCTAssertEqual(spatialRead.poiByKeyCalls, [missingKey])
         XCTAssertTrue(store.referenceEntityByEntityKeyCallKeys.isEmpty)
-        XCTAssertEqual(store.searchByKeyCallKeys, [missingKey])
+        XCTAssertTrue(store.searchByKeyCallKeys.isEmpty)
     }
 
     func testReferenceEntityAddLocationUsesSpatialReadContractGenericLocationLookup() async throws {
