@@ -115,7 +115,11 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
     }
 
     func removeAllRoutes() async throws {
-        try Route.deleteAll()
+        let routes = await DataContractRegistry.spatialRead.routes()
+
+        for route in routes {
+            try Route.delete(route.id)
+        }
     }
 
     func clearNewReferenceEntitiesAndRoutes() async throws {

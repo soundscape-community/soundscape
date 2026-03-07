@@ -475,6 +475,20 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(store.routesCallCount, 1)
     }
 
+    func testDefaultSpatialMaintenanceWriteRemoveAllRoutesUsesSpatialReadContractRoutes() async throws {
+        let store = MockSpatialDataStore()
+        SpatialDataStoreRegistry.configure(with: store)
+
+        let readMock = MockSpatialReadContract()
+        readMock.routesToReturn = []
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        try await DataContractRegistry.spatialMaintenanceWrite.removeAllRoutes()
+
+        XCTAssertEqual(readMock.routesCallCount, 1)
+        XCTAssertEqual(store.routesCallCount, 0)
+    }
+
     func testEncodeFromDetailUsesSpatialReadContractRouteLookup() async throws {
         let route = try createPersistedRoute(name: "EncodeRoute")
         let readMock = MockSpatialReadContract()
