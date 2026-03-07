@@ -109,11 +109,12 @@ Acceptance:
 - 2026-03-06: Plan reset initiated to reduce complexity and token churn.
 - 2026-03-06: Guardrail policy changed from seam-permutation expansion to minimal high-signal boundary enforcement.
 - 2026-03-06: Added low-noise targeted-suite wrapper `apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh` to reduce repeated manual `xcodebuild` context pollution and standardize reruns.
+- 2026-03-06: Simplified async route waypoint validation by removing the pre-check dependency on sync `RouteWaypoint(index:markerId:)` in `RouteWaypoint.validated(...)`, keeping persisted-waypoint shape domain-first (`importedReferenceEntity: nil`).
 - 2026-03-05: Latest dependency artifact: `docs/plans/artifacts/dependency-analysis/20260305-120430Z-ssindex-d98603a.txt`.
 
 ## Immediate Next Steps
 1. Apply the same simplification principles to implementation slices (model-first, minimal seams, no new abstraction families).
-2. Review `DataContractRegistry` and related contracts for removable compatibility seams.
+2. Continue removing sync compatibility lookups from async model/serialization paths where contract-based async reads already exist.
 3. Use `run_data_modularization_targeted_tests.sh` for targeted data-suite runs; add wrappers only where repetition/noise still hurts execution.
 4. Keep dependency tracking cadence but report only meaningful deltas.
 

@@ -101,17 +101,13 @@ extension RouteWaypoint {
     }
 
     static func validated(index: Int, markerId: String, using spatialRead: ReferenceReadContract) async -> RouteWaypoint? {
-        if let waypoint = RouteWaypoint(index: index, markerId: markerId) {
-            return waypoint
-        }
-
-        guard let marker = await spatialRead.referenceEntity(byID: markerId) else {
+        guard await spatialRead.referenceEntity(byID: markerId) != nil else {
             return nil
         }
 
         return RouteWaypoint(index: index,
                              markerId: markerId,
-                             importedReferenceEntity: marker)
+                             importedReferenceEntity: nil)
     }
 
     init(from parameters: RouteWaypointParameters) {
