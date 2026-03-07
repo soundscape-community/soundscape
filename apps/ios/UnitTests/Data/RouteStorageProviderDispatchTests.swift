@@ -1251,6 +1251,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let route = try createPersistedRoute(name: "UpdateWriteAsync-\(UUID().uuidString)",
                                              markerIDs: [firstMarkerID, secondMarkerID])
 
+        let store = MockSpatialDataStore()
+        store.routesContainingToReturn[firstMarkerID] = [route]
+        SpatialDataStoreRegistry.configure(with: store)
+
         let asyncCoordinate = CLLocationCoordinate2D(latitude: 51.1234, longitude: -125.4567)
         let readMock = MockSpatialReadContract()
         readMock.referenceEntitiesByID[firstMarkerID] = ReferenceEntity(id: firstMarkerID,
@@ -1277,6 +1281,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.firstWaypointLatitude ?? 0, asyncCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
         XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(firstMarkerID))
+        XCTAssertEqual(store.routesContainingCallKeys, [firstMarkerID])
     }
 
     func testDefaultSpatialMaintenanceWriteImportReferenceEntityFromCloudHydratesFirstWaypointFromAsyncReadContract() async throws {

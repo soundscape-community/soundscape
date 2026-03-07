@@ -680,6 +680,30 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             try await Route.updateWaypointInAllRoutes(markerId: entity.id, using: spatialRead)
         }
     }
+
+    static func update(id: String,
+                       location: CLLocationCoordinate2D? = nil,
+                       nickname: String?,
+                       address: String?,
+                       annotation: String?,
+                       context: String? = nil,
+                       isTemp: Bool,
+                       using spatialRead: ReferenceReadContract) async throws {
+        let database = try RealmHelper.getDatabaseRealm()
+
+        guard let entity = database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: id) else {
+            return
+        }
+
+        try await update(entity: entity,
+                         location: location,
+                         nickname: nickname,
+                         address: address,
+                         annotation: annotation,
+                         context: context,
+                         isTemp: isTemp,
+                         using: spatialRead)
+    }
     
     /// Constructs and saves a reference point for the generic location described by the
     /// provided coordinate and nickname.

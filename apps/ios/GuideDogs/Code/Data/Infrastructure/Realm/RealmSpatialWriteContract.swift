@@ -55,11 +55,7 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
     }
 
     func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {
-        guard let entity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
-            return
-        }
-
-        try await RealmReferenceEntity.update(entity: entity,
+        try await RealmReferenceEntity.update(id: id,
                                               location: location?.clCoordinate,
                                               nickname: nickname,
                                               address: estimatedAddress,
