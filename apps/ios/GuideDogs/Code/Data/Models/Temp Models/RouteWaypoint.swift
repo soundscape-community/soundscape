@@ -57,7 +57,7 @@ extension RouteWaypoint {
      *     - index: Index of the waypoint
      *     - markerId: ID for the marker
      */
-    init?(index: Int, markerId: String) {
+    init(index: Int, markerId: String) {
         self.init(index: index, markerId: markerId, importedReferenceEntity: nil)
     }
 

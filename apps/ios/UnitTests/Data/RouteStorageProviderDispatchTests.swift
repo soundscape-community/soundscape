@@ -1020,11 +1020,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         let route = try createPersistedRoute(name: "FirstWaypointUpdate-\(UUID().uuidString)", markerIDs: [firstMarkerID, secondMarkerID])
 
-        guard let reorderedFirst = RouteWaypoint(index: 0, markerId: secondMarkerID),
-              let reorderedSecond = RouteWaypoint(index: 1, markerId: firstMarkerID) else {
-            XCTFail("Expected persisted marker-backed waypoints")
-            return
-        }
+        let reorderedFirst = RouteWaypoint(index: 0, markerId: secondMarkerID)
+        let reorderedSecond = RouteWaypoint(index: 1, markerId: firstMarkerID)
 
         try Route.update(id: route.id,
                          name: route.name,
@@ -1353,9 +1350,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     private func createPersistedRoute(name: String, markerIDs: [String]) throws -> Route {
         var waypoints: [RouteWaypoint] = []
         for (index, markerID) in markerIDs.enumerated() {
-            guard let waypoint = RouteWaypoint(index: index, markerId: markerID) else {
-                throw ReferenceEntityError.entityDoesNotExist
-            }
+            let waypoint = RouteWaypoint(index: index, markerId: markerID)
             waypoints.append(waypoint)
         }
 

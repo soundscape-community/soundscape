@@ -72,22 +72,22 @@ extension RouteWaypoint: Samplable {
     
     @MainActor
     static var sample: RouteWaypoint {
-        RouteWaypoint(index: 0, markerId: RealmReferenceEntity.sample.id)!
+        RouteWaypoint(index: 0, markerId: RealmReferenceEntity.sample.id)
     }
     
     @MainActor
     static var sample2: RouteWaypoint {
-        RouteWaypoint(index: 1, markerId: RealmReferenceEntity.sample2.id)!
+        RouteWaypoint(index: 1, markerId: RealmReferenceEntity.sample2.id)
     }
     
     @MainActor
     static var sample3: RouteWaypoint {
-        RouteWaypoint(index: 2, markerId: RealmReferenceEntity.sample3.id)!
+        RouteWaypoint(index: 2, markerId: RealmReferenceEntity.sample3.id)
     }
     
     @MainActor
     static var sample4: RouteWaypoint {
-        RouteWaypoint(index: 3, markerId: RealmReferenceEntity.sample4.id)!
+        RouteWaypoint(index: 3, markerId: RealmReferenceEntity.sample4.id)
     }
 }
 
