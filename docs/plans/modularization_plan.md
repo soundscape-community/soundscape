@@ -24,6 +24,7 @@ Out of scope:
 Progress is materially good:
 - `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
 - Shared contract-side parameter models (`UniversalLinkParameters`, route/marker/location parameter types) now also live in `SSDataContracts`, with iOS files reduced to shims and runtime-specific extensions.
+- `VectorTile` and the legacy `GDAJSONObject` parsing helper are now Swift/common types in `SSDataContracts`, with iOS retaining only CoreLocation convenience shims.
 - `DataContractRegistry` is the app-facing data ingress.
 - Default backend installation is centralized and guarded.
 - The retired sync-store seam has been removed from `apps/ios/GuideDogs/Code` and `apps/ios/UnitTests`.
@@ -56,6 +57,7 @@ Completed:
 - App-layer `RealmHelper` usage is now zero.
 - `DataContractRegistry` no longer constructs Realm adapters directly; Realm default installation is now owned from infrastructure and bootstrapped explicitly by app/test setup.
 - Shared route/marker/location parameter models and `UniversalLinkParameters` now live in `apps/common/Sources/SSDataContracts`; iOS serialization files retain only runtime-specific behavior.
+- `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; the Objective-C `GDAJSONObject` bridge has been removed from the iOS target.
 
 In progress:
 - Continue moving runtime-neutral contract/value types into `apps/common` instead of building an iOS package shell.
@@ -123,15 +125,16 @@ Remaining focus:
 - Chose the extraction direction: keep `apps/common` portable, keep `DataContractRegistry` as the composition root, and avoid using the placeholder `apps/ios/Package.swift` as an architectural boundary.
 - Changed `DataContractRegistry` from direct Realm construction to installed defaults, with `configureWithRealmDefaults()` owned in Realm infrastructure and invoked explicitly from `AppContext` and tests.
 - Moved shared universal-link/storage parameter models into `SSDataContracts`, leaving iOS serialization files as shim/extension layers for runtime-specific behavior.
+- Rewrote `GDAJSONObject` in Swift, moved it and `VectorTile` into `SSDataContracts`, converted the portable tile API to `SSGeo` types, and reduced the iOS helper file to CoreLocation bridge overloads.
+- Removed the Objective-C `GDAJSONObject` bridge/header from the iOS target.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
 1. Continue extracting runtime-neutral contract/value types into `SSDataContracts` or `SSDataDomain` when they no longer depend on app behavior or Apple-only frameworks.
 2. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
-3. Decide whether `VectorTile` can be made portable enough for `apps/common`; keep it in `apps/ios` if CoreLocation-shaped behavior remains the simpler boundary.
-4. Revisit `POI`/`GenericLocation` portability only if a concrete cross-platform backend need appears; do not force them into `apps/common` prematurely.
-5. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining iOS-specific associated-type surface is stable.
-6. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
+3. Revisit `POI`/`GenericLocation` portability only if a concrete cross-platform backend need appears; do not force them into `apps/common` prematurely.
+4. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining iOS-specific associated-type surface is stable.
+5. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 
 ## Handoff
 - Use `docs/plans/data_storage_api_north_star.md` for the stable target.

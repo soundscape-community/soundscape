@@ -8,6 +8,7 @@
 
 import Foundation
 import MapKit
+import SSDataContracts
 
 /// Should contain two objects: latitude and longitude
 typealias GAPoint = [CLLocationDegrees]

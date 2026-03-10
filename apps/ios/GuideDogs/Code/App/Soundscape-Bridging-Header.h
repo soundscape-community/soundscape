@@ -10,6 +10,5 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 
 // Helpers
-#import "GDAJSONObject.h"
 #import "ObjCExceptionHandling.h"
 

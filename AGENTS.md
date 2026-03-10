@@ -21,7 +21,7 @@ This file is the canonical instruction source for coding agents in this reposito
 - `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
 - `SSGeo` now lives in `apps/common` and provides portable location payloads plus basic geodesic math without `CoreLocation`.
 - `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models shared with iOS.
-- `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries, including the universal-link/storage parameter models that have been decoupled from iOS runtime behavior.
+- `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries, including the universal-link/storage parameter models, `VectorTile`, and the Swift `GDAJSONObject` helper after decoupling them from iOS runtime behavior.
 
 ## Data Modularization Status
 - `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
@@ -182,6 +182,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Packaging direction: keep `apps/common` portable (`SSGeo`, `SSDataDomain`, `SSDataContracts`), keep `DataContractRegistry` as the single composition root in `apps/ios`, and move runtime-neutral types into `apps/common` instead of using `apps/ios/Package.swift` as a modularization boundary.
 - `DataContractRegistry` should store installed defaults, but concrete Realm adapter construction belongs in infrastructure-owned installer code (`configureWithRealmDefaults()`), not in the registry file itself.
 - Shared route/marker/location parameter models plus `UniversalLinkParameters` now live in `apps/common/Sources/SSDataContracts`; the iOS serialization files should stay as shims/runtime extensions when behavior still depends on app-specific services.
+- `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; keep the iOS helper file as a CoreLocation shim only, and do not reintroduce the old Objective-C bridge.
 - `apps/ios/Package.swift` is placeholder/editor scaffolding and should not be used as the architectural extraction boundary.
 - Current validation default for modularization slices is low-noise output (`--output quiet`).
 - Known local full-suite non-blocking failures remain `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.

@@ -68,8 +68,8 @@ Must not be used by non-infrastructure code:
 
 ## Target Extraction Shape
 - `apps/common/Sources/SSDataDomain`: canonical platform-neutral domain/value models.
-- `apps/common/Sources/SSDataContracts`: async contract protocols and shared contract-side value types, including universal-link/storage parameter models once decoupled from runtime behavior.
-- `apps/ios/GuideDogs/Code/Data/Contracts` and adjacent runtime extensions: iOS-specific composition and associated types that still depend on app behavior or app/platform-shaped values such as `POI`, `GenericLocation`, and `VectorTile`.
+- `apps/common/Sources/SSDataContracts`: async contract protocols and shared contract-side value types, including universal-link/storage parameter models, `VectorTile`, and the Swift `GDAJSONObject` helper once decoupled from runtime behavior.
+- `apps/ios/GuideDogs/Code/Data/Contracts` and adjacent runtime extensions: iOS-specific composition and associated types that still depend on app behavior or app/platform-shaped values such as `POI` and `GenericLocation`.
 - `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm/**`: Realm-backed contract implementations plus Realm object mappings, migrations, cache/search infrastructure, and backend installers.
 
 Recommended split:
@@ -87,7 +87,7 @@ Reason: it is editor/tooling scaffolding, not part of the architectural split.
 
 Portable-first guidance:
 - move pure value types to `apps/common` only when they do not depend on app runtime behavior or Apple frameworks
-- keep associated-type-bound contracts in `SSDataContracts` when they need to abstract over iOS-only values such as `POI` or `VectorTile`
+- keep associated-type-bound contracts in `SSDataContracts` when the associated value is genuinely portable (for example `VectorTile`), and keep iOS-only values such as `POI` or `GenericLocation` local until they are decoupled
 - prefer extracting shared value models into `apps/common` over inventing iOS-only package shells
 
 ## Static Success Criteria
