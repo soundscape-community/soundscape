@@ -1,3 +1,5 @@
+<!-- Copyright (c) Soundscape Community Contributers. -->
+
 # Localization
 
 The project's base internationalization is `en-US` (English, United States).
@@ -10,6 +12,8 @@ For every supported language, there is a `Localizable.strings` file which holds 
 
 These files are located in folders that correspond to their locale identifiers. For example, the strings file for `en-US` is located in:  
 `GuideDogs/Assets/Localization/en-US.lproj/Localizable.strings`
+
+Portable shared helper strings that are owned by `SSLanguage` live separately under `apps/common/Sources/SSLanguage/Resources/<locale>.lproj/Localizable.strings`. These keys should not be duplicated in `GuideDogs/Assets/Localization`; the localization validator now enforces that boundary.
 
 The `.strings` files hold key-value pairs. The value is the translated string and the key is an identifier, to be used in the code and by the translators.  
 Above every string should be a comment that describes the context in which the string will be used. For example:

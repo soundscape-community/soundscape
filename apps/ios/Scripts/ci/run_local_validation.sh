@@ -18,7 +18,7 @@ Usage: run_local_validation.sh [--skip-ios-build-test] [-- <run_local_ios_build_
 Runs the common local validation baseline:
 1) apps/common boundary check
 2) apps/common package tests
-3) iOS localization linter
+3) iOS + SSLanguage localization linter
 4) iOS seam and boundary scripts
 5) iOS build+test (unless skipped)
 
@@ -58,7 +58,7 @@ bash "${REPO_ROOT}/apps/common/Scripts/check_forbidden_imports.sh"
 echo "Step 2/5: apps/common package tests"
 swift test --package-path "${REPO_ROOT}/apps/common"
 
-echo "Step 3/5: iOS localization linter"
+echo "Step 3/5: iOS + SSLanguage localization linter"
 (
   cd "${IOS_DIR}"
   swift Scripts/LocalizationLinter/main.swift
