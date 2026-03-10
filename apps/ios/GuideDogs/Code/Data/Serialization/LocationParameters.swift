@@ -57,18 +57,9 @@ extension LocationParameters {
             }
 
             // Create a new OSM entity and cache on the device
-            let entity = GDASpatialDataResultEntity(id: id, parameters: self)
-
             do {
-                try autoreleasepool {
-                    let cache = try RealmHelper.getCacheRealm()
-
-                    try cache.write {
-                        cache.add(entity, update: .modified)
-                    }
-
-                    completion(.success(entity))
-                }
+                let entity = try GDASpatialDataResultEntity.addOrUpdateSpatialCacheEntity(id: id, parameters: self)
+                completion(.success(entity))
             }
             catch {
                 // Failed to save the entity

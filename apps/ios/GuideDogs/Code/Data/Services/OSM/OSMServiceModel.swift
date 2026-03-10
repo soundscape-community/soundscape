@@ -3,10 +3,13 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
+
+enum OSMTileCacheLookup { }
 
 enum HTTPStatusCode: Int {
     case unknown = 0
@@ -33,15 +36,7 @@ class OSMServiceModel: OSMServiceModelProtocol {
         
         // Set the etag header
         do {
-            try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                var etag = ""
-                if let tiledata = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) {
-                    etag = tiledata.etag
-                }
-                request.setValue(etag, forHTTPHeaderField: HTTPHeader.ifNoneMatch.rawValue)
-            }
+            request.setValue(try OSMTileCacheLookup.etag(for: tile), forHTTPHeaderField: HTTPHeader.ifNoneMatch.rawValue)
         } catch {
             callback(.unknown, nil, NSError(domain: ServiceModel.errorRealm, code: 0, userInfo: nil))
             return

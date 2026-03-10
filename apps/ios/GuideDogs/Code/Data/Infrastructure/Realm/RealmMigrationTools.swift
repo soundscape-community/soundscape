@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -104,4 +105,10 @@ class RealmMigrationTools {
         }
     }
     
+}
+
+extension SpatialDataMigration {
+    static func migrateIfNeeded() {
+        RealmMigrationTools.migrate(database: RealmHelper.databaseConfig, cache: RealmHelper.cacheConfig)
+    }
 }

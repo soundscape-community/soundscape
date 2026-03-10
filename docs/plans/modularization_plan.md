@@ -30,6 +30,7 @@ Progress is materially good:
 Local evidence as of 2026-03-10:
 - `RealmSwift` imports outside `Data/Infrastructure/Realm/**`: `0`
 - `SpatialDataCache` usage outside `Data/Infrastructure/Realm/**`: `0`
+- `RealmHelper` usage outside `Data/Infrastructure/Realm/**`: `0`
 - `RealmSpatial*Contract()` construction outside registry/tests: `0`
 - Residual sync-store seam symbols in app/test Swift sources: `0`
 - `spatialReadCompatibility` / `spatialWriteCompatibility` references: `0`
@@ -99,11 +100,12 @@ Remaining focus:
 - Narrowed marker cloud dispatch to `MarkerParameters` updates and marker-ID deletes.
 - Removed the last non-infrastructure `RouteRuntime` usage by routing route-guidance deactivation through `BehaviorDelegate` instead of a Realm-owned runtime wrapper.
 - Removed dead Realm-typed overloads and stale `RealmReferenceEntity` references from non-infrastructure model/serialization/UI code; the remaining concrete Realm-model references outside infrastructure were then isolated and removed.
-- Moved `GenericLocationSearchProvider`, `OSMPOISearchProvider`, and `AddressSearchProvider` Realm-backed implementations into `Data/Infrastructure/Realm`, bringing non-infrastructure `RealmReferenceEntity` references to zero and reducing non-infrastructure `RealmHelper` usage to the remaining non-provider helper call sites.
+- Moved `GenericLocationSearchProvider`, `OSMPOISearchProvider`, and `AddressSearchProvider` Realm-backed implementations into `Data/Infrastructure/Realm`, then moved the remaining app-layer `RealmHelper` calls behind infrastructure-owned extensions and neutral façades.
+- Renamed the route persistence error surface from `RouteRealmError` to `RouteDataError`, removing the last UI-facing Realm-branded error reference from runtime code.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
-1. Reduce the remaining `RealmHelper` usage outside `Data/Infrastructure/Realm/**` by moving the last non-provider helper call sites (`LocationParameters`, `OSMServiceModel`, and migration/bootstrap support) behind infrastructure-owned entry points.
+1. Keep the remaining explicit Realm-owned type names outside `Data/Infrastructure/Realm/**` limited to the registry's allowed default adapter construction unless a concrete migration step requires otherwise.
 2. Keep app-level storage ingress contract-first through `DataContractRegistry`; avoid introducing new side-entry points or registry-style helpers.
 3. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 4. Keep plan/docs concise; detailed slice history should live in git history rather than this document.

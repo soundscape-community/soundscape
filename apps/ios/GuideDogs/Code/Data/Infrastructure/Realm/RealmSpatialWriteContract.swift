@@ -129,7 +129,7 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
 
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {
         guard let cache = try? RealmHelper.getCacheRealm() else {
-            throw RouteRealmError.databaseError
+            throw RouteDataError.databaseError
         }
 
         try cache.write {

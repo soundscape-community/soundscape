@@ -822,7 +822,7 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
 
     func updateRoute(_ route: Route) async throws {
         guard let existingRoute = routesByID[route.id] else {
-            throw RouteRealmError.doesNotExist
+            throw RouteDataError.doesNotExist
         }
 
         routesByID[route.id] = updatedRouteSnapshot(existing: existingRoute,

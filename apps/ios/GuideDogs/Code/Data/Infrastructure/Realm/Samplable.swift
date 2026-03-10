@@ -172,3 +172,27 @@ enum RealmPreviewEnvironment {
         view.environment(\.realmConfiguration, RealmHelper.databaseConfig)
     }
 }
+
+extension SpatialPreviewSamples {
+    static func bootstrap() {
+        RealmSampleDataBootstrap.bootstrap()
+    }
+
+    static func markerIDs() -> [String] {
+        RealmPreviewSamples.markerIDs()
+    }
+
+    static func sampleMarkerID() -> String {
+        RealmPreviewSamples.sampleMarkerID()
+    }
+
+    static func secondarySampleMarkerID() -> String {
+        RealmPreviewSamples.secondarySampleMarkerID()
+    }
+}
+
+extension SpatialPreviewEnvironment {
+    static func configure<Content: View>(_ view: Content) -> some View {
+        RealmPreviewEnvironment.configure(view)
+    }
+}

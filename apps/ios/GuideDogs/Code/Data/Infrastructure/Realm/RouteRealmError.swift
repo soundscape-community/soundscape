@@ -9,7 +9,7 @@
 
 import Foundation
 
-enum RouteRealmError: Error {
+enum RouteDataError: Error {
     case databaseError
     case doesNotExist
     case invalidReadContract

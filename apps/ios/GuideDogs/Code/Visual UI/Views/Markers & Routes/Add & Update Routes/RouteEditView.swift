@@ -176,7 +176,7 @@ struct RouteEditView: View {
     private func onUpdateRoute(_ detail: RouteDetail) async throws {
         guard case .database(let id) = detail.source else {
             // Route does not exist in database
-            throw RouteRealmError.doesNotExist
+            throw RouteDataError.doesNotExist
         }
 
         var updatedRoute = Route(name: name,

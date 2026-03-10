@@ -87,7 +87,7 @@ extension Route {
                                           firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
-                throw RouteRealmError.databaseError
+                throw RouteDataError.databaseError
             }
 
             var route = route
@@ -226,7 +226,7 @@ extension Route {
     static func importFromCloud(_ route: Route, firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
-                throw RouteRealmError.databaseError
+                throw RouteDataError.databaseError
             }
 
             let persistedFirstWaypointCoordinate = resolvedFirstWaypointCoordinate(for: route,
@@ -270,11 +270,11 @@ extension Route {
     static func delete(_ id: String) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
-                throw RouteRealmError.databaseError
+                throw RouteDataError.databaseError
             }
             
             guard let route = database.object(ofType: RealmRoute.self, forPrimaryKey: id) else {
-                throw RouteRealmError.doesNotExist
+                throw RouteDataError.doesNotExist
             }
             
             // Unlink reversed route if it exists
@@ -335,11 +335,11 @@ extension Route {
     static func updateLastSelectedDate(id: String, _ lastSelectedDate: Date = Date()) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
-                throw RouteRealmError.databaseError
+                throw RouteDataError.databaseError
             }
             
             guard let route = database.object(ofType: RealmRoute.self, forPrimaryKey: id) else {
-                throw RouteRealmError.doesNotExist
+                throw RouteDataError.doesNotExist
             }
             
             try database.write {
@@ -357,11 +357,11 @@ extension Route {
                        firstWaypointCoordinate: CLLocationCoordinate2D? = nil) throws {
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
-                throw RouteRealmError.databaseError
+                throw RouteDataError.databaseError
             }
             
             guard let route = database.object(ofType: RealmRoute.self, forPrimaryKey: id) else {
-                throw RouteRealmError.doesNotExist
+                throw RouteDataError.doesNotExist
             }
             
             // `update` should never be called when a route is active,
@@ -455,7 +455,7 @@ extension Route {
     private static func routesContaining(markerId: String,
                                          using spatialRead: ReferenceReadContract) async throws -> [Route] {
         guard let spatialRouteRead = spatialRead as? SpatialReadContract else {
-            throw RouteRealmError.invalidReadContract
+            throw RouteDataError.invalidReadContract
         }
 
         return await spatialRouteRead.routes(containingMarkerID: markerId)
@@ -557,7 +557,7 @@ extension Route {
         try await add(reversed, using: spatialRead)
         try autoreleasepool {
             guard let database = try? RealmHelper.getDatabaseRealm() else {
-                throw RouteRealmError.databaseError
+                throw RouteDataError.databaseError
             }
 
             guard let persistedRoute = database.object(ofType: RealmRoute.self, forPrimaryKey: route.id),

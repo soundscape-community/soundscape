@@ -50,6 +50,56 @@ enum RealmReverseGeocoderLookup {
     }
 }
 
+extension SpatialSearchBootstrap {
+    static func configureDefaults() {
+        RealmSpatialSearchBootstrap.configureDefaults()
+    }
+}
+
+extension ReverseGeocoderLookup {
+    static func road(by key: String?) -> Road? {
+        RealmReverseGeocoderLookup.road(by: key)
+    }
+
+    static func poi(by key: String?) -> POI? {
+        RealmReverseGeocoderLookup.poi(by: key)
+    }
+
+    static func intersection(by key: String?) -> Intersection? {
+        RealmReverseGeocoderLookup.intersection(by: key)
+    }
+
+    static func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void) {
+        RealmReverseGeocoderLookup.fetchEstimatedAddress(for: location, completion: completion)
+    }
+}
+
+extension OSMTileCacheLookup {
+    static func etag(for tile: VectorTile) throws -> String {
+        try autoreleasepool {
+            let cache = try RealmHelper.getCacheRealm()
+            return cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey)?.etag ?? ""
+        }
+    }
+}
+
+extension GDASpatialDataResultEntity {
+    @MainActor
+    static func addOrUpdateSpatialCacheEntity(id: String, parameters: LocationParameters) throws -> GDASpatialDataResultEntity {
+        let entity = GDASpatialDataResultEntity(id: id, parameters: parameters)
+
+        try autoreleasepool {
+            let cache = try RealmHelper.getCacheRealm()
+
+            try cache.write {
+                cache.add(entity, update: .modified)
+            }
+        }
+
+        return entity
+    }
+}
+
 extension SpatialDataCache {
     
     struct Predicates {

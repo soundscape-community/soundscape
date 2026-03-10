@@ -62,59 +62,15 @@ extension SecondaryRoadsContext {
 }
 
 @MainActor
-enum SpatialSearchBootstrap {
-    static func configureDefaults() {
-        RealmSpatialSearchBootstrap.configureDefaults()
-    }
-}
+enum SpatialSearchBootstrap { }
 
 @MainActor
-enum ReverseGeocoderLookup {
-    static func road(by key: String?) -> Road? {
-        RealmReverseGeocoderLookup.road(by: key)
-    }
-
-    static func poi(by key: String?) -> POI? {
-        RealmReverseGeocoderLookup.poi(by: key)
-    }
-
-    static func intersection(by key: String?) -> Intersection? {
-        RealmReverseGeocoderLookup.intersection(by: key)
-    }
-
-    static func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void) {
-        RealmReverseGeocoderLookup.fetchEstimatedAddress(for: location, completion: completion)
-    }
-}
+enum ReverseGeocoderLookup { }
 
 @MainActor
-enum SpatialPreviewSamples {
-    static func bootstrap() {
-        RealmSampleDataBootstrap.bootstrap()
-    }
-
-    static func markerIDs() -> [String] {
-        RealmPreviewSamples.markerIDs()
-    }
-
-    static func sampleMarkerID() -> String {
-        RealmPreviewSamples.sampleMarkerID()
-    }
-
-    static func secondarySampleMarkerID() -> String {
-        RealmPreviewSamples.secondarySampleMarkerID()
-    }
-}
+enum SpatialPreviewSamples { }
 
 @MainActor
-enum SpatialPreviewEnvironment {
-    static func configure<Content: View>(_ view: Content) -> some View {
-        RealmPreviewEnvironment.configure(view)
-    }
-}
+enum SpatialPreviewEnvironment { }
 
-enum SpatialDataMigration {
-    static func migrateIfNeeded() {
-        RealmMigrationTools.migrate(database: RealmHelper.databaseConfig, cache: RealmHelper.cacheConfig)
-    }
-}
+enum SpatialDataMigration { }

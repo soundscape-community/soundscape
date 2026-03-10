@@ -226,7 +226,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             try await Route.removeWaypointFromAllRoutes(markerId: "marker-id", using: readMock)
             XCTFail("Expected invalidReadContract error")
         } catch {
-            guard case RouteRealmError.invalidReadContract = error else {
+            guard case RouteDataError.invalidReadContract = error else {
                 XCTFail("Expected invalidReadContract, received: \(error)")
                 return
             }
@@ -240,7 +240,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
             try await Route.updateWaypointInAllRoutes(markerId: "marker-id", using: readMock)
             XCTFail("Expected invalidReadContract error")
         } catch {
-            guard case RouteRealmError.invalidReadContract = error else {
+            guard case RouteDataError.invalidReadContract = error else {
                 XCTFail("Expected invalidReadContract, received: \(error)")
                 return
             }
