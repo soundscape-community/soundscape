@@ -29,6 +29,7 @@
 		A1C0D0042F0A000100000001 /* SSGeo in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0052F0A000100000001 /* SSGeo */; };
 		A1C0D0062F0A000100000001 /* SSDataDomain in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0072F0A000100000001 /* SSDataDomain */; };
 		A1C0D0082F0A000100000001 /* SSDataContracts in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D0092F0A000100000001 /* SSDataContracts */; };
+		A1C0D00A2F0A000100000001 /* SSLanguage in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0D00B2F0A000100000001 /* SSLanguage */; };
 		A1C0D1212F0C000100000001 /* SpatialReadContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1112F0C000100000001 /* SpatialReadContracts.swift */; };
 		A1C0D1222F0C000100000001 /* DataContractRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1122F0C000100000001 /* DataContractRegistry.swift */; };
 		A1C0D1232F0C000100000001 /* RealmSpatialReadContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0D1132F0C000100000001 /* RealmSpatialReadContract.swift */; };
@@ -1591,6 +1592,7 @@
 					A1C0D0042F0A000100000001 /* SSGeo in Frameworks */,
 					A1C0D0062F0A000100000001 /* SSDataDomain in Frameworks */,
 					A1C0D0082F0A000100000001 /* SSDataContracts in Frameworks */,
+					A1C0D00A2F0A000100000001 /* SSLanguage in Frameworks */,
 					283B0307264B03920092F74F /* SDWebImageSwiftUI in Frameworks */,
 					2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
 					286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */,
@@ -4388,6 +4390,7 @@
 					A1C0D0052F0A000100000001 /* SSGeo */,
 					A1C0D0072F0A000100000001 /* SSDataDomain */,
 					A1C0D0092F0A000100000001 /* SSDataContracts */,
+					A1C0D00B2F0A000100000001 /* SSLanguage */,
 					286F409C2624FF6000C3F80B /* NVActivityIndicatorView */,
 					2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
 					2866A7CE2625028600EBA2D8 /* Reachability */,
@@ -5946,6 +5949,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A1C0D0022F0A000100000001 /* XCLocalSwiftPackageReference "../common" */;
 			productName = SSDataContracts;
+		};
+		A1C0D00B2F0A000100000001 /* SSLanguage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0D0022F0A000100000001 /* XCLocalSwiftPackageReference "../common" */;
+			productName = SSLanguage;
 		};
 		281BCBFE262638290031298D /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;

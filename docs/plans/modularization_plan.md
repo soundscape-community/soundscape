@@ -23,7 +23,8 @@ Out of scope:
 
 ## Current Assessment
 Progress is materially good:
-- `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
+- `SSDataStructures`, `SSGeo`, `SSLanguage`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
+- Shared language/localization helpers now live in `SSLanguage`, with iOS retaining only app-state and UI-specific localization behavior.
 - Shared contract-side parameter models (`UniversalLinkParameters`, route/marker/location parameter types) now also live in `SSDataContracts`, with iOS files reduced to shims and runtime-specific extensions.
 - `VectorTile` and the legacy `GDAJSONObject` parsing helper are now Swift/common types in `SSDataContracts`, with iOS retaining only CoreLocation convenience shims.
 - `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, portable filter/sort/queue constructors and generic array-query helpers, and the primary/secondary POI typing abstractions now live in `SSDataDomain`, with iOS retaining Realm keys plus CoreLocation and glyph/audio extensions only.
@@ -53,6 +54,7 @@ Plan sanity assessment:
 ## Current Status
 Completed:
 - Common data modules are extracted and tested in `apps/common`.
+- `SSLanguage` is extracted with package-owned localization resources and iOS compatibility shims.
 - In-memory contract parity is complete.
 - Structural boundary checks are active and currently green.
 - Sync-store compatibility registry/shim reintroduction is structurally blocked and absent from app/test code.
@@ -61,6 +63,7 @@ Completed:
 - Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component value types now live in `apps/common/Sources/SSDataContracts`; iOS serialization files retain only runtime-specific behavior.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; the Objective-C `GDAJSONObject` bridge has been removed from the iOS target.
 - `POI`, `SelectablePOI`, `MatchablePOI`, `GenericLocation`, `SuperCategory`, portable POI matching/equality helpers, shared filter/sort/queue helpers, and the shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; iOS files retain only Realm keys plus CoreLocation and presentation-specific shims/extensions.
+- `DistanceFormatter`, `DistanceUnit`, `LanguageFormatter`, `PostalAbbreviations`, `Direction`, `CardinalDirection`, `CodeableDirection`, and portable locale/bundle helpers now live in `apps/common/Sources/SSLanguage`; iOS retains compatibility wrappers plus app-locale state and UI localization behavior.
 
 In progress:
 - Continue moving runtime-neutral domain/contract types into `apps/common` instead of building an iOS package shell.
@@ -129,10 +132,11 @@ Remaining focus:
 
 ## Next Steps
 1. Continue extracting runtime-neutral domain/value/helper logic into `SSDataDomain` or `SSDataContracts` when it no longer depends on Apple frameworks or UI/runtime behavior.
-2. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
-3. Keep the shared domain surface stable while trimming remaining iOS-only adapters and only extract additional helpers when the module boundary is clearly cleaner afterward.
-4. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining iOS-specific associated-type and runtime wrapper surface is stable.
-5. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
+2. Use `SSLanguage` for future runtime-neutral localization helpers instead of reintroducing shared language logic under `apps/ios`.
+3. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
+4. Keep the shared domain surface stable while trimming remaining iOS-only adapters and only extract additional helpers when the module boundary is clearly cleaner afterward.
+5. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining iOS-specific associated-type and runtime wrapper surface is stable.
+6. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 
 ## Handoff
 - Use `docs/plans/data_modularization_north_star.md` for the stable target.

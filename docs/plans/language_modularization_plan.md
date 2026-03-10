@@ -22,19 +22,19 @@ Out of scope:
 
 ## Current Status
 Current assessment as of 2026-03-10:
-- `apps/common` does not yet contain a language/localization module.
-- Portable candidates currently live under `apps/ios/GuideDogs/Code/Language` and adjacent helper folders.
-- Shared helper resources still live in app-owned assets:
-  - `Assets/Localization/*.lproj/Localizable.strings`
-  - `Assets/PropertyLists/StreetSuffixAbbreviations_{en,fr}.plist`
-- `LocalizationContext` currently mixes portable string lookup/locale helpers with iOS-only state, notifications, accessibility, and SwiftUI helpers.
+- `apps/common` now contains `SSLanguage`, a portable localization/language helper module.
+- Shared portable language helpers now live in `apps/common/Sources/SSLanguage`.
+- `SSLanguage` owns package resources for shared localized helper strings plus `StreetSuffixAbbreviations_{en,fr}.plist`.
+- iOS app-facing language types in `GuideDogs/Code/Language` and adjacent helper folders now act as thin compatibility shims over `SSLanguage`.
+- `LocalizationContext` still owns app-locale persistence, notifications, accessibility language wiring, and app-bundle localization behavior.
 
 ## Progress Updates
 - 2026-03-10: Plan created and linked from `AGENTS.md` before implementation, per repo workflow requirements.
+- 2026-03-10: Added `SSLanguage` to `apps/common`, moved portable distance/direction/codeable-direction/postal-abbreviation/locale helpers into the new module, and added package-owned localized resources plus `SSLanguageTests`.
+- 2026-03-10: Replaced iOS `DistanceFormatter`, `DistanceUnit`, `LanguageFormatter`, `PostalAbbreviations`, `Direction`, `CardinalDirection`, and `CodeableDirection` implementations with compatibility shims over `SSLanguage`, and added the `SSLanguage` package dependency to the iOS app target.
+- 2026-03-10: Validation completed with `swift test --package-path apps/common`, `bash apps/common/Scripts/check_forbidden_imports.sh`, and `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`; the only remaining full-suite test failures were the pre-existing non-blocking `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.
 
 ## Next Steps
-1. Add `SSLanguage` to `apps/common/Package.swift` with localized resources and tests.
-2. Move portable language types and helpers into `SSLanguage`, converting the common API to explicit locale/unit inputs and `SSGeo` coordinates.
-3. Migrate shared language-helper localization keys and postal-abbreviation resources into package-owned resources.
-4. Narrow iOS `LocalizationContext` and related wrappers to app-state/UI responsibilities while routing portable formatting through `SSLanguage`.
-5. Validate with package tests, forbidden-import checks, and local iOS validation, then update this plan and the modularization status docs with results.
+1. Keep app-owned UI/XIB localization and locale-persistence behavior in `apps/ios`; do not move those concerns into `apps/common`.
+2. Audit any remaining direct app-bundle uses of shared helper keys before removing duplicated language-helper strings from the iOS localization assets.
+3. Extract additional language-related helpers into `SSLanguage` only when they are clearly runtime-neutral and do not introduce Apple-framework coupling.

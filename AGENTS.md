@@ -6,7 +6,7 @@ This file is the canonical instruction source for coding agents in this reposito
 
 ## Repository Map
 - `apps/ios/`: iOS app (`GuideDogs.xcworkspace`, app code, unit tests, CI scripts).
-- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SSDataStructures`, `SSGeo`, `SSDataDomain`, `SSDataContracts`).
+- `apps/common/`: shared Swift package for platform-agnostic modules (currently `SSDataStructures`, `SSGeo`, `SSLanguage`, `SSDataDomain`, `SSDataContracts`).
 - `svcs/data/`: open-source data-plane ingestion/tile tooling (Python, Docker, SQL, Helm chart assets).
 - `docs/`: project documentation.
 - `.github/workflows/`: CI definitions (use these as command truth for automation-aligned docs).
@@ -20,11 +20,12 @@ This file is the canonical instruction source for coding agents in this reposito
 - `HandledEventAction` is the behavior-to-processor contract for callout playback, event fan-out, and interrupt requests.
 - `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
 - `SSGeo` now lives in `apps/common` and provides portable location payloads plus basic geodesic math without `CoreLocation`.
+- `SSLanguage` now lives in `apps/common` and provides portable localization helpers, distance/direction formatters, locale helpers, and package-owned shared language resources.
 - `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models plus shared POI/category/type/filter/sort/queue/query abstractions and portable POI matching logic shared with iOS.
 - `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries, including universal-link parameter/parsing types, `VectorTile`, and the Swift `GDAJSONObject` helper after decoupling them from iOS runtime behavior.
 
 ## Data Modularization Status
-- `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
+- `SSDataStructures`, `SSGeo`, `SSLanguage`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
 - `DataContractRegistry` is the app-facing data ingress.
 - Realm implementation remains infrastructure-local under `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm`.
 - `SpatialDataCache` usage is confined to Realm infrastructure and the retired sync-store seam (`SpatialDataStoreRegistry`, `DefaultSpatialDataStore`, `SpatialDataStore`) must not be reintroduced.
@@ -181,7 +182,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Data-infrastructure runtime facades (for example `RouteRuntime`) should stay within data infrastructure; behavior-layer callers should use behavior/UI runtime or delegate seams instead.
 - Neutral app-layer wrappers such as spatial search/bootstrap/migration entry points should remain declaration-only outside infrastructure, with Realm-backed implementations owned from `Data/Infrastructure/Realm/**`.
 - Route persistence errors exposed outside infrastructure should stay boundary-neutral (`RouteDataError`), not Realm-branded.
-- Packaging direction: keep `apps/common` portable (`SSGeo`, `SSDataDomain`, `SSDataContracts`), keep `DataContractRegistry` as the single composition root in `apps/ios`, and move runtime-neutral types into `apps/common` instead of using `apps/ios/Package.swift` as a modularization boundary.
+- Packaging direction: keep `apps/common` portable (`SSGeo`, `SSLanguage`, `SSDataDomain`, `SSDataContracts`), keep `DataContractRegistry` as the single composition root in `apps/ios`, and move runtime-neutral types into `apps/common` instead of using `apps/ios/Package.swift` as a modularization boundary.
 - `DataContractRegistry` should store installed defaults, but concrete Realm adapter construction belongs in infrastructure-owned installer code (`configureWithRealmDefaults()`), not in the registry file itself.
 - Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component parsing types now live in `apps/common/Sources/SSDataContracts`; keep only runtime managers/handlers and other app-specific behavior in `apps/ios`.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; keep the iOS helper file as a CoreLocation shim only, and do not reintroduce the old Objective-C bridge.
