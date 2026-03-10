@@ -135,6 +135,10 @@ class EventProcessor: BehaviorDelegate {
             finishDeactivatingCustom()
         }
     }
+
+    func deactivateCustomBehavior() {
+        deactivateCustom()
+    }
     
     private func finishDeactivatingCustom() {
         guard isCustomBehaviorActive else {

@@ -448,7 +448,7 @@ extension RouteGuidanceGenerator: CalloutGroupDelegate {
             }
             
             if shouldDeactivate {
-                RouteRuntime.deactivateActiveBehavior()
+                owner.delegate?.deactivateCustomBehavior()
             } else {
                 // Already on MainActor, no dispatch needed
                 owner.finishTransitioningBeacon()

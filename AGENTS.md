@@ -176,6 +176,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Canonical route write APIs are domain-shaped: `SpatialWriteContract.addRoute(_ route: Route)` and `SpatialWriteContract.updateRoute(_ route: Route)`.
 - First-waypoint coordinate hydration stays infrastructure-local behind route-focused Realm helpers.
 - Destination temporary-marker mutation is persistence-local (`RealmReferenceEntity.setTemporary(id:temporary:)`).
+- Data-infrastructure runtime facades (for example `RouteRuntime`) should stay within data infrastructure; behavior-layer callers should use behavior/UI runtime or delegate seams instead.
 - Current validation default for modularization slices is low-noise output (`--output quiet`).
 - Known local full-suite non-blocking failures remain `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.
 

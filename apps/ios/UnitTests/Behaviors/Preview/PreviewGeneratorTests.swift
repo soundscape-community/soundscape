@@ -45,6 +45,8 @@ private final class MockBehaviorDelegate: BehaviorDelegate {
 
     func interruptCurrent(clearQueue: Bool, playHush: Bool) { }
 
+    func deactivateCustomBehavior() { }
+
     func process(_ event: Event) { }
 
     func playCallouts(_ group: CalloutGroup) async -> Bool {

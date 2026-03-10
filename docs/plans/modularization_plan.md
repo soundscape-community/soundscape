@@ -97,6 +97,7 @@ Remaining focus:
 ## Recent Completed Work
 - Removed the retired sync-store seam from app and unit-test code and aligned the boundary script to enforce that state.
 - Narrowed marker cloud dispatch to `MarkerParameters` updates and marker-ID deletes.
+- Removed the last non-infrastructure `RouteRuntime` usage by routing route-guidance deactivation through `BehaviorDelegate` instead of a Realm-owned runtime wrapper.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
