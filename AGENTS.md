@@ -188,6 +188,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - `FilterPredicate`, `CompoundPredicate`, `SuperCategoryPredicate`, and `TypePredicate` now live in `apps/common/Sources/SSDataDomain`; keep only `LocationPredicate` and the `Filter` facade in `apps/ios`.
 - `POIQueue`, `SortPredicate`, and `LastSelectedPredicate` now live in `apps/common/Sources/SSDataDomain`; keep only `DistancePredicate` and the `Sort` facade in `apps/ios`.
 - `DistancePredicate`, `Sort`, and the generic `[POI]` array filter/sort helpers now live in `apps/common/Sources/SSDataDomain`; keep only `CLLocation` overloads and quadrant-specific array helpers in `apps/ios`.
+- `Filter` and `LocationPredicate` now live in `apps/common/Sources/SSDataDomain`; keep only the `CLLocation` `Filter.location` bridge in `apps/ios`.
 - `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, shared filter predicates, and shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; keep only Realm keys, CoreLocation conveniences, and glyph/audio presentation mapping in `apps/ios`.
 - `apps/ios/Package.swift` is placeholder/editor scaffolding and should not be used as the architectural extraction boundary.
 - Current validation default for modularization slices is low-noise output (`--output quiet`).

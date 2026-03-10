@@ -248,6 +248,32 @@ struct POIDomainTests {
         #expect(filtered.map(\.key) == ["middle", "newest"])
         #expect(distanceSorted.map(\.key) == ["newest", "middle", "far"])
     }
+
+
+    @Test
+    func filterFactoriesBuildExpectedPredicates() {
+        let place = TestPOI(key: "place",
+                            name: "Cafe",
+                            coordinate: .init(latitude: 47.6205, longitude: -122.3493),
+                            primaryTypes: [.food],
+                            secondaryTypes: [.food],
+                            superCategory: SuperCategory.places.rawValue)
+        let transit = TestPOI(key: "transit",
+                              name: "Stop",
+                              coordinate: .init(latitude: 47.6206, longitude: -122.3494),
+                              primaryTypes: [.transit],
+                              secondaryTypes: [.transitStop],
+                              superCategory: SuperCategory.mobility.rawValue)
+        let origin = SSGeoLocation(coordinate: place.centroidSSGeoCoordinate)
+
+        #expect(Filter.superCategory(expected: .places).isIncluded(place))
+        #expect(Filter.superCategories(orExpected: [.mobility, .places]).isIncluded(place))
+        #expect(Filter.type(expected: PrimaryType.food).isIncluded(place))
+        #expect(Filter.type(expected: SecondaryType.transitStop).isIncluded(transit))
+        #expect(Filter.types(orExpected: [.food, .transit]).isIncluded(transit))
+        #expect(Filter.location(expected: origin).isIncluded(place))
+        #expect(Filter.location(expected: origin).isIncluded(transit) == false)
+    }
 }
 
 private struct TestPOI: SelectablePOI, Typeable {

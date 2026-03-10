@@ -26,7 +26,7 @@ Progress is materially good:
 - `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
 - Shared contract-side parameter models (`UniversalLinkParameters`, route/marker/location parameter types) now also live in `SSDataContracts`, with iOS files reduced to shims and runtime-specific extensions.
 - `VectorTile` and the legacy `GDAJSONObject` parsing helper are now Swift/common types in `SSDataContracts`, with iOS retaining only CoreLocation convenience shims.
-- `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, portable filter/sort/queue and generic array-query helpers, and the primary/secondary POI typing abstractions now live in `SSDataDomain`, with iOS retaining Realm keys plus CoreLocation and glyph/audio extensions only.
+- `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, portable filter/sort/queue constructors and generic array-query helpers, and the primary/secondary POI typing abstractions now live in `SSDataDomain`, with iOS retaining Realm keys plus CoreLocation and glyph/audio extensions only.
 - `DataContractRegistry` is the app-facing data ingress.
 - Default backend installation is centralized and guarded.
 - The retired sync-store seam has been removed from `apps/ios/GuideDogs/Code` and `apps/ios/UnitTests`.
@@ -135,6 +135,7 @@ Remaining focus:
 - Moved `FilterPredicate`, `CompoundPredicate`, `SuperCategoryPredicate`, and `TypePredicate` into `SSDataDomain`, leaving only `LocationPredicate` and the `Filter` facade in `apps/ios`.
 - Moved `POIQueue`, `SortPredicate`, and `LastSelectedPredicate` into `SSDataDomain`, leaving only `DistancePredicate` and the `Sort` convenience facade in `apps/ios`.
 - Moved `DistancePredicate`, `Sort`, and generic `[POI]` array filtering/sorting helpers into `SSDataDomain`, leaving only `CLLocation` overloads and quadrant-specific array helpers in `apps/ios`.
+- Moved `Filter` and `LocationPredicate` into `SSDataDomain`, leaving only the `CLLocation` `Filter.location` bridge in `apps/ios`.
 - Renamed the stable-target doc from a storage-only framing to `docs/plans/data_modularization_north_star.md` so it matches the broader shared-domain extraction work and future Android goal.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 

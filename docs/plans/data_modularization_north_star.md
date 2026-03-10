@@ -70,7 +70,7 @@ Use shared domain/value types directly at boundaries and in cross-platform logic
 Current examples include:
 - `Route`, `RouteWaypoint`, `ReferenceEntity`
 - `POI`, `GenericLocation`, `SuperCategory`
-- shared POI typing, matching, filtering, sorting, queueing, and generic array-query helpers that do not depend on Apple frameworks
+- shared POI typing, matching, filter construction, filtering, sorting, queueing, and generic array-query helpers that do not depend on Apple frameworks
 - shared route/marker/location/universal-link parameter models
 - `VectorTile` and other portable geometry/value helpers
 

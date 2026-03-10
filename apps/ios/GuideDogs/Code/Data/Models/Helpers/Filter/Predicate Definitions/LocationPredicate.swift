@@ -7,18 +7,6 @@
 //
 
 import Foundation
-import CoreLocation
+import SSDataDomain
 
-struct LocationPredicate: FilterPredicate {
-    
-    let expectedLocation: CLLocation
-    
-    init(expected: CLLocation) {
-        self.expectedLocation = expected
-    }
-    
-    func isIncluded(_ a: POI) -> Bool {
-        return a.contains(location: expectedLocation.coordinate)
-    }
-    
-}
+typealias LocationPredicate = SSDataDomain.LocationPredicate

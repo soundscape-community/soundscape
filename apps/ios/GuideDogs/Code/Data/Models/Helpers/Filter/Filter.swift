@@ -8,36 +8,12 @@
 
 import Foundation
 import CoreLocation
+import SSDataDomain
 
-struct Filter {
-    static func superCategory(expected: SuperCategory) -> FilterPredicate {
-        return SuperCategoryPredicate(expected: expected)
-    }
+typealias Filter = SSDataDomain.Filter
 
-    static func superCategories(orExpected expected: [SuperCategory]) -> CompoundPredicate {
-        let subpredicates = expected.map({ return SuperCategoryPredicate(expected: $0) })
-        return CompoundPredicate(orPredicateWithSubpredicates: subpredicates)
-    }
-
-    static func type(expected: PrimaryType) -> FilterPredicate {
-        return TypePredicate(expected: expected)
-    }
-
-    static func type(expected: SecondaryType) -> FilterPredicate {
-        return TypePredicate(expected: expected)
-    }
-
-    static func types(orExpected expected: [PrimaryType]) -> CompoundPredicate {
-        let subpredicates = expected.map({ return TypePredicate(expected: $0) })
-        return CompoundPredicate(orPredicateWithSubpredicates: subpredicates)
-    }
-
-    static func types(orExpected expected: [SecondaryType]) -> CompoundPredicate {
-        let subpredicates = expected.map({ return TypePredicate(expected: $0) })
-        return CompoundPredicate(orPredicateWithSubpredicates: subpredicates)
-    }
-
-    static func location(expected: CLLocation) -> FilterPredicate {
-        return LocationPredicate(expected: expected)
+extension SSDataDomain.Filter {
+    static func location(expected: CLLocation) -> any FilterPredicate {
+        SSDataDomain.Filter.location(expected: expected.ssGeoLocation)
     }
 }
