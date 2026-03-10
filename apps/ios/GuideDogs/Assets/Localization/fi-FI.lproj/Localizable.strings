@@ -474,8 +474,6 @@
 "settings.language.change_alert_action" = "Vaihda kieleen %@";
 
 
-/*  */
-"settings.language.language_name" = "%1$@ (%2$@)";
 
 
 /*  */
@@ -2178,52 +2176,28 @@
 "directions.name_continues_ahead.roundabout" = "%@, jatkuu eteenpäin liikenneympyrässä";
 
 
-/*  */
-"directions.direction.ahead" = "edessä";
 
 
-/*  */
-"directions.direction.ahead_to_the_right" = "edessä oikealla";
 
 
-/*  */
-"directions.direction.to_the_right" = "oikealla";
 
 
-/*  */
-"directions.direction.behind_to_the_right" = "takana oikealla";
 
 
-/*  */
-"directions.direction.behind" = "takana";
 
 
-/*  */
-"directions.direction.behind_to_the_left" = "takana vasemmalla";
 
 
-/*  */
-"directions.direction.to_the_left" = "vasemmalla";
 
 
-/*  */
-"directions.direction.ahead_to_the_left" = "edessä vasemmalla";
 
 
-/*  */
-"directions.direction.away" = "poissa";
 
 
-/*  */
-"directions.name_close_by" = "%@ lähellä";
 
 
-/*  */
-"directions.name_about_distance" = "%1$@ noin %2$@";
 
 
-/*  */
-"directions.name_around_distance" = "%1$@ noin %2$@";
 
 
 /*  */
@@ -2430,120 +2404,62 @@
 "directions.along.heading.nw" = "Matkalla luoteeseen tiellä %@";
 
 
-/*  */
-"directions.cardinal.north" = "Pohjoinen";
 
 
-/*  */
-"directions.cardinal.north_east" = "Koillinen";
 
 
-/*  */
-"directions.cardinal.east" = "Itä";
 
 
-/*  */
-"directions.cardinal.south_east" = "Kaakko";
 
 
-/*  */
-"directions.cardinal.south" = "Etelä";
 
 
-/*  */
-"directions.cardinal.south_west" = "Lounas";
 
 
-/*  */
-"directions.cardinal.west" = "Länsi";
 
 
-/*  */
-"directions.cardinal.north_west" = "Luode";
 
 
-/*  */
-"directions.cardinal.north.abb" = "P";
 
 
-/*  */
-"directions.cardinal.north_east.abb" = "Ko";
 
 
-/*  */
-"directions.cardinal.east.abb" = "I";
 
 
-/*  */
-"directions.cardinal.south_east.abb" = "Ka";
 
 
-/*  */
-"directions.cardinal.south.abb" = "E";
 
 
-/*  */
-"directions.cardinal.south_west.abb" = "Lo";
 
 
-/*  */
-"directions.cardinal.west.abb" = "L";
 
 
-/*  */
-"directions.cardinal.north_west.abb" = "Lu";
 
 
-/*  */
-"directions.name_distance" = "%1$@, %2$@";
 
 
-/*  */
-"distance.format.m" = "%@ m";
 
 
-/*  */
-"distance.format.meter" = "%@ metri";
 
 
-/*  */
-"distance.format.meters" = "%@ metriä";
 
 
-/*  */
-"distance.format.km" = "%@ km";
 
 
-/*  */
-"distance.format.kilometer" = "%@ kilometri";
 
 
-/*  */
-"distance.format.kilometers" = "%@ kilometriä";
 
 
-/*  */
-"distance.format.ft" = "%@ ft";
 
 
-/*  */
-"distance.format.foot" = "%@ jalka";
 
 
-/*  */
-"distance.format.feet" = "%@ jalkaa";
 
 
-/*  */
-"distance.format.mi" = "%@ mi";
 
 
-/*  */
-"distance.format.mile" = "%@ maili";
 
 
-/*  */
-"distance.format.miles" = "%@ mailia";
 
 
 /*  */

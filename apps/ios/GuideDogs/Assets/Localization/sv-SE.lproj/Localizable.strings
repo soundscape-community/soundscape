@@ -474,8 +474,6 @@
 "settings.language.change_alert_action" = "Byt till %@";
 
 
-/*  */
-"settings.language.language_name" = "%1$@ (%2$@)";
 
 
 /*  */
@@ -2178,52 +2176,28 @@
 "directions.name_continues_ahead.roundabout" = "%@, fortsätter rakt fram i en rondell";
 
 
-/*  */
-"directions.direction.ahead" = "rakt fram";
 
 
-/*  */
-"directions.direction.ahead_to_the_right" = "framme till höger";
 
 
-/*  */
-"directions.direction.to_the_right" = "till höger";
 
 
-/*  */
-"directions.direction.behind_to_the_right" = "bakom till höger";
 
 
-/*  */
-"directions.direction.behind" = "bakom";
 
 
-/*  */
-"directions.direction.behind_to_the_left" = "bakom till vänster";
 
 
-/*  */
-"directions.direction.to_the_left" = "till vänster";
 
 
-/*  */
-"directions.direction.ahead_to_the_left" = "framme till vänster";
 
 
-/*  */
-"directions.direction.away" = "bort";
 
 
-/*  */
-"directions.name_close_by" = "%@ finns i närheten";
 
 
-/*  */
-"directions.name_about_distance" = "%1$@ cirka %2$@";
 
 
-/*  */
-"directions.name_around_distance" = "%1$@ cirka %2$@";
 
 
 /*  */
@@ -2430,120 +2404,62 @@
 "directions.along.heading.nw" = "På väg mot nordväst utmed %@";
 
 
-/*  */
-"directions.cardinal.north" = "Norr";
 
 
-/*  */
-"directions.cardinal.north_east" = "Nordost";
 
 
-/*  */
-"directions.cardinal.east" = "Öst";
 
 
-/*  */
-"directions.cardinal.south_east" = "Sydost";
 
 
-/*  */
-"directions.cardinal.south" = "Söder";
 
 
-/*  */
-"directions.cardinal.south_west" = "Sydväst";
 
 
-/*  */
-"directions.cardinal.west" = "Väst";
 
 
-/*  */
-"directions.cardinal.north_west" = "Nordväst";
 
 
-/*  */
-"directions.cardinal.north.abb" = "N";
 
 
-/*  */
-"directions.cardinal.north_east.abb" = "NO";
 
 
-/*  */
-"directions.cardinal.east.abb" = "Ö";
 
 
-/*  */
-"directions.cardinal.south_east.abb" = "SO";
 
 
-/*  */
-"directions.cardinal.south.abb" = "S";
 
 
-/*  */
-"directions.cardinal.south_west.abb" = "SV";
 
 
-/*  */
-"directions.cardinal.west.abb" = "V";
 
 
-/*  */
-"directions.cardinal.north_west.abb" = "NV";
 
 
-/*  */
-"directions.name_distance" = "%1$@, %2$@";
 
 
-/*  */
-"distance.format.m" = "%@ m";
 
 
-/*  */
-"distance.format.meter" = "%@ meter";
 
 
-/*  */
-"distance.format.meters" = "%@ meter";
 
 
-/*  */
-"distance.format.km" = "%@ km";
 
 
-/*  */
-"distance.format.kilometer" = "%@ kilometer";
 
 
-/*  */
-"distance.format.kilometers" = "%@ kilometer";
 
 
-/*  */
-"distance.format.ft" = "%@ ft";
 
 
-/*  */
-"distance.format.foot" = "%@ fot";
 
 
-/*  */
-"distance.format.feet" = "%@ fot";
 
 
-/*  */
-"distance.format.mi" = "%@ mi";
 
 
-/*  */
-"distance.format.mile" = "%@ mile";
 
 
-/*  */
-"distance.format.miles" = "%@ miles";
 
 
 /*  */

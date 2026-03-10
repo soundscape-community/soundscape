@@ -3,11 +3,13 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 import CocoaLumberjackSwift
+import SSLanguage
 import SwiftUI
 
 public func GDLocalizedString(_ key: String) -> String {
@@ -371,7 +373,12 @@ extension Locale {
             let localizedCountry = locale.localizedString(forRegionCode: regionCode) else {
                 return localizedLanguage
         }
-        
-        return GDLocalizedString("settings.language.language_name", localizedLanguage, localizedCountry) // "English (United Kingdom)"
+
+        return LanguageLocalizer.localizedString(
+            "settings.language.language_name",
+            arguments: [localizedLanguage, localizedCountry],
+            locale: locale,
+            normalizeArguments: true
+        )
     }
 }

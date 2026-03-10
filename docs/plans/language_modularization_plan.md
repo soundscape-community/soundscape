@@ -26,6 +26,7 @@ Current assessment as of 2026-03-10:
 - Shared portable language helpers now live in `apps/common/Sources/SSLanguage`.
 - `SSLanguage` owns package resources for shared localized helper strings plus `StreetSuffixAbbreviations_{en,fr}.plist`.
 - iOS now imports `SSLanguage` directly at call sites for portable distance/direction/postal-abbreviation types and retains only one app-composition wrapper in `LanguageFormatter` plus a small set of CoreLocation/app-locale convenience extensions around `SSLanguage` types.
+- Duplicated shared helper keys for distance formatting, cardinal/directional strings, and locale display names have been removed from the iOS app localization assets; the remaining lookups now resolve through `SSLanguage`.
 - `LocalizationContext` still owns app-locale persistence, notifications, accessibility language wiring, and app-bundle localization behavior.
 
 ## Progress Updates
@@ -34,8 +35,10 @@ Current assessment as of 2026-03-10:
 - 2026-03-10: Replaced iOS `DistanceFormatter`, `DistanceUnit`, `LanguageFormatter`, `PostalAbbreviations`, `Direction`, `CardinalDirection`, and `CodeableDirection` implementations with compatibility shims over `SSLanguage`, and added the `SSLanguage` package dependency to the iOS app target.
 - 2026-03-10: Validation completed with `swift test --package-path apps/common`, `bash apps/common/Scripts/check_forbidden_imports.sh`, and `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`; the only remaining full-suite test failures were the pre-existing non-blocking `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.
 - 2026-03-10: Removed the redundant alias-based iOS `SSLanguage` shims for `DistanceFormatter` and `PostalAbbreviations`, converted the remaining helper files to true iOS-only convenience extensions/helpers, and migrated iOS callers to direct `SSLanguage` imports while keeping app-locale/app-context composition behavior in iOS.
+- 2026-03-10: Audited the remaining direct uses of shared language-helper keys in `apps/ios`, rerouted those lookups through `SSLanguage` helpers and `LanguageLocalizer`, and removed the duplicated helper-key entries from every iOS `Localizable.strings` asset.
+- 2026-03-10: Revalidated the shared-key cleanup with `swift Scripts/LocalizationLinter/main.swift`, `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`, and the existing common/iOS build steps; the only remaining full-suite test failures were again the pre-existing non-blocking `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.
 
 ## Next Steps
 1. Keep app-owned UI/XIB localization, locale-persistence behavior, and app-default composition in `apps/ios`; do not move those concerns into `apps/common`.
-2. Audit any remaining direct app-bundle uses of shared helper keys before removing duplicated language-helper strings from the iOS localization assets.
+2. Audit for any future additions of shared helper keys to `apps/ios/GuideDogs/Assets/Localization/**`; new portable language-helper strings should be owned by `SSLanguage`.
 3. Extract additional language-related helpers into `SSLanguage` only when they are clearly runtime-neutral and do not introduce Apple-framework coupling.

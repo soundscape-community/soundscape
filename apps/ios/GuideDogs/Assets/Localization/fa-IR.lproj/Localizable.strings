@@ -284,8 +284,6 @@
 "settings.language.change_alert" = "آیا می‌خواهید زبان برنامه را به %@ تغییر دهید؟";
 /* Language selection validation button title. %@ is a language name e.g. "Change to English" {NumberedPlaceholder="%@"} */
 "settings.language.change_alert_action" = "تغییر به %@";
-/* Language display name. %1$@ is a language name, %2$@ is the country name. e.g. "English (United Kingdom)" {NumberedPlaceholder="%1$@", "%2$@"} */
-"settings.language.language_name" = "%1$@ (%2$@)";
 //------------------------------------------------------------------------------
 // MARK: Settings (Audio)
 //------------------------------------------------------------------------------
@@ -1256,30 +1254,6 @@
 "directions.name_continues_ahead" = "%@، مستقیم ادامه می‌یابد";
 /* Notification, %@ street name, "<Pike Street>, continues ahead in roundabout {NumberedPlaceholder="%@"} */
 "directions.name_continues_ahead.roundabout" = "%@، در میدان مستقیم ادامه می‌یابد";
-/* Notification orientation, ahead. Used as the direction name in sentances such as "<Pike Street>, <ahead>". */
-"directions.direction.ahead" = "مستقیم";
-/* Notification orientation, ahead to the right. Used as the direction name in sentances such as "<Pike Street>, <ahead to the right>". */
-"directions.direction.ahead_to_the_right" = "مستقیم به راست";
-/* Notification orientation, to the right. Used as the direction name in sentances such as "<Pike Street>, <to the right>". */
-"directions.direction.to_the_right" = "به سمت راست";
-/* Notification orientation, behind to the right. Used as the direction name in sentances such as "<Pike Street>, <behind to the right>". */
-"directions.direction.behind_to_the_right" = "پشت به راست";
-/* Notification orientation. Used as the direction name in sentances such as "<Pike Street>, <behind>". */
-"directions.direction.behind" = "پشت سر";
-/* Notification orientation, behind to the left. Used as the direction name in sentances such as "<Pike Street>, <behind to the left>". */
-"directions.direction.behind_to_the_left" = "پشت به چپ";
-/* Notification orientation, to the left. Used as the direction name in sentances such as "<Pike Street>, <to the left>". */
-"directions.direction.to_the_left" = "به سمت چپ";
-/* Notification orientation, ahead to the left. Used as the direction name in sentances such as "<Pike Street>, <ahead to the left>". */
-"directions.direction.ahead_to_the_left" = "مستقیم به چپ";
-/* Notification, away, such as 'a location is away' */
-"directions.direction.away" = "فاصله";
-/* Notification, %@ is the point of interest, "Starbucks close by" {NumberedPlaceholder="%@"} */
-"directions.name_close_by" = "%@ در نزدیکی";
-/* Notification, %1$@ is a point of interest and %2$@ is distance with units, "<Starbucks> about <5 meters>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_about_distance" = "%1$@ حدود %2$@";
-/* Notification, %1$@ is a point of interest and %2$@ is the distance with units, "<Starbucks> around <5 meters>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_around_distance" = "%1$@ در اطراف %2$@";
 /* Notification, %1$@ is a point of interest and %2$@ is a physical address,"<Some Place> is nearby. Street address is <Some Address>" {NumberedPlaceholder="%1$@", "%2$@"} */
 "directions.name_is_nearby_street_address" = "%1$@ در نزدیکی است. آدرس خیابان %@ است.";
 /* Notification, %1$@ is a point of interest, %2$@ is distance with units and %3$@ is a physical address, "<Some Place> is currently <5 meters>. Street address is <Some Address>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
@@ -1351,53 +1325,9 @@
 //------------------------------------------------------------------------------
 // MARK: Directions (Cardinal Directions)
 //------------------------------------------------------------------------------
-/* Direction, North */
-"directions.cardinal.north" = "شمال";
-"directions.cardinal.north_east" = "شمال شرقی";
-"directions.cardinal.east" = "شرق";
-"directions.cardinal.south_east" = "جنوب شرقی";
-"directions.cardinal.south" = "جنوب";
-"directions.cardinal.south_west" = "جنوب غربی";
-"directions.cardinal.west" = "غرب";
-"directions.cardinal.north_west" = "شمال غربی";
-/* Direction, Abbreviation for North */
-"directions.cardinal.north.abb" = "ش";
-"directions.cardinal.north_east.abb" = "ش‌ش";
-"directions.cardinal.east.abb" = "ش";
-"directions.cardinal.south_east.abb" = "ج‌ش";
-"directions.cardinal.south.abb" = "ج";
-"directions.cardinal.south_west.abb" = "ج‌غ";
-"directions.cardinal.west.abb" = "غ";
-"directions.cardinal.north_west.abb" = "ش‌غ";
 //------------------------------------------------------------------------------
 // MARK: - Distance
 //------------------------------------------------------------------------------
-/* Notification, %1$@ point of interest %2$@ distance, "<Starbucks>, <5 meters>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_distance" = "%1$@، %2$@";
-/* Preserve m unit but can translate abbreviation of meter m. Distance string. %@ is a number, "15 m" {NumberedPlaceholder="%@"} */
-"distance.format.m" = "%@ م";
-/* Preserve meter unit - Do not convert but can translate. Distance string, singular. %@ is a singular number, "1 meter" {NumberedPlaceholder="%@"} */
-"distance.format.meter" = "%@ متر";
-/* Preserve meters unit - Do not convert but can translate. Distance string, plural. %@ is a plural number, "15 meters" {NumberedPlaceholder="%@"} */
-"distance.format.meters" = "%@ متر";
-/* Preserve km unit - Do not convert but can translate abbreviation of kilometer. Distance string. %@ is a number, "15 km" {NumberedPlaceholder="%@"} */
-"distance.format.km" = "%@ کیلومتر";
-/* Preserve kilometer unit - Do not convert but can translate. Distance string, singular. %@ is a singular number, "1 kilometer" {NumberedPlaceholder="%@"} */
-"distance.format.kilometer" = "%@ کیلومتر";
-/* Preserve kilometers unit - Do not convert but can translate. Distance string, plural. %@ is a plural number, "15 kilometers" {NumberedPlaceholder="%@"} */
-"distance.format.kilometers" = "%@ کیلومتر";
-/* Preserve ft (Feet Abbreviation) unit - Do not convert but can translate. Distance string. %@ is a number, "15 ft" {NumberedPlaceholder="%@"} */
-"distance.format.ft" = "%@ فوت";
-/* Preserve foot unit - Do not convert but can translate. Distance string, singular. %@ is a singular number, "1 foot" {NumberedPlaceholder="%@"} */
-"distance.format.foot" = "%@ فوت";
-/* Preserve feet unit - Do not convert but can translate. Distance string, plural. %@ is a plural number, "15 feet" {NumberedPlaceholder="%@"} */
-"distance.format.feet" = "%@ فوت";
-/* Preserve mi unit - Do not convert but can translate abbreviation of mile. Distance string. %@ is a number, "15 mi" {NumberedPlaceholder="%@"} */
-"distance.format.mi" = "%@ مایل";
-/* Preserve mile unit - Do not convert but can translate. Distance string, singular. %@ is a singular number, "1 mile" {NumberedPlaceholder="%@"} */
-"distance.format.mile" = "%@ مایل";
-/* Preserve miles unit - Do not convert but can translate. Distance string, plural.%@ is a plural number, "15 miles" {NumberedPlaceholder="%@"} */
-"distance.format.miles" = "%@ مایل";
 //------------------------------------------------------------------------------
 // MARK: - UI
 //------------------------------------------------------------------------------

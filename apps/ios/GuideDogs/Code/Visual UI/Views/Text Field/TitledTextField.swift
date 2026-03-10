@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -21,7 +22,11 @@ struct TitledTextField: View {
     
     private var accessibilityLabel: String {
         if value.isEmpty, let defaultValue = defaultValue {
-            return GDLocalizedString("directions.name_distance", title, defaultValue)
+            return LanguageFormatter.string(
+                fromFormattedDistance: defaultValue,
+                distanceStyle: .default,
+                name: title
+            )
         } else {
             return title
         }

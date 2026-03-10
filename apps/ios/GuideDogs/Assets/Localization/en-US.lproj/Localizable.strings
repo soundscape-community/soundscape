@@ -413,9 +413,6 @@
 /* Language selection validation button title. %@ is a language name e.g. "Change to English" {NumberedPlaceholder="%@"} */
 "settings.language.change_alert_action" = "Change to %@";
 
-/* Language display name. %1$@ is a language name, %2$@ is the country name. e.g. "English (United Kingdom)" {NumberedPlaceholder="%1$@", "%2$@"} */
-"settings.language.language_name" = "%1$@ (%2$@)";
-
 //------------------------------------------------------------------------------
 // MARK: Settings (Audio)
 //------------------------------------------------------------------------------
@@ -1858,42 +1855,6 @@
 /* Notification, %@ street name, "<Pike Street>, continues ahead in roundabout {NumberedPlaceholder="%@"} */
 "directions.name_continues_ahead.roundabout" = "%@, continues ahead in roundabout";
 
-/* Notification orientation, ahead. Used as the direction name in sentances such as "<Pike Street>, <ahead>". */
-"directions.direction.ahead" = "ahead";
-
-/* Notification orientation, ahead to the right. Used as the direction name in sentances such as "<Pike Street>, <ahead to the right>". */
-"directions.direction.ahead_to_the_right" = "ahead to the right";
-
-/* Notification orientation, to the right. Used as the direction name in sentances such as "<Pike Street>, <to the right>". */
-"directions.direction.to_the_right" = "to the right";
-
-/* Notification orientation, behind to the right. Used as the direction name in sentances such as "<Pike Street>, <behind to the right>". */
-"directions.direction.behind_to_the_right" = "behind to the right";
-
-/* Notification orientation. Used as the direction name in sentances such as "<Pike Street>, <behind>". */
-"directions.direction.behind" = "behind";
-
-/* Notification orientation, behind to the left. Used as the direction name in sentances such as "<Pike Street>, <behind to the left>". */
-"directions.direction.behind_to_the_left" = "behind to the left";
-
-/* Notification orientation, to the left. Used as the direction name in sentances such as "<Pike Street>, <to the left>". */
-"directions.direction.to_the_left" = "to the left";
-
-/* Notification orientation, ahead to the left. Used as the direction name in sentances such as "<Pike Street>, <ahead to the left>". */
-"directions.direction.ahead_to_the_left" = "ahead to the left";
-
-/* Notification, away, such as 'a location is away' */
-"directions.direction.away" = "away";
-
-/* Notification, %@ is the point of interest, "Starbucks close by" {NumberedPlaceholder="%@"} */
-"directions.name_close_by" = "%@ close by";
-
-/* Notification, %1$@ is a point of interest and %2$@ is distance with units, "<Starbucks> about <5 meters>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_about_distance" = "%1$@ about %2$@";
-
-/* Notification, %1$@ is a point of interest and %2$@ is the distance with units, "<Starbucks> around <5 meters>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_around_distance" = "%1$@ around %2$@";
-
 /* Notification, %1$@ is a point of interest and %2$@ is a physical address,"<Some Place> is nearby. Street address is <Some Address>" {NumberedPlaceholder="%1$@", "%2$@"} */
 "directions.name_is_nearby_street_address" = "%1$@ is nearby. Street address is %2$@.";
 
@@ -2062,96 +2023,9 @@
 // MARK: Directions (Cardinal Directions)
 //------------------------------------------------------------------------------
 
-/* Direction, North */
-"directions.cardinal.north" = "North";
-
-/* Direction, North East */
-"directions.cardinal.north_east" = "North East";
-
-/* Direction, East */
-"directions.cardinal.east" = "East";
-
-/* Direction, South East */
-"directions.cardinal.south_east" = "South East";
-
-/* Direction, South */
-"directions.cardinal.south" = "South";
-
-/* Direction, South West */
-"directions.cardinal.south_west" = "South West";
-
-/* Direction, West */
-"directions.cardinal.west" = "West";
-
-/* Direction, North West */
-"directions.cardinal.north_west" = "North West";
-
-/* Direction, Abbreviation for North */
-"directions.cardinal.north.abb" = "N";
-
-/* Direction, Abbreviation for North East */
-"directions.cardinal.north_east.abb" = "NE";
-
-/* Direction, Abbreviation for East */
-"directions.cardinal.east.abb" = "E";
-
-/* Direction, Abbreviation for South East */
-"directions.cardinal.south_east.abb" = "SE";
-
-/* Direction, Abbreviation for South */
-"directions.cardinal.south.abb" = "S";
-
-/* Direction, Abbreviation for South West */
-"directions.cardinal.south_west.abb" = "SW";
-
-/* Direction, Abbreviation for West */
-"directions.cardinal.west.abb" = "W";
-
-/* Direction, Abbreviation for North West */
-"directions.cardinal.north_west.abb" = "NW";
-
 //------------------------------------------------------------------------------
 // MARK: - Distance
 //------------------------------------------------------------------------------
-
-/* Notification, %1$@ point of interest %2$@ distance, "<Starbucks>, <5 meters>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_distance" = "%1$@, %2$@";
-
-/* Preserve m unit but can translate abbreviation of meter m. Distance string. %@ is a number, "15 m" {NumberedPlaceholder="%@"} */
-"distance.format.m" = "%@ m";
-
-/* Preserve meter unit - Do not convert but can translate. Distance string, singular. %@ is a singular number, "1 meter" {NumberedPlaceholder="%@"} */
-"distance.format.meter" = "%@ meter";
-
-/* Preserve meters unit - Do not convert but can translate. Distance string, plural. %@ is a plural number, "15 meters" {NumberedPlaceholder="%@"} */
-"distance.format.meters" = "%@ meters";
-
-/* Preserve km unit - Do not convert but can translate abbreviation of kilometer. Distance string. %@ is a number, "15 km" {NumberedPlaceholder="%@"} */
-"distance.format.km" = "%@ km";
-
-/* Preserve kilometer unit - Do not convert but can translate. Distance string, singular. %@ is a singular number, "1 kilometer" {NumberedPlaceholder="%@"} */
-"distance.format.kilometer" = "%@ kilometer";
-
-/* Preserve kilometers unit - Do not convert but can translate. Distance string, plural. %@ is a plural number, "15 kilometers" {NumberedPlaceholder="%@"} */
-"distance.format.kilometers" = "%@ kilometers";
-
-/* Preserve ft (Feet Abbreviation) unit - Do not convert but can translate. Distance string. %@ is a number, "15 ft" {NumberedPlaceholder="%@"} */
-"distance.format.ft" = "%@ ft";
-
-/* Preserve foot unit - Do not convert but can translate. Distance string, singular. %@ is a singular number, "1 foot" {NumberedPlaceholder="%@"} */
-"distance.format.foot" = "%@ foot";
-
-/* Preserve feet unit - Do not convert but can translate. Distance string, plural. %@ is a plural number, "15 feet" {NumberedPlaceholder="%@"} */
-"distance.format.feet" = "%@ feet";
-
-/* Preserve mi unit - Do not convert but can translate abbreviation of mile. Distance string. %@ is a number, "15 mi" {NumberedPlaceholder="%@"} */
-"distance.format.mi" = "%@ mi";
-
-/* Preserve mile unit - Do not convert but can translate. Distance string, singular. %@ is a singular number, "1 mile" {NumberedPlaceholder="%@"} */
-"distance.format.mile" = "%@ mile";
-
-/* Preserve miles unit - Do not convert but can translate. Distance string, plural.%@ is a plural number, "15 miles" {NumberedPlaceholder="%@"} */
-"distance.format.miles" = "%@ miles";
 
 //------------------------------------------------------------------------------
 // MARK: - UI

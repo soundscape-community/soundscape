@@ -474,8 +474,6 @@
 "settings.language.change_alert_action" = "Définir la langue sur %@";
 
 
-/*  */
-"settings.language.language_name" = "%1$@ (%2$@)";
 
 
 /*  */
@@ -2178,52 +2176,28 @@
 "directions.name_continues_ahead.roundabout" = "%@, tout droit au rond-point";
 
 
-/*  */
-"directions.direction.ahead" = "face à vous";
 
 
-/*  */
-"directions.direction.ahead_to_the_right" = "face à vous à droite";
 
 
-/*  */
-"directions.direction.to_the_right" = "à droite";
 
 
-/*  */
-"directions.direction.behind_to_the_right" = "derrière vous à droite";
 
 
-/*  */
-"directions.direction.behind" = "derrière vous";
 
 
-/*  */
-"directions.direction.behind_to_the_left" = "derrière vous à gauche";
 
 
-/*  */
-"directions.direction.to_the_left" = "à gauche";
 
 
-/*  */
-"directions.direction.ahead_to_the_left" = "face à vous à gauche";
 
 
-/*  */
-"directions.direction.away" = "loin";
 
 
-/*  */
-"directions.name_close_by" = "%@ à proximité";
 
 
-/*  */
-"directions.name_about_distance" = "%1$@ à environ %2$@";
 
 
-/*  */
-"directions.name_around_distance" = "%1$@ à environ %2$@";
 
 
 /*  */
@@ -2430,120 +2404,62 @@
 "directions.along.heading.nw" = "En direction du nord-ouest le long de %@";
 
 
-/*  */
-"directions.cardinal.north" = "Nord";
 
 
-/*  */
-"directions.cardinal.north_east" = "Nord-est";
 
 
-/*  */
-"directions.cardinal.east" = "Est";
 
 
-/*  */
-"directions.cardinal.south_east" = "Sud-est";
 
 
-/*  */
-"directions.cardinal.south" = "Sud";
 
 
-/*  */
-"directions.cardinal.south_west" = "Sud-ouest";
 
 
-/*  */
-"directions.cardinal.west" = "Ouest";
 
 
-/*  */
-"directions.cardinal.north_west" = "Nord-ouest";
 
 
-/*  */
-"directions.cardinal.north.abb" = "N";
 
 
-/*  */
-"directions.cardinal.north_east.abb" = "NE";
 
 
-/*  */
-"directions.cardinal.east.abb" = "E";
 
 
-/*  */
-"directions.cardinal.south_east.abb" = "SE";
 
 
-/*  */
-"directions.cardinal.south.abb" = "S";
 
 
-/*  */
-"directions.cardinal.south_west.abb" = "SO";
 
 
-/*  */
-"directions.cardinal.west.abb" = "O";
 
 
-/*  */
-"directions.cardinal.north_west.abb" = "NO";
 
 
-/*  */
-"directions.name_distance" = "%1$@, %2$@";
 
 
-/*  */
-"distance.format.m" = "%@ m";
 
 
-/*  */
-"distance.format.meter" = "%@ mètre";
 
 
-/*  */
-"distance.format.meters" = "%@ mètres";
 
 
-/*  */
-"distance.format.km" = "%@ km";
 
 
-/*  */
-"distance.format.kilometer" = "%@ kilomètre";
 
 
-/*  */
-"distance.format.kilometers" = "%@ kilomètres";
 
 
-/*  */
-"distance.format.ft" = "%@ pi";
 
 
-/*  */
-"distance.format.foot" = "%@ pied";
 
 
-/*  */
-"distance.format.feet" = "%@ pieds";
 
 
-/*  */
-"distance.format.mi" = "%@ mi";
 
 
-/*  */
-"distance.format.mile" = "%@ mile";
 
 
-/*  */
-"distance.format.miles" = "%@ miles";
 
 
 /*  */

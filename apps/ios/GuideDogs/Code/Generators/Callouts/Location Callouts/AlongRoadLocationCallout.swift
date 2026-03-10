@@ -177,7 +177,7 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
             var directionString: String?
             
             if direction != nil {
-                directionString = automotive ? GDLocalizedString("directions.direction.ahead") : intComponents.encodedDirection
+                directionString = automotive ? Direction.ahead.localizedString : intComponents.encodedDirection
             }
             
             if let roundabout = intersection.roundabout, !roundabout.isLarge {

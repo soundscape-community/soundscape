@@ -82,8 +82,16 @@ struct LocationDetailLocalizedLabel {
         let name = name()
         
         if let distance = distance(from: userLocation) {
-            let text = GDLocalizedString("directions.name_distance", name.text, distance.text)
-            let accessibilityText = GDLocalizedString("directions.name_distance", name.accessibilityText ?? name.text, distance.accessibilityText ?? distance.text)
+            let text = LanguageFormatter.string(
+                fromFormattedDistance: distance.text,
+                distanceStyle: .default,
+                name: name.text
+            )
+            let accessibilityText = LanguageFormatter.string(
+                fromFormattedDistance: distance.accessibilityText ?? distance.text,
+                distanceStyle: .default,
+                name: name.accessibilityText ?? name.text
+            )
             
             return LocalizedLabel(text: text, accessibilityText: accessibilityText)
         } else {

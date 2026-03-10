@@ -7,10 +7,11 @@
 //
 
 import SwiftUI
+import SSLanguage
 
 /// Defines a stepper (increment/decrement buttons) that can be used for settings like Enter Vicinity Distance.
-/// Takes a step size, min, max, and localization key for printing the value with units..
-/// `unitsLocalization` should be a localization key like "distance.format.meters".
+/// Takes a step size, min, max, and shared localization key for printing the value with units.
+/// `unitsLocalization` should be a shared `SSLanguage` key like "distance.format.meters".
 struct SettingStepper: View {
     @Binding var value: Double
     private let unitsLocalization: String
@@ -36,6 +37,16 @@ struct SettingStepper: View {
         let newValue = value - stepSize
         value = min(max(newValue, minValue), maxValue)
     }
+
+    private var formattedValue: String {
+        let localizedValue = String(format: "%.0f", value)
+        return LanguageLocalizer.localizedString(
+            unitsLocalization,
+            arguments: [localizedValue],
+            locale: LocalizationContext.currentAppLocale,
+            normalizeArguments: true
+        )
+    }
     
     var body: some View {
         VStack {
@@ -43,7 +54,7 @@ struct SettingStepper: View {
             /// controls can't be styled, and the defaults are low contrast.
             HStack {
                 // truncate `value` at the decimal point
-                Text(GDLocalizedString(unitsLocalization, String(format: "%.0f", value)))
+                Text(formattedValue)
                     .foregroundColor(.primaryForeground)
                     .font(.body)
                     .lineLimit(nil)
@@ -75,7 +86,7 @@ struct SettingStepper: View {
             .padding()
             .background(Color.primaryBackground)
             .accessibilityElement(children: .ignore)
-            .accessibilityValue(GDLocalizedString(unitsLocalization, String(format: "%.0f", value)))
+            .accessibilityValue(formattedValue)
             .accessibilityAdjustableAction { direction in
                 switch direction {
                 case .increment:
