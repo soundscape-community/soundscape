@@ -35,4 +35,8 @@ public extension POI {
     var centroidSSGeoLocation: SSGeoLocation {
         SSGeoLocation(coordinate: centroidSSGeoCoordinate)
     }
+
+    func isEqual(_ poi: any POI) -> Bool {
+        key == poi.key
+    }
 }

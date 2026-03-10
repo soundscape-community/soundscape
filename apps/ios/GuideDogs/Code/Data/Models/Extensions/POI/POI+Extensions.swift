@@ -16,8 +16,4 @@ struct POIKeys {
 
 extension POI {
     typealias Keys = POIKeys
-    
-    func isEqual(_ poi: POI) -> Bool {
-        return self.key == poi.key
-    }
 }

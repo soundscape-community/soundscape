@@ -9,5 +9,5 @@
 import Foundation
 
 protocol Type {
-    func matches(poi: POI) -> Bool
+    func matches(poi: any POI) -> Bool
 }

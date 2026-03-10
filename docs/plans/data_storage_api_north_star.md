@@ -43,7 +43,7 @@ That means:
 - do not add a second generic registry layer just to make package boundaries look cleaner
 
 ### Canonical Domain Surface
-Use domain/value types directly at contract boundaries (for example `Route`, `RouteWaypoint`, `ReferenceEntity`, `POI`, `GenericLocation`, `SuperCategory`, and shared parameter/value models), not Realm object models.
+Use domain/value types directly at contract boundaries (for example `Route`, `RouteWaypoint`, `ReferenceEntity`, `POI`, `GenericLocation`, `SuperCategory`, shared POI typing/matching abstractions, and shared parameter/value models), not Realm object models.
 
 ## Async Policy
 - Contracts are async-first (`async`/`await`) and explicit about failure (`throws`).
@@ -67,7 +67,7 @@ Must not be used by non-infrastructure code:
 - Avoid adding global registries or parallel ingress points.
 
 ## Target Extraction Shape
-- `apps/common/Sources/SSDataDomain`: canonical platform-neutral domain/value models, including `POI`, `GenericLocation`, and `SuperCategory` taxonomy once decoupled from platform presentation.
+- `apps/common/Sources/SSDataDomain`: canonical platform-neutral domain/value models, including `POI`, `GenericLocation`, `SuperCategory`, and shared POI typing/matching abstractions once decoupled from platform presentation.
 - `apps/common/Sources/SSDataContracts`: async contract protocols and shared contract-side value types, including universal-link/storage parameter models, `VectorTile`, and the Swift `GDAJSONObject` helper once decoupled from runtime behavior.
 - `apps/ios/GuideDogs/Code/Data/Contracts` and adjacent runtime extensions: iOS-specific composition plus platform/presentation shims such as `CoreLocation` conveniences and glyph/audio mapping.
 - `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm/**`: Realm-backed contract implementations plus Realm object mappings, migrations, cache/search infrastructure, and backend installers.
@@ -87,7 +87,7 @@ Reason: it is editor/tooling scaffolding, not part of the architectural split.
 
 Portable-first guidance:
 - move pure value types to `apps/common` only when they do not depend on app runtime behavior or Apple frameworks
-- keep associated-type-bound contracts in `SSDataContracts` when the associated value is genuinely portable (for example `VectorTile`), and prefer moving cross-platform app/domain concepts such as `POI` or `GenericLocation` into `SSDataDomain` once their platform-specific APIs are removed
+- keep associated-type-bound contracts in `SSDataContracts` when the associated value is genuinely portable (for example `VectorTile`), and prefer moving cross-platform app/domain concepts such as `POI`, `GenericLocation`, or shared POI typing/matching helpers into `SSDataDomain` once their platform-specific APIs are removed
 - prefer extracting shared value models into `apps/common` over inventing iOS-only package shells
 
 ## Static Success Criteria

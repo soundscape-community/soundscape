@@ -32,7 +32,7 @@ let package = Package(
         ),
         .target(
             name: "SSDataDomain",
-            dependencies: ["SSGeo"]
+            dependencies: ["SSDataStructures", "SSGeo"]
         ),
         .target(
             name: "SSDataContracts",
