@@ -70,7 +70,11 @@ struct Configuration {
         static let prefixes = [
             "directions.direction.",
             "directions.cardinal.",
-            "distance.format."
+            "distance.format.",
+            "directions.traveling.",
+            "directions.facing.",
+            "directions.heading.",
+            "directions.along."
         ]
 
         static func contains(_ key: String) -> Bool {

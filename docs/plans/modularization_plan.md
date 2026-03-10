@@ -66,6 +66,7 @@ Completed:
 - `DistanceFormatter`, `DistanceUnit`, `LanguageFormatter`, `PostalAbbreviations`, `Direction`, `CardinalDirection`, `CodeableDirection`, and portable locale/bundle helpers now live in `apps/common/Sources/SSLanguage`; iOS now imports `SSLanguage` directly for portable types and retains only app-locale/app-context composition wrappers plus UI localization behavior.
 - The duplicated shared distance/direction/locale-helper string entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`; those lookups now resolve from `SSLanguage` resources.
 - Shared intersection/roundabout road-name phrases and beacon-detail street-address summary phrases also now live in `apps/common/Sources/SSLanguage`; iOS callers route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
+- Shared cardinal-movement phrase families (`directions.traveling.*`, `directions.facing.*`, `directions.heading.*`, and `directions.along.*`) also now live in `apps/common/Sources/SSLanguage`; iOS location callouts route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
 - The localization validator now checks both the iOS app bundle and `apps/common/Sources/SSLanguage/Resources`, and fails if `SSLanguage`-owned helper keys are duplicated back into the iOS app assets.
 
 In progress:

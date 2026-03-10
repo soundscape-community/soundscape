@@ -16,6 +16,12 @@ public enum LanguageFormatter {
         case unknownDistance
     }
 
+    public enum CardinalMovementStyle: String, Sendable {
+        case facing
+        case heading
+        case traveling
+    }
+
     public static func string(
         from distance: Double,
         accuracy: Double,
@@ -221,6 +227,28 @@ public enum LanguageFormatter {
         return LanguageLocalizer.localizedString(
             key,
             arguments: arguments,
+            locale: locale,
+            normalizeArguments: true
+        )
+    }
+
+    public static func cardinalMovementString(
+        direction: CardinalDirection,
+        style: CardinalMovementStyle,
+        roadName: String? = nil,
+        locale: Locale
+    ) -> String {
+        let key: String
+
+        if roadName == nil {
+            key = "directions.\(style.rawValue).\(direction.rawValue)"
+        } else {
+            key = "directions.along.\(style.rawValue).\(direction.rawValue)"
+        }
+
+        return LanguageLocalizer.localizedString(
+            key,
+            arguments: roadName.map { [$0] } ?? [],
             locale: locale,
             normalizeArguments: true
         )

@@ -1237,63 +1237,9 @@
 //------------------------------------------------------------------------------
 // MARK: Directions (Traveling with Cardinal Directions)
 //------------------------------------------------------------------------------
-/* Traveling in a vehicle such as a train, bus, car with a cardinal direction, %@ is a road name. Whenever the vehicle changes roads, the app will announce a location update by saying the direction the vehicle is travelling in and the name of the road e.g. Travelling east along High Street */
-"directions.traveling.n" = "در حال حرکت به سمت شمال";
-"directions.traveling.ne" = "در حال حرکت به سمت شمال شرقی";
-"directions.traveling.e" = "در حال حرکت به سمت شرق";
-"directions.traveling.se" = "در حال حرکت به سمت جنوب شرقی";
-"directions.traveling.s" = "در حال حرکت به سمت جنوب";
-"directions.traveling.sw" = "در حال حرکت به سمت جنوب غربی";
-"directions.traveling.w" = "در حال حرکت به سمت غرب";
-"directions.traveling.nw" = "در حال حرکت به سمت شمال غربی";
-/* Facing a cardinal direction. If the user is not travelling in a vehicle, or not moving (e.g. on foot) but is stationary along a road somewhere, the application will know which way the user is facing e.g. Facing east along High Street */
-"directions.facing.n" = "رو به شمال";
-"directions.facing.ne" = "رو به شمال شرقی";
-"directions.facing.e" = "رو به شرق";
-"directions.facing.se" = "رو به جنوب شرقی";
-"directions.facing.s" = "رو به جنوب";
-"directions.facing.sw" = "رو به جنوب غربی";
-"directions.facing.w" = "رو به غرب";
-"directions.facing.nw" = "رو به شمال غربی";
-/* Walking with a cardinal direction. If the user is walking and heading along a road in a specific direction then the app will know the direction of travel of the user along that road e.g. Heading east along High Street. This is different to when a user is moving in a vehicle. */
-"directions.heading.n" = "به سمت شمال";
-"directions.heading.ne" = "به سمت شمال شرقی";
-"directions.heading.e" = "به سمت شرق";
-"directions.heading.se" = "به سمت جنوب شرقی";
-"directions.heading.s" = "به سمت جنوب";
-"directions.heading.sw" = "به سمت جنوب غربی";
-"directions.heading.w" = "به سمت غرب";
-"directions.heading.nw" = "به سمت شمال غربی";
 //------------------------------------------------------------------------------
 // MARK: Directions (Traveling Along with Cardinal Directions)
 //------------------------------------------------------------------------------
-/* Traveling in a vehicle such as a train, bus, car with a cardinal direction, %@ is a road name. Whenever the vehicle changes roads, the app will announce a location update by saying the direction the vehicle is travelling in and the name of the road e.g. Travelling east along High Street {NumberedPlaceholder="%@"} */
-"directions.along.traveling.n" = "در حال حرکت به سمت شمال در امتداد %@";
-"directions.along.traveling.ne" = "در حال حرکت به سمت شمال شرقی در امتداد %@";
-"directions.along.traveling.e" = "در حال حرکت به سمت شرق در امتداد %@";
-"directions.along.traveling.se" = "در حال حرکت به سمت جنوب شرقی در امتداد %@";
-"directions.along.traveling.s" = "در حال حرکت به سمت جنوب در امتداد %@";
-"directions.along.traveling.sw" = "در حال حرکت به سمت جنوب غربی در امتداد %@";
-"directions.along.traveling.w" = "در حال حرکت به سمت غرب در امتداد %@";
-"directions.along.traveling.nw" = "در حال حرکت به سمت شمال غربی در امتداد %@";
-/* Facing a cardinal direction. If the user is not travelling in a vehicle, or not moving (e.g. on foot) but is stationary along a road somewhere, the application will know which way the user is facing e.g. Facing east along High Street, %@ is a road name {NumberedPlaceholder="%@"} */
-"directions.along.facing.n" = "رو به شمال در امتداد %@";
-"directions.along.facing.ne" = "رو به شمال شرقی در امتداد %@";
-"directions.along.facing.e" = "رو به شرق در امتداد %@";
-"directions.along.facing.se" = "رو به جنوب شرقی در امتداد %@";
-"directions.along.facing.s" = "رو به جنوب در امتداد %@";
-"directions.along.facing.sw" = "رو به جنوب غربی در امتداد %@";
-"directions.along.facing.w" = "رو به غرب در امتداد %@";
-"directions.along.facing.nw" = "رو به شمال غربی در امتداد %@";
-/* Walking with a cardinal direction. If the user is walking and heading along a road in a specific direction then the app will know the direction of travel of the user along that road e.g. Heading east along High Street. This is different to when a user is moving in a vehicle, %@ is a road name {NumberedPlaceholder="%@"} */
-"directions.along.heading.n" = "به سمت شمال در امتداد %@";
-"directions.along.heading.ne" = "به سمت شمال شرقی در امتداد %@";
-"directions.along.heading.e" = "به سمت شرق در امتداد %@";
-"directions.along.heading.se" = "به سمت جنوب شرقی در امتداد %@";
-"directions.along.heading.s" = "به سمت جنوب در امتداد %@";
-"directions.along.heading.sw" = "به سمت جنوب غربی در امتداد %@";
-"directions.along.heading.w" = "به سمت غرب در امتداد %@";
-"directions.along.heading.nw" = "به سمت شمال غربی در امتداد %@";
 //------------------------------------------------------------------------------
 // MARK: Directions (Cardinal Directions)
 //------------------------------------------------------------------------------

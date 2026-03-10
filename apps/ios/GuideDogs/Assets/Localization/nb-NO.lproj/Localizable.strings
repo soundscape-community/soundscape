@@ -2170,196 +2170,52 @@
 
 
 
-/*  */
-"directions.traveling.n" = "Kjører mot nord";
 
 
-/*  */
-"directions.traveling.ne" = "Kjører mot nordøst";
 
 
-/*  */
-"directions.traveling.e" = "Kjører mot øst";
 
 
-/*  */
-"directions.traveling.se" = "Kjører mot sørøst";
 
 
-/*  */
-"directions.traveling.s" = "Kjører mot sør";
 
 
-/*  */
-"directions.traveling.sw" = "Kjører mot sørvest";
 
 
-/*  */
-"directions.traveling.w" = "Kjører mot vest";
 
 
-/*  */
-"directions.traveling.nw" = "Kjører mot nordvest";
 
 
-/*  */
-"directions.facing.n" = "Du står mot nord";
 
 
-/*  */
-"directions.facing.ne" = "Du står mot nordøst";
 
 
-/*  */
-"directions.facing.e" = "Du står mot øst";
 
 
-/*  */
-"directions.facing.se" = "Du står mot sørøst";
 
 
-/*  */
-"directions.facing.s" = "Du står mot sør";
 
 
-/*  */
-"directions.facing.sw" = "Du står mot sørvest";
 
 
-/*  */
-"directions.facing.w" = "Du står mot vest";
 
 
-/*  */
-"directions.facing.nw" = "Du står mot nordvest";
 
 
-/*  */
-"directions.heading.n" = "Du går mot nord";
 
 
-/*  */
-"directions.heading.ne" = "Du går mot nordøst";
 
 
-/*  */
-"directions.heading.e" = "Du går mot øst";
 
 
-/*  */
-"directions.heading.se" = "Du går mot sørøst";
 
 
-/*  */
-"directions.heading.s" = "Du går mot sør";
 
 
-/*  */
-"directions.heading.sw" = "Du går mot sørvest";
 
 
-/*  */
-"directions.heading.w" = "Du går mot vest";
 
 
-/*  */
-"directions.heading.nw" = "Du går mot nordvest";
-
-
-/*  */
-"directions.along.traveling.n" = "Kjører mot nord langs %@";
-
-
-/*  */
-"directions.along.traveling.ne" = "Kjører mot nordøst langs %@";
-
-
-/*  */
-"directions.along.traveling.e" = "Kjører mot øst langs %@";
-
-
-/*  */
-"directions.along.traveling.se" = "Kjører mot sørøst langs %@";
-
-
-/*  */
-"directions.along.traveling.s" = "Kjører mot sør langs %@";
-
-
-/*  */
-"directions.along.traveling.sw" = "Kjører mot sørvest langs %@";
-
-
-/*  */
-"directions.along.traveling.w" = "Kjører mot vest langs %@";
-
-
-/*  */
-"directions.along.traveling.nw" = "Kjører mot nordvest langs %@";
-
-
-/*  */
-"directions.along.facing.n" = "Står mot nord langs %@";
-
-
-/*  */
-"directions.along.facing.ne" = "Står mot nordøst langs %@";
-
-
-/*  */
-"directions.along.facing.e" = "Står mot øst langs %@";
-
-
-/*  */
-"directions.along.facing.se" = "Står mot sørøst langs %@";
-
-
-/*  */
-"directions.along.facing.s" = "Står mot sør langs %@";
-
-
-/*  */
-"directions.along.facing.sw" = "Står mot sørvest langs %@";
-
-
-/*  */
-"directions.along.facing.w" = "Står mot vest langs %@";
-
-
-/*  */
-"directions.along.facing.nw" = "Står mot nordvest langs %@";
-
-
-/*  */
-"directions.along.heading.n" = "Går mot nord langs %@";
-
-
-/*  */
-"directions.along.heading.ne" = "Går mot nordøst langs %@";
-
-
-/*  */
-"directions.along.heading.e" = "Går mot øst langs %@";
-
-
-/*  */
-"directions.along.heading.se" = "Går mot sørøst langs %@";
-
-
-/*  */
-"directions.along.heading.s" = "Går mot sør langs %@";
-
-
-/*  */
-"directions.along.heading.sw" = "Går mot sørvest langs %@";
-
-
-/*  */
-"directions.along.heading.w" = "Går mot vest langs %@";
-
-
-/*  */
-"directions.along.heading.nw" = "Går mot nordvest langs %@";
 
 
 

@@ -2170,196 +2170,52 @@
 
 
 
-/*  */
-"directions.traveling.n" = "Kører nord";
 
 
-/*  */
-"directions.traveling.ne" = "Kører nordøst";
 
 
-/*  */
-"directions.traveling.e" = "Kører øst";
 
 
-/*  */
-"directions.traveling.se" = "Kører sydøst";
 
 
-/*  */
-"directions.traveling.s" = "Kører syd";
 
 
-/*  */
-"directions.traveling.sw" = "Kører sydvest";
 
 
-/*  */
-"directions.traveling.w" = "Kører vest";
 
 
-/*  */
-"directions.traveling.nw" = "Kører nordvest";
 
 
-/*  */
-"directions.facing.n" = "Vender nord";
 
 
-/*  */
-"directions.facing.ne" = "Vender nordøst";
 
 
-/*  */
-"directions.facing.e" = "Vender øst";
 
 
-/*  */
-"directions.facing.se" = "Vender sydøst";
 
 
-/*  */
-"directions.facing.s" = "Vender syd";
 
 
-/*  */
-"directions.facing.sw" = "Vender sydvest";
 
 
-/*  */
-"directions.facing.w" = "Vender vest";
 
 
-/*  */
-"directions.facing.nw" = "Vender nordvest";
 
 
-/*  */
-"directions.heading.n" = "På vej nord";
 
 
-/*  */
-"directions.heading.ne" = "På vej nordøst";
 
 
-/*  */
-"directions.heading.e" = "På vej øst";
 
 
-/*  */
-"directions.heading.se" = "På vej sydøst";
 
 
-/*  */
-"directions.heading.s" = "På vej syd";
 
 
-/*  */
-"directions.heading.sw" = "På vej sydvest";
 
 
-/*  */
-"directions.heading.w" = "På vej vest";
 
 
-/*  */
-"directions.heading.nw" = "På vej nordvest";
-
-
-/*  */
-"directions.along.traveling.n" = "Kører nord ad %@";
-
-
-/*  */
-"directions.along.traveling.ne" = "Kører nordøst ad %@";
-
-
-/*  */
-"directions.along.traveling.e" = "Kører øst ad %@";
-
-
-/*  */
-"directions.along.traveling.se" = "Kører sydøst ad %@";
-
-
-/*  */
-"directions.along.traveling.s" = "Kører syd ad %@";
-
-
-/*  */
-"directions.along.traveling.sw" = "Kører sydvest ad %@";
-
-
-/*  */
-"directions.along.traveling.w" = "Kører vest ad %@";
-
-
-/*  */
-"directions.along.traveling.nw" = "Kører nordvest ad %@";
-
-
-/*  */
-"directions.along.facing.n" = "Vender nord ad %@";
-
-
-/*  */
-"directions.along.facing.ne" = "Vender nordøst ad %@";
-
-
-/*  */
-"directions.along.facing.e" = "Vender øst ad %@";
-
-
-/*  */
-"directions.along.facing.se" = "Vender sydøst ad %@";
-
-
-/*  */
-"directions.along.facing.s" = "Vender syd ad %@";
-
-
-/*  */
-"directions.along.facing.sw" = "Vender sydvest ad %@";
-
-
-/*  */
-"directions.along.facing.w" = "Vender vest ad %@";
-
-
-/*  */
-"directions.along.facing.nw" = "Vender nordvest ad %@";
-
-
-/*  */
-"directions.along.heading.n" = "På vej nord ad %@";
-
-
-/*  */
-"directions.along.heading.ne" = "På vej nordøst ad %@";
-
-
-/*  */
-"directions.along.heading.e" = "På vej øst ad %@";
-
-
-/*  */
-"directions.along.heading.se" = "På vej sydøst ad %@";
-
-
-/*  */
-"directions.along.heading.s" = "På vej syd ad %@";
-
-
-/*  */
-"directions.along.heading.sw" = "På vej sydvest ad %@";
-
-
-/*  */
-"directions.along.heading.w" = "På vej vest ad %@";
-
-
-/*  */
-"directions.along.heading.nw" = "På vej nordvest ad %@";
 
 
 

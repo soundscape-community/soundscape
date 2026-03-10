@@ -16,6 +16,7 @@ enum LanguageFormatter {
     typealias DistanceStyle = SSLanguage.LanguageFormatter.DistanceStyle
     typealias RoadNameDirection = SSLanguage.LanguageFormatter.RoadNameDirection
     typealias NamedLocationStreetAddressStyle = SSLanguage.LanguageFormatter.NamedLocationStreetAddressStyle
+    typealias CardinalMovementStyle = SSLanguage.LanguageFormatter.CardinalMovementStyle
 
     private static var defaultOptions: DistanceFormatter.Options {
         DistanceFormatter.Options(
@@ -194,6 +195,19 @@ enum LanguageFormatter {
             name: name,
             address: address,
             style: style,
+            locale: LocalizationContext.currentAppLocale
+        )
+    }
+
+    static func cardinalMovementString(
+        direction: CardinalDirection,
+        style: CardinalMovementStyle,
+        roadName: String? = nil
+    ) -> String {
+        SSLanguage.LanguageFormatter.cardinalMovementString(
+            direction: direction,
+            style: style,
+            roadName: roadName,
             locale: LocalizationContext.currentAppLocale
         )
     }

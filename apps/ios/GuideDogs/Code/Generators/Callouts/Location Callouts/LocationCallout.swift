@@ -88,16 +88,16 @@ struct LocationCallout: LocationCalloutProtocol {
             
             // Create the localization string key
             if let direction = geocoderResult.heading.value {
-                let cardinal = CardinalDirection(direction: direction)!.rawValue
-            
-                var prefix = "facing"
-            
-                if geocoderResult.heading.isCourse {
-                    prefix = (automotive ? "traveling" : "heading")
+                let cardinal = CardinalDirection(direction: direction)!
+                let style: LanguageFormatter.CardinalMovementStyle = if geocoderResult.heading.isCourse {
+                    automotive ? .traveling : .heading
+                } else {
+                    .facing
                 }
-            
-                // "directions.traveling.ne" -> "Traveling northeast"
-                let string = GDLocalizedString("directions.\(prefix).\(cardinal)")
+                let string = LanguageFormatter.cardinalMovementString(
+                    direction: cardinal,
+                    style: style
+                )
             
                 sounds.append(TTSSound(string, compass: direction))
             

@@ -73,4 +73,24 @@ final class SSLanguageTests: XCTestCase {
             "Library is currently five meters. Street address is 123 Main Street."
         )
     }
+
+    func testCardinalMovementPhrasesUseSharedResources() {
+        XCTAssertEqual(
+            LanguageFormatter.cardinalMovementString(
+                direction: .northEast,
+                style: .traveling,
+                locale: .enUS
+            ),
+            "Traveling northeast"
+        )
+        XCTAssertEqual(
+            LanguageFormatter.cardinalMovementString(
+                direction: .west,
+                style: .heading,
+                roadName: "Pike Street",
+                locale: .enUS
+            ),
+            "Heading west along Pike Street"
+        )
+    }
 }

@@ -113,16 +113,17 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
 
             // Create the localization string key
             if let direction = direction {
-                let cardinal = CardinalDirection(direction: direction)!.rawValue
-                
-                var prefix = "facing"
-                
-                if geocoderResult.heading.isCourse {
-                    prefix = (automotive ? "traveling" : "heading")
+                let cardinal = CardinalDirection(direction: direction)!
+                let style: LanguageFormatter.CardinalMovementStyle = if geocoderResult.heading.isCourse {
+                    automotive ? .traveling : .heading
+                } else {
+                    .facing
                 }
-                
-                // "directions.along.traveling.ne" -> "Traveling northeast along <Road ABC>"
-                let string = GDLocalizedString("directions.along.\(prefix).\(cardinal)", roadComponents.name)
+                let string = LanguageFormatter.cardinalMovementString(
+                    direction: cardinal,
+                    style: style,
+                    roadName: roadComponents.name
+                )
                 
                 sounds.append(TTSSound(string, compass: direction))
             } else {

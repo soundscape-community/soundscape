@@ -2170,196 +2170,52 @@
 
 
 
-/*  */
-"directions.traveling.n" = "Voyageant vers le Nord";
 
 
-/*  */
-"directions.traveling.ne" = "Voyageant vers le Nord-est";
 
 
-/*  */
-"directions.traveling.e" = "Se déplaçant vers l’est";
 
 
-/*  */
-"directions.traveling.se" = "Voyageant vers le Sud-est";
 
 
-/*  */
-"directions.traveling.s" = "Voyageant vers le Sud";
 
 
-/*  */
-"directions.traveling.sw" = "Voyageant vers le Sud-ouest";
 
 
-/*  */
-"directions.traveling.w" = "Se déplaçant vers l’ouest";
 
 
-/*  */
-"directions.traveling.nw" = "Voyageant vers le Nord-ouest";
 
 
-/*  */
-"directions.facing.n" = "Vers le Nord";
 
 
-/*  */
-"directions.facing.ne" = "Vers le Nord-est";
 
 
-/*  */
-"directions.facing.e" = "Face à l’est";
 
 
-/*  */
-"directions.facing.se" = "Vers le Sud-est";
 
 
-/*  */
-"directions.facing.s" = "Vers le Sud";
 
 
-/*  */
-"directions.facing.sw" = "Vers le Sud-ouest";
 
 
-/*  */
-"directions.facing.w" = "Face à l’ouest";
 
 
-/*  */
-"directions.facing.nw" = "Vers le Nord-ouest";
 
 
-/*  */
-"directions.heading.n" = "En direction vers le Nord";
 
 
-/*  */
-"directions.heading.ne" = "En direction vers le Nord-est";
 
 
-/*  */
-"directions.heading.e" = "En direction de l’est";
 
 
-/*  */
-"directions.heading.se" = "En direction vers le Sud-est";
 
 
-/*  */
-"directions.heading.s" = "En direction vers le Sud";
 
 
-/*  */
-"directions.heading.sw" = "En direction vers le Sud-ouest";
 
 
-/*  */
-"directions.heading.w" = "En direction de l’ouest";
 
 
-/*  */
-"directions.heading.nw" = "En direction vers le Nord-ouest";
-
-
-/*  */
-"directions.along.traveling.n" = "Voyageant vers le Nord le long de %@";
-
-
-/*  */
-"directions.along.traveling.ne" = "Voyageant vers le Nord-est le long de %@";
-
-
-/*  */
-"directions.along.traveling.e" = "Se déplaçant vers l’est le long de %@";
-
-
-/*  */
-"directions.along.traveling.se" = "Voyageant vers le Sud-est le long de %@";
-
-
-/*  */
-"directions.along.traveling.s" = "Voyageant vers le Sud le long de %@";
-
-
-/*  */
-"directions.along.traveling.sw" = "Voyageant vers le Sud-ouest le long de %@";
-
-
-/*  */
-"directions.along.traveling.w" = "Se déplaçant vers l’ouest le long de %@";
-
-
-/*  */
-"directions.along.traveling.nw" = "Voyageant vers le Nord-ouest le long de %@";
-
-
-/*  */
-"directions.along.facing.n" = "Vers le Nord le long de %@";
-
-
-/*  */
-"directions.along.facing.ne" = "Vers le Nord-est le long de %@";
-
-
-/*  */
-"directions.along.facing.e" = "Face à l’est le long de %@";
-
-
-/*  */
-"directions.along.facing.se" = "Vers le Sud-est le long de %@";
-
-
-/*  */
-"directions.along.facing.s" = "Vers le Sud le long de %@";
-
-
-/*  */
-"directions.along.facing.sw" = "Vers le Sud-ouest le long de %@";
-
-
-/*  */
-"directions.along.facing.w" = "Face à l’ouest le long de %@";
-
-
-/*  */
-"directions.along.facing.nw" = "Vers le Nord-ouest le long de %@";
-
-
-/*  */
-"directions.along.heading.n" = "En direction vers le Nord le long de %@";
-
-
-/*  */
-"directions.along.heading.ne" = "En direction vers le Nord-est le long de %@";
-
-
-/*  */
-"directions.along.heading.e" = "En direction de l’est le long de %@";
-
-
-/*  */
-"directions.along.heading.se" = "En direction vers le Sud-est le long de %@";
-
-
-/*  */
-"directions.along.heading.s" = "En direction vers le Sud le long de %@";
-
-
-/*  */
-"directions.along.heading.sw" = "En direction vers le Sud-ouest le long de %@";
-
-
-/*  */
-"directions.along.heading.w" = "En direction de l’ouest le long de %@";
-
-
-/*  */
-"directions.along.heading.nw" = "En direction vers le Nord-ouest le long de %@";
 
 
 

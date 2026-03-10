@@ -2206,196 +2206,52 @@
 
 
 
-/*  */
-"directions.traveling.n" = "Travelling north";
 
 
-/*  */
-"directions.traveling.ne" = "Travelling northeast";
 
 
-/*  */
-"directions.traveling.e" = "Travelling east";
 
 
-/*  */
-"directions.traveling.se" = "Travelling southeast";
 
 
-/*  */
-"directions.traveling.s" = "Travelling south";
 
 
-/*  */
-"directions.traveling.sw" = "Travelling southwest";
 
 
-/*  */
-"directions.traveling.w" = "Travelling west";
 
 
-/*  */
-"directions.traveling.nw" = "Travelling northwest";
 
 
-/*  */
-"directions.facing.n" = "Facing north";
 
 
-/*  */
-"directions.facing.ne" = "Facing northeast";
 
 
-/*  */
-"directions.facing.e" = "Facing east";
 
 
-/*  */
-"directions.facing.se" = "Facing southeast";
 
 
-/*  */
-"directions.facing.s" = "Facing south";
 
 
-/*  */
-"directions.facing.sw" = "Facing southwest";
 
 
-/*  */
-"directions.facing.w" = "Facing west";
 
 
-/*  */
-"directions.facing.nw" = "Facing northwest";
 
 
-/*  */
-"directions.heading.n" = "Heading north";
 
 
-/*  */
-"directions.heading.ne" = "Heading northeast";
 
 
-/*  */
-"directions.heading.e" = "Heading east";
 
 
-/*  */
-"directions.heading.se" = "Heading southeast";
 
 
-/*  */
-"directions.heading.s" = "Heading south";
 
 
-/*  */
-"directions.heading.sw" = "Heading southwest";
 
 
-/*  */
-"directions.heading.w" = "Heading west";
 
 
-/*  */
-"directions.heading.nw" = "Heading northwest";
-
-
-/*  */
-"directions.along.traveling.n" = "Travelling north along %@";
-
-
-/*  */
-"directions.along.traveling.ne" = "Travelling northeast along %@";
-
-
-/*  */
-"directions.along.traveling.e" = "Travelling east along %@";
-
-
-/*  */
-"directions.along.traveling.se" = "Travelling southeast along %@";
-
-
-/*  */
-"directions.along.traveling.s" = "Travelling south along %@";
-
-
-/*  */
-"directions.along.traveling.sw" = "Travelling southwest along %@";
-
-
-/*  */
-"directions.along.traveling.w" = "Travelling west along %@";
-
-
-/*  */
-"directions.along.traveling.nw" = "Travelling northwest along %@";
-
-
-/*  */
-"directions.along.facing.n" = "Facing north along %@";
-
-
-/*  */
-"directions.along.facing.ne" = "Facing northeast along %@";
-
-
-/*  */
-"directions.along.facing.e" = "Facing east along %@";
-
-
-/*  */
-"directions.along.facing.se" = "Facing southeast along %@";
-
-
-/*  */
-"directions.along.facing.s" = "Facing south along %@";
-
-
-/*  */
-"directions.along.facing.sw" = "Facing southwest along %@";
-
-
-/*  */
-"directions.along.facing.w" = "Facing west along %@";
-
-
-/*  */
-"directions.along.facing.nw" = "Facing northwest along %@";
-
-
-/*  */
-"directions.along.heading.n" = "Heading north along %@";
-
-
-/*  */
-"directions.along.heading.ne" = "Heading northeast along %@";
-
-
-/*  */
-"directions.along.heading.e" = "Heading east along %@";
-
-
-/*  */
-"directions.along.heading.se" = "Heading southeast along %@";
-
-
-/*  */
-"directions.along.heading.s" = "Heading south along %@";
-
-
-/*  */
-"directions.along.heading.sw" = "Heading southwest along %@";
-
-
-/*  */
-"directions.along.heading.w" = "Heading west along %@";
-
-
-/*  */
-"directions.along.heading.nw" = "Heading northwest along %@";
 
 
 

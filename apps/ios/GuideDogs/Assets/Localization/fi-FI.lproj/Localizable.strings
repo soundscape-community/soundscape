@@ -2170,196 +2170,52 @@
 
 
 
-/*  */
-"directions.traveling.n" = "Kuljetaan pohjoiseen";
 
 
-/*  */
-"directions.traveling.ne" = "Kuljetaan koilliseen";
 
 
-/*  */
-"directions.traveling.e" = "Kuljetaan itään";
 
 
-/*  */
-"directions.traveling.se" = "Kuljetaan kaakkoon";
 
 
-/*  */
-"directions.traveling.s" = "Kuljetaan etelään";
 
 
-/*  */
-"directions.traveling.sw" = "Kuljetaan lounaaseen";
 
 
-/*  */
-"directions.traveling.w" = "Kuljetaan länteen";
 
 
-/*  */
-"directions.traveling.nw" = "Kuljetaan luoteeseen";
 
 
-/*  */
-"directions.facing.n" = "Kääntyneenä pohjoiseen";
 
 
-/*  */
-"directions.facing.ne" = "Kääntyneenä koilliseen";
 
 
-/*  */
-"directions.facing.e" = "Kääntyneenä itään";
 
 
-/*  */
-"directions.facing.se" = "Kääntyneenä kaakkoon";
 
 
-/*  */
-"directions.facing.s" = "Kääntyneenä etelään";
 
 
-/*  */
-"directions.facing.sw" = "Kääntyneenä lounaaseen";
 
 
-/*  */
-"directions.facing.w" = "Kääntyneenä länteen";
 
 
-/*  */
-"directions.facing.nw" = "Kääntyneenä luoteeseen";
 
 
-/*  */
-"directions.heading.n" = "Matkalla pohjoiseen";
 
 
-/*  */
-"directions.heading.ne" = "Matkalla koilliseen";
 
 
-/*  */
-"directions.heading.e" = "Matkalla itään";
 
 
-/*  */
-"directions.heading.se" = "Matkalla kaakkoon";
 
 
-/*  */
-"directions.heading.s" = "Matkalla etelään";
 
 
-/*  */
-"directions.heading.sw" = "Matkalla lounaaseen";
 
 
-/*  */
-"directions.heading.w" = "Matkalla länteen";
 
 
-/*  */
-"directions.heading.nw" = "Matkalla luoteeseen";
-
-
-/*  */
-"directions.along.traveling.n" = "Kuljetaan pohjoiseen tiellä %@";
-
-
-/*  */
-"directions.along.traveling.ne" = "Kuljetaan koilliseen tiellä %@";
-
-
-/*  */
-"directions.along.traveling.e" = "Kuljetaan itään tietä %@ pitkin";
-
-
-/*  */
-"directions.along.traveling.se" = "Kuljetaan kaakkoon tiellä %@";
-
-
-/*  */
-"directions.along.traveling.s" = "Kuljetaan etelään tiellä %@";
-
-
-/*  */
-"directions.along.traveling.sw" = "Kuljetaan lounaaseen tiellä %@";
-
-
-/*  */
-"directions.along.traveling.w" = "Kuljetaan länteen tiellä %@";
-
-
-/*  */
-"directions.along.traveling.nw" = "Kuljetaan luoteeseen tiellä %@";
-
-
-/*  */
-"directions.along.facing.n" = "Kääntyneenä pohjoiseen tiellä %@";
-
-
-/*  */
-"directions.along.facing.ne" = "Kääntyneenä koilliseen tiellä %@";
-
-
-/*  */
-"directions.along.facing.e" = "Kääntyneenä itään tiellä %@";
-
-
-/*  */
-"directions.along.facing.se" = "Kääntyneenä kaakkoon tiellä %@";
-
-
-/*  */
-"directions.along.facing.s" = "Kääntyneenä etelään tiellä %@";
-
-
-/*  */
-"directions.along.facing.sw" = "Kääntyneenä lounaaseen tiellä %@";
-
-
-/*  */
-"directions.along.facing.w" = "Kääntyneenä länteen tiellä %@";
-
-
-/*  */
-"directions.along.facing.nw" = "Kääntyneenä luoteeseen tiellä %@";
-
-
-/*  */
-"directions.along.heading.n" = "Matkalla pohjoiseen tiellä %@";
-
-
-/*  */
-"directions.along.heading.ne" = "Matkalla koilliseen tiellä %@";
-
-
-/*  */
-"directions.along.heading.e" = "Matkalla itään tiellä %@";
-
-
-/*  */
-"directions.along.heading.se" = "Matkalla kaakkoon tiellä %@";
-
-
-/*  */
-"directions.along.heading.s" = "Matkalla etelään tiellä %@";
-
-
-/*  */
-"directions.along.heading.sw" = "Matkalla lounaaseen tiellä %@";
-
-
-/*  */
-"directions.along.heading.w" = "Matkalla länteen tiellä %@";
-
-
-/*  */
-"directions.along.heading.nw" = "Matkalla luoteeseen tiellä %@";
 
 
 
