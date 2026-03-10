@@ -7,14 +7,6 @@
 //
 
 import Foundation
+import SSDataContracts
 
-enum UniversalLinkPath: String {
-    
-    // `rawValue` should be the path (excluding version)
-    // in the universal link URL
-    //
-    // e.g. "https://share.openscape.io/<Version>/<Path>?<QueryItems>"
-    case experience = "experience"
-    case shareMarker = "sharemarker"
-    
-}
+typealias UniversalLinkPath = SSDataContracts.UniversalLinkPath

@@ -58,7 +58,7 @@ Completed:
 - Sync-store compatibility registry/shim reintroduction is structurally blocked and absent from app/test code.
 - App-layer `RealmHelper` usage is now zero.
 - `DataContractRegistry` no longer constructs Realm adapters directly; Realm default installation is now owned from infrastructure and bootstrapped explicitly by app/test setup.
-- Shared route/marker/location parameter models and `UniversalLinkParameters` now live in `apps/common/Sources/SSDataContracts`; iOS serialization files retain only runtime-specific behavior.
+- Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component value types now live in `apps/common/Sources/SSDataContracts`; iOS serialization files retain only runtime-specific behavior.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; the Objective-C `GDAJSONObject` bridge has been removed from the iOS target.
 - `POI`, `SelectablePOI`, `MatchablePOI`, `GenericLocation`, `SuperCategory`, portable POI matching/equality helpers, shared filter/sort/queue helpers, and the shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; iOS files retain only Realm keys plus CoreLocation and presentation-specific shims/extensions.
 
@@ -136,6 +136,7 @@ Remaining focus:
 - Moved `POIQueue`, `SortPredicate`, and `LastSelectedPredicate` into `SSDataDomain`, leaving only `DistancePredicate` and the `Sort` convenience facade in `apps/ios`.
 - Moved `DistancePredicate`, `Sort`, and generic `[POI]` array filtering/sorting helpers into `SSDataDomain`, leaving only `CLLocation` overloads and quadrant-specific array helpers in `apps/ios`.
 - Moved `Filter` and `LocationPredicate` into `SSDataDomain`, leaving only the `CLLocation` `Filter.location` bridge in `apps/ios`.
+- Moved universal-link path/version/component value types into `SSDataContracts`, leaving `UniversalLinkManager` and link handlers in `apps/ios`.
 - Renamed the stable-target doc from a storage-only framing to `docs/plans/data_modularization_north_star.md` so it matches the broader shared-domain extraction work and future Android goal.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 

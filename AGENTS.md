@@ -21,7 +21,7 @@ This file is the canonical instruction source for coding agents in this reposito
 - `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
 - `SSGeo` now lives in `apps/common` and provides portable location payloads plus basic geodesic math without `CoreLocation`.
 - `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models plus shared POI/category/type/filter/sort/queue/query abstractions and portable POI matching logic shared with iOS.
-- `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries, including the universal-link/storage parameter models, `VectorTile`, and the Swift `GDAJSONObject` helper after decoupling them from iOS runtime behavior.
+- `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries, including universal-link parameter/parsing types, `VectorTile`, and the Swift `GDAJSONObject` helper after decoupling them from iOS runtime behavior.
 
 ## Data Modularization Status
 - `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
@@ -183,6 +183,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Packaging direction: keep `apps/common` portable (`SSGeo`, `SSDataDomain`, `SSDataContracts`), keep `DataContractRegistry` as the single composition root in `apps/ios`, and move runtime-neutral types into `apps/common` instead of using `apps/ios/Package.swift` as a modularization boundary.
 - `DataContractRegistry` should store installed defaults, but concrete Realm adapter construction belongs in infrastructure-owned installer code (`configureWithRealmDefaults()`), not in the registry file itself.
 - Shared route/marker/location parameter models plus `UniversalLinkParameters` now live in `apps/common/Sources/SSDataContracts`; the iOS serialization files should stay as shims/runtime extensions when behavior still depends on app-specific services.
+- Universal-link path/version/components now live in `apps/common/Sources/SSDataContracts`; keep only `UniversalLinkManager` and the concrete iOS link handlers in `apps/ios`.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; keep the iOS helper file as a CoreLocation shim only, and do not reintroduce the old Objective-C bridge.
 - `PrimaryType`, `SecondaryType`, `Typeable`, and portable `POI.match` / `POI.isEqual` behavior now live in `apps/common/Sources/SSDataDomain`; keep the Realm-only `POIKeys` helper and CoreLocation distance wrappers in `apps/ios`.
 - `FilterPredicate`, `CompoundPredicate`, `SuperCategoryPredicate`, and `TypePredicate` now live in `apps/common/Sources/SSDataDomain`; keep only `LocationPredicate` and the `Filter` facade in `apps/ios`.

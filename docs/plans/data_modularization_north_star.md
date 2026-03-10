@@ -71,7 +71,7 @@ Current examples include:
 - `Route`, `RouteWaypoint`, `ReferenceEntity`
 - `POI`, `GenericLocation`, `SuperCategory`
 - shared POI typing, matching, filter construction, filtering, sorting, queueing, and generic array-query helpers that do not depend on Apple frameworks
-- shared route/marker/location/universal-link parameter models
+- shared route/marker/location/universal-link parameter models and universal-link parsing/building value types
 - `VectorTile` and other portable geometry/value helpers
 
 Platform-specific wrappers should stay in `apps/ios` only when they genuinely depend on Apple frameworks or presentation/runtime services.
