@@ -24,7 +24,7 @@ Out of scope:
 Progress is materially good:
 - `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
 - `DataContractRegistry` is the app-facing data ingress.
-- Realm adapter wiring is centralized and guarded.
+- Default backend installation is centralized and guarded.
 - The retired sync-store seam has been removed from `apps/ios/GuideDogs/Code` and `apps/ios/UnitTests`.
 
 Current packaging decision:
@@ -52,6 +52,7 @@ Completed:
 - Structural boundary checks are active and currently green.
 - Sync-store compatibility registry/shim reintroduction is structurally blocked and absent from app/test code.
 - App-layer `RealmHelper` usage is now zero.
+- `DataContractRegistry` no longer constructs Realm adapters directly; Realm default installation is now owned from infrastructure and bootstrapped explicitly by app/test setup.
 
 In progress:
 - Prepare the storage code for package extraction instead of continuing incidental seam cleanup.
@@ -117,14 +118,16 @@ Remaining focus:
 - Moved `GenericLocationSearchProvider`, `OSMPOISearchProvider`, and `AddressSearchProvider` Realm-backed implementations into `Data/Infrastructure/Realm`, then moved the remaining app-layer `RealmHelper` calls behind infrastructure-owned extensions and neutral façades.
 - Renamed the route persistence error surface from `RouteRealmError` to `RouteDataError`, removing the last UI-facing Realm-branded error reference from runtime code.
 - Chose the extraction direction: keep `apps/common` portable, keep `DataContractRegistry` as the composition root, and split future package work into iOS storage-support plus Realm backend targets.
+- Changed `DataContractRegistry` from direct Realm construction to installed defaults, with `configureWithRealmDefaults()` owned in Realm infrastructure and invoked explicitly from `AppContext` and tests.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
 1. Create an explicit iOS storage-support target/package boundary around `DataContractRegistry`, `Data/Contracts`, and the iOS-specific contract-associated value types that are not yet portable.
-2. Extract `Data/Infrastructure/Realm/**` into a Realm backend target/package that depends on that storage-support target instead of the full app target.
-3. Keep app-level storage ingress contract-first through `DataContractRegistry`; avoid introducing new side-entry points or secondary registries.
-4. Move additional types into `apps/common` only when they are genuinely platform-neutral and runtime-neutral.
-5. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
+2. Move the installed-defaults composition code with that boundary in mind so the registry can live outside the Realm backend without reintroducing adapter construction there.
+3. Extract `Data/Infrastructure/Realm/**` into a Realm backend target/package that depends on that storage-support target instead of the full app target.
+4. Keep app-level storage ingress contract-first through `DataContractRegistry`; avoid introducing new side-entry points or secondary registries.
+5. Move additional types into `apps/common` only when they are genuinely platform-neutral and runtime-neutral.
+6. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 
 ## Handoff
 - Use `docs/plans/data_storage_api_north_star.md` for the stable target.

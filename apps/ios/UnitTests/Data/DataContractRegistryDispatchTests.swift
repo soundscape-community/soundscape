@@ -12,6 +12,11 @@ import SSGeo
 
 @MainActor
 final class DataContractRegistryDispatchTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        DataContractRegistry.configureWithRealmDefaults()
+    }
+
     private final class MockSpatialReadContract: SpatialReadContract {
         var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
@@ -1181,6 +1186,11 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
 
 @MainActor
 final class InMemorySpatialContractStoreTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        DataContractRegistry.configureWithRealmDefaults()
+    }
+
     override func tearDown() {
         DataContractRegistry.resetForTesting()
         super.tearDown()

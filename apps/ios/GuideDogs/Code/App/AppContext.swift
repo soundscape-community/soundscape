@@ -1503,6 +1503,8 @@ class AppContext {
             )
         }
 
+        DataContractRegistry.configureWithRealmDefaults()
+
         DataRuntimeProviderRegistry.configure(with: AppContextDataRuntimeProviders(context: self))
         UIRuntimeProviderRegistry.configure(with: AppContextUIRuntimeProviders(context: self))
         BehaviorRuntimeProviderRegistry.configure(with: AppContextBehaviorRuntimeProviders(context: self))

@@ -63,7 +63,7 @@ Must not be used by non-infrastructure code:
 - `RealmSwift` imports are confined to `Data/Infrastructure/Realm/**`.
 - `SpatialDataCache` usage is confined to `Data/Infrastructure/Realm/**`.
 - New app/runtime data behavior must be exposed through `DataContractRegistry` contracts.
-- Production Realm adapter wiring stays centralized in `DataContractRegistry` default static declarations.
+- `DataContractRegistry` stores installed defaults but must not construct Realm adapters directly; backend default installation belongs to infrastructure-owned installer code.
 - Avoid adding global registries or parallel ingress points.
 
 ## Target Extraction Shape

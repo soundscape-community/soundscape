@@ -11,6 +11,11 @@ import SSGeo
 
 @MainActor
 final class CloudSyncContractBridgeTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        DataContractRegistry.configureWithRealmDefaults()
+    }
+
     private final class MockSpatialReadContract: SpatialReadContract {
         var routesByKey: [String: Route] = [:]
         var routeMetadataByKey: [String: RouteReadMetadata] = [:]

@@ -12,8 +12,8 @@ readonly FORBIDDEN_IMPORT_PATTERN='^\s*import\s+(RealmSwift|CoreLocation|MapKit)
 readonly FORBIDDEN_RUNTIME_SYMBOL_PATTERN='\b(AppContext(\.shared)?|UIRuntimeProviderRegistry|BehaviorRuntimeProviderRegistry)\b'
 readonly REALM_ADAPTER_SYMBOL_PATTERN='\b(RealmSpatialReadContract|RealmSpatialWriteContract|RealmSpatialMaintenanceWriteContract)\b'
 readonly REALM_ADAPTER_CONSTRUCTOR_PATTERN='\b(RealmSpatialReadContract|RealmSpatialWriteContract|RealmSpatialMaintenanceWriteContract)\s*\('
-readonly REALM_ADAPTER_REGISTRY_DEFAULT_DECLARATION_PATTERN='^[[:space:]]*private[[:space:]]+static[[:space:]]+let[[:space:]]+defaultSpatial(Read|WriteAdapter|MaintenanceWriteAdapter)[[:space:]]*=[[:space:]]*RealmSpatial(Read|Write|MaintenanceWrite)Contract[[:space:]]*\([[:space:]]*\)[[:space:]]*$'
 readonly REALM_ADAPTER_ALLOWED_REGISTRY='GuideDogs/Code/Data/Contracts/Storage/DataContractRegistry.swift'
+readonly REALM_ADAPTER_ALLOWED_DEFAULT_INSTALLER='GuideDogs/Code/Data/Infrastructure/Realm/DataContractRegistry+RealmDefaults.swift'
 readonly REALM_ADAPTER_ALLOWED_INFRA_PREFIX='GuideDogs/Code/Data/Infrastructure/Realm/'
 readonly REALM_ADAPTER_CONSTRUCTOR_ALLOWED_TEST_PREFIX='UnitTests/'
 readonly DATA_CONTRACT_REGISTRY_TEST_OVERRIDE_PATTERN='DataContractRegistry\.(configure|resetForTesting)\('
@@ -105,10 +105,6 @@ check_realm_adapter_boundary() {
     [[ -z "${caller}" ]] && continue
     relative_caller="${caller#${IOS_DIR}/}"
 
-    if [[ "${relative_caller}" == "${REALM_ADAPTER_ALLOWED_REGISTRY}" ]]; then
-      continue
-    fi
-
     if [[ "${relative_caller}" == ${REALM_ADAPTER_ALLOWED_INFRA_PREFIX}* ]]; then
       continue
     fi
@@ -121,7 +117,6 @@ check_realm_adapter_boundary() {
     echo "Disallowed callers:" >&2
     printf "  %s\n" "${disallowed_callers[@]}" >&2
     echo "Allowed callers:" >&2
-    echo "  ${REALM_ADAPTER_ALLOWED_REGISTRY}" >&2
     echo "  ${REALM_ADAPTER_ALLOWED_INFRA_PREFIX}*" >&2
     exit 1
   fi
@@ -145,7 +140,7 @@ check_realm_adapter_constructor_boundary() {
     [[ -z "${caller}" ]] && continue
     relative_caller="${caller#${IOS_DIR}/}"
 
-    if [[ "${relative_caller}" == "${REALM_ADAPTER_ALLOWED_REGISTRY}" ]]; then
+    if [[ "${relative_caller}" == "${REALM_ADAPTER_ALLOWED_DEFAULT_INSTALLER}" ]]; then
       continue
     fi
 
@@ -161,15 +156,14 @@ check_realm_adapter_constructor_boundary() {
     echo "Disallowed callers:" >&2
     printf "  %s\n" "${disallowed_callers[@]}" >&2
     echo "Allowed callers:" >&2
-    echo "  ${REALM_ADAPTER_ALLOWED_REGISTRY}" >&2
+    echo "  ${REALM_ADAPTER_ALLOWED_DEFAULT_INSTALLER}" >&2
     echo "  ${REALM_ADAPTER_CONSTRUCTOR_ALLOWED_TEST_PREFIX}*" >&2
     exit 1
   fi
 }
 
 check_data_contract_registry_realm_adapter_wiring() {
-  local registry_file constructor_output line_number line_content
-  declare -a disallowed_registry_wiring=()
+  local registry_file constructor_output
 
   registry_file="${IOS_DIR}/${REALM_ADAPTER_ALLOWED_REGISTRY}"
   if [[ ! -f "${registry_file}" ]]; then
@@ -183,24 +177,9 @@ check_data_contract_registry_realm_adapter_wiring() {
       || true
   )"
 
-  while IFS= read -r constructor_line; do
-    [[ -z "${constructor_line}" ]] && continue
-    line_number="${constructor_line%%:*}"
-    line_content="${constructor_line#*:}"
-
-    if [[ "${line_content}" =~ ${REALM_ADAPTER_REGISTRY_DEFAULT_DECLARATION_PATTERN} ]]; then
-      continue
-    fi
-
-    disallowed_registry_wiring+=("${REALM_ADAPTER_ALLOWED_REGISTRY}:${line_number}")
-  done <<< "${constructor_output}"
-
-  if [[ ${#disallowed_registry_wiring[@]} -gt 0 ]]; then
-    echo "DataContractRegistry contains non-default Realm adapter constructor wiring." >&2
-    echo "Disallowed constructor call sites:" >&2
-    printf "  %s\n" "${disallowed_registry_wiring[@]}" >&2
-    echo "Allowed constructor shape:" >&2
-    echo "  private static let defaultSpatial* = RealmSpatial*Contract()" >&2
+  if [[ -n "${constructor_output}" ]]; then
+    echo "DataContractRegistry must not construct Realm adapters directly." >&2
+    echo "Move default backend installation into ${REALM_ADAPTER_ALLOWED_DEFAULT_INSTALLER}." >&2
     exit 1
   fi
 }
@@ -2960,4 +2939,4 @@ check_data_contract_registry_escaped_alias_owner_assignment_wiring
 check_data_contract_registry_escaped_owner_wiring
 check_data_contract_registry_escaped_identifier_wiring
 
-echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, constructor wiring boundaries preserved including registry-default declarations, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/parenthesized-alias-owner/nested-parenthesized-owner/cast-owner/nested-cast-owner/forced-optional-cast-owner/optional-metatype-cast-owner/cast-coalescing-owner/spaced-member/comment-interleaved/block-comment-separated/metatype-self-owner/chained-metatype-self-owner/parenthesized-chained-metatype-self-owner/chained-metatype-self-cast-owner/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."
+echo "Data contract/domain boundaries passed (no forbidden platform imports/runtime symbols, no Realm adapter seam leaks, default backend installation confined to infrastructure, registry spatial-adapter assignment seams preserved including parenthesized/multiline/split-member/parenthesized-owner/parenthesized-alias-owner/nested-parenthesized-owner/cast-owner/nested-cast-owner/forced-optional-cast-owner/optional-metatype-cast-owner/cast-coalescing-owner/spaced-member/comment-interleaved/block-comment-separated/metatype-self-owner/chained-metatype-self-owner/parenthesized-chained-metatype-self-owner/chained-metatype-self-cast-owner/inout/key-path/metatype-alias/typealias/typealias-chain/typealias-derived-metatype-alias/escaped-alias-owner/escaped-owner/escaped-identifier wiring detection, and test-only registry overrides)."

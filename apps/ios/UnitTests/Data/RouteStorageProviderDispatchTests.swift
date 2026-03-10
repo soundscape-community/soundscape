@@ -177,6 +177,11 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func spatialDataContextProcessEvent(_ event: Event) {}
     }
 
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        DataContractRegistry.configureWithRealmDefaults()
+    }
+
     override func tearDownWithError() throws {
         DataContractRegistry.resetForTesting()
         DataRuntimeProviderRegistry.resetForTesting()

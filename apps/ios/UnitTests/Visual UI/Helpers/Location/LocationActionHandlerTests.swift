@@ -13,11 +13,13 @@ import SSGeo
 @MainActor
 final class LocationActionHandlerTests: XCTestCase {
     override func setUpWithError() throws {
-        DataContractRegistry.resetForTesting()
+        try super.setUpWithError()
+        DataContractRegistry.configureWithRealmDefaults()
     }
 
     override func tearDownWithError() throws {
         DataContractRegistry.resetForTesting()
+        try super.tearDownWithError()
     }
 
     func testSaveCoordinatePersistsMarkerThroughAsyncWriteContract() async throws {
