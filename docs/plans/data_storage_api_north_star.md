@@ -2,7 +2,7 @@
 
 # Data Storage API North Star
 
-Last updated: 2026-03-09
+Last updated: 2026-03-10
 
 ## Document Contract
 - This document defines the target data API and boundary rules.
@@ -40,6 +40,7 @@ Use domain/value types directly at contract boundaries (for example `Route`, `Ro
 - Contracts are async-first (`async`/`await`) and explicit about failure (`throws`).
 - Do not reintroduce removed compatibility surfaces (`spatialReadCompatibility`, `spatialWriteCompatibility`).
 - Temporary compatibility seams must be explicitly deprecated and short-lived.
+- Do not reintroduce retired sync-store registry/shim patterns.
 
 ## Infrastructure-Only APIs (Non App-Facing)
 Must not be used by non-infrastructure code:
@@ -51,6 +52,7 @@ Must not be used by non-infrastructure code:
 ## Boundary Rules
 - `Data/Contracts` must remain free of Realm infrastructure types.
 - `RealmSwift` imports are confined to `Data/Infrastructure/Realm/**`.
+- `SpatialDataCache` usage is confined to `Data/Infrastructure/Realm/**`.
 - New app/runtime data behavior must be exposed through `DataContractRegistry` contracts.
 - Production Realm adapter wiring stays centralized in `DataContractRegistry` default static declarations.
 - Avoid adding global registries or parallel ingress points.

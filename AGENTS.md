@@ -23,14 +23,15 @@ This file is the canonical instruction source for coding agents in this reposito
 - `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models shared with iOS.
 - `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries.
 
-## Modularization Status (Phase 1)
-- First extraction is complete: core data-structure types moved from `apps/ios` into `apps/common/Sources/SSDataStructures`.
-- Shared geo primitives extraction is complete: portable coordinate/location/math types now live in `apps/common/Sources/SSGeo`.
-- Initial data-domain extraction is complete: canonical `Route`, `RouteWaypoint`, and `ReferenceEntity` models now live in `apps/common/Sources/SSDataDomain`.
-- Initial data-contract extraction is complete: shared contract-side value types now live in `apps/common/Sources/SSDataContracts` and are bridged in iOS contract files.
+## Data Modularization Status
+- `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
+- `DataContractRegistry` is the app-facing data ingress.
+- Realm implementation remains infrastructure-local under `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm`.
+- `SpatialDataCache` usage is confined to Realm infrastructure and the retired sync-store seam (`SpatialDataStoreRegistry`, `DefaultSpatialDataStore`, `SpatialDataStore`) must not be reintroduced.
+- Marker cloud write/update paths are value-shaped (`MarkerParameters` updates, marker-ID deletes) rather than entity-shaped compatibility helpers.
 - Boundary rule: keep `apps/common` platform-agnostic. Do not import Apple UI/platform frameworks in `apps/common/Sources`.
 - Boundary enforcement script: `bash apps/common/Scripts/check_forbidden_imports.sh`.
-- Package tests for extracted module: `swift test --package-path apps/common`.
+- Package tests for extracted modules: `swift test --package-path apps/common`.
 
 ## Common Module Naming
 - Use `SS` + concise domain noun for modules in `apps/common` (for example: `SSDataStructures`, `SSUniversalLinks`).
@@ -170,28 +171,13 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Use async APIs where appropriate, but migrate incrementally with minimal client churn and explicit deprecation only for temporary compatibility seams.
 - Add abstractions/patterns only when they clearly improve code organization, readability, and local reasoning boundaries. Do not add patterns from irrelevant contexts (for example distributed-systems patterns) when they are not required for this modularization work.
 
-## Modularization Checkpoint (2026-02-11)
-- Data read/write contract compatibility surfaces are removed from production (`spatialReadCompatibility`/`spatialWriteCompatibility` usage in `apps/ios/GuideDogs/Code` is zero); use async `DataContractRegistry.spatialRead` and `DataContractRegistry.spatialWrite`.
-- Canonical route write APIs are now domain-shaped: `SpatialWriteContract.addRoute(_ route: Route)` and `SpatialWriteContract.updateRoute(_ route: Route)`.
-- Route add telemetry remains infrastructure-local in `Data/Infrastructure/Realm/Route+Realm.swift`; do not re-introduce telemetry-context parameters into app-facing contracts.
-- First-waypoint coordinate hydration for route initialization is centralized behind route-focused helpers in `Data/Infrastructure/Realm/Route.swift` (`firstWaypointCoordinate(for:)`, `markerCoordinate(forMarkerID:)`).
-- When validating route modularization slices locally, prefer clean derived data (for example `/tmp/soundscape-modularization-dd2`) before `xcodebuild build-for-testing` and targeted suites (`RouteStorageProviderDispatchTests`, `DataContractRegistryDispatchTests`, `CloudSyncContractBridgeTests`) to avoid stale test artifacts.
-
-## Modularization Checkpoint (2026-03-04)
-- Milestone 4 in-memory contract parity is complete; coverage now includes cloud marker import read round-trip, metadata/callout nickname-fallback semantics, and entity-key upsert behavior after temporary-marker cleanup.
-- Milestone 3 Realm adapter isolation hardening is now the primary active execution track.
-- For data-modularization slices, known full-suite `AudioEngineTest` failures (`testDiscreteAudio2DSimple`, `testDiscreteAudio2DSeveral`) are currently tracked as non-blocking.
-
-## Modularization Checkpoint (2026-03-07)
-- Async marker cloud removal dispatch now supports marker-ID-only routing (`referenceRemoveFromCloud(markerID:)`) to avoid remove-time sync POI fallback lookups.
-- Destination-store temporary marker mutation now routes through persistence-local `RealmReferenceEntity.setTemporary(id:temporary:)` instead of injected-store mutation fallback.
-- Current execution mode is low-noise by default (`--output quiet`) for targeted modularization validation loops.
-
-## Modularization Checkpoint (2026-03-10)
-- `check_spatial_data_cache_seam.sh` now enforces the simplified post-reset boundary: `SpatialDataCache` usage is allowed only under `GuideDogs/Code/Data/Infrastructure/Realm/`.
-- The retired sync-store seam (`SpatialDataStoreRegistry`, `DefaultSpatialDataStore`, `SpatialDataStore`) must remain absent from `apps/ios/GuideDogs/Code` and `apps/ios/UnitTests`.
-- Marker cloud write/update paths now support `MarkerParameters` dispatch so entity-key/location marker writes do not require sync POI fallback hydration.
-- Marker cloud runtime update/remove dispatch is now narrowed to `MarkerParameters` updates and marker-ID deletes; do not reintroduce entity-shaped reference cloud runtime helpers unless a concrete production caller requires them.
+## Data Modularization Checkpoints
+- Data read/write contract compatibility surfaces are removed from production; use async `DataContractRegistry.spatialRead` and `DataContractRegistry.spatialWrite`.
+- Canonical route write APIs are domain-shaped: `SpatialWriteContract.addRoute(_ route: Route)` and `SpatialWriteContract.updateRoute(_ route: Route)`.
+- First-waypoint coordinate hydration stays infrastructure-local behind route-focused Realm helpers.
+- Destination temporary-marker mutation is persistence-local (`RealmReferenceEntity.setTemporary(id:temporary:)`).
+- Current validation default for modularization slices is low-noise output (`--output quiet`).
+- Known local full-suite non-blocking failures remain `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.
 
 ## Compatibility Seam Policy
 - Temporary compatibility APIs (for example sync wrappers around async-first contracts) must be explicitly marked deprecated with `@available(*, deprecated, message: "...")`.
