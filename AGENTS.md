@@ -60,6 +60,7 @@ From repo root:
 bash apps/ios/Scripts/ci/run_local_validation.sh
 
 # Optional output modes for build/test stage:
+bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet
 bash apps/ios/Scripts/ci/run_local_validation.sh -- --output summary
 bash apps/ios/Scripts/ci/run_local_validation.sh -- --output xcpretty
 bash apps/ios/Scripts/ci/run_local_validation.sh -- --output raw
@@ -69,15 +70,22 @@ bash apps/ios/Scripts/ci/run_local_ios_build_test.sh
 
 # Targeted data-modularization suites (low-noise wrapper):
 bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh
+bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output quiet
+
+# Focused seam/boundary spot check:
+bash apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh
 ```
 
 ## Tool Output and Context Hygiene
 - Watch for high-volume tools (especially `xcodebuild`) polluting agent/user context with low-signal logs.
+- Treat context tokens as a limited budget: default to low-noise output and avoid full log streaming unless actively diagnosing a failure.
 - Prefer concise output modes and wrappers for repeated actions:
+  - `--output quiet` (alias for `summary`) for routine local runs where context minimization is the priority.
   - `--output summary` for the lowest-noise local loop (step pass/fail + counts + log paths).
   - `--output errors` for routine local build/test loops.
-  - `--output xcpretty` when human-readable summaries are needed (`xcpretty` is available locally).
+  - `--output xcpretty` only when human-readable per-test output is specifically needed (`xcpretty` is available locally).
 - When a command is repeated often, prefer a small script in `apps/ios/Scripts/ci/` rather than re-issuing long raw commands.
+- When creating or changing a script in `apps/ios/Scripts/ci/`, update this `AGENTS.md` in the same change with command examples, defaults, and supported output/options so future sessions can discover and use it correctly.
 - Default to reporting key outcomes + log file locations instead of streaming full command output into the conversation.
 - Use raw output only when diagnosing a failure that requires full trace context.
 
@@ -173,6 +181,15 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Milestone 4 in-memory contract parity is complete; coverage now includes cloud marker import read round-trip, metadata/callout nickname-fallback semantics, and entity-key upsert behavior after temporary-marker cleanup.
 - Milestone 3 Realm adapter isolation hardening is now the primary active execution track.
 - For data-modularization slices, known full-suite `AudioEngineTest` failures (`testDiscreteAudio2DSimple`, `testDiscreteAudio2DSeveral`) are currently tracked as non-blocking.
+
+## Modularization Checkpoint (2026-03-07)
+- Async marker cloud removal dispatch now supports marker-ID-only routing (`referenceRemoveFromCloud(markerID:)`) to avoid remove-time sync POI fallback lookups.
+- Destination-store temporary marker mutation now routes through persistence-local `RealmReferenceEntity.setTemporary(id:temporary:)` instead of injected-store mutation fallback.
+- Current execution mode is low-noise by default (`--output quiet`) for targeted modularization validation loops.
+
+## Modularization Checkpoint (2026-03-10)
+- `check_spatial_data_cache_seam.sh` now enforces the simplified post-reset boundary: `SpatialDataCache` usage is allowed only under `GuideDogs/Code/Data/Infrastructure/Realm/`.
+- The retired sync-store seam (`SpatialDataStoreRegistry`, `DefaultSpatialDataStore`, `SpatialDataStore`) must remain absent from `apps/ios/GuideDogs/Code` and `apps/ios/UnitTests`.
 
 ## Compatibility Seam Policy
 - Temporary compatibility APIs (for example sync wrappers around async-first contracts) must be explicitly marked deprecated with `@available(*, deprecated, message: "...")`.
