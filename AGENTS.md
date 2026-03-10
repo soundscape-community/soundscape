@@ -41,6 +41,7 @@ This file is the canonical instruction source for coding agents in this reposito
 ## Plan Documents
 - Active plans live in `docs/plans/`.
 - Modularization progress is tracked in `docs/plans/modularization_plan.md`.
+- Language extraction progress is tracked in `docs/plans/language_modularization_plan.md`.
 - Stable target/boundary rules live in `docs/plans/data_modularization_north_star.md`.
 - Each active plan must include: summary, scope, current status, progress updates, and next steps.
 - After each implementation in plan scope, update the plan document in the same change with current progress and immediate next steps.

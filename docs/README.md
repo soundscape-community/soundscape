@@ -22,3 +22,4 @@ These historical planning docs are useful for context, but operational commands 
 ## Active Plan Docs
 - [Plan documentation standards](./plans/README.md)
 - [Modularization plan (live status)](./plans/modularization_plan.md)
+- [Language modularization plan](./plans/language_modularization_plan.md)
