@@ -8,15 +8,12 @@
 
 import Foundation
 import CoreLocation
+import SSDataDomain
 
-struct Sort {
-    
-    static func distance(origin: CLLocation, useEntranceIfAvailable: Bool = false) -> SortPredicate {
-        return DistancePredicate(origin: origin, useEntranceIfAvailable: useEntranceIfAvailable)
+typealias Sort = SSDataDomain.Sort
+
+extension SSDataDomain.Sort {
+    static func distance(origin: CLLocation, useEntranceIfAvailable: Bool = false) -> any SortPredicate {
+        SSDataDomain.Sort.distance(origin: origin.ssGeoLocation, useEntranceIfAvailable: useEntranceIfAvailable)
     }
-    
-    static func lastSelected() -> SortPredicate {
-        return LastSelectedPredicate()
-    }
-    
 }

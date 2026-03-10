@@ -206,6 +206,48 @@ struct POIDomainTests {
 
         #expect(queue.pois.map(\.key) == ["newest", "middle"])
     }
+
+
+    @Test
+    func distancePredicateOrdersCloserPOIsFirst() {
+        let origin = SSGeoLocation(coordinate: .init(latitude: 47.6205, longitude: -122.3493))
+        let close = TestPOI(key: "close",
+                            name: "Close",
+                            coordinate: .init(latitude: 47.6206, longitude: -122.3493))
+        let far = TestPOI(key: "far",
+                          name: "Far",
+                          coordinate: .init(latitude: 47.6305, longitude: -122.3493))
+
+        #expect(DistancePredicate(origin: origin).areInIncreasingOrder(close, far))
+        #expect(DistancePredicate(origin: origin).areInIncreasingOrder(far, close) == false)
+    }
+
+    @Test
+    func poiArrayHelpersSortFilterAndDistanceSort() {
+        let origin = SSGeoLocation(coordinate: .init(latitude: 47.6205, longitude: -122.3493))
+        let newest = TestPOI(key: "newest",
+                             name: "Newest",
+                             coordinate: .init(latitude: 47.6206, longitude: -122.3494),
+                             lastSelectedDate: Date(timeIntervalSince1970: 300))
+        let middle = TestPOI(key: "middle",
+                             name: "Middle",
+                             coordinate: .init(latitude: 47.6207, longitude: -122.3495),
+                             lastSelectedDate: Date(timeIntervalSince1970: 200))
+        let far = TestPOI(key: "far",
+                          name: "Far",
+                          coordinate: .init(latitude: 47.6305, longitude: -122.3493),
+                          superCategory: SuperCategory.mobility.rawValue,
+                          lastSelectedDate: Date(timeIntervalSince1970: 100))
+        let pois: [any POI] = [far, middle, newest]
+
+        let sorted = pois.sorted(by: Sort.lastSelected(), filteredBy: nil, maxLength: 2)
+        let filtered = pois.filtered(by: SuperCategoryPredicate(expected: .places))
+        let distanceSorted = pois.sorted(byDistanceFrom: origin)
+
+        #expect(sorted.map(\.key) == ["newest", "middle"])
+        #expect(filtered.map(\.key) == ["middle", "newest"])
+        #expect(distanceSorted.map(\.key) == ["newest", "middle", "far"])
+    }
 }
 
 private struct TestPOI: SelectablePOI, Typeable {
