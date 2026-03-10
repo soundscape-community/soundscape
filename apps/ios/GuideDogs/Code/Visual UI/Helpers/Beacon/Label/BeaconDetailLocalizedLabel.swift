@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -102,14 +103,30 @@ struct BeaconDetailLocalizedLabel {
             
         if let userLocation = userLocation, BeaconDetailRuntime.isUserWithinDestinationGeofence(userLocation) {
             // "<Some Place> is nearby. Street address is <Some Address>"
-            text = GDLocalizedString("directions.name_is_nearby_street_address", detail.locationDetail.displayName, detail.locationDetail.displayAddress)
+            text = LanguageFormatter.namedLocationStreetAddressString(
+                name: detail.locationDetail.displayName,
+                address: detail.locationDetail.displayAddress,
+                style: .nearby
+            )
         } else if let dLabel = detail.locationDetail.labels.distance(from: userLocation) {
             // "<Some Place> is currently <5 meters>. Street address is <Some Address>"
-            text = GDLocalizedString("directions.name_is_currently_street_address", detail.locationDetail.displayName, dLabel.text, detail.locationDetail.displayAddress)
-            accessibilityText = GDLocalizedString("directions.name_is_currently_street_address", detail.locationDetail.displayName, dLabel.accessibilityText ?? dLabel.text, detail.locationDetail.displayAddress)
+            text = LanguageFormatter.namedLocationStreetAddressString(
+                name: detail.locationDetail.displayName,
+                address: detail.locationDetail.displayAddress,
+                style: .current(distance: dLabel.text)
+            )
+            accessibilityText = LanguageFormatter.namedLocationStreetAddressString(
+                name: detail.locationDetail.displayName,
+                address: detail.locationDetail.displayAddress,
+                style: .current(distance: dLabel.accessibilityText ?? dLabel.text)
+            )
         } else {
             // "<Some Place>. Street address is <Some Address>. Distance unknown."
-            text = GDLocalizedString("directions.name_street_address", detail.locationDetail.displayName, detail.locationDetail.displayAddress)
+            text = LanguageFormatter.namedLocationStreetAddressString(
+                name: detail.locationDetail.displayName,
+                address: detail.locationDetail.displayAddress,
+                style: .unknownDistance
+            )
         }
             
         return LocalizedLabel(text: text, accessibilityText: accessibilityText)

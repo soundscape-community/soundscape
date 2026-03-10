@@ -50,7 +50,21 @@ struct Configuration {
             "directions.name_close_by",
             "directions.name_about_distance",
             "directions.name_around_distance",
-            "directions.name_distance"
+            "directions.name_distance",
+            "directions.name_goes_left",
+            "directions.name_goes_left.roundabout",
+            "directions.name_goes_right",
+            "directions.name_goes_right.roundabout",
+            "directions.name_continues_ahead",
+            "directions.name_continues_ahead.roundabout",
+            "directions.name_roundabout",
+            "directions.approaching_name_roundabout",
+            "directions.approaching_name",
+            "directions.approaching_name_roundabout_with_exits",
+            "directions.approaching_name_with_exits",
+            "directions.name_is_nearby_street_address",
+            "directions.name_is_currently_street_address",
+            "directions.name_street_address"
         ]
 
         static let prefixes = [

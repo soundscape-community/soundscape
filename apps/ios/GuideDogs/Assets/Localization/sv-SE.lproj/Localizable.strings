@@ -2120,28 +2120,13 @@
 "directions.roundabout_with_exits" = "Rondell med %1$@ avfarter ligger i närheten";
 
 
-/*  */
-"directions.approaching_name" = "Snart framme vid %@";
-
 
 /*  */
 "directions.approaching_roundabout" = "Snart framme vid rondell";
 
 
-/*  */
-"directions.approaching_name_roundabout" = "Snart framme vid rondellen %@";
 
 
-/*  */
-"directions.name_roundabout" = "Rondellen vid %@";
-
-
-/*  */
-"directions.approaching_name_roundabout_with_exits" = "Snart framme vid rondellen %1$@ med %2$@ avfarter";
-
-
-/*  */
-"directions.approaching_name_with_exits" = "Snart framme vid %1$@ med %2$@ avfarter";
 
 
 /*  */
@@ -2152,28 +2137,6 @@
 "directions.name_with_exits" = "%1$@ med %2$@ avfarter";
 
 
-/*  */
-"directions.name_goes_left" = "%@, går åt vänster";
-
-
-/*  */
-"directions.name_goes_left.roundabout" = "%@, går till vänster i en rondell";
-
-
-/*  */
-"directions.name_goes_right" = "%@, går åt höger";
-
-
-/*  */
-"directions.name_goes_right.roundabout" = "%@, går till höger i en rondell";
-
-
-/*  */
-"directions.name_continues_ahead" = "%@, fortsätter framåt";
-
-
-/*  */
-"directions.name_continues_ahead.roundabout" = "%@, fortsätter rakt fram i en rondell";
 
 
 
@@ -2200,16 +2163,11 @@
 
 
 
-/*  */
-"directions.name_is_nearby_street_address" = "%1$@ ligger i närheten. Gatuadressen är %2$@.";
 
 
-/*  */
-"directions.name_is_currently_street_address" = "%1$@ ligger nu %2$@ bort. Gatuadressen är %3$@.";
 
 
-/*  */
-"directions.name_street_address" = "%1$@. Gatuadressen är %2$@. Okänt avstånd.";
+
 
 
 /*  */

@@ -20,7 +20,7 @@ This file is the canonical instruction source for coding agents in this reposito
 - `HandledEventAction` is the behavior-to-processor contract for callout playback, event fan-out, and interrupt requests.
 - `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
 - `SSGeo` now lives in `apps/common` and provides portable location payloads plus basic geodesic math without `CoreLocation`.
-- `SSLanguage` now lives in `apps/common` and provides portable localization helpers, distance/direction formatters, locale helpers, and package-owned shared language resources.
+- `SSLanguage` now lives in `apps/common` and provides portable localization helpers, distance/direction/intersection/street-address formatters, locale helpers, and package-owned shared language resources.
 - Localization validation now checks both `apps/ios/GuideDogs/Assets/Localization` and `apps/common/Sources/SSLanguage/Resources`, and it blocks reintroducing `SSLanguage`-owned helper keys into the iOS app bundle.
 - `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models plus shared POI/category/type/filter/sort/queue/query abstractions and portable POI matching logic shared with iOS.
 - `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries, including universal-link parameter/parsing types, `VectorTile`, and the Swift `GDAJSONObject` helper after decoupling them from iOS runtime behavior.
@@ -191,7 +191,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component parsing types now live in `apps/common/Sources/SSDataContracts`; keep only runtime managers/handlers and other app-specific behavior in `apps/ios`.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; keep the iOS helper file as a CoreLocation shim only, and do not reintroduce the old Objective-C bridge.
 - `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, type/filter/sort/queue/query helpers, and generic `[POI]` array helper logic now live in `apps/common/Sources/SSDataDomain`; keep only Realm keys, CoreLocation conveniences/bridges, quadrant-specific wrappers, and glyph/audio presentation mapping in `apps/ios`.
-- Shared distance/direction/locale-helper localization keys are owned by `SSLanguage`; do not duplicate those key families back into `apps/ios/GuideDogs/Assets/Localization/**`.
+- Shared distance/direction/intersection/street-address localization helper keys are owned by `SSLanguage`; do not duplicate those key families back into `apps/ios/GuideDogs/Assets/Localization/**`.
 - `SSLanguage` call sites in `apps/ios` now import the module directly for portable types; keep iOS wrappers only where app-locale defaults, `AppContext`, or Apple-framework bridging are still required.
 - `apps/ios/Package.swift` is placeholder/editor scaffolding and should not be used as the architectural extraction boundary.
 - Current validation default for modularization slices is low-noise output (`--output quiet`).

@@ -2120,28 +2120,13 @@
 "directions.roundabout_with_exits" = "Rotatória com %1$@ saídas nas proximidades";
 
 
-/*  */
-"directions.approaching_name" = "Aproximando-se de %@";
-
 
 /*  */
 "directions.approaching_roundabout" = "Aproximando-se da rotatória";
 
 
-/*  */
-"directions.approaching_name_roundabout" = "Aproximando-se da rotatória da %@";
 
 
-/*  */
-"directions.name_roundabout" = "Rotatória da %@";
-
-
-/*  */
-"directions.approaching_name_roundabout_with_exits" = "Aproximando-se da rotatória da %1$@ com %2$@ saídas";
-
-
-/*  */
-"directions.approaching_name_with_exits" = "Aproximando-se de %1$@ com %2$@ saídas";
 
 
 /*  */
@@ -2152,28 +2137,6 @@
 "directions.name_with_exits" = "%1$@ com %2$@ saídas";
 
 
-/*  */
-"directions.name_goes_left" = "%@, vira à esquerda";
-
-
-/*  */
-"directions.name_goes_left.roundabout" = "%@, segue à esquerda na rotatória";
-
-
-/*  */
-"directions.name_goes_right" = "%@, vira à direita";
-
-
-/*  */
-"directions.name_goes_right.roundabout" = "%@, segue à direita na rotatória";
-
-
-/*  */
-"directions.name_continues_ahead" = "%@, continua à frente";
-
-
-/*  */
-"directions.name_continues_ahead.roundabout" = "%@, continua à frente na rotatória";
 
 
 
@@ -2200,16 +2163,11 @@
 
 
 
-/*  */
-"directions.name_is_nearby_street_address" = "%1$@ está nas proximidades. O endereço é %2$@.";
 
 
-/*  */
-"directions.name_is_currently_street_address" = "%1$@ está a %2$@. O endereço é %3$@.";
 
 
-/*  */
-"directions.name_street_address" = "%1$@. O endereço é %2$@. Distância desconhecida.";
+
 
 
 /*  */

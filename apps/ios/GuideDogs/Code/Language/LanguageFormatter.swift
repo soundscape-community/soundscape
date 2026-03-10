@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -13,6 +14,8 @@ import SSLanguage
 @MainActor
 enum LanguageFormatter {
     typealias DistanceStyle = SSLanguage.LanguageFormatter.DistanceStyle
+    typealias RoadNameDirection = SSLanguage.LanguageFormatter.RoadNameDirection
+    typealias NamedLocationStreetAddressStyle = SSLanguage.LanguageFormatter.NamedLocationStreetAddressStyle
 
     private static var defaultOptions: DistanceFormatter.Options {
         DistanceFormatter.Options(
@@ -141,6 +144,56 @@ enum LanguageFormatter {
             for: string,
             coordinate: coordinate?.ssGeoCoordinate,
             heading: heading,
+            locale: LocalizationContext.currentAppLocale
+        )
+    }
+
+    static func roadNameString(
+        name: String,
+        direction: RoadNameDirection,
+        roundabout: Bool = false
+    ) -> String {
+        SSLanguage.LanguageFormatter.roadNameString(
+            name: name,
+            direction: direction,
+            roundabout: roundabout,
+            locale: LocalizationContext.currentAppLocale
+        )
+    }
+
+    static func roundaboutNameString(
+        name: String,
+        includesRoundaboutInName: Bool
+    ) -> String {
+        SSLanguage.LanguageFormatter.roundaboutNameString(
+            name: name,
+            includesRoundaboutInName: includesRoundaboutInName,
+            locale: LocalizationContext.currentAppLocale
+        )
+    }
+
+    static func approachingRoundaboutString(
+        name: String,
+        includesRoundaboutInName: Bool,
+        exitCount: Int? = nil
+    ) -> String {
+        SSLanguage.LanguageFormatter.approachingRoundaboutString(
+            name: name,
+            includesRoundaboutInName: includesRoundaboutInName,
+            exitCount: exitCount,
+            locale: LocalizationContext.currentAppLocale
+        )
+    }
+
+    static func namedLocationStreetAddressString(
+        name: String,
+        address: String,
+        style: NamedLocationStreetAddressStyle
+    ) -> String {
+        SSLanguage.LanguageFormatter.namedLocationStreetAddressString(
+            name: name,
+            address: address,
+            style: style,
             locale: LocalizationContext.currentAppLocale
         )
     }

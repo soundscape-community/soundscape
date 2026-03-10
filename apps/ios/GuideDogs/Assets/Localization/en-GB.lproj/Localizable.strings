@@ -2156,28 +2156,13 @@
 "directions.roundabout_with_exits" = "Roundabout with %1$@ exits nearby";
 
 
-/*  */
-"directions.approaching_name" = "Approaching %@";
-
 
 /*  */
 "directions.approaching_roundabout" = "Approaching roundabout";
 
 
-/*  */
-"directions.approaching_name_roundabout" = "Approaching %@ roundabout";
 
 
-/*  */
-"directions.name_roundabout" = "%@ roundabout";
-
-
-/*  */
-"directions.approaching_name_roundabout_with_exits" = "Approaching %1$@ roundabout with %2$@ exits";
-
-
-/*  */
-"directions.approaching_name_with_exits" = "Approaching %1$@ with %2$@ exits";
 
 
 /*  */
@@ -2188,28 +2173,6 @@
 "directions.name_with_exits" = "%1$@ with %2$@ exits";
 
 
-/*  */
-"directions.name_goes_left" = "%@, goes left";
-
-
-/*  */
-"directions.name_goes_left.roundabout" = "%@, goes left in roundabout";
-
-
-/*  */
-"directions.name_goes_right" = "%@, goes right";
-
-
-/*  */
-"directions.name_goes_right.roundabout" = "%@, goes right in roundabout";
-
-
-/*  */
-"directions.name_continues_ahead" = "%@, continues ahead";
-
-
-/*  */
-"directions.name_continues_ahead.roundabout" = "%@, continues ahead in roundabout";
 
 
 
@@ -2236,16 +2199,11 @@
 
 
 
-/*  */
-"directions.name_is_nearby_street_address" = "%1$@ is nearby. Street address is %2$@.";
 
 
-/*  */
-"directions.name_is_currently_street_address" = "%1$@ is currently %2$@. Street address is %3$@.";
 
 
-/*  */
-"directions.name_street_address" = "%1$@. Street address is %2$@. Distance unknown.";
+
 
 
 /*  */

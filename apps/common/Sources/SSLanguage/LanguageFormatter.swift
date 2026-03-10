@@ -4,6 +4,18 @@ import Foundation
 import SSGeo
 
 public enum LanguageFormatter {
+    public enum RoadNameDirection: Sendable {
+        case left
+        case ahead
+        case right
+    }
+
+    public enum NamedLocationStreetAddressStyle: Sendable {
+        case nearby
+        case current(distance: String)
+        case unknownDistance
+    }
+
     public static func string(
         from distance: Double,
         accuracy: Double,
@@ -106,6 +118,112 @@ public enum LanguageFormatter {
             : direction.localizedString(locale: locale)
 
         return string.replacingOccurrences(of: codedDirection.encodedSubstring, with: directionString)
+    }
+
+    public static func roadNameString(
+        name: String,
+        direction: RoadNameDirection,
+        roundabout: Bool = false,
+        locale: Locale
+    ) -> String {
+        let key: String
+
+        switch (direction, roundabout) {
+        case (.left, false):
+            key = "directions.name_goes_left"
+        case (.left, true):
+            key = "directions.name_goes_left.roundabout"
+        case (.ahead, false):
+            key = "directions.name_continues_ahead"
+        case (.ahead, true):
+            key = "directions.name_continues_ahead.roundabout"
+        case (.right, false):
+            key = "directions.name_goes_right"
+        case (.right, true):
+            key = "directions.name_goes_right.roundabout"
+        }
+
+        return LanguageLocalizer.localizedString(
+            key,
+            arguments: [name],
+            locale: locale,
+            normalizeArguments: true
+        )
+    }
+
+    public static func roundaboutNameString(
+        name: String,
+        includesRoundaboutInName: Bool,
+        locale: Locale
+    ) -> String {
+        guard !includesRoundaboutInName else {
+            return name
+        }
+
+        return LanguageLocalizer.localizedString(
+            "directions.name_roundabout",
+            arguments: [name],
+            locale: locale,
+            normalizeArguments: true
+        )
+    }
+
+    public static func approachingRoundaboutString(
+        name: String,
+        includesRoundaboutInName: Bool,
+        exitCount: Int? = nil,
+        locale: Locale
+    ) -> String {
+        let key: String
+        let arguments: [String]
+
+        if let exitCount {
+            arguments = [name, String(exitCount)]
+            key = includesRoundaboutInName
+                ? "directions.approaching_name_with_exits"
+                : "directions.approaching_name_roundabout_with_exits"
+        } else {
+            arguments = [name]
+            key = includesRoundaboutInName
+                ? "directions.approaching_name"
+                : "directions.approaching_name_roundabout"
+        }
+
+        return LanguageLocalizer.localizedString(
+            key,
+            arguments: arguments,
+            locale: locale,
+            normalizeArguments: true
+        )
+    }
+
+    public static func namedLocationStreetAddressString(
+        name: String,
+        address: String,
+        style: NamedLocationStreetAddressStyle,
+        locale: Locale
+    ) -> String {
+        let key: String
+        let arguments: [String]
+
+        switch style {
+        case .nearby:
+            key = "directions.name_is_nearby_street_address"
+            arguments = [name, address]
+        case .current(let distance):
+            key = "directions.name_is_currently_street_address"
+            arguments = [name, distance, address]
+        case .unknownDistance:
+            key = "directions.name_street_address"
+            arguments = [name, address]
+        }
+
+        return LanguageLocalizer.localizedString(
+            key,
+            arguments: arguments,
+            locale: locale,
+            normalizeArguments: true
+        )
     }
 }
 

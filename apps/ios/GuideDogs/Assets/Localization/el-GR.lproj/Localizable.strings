@@ -2120,28 +2120,13 @@
 "directions.roundabout_with_exits" = "Κυκλικός κόμβος με %1$@ εξόδους σε κοντινή απόσταση";
 
 
-/*  */
-"directions.approaching_name" = "Πλησιάζετε  %@";
-
 
 /*  */
 "directions.approaching_roundabout" = "Πλησιάζετε κυκλικό κόμβο";
 
 
-/*  */
-"directions.approaching_name_roundabout" = "Πλησιάζετε  %@ κυκλικό κόμβο";
 
 
-/*  */
-"directions.name_roundabout" = "%@ κυκλικό κόμβο";
-
-
-/*  */
-"directions.approaching_name_roundabout_with_exits" = "Πλησιάζετε  %1$@ κυκλικό κόμβο με %2$@ εξόδους";
-
-
-/*  */
-"directions.approaching_name_with_exits" = "Πλησιάζετε  %1$@ με %2$@ εξόδους";
 
 
 /*  */
@@ -2152,28 +2137,6 @@
 "directions.name_with_exits" = "%1$@ με %2$@ εξόδους";
 
 
-/*  */
-"directions.name_goes_left" = "%@, πηγαίνει αριστερά";
-
-
-/*  */
-"directions.name_goes_left.roundabout" = "%@, πηγαίνει αριστερά στον κυκλικό κόμβο";
-
-
-/*  */
-"directions.name_goes_right" = "%@, πηγαίνει δεξιά";
-
-
-/*  */
-"directions.name_goes_right.roundabout" = "%@, πηγαίνει δεξιά στον κυκλικό κόμβο";
-
-
-/*  */
-"directions.name_continues_ahead" = "%@, συνεχίζει μπροστά";
-
-
-/*  */
-"directions.name_continues_ahead.roundabout" = "%@, συνεχίζει μπροστά στον κυκλικό κόμβο";
 
 
 
@@ -2200,16 +2163,11 @@
 
 
 
-/*  */
-"directions.name_is_nearby_street_address" = "%1$@ είναι κοντά. Η διεύθυνση του δρόμου είναι %2$@.";
 
 
-/*  */
-"directions.name_is_currently_street_address" = "%1$@ είναι προς το παρόν %2$@. Η διεύθυνση του δρόμου είναι %3$@.";
 
 
-/*  */
-"directions.name_street_address" = "%1$@. Η διεύθυνση του δρόμου είναι %2$@. Απόσταση άγνωστη.";
+
 
 
 /*  */

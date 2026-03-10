@@ -1813,56 +1813,14 @@
 /* Notification, %1$@ is a number, "Roundabout with <3> exits" {NumberedPlaceholder="%1$@"} */
 "directions.roundabout_with_exits" = "Roundabout with %1$@ exits nearby";
 
-/* Notification, %@ is a point of interest, "Approaching <Starbucks>" {NumberedPlaceholder="%@"} */
-"directions.approaching_name" = "Approaching %@";
-
 /* Notification, Approaching Roundabout */
 "directions.approaching_roundabout" = "Approaching roundabout";
-
-/* Notification, %@ is the name, "Approaching <Pike Street> roundabout" {NumberedPlaceholder="%@"} */
-"directions.approaching_name_roundabout" = "Approaching %@ roundabout";
-
-/* Notification, %@ is the road, "<Pike Street> roundabout" {NumberedPlaceholder="%@"} */
-"directions.name_roundabout" = "%@ roundabout";
-
-/* Notification, %1$@ is the road and %2$@ is a number, "Approaching <Pike Street> roundabout with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.approaching_name_roundabout_with_exits" = "Approaching %1$@ roundabout with %2$@ exits";
-
-/* Notification, %1$@ is the name and %2$@ is a number, "Approaching <Dupont Cirle Roundabout> with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.approaching_name_with_exits" = "Approaching %1$@ with %2$@ exits";
 
 /* Notification, %1$@ is the road and %2$@ is a number, "<Pike Street> roundabout with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */
 "directions.name_roundabout_with_exits" = "%1$@ roundabout with %2$@ exits";
 
 /* Notification, %1$@ is the name and %2$@ is a number, "<Dupont Cirle Roundabout> with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */
 "directions.name_with_exits" = "%1$@ with %2$@ exits";
-
-/* Notification, %@ street name, "<Pike Street>, goes left {NumberedPlaceholder="%@"} */
-"directions.name_goes_left" = "%@, goes left";
-
-/* Notification, %@ street name, "<Pike Street>, goes left in roundabout {NumberedPlaceholder="%@"} */
-"directions.name_goes_left.roundabout" = "%@, goes left in roundabout";
-
-/* Notification, %@ street name, "<Pike Street>, goes right {NumberedPlaceholder="%@"} */
-"directions.name_goes_right" = "%@, goes right";
-
-/* Notification, %@ street name, "<Pike Street>, goes right in roundabout {NumberedPlaceholder="%@"} */
-"directions.name_goes_right.roundabout" = "%@, goes right in roundabout";
-
-/* Notification, %@ street name, "<Pike Street>, continues ahead {NumberedPlaceholder="%@"} */
-"directions.name_continues_ahead" = "%@, continues ahead";
-
-/* Notification, %@ street name, "<Pike Street>, continues ahead in roundabout {NumberedPlaceholder="%@"} */
-"directions.name_continues_ahead.roundabout" = "%@, continues ahead in roundabout";
-
-/* Notification, %1$@ is a point of interest and %2$@ is a physical address,"<Some Place> is nearby. Street address is <Some Address>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_is_nearby_street_address" = "%1$@ is nearby. Street address is %2$@.";
-
-/* Notification, %1$@ is a point of interest, %2$@ is distance with units and %3$@ is a physical address, "<Some Place> is currently <5 meters>. Street address is <Some Address>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.name_is_currently_street_address" = "%1$@ is currently %2$@. Street address is %3$@.";
-
-/* Notification, %1$@ is a point of interest and %2$@ is a physical address, "<Some Place>. Street address is <Some Address>. Distance unknown." {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_street_address" = "%1$@. Street address is %2$@. Distance unknown.";
 
 /* Notification at locations with NaviLens codes */
 "directions.navilens_available" = "NaviLens available";

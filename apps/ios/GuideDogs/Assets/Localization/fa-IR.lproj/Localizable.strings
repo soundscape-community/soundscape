@@ -1226,40 +1226,12 @@
 "directions.roundabout_with_exits_direction" = "میدان با %1$@ خروجی %2$@";
 /* Notification, %1$@ is a number, "Roundabout with <3> exits" {NumberedPlaceholder="%1$@"} */
 "directions.roundabout_with_exits" = "میدان با %1$@ خروجی در نزدیکی";
-/* Notification, %@ is a point of interest, "Approaching <Starbucks>" {NumberedPlaceholder="%@"} */
-"directions.approaching_name" = "نزدیک شدن به %@";
 /* Notification, Approaching Roundabout */
 "directions.approaching_roundabout" = "نزدیک شدن به میدان";
-/* Notification, %@ is the name, "Approaching <Pike Street> roundabout" {NumberedPlaceholder="%@"} */
-"directions.approaching_name_roundabout" = "نزدیک شدن به میدان %@";
-/* Notification, %@ is the road, "<Pike Street> roundabout" {NumberedPlaceholder="%@"} */
-"directions.name_roundabout" = "میدان %@";
-/* Notification, %1$@ is the road and %2$@ is a number, "Approaching <Pike Street> roundabout with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.approaching_name_roundabout_with_exits" = "نزدیک شدن به میدان %@ با %2$@ خروجی";
-/* Notification, %1$@ is the name and %2$@ is a number, "Approaching <Dupont Cirle Roundabout> with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.approaching_name_with_exits" = "نزدیک شدن به %1$@ با %2$@ خروجی";
 /* Notification, %1$@ is the road and %2$@ is a number, "<Pike Street> roundabout with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */
 "directions.name_roundabout_with_exits" = "میدان %1$@ با %2$@ خروجی";
 /* Notification, %1$@ is the name and %2$@ is a number, "<Dupont Cirle Roundabout> with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */
 "directions.name_with_exits" = "%1$@ با %2$@ خروجی";
-/* Notification, %@ street name, "<Pike Street>, goes left {NumberedPlaceholder="%@"} */
-"directions.name_goes_left" = "%@، به سمت چپ می‌رود";
-/* Notification, %@ street name, "<Pike Street>, goes left in roundabout {NumberedPlaceholder="%@"} */
-"directions.name_goes_left.roundabout" = "%@، در میدان به سمت چپ می‌رود";
-/* Notification, %@ street name, "<Pike Street>, goes right {NumberedPlaceholder="%@"} */
-"directions.name_goes_right" = "%@، به سمت راست می‌رود";
-/* Notification, %@ street name, "<Pike Street>, goes right in roundabout {NumberedPlaceholder="%@"} */
-"directions.name_goes_right.roundabout" = "%@، در میدان به سمت راست می‌رود";
-/* Notification, %@ street name, "<Pike Street>, continues ahead {NumberedPlaceholder="%@"} */
-"directions.name_continues_ahead" = "%@، مستقیم ادامه می‌یابد";
-/* Notification, %@ street name, "<Pike Street>, continues ahead in roundabout {NumberedPlaceholder="%@"} */
-"directions.name_continues_ahead.roundabout" = "%@، در میدان مستقیم ادامه می‌یابد";
-/* Notification, %1$@ is a point of interest and %2$@ is a physical address,"<Some Place> is nearby. Street address is <Some Address>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_is_nearby_street_address" = "%1$@ در نزدیکی است. آدرس خیابان %@ است.";
-/* Notification, %1$@ is a point of interest, %2$@ is distance with units and %3$@ is a physical address, "<Some Place> is currently <5 meters>. Street address is <Some Address>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.name_is_currently_street_address" = "%1$@ در حال حاضر %2$@ فاصله دارد. آدرس خیابان %3$@ است.";
-/* Notification, %1$@ is a point of interest and %2$@ is a physical address, "<Some Place>. Street address is <Some Address>. Distance unknown." {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.name_street_address" = "%1$@. آدرس خیابان %2$@ است. فاصله نامعلوم.";
 /* Notification at locations with NaviLens codes */
 "directions.navilens_available" = "NaviLens در دسترس است";
 //------------------------------------------------------------------------------

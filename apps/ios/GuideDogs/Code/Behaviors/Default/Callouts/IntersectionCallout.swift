@@ -120,23 +120,32 @@ extension IntersectionCallout {
                                roundabout: Bool = false) -> [Sound]? {
         
         func leftSound(_ direction: RoadDirection) -> Sound {
-            let string = roundabout ? GDLocalizedString("directions.name_goes_left.roundabout", direction.road.localizedName) :
-                                      GDLocalizedString("directions.name_goes_left", direction.road.localizedName)
+            let string = LanguageFormatter.roadNameString(
+                name: direction.road.localizedName,
+                direction: .left,
+                roundabout: roundabout
+            )
             
             let position = heading.add(degrees: .left)
             return TTSSound(string + ".", compass: position)
         }
         
         func aheadSound(_ direction: RoadDirection) -> Sound {
-            let string = roundabout ? GDLocalizedString("directions.name_continues_ahead.roundabout", direction.road.localizedName) :
-                                      GDLocalizedString("directions.name_continues_ahead", direction.road.localizedName)
+            let string = LanguageFormatter.roadNameString(
+                name: direction.road.localizedName,
+                direction: .ahead,
+                roundabout: roundabout
+            )
             
             return TTSSound(string + ".", compass: heading)
         }
         
         func rightSound(_ direction: RoadDirection) -> Sound {
-            let string = roundabout ? GDLocalizedString("directions.name_goes_right.roundabout", direction.road.localizedName) :
-                                      GDLocalizedString("directions.name_goes_right", direction.road.localizedName)
+            let string = LanguageFormatter.roadNameString(
+                name: direction.road.localizedName,
+                direction: .right,
+                roundabout: roundabout
+            )
             
             let position = heading.add(degrees: .right)
             return TTSSound(string + ".", compass: position)
@@ -208,24 +217,18 @@ extension IntersectionCallout {
         let string: String
         
         guard !withoutExits else {
-            if !hasRoundaboutInName {
-                // "Pike roundabout" ("Pike" is the roundabout name)
-                string = GDLocalizedString("directions.name_roundabout", roundaboutName)
-            } else {
-                // "Pike roundabout" (Pike roundabout" is the roundabout name)
-                string = roundaboutName
-            }
+            string = LanguageFormatter.roundaboutNameString(
+                name: roundaboutName,
+                includesRoundaboutInName: hasRoundaboutInName
+            )
             
             return [TTSSound(string + ".", at: roundabout.intersection.location)]
         }
         
-        if !hasRoundaboutInName {
-            // "Approaching Pike roundabout" ("Pike" is the roundabout name)
-            string = GDLocalizedString("directions.approaching_name_roundabout", roundaboutName)
-        } else {
-            // "Approaching Pike roundabout" ("Pike roundabout" is the roundabout name)
-            string = GDLocalizedString("directions.approaching_name", roundaboutName)
-        }
+        string = LanguageFormatter.approachingRoundaboutString(
+            name: roundaboutName,
+            includesRoundaboutInName: hasRoundaboutInName
+        )
         
         var sounds: [Sound] = [TTSSound(string + ".", at: roundabout.intersection.location)]
         
@@ -235,15 +238,11 @@ extension IntersectionCallout {
         // Add direction sounds
         if exitSounds.count > IntersectionCallout.maxRoundaboutExitsToCallout {
             // Because there a lot of exits to callout, use a short phrase with the number of exits
-            
-            let string: String
-            if !hasRoundaboutInName {
-                // "Approaching Pike roundabout with 3 exits" ("Pike" is the roundabout name)
-                string = GDLocalizedString("directions.approaching_name_roundabout_with_exits", roundaboutName, String(exitDirections.count))
-            } else {
-                // "Approaching Pike roundabout with 3 exits" ("Pike roundabout" is the roundabout name)
-                string = GDLocalizedString("directions.approaching_name_with_exits", roundaboutName, String(exitDirections.count))
-            }
+            let string = LanguageFormatter.approachingRoundaboutString(
+                name: roundaboutName,
+                includesRoundaboutInName: hasRoundaboutInName,
+                exitCount: exitDirections.count
+            )
             
             sounds = [TTSSound(string + ".", at: roundabout.intersection.location)]
         } else {

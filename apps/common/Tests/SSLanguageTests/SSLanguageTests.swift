@@ -31,4 +31,46 @@ final class SSLanguageTests: XCTestCase {
         let locale = Locale(identifier: "en-GB")
         XCTAssertEqual(locale.localizedDescription(with: Locale(identifier: "fr-FR")), "Anglais (Royaume-Uni)")
     }
+
+    func testIntersectionPhrasesUseSharedResources() {
+        XCTAssertEqual(
+            LanguageFormatter.roadNameString(
+                name: "Pike Street",
+                direction: .left,
+                roundabout: true,
+                locale: .enUS
+            ),
+            "Pike Street, goes left in roundabout"
+        )
+        XCTAssertEqual(
+            LanguageFormatter.approachingRoundaboutString(
+                name: "Pike Street",
+                includesRoundaboutInName: false,
+                exitCount: 3,
+                locale: .enUS
+            ),
+            "Approaching Pike Street roundabout with 3 exits"
+        )
+    }
+
+    func testStreetAddressPhrasesUseSharedResources() {
+        XCTAssertEqual(
+            LanguageFormatter.namedLocationStreetAddressString(
+                name: "Library",
+                address: "123 Main Street",
+                style: .nearby,
+                locale: .enUS
+            ),
+            "Library is nearby. Street address is 123 Main Street."
+        )
+        XCTAssertEqual(
+            LanguageFormatter.namedLocationStreetAddressString(
+                name: "Library",
+                address: "123 Main Street",
+                style: .current(distance: "five meters"),
+                locale: .enUS
+            ),
+            "Library is currently five meters. Street address is 123 Main Street."
+        )
+    }
 }

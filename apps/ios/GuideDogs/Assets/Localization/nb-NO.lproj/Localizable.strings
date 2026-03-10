@@ -2120,28 +2120,13 @@
 "directions.roundabout_with_exits" = "Rundkjøring med %1$@ utkjøringer i nærheten";
 
 
-/*  */
-"directions.approaching_name" = "Du nærmer deg %@";
-
 
 /*  */
 "directions.approaching_roundabout" = "Du nærmer deg rundkjøringen";
 
 
-/*  */
-"directions.approaching_name_roundabout" = "Du nærmer deg rundkjøringen i %@";
 
 
-/*  */
-"directions.name_roundabout" = "Rundkjøringen i %@";
-
-
-/*  */
-"directions.approaching_name_roundabout_with_exits" = "Du nærmer deg rundkjøringen i %1$@ med %2$@ utkjøringer";
-
-
-/*  */
-"directions.approaching_name_with_exits" = "Du nærmer deg %1$@ med %2$@ utkjøringer";
 
 
 /*  */
@@ -2152,28 +2137,6 @@
 "directions.name_with_exits" = "%1$@ med %2$@ utkjøringer";
 
 
-/*  */
-"directions.name_goes_left" = "%@, går til venstre";
-
-
-/*  */
-"directions.name_goes_left.roundabout" = "%@, går til venstre i rundkjøringen";
-
-
-/*  */
-"directions.name_goes_right" = "%@, går til høyre";
-
-
-/*  */
-"directions.name_goes_right.roundabout" = "%@, går til høyre i rundkjøringen";
-
-
-/*  */
-"directions.name_continues_ahead" = "%@, fortsetter rett frem";
-
-
-/*  */
-"directions.name_continues_ahead.roundabout" = "%@, fortsetter rett frem i rundkjøringen";
 
 
 
@@ -2200,16 +2163,11 @@
 
 
 
-/*  */
-"directions.name_is_nearby_street_address" = "%1$@ er i nærheten. Adressen er %2$@.";
 
 
-/*  */
-"directions.name_is_currently_street_address" = "%1$@ er nå %2$@. Adressen er %3$@.";
 
 
-/*  */
-"directions.name_street_address" = "%1$@. Adressen er %2$@. Ukjent avstand.";
+
 
 
 /*  */
