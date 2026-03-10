@@ -36,8 +36,8 @@ extension Address: SelectablePOI {
         return nil
     }
     
-    func contains(location: CLLocationCoordinate2D) -> Bool {
-        return self.location.coordinate.latitude == location.latitude && self.location.coordinate.longitude == location.longitude
+    func contains(location: SSGeoCoordinate) -> Bool {
+        latitude == location.latitude && longitude == location.longitude
     }
     
     func updateDistanceAndBearing(with location: CLLocation) {
@@ -47,16 +47,16 @@ extension Address: SelectablePOI {
         return
     }
     
-    func distanceToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDistance {
-        return SSGeoMath.distanceMeters(from: geoCoordinate, to: location.coordinate.ssGeoCoordinate)
+    func distanceToClosestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> Double {
+        SSGeoMath.distanceMeters(from: geoCoordinate, to: location.coordinate)
     }
     
-    func bearingToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDirection {
-        return SSGeoMath.initialBearingDegrees(from: location.coordinate.ssGeoCoordinate, to: geoCoordinate)
+    func bearingToClosestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> Double {
+        SSGeoMath.initialBearingDegrees(from: location.coordinate, to: geoCoordinate)
     }
     
-    func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {
-        return geoCoordinate.clLocation
+    func closestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> SSGeoLocation {
+        SSGeoLocation(coordinate: geoCoordinate)
     }
     
 }

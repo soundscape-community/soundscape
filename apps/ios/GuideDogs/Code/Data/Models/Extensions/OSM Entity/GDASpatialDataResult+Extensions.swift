@@ -13,32 +13,38 @@ import SSGeo
 @MainActor
 extension GDASpatialDataResultEntity: SelectablePOI {
     
-    func distanceToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDistance {
-        if self.contains(location: location.coordinate) {
+    func contains(location: SSGeoCoordinate) -> Bool {
+        contains(location: location.clCoordinate)
+    }
+
+    func distanceToClosestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> Double {
+        if contains(location: location.coordinate) {
             return 0
         }
 
         let closestCoordinate = closestLocation(from: location, useEntranceIfAvailable: useEntranceIfAvailable).coordinate
-        return SSGeoMath.distanceMeters(from: location.coordinate.ssGeoCoordinate, to: closestCoordinate.ssGeoCoordinate)
+        return SSGeoMath.distanceMeters(from: location.coordinate, to: closestCoordinate)
     }
     
-    func bearingToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDirection {
-        if self.contains(location: location.coordinate) {
+    func bearingToClosestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> Double {
+        if contains(location: location.coordinate) {
             return 0
         }
-        
+
         let closestCoordinate = closestLocation(from: location, useEntranceIfAvailable: useEntranceIfAvailable).coordinate
-        return SSGeoMath.initialBearingDegrees(from: location.coordinate.ssGeoCoordinate, to: closestCoordinate.ssGeoCoordinate)
+        return SSGeoMath.initialBearingDegrees(from: location.coordinate, to: closestCoordinate)
     }
     
-    func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {
-        if useEntranceIfAvailable, let entrance = closestEntrance(from: location) {
-            return entrance.closestLocation(from: location)
-        } else if let edge = closestEdge(from: location) {
-            return edge
+    func closestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> SSGeoLocation {
+        let clLocation = location.clLocation
+
+        if useEntranceIfAvailable, let entrance = closestEntrance(from: clLocation) {
+            return entrance.closestLocation(from: clLocation).ssGeoLocation
+        } else if let edge = closestEdge(from: clLocation) {
+            return edge.ssGeoLocation
         }
-        
-        return geoCoordinate.clLocation
+
+        return SSGeoLocation(coordinate: geoCoordinate)
     }
     
     var searchString: String? {

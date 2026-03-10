@@ -524,28 +524,28 @@ extension ActivityPOI: POI {
         return nil
     }
     
-    var centroidLatitude: CLLocationDegrees {
-        return coordinate.latitude
+    var centroidLatitude: Double {
+        coordinate.latitude
     }
-    
-    var centroidLongitude: CLLocationDegrees {
-        return coordinate.longitude
+
+    var centroidLongitude: Double {
+        coordinate.longitude
     }
-    
-    func contains(location: CLLocationCoordinate2D) -> Bool {
-        return coordinate == location
+
+    func contains(location: SSGeoCoordinate) -> Bool {
+        coordinate.ssGeoCoordinate == location
     }
-    
-    func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {
-        return CLLocation(coordinate)
+
+    func closestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> SSGeoLocation {
+        self.location
     }
-    
-    func distanceToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDistance {
-        return coordinate.ssGeoCoordinate.distance(to: location.coordinate.ssGeoCoordinate)
+
+    func distanceToClosestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> Double {
+        coordinate.ssGeoCoordinate.distance(to: location.coordinate)
     }
-    
-    func bearingToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDirection {
-        return location.coordinate.bearing(to: coordinate)
+
+    func bearingToClosestLocation(from location: SSGeoLocation, useEntranceIfAvailable: Bool) -> Double {
+        location.coordinate.initialBearing(to: coordinate.ssGeoCoordinate)
     }
 }
 

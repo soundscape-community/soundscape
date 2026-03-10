@@ -3,54 +3,40 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import CoreLocation
+import SSDataDomain
 import SSGeo
 
-/// Protocol for all OSM entity data structures
-protocol POI {
-    var key: String { get }
-    
-    var name: String { get }
-    var localizedName: String { get }
-    var superCategory: String { get }
-    var addressLine: String? { get }
-    var streetName: String? { get }
-    var centroidLatitude: CLLocationDegrees { get }
-    var centroidLongitude: CLLocationDegrees { get }
-    
-    func contains(location: CLLocationCoordinate2D) -> Bool
-    func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation
-    func distanceToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDistance
-    func bearingToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDirection
-}
+typealias POI = SSDataDomain.POI
+typealias SelectablePOI = SSDataDomain.SelectablePOI
+typealias MatchablePOI = SSDataDomain.MatchablePOI
 
-protocol SelectablePOI: POI {
-    var lastSelectedDate: Date? { get set }
-}
-
-protocol MatchablePOI: POI {
-    var matchKeys: [String] { get }
-}
-
-extension POI {
-    
+extension SSDataDomain.POI {
     var centroidCoordinate: CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: centroidLatitude, longitude: centroidLongitude)
+        CLLocationCoordinate2D(latitude: centroidLatitude, longitude: centroidLongitude)
     }
-    
+
     var centroidLocation: CLLocation {
-        return CLLocation(centroidCoordinate)
+        centroidSSGeoCoordinate.clLocation
     }
 
-    var centroidSSGeoCoordinate: SSGeoCoordinate {
-        centroidCoordinate.ssGeoCoordinate
+    func contains(location: CLLocationCoordinate2D) -> Bool {
+        contains(location: location.ssGeoCoordinate)
     }
 
-    var centroidSSGeoLocation: SSGeoLocation {
-        SSGeoLocation(coordinate: centroidSSGeoCoordinate)
+    func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {
+        closestLocation(from: location.ssGeoLocation, useEntranceIfAvailable: useEntranceIfAvailable).clLocation
     }
-    
+
+    func distanceToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDistance {
+        distanceToClosestLocation(from: location.ssGeoLocation, useEntranceIfAvailable: useEntranceIfAvailable)
+    }
+
+    func bearingToClosestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocationDirection {
+        bearingToClosestLocation(from: location.ssGeoLocation, useEntranceIfAvailable: useEntranceIfAvailable)
+    }
 }
