@@ -179,6 +179,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Data-infrastructure runtime facades (for example `RouteRuntime`) should stay within data infrastructure; behavior-layer callers should use behavior/UI runtime or delegate seams instead.
 - Neutral app-layer wrappers such as spatial search/bootstrap/migration entry points should remain declaration-only outside infrastructure, with Realm-backed implementations owned from `Data/Infrastructure/Realm/**`.
 - Route persistence errors exposed outside infrastructure should stay boundary-neutral (`RouteDataError`), not Realm-branded.
+- Packaging direction: keep `apps/common` portable (`SSGeo`, `SSDataDomain`, `SSDataContracts`), keep `DataContractRegistry` as the single composition root, and prefer an iOS storage-support target plus a Realm backend target over moving the registry into `apps/common`.
 - Current validation default for modularization slices is low-noise output (`--output quiet`).
 - Known local full-suite non-blocking failures remain `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.
 

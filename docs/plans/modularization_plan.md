@@ -27,6 +27,11 @@ Progress is materially good:
 - Realm adapter wiring is centralized and guarded.
 - The retired sync-store seam has been removed from `apps/ios/GuideDogs/Code` and `apps/ios/UnitTests`.
 
+Current packaging decision:
+- `apps/common` remains the portable core for domain models, geo types, and storage contracts.
+- `DataContractRegistry` remains the single composition root, but should not be forced into the portable core.
+- Realm replacement readiness now depends more on package extraction shape than on additional runtime seam cleanup.
+
 Local evidence as of 2026-03-10:
 - `RealmSwift` imports outside `Data/Infrastructure/Realm/**`: `0`
 - `SpatialDataCache` usage outside `Data/Infrastructure/Realm/**`: `0`
@@ -38,7 +43,7 @@ Local evidence as of 2026-03-10:
 Plan sanity assessment:
 - The north star is still correct: contract-first ingress, domain/value models at the boundary, Realm kept infrastructure-local.
 - The previous plan had become too historical and noisy. It is now trimmed to current status, current rules, and current next steps.
-- Remaining work is now mostly cleanup and closure work, not large architectural uncertainty.
+- The main open design choice is now settled: prefer a portable contracts core plus iOS storage-support target plus Realm backend target, rather than adding another registry abstraction layer.
 
 ## Current Status
 Completed:
@@ -46,9 +51,10 @@ Completed:
 - In-memory contract parity is complete.
 - Structural boundary checks are active and currently green.
 - Sync-store compatibility registry/shim reintroduction is structurally blocked and absent from app/test code.
+- App-layer `RealmHelper` usage is now zero.
 
 In progress:
-- Continue shrinking residual Realm-owned helper/runtime surface where the contract/value shape is already sufficient.
+- Prepare the storage code for package extraction instead of continuing incidental seam cleanup.
 - Keep app-level storage usage readable and contract-first.
 - Close remaining migration steps in small validated slices.
 
@@ -62,6 +68,8 @@ Known non-blocking local full-suite failures:
 3. No non-registry/non-test `RealmSpatial*Contract()` construction.
 4. No app-facing Realm model types in `Data/Contracts`.
 5. Keep cloud marker dispatch value-shaped (`MarkerParameters` updates, marker-ID deletes) unless a concrete production caller requires something else.
+6. Keep `DataContractRegistry` as the single composition root; do not add a second registry layer for modularization.
+7. Prefer one iOS storage-support target and one Realm backend target over multiple thin glue targets.
 
 ## Validation Snapshot
 Preferred local workflow:
@@ -85,10 +93,16 @@ Outcome:
 Status: In progress
 
 Remaining focus:
-- Keep removing compatibility helpers where contract/value-shaped paths already exist.
 - Keep app-facing call sites stable and readable.
 
-### Milestone C: Behavior Confidence and Closure
+### Milestone C: Package Extraction Readiness
+Status: In progress
+
+Remaining focus:
+- Create a package boundary for the iOS-specific storage-support surface (`DataContractRegistry`, `Data/Contracts`, and non-portable contract-associated value types).
+- Extract Realm infrastructure behind that boundary without introducing additional ingress layers.
+
+### Milestone D: Behavior Confidence and Closure
 Status: In progress
 
 Remaining focus:
@@ -102,13 +116,15 @@ Remaining focus:
 - Removed dead Realm-typed overloads and stale `RealmReferenceEntity` references from non-infrastructure model/serialization/UI code; the remaining concrete Realm-model references outside infrastructure were then isolated and removed.
 - Moved `GenericLocationSearchProvider`, `OSMPOISearchProvider`, and `AddressSearchProvider` Realm-backed implementations into `Data/Infrastructure/Realm`, then moved the remaining app-layer `RealmHelper` calls behind infrastructure-owned extensions and neutral façades.
 - Renamed the route persistence error surface from `RouteRealmError` to `RouteDataError`, removing the last UI-facing Realm-branded error reference from runtime code.
+- Chose the extraction direction: keep `apps/common` portable, keep `DataContractRegistry` as the composition root, and split future package work into iOS storage-support plus Realm backend targets.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
-1. Keep the remaining explicit Realm-owned type names outside `Data/Infrastructure/Realm/**` limited to the registry's allowed default adapter construction unless a concrete migration step requires otherwise.
-2. Keep app-level storage ingress contract-first through `DataContractRegistry`; avoid introducing new side-entry points or registry-style helpers.
-3. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
-4. Keep plan/docs concise; detailed slice history should live in git history rather than this document.
+1. Create an explicit iOS storage-support target/package boundary around `DataContractRegistry`, `Data/Contracts`, and the iOS-specific contract-associated value types that are not yet portable.
+2. Extract `Data/Infrastructure/Realm/**` into a Realm backend target/package that depends on that storage-support target instead of the full app target.
+3. Keep app-level storage ingress contract-first through `DataContractRegistry`; avoid introducing new side-entry points or secondary registries.
+4. Move additional types into `apps/common` only when they are genuinely platform-neutral and runtime-neutral.
+5. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 
 ## Handoff
 - Use `docs/plans/data_storage_api_north_star.md` for the stable target.
