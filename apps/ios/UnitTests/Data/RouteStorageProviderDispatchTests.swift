@@ -136,10 +136,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
     }
 
     final class CloudDispatchProbeRuntimeProviders: DataRuntimeProviders {
-        private(set) var referenceStoreEntityCalls = 0
-        private(set) var referenceUpdateEntityCalls = 0
         private(set) var referenceUpdateMarkerParametersCalls = 0
-        private(set) var referenceRemoveEntityCalls = 0
         private(set) var referenceRemoveMarkerIDCalls = 0
 
         func routeCurrentUserLocation() -> CLLocation? { nil }
@@ -151,23 +148,9 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func routeCurrentMotionActivityRawValue() -> String { "unknown" }
 
         func referenceCurrentUserLocation() -> CLLocation? { nil }
-        func referenceStoreInCloud(_ entity: ReferenceEntity) {
-            referenceStoreEntityCalls += 1
-            _ = entity.getPOI()
-        }
-
-        func referenceUpdateInCloud(_ entity: ReferenceEntity) {
-            referenceUpdateEntityCalls += 1
-            _ = entity.getPOI()
-        }
 
         func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
             referenceUpdateMarkerParametersCalls += 1
-        }
-
-        func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
-            referenceRemoveEntityCalls += 1
-            _ = entity.getPOI()
         }
 
         func referenceRemoveFromCloud(markerID: String) {
@@ -697,8 +680,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertEqual(readMock.referenceEntityByEntityKeyCalls, [entityKey])
         XCTAssertEqual(readMock.poiByKeyCalls, [entityKey])
-        XCTAssertEqual(runtimeProviders.referenceStoreEntityCalls, 0)
-        XCTAssertEqual(runtimeProviders.referenceUpdateEntityCalls, 0)
         XCTAssertEqual(runtimeProviders.referenceUpdateMarkerParametersCalls, 1)
     }
 
@@ -726,8 +707,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(marker.estimatedAddress, "Address")
         XCTAssertEqual(marker.annotation, "Annotation")
         XCTAssertEqual(readMock.referenceEntityByGenericLocationCalls, [coordinateKey])
-        XCTAssertEqual(runtimeProviders.referenceStoreEntityCalls, 0)
-        XCTAssertEqual(runtimeProviders.referenceUpdateEntityCalls, 0)
         XCTAssertEqual(runtimeProviders.referenceUpdateMarkerParametersCalls, 1)
     }
 
@@ -1052,7 +1031,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: removedMarkerID)
 
-        XCTAssertEqual(runtimeProviders.referenceRemoveEntityCalls, 0)
         XCTAssertEqual(runtimeProviders.referenceRemoveMarkerIDCalls, 1)
     }
 
@@ -1180,7 +1158,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                           annotation: "Updated annotation")
 
         XCTAssertEqual(readMock.poiByKeyCalls, [entityKey])
-        XCTAssertEqual(runtimeProviders.referenceUpdateEntityCalls, 0)
         XCTAssertEqual(runtimeProviders.referenceUpdateMarkerParametersCalls, 1)
     }
 
@@ -1231,7 +1208,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(refreshedMarker.lastUpdatedDate, originalLastUpdatedDate)
         XCTAssertEqual(refreshedMarker.lastSelectedDate, originalLastSelectedDate)
         XCTAssertTrue(readMock.poiByKeyCalls.isEmpty)
-        XCTAssertEqual(runtimeProviders.referenceUpdateEntityCalls, 0)
         XCTAssertEqual(runtimeProviders.referenceUpdateMarkerParametersCalls, 0)
     }
 

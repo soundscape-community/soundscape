@@ -191,6 +191,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - `check_spatial_data_cache_seam.sh` now enforces the simplified post-reset boundary: `SpatialDataCache` usage is allowed only under `GuideDogs/Code/Data/Infrastructure/Realm/`.
 - The retired sync-store seam (`SpatialDataStoreRegistry`, `DefaultSpatialDataStore`, `SpatialDataStore`) must remain absent from `apps/ios/GuideDogs/Code` and `apps/ios/UnitTests`.
 - Marker cloud write/update paths now support `MarkerParameters` dispatch so entity-key/location marker writes do not require sync POI fallback hydration.
+- Marker cloud runtime update/remove dispatch is now narrowed to `MarkerParameters` updates and marker-ID deletes; do not reintroduce entity-shaped reference cloud runtime helpers unless a concrete production caller requires them.
 
 ## Compatibility Seam Policy
 - Temporary compatibility APIs (for example sync wrappers around async-first contracts) must be explicitly marked deprecated with `@available(*, deprecated, message: "...")`.

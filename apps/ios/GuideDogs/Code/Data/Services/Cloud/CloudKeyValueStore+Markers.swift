@@ -53,11 +53,6 @@ extension CloudKeyValueStore {
     // MARK: Individual Set/Get
     
     /// Returns "marker.object_id"
-    private static func key(for referenceEntity: ReferenceEntity) -> String {
-        return CloudKeyValueStore.markerKeyPrefix + "." + referenceEntity.id
-    }
-
-    /// Returns "marker.object_id"
     private static func key(forReferenceEntityID id: String) -> String {
         return CloudKeyValueStore.markerKeyPrefix + "." + id
     }
@@ -67,29 +62,9 @@ extension CloudKeyValueStore {
         return referenceEntityKey.replacingOccurrences(of: CloudKeyValueStore.markerKeyPrefix + ".", with: "")
     }
     
-    func store(referenceEntity: ReferenceEntity) {
-        if let markerParameters = MarkerParameters(marker: referenceEntity) {
-            store(markerParameters: markerParameters)
-        } else {
-            GDLogCloudInfo("Failed to initialize marker parameters")
-            Task { @MainActor in
-                GDATelemetry.track("marker_backup.error.parameters_failed_to_initialize")
-            }
-        }
-    }
-    
-    func update(referenceEntity: ReferenceEntity) {
-        // For iCloud key-value store we override the current value
-        store(referenceEntity: referenceEntity)
-    }
-
     func update(markerParameters: MarkerParameters) {
         // For iCloud key-value store we override the current value
         store(markerParameters: markerParameters)
-    }
-    
-    func remove(referenceEntity: ReferenceEntity) {
-        removeObject(forKey: CloudKeyValueStore.key(for: referenceEntity))
     }
 
     func remove(referenceEntityID id: String) {

@@ -107,20 +107,8 @@ enum ReferenceEntityRuntime {
         DataRuntimeProviderRegistry.providers.referenceCurrentUserLocation()
     }
 
-    static func storeReferenceInCloud(_ entity: ReferenceEntity) {
-        DataRuntimeProviderRegistry.providers.referenceStoreInCloud(entity)
-    }
-
-    static func updateReferenceInCloud(_ entity: ReferenceEntity) {
-        DataRuntimeProviderRegistry.providers.referenceUpdateInCloud(entity)
-    }
-
     static func updateReferenceInCloud(_ markerParameters: MarkerParameters) {
         DataRuntimeProviderRegistry.providers.referenceUpdateInCloud(markerParameters)
-    }
-
-    static func removeReferenceFromCloud(_ entity: ReferenceEntity) {
-        DataRuntimeProviderRegistry.providers.referenceRemoveFromCloud(entity)
     }
 
     static func removeReferenceFromCloud(markerID: String) {
@@ -688,8 +676,10 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                 }
             }
             
-            if updateCloudSynchronously {
-                ReferenceEntityRuntime.updateReferenceInCloud(entity.domainEntity)
+            if updateCloudSynchronously,
+               let markerParameters = markerParametersForCloudStore(marker: entity,
+                                                                   entity: entity.getPOI()) {
+                ReferenceEntityRuntime.updateReferenceInCloud(markerParameters)
             }
             
             let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"

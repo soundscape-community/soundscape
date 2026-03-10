@@ -44,10 +44,7 @@ protocol RouteRuntimeProviding {
 @MainActor
 protocol ReferenceEntityRuntimeProviding {
     func referenceCurrentUserLocation() -> CLLocation?
-    func referenceStoreInCloud(_ entity: ReferenceEntity)
-    func referenceUpdateInCloud(_ entity: ReferenceEntity)
     func referenceUpdateInCloud(_ markerParameters: MarkerParameters)
-    func referenceRemoveFromCloud(_ entity: ReferenceEntity)
     func referenceRemoveFromCloud(markerID: String)
     func referenceProcessEvent(_ event: Event)
     func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool
@@ -150,19 +147,7 @@ private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
         return nil
     }
 
-    func referenceStoreInCloud(_ entity: ReferenceEntity) {
-        debugAssertUnconfigured(#function)
-    }
-
-    func referenceUpdateInCloud(_ entity: ReferenceEntity) {
-        debugAssertUnconfigured(#function)
-    }
-
     func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
-        debugAssertUnconfigured(#function)
-    }
-
-    func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
         debugAssertUnconfigured(#function)
     }
 
@@ -292,20 +277,8 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
         context.geolocationManager.location
     }
 
-    func referenceStoreInCloud(_ entity: ReferenceEntity) {
-        context.cloudKeyValueStore.store(referenceEntity: entity)
-    }
-
-    func referenceUpdateInCloud(_ entity: ReferenceEntity) {
-        context.cloudKeyValueStore.update(referenceEntity: entity)
-    }
-
     func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
         context.cloudKeyValueStore.update(markerParameters: markerParameters)
-    }
-
-    func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
-        context.cloudKeyValueStore.remove(referenceEntity: entity)
     }
 
     func referenceRemoveFromCloud(markerID: String) {

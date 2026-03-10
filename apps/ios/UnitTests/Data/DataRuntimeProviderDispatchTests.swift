@@ -28,10 +28,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var routeRemoved: [Route] = []
 
         var referenceLocation: CLLocation?
-        var referenceStored: [ReferenceEntity] = []
-        var referenceUpdated: [ReferenceEntity] = []
         var referenceUpdatedMarkerParameters: [MarkerParameters] = []
-        var referenceRemoved: [ReferenceEntity] = []
         var referenceRemovedCloudMarkerIDs: [String] = []
         var referenceSetDestinationResult = false
         var referenceSetDestinationError: Error?
@@ -86,20 +83,8 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             referenceLocation
         }
 
-        func referenceStoreInCloud(_ entity: ReferenceEntity) {
-            referenceStored.append(entity)
-        }
-
-        func referenceUpdateInCloud(_ entity: ReferenceEntity) {
-            referenceUpdated.append(entity)
-        }
-
         func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
             referenceUpdatedMarkerParameters.append(markerParameters)
-        }
-
-        func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
-            referenceRemoved.append(entity)
         }
 
         func referenceRemoveFromCloud(markerID: String) {
@@ -229,8 +214,6 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(ReferenceEntityRuntime.currentUserLocation(), location)
         XCTAssertTrue((try? ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID("destination-1")) ?? false)
 
-        ReferenceEntityRuntime.storeReferenceInCloud(entity)
-        ReferenceEntityRuntime.updateReferenceInCloud(entity)
         let cloudEntity = GenericLocation(lat: 47.63,
                                           lon: -122.32,
                                           name: "Cloud Marker")
@@ -245,15 +228,11 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             XCTFail("Expected marker parameters for cloud dispatch")
             return
         }
-        ReferenceEntityRuntime.removeReferenceFromCloud(entity)
         ReferenceEntityRuntime.removeReferenceFromCloud(markerID: entity.id)
         ReferenceEntityRuntime.removeCalloutHistoryForMarkerID("marker-1")
         ReferenceEntityRuntime.processEvent(BehaviorActivatedEvent())
 
-        XCTAssertEqual(provider.referenceStored.count, 1)
-        XCTAssertEqual(provider.referenceUpdated.count, 1)
         XCTAssertEqual(provider.referenceUpdatedMarkerParameters.count, 1)
-        XCTAssertEqual(provider.referenceRemoved.count, 1)
         XCTAssertEqual(provider.referenceRemovedCloudMarkerIDs, [entity.id])
         XCTAssertEqual(provider.referenceRemovedCalloutMarkerIDs, ["marker-1"])
         XCTAssertEqual(provider.referenceProcessedEventNames, [BehaviorActivatedEvent().name])
