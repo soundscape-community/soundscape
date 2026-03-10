@@ -84,7 +84,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
             return nil
         }
 
-        return MarkerParameters(marker: marker)
+        return MarkerParameters(marker: marker.domainEntity)
     }
 
     func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? {
@@ -92,7 +92,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
             return nil
         }
 
-        return MarkerParameters(marker: marker)
+        return MarkerParameters(marker: marker.domainEntity)
     }
 
     func markerParameters(byEntityKey key: String) async -> MarkerParameters? {
@@ -100,11 +100,11 @@ struct RealmSpatialReadContract: SpatialReadContract {
             return nil
         }
 
-        return MarkerParameters(marker: marker)
+        return MarkerParameters(marker: marker.domainEntity)
     }
 
     func markerParametersForBackup() async -> [MarkerParameters] {
-        SpatialDataCache.referenceEntities().compactMap { MarkerParameters(marker: $0) }
+        SpatialDataCache.referenceEntities().compactMap { MarkerParameters(marker: $0.domainEntity) }
     }
 
     func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? {

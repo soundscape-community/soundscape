@@ -73,18 +73,6 @@ class GenericLocation: SelectablePOI {
     
     // MARK: Initialization
 
-    init(ref: RealmReferenceEntity) {
-        key = ref.id
-        name = ref.nickname ?? ref.estimatedAddress ?? ""
-        
-        lastSelectedDate = ref.lastSelectedDate
-        
-        latitude = ref.latitude
-        longitude = ref.longitude
-        
-        addressLine = ref.estimatedAddress
-    }
-
     init(ref: ReferenceEntity) {
         key = ref.id
         name = ref.nickname ?? ref.estimatedAddress ?? ""

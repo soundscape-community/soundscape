@@ -24,7 +24,7 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
     /// Used for telemetry to identify the context (source) of the viewing this screen
     var logContext: String?
 
-    /// The key for the RealmReferenceEntity the user selected from the Nearby Places List
+    /// The key for the saved marker the user selected from the Nearby Places List
     var entityKey: String?
     
     var player: FadeableAudioPlayer?

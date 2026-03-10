@@ -17,7 +17,7 @@ struct BeaconActionHandler {
     ///
     /// `createMarker(detail: BeaconDetail)`
     ///
-    /// parameter detail is the `BeaconDetail` object corresponding to the expected `RealmReferenceEntity`
+    /// parameter detail is the `BeaconDetail` object corresponding to the expected marker reference
     ///
     /// returns `UIViewController` if a view controller is returned, then the calling view or view controller should present the view controller
     ///
@@ -62,7 +62,7 @@ struct BeaconActionHandler {
     ///
     /// `callout(detail: BeaconDetail)`
     ///
-    /// parameter detail is the `BeaconDetail` object corresponding to the expected `RealmReferenceEntity`
+    /// parameter detail is the `BeaconDetail` object corresponding to the expected marker reference
     ///
     /// queues a call out for the given audio beacon
     ///
@@ -73,7 +73,7 @@ struct BeaconActionHandler {
     ///
     /// `callout(detail: LocationDetail)`
     ///
-    /// parameter detail is the `LocationDetail` object corresponding to the expected `RealmReferenceEntity`
+    /// parameter detail is the `LocationDetail` object corresponding to the expected marker reference
     ///
     /// queues a call out for the given audio beacon
     ///
@@ -122,7 +122,7 @@ struct BeaconActionHandler {
     /// `moreInformation(detail: BeaconDetail, userLocation: SSGeoLocation)`
     ///
     /// parameters
-    /// - detail is the `BeaconDetail` object corresponding to the expected `RealmReferenceEntity`
+    /// - detail is the `BeaconDetail` object corresponding to the expected marker reference
     /// - userLocation is the user's current location
     ///
     /// queues a call out for the given audio beacon

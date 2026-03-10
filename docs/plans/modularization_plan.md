@@ -98,10 +98,11 @@ Remaining focus:
 - Removed the retired sync-store seam from app and unit-test code and aligned the boundary script to enforce that state.
 - Narrowed marker cloud dispatch to `MarkerParameters` updates and marker-ID deletes.
 - Removed the last non-infrastructure `RouteRuntime` usage by routing route-guidance deactivation through `BehaviorDelegate` instead of a Realm-owned runtime wrapper.
+- Removed dead Realm-typed overloads and stale `RealmReferenceEntity` references from non-infrastructure model/serialization/UI code; the remaining concrete Realm-model references outside infrastructure are now isolated to `GenericLocationSearchProvider`.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
-1. Audit remaining Realm-owned helper/runtime surfaces and remove any compatibility shape that is no longer serving a concrete production caller.
+1. Resolve the remaining `GenericLocationSearchProvider` Realm-model dependency outside `Data/Infrastructure/Realm/**`, either by relocating that implementation into Realm infrastructure or by replacing it with an infrastructure-owned helper seam.
 2. Keep app-level storage ingress contract-first through `DataContractRegistry`; avoid introducing new side-entry points or registry-style helpers.
 3. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 4. Keep plan/docs concise; detailed slice history should live in git history rather than this document.

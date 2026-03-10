@@ -13,7 +13,7 @@ import SSGeo
  Represents the waypoints belonging to a route.
 
  Each waypoint in the `Route` object is represented by
- an existing `RealmReferenceEntity` (e.g., `markerId`) and an
+ an existing marker reference (e.g., `markerId`) and an
  index that reflects the waypoint's ordering within the
  route.
  */

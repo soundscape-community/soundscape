@@ -94,10 +94,6 @@ struct MarkerParameters: Codable {
         self.init(entity: entity, markerId: markerId, estimatedAddress: estimatedAddress, nickname: nickname, annotation: annotation, lastUpdatedDate: lastUpdatedDate)
     }
 
-    init?(marker: RealmReferenceEntity) {
-        self.init(marker: marker.domainEntity)
-    }
-    
     init?(markerId: String) {
         guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId) else {
             return nil

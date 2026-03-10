@@ -398,7 +398,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     ///
     /// - Returns: A POI referenced by this RealmReferenceEntity
     func getPOI() -> POI {
-        return _poi ?? GenericLocation(ref: self)
+        return _poi ?? GenericLocation(ref: domainEntity)
     }
     
     /// Updates the lastSelectedDate of the reference entity and, if the reference entity is not a

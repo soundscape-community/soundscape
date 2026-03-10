@@ -244,10 +244,10 @@ class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Manage Destination Methods
     
-    /// Sets the provided RealmReferenceEntity as the current destination.
+    /// Sets the provided saved marker as the current destination.
     ///
     /// - Parameters:
-    ///   - referenceID: ID of the RealmReferenceEntity to set as the destination
+    ///   - referenceID: ID of the saved marker to set as the destination
     ///   - enableAudio: Flag indicating if the beacon should be turned on automatically for the destination
     ///   - userLocation: The user's current location
     ///   - logContext: The context of the call that will be passed to the telemetry service
