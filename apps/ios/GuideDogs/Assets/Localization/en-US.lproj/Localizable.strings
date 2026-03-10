@@ -402,7 +402,7 @@
 "settings.section.telemetry.footer" = "Help Soundscape improve by automatically sending diagnostics, error reporting, and usage data. No personal data is collected.";
 
 /* Settings title, Language */
-"settings.language.screen_title" = "Language & Region";
+"settings.language.screen_title" = "Language";
 
 /* Settings title, Language and Region */
 "settings.language.screen_title.2" = "Language & Region";

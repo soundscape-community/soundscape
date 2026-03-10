@@ -1017,10 +1017,10 @@
             </objects>
             <point key="canvasLocation" x="1848" y="-746"/>
         </scene>
-        <!--Language & Region-->
+        <!--Language-->
         <scene sceneID="WAD-hi-Ul7">
             <objects>
-                <tableViewController title="Language &amp; Region" id="Vrs-lu-RFH" customClass="LanguageTableViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Language" id="Vrs-lu-RFH" customClass="LanguageTableViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="60" sectionHeaderHeight="18" sectionFooterHeight="18" id="jo0-AK-0oI">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="680"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1065,7 +1065,7 @@
                         </connections>
                     </tableView>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.language.screen_title"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.language.screen_title.2"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="largeBannerContainerView" destination="OwD-aa-xRl" id="NFz-Lw-bk2"/>
