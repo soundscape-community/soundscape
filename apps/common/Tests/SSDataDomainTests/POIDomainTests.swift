@@ -162,9 +162,53 @@ struct POIDomainTests {
         #expect(CompoundPredicate(orPredicateWithSubpredicates: [transit, food]).isIncluded(poi))
         #expect(food.invert().isIncluded(poi) == false)
     }
+
+
+    @Test
+    func lastSelectedPredicateOrdersMostRecentSelectablePOIsFirst() {
+        let older = TestPOI(key: "older",
+                            name: "Older",
+                            coordinate: .init(latitude: 47.6205, longitude: -122.3493),
+                            lastSelectedDate: Date(timeIntervalSince1970: 100))
+        let newer = TestPOI(key: "newer",
+                            name: "Newer",
+                            coordinate: .init(latitude: 47.6205, longitude: -122.3493),
+                            lastSelectedDate: Date(timeIntervalSince1970: 200))
+
+        #expect(LastSelectedPredicate().areInIncreasingOrder(newer, older))
+        #expect(LastSelectedPredicate().areInIncreasingOrder(older, newer) == false)
+    }
+
+    @Test
+    func poiQueueKeepsSortedFilteredTopNResults() {
+        let queue = POIQueue(maxItems: 2,
+                             sort: LastSelectedPredicate(),
+                             filter: SuperCategoryPredicate(expected: .places))
+        let oldest = TestPOI(key: "oldest",
+                             name: "Oldest",
+                             coordinate: .init(latitude: 47.6205, longitude: -122.3493),
+                             lastSelectedDate: Date(timeIntervalSince1970: 100))
+        let newest = TestPOI(key: "newest",
+                             name: "Newest",
+                             coordinate: .init(latitude: 47.6206, longitude: -122.3494),
+                             lastSelectedDate: Date(timeIntervalSince1970: 300))
+        let middle = TestPOI(key: "middle",
+                             name: "Middle",
+                             coordinate: .init(latitude: 47.6207, longitude: -122.3495),
+                             lastSelectedDate: Date(timeIntervalSince1970: 200))
+        let filteredOut = TestPOI(key: "filtered",
+                                  name: "Filtered",
+                                  coordinate: .init(latitude: 47.6208, longitude: -122.3496),
+                                  superCategory: SuperCategory.mobility.rawValue,
+                                  lastSelectedDate: Date(timeIntervalSince1970: 400))
+
+        queue.insert([oldest, newest, middle, filteredOut])
+
+        #expect(queue.pois.map(\.key) == ["newest", "middle"])
+    }
 }
 
-private struct TestPOI: POI, Typeable {
+private struct TestPOI: SelectablePOI, Typeable {
     let key: String
     let name: String
     let localizedName: String
@@ -173,6 +217,7 @@ private struct TestPOI: POI, Typeable {
     let streetName: String?
     let centroidLatitude: Double
     let centroidLongitude: Double
+    var lastSelectedDate: Date?
     let primaryTypes: Set<PrimaryType>
     let secondaryTypes: Set<SecondaryType>
 
@@ -184,7 +229,8 @@ private struct TestPOI: POI, Typeable {
         secondaryTypes: Set<SecondaryType> = [],
         superCategory: String = SuperCategory.places.rawValue,
         addressLine: String? = nil,
-        streetName: String? = nil
+        streetName: String? = nil,
+        lastSelectedDate: Date? = nil
     ) {
         self.key = key
         self.name = name
@@ -192,6 +238,7 @@ private struct TestPOI: POI, Typeable {
         self.superCategory = superCategory
         self.addressLine = addressLine
         self.streetName = streetName
+        self.lastSelectedDate = lastSelectedDate
         centroidLatitude = coordinate.latitude
         centroidLongitude = coordinate.longitude
         self.primaryTypes = primaryTypes

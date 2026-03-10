@@ -7,7 +7,6 @@
 //
 
 import Foundation
+import SSDataDomain
 
-protocol SortPredicate {
-    func areInIncreasingOrder(_ a: POI, _ b: POI) -> Bool
-}
+typealias SortPredicate = SSDataDomain.SortPredicate

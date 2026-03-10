@@ -5,11 +5,12 @@
 Last updated: 2026-03-10
 
 ## Summary
-Continue extracting the data layer toward a small, stable contract surface.
-Keep Realm implementation details isolated under `Data/Infrastructure/Realm`, keep app-facing APIs centered on `DataContractRegistry`, and prefer deleting compatibility seams over adding new ones.
+Continue extracting shared data/domain logic into `apps/common` while keeping Realm isolated behind a stable app-facing storage boundary.
+Keep `DataContractRegistry` as the iOS composition root, keep Realm implementation details under `Data/Infrastructure/Realm`, and prefer deleting compatibility seams over adding new ones.
 
 ## Scope
 In scope:
+- Shared domain/value/helper extraction into `apps/common`.
 - App-facing data API shape and naming stability.
 - Realm isolation boundaries.
 - Contract behavior confidence through focused validation.
@@ -18,14 +19,14 @@ In scope:
 Out of scope:
 - New abstraction families such as DTO stacks or extra shim hierarchies.
 - Parser-style seam hardening beyond clear structural boundary checks.
-- Broad UI or behavior architecture work unrelated to the data-layer boundary.
+- Broad UI or behavior architecture work unrelated to the shared data/domain boundary.
 
 ## Current Assessment
 Progress is materially good:
 - `SSDataStructures`, `SSGeo`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
 - Shared contract-side parameter models (`UniversalLinkParameters`, route/marker/location parameter types) now also live in `SSDataContracts`, with iOS files reduced to shims and runtime-specific extensions.
 - `VectorTile` and the legacy `GDAJSONObject` parsing helper are now Swift/common types in `SSDataContracts`, with iOS retaining only CoreLocation convenience shims.
-- `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, portable filter predicates, and the primary/secondary POI typing abstractions now live in `SSDataDomain`, with iOS retaining Realm keys plus CoreLocation and glyph/audio extensions only.
+- `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, portable filter/sort/queue helpers, and the primary/secondary POI typing abstractions now live in `SSDataDomain`, with iOS retaining Realm keys plus CoreLocation and glyph/audio extensions only.
 - `DataContractRegistry` is the app-facing data ingress.
 - Default backend installation is centralized and guarded.
 - The retired sync-store seam has been removed from `apps/ios/GuideDogs/Code` and `apps/ios/UnitTests`.
@@ -45,7 +46,7 @@ Local evidence as of 2026-03-10:
 - `spatialReadCompatibility` / `spatialWriteCompatibility` references: `0`
 
 Plan sanity assessment:
-- The north star is still correct: contract-first ingress, domain/value models at the boundary, Realm kept infrastructure-local.
+- The north star is still correct after broadening beyond storage cleanup: shared domain/contracts/helpers in `apps/common`, `DataContractRegistry` as the iOS composition root, and Realm kept infrastructure-local.
 - The previous plan had become too historical and noisy. It is now trimmed to current status, current rules, and current next steps.
 - The main design choice is now settled: prefer portable common modules plus an iOS app composition root, rather than introducing an intermediate iOS package layer or another registry abstraction.
 
@@ -59,7 +60,7 @@ Completed:
 - `DataContractRegistry` no longer constructs Realm adapters directly; Realm default installation is now owned from infrastructure and bootstrapped explicitly by app/test setup.
 - Shared route/marker/location parameter models and `UniversalLinkParameters` now live in `apps/common/Sources/SSDataContracts`; iOS serialization files retain only runtime-specific behavior.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; the Objective-C `GDAJSONObject` bridge has been removed from the iOS target.
-- `POI`, `SelectablePOI`, `MatchablePOI`, `GenericLocation`, `SuperCategory`, portable POI matching/equality helpers, shared filter predicates, and the shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; iOS files retain only Realm keys plus CoreLocation and presentation-specific shims/extensions.
+- `POI`, `SelectablePOI`, `MatchablePOI`, `GenericLocation`, `SuperCategory`, portable POI matching/equality helpers, shared filter/sort/queue helpers, and the shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; iOS files retain only Realm keys plus CoreLocation and presentation-specific shims/extensions.
 
 In progress:
 - Continue moving runtime-neutral domain/contract types into `apps/common` instead of building an iOS package shell.
@@ -132,16 +133,18 @@ Remaining focus:
 - Moved `POI`, `GenericLocation`, and `SuperCategory` core taxonomy into `SSDataDomain`, flipping the portable POI surface to `SSGeo` while preserving iOS CoreLocation and glyph/audio convenience shims.
 - Moved portable `POI` equality/matching plus `PrimaryType`/`SecondaryType`/`Typeable` into `SSDataDomain`, leaving `POIKeys`, CoreLocation distance wrappers, and UI/presentation usage in `apps/ios`.
 - Moved `FilterPredicate`, `CompoundPredicate`, `SuperCategoryPredicate`, and `TypePredicate` into `SSDataDomain`, leaving only `LocationPredicate` and the `Filter` facade in `apps/ios`.
+- Moved `POIQueue`, `SortPredicate`, and `LastSelectedPredicate` into `SSDataDomain`, leaving only `DistancePredicate` and the `Sort` convenience facade in `apps/ios`.
+- Renamed the stable-target doc from a storage-only framing to `docs/plans/data_modularization_north_star.md` so it matches the broader shared-domain extraction work and future Android goal.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
-1. Continue extracting runtime-neutral contract/value types into `SSDataContracts` or `SSDataDomain` when they no longer depend on app behavior or Apple-only frameworks.
+1. Continue extracting runtime-neutral domain/value/helper logic into `SSDataDomain` or `SSDataContracts` when it no longer depends on Apple frameworks or UI/runtime behavior.
 2. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
-3. Keep the shared domain surface stable while trimming remaining iOS-only adapters around the portable `POI` and filter surfaces.
-4. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining iOS-specific associated-type surface is stable.
+3. Keep the shared domain surface stable while trimming remaining iOS-only adapters around the portable `POI`, filter, and sort/query helper surfaces.
+4. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining iOS-specific associated-type and runtime wrapper surface is stable.
 5. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 
 ## Handoff
-- Use `docs/plans/data_storage_api_north_star.md` for the stable target.
+- Use `docs/plans/data_modularization_north_star.md` for the stable target.
 - Use this file for current status only.
 - Start the next slice with one focused cleanup, validate with `--output quiet`, then update this file only if the current status or next steps materially changed.
