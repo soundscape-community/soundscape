@@ -107,6 +107,55 @@ extension GenericLocationSearchProvider {
 }
 
 @MainActor
+extension OSMPOISearchProvider {
+    func search(byKey key: String) -> POI? {
+        autoreleasepool {
+            guard let cache = try? RealmHelper.getCacheRealm() else {
+                GDLogSpatialDataError("Search by Key Error - Cannot get cache Realm")
+                return nil
+            }
+
+            return cache.object(ofType: GDASpatialDataResultEntity.self, forPrimaryKey: key)
+        }
+    }
+
+    func objects(predicate: NSPredicate) -> [POI] {
+        autoreleasepool {
+            guard let cache = try? RealmHelper.getCacheRealm() else {
+                return []
+            }
+
+            return Array(cache.objects(GDASpatialDataResultEntity.self).filter(predicate))
+        }
+    }
+}
+
+@MainActor
+extension AddressSearchProvider {
+    func search(byKey key: String) -> POI? {
+        autoreleasepool {
+            guard let cache = try? RealmHelper.getCacheRealm() else {
+                GDLogSpatialDataError("Search by Key Error - Cannot get cache Realm")
+                return nil
+            }
+
+            return cache.object(ofType: Address.self, forPrimaryKey: key)
+        }
+    }
+
+    func objects(predicate: NSPredicate) -> [POI] {
+        autoreleasepool {
+            guard let cache = try? RealmHelper.getCacheRealm() else {
+                GDLogSpatialDataError("Object Search Error - Cannot get cache Realm")
+                return []
+            }
+
+            return Array(cache.objects(Address.self).filter(predicate))
+        }
+    }
+}
+
+@MainActor
 class SpatialDataCache: NSObject {
     
     // MARK: Geocoders
