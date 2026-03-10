@@ -40,8 +40,8 @@ By default:
 Options:
   --build-only                 Run build-for-testing only.
   --test-only                  Run targeted test-without-building only.
-  --output <errors|xcpretty|raw|summary>
-                               Output mode (default: errors).
+  --output <errors|xcpretty|raw|summary|quiet>
+                               Output mode (default: errors). `quiet` aliases `summary`.
   --destination "<xcode destination>"
                                Full xcodebuild destination string.
   --simulator-id <id>          iOS simulator UDID to use.
@@ -55,6 +55,7 @@ Options:
 
 Examples:
   bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh
+  bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output quiet
   bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output summary
   bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output xcpretty
   bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --test-only
@@ -292,8 +293,12 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
+if [[ "${OUTPUT_MODE}" == "quiet" ]]; then
+  OUTPUT_MODE="summary"
+fi
+
 if [[ "${OUTPUT_MODE}" != "errors" && "${OUTPUT_MODE}" != "xcpretty" && "${OUTPUT_MODE}" != "raw" && "${OUTPUT_MODE}" != "summary" ]]; then
-  echo "Invalid --output value: ${OUTPUT_MODE}. Expected errors, xcpretty, raw, or summary." >&2
+  echo "Invalid --output value: ${OUTPUT_MODE}. Expected errors, xcpretty, raw, summary, or quiet." >&2
   exit 1
 fi
 

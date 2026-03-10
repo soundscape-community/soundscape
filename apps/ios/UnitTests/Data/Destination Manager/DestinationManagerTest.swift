@@ -257,7 +257,7 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationUsesInjectedEntityStoreLookup() async throws {
-        let testID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
+        let testID = try createTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                               lon: -73.6726370,
                                                                                                               name: "Test"),
                                                                                     estimatedAddress: nil)
@@ -275,7 +275,7 @@ final class DestinationManagerTest: XCTestCase {
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
             removeAllTemporaryCallCount += 1
-            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+            try self.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -290,7 +290,7 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testDestinationMetadataUsesInjectedEntityStoreMetadataLookup() async throws {
-        let testID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
+        let testID = try createTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                               lon: -73.6726370,
                                                                                                               name: "Test Metadata"),
                                                                                     estimatedAddress: nil)
@@ -306,7 +306,7 @@ final class DestinationManagerTest: XCTestCase {
         }
         store.markReferenceEntitySelectedHandler = { _ in }
         store.removeAllTemporaryReferenceEntitiesHandler = {
-            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+            try self.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -319,7 +319,7 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationTemporaryIfMatchingIDUsesInjectedEntityStoreTemporaryMutation() async throws {
-        let testID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
+        let testID = try createTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                               lon: -73.6726370,
                                                                                                               name: "Test Temporary"),
                                                                                     estimatedAddress: nil)
@@ -334,7 +334,7 @@ final class DestinationManagerTest: XCTestCase {
         }
         store.markReferenceEntitySelectedHandler = { _ in }
         store.removeAllTemporaryReferenceEntitiesHandler = {
-            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+            try self.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -395,7 +395,7 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationGenericLocationUsesInjectedEntityIDLookup() async throws {
-        let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
+        let existingID = try createTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                                   lon: -73.6726370,
                                                                                                                   name: "Test Generic"),
                                                                                         estimatedAddress: nil)
@@ -416,7 +416,7 @@ final class DestinationManagerTest: XCTestCase {
             return UUID().uuidString
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
-            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+            try self.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -435,7 +435,7 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationGenericLocationAsyncUsesInjectedEntityIDLookup() async throws {
-        let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
+        let existingID = try createTemporaryReferenceEntity(location: GenericLocation(lat: 42.7290570,
                                                                                                                   lon: -73.6726370,
                                                                                                                   name: "Test Generic Async"),
                                                                                         estimatedAddress: nil)
@@ -456,7 +456,7 @@ final class DestinationManagerTest: XCTestCase {
             return UUID().uuidString
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
-            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+            try self.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -475,7 +475,7 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationEntityKeyUsesInjectedEntityIDLookup() async throws {
-        let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7292000,
+        let existingID = try createTemporaryReferenceEntity(location: GenericLocation(lat: 42.7292000,
                                                                                                                   lon: -73.6727000,
                                                                                                                   name: "Test Entity Key"),
                                                                                         estimatedAddress: nil)
@@ -496,7 +496,7 @@ final class DestinationManagerTest: XCTestCase {
             return UUID().uuidString
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
-            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+            try self.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -514,7 +514,7 @@ final class DestinationManagerTest: XCTestCase {
     }
 
     func testSetDestinationEntityKeyAsyncUsesInjectedEntityIDLookup() async throws {
-        let existingID = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: GenericLocation(lat: 42.7292000,
+        let existingID = try createTemporaryReferenceEntity(location: GenericLocation(lat: 42.7292000,
                                                                                                                   lon: -73.6727000,
                                                                                                                   name: "Test Entity Key Async"),
                                                                                         estimatedAddress: nil)
@@ -535,7 +535,7 @@ final class DestinationManagerTest: XCTestCase {
             return UUID().uuidString
         }
         store.removeAllTemporaryReferenceEntitiesHandler = {
-            try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+            try self.removeAllTemporaryReferenceEntities()
         }
 
         let dm = DestinationManager(audioEngine: basic_audio_engine, collectionHeading: empty_heading, destinationStore: store)
@@ -552,6 +552,15 @@ final class DestinationManagerTest: XCTestCase {
         try await dm.clearDestinationAsync(logContext: nil)
     }
     
+
+    private func createTemporaryReferenceEntity(location: GenericLocation,
+                                                estimatedAddress: String?) throws -> String {
+        try RealmReferenceEntity.addTemporary(location: location, estimatedAddress: estimatedAddress)
+    }
+
+    private func removeAllTemporaryReferenceEntities() throws {
+        try RealmReferenceEntity.removeAllTemporary()
+    }
     
 
 }

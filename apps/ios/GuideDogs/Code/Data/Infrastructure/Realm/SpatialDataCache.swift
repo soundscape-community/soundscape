@@ -12,204 +12,6 @@ import RealmSwift
 import MapKit
 
 @MainActor
-protocol SpatialDataStore {
-    func referenceEntityByKey(_ key: String) -> RealmReferenceEntity?
-    func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity?
-    func hasReferenceEntity(forEntityKey key: String) -> Bool
-    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity?
-    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity]
-    func referenceEntities() -> [RealmReferenceEntity]
-    func recentlySelectedObjects() -> [POI]
-    func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void)
-    func searchByKey(_ key: String) -> POI?
-    func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity?
-    func destinationPOI(forReferenceID id: String) -> POI?
-    func destinationEntityKey(forReferenceID id: String) -> String?
-    func destinationIsTemporary(forReferenceID id: String) -> Bool
-    func destinationNickname(forReferenceID id: String) -> String?
-    func destinationEstimatedAddress(forReferenceID id: String) -> String?
-    func markReferenceEntitySelected(forReferenceID id: String) throws
-    func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String
-    func removeAllTemporaryReferenceEntities() throws
-    func clearNewReferenceEntities() throws
-    func clearNewRoutes() throws
-    func routes() -> [Route]
-    func routeByKey(_ key: String) -> Route?
-    func routesContaining(markerId: String) -> [Route]
-    func roadByKey(_ key: String) -> Road?
-    func intersections(forRoadKey key: String) -> [Intersection]
-    func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection?
-    func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]?
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destinationCoordinate: CLLocationCoordinate2D?) -> Set<VectorTile>
-    func tileData(for tiles: [VectorTile]) -> [TileData]
-    func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI]
-}
-
-@MainActor
-struct DefaultSpatialDataStore: SpatialDataStore {
-    func referenceEntityByKey(_ key: String) -> RealmReferenceEntity? {
-        SpatialDataCache.referenceEntityByKey(key)
-    }
-
-    func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity? {
-        SpatialDataCache.referenceEntityByEntityKey(key)
-    }
-
-    func hasReferenceEntity(forEntityKey key: String) -> Bool {
-        referenceEntityByEntityKey(key) != nil
-    }
-
-    func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity? {
-        SpatialDataCache.referenceEntityByLocation(coordinate)
-    }
-
-    func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity] {
-        SpatialDataCache.referenceEntitiesNear(coordinate, range: range)
-    }
-
-    func referenceEntities() -> [RealmReferenceEntity] {
-        SpatialDataCache.referenceEntities()
-    }
-
-    func recentlySelectedObjects() -> [POI] {
-        SpatialDataCache.recentlySelectedObjects()
-    }
-
-    func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void) {
-        SpatialDataCache.fetchEstimatedAddress(location: location, completionHandler: completion)
-    }
-
-    func searchByKey(_ key: String) -> POI? {
-        SpatialDataCache.searchByKey(key: key)
-    }
-
-    func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity? {
-        SpatialDataCache.referenceEntityByGenericLocation(location)
-    }
-
-    func destinationPOI(forReferenceID id: String) -> POI? {
-        referenceEntityByKey(id)?.getPOI()
-    }
-
-    func destinationEntityKey(forReferenceID id: String) -> String? {
-        referenceEntityByKey(id)?.entityKey
-    }
-
-    func destinationIsTemporary(forReferenceID id: String) -> Bool {
-        referenceEntityByKey(id)?.isTemp ?? false
-    }
-
-    func destinationNickname(forReferenceID id: String) -> String? {
-        referenceEntityByKey(id)?.nickname
-    }
-
-    func destinationEstimatedAddress(forReferenceID id: String) -> String? {
-        referenceEntityByKey(id)?.estimatedAddress
-    }
-
-    func markReferenceEntitySelected(forReferenceID id: String) throws {
-        try referenceEntityByKey(id)?.updateLastSelectedDate()
-    }
-
-    func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws {
-        try referenceEntityByKey(id)?.setTemporary(temporary)
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
-        try RealmReferenceEntity.addTemporary(location: location, estimatedAddress: estimatedAddress)
-    }
-
-    func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
-        try RealmReferenceEntity.addTemporary(location: location,
-                                              nickname: nickname,
-                                              estimatedAddress: estimatedAddress)
-    }
-
-    func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
-        try RealmReferenceEntity.addTemporary(entityKey: entityKey,
-                                              estimatedAddress: estimatedAddress)
-    }
-
-    func removeAllTemporaryReferenceEntities() throws {
-        let database = try RealmHelper.getDatabaseRealm()
-
-        for entity in database.objects(RealmReferenceEntity.self).filter("isTemp == true") {
-            try database.write {
-                database.delete(entity)
-            }
-        }
-    }
-
-    func clearNewReferenceEntities() throws {
-        try SpatialDataCache.clearNewReferenceEntities()
-    }
-
-    func clearNewRoutes() throws {
-        try SpatialDataCache.clearNewRoutes()
-    }
-
-    func routes() -> [Route] {
-        SpatialDataCache.routes()
-    }
-
-    func routeByKey(_ key: String) -> Route? {
-        SpatialDataCache.routeByKey(key)
-    }
-
-    func routesContaining(markerId: String) -> [Route] {
-        SpatialDataCache.routesContaining(markerId: markerId)
-    }
-
-    func roadByKey(_ key: String) -> Road? {
-        SpatialDataCache.road(withKey: key)
-    }
-
-    func intersections(forRoadKey key: String) -> [Intersection] {
-        SpatialDataCache.intersections(forRoadKey: key) ?? []
-    }
-
-    func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
-        SpatialDataCache.intersection(forRoadKey: key, atCoordinate: coordinate)
-    }
-
-    func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]? {
-        SpatialDataCache.intersections(forRoadKey: key, inRegion: region)
-    }
-
-    func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destinationCoordinate: CLLocationCoordinate2D?) -> Set<VectorTile> {
-        SpatialDataCache.tiles(forDestinations: forDestinations,
-                               forReferences: forReferences,
-                               at: zoomLevel,
-                               destinationCoordinate: destinationCoordinate)
-    }
-
-    func tileData(for tiles: [VectorTile]) -> [TileData] {
-        SpatialDataCache.tileData(for: tiles)
-    }
-
-    func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI] {
-        SpatialDataCache.genericLocationsNear(location, range: range)
-    }
-}
-
-@MainActor
-enum SpatialDataStoreRegistry {
-    private static let defaultStore = DefaultSpatialDataStore()
-    private(set) static var store: SpatialDataStore = defaultStore
-
-    static func configure(with store: SpatialDataStore) {
-        self.store = store
-    }
-
-    static func resetForTesting() {
-        store = defaultStore
-    }
-}
-
-@MainActor
 enum RealmSpatialSearchBootstrap {
     static func configureDefaults() {
         SpatialDataCache.useDefaultSearchProviders()
@@ -224,7 +26,7 @@ enum RealmReverseGeocoderLookup {
             return nil
         }
 
-        return SpatialDataCache.searchByKey(key: key) as? Road
+        return SpatialDataCache.road(withKey: key)
     }
 
     static func poi(by key: String?) -> POI? {
@@ -342,28 +144,25 @@ class SpatialDataCache: NSObject {
         return poiSearchProviders[index].objects(predicate: predicate)
     }
     
-    /// Search all caches for a POI with the given key. Keys should be unique
-    /// across all POI types, so this will return the first POI any POISearchProviderProtocol
-    /// object finds
+    /// Search all registered providers for a POI with the given key.
     ///
-    /// - Parameter key: The key to search for
-    /// - Returns: Optionally a POI instance if one is found
+    /// Returns nil when providers have not yet been configured, so runtime
+    /// callers can safely resolve coordinate-only fallbacks without requiring
+    /// bootstrap ordering guarantees.
     static func searchByKey(key: String) -> POI? {
-        // In release builds, the default search provider (`POISearchProvider()`) is set in
-        // `AppDelegate.applicationDidFinishLaunchingWithOptions`. In unit tests, you should
-        // set the search provider in the `setUp` method of your unit test class (and call
-        // `SpatialDataSearch.removeAllProviders()` in the `tearDown` method).
-        assert(!poiSearchProviders.isEmpty, "A search provider must be specified for SpatialDataSearch")
-        
+        guard !poiSearchProviders.isEmpty else {
+            return nil
+        }
+
         for provider in poiSearchProviders {
             if let poi = provider.search(byKey: key) {
                 return poi
             }
         }
-        
+
         return nil
     }
-    
+
     // MARK: Road Entities
 
     static func road(withKey key: String) -> Road? {

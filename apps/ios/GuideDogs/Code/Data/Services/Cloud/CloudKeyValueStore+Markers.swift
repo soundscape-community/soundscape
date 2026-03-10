@@ -82,9 +82,18 @@ extension CloudKeyValueStore {
         // For iCloud key-value store we override the current value
         store(referenceEntity: referenceEntity)
     }
+
+    func update(markerParameters: MarkerParameters) {
+        // For iCloud key-value store we override the current value
+        store(markerParameters: markerParameters)
+    }
     
     func remove(referenceEntity: ReferenceEntity) {
         removeObject(forKey: CloudKeyValueStore.key(for: referenceEntity))
+    }
+
+    func remove(referenceEntityID id: String) {
+        removeObject(forKey: CloudKeyValueStore.key(forReferenceEntityID: id))
     }
     
     // MARK: Bulk Set/Get

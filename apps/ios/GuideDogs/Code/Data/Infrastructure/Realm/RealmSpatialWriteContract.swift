@@ -99,7 +99,7 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
         for entity in database.objects(RealmReferenceEntity.self) {
             let id = entity.id
 
-            ReferenceEntityRuntime.removeReferenceFromCloud(entity.domainEntity)
+            ReferenceEntityRuntime.removeReferenceFromCloud(markerID: id)
 
             try database.write {
                 database.delete(entity)
@@ -123,8 +123,8 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
     }
 
     func clearNewReferenceEntitiesAndRoutes() async throws {
-        try SpatialDataStoreRegistry.store.clearNewReferenceEntities()
-        try SpatialDataStoreRegistry.store.clearNewRoutes()
+        try RealmReferenceEntity.clearNew()
+        try Route.clearNew()
     }
 
     func restoreCachedAddresses(_ addresses: [AddressCacheRecord]) async throws {
@@ -163,32 +163,31 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
 @MainActor
 struct SpatialDataDestinationEntityStore: DestinationEntityStore {
     func destinationPOI(forReferenceID id: String) -> POI? {
-        SpatialDataStoreRegistry.store.destinationPOI(forReferenceID: id)
+        RealmReferenceEntity.entity(byID: id)?.getPOI()
     }
 
     func destinationEntityKey(forReferenceID id: String) -> String? {
-        SpatialDataStoreRegistry.store.destinationEntityKey(forReferenceID: id)
+        RealmReferenceEntity.entity(byID: id)?.entityKey
     }
 
     func destinationIsTemporary(forReferenceID id: String) -> Bool {
-        SpatialDataStoreRegistry.store.destinationIsTemporary(forReferenceID: id)
+        RealmReferenceEntity.entity(byID: id)?.isTemp ?? false
     }
 
     func destinationNickname(forReferenceID id: String) -> String? {
-        SpatialDataStoreRegistry.store.destinationNickname(forReferenceID: id)
+        RealmReferenceEntity.entity(byID: id)?.nickname
     }
 
     func destinationEstimatedAddress(forReferenceID id: String) -> String? {
-        SpatialDataStoreRegistry.store.destinationEstimatedAddress(forReferenceID: id)
+        RealmReferenceEntity.entity(byID: id)?.estimatedAddress
     }
 
     func markReferenceEntitySelected(forReferenceID id: String) throws {
-        try SpatialDataStoreRegistry.store.markReferenceEntitySelected(forReferenceID: id)
+        try RealmReferenceEntity.markSelected(id: id)
     }
 
     func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws {
-        try SpatialDataStoreRegistry.store.setReferenceEntityTemporary(forReferenceID: id,
-                                                                       temporary: temporary)
+        try RealmReferenceEntity.setTemporary(id: id, temporary: temporary)
     }
 
     func referenceEntityID(forGenericLocation location: GenericLocation) async -> String? {
@@ -200,46 +199,60 @@ struct SpatialDataDestinationEntityStore: DestinationEntityStore {
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) async throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
-                                                                       estimatedAddress: estimatedAddress)
+        try await RealmReferenceEntity.add(location: location,
+                                           nickname: nil,
+                                           estimatedAddress: estimatedAddress,
+                                           annotation: nil,
+                                           temporary: true,
+                                           context: nil,
+                                           using: DataContractRegistry.spatialRead)
     }
 
     func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) async throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location,
-                                                                       nickname: nickname,
-                                                                       estimatedAddress: estimatedAddress)
+        try await RealmReferenceEntity.add(location: location,
+                                           nickname: nickname,
+                                           estimatedAddress: estimatedAddress,
+                                           annotation: nil,
+                                           temporary: true,
+                                           context: nil,
+                                           using: DataContractRegistry.spatialRead)
     }
 
     func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) async throws -> String {
-        try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey,
-                                                                       estimatedAddress: estimatedAddress)
+        try await RealmReferenceEntity.add(entityKey: entityKey,
+                                           nickname: nil,
+                                           estimatedAddress: estimatedAddress,
+                                           annotation: nil,
+                                           temporary: true,
+                                           context: nil,
+                                           using: DataContractRegistry.spatialRead)
     }
 
     func removeAllTemporaryReferenceEntities() async throws {
-        try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
+        try RealmReferenceEntity.removeAllTemporary()
     }
 }
 
 @MainActor
 enum LocationDetailStoreAdapter {
     static func poi(byKey key: String) -> POI? {
-        SpatialDataStoreRegistry.store.searchByKey(key)
+        SpatialDataCache.searchByKey(key: key)
     }
 
     static func referenceEntity(byID id: String) -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByKey(id)?.domainEntity
+        RealmReferenceEntity.entity(byID: id)?.domainEntity
     }
 
     static func referenceEntity(byEntityKey key: String) -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
+        SpatialDataCache.referenceEntityByEntityKey(key)?.domainEntity
     }
 
     static func referenceEntity(byLocation coordinate: CLLocationCoordinate2D) -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate)?.domainEntity
+        SpatialDataCache.referenceEntityByLocation(coordinate)?.domainEntity
     }
 
     static func markReferenceEntitySelected(forReferenceID id: String) throws {
-        try SpatialDataStoreRegistry.store.markReferenceEntitySelected(forReferenceID: id)
+        try RealmReferenceEntity.markSelected(id: id)
     }
 
     static func markPOISelected(_ entity: SelectablePOI) throws {

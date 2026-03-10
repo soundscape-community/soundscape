@@ -152,7 +152,7 @@ extension Route {
                             return (id: route.id, distance: CLLocationDistance.greatestFiniteMagnitude)
                         }
 
-                        let distance = SpatialDataStoreRegistry.store.referenceEntityByKey(start.markerId)?
+                        let distance = SpatialDataCache.referenceEntityByKey(start.markerId)?
                             .distanceToClosestLocation(from: userLocation)
                             ?? CLLocationDistance.greatestFiniteMagnitude
 
@@ -303,9 +303,24 @@ extension Route {
     }
     
     static func deleteAll() throws {
-        try SpatialDataStoreRegistry.store.routes().forEach({
+        try SpatialDataCache.routes().forEach({
             try delete($0.id)
         })
+    }
+
+    static func clearNew() throws {
+        let database = try RealmHelper.getDatabaseRealm()
+        let newRoutes = database.objects(RealmRoute.self).filter("isNew == true")
+
+        guard !newRoutes.isEmpty else {
+            return
+        }
+
+        try database.write {
+            for route in newRoutes {
+                route.isNew = false
+            }
+        }
     }
     
     // MARK: Update Routes
@@ -457,7 +472,7 @@ extension Route {
     }
     
     static func updateWaypointInAllRoutes(markerId: String) throws {
-        try SpatialDataStoreRegistry.store.routesContaining(markerId: markerId).forEach({
+        try SpatialDataCache.routesContaining(markerId: markerId).forEach({
             guard let first = $0.waypoints.ordered.first else {
                 return
             }

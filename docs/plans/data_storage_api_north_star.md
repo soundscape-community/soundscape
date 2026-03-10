@@ -2,12 +2,13 @@
 
 # Data Storage API North Star
 
-Last updated: 2026-03-06
+Last updated: 2026-03-09
 
 ## Document Contract
 - This document defines the target data API and boundary rules.
 - This document should change rarely.
 - Progress/migration history belongs in `docs/plans/modularization_plan.md`.
+- Day-to-day execution/logging defaults belong in `AGENTS.md` to keep this document stable.
 
 ## Purpose
 Define a stable, minimal app-facing data API that stays close to existing data behavior while isolating Realm infrastructure.
@@ -42,7 +43,6 @@ Use domain/value types directly at contract boundaries (for example `Route`, `Ro
 
 ## Infrastructure-Only APIs (Non App-Facing)
 Must not be used by non-infrastructure code:
-- `SpatialDataStoreRegistry.store`
 - `SpatialDataCache`
 - `DestinationEntityStore`
 - Realm object models (`RealmRoute`, `RealmRouteWaypoint`, `RealmReferenceEntity`, etc.)

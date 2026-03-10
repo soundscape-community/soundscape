@@ -144,13 +144,14 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             return nil
         }
 
-        if let destinationEntity = SpatialDataStoreRegistry.store.referenceEntityByKey(destinationKey),
-           let destinationEntityKey = destinationEntity.entityKey,
-           let destinationPOI = SpatialDataStoreRegistry.store.searchByKey(destinationEntityKey) {
+        let destinationEntity = SpatialDataCache.referenceEntityByKey(destinationKey)
+
+        if let destinationEntityKey = destinationEntity?.entityKey,
+           let destinationPOI = SpatialDataCache.searchByKey(key: destinationEntityKey) {
             return destinationPOI
         }
 
-        return SpatialDataStoreRegistry.store.referenceEntityByKey(destinationKey)?.getPOI()
+        return destinationEntity?.getPOI()
     }
     
     var loadedSpatialData: Bool {
@@ -319,9 +320,9 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         }
         
         let vectorTiles = VectorTile.tilesForRegion(location, radius: searchDistance, zoom: SpatialDataContext.zoomLevel)
-        let tileData = SpatialDataStoreRegistry.store.tileData(for: vectorTiles)
-        let markedPoints = SpatialDataStoreRegistry.store.referenceEntitiesNear(location.coordinate, range: searchDistance).map(\.domainEntity)
-        let genericLocations = SpatialDataStoreRegistry.store.genericLocationsNear(location, range: searchDistance)
+        let tileData = SpatialDataCache.tileData(for: vectorTiles)
+        let markedPoints = SpatialDataCache.referenceEntitiesNear(location.coordinate, range: searchDistance).map(\.domainEntity)
+        let genericLocations = SpatialDataCache.genericLocationsNear(location, range: searchDistance)
         
         results = SpatialDataView(tiles: tileData,
                                   markedPoints: markedPoints,
@@ -708,7 +709,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                 // Remove the existing tiles before storing the updated tile so that we remove old (bad)
                 // intersection data from before we fixed the server intersection code (where multiple versions
                 // of the same intersection were being returned in adjacent tiles)
-                if let existingTile = SpatialDataStoreRegistry.store.tileData(for: [tile]).first {
+                if let existingTile = SpatialDataCache.tileData(for: [tile]).first {
                     try cache.write {
                         cache.delete(existingTile.intersections)
                     }
@@ -738,10 +739,10 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
             var needed = [VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)]
             
             if includePORs {
-                needed = Array(SpatialDataStoreRegistry.store.tiles(forDestinations: true,
-                                                                    forReferences: true,
-                                                                    at: zoomLevel,
-                                                                    destinationCoordinate: destinationCoordinate).union(needed))
+                needed = Array(SpatialDataCache.tiles(forDestinations: true,
+                                                        forReferences: true,
+                                                        at: zoomLevel,
+                                                        destinationCoordinate: destinationCoordinate).union(needed))
             }
             
             return (Set<VectorTile>(), needed)
@@ -750,10 +751,10 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         var neededTiles = VectorTile.tilesForRegion(location, radius: SpatialDataContext.cacheDistance, zoom: SpatialDataContext.zoomLevel)
         
         if includePORs {
-            neededTiles = Array(SpatialDataStoreRegistry.store.tiles(forDestinations: true,
-                                                                     forReferences: true,
-                                                                     at: zoomLevel,
-                                                                     destinationCoordinate: destinationCoordinate).union(neededTiles))
+            neededTiles = Array(SpatialDataCache.tiles(forDestinations: true,
+                                                         forReferences: true,
+                                                         at: zoomLevel,
+                                                         destinationCoordinate: destinationCoordinate).union(neededTiles))
         }
         
         let remainingTiles = Set(tiles.filter { neededTiles.contains($0) }) // Remove tile we don't need anymore

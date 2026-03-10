@@ -30,11 +30,13 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var referenceLocation: CLLocation?
         var referenceStored: [ReferenceEntity] = []
         var referenceUpdated: [ReferenceEntity] = []
+        var referenceUpdatedMarkerParameters: [MarkerParameters] = []
         var referenceRemoved: [ReferenceEntity] = []
+        var referenceRemovedCloudMarkerIDs: [String] = []
         var referenceSetDestinationResult = false
         var referenceSetDestinationError: Error?
         var referenceClearError: Error?
-        var referenceRemovedMarkerIDs: [String] = []
+        var referenceRemovedCalloutMarkerIDs: [String] = []
         var referenceProcessedEventNames: [String] = []
 
         var spatialDataEntityLocation: CLLocation?
@@ -92,8 +94,16 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             referenceUpdated.append(entity)
         }
 
+        func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
+            referenceUpdatedMarkerParameters.append(markerParameters)
+        }
+
         func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
             referenceRemoved.append(entity)
+        }
+
+        func referenceRemoveFromCloud(markerID: String) {
+            referenceRemovedCloudMarkerIDs.append(markerID)
         }
 
         func referenceProcessEvent(_ event: Event) {
@@ -115,7 +125,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         }
 
         func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {
-            referenceRemovedMarkerIDs.append(markerID)
+            referenceRemovedCalloutMarkerIDs.append(markerID)
         }
 
         func spatialDataEntityCurrentUserLocation() -> CLLocation? {
@@ -221,14 +231,31 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
 
         ReferenceEntityRuntime.storeReferenceInCloud(entity)
         ReferenceEntityRuntime.updateReferenceInCloud(entity)
+        let cloudEntity = GenericLocation(lat: 47.63,
+                                          lon: -122.32,
+                                          name: "Cloud Marker")
+        if let markerParameters = MarkerParameters(entity: cloudEntity,
+                                                   markerId: entity.id,
+                                                   estimatedAddress: nil,
+                                                   nickname: entity.nickname,
+                                                   annotation: entity.annotation,
+                                                   lastUpdatedDate: entity.lastUpdatedDate) {
+            ReferenceEntityRuntime.updateReferenceInCloud(markerParameters)
+        } else {
+            XCTFail("Expected marker parameters for cloud dispatch")
+            return
+        }
         ReferenceEntityRuntime.removeReferenceFromCloud(entity)
+        ReferenceEntityRuntime.removeReferenceFromCloud(markerID: entity.id)
         ReferenceEntityRuntime.removeCalloutHistoryForMarkerID("marker-1")
         ReferenceEntityRuntime.processEvent(BehaviorActivatedEvent())
 
         XCTAssertEqual(provider.referenceStored.count, 1)
         XCTAssertEqual(provider.referenceUpdated.count, 1)
+        XCTAssertEqual(provider.referenceUpdatedMarkerParameters.count, 1)
         XCTAssertEqual(provider.referenceRemoved.count, 1)
-        XCTAssertEqual(provider.referenceRemovedMarkerIDs, ["marker-1"])
+        XCTAssertEqual(provider.referenceRemovedCloudMarkerIDs, [entity.id])
+        XCTAssertEqual(provider.referenceRemovedCalloutMarkerIDs, ["marker-1"])
         XCTAssertEqual(provider.referenceProcessedEventNames, [BehaviorActivatedEvent().name])
 
         provider.referenceSetDestinationError = MockError.expected

@@ -12,15 +12,15 @@ import SSGeo
 @MainActor
 struct RealmSpatialReadContract: SpatialReadContract {
     func routes() async -> [Route] {
-        SpatialDataStoreRegistry.store.routes()
+        SpatialDataCache.routes()
     }
 
     func route(byKey key: String) async -> Route? {
-        SpatialDataStoreRegistry.store.routeByKey(key)
+        SpatialDataCache.routeByKey(key)
     }
 
     func routeMetadata(byKey key: String) async -> RouteReadMetadata? {
-        guard let route = SpatialDataStoreRegistry.store.routeByKey(key) else {
+        guard let route = SpatialDataCache.routeByKey(key) else {
             return nil
         }
 
@@ -28,7 +28,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func routeParameters(byKey key: String, context: RouteParameters.Context) async -> RouteParameters? {
-        guard let route = SpatialDataStoreRegistry.store.routeByKey(key) else {
+        guard let route = SpatialDataCache.routeByKey(key) else {
             return nil
         }
 
@@ -36,19 +36,19 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func routeParametersForBackup() async -> [RouteParameters] {
-        SpatialDataStoreRegistry.store.routes().compactMap { RouteParameters(route: $0, context: .backup) }
+        SpatialDataCache.routes().compactMap { RouteParameters(route: $0, context: .backup) }
     }
 
     func routes(containingMarkerID markerID: String) async -> [Route] {
-        SpatialDataStoreRegistry.store.routesContaining(markerId: markerID)
+        SpatialDataCache.routesContaining(markerId: markerID)
     }
 
     func referenceEntity(byID id: String) async -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByKey(id)?.domainEntity
+        SpatialDataCache.referenceEntityByKey(id)?.domainEntity
     }
 
     func referenceCallout(byID id: String) async -> ReferenceCalloutReadData? {
-        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+        guard let marker = SpatialDataCache.referenceEntityByKey(id) else {
             return nil
         }
 
@@ -56,7 +56,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func distanceToClosestLocation(forMarkerID id: String, from location: SSGeoLocation) async -> Double? {
-        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+        guard let marker = SpatialDataCache.referenceEntityByKey(id) else {
             return nil
         }
 
@@ -64,7 +64,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func referenceMetadata(byID id: String) async -> ReferenceReadMetadata? {
-        guard let referenceEntity = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+        guard let referenceEntity = SpatialDataCache.referenceEntityByKey(id) else {
             return nil
         }
 
@@ -72,7 +72,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func referenceMetadata(byEntityKey key: String) async -> ReferenceReadMetadata? {
-        guard let referenceEntity = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key) else {
+        guard let referenceEntity = SpatialDataCache.referenceEntityByEntityKey(key) else {
             return nil
         }
 
@@ -80,7 +80,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func markerParameters(byID id: String) async -> MarkerParameters? {
-        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByKey(id) else {
+        guard let marker = SpatialDataCache.referenceEntityByKey(id) else {
             return nil
         }
 
@@ -88,7 +88,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func markerParameters(byCoordinate coordinate: SSGeoCoordinate) async -> MarkerParameters? {
-        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate.clCoordinate) else {
+        guard let marker = SpatialDataCache.referenceEntityByLocation(coordinate.clCoordinate) else {
             return nil
         }
 
@@ -96,7 +96,7 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func markerParameters(byEntityKey key: String) async -> MarkerParameters? {
-        guard let marker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key) else {
+        guard let marker = SpatialDataCache.referenceEntityByEntityKey(key) else {
             return nil
         }
 
@@ -104,32 +104,32 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func markerParametersForBackup() async -> [MarkerParameters] {
-        SpatialDataStoreRegistry.store.referenceEntities().compactMap { MarkerParameters(marker: $0) }
+        SpatialDataCache.referenceEntities().compactMap { MarkerParameters(marker: $0) }
     }
 
     func referenceEntity(byEntityKey key: String) async -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByEntityKey(key)?.domainEntity
+        SpatialDataCache.referenceEntityByEntityKey(key)?.domainEntity
     }
 
     func referenceEntity(byCoordinate coordinate: SSGeoCoordinate) async -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByLocation(coordinate.clCoordinate)?.domainEntity
+        SpatialDataCache.referenceEntityByLocation(coordinate.clCoordinate)?.domainEntity
     }
 
     func referenceEntity(byGenericLocation location: GenericLocation) async -> ReferenceEntity? {
-        SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location)?.domainEntity
+        SpatialDataCache.referenceEntityByGenericLocation(location)?.domainEntity
     }
 
     func referenceEntities() async -> [ReferenceEntity] {
-        SpatialDataStoreRegistry.store.referenceEntities().map(\.domainEntity)
+        SpatialDataCache.referenceEntities().map(\.domainEntity)
     }
 
     func recentlySelectedPOIs() async -> [POI] {
-        SpatialDataStoreRegistry.store.recentlySelectedObjects()
+        SpatialDataCache.recentlySelectedObjects()
     }
 
     func estimatedAddress(near location: SSGeoLocation) async -> EstimatedAddressReadData? {
         await withCheckedContinuation { continuation in
-            SpatialDataStoreRegistry.store.fetchEstimatedAddress(for: location.clLocation) { address in
+            SpatialDataCache.fetchEstimatedAddress(location: location.clLocation) { address in
                 continuation.resume(returning: address.map {
                     EstimatedAddressReadData(addressLine: $0.addressLine,
                                              streetName: $0.streetName,
@@ -140,39 +140,39 @@ struct RealmSpatialReadContract: SpatialReadContract {
     }
 
     func referenceEntities(near coordinate: SSGeoCoordinate, rangeMeters: Double) async -> [ReferenceEntity] {
-        SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate.clCoordinate, range: rangeMeters).map(\.domainEntity)
+        SpatialDataCache.referenceEntitiesNear(coordinate.clCoordinate, range: rangeMeters).map(\.domainEntity)
     }
 
     func poi(byKey key: String) async -> POI? {
-        SpatialDataStoreRegistry.store.searchByKey(key)
+        SpatialDataCache.searchByKey(key: key)
     }
 
     func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destination: ReferenceEntity?) async -> Set<VectorTile> {
-        return SpatialDataStoreRegistry.store.tiles(forDestinations: forDestinations,
-                                                    forReferences: forReferences,
-                                                    at: zoomLevel,
-                                                    destinationCoordinate: destination?.coordinate.clCoordinate)
+        return SpatialDataCache.tiles(forDestinations: forDestinations,
+                                      forReferences: forReferences,
+                                      at: zoomLevel,
+                                      destinationCoordinate: destination?.coordinate.clCoordinate)
     }
 
     func genericLocations(near location: SSGeoLocation, rangeMeters: Double?) async -> [POI] {
-        SpatialDataStoreRegistry.store.genericLocationsNear(location.clLocation, range: rangeMeters)
+        SpatialDataCache.genericLocationsNear(location.clLocation, range: rangeMeters)
     }
 }
 
 @MainActor
 extension Road {
     var intersections: [Intersection] {
-        SpatialDataStoreRegistry.store.intersections(forRoadKey: key)
+        SpatialDataCache.intersections(forRoadKey: key) ?? []
     }
 
     func intersection(atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
-        SpatialDataStoreRegistry.store.intersection(forRoadKey: key, atCoordinate: coordinate)
+        SpatialDataCache.intersection(forRoadKey: key, atCoordinate: coordinate)
     }
 }
 
 @MainActor
 enum RoadAdjacentDataStoreAdapter {
     static func markersNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [ReferenceEntity] {
-        SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate, range: range).map(\.domainEntity)
+        SpatialDataCache.referenceEntitiesNear(coordinate, range: range).map(\.domainEntity)
     }
 }

@@ -15,252 +15,6 @@ import SSGeo
 
 @MainActor
 final class RouteStorageProviderDispatchTests: XCTestCase {
-    final class MockSpatialDataStore: SpatialDataStore {
-        var referenceEntitiesByKey: [String: RealmReferenceEntity] = [:]
-        var referenceEntitiesByEntityKey: [String: RealmReferenceEntity] = [:]
-        var referenceEntitiesByLocation: [String: RealmReferenceEntity] = [:]
-        var referenceEntitiesNearByLocation: [String: [RealmReferenceEntity]] = [:]
-        var referenceEntitiesByGenericLocation: [String: RealmReferenceEntity] = [:]
-        var referenceEntitiesToReturn: [RealmReferenceEntity] = []
-        var searchResultsByKey: [String: POI] = [:]
-        var addedTemporaryReferenceEntityID = "mock-temp-reference-entity-id"
-        var routesToReturn: [Route] = []
-        var routesByKey: [String: Route] = [:]
-        var routesContainingToReturn: [String: [Route]] = [:]
-        var roadsByKey: [String: Road] = [:]
-        var intersectionsByRoadKey: [String: [Intersection]] = [:]
-        var intersectionsByRoadCoordinateKey: [String: Intersection] = [:]
-        var intersectionsByRoadRegionKey: [String: [Intersection]] = [:]
-        var tilesToReturn: Set<VectorTile> = []
-        var tileDataByQuadKey: [String: TileData] = [:]
-        var genericLocationsByLookupKey: [String: [POI]] = [:]
-
-        private(set) var referenceEntityByKeyCallKeys: [String] = []
-        private(set) var referenceEntityByEntityKeyCallKeys: [String] = []
-        private(set) var hasReferenceEntityCallKeys: [String] = []
-        private(set) var referenceEntityByLocationCallKeys: [String] = []
-        private(set) var referenceEntitiesNearCallKeys: [String] = []
-        private(set) var referenceEntityByGenericLocationCallKeys: [String] = []
-        private(set) var referenceEntitiesCallCount = 0
-        private(set) var recentlySelectedObjectsCallCount = 0
-        private(set) var fetchEstimatedAddressCallCount = 0
-        private(set) var searchByKeyCallKeys: [String] = []
-        private(set) var destinationPOICallKeys: [String] = []
-        private(set) var destinationEntityKeyCallKeys: [String] = []
-        private(set) var destinationIsTemporaryCallKeys: [String] = []
-        private(set) var destinationNicknameCallKeys: [String] = []
-        private(set) var destinationEstimatedAddressCallKeys: [String] = []
-        private(set) var markReferenceEntitySelectedCallKeys: [String] = []
-        private(set) var setReferenceEntityTemporaryCalls: [(id: String, temporary: Bool)] = []
-        private(set) var addTemporaryReferenceEntityLocationCallCount = 0
-        private(set) var addTemporaryReferenceEntityLocationWithNicknameCallCount = 0
-        private(set) var addTemporaryReferenceEntityEntityKeyCallKeys: [String] = []
-        private(set) var removeAllTemporaryReferenceEntitiesCallCount = 0
-        private(set) var clearNewReferenceEntitiesCallCount = 0
-        private(set) var clearNewRoutesCallCount = 0
-        private(set) var routesCallCount = 0
-        private(set) var routeByKeyCallKeys: [String] = []
-        private(set) var routesContainingCallKeys: [String] = []
-        private(set) var roadByKeyCallKeys: [String] = []
-        private(set) var intersectionsForRoadKeyCallKeys: [String] = []
-        private(set) var intersectionForRoadCoordinateCallKeys: [String] = []
-        private(set) var intersectionsForRoadRegionCallKeys: [String] = []
-        private(set) var tilesCallKeys: [String] = []
-        private(set) var tileDataCallQuadKeys: [[String]] = []
-        private(set) var genericLocationsNearCallKeys: [String] = []
-
-        func referenceEntityByKey(_ key: String) -> RealmReferenceEntity? {
-            referenceEntityByKeyCallKeys.append(key)
-            return referenceEntitiesByKey[key]
-        }
-
-        func referenceEntityByEntityKey(_ key: String) -> RealmReferenceEntity? {
-            referenceEntityByEntityKeyCallKeys.append(key)
-            return referenceEntitiesByEntityKey[key]
-        }
-
-        func hasReferenceEntity(forEntityKey key: String) -> Bool {
-            hasReferenceEntityCallKeys.append(key)
-            return referenceEntitiesByEntityKey[key] != nil
-        }
-
-        func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D) -> RealmReferenceEntity? {
-            let key = locationKey(for: coordinate)
-            referenceEntityByLocationCallKeys.append(key)
-            return referenceEntitiesByLocation[key]
-        }
-
-        func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [RealmReferenceEntity] {
-            let key = "\(locationKey(for: coordinate))@\(range)"
-            referenceEntitiesNearCallKeys.append(key)
-            return referenceEntitiesNearByLocation[key] ?? []
-        }
-
-        func referenceEntities() -> [RealmReferenceEntity] {
-            referenceEntitiesCallCount += 1
-            return referenceEntitiesToReturn
-        }
-
-        func recentlySelectedObjects() -> [POI] {
-            recentlySelectedObjectsCallCount += 1
-            return []
-        }
-
-        func fetchEstimatedAddress(for location: CLLocation, completion: @escaping (GeocodedAddress?) -> Void) {
-            fetchEstimatedAddressCallCount += 1
-            completion(nil)
-        }
-
-        func searchByKey(_ key: String) -> POI? {
-            searchByKeyCallKeys.append(key)
-            return searchResultsByKey[key]
-        }
-
-        func referenceEntityByGenericLocation(_ location: GenericLocation) -> RealmReferenceEntity? {
-            let key = locationKey(for: location.location.coordinate)
-            referenceEntityByGenericLocationCallKeys.append(key)
-            return referenceEntitiesByGenericLocation[key]
-        }
-
-        func destinationPOI(forReferenceID id: String) -> POI? {
-            destinationPOICallKeys.append(id)
-            return referenceEntitiesByKey[id]?.getPOI()
-        }
-
-        func destinationEntityKey(forReferenceID id: String) -> String? {
-            destinationEntityKeyCallKeys.append(id)
-            return referenceEntitiesByKey[id]?.entityKey
-        }
-
-        func destinationIsTemporary(forReferenceID id: String) -> Bool {
-            destinationIsTemporaryCallKeys.append(id)
-            return referenceEntitiesByKey[id]?.isTemp ?? false
-        }
-
-        func destinationNickname(forReferenceID id: String) -> String? {
-            destinationNicknameCallKeys.append(id)
-            return referenceEntitiesByKey[id]?.nickname
-        }
-
-        func destinationEstimatedAddress(forReferenceID id: String) -> String? {
-            destinationEstimatedAddressCallKeys.append(id)
-            return referenceEntitiesByKey[id]?.estimatedAddress
-        }
-
-        func markReferenceEntitySelected(forReferenceID id: String) throws {
-            markReferenceEntitySelectedCallKeys.append(id)
-        }
-
-        func setReferenceEntityTemporary(forReferenceID id: String, temporary: Bool) throws {
-            setReferenceEntityTemporaryCalls.append((id: id, temporary: temporary))
-            referenceEntitiesByKey[id]?.isTemp = temporary
-        }
-
-        func addTemporaryReferenceEntity(location: GenericLocation, estimatedAddress: String?) throws -> String {
-            addTemporaryReferenceEntityLocationCallCount += 1
-            return addedTemporaryReferenceEntityID
-        }
-
-        func addTemporaryReferenceEntity(location: GenericLocation, nickname: String?, estimatedAddress: String?) throws -> String {
-            addTemporaryReferenceEntityLocationWithNicknameCallCount += 1
-            return addedTemporaryReferenceEntityID
-        }
-
-        func addTemporaryReferenceEntity(entityKey: String, estimatedAddress: String?) throws -> String {
-            addTemporaryReferenceEntityEntityKeyCallKeys.append(entityKey)
-            return addedTemporaryReferenceEntityID
-        }
-
-        func removeAllTemporaryReferenceEntities() throws {
-            removeAllTemporaryReferenceEntitiesCallCount += 1
-        }
-
-        func clearNewReferenceEntities() throws {
-            clearNewReferenceEntitiesCallCount += 1
-        }
-
-        func clearNewRoutes() throws {
-            clearNewRoutesCallCount += 1
-        }
-
-        func routes() -> [Route] {
-            routesCallCount += 1
-            return routesToReturn
-        }
-
-        func routeByKey(_ key: String) -> Route? {
-            routeByKeyCallKeys.append(key)
-            return routesByKey[key]
-        }
-
-        func routesContaining(markerId: String) -> [Route] {
-            routesContainingCallKeys.append(markerId)
-            return routesContainingToReturn[markerId] ?? []
-        }
-
-        func roadByKey(_ key: String) -> Road? {
-            roadByKeyCallKeys.append(key)
-            return roadsByKey[key]
-        }
-
-        func intersections(forRoadKey key: String) -> [Intersection] {
-            intersectionsForRoadKeyCallKeys.append(key)
-            return intersectionsByRoadKey[key] ?? []
-        }
-
-        func intersection(forRoadKey key: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
-            let lookupKey = roadCoordinateKey(forRoadKey: key, coordinate: coordinate)
-            intersectionForRoadCoordinateCallKeys.append(lookupKey)
-            return intersectionsByRoadCoordinateKey[lookupKey]
-        }
-
-        func intersections(forRoadKey key: String, inRegion region: MKCoordinateRegion) -> [Intersection]? {
-            let lookupKey = roadRegionKey(forRoadKey: key, region: region)
-            intersectionsForRoadRegionCallKeys.append(lookupKey)
-            return intersectionsByRoadRegionKey[lookupKey]
-        }
-
-        func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt, destinationCoordinate: CLLocationCoordinate2D?) -> Set<VectorTile> {
-            let destinationKey: String
-            if let destinationCoordinate = destinationCoordinate {
-                destinationKey = "\(destinationCoordinate.latitude),\(destinationCoordinate.longitude)"
-            } else {
-                destinationKey = "nil"
-            }
-
-            tilesCallKeys.append("\(forDestinations)|\(forReferences)|\(zoomLevel)|\(destinationKey)")
-            return tilesToReturn
-        }
-
-        func tileData(for tiles: [VectorTile]) -> [TileData] {
-            let quadKeys = tiles.map(\.quadKey)
-            tileDataCallQuadKeys.append(quadKeys)
-            return quadKeys.compactMap { tileDataByQuadKey[$0] }
-        }
-
-        func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance?) -> [POI] {
-            let lookupKey = genericLocationLookupKey(location: location, range: range)
-            genericLocationsNearCallKeys.append(lookupKey)
-            return genericLocationsByLookupKey[lookupKey] ?? []
-        }
-
-        private func locationKey(for coordinate: CLLocationCoordinate2D) -> String {
-            "\(coordinate.latitude),\(coordinate.longitude)"
-        }
-
-        private func roadCoordinateKey(forRoadKey key: String, coordinate: CLLocationCoordinate2D) -> String {
-            "\(key)@\(locationKey(for: coordinate))"
-        }
-
-        private func roadRegionKey(forRoadKey key: String, region: MKCoordinateRegion) -> String {
-            "\(key)@\(locationKey(for: region.center))@\(region.span.latitudeDelta),\(region.span.longitudeDelta)"
-        }
-
-        private func genericLocationLookupKey(location: CLLocation, range: CLLocationDistance?) -> String {
-            "\(locationKey(for: location.coordinate))@\(range.map(String.init(describing:)) ?? "nil")"
-        }
-    }
-
     final class MockSpatialReadContract: SpatialReadContract {
         var routesToReturn: [Route] = []
         var routesByKey: [String: Route] = [:]
@@ -381,24 +135,77 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func poi(byKey key: String) async -> POI? { nil }
     }
 
+    final class CloudDispatchProbeRuntimeProviders: DataRuntimeProviders {
+        private(set) var referenceStoreEntityCalls = 0
+        private(set) var referenceUpdateEntityCalls = 0
+        private(set) var referenceUpdateMarkerParametersCalls = 0
+        private(set) var referenceRemoveEntityCalls = 0
+        private(set) var referenceRemoveMarkerIDCalls = 0
+
+        func routeCurrentUserLocation() -> CLLocation? { nil }
+        func routeActiveRouteDatabaseID() -> String? { nil }
+        func routeDeactivateActiveBehavior() {}
+        func routeStoreInCloud(_ route: Route) {}
+        func routeUpdateInCloud(_ route: Route) {}
+        func routeRemoveFromCloud(_ route: Route) {}
+        func routeCurrentMotionActivityRawValue() -> String { "unknown" }
+
+        func referenceCurrentUserLocation() -> CLLocation? { nil }
+        func referenceStoreInCloud(_ entity: ReferenceEntity) {
+            referenceStoreEntityCalls += 1
+            _ = entity.getPOI()
+        }
+
+        func referenceUpdateInCloud(_ entity: ReferenceEntity) {
+            referenceUpdateEntityCalls += 1
+            _ = entity.getPOI()
+        }
+
+        func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
+            referenceUpdateMarkerParametersCalls += 1
+        }
+
+        func referenceRemoveFromCloud(_ entity: ReferenceEntity) {
+            referenceRemoveEntityCalls += 1
+            _ = entity.getPOI()
+        }
+
+        func referenceRemoveFromCloud(markerID: String) {
+            referenceRemoveMarkerIDCalls += 1
+        }
+        func referenceProcessEvent(_ event: Event) {}
+        func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool { false }
+        func referenceClearDestinationForCacheReset() async throws {}
+        func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {}
+
+        func spatialDataEntityCurrentUserLocation() -> CLLocation? { nil }
+
+        func destinationManagerCurrentUserLocation() -> CLLocation? { nil }
+        func destinationManagerIsRouteGuidanceActive() -> Bool { false }
+        func destinationManagerIsRouteOrTourGuidanceActive() -> Bool { false }
+        func destinationManagerIsBeaconCalloutGeneratorBlocked() -> Bool { false }
+        func destinationManagerProcessEvent(_ event: Event) {}
+
+        func spatialDataContextCurrentUserLocation() -> CLLocation? { nil }
+        func spatialDataContextPerformInitialCloudSync(_ completion: @escaping () -> Void) { completion() }
+        func spatialDataContextClearCalloutHistory() {}
+        func spatialDataContextIsApplicationInNormalState() -> Bool { false }
+        func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation) {}
+        func spatialDataContextProcessEvent(_ event: Event) {}
+    }
+
     override func tearDownWithError() throws {
-        SpatialDataStoreRegistry.resetForTesting()
         DataContractRegistry.resetForTesting()
+        DataRuntimeProviderRegistry.resetForTesting()
         try clearAllRoutes()
     }
 
-    func testObjectKeysDistanceUsesInjectedSpatialStoreForMarkerLookup() throws {
+    func testObjectKeysDistanceUsesPersistenceWithoutInjectedSpatialStoreFallback() throws {
         let route = try createPersistedRoute(name: "DistanceTestRoute")
-        let markerID = route.waypoints.ordered.first?.markerId
-        XCTAssertNotNil(markerID)
-
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
 
         let keys = Route.objectKeys(sortedBy: .distance)
 
         XCTAssertTrue(keys.contains(route.id))
-        XCTAssertEqual(store.referenceEntityByKeyCallKeys.first, markerID)
     }
 
     func testAsyncObjectKeysDistanceUsesSpatialReadContractDistanceLookup() async throws {
@@ -406,9 +213,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let markerIDFar = "async-distance-far-\(UUID().uuidString)"
         let nearRoute = try createPersistedRoute(name: "AsyncDistanceNear-\(UUID().uuidString)", markerIDs: [markerIDNear])
         let farRoute = try createPersistedRoute(name: "AsyncDistanceFar-\(UUID().uuidString)", markerIDs: [markerIDFar])
-
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
 
         let readMock = MockSpatialReadContract()
         readMock.routesToReturn = [farRoute, nearRoute]
@@ -420,21 +224,16 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertEqual(keys, [nearRoute.id, farRoute.id])
         XCTAssertEqual(readMock.routesCallCount, 1)
-        XCTAssertEqual(readMock.distanceToClosestLocationCallIDs, [markerIDFar, markerIDNear])
-        XCTAssertTrue(store.referenceEntityByKeyCallKeys.isEmpty)
-        XCTAssertEqual(store.routesCallCount, 0)
+        XCTAssertEqual(Set(readMock.distanceToClosestLocationCallIDs), Set([markerIDFar, markerIDNear]))
     }
 
     func testRemoveWaypointFromAllRoutesUsesSpatialReadContractLookup() async throws {
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
         let readMock = MockSpatialReadContract()
         readMock.routesContainingByMarkerID["marker-id"] = []
 
         try await Route.removeWaypointFromAllRoutes(markerId: "marker-id", using: readMock)
 
         XCTAssertEqual(readMock.routesContainingMarkerIDCalls, ["marker-id"])
-        XCTAssertTrue(store.routesContainingCallKeys.isEmpty)
     }
 
     func testRemoveWaypointFromAllRoutesThrowsWhenSpatialRouteReadsAreUnavailable() async {
@@ -465,19 +264,15 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         }
     }
 
-    func testDeleteAllUsesInjectedSpatialStoreRoutesList() throws {
-        let store = MockSpatialDataStore()
-        store.routesToReturn = []
-        SpatialDataStoreRegistry.configure(with: store)
+    func testDeleteAllUsesPersistenceWithoutInjectedSpatialStoreFallback() throws {
+        let route = try createPersistedRoute(name: "DeleteAllRoute-\(UUID().uuidString)")
 
         try Route.deleteAll()
 
-        XCTAssertEqual(store.routesCallCount, 1)
+        XCTAssertNil(Route.object(forPrimaryKey: route.id))
     }
 
     func testDefaultSpatialMaintenanceWriteRemoveAllRoutesUsesSpatialReadContractRoutes() async throws {
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
 
         let readMock = MockSpatialReadContract()
         readMock.routesToReturn = []
@@ -486,7 +281,31 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         try await DataContractRegistry.spatialMaintenanceWrite.removeAllRoutes()
 
         XCTAssertEqual(readMock.routesCallCount, 1)
-        XCTAssertEqual(store.routesCallCount, 0)
+    }
+
+    func testDefaultSpatialMaintenanceWriteClearNewFlagsUsesPersistenceWithoutStoreFallback() async throws {
+        let markerID = "clear-new-marker-\(UUID().uuidString)"
+        let markerCoordinate = makeUniqueCoordinate(baseLatitude: 42.6205, baseLongitude: -117.3493)
+        _ = try createPersistedMarker(id: markerID, coordinate: markerCoordinate)
+        let route = try createPersistedRoute(name: "ClearNewRoute-\(UUID().uuidString)", markerIDs: [markerID])
+
+        let database = try RealmHelper.getDatabaseRealm()
+        let persistedMarkerBefore = try XCTUnwrap(database.object(ofType: RealmReferenceEntity.self,
+                                                                  forPrimaryKey: markerID))
+        let persistedRouteBefore = try XCTUnwrap(database.object(ofType: RealmRoute.self,
+                                                                 forPrimaryKey: route.id))
+        XCTAssertTrue(persistedMarkerBefore.isNew)
+        XCTAssertTrue(persistedRouteBefore.isNew)
+
+        try await DataContractRegistry.spatialMaintenanceWrite.clearNewReferenceEntitiesAndRoutes()
+
+        let refreshedDatabase = try RealmHelper.getDatabaseRealm()
+        let persistedMarkerAfter = try XCTUnwrap(refreshedDatabase.object(ofType: RealmReferenceEntity.self,
+                                                                          forPrimaryKey: markerID))
+        let persistedRouteAfter = try XCTUnwrap(refreshedDatabase.object(ofType: RealmRoute.self,
+                                                                         forPrimaryKey: route.id))
+        XCTAssertFalse(persistedMarkerAfter.isNew)
+        XCTAssertFalse(persistedRouteAfter.isNew)
     }
 
     func testEncodeFromDetailUsesSpatialReadContractRouteLookup() async throws {
@@ -502,22 +321,23 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.routeByKeyCalls, [route.id])
     }
 
-    func testRouteInitFromParametersUsesInjectedSpatialStoreMarkerLookup() throws {
-        let route = try createPersistedRoute(name: "InitFromParametersRoute")
-        let firstMarkerID = route.waypoints.ordered.first?.markerId
-        XCTAssertNotNil(firstMarkerID)
+    func testRouteInitFromParametersUsesPersistenceMarkerLookupWithoutInjectedStoreFallback() throws {
+        let markerID = "init-from-parameters-marker-\(UUID().uuidString)"
+        let markerCoordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
+        _ = try createPersistedMarker(id: markerID, coordinate: markerCoordinate)
 
-        guard let parameters = RouteParameters(route: route, context: .backup) else {
-            XCTFail("Expected route parameters to initialize")
-            return
-        }
+        let parameters = RouteParameters(id: "init-from-parameters-route-\(UUID().uuidString)",
+                                         name: "InitFromParametersRoute",
+                                         routeDescription: nil,
+                                         waypoints: [RouteWaypointParameters(index: 0, markerId: markerID, marker: nil)],
+                                         createdDate: nil,
+                                         lastUpdatedDate: nil,
+                                         lastSelectedDate: nil)
 
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
+        let route = Route(from: parameters)
 
-        _ = Route(from: parameters)
-
-        XCTAssertEqual(store.referenceEntityByKeyCallKeys.first, firstMarkerID)
+        XCTAssertEqual(route.firstWaypointLatitude ?? 0, markerCoordinate.latitude, accuracy: 0.000_001)
+        XCTAssertEqual(route.firstWaypointLongitude ?? 0, markerCoordinate.longitude, accuracy: 0.000_001)
     }
 
     func testRouteInitFromParametersUsesProvidedFirstWaypointCoordinateWithoutStoreLookup() {
@@ -531,14 +351,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                          lastUpdatedDate: nil,
                                          lastSelectedDate: nil)
 
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
-
         let route = Route(from: parameters, firstWaypointCoordinate: explicitCoordinate)
 
         XCTAssertEqual(route.firstWaypointLatitude ?? 0, explicitCoordinate.latitude, accuracy: 0.000_001)
         XCTAssertEqual(route.firstWaypointLongitude ?? 0, explicitCoordinate.longitude, accuracy: 0.000_001)
-        XCTAssertTrue(store.referenceEntityByKeyCallKeys.isEmpty)
     }
 
     func testRouteInitFromParametersHydratesFirstWaypointCoordinatesFromMarker() throws {
@@ -567,12 +383,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let markerID = "handler-marker-\(UUID().uuidString)"
         let storeCoordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
         let asyncReadCoordinate = CLLocationCoordinate2D(latitude: 48.1122, longitude: -122.7711)
-
-        let store = MockSpatialDataStore()
         let marker = RealmReferenceEntity(coordinate: storeCoordinate)
         marker.id = markerID
-        store.referenceEntitiesByKey[markerID] = marker
-        SpatialDataStoreRegistry.configure(with: store)
 
         let readMock = MockSpatialReadContract()
         readMock.referenceEntitiesByID[markerID] = ReferenceEntity(id: markerID,
@@ -669,10 +481,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let storeMarker = RealmReferenceEntity(coordinate: storeMarkerCoordinate, entityKey: nil, name: "Store Marker")
         storeMarker.id = markerID
 
-        let store = MockSpatialDataStore()
-        store.referenceEntitiesByKey[markerID] = storeMarker
-        SpatialDataStoreRegistry.configure(with: store)
-
         let readMock = MockSpatialReadContract()
         let waypoint = RouteWaypoint(index: 0, markerId: markerID)
 
@@ -680,416 +488,162 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertNil(detail)
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [markerID])
-        XCTAssertTrue(store.referenceEntityByKeyCallKeys.isEmpty)
     }
 
-    func testMarkerParametersInitMarkerIDUsesReferenceEntityLookup() {
-        let markerID = "marker-id"
-        let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
-        marker.id = markerID
-
-        let store = MockSpatialDataStore()
-        store.referenceEntitiesByKey[markerID] = marker
-        let locationLookupKey = "\(marker.latitude),\(marker.longitude)"
-        store.referenceEntitiesByLocation[locationLookupKey] = marker
-        SpatialDataStoreRegistry.configure(with: store)
+    func testMarkerParametersInitMarkerIDUsesPersistenceLookupWithoutInjectedStoreFallback() throws {
+        let markerID = "marker-id-\(UUID().uuidString)"
+        let coordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
+        _ = try createPersistedMarker(id: markerID, coordinate: coordinate)
 
         let parameters = MarkerParameters(markerId: markerID)
 
         XCTAssertNotNil(parameters)
         XCTAssertEqual(parameters?.id, markerID)
-        XCTAssertEqual(store.referenceEntityByKeyCallKeys, [markerID])
-        XCTAssertTrue(store.destinationPOICallKeys.isEmpty)
-        XCTAssertTrue(store.referenceEntityByLocationCallKeys.contains(locationLookupKey))
     }
 
-    func testMarkerParametersInitGenericLocationUsesInjectedSpatialStoreLocationLookup() {
+    func testMarkerParametersInitGenericLocationUsesPersistenceLookupWithoutInjectedStoreFallback() throws {
         let genericLocation = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Generic")
         let expectedCoordinate = genericLocation.location.coordinate
-        let locationLookupKey = "\(expectedCoordinate.latitude),\(expectedCoordinate.longitude)"
-        let marker = RealmReferenceEntity(coordinate: expectedCoordinate, entityKey: nil)
-
-        let store = MockSpatialDataStore()
-        store.referenceEntitiesByLocation[locationLookupKey] = marker
-        SpatialDataStoreRegistry.configure(with: store)
+        _ = try createPersistedMarker(id: "marker-generic-\(UUID().uuidString)", coordinate: expectedCoordinate)
 
         let parameters = MarkerParameters(entity: genericLocation)
 
         XCTAssertNotNil(parameters)
-        XCTAssertTrue(store.referenceEntityByLocationCallKeys.contains(locationLookupKey))
     }
 
-    func testSpatialDataStoreReferenceEntityByEntityKeyDispatchesToInjectedStore() {
-        let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
-        let entityKey = "entity-key"
-        let store = MockSpatialDataStore()
-        store.referenceEntitiesByEntityKey[entityKey] = marker
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let entity = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey)
-
-        XCTAssertTrue(entity === marker)
-        XCTAssertEqual(store.referenceEntityByEntityKeyCallKeys, [entityKey])
-    }
-
-    func testSpatialDataStoreReferenceEntityByGenericLocationDispatchesToInjectedStore() {
-        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Generic")
-        let marker = RealmReferenceEntity(coordinate: location.location.coordinate)
-        let key = "\(location.location.coordinate.latitude),\(location.location.coordinate.longitude)"
-
-        let store = MockSpatialDataStore()
-        store.referenceEntitiesByGenericLocation[key] = marker
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let entity = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location)
-
-        XCTAssertTrue(entity === marker)
-        XCTAssertEqual(store.referenceEntityByGenericLocationCallKeys, [key])
-    }
-
-    func testSpatialDataStoreReferenceEntitiesNearDispatchesToInjectedStore() {
-        let coordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
-        let range = CalloutRangeContext.streetPreview.searchDistance
-        let marker = RealmReferenceEntity(coordinate: coordinate)
-        let locationLookupKey = "\(coordinate.latitude),\(coordinate.longitude)@\(range)"
-
-        let store = MockSpatialDataStore()
-        store.referenceEntitiesNearByLocation[locationLookupKey] = [marker]
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let entities = SpatialDataStoreRegistry.store.referenceEntitiesNear(coordinate, range: range)
-
-        XCTAssertEqual(entities.count, 1)
-        XCTAssertTrue(entities.first === marker)
-        XCTAssertEqual(store.referenceEntitiesNearCallKeys, [locationLookupKey])
-    }
-
-    func testSpatialDataStoreTemporaryReferenceEntityOperationsDispatchToInjectedStore() throws {
-        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Temp")
-        let entityKey = "entity-key"
-        let expectedID = "temp-id"
-
-        let store = MockSpatialDataStore()
-        store.addedTemporaryReferenceEntityID = expectedID
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let idFromLocation = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location, estimatedAddress: "Address")
-        let idFromNickname = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(location: location, nickname: "Nickname", estimatedAddress: "Address")
-        let idFromEntityKey = try SpatialDataStoreRegistry.store.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: "Address")
-        try SpatialDataStoreRegistry.store.removeAllTemporaryReferenceEntities()
-
-        XCTAssertEqual(idFromLocation, expectedID)
-        XCTAssertEqual(idFromNickname, expectedID)
-        XCTAssertEqual(idFromEntityKey, expectedID)
-        XCTAssertEqual(store.addTemporaryReferenceEntityLocationCallCount, 1)
-        XCTAssertEqual(store.addTemporaryReferenceEntityLocationWithNicknameCallCount, 1)
-        XCTAssertEqual(store.addTemporaryReferenceEntityEntityKeyCallKeys, [entityKey])
-        XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
-    }
-
-    func testSpatialDataDestinationEntityStoreAsyncTemporaryReferenceEntityOperationsDispatchToInjectedStore() async throws {
-        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Temp Async")
-        let entityKey = "entity-key-async"
-        let expectedID = "temp-id-async"
-
-        let store = MockSpatialDataStore()
-        store.addedTemporaryReferenceEntityID = expectedID
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let destinationStore = SpatialDataDestinationEntityStore()
-        let idFromLocation = try await destinationStore.addTemporaryReferenceEntity(location: location, estimatedAddress: "Address")
-        let idFromNickname = try await destinationStore.addTemporaryReferenceEntity(location: location, nickname: "Nickname", estimatedAddress: "Address")
-        let idFromEntityKey = try await destinationStore.addTemporaryReferenceEntity(entityKey: entityKey, estimatedAddress: "Address")
-        try await destinationStore.removeAllTemporaryReferenceEntities()
-
-        XCTAssertEqual(idFromLocation, expectedID)
-        XCTAssertEqual(idFromNickname, expectedID)
-        XCTAssertEqual(idFromEntityKey, expectedID)
-        XCTAssertEqual(store.addTemporaryReferenceEntityLocationCallCount, 1)
-        XCTAssertEqual(store.addTemporaryReferenceEntityLocationWithNicknameCallCount, 1)
-        XCTAssertEqual(store.addTemporaryReferenceEntityEntityKeyCallKeys, [entityKey])
-        XCTAssertEqual(store.removeAllTemporaryReferenceEntitiesCallCount, 1)
-    }
-
-    func testSpatialDataDestinationEntityStoreAsyncReferenceIDLookupsDispatchToSpatialReadContract() async {
-        let genericLocation = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Generic lookup")
-        let entityKey = "destination-entity-key-lookup"
-        let genericID = "generic-reference-id"
-        let entityID = "entity-reference-id"
-        let coordinate = genericLocation.location.coordinate
-        let coordinateKey = "\(coordinate.latitude),\(coordinate.longitude)"
-
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let readMock = MockSpatialReadContract()
-        readMock.referenceEntitiesByGenericLocation[coordinateKey] = ReferenceEntity(id: genericID,
-                                                                                      entityKey: nil,
-                                                                                      lastUpdatedDate: nil,
-                                                                                      lastSelectedDate: nil,
-                                                                                      isNew: false,
-                                                                                      isTemp: false,
-                                                                                      coordinate: coordinate.ssGeoCoordinate,
-                                                                                      nickname: nil,
-                                                                                      estimatedAddress: nil,
-                                                                                      annotation: nil)
-        readMock.referenceEntitiesByEntityKey[entityKey] = ReferenceEntity(id: entityID,
-                                                                            entityKey: entityKey,
-                                                                            lastUpdatedDate: nil,
-                                                                            lastSelectedDate: nil,
-                                                                            isNew: false,
-                                                                            isTemp: false,
-                                                                            coordinate: coordinate.ssGeoCoordinate,
-                                                                            nickname: nil,
-                                                                            estimatedAddress: nil,
-                                                                            annotation: nil)
-        DataContractRegistry.configure(spatialRead: readMock)
-
-        let destinationStore = SpatialDataDestinationEntityStore()
-        let genericLocationID = await destinationStore.referenceEntityID(forGenericLocation: genericLocation)
-        let entityKeyID = await destinationStore.referenceEntityID(forEntityKey: entityKey)
-
-        XCTAssertEqual(genericLocationID, genericID)
-        XCTAssertEqual(entityKeyID, entityID)
-        XCTAssertEqual(readMock.referenceEntityByGenericLocationCalls, [coordinateKey])
-        XCTAssertEqual(readMock.referenceEntityByEntityKeyCalls, [entityKey])
-        XCTAssertTrue(store.referenceEntityByLocationCallKeys.isEmpty)
-        XCTAssertTrue(store.referenceEntityByEntityKeyCallKeys.isEmpty)
-    }
-
-    func testSpatialDataDestinationEntityStoreFocusedReadsAndMutationsDispatchToInjectedStore() throws {
-        let referenceID = "destination-reference-id"
-        let entityKey = "destination-entity-key"
-        let nickname = "Destination nickname"
-        let estimatedAddress = "123 Main St"
-        let marker = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
-        marker.entityKey = entityKey
-        marker.isTemp = true
-        marker.nickname = nickname
-        marker.estimatedAddress = estimatedAddress
-
-        let store = MockSpatialDataStore()
-        store.referenceEntitiesByKey[referenceID] = marker
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let destinationStore = SpatialDataDestinationEntityStore()
-        let destinationPOI = destinationStore.destinationPOI(forReferenceID: referenceID)
-        let destinationEntityKey = destinationStore.destinationEntityKey(forReferenceID: referenceID)
-        let destinationIsTemporary = destinationStore.destinationIsTemporary(forReferenceID: referenceID)
-        let destinationNickname = destinationStore.destinationNickname(forReferenceID: referenceID)
-        let destinationEstimatedAddress = destinationStore.destinationEstimatedAddress(forReferenceID: referenceID)
-        try destinationStore.markReferenceEntitySelected(forReferenceID: referenceID)
-        try destinationStore.setReferenceEntityTemporary(forReferenceID: referenceID, temporary: false)
-
-        XCTAssertNotNil(destinationPOI)
-        XCTAssertEqual(destinationEntityKey, entityKey)
-        XCTAssertTrue(destinationIsTemporary)
-        XCTAssertEqual(destinationNickname, nickname)
-        XCTAssertEqual(destinationEstimatedAddress, estimatedAddress)
-        XCTAssertEqual(store.destinationPOICallKeys, [referenceID])
-        XCTAssertEqual(store.destinationEntityKeyCallKeys, [referenceID])
-        XCTAssertEqual(store.destinationIsTemporaryCallKeys, [referenceID])
-        XCTAssertEqual(store.destinationNicknameCallKeys, [referenceID])
-        XCTAssertEqual(store.destinationEstimatedAddressCallKeys, [referenceID])
-        XCTAssertEqual(store.markReferenceEntitySelectedCallKeys, [referenceID])
-        XCTAssertEqual(store.setReferenceEntityTemporaryCalls.count, 1)
-        XCTAssertEqual(store.setReferenceEntityTemporaryCalls.first?.id, referenceID)
-        XCTAssertFalse(store.setReferenceEntityTemporaryCalls.first?.temporary ?? true)
-    }
-
-    func testSpatialDataStoreRoadByKeyDispatchesToInjectedStore() {
-        let roadKey = "road-key"
-        let roadEntity = createRoadEntity(key: roadKey)
-        let store = MockSpatialDataStore()
-        store.roadsByKey[roadKey] = roadEntity
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let road = SpatialDataStoreRegistry.store.roadByKey(roadKey)
-
-        guard let returnedRoad = road as? GDASpatialDataResultEntity else {
-            XCTFail("Expected GDASpatialDataResultEntity road")
-            return
+    func testSpatialDataCacheSearchByKeyWithNoProvidersReturnsNilWithoutAssert() {
+        SpatialDataCache.removeAllProviders()
+        defer {
+            SpatialDataCache.removeAllProviders()
+            SpatialDataCache.register(provider: OSMPOISearchProvider())
+            SpatialDataCache.register(provider: AddressSearchProvider())
+            SpatialDataCache.register(provider: GenericLocationSearchProvider())
         }
 
-        XCTAssertTrue(returnedRoad === roadEntity)
-        XCTAssertEqual(store.roadByKeyCallKeys, [roadKey])
+        let poi = SpatialDataCache.searchByKey(key: "default-store-search-\(UUID().uuidString)")
+
+        XCTAssertNil(poi)
     }
 
-    func testSpatialDataStoreIntersectionsForRoadKeyDispatchesToInjectedStore() {
-        let roadKey = "road-key"
-        let intersection = createIntersection(key: "intersection-key",
-                                              coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
-        let store = MockSpatialDataStore()
-        store.intersectionsByRoadKey[roadKey] = [intersection]
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let intersections = SpatialDataStoreRegistry.store.intersections(forRoadKey: roadKey)
-
-        XCTAssertEqual(intersections.count, 1)
-        XCTAssertTrue(intersections.first === intersection)
-        XCTAssertEqual(store.intersectionsForRoadKeyCallKeys, [roadKey])
-    }
-
-    func testSpatialDataStoreIntersectionForRoadKeyAtCoordinateDispatchesToInjectedStore() {
-        let roadKey = "road-key"
-        let coordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
-        let lookupKey = "\(roadKey)@\(coordinate.latitude),\(coordinate.longitude)"
-        let intersection = createIntersection(key: "intersection-key", coordinate: coordinate)
-        let store = MockSpatialDataStore()
-        store.intersectionsByRoadCoordinateKey[lookupKey] = intersection
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let result = SpatialDataStoreRegistry.store.intersection(forRoadKey: roadKey, atCoordinate: coordinate)
-
-        XCTAssertTrue(result === intersection)
-        XCTAssertEqual(store.intersectionForRoadCoordinateCallKeys, [lookupKey])
-    }
-
-    func testSpatialDataStoreIntersectionsForRoadKeyInRegionDispatchesToInjectedStore() {
-        let roadKey = "road-key"
-        let center = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
-        let region = MKCoordinateRegion(center: center, latitudinalMeters: 500, longitudinalMeters: 500)
-        let lookupKey = "\(roadKey)@\(center.latitude),\(center.longitude)@\(region.span.latitudeDelta),\(region.span.longitudeDelta)"
-        let intersection = createIntersection(key: "intersection-key", coordinate: center)
-        let store = MockSpatialDataStore()
-        store.intersectionsByRoadRegionKey[lookupKey] = [intersection]
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let intersections = SpatialDataStoreRegistry.store.intersections(forRoadKey: roadKey, inRegion: region)
-
-        XCTAssertEqual(intersections?.count, 1)
-        XCTAssertTrue(intersections?.first === intersection)
-        XCTAssertEqual(store.intersectionsForRoadRegionCallKeys, [lookupKey])
-    }
-
-    func testIntersectionRoadsUseInjectedSpatialStoreLookup() {
-        let roadKey = "road-key"
-        let roadEntity = createRoadEntity(key: roadKey)
-        let intersection = createIntersection(key: "intersection-key",
-                                              coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493),
-                                              roadKeys: [roadKey])
-        let store = MockSpatialDataStore()
-        store.roadsByKey[roadKey] = roadEntity
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let roads = intersection.roads
-
-        XCTAssertEqual(roads.count, 1)
-        XCTAssertEqual(store.roadByKeyCallKeys, [roadKey])
-    }
-
-    func testRoadIntersectionsUseInjectedSpatialStoreLookup() {
-        let roadKey = "road-key"
-        guard let road = createRoadEntity(key: roadKey) as? Road else {
-            XCTFail("Expected road-conforming entity")
-            return
+    func testLocationDetailStoreAdapterPOIWithNoProvidersReturnsNilWithoutInjectedStoreFallback() {
+        SpatialDataCache.removeAllProviders()
+        defer {
+            SpatialDataCache.removeAllProviders()
+            SpatialDataCache.register(provider: OSMPOISearchProvider())
+            SpatialDataCache.register(provider: AddressSearchProvider())
+            SpatialDataCache.register(provider: GenericLocationSearchProvider())
         }
-        let intersection = createIntersection(key: "intersection-key",
-                                              coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493))
-        let store = MockSpatialDataStore()
-        store.intersectionsByRoadKey[roadKey] = [intersection]
-        SpatialDataStoreRegistry.configure(with: store)
 
-        let intersections = road.intersections
+        let key = "location-detail-poi-\(UUID().uuidString)"
+        let storeOnlyPOI = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Store-only POI")
+        storeOnlyPOI.key = key
 
-        XCTAssertEqual(intersections.count, 1)
-        XCTAssertTrue(intersections.first === intersection)
-        XCTAssertEqual(store.intersectionsForRoadKeyCallKeys, [roadKey])
+        let poi = LocationDetailStoreAdapter.poi(byKey: key)
+
+        XCTAssertNil(poi)
     }
 
-    func testRoadIntersectionAtCoordinateUsesInjectedSpatialStoreLookup() {
-        let roadKey = "road-key"
-        let coordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
-        guard let road = createRoadEntity(key: roadKey) as? Road else {
-            XCTFail("Expected road-conforming entity")
-            return
+    func testReverseGeocoderLookupPOIWithNoProvidersReturnsNil() {
+        SpatialDataCache.removeAllProviders()
+        defer {
+            SpatialDataCache.removeAllProviders()
+            SpatialDataCache.register(provider: OSMPOISearchProvider())
+            SpatialDataCache.register(provider: AddressSearchProvider())
+            SpatialDataCache.register(provider: GenericLocationSearchProvider())
         }
-        let lookupKey = "\(roadKey)@\(coordinate.latitude),\(coordinate.longitude)"
-        let intersection = createIntersection(key: "intersection-key", coordinate: coordinate)
-        let store = MockSpatialDataStore()
-        store.intersectionsByRoadCoordinateKey[lookupKey] = intersection
-        SpatialDataStoreRegistry.configure(with: store)
 
-        let result = road.intersection(atCoordinate: coordinate)
+        let key = "reverse-geocoder-poi-\(UUID().uuidString)"
 
-        XCTAssertTrue(result === intersection)
-        XCTAssertEqual(store.intersectionForRoadCoordinateCallKeys, [lookupKey])
+        let poi = ReverseGeocoderLookup.poi(by: key)
+
+        XCTAssertNil(poi)
     }
 
-    func testSpatialDataStoreTilesDispatchesToInjectedStore() {
-        let zoomLevel: UInt = 16
-        let destinationCoordinate = CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493)
-        let expectedTile = VectorTile(latitude: 47.6205, longitude: -122.3493, zoom: zoomLevel)
-        let expectedCallKey = "true|true|\(zoomLevel)|\(destinationCoordinate.latitude),\(destinationCoordinate.longitude)"
+    func testReverseGeocoderLookupRoadWithNoProvidersReturnsNilWithoutAssert() {
+        SpatialDataCache.removeAllProviders()
+        defer {
+            SpatialDataCache.removeAllProviders()
+            SpatialDataCache.register(provider: OSMPOISearchProvider())
+            SpatialDataCache.register(provider: AddressSearchProvider())
+            SpatialDataCache.register(provider: GenericLocationSearchProvider())
+        }
 
-        let store = MockSpatialDataStore()
-        store.tilesToReturn = [expectedTile]
-        SpatialDataStoreRegistry.configure(with: store)
+        let key = "reverse-geocoder-road-\(UUID().uuidString)"
 
-        let tiles = SpatialDataStoreRegistry.store.tiles(forDestinations: true,
-                                                         forReferences: true,
-                                                         at: zoomLevel,
-                                                         destinationCoordinate: destinationCoordinate)
+        let road = ReverseGeocoderLookup.road(by: key)
 
-        XCTAssertEqual(tiles.count, 1)
-        XCTAssertEqual(tiles.first?.quadKey, expectedTile.quadKey)
-        XCTAssertEqual(store.tilesCallKeys, [expectedCallKey])
+        XCTAssertNil(road)
     }
 
-    func testSpatialDataStoreTileDataDispatchesToInjectedStore() {
-        let tile = VectorTile(latitude: 47.6205, longitude: -122.3493, zoom: 16)
-        let tileData = TileData()
-        tileData.quadkey = tile.quadKey
-
-        let store = MockSpatialDataStore()
-        store.tileDataByQuadKey[tile.quadKey] = tileData
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let tileDataResults = SpatialDataStoreRegistry.store.tileData(for: [tile])
-
-        XCTAssertEqual(tileDataResults.count, 1)
-        XCTAssertTrue(tileDataResults.first === tileData)
-        XCTAssertEqual(store.tileDataCallQuadKeys, [[tile.quadKey]])
-    }
-
-    func testSpatialDataStoreGenericLocationsNearDispatchesToInjectedStore() {
-        let location = CLLocation(latitude: 47.6205, longitude: -122.3493)
-        let range = CLLocationDistance(50)
-        let lookupKey = "\(location.coordinate.latitude),\(location.coordinate.longitude)@\(String(describing: range))"
-        let genericLocation = GenericLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude, name: "Nearby")
-
-        let store = MockSpatialDataStore()
-        store.genericLocationsByLookupKey[lookupKey] = [genericLocation]
-        SpatialDataStoreRegistry.configure(with: store)
-
-        let results = SpatialDataStoreRegistry.store.genericLocationsNear(location, range: range)
-
-        XCTAssertEqual(results.count, 1)
-        XCTAssertEqual(results.first?.key, genericLocation.key)
-        XCTAssertEqual(store.genericLocationsNearCallKeys, [lookupKey])
-    }
-
-    func testReferenceEntityGetPOIUsesInjectedSpatialStoreSearchLookup() {
-        let key = "poi-key"
-        let poi = GenericLocation(lat: 47.6205, lon: -122.3493, name: "POI")
-        poi.key = key
-
-        let store = MockSpatialDataStore()
-        store.searchResultsByKey[key] = poi
-        SpatialDataStoreRegistry.configure(with: store)
+    func testReferenceEntityGetPOIUsesPersistenceSearchWithoutInjectedStoreFallback() {
+        let key = "poi-key-\(UUID().uuidString)"
 
         let reference = RealmReferenceEntity(coordinate: CLLocationCoordinate2D(latitude: 47.6205, longitude: -122.3493),
                                         entityKey: key)
-        _ = reference.getPOI()
+        let poi = reference.getPOI()
 
-        XCTAssertEqual(store.searchByKeyCallKeys, [key])
+        XCTAssertTrue(poi is GenericLocation)
+    }
+
+    func testSpatialDataResultEntityEntrancesUsePersistenceLookupWithoutInjectedStoreFallback() {
+        let entity = GDASpatialDataResultEntity()
+        entity.coordinatesJson = "{\"type\":\"LineString\",\"coordinates\":[[-122.35,47.62],[-122.34,47.63]]}"
+        entity.entrancesJson = "[\"entrance-1\"]"
+        let storeOnlyPOI = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Store-only entrance")
+        storeOnlyPOI.key = "entrance-1"
+
+        XCTAssertNotNil(entity.coordinates)
+        let entrances = entity.entrances
+
+        XCTAssertEqual(entrances?.count, 0)
+    }
+
+
+    func testDefaultSpatialReadRouteByKeyUsesPersistenceWithoutInjectedStoreFallback() async throws {
+        let route = try createPersistedRoute(name: "DefaultSpatialReadRouteByKey-\(UUID().uuidString)")
+        DataContractRegistry.resetForTesting()
+
+        let fetchedRoute = await DataContractRegistry.spatialRead.route(byKey: route.id)
+
+        XCTAssertEqual(fetchedRoute?.id, route.id)
+    }
+
+    func testDefaultSpatialReadRouteParametersForBackupUsesPersistenceWithoutInjectedStoreFallback() async throws {
+        let route = try createPersistedRoute(name: "DefaultSpatialReadRouteParameters-\(UUID().uuidString)")
+        DataContractRegistry.resetForTesting()
+
+        let routeParameters = await DataContractRegistry.spatialRead.routeParametersForBackup()
+
+        XCTAssertTrue(routeParameters.contains(where: { $0.id == route.id }))
+    }
+
+    func testDefaultSpatialReadReferenceEntityByIDUsesPersistenceWithoutInjectedStoreFallback() async throws {
+        let markerID = "default-spatial-read-marker-\(UUID().uuidString)"
+        let coordinate = makeUniqueCoordinate(baseLatitude: 41.6205, baseLongitude: -116.3493)
+        _ = try createPersistedMarker(id: markerID, coordinate: coordinate)
+        DataContractRegistry.resetForTesting()
+
+        let referenceEntity = await DataContractRegistry.spatialRead.referenceEntity(byID: markerID)
+
+        XCTAssertEqual(referenceEntity?.id, markerID)
+    }
+
+    func testDefaultSpatialReadReferenceEntitiesNearUsesPersistenceWithoutInjectedStoreFallback() async throws {
+        let markerID = "default-spatial-read-near-\(UUID().uuidString)"
+        let coordinate = makeUniqueCoordinate(baseLatitude: 41.7205, baseLongitude: -116.4493)
+        _ = try createPersistedMarker(id: markerID, coordinate: coordinate)
+        let lookupKey = "\(coordinate.latitude),\(coordinate.longitude)@\(50.0)"
+        DataContractRegistry.resetForTesting()
+
+        let entities = await DataContractRegistry.spatialRead.referenceEntities(near: coordinate.ssGeoCoordinate,
+                                                                                rangeMeters: 50.0)
+
+        XCTAssertTrue(entities.contains(where: { $0.id == markerID }))
     }
 
     func testReferenceEntityAddEntityKeyUsesSpatialReadContractForExistenceAndPOILookup() async {
         let missingKey = "missing-entity-key"
-        let store = MockSpatialDataStore()
         let spatialRead = MockSpatialReadContract()
-        SpatialDataStoreRegistry.configure(with: store)
 
         do {
             _ = try await RealmReferenceEntity.add(entityKey: missingKey,
@@ -1110,8 +664,71 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertEqual(spatialRead.referenceEntityByEntityKeyCalls, [missingKey])
         XCTAssertEqual(spatialRead.poiByKeyCalls, [missingKey])
-        XCTAssertTrue(store.referenceEntityByEntityKeyCallKeys.isEmpty)
-        XCTAssertTrue(store.searchByKeyCallKeys.isEmpty)
+    }
+
+    func testDefaultSpatialWriteAddReferenceEntityEntityKeyUsesMarkerParametersCloudDispatchWithoutStoreFallback() async throws {
+        let entityKey = "add-write-entity-key-\(UUID().uuidString)"
+        let coordinate = makeUniqueCoordinate(baseLatitude: 40.6205, baseLongitude: -115.3493)
+        let storeOnlyPOI = GenericLocation(lat: coordinate.latitude,
+                                           lon: coordinate.longitude,
+                                           name: "Store-Only Name")
+        storeOnlyPOI.key = entityKey
+
+        let readMock = MockSpatialReadContract()
+        let contractPOI = GenericLocation(lat: coordinate.latitude,
+                                          lon: coordinate.longitude,
+                                          name: "Contract POI Name")
+        contractPOI.key = entityKey
+        readMock.poisByKey[entityKey] = contractPOI
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let runtimeProviders = CloudDispatchProbeRuntimeProviders()
+        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+
+        let markerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: entityKey,
+                                                                                       nickname: "Cloud Name",
+                                                                                       estimatedAddress: "Address",
+                                                                                       annotation: "Annotation")
+
+        let database = try RealmHelper.getDatabaseRealm()
+        let marker = try XCTUnwrap(database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: markerID))
+        XCTAssertEqual(marker.entityKey, entityKey)
+        XCTAssertEqual(marker.nickname, "Cloud Name")
+
+        XCTAssertEqual(readMock.referenceEntityByEntityKeyCalls, [entityKey])
+        XCTAssertEqual(readMock.poiByKeyCalls, [entityKey])
+        XCTAssertEqual(runtimeProviders.referenceStoreEntityCalls, 0)
+        XCTAssertEqual(runtimeProviders.referenceUpdateEntityCalls, 0)
+        XCTAssertEqual(runtimeProviders.referenceUpdateMarkerParametersCalls, 1)
+    }
+
+    func testDefaultSpatialWriteAddReferenceEntityLocationUsesMarkerParametersCloudDispatchWithoutStoreFallback() async throws {
+        let coordinate = makeUniqueCoordinate(baseLatitude: 40.7105, baseLongitude: -115.2793)
+        let location = GenericLocation(lat: coordinate.latitude,
+                                       lon: coordinate.longitude,
+                                       name: "Contract Location Name")
+        let coordinateKey = "\(coordinate.latitude),\(coordinate.longitude)"
+
+        let readMock = MockSpatialReadContract()
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let runtimeProviders = CloudDispatchProbeRuntimeProviders()
+        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+
+        let markerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: location,
+                                                                                       nickname: "Cloud Location",
+                                                                                       estimatedAddress: "Address",
+                                                                                       annotation: "Annotation")
+
+        let database = try RealmHelper.getDatabaseRealm()
+        let marker = try XCTUnwrap(database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: markerID))
+        XCTAssertEqual(marker.nickname, "Cloud Location")
+        XCTAssertEqual(marker.estimatedAddress, "Address")
+        XCTAssertEqual(marker.annotation, "Annotation")
+        XCTAssertEqual(readMock.referenceEntityByGenericLocationCalls, [coordinateKey])
+        XCTAssertEqual(runtimeProviders.referenceStoreEntityCalls, 0)
+        XCTAssertEqual(runtimeProviders.referenceUpdateEntityCalls, 0)
+        XCTAssertEqual(runtimeProviders.referenceUpdateMarkerParametersCalls, 1)
     }
 
     func testReferenceEntityAddLocationUsesSpatialReadContractGenericLocationLookup() async throws {
@@ -1119,7 +736,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let existingMarkerID = "existing-location-marker-\(UUID().uuidString)"
         _ = try createPersistedMarker(id: existingMarkerID, coordinate: location.location.coordinate)
         let key = "\(location.location.coordinate.latitude),\(location.location.coordinate.longitude)"
-        let store = MockSpatialDataStore()
         let spatialRead = MockSpatialReadContract()
         spatialRead.referenceEntitiesByGenericLocation[key] = ReferenceEntity(id: existingMarkerID,
                                                                               entityKey: nil,
@@ -1131,7 +747,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                               nickname: nil,
                                                                               estimatedAddress: nil,
                                                                               annotation: nil)
-        SpatialDataStoreRegistry.configure(with: store)
 
         let id = try await RealmReferenceEntity.add(location: location,
                                                     nickname: nil,
@@ -1144,7 +759,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
         XCTAssertEqual(id, existingMarkerID)
         XCTAssertEqual(spatialRead.referenceEntityByGenericLocationCalls, [key])
-        XCTAssertTrue(store.referenceEntityByGenericLocationCallKeys.isEmpty)
     }
 
     func testLocationParametersFetchEntityUsesSpatialReadContractPOILookup() {
@@ -1197,8 +811,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                              estimatedAddress: nil,
                                              annotation: nil)
         let locationKey = "\(waypointLocation.coordinate.latitude),\(waypointLocation.coordinate.longitude)"
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
         let spatialRead = MockSpatialReadContract()
         spatialRead.referenceEntitiesByGenericLocation[locationKey] = existingMarker
         spatialRead.referenceEntitiesByID[existingMarkerID] = existingMarker
@@ -1208,7 +820,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let persistedRoute = Route.object(forPrimaryKey: route.id)
         XCTAssertEqual(spatialRead.referenceEntityByGenericLocationCalls, [locationKey])
         XCTAssertTrue(spatialRead.referenceEntityByIDCalls.contains(existingMarkerID))
-        XCTAssertTrue(store.referenceEntityByGenericLocationCallKeys.isEmpty)
         XCTAssertEqual(persistedRoute?.waypoints.ordered.first?.markerId, existingMarkerID)
     }
 
@@ -1221,9 +832,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let route = Route(name: "RouteAddContractMarker-\(UUID().uuidString)",
                           description: nil,
                           waypoints: [waypoint])
-
-        let store = MockSpatialDataStore()
-        SpatialDataStoreRegistry.configure(with: store)
 
         let readMock = MockSpatialReadContract()
         readMock.referenceEntitiesByID[existingMarkerID] = ReferenceEntity(id: existingMarkerID,
@@ -1242,7 +850,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let persistedRoute = try XCTUnwrap(Route.object(forPrimaryKey: route.id))
         XCTAssertEqual(persistedRoute.waypoints.ordered.first?.markerId, existingMarkerID)
         XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(existingMarkerID))
-        XCTAssertTrue(store.referenceEntityByGenericLocationCallKeys.isEmpty)
     }
 
     func testRouteUpdatePersistsFirstWaypointCoordinatesFromUpdatedWaypointOrder() throws {
@@ -1399,6 +1006,56 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.routesContainingMarkerIDCalls, [removedMarkerID])
     }
 
+    func testDefaultSpatialWriteRemoveReferenceEntityUsesMarkerIDCloudDispatchWithoutStorePOIFallback() async throws {
+        let removedMarkerID = "remove-write-cloud-dispatch-first-\(UUID().uuidString)"
+        let remainingMarkerID = "remove-write-cloud-dispatch-second-\(UUID().uuidString)"
+        let removedEntityKey = "remove-write-cloud-dispatch-entity-key-\(UUID().uuidString)"
+
+        let removedMarker = RealmReferenceEntity(coordinate: makeUniqueCoordinate(baseLatitude: 46.6205,
+                                                                                   baseLongitude: -121.3493),
+                                                 entityKey: removedEntityKey,
+                                                 name: nil)
+        removedMarker.id = removedMarkerID
+        removedMarker.isTemp = false
+
+        let database = try RealmHelper.getDatabaseRealm()
+        try database.write {
+            database.add(removedMarker, update: .modified)
+        }
+
+        _ = try createPersistedMarker(id: remainingMarkerID,
+                                      coordinate: makeUniqueCoordinate(baseLatitude: 46.6301, baseLongitude: -121.3402))
+        let route = try createPersistedRoute(name: "RemoveWriteCloudDispatch-\(UUID().uuidString)",
+                                             markerIDs: [removedMarkerID, remainingMarkerID])
+
+        let asyncCoordinate = CLLocationCoordinate2D(latitude: 52.1234, longitude: -126.4567)
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[remainingMarkerID] = ReferenceEntity(id: remainingMarkerID,
+                                                                            entityKey: nil,
+                                                                            lastUpdatedDate: nil,
+                                                                            lastSelectedDate: nil,
+                                                                            isNew: false,
+                                                                            isTemp: false,
+                                                                            coordinate: asyncCoordinate.ssGeoCoordinate,
+                                                                            nickname: nil,
+                                                                            estimatedAddress: nil,
+                                                                            annotation: nil)
+        readMock.routesContainingByMarkerID[removedMarkerID] = [route]
+        DataContractRegistry.configure(spatialRead: readMock)
+        let storeOnlyPOI = GenericLocation(lat: 46.6205,
+                                           lon: -121.3493,
+                                           name: "Store-Only Removed POI")
+        storeOnlyPOI.key = removedEntityKey
+
+        let runtimeProviders = CloudDispatchProbeRuntimeProviders()
+        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+
+        try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: removedMarkerID)
+
+        XCTAssertEqual(runtimeProviders.referenceRemoveEntityCalls, 0)
+        XCTAssertEqual(runtimeProviders.referenceRemoveMarkerIDCalls, 1)
+    }
+
     func testDefaultSpatialWriteUpdateReferenceEntityHydratesFirstWaypointFromAsyncReadContract() async throws {
         let firstMarkerID = "update-write-first-\(UUID().uuidString)"
         let secondMarkerID = "update-write-second-\(UUID().uuidString)"
@@ -1437,6 +1094,145 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(updatedRoute.firstWaypointLongitude ?? 0, asyncCoordinate.longitude, accuracy: 0.000_001)
         XCTAssertTrue(readMock.referenceEntityByIDCalls.contains(firstMarkerID))
         XCTAssertEqual(readMock.routesContainingMarkerIDCalls, [firstMarkerID])
+    }
+
+    func testDefaultSpatialWriteUpdateReferenceEntityLocationChangeUsesSpatialReadPOILookupWithoutStoreFallback() async throws {
+        let markerID = "update-write-location-change-\(UUID().uuidString)"
+        let entityKey = "update-write-entity-key-\(UUID().uuidString)"
+        let originalCoordinate = makeUniqueCoordinate(baseLatitude: 43.6205, baseLongitude: -118.3493)
+        let updatedCoordinate = SSGeoCoordinate(latitude: 43.1111, longitude: -118.2222)
+
+        let marker = RealmReferenceEntity(coordinate: originalCoordinate,
+                                          entityKey: entityKey,
+                                          name: nil)
+        marker.id = markerID
+        marker.isTemp = false
+        marker.lastUpdatedDate = Date()
+
+        let database = try RealmHelper.getDatabaseRealm()
+        try database.write {
+            database.add(marker, update: .modified)
+        }
+        let storeOnlyPOI = GenericLocation(lat: originalCoordinate.latitude,
+                                           lon: originalCoordinate.longitude,
+                                           name: "Store-Only Name")
+        storeOnlyPOI.key = entityKey
+
+        let readMock = MockSpatialReadContract()
+        let contractPOI = GenericLocation(lat: originalCoordinate.latitude,
+                                          lon: originalCoordinate.longitude,
+                                          name: "Contract POI Name")
+        contractPOI.key = entityKey
+        readMock.poisByKey[entityKey] = contractPOI
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: markerID,
+                                                                          location: updatedCoordinate,
+                                                                          nickname: nil,
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil)
+
+        let refreshedDatabase = try RealmHelper.getDatabaseRealm()
+        let updatedMarker = try XCTUnwrap(refreshedDatabase.object(ofType: RealmReferenceEntity.self,
+                                                                    forPrimaryKey: markerID))
+        XCTAssertEqual(updatedMarker.nickname, "Contract POI Name")
+        XCTAssertNil(updatedMarker.entityKey)
+        XCTAssertEqual(readMock.poiByKeyCalls, [entityKey])
+        XCTAssertEqual(readMock.routesContainingMarkerIDCalls, [markerID])
+    }
+
+    func testDefaultSpatialWriteUpdateReferenceEntityWithoutLocationChangeUsesSpatialReadPOILookupForRecents() async throws {
+        let markerID = "update-write-no-location-change-\(UUID().uuidString)"
+        let entityKey = "update-write-no-location-entity-key-\(UUID().uuidString)"
+        let markerCoordinate = makeUniqueCoordinate(baseLatitude: 44.6205, baseLongitude: -119.3493)
+
+        let marker = RealmReferenceEntity(coordinate: markerCoordinate,
+                                          entityKey: entityKey,
+                                          name: "Existing Marker")
+        marker.id = markerID
+        marker.isTemp = false
+        marker.lastUpdatedDate = Date()
+
+        let database = try RealmHelper.getDatabaseRealm()
+        try database.write {
+            database.add(marker, update: .modified)
+        }
+        let storeOnlyPOI = GenericLocation(lat: markerCoordinate.latitude,
+                                           lon: markerCoordinate.longitude,
+                                           name: "Store-Only Name")
+        storeOnlyPOI.key = entityKey
+
+        let readMock = MockSpatialReadContract()
+        let contractPOI = GenericLocation(lat: markerCoordinate.latitude,
+                                          lon: markerCoordinate.longitude,
+                                          name: "Contract Recents Name")
+        contractPOI.key = entityKey
+        readMock.poisByKey[entityKey] = contractPOI
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let runtimeProviders = CloudDispatchProbeRuntimeProviders()
+        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: markerID,
+                                                                          location: nil,
+                                                                          nickname: "Edited Marker",
+                                                                          estimatedAddress: nil,
+                                                                          annotation: "Updated annotation")
+
+        XCTAssertEqual(readMock.poiByKeyCalls, [entityKey])
+        XCTAssertEqual(runtimeProviders.referenceUpdateEntityCalls, 0)
+        XCTAssertEqual(runtimeProviders.referenceUpdateMarkerParametersCalls, 1)
+    }
+
+    func testDefaultSpatialWriteUpdateReferenceEntityNoOpDoesNotDispatchCloudOrRecentsLookups() async throws {
+        let markerID = "update-write-no-op-\(UUID().uuidString)"
+        let entityKey = "update-write-no-op-entity-key-\(UUID().uuidString)"
+        let markerCoordinate = makeUniqueCoordinate(baseLatitude: 45.6205, baseLongitude: -120.3493)
+        let originalLastUpdatedDate = Date(timeIntervalSince1970: 1_700_000_000)
+        let originalLastSelectedDate = Date(timeIntervalSince1970: 1_700_000_100)
+
+        let marker = RealmReferenceEntity(coordinate: markerCoordinate,
+                                          entityKey: entityKey,
+                                          name: "Unchanged Marker")
+        marker.id = markerID
+        marker.isTemp = false
+        marker.lastUpdatedDate = originalLastUpdatedDate
+        marker.lastSelectedDate = originalLastSelectedDate
+
+        let database = try RealmHelper.getDatabaseRealm()
+        try database.write {
+            database.add(marker, update: .modified)
+        }
+        let storeOnlyPOI = GenericLocation(lat: markerCoordinate.latitude,
+                                           lon: markerCoordinate.longitude,
+                                           name: "Store-Only Name")
+        storeOnlyPOI.key = entityKey
+
+        let readMock = MockSpatialReadContract()
+        let contractPOI = GenericLocation(lat: markerCoordinate.latitude,
+                                          lon: markerCoordinate.longitude,
+                                          name: "Contract Name")
+        contractPOI.key = entityKey
+        readMock.poisByKey[entityKey] = contractPOI
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let runtimeProviders = CloudDispatchProbeRuntimeProviders()
+        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+
+        try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: markerID,
+                                                                          location: nil,
+                                                                          nickname: "Unchanged Marker",
+                                                                          estimatedAddress: nil,
+                                                                          annotation: nil)
+
+        let refreshedDatabase = try RealmHelper.getDatabaseRealm()
+        let refreshedMarker = try XCTUnwrap(refreshedDatabase.object(ofType: RealmReferenceEntity.self,
+                                                                      forPrimaryKey: markerID))
+        XCTAssertEqual(refreshedMarker.lastUpdatedDate, originalLastUpdatedDate)
+        XCTAssertEqual(refreshedMarker.lastSelectedDate, originalLastSelectedDate)
+        XCTAssertTrue(readMock.poiByKeyCalls.isEmpty)
+        XCTAssertEqual(runtimeProviders.referenceUpdateEntityCalls, 0)
+        XCTAssertEqual(runtimeProviders.referenceUpdateMarkerParametersCalls, 0)
     }
 
     func testDefaultSpatialMaintenanceWriteImportReferenceEntityFromCloudHydratesFirstWaypointFromAsyncReadContract() async throws {
@@ -1589,14 +1385,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         try database.write {
             database.add(marker, update: .modified)
         }
-
-        let store = MockSpatialDataStore()
         let storeOnlyPOI = GenericLocation(lat: markerCoordinate.latitude,
                                            lon: markerCoordinate.longitude,
                                            name: "Store-Only POI")
         storeOnlyPOI.key = entityKey
-        store.searchResultsByKey[entityKey] = storeOnlyPOI
-        SpatialDataStoreRegistry.configure(with: store)
 
         let readMock = MockSpatialReadContract()
         DataContractRegistry.configure(spatialRead: readMock)
@@ -1607,7 +1399,6 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         let deletedMarker = refreshedDatabase.object(ofType: RealmReferenceEntity.self, forPrimaryKey: markerID)
         XCTAssertNil(deletedMarker)
         XCTAssertTrue(readMock.poiByKeyCalls.contains(entityKey))
-        XCTAssertTrue(store.searchByKeyCallKeys.isEmpty)
     }
 
     private func createPersistedRoute(name: String) throws -> Route {

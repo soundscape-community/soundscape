@@ -35,7 +35,7 @@ extension ReferenceEntity {
             return nil
         }
 
-        return SpatialDataStoreRegistry.store.searchByKey(entityKey)
+        return SpatialDataCache.searchByKey(key: entityKey)
     }
 
     var name: String {
@@ -115,8 +115,16 @@ enum ReferenceEntityRuntime {
         DataRuntimeProviderRegistry.providers.referenceUpdateInCloud(entity)
     }
 
+    static func updateReferenceInCloud(_ markerParameters: MarkerParameters) {
+        DataRuntimeProviderRegistry.providers.referenceUpdateInCloud(markerParameters)
+    }
+
     static func removeReferenceFromCloud(_ entity: ReferenceEntity) {
         DataRuntimeProviderRegistry.providers.referenceRemoveFromCloud(entity)
+    }
+
+    static func removeReferenceFromCloud(markerID: String) {
+        DataRuntimeProviderRegistry.providers.referenceRemoveFromCloud(markerID: markerID)
     }
 
     static func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
@@ -177,8 +185,8 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         guard let key = entityKey else {
             return nil
         }
-        
-        return SpatialDataStoreRegistry.store.searchByKey(key)
+
+        return SpatialDataCache.searchByKey(key: key)
     }()
     
     // MARK: Computed Properties
@@ -442,6 +450,22 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     
     // MARK: Static Methods
 
+    static func entity(byID id: String) -> RealmReferenceEntity? {
+        guard let database = try? RealmHelper.getDatabaseRealm() else {
+            return nil
+        }
+
+        return database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: id)
+    }
+
+    static func markSelected(id: String) throws {
+        guard let entity = entity(byID: id) else {
+            return
+        }
+
+        try entity.updateLastSelectedDate()
+    }
+
     static func importFromCloud(markerParameters: MarkerParameters,
                                 entity: POI,
                                 using spatialRead: ReferenceReadContract) async throws {
@@ -515,7 +539,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                                          temporary: Bool = false,
                                          context: String? = nil,
                                          notify: Bool = true) throws -> String {
-        if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByEntityKey(entityKey) {
+        if let existingMarker = SpatialDataCache.referenceEntityByEntityKey(entityKey) {
             // Update and return the existing marker
             try update(entity: existingMarker,
                        nickname: nickname,
@@ -559,14 +583,23 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             throw ReferenceEntityError.entityDoesNotExist
         }
 
-        return try addNewReferenceEntity(for: entity,
-                                         entityKey: entityKey,
-                                         nickname: nickname,
-                                         estimatedAddress: estimatedAddress,
-                                         annotation: annotation,
-                                         temporary: temporary,
-                                         context: context,
-                                         notify: notify)
+        let markerID = try addNewReferenceEntity(for: entity,
+                                                 entityKey: entityKey,
+                                                 nickname: nickname,
+                                                 estimatedAddress: estimatedAddress,
+                                                 annotation: annotation,
+                                                 temporary: temporary,
+                                                 context: context,
+                                                 notify: notify,
+                                                 updateCloudSynchronously: false)
+
+        if !temporary,
+           let markerParameters = try markerParametersForCloudStore(markerID: markerID,
+                                                                    entity: entity) {
+            ReferenceEntityRuntime.updateReferenceInCloud(markerParameters)
+        }
+
+        return markerID
     }
     
     /// Updates the given reference entity
@@ -585,7 +618,11 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                        annotation: String?,
                        context: String? = nil,
                        isTemp: Bool,
-                       updateRoutesSynchronously: Bool = true) throws {
+                       updateRoutesSynchronously: Bool = true,
+                       preservePOINameOnLocationChange: Bool = true,
+                       updateDate: Date = Date(),
+                       updatePOILastSelectedViaStore: Bool = true,
+                       updateCloudSynchronously: Bool = true) throws {
         var locChanged: Bool = false
         if let loc = location, loc != entity.coordinate {
             locChanged = true
@@ -596,10 +633,10 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             return
         }
         
-        let now = Date()
+        let now = updateDate
         
         var updatedNickname = nickname
-        if locChanged, nickname == nil {
+        if locChanged, nickname == nil, preservePOINameOnLocationChange {
             // Because the location has changed, we are going to disconnect this marker from its
             // underlying POI and use a generic location instead. In the edge case where no nickname
             // has been specified, make sure we at least keep the underlying POI's name.
@@ -642,10 +679,18 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                 entity.lastUpdatedDate = now
             }
             
-            // Update the lastSelectedDate to support recents
-            try entity.updateLastSelectedDate(to: now)
+            if updatePOILastSelectedViaStore {
+                // Update the lastSelectedDate to support recents
+                try entity.updateLastSelectedDate(to: now)
+            } else {
+                try database.write {
+                    entity.lastSelectedDate = now
+                }
+            }
             
-            ReferenceEntityRuntime.updateReferenceInCloud(entity.domainEntity)
+            if updateCloudSynchronously {
+                ReferenceEntityRuntime.updateReferenceInCloud(entity.domainEntity)
+            }
             
             let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
             GDATelemetry.track("markers.edited", with: ["includesAnnotation": includesAnnotation, "context": context ?? "none"])
@@ -672,18 +717,114 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             locChanged = true
         }
 
+        if entity.nickname == nickname,
+           entity.estimatedAddress == address,
+           entity.annotation == annotation,
+           entity.isTemp == isTemp,
+           !locChanged {
+            return
+        }
+
+        let originalEntityKey = entity.entityKey
+        let updateDate = Date()
+
+        var resolvedNickname = nickname
+        var resolvedPOI: POI?
+        if locChanged,
+           nickname == nil,
+           let entityKey = entity.entityKey {
+            resolvedPOI = await spatialRead.poi(byKey: entityKey)
+            resolvedNickname = resolvedPOI?.localizedName
+        }
+
         try update(entity: entity,
                    location: location,
-                   nickname: nickname,
+                   nickname: resolvedNickname,
                    address: address,
                    annotation: annotation,
                    context: context,
                    isTemp: isTemp,
-                   updateRoutesSynchronously: false)
+                   updateRoutesSynchronously: false,
+                   preservePOINameOnLocationChange: false,
+                   updateDate: updateDate,
+                   updatePOILastSelectedViaStore: false,
+                   updateCloudSynchronously: false)
+
+        if !locChanged,
+           let entityKey = originalEntityKey {
+            resolvedPOI = try await updatePOILastSelectedDate(forEntityKey: entityKey,
+                                                              to: updateDate,
+                                                              using: spatialRead)
+        }
+
+        if !isTemp,
+           let markerParameters = await markerParametersForCloudUpdate(entity: entity,
+                                                                       resolvedPOI: resolvedPOI,
+                                                                       using: spatialRead) {
+            ReferenceEntityRuntime.updateReferenceInCloud(markerParameters)
+        }
 
         if locChanged {
             try await Route.updateWaypointInAllRoutes(markerId: entity.id, using: spatialRead)
         }
+    }
+
+    private static func updatePOILastSelectedDate(forEntityKey entityKey: String,
+                                                  to date: Date,
+                                                  using spatialRead: ReferenceReadContract) async throws -> POI? {
+        guard let poi = await spatialRead.poi(byKey: entityKey) else {
+            return nil
+        }
+
+        if let persistedPOI = poi as? Object {
+            let cache = try RealmHelper.getCacheRealm()
+
+            try cache.write {
+                persistedPOI[POI.Keys.lastSelectedDate] = date
+            }
+        }
+
+        return poi
+    }
+
+    private static func markerParametersForCloudUpdate(entity: RealmReferenceEntity,
+                                                       resolvedPOI: POI?,
+                                                       using spatialRead: ReferenceReadContract) async -> MarkerParameters? {
+        let cloudPOI: POI?
+        if let resolvedPOI {
+            cloudPOI = resolvedPOI
+        } else {
+            cloudPOI = await resolvedCloudPOI(for: entity, using: spatialRead)
+        }
+
+        if let poi = cloudPOI {
+            return MarkerParameters(entity: poi,
+                                    markerId: entity.id,
+                                    estimatedAddress: entity.estimatedAddress,
+                                    nickname: entity.nickname,
+                                    annotation: entity.annotation,
+                                    lastUpdatedDate: entity.lastUpdatedDate)
+        }
+
+        let fallbackName = entity.nickname ?? entity.estimatedAddress ?? ""
+        let fallbackPOI = GenericLocation(coordinate: entity.geoCoordinate,
+                                          name: fallbackName,
+                                          address: entity.estimatedAddress)
+        return MarkerParameters(entity: fallbackPOI,
+                                markerId: entity.id,
+                                estimatedAddress: entity.estimatedAddress,
+                                nickname: entity.nickname,
+                                annotation: entity.annotation,
+                                lastUpdatedDate: entity.lastUpdatedDate)
+    }
+
+    private static func resolvedCloudPOI(for entity: RealmReferenceEntity,
+                                         using spatialRead: ReferenceReadContract) async -> POI? {
+        guard let entityKey = entity.entityKey else {
+            return nil
+        }
+
+        return await spatialRead.poi(byKey: entityKey)
     }
 
     static func update(id: String,
@@ -733,7 +874,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         // match, then we can also update the marker to set `isTemp` to false. This covers the only edge case where
         // we allow permanent markers to become temporary: when a marker is deleted and there is currently a beacon
         // set on the location of that marker.
-        if let existingMarker = SpatialDataStoreRegistry.store.referenceEntityByGenericLocation(location) {
+        if let existingMarker = SpatialDataCache.referenceEntityByGenericLocation(location) {
             let tempStatusMatches = existingMarker.isTemp == temporary
             let propertiesMatch = existingMarker.nickname == nickname &&
                                   existingMarker.estimatedAddress == estimatedAddress &&
@@ -806,7 +947,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                                                            context: String?,
                                                            notify: Bool) throws -> String {
         try autoreleasepool {
-            guard let entity = SpatialDataStoreRegistry.store.searchByKey(entityKey) else {
+            guard let entity = SpatialDataCache.searchByKey(key: entityKey) else {
                 // Return if entity does not exist (or doesn't exist in Realm)
                 throw ReferenceEntityError.entityDoesNotExist
             }
@@ -829,7 +970,8 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                                               annotation: String?,
                                               temporary: Bool,
                                               context: String?,
-                                              notify: Bool) throws -> String {
+                                              notify: Bool,
+                                              updateCloudSynchronously: Bool = true) throws -> String {
         let database = try RealmHelper.getDatabaseRealm()
         let cache = try RealmHelper.getCacheRealm()
 
@@ -860,7 +1002,12 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         }
 
         if !temporary {
-            ReferenceEntityRuntime.storeReferenceInCloud(reference.domainEntity)
+            if updateCloudSynchronously {
+                if let markerParameters = markerParametersForCloudStore(marker: reference,
+                                                                        entity: entity) {
+                    ReferenceEntityRuntime.updateReferenceInCloud(markerParameters)
+                }
+            }
 
             let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
             if entity is Address {
@@ -885,6 +1032,28 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
         }
 
         return reference.id
+    }
+
+    private static func markerParametersForCloudStore(markerID: String,
+                                                      entity: POI) throws -> MarkerParameters? {
+        let database = try RealmHelper.getDatabaseRealm()
+        guard let persistedMarker = database.object(ofType: RealmReferenceEntity.self,
+                                                    forPrimaryKey: markerID) else {
+            return nil
+        }
+
+        return markerParametersForCloudStore(marker: persistedMarker,
+                                             entity: entity)
+    }
+
+    private static func markerParametersForCloudStore(marker: RealmReferenceEntity,
+                                                      entity: POI) -> MarkerParameters? {
+        MarkerParameters(entity: entity,
+                         markerId: marker.id,
+                         estimatedAddress: marker.estimatedAddress,
+                         nickname: marker.nickname,
+                         annotation: marker.annotation,
+                         lastUpdatedDate: marker.lastUpdatedDate)
     }
 
     private static func addNewReferenceEntityForLocation(_ location: GenericLocation,
@@ -924,7 +1093,10 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             }
 
             if !temporary {
-                ReferenceEntityRuntime.storeReferenceInCloud(reference.domainEntity)
+                if let markerParameters = markerParametersForCloudStore(marker: reference,
+                                                                        entity: location) {
+                    ReferenceEntityRuntime.updateReferenceInCloud(markerParameters)
+                }
 
                 let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
                 GDATelemetry.track("markers.added",
@@ -980,7 +1152,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
 
         try await Route.removeWaypointFromAllRoutes(markerId: id, using: spatialRead)
 
-        ReferenceEntityRuntime.removeReferenceFromCloud(entity.domainEntity)
+        ReferenceEntityRuntime.removeReferenceFromCloud(markerID: entity.id)
 
         try database.write {
             database.delete(entity)
@@ -991,7 +1163,45 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
 
         RealmReferenceEntity.notifyEntityRemoved(id)
     }
-    
+
+    static func removeAllTemporary() throws {
+        let database = try RealmHelper.getDatabaseRealm()
+        let temporaryEntities = database.objects(RealmReferenceEntity.self).filter("isTemp == true")
+
+        guard !temporaryEntities.isEmpty else {
+            return
+        }
+
+        try database.write {
+            database.delete(temporaryEntities)
+        }
+    }
+
+    static func setTemporary(id: String, temporary: Bool) throws {
+        let database = try RealmHelper.getDatabaseRealm()
+
+        guard let entity = database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: id) else {
+            return
+        }
+
+        try entity.setTemporary(temporary)
+    }
+
+    static func clearNew() throws {
+        let database = try RealmHelper.getDatabaseRealm()
+        let newEntities = database.objects(RealmReferenceEntity.self).filter("isNew == true")
+
+        guard !newEntities.isEmpty else {
+            return
+        }
+
+        try database.write {
+            for entity in newEntities {
+                entity.isNew = false
+            }
+        }
+    }
+
     static func cleanCorruptEntities(using spatialRead: ReferenceReadContract) async throws {
         let entities = try RealmHelper.getDatabaseRealm().objects(RealmReferenceEntity.self).filter("isTemp == false")
         let candidates = entities.map { entity in

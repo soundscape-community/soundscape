@@ -107,6 +107,7 @@ Acceptance:
 - Boundary checks stay green without additional parser-like complexity.
 
 ## Progress Updates
+- 2026-03-10: With simulator access restored, `bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output quiet` passed (61 tests, 0 failures) and `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet` reached only the two already-tracked non-blocking full-suite failures (`AudioEngineTest.testDiscreteAudio2DSimple`, `AudioEngineTest.testDiscreteAudio2DSeveral`).
 - 2026-03-10: Validated the guardrail-alignment slice with `bash apps/ios/Scripts/ci/run_local_validation.sh --skip-ios-build-test -- --output quiet`; apps/common tests passed (22 tests, 0 failures) and the iOS seam/boundary scripts all passed with the updated `SpatialDataCache` infrastructure rule.
 - 2026-03-10: Aligned `check_spatial_data_cache_seam.sh` with the simplified post-reset boundary so validation now matches the current architecture: `SpatialDataCache` usage is allowed anywhere under `GuideDogs/Code/Data/Infrastructure/Realm/**`, and the retired sync-store seam symbols (`SpatialDataStoreRegistry`, `DefaultSpatialDataStore`, `SpatialDataStore`) must remain absent from `GuideDogs/Code` and `UnitTests`.
 - 2026-03-09: Local targeted iOS validation is currently blocked by CoreSimulatorService/device-set failures on this machine; syntax validation of touched Swift files passed with `xcrun swiftc -parse apps/ios/GuideDogs/Code/Data/Infrastructure/Realm/SpatialDataCache.swift` and `xcrun swiftc -parse apps/ios/UnitTests/Data/RouteStorageProviderDispatchTests.swift`.
@@ -156,7 +157,7 @@ Acceptance:
 
 ## Immediate Next Steps
 1. Keep `bash apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh` green; it now enforces both the `SpatialDataCache` infrastructure boundary and continued absence of the retired sync-store seam in `GuideDogs/Code` and `UnitTests`.
-2. Keep targeted data coverage focused on persistence-local and contract-first behavior rather than retired shim dispatch scaffolding.
+2. Keep targeted data coverage focused on persistence-local and contract-first behavior rather than retired shim dispatch scaffolding; current baseline is `61` targeted tests passing.
 3. Keep local validation low-noise by default (`--output quiet`) and report only outcome + log paths unless debugging failures.
 4. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 

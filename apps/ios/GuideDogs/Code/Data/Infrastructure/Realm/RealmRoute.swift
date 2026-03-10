@@ -115,7 +115,7 @@ extension Route {
 
     @MainActor
     static func markerCoordinate(forMarkerID markerID: String) -> CLLocationCoordinate2D? {
-        SpatialDataStoreRegistry.store.referenceEntityByKey(markerID)?.coordinate
+        SpatialDataCache.referenceEntityByKey(markerID)?.coordinate
     }
 
     @MainActor
