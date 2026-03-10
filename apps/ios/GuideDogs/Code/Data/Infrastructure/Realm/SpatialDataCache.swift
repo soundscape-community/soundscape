@@ -79,6 +79,34 @@ extension SpatialDataCache {
 }
 
 @MainActor
+extension GenericLocationSearchProvider {
+    func search(byKey key: String) -> POI? {
+        autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                GDLogSpatialDataError("Search by Key Error - Cannot get database Realm")
+                return nil
+            }
+
+            return database.object(ofType: RealmReferenceEntity.self, forPrimaryKey: key)?.getPOI()
+        }
+    }
+
+    func objects(predicate: NSPredicate) -> [POI] {
+        autoreleasepool {
+            guard let database = try? RealmHelper.getDatabaseRealm() else {
+                return []
+            }
+
+            // Generic locations are persisted markers without an underlying entity key.
+            let entityPredicate = NSPredicate(format: "entityKey == nil AND isTemp == false")
+            let predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [entityPredicate, predicate])
+
+            return database.objects(RealmReferenceEntity.self).filter(predicates).map { $0.getPOI() }
+        }
+    }
+}
+
+@MainActor
 class SpatialDataCache: NSObject {
     
     // MARK: Geocoders
