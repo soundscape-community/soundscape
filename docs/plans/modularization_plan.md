@@ -119,35 +119,22 @@ Remaining focus:
 - Keep the boundary scripts green while closing the remaining cleanup slices.
 
 ## Recent Completed Work
-- Removed the retired sync-store seam from app and unit-test code and aligned the boundary script to enforce that state.
-- Narrowed marker cloud dispatch to `MarkerParameters` updates and marker-ID deletes.
-- Removed the last non-infrastructure `RouteRuntime` usage by routing route-guidance deactivation through `BehaviorDelegate` instead of a Realm-owned runtime wrapper.
-- Removed dead Realm-typed overloads and stale `RealmReferenceEntity` references from non-infrastructure model/serialization/UI code; the remaining concrete Realm-model references outside infrastructure were then isolated and removed.
-- Moved `GenericLocationSearchProvider`, `OSMPOISearchProvider`, and `AddressSearchProvider` Realm-backed implementations into `Data/Infrastructure/Realm`, then moved the remaining app-layer `RealmHelper` calls behind infrastructure-owned extensions and neutral façades.
-- Renamed the route persistence error surface from `RouteRealmError` to `RouteDataError`, removing the last UI-facing Realm-branded error reference from runtime code.
-- Chose the extraction direction: keep `apps/common` portable, keep `DataContractRegistry` as the composition root, and avoid using the placeholder `apps/ios/Package.swift` as an architectural boundary.
-- Changed `DataContractRegistry` from direct Realm construction to installed defaults, with `configureWithRealmDefaults()` owned in Realm infrastructure and invoked explicitly from `AppContext` and tests.
-- Moved shared universal-link/storage parameter models into `SSDataContracts`, leaving iOS serialization files as shim/extension layers for runtime-specific behavior.
-- Rewrote `GDAJSONObject` in Swift, moved it and `VectorTile` into `SSDataContracts`, converted the portable tile API to `SSGeo` types, and reduced the iOS helper file to CoreLocation bridge overloads.
-- Removed the Objective-C `GDAJSONObject` bridge/header from the iOS target.
-- Moved `POI`, `GenericLocation`, and `SuperCategory` core taxonomy into `SSDataDomain`, flipping the portable POI surface to `SSGeo` while preserving iOS CoreLocation and glyph/audio convenience shims.
-- Moved portable `POI` equality/matching plus `PrimaryType`/`SecondaryType`/`Typeable` into `SSDataDomain`, leaving `POIKeys`, CoreLocation distance wrappers, and UI/presentation usage in `apps/ios`.
-- Moved `FilterPredicate`, `CompoundPredicate`, `SuperCategoryPredicate`, and `TypePredicate` into `SSDataDomain`, leaving only `LocationPredicate` and the `Filter` facade in `apps/ios`.
-- Moved `POIQueue`, `SortPredicate`, and `LastSelectedPredicate` into `SSDataDomain`, leaving only `DistancePredicate` and the `Sort` convenience facade in `apps/ios`.
-- Moved `DistancePredicate`, `Sort`, and generic `[POI]` array filtering/sorting helpers into `SSDataDomain`, leaving only `CLLocation` overloads and quadrant-specific array helpers in `apps/ios`.
-- Moved `Filter` and `LocationPredicate` into `SSDataDomain`, leaving only the `CLLocation` `Filter.location` bridge in `apps/ios`.
-- Moved universal-link path/version/component value types into `SSDataContracts`, leaving `UniversalLinkManager` and link handlers in `apps/ios`.
-- Renamed the stable-target doc from a storage-only framing to `docs/plans/data_modularization_north_star.md` so it matches the broader shared-domain extraction work and future Android goal.
+- Removed the retired sync-store seam from app and unit-test code, aligned the boundary scripts to enforce that state, and kept Realm confined to infrastructure-owned implementations and installers.
+- Moved the remaining portable route/marker/location/universal-link contract-side value models into `SSDataContracts`, including universal-link path/version/component parsing types, while leaving only runtime managers/handlers in `apps/ios`.
+- Rewrote `GDAJSONObject` in Swift, moved it and `VectorTile` into `SSDataContracts`, and reduced the iOS helper surface to CoreLocation bridge overloads.
+- Moved the shared POI/domain helper surface into `SSDataDomain`: `POI`, `GenericLocation`, `SuperCategory`, type/filter/sort/queue/query helpers, and generic `[POI]` array helper logic now live in `apps/common`, while iOS retains only Realm keys, CoreLocation bridges, quadrant-specific wrappers, and presentation mapping.
+- Kept `DataContractRegistry` as the single iOS composition root and moved default Realm installation behind infrastructure-owned setup (`configureWithRealmDefaults()`).
+- Renamed the stable-target doc to `docs/plans/data_modularization_north_star.md` so it matches the broader shared-domain extraction work and future Android goal.
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
 1. Continue extracting runtime-neutral domain/value/helper logic into `SSDataDomain` or `SSDataContracts` when it no longer depends on Apple frameworks or UI/runtime behavior.
 2. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
-3. Keep the shared domain surface stable while trimming remaining iOS-only adapters around the portable `POI`, filter, and sort/query helper surfaces.
+3. Keep the shared domain surface stable while trimming remaining iOS-only adapters and only extract additional helpers when the module boundary is clearly cleaner afterward.
 4. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining iOS-specific associated-type and runtime wrapper surface is stable.
 5. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
 
 ## Handoff
 - Use `docs/plans/data_modularization_north_star.md` for the stable target.
 - Use this file for current status only.
-- Start the next slice with one focused cleanup, validate with `--output quiet`, then update this file only if the current status or next steps materially changed.
+- Start the next slice with one focused cleanup only when the target type/helper cluster is clearly portable, validate with `--output quiet`, then update this file only if the current status or next steps materially changed.
