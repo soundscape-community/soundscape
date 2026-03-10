@@ -20,7 +20,7 @@ This file is the canonical instruction source for coding agents in this reposito
 - `HandledEventAction` is the behavior-to-processor contract for callout playback, event fan-out, and interrupt requests.
 - `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
 - `SSGeo` now lives in `apps/common` and provides portable location payloads plus basic geodesic math without `CoreLocation`.
-- `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models plus shared POI/category/type abstractions and portable POI matching logic shared with iOS.
+- `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models plus shared POI/category/type/filter abstractions and portable POI matching logic shared with iOS.
 - `SSDataContracts` now lives in `apps/common` and hosts shared contract-side value types for storage/read-write boundaries, including the universal-link/storage parameter models, `VectorTile`, and the Swift `GDAJSONObject` helper after decoupling them from iOS runtime behavior.
 
 ## Data Modularization Status
@@ -184,7 +184,8 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Shared route/marker/location parameter models plus `UniversalLinkParameters` now live in `apps/common/Sources/SSDataContracts`; the iOS serialization files should stay as shims/runtime extensions when behavior still depends on app-specific services.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; keep the iOS helper file as a CoreLocation shim only, and do not reintroduce the old Objective-C bridge.
 - `PrimaryType`, `SecondaryType`, `Typeable`, and portable `POI.match` / `POI.isEqual` behavior now live in `apps/common/Sources/SSDataDomain`; keep the Realm-only `POIKeys` helper and CoreLocation distance wrappers in `apps/ios`.
-- `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, and shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; keep only Realm keys, CoreLocation conveniences, and glyph/audio presentation mapping in `apps/ios`.
+- `FilterPredicate`, `CompoundPredicate`, `SuperCategoryPredicate`, and `TypePredicate` now live in `apps/common/Sources/SSDataDomain`; keep only `LocationPredicate` and the `Filter` facade in `apps/ios`.
+- `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, shared filter predicates, and shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; keep only Realm keys, CoreLocation conveniences, and glyph/audio presentation mapping in `apps/ios`.
 - `apps/ios/Package.swift` is placeholder/editor scaffolding and should not be used as the architectural extraction boundary.
 - Current validation default for modularization slices is low-noise output (`--output quiet`).
 - Known local full-suite non-blocking failures remain `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.

@@ -7,7 +7,3 @@
 //
 
 import Foundation
-
-protocol Type {
-    func matches(poi: any POI) -> Bool
-}

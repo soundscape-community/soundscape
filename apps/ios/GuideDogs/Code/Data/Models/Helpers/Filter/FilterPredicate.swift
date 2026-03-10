@@ -7,15 +7,6 @@
 //
 
 import Foundation
+import SSDataDomain
 
-protocol FilterPredicate {
-    func isIncluded(_ a: POI) -> Bool
-}
-
-extension FilterPredicate {
-    
-    func invert() -> FilterPredicate {
-        return CompoundPredicate(notPredicateWithSubpredicate: self)
-    }
-    
-}
+typealias FilterPredicate = SSDataDomain.FilterPredicate

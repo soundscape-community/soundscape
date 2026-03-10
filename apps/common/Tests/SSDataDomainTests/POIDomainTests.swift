@@ -120,6 +120,48 @@ struct POIDomainTests {
 
         #expect(transit.match(others: [nonTransit]) == nil)
     }
+
+
+    @Test
+    func superCategoryPredicateIncludesMatchingCategory() {
+        let poi = TestPOI(key: "poi-1",
+                          name: "Transit Hub",
+                          coordinate: .init(latitude: 47.6205, longitude: -122.3493),
+                          superCategory: SuperCategory.mobility.rawValue)
+
+        #expect(SuperCategoryPredicate(expected: .mobility).isIncluded(poi))
+        #expect(SuperCategoryPredicate(expected: .places).isIncluded(poi) == false)
+    }
+
+    @Test
+    func typePredicateIncludesMatchingType() {
+        let poi = TestPOI(key: "poi-1",
+                          name: "Transit Hub",
+                          coordinate: .init(latitude: 47.6205, longitude: -122.3493),
+                          primaryTypes: [.transit],
+                          secondaryTypes: [.transitStop])
+
+        #expect(TypePredicate(expected: PrimaryType.transit).isIncluded(poi))
+        #expect(TypePredicate(expected: SecondaryType.food).isIncluded(poi) == false)
+    }
+
+    @Test
+    func compoundPredicateSupportsAndOrAndInvert() {
+        let poi = TestPOI(key: "poi-1",
+                          name: "Park Cafe",
+                          coordinate: .init(latitude: 47.6205, longitude: -122.3493),
+                          primaryTypes: [.food],
+                          secondaryTypes: [.food],
+                          superCategory: SuperCategory.places.rawValue)
+
+        let category = SuperCategoryPredicate(expected: .places)
+        let food = TypePredicate(expected: PrimaryType.food)
+        let transit = TypePredicate(expected: PrimaryType.transit)
+
+        #expect(CompoundPredicate(andPredicatesWithSubpredicates: [category, food]).isIncluded(poi))
+        #expect(CompoundPredicate(orPredicateWithSubpredicates: [transit, food]).isIncluded(poi))
+        #expect(food.invert().isIncluded(poi) == false)
+    }
 }
 
 private struct TestPOI: POI, Typeable {

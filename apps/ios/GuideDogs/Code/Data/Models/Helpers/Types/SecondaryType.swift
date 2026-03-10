@@ -10,5 +10,3 @@ import Foundation
 import SSDataDomain
 
 typealias SecondaryType = SSDataDomain.SecondaryType
-
-extension SecondaryType: Type {}
