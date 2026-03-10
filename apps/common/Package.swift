@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SoundscapeCommon",
+    defaultLocalization: "en-US",
     products: [
         .library(
             name: "SSDataStructures",
@@ -13,6 +14,10 @@ let package = Package(
         .library(
             name: "SSGeo",
             targets: ["SSGeo"]
+        ),
+        .library(
+            name: "SSLanguage",
+            targets: ["SSLanguage"]
         ),
         .library(
             name: "SSDataDomain",
@@ -31,6 +36,11 @@ let package = Package(
             name: "SSGeo"
         ),
         .target(
+            name: "SSLanguage",
+            dependencies: ["SSGeo"],
+            resources: [.process("Resources")]
+        ),
+        .target(
             name: "SSDataDomain",
             dependencies: ["SSDataStructures", "SSGeo"]
         ),
@@ -45,6 +55,10 @@ let package = Package(
         .testTarget(
             name: "SSGeoTests",
             dependencies: ["SSGeo"]
+        ),
+        .testTarget(
+            name: "SSLanguageTests",
+            dependencies: ["SSLanguage"]
         ),
         .testTarget(
             name: "SSDataDomainTests",
