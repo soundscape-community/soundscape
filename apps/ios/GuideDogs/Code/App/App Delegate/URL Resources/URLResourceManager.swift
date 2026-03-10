@@ -111,6 +111,7 @@ class URLResourceManager {
 
 extension URLResourceManager {
     
+    @MainActor
     static func shareRoute(_ route: Route) -> URL? {
         return RouteParameters.encodeAndWriteToTemporaryFile(from: route, context: .share)
     }

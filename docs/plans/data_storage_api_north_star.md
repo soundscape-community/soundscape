@@ -43,7 +43,7 @@ That means:
 - do not add a second generic registry layer just to make package boundaries look cleaner
 
 ### Canonical Domain Surface
-Use domain/value types directly at contract boundaries (for example `Route`, `RouteWaypoint`, `ReferenceEntity`, `POI`, `GenericLocation`), not Realm object models.
+Use domain/value types directly at contract boundaries (for example `Route`, `RouteWaypoint`, `ReferenceEntity`, and shared parameter/value models), not Realm object models.
 
 ## Async Policy
 - Contracts are async-first (`async`/`await`) and explicit about failure (`throws`).
@@ -68,23 +68,27 @@ Must not be used by non-infrastructure code:
 
 ## Target Extraction Shape
 - `apps/common/Sources/SSDataDomain`: canonical platform-neutral domain/value models.
-- `apps/common/Sources/SSDataContracts`: async contract protocols and shared contract-side types.
-- iOS-only storage-support target/package: concrete contract-boundary types that are still app/platform-shaped (for example `POI`, `GenericLocation`, `VectorTile`, route/marker parameter types, and the registry composition root).
-- Realm storage target/package: Realm-backed contract implementations plus Realm object mappings/migrations/cache/search infrastructure.
+- `apps/common/Sources/SSDataContracts`: async contract protocols and shared contract-side value types, including universal-link/storage parameter models once decoupled from runtime behavior.
+- `apps/ios/GuideDogs/Code/Data/Contracts` and adjacent runtime extensions: iOS-specific composition and associated types that still depend on app behavior or app/platform-shaped values such as `POI`, `GenericLocation`, and `VectorTile`.
+- `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm/**`: Realm-backed contract implementations plus Realm object mappings, migrations, cache/search infrastructure, and backend installers.
 
 Recommended split:
 1. Keep `SSDataDomain`, `SSGeo`, and `SSDataContracts` as the shared portable core.
-2. Extract the current `Data/Contracts` surface plus the iOS-specific associated-value types into a small iOS package target.
-3. Extract `Data/Infrastructure/Realm/**` into a separate Realm storage target that depends on that iOS storage-support target.
-4. Keep `DataContractRegistry` in the iOS storage-support target or app target as the single composition root that chooses the concrete backend.
+2. Move pure contract-side value types into `SSDataContracts` instead of creating an intermediate iOS package boundary for them.
+3. Keep `DataContractRegistry` in `apps/ios` as the single composition root that chooses the concrete backend.
+4. Keep iOS-only associated values and runtime resolution helpers in `apps/ios` until they are genuinely portable.
+5. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after it depends on a stable app-side contract surface rather than the full app runtime.
 
 Do not put `DataContractRegistry` in `apps/common`.
 Reason: the registry is where concrete backend selection happens, and moving that into the portable package would either leak backend knowledge upward or require unnecessary type-erasure/glue layers.
 
+Do not use `apps/ios/Package.swift` as a modularization boundary.
+Reason: it is editor/tooling scaffolding, not part of the architectural split.
+
 Portable-first guidance:
 - move pure value types to `apps/common` only when they do not depend on app runtime behavior or Apple frameworks
 - keep associated-type-bound contracts in `SSDataContracts` when they need to abstract over iOS-only values such as `POI` or `VectorTile`
-- prefer one iOS support target plus one backend target over several micro-targets
+- prefer extracting shared value models into `apps/common` over inventing iOS-only package shells
 
 ## Static Success Criteria
 - Non-infrastructure app code uses only `DataContractRegistry` contracts for storage ingress.

@@ -46,6 +46,7 @@ extension RouteParameters {
         return try? encoder.encode(parameters)
     }
     
+    @MainActor
     static func encode(from route: Route, context: RouteParameters.Context) -> Data? {
         guard let parameters = RouteParameters(route: route, context: context) else {
             GDLogURLResourceError("Failed to encode - Failed to initialize parameters")
@@ -96,6 +97,7 @@ extension RouteParameters {
         return writeToTemporaryFile(encode(parameters))
     }
     
+    @MainActor
     static func encodeAndWriteToTemporaryFile(from route: Route, context: RouteParameters.Context) -> URL? {
         return writeToTemporaryFile(encode(from: route, context: context))
     }

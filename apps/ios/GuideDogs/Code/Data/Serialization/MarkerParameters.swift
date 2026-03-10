@@ -9,6 +9,7 @@
 
 import Foundation
 import CoreLocation
+import SSDataContracts
 
 enum ImportMarkerError: Error {
     case invalidParameter
@@ -17,83 +18,47 @@ enum ImportMarkerError: Error {
     case failedToFetchMarker
 }
 
-@MainActor
-struct MarkerParameters: Codable {
-    
-    // MARK: Properties
-    
-    /// Refers to the saved marker id, if applicable.
-    let id: String?
-    let nickname: String?
-    let annotation: String?
-    let estimatedAddress: String?
-    let lastUpdatedDate: Date?
+typealias MarkerParameters = SSDataContracts.MarkerParameters
 
-    // `UniversalLinkParameter` Properties
-    let location: LocationParameters
-    
-    // MARK: Initialization
-    
+extension SSDataContracts.MarkerParameters {
+    @MainActor
     init?(entity: POI, markerId: String?, estimatedAddress: String?, nickname: String?, annotation: String?, lastUpdatedDate: Date?) {
         let location: LocationParameters
-        
+
         if let entity = entity as? GDASpatialDataResultEntity {
-            let id = entity.key
-            let name = entity.localizedName
-            let address = entity.addressLine
             let coordinate = CoordinateParameters(latitude: entity.centroidLatitude, longitude: entity.centroidLongitude)
-            
-            // Initialize parameters for an OSM entity
-            let entityParameters = EntityParameters(source: .osm, lookupInformation: id)
-            
-            // Initialize location parameters
-            location = LocationParameters(name: name, address: address, coordinate: coordinate, entity: entityParameters)
+            let entityParameters = EntityParameters(source: .osm, lookupInformation: entity.key)
+            location = LocationParameters(name: entity.localizedName,
+                                          address: entity.addressLine,
+                                          coordinate: coordinate,
+                                          entity: entityParameters)
         } else {
             let coordinate = CoordinateParameters(latitude: entity.centroidLatitude, longitude: entity.centroidLongitude)
-            
-            // Initialize location parameters
-            location = LocationParameters(name: entity.localizedName, address: nil, coordinate: coordinate, entity: nil)
+            location = LocationParameters(name: entity.localizedName,
+                                          address: nil,
+                                          coordinate: coordinate,
+                                          entity: nil)
         }
-        
-        if let markerId = markerId, markerId.isEmpty == false {
-            self.id = markerId
-        } else {
-            self.id = nil
-        }
-        
-        if let nickname = nickname, nickname.isEmpty == false {
-            self.nickname = nickname
-        } else {
-            self.nickname = nil
-        }
-        
-        if let annotation = annotation, annotation.isEmpty == false {
-            self.annotation = annotation
-        } else {
-            self.annotation = nil
-        }
-        
-        if let estimatedAddress = estimatedAddress, estimatedAddress.isEmpty == false {
-            self.estimatedAddress = estimatedAddress
-        } else {
-            self.estimatedAddress = nil
-        }
-        
-        self.lastUpdatedDate = lastUpdatedDate
-        self.location = location
-    }
-    
-    init?(marker: ReferenceEntity) {
-        let entity = marker.getPOI()
-        let markerId = marker.id
-        let estimatedAddress = marker.estimatedAddress
-        let nickname = marker.nickname
-        let annotation = marker.annotation
-        let lastUpdatedDate = marker.lastUpdatedDate
-        
-        self.init(entity: entity, markerId: markerId, estimatedAddress: estimatedAddress, nickname: nickname, annotation: annotation, lastUpdatedDate: lastUpdatedDate)
+
+        self.init(id: markerId.flatMap { $0.isEmpty ? nil : $0 },
+                  nickname: nickname.flatMap { $0.isEmpty ? nil : $0 },
+                  annotation: annotation.flatMap { $0.isEmpty ? nil : $0 },
+                  estimatedAddress: estimatedAddress.flatMap { $0.isEmpty ? nil : $0 },
+                  lastUpdatedDate: lastUpdatedDate,
+                  location: location)
     }
 
+    @MainActor
+    init?(marker: ReferenceEntity) {
+        self.init(entity: marker.getPOI(),
+                  markerId: marker.id,
+                  estimatedAddress: marker.estimatedAddress,
+                  nickname: marker.nickname,
+                  annotation: marker.annotation,
+                  lastUpdatedDate: marker.lastUpdatedDate)
+    }
+
+    @MainActor
     init?(markerId: String) {
         guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId) else {
             return nil
@@ -110,7 +75,8 @@ struct MarkerParameters: Codable {
                   annotation: resolvedMarker.annotation,
                   lastUpdatedDate: resolvedMarker.lastUpdatedDate)
     }
-    
+
+    @MainActor
     init?(entity: POI) {
         let matchedMarker: ReferenceEntity?
         if let location = entity as? GenericLocation {
@@ -137,63 +103,4 @@ struct MarkerParameters: Codable {
                   annotation: nil,
                   lastUpdatedDate: nil)
     }
-    
-    init(name: String, latitude: Double, longitude: Double) {
-        let coordinate = CoordinateParameters(latitude: latitude, longitude: longitude)
-        let location = LocationParameters(name: name, address: nil, coordinate: coordinate, entity: nil)
-        
-        self.id = nil
-        self.nickname = nil
-        self.annotation = nil
-        self.estimatedAddress = nil
-        self.lastUpdatedDate = nil
-        self.location = location
-    }
-    
-}
-
-extension MarkerParameters: UniversalLinkParameters {
-    
-    private struct Name {
-        static let nickname = "nickname"
-        static let annotation = "annotation"
-    }
-    
-    // MARK: Properties
-    
-    var queryItems: [URLQueryItem] {
-        var queryItems: [URLQueryItem] = []
-    
-        if let nickname = nickname {
-            // Append nickname
-            queryItems.append(URLQueryItem(name: Name.nickname, value: nickname))
-        }
-        
-        if let annotation = annotation {
-            // Append annotation
-            queryItems.append(URLQueryItem(name: Name.annotation, value: annotation))
-        }
-        
-        // Append location query items
-        queryItems.append(contentsOf: location.queryItems)
-        
-        return queryItems
-    }
-    
-    // MARK: Initialization
-    
-    init?(queryItems: [URLQueryItem]) {
-        guard let location = LocationParameters(queryItems: queryItems) else {
-            return nil
-        }
-        
-        self.id = nil
-        self.nickname = queryItems.first(where: { $0.name == Name.nickname })?.value
-        self.annotation = queryItems.first(where: { $0.name == Name.annotation })?.value
-        // `estimatedAddress` is not used in universal links
-        self.estimatedAddress = nil
-        self.lastUpdatedDate = nil
-        self.location = location
-    }
-    
 }
