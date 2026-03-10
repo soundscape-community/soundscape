@@ -12,6 +12,7 @@ import CoreLocation
 import CocoaLumberjackSwift
 import CoreGPX
 import SSGeo
+import SSLanguage
 
 @MainActor
 struct RoadAdjacentDataView: AdjacentDataView, Equatable {

@@ -10,6 +10,7 @@
 import SwiftUI
 import Combine
 import CoreLocation
+import SSLanguage
 
 @MainActor
 class MarkerModel: ObservableObject {

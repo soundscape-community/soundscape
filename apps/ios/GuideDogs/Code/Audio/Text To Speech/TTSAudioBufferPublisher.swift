@@ -3,11 +3,13 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import AVFoundation
 import Combine
+import SSLanguage
 
 enum TTSError: Error, CustomStringConvertible {
     case cancelled

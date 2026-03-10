@@ -3,16 +3,14 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import CoreLocation
 import SSLanguage
 
-typealias RelativeDirectionType = SSLanguage.RelativeDirectionType
-typealias Direction = SSLanguage.Direction
-
-extension SSLanguage.Direction {
+extension Direction {
     init(from direction: CLLocationDirection, to otherDirection: CLLocationDirection, type: RelativeDirectionType = .individual) {
         self.init(from: Double(direction), to: Double(otherDirection), type: type)
     }

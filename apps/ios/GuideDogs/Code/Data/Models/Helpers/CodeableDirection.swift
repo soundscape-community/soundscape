@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -10,9 +11,7 @@ import Foundation
 import CoreLocation
 import SSLanguage
 
-typealias CodeableDirection = SSLanguage.CodeableDirection
-
-extension SSLanguage.CodeableDirection {
+extension CodeableDirection {
     init(
         originCoordinate: CLLocationCoordinate2D? = nil,
         originHeading: CLLocationDirection? = nil,

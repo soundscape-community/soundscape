@@ -63,7 +63,7 @@ Completed:
 - Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component value types now live in `apps/common/Sources/SSDataContracts`; iOS serialization files retain only runtime-specific behavior.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; the Objective-C `GDAJSONObject` bridge has been removed from the iOS target.
 - `POI`, `SelectablePOI`, `MatchablePOI`, `GenericLocation`, `SuperCategory`, portable POI matching/equality helpers, shared filter/sort/queue helpers, and the shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; iOS files retain only Realm keys plus CoreLocation and presentation-specific shims/extensions.
-- `DistanceFormatter`, `DistanceUnit`, `LanguageFormatter`, `PostalAbbreviations`, `Direction`, `CardinalDirection`, `CodeableDirection`, and portable locale/bundle helpers now live in `apps/common/Sources/SSLanguage`; iOS retains compatibility wrappers plus app-locale state and UI localization behavior.
+- `DistanceFormatter`, `DistanceUnit`, `LanguageFormatter`, `PostalAbbreviations`, `Direction`, `CardinalDirection`, `CodeableDirection`, and portable locale/bundle helpers now live in `apps/common/Sources/SSLanguage`; iOS now imports `SSLanguage` directly for portable types and retains only app-locale/app-context composition wrappers plus UI localization behavior.
 
 In progress:
 - Continue moving runtime-neutral domain/contract types into `apps/common` instead of building an iOS package shell.

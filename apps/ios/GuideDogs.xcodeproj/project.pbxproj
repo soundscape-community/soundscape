@@ -338,8 +338,6 @@
 		3150EC4C21FBD8A200F6EB3A /* CardinalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3150EC4A21FBD8A200F6EB3A /* CardinalDirection.swift */; };
 		3150EC4D21FBD8A200F6EB3A /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3150EC4B21FBD8A200F6EB3A /* Direction.swift */; };
 		3153765521FF1DFB008445AD /* CodeableDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3153765421FF1DFA008445AD /* CodeableDirection.swift */; };
-		3153765721FF8124008445AD /* PostalAbbreviations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3153765621FF8124008445AD /* PostalAbbreviations.swift */; };
-		3153765921FFB2BA008445AD /* DistanceFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3153765821FFB2BA008445AD /* DistanceFormatter.swift */; };
 		3153765C22013CDA008445AD /* DistanceUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3153765B22013CDA008445AD /* DistanceUnit.swift */; };
 		31569D2B20EBF6CA00FD7B35 /* MarkerTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31569D2A20EBF6CA00FD7B35 /* MarkerTutorialViewController.swift */; };
 		31656ADD20EE8A7C00059AFA /* BaseTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31656ADC20EE8A7C00059AFA /* BaseTutorialViewController.swift */; };
@@ -1099,8 +1097,6 @@
 		3150EC4A21FBD8A200F6EB3A /* CardinalDirection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CardinalDirection.swift; path = Code/Data/Models/Helpers/CardinalDirection.swift; sourceTree = "<group>"; };
 		3150EC4B21FBD8A200F6EB3A /* Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Direction.swift; path = Code/Data/Models/Helpers/Direction.swift; sourceTree = "<group>"; };
 		3153765421FF1DFA008445AD /* CodeableDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CodeableDirection.swift; path = Code/Data/Models/Helpers/CodeableDirection.swift; sourceTree = "<group>"; };
-		3153765621FF8124008445AD /* PostalAbbreviations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PostalAbbreviations.swift; path = Code/Language/PostalAbbreviations.swift; sourceTree = "<group>"; };
-		3153765821FFB2BA008445AD /* DistanceFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DistanceFormatter.swift; path = Code/Language/DistanceFormatter.swift; sourceTree = "<group>"; };
 		3153765B22013CDA008445AD /* DistanceUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DistanceUnit.swift; path = Code/Language/DistanceUnit.swift; sourceTree = "<group>"; };
 		31569D2A20EBF6CA00FD7B35 /* MarkerTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MarkerTutorialViewController.swift; path = "Code/Visual UI/View Controllers/Tutorials/Markers/MarkerTutorialViewController.swift"; sourceTree = "<group>"; };
 		31656ADC20EE8A7C00059AFA /* BaseTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BaseTutorialViewController.swift; path = "Code/Visual UI/View Controllers/Tutorials/BaseTutorialViewController.swift"; sourceTree = "<group>"; };
@@ -1959,8 +1955,6 @@
 			children = (
 				B9D3FF931E11AF4E00501DA3 /* Localization */,
 				B98B74191F196D55000DDED2 /* LanguageFormatter.swift */,
-				3153765621FF8124008445AD /* PostalAbbreviations.swift */,
-				3153765821FFB2BA008445AD /* DistanceFormatter.swift */,
 				3153765B22013CDA008445AD /* DistanceUnit.swift */,
 			);
 			name = Language;
@@ -4960,7 +4954,6 @@
 				C3652797224A9D5B0056F570 /* NotificationController.swift in Sources */,
 				C31BEE102214D84E00EE9284 /* POITableViewDelegate.swift in Sources */,
 				28F0F9251F85A39D00B6A64F /* DestinationTutorialIntroViewController.swift in Sources */,
-				3153765721FF8124008445AD /* PostalAbbreviations.swift in Sources */,
 				C3265D291FB271CF001D82EA /* AudioParser.swift in Sources */,
 				282C795026828A2400669555 /* BeaconUpdateFilter.swift in Sources */,
 				28162BA824D1DC1800B05CCC /* TTSAudioBufferPublisher.swift in Sources */,
@@ -5056,7 +5049,6 @@
 				C338FF0820A3ACA3003BEBF2 /* AuthorizeMotionFitnessViewController.swift in Sources */,
 				C36E562C22A87E5300E89C6D /* Array+POI.swift in Sources */,
 				C354342722A5E8C800FE3366 /* Sort.swift in Sources */,
-				3153765921FFB2BA008445AD /* DistanceFormatter.swift in Sources */,
 				C36BAD60224EE0E600182747 /* SearchResultsTableViewController.swift in Sources */,
 				6277B9BD25A525C70022A937 /* Array+FloatingPoint.swift in Sources */,
 				3146035E2242A42000617F5C /* UIAlertAction+Extensions.swift in Sources */,

@@ -3,10 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
+import SSLanguage
 
 protocol PreviewControlDelegate: AnyObject {
     func previewControl(_ viewController: PreviewControlViewController, didSelect edge: RoadAdjacentDataView?)

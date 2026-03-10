@@ -3,12 +3,14 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 import CoreLocation
 import CocoaLumberjackSwift
+import SSLanguage
 
 protocol Orientable {
     var bearing: CLLocationDirection { get }

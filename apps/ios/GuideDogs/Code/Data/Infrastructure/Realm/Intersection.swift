@@ -12,6 +12,7 @@ import CoreLocation
 import RealmSwift
 import CocoaLumberjackSwift
 import SSGeo
+import SSLanguage
 
 //--------------------//
 // Intersection Types //

@@ -187,6 +187,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component parsing types now live in `apps/common/Sources/SSDataContracts`; keep only runtime managers/handlers and other app-specific behavior in `apps/ios`.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; keep the iOS helper file as a CoreLocation shim only, and do not reintroduce the old Objective-C bridge.
 - `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, type/filter/sort/queue/query helpers, and generic `[POI]` array helper logic now live in `apps/common/Sources/SSDataDomain`; keep only Realm keys, CoreLocation conveniences/bridges, quadrant-specific wrappers, and glyph/audio presentation mapping in `apps/ios`.
+- `SSLanguage` call sites in `apps/ios` now import the module directly for portable types; keep iOS wrappers only where app-locale defaults, `AppContext`, or Apple-framework bridging are still required.
 - `apps/ios/Package.swift` is placeholder/editor scaffolding and should not be used as the architectural extraction boundary.
 - Current validation default for modularization slices is low-noise output (`--output quiet`).
 - Known local full-suite non-blocking failures remain `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral`.

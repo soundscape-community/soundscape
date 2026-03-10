@@ -3,12 +3,14 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import CoreLocation
 import CocoaLumberjackSwift
 import SSGeo
+import SSLanguage
 
 struct AlongRoadLocationCallout: LocationCalloutProtocol {
     

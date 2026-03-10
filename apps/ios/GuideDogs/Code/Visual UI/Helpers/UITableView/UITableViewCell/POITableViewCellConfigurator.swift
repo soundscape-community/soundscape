@@ -9,6 +9,7 @@
 
 import Foundation
 import CoreLocation
+import SSLanguage
 
 @MainActor
 class POITableViewCellConfigurator: TableViewCellConfigurator {

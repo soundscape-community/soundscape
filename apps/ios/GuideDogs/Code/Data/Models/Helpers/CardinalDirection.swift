@@ -3,15 +3,14 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import CoreLocation
 import SSLanguage
 
-typealias CardinalDirection = SSLanguage.CardinalDirection
-
-extension SSLanguage.CardinalDirection {
+extension CardinalDirection {
     init?(direction: CLLocationDirection) {
         self.init(direction: Double(direction))
     }
