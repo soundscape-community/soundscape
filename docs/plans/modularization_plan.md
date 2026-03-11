@@ -39,6 +39,7 @@ Current extraction decision:
 - `DataContractRegistry` remains the single composition root in `apps/ios`; do not force it into the portable core.
 - Do not use `apps/ios/Package.swift` as a modularization boundary; it is editor/tooling scaffolding, not the extraction plan.
 - Realm replacement readiness now depends on two things: continuing pure-type extraction into `apps/common`, and eliminating non-infrastructure dependencies on Realm-backed entities/caches in favor of contracts plus shared value types.
+- Realm backend readiness audit result on 2026-03-11: `20` Realm infrastructure files classified as `9` backend-ready, `8` mixed, and `3` runtime-owned; see `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`.
 
 Local evidence as of 2026-03-10:
 - `RealmSwift` imports outside `Data/Infrastructure/Realm/**`: `0`
@@ -83,10 +84,11 @@ Completed:
 - Shared cardinal-movement phrase families (`directions.traveling.*`, `directions.facing.*`, `directions.heading.*`, and `directions.along.*`) also now live in `apps/common/Sources/SSLanguage`; iOS location callouts route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
 - Shared named-location and junction-summary phrase families (`directions.nearest_road_name_*`, `directions.poi_name_*`, `directions.intersection_with_name*`, and `directions.roundabout_with_exits*`) also now live in `apps/common/Sources/SSLanguage`; iOS location callouts route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
 - The localization validator now checks both the iOS app bundle and `apps/common/Sources/SSLanguage/Resources`, and fails if `SSLanguage`-owned helper keys are duplicated back into the iOS app assets.
+- Realm replaceability readiness is now explicitly audited: the caller boundary is largely clean, but backend extraction is still blocked by mixed Realm files that directly use `DataRuntimeProviderRegistry`, `NotificationCenter`, `GDATelemetry`, or app-lifecycle globals; the current classification lives in `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`.
 
 In progress:
-- Continue moving runtime-neutral domain/contract types into `apps/common` instead of building an iOS package shell.
 - Keep app-level storage usage readable, contract-first, and free of direct Realm object-model dependencies.
+- Peel app/runtime side effects out of the mixed Realm backend files before attempting backend extraction.
 - Close remaining migration steps in small validated slices.
 
 Known non-blocking local full-suite failures:
@@ -109,6 +111,7 @@ Preferred local workflow:
 3. Refresh dependency analysis only when dependency shape meaningfully changes.
 
 Latest local results on 2026-03-11:
+- `bash apps/ios/Scripts/ci/check_spatial_data_cache_seam.sh`: passed.
 - `bash apps/ios/Scripts/ci/run_local_ios_build_test.sh --build-only --output quiet`: passed.
 - `bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output quiet`: passed, `64` tests, `0` failures.
 - `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`: boundary scripts green, iOS build-for-testing passed, full-suite test phase reached only the two known non-blocking `AudioEngineTest` failures.
@@ -158,6 +161,7 @@ Remaining focus:
 - Migrated the remaining production edit/import/tutorial/configuration call sites onto async marker-aware `LocationDetail` loads, rewired POI table cells to update marker/accessibility state through reuse-safe async refresh instead of sync adapter lookups, removed the last synchronous `MarkerEditViewRepresentable(entity:...)` convenience entry point, and trimmed the destination-key lookup fallback inside `LocationDetail`.
 - Removed the remaining internal `LocationDetail` sync fallbacks by dropping `Source.entity`/`referenceEntity(source:)` storage lookups, moving closest-location resolution onto `LocationDetail`, and updating route/tour guidance to rely on the detail's async-resolved entity/marker state instead of re-querying Realm-backed adapters.
 - Rewired the remaining `WaypointAddList` preview to construct its sample marker detail directly and removed the deprecated sync `LocationDetail` marker/entity ID loaders, leaving no callers on those sync entry points.
+- Audited every file under `Data/Infrastructure/Realm/**`, recorded the current backend-ready vs mixed vs runtime-owned classification in `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`, and fixed the next backend-proof slice on the `DataRuntimeProviderRegistry` chokepoints in `RealmRoute.swift` and `RealmReferenceEntity.swift`.
 - Moved `Quadrant`, `CompassDirection`, and the heading-to-quadrant bucketing helpers into `SSGeo`, replaced the `SpatialDataView`-owned heading helper logic with the shared API, and reduced the iOS helper files to compatibility aliases.
 - Moved the runtime-neutral `GeometryUtils` path/bearing/interpolation/centroid math into `SSGeo`, left `GeometryUtils` in `apps/ios` as the Apple-framework bridge for polygon/VectorTile-specific work, and added focused `SSGeo` test coverage for the extracted path helpers.
 - Moved the shared Web-Mercator projection, closest-edge, and polygon-containment math into `SSGeo`, rewired `VectorTile` and `GeometryUtils` to delegate to those shared helpers, and restored the legacy two-point containment behavior covered by the iOS unit tests.
@@ -167,12 +171,13 @@ Remaining focus:
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
-1. Continue extracting runtime-neutral domain/value/helper logic into `SSDataDomain` or `SSDataContracts` when it no longer depends on Apple frameworks or UI/runtime behavior.
-2. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
-3. Use `SSLanguage` for future runtime-neutral localization helpers instead of reintroducing shared language logic under `apps/ios`.
-4. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining caller surface is contract-first and stable.
+1. Split the mixed `RealmRoute.swift` and `RealmReferenceEntity.swift` files so their `DataRuntimeProviderRegistry` usage moves behind iOS-owned runtime adapters or explicit backend callback dependencies while the persistence/model logic stays backend-local.
+2. Isolate notification/telemetry side effects next in `Route+Realm.swift`, `RealmSpatialWriteContract.swift`, and `RealmMigrationTools.swift`; do not let backend extraction depend on `NotificationCenter` or `GDATelemetry` directly.
+3. Keep `SpatialDataContext.swift`, `Samplable.swift`, and `DataContractRegistry+RealmDefaults.swift` in `apps/ios` runtime/composition code and exclude them from the first backend target/package candidate.
+4. Extract the remaining backend-ready Realm infrastructure into a backend target/package only after the mixed files above no longer depend on app/runtime globals.
 
 ## Handoff
 - Use `docs/plans/data_modularization_north_star.md` for the stable target.
 - Use this file for current status only.
+- Use `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md` for the current file-by-file Realm replaceability inventory and the agreed first decoupling slice.
 - Start the next slice with one focused cleanup only when the target type/helper cluster is clearly portable, validate with `--output quiet`, then update this file only if the current status or next steps materially changed.
