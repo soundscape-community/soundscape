@@ -46,8 +46,9 @@ func guideToNaviLens(detail: LocationDetail) async throws {
 @MainActor
 func safeGuideToNaviLens(poi: POI) {
     // Launch NaviLens if starting a beacon throws an error
-    let detail = LocationDetail(entity: poi)
     Task { @MainActor in
+        let detail = await LocationDetail.load(entity: poi)
+
         do {
             try await guideToNaviLens(detail: detail)
         } catch {

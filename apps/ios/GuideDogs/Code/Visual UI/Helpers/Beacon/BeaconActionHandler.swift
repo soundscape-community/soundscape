@@ -47,7 +47,7 @@ struct BeaconActionHandler {
             return nil
         }
 
-        let markerDetail = LocationDetail(entity: markerPOI)
+        let markerDetail = await LocationDetail.load(entity: markerPOI)
 
         let config = EditMarkerConfig(detail: markerDetail,
                                       route: nil,

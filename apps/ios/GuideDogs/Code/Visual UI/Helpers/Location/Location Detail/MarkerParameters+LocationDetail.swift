@@ -52,7 +52,9 @@ extension MarkerParameters {
                 switch result {
                 case .success(let entity):
                     let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
-                    let locationDetail = LocationDetail(entity: entity, imported: importedDetail, telemetryContext: nil)
+                    let locationDetail = await LocationDetail.load(entity: entity,
+                                                                   imported: importedDetail,
+                                                                   telemetryContext: nil)
                     completion(.success(locationDetail))
                 case .failure(let error):
                     completion(.failure(error))

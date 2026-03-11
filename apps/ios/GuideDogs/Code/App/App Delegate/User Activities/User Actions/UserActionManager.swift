@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -160,20 +161,23 @@ class UserActionManager {
             return false
         }
         
-        let locationDetail = LocationDetail(location: location, telemetryContext: "current_location.user_activity.save")
-        
-        LocationDetail.fetchNameAndAddressIfNeeded(for: locationDetail) { (updatedLocationDetail) in
-            let config = EditMarkerConfig(detail: updatedLocationDetail,
-                                          context: "user_action",
-                                          addOrUpdateAction: .dismissesViewController,
-                                          deleteAction: .dismissesViewController,
-                                          cancelAction: .dismissesViewController,
-                                          leftBarButtonItemIsHidden: false)
-            
-            guard let vc = MarkerEditViewRepresentable(config: config).makeViewController() else { return }
-            let nav = NavigationController(rootViewController: vc)
-            nav.view.accessibilityIgnoresInvertColors = true
-            rootViewController.present(nav, animated: true)
+        Task { @MainActor in
+            let locationDetail = await LocationDetail.load(location: location,
+                                                           telemetryContext: "current_location.user_activity.save")
+
+            LocationDetail.fetchNameAndAddressIfNeeded(for: locationDetail) { updatedLocationDetail in
+                let config = EditMarkerConfig(detail: updatedLocationDetail,
+                                              context: "user_action",
+                                              addOrUpdateAction: .dismissesViewController,
+                                              deleteAction: .dismissesViewController,
+                                              cancelAction: .dismissesViewController,
+                                              leftBarButtonItemIsHidden: false)
+
+                guard let vc = MarkerEditViewRepresentable(config: config).makeViewController() else { return }
+                let nav = NavigationController(rootViewController: vc)
+                nav.view.accessibilityIgnoresInvertColors = true
+                rootViewController.present(nav, animated: true)
+            }
         }
         
         return true
@@ -200,9 +204,12 @@ class UserActionManager {
               let vc = nav.topViewController as? PreviewViewController else { return false }
         
         nav.modalPresentationStyle = .fullScreen
-        vc.locationDetail = LocationDetail(location: location, telemetryContext: "current_location.user_activity.street_preview")
-        
-        rootViewController.present(nav, animated: true)
+        Task { @MainActor in
+            vc.locationDetail = await LocationDetail.load(location: location,
+                                                          telemetryContext: "current_location.user_activity.street_preview")
+
+            rootViewController.present(nav, animated: true)
+        }
         
         return true
     }

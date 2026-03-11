@@ -220,7 +220,19 @@ class BeaconDetailStore: ObservableObject {
         destinationResolutionTask?.cancel()
 
         if let destinationPOIOverride {
-            beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOIOverride), isAudioEnabled: isAudioEnabled)
+            destinationResolutionTask = Task { @MainActor [weak self] in
+                guard let self else {
+                    return
+                }
+
+                let detail = await LocationDetail.load(entity: destinationPOIOverride)
+
+                guard !Task.isCancelled, manager.destinationKey == id else {
+                    return
+                }
+
+                self.beacon = BeaconDetail(locationDetail: detail, isAudioEnabled: isAudioEnabled)
+            }
             return
         }
 
@@ -238,7 +250,13 @@ class BeaconDetailStore: ObservableObject {
                 return
             }
 
-            self.beacon = BeaconDetail(locationDetail: LocationDetail(entity: destinationPOI), isAudioEnabled: isAudioEnabled)
+            let detail = await LocationDetail.load(entity: destinationPOI)
+
+            guard !Task.isCancelled, manager.destinationKey == id else {
+                return
+            }
+
+            self.beacon = BeaconDetail(locationDetail: detail, isAudioEnabled: isAudioEnabled)
         }
     }
 

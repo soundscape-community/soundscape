@@ -224,11 +224,25 @@ extension SearchWaypointViewController: POITableViewDelegate {
     }
     
     func didSelect(poi: POI) {
-        didSelect(detail: LocationDetail(entity: poi))
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            let detail = await LocationDetail.load(entity: poi)
+            self.didSelect(detail: detail)
+        }
     }
     
     func didSelect(currentLocation location: CLLocation) {
-        didSelect(detail: LocationDetail(location: location))
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            let detail = await LocationDetail.load(location: location)
+            self.didSelect(detail: detail)
+        }
     }
     
 }
@@ -238,7 +252,14 @@ extension SearchWaypointViewController: POITableViewDelegate {
 extension SearchWaypointViewController: SearchResultsTableViewControllerDelegate {
     
     func didSelectSearchResult(_ searchResult: POI) {
-        didSelect(detail: LocationDetail(entity: searchResult))
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            let detail = await LocationDetail.load(entity: searchResult)
+            self.didSelect(detail: detail)
+        }
     }
     
     var isCachingRequired: Bool {

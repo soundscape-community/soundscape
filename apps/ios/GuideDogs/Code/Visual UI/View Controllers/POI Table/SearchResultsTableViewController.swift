@@ -516,41 +516,42 @@ extension SearchResultsTableViewController: TableViewSelectDelegate {
     }
     
     private func dismissOnDidSelectSearchResult(_ entity: POI) {
-        // If the selected result will be cached on device but caching is not enabled
-        // (e.g., unencumbered coordinate is not available), present the error alert
-        // and return
-        if isCachingRequired {
-            let detail = LocationDetail(entity: entity)
-            
-            guard detail.source.isCachingEnabled else {
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            let detail = await LocationDetail.load(entity: entity)
+
+            // If the selected result will be cached on device but caching is not enabled
+            // (e.g., unencumbered coordinate is not available), present the error alert
+            // and return
+            if self.isCachingRequired, !detail.source.isCachingEnabled {
                 self.presentErrorAlert()
                 return
             }
-        }
-        
-        let completion = { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            if self.isPresentingDefaultResults == false {
-                // If the user has selected a result from a search, update
-                // the last selected date for that result
-                Task { @MainActor in
-                    let detail = await LocationDetail.load(entity: entity)
+
+            let completion = { [weak self] in
+                guard let self else {
+                    return
+                }
+
+                if !self.isPresentingDefaultResults {
+                    // If the user has selected a result from a search, update
+                    // the last selected date for that result
                     detail.updateLastSelectedDate()
                 }
+
+                self.delegate?.didSelectSearchResult(entity)
             }
-            
-            self.delegate?.didSelectSearchResult(entity)
-        }
-        
-        if viewConfiguration == .embedded {
-            self.dismiss(animated: true) {
+
+            if self.viewConfiguration == .embedded {
+                self.dismiss(animated: true) {
+                    completion()
+                }
+            } else {
                 completion()
             }
-        } else {
-            completion()
         }
     }
     

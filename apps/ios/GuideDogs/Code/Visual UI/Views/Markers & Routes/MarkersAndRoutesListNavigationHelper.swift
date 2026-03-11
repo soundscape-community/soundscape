@@ -21,15 +21,21 @@ class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccess
     
     func didSelectLocationAction(_ action: LocationAction, entity: POI) {
         GDATelemetry.track(action.telemetryEvent, with: ["context": "", "source": "accessibility_action"])
-        
-        let detail = LocationDetail(entity: entity, telemetryContext: "markers")
-        
-        LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (newValue) in
-            guard let `self` = self else {
+
+        Task { @MainActor [weak self] in
+            guard let self else {
                 return
             }
-            
-            self.didSelectLocationAction(action, detail: newValue)
+
+            let detail = await LocationDetail.load(entity: entity, telemetryContext: "markers")
+
+            LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (newValue) in
+                guard let self else {
+                    return
+                }
+
+                self.didSelectLocationAction(action, detail: newValue)
+            }
         }
     }
     
