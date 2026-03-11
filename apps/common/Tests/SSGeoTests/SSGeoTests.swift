@@ -133,6 +133,70 @@ struct SSGeoTests {
         }
     }
 
+    @Test
+    func mercatorProjectionRoundTripsCoordinate() {
+        let coordinate = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+        let pixel = SSGeoMercator.pixelXY(for: coordinate, zoom: 16)
+        let roundTrip = SSGeoMercator.coordinate(forPixelX: pixel.x, pixelY: pixel.y, zoom: 16)
+
+        #expect(abs(roundTrip.latitude - coordinate.latitude) < 0.001)
+        #expect(abs(roundTrip.longitude - coordinate.longitude) < 0.001)
+    }
+
+    @Test
+    func mercatorProjectedDistanceFindsClosestPointOnSegment() {
+        let location = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+        let start = SSGeoCoordinate(latitude: 47.6200, longitude: -122.3500)
+        let end = SSGeoCoordinate(latitude: 47.6210, longitude: -122.3500)
+
+        let result = SSGeoMercator.projectedDistanceSquared(
+            from: location,
+            toSegmentStart: start,
+            end: end,
+            zoom: 23
+        )
+
+        #expect(result.distanceSquaredPixels > 0.0)
+        #expect(abs(result.closestCoordinate.longitude - start.longitude) < 0.001)
+        #expect(result.closestCoordinate.latitude > start.latitude)
+        #expect(result.closestCoordinate.latitude < end.latitude)
+    }
+
+    @Test
+    func mercatorClosestCoordinateAndPolygonContainmentWork() {
+        let location = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+        let path = [
+            SSGeoCoordinate(latitude: 47.6200, longitude: -122.3500),
+            SSGeoCoordinate(latitude: 47.6210, longitude: -122.3500),
+            SSGeoCoordinate(latitude: 47.6210, longitude: -122.3480),
+        ]
+        let polygon = [
+            SSGeoCoordinate(latitude: 47.6200, longitude: -122.3500),
+            SSGeoCoordinate(latitude: 47.6200, longitude: -122.3480),
+            SSGeoCoordinate(latitude: 47.6210, longitude: -122.3480),
+            SSGeoCoordinate(latitude: 47.6210, longitude: -122.3500),
+        ]
+
+        let closest = SSGeoMercator.closestCoordinate(to: location, on: path)
+
+        #expect(closest != nil)
+        if let closest {
+            #expect(closest.latitude >= 47.6200)
+            #expect(closest.latitude <= 47.6210)
+        }
+
+        #expect(SSGeoMercator.contains(location, in: polygon))
+        #expect(!SSGeoMercator.contains(
+            SSGeoCoordinate(latitude: 47.6220, longitude: -122.3493),
+            in: polygon
+        ))
+
+        #expect(SSGeoMercator.contains(
+            SSGeoCoordinate(latitude: 47.6200, longitude: -122.3500),
+            in: [path[0], path[1]]
+        ))
+    }
+
     #if canImport(CoreLocation)
     @Test
     func distanceAccuracyComparedToCoreLocation() {

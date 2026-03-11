@@ -9,11 +9,11 @@ public final class VectorTile: Hashable {
         case invalidQuadKeySequence
     }
 
-    public static let earthRadius = 6_378_137
-    public static let minLatitude = -85.05112878
-    public static let maxLatitude = 85.05112878
-    public static let minLongitude: Double = -180
-    public static let maxLongitude: Double = 180
+    public static let earthRadius = Int(SSGeoMercator.earthRadiusMeters)
+    public static let minLatitude = SSGeoMercator.minLatitude
+    public static let maxLatitude = SSGeoMercator.maxLatitude
+    public static let minLongitude = SSGeoMercator.minLongitude
+    public static let maxLongitude = SSGeoMercator.maxLongitude
 
     public let x: Int
     public let y: Int
@@ -140,49 +140,35 @@ public final class VectorTile: Hashable {
     }
 
     public static func clip(_ value: Double, min minimum: Double, max maximum: Double) -> Double {
-        Swift.min(Swift.max(value, minimum), maximum)
+        SSGeoMercator.clip(value, min: minimum, max: maximum)
     }
 
     public static func mapSize(zoom: UInt) -> UInt {
-        let base: UInt = 256
-        return base << zoom
+        SSGeoMercator.mapSize(zoom: zoom)
     }
 
     public static func groundResolution(latitude: Double, zoom: UInt) -> Double {
-        let clippedLat = clip(latitude, min: minLatitude, max: maxLatitude)
-        return cos(clippedLat * .pi / 180.0) * 2 * .pi * Double(earthRadius) / Double(mapSize(zoom: zoom))
+        SSGeoMercator.groundResolution(latitude: latitude, zoom: zoom)
     }
 
     public static func getPixelXY(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> (x: Int, y: Int) {
-        let lat = clip(latitude, min: minLatitude, max: maxLatitude)
-        let lon = clip(longitude, min: minLongitude, max: maxLongitude)
-
-        let sinLat = sin(lat * .pi / 180)
-        let x = (lon + 180) / 360
-        let y = 0.5 - log((1 + sinLat) / (1 - sinLat)) / (.pi * 4)
-
-        let size = Double(mapSize(zoom: zoomLevel))
-        let pixelX = Int(clip((x * size + 0.5), min: 0, max: size - 1))
-        let pixelY = Int(clip((y * size + 0.5), min: 0, max: size - 1))
-        return (pixelX, pixelY)
+        SSGeoMercator.pixelXY(
+            for: SSGeoCoordinate(latitude: latitude, longitude: longitude),
+            zoom: zoomLevel
+        )
     }
 
     public static func getLatLong(pixelX: Int, pixelY: Int, zoom zoomLevel: UInt) -> (lat: Double, lon: Double) {
-        let size = Double(mapSize(zoom: zoomLevel))
-        let x = (clip(Double(pixelX), min: 0, max: Double(size - 1)) / size) - 0.5
-        let y = 0.5 - (clip(Double(pixelY), min: 0, max: Double(size - 1)) / size)
-
-        let lat = 90 - 360 * atan(exp(-y * 2 * .pi)) / .pi
-        let lon = 360 * x
-        return (lat, lon)
+        let coordinate = SSGeoMercator.coordinate(forPixelX: pixelX, pixelY: pixelY, zoom: zoomLevel)
+        return (coordinate.latitude, coordinate.longitude)
     }
 
     public static func getTileXY(pixelX: Int, pixelY: Int) -> (x: Int, y: Int) {
-        (pixelX / 256, pixelY / 256)
+        SSGeoMercator.tileXY(pixelX: pixelX, pixelY: pixelY)
     }
 
     public static func getPixelXY(tileX: Int, tileY: Int) -> (x: Int, y: Int) {
-        (tileX * 256, tileY * 256)
+        SSGeoMercator.pixelXY(tileX: tileX, tileY: tileY)
     }
 
     public static func isValidLocation(latitude: Double, longitude: Double) -> Bool {

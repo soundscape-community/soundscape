@@ -8,7 +8,7 @@
 //
 
 import Foundation
-import MapKit
+import CoreLocation
 import SSDataContracts
 import SSGeo
 
@@ -28,7 +28,7 @@ class GeometryUtils {
     
     static let maxRoadDistanceForBearingCalculation: CLLocationDistance = SSGeoPath.maxDistanceForBearingCalculation
 
-    static let earthRadius = Double(6378137)
+    static let earthRadius = SSGeoMercator.earthRadiusMeters
     
     /// Parses a GeoJSON string and returns the coordinates and type values.
     ///
@@ -57,30 +57,11 @@ class GeometryUtils {
     /// Returns whether a coordinate lies inside of the region contained within the coordinate path.
     /// The path is always considered closed, regardless of whether the last point equals the first or not.
     nonisolated static func geometryContainsLocation(location: CLLocationCoordinate2D, coordinates: [CLLocationCoordinate2D]) -> Bool {
-        guard coordinates.count > 0 else {
-            return false
-        }
-        
-        // Construct the polygon as a CGPath
-        let path = CGMutablePath()
-        
-        var (pixelX, pixelY) = VectorTile.getPixelXY(latitude: coordinates.first!.latitude, longitude: coordinates.first!.longitude, zoom: 16)
-        path.move(to: CGPoint(x: pixelX, y: pixelY))
-        
-        for coordinate in coordinates {
-            (pixelX, pixelY) = VectorTile.getPixelXY(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
-            path.addLine(to: CGPoint(x: pixelX, y: pixelY))
-        }
-        
-        // Check if we need to add a coordinate for a closed path
-        if coordinates.last! != coordinates.first! {
-            (pixelX, pixelY) = VectorTile.getPixelXY(latitude: coordinates.first!.latitude, longitude: coordinates.first!.longitude, zoom: 16)
-        }
-        path.move(to: CGPoint(x: pixelX, y: pixelY))
-        
-        // Check if the point is inside the polygon
-        (pixelX, pixelY) = VectorTile.getPixelXY(latitude: location.latitude, longitude: location.longitude, zoom: 16)
-        return path.contains(CGPoint(x: pixelX, y: pixelY))
+        SSGeoMercator.contains(
+            location.ssGeoCoordinate,
+            in: coordinates.map(\.ssGeoCoordinate),
+            zoom: 16
+        )
     }
     
     /// Calculates the bearing of a coordinates path.
@@ -179,67 +160,17 @@ class GeometryUtils {
                                 start: CLLocationCoordinate2D,
                                 end: CLLocationCoordinate2D,
                                 zoom: UInt) -> (CLLocationDistance, CLLocationDegrees, CLLocationDegrees) {
-        // Get the points of the geocoordinates in the pixel space
-        let (startX, startY) = VectorTile.getPixelXY(latitude: start.latitude,
-                                                     longitude: start.longitude,
-                                                     zoom: zoom)
-        let (endX, endY) = VectorTile.getPixelXY(latitude: end.latitude,
-                                                 longitude: end.longitude,
-                                                 zoom: zoom)
-        let (userX, userY) = VectorTile.getPixelXY(latitude: location.latitude,
-                                                   longitude: location.longitude,
-                                                   zoom: zoom)
-        
-        let (aX, aY) = (Double(startX), Double(startY))
-        let (bX, bY) = (Double(endX), Double(endY))
-        let (cX, cY) = (Double(userX), Double(userY))
-        
-        if aX == bX && aY == bY {
-            // return squared distance (in pixels)
-            return ((cX - aX) * (cX - aX) + (cY - aY) * (cY - aY), start.latitude, start.longitude)
-        }
-        
-        // Calculate the vectors
-        let (abX, abY) = (bX - aX, bY - aY)
-        let (acX, acY) = (cX - aX, cY - aY)
-        
-        // Calculate the projection of vector ac onto the line L = { cv | c in R } where v is the vector ab above
-        let abDotAc = abX * acX + abY * acY // x dot v
-        let abDotAb = abX * abX + abY * abY // v dot v
-        let coeff = abDotAc / abDotAb
-        
-        var (projX, projY) = (aX + abX * coeff, aY + abY * coeff)
-        
-        // Bound the projection to the segment from a to b (the projection was calculated based on the
-        // line defined by a and b, and the projected point can therefore be outside of the segment
-        // between a and b but still on the same line).
-        if aX != bX {
-            let (leftX, leftY) = aX < bX ? (aX, aY) : (bX, bY)
-            let (rightX, rightY) = aX > bX ? (aX, aY) : (bX, bY)
-            
-            if projX <= aX && projX <= bX {
-                // Bound projection to point a
-                (projX, projY) = (leftX, leftY)
-            } else if projX >= aX && projX >= bX {
-                // Bound projection to point b
-                (projX, projY) = (rightX, rightY)
-            }
-        } else {
-            let (leftX, leftY) = aY < bY ? (aX, aY) : (bX, bY)
-            let (rightX, rightY) = aY > bY ? (aX, aY) : (bX, bY)
-            
-            if projY <= aY && projY <= bY {
-                // Bound projection to point a
-                (projX, projY) = (leftX, leftY)
-            } else if projY >= aY && projY >= bY {
-                // Bound projection to point b
-                (projX, projY) = (rightX, rightY)
-            }
-        }
-        
-        // return squared distance to projected point (in pixels)
-        let (lat, lon) = VectorTile.getLatLong(pixelX: Int(projX), pixelY: Int(projY), zoom: zoom)
-        return ((cX - projX) * (cX - projX) + (cY - projY) * (cY - projY), lat, lon)
+        let result = SSGeoMercator.projectedDistanceSquared(
+            from: location.ssGeoCoordinate,
+            toSegmentStart: start.ssGeoCoordinate,
+            end: end.ssGeoCoordinate,
+            zoom: zoom
+        )
+        return (
+            result.distanceSquaredPixels,
+            result.closestCoordinate.latitude,
+            result.closestCoordinate.longitude
+        )
     }
     
     /// Finds the closest point on an edge of the polygon (including intermediate points along edges) to the given coordinate.
@@ -260,43 +191,11 @@ class GeometryUtils {
     /// Finds the closest point on the path (including intermediate points along edges) to the given coordinate.
     /// - Returns: `nil` if there are no edges (less than two points in `path`)
     nonisolated static func closestEdge(from coordinate: CLLocationCoordinate2D, on path: [CLLocationCoordinate2D]) -> CLLocation? {
-        guard !path.isEmpty else {
-            return nil;
-        }
-        
-        // Used to calculate distance to a point on a polygon
-        let zoomLevel: UInt = 23
-        let res: Double = VectorTile.groundResolution(latitude: coordinate.latitude, zoom: zoomLevel)
-        
-        var closestLocation: CLLocation?
-        var minimumDistance = CLLocationDistanceMax
-        
-        for i in 0..<path.count - 1 {
-            // `start` and `end` of line segment between coordinates
-            let start = path[i]
-            let end = path[i+1]
-            
-            guard start.latitude != end.latitude || start.longitude != end.longitude else {
-                continue
-            }
-            
-            // Calculate the minimum squared distance from user location to line segment
-            // Distance is calculated in pixel space
-            let (distanceSq, lat, long) = GeometryUtils.squaredDistance(location: coordinate,
-                                                                        start: start,
-                                                                        end: end,
-                                                                        zoom: zoomLevel)
-            
-            // Translate pixel distance to meters
-            let distance = sqrt(distanceSq) * res
-            
-            if distance < minimumDistance {
-                closestLocation = CLLocation(latitude: lat, longitude: long)
-                minimumDistance = distance
-            }
-        }
-        
-        return closestLocation
+        SSGeoMercator.closestCoordinate(
+            to: coordinate.ssGeoCoordinate,
+            on: path.map(\.ssGeoCoordinate),
+            zoom: 23
+        )?.clLocation
     }
     
     ///  Returns the interpolated path between coordinates in a coordinates array. The interpolated path
