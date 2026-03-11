@@ -98,6 +98,9 @@ private final class StorageContractMock: SpatialRouteReadContract,
     func importRouteFromCloud(_ route: Route) async throws {}
     func removeAllRoutes() async throws {}
     func importReferenceEntityFromCloud(markerParameters: MarkerParametersStub, entity: PointOfInterestStub) async throws {}
+    func materializePointOfInterest(from location: LocationParameters) async throws -> PointOfInterestStub {
+        PointOfInterestStub(id: location.entity?.lookupInformation ?? location.name)
+    }
     func removeAllReferenceEntities() async throws {}
     func clearNewReferenceEntitiesAndRoutes() async throws {}
     func cleanCorruptReferenceEntities() async throws {}
@@ -234,6 +237,12 @@ struct SSDataContractsTests {
         let genericLocationEntity = await mock.referenceEntity(byGenericLocation: .init(id: "location-1"))
         let recentlySelectedPOIs = await mock.recentlySelectedPOIs()
         let poi = await mock.poi(byKey: "poi-1")
+        let materializedPOI = try await mock.materializePointOfInterest(from: LocationParameters(
+            name: "Imported POI",
+            address: nil,
+            coordinate: CoordinateParameters(latitude: 47.6205, longitude: -122.3493),
+            entity: EntityParameters(source: .osm, lookupInformation: "entity-1")
+        ))
         let tiles = await mock.tiles(forDestinations: true, forReferences: true, at: 16, destination: nil)
         let nearbyLocations = await mock.genericLocations(near: .init(coordinate: .init(latitude: 47.6205,
                                                                                           longitude: -122.3493)),
@@ -248,6 +257,7 @@ struct SSDataContractsTests {
         #expect(genericLocationEntity == nil)
         #expect(recentlySelectedPOIs.isEmpty)
         #expect(poi == nil)
+        #expect(materializedPOI == PointOfInterestStub(id: "entity-1"))
         #expect(tiles.isEmpty)
         #expect(nearbyLocations.isEmpty)
 

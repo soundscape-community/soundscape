@@ -114,6 +114,7 @@ public protocol SpatialReferenceMaintenanceWriteContract {
 
     func importReferenceEntityFromCloud(markerParameters: MarkerParametersValue,
                                         entity: PointOfInterestValue) async throws
+    func materializePointOfInterest(from location: LocationParameters) async throws -> PointOfInterestValue
     func removeAllReferenceEntities() async throws
     func clearNewReferenceEntitiesAndRoutes() async throws
     func cleanCorruptReferenceEntities() async throws

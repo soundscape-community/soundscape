@@ -195,6 +195,12 @@ final class CloudSyncContractBridgeTests: XCTestCase {
             }
         }
 
+        func materializePointOfInterest(from location: LocationParameters) async throws -> POI {
+            GenericLocation(lat: location.coordinate.latitude,
+                            lon: location.coordinate.longitude,
+                            name: location.name)
+        }
+
         func removeAllReferenceEntities() async throws {}
 
         func removeAllRoutes() async throws {}

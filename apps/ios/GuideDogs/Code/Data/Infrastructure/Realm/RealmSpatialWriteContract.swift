@@ -89,6 +89,26 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
                                                        using: DataContractRegistry.spatialRead)
     }
 
+    func materializePointOfInterest(from location: LocationParameters) async throws -> POI {
+        if let entity = location.entity {
+            switch entity.source {
+            case .osm:
+                if let existingPOI = await DataContractRegistry.spatialRead.poi(byKey: entity.lookupInformation) {
+                    return existingPOI
+                }
+
+                return try GDASpatialDataResultEntity.addOrUpdateSpatialCacheEntity(
+                    id: entity.lookupInformation,
+                    parameters: location
+                )
+            }
+        }
+
+        return GenericLocation(lat: location.coordinate.latitude,
+                               lon: location.coordinate.longitude,
+                               name: location.name)
+    }
+
     func removeAllReferenceEntities() async throws {
         // Clear the destination before deleting markers to preserve existing cache-reset behavior.
         try await ReferenceEntityRuntime.clearDestinationForCacheReset()

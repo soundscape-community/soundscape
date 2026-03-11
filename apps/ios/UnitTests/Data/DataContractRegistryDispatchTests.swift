@@ -262,6 +262,12 @@ final class DataContractRegistryDispatchTests: XCTestCase {
             importReferenceEntityFromCloudCalls.append(markerParameters.id)
         }
 
+        func materializePointOfInterest(from location: LocationParameters) async throws -> POI {
+            GenericLocation(lat: location.coordinate.latitude,
+                            lon: location.coordinate.longitude,
+                            name: location.name)
+        }
+
         func removeAllReferenceEntities() async throws {
             removeAllReferenceEntitiesCalls += 1
         }
@@ -915,6 +921,17 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
                                             annotation: markerParameters.annotation,
                                             isTemp: false)
         store(reference)
+    }
+
+    func materializePointOfInterest(from location: LocationParameters) async throws -> POI {
+        if let entity = location.entity,
+           let poi = poiByEntityKey[entity.lookupInformation] {
+            return poi
+        }
+
+        return GenericLocation(lat: location.coordinate.latitude,
+                               lon: location.coordinate.longitude,
+                               name: location.name)
     }
 
     func removeAllRoutes() async throws {
