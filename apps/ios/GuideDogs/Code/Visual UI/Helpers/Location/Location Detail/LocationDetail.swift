@@ -591,5 +591,17 @@ extension LocationDetail {
                               imported: imported,
                               telemetryContext: telemetryContext)
     }
+
+    static func load(entityId: String,
+                     imported: ImportedLocationDetail? = nil,
+                     telemetryContext: String? = nil) async -> LocationDetail? {
+        guard let entity = await DataContractRegistry.spatialRead.poi(byKey: entityId) else {
+            return nil
+        }
+
+        return LocationDetail(entity: entity,
+                              imported: imported,
+                              telemetryContext: telemetryContext)
+    }
     
 }

@@ -1160,7 +1160,7 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
             return markerCoordinate
         }
 
-        return firstWaypoint.asLocationDetail?.location.coordinate.ssGeoCoordinate
+        return firstWaypoint.importedReferenceEntity?.coordinate
     }
 
     private func removeWaypointFromAllRoutes(markerID: String, updatedAt: Date) {

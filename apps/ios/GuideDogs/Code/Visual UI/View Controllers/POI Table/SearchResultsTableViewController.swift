@@ -343,7 +343,7 @@ class SearchResultsTableViewController: UITableViewController {
                 let name = GDLocalizedString("intersection.named_intersection", intersection.localizedName)
                 callouts.append(GenericLocation(lat: latitude, lon: longitude, name: name))
             } else if let waypointCallout = callout as? WaypointArrivalCallout,
-                      let poi = waypointCallout.waypoint.source.entity {
+                      let poi = waypointCallout.waypoint.entity {
                 callouts.append(poi)
             }
         }

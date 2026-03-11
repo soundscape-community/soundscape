@@ -530,6 +530,21 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertNotNil(parameters)
     }
 
+    func testLocationDetailLoadEntityIDUsesContractLookup() async {
+        let entityKey = "location-detail-entity-\(UUID().uuidString)"
+        let readMock = MockSpatialReadContract()
+        let poi = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Contract POI")
+        poi.key = entityKey
+        readMock.poisByKey[entityKey] = poi
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let detail = await LocationDetail.load(entityId: entityKey)
+
+        XCTAssertNotNil(detail)
+        XCTAssertEqual(detail?.entity?.key, entityKey)
+        XCTAssertEqual(readMock.poiByKeyCalls, [entityKey])
+    }
+
     func testSpatialDataCacheSearchByKeyWithNoProvidersReturnsNilWithoutAssert() {
         SpatialDataCache.removeAllProviders()
         defer {

@@ -228,8 +228,11 @@ struct RouteEditView: View {
             // Update description
             route.routeDescription = description
         }
-        
-        if route.waypoints.ordered.asLocationDetail.compactMap({ return $0.source }) != identifiableWaypoints.compactMap({ return $0.locationDetail.source }) {
+
+        let existingMarkerIDs = route.waypoints.ordered.map(\.markerId)
+        let updatedMarkerIDs = identifiableWaypoints.compactMap { $0.locationDetail.markerId }
+
+        if existingMarkerIDs != updatedMarkerIDs {
             // Update waypoints
             route.waypoints.removeAll()
             route.waypoints.append(contentsOf: identifiableWaypoints.asRouteWaypoint)
