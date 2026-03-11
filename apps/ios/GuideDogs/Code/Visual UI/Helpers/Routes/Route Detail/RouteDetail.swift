@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -10,7 +11,7 @@ import CoreLocation
 import Combine
 
 @MainActor
-class RouteDetail: RouteDetailProtocol {
+class RouteDetail: ObservableObject, RouteDetailProtocol {
     
     struct DesignData {
         var id: String
@@ -31,11 +32,12 @@ class RouteDetail: RouteDetailProtocol {
     // MARK: Properties
     
     let source: Source
-    private(set) var name: String?
-    private(set) var description: String?
-    private(set) var waypoints: [LocationDetail] = []
+    @Published private(set) var name: String?
+    @Published private(set) var description: String?
+    @Published private(set) var waypoints: [LocationDetail] = []
     private let designData: DesignData?
     private var listeners: [AnyCancellable] = []
+    private var routeLoadTask: Task<Void, Never>?
     
     var guidance: RouteGuidance? {
         guard let routeGuidance = UIRuntimeProviderRegistry.providers.routeGuidanceStateStoreActiveRouteGuidance() else {
@@ -127,6 +129,7 @@ class RouteDetail: RouteDetailProtocol {
     
     deinit {
         listeners.cancelAndRemoveAll()
+        routeLoadTask?.cancel()
     }
     
     // MARK: Route Properties
@@ -136,22 +139,30 @@ class RouteDetail: RouteDetailProtocol {
             name = designData.name
             description = designData.description
             waypoints = designData.waypoints
+            return
         }
         
         switch source {
         case .database(let id):
-            guard let route = Route.object(forPrimaryKey: id) else {
-                return
+            if let route = Route.object(forPrimaryKey: id) {
+                name = route.name
+                description = route.routeDescription
             }
             
-            name = route.name
-            description = route.routeDescription
-            waypoints = route.waypoints.ordered.asLocationDetail
+            waypoints = []
+            refreshRouteProperties()
             
         case .cache(let route):
             name = route.name
             description = route.routeDescription
-            waypoints = route.waypoints.ordered.asLocationDetail
+            waypoints = route.waypoints.ordered.compactMap { waypoint in
+                guard let marker = waypoint.importedReferenceEntity else {
+                    return nil
+                }
+
+                return LocationDetail(marker: marker)
+            }
+            refreshRouteProperties()
             
         case .trailActivity(let activity):
             name = activity.name
@@ -167,6 +178,44 @@ class RouteDetail: RouteDetailProtocol {
                                       telemetryContext: "route_detail")
             }
         }
+    }
+
+    private func refreshRouteProperties() {
+        routeLoadTask?.cancel()
+        routeLoadTask = Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            await self.loadRouteProperties()
+        }
+    }
+
+    private func loadRouteProperties() async {
+        let route: Route?
+
+        switch source {
+        case .database(let id):
+            route = await DataContractRegistry.spatialRead.route(byKey: id)
+        case .cache(let cachedRoute):
+            route = cachedRoute
+        case .trailActivity:
+            return
+        }
+
+        guard let route else {
+            return
+        }
+
+        let loadedWaypoints = await route.waypoints.locationDetails(using: DataContractRegistry.spatialRead)
+
+        guard !Task.isCancelled else {
+            return
+        }
+
+        name = route.name
+        description = route.routeDescription
+        waypoints = loadedWaypoints
     }
     
 }

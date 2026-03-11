@@ -7,6 +7,7 @@
 //  Licensed under the MIT License.
 //
 
+import Combine
 import SwiftUI
 import CoreLocation
 import SSGeo
@@ -21,15 +22,6 @@ struct RouteEditView: View {
         case add
         case edit(detail: RouteDetail)
         case `import`(route: Route)
-        
-        @MainActor
-        var detail: RouteDetail? {
-            switch self {
-            case .add: return nil
-            case .edit(let detail): return detail
-            case .import(let route): return RouteDetail(source: .cache(route: route))
-            }
-        }
         
         @MainActor
         var title: String {
@@ -61,6 +53,7 @@ struct RouteEditView: View {
     
     let style: Style
     let deleteAction: NavigationAction?
+    private let detail: RouteDetail?
     
     private var isValid: Bool {
         return name.isEmpty == false
@@ -97,8 +90,17 @@ struct RouteEditView: View {
     init(style: Style, deleteAction: NavigationAction?) {
         self.style = style
         self.deleteAction = deleteAction
-        
-        if let detail = style.detail {
+
+        switch style {
+        case .add:
+            self.detail = nil
+        case .edit(let detail):
+            self.detail = detail
+        case .import(let route):
+            self.detail = RouteDetail(source: .cache(route: route))
+        }
+
+        if let detail = self.detail {
             _identifiableWaypoints = State(initialValue: detail.waypoints.asIdenfifiable)
             
             if let name = detail.name {
@@ -115,6 +117,32 @@ struct RouteEditView: View {
         
         // Disable vertical bounce when scrolling is not needed
         UIScrollView.appearance().alwaysBounceVertical = false
+    }
+
+    private var detailWaypointsPublisher: AnyPublisher<[LocationDetail], Never> {
+        guard let detail else {
+            return Empty(completeImmediately: true).eraseToAnyPublisher()
+        }
+
+        return detail.$waypoints.eraseToAnyPublisher()
+    }
+
+    private func seedFromDetailIfNeeded() {
+        guard let detail else {
+            return
+        }
+
+        if name.isEmpty, let detailName = detail.name {
+            name = detailName
+        }
+
+        if description.isEmpty, let detailDescription = detail.description {
+            description = detailDescription
+        }
+
+        if identifiableWaypoints.isEmpty, detail.waypoints.isEmpty == false {
+            identifiableWaypoints = detail.waypoints.asIdenfifiable
+        }
     }
     
     // MARK: Actions
@@ -336,7 +364,11 @@ struct RouteEditView: View {
         .alert(isPresented: $showAlert, content: { alertView })
         .onAppear {
             GDATelemetry.trackScreenView("route_edit")
+            seedFromDetailIfNeeded()
             refreshImportRouteExists()
+        }
+        .onReceive(detailWaypointsPublisher) { _ in
+            seedFromDetailIfNeeded()
         }
     }
 }

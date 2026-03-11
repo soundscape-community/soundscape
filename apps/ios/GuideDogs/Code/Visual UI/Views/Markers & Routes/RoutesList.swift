@@ -49,11 +49,18 @@ struct RoutesList: View {
         guard let id = isPresentingForRouteId else {
             return
         }
-        
-        let detail = RouteDetail(source: .database(id: id))
-        let context = ShareRouteActivityViewRepresentable(route: detail)
-        
-        NotificationCenter.default.post(name: .presentAnyModalViewController, object: self, userInfo: [AnyModalViewObserver.Keys.context: context])
+
+        Task { @MainActor in
+            guard let route = await DataContractRegistry.spatialRead.route(byKey: id),
+                  let activityViewController = await SoundscapeDocumentAlert.shareRoute(route) else {
+                return
+            }
+
+            let context = ShareRouteActivityViewRepresentable(viewController: activityViewController)
+            NotificationCenter.default.post(name: .presentAnyModalViewController,
+                                            object: self,
+                                            userInfo: [AnyModalViewObserver.Keys.context: context])
+        }
     }
     
     @ViewBuilder var selectedDetailView: some View {

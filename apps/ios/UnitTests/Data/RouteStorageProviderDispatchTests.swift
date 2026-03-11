@@ -478,6 +478,37 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [markerID])
     }
 
+    func testRouteDetailCacheSourceHydratesWaypointsUsingSpatialReadContract() async {
+        let markerID = "route-detail-marker-\(UUID().uuidString)"
+        let coordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
+        let readMock = MockSpatialReadContract()
+        readMock.referenceEntitiesByID[markerID] = ReferenceEntity(id: markerID,
+                                                                   entityKey: nil,
+                                                                   lastUpdatedDate: nil,
+                                                                   lastSelectedDate: nil,
+                                                                   isNew: false,
+                                                                   isTemp: false,
+                                                                   coordinate: coordinate.ssGeoCoordinate,
+                                                                   nickname: "Route Detail Marker",
+                                                                   estimatedAddress: nil,
+                                                                   annotation: nil)
+        DataContractRegistry.configure(spatialRead: readMock)
+
+        let route = Route(name: "Hydrated Route",
+                          description: "A route description",
+                          waypoints: [RouteWaypoint(index: 0, markerId: markerID)])
+        let detail = RouteDetail(source: .cache(route: route))
+
+        for _ in 0..<10 where detail.waypoints.isEmpty {
+            await Task.yield()
+        }
+
+        XCTAssertEqual(detail.displayName, "Hydrated Route")
+        XCTAssertEqual(detail.waypoints.count, 1)
+        XCTAssertEqual(detail.waypoints.first?.markerId, markerID)
+        XCTAssertEqual(readMock.referenceEntityByIDCalls, [markerID])
+    }
+
     func testMarkerParametersInitMarkerIDUsesContractLookup() async throws {
         let markerID = "marker-id-\(UUID().uuidString)"
         let coordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
