@@ -23,53 +23,21 @@ struct LocationDetail {
         case designData(at: CLLocation, address: String)
         case screenshots(poi: GenericLocation)
         
-        var entity: POI? {
-            if case .entity(let id) = self {
-                return LocationDetailStoreAdapter.poi(byKey: id)
-            } else if case .screenshots(let poi) = self {
-                return poi
-            }
-            
-            return nil
-        }
-        
-        var name: String? {
-            return entity?.localizedName
-        }
-        
-        /// Determines whether the "Launch NaviLens" action should be shown
-        var hasNaviLens: Bool {
-            return entity?.superCategory == "navilens"
-        }
-        
         var address: String? {
-            if case let .designData(_, address) = self {
+            switch self {
+            case .designData(_, let address):
                 return address
+            case .screenshots(let poi):
+                return poi.addressLine
+            case .entity, .coordinate:
+                return nil
             }
-            
-            return entity?.addressLine
         }
         
         var isCachingEnabled: Bool {
             // If the data source does not allow caching, return false
             // For OSM, return true
             return true
-        }
-        
-        func closestLocation(from userLocation: CLLocation, useEntranceIfAvailable: Bool = true) -> CLLocation? {
-            switch self {
-            case .entity:
-                return entity?.closestLocation(from: userLocation, useEntranceIfAvailable: useEntranceIfAvailable)
-                
-            case .coordinate(let location):
-                return location
-                
-            case .designData(let location, _):
-                return location
-                
-            case .screenshots(let poi):
-                return poi.location
-            }
         }
         
         static func == (lhs: Source, rhs: Source) -> Bool {
@@ -180,7 +148,15 @@ struct LocationDetail {
     }
     
     var entity: POI? {
-        resolvedEntity ?? source.entity
+        if let resolvedEntity {
+            return resolvedEntity
+        }
+
+        if case .screenshots(let poi) = source {
+            return poi
+        }
+
+        return nil
     }
 
     var hasNaviLens: Bool {
@@ -188,7 +164,7 @@ struct LocationDetail {
     }
 
     private var marker: ReferenceEntity? {
-        resolvedMarker ?? referenceEntity(source: source, isTemp: nil)
+        resolvedMarker
     }
 
     private func isDestinationKeyMatch(_ key: String, destinationKey: String) -> Bool {
@@ -209,6 +185,19 @@ struct LocationDetail {
         }
         
         return nil
+    }
+
+    func closestLocation(from userLocation: CLLocation, useEntranceIfAvailable: Bool = true) -> CLLocation? {
+        switch source {
+        case .entity:
+            return entity?.closestLocation(from: userLocation, useEntranceIfAvailable: useEntranceIfAvailable)
+        case .coordinate(let location):
+            return location
+        case .designData(let location, _):
+            return location
+        case .screenshots(let poi):
+            return poi.location
+        }
     }
     
     private var name: String? {
@@ -290,27 +279,6 @@ struct LocationDetail {
         return GDLocalizedString("location_detail.default.address")
     }
 
-    private func referenceEntity(source: Source, isTemp: Bool?) -> ReferenceEntity? {
-        let marker: ReferenceEntity?
-
-        switch source {
-        case .entity(let id):
-            marker = LocationDetailStoreAdapter.referenceEntity(byEntityKey: id)
-        case .coordinate(let location):
-            marker = LocationDetailStoreAdapter.referenceEntity(byLocation: location.coordinate)
-        case .designData:
-            marker = nil
-        case .screenshots(let poi):
-            marker = LocationDetailStoreAdapter.referenceEntity(byEntityKey: poi.key)
-        }
-
-        guard let isTemp, let marker else {
-            return marker
-        }
-
-        return marker.isTemp == isTemp ? marker : nil
-    }
-    
     var hasAddress: Bool {
         return address != nil
     }

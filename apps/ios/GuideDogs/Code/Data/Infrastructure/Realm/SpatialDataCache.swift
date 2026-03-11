@@ -427,32 +427,6 @@ class SpatialDataCache: NSObject {
     }
     
     ///
-    /// Returns reference entity objects matching the given source and with the expected `isTemp` value (if expected value is provided)
-    ///
-    /// Parameters:
-    /// - source defines what the reference entity is based on
-    /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
-    ///
-    static func referenceEntity(source: LocationDetail.Source, isTemp: Bool? = false) -> RealmReferenceEntity? {
-        var marker: RealmReferenceEntity?
-        
-        switch source {
-        case .entity(let id): marker = SpatialDataCache.referenceEntityByEntityKey(id)
-        case .coordinate(let location): marker = SpatialDataCache.referenceEntityByLocation(location.coordinate, isTemp: isTemp)
-        case .designData: marker = nil
-        case .screenshots(let poi): marker = SpatialDataCache.referenceEntityByEntityKey(poi.key)
-        }
-        
-        if let isTemp = isTemp, let marker = marker {
-            // Only return markers with the given value for `isTemp`
-            return marker.isTemp == isTemp ? marker : nil
-        } else {
-            // Do not filter by `isTemp`
-            return marker
-        }
-    }
-    
-    ///
     /// Returns reference entity objects near the given coordinate and with the expected `isTemp` value (if expected value is provided)
     ///
     /// Parameters:

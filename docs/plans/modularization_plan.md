@@ -155,6 +155,7 @@ Remaining focus:
 - Added async `LocationDetail.load(entity:)` and `LocationDetail.load(location:)` builders that hydrate matching marker state through `DataContractRegistry`, updated the first search/nearby/home/current-location controller flows to use them, and added regression coverage for entity-based generic-location marker resolution.
 - Migrated additional production `LocationDetail` construction paths onto the async builders: search waypoint/result selection, current-location user actions, beacon destination resolution/edit flows, marker-parameter fetch resolution, NaviLens handoff, and markers/routes accessibility-action handling now call `LocationDetail.load(entity:)` / `load(location:)` instead of direct sync construction.
 - Migrated the remaining production edit/import/tutorial/configuration call sites onto async marker-aware `LocationDetail` loads, rewired POI table cells to update marker/accessibility state through reuse-safe async refresh instead of sync adapter lookups, removed the last synchronous `MarkerEditViewRepresentable(entity:...)` convenience entry point, and trimmed the destination-key lookup fallback inside `LocationDetail`.
+- Removed the remaining internal `LocationDetail` sync fallbacks by dropping `Source.entity`/`referenceEntity(source:)` storage lookups, moving closest-location resolution onto `LocationDetail`, and updating route/tour guidance to rely on the detail's async-resolved entity/marker state instead of re-querying Realm-backed adapters.
 - Moved `Quadrant`, `CompassDirection`, and the heading-to-quadrant bucketing helpers into `SSGeo`, replaced the `SpatialDataView`-owned heading helper logic with the shared API, and reduced the iOS helper files to compatibility aliases.
 - Moved the runtime-neutral `GeometryUtils` path/bearing/interpolation/centroid math into `SSGeo`, left `GeometryUtils` in `apps/ios` as the Apple-framework bridge for polygon/VectorTile-specific work, and added focused `SSGeo` test coverage for the extracted path helpers.
 - Moved the shared Web-Mercator projection, closest-edge, and polygon-containment math into `SSGeo`, rewired `VectorTile` and `GeometryUtils` to delegate to those shared helpers, and restored the legacy two-point containment behavior covered by the iOS unit tests.
@@ -164,12 +165,11 @@ Remaining focus:
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
-1. Return to the remaining internal sync fallbacks inside `LocationDetail`, primarily `Source.entity` and `referenceEntity(source:)`, now that the remaining production presentation/configuration callers and the destination-key adapter lookup are off the sync path.
-2. Replace those dependencies with `DataContractRegistry` contract calls and shared value/domain types before attempting any backend target split.
-3. Continue extracting runtime-neutral domain/value/helper logic into `SSDataDomain` or `SSDataContracts` when it no longer depends on Apple frameworks or UI/runtime behavior.
-4. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
-5. Use `SSLanguage` for future runtime-neutral localization helpers instead of reintroducing shared language logic under `apps/ios`.
-6. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining caller surface is contract-first and stable.
+1. Audit the remaining deprecated sync `LocationDetail.init?(markerId:)` / `init?(entityId:)` compatibility loaders and keep their Realm-backed adapter use confined to preview/test-only code until those entry points can be removed.
+2. Continue extracting runtime-neutral domain/value/helper logic into `SSDataDomain` or `SSDataContracts` when it no longer depends on Apple frameworks or UI/runtime behavior.
+3. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
+4. Use `SSLanguage` for future runtime-neutral localization helpers instead of reintroducing shared language logic under `apps/ios`.
+5. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining caller surface is contract-first and stable.
 
 ## Handoff
 - Use `docs/plans/data_modularization_north_star.md` for the stable target.

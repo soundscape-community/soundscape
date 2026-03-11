@@ -530,7 +530,7 @@ class RouteGuidance: BehaviorBase {
             return
         }
         
-        guard let location = waypoint.source.closestLocation(from: userLocation, useEntranceIfAvailable: true) else {
+        guard let location = waypoint.closestLocation(from: userLocation, useEntranceIfAvailable: true) else {
             return
         }
         
@@ -584,7 +584,7 @@ class RouteGuidance: BehaviorBase {
     private func updateNowPlayingInfo(_ current: (index: Int, waypoint: LocationDetail)?) {
         guard let current = current,
               let userLocation = userLocation ?? RouteGuidanceRuntime.currentUserLocation(),
-              let location = current.waypoint.source.closestLocation(from: userLocation, useEntranceIfAvailable: true) else {
+              let location = current.waypoint.closestLocation(from: userLocation, useEntranceIfAvailable: true) else {
             AudioSessionManager.removeNowPlayingInfo()
             return
         }
