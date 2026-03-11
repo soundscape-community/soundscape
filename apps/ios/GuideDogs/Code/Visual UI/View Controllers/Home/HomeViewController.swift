@@ -601,10 +601,12 @@ extension HomeViewController: DismissableViewControllerDelegate {
 extension HomeViewController: SearchResultsTableViewControllerDelegate {
     
     func didSelectSearchResult(_ searchResult: POI) {
-        let detail = LocationDetail(entity: searchResult, telemetryContext: "search_result")
-        performSegue(withIdentifier: "LocationDetailView", sender: detail)
-        
         searchController?.isActive = false
+
+        Task { @MainActor in
+            let detail = await LocationDetail.load(entity: searchResult, telemetryContext: "search_result")
+            performSegue(withIdentifier: "LocationDetailView", sender: detail)
+        }
     }
     
     var isCachingRequired: Bool {

@@ -536,8 +536,10 @@ extension SearchResultsTableViewController: TableViewSelectDelegate {
             if self.isPresentingDefaultResults == false {
                 // If the user has selected a result from a search, update
                 // the last selected date for that result
-                let detail = LocationDetail(entity: entity)
-                detail.updateLastSelectedDate()
+                Task { @MainActor in
+                    let detail = await LocationDetail.load(entity: entity)
+                    detail.updateLastSelectedDate()
+                }
             }
             
             self.delegate?.didSelectSearchResult(entity)
@@ -576,22 +578,24 @@ extension SearchResultsTableViewController: LocationAccessibilityActionDelegate 
                     if let telemetryContext = self.delegate?.telemetryContext, telemetryContext.isEmpty == false {
                         context = "\(telemetryContext).search_results"
                     }
-                    
-                    let detail = LocationDetail(entity: value, telemetryContext: context)
-                    
-                    LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (newValue) in
-                        guard let `self` = self else {
-                            return
-                        }
-                        
-                        self.dismissActivityIndicator()
-                        
-                        self.dismiss(animated: true) { [weak self] in
+
+                    Task { @MainActor in
+                        let detail = await LocationDetail.load(entity: value, telemetryContext: context)
+
+                        LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (newValue) in
                             guard let `self` = self else {
                                 return
                             }
                             
-                            self.delegate?.didSelectLocationAction(action, detail: newValue)
+                            self.dismissActivityIndicator()
+                            
+                            self.dismiss(animated: true) { [weak self] in
+                                guard let `self` = self else {
+                                    return
+                                }
+                                
+                                self.delegate?.didSelectLocationAction(action, detail: newValue)
+                            }
                         }
                     }
                 default:
@@ -621,8 +625,11 @@ extension SearchResultsTableViewController: SearchResultsTableViewControllerDele
     func didSelectSearchResult(_ searchResult: POI) {
         let storyboard = UIStoryboard(name: "POITable", bundle: nil)
         guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else { return }
-        viewController.locationDetail = LocationDetail(entity: searchResult, telemetryContext: "search_result")
-        self.navigationController?.pushViewController(viewController, animated: true)
+
+        Task { @MainActor in
+            viewController.locationDetail = await LocationDetail.load(entity: searchResult, telemetryContext: "search_result")
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
     
     var isAccessibilityActionsEnabled: Bool {

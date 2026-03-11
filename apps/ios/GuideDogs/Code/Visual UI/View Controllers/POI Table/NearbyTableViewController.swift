@@ -219,8 +219,10 @@ extension NearbyTableViewController: TableViewSelectDelegate {
         if let delegate = delegate {
             delegate.didSelect(poi: entity)
         } else {
-            let detail = LocationDetail(entity: entity, telemetryContext: telemetryContext)
-            performSegue(withIdentifier: "LocationDetailView", sender: detail)
+            Task { @MainActor in
+                let detail = await LocationDetail.load(entity: entity, telemetryContext: telemetryContext)
+                performSegue(withIdentifier: "LocationDetailView", sender: detail)
+            }
         }
     }
     
@@ -282,19 +284,20 @@ extension NearbyTableViewController: LocationAccessibilityActionDelegate {
     
     func didSelectLocationAction(_ action: LocationAction, entity: POI) {
         GDATelemetry.track(action.telemetryEvent, with: ["context": telemetryContext, "source": "accessibility_action"])
-        
-        let detail = LocationDetail(entity: entity, telemetryContext: self.telemetryContext)
-        
         self.presentActivityIndicatorView()
-        
-        LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (detail) in
-            guard let `self` = self else {
-                return
+
+        Task { @MainActor in
+            let detail = await LocationDetail.load(entity: entity, telemetryContext: self.telemetryContext)
+
+            LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (detail) in
+                guard let `self` = self else {
+                    return
+                }
+                
+                self.dismissActivityIndicatorView()
+                
+                self.didSelectLocationAction(action, detail: detail)
             }
-            
-            self.dismissActivityIndicatorView()
-            
-            self.didSelectLocationAction(action, detail: detail)
         }
     }
     

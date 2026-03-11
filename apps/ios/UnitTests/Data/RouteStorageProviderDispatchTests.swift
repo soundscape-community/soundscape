@@ -545,6 +545,30 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.poiByKeyCalls, [entityKey])
     }
 
+    func testLocationDetailLoadEntityResolvesGenericLocationMarkerThroughContract() async {
+        let coordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
+        let readMock = MockSpatialReadContract()
+        let entity = GenericLocation(lat: coordinate.latitude, lon: coordinate.longitude, name: "Generic Location")
+        let entityCoordinate = entity.location.coordinate
+        let key = "\(entityCoordinate.latitude),\(entityCoordinate.longitude)"
+        let markerID = "generic-location-marker-\(UUID().uuidString)"
+        readMock.referenceEntitiesByGenericLocation[key] = ReferenceEntity(id: markerID,
+                                                                           entityKey: nil,
+                                                                           lastUpdatedDate: nil,
+                                                                           lastSelectedDate: nil,
+                                                                           isNew: false,
+                                                                           isTemp: false,
+                                                                           coordinate: entityCoordinate.ssGeoCoordinate,
+                                                                           nickname: "Stored Marker",
+                                                                           estimatedAddress: nil,
+                                                                           annotation: nil)
+
+        let detail = await LocationDetail.load(entity: entity, telemetryContext: "unit_test")
+
+        XCTAssertEqual(detail.markerId, markerID)
+        XCTAssertEqual(readMock.referenceEntityByGenericLocationCalls, [key])
+    }
+
     func testSpatialDataCacheSearchByKeyWithNoProvidersReturnsNilWithoutAssert() {
         SpatialDataCache.removeAllProviders()
         defer {

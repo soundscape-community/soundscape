@@ -605,5 +605,37 @@ extension LocationDetail {
                               imported: imported,
                               telemetryContext: telemetryContext)
     }
+
+    static func load(entity: POI,
+                     imported: ImportedLocationDetail? = nil,
+                     telemetryContext: String? = nil) async -> LocationDetail {
+        let resolvedMarker: ReferenceEntity?
+
+        if let genericLocation = entity as? GenericLocation {
+            resolvedMarker = await DataContractRegistry.spatialRead.referenceEntity(byGenericLocation: genericLocation)
+        } else {
+            resolvedMarker = await DataContractRegistry.spatialRead.referenceEntity(byEntityKey: entity.key)
+        }
+
+        return LocationDetail(entity: entity,
+                              imported: imported,
+                              telemetryContext: telemetryContext,
+                              resolvedMarker: resolvedMarker)
+    }
+
+    static func load(location: CLLocation,
+                     imported: ImportedLocationDetail? = nil,
+                     telemetryContext: String? = nil) async -> LocationDetail {
+        let marker = await DataContractRegistry.spatialRead.referenceEntity(byCoordinate: location.coordinate.ssGeoCoordinate)
+        let source: Source = .coordinate(at: location)
+
+        return LocationDetail(source: source,
+                              location: location,
+                              centerLocation: location,
+                              estimated: nil,
+                              imported: imported,
+                              telemetryContext: telemetryContext,
+                              resolvedMarker: marker)
+    }
     
 }

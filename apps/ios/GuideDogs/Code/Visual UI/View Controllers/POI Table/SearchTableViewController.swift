@@ -190,13 +190,15 @@ class SearchTableViewController: BaseTableViewController {
             dataSource.showCurrentLocationActivityIndicator = true
             tableView.reloadData()
         }
-        
-        let detail = LocationDetail(location: location, telemetryContext: "current_location")
-        
-        // If the location is not a marker, try to fetch an estimated name and
-        // address, if necessary
-        LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (newValue) in
-            self?.didSelectLocationAction(.save(isEnabled: true), detail: newValue)
+
+        Task { @MainActor in
+            let detail = await LocationDetail.load(location: location, telemetryContext: "current_location")
+
+            // If the location is not a marker, try to fetch an estimated name and
+            // address, if necessary
+            LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (newValue) in
+                self?.didSelectLocationAction(.save(isEnabled: true), detail: newValue)
+            }
         }
     }
     
@@ -208,8 +210,10 @@ extension SearchTableViewController: SearchResultsTableViewControllerDelegate {
         if let delegate = delegate {
             delegate.didSelect(poi: searchResult)
         } else {
-            let detail = LocationDetail(entity: searchResult, telemetryContext: "search_result")
-            performSegue(withIdentifier: "LocationDetailView", sender: detail)
+            Task { @MainActor in
+                let detail = await LocationDetail.load(entity: searchResult, telemetryContext: "search_result")
+                performSegue(withIdentifier: "LocationDetailView", sender: detail)
+            }
         }
     }
     
@@ -253,8 +257,10 @@ extension SearchTableViewController: TableViewSelectDelegate {
             if let delegate = self.delegate {
                 delegate.didSelect(currentLocation: location)
             } else {
-                let detail = LocationDetail(location: location, telemetryContext: "current_location")
-                self.performSegue(withIdentifier: "LocationDetailView", sender: detail)
+                Task { @MainActor in
+                    let detail = await LocationDetail.load(location: location, telemetryContext: "current_location")
+                    self.performSegue(withIdentifier: "LocationDetailView", sender: detail)
+                }
             }
         }
     }
