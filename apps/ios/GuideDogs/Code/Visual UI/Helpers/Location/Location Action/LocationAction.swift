@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -51,9 +52,7 @@ enum LocationAction {
     
     // MARK: Accessibility Custom Actions
     
-    static func accessibilityCustomActions(for entity: POI, callback: @escaping (LocationAction, POI) -> Void) -> [UIAccessibilityCustomAction] {
-        let detail = LocationDetail(entity: entity)
-        
+    static func accessibilityCustomActions(for detail: LocationDetail, entity: POI, callback: @escaping (LocationAction, POI) -> Void) -> [UIAccessibilityCustomAction] {
         return actions(for: detail).reversed().compactMap({ (action) in
             guard action.isEnabled else {
                 return nil

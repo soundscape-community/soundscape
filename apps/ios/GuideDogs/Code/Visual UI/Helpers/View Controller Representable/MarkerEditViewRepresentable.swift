@@ -19,19 +19,6 @@ class MarkerEditViewRepresentable: ViewControllerRepresentable {
     // MARK: Initialization
     
     @MainActor
-    init(entity: POI, nickname: String?, annotation: String?, telemetryContext: String) {
-        let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
-        let locationDetail = LocationDetail(entity: entity, imported: importedDetail)
-        
-        config = EditMarkerConfig(detail: locationDetail,
-                                  route: nil,
-                                  context: telemetryContext,
-                                  addOrUpdateAction: .popViewController,
-                                  deleteAction: nil,
-                                  leftBarButtonItemIsHidden: false)
-    }
-    
-    @MainActor
     init(marker: ReferenceEntity, nickname: String?, annotation: String?, telemetryContext: String) {
         let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
         let locationDetail = LocationDetail(marker: marker, imported: importedDetail)

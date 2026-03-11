@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
@@ -33,6 +34,9 @@ class POITableViewCell: UITableViewCell, NibLoadableView {
     @IBOutlet private weak var newImageView: UIView!
     
     // MARK: Properties
+
+    var asyncConfigurationID: UUID?
+    var asyncConfigurationTask: Task<Void, Never>?
     
     var imageViewType: ImageViewType = .none {
         didSet {
@@ -64,6 +68,15 @@ class POITableViewCell: UITableViewCell, NibLoadableView {
                 newImageView.isHidden = true
             }
         }
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        asyncConfigurationTask?.cancel()
+        asyncConfigurationTask = nil
+        asyncConfigurationID = nil
+        accessibilityCustomActions = nil
     }
     
 }

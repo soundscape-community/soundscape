@@ -192,11 +192,7 @@ struct LocationDetail {
     }
 
     private func isDestinationKeyMatch(_ key: String, destinationKey: String) -> Bool {
-        guard destinationKey != key else {
-            return true
-        }
-
-        return LocationDetailStoreAdapter.referenceEntity(byID: destinationKey)?.entityKey == key
+        destinationKey == key || resolvedMarker?.id == destinationKey
     }
     
     // Name Properties

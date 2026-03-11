@@ -53,8 +53,19 @@ class ShareMarkerAlertObserver: NotificationObserver {
     
     // MARK: Alert Segues
     
-    private func segueToEditImportedMarker(location: POI, nickname: String?, annotation: String?) {
-        let destination = MarkerEditViewRepresentable(entity: location, nickname: nickname, annotation: annotation, telemetryContext: "universal_link.new")
+    @MainActor
+    private func segueToEditImportedMarker(location: POI, nickname: String?, annotation: String?) async {
+        let importedDetail = ImportedLocationDetail(nickname: nickname, annotation: annotation)
+        let detail = await LocationDetail.load(entity: location,
+                                               imported: importedDetail,
+                                               telemetryContext: "universal_link.new")
+        let config = EditMarkerConfig(detail: detail,
+                                      route: nil,
+                                      context: "universal_link.new",
+                                      addOrUpdateAction: .popViewController,
+                                      deleteAction: nil,
+                                      leftBarButtonItemIsHidden: false)
+        let destination = MarkerEditViewRepresentable(config: config)
         
         // Segue to edit marker view
         self.delegate?.performSegue(self, destination: destination)
@@ -108,7 +119,7 @@ class ShareMarkerAlertObserver: NotificationObserver {
                     // Present another alert to ask the user what to do.
                     self.presentImportExistingMarkerAlert(existingMarker: existingMarker, nickname: nickname, annotation: annotation)
                 } else {
-                    self.segueToEditImportedMarker(location: location, nickname: nickname, annotation: annotation)
+                    await self.segueToEditImportedMarker(location: location, nickname: nickname, annotation: annotation)
                 }
             }
         }

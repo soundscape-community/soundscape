@@ -377,23 +377,36 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     }
     
     @objc func editMarkerAction() {
-        let detail: LocationDetail
-            
         if let referenceEntity = referenceEntity {
-            detail = LocationDetail(marker: referenceEntity)
-        } else {
-            detail = LocationDetail(entity: selectedPOI!)
+            presentEditMarkerView(detail: LocationDetail(marker: referenceEntity))
+            return
         }
-        
+
+        guard let selectedPOI else {
+            return
+        }
+
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            let detail = await LocationDetail.load(entity: selectedPOI)
+            self.presentEditMarkerView(detail: detail)
+        }
+    }
+
+    @MainActor
+    private func presentEditMarkerView(detail: LocationDetail) {
         let config = EditMarkerConfig(detail: detail,
                                       route: nil,
                                       context: "marker_tutorial",
                                       addOrUpdateAction: .popToViewController(type: MarkerTutorialViewController.self),
                                       deleteAction: nil,
                                       leftBarButtonItemIsHidden: true)
-        
+
         if let vc = MarkerEditViewRepresentable(config: config).makeViewController() {
-            self.navigationController?.pushViewController(vc, animated: true)
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     

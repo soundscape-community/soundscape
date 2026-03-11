@@ -22,6 +22,7 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
     var location: CLLocation?
     weak var accessibilityActionDelegate: LocationAccessibilityActionDelegate?
     let cellsAreButtons: Bool
+    private var resolvedDetailsByKey: [String: LocationDetail] = [:]
     
     init(cellsAreButtons: Bool = true) {
         self.cellsAreButtons = cellsAreButtons
@@ -30,25 +31,55 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
     // MARK: `TableViewCellConfigurator`
     
     func configure(_ cell: TableViewCell, forDisplaying model: Model) {
-        let detail = LocationDetail(entity: model)
+        let configurationID = UUID()
+        cell.asyncConfigurationID = configurationID
+        cell.asyncConfigurationTask?.cancel()
 
-        if detail.isMarker {
-            configureTitle(cell, marker: detail, poi: model)
-            configureDetail(cell, marker: detail)
-            configureImageView(cell, marker: detail)
-        } else {
-            configureTitle(cell, poi: model)
-            configureDetail(cell, poi: model)
-            configureImageView(cell, poi: model)
-        }
-        
+        applyDefaultPresentation(to: cell, poi: model)
         configureSubtitle(cell, model: model)
-        configureAccessibilityHint(cell, poi: model)
-        configureAccessibilityCustomActions(cell, poi: model)
+        configureAccessibility(cell, poi: model, detail: resolvedDetailsByKey[model.key])
         
         if cellsAreButtons {
             cell.accessibilityTraits = .button
         }
+
+        if let detail = resolvedDetailsByKey[model.key] {
+            applyResolvedPresentation(detail, to: cell, poi: model)
+            return
+        }
+
+        cell.asyncConfigurationTask = Task { @MainActor [weak self, weak cell] in
+            guard let self, let cell else {
+                return
+            }
+
+            let detail = await LocationDetail.load(entity: model)
+            self.resolvedDetailsByKey[model.key] = detail
+
+            guard cell.asyncConfigurationID == configurationID else {
+                return
+            }
+
+            self.applyResolvedPresentation(detail, to: cell, poi: model)
+        }
+    }
+
+    private func applyDefaultPresentation(to cell: POITableViewCell, poi: POI) {
+        configureTitle(cell, poi: poi)
+        configureDetail(cell, poi: poi)
+        configureImageView(cell, poi: poi)
+    }
+
+    private func applyResolvedPresentation(_ detail: LocationDetail, to cell: POITableViewCell, poi: POI) {
+        if detail.isMarker {
+            configureTitle(cell, marker: detail, poi: poi)
+            configureDetail(cell, marker: detail)
+            configureImageView(cell, marker: detail)
+        } else {
+            applyDefaultPresentation(to: cell, poi: poi)
+        }
+
+        configureAccessibility(cell, poi: poi, detail: detail)
     }
     
     private func configureTitle(_ cell: POITableViewCell, poi: POI) {
@@ -129,12 +160,15 @@ class POITableViewCellConfigurator: TableViewCellConfigurator {
         cell.accessibilityHint = GDLocalizedString("location.select.hint")
     }
     
-    private func configureAccessibilityCustomActions(_ cell: POITableViewCell, poi: Model) {
-        guard accessibilityActionDelegate != nil else {
+    private func configureAccessibility(_ cell: POITableViewCell, poi: Model, detail: LocationDetail?) {
+        configureAccessibilityHint(cell, poi: poi)
+
+        guard let detail, accessibilityActionDelegate != nil else {
+            cell.accessibilityCustomActions = nil
             return
         }
         
-        cell.accessibilityCustomActions = LocationAction.accessibilityCustomActions(for: poi) { [weak self] action, entity in
+        cell.accessibilityCustomActions = LocationAction.accessibilityCustomActions(for: detail, entity: poi) { [weak self] action, entity in
             self?.accessibilityActionDelegate?.didSelectLocationAction(action, entity: entity)
         }
     }

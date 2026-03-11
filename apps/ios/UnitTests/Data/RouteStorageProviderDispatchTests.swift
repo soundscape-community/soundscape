@@ -562,6 +562,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                                                                            nickname: "Stored Marker",
                                                                            estimatedAddress: nil,
                                                                            annotation: nil)
+        DataContractRegistry.configure(spatialRead: readMock)
 
         let detail = await LocationDetail.load(entity: entity, telemetryContext: "unit_test")
 
