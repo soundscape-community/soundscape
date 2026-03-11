@@ -32,6 +32,14 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
 
         var referenceUpdatedMarkerParameters: [MarkerParameters] = []
         var referenceRemovedCloudMarkerIDs: [String] = []
+        var referenceAddedIDs: [String] = []
+        var referenceAddedTypes: [String?] = []
+        var referenceAddedContexts: [String?] = []
+        var referenceAddedNotifyFlags: [Bool] = []
+        var referenceUpdatedIDs: [String] = []
+        var referenceUpdatedContexts: [String?] = []
+        var referenceNotifiedUpdatedEntityIDs: [String] = []
+        var referenceNotifiedRemovedEntityIDs: [String] = []
         var referenceRemovedEntityIDs: [String] = []
         var referenceSetDestinationResult = false
         var referenceSetDestinationError: Error?
@@ -74,6 +82,22 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
                 },
                 removeReferenceFromCloud: { [self] markerID in
                     referenceRemovedCloudMarkerIDs.append(markerID)
+                },
+                didAddReferenceEntity: { [self] id, type, _, context, notify in
+                    referenceAddedIDs.append(id)
+                    referenceAddedTypes.append(type?.rawValue)
+                    referenceAddedContexts.append(context)
+                    referenceAddedNotifyFlags.append(notify)
+                },
+                didUpdateReferenceEntity: { [self] id, _, context in
+                    referenceUpdatedIDs.append(id)
+                    referenceUpdatedContexts.append(context)
+                },
+                notifyReferenceEntityUpdated: { [self] id in
+                    referenceNotifiedUpdatedEntityIDs.append(id)
+                },
+                notifyReferenceEntityRemoved: { [self] id in
+                    referenceNotifiedRemovedEntityIDs.append(id)
                 },
                 didRemoveReferenceEntity: { [self] id in
                     referenceRemovedEntityIDs.append(id)
@@ -218,12 +242,30 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             return
         }
         ReferenceEntityRuntime.removeReferenceFromCloud(markerID: entity.id)
+        ReferenceEntityRuntime.didAddReferenceEntity(id: entity.id,
+                                                     type: .poi,
+                                                     includesAnnotation: true,
+                                                     context: "test",
+                                                     notify: true)
+        ReferenceEntityRuntime.didUpdateReferenceEntity(id: entity.id,
+                                                        includesAnnotation: false,
+                                                        context: "edit")
+        ReferenceEntityRuntime.notifyReferenceEntityUpdated(id: "marker-update-notify")
+        ReferenceEntityRuntime.notifyReferenceEntityRemoved(id: "marker-notify")
         ReferenceEntityRuntime.didRemoveReferenceEntity(id: entity.id)
         ReferenceEntityRuntime.removeCalloutHistoryForMarkerID("marker-1")
         ReferenceEntityRuntime.processEvent(BehaviorActivatedEvent())
 
         XCTAssertEqual(provider.referenceUpdatedMarkerParameters.count, 1)
         XCTAssertEqual(provider.referenceRemovedCloudMarkerIDs, [entity.id])
+        XCTAssertEqual(provider.referenceAddedIDs, [entity.id])
+        XCTAssertEqual(provider.referenceAddedTypes, ["poi"])
+        XCTAssertEqual(provider.referenceAddedContexts, ["test"])
+        XCTAssertEqual(provider.referenceAddedNotifyFlags, [true])
+        XCTAssertEqual(provider.referenceUpdatedIDs, [entity.id])
+        XCTAssertEqual(provider.referenceUpdatedContexts, ["edit"])
+        XCTAssertEqual(provider.referenceNotifiedUpdatedEntityIDs, ["marker-update-notify"])
+        XCTAssertEqual(provider.referenceNotifiedRemovedEntityIDs, ["marker-notify"])
         XCTAssertEqual(provider.referenceRemovedEntityIDs, [entity.id])
         XCTAssertEqual(provider.referenceRemovedCalloutMarkerIDs, ["marker-1"])
         XCTAssertEqual(provider.referenceProcessedEventNames, [BehaviorActivatedEvent().name])

@@ -103,9 +103,19 @@ extension ReferenceEntity {
 
 @MainActor
 enum ReferenceEntityRuntime {
+    enum AddedTelemetryType: String {
+        case address
+        case poi
+        case genericLocation = "generic_location"
+    }
+
     struct Integration {
         var updateReferenceInCloud: (MarkerParameters) -> Void
         var removeReferenceFromCloud: (String) -> Void
+        var didAddReferenceEntity: (String, AddedTelemetryType?, Bool, String?, Bool) -> Void
+        var didUpdateReferenceEntity: (String, Bool, String?) -> Void
+        var notifyReferenceEntityUpdated: (String) -> Void
+        var notifyReferenceEntityRemoved: (String) -> Void
         var didRemoveReferenceEntity: (String) -> Void
         var setDestinationTemporaryIfMatchingID: (String) throws -> Bool
         var clearDestinationForCacheReset: () async throws -> Void
@@ -117,6 +127,18 @@ enum ReferenceEntityRuntime {
                 ReferenceEntityRuntime.debugAssertUnconfigured(#function)
             },
             removeReferenceFromCloud: { _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            didAddReferenceEntity: { _, _, _, _, _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            didUpdateReferenceEntity: { _, _, _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            notifyReferenceEntityUpdated: { _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            notifyReferenceEntityRemoved: { _ in
                 ReferenceEntityRuntime.debugAssertUnconfigured(#function)
             },
             didRemoveReferenceEntity: { _ in
@@ -154,6 +176,28 @@ enum ReferenceEntityRuntime {
 
     static func removeReferenceFromCloud(markerID: String) {
         integration.removeReferenceFromCloud(markerID)
+    }
+
+    static func didAddReferenceEntity(id: String,
+                                      type: AddedTelemetryType?,
+                                      includesAnnotation: Bool,
+                                      context: String?,
+                                      notify: Bool) {
+        integration.didAddReferenceEntity(id, type, includesAnnotation, context, notify)
+    }
+
+    static func didUpdateReferenceEntity(id: String,
+                                         includesAnnotation: Bool,
+                                         context: String?) {
+        integration.didUpdateReferenceEntity(id, includesAnnotation, context)
+    }
+
+    static func notifyReferenceEntityUpdated(id: String) {
+        integration.notifyReferenceEntityUpdated(id)
+    }
+
+    static func notifyReferenceEntityRemoved(id: String) {
+        integration.notifyReferenceEntityRemoved(id)
     }
 
     static func didRemoveReferenceEntity(id: String) {
@@ -474,7 +518,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             }
         }
         
-        RealmReferenceEntity.notifyEntityUpdated(id)
+        ReferenceEntityRuntime.notifyReferenceEntityUpdated(id: id)
     }
     
     func setTemporary(_ flag: Bool) throws {
@@ -486,7 +530,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             self.isNew = newFlag
         }
         
-        RealmReferenceEntity.notifyEntityUpdated(id)
+        ReferenceEntityRuntime.notifyReferenceEntityUpdated(id: id)
     }
     
     // MARK: Static Methods
@@ -735,10 +779,9 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                 ReferenceEntityRuntime.updateReferenceInCloud(markerParameters)
             }
             
-            let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-            GDATelemetry.track("markers.edited", with: ["includesAnnotation": includesAnnotation, "context": context ?? "none"])
-            
-            RealmReferenceEntity.notifyEntityUpdated(entity.id)
+            ReferenceEntityRuntime.didUpdateReferenceEntity(id: entity.id,
+                                                            includesAnnotation: entity.annotation?.isEmpty == false,
+                                                            context: context)
             
             if locChanged, updateRoutesSynchronously {
                 // Update all routes whose first waypoint is the given entity
@@ -1052,26 +1095,18 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                 }
             }
 
-            let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-            if entity is Address {
-                GDATelemetry.track("markers.added",
-                                   with: ["type": "address",
-                                          "includesAnnotation": includesAnnotation,
-                                          "context": context ?? "none"])
-                GDATelemetry.helper?.markerCountAddress += 1
-            } else {
-                GDATelemetry.track("markers.added",
-                                   with: ["type": "poi",
-                                          "includesAnnotation": includesAnnotation,
-                                          "context": context ?? "none"])
-                GDATelemetry.helper?.markerCountPOI += 1
-            }
-
-            NSUserActivity(userAction: .saveMarker).becomeCurrent()
-        }
-
-        if notify {
-            notifyEntityAdded(reference.id)
+            let telemetryType: ReferenceEntityRuntime.AddedTelemetryType = entity is Address ? .address : .poi
+            ReferenceEntityRuntime.didAddReferenceEntity(id: reference.id,
+                                                         type: telemetryType,
+                                                         includesAnnotation: reference.annotation?.isEmpty == false,
+                                                         context: context,
+                                                         notify: notify)
+        } else if notify {
+            ReferenceEntityRuntime.didAddReferenceEntity(id: reference.id,
+                                                         type: nil,
+                                                         includesAnnotation: reference.annotation?.isEmpty == false,
+                                                         context: context,
+                                                         notify: true)
         }
 
         return reference.id
@@ -1141,35 +1176,21 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
                     ReferenceEntityRuntime.updateReferenceInCloud(markerParameters)
                 }
 
-                let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-                GDATelemetry.track("markers.added",
-                                   with: ["type": "generic_location",
-                                          "includesAnnotation": includesAnnotation,
-                                          "context": context ?? "none"])
-                GDATelemetry.helper?.markerCountLocation += 1
-
-                NSUserActivity(userAction: .saveMarker).becomeCurrent()
-            }
-
-            if notify {
-                notifyEntityAdded(reference.id)
+                ReferenceEntityRuntime.didAddReferenceEntity(id: reference.id,
+                                                             type: .genericLocation,
+                                                             includesAnnotation: reference.annotation?.isEmpty == false,
+                                                             context: context,
+                                                             notify: notify)
+            } else if notify {
+                ReferenceEntityRuntime.didAddReferenceEntity(id: reference.id,
+                                                             type: nil,
+                                                             includesAnnotation: reference.annotation?.isEmpty == false,
+                                                             context: context,
+                                                             notify: true)
             }
 
             return reference.id
         }
-    }
-    
-    private static func notifyEntityAdded(_ id: String) {
-        ReferenceEntityRuntime.processEvent(MarkerAddedEvent(id))
-        NotificationCenter.default.post(name: Notification.Name.markerAdded, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
-    }
-    
-    private static func notifyEntityUpdated(_ id: String) {
-        NotificationCenter.default.post(name: .markerUpdated, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
-    }
-    
-    private static func notifyEntityRemoved(_ id: String) {
-        NotificationCenter.default.post(name: .markerRemoved, object: self, userInfo: [ReferenceEntity.Keys.entityId: id])
     }
     
     /// Removes the reference entity with the corresponding ID. If the reference entity is currently set as the
@@ -1179,7 +1200,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Throws: If the database/cache cannot be accessed or no reference entity exists for the provided ID
     static func remove(id: String, using spatialRead: ReferenceReadContract) async throws {
         if try ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID(id) {
-            RealmReferenceEntity.notifyEntityRemoved(id)
+            ReferenceEntityRuntime.notifyReferenceEntityRemoved(id: id)
             return
         }
 
@@ -1201,10 +1222,7 @@ class RealmReferenceEntity: Object, ObjectKeyIdentifiable {
             database.delete(entity)
         }
 
-        GDATelemetry.track("markers.removed")
-        GDATelemetry.helper?.markerCountRemoved += 1
-
-        RealmReferenceEntity.notifyEntityRemoved(id)
+        ReferenceEntityRuntime.didRemoveReferenceEntity(id: id)
     }
 
     static func removeAllTemporary() throws {

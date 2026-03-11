@@ -87,6 +87,7 @@ Completed:
 - Realm replaceability readiness is now explicitly audited: the caller boundary is largely clean, `RealmRoute.swift` and `RealmReferenceEntity.swift` no longer reach through `DataRuntimeProviderRegistry`, but backend extraction is still blocked by mixed Realm files that directly use `NotificationCenter`, `GDATelemetry`, or the remaining runtime globals in `GDASpatialDataResultEntity.swift` / `SpatialDataContext.swift`; the current classification lives in `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`.
 - Route add/update/delete notifications and telemetry, cache-reset marker-removal notifications and telemetry, and migration-failure telemetry now dispatch through runtime integrations configured from `AppContext`/`AppDelegate` instead of directly from `Route+Realm.swift`, `RealmSpatialWriteContract.swift`, and `RealmMigrationTools.swift`.
 - `GDASpatialDataResultEntity.swift` is now backend-ready again: its debug quick-look user-location hook moved into an iOS-only extension/runtime seam, and the unused `SpatialDataEntity` path was removed from `DataRuntimeProviderRegistry`.
+- `RealmReferenceEntity.swift` no longer directly depends on `GDATelemetry`, `NotificationCenter`, or `NSUserActivity` for marker add/edit/remove flows; those side effects now dispatch through `ReferenceEntityRuntime`.
 
 In progress:
 - Keep app-level storage usage readable, contract-first, and free of direct Realm object-model dependencies.
@@ -166,6 +167,7 @@ Remaining focus:
 - Audited every file under `Data/Infrastructure/Realm/**`, recorded the current backend-ready vs mixed vs runtime-owned classification in `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`, and fixed the first runtime-decoupling slice by replacing the `DataRuntimeProviderRegistry` chokepoints in `RealmRoute.swift` and `RealmReferenceEntity.swift` with explicit `RouteRuntime` / `ReferenceEntityRuntime` integrations configured from `AppContext`.
 - Moved route write notifications/telemetry, cache-reset marker-removal notifications/telemetry, and migration-failure telemetry behind `RouteRuntime`, `ReferenceEntityRuntime`, and `RealmMigrationRuntime`, so the targeted Realm files no longer depend on `NotificationCenter` or `GDATelemetry` directly for that side-effect slice.
 - Moved `GDASpatialDataResultEntity`'s debug quick-look runtime hook out of the Realm entity file into an iOS extension, removed the now-unused `SpatialDataEntity` provider path from `DataRuntimeProviderRegistry`, and reclassified the core Realm entity file as backend-ready.
+- Moved marker add/edit/remove telemetry, notifications, and save-marker user-activity dispatch out of `RealmReferenceEntity.swift` and behind `ReferenceEntityRuntime`, leaving the remaining mixed surface focused on cloud sync, destination mutation, callout-history cleanup, and event dispatch.
 - Moved `Quadrant`, `CompassDirection`, and the heading-to-quadrant bucketing helpers into `SSGeo`, replaced the `SpatialDataView`-owned heading helper logic with the shared API, and reduced the iOS helper files to compatibility aliases.
 - Moved the runtime-neutral `GeometryUtils` path/bearing/interpolation/centroid math into `SSGeo`, left `GeometryUtils` in `apps/ios` as the Apple-framework bridge for polygon/VectorTile-specific work, and added focused `SSGeo` test coverage for the extracted path helpers.
 - Moved the shared Web-Mercator projection, closest-edge, and polygon-containment math into `SSGeo`, rewired `VectorTile` and `GeometryUtils` to delegate to those shared helpers, and restored the legacy two-point containment behavior covered by the iOS unit tests.
@@ -176,7 +178,7 @@ Remaining focus:
 
 ## Next Steps
 1. Keep `SpatialDataContext.swift` explicitly runtime-owned, and continue re-auditing only the files that still mix backend logic with app/runtime hooks.
-2. Continue peeling the remaining cloud-sync, destination-mutation, and marker add/edit/remove side effects out of `Route+Realm.swift`, `RealmSpatialWriteContract.swift`, `RealmReferenceEntity.swift`, and `SpatialDataCache.swift` so the backend candidate depends on contracts/value types plus explicit runtime hooks only.
+2. Continue peeling the remaining cloud-sync, destination-mutation, callout-history, and event-dispatch side effects out of `Route+Realm.swift`, `RealmSpatialWriteContract.swift`, `RealmReferenceEntity.swift`, and `SpatialDataCache.swift` so the backend candidate depends on contracts/value types plus explicit runtime hooks only.
 3. Keep `SpatialDataContext.swift`, `Samplable.swift`, and `DataContractRegistry+RealmDefaults.swift` in `apps/ios` runtime/composition code and exclude them from the first backend target/package candidate.
 4. Extract the remaining backend-ready Realm infrastructure into a backend target/package only after the mixed files above no longer depend on app/runtime globals.
 

@@ -270,6 +270,51 @@ extension ReferenceEntityRuntime.Integration {
             removeReferenceFromCloud: { [unowned context] markerID in
                 context.cloudKeyValueStore.remove(referenceEntityID: markerID)
             },
+            didAddReferenceEntity: { [unowned context] id, type, includesAnnotation, eventContext, notify in
+                if let type {
+                    GDATelemetry.track("markers.added",
+                                       with: ["type": type.rawValue,
+                                              "includesAnnotation": String(includesAnnotation),
+                                              "context": eventContext ?? "none"])
+                    switch type {
+                    case .address:
+                        GDATelemetry.helper?.markerCountAddress += 1
+                    case .poi:
+                        GDATelemetry.helper?.markerCountPOI += 1
+                    case .genericLocation:
+                        GDATelemetry.helper?.markerCountLocation += 1
+                    }
+
+                    NSUserActivity(userAction: .saveMarker).becomeCurrent()
+                }
+
+                guard notify else {
+                    return
+                }
+
+                context.eventProcessor.process(MarkerAddedEvent(id))
+                NotificationCenter.default.post(name: .markerAdded,
+                                                object: RealmReferenceEntity.self,
+                                                userInfo: [ReferenceEntity.Keys.entityId: id])
+            },
+            didUpdateReferenceEntity: { id, includesAnnotation, eventContext in
+                GDATelemetry.track("markers.edited",
+                                   with: ["includesAnnotation": String(includesAnnotation),
+                                          "context": eventContext ?? "none"])
+                NotificationCenter.default.post(name: .markerUpdated,
+                                                object: RealmReferenceEntity.self,
+                                                userInfo: [ReferenceEntity.Keys.entityId: id])
+            },
+            notifyReferenceEntityUpdated: { id in
+                NotificationCenter.default.post(name: .markerUpdated,
+                                                object: RealmReferenceEntity.self,
+                                                userInfo: [ReferenceEntity.Keys.entityId: id])
+            },
+            notifyReferenceEntityRemoved: { id in
+                NotificationCenter.default.post(name: .markerRemoved,
+                                                object: RealmReferenceEntity.self,
+                                                userInfo: [ReferenceEntity.Keys.entityId: id])
+            },
             didRemoveReferenceEntity: { id in
                 GDATelemetry.track("markers.removed")
                 GDATelemetry.helper?.markerCountRemoved += 1

@@ -15,8 +15,8 @@ The app-facing caller surface is largely contract-first, but the Realm backend i
 
 ## Coupling Clusters
 - `DataRuntimeProviderRegistry`: `SpatialDataContext.swift`
-- `NotificationCenter`: `RealmReferenceEntity.swift`, `SpatialDataContext.swift`
-- `GDATelemetry`: `SpatialDataCache.swift`, `Intersection.swift`, `RealmReferenceEntity.swift`, `SpatialDataContext.swift`
+- `NotificationCenter`: `SpatialDataContext.swift`
+- `GDATelemetry`: `SpatialDataCache.swift`, `Intersection.swift`, `SpatialDataContext.swift`
 - App lifecycle/resource globals: `SpatialDataContext.swift` uses `Bundle.main`, `UserDefaults`, and `UIApplication`
 - Preview/UI glue: `Samplable.swift` imports `SwiftUI` and bootstraps preview data
 
@@ -41,7 +41,7 @@ These still combine backend persistence with runtime side effects and must be sp
 
 - `SpatialDataCache.swift`: backend search/cache logic plus bootstrap and telemetry hooks
 - `RealmSpatialWriteContract.swift`: backend writes plus destination-clearing runtime calls and cloud-removal dispatch during cache reset
-- `RealmReferenceEntity.swift`: backend marker model/mapping plus cloud sync, destination mutation, callout-history, event dispatch, telemetry, and notifications
+- `RealmReferenceEntity.swift`: backend marker model/mapping plus cloud sync, destination mutation, callout-history cleanup, and event dispatch
 - `Intersection.swift`: backend intersection model plus telemetry warning path
 - `Route+Realm.swift`: backend route persistence plus cloud sync and active-route behavior hooks
 - `RealmRoute.swift`: backend route model/mapping plus route runtime provider access
@@ -64,5 +64,5 @@ Completed on 2026-03-11:
 After the route/reference runtime chokepoints and the first telemetry/notification slice are removed:
 
 1. Keep `SpatialDataContext.swift` runtime-owned and continue re-auditing only the files that still mix backend logic with app/runtime hooks.
-2. Continue peeling cloud-sync, destination-mutation, and marker add/edit/remove side effects out of `Route+Realm.swift`, `RealmSpatialWriteContract.swift`, `RealmReferenceEntity.swift`, and `SpatialDataCache.swift`.
+2. Continue peeling cloud-sync, destination-mutation, callout-history, and event-dispatch side effects out of `Route+Realm.swift`, `RealmSpatialWriteContract.swift`, `RealmReferenceEntity.swift`, and `SpatialDataCache.swift`.
 3. Re-run the audit; only then choose the first concrete backend target/package boundary.

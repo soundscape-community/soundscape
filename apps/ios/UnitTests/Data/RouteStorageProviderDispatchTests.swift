@@ -147,6 +147,10 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
                 removeReferenceFromCloud: { [self] _ in
                     referenceRemoveMarkerIDCalls += 1
                 },
+                didAddReferenceEntity: { _, _, _, _, _ in },
+                didUpdateReferenceEntity: { _, _, _ in },
+                notifyReferenceEntityUpdated: { _ in },
+                notifyReferenceEntityRemoved: { _ in },
                 didRemoveReferenceEntity: { _ in },
                 setDestinationTemporaryIfMatchingID: { _ in false },
                 clearDestinationForCacheReset: {},
