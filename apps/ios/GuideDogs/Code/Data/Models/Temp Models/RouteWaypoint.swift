@@ -21,17 +21,6 @@ typealias RouteWaypoint = SSDataDomain.RouteWaypoint
 
 @MainActor
 extension RouteWaypoint {
-    // This value should never be `nil`
-    var asLocationDetail: LocationDetail? {
-        // If there is imported marker data, return it.
-        if let importedReferenceEntity {
-            return LocationDetail(marker: importedReferenceEntity)
-        }
-
-        // Otherwise, return Realm data.
-        return LocationDetail(markerId: markerId)
-    }
-
     func locationDetail(using spatialRead: ReferenceReadContract) async -> LocationDetail? {
         if let importedReferenceEntity {
             return LocationDetail(marker: importedReferenceEntity)
@@ -123,10 +112,6 @@ extension RouteWaypoint {
 
 @MainActor
 extension Array where Element == RouteWaypoint {
-    var asLocationDetail: [LocationDetail] {
-        compactMap({ $0.asLocationDetail })
-    }
-
     func locationDetails(using spatialRead: ReferenceReadContract) async -> [LocationDetail] {
         var details: [LocationDetail] = []
 

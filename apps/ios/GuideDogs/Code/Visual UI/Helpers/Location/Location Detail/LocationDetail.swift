@@ -501,6 +501,7 @@ extension LocationDetail {
                   resolvedMarker: marker)
     }
 
+    @available(*, deprecated, message: "Use LocationDetail.load(markerId:imported:telemetryContext:) for persisted marker lookups.")
     init?(markerId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId) else {
             return nil
@@ -521,6 +522,7 @@ extension LocationDetail {
                   resolvedMarker: nil)
     }
     
+    @available(*, deprecated, message: "Use LocationDetail.load(entityId:imported:telemetryContext:) for persisted entity lookups.")
     init?(entityId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         guard let entity = LocationDetailStoreAdapter.poi(byKey: entityId) else {
             return nil
