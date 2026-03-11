@@ -93,6 +93,8 @@ public protocol SpatialReferenceWriteContract {
                                nickname: String?,
                                estimatedAddress: String?,
                                annotation: String?) async throws
+    func markReferenceEntitySelected(id: String) async throws
+    func markPointOfInterestSelected(entityKey: String) async throws
     func removeReferenceEntity(id: String) async throws
 }
 

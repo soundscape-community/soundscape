@@ -211,6 +211,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         private(set) var addReferenceEntityByEntityKeyCalls: [String] = []
         private(set) var addReferenceEntityByLocationCalls: [String] = []
         private(set) var updateReferenceEntityCalls: [String] = []
+        private(set) var markReferenceEntitySelectedCalls: [String] = []
+        private(set) var markPointOfInterestSelectedCalls: [String] = []
         private(set) var removeReferenceEntityCalls: [String] = []
 
         func addRoute(_ route: Route) async throws {
@@ -238,6 +240,14 @@ final class DataContractRegistryDispatchTests: XCTestCase {
 
         func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {
             updateReferenceEntityCalls.append(id)
+        }
+
+        func markReferenceEntitySelected(id: String) async throws {
+            markReferenceEntitySelectedCalls.append(id)
+        }
+
+        func markPointOfInterestSelected(entityKey: String) async throws {
+            markPointOfInterestSelectedCalls.append(entityKey)
         }
 
         func removeReferenceEntity(id: String) async throws {
@@ -482,6 +492,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
                                                                           nickname: "Updated",
                                                                           estimatedAddress: "1st Ave",
                                                                           annotation: nil)
+        try await DataContractRegistry.spatialWrite.markReferenceEntitySelected(id: markerFromEntity)
+        try await DataContractRegistry.spatialWrite.markPointOfInterestSelected(entityKey: "entity-1")
         try await DataContractRegistry.spatialMaintenanceWrite.removeAllReferenceEntities()
         try await DataContractRegistry.spatialMaintenanceWrite.removeAllRoutes()
         try await DataContractRegistry.spatialMaintenanceWrite.clearNewReferenceEntitiesAndRoutes()
@@ -519,6 +531,8 @@ final class DataContractRegistryDispatchTests: XCTestCase {
         XCTAssertEqual(writeMock.addReferenceEntityByEntityKeyCalls, ["entity-1"])
         XCTAssertEqual(writeMock.addReferenceEntityByLocationCalls, ["47.62,-122.35"])
         XCTAssertEqual(writeMock.updateReferenceEntityCalls, ["marker-1"])
+        XCTAssertEqual(writeMock.markReferenceEntitySelectedCalls, ["marker-1"])
+        XCTAssertEqual(writeMock.markPointOfInterestSelectedCalls, ["entity-1"])
         XCTAssertEqual(maintenanceMock.removeAllReferenceEntitiesCalls, 1)
         XCTAssertEqual(maintenanceMock.removeAllRoutesCalls, 1)
         XCTAssertEqual(maintenanceMock.clearNewReferenceEntitiesAndRoutesCalls, 1)
@@ -995,6 +1009,10 @@ private final class InMemorySpatialContractStore: SpatialReadContract, SpatialWr
             removeWaypointFromAllRoutes(markerID: referenceID, updatedAt: cleanedAt)
         }
     }
+
+    func markReferenceEntitySelected(id: String) async throws {}
+
+    func markPointOfInterestSelected(entityKey: String) async throws {}
 
     func removeReferenceEntity(id: String) async throws {
         if destinationReferenceID == id, let existing = referenceByID[id] {

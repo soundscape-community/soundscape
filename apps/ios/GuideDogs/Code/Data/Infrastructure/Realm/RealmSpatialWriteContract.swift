@@ -65,6 +65,25 @@ struct RealmSpatialWriteContract: SpatialWriteContract {
                                               using: DataContractRegistry.spatialRead)
     }
 
+    func markReferenceEntitySelected(id: String) async throws {
+        try RealmReferenceEntity.markSelected(id: id)
+    }
+
+    func markPointOfInterestSelected(entityKey: String) async throws {
+        guard let selectablePOI = await DataContractRegistry.spatialRead.poi(byKey: entityKey) as? SelectablePOI else {
+            return
+        }
+
+        var mutablePOI = selectablePOI
+
+        try autoreleasepool {
+            let cache = try RealmHelper.getCacheRealm()
+            try cache.write {
+                mutablePOI.lastSelectedDate = Date()
+            }
+        }
+    }
+
     func removeReferenceEntity(id: String) async throws {
         try await RealmReferenceEntity.remove(id: id, using: DataContractRegistry.spatialRead)
     }

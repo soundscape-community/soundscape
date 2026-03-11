@@ -437,16 +437,18 @@ struct LocationDetail {
     }
     
     // MARK: Realm
-    
+
     func updateLastSelectedDate() {
-        do {
-            if let marker = self.marker {
-                try LocationDetailStoreAdapter.markReferenceEntitySelected(forReferenceID: marker.id)
-            } else if let entity = self.entity as? SelectablePOI {
-                try LocationDetailStoreAdapter.markPOISelected(entity)
+        Task { @MainActor in
+            do {
+                if let marker = self.marker {
+                    try await DataContractRegistry.spatialWrite.markReferenceEntitySelected(id: marker.id)
+                } else if let entity = self.entity as? SelectablePOI {
+                    try await DataContractRegistry.spatialWrite.markPointOfInterestSelected(entityKey: entity.key)
+                }
+            } catch {
+                DDLogError("Failed to update last selected date in Realm")
             }
-        } catch {
-            DDLogError("Failed to update last selected date in Realm")
         }
     }
     

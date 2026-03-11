@@ -93,6 +93,8 @@ private final class StorageContractMock: SpatialRouteReadContract,
     func addReferenceEntity(entityKey: String, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String { "marker-1" }
     func addReferenceEntity(location: GenericLocationStub, nickname: String?, estimatedAddress: String?, annotation: String?) async throws -> String { "marker-2" }
     func updateReferenceEntity(id: String, location: SSGeoCoordinate?, nickname: String?, estimatedAddress: String?, annotation: String?) async throws {}
+    func markReferenceEntitySelected(id: String) async throws {}
+    func markPointOfInterestSelected(entityKey: String) async throws {}
     func removeReferenceEntity(id: String) async throws {}
 
     func importRouteFromCloud(_ route: Route) async throws {}
@@ -275,6 +277,8 @@ struct SSDataContractsTests {
                                              nickname: nil,
                                              estimatedAddress: nil,
                                              annotation: nil)
+        try await mock.markReferenceEntitySelected(id: "marker-1")
+        try await mock.markPointOfInterestSelected(entityKey: "entity-1")
         try await mock.removeReferenceEntity(id: "marker-1")
         try await routeMaintenance.removeAllRoutes()
         try await mock.importReferenceEntityFromCloud(markerParameters: .init(id: "marker-1"),
