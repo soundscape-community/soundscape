@@ -29,6 +29,7 @@ This file is the canonical instruction source for coding agents in this reposito
 - `SSDataStructures`, `SSGeo`, `SSLanguage`, `SSDataDomain`, and `SSDataContracts` are extracted into `apps/common`.
 - `DataContractRegistry` is the app-facing data ingress.
 - Realm implementation remains infrastructure-local under `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm`.
+- Current replaceability focus: Realm may remain in the iOS app target for now, but non-infrastructure code should reach storage only through `DataContractRegistry` contracts and shared value types.
 - `SpatialDataCache` usage is confined to Realm infrastructure and the retired sync-store seam (`SpatialDataStoreRegistry`, `DefaultSpatialDataStore`, `SpatialDataStore`) must not be reintroduced.
 - Marker cloud write/update paths are value-shaped (`MarkerParameters` updates, marker-ID deletes) rather than entity-shaped compatibility helpers.
 - Boundary rule: keep `apps/common` platform-agnostic. Do not import Apple UI/platform frameworks in `apps/common/Sources`.
@@ -187,6 +188,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Neutral app-layer wrappers such as spatial search/bootstrap/migration entry points should remain declaration-only outside infrastructure, with Realm-backed implementations owned from `Data/Infrastructure/Realm/**`.
 - Route persistence errors exposed outside infrastructure should stay boundary-neutral (`RouteDataError`), not Realm-branded.
 - Packaging direction: keep `apps/common` portable (`SSGeo`, `SSLanguage`, `SSDataDomain`, `SSDataContracts`), keep `DataContractRegistry` as the single composition root in `apps/ios`, and move runtime-neutral types into `apps/common` instead of using `apps/ios/Package.swift` as a modularization boundary.
+- Realm replaceability target: keep Realm in `apps/ios` until the caller surface is clean, but treat any new direct dependency on Realm object models or cache/search helpers outside infrastructure as a boundary regression.
 - `DataContractRegistry` should store installed defaults, but concrete Realm adapter construction belongs in infrastructure-owned installer code (`configureWithRealmDefaults()`), not in the registry file itself.
 - Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component parsing types now live in `apps/common/Sources/SSDataContracts`; keep only runtime managers/handlers and other app-specific behavior in `apps/ios`.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; keep the iOS helper file as a CoreLocation shim only, and do not reintroduce the old Objective-C bridge.

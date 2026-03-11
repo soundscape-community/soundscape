@@ -2,7 +2,7 @@
 
 # Data Modularization North Star
 
-Last updated: 2026-03-10
+Last updated: 2026-03-11
 
 ## Document Contract
 - This document defines the stable modularization target for shared data/domain code and storage boundaries.
@@ -40,6 +40,7 @@ It should hold:
 
 ### Backend Layer
 Realm remains an infrastructure backend under `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm/**` until it is ready to be split behind the stabilized app-side surface.
+Replaceability comes before physical extraction: Realm may stay in the iOS app target for now, but non-infrastructure callers should depend on contracts and shared value types rather than Realm object models or cache/search helpers.
 
 ## Stable App-Facing Storage API
 ### Entry Point
@@ -121,6 +122,7 @@ Reason: it is editor/tooling scaffolding, not part of the architectural split.
 
 ## Static Success Criteria
 - Non-infrastructure app code uses `DataContractRegistry` contracts for storage ingress.
+- Non-infrastructure app code does not depend directly on Realm object models, `SpatialDataCache`, or other infrastructure-local helpers.
 - `apps/common` contains the portable domain/value/helper surface for shared app logic.
 - `Data/Contracts` contain no Realm infrastructure types.
 - `RealmSwift` imports remain confined to Realm infrastructure.

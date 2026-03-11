@@ -38,7 +38,7 @@ Current extraction decision:
 - `apps/common` remains the portable core for domain models, geo types, storage contracts, and runtime-neutral contract-side parameter models.
 - `DataContractRegistry` remains the single composition root in `apps/ios`; do not force it into the portable core.
 - Do not use `apps/ios/Package.swift` as a modularization boundary; it is editor/tooling scaffolding, not the extraction plan.
-- Realm replacement readiness now depends on continuing pure-type extraction into `apps/common` while keeping iOS-only runtime behavior local to `apps/ios`.
+- Realm replacement readiness now depends on two things: continuing pure-type extraction into `apps/common`, and eliminating non-infrastructure dependencies on Realm-backed entities/caches in favor of contracts plus shared value types.
 
 Local evidence as of 2026-03-10:
 - `RealmSwift` imports outside `Data/Infrastructure/Realm/**`: `0`
@@ -76,7 +76,7 @@ Completed:
 
 In progress:
 - Continue moving runtime-neutral domain/contract types into `apps/common` instead of building an iOS package shell.
-- Keep app-level storage usage readable and contract-first.
+- Keep app-level storage usage readable, contract-first, and free of direct Realm object-model dependencies.
 - Close remaining migration steps in small validated slices.
 
 Known non-blocking local full-suite failures:
@@ -128,7 +128,7 @@ Status: In progress
 
 Remaining focus:
 - Keep targeted data suites reliable.
-- Keep the boundary scripts green while closing the remaining cleanup slices.
+- Keep the boundary scripts green while closing the remaining Realm replaceability cleanup slices.
 
 ## Recent Completed Work
 - Removed the retired sync-store seam from app and unit-test code, aligned the boundary scripts to enforce that state, and kept Realm confined to infrastructure-owned implementations and installers.
@@ -144,12 +144,12 @@ Remaining focus:
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
-1. Continue extracting runtime-neutral domain/value/helper logic into `SSDataDomain` or `SSDataContracts` when it no longer depends on Apple frameworks or UI/runtime behavior.
-2. Use `SSLanguage` for future runtime-neutral localization helpers instead of reintroducing shared language logic under `apps/ios`.
-3. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
-4. Keep the shared domain surface stable while trimming remaining iOS-only adapters and only extract additional helpers when the module boundary is clearly cleaner afterward.
-5. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining iOS-specific associated-type and runtime wrapper surface is stable.
-6. Refresh dependency analysis artifacts only when a meaningful dependency-shape delta is expected.
+1. Audit remaining non-infrastructure code for direct dependence on Realm-backed entities, cache/search helpers, or other infrastructure-local types.
+2. Replace those dependencies with `DataContractRegistry` contract calls and shared value/domain types before attempting any backend target split.
+3. Continue extracting runtime-neutral domain/value/helper logic into `SSDataDomain` or `SSDataContracts` when it no longer depends on Apple frameworks or UI/runtime behavior.
+4. Keep `DataContractRegistry` in `apps/ios` as the composition root; do not introduce new package or registry layers around it.
+5. Use `SSLanguage` for future runtime-neutral localization helpers instead of reintroducing shared language logic under `apps/ios`.
+6. Extract `Data/Infrastructure/Realm/**` into a backend target/package only after the remaining caller surface is contract-first and stable.
 
 ## Handoff
 - Use `docs/plans/data_modularization_north_star.md` for the stable target.
