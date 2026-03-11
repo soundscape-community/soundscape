@@ -464,17 +464,6 @@ extension LocationDetail {
                   telemetryContext: telemetryContext,
                   resolvedMarker: marker)
     }
-
-#if DEBUG
-    // Debug-only compatibility seam for previews/tests while async loaders finish retiring sync entry points.
-    @available(*, deprecated, message: "Use LocationDetail.load(markerId:imported:telemetryContext:) for persisted marker lookups.")
-    init?(markerId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId) else {
-            return nil
-        }
-        
-        self.init(marker: marker, imported: imported, telemetryContext: telemetryContext)
-    }
     
     init(location: CLLocation, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         let source: Source = .coordinate(at: location)
@@ -487,16 +476,6 @@ extension LocationDetail {
                   telemetryContext: telemetryContext,
                   resolvedMarker: nil)
     }
-    
-    @available(*, deprecated, message: "Use LocationDetail.load(entityId:imported:telemetryContext:) for persisted entity lookups.")
-    init?(entityId: String, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
-        guard let entity = LocationDetailStoreAdapter.poi(byKey: entityId) else {
-            return nil
-        }
-        
-        self.init(entity: entity, imported: imported, telemetryContext: telemetryContext)
-    }
-#endif
     
     init?(designTimeSource: LocationDetail.Source, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         guard case let .designData(location, _) = designTimeSource else {
