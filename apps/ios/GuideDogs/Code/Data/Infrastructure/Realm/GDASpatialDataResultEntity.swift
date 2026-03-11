@@ -13,13 +13,6 @@ import RealmSwift
 import SSDataContracts
 import SSGeo
 
-@MainActor
-enum SpatialDataEntityRuntime {
-    static func currentUserLocation() -> CLLocation? {
-        DataRuntimeProviderRegistry.providers.spatialDataEntityCurrentUserLocation()
-    }
-}
-
 class LocalizedString: Object {
     /// Lowercase ISO 639-1 alpha2 code (second column), or a lowercase ISO 639-2 code if an ISO 639-1 code doesn't exist.
     /// http://www.loc.gov/standards/iso639-2/php/code_list.php
@@ -257,15 +250,6 @@ class GDASpatialDataResultEntity: Object {
         return "{\tName: \(name)\n\tID: \(key)"
     }
     
-    // Adds the ability to show the location in Xcode's debug quick look (shown as a map with a marker)
-    @MainActor
-    func debugQuickLookObject() -> AnyObject? {
-        guard let userLocation = SpatialDataEntityRuntime.currentUserLocation() else {
-            return nil
-        }
-        
-        return self.closestLocation(from: userLocation)
-    }
 }
 
 extension GDASpatialDataResultEntity: EntityParameterRepresentablePOI {

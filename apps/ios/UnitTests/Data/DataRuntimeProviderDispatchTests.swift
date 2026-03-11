@@ -39,8 +39,6 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var referenceRemovedCalloutMarkerIDs: [String] = []
         var referenceProcessedEventNames: [String] = []
 
-        var spatialDataEntityLocation: CLLocation?
-
         var destinationLocation: CLLocation?
         var routeGuidanceActive = false
         var routeOrTourGuidanceActive = false
@@ -101,10 +99,6 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             )
         }
 
-        func spatialDataEntityCurrentUserLocation() -> CLLocation? {
-            spatialDataEntityLocation
-        }
-
         func destinationManagerCurrentUserLocation() -> CLLocation? {
             destinationLocation
         }
@@ -152,6 +146,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
     }
 
     override func tearDown() {
+        SpatialDataEntityDebugRuntime.resetForTesting()
         RouteRuntime.resetForTesting()
         ReferenceEntityRuntime.resetForTesting()
         RealmMigrationRuntime.resetForTesting()
@@ -245,17 +240,17 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         }
     }
 
-    func testSpatialDataEntityAndDestinationRuntimeDispatch() {
+    func testSpatialDataEntityDebugRuntimeAndDestinationRuntimeDispatch() {
         let provider = MockDataRuntimeProviders()
         let location = CLLocation(latitude: 47.64, longitude: -122.36)
-        provider.spatialDataEntityLocation = location
         provider.destinationLocation = location
         provider.routeGuidanceActive = true
         provider.routeOrTourGuidanceActive = true
         provider.beaconCalloutBlocked = true
+        SpatialDataEntityDebugRuntime.configure(with: .init(currentUserLocation: { location }))
         DataRuntimeProviderRegistry.configure(with: provider)
 
-        XCTAssertEqual(SpatialDataEntityRuntime.currentUserLocation(), location)
+        XCTAssertEqual(SpatialDataEntityDebugRuntime.currentUserLocation(), location)
         XCTAssertEqual(DestinationManagerRuntime.currentUserLocation(), location)
         XCTAssertTrue(DestinationManagerRuntime.isRouteGuidanceActive())
         XCTAssertTrue(DestinationManagerRuntime.isRouteOrTourGuidanceActive())
@@ -308,14 +303,18 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
     func testRuntimeResetClearsInjectedProviders() {
         let provider = MockDataRuntimeProviders()
         provider.routeLocation = CLLocation(latitude: 47.66, longitude: -122.38)
+        SpatialDataEntityDebugRuntime.configure(with: .init(currentUserLocation: { provider.routeLocation }))
         RouteRuntime.configure(with: provider.routeIntegration())
         DataRuntimeProviderRegistry.configure(with: provider)
 
+        XCTAssertNotNil(SpatialDataEntityDebugRuntime.currentUserLocation())
         XCTAssertNotNil(RouteRuntime.currentUserLocation())
 
+        SpatialDataEntityDebugRuntime.resetForTesting()
         RouteRuntime.resetForTesting()
         DataRuntimeProviderRegistry.resetForTesting()
 
+        XCTAssertNil(SpatialDataEntityDebugRuntime.currentUserLocation())
         XCTAssertNil(RouteRuntime.currentUserLocation())
         XCTAssertFalse(DestinationManagerRuntime.isRouteGuidanceActive())
         XCTAssertFalse(SpatialDataContextRuntime.isApplicationInNormalState())

@@ -3,12 +3,47 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 import CoreLocation
 import SSGeo
+
+@MainActor
+enum SpatialDataEntityDebugRuntime {
+    struct Integration {
+        var currentUserLocation: () -> CLLocation?
+
+        static let unconfigured = Self(currentUserLocation: {
+            SpatialDataEntityDebugRuntime.debugAssertUnconfigured(#function)
+            return nil
+        })
+    }
+
+    private static var integration = Integration.unconfigured
+
+    static func configure(with integration: Integration) {
+        self.integration = integration
+    }
+
+    static func resetForTesting() {
+        integration = .unconfigured
+    }
+
+    static func currentUserLocation() -> CLLocation? {
+        integration.currentUserLocation()
+    }
+
+    nonisolated private static func debugAssertUnconfigured(_ method: StaticString) {
+#if DEBUG
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            assertionFailure("SpatialDataEntityDebugRuntime is unconfigured when calling \(method)")
+        }
+#endif
+    }
+}
 
 @MainActor
 extension GDASpatialDataResultEntity {
@@ -91,5 +126,13 @@ extension GDASpatialDataResultEntity {
 
         return closestLocationCoordinate?.clLocation
     }
-    
+
+    // Adds the ability to show the location in Xcode's debug quick look (shown as a map with a marker)
+    func debugQuickLookObject() -> AnyObject? {
+        guard let userLocation = SpatialDataEntityDebugRuntime.currentUserLocation() else {
+            return nil
+        }
+
+        return closestLocation(from: userLocation)
+    }
 }

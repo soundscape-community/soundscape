@@ -31,11 +31,6 @@ extension Notification.Name {
 }
 
 @MainActor
-protocol SpatialDataEntityRuntimeProviding {
-    func spatialDataEntityCurrentUserLocation() -> CLLocation?
-}
-
-@MainActor
 protocol DestinationManagerRuntimeProviding {
     func destinationManagerCurrentUserLocation() -> CLLocation?
     func destinationManagerIsRouteGuidanceActive() -> Bool
@@ -55,8 +50,7 @@ protocol SpatialDataContextRuntimeProviding {
 }
 
 @MainActor
-protocol DataRuntimeProviders: SpatialDataEntityRuntimeProviding,
-                               DestinationManagerRuntimeProviding,
+protocol DataRuntimeProviders: DestinationManagerRuntimeProviding,
                                SpatialDataContextRuntimeProviding {}
 
 @MainActor
@@ -85,11 +79,6 @@ private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
             assertionFailure("DataRuntimeProviderRegistry is unconfigured when calling \(method)")
         }
 #endif
-    }
-
-    func spatialDataEntityCurrentUserLocation() -> CLLocation? {
-        debugAssertUnconfigured(#function)
-        return nil
     }
 
     func destinationManagerCurrentUserLocation() -> CLLocation? {
@@ -152,10 +141,6 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
         self.context = context
     }
 
-    func spatialDataEntityCurrentUserLocation() -> CLLocation? {
-        context.geolocationManager.location
-    }
-
     func destinationManagerCurrentUserLocation() -> CLLocation? {
         context.geolocationManager.location
     }
@@ -203,6 +188,17 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
 
     func spatialDataContextProcessEvent(_ event: Event) {
         context.eventProcessor.process(event)
+    }
+}
+
+@MainActor
+extension SpatialDataEntityDebugRuntime.Integration {
+    static func appContext(_ context: AppContext) -> Self {
+        Self(
+            currentUserLocation: { [unowned context] in
+                context.geolocationManager.location
+            }
+        )
     }
 }
 
@@ -1446,6 +1442,7 @@ class AppContext {
         }
 
         DataContractRegistry.configureWithRealmDefaults()
+        SpatialDataEntityDebugRuntime.configure(with: .appContext(self))
         RouteRuntime.configure(with: .appContext(self))
         ReferenceEntityRuntime.configure(with: .appContext(self))
         DataRuntimeProviderRegistry.configure(with: AppContextDataRuntimeProviders(context: self))
