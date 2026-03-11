@@ -22,6 +22,9 @@ enum RouteRuntime {
         var updateRouteInCloud: (Route) -> Void
         var removeRouteFromCloud: (Route) -> Void
         var currentMotionActivityRawValue: () -> String
+        var didAddRoute: (String) -> Void
+        var didUpdateRoute: (String) -> Void
+        var didDeleteRoute: (String) -> Void
 
         static let unconfigured = Self(
             currentUserLocation: {
@@ -47,6 +50,15 @@ enum RouteRuntime {
             currentMotionActivityRawValue: {
                 RouteRuntime.debugAssertUnconfigured(#function)
                 return "unknown"
+            },
+            didAddRoute: { _ in
+                RouteRuntime.debugAssertUnconfigured(#function)
+            },
+            didUpdateRoute: { _ in
+                RouteRuntime.debugAssertUnconfigured(#function)
+            },
+            didDeleteRoute: { _ in
+                RouteRuntime.debugAssertUnconfigured(#function)
             }
         )
     }
@@ -87,6 +99,18 @@ enum RouteRuntime {
 
     static func currentMotionActivityRawValue() -> String {
         integration.currentMotionActivityRawValue()
+    }
+
+    static func didAddRoute(id: String) {
+        integration.didAddRoute(id)
+    }
+
+    static func didUpdateRoute(id: String) {
+        integration.didUpdateRoute(id)
+    }
+
+    static func didDeleteRoute(id: String) {
+        integration.didDeleteRoute(id)
     }
 
     nonisolated private static func debugAssertUnconfigured(_ method: StaticString) {

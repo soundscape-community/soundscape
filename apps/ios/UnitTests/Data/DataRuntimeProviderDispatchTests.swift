@@ -26,9 +26,13 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var routeStored: [Route] = []
         var routeUpdated: [Route] = []
         var routeRemoved: [Route] = []
+        var routeAddedIDs: [String] = []
+        var routeUpdatedIDs: [String] = []
+        var routeDeletedIDs: [String] = []
 
         var referenceUpdatedMarkerParameters: [MarkerParameters] = []
         var referenceRemovedCloudMarkerIDs: [String] = []
+        var referenceRemovedEntityIDs: [String] = []
         var referenceSetDestinationResult = false
         var referenceSetDestinationError: Error?
         var referenceClearError: Error?
@@ -58,7 +62,10 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
                 storeRouteInCloud: { [self] route in routeStored.append(route) },
                 updateRouteInCloud: { [self] route in routeUpdated.append(route) },
                 removeRouteFromCloud: { [self] route in routeRemoved.append(route) },
-                currentMotionActivityRawValue: { [self] in routeMotion }
+                currentMotionActivityRawValue: { [self] in routeMotion },
+                didAddRoute: { [self] id in routeAddedIDs.append(id) },
+                didUpdateRoute: { [self] id in routeUpdatedIDs.append(id) },
+                didDeleteRoute: { [self] id in routeDeletedIDs.append(id) }
             )
         }
 
@@ -69,6 +76,9 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
                 },
                 removeReferenceFromCloud: { [self] markerID in
                     referenceRemovedCloudMarkerIDs.append(markerID)
+                },
+                didRemoveReferenceEntity: { [self] id in
+                    referenceRemovedEntityIDs.append(id)
                 },
                 setDestinationTemporaryIfMatchingID: { [self] _ in
                     if let referenceSetDestinationError {
@@ -144,6 +154,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
     override func tearDown() {
         RouteRuntime.resetForTesting()
         ReferenceEntityRuntime.resetForTesting()
+        RealmMigrationRuntime.resetForTesting()
         DataRuntimeProviderRegistry.resetForTesting()
         super.tearDown()
     }
@@ -166,11 +177,17 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         RouteRuntime.storeRouteInCloud(route)
         RouteRuntime.updateRouteInCloud(route)
         RouteRuntime.removeRouteFromCloud(route)
+        RouteRuntime.didAddRoute(id: "route-added")
+        RouteRuntime.didUpdateRoute(id: "route-updated")
+        RouteRuntime.didDeleteRoute(id: "route-deleted")
 
         XCTAssertEqual(provider.routeDeactivateCount, 1)
         XCTAssertEqual(provider.routeStored.count, 1)
         XCTAssertEqual(provider.routeUpdated.count, 1)
         XCTAssertEqual(provider.routeRemoved.count, 1)
+        XCTAssertEqual(provider.routeAddedIDs, ["route-added"])
+        XCTAssertEqual(provider.routeUpdatedIDs, ["route-updated"])
+        XCTAssertEqual(provider.routeDeletedIDs, ["route-deleted"])
     }
 
     func testReferenceEntityRuntimeDispatchesAndPropagatesErrors() async {
@@ -206,11 +223,13 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
             return
         }
         ReferenceEntityRuntime.removeReferenceFromCloud(markerID: entity.id)
+        ReferenceEntityRuntime.didRemoveReferenceEntity(id: entity.id)
         ReferenceEntityRuntime.removeCalloutHistoryForMarkerID("marker-1")
         ReferenceEntityRuntime.processEvent(BehaviorActivatedEvent())
 
         XCTAssertEqual(provider.referenceUpdatedMarkerParameters.count, 1)
         XCTAssertEqual(provider.referenceRemovedCloudMarkerIDs, [entity.id])
+        XCTAssertEqual(provider.referenceRemovedEntityIDs, [entity.id])
         XCTAssertEqual(provider.referenceRemovedCalloutMarkerIDs, ["marker-1"])
         XCTAssertEqual(provider.referenceProcessedEventNames, [BehaviorActivatedEvent().name])
 
@@ -271,6 +290,19 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.updatedAudioEngineLocations.count, 1)
         XCTAssertEqual(provider.updatedAudioEngineLocations.first, location)
         XCTAssertEqual(provider.spatialDataContextProcessedEventNames, [BehaviorActivatedEvent().name])
+    }
+
+    func testRealmMigrationRuntimeDispatchesToConfiguredIntegration() {
+        var migratedRealmNames: [String] = []
+        RealmMigrationRuntime.configure(
+            with: .init(trackMigrationFailure: { realmName in
+                migratedRealmNames.append(realmName)
+            })
+        )
+
+        RealmMigrationRuntime.trackMigrationFailure(forRealmNamed: "Cache.realm")
+
+        XCTAssertEqual(migratedRealmNames, ["Cache.realm"])
     }
 
     func testRuntimeResetClearsInjectedProviders() {

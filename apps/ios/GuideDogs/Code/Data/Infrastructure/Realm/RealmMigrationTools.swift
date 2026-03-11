@@ -10,6 +10,39 @@
 import CoreLocation
 import RealmSwift
 
+@MainActor
+enum RealmMigrationRuntime {
+    struct Integration {
+        var trackMigrationFailure: (String) -> Void
+
+        static let unconfigured = Self(trackMigrationFailure: { _ in
+            RealmMigrationRuntime.debugAssertUnconfigured(#function)
+        })
+    }
+
+    private static var integration = Integration.unconfigured
+
+    static func configure(with integration: Integration) {
+        self.integration = integration
+    }
+
+    static func resetForTesting() {
+        integration = .unconfigured
+    }
+
+    static func trackMigrationFailure(forRealmNamed realmName: String) {
+        integration.trackMigrationFailure(realmName)
+    }
+
+    nonisolated private static func debugAssertUnconfigured(_ method: StaticString) {
+#if DEBUG
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            assertionFailure("RealmMigrationRuntime is unconfigured when calling \(method)")
+        }
+#endif
+    }
+}
+
 /// A class of static methods used for making the Realm migration code more modular
 class RealmMigrationTools {
     
@@ -97,9 +130,9 @@ class RealmMigrationTools {
             // Log a telemetry event saying that a crash was averted in migrating the specified Realm,
             // but to do so, we had to remove the Realm and start fresh... This means that users may have
             // lost data.
-            
+
             Task { @MainActor in
-                GDATelemetry.track("data_migration_failed", with: ["realm_name": realmName])
+                RealmMigrationRuntime.trackMigrationFailure(forRealmNamed: realmName)
             }
             return false
         }

@@ -238,6 +238,27 @@ extension RouteRuntime.Integration {
             },
             currentMotionActivityRawValue: { [unowned context] in
                 context.motionActivityContext.currentActivity.rawValue
+            },
+            didAddRoute: { [unowned context] id in
+                NotificationCenter.default.post(name: .routeAdded,
+                                                object: Route.self,
+                                                userInfo: [Route.Keys.id: id])
+                GDATelemetry.track("routes.added",
+                                   with: ["context": "none",
+                                          "activity": context.motionActivityContext.currentActivity.rawValue])
+            },
+            didUpdateRoute: { [unowned context] id in
+                NotificationCenter.default.post(name: .routeUpdated,
+                                                object: Route.self,
+                                                userInfo: [Route.Keys.id: id])
+                GDATelemetry.track("routes.edited",
+                                   with: ["activity": context.motionActivityContext.currentActivity.rawValue])
+            },
+            didDeleteRoute: { id in
+                NotificationCenter.default.post(name: .routeDeleted,
+                                                object: Route.self,
+                                                userInfo: [Route.Keys.id: id])
+                GDATelemetry.track("routes.removed")
             }
         )
     }
@@ -252,6 +273,13 @@ extension ReferenceEntityRuntime.Integration {
             },
             removeReferenceFromCloud: { [unowned context] markerID in
                 context.cloudKeyValueStore.remove(referenceEntityID: markerID)
+            },
+            didRemoveReferenceEntity: { id in
+                GDATelemetry.track("markers.removed")
+                GDATelemetry.helper?.markerCountRemoved += 1
+                NotificationCenter.default.post(name: .markerRemoved,
+                                                object: RealmReferenceEntity.self,
+                                                userInfo: [ReferenceEntity.Keys.entityId: id])
             },
             setDestinationTemporaryIfMatchingID: { [unowned context] id in
                 guard let destinationManager = context.spatialDataContext.destinationManager as? DestinationManager else {

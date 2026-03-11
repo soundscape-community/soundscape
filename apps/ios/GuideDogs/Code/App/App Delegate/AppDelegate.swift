@@ -34,6 +34,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: UIApplicationDelegate
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        RealmMigrationRuntime.configure(
+            with: .init(trackMigrationFailure: { realmName in
+                GDATelemetry.track("data_migration_failed", with: ["realm_name": realmName])
+            })
+        )
+
         // Check if we need to migrate Realm before we do anything else
         SpatialDataMigration.migrateIfNeeded()
         

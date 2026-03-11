@@ -110,11 +110,7 @@ extension Route {
                 }
 
                 RouteRuntime.storeRouteInCloud(route)
-
-                let id = route.id
-
-                NotificationCenter.default.post(name: .routeAdded, object: self, userInfo: [Route.Keys.id: id])
-                GDATelemetry.track("routes.added", with: ["context": "none", "activity": RouteRuntime.currentMotionActivityRawValue()])
+                RouteRuntime.didAddRoute(id: route.id)
             }
         }
     }
@@ -292,13 +288,12 @@ extension Route {
             }
             
             RouteRuntime.removeRouteFromCloud(route.domainModel)
-            
+
             try database.write {
                 database.delete(route)
             }
-            
-            NotificationCenter.default.post(name: .routeDeleted, object: self, userInfo: [Route.Keys.id: id])
-            GDATelemetry.track("routes.removed")
+
+            RouteRuntime.didDeleteRoute(id: id)
         }
     }
     
@@ -327,9 +322,7 @@ extension Route {
     
     private static func onRouteDidUpdate(_ route: RealmRoute) {
         RouteRuntime.updateRouteInCloud(route.domainModel)
-
-        NotificationCenter.default.post(name: .routeUpdated, object: self, userInfo: [Route.Keys.id: route.id])
-        GDATelemetry.track("routes.edited", with: ["activity": RouteRuntime.currentMotionActivityRawValue()])
+        RouteRuntime.didUpdateRoute(id: route.id)
     }
     
     static func updateLastSelectedDate(id: String, _ lastSelectedDate: Date = Date()) throws {

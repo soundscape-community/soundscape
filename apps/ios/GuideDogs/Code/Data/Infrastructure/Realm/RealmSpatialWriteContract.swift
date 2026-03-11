@@ -142,14 +142,9 @@ struct RealmSpatialMaintenanceWriteContract: SpatialMaintenanceWriteContract {
 
             try database.write {
                 database.delete(entity)
-
-                GDATelemetry.track("markers.removed")
-                GDATelemetry.helper?.markerCountRemoved += 1
-
-                NotificationCenter.default.post(name: .markerRemoved,
-                                                object: RealmReferenceEntity.self,
-                                                userInfo: [ReferenceEntity.Keys.entityId: id])
             }
+
+            ReferenceEntityRuntime.didRemoveReferenceEntity(id: id)
         }
     }
 

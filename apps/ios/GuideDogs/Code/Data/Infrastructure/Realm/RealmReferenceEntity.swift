@@ -106,6 +106,7 @@ enum ReferenceEntityRuntime {
     struct Integration {
         var updateReferenceInCloud: (MarkerParameters) -> Void
         var removeReferenceFromCloud: (String) -> Void
+        var didRemoveReferenceEntity: (String) -> Void
         var setDestinationTemporaryIfMatchingID: (String) throws -> Bool
         var clearDestinationForCacheReset: () async throws -> Void
         var removeCalloutHistoryForMarkerID: (String) -> Void
@@ -116,6 +117,9 @@ enum ReferenceEntityRuntime {
                 ReferenceEntityRuntime.debugAssertUnconfigured(#function)
             },
             removeReferenceFromCloud: { _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            didRemoveReferenceEntity: { _ in
                 ReferenceEntityRuntime.debugAssertUnconfigured(#function)
             },
             setDestinationTemporaryIfMatchingID: { _ in
@@ -150,6 +154,10 @@ enum ReferenceEntityRuntime {
 
     static func removeReferenceFromCloud(markerID: String) {
         integration.removeReferenceFromCloud(markerID)
+    }
+
+    static func didRemoveReferenceEntity(id: String) {
+        integration.didRemoveReferenceEntity(id)
     }
 
     static func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
