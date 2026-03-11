@@ -20,25 +20,20 @@ enum ImportMarkerError: Error {
 
 typealias MarkerParameters = SSDataContracts.MarkerParameters
 
+protocol EntityParameterRepresentablePOI: POI {
+    var entityParametersForSerialization: EntityParameters? { get }
+}
+
 extension SSDataContracts.MarkerParameters {
     @MainActor
     init?(entity: POI, markerId: String?, estimatedAddress: String?, nickname: String?, annotation: String?, lastUpdatedDate: Date?) {
-        let location: LocationParameters
-
-        if let entity = entity as? GDASpatialDataResultEntity {
-            let coordinate = CoordinateParameters(latitude: entity.centroidLatitude, longitude: entity.centroidLongitude)
-            let entityParameters = EntityParameters(source: .osm, lookupInformation: entity.key)
-            location = LocationParameters(name: entity.localizedName,
-                                          address: entity.addressLine,
+        let coordinate = CoordinateParameters(latitude: entity.centroidLatitude, longitude: entity.centroidLongitude)
+        let entityParameters = (entity as? EntityParameterRepresentablePOI)?.entityParametersForSerialization
+        let address = entityParameters == nil ? nil : entity.addressLine
+        let location = LocationParameters(name: entity.localizedName,
+                                          address: address,
                                           coordinate: coordinate,
                                           entity: entityParameters)
-        } else {
-            let coordinate = CoordinateParameters(latitude: entity.centroidLatitude, longitude: entity.centroidLongitude)
-            location = LocationParameters(name: entity.localizedName,
-                                          address: nil,
-                                          coordinate: coordinate,
-                                          entity: nil)
-        }
 
         self.init(id: markerId.flatMap { $0.isEmpty ? nil : $0 },
                   nickname: nickname.flatMap { $0.isEmpty ? nil : $0 },

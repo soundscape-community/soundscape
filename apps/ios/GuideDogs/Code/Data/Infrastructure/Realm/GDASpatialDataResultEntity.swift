@@ -10,6 +10,7 @@
 import Foundation
 import CoreLocation
 import RealmSwift
+import SSDataContracts
 import SSGeo
 
 @MainActor
@@ -264,5 +265,11 @@ class GDASpatialDataResultEntity: Object {
         }
         
         return self.closestLocation(from: userLocation)
+    }
+}
+
+extension GDASpatialDataResultEntity: EntityParameterRepresentablePOI {
+    var entityParametersForSerialization: EntityParameters? {
+        EntityParameters(source: .osm, lookupInformation: key)
     }
 }
