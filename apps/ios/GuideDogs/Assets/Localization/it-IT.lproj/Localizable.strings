@@ -2009,25 +2009,10 @@
 
 
 /*  */
-"directions.intersection_with_name_distance_direction" = "Incrocio con %1$@ %2$@ %3$@";
-
-
 /*  */
-"directions.intersection_with_name_distance" = "Incrocio con %1$@ %2$@ di distanza";
-
-
 /*  */
-"directions.intersection_with_name_direction" = "Incrocio con %1$@ %2$@";
-
-
 /*  */
-"directions.intersection_with_name" = "Incrocio con %@ nelle vicinanze";
-
-
 /*  */
-"directions.intersection_with_name_was_distance_direction" = "Incrocio con %1$@ era %2$@ %3$@";
-
-
 /*  */
 "intersection.named_intersection" = "Incrocio %@";
 
@@ -2077,50 +2062,16 @@
 
 
 /*  */
-"directions.nearest_road_name_is_distance_direction" = "La strada più vicina, %1$@, è a %2$@ %3$@";
-
-
 /*  */
-"directions.nearest_road_name_is_distance" = "La strada più vicina, %1$@, è a %2$@ di distanza";
-
-
 /*  */
-"directions.nearest_road_name_was_distance_direction" = "La strada più vicina, %1$@, era a %2$@ %3$@";
-
-
 /*  */
-"directions.poi_name_is_distance_direction" = "%1$@ è a %2$@ %3$@";
-
-
 /*  */
-"directions.poi_name_is_distance" = "%1$@ è a %2$@ di distanza";
-
-
 /*  */
-"directions.poi_name_was_distance_direction" = "%1$@ era a %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_distance_direction" = "Rotonda con %1$@ uscite a %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_distance" = "Rotonda con %1$@ uscite a %2$@ di distanza";
-
-
 /*  */
-"directions.roundabout_with_exits_was_distance_direction" = "Rotonda con %1$@ uscite era a %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_direction" = "Rotonda con %1$@ uscite %2$@";
-
-
 /*  */
-"directions.roundabout_with_exits" = "Rotonda con %1$@ uscite nelle vicinanze";
-
-
-
 /*  */
 "directions.approaching_roundabout" = "Ti stai avvicinando alla rotonda";
 

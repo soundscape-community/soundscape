@@ -103,3 +103,36 @@
 "distance.format.mi" = "%@ mi";
 "distance.format.mile" = "%@ mile";
 "distance.format.miles" = "%@ miles";
+
+"directions.intersection_with_name_distance_direction" = "Intersection with %1$@ %2$@ %3$@";
+
+"directions.intersection_with_name_distance" = "Intersection with %1$@ %2$@ away";
+
+"directions.intersection_with_name_direction" = "Intersection with %1$@ %2$@";
+
+"directions.intersection_with_name" = "Intersection with %@ nearby";
+
+"directions.intersection_with_name_was_distance_direction" = "Intersection with %1$@ was %2$@ %3$@";
+
+"directions.nearest_road_name_is_distance_direction" = "Nearest road, %1$@, is %2$@ %3$@";
+
+"directions.nearest_road_name_is_distance" = "Nearest road, %1$@, is %2$@ away";
+
+"directions.nearest_road_name_was_distance_direction" = "Nearest road, %1$@, was %2$@ %3$@";
+
+"directions.poi_name_is_distance_direction" = "%1$@ is %2$@ %3$@";
+
+"directions.poi_name_is_distance" = "%1$@ is %2$@ away";
+
+"directions.poi_name_was_distance_direction" = "%1$@ was %2$@ %3$@";
+
+"directions.roundabout_with_exits_distance_direction" = "Roundabout with %1$@ exits %2$@ %3$@";
+
+"directions.roundabout_with_exits_distance" = "Roundabout with %1$@ exits %2$@ away";
+
+"directions.roundabout_with_exits_was_distance_direction" = "Roundabout with %1$@ exits was %2$@ %3$@";
+
+"directions.roundabout_with_exits_direction" = "Roundabout with %1$@ exits %2$@";
+
+"directions.roundabout_with_exits" = "Roundabout with %1$@ exits nearby";
+

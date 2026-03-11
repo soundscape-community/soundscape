@@ -184,37 +184,17 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
             if let roundabout = intersection.roundabout, !roundabout.isLarge {
                 guard let exitDirections = roundabout.exitDirections(relativeTo: direction ?? Heading.defaultValue) else { return Sounds(sounds) }
                 
-                let string: String
-                if let distanceString = distanceString, let directionString = directionString {
-                    // Phrase example 1: "Roundabout with <5> exits <600 meters> <ahead to the left>"
-                    string = GDLocalizedString("directions.roundabout_with_exits_distance_direction", String(exitDirections.count), distanceString, directionString)
-                } else if let directionString = directionString {
-                    // Phrase example 2: "Roundabout with <5> exits <ahead>"
-                    string = GDLocalizedString("directions.roundabout_with_exits_direction", String(exitDirections.count), directionString)
-                } else if let distanceString = distanceString {
-                    // Phrase example 3: "Roundabout with <5> exits <600 meters> away"
-                    string = GDLocalizedString("directions.roundabout_with_exits_distance", distanceString)
-                } else {
-                    // Phrase example 3: "Roundabout with <5> exits nearby"
-                    string = GDLocalizedString("directions.roundabout_with_exits")
-                }
+                let string = LanguageFormatter.roundaboutString(
+                    exitCount: exitDirections.count,
+                    style: .current(distance: distanceString, direction: directionString)
+                )
                 
                 sounds.append(TTSSound(string, compass: intComponents.bearing))
             } else {
-                let string: String
-                if let distanceString = distanceString, let directionString = directionString {
-                    // Phrase example 1: "Intersection with <Pike Street> <600 meters> <ahead to the left>"
-                    string = GDLocalizedString("directions.intersection_with_name_distance_direction", intComponents.name, distanceString, directionString)
-                } else if let directionString = directionString {
-                    // Phrase example 2: "Intersection with <Pike Street> <ahead>"
-                    string = GDLocalizedString("directions.intersection_with_name_direction", intComponents.name, directionString)
-                } else if let distanceString = distanceString {
-                    // Phrase example 2: "Intersection with <Pike Street> <600 meters> away"
-                    string = GDLocalizedString("directions.intersection_with_name_distance", intComponents.name, distanceString)
-                } else {
-                    // Phrase example 2: "Intersection with <Pike Street> nearby"
-                    string = GDLocalizedString("directions.intersection_with_name", intComponents.name)
-                }
+                let string = LanguageFormatter.intersectionString(
+                    name: intComponents.name,
+                    style: .current(distance: distanceString, direction: directionString)
+                )
                 
                 sounds.append(TTSSound(string, compass: intComponents.bearing))
             }
@@ -236,17 +216,23 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
             
             if let roundabout = intersection.roundabout, !roundabout.isLarge {
                 guard let exitDirections = roundabout.exitDirections(relativeTo: direction ?? Heading.defaultValue) else { return Sounds(sounds) }
-                let string = GDLocalizedString("directions.roundabout_with_exits_was_distance_direction",
-                                               String(exitDirections.count),
-                                               intComponents.formattedDistance,
-                                               intComponents.encodedDirection)
+                let string = LanguageFormatter.roundaboutString(
+                    exitCount: exitDirections.count,
+                    style: .previous(
+                        distance: intComponents.formattedDistance,
+                        direction: intComponents.encodedDirection
+                    )
+                )
                 
                 sounds.append(TTSSound(string, compass: intComponents.bearing))
             } else {
-                let string = GDLocalizedString("directions.intersection_with_name_was_distance_direction",
-                                               intComponents.name,
-                                               intComponents.formattedDistance,
-                                               intComponents.encodedDirection)
+                let string = LanguageFormatter.intersectionString(
+                    name: intComponents.name,
+                    style: .previous(
+                        distance: intComponents.formattedDistance,
+                        direction: intComponents.encodedDirection
+                    )
+                )
                 
                 sounds.append(TTSSound(string, compass: intComponents.bearing))
             }

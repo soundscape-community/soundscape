@@ -2009,25 +2009,10 @@
 
 
 /*  */
-"directions.intersection_with_name_distance_direction" = "Διασταύρωση με %1$@ %2$@ %3$@";
-
-
 /*  */
-"directions.intersection_with_name_distance" = "Διασταύρωση με %1$@ σε απόσταση %2$@";
-
-
 /*  */
-"directions.intersection_with_name_direction" = "Διασταύρωση με %1$@ %2$@";
-
-
 /*  */
-"directions.intersection_with_name" = "Διασταύρωση με %@ κοντά";
-
-
 /*  */
-"directions.intersection_with_name_was_distance_direction" = "Η διασταύρωση με %1$@ ήταν %2$@ %3$@";
-
-
 /*  */
 "intersection.named_intersection" = "%@ Διασταύρωση";
 
@@ -2077,50 +2062,16 @@
 
 
 /*  */
-"directions.nearest_road_name_is_distance_direction" = "Ο κοντινότερος δρόμος, %1$@, είναι %2$@ %3$@";
-
-
 /*  */
-"directions.nearest_road_name_is_distance" = "Ο κοντινότερος δρόμος, %1$@, βρίσκεται σε απόσταση %2$@";
-
-
 /*  */
-"directions.nearest_road_name_was_distance_direction" = "Ο κοντινότερος δρόμος, %1$@, ήταν %2$@ %3$@";
-
-
 /*  */
-"directions.poi_name_is_distance_direction" = "%1$@ είναι %2$@ %3$@";
-
-
 /*  */
-"directions.poi_name_is_distance" = "%1$@ βρίσκεται σε απόσταση %2$@";
-
-
 /*  */
-"directions.poi_name_was_distance_direction" = "%1$@ ήταν %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_distance_direction" = "Κυκλικός κόμβος %1$@ με εξόδους %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_distance" = "Κυκλικός κόμβος με %1$@ εξόδους σε απόσταση %2$@";
-
-
 /*  */
-"directions.roundabout_with_exits_was_distance_direction" = "Ο κυκλικός κόμβος με %1$@ εξόδους ήταν %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_direction" = "Κυκλικός κόμβος με %1$@ εξόδους %2$@";
-
-
 /*  */
-"directions.roundabout_with_exits" = "Κυκλικός κόμβος με %1$@ εξόδους σε κοντινή απόσταση";
-
-
-
 /*  */
 "directions.approaching_roundabout" = "Πλησιάζετε κυκλικό κόμβο";
 

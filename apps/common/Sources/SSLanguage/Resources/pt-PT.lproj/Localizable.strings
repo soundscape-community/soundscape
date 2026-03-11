@@ -103,3 +103,53 @@
 "distance.format.mi" = "%@ mi";
 "distance.format.mile" = "%@ milha";
 "distance.format.miles" = "%@ milhas";
+
+"directions.intersection_with_name_distance_direction" = "Cruzamento com a %1$@ a %2$@ %3$@";
+
+
+"directions.intersection_with_name_distance" = "Cruzamento com a %1$@ a %2$@";
+
+
+"directions.intersection_with_name_direction" = "Cruzamento com a %1$@ %2$@";
+
+
+"directions.intersection_with_name" = "Cruzamento com a %@ por perto";
+
+
+"directions.intersection_with_name_was_distance_direction" = "Cruzamento com a %1$@ há %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance_direction" = "A rua mais próxima, %1$@, está a %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance" = "A rua mais próxima, %1$@, está a %2$@";
+
+
+"directions.nearest_road_name_was_distance_direction" = "A rua mais próxima, %1$@, estava a %2$@ %3$@";
+
+
+"directions.poi_name_is_distance_direction" = "%1$@ está a %2$@ %3$@";
+
+
+"directions.poi_name_is_distance" = "%1$@ está a %2$@";
+
+
+"directions.poi_name_was_distance_direction" = "%1$@ estava a %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance_direction" = "Rotunda com %1$@ saídas a %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance" = "Rotunda com %1$@ saídas a %2$@";
+
+
+"directions.roundabout_with_exits_was_distance_direction" = "Rotunda com %1$@ saídas há %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_direction" = "Rotunda com %1$@ saídas %2$@";
+
+
+"directions.roundabout_with_exits" = "Rotunda com %1$@ saídas por perto";
+
+
+

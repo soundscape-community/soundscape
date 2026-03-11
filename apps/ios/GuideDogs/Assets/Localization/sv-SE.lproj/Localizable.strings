@@ -2009,25 +2009,10 @@
 
 
 /*  */
-"directions.intersection_with_name_distance_direction" = "Vägkorsning med %1$@ %2$@ %3$@";
-
-
 /*  */
-"directions.intersection_with_name_distance" = "Vägkorsning med %1$@, %2$@ bort";
-
-
 /*  */
-"directions.intersection_with_name_direction" = "Vägkorsning med %1$@ %2$@";
-
-
 /*  */
-"directions.intersection_with_name" = "Vägkorsning med %@ i närheten";
-
-
 /*  */
-"directions.intersection_with_name_was_distance_direction" = "Vägkorsningen med %1$@ låg %2$@ %3$@";
-
-
 /*  */
 "intersection.named_intersection" = "%@, vägkorsning";
 
@@ -2077,50 +2062,16 @@
 
 
 /*  */
-"directions.nearest_road_name_is_distance_direction" = "Närmaste vägen, %1$@, ligger %2$@ %3$@";
-
-
 /*  */
-"directions.nearest_road_name_is_distance" = "Närmaste väg, %1$@, ligger %2$@ bort";
-
-
 /*  */
-"directions.nearest_road_name_was_distance_direction" = "Närmaste vägen, %1$@, låg %2$@ %3$@";
-
-
 /*  */
-"directions.poi_name_is_distance_direction" = "%1$@ ligger %2$@ %3$@";
-
-
 /*  */
-"directions.poi_name_is_distance" = "%1$@ ligger %2$@ bort";
-
-
 /*  */
-"directions.poi_name_was_distance_direction" = "%1$@ låg %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_distance_direction" = "Rondell med %1$@ avfarter %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_distance" = "Rondell med %1$@ avfarter, %2$@ bort";
-
-
 /*  */
-"directions.roundabout_with_exits_was_distance_direction" = "Rondell med %1$@ avfarter låg %2$@ %3$@";
-
-
 /*  */
-"directions.roundabout_with_exits_direction" = "Rondell med %1$@ avfarter %2$@";
-
-
 /*  */
-"directions.roundabout_with_exits" = "Rondell med %1$@ avfarter ligger i närheten";
-
-
-
 /*  */
 "directions.approaching_roundabout" = "Snart framme vid rondell";
 

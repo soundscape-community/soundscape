@@ -103,3 +103,53 @@
 "distance.format.mi" = "%@ mi";
 "distance.format.mile" = "%@ mile";
 "distance.format.miles" = "%@ miles";
+
+"directions.intersection_with_name_distance_direction" = "Kryds med %1$@ %2$@ %3$@";
+
+
+"directions.intersection_with_name_distance" = "Kryds med %1$@ %2$@ væk";
+
+
+"directions.intersection_with_name_direction" = "Kryds med %1$@ %2$@";
+
+
+"directions.intersection_with_name" = "Kryds med %@ i nærheden";
+
+
+"directions.intersection_with_name_was_distance_direction" = "Kryds med %1$@ var %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance_direction" = "Nærmeste vej, %1$@, er %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance" = "Nærmeste vej, %1$@, er %2$@ væk";
+
+
+"directions.nearest_road_name_was_distance_direction" = "Nærmeste vej, %1$@, var %2$@ %3$@";
+
+
+"directions.poi_name_is_distance_direction" = "%1$@ er %2$@ %3$@";
+
+
+"directions.poi_name_is_distance" = "%1$@ er %2$@ væk";
+
+
+"directions.poi_name_was_distance_direction" = "%1$@ var %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance_direction" = "Rundkørsel med %1$@ udkørsler %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance" = "Rundkørsel med %1$@ udkørsler %2$@ væk";
+
+
+"directions.roundabout_with_exits_was_distance_direction" = "Rundkørsel med %1$@ udkørsler var %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_direction" = "Rundkørsel med %1$@ udkørsler %2$@";
+
+
+"directions.roundabout_with_exits" = "Rundkørsel med %1$@ udkørsler i nærheden";
+
+
+

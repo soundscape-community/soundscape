@@ -93,4 +93,44 @@ final class SSLanguageTests: XCTestCase {
             "Heading west along Pike Street"
         )
     }
+
+    func testNamedLocationPhrasesUseSharedResources() {
+        XCTAssertEqual(
+            LanguageFormatter.namedLocationString(
+                kind: .nearestRoad,
+                name: "Pike Street",
+                style: .current(distance: "600 meters", direction: "ahead"),
+                locale: .enUS
+            ),
+            "Nearest road, Pike Street, is 600 meters ahead"
+        )
+        XCTAssertEqual(
+            LanguageFormatter.namedLocationString(
+                kind: .pointOfInterest,
+                name: "Library",
+                style: .previous(distance: "200 meters", direction: "behind"),
+                locale: .enUS
+            ),
+            "Library was 200 meters behind"
+        )
+    }
+
+    func testJunctionPhrasesUseSharedResources() {
+        XCTAssertEqual(
+            LanguageFormatter.intersectionString(
+                name: "Pine Street",
+                style: .current(distance: nil, direction: "ahead"),
+                locale: .enUS
+            ),
+            "Intersection with Pine Street ahead"
+        )
+        XCTAssertEqual(
+            LanguageFormatter.roundaboutString(
+                exitCount: 5,
+                style: .current(distance: "600 meters", direction: nil),
+                locale: .enUS
+            ),
+            "Roundabout with 5 exits 600 meters away"
+        )
+    }
 }

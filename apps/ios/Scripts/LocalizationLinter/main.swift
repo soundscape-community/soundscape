@@ -74,7 +74,11 @@ struct Configuration {
             "directions.traveling.",
             "directions.facing.",
             "directions.heading.",
-            "directions.along."
+            "directions.along.",
+            "directions.nearest_road_name_",
+            "directions.poi_name_",
+            "directions.intersection_with_name",
+            "directions.roundabout_with_exits"
         ]
 
         static func contains(_ key: String) -> Bool {

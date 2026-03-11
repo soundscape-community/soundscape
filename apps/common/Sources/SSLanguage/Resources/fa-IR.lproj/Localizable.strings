@@ -103,3 +103,20 @@
 "distance.format.mi" = "%@ مایل";
 "distance.format.mile" = "%@ مایل";
 "distance.format.miles" = "%@ مایل";
+
+"directions.intersection_with_name_distance_direction" = "تقاطع با %1$@ در فاصله %2$@ %3$@";
+"directions.intersection_with_name_distance" = "تقاطع با %1$@ در فاصله %2$@";
+"directions.intersection_with_name_direction" = "تقاطع با %1$@ در %@";
+"directions.intersection_with_name" = "تقاطع با %@ در نزدیکی";
+"directions.intersection_with_name_was_distance_direction" = "تقاطع با %1$@ در فاصله %2$@ %3$@ بود";
+"directions.nearest_road_name_is_distance_direction" = "نزدیک‌ترین جاده، %1$@، در فاصله %2$@ %3$@ است";
+"directions.nearest_road_name_is_distance" = "نزدیک‌ترین جاده، %1$@، در فاصله %2$@ است";
+"directions.nearest_road_name_was_distance_direction" = "نزدیک‌ترین جاده، %1$@، در فاصله %2$@ %3$@ بود";
+"directions.poi_name_is_distance_direction" = "%1$@ در فاصله %2$@ %3$@ است";
+"directions.poi_name_is_distance" = "%1$@ در فاصله %2$@ است";
+"directions.poi_name_was_distance_direction" = "%1$@ در فاصله %2$@ %3$@ بود";
+"directions.roundabout_with_exits_distance_direction" = "میدان با %1$@ خروجی در فاصله %2$@ %3$@";
+"directions.roundabout_with_exits_distance" = "میدان با %1$@ خروجی در فاصله %2$@";
+"directions.roundabout_with_exits_was_distance_direction" = "میدان با %1$@ خروجی در فاصله %2$@ %3$@ بود";
+"directions.roundabout_with_exits_direction" = "میدان با %1$@ خروجی %2$@";
+"directions.roundabout_with_exits" = "میدان با %1$@ خروجی در نزدیکی";

@@ -103,3 +103,53 @@
 "distance.format.mi" = "%@ マイル";
 "distance.format.mile" = "%@ マイル";
 "distance.format.miles" = "%@ マイル";
+
+"directions.intersection_with_name_distance_direction" = "%1$@ との交差点まで %3$@、%2$@";
+
+
+"directions.intersection_with_name_distance" = "%1$@ との交差点まで %2$@";
+
+
+"directions.intersection_with_name_direction" = "%1$@ との交差点が %2$@";
+
+
+"directions.intersection_with_name" = "%@ との交差点が近くにあります";
+
+
+"directions.intersection_with_name_was_distance_direction" = "%1$@ との交差点まで %3$@、%2$@ でした";
+
+
+"directions.nearest_road_name_is_distance_direction" = "最寄りの道路、%1$@ まで %3$@、%2$@ です";
+
+
+"directions.nearest_road_name_is_distance" = "最寄りの道路、%1$@ まで %2$@ です";
+
+
+"directions.nearest_road_name_was_distance_direction" = "最寄りの道路、%1$@ まで %3$@、%2$@ でした";
+
+
+"directions.poi_name_is_distance_direction" = "%1$@ まで %3$@、%2$@ です";
+
+
+"directions.poi_name_is_distance" = "%1$@ まで %2$@ です";
+
+
+"directions.poi_name_was_distance_direction" = "%1$@ まで %3$@、%2$@ でした";
+
+
+"directions.roundabout_with_exits_distance_direction" = "%3$@、分岐が %1$@ つの環状交差点まで %2$@";
+
+
+"directions.roundabout_with_exits_distance" = "分岐が %1$@ つの環状交差点まで %2$@";
+
+
+"directions.roundabout_with_exits_was_distance_direction" = "%3$@、分岐が %1$@ つの環状交差点まで %2$@";
+
+
+"directions.roundabout_with_exits_direction" = "%2$@、分岐が %1$@ つの環状交差点";
+
+
+"directions.roundabout_with_exits" = "分岐が %1$@ つの環状交差点付近です";
+
+
+

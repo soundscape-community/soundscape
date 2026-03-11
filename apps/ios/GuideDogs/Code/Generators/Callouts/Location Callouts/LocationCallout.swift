@@ -102,12 +102,26 @@ struct LocationCallout: LocationCalloutProtocol {
                 sounds.append(TTSSound(string, compass: direction))
             
                 if let roadComponents = roadComponents {
-                    let string = GDLocalizedString("directions.nearest_road_name_is_distance_direction", roadComponents.name, roadComponents.formattedDistance, roadComponents.encodedDirection)
+                    let string = LanguageFormatter.namedLocationString(
+                        kind: .nearestRoad,
+                        name: roadComponents.name,
+                        style: .current(
+                            distance: roadComponents.formattedDistance,
+                            direction: roadComponents.encodedDirection
+                        )
+                    )
                     sounds.append(TTSSound(string, at: roadComponents.location))
                 }
             
                 if let poiComponents = poiComponents {
-                    let string = GDLocalizedString("directions.poi_name_is_distance_direction", poiComponents.name, poiComponents.formattedDistance, poiComponents.encodedDirection)
+                    let string = LanguageFormatter.namedLocationString(
+                        kind: .pointOfInterest,
+                        name: poiComponents.name,
+                        style: .current(
+                            distance: poiComponents.formattedDistance,
+                            direction: poiComponents.encodedDirection
+                        )
+                    )
                     sounds.append(TTSSound(string, at: poiComponents.location))
                 }
             } else {
@@ -116,12 +130,20 @@ struct LocationCallout: LocationCalloutProtocol {
                     sounds.append(TTSSound(string, direction: .ahead))
                 } else {
                     if let roadComponents = roadComponents {
-                        let string = GDLocalizedString("directions.nearest_road_name_is_distance", roadComponents.name, roadComponents.formattedDistance)
+                        let string = LanguageFormatter.namedLocationString(
+                            kind: .nearestRoad,
+                            name: roadComponents.name,
+                            style: .current(distance: roadComponents.formattedDistance, direction: nil)
+                        )
                         sounds.append(TTSSound(string, direction: .ahead))
                     }
                     
                     if let poiComponents = poiComponents {
-                        let string = GDLocalizedString("directions.poi_name_is_distance", poiComponents.name, poiComponents.formattedDistance)
+                        let string = LanguageFormatter.namedLocationString(
+                            kind: .pointOfInterest,
+                            name: poiComponents.name,
+                            style: .current(distance: poiComponents.formattedDistance, direction: nil)
+                        )
                         sounds.append(TTSSound(string, direction: .ahead))
                     }
                 }
@@ -130,12 +152,26 @@ struct LocationCallout: LocationCalloutProtocol {
             sounds.append(TTSSound(GDLocalizedString("directions.previous_location"), direction: .ahead))
             
             if let roadComponents = geocoderResult.getRoadCalloutComponents(useClosest: useClosestRoadIfAvailable, useOriginalHeading: true) {
-                let string = GDLocalizedString("directions.nearest_road_name_was_distance_direction", roadComponents.name, roadComponents.formattedDistance, roadComponents.encodedDirection)
+                let string = LanguageFormatter.namedLocationString(
+                    kind: .nearestRoad,
+                    name: roadComponents.name,
+                    style: .previous(
+                        distance: roadComponents.formattedDistance,
+                        direction: roadComponents.encodedDirection
+                    )
+                )
                 sounds.append(TTSSound(string, at: roadComponents.location))
             }
             
             if let poiComponents = geocoderResult.getPOICalloutComponents(useOriginalHeading: true) {
-                let string = GDLocalizedString("directions.poi_name_was_distance_direction", poiComponents.name, poiComponents.formattedDistance, poiComponents.encodedDirection)
+                let string = LanguageFormatter.namedLocationString(
+                    kind: .pointOfInterest,
+                    name: poiComponents.name,
+                    style: .previous(
+                        distance: poiComponents.formattedDistance,
+                        direction: poiComponents.encodedDirection
+                    )
+                )
                 sounds.append(TTSSound(string, at: poiComponents.location))
             }
         }

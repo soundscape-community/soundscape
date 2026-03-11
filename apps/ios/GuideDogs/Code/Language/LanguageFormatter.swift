@@ -17,6 +17,8 @@ enum LanguageFormatter {
     typealias RoadNameDirection = SSLanguage.LanguageFormatter.RoadNameDirection
     typealias NamedLocationStreetAddressStyle = SSLanguage.LanguageFormatter.NamedLocationStreetAddressStyle
     typealias CardinalMovementStyle = SSLanguage.LanguageFormatter.CardinalMovementStyle
+    typealias NamedLocationKind = SSLanguage.LanguageFormatter.NamedLocationKind
+    typealias RelativeLocationStyle = SSLanguage.LanguageFormatter.RelativeLocationStyle
 
     private static var defaultOptions: DistanceFormatter.Options {
         DistanceFormatter.Options(
@@ -208,6 +210,41 @@ enum LanguageFormatter {
             direction: direction,
             style: style,
             roadName: roadName,
+            locale: LocalizationContext.currentAppLocale
+        )
+    }
+
+    static func namedLocationString(
+        kind: NamedLocationKind,
+        name: String,
+        style: RelativeLocationStyle
+    ) -> String {
+        SSLanguage.LanguageFormatter.namedLocationString(
+            kind: kind,
+            name: name,
+            style: style,
+            locale: LocalizationContext.currentAppLocale
+        )
+    }
+
+    static func intersectionString(
+        name: String,
+        style: RelativeLocationStyle
+    ) -> String {
+        SSLanguage.LanguageFormatter.intersectionString(
+            name: name,
+            style: style,
+            locale: LocalizationContext.currentAppLocale
+        )
+    }
+
+    static func roundaboutString(
+        exitCount: Int,
+        style: RelativeLocationStyle
+    ) -> String {
+        SSLanguage.LanguageFormatter.roundaboutString(
+            exitCount: exitCount,
+            style: style,
             locale: LocalizationContext.currentAppLocale
         )
     }

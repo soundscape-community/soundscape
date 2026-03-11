@@ -103,3 +103,53 @@
 "distance.format.mi" = "%@ mi";
 "distance.format.mile" = "%@ maili";
 "distance.format.miles" = "%@ mailia";
+
+"directions.intersection_with_name_distance_direction" = "Risteys tien %1$@ kanssa %2$@ %3$@";
+
+
+"directions.intersection_with_name_distance" = "Risteys tien %1$@ kanssa %2$@ päässä";
+
+
+"directions.intersection_with_name_direction" = "Risteys tien %1$@ kanssa %2$@";
+
+
+"directions.intersection_with_name" = "Risteys %@:n kanssa lähistöllä";
+
+
+"directions.intersection_with_name_was_distance_direction" = "Risteys tien %1$@ kanssa oli %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance_direction" = "Lähin tie, %1$@, on %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance" = "Lähin tie, %1$@, on %2$@ päässä";
+
+
+"directions.nearest_road_name_was_distance_direction" = "Lähin tie, %1$@, oli %2$@ %3$@";
+
+
+"directions.poi_name_is_distance_direction" = "%1$@ on %2$@ %3$@";
+
+
+"directions.poi_name_is_distance" = "%1$@ on %2$@ päässä";
+
+
+"directions.poi_name_was_distance_direction" = "%1$@ oli %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance_direction" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä %2$@ päässä";
+
+
+"directions.roundabout_with_exits_was_distance_direction" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä oli %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_direction" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä %2$@";
+
+
+"directions.roundabout_with_exits" = "Liikenneympyrä, jossa on %1$@ uloskäyntiä lähistöllä";
+
+
+

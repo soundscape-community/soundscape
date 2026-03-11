@@ -2,7 +2,7 @@
 
 # Language Modularization Plan
 
-Last updated: 2026-03-10
+Last updated: 2026-03-11
 
 ## Summary
 Extract the portable language and localization helper surface from `apps/ios/GuideDogs/Code/Language` into a new `SSLanguage` module under `apps/common`.
@@ -29,6 +29,7 @@ Current assessment as of 2026-03-10:
 - Duplicated shared helper keys for distance formatting, cardinal/directional strings, and locale display names have been removed from the iOS app localization assets; the remaining lookups now resolve through `SSLanguage`.
 - Shared intersection/roundabout road-name phrases and beacon-detail street-address summary phrases now also live in `SSLanguage`, with iOS callers routed through `LanguageFormatter`.
 - Shared cardinal-movement phrases (`directions.traveling.*`, `directions.facing.*`, `directions.heading.*`, and `directions.along.*`) now also live in `SSLanguage`, with the location callouts routed through the shared formatter.
+- Shared location-summary phrases (`directions.nearest_road_name_*`, `directions.poi_name_*`, `directions.intersection_with_name*`, and `directions.roundabout_with_exits*`) now also live in `SSLanguage`, with the location callouts routed through the shared formatter.
 - `LocalizationContext` still owns app-locale persistence, notifications, accessibility language wiring, and app-bundle localization behavior.
 - The localization validator now checks both iOS app assets and `SSLanguage` resources, and it blocks reintroducing `SSLanguage`-owned helper keys into the iOS app bundle.
 
@@ -43,8 +44,9 @@ Current assessment as of 2026-03-10:
 - 2026-03-10: Extended `apps/ios/Scripts/LocalizationLinter/main.swift` to validate `apps/common/Sources/SSLanguage/Resources`, compare locale coverage with the iOS app bundle, verify `SSLanguage` source keys against its base strings file, and fail if shared helper keys are reintroduced into `apps/ios/GuideDogs/Assets/Localization/**`; revalidated with `swift Scripts/LocalizationLinter/main.swift`, `swift test --package-path apps/common`, and `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`, with only the pre-existing non-blocking `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral` failures remaining.
 - 2026-03-10: Moved the shared intersection/roundabout road-name phrases and beacon-detail street-address summary phrases into `SSLanguage`, migrated `IntersectionCallout` and `BeaconDetailLocalizedLabel` to the shared helpers, removed those duplicated keys from every iOS `Localizable.strings` asset, and revalidated with `swift test --package-path apps/common`, `swift Scripts/LocalizationLinter/main.swift`, and `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`, again reaching only the pre-existing non-blocking `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral` failures.
 - 2026-03-10: Moved the shared cardinal-movement phrase families (`directions.traveling.*`, `directions.facing.*`, `directions.heading.*`, and `directions.along.*`) into `SSLanguage`, migrated `LocationCallout`, `InsideLocationCallout`, and `AlongRoadLocationCallout` to the shared formatter, removed those duplicated keys from every iOS `Localizable.strings` asset, and revalidated with `swift test --package-path apps/common`, `swift Scripts/LocalizationLinter/main.swift`, and `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`, again reaching only the pre-existing non-blocking `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral` failures.
+- 2026-03-11: Moved the shared named-location and junction-summary phrase families (`directions.nearest_road_name_*`, `directions.poi_name_*`, `directions.intersection_with_name*`, and `directions.roundabout_with_exits*`) into `SSLanguage`, migrated `LocationCallout` and `AlongRoadLocationCallout` to the shared formatter, removed those duplicated keys from every iOS `Localizable.strings` asset, and revalidated with `swift test --package-path apps/common`, `swift Scripts/LocalizationLinter/main.swift`, and `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`, again reaching only the pre-existing non-blocking `AudioEngineTest.testDiscreteAudio2DSimple` and `AudioEngineTest.testDiscreteAudio2DSeveral` failures.
 
 ## Next Steps
 1. Keep app-owned UI/XIB localization, locale-persistence behavior, and app-default composition in `apps/ios`; do not move those concerns into `apps/common`.
 2. Keep `apps/ios/Scripts/LocalizationLinter/main.swift` as the enforcement point for the iOS/`SSLanguage` localization boundary; update it in the same change when new shared helper-key families move into `SSLanguage`.
-3. Audit the remaining direction/location helper families such as `directions.nearest_road_*`, `directions.poi_name_*`, `directions.intersection_with_*`, and `directions.roundabout_with_*` next; they are the most likely remaining runtime-neutral phrase families if further extraction is worthwhile.
+3. Audit the remaining direction/location helper families such as `directions.near_*`, `directions.previous_location*`, and other runtime-neutral callout templates next; only move them into `SSLanguage` if the shared formatter becomes the clear owner of the behavior.

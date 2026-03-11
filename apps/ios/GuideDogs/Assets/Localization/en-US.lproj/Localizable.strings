@@ -1725,21 +1725,6 @@
 /* Notification, Approaching Intersection */
 "intersection.approaching_intersection" = "Approaching intersection";
 
-/* Notification, %1$@ is a road name, %2$@ is the distance with units and %3$@ is the orientation, "Intersection with <Pike Street> <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.intersection_with_name_distance_direction" = "Intersection with %1$@ %2$@ %3$@";
-
-/* Notification, %1$@ is a road name, %2$@ is the distance with units, "Intersection with <Pike Street> <5 meters> away" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.intersection_with_name_distance" = "Intersection with %1$@ %2$@ away";
-
-/* Notification, %1$@ is a road name, %2$@ is the orientation, "Intersection with <Pike Street> ahead" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.intersection_with_name_direction" = "Intersection with %1$@ %2$@";
-
-/* Notification, %@ is a road name, "Intersection with <Pike Street> nearby" {NumberedPlaceholder="%@"} */
-"directions.intersection_with_name" = "Intersection with %@ nearby";
-
-/* Notification past tense, %1$@ is a road name, %2$@ is the distance with units and %3$@ is the orientation, "Intersection with <Pike Street> was <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@", "%3$@"} */
-"directions.intersection_with_name_was_distance_direction" = "Intersection with %1$@ was %2$@ %3$@";
-
 /* Notification, %@ will be a localized string with two or more roads, "<Alfred Street and High Street> Intersection" or "<Alfred Street, High Street and Pike Street> Intersection" {NumberedPlaceholder="%@"} */
 "intersection.named_intersection" = "%@ Intersection";
 
@@ -1779,39 +1764,6 @@
 
 /* Notification, Entrance List */
 "directions.amenity.entrance_list" = "Entrance List";
-
-/* Notification, %1$@ is a road name, %2$@ is the distance with units and %3$@ is the orientation, "Nearest road, <Pike Street>, is <5 meters> <ahead to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.nearest_road_name_is_distance_direction" = "Nearest road, %1$@, is %2$@ %3$@";
-
-/* Notification, %1$@ is a road name, %2$@ is the distance with units, "Nearest road, <Pike Street>, is <5 meters> away" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.nearest_road_name_is_distance" = "Nearest road, %1$@, is %2$@ away";
-
-/* Notification past tense, %1$@ is a road name, %2$@ is the distance with units and %3$@ is the orientation, "Nearest road, <Pike Street>, was <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.nearest_road_name_was_distance_direction" = "Nearest road, %1$@, was %2$@ %3$@";
-
-/* Notification, %1$@ is the point of interest, %2$@ is the distance with units, %3$@ is the orientation, "<Starbucks> is <5 meters> <ahead to the left> {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.poi_name_is_distance_direction" = "%1$@ is %2$@ %3$@";
-
-/* Notification, %1$@ is the point of interest, %2$@ is the distance with units, "<Starbucks> is <5 meters> away {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.poi_name_is_distance" = "%1$@ is %2$@ away";
-
-/* Notification past tense, %1$@ is the point of interest, %2$@ is the distance with units and %3$@ is the orientation, "<Starbucks> was <5 meters> <to the left> {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.poi_name_was_distance_direction" = "%1$@ was %2$@ %3$@";
-
-/* Notification, %1$@ is a number, %2$@ is the distance with units and %3$@ is the orientation, "Roundabout with <3> exits <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.roundabout_with_exits_distance_direction" = "Roundabout with %1$@ exits %2$@ %3$@";
-
-/* Notification, %1$@ is a number, and %2$@ is the distance with units, "Roundabout with <3> exits <5 meters> away" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.roundabout_with_exits_distance" = "Roundabout with %1$@ exits %2$@ away";
-
-/* Notification past tense, %1$@ is a number, %2$@ is the distance with units and %3$@ is the orientation, "Roundabout with <3> exits was <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.roundabout_with_exits_was_distance_direction" = "Roundabout with %1$@ exits was %2$@ %3$@";
-
-/* Notification, %1$@ is a number and %2$@ is the orientation, "Roundabout with <3> exits <to the left>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.roundabout_with_exits_direction" = "Roundabout with %1$@ exits %2$@";
-
-/* Notification, %1$@ is a number, "Roundabout with <3> exits" {NumberedPlaceholder="%1$@"} */
-"directions.roundabout_with_exits" = "Roundabout with %1$@ exits nearby";
 
 /* Notification, Approaching Roundabout */
 "directions.approaching_roundabout" = "Approaching roundabout";

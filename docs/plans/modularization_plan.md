@@ -2,7 +2,7 @@
 
 # Modularization Plan
 
-Last updated: 2026-03-10
+Last updated: 2026-03-11
 
 ## Summary
 Continue extracting shared data/domain logic into `apps/common` while keeping Realm isolated behind a stable app-facing storage boundary.
@@ -67,6 +67,7 @@ Completed:
 - The duplicated shared distance/direction/locale-helper string entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`; those lookups now resolve from `SSLanguage` resources.
 - Shared intersection/roundabout road-name phrases and beacon-detail street-address summary phrases also now live in `apps/common/Sources/SSLanguage`; iOS callers route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
 - Shared cardinal-movement phrase families (`directions.traveling.*`, `directions.facing.*`, `directions.heading.*`, and `directions.along.*`) also now live in `apps/common/Sources/SSLanguage`; iOS location callouts route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
+- Shared named-location and junction-summary phrase families (`directions.nearest_road_name_*`, `directions.poi_name_*`, `directions.intersection_with_name*`, and `directions.roundabout_with_exits*`) also now live in `apps/common/Sources/SSLanguage`; iOS location callouts route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
 - The localization validator now checks both the iOS app bundle and `apps/common/Sources/SSLanguage/Resources`, and fails if `SSLanguage`-owned helper keys are duplicated back into the iOS app assets.
 
 In progress:

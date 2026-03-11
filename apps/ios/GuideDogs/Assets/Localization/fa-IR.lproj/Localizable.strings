@@ -1167,16 +1167,7 @@
 //------------------------------------------------------------------------------
 /* Notification, Approaching Intersection */
 "intersection.approaching_intersection" = "نزدیک شدن به تقاطع";
-/* Notification, %1$@ is a road name, %2$@ is the distance with units and %3$@ is the orientation, "Intersection with <Pike Street> <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.intersection_with_name_distance_direction" = "تقاطع با %1$@ در فاصله %2$@ %3$@";
-/* Notification, %1$@ is a road name, %2$@ is the distance with units, "Intersection with <Pike Street> <5 meters> away" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.intersection_with_name_distance" = "تقاطع با %1$@ در فاصله %2$@";
-/* Notification, %1$@ is a road name, %2$@ is the orientation, "Intersection with <Pike Street> ahead" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.intersection_with_name_direction" = "تقاطع با %1$@ در %@";
-/* Notification, %@ is a road name, "Intersection with <Pike Street> nearby" {NumberedPlaceholder="%@"} */
-"directions.intersection_with_name" = "تقاطع با %@ در نزدیکی";
-/* Notification past tense, %1$@ is a road name, %2$@ is the distance with units and %3$@ is the orientation, "Intersection with <Pike Street> was <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@", "%3$@"} */
-"directions.intersection_with_name_was_distance_direction" = "تقاطع با %1$@ در فاصله %2$@ %3$@ بود";
+
 /* Notification, %@ will be a localized string with two or more roads, "<Alfred Street and High Street> Intersection" or "<Alfred Street, High Street and Pike Street> Intersection" {NumberedPlaceholder="%@"} */
 "intersection.named_intersection" = "تقاطع %@";
 //------------------------------------------------------------------------------
@@ -1204,28 +1195,7 @@
 "directions.previous_location_along" = "مکان قبلی، در امتداد %@";
 /* Notification, Entrance List */
 "directions.amenity.entrance_list" = "لیست ورودی‌ها";
-/* Notification, %1$@ is a road name, %2$@ is the distance with units and %3$@ is the orientation, "Nearest road, <Pike Street>, is <5 meters> <ahead to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.nearest_road_name_is_distance_direction" = "نزدیک‌ترین جاده، %1$@، در فاصله %2$@ %3$@ است";
-/* Notification, %1$@ is a road name, %2$@ is the distance with units, "Nearest road, <Pike Street>, is <5 meters> away" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.nearest_road_name_is_distance" = "نزدیک‌ترین جاده، %1$@، در فاصله %2$@ است";
-/* Notification past tense, %1$@ is a road name, %2$@ is the distance with units and %3$@ is the orientation, "Nearest road, <Pike Street>, was <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.nearest_road_name_was_distance_direction" = "نزدیک‌ترین جاده، %1$@، در فاصله %2$@ %3$@ بود";
-/* Notification, %1$@ is the point of interest, %2$@ is the distance with units, %3$@ is the orientation, "<Starbucks> is <5 meters> <ahead to the left> {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.poi_name_is_distance_direction" = "%1$@ در فاصله %2$@ %3$@ است";
-/* Notification, %1$@ is the point of interest, %2$@ is the distance with units, "<Starbucks> is <5 meters> away {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.poi_name_is_distance" = "%1$@ در فاصله %2$@ است";
-/* Notification past tense, %1$@ is the point of interest, %2$@ is the distance with units and %3$@ is the orientation, "<Starbucks> was <5 meters> <to the left> {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.poi_name_was_distance_direction" = "%1$@ در فاصله %2$@ %3$@ بود";
-/* Notification, %1$@ is a number, %2$@ is the distance with units and %3$@ is the orientation, "Roundabout with <3> exits <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.roundabout_with_exits_distance_direction" = "میدان با %1$@ خروجی در فاصله %2$@ %3$@";
-/* Notification, %1$@ is a number, and %2$@ is the distance with units, "Roundabout with <3> exits <5 meters> away" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.roundabout_with_exits_distance" = "میدان با %1$@ خروجی در فاصله %2$@";
-/* Notification past tense, %1$@ is a number, %2$@ is the distance with units and %3$@ is the orientation, "Roundabout with <3> exits was <5 meters> <to the left>" {NumberedPlaceholder="%1$@", "%2$@","%3$@"} */
-"directions.roundabout_with_exits_was_distance_direction" = "میدان با %1$@ خروجی در فاصله %2$@ %3$@ بود";
-/* Notification, %1$@ is a number and %2$@ is the orientation, "Roundabout with <3> exits <to the left>" {NumberedPlaceholder="%1$@", "%2$@"} */
-"directions.roundabout_with_exits_direction" = "میدان با %1$@ خروجی %2$@";
-/* Notification, %1$@ is a number, "Roundabout with <3> exits" {NumberedPlaceholder="%1$@"} */
-"directions.roundabout_with_exits" = "میدان با %1$@ خروجی در نزدیکی";
+
 /* Notification, Approaching Roundabout */
 "directions.approaching_roundabout" = "نزدیک شدن به میدان";
 /* Notification, %1$@ is the road and %2$@ is a number, "<Pike Street> roundabout with <3> exits" {NumberedPlaceholder="%1$@", "%2$@"} */

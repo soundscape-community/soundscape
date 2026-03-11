@@ -22,6 +22,16 @@ public enum LanguageFormatter {
         case traveling
     }
 
+    public enum NamedLocationKind: Sendable {
+        case nearestRoad
+        case pointOfInterest
+    }
+
+    public enum RelativeLocationStyle: Sendable {
+        case current(distance: String?, direction: String?)
+        case previous(distance: String, direction: String)
+    }
+
     public static func string(
         from distance: Double,
         accuracy: Double,
@@ -249,6 +259,124 @@ public enum LanguageFormatter {
         return LanguageLocalizer.localizedString(
             key,
             arguments: roadName.map { [$0] } ?? [],
+            locale: locale,
+            normalizeArguments: true
+        )
+    }
+
+    public static func namedLocationString(
+        kind: NamedLocationKind,
+        name: String,
+        style: RelativeLocationStyle,
+        locale: Locale
+    ) -> String {
+        let key: String
+        let arguments: [String]
+
+        switch (kind, style) {
+        case (.nearestRoad, .current(distance: let distance?, direction: let direction?)):
+            key = "directions.nearest_road_name_is_distance_direction"
+            arguments = [name, distance, direction]
+        case (.nearestRoad, .current(distance: let distance?, direction: nil)):
+            key = "directions.nearest_road_name_is_distance"
+            arguments = [name, distance]
+        case (.nearestRoad, .current(distance: nil, direction: let direction?)):
+            key = "directions.nearest_road_name_is_distance_direction"
+            arguments = [name, "", direction]
+        case (.nearestRoad, .current(distance: nil, direction: nil)):
+            key = "directions.nearest_road_name_is_distance"
+            arguments = [name, ""]
+        case (.nearestRoad, .previous(distance: let distance, direction: let direction)):
+            key = "directions.nearest_road_name_was_distance_direction"
+            arguments = [name, distance, direction]
+        case (.pointOfInterest, .current(distance: let distance?, direction: let direction?)):
+            key = "directions.poi_name_is_distance_direction"
+            arguments = [name, distance, direction]
+        case (.pointOfInterest, .current(distance: let distance?, direction: nil)):
+            key = "directions.poi_name_is_distance"
+            arguments = [name, distance]
+        case (.pointOfInterest, .current(distance: nil, direction: let direction?)):
+            key = "directions.poi_name_is_distance_direction"
+            arguments = [name, "", direction]
+        case (.pointOfInterest, .current(distance: nil, direction: nil)):
+            key = "directions.poi_name_is_distance"
+            arguments = [name, ""]
+        case (.pointOfInterest, .previous(distance: let distance, direction: let direction)):
+            key = "directions.poi_name_was_distance_direction"
+            arguments = [name, distance, direction]
+        }
+
+        return LanguageLocalizer.localizedString(
+            key,
+            arguments: arguments,
+            locale: locale,
+            normalizeArguments: true
+        )
+    }
+
+    public static func intersectionString(
+        name: String,
+        style: RelativeLocationStyle,
+        locale: Locale
+    ) -> String {
+        let key: String
+        let arguments: [String]
+
+        switch style {
+        case .current(distance: let distance?, direction: let direction?):
+            key = "directions.intersection_with_name_distance_direction"
+            arguments = [name, distance, direction]
+        case .current(distance: nil, direction: let direction?):
+            key = "directions.intersection_with_name_direction"
+            arguments = [name, direction]
+        case .current(distance: let distance?, direction: nil):
+            key = "directions.intersection_with_name_distance"
+            arguments = [name, distance]
+        case .current(distance: nil, direction: nil):
+            key = "directions.intersection_with_name"
+            arguments = [name]
+        case .previous(distance: let distance, direction: let direction):
+            key = "directions.intersection_with_name_was_distance_direction"
+            arguments = [name, distance, direction]
+        }
+
+        return LanguageLocalizer.localizedString(
+            key,
+            arguments: arguments,
+            locale: locale,
+            normalizeArguments: true
+        )
+    }
+
+    public static func roundaboutString(
+        exitCount: Int,
+        style: RelativeLocationStyle,
+        locale: Locale
+    ) -> String {
+        let key: String
+        let arguments: [String]
+
+        switch style {
+        case .current(distance: let distance?, direction: let direction?):
+            key = "directions.roundabout_with_exits_distance_direction"
+            arguments = [String(exitCount), distance, direction]
+        case .current(distance: nil, direction: let direction?):
+            key = "directions.roundabout_with_exits_direction"
+            arguments = [String(exitCount), direction]
+        case .current(distance: let distance?, direction: nil):
+            key = "directions.roundabout_with_exits_distance"
+            arguments = [String(exitCount), distance]
+        case .current(distance: nil, direction: nil):
+            key = "directions.roundabout_with_exits"
+            arguments = [String(exitCount)]
+        case .previous(distance: let distance, direction: let direction):
+            key = "directions.roundabout_with_exits_was_distance_direction"
+            arguments = [String(exitCount), distance, direction]
+        }
+
+        return LanguageLocalizer.localizedString(
+            key,
+            arguments: arguments,
             locale: locale,
             normalizeArguments: true
         )

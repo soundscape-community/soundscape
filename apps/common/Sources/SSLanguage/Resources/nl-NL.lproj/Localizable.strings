@@ -103,3 +103,53 @@
 "distance.format.mi" = "%@ mi";
 "distance.format.mile" = "%@ mijl";
 "distance.format.miles" = "%@ mijl";
+
+"directions.intersection_with_name_distance_direction" = "Kruispunt met %1$@ %2$@ %3$@";
+
+
+"directions.intersection_with_name_distance" = "Kruispunt met op %1$@ %2$@ afstand";
+
+
+"directions.intersection_with_name_direction" = "Kruispunt met %1$@ %2$@";
+
+
+"directions.intersection_with_name" = "Kruispunt met %@ dichtbij";
+
+
+"directions.intersection_with_name_was_distance_direction" = "Kruispunt met %1$@ was %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance_direction" = "Dichtstbijzijnde weg, %1$@, is %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance" = "Dichtstbijzijnde weg, %1$@, op %2$@ afstand";
+
+
+"directions.nearest_road_name_was_distance_direction" = "Dichtstbijzijnde weg, %1$@, was %2$@ %3$@";
+
+
+"directions.poi_name_is_distance_direction" = "%1$@ is %2$@ %3$@";
+
+
+"directions.poi_name_is_distance" = "%1$@ is %2$@ weg";
+
+
+"directions.poi_name_was_distance_direction" = "%1$@ was %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance_direction" = "Rotonde met %1$@ afslagen %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance" = "Rotonde met %1$@ afslagen op %2$@ afstand";
+
+
+"directions.roundabout_with_exits_was_distance_direction" = "Rotonde met %1$@ afslagen was %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_direction" = "Rotonde met %1$@ afslagen %2$@";
+
+
+"directions.roundabout_with_exits" = "Rotonde met %1$@ afslagen dichtbij";
+
+
+

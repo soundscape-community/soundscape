@@ -103,3 +103,53 @@
 "distance.format.mi" = "%@ mi";
 "distance.format.mile" = "%@ Meile";
 "distance.format.miles" = "%@ Meilen";
+
+"directions.intersection_with_name_distance_direction" = "Kreuzung mit %1$@ %2$@ %3$@";
+
+
+"directions.intersection_with_name_distance" = "Kreuzung mit %1$@ %2$@ entfernt";
+
+
+"directions.intersection_with_name_direction" = "Kreuzung mit %1$@ %2$@";
+
+
+"directions.intersection_with_name" = "Kreuzung mit %@ in der Nähe";
+
+
+"directions.intersection_with_name_was_distance_direction" = "Kreuzung mit %1$@ war %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance_direction" = "Nächste Straße, %1$@, ist %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance" = "Nächste Straße, %1$@, ist %2$@ entfernt";
+
+
+"directions.nearest_road_name_was_distance_direction" = "Nächste Straße, %1$@, war %2$@ %3$@";
+
+
+"directions.poi_name_is_distance_direction" = "%1$@ ist %2$@ %3$@";
+
+
+"directions.poi_name_is_distance" = "%1$@ ist %2$@ entfernt";
+
+
+"directions.poi_name_was_distance_direction" = "%1$@ war %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance_direction" = "Kreisverkehr mit %1$@ Ausfahrten %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance" = "Kreisverkehr mit %1$@ Ausfahrten %2$@ entfernt";
+
+
+"directions.roundabout_with_exits_was_distance_direction" = "Kreisverkehr mit %1$@ Ausfahrten war %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_direction" = "Kreisverkehr mit %1$@ Ausfahrten %2$@";
+
+
+"directions.roundabout_with_exits" = "Kreisverkehr mit %1$@ Ausfahrten in der Nähe";
+
+
+

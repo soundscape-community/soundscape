@@ -103,3 +103,53 @@
 "distance.format.mi" = "%@ mi";
 "distance.format.mile" = "%@ mile";
 "distance.format.miles" = "%@ miles";
+
+"directions.intersection_with_name_distance_direction" = "Intersection avec %1$@ à %2$@ %3$@";
+
+
+"directions.intersection_with_name_distance" = "Intersection avec %1$@ à %2$@";
+
+
+"directions.intersection_with_name_direction" = "Intersection de %1$@ %2$@";
+
+
+"directions.intersection_with_name" = "Intersection avec %@ à proximité";
+
+
+"directions.intersection_with_name_was_distance_direction" = "L’intersection avec %1$@ était à %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance_direction" = "La route la plus proche, %1$@, est à %2$@ %3$@";
+
+
+"directions.nearest_road_name_is_distance" = "La route la plus proche, %1$@, est à %2$@";
+
+
+"directions.nearest_road_name_was_distance_direction" = "La route la plus proche, %1$@, était à %2$@ %3$@";
+
+
+"directions.poi_name_is_distance_direction" = "%1$@ se trouve à %2$@ %3$@";
+
+
+"directions.poi_name_is_distance" = "%1$@ est à %2$@";
+
+
+"directions.poi_name_was_distance_direction" = "%1$@ se trouvait à %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance_direction" = "Un carrefour giratoire avec %1$@ sorties se trouve à %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_distance" = "Carrefour giratoire avec %1$@ sorties à %2$@";
+
+
+"directions.roundabout_with_exits_was_distance_direction" = "Un carrefour giratoire avec %1$@ sorties se trouvait à %2$@ %3$@";
+
+
+"directions.roundabout_with_exits_direction" = "Carrefour giratoire avec %1$@ sorties %2$@";
+
+
+"directions.roundabout_with_exits" = "Carrefour giratoire avec %1$@ sorties à proximité";
+
+
+
