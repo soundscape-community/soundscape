@@ -157,6 +157,54 @@ struct SSDataContractsTests {
         #expect(region.longitudeDelta == 0.02)
     }
 
+    @Test
+    func geoJSONGeometryParserExtractsTypeAndCoordinates() {
+        let point = GeoJSONGeometryParser.coordinates(geoJson: """
+        {
+            "type": "Point",
+            "coordinates": [100.0, 0.0]
+        }
+        """)
+        let line = GeoJSONGeometryParser.coordinates(geoJson: """
+        {
+            "type": "LineString",
+            "coordinates": [
+                [100.0, 0.0],
+                [101.0, 1.0]
+            ]
+        }
+        """)
+
+        #expect(point.type == .point)
+        #expect((point.points as? GAPoint) == [100.0, 0.0])
+        #expect(line.type == .lineString)
+        #expect((line.points as? GALine) == [[100.0, 0.0], [101.0, 1.0]])
+    }
+
+    @Test
+    func geoJSONGeometryParserCalculatesCentroidForPolygonData() {
+        let centroid = GeoJSONGeometryParser.centroid(geoJson: """
+        {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [100.0, 0.0],
+                    [101.0, 0.0],
+                    [101.0, 1.0],
+                    [100.0, 1.0],
+                    [100.0, 0.0]
+                ]
+            ]
+        }
+        """)
+
+        #expect(centroid != nil)
+        if let centroid {
+            #expect(centroid.longitude == 100.5)
+            #expect(centroid.latitude == 0.5)
+        }
+    }
+
     @MainActor
     @Test
     func storageContractProtocolsSupportUnifiedConformance() async throws {

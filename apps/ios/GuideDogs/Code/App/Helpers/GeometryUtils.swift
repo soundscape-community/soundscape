@@ -12,18 +12,6 @@ import CoreLocation
 import SSDataContracts
 import SSGeo
 
-/// Should contain two objects: latitude and longitude
-typealias GAPoint = [CLLocationDegrees]
-
-/// Should contain one or more points
-typealias GALine = [GAPoint]
-
-/// Should contain one or more lines
-typealias GAMultiLine = [GALine]
-
-// Should contain one or more multi lines
-typealias GAMultiLineCollection = [GAMultiLine]
-
 class GeometryUtils {
     
     static let maxRoadDistanceForBearingCalculation: CLLocationDistance = SSGeoPath.maxDistanceForBearingCalculation
@@ -36,22 +24,7 @@ class GeometryUtils {
     /// * https://geojson.org
     /// * RFC 7946
     nonisolated static func coordinates(geoJson: String) -> (type: GeometryType?, points: [Any]?) {
-        guard !geoJson.isEmpty, let jsonObject = GDAJSONObject(string: geoJson) else {
-                return (nil, nil)
-        }
-        
-        let geometryType: GeometryType?
-        if let typeString = jsonObject.string(atPath: "type") {
-            geometryType = GeometryType(rawValue: typeString)
-        } else {
-            geometryType = nil
-        }
-        
-        guard let geometry = jsonObject.array(atPath: "coordinates") else {
-            return (geometryType, nil)
-        }
-        
-        return (geometryType, geometry)
+        GeoJSONGeometryParser.coordinates(geoJson: geoJson)
     }
     
     /// Returns whether a coordinate lies inside of the region contained within the coordinate path.
@@ -257,27 +230,7 @@ extension GeometryUtils {
     /// Returns a generated coordinate representing the mean center of a given array of coordinates.
     /// - Note: See `centroid(coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D?`
     nonisolated static func centroid(geoJson: String) -> CLLocationCoordinate2D? {
-        guard let points = GeometryUtils.coordinates(geoJson: geoJson).points else {
-            return nil
-        }
-        
-        // Check if `points` contains one point (e.g. point)
-        if let point = points as? GAPoint {
-            return point.toCoordinate()
-        }
-        
-        // Check if `points` contains an array of points (e.g. line, polygon)
-        if let points = points as? GALine {
-            return GeometryUtils.centroid(coordinates: points.toCoordinates())
-        }
-        
-        // Check if `points` contains a two dimensional array of points (e.g. lines, polygons)
-        if let points = points as? GAMultiLine {
-            let flattened = Array(points.toCoordinates().joined())
-            return GeometryUtils.centroid(coordinates: flattened)
-        }
-        
-       return nil
+        GeoJSONGeometryParser.centroid(geoJson: geoJson)?.clCoordinate
     }
     
     /// Returns a generated coordinate representing the mean center of a given array of `CLLocation` objects.

@@ -3,79 +3,18 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
+import SSDataContracts
 
-/// Geometry types from the GeoJSON spec ([link](https://tools.ietf.org/html/rfc7946)).
-/// Note that this looks like a very odd/inefficient way to define an `Enum:String` type. That is
-/// because it is. This was only defined this way so as to allow for Objective-C support. In
-/// Objective-C, enums must have an integer type, hence the additional work to allow for strings.
-///
-/// - point: The geometry consists of a single point
-/// - lineString: The geometry consists of at least two points
-/// - multiPoint: The geometry consists of any number of points
-/// - polygon: The geometry consists of an array of linear ring coordinate arrays (see spec above)
-/// - multiLineString: The geometry consists of an array of lineStrings
-/// - multiPolygon: The geometry consists of an array of polygons
-@objc public enum GeometryType: Int, RawRepresentable {
-    /// The geometry consists of a single point
-    case point
-    
-    /// The geometry consists of at least two points
-    case lineString
-    
-    /// The geometry consists of any number of points
-    case multiPoint
-    
-    ///  The geometry consists of an array of linear ring coordinate arrays (see spec above)
-    case polygon
-    
-    /// The geometry consists of an array of lineStrings
-    case multiLineString
-    
-    /// The geometry consists of an array of polygons
-    case multiPolygon
-    
-    public typealias RawValue = String
-    
-    public var rawValue: RawValue {
-        switch self {
-        case .point:
-            return "Point"
-        case .lineString:
-            return "LineString"
-        case .multiPoint:
-            return "MultiPoint"
-        case .polygon:
-            return "Polygon"
-        case .multiLineString:
-            return "MultiLineString"
-        case .multiPolygon:
-            return "MultiPolygon"
-        }
-    }
-    
-    public init?(rawValue: RawValue) {
-        switch rawValue {
-        case "Point":
-            self = .point
-        case "LineString":
-            self = .lineString
-        case "MultiPoint":
-            self = .multiPoint
-        case "Polygon":
-            self = .polygon
-        case "MultiLineString":
-            self = .multiLineString
-        case "MultiPolygon":
-            self = .multiPolygon
-        default:
-            self = .multiPolygon
-        }
-    }
-}
+typealias GeometryType = SSDataContracts.GeometryType
+typealias GAPoint = SSDataContracts.GAPoint
+typealias GALine = SSDataContracts.GALine
+typealias GAMultiLine = SSDataContracts.GAMultiLine
+typealias GAMultiLineCollection = SSDataContracts.GAMultiLineCollection
 
 /// GeoJsonGeometry is a Swift representation of the `geometry` property in a GeoJSON feature.
 class GeoJsonGeometry {
