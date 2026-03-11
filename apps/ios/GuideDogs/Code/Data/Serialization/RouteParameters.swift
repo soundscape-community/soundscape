@@ -15,11 +15,17 @@ typealias RouteParameters = SSDataContracts.RouteParameters
 
 extension SSDataContracts.RouteParameters {
     @MainActor
-    init?(route: SSDataDomain.Route, context: Context) {
+    init?(route: SSDataDomain.Route, context: Context) async {
         let id = route.id
         let name = route.name
         let routeDescription = route.routeDescription
-        let waypoints = route.waypoints.map { RouteWaypointParameters(waypoint: $0) }
+        var waypoints: [RouteWaypointParameters] = []
+        waypoints.reserveCapacity(route.waypoints.count)
+
+        for waypoint in route.waypoints {
+            waypoints.append(await RouteWaypointParameters(waypoint: waypoint))
+        }
+
         let createdDate = context == .backup ? route.createdDate : nil
         let lastUpdatedDate = context == .backup ? route.lastUpdatedDate : nil
         let lastSelectedDate = context == .backup ? route.lastSelectedDate : nil
@@ -35,5 +41,38 @@ extension SSDataContracts.RouteParameters {
                   createdDate: createdDate,
                   lastUpdatedDate: lastUpdatedDate,
                   lastSelectedDate: lastSelectedDate)
+    }
+
+    @MainActor
+    init?(routeDetail: RouteDetail, context: Context) {
+        let waypoints = routeDetail.waypoints.enumerated().compactMap { index, detail -> RouteWaypointParameters? in
+            guard let markerId = detail.markerId else {
+                return nil
+            }
+
+            switch context {
+            case .backup:
+                return RouteWaypointParameters(index: index, markerId: markerId, marker: nil)
+            case .share:
+                guard let marker = MarkerParameters(location: detail) else {
+                    return nil
+                }
+
+                return RouteWaypointParameters(index: index, markerId: markerId, marker: marker)
+            }
+        }
+
+        guard waypoints.count == routeDetail.waypoints.count else {
+            return nil
+        }
+
+        let routeDescription = routeDetail.description
+        self.init(id: routeDetail.id,
+                  name: routeDetail.displayName,
+                  routeDescription: routeDescription,
+                  waypoints: waypoints,
+                  createdDate: nil,
+                  lastUpdatedDate: nil,
+                  lastSelectedDate: nil)
     }
 }

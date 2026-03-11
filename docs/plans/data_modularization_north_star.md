@@ -41,6 +41,7 @@ It should hold:
 ### Backend Layer
 Realm remains an infrastructure backend under `apps/ios/GuideDogs/Code/Data/Infrastructure/Realm/**` until it is ready to be split behind the stabilized app-side surface.
 Replaceability comes before physical extraction: Realm may stay in the iOS app target for now, but non-infrastructure callers should depend on contracts and shared value types rather than Realm object models or cache/search helpers.
+Serialization code follows the same rule: persisted marker/route lookups should go through async contract reads, and share/export flows should prefer already-loaded domain/detail values over synchronous persistence reach-backs.
 
 ## Stable App-Facing Storage API
 ### Entry Point

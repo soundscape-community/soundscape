@@ -67,11 +67,11 @@ extension CloudKeyValueStore {
     }
     
     func store(route: Route) {
-        if let routeParameters = RouteParameters(route: route, context: .backup) {
-            store(routeParameters: routeParameters)
-        } else {
-            GDLogCloudInfo("Failed to initialize route")
-            Task { @MainActor in
+        Task { @MainActor in
+            if let routeParameters = await RouteParameters(route: route, context: .backup) {
+                store(routeParameters: routeParameters)
+            } else {
+                GDLogCloudInfo("Failed to initialize route")
                 GDATelemetry.track("route_backup.error.parameters_failed_to_initialize")
             }
         }

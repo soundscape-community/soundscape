@@ -83,8 +83,8 @@ struct SoundscapeDocumentAlert: ShareAlertFactory {
         return activity
     }
     
-    static func shareRoute(_ route: Route) -> UIActivityViewController? {
-        guard let url = URLResourceManager.shareRoute(route) else {
+    static func shareRoute(_ route: Route) async -> UIActivityViewController? {
+        guard let url = await URLResourceManager.shareRoute(route) else {
             return nil
         }
         
@@ -92,16 +92,12 @@ struct SoundscapeDocumentAlert: ShareAlertFactory {
     }
     
     static func shareRoute(_ routeDetail: RouteDetail) -> UIActivityViewController? {
-        guard case .database(let id) = routeDetail.source else {
+        guard let parameters = RouteParameters(routeDetail: routeDetail, context: .share),
+              let url = RouteParameters.encodeAndWriteToTemporaryFile(parameters) else {
             return nil
         }
-        
-        var route = Route(name: routeDetail.displayName,
-                          description: routeDetail.description,
-                          waypoints: routeDetail.waypoints.asRouteWaypoint)
-        route.id = id
 
-        return shareRoute(route)
+        return shareRoute(url, routeName: routeDetail.displayName)
     }
     
 }

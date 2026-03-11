@@ -105,8 +105,8 @@ class UniversalLinkManager {
 extension UniversalLinkManager {
 
     @MainActor
-    static func shareEntity(_ entity: POI) -> URL? {
-        guard let parameters = MarkerParameters(entity: entity) else {
+    static func shareEntity(_ entity: POI) async -> URL? {
+        guard let parameters = await MarkerParameters(entity: entity) else {
             return nil
         }
         

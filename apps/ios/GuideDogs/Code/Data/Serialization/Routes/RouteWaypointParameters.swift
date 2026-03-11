@@ -15,9 +15,9 @@ typealias RouteWaypointParameters = SSDataContracts.RouteWaypointParameters
 
 extension SSDataContracts.RouteWaypointParameters {
     @MainActor
-    init(waypoint: SSDataDomain.RouteWaypoint) {
+    init(waypoint: SSDataDomain.RouteWaypoint) async {
         self.init(index: waypoint.index,
                   markerId: waypoint.markerId,
-                  marker: MarkerParameters(markerId: waypoint.markerId))
+                  marker: await MarkerParameters(markerId: waypoint.markerId))
     }
 }

@@ -32,11 +32,19 @@ struct RealmSpatialReadContract: SpatialReadContract {
             return nil
         }
 
-        return RouteParameters(route: route, context: context)
+        return await RouteParameters(route: route, context: context)
     }
 
     func routeParametersForBackup() async -> [RouteParameters] {
-        SpatialDataCache.routes().compactMap { RouteParameters(route: $0, context: .backup) }
+        var parameters: [RouteParameters] = []
+
+        for route in SpatialDataCache.routes() {
+            if let routeParameters = await RouteParameters(route: route, context: .backup) {
+                parameters.append(routeParameters)
+            }
+        }
+
+        return parameters
     }
 
     func routes(containingMarkerID markerID: String) async -> [Route] {

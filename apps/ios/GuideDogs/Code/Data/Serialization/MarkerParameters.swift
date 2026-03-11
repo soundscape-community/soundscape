@@ -59,13 +59,17 @@ extension SSDataContracts.MarkerParameters {
     }
 
     @MainActor
-    init?(markerId: String) {
-        guard let marker = LocationDetailStoreAdapter.referenceEntity(byID: markerId) else {
+    init?(markerId: String) async {
+        await self.init(markerId: markerId, using: DataContractRegistry.spatialRead)
+    }
+
+    @MainActor
+    init?(markerId: String, using spatialRead: ReferenceReadContract) async {
+        guard let marker = await spatialRead.referenceEntity(byID: markerId) else {
             return nil
         }
 
-        let locationCoordinate = CLLocationCoordinate2D(latitude: marker.latitude, longitude: marker.longitude)
-        let locationMarker = LocationDetailStoreAdapter.referenceEntity(byLocation: locationCoordinate)
+        let locationMarker = await spatialRead.referenceEntity(byCoordinate: marker.coordinate)
         let resolvedMarker = locationMarker ?? marker
 
         self.init(entity: resolvedMarker.getPOI(),
@@ -77,12 +81,17 @@ extension SSDataContracts.MarkerParameters {
     }
 
     @MainActor
-    init?(entity: POI) {
+    init?(entity: POI) async {
+        await self.init(entity: entity, using: DataContractRegistry.spatialRead)
+    }
+
+    @MainActor
+    init?(entity: POI, using spatialRead: ReferenceReadContract) async {
         let matchedMarker: ReferenceEntity?
         if let location = entity as? GenericLocation {
-            matchedMarker = LocationDetailStoreAdapter.referenceEntity(byLocation: location.location.coordinate)
+            matchedMarker = await spatialRead.referenceEntity(byGenericLocation: location)
         } else {
-            matchedMarker = LocationDetailStoreAdapter.referenceEntity(byEntityKey: entity.key)
+            matchedMarker = await spatialRead.referenceEntity(byEntityKey: entity.key)
         }
 
         if let matchedMarker {

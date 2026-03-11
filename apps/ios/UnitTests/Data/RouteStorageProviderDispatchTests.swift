@@ -478,23 +478,23 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         XCTAssertEqual(readMock.referenceEntityByIDCalls, [markerID])
     }
 
-    func testMarkerParametersInitMarkerIDUsesPersistenceLookupWithoutInjectedStoreFallback() throws {
+    func testMarkerParametersInitMarkerIDUsesContractLookup() async throws {
         let markerID = "marker-id-\(UUID().uuidString)"
         let coordinate = makeUniqueCoordinate(baseLatitude: 47.6205, baseLongitude: -122.3493)
         _ = try createPersistedMarker(id: markerID, coordinate: coordinate)
 
-        let parameters = MarkerParameters(markerId: markerID)
+        let parameters = await MarkerParameters(markerId: markerID)
 
         XCTAssertNotNil(parameters)
         XCTAssertEqual(parameters?.id, markerID)
     }
 
-    func testMarkerParametersInitGenericLocationUsesPersistenceLookupWithoutInjectedStoreFallback() throws {
+    func testMarkerParametersInitGenericLocationUsesContractLookup() async throws {
         let genericLocation = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Generic")
         let expectedCoordinate = genericLocation.location.coordinate
         _ = try createPersistedMarker(id: "marker-generic-\(UUID().uuidString)", coordinate: expectedCoordinate)
 
-        let parameters = MarkerParameters(entity: genericLocation)
+        let parameters = await MarkerParameters(entity: genericLocation)
 
         XCTAssertNotNil(parameters)
     }
