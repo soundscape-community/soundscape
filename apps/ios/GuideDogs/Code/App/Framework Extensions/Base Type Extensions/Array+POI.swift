@@ -19,7 +19,7 @@ extension Array where Element == POI {
     }
 
     func quadrants(_ includedQuadrants: [CompassDirection] = CompassDirection.allDirections, location: CLLocation, heading: CLLocationDirection, categories: [SuperCategory], maxLengthPerQuadrant: Int) -> Quadrant {
-        let quadrants = SpatialDataView.getQuadrants(heading: heading)
+        let quadrants = CompassDirection.quadrants(forHeading: heading)
         let sortPredicate = Sort.distance(origin: location)
         let categoryFilterPredicate = Filter.superCategories(orExpected: categories)
 

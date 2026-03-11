@@ -47,6 +47,25 @@ struct SSGeoTests {
         }
     }
 
+    @Test
+    func quadrantsRotateAroundCurrentHeading() {
+        let quadrants = CompassDirection.quadrants(forHeading: 95.0)
+
+        #expect(quadrants.count == 4)
+        #expect(quadrants[0].left == 320.0)
+        #expect(quadrants[0].right == 50.0)
+        #expect(quadrants[1].contains(95.0))
+        #expect(!quadrants[0].contains(95.0))
+    }
+
+    @Test
+    func compassDirectionResolvesFromBearingAndHeading() {
+        let quadrants = CompassDirection.quadrants(forHeading: 230.0)
+
+        #expect(CompassDirection.from(bearing: 230.0, quadrants: quadrants) == .west)
+        #expect(CompassDirection.from(heading: 0.0) == .north)
+    }
+
     #if canImport(CoreLocation)
     @Test
     func distanceAccuracyComparedToCoreLocation() {

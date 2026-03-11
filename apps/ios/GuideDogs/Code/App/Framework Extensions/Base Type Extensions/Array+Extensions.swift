@@ -9,6 +9,7 @@
 
 import CoreLocation
 import Combine
+import SSGeo
 
 extension Array where Element: Hashable {
     /// Converts an array of hashable elements to a set
@@ -63,7 +64,7 @@ extension Array where Element == ReferenceEntity {
                                      maxDistance range: CLLocationDistance? = nil,
                                      excludeEntitiesContainingLocation excluding: Bool = true) -> [CompassDirection: ReferenceEntity] {
         // Get the quadrants (based on the user's current heading) used for grouping POIs
-        let quadrants = SpatialDataView.getQuadrants(heading: heading)
+        let quadrants = CompassDirection.quadrants(forHeading: heading)
         
         var north: SortedEntity?
         var east: SortedEntity?

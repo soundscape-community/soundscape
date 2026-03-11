@@ -8,6 +8,7 @@
 //
 
 import CoreLocation
+import SSGeo
 
 struct ExplorationModeToggled: UserInitiatedEvent {
     let sender: AnyObject?
@@ -450,7 +451,7 @@ private extension ExplorationGenerator {
             
         case .aheadOfMe:
             let heading = geo.heading(orderedBy: [.user, .device, .course]).value ?? Heading.defaultValue
-            let direction = SpatialDataView.getHeadingDirection(heading: heading)
+            let direction = CompassDirection.from(heading: heading)
             setUserActivityIfNeeded(for: event)
             return findCalloutsFor(direction,
                                    maxItems: maxAheadOfMeCallouts,
