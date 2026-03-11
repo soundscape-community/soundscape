@@ -100,17 +100,11 @@ struct WaypointAddList_Previews: PreviewProvider {
         
         SpatialPreviewSamples.bootstrap()
         
-        let markerIds = SpatialPreviewSamples.markerIDs()
         let waypoints: [IdentifiableLocationDetail]
-        
-        if let id = markerIds.first, let detail = LocationDetail(markerId: id) {
-            var details = RouteDetailsView_Previews.testOMRoute.waypoints
-            details.append(detail)
-            
-            waypoints = details.asIdenfifiable
-        } else {
-            waypoints = RouteDetailsView_Previews.testOMRoute.waypoints.asIdenfifiable
-        }
+
+        var details = RouteDetailsView_Previews.testOMRoute.waypoints
+        details.append(LocationDetail(entity: RealmReferenceEntity.sample.getPOI()))
+        waypoints = details.asIdenfifiable
         
         return SpatialPreviewEnvironment.configure(
             Group {
