@@ -1,3 +1,5 @@
+// Copyright (c) Soundscape Community Contributers.
+
 import Foundation
 import Testing
 
@@ -64,6 +66,71 @@ struct SSGeoTests {
 
         #expect(CompassDirection.from(bearing: 230.0, quadrants: quadrants) == .west)
         #expect(CompassDirection.from(heading: 0.0) == .north)
+    }
+
+    @Test
+    func pathBearingAndReferenceCoordinateUsePathDistance() {
+        let path = [
+            SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493),
+            SSGeoCoordinate(latitude: 47.6210, longitude: -122.3493),
+            SSGeoCoordinate(latitude: 47.6210, longitude: -122.3480),
+        ]
+
+        let firstLegDistance = path[0].distance(to: path[1])
+        let bearing = SSGeoPath.pathBearing(for: path, maxDistance: firstLegDistance + 1.0)
+        let referenceCoordinate = SSGeoPath.referenceCoordinate(on: path, for: firstLegDistance / 2.0)
+
+        #expect(bearing != nil)
+        if let bearing {
+            #expect(bearing > 0.0)
+        }
+
+        #expect(referenceCoordinate != nil)
+        if let referenceCoordinate {
+            #expect(referenceCoordinate.latitude > path[0].latitude)
+            #expect(referenceCoordinate.longitude == path[0].longitude)
+        }
+    }
+
+    @Test
+    func pathRotationSplitAndCircularDetectionWorkTogether() {
+        let path = [
+            SSGeoCoordinate(latitude: 1.0, longitude: 1.0),
+            SSGeoCoordinate(latitude: 1.0, longitude: 2.0),
+            SSGeoCoordinate(latitude: 2.0, longitude: 2.0),
+            SSGeoCoordinate(latitude: 1.0, longitude: 1.0),
+        ]
+
+        let rotated = SSGeoPath.rotate(circularPath: path, atCoordinate: path[1])
+        let reversedSplit = SSGeoPath.split(path: path, atCoordinate: path[2], reversedDirection: true)
+
+        #expect(SSGeoPath.pathIsCircular(path))
+        #expect(rotated.first == path[1])
+        #expect(rotated.last == path[1])
+        #expect(reversedSplit.first == path[2])
+        #expect(reversedSplit.last == path[0])
+    }
+
+    @Test
+    func interpolationAndCentroidReturnExpectedShape() {
+        let start = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3493)
+        let end = SSGeoCoordinate(latitude: 47.6205, longitude: -122.3470)
+        let interpolated = SSGeoPath.interpolateToEqualDistance(
+            start: start,
+            end: end,
+            distance: 50.0
+        )
+        let centroid = SSGeoPath.centroid(coordinates: [start, end])
+
+        #expect(interpolated.count > 2)
+        #expect(interpolated.first == start)
+        #expect(interpolated.last == end)
+        #expect(centroid != nil)
+        if let centroid {
+            #expect(centroid.latitude == start.latitude)
+            #expect(centroid.longitude > start.longitude)
+            #expect(centroid.longitude < end.longitude)
+        }
     }
 
     #if canImport(CoreLocation)

@@ -19,7 +19,7 @@ This file is the canonical instruction source for coding agents in this reposito
 - `AudioPlaybackActor` provides async audio playback control for the coordinator and wraps `AudioEngine` interactions.
 - `HandledEventAction` is the behavior-to-processor contract for callout playback, event fan-out, and interrupt requests.
 - `SSDataStructures` now lives in `apps/common` and is imported by iOS targets that need queue/stack/token/thread-safe primitives.
-- `SSGeo` now lives in `apps/common` and provides portable location payloads, heading/quadrant helpers, and basic geodesic math without `CoreLocation`.
+- `SSGeo` now lives in `apps/common` and provides portable location payloads, heading/quadrant/path helpers, centroid calculations, and basic geodesic math without `CoreLocation`.
 - `SSLanguage` now lives in `apps/common` and provides portable localization helpers, distance/direction/intersection/street-address/cardinal-movement/location-summary formatters, locale helpers, and package-owned shared language resources.
 - Localization validation now checks both `apps/ios/GuideDogs/Assets/Localization` and `apps/common/Sources/SSLanguage/Resources`, and it blocks reintroducing `SSLanguage`-owned helper keys into the iOS app bundle.
 - `SSDataDomain` now lives in `apps/common` and hosts canonical route/reference domain value models plus shared POI/category/type/filter/sort/queue/query abstractions and portable POI matching logic shared with iOS.
@@ -191,7 +191,7 @@ Historical planning docs are valuable context, but commands and tooling details 
 - Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component parsing types now live in `apps/common/Sources/SSDataContracts`; keep only runtime managers/handlers and other app-specific behavior in `apps/ios`.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; keep the iOS helper file as a CoreLocation shim only, and do not reintroduce the old Objective-C bridge.
 - `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, type/filter/sort/queue/query helpers, and generic `[POI]` array helper logic now live in `apps/common/Sources/SSDataDomain`; keep only Realm keys, CoreLocation conveniences/bridges, quadrant-specific wrappers, and glyph/audio presentation mapping in `apps/ios`.
-- `Quadrant`, `CompassDirection`, and the shared heading-to-quadrant bucketing logic now live in `apps/common/Sources/SSGeo`; keep only iOS compatibility aliases or call-site imports in `apps/ios`.
+- `Quadrant`, `CompassDirection`, the shared heading-to-quadrant bucketing logic, and the portable path/centroid helpers extracted from `GeometryUtils` now live in `apps/common/Sources/SSGeo`; keep `GeometryUtils` in `apps/ios` only for Apple-framework-specific wrappers.
 - Shared distance/direction/intersection/street-address/cardinal-movement/location-summary localization helper keys are owned by `SSLanguage`; do not duplicate those key families back into `apps/ios/GuideDogs/Assets/Localization/**`.
 - `SSLanguage` call sites in `apps/ios` now import the module directly for portable types; keep iOS wrappers only where app-locale defaults, `AppContext`, or Apple-framework bridging are still required.
 - `apps/ios/Package.swift` is placeholder/editor scaffolding and should not be used as the architectural extraction boundary.

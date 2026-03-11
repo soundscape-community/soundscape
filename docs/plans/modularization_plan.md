@@ -27,7 +27,7 @@ Progress is materially good:
 - Shared language/localization helpers now live in `SSLanguage`, with iOS retaining only app-state and UI-specific localization behavior.
 - Shared contract-side parameter models (`UniversalLinkParameters`, route/marker/location parameter types) now also live in `SSDataContracts`, with iOS files reduced to shims and runtime-specific extensions.
 - `VectorTile` and the legacy `GDAJSONObject` parsing helper are now Swift/common types in `SSDataContracts`, with iOS retaining only CoreLocation convenience shims.
-- `Quadrant`, `CompassDirection`, and the shared heading-to-quadrant bucketing helpers now live in `SSGeo`, with iOS call sites using the shared geometry API.
+- `Quadrant`, `CompassDirection`, the shared heading-to-quadrant bucketing helpers, and the runtime-neutral path/centroid math extracted from `GeometryUtils` now live in `SSGeo`, with iOS retaining only Apple-framework-specific geometry wrappers.
 - `POI`, `GenericLocation`, `SuperCategory`, portable POI equality/matching, portable filter/sort/queue constructors and generic array-query helpers, and the primary/secondary POI typing abstractions now live in `SSDataDomain`, with iOS retaining Realm keys plus CoreLocation and glyph/audio extensions only.
 - `DataContractRegistry` is the app-facing data ingress.
 - Default backend installation is centralized and guarded.
@@ -63,7 +63,7 @@ Completed:
 - `DataContractRegistry` no longer constructs Realm adapters directly; Realm default installation is now owned from infrastructure and bootstrapped explicitly by app/test setup.
 - Shared route/marker/location parameter models, `UniversalLinkParameters`, and universal-link path/version/component value types now live in `apps/common/Sources/SSDataContracts`; iOS serialization files retain only runtime-specific behavior.
 - `VectorTile` and `GDAJSONObject` now live in `apps/common/Sources/SSDataContracts`; the Objective-C `GDAJSONObject` bridge has been removed from the iOS target.
-- `Quadrant`, `CompassDirection`, and the heading-to-quadrant bucketing math now live in `apps/common/Sources/SSGeo`; iOS call sites use the shared helpers and the former helper files are reduced to compatibility aliases.
+- `Quadrant`, `CompassDirection`, the heading-to-quadrant bucketing math, and the portable path/centroid helpers now live in `apps/common/Sources/SSGeo`; iOS call sites use the shared helpers, the former helper files are reduced to compatibility aliases, and `GeometryUtils` now bridges only the remaining Apple-framework-specific pieces.
 - `POI`, `SelectablePOI`, `MatchablePOI`, `GenericLocation`, `SuperCategory`, portable POI matching/equality helpers, shared filter/sort/queue helpers, and the shared `PrimaryType`/`SecondaryType`/`Typeable` abstractions now live in `apps/common/Sources/SSDataDomain`; iOS files retain only Realm keys plus CoreLocation and presentation-specific shims/extensions.
 - `DistanceFormatter`, `DistanceUnit`, `LanguageFormatter`, `PostalAbbreviations`, `Direction`, `CardinalDirection`, `CodeableDirection`, and portable locale/bundle helpers now live in `apps/common/Sources/SSLanguage`; iOS now imports `SSLanguage` directly for portable types and retains only app-locale/app-context composition wrappers plus UI localization behavior.
 - The duplicated shared distance/direction/locale-helper string entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`; those lookups now resolve from `SSLanguage` resources.
@@ -96,7 +96,7 @@ Preferred local workflow:
 2. `bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output quiet`
 3. Refresh dependency analysis only when dependency shape meaningfully changes.
 
-Latest local results on 2026-03-10:
+Latest local results on 2026-03-11:
 - `bash apps/ios/Scripts/ci/run_data_modularization_targeted_tests.sh --output quiet`: passed, `61` tests, `0` failures.
 - `bash apps/ios/Scripts/ci/run_local_validation.sh -- --output quiet`: boundary scripts green, iOS build-for-testing passed, full-suite test phase reached only the two known non-blocking `AudioEngineTest` failures.
 
@@ -133,6 +133,7 @@ Remaining focus:
 - Moved the remaining portable route/marker/location/universal-link contract-side value models into `SSDataContracts`, including universal-link path/version/component parsing types, while leaving only runtime managers/handlers in `apps/ios`.
 - Rewrote `GDAJSONObject` in Swift, moved it and `VectorTile` into `SSDataContracts`, and reduced the iOS helper surface to CoreLocation bridge overloads.
 - Moved `Quadrant`, `CompassDirection`, and the heading-to-quadrant bucketing helpers into `SSGeo`, replaced the `SpatialDataView`-owned heading helper logic with the shared API, and reduced the iOS helper files to compatibility aliases.
+- Moved the runtime-neutral `GeometryUtils` path/bearing/interpolation/centroid math into `SSGeo`, left `GeometryUtils` in `apps/ios` as the Apple-framework bridge for polygon/VectorTile-specific work, and added focused `SSGeo` test coverage for the extracted path helpers.
 - Moved the shared POI/domain helper surface into `SSDataDomain`: `POI`, `GenericLocation`, `SuperCategory`, type/filter/sort/queue/query helpers, and generic `[POI]` array helper logic now live in `apps/common`, while iOS retains only Realm keys, CoreLocation bridges, quadrant-specific wrappers, and presentation mapping.
 - Kept `DataContractRegistry` as the single iOS composition root and moved default Realm installation behind infrastructure-owned setup (`configureWithRealmDefaults()`).
 - Renamed the stable-target doc to `docs/plans/data_modularization_north_star.md` so it matches the broader shared-domain extraction work and future Android goal.

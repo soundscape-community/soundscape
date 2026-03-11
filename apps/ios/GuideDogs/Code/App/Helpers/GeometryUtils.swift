@@ -3,12 +3,14 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributers.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 import MapKit
 import SSDataContracts
+import SSGeo
 
 /// Should contain two objects: latitude and longitude
 typealias GAPoint = [CLLocationDegrees]
@@ -24,7 +26,7 @@ typealias GAMultiLineCollection = [GAMultiLine]
 
 class GeometryUtils {
     
-    static let maxRoadDistanceForBearingCalculation: CLLocationDistance = 25.0
+    static let maxRoadDistanceForBearingCalculation: CLLocationDistance = SSGeoPath.maxDistanceForBearingCalculation
 
     static let earthRadius = Double(6378137)
     
@@ -102,17 +104,7 @@ class GeometryUtils {
     /// //         * * C  - (C) last coordinate
     /// ```
     nonisolated static func pathBearing(for path: [CLLocationCoordinate2D], maxDistance: CLLocationDistance = CLLocationDistanceMax) -> CLLocationDirection? {
-        guard let firstCoordinate = path.first else {
-            print("[GAPathBearing] Error: path has no coordinates")
-            return nil
-        }
-        
-        guard let referenceCoordinate = referenceCoordinate(on: path, for: maxDistance) else {
-            print("[GAPathBearing] Error: could not calculate reference coordinate")
-            return nil
-        }
-        
-        return firstCoordinate.bearing(to: referenceCoordinate)
+        SSGeoPath.pathBearing(for: path.map(\.ssGeoCoordinate), maxDistance: maxDistance)
     }
     
     ///  Returns the sub-coordinates from a coordinate on a path until the end or start of the path.
@@ -126,13 +118,11 @@ class GeometryUtils {
     nonisolated static func split(path: [CLLocationCoordinate2D],
                       atCoordinate coordinate: CLLocationCoordinate2D,
                       reversedDirection: Bool = false) -> [CLLocationCoordinate2D] {
-        guard let coordinateIndex = path.firstIndex(of: coordinate) else {
-            return []
-        }
-        
-        return reversedDirection ?                       // Illustration: numbers are coordinates, * is the root coordinate.
-            Array(path[...coordinateIndex].reversed()) : // [1, 2, 3, *, 5, 6, 7] → [*, 3, 2, 1]
-            Array(path[coordinateIndex...])              // [1, 2, 3, *, 5, 6, 7] → [*, 5, 6, 7]
+        SSGeoPath.split(
+            path: path.map(\.ssGeoCoordinate),
+            atCoordinate: coordinate.ssGeoCoordinate,
+            reversedDirection: reversedDirection
+        ).map(\.clCoordinate)
     }
     
     /// Rotates the order of the coordinates in a circular path so that the specified coordinate is the first/last coordinate
@@ -148,22 +138,11 @@ class GeometryUtils {
     nonisolated static func rotate(circularPath path: [CLLocationCoordinate2D],
                        atCoordinate coordinate: CLLocationCoordinate2D,
                        reversedDirection: Bool = false) -> [CLLocationCoordinate2D] {
-        guard pathIsCircular(path), let coordinateIndex = path.firstIndex(of: coordinate) else {
-            return []
-        }
-        
-        guard coordinateIndex != 0 else {
-            if reversedDirection {
-                return path.reversed()
-            } else {
-                return path
-            }
-        }
-        
-        let back: [CLLocationCoordinate2D] = Array(path[coordinateIndex ..< (path.count - 1)]) // ..< so we don't include the current start/end coordinate twice
-        let front: [CLLocationCoordinate2D] = Array(path[0 ... coordinateIndex]) // ... so we start and end the new order with the same coordinate
-        
-        return reversedDirection ? (back + front).reversed() : back + front
+        SSGeoPath.rotate(
+            circularPath: path.map(\.ssGeoCoordinate),
+            atCoordinate: coordinate.ssGeoCoordinate,
+            reversedDirection: reversedDirection
+        ).map(\.clCoordinate)
     }
     
     ///  Returns `true` if the path is a circular path (the first coordinate is equal to the last coordinate,
@@ -173,11 +152,7 @@ class GeometryUtils {
     ///     - path: The reference path.
     /// - Returns: `true` if the path is a circular path, `false` otherwise.
     nonisolated static func pathIsCircular(_ path: [CLLocationCoordinate2D]) -> Bool {
-        guard path.count > 2, let first = path.first, let last = path.last else {
-            return false
-        }
-        
-        return first == last
+        SSGeoPath.pathIsCircular(path.map(\.ssGeoCoordinate))
     }
     
     ///  Returns the distance of a coordinate path
@@ -186,17 +161,7 @@ class GeometryUtils {
     ///     - path: The reference path.
     /// - Returns: The distance of a coordinate path
     nonisolated static func pathDistance(_ path: [CLLocationCoordinate2D]) -> CLLocationDistance {
-        guard path.count > 1 else {
-            return 0
-        }
-        
-        var distance: CLLocationDistance = 0
-        
-        for index in 0 ..< path.count-1 {
-            distance += path[index].ssGeoCoordinate.distance(to: path[index+1].ssGeoCoordinate)
-        }
-        
-        return distance
+        SSGeoPath.pathDistance(path.map(\.ssGeoCoordinate))
     }
     
     /// Calculates a coordinate on a path at a target distance along the path from the path's first coordinate.
@@ -204,41 +169,10 @@ class GeometryUtils {
     /// - note: If the target distance is between two coordinates on the path, a synthesized coordinate between the coordinates is returned.
     /// - note: If the target distance is smaller or equal to zero, the first path coordinate is returned.
     nonisolated static func referenceCoordinate(on path: [CLLocationCoordinate2D], for targetDistance: CLLocationDistance) -> CLLocationCoordinate2D? {
-        guard !path.isEmpty else {
-            return nil
-        }
-        
-        if path.count == 1 || targetDistance <= 0 {
-            return path.first
-        }
-        
-        if targetDistance == CLLocationDistanceMax {
-            return path.last
-        }
-                
-        var totalDistance = CLLocationDistance(0)
-        
-        for index in 0 ..< path.count-1 {
-            let coord1 = path[index]
-            let coord2 = path[index+1]
-            
-            let coordDistance = coord1.ssGeoCoordinate.distance(to: coord2.ssGeoCoordinate)
-            totalDistance += coordDistance
-            
-            if totalDistance == targetDistance {
-                return coord2
-            }
-            
-            if totalDistance > targetDistance {
-                // The target coordinate is between two coordinates, so we synthesize it
-                let prevTotalDistance = totalDistance - coordDistance
-                let prevTotalDistanceToTargetDistance = targetDistance - prevTotalDistance
-                
-                return coord1.coordinateBetween(coordinate: coord2, distance: prevTotalDistanceToTargetDistance)
-            }
-        }
-        
-        return path.last
+        SSGeoPath.referenceCoordinate(
+            on: path.map(\.ssGeoCoordinate),
+            for: targetDistance
+        )?.clCoordinate
     }
     
     nonisolated static func squaredDistance(location: CLLocationCoordinate2D,
@@ -383,30 +317,10 @@ class GeometryUtils {
     /// them with a fixed distance of `distance`.
     nonisolated static func interpolateToEqualDistance(coordinates: [CLLocationCoordinate2D],
                                            distance targetDistance: CLLocationDistance) -> [CLLocationCoordinate2D] {
-        guard coordinates.count > 1 else {
-            return coordinates
-        }
-        
-        var totalInterpolation: [CLLocationCoordinate2D] = []
-        
-        for index in 0...coordinates.count-2 {
-            let coordinate = coordinates[index]
-            let nextCoordinate = coordinates[index+1]
-            
-            var interpolation = GeometryUtils.interpolateToEqualDistance(start: coordinate,
-                                                                         end: nextCoordinate,
-                                                                         distance: targetDistance)
-            
-            if index != coordinates.count-2 {
-                // For every interpolation (except the last) we remove the last coordinate.
-                // This is because the next interpolation will include it as the first.
-                interpolation.removeLast()
-            }
-            
-            totalInterpolation.append(contentsOf: interpolation)
-        }
-        
-        return totalInterpolation
+        SSGeoPath.interpolateToEqualDistance(
+            coordinates: coordinates.map(\.ssGeoCoordinate),
+            distance: targetDistance
+        ).map(\.clCoordinate)
     }
     
     ///  Returns the interpolated path between two coordinates. The interpolated path
@@ -428,28 +342,11 @@ class GeometryUtils {
     nonisolated static func interpolateToEqualDistance(start: CLLocationCoordinate2D,
                                            end: CLLocationCoordinate2D,
                                            distance targetDistance: CLLocationDistance) -> [CLLocationCoordinate2D] {
-        let totalDistance = start.ssGeoCoordinate.distance(to: end.ssGeoCoordinate)
-        
-        guard totalDistance > targetDistance else {
-            return [start, end]
-        }
-        
-        var coordinates = [start]
-        var remainingDistance = totalDistance
-        
-        // We repeatedly create coordinates at fixed distances until we reach the target distance
-        repeat {
-            guard let prevCoordinate = coordinates.last else { break }
-            
-            let currentCoordinate = prevCoordinate.coordinateBetween(coordinate: end, distance: targetDistance)
-            coordinates.append(currentCoordinate)
-            
-            remainingDistance = currentCoordinate.ssGeoCoordinate.distance(to: end.ssGeoCoordinate)
-        } while remainingDistance > targetDistance
-        
-        coordinates.append(end)
-        
-        return coordinates
+        SSGeoPath.interpolateToEqualDistance(
+            start: start.ssGeoCoordinate,
+            end: end.ssGeoCoordinate,
+            distance: targetDistance
+        ).map(\.clCoordinate)
     }
     
 }
@@ -498,46 +395,7 @@ extension GeometryUtils {
     /// this means that any geometrical shape is acceptable.
     /// - Note: In practice, for extremely irregular shapes, this can lead to center coordinates not inside the shape.
     nonisolated static func centroid(coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D? {
-        if coordinates.isEmpty {
-            return nil
-        }
-        
-        if coordinates.count == 1 {
-            return coordinates[0]
-        }
-        
-        // We start with the widest bound box available for coordinates.
-        // We then loop thru the given coordinates and narrow it.
-        // This creates a minimum bounding box that contains all the coordinates.
-        var minLat: CLLocationDegrees = 90.0
-        var maxLat: CLLocationDegrees = -90.0
-        var minLon: CLLocationDegrees = 180.0
-        var maxLon: CLLocationDegrees = -180.0
-        
-        for coordinate in coordinates {
-            let lat = coordinate.latitude
-            let long = coordinate.longitude
-            
-            if lat < minLat {
-                minLat = lat
-            }
-            if long < minLon {
-                minLon = long
-            }
-            if lat > maxLat {
-                maxLat = lat
-            }
-            if long > maxLon {
-                maxLon = long
-            }
-        }
-        
-        // Create a span that represents the distance (delta) between the top and bottom (north-to-south) edges,
-        // and the right and left (east-to-west) edges of the box.
-        let span = MKCoordinateSpan(latitudeDelta: maxLat - minLat, longitudeDelta: maxLon - minLon)
-        
-        // Return the generated center coordinate for the bounding box
-        return CLLocationCoordinate2DMake((maxLat - span.latitudeDelta / 2.0), (maxLon - span.longitudeDelta / 2.0))
+        SSGeoPath.centroid(coordinates: coordinates.map(\.ssGeoCoordinate))?.clCoordinate
     }
     
 }
