@@ -14,32 +14,87 @@ import SSGeo
 
 @MainActor
 enum RouteRuntime {
+    struct Integration {
+        var currentUserLocation: () -> CLLocation?
+        var activeRouteDatabaseID: () -> String?
+        var deactivateActiveBehavior: () -> Void
+        var storeRouteInCloud: (Route) -> Void
+        var updateRouteInCloud: (Route) -> Void
+        var removeRouteFromCloud: (Route) -> Void
+        var currentMotionActivityRawValue: () -> String
+
+        static let unconfigured = Self(
+            currentUserLocation: {
+                RouteRuntime.debugAssertUnconfigured(#function)
+                return nil
+            },
+            activeRouteDatabaseID: {
+                RouteRuntime.debugAssertUnconfigured(#function)
+                return nil
+            },
+            deactivateActiveBehavior: {
+                RouteRuntime.debugAssertUnconfigured(#function)
+            },
+            storeRouteInCloud: { _ in
+                RouteRuntime.debugAssertUnconfigured(#function)
+            },
+            updateRouteInCloud: { _ in
+                RouteRuntime.debugAssertUnconfigured(#function)
+            },
+            removeRouteFromCloud: { _ in
+                RouteRuntime.debugAssertUnconfigured(#function)
+            },
+            currentMotionActivityRawValue: {
+                RouteRuntime.debugAssertUnconfigured(#function)
+                return "unknown"
+            }
+        )
+    }
+
+    private static var integration = Integration.unconfigured
+
+    static func configure(with integration: Integration) {
+        self.integration = integration
+    }
+
+    static func resetForTesting() {
+        integration = .unconfigured
+    }
+
     static func currentUserLocation() -> CLLocation? {
-        DataRuntimeProviderRegistry.providers.routeCurrentUserLocation()
+        integration.currentUserLocation()
     }
 
     static func activeRouteDatabaseID() -> String? {
-        DataRuntimeProviderRegistry.providers.routeActiveRouteDatabaseID()
+        integration.activeRouteDatabaseID()
     }
 
     static func deactivateActiveBehavior() {
-        DataRuntimeProviderRegistry.providers.routeDeactivateActiveBehavior()
+        integration.deactivateActiveBehavior()
     }
 
     static func storeRouteInCloud(_ route: Route) {
-        DataRuntimeProviderRegistry.providers.routeStoreInCloud(route)
+        integration.storeRouteInCloud(route)
     }
 
     static func updateRouteInCloud(_ route: Route) {
-        DataRuntimeProviderRegistry.providers.routeUpdateInCloud(route)
+        integration.updateRouteInCloud(route)
     }
 
     static func removeRouteFromCloud(_ route: Route) {
-        DataRuntimeProviderRegistry.providers.routeRemoveFromCloud(route)
+        integration.removeRouteFromCloud(route)
     }
 
     static func currentMotionActivityRawValue() -> String {
-        DataRuntimeProviderRegistry.providers.routeCurrentMotionActivityRawValue()
+        integration.currentMotionActivityRawValue()
+    }
+
+    nonisolated private static func debugAssertUnconfigured(_ method: StaticString) {
+#if DEBUG
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            assertionFailure("RouteRuntime is unconfigured when calling \(method)")
+        }
+#endif
     }
 }
 

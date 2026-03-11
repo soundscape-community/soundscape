@@ -31,28 +31,6 @@ extension Notification.Name {
 }
 
 @MainActor
-protocol RouteRuntimeProviding {
-    func routeCurrentUserLocation() -> CLLocation?
-    func routeActiveRouteDatabaseID() -> String?
-    func routeDeactivateActiveBehavior()
-    func routeStoreInCloud(_ route: Route)
-    func routeUpdateInCloud(_ route: Route)
-    func routeRemoveFromCloud(_ route: Route)
-    func routeCurrentMotionActivityRawValue() -> String
-}
-
-@MainActor
-protocol ReferenceEntityRuntimeProviding {
-    func referenceCurrentUserLocation() -> CLLocation?
-    func referenceUpdateInCloud(_ markerParameters: MarkerParameters)
-    func referenceRemoveFromCloud(markerID: String)
-    func referenceProcessEvent(_ event: Event)
-    func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool
-    func referenceClearDestinationForCacheReset() async throws
-    func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String)
-}
-
-@MainActor
 protocol SpatialDataEntityRuntimeProviding {
     func spatialDataEntityCurrentUserLocation() -> CLLocation?
 }
@@ -77,9 +55,7 @@ protocol SpatialDataContextRuntimeProviding {
 }
 
 @MainActor
-protocol DataRuntimeProviders: RouteRuntimeProviding,
-                               ReferenceEntityRuntimeProviding,
-                               SpatialDataEntityRuntimeProviding,
+protocol DataRuntimeProviders: SpatialDataEntityRuntimeProviding,
                                DestinationManagerRuntimeProviding,
                                SpatialDataContextRuntimeProviding {}
 
@@ -109,67 +85,6 @@ private final class UnconfiguredDataRuntimeProviders: DataRuntimeProviders {
             assertionFailure("DataRuntimeProviderRegistry is unconfigured when calling \(method)")
         }
 #endif
-    }
-
-    func routeCurrentUserLocation() -> CLLocation? {
-        debugAssertUnconfigured(#function)
-        return nil
-    }
-
-    func routeActiveRouteDatabaseID() -> String? {
-        debugAssertUnconfigured(#function)
-        return nil
-    }
-
-    func routeDeactivateActiveBehavior() {
-        debugAssertUnconfigured(#function)
-    }
-
-    func routeStoreInCloud(_ route: Route) {
-        debugAssertUnconfigured(#function)
-    }
-
-    func routeUpdateInCloud(_ route: Route) {
-        debugAssertUnconfigured(#function)
-    }
-
-    func routeRemoveFromCloud(_ route: Route) {
-        debugAssertUnconfigured(#function)
-    }
-
-    func routeCurrentMotionActivityRawValue() -> String {
-        debugAssertUnconfigured(#function)
-        return "unknown"
-    }
-
-    func referenceCurrentUserLocation() -> CLLocation? {
-        debugAssertUnconfigured(#function)
-        return nil
-    }
-
-    func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
-        debugAssertUnconfigured(#function)
-    }
-
-    func referenceRemoveFromCloud(markerID: String) {
-        debugAssertUnconfigured(#function)
-    }
-
-    func referenceProcessEvent(_ event: Event) {
-        debugAssertUnconfigured(#function)
-    }
-
-    func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
-        debugAssertUnconfigured(#function)
-        return false
-    }
-
-    func referenceClearDestinationForCacheReset() async throws {
-        debugAssertUnconfigured(#function)
-    }
-
-    func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {
-        debugAssertUnconfigured(#function)
     }
 
     func spatialDataEntityCurrentUserLocation() -> CLLocation? {
@@ -237,94 +152,6 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
         self.context = context
     }
 
-    func routeCurrentUserLocation() -> CLLocation? {
-        context.geolocationManager.location
-    }
-
-    func routeActiveRouteDatabaseID() -> String? {
-        guard let routeGuidance = context.eventProcessor.activeBehavior as? RouteGuidance else {
-            return nil
-        }
-
-        guard case let .database(activeID) = routeGuidance.content.source else {
-            return nil
-        }
-
-        return activeID
-    }
-
-    func routeDeactivateActiveBehavior() {
-        context.eventProcessor.deactivateCustom()
-    }
-
-    func routeStoreInCloud(_ route: Route) {
-        context.cloudKeyValueStore.store(route: route)
-    }
-
-    func routeUpdateInCloud(_ route: Route) {
-        context.cloudKeyValueStore.update(route: route)
-    }
-
-    func routeRemoveFromCloud(_ route: Route) {
-        context.cloudKeyValueStore.remove(route: route)
-    }
-
-    func routeCurrentMotionActivityRawValue() -> String {
-        context.motionActivityContext.currentActivity.rawValue
-    }
-
-    func referenceCurrentUserLocation() -> CLLocation? {
-        context.geolocationManager.location
-    }
-
-    func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
-        context.cloudKeyValueStore.update(markerParameters: markerParameters)
-    }
-
-    func referenceRemoveFromCloud(markerID: String) {
-        context.cloudKeyValueStore.remove(referenceEntityID: markerID)
-    }
-
-    func referenceProcessEvent(_ event: Event) {
-        context.eventProcessor.process(event)
-    }
-
-    func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
-        guard let destinationManager = context.spatialDataContext.destinationManager as? DestinationManager else {
-            return false
-        }
-
-        return try destinationManager.setDestinationTemporaryIfMatchingID(id)
-    }
-
-    func referenceClearDestinationForCacheReset() async throws {
-        try await context.spatialDataContext.destinationManager.clearDestinationAsync(logContext: "settings.clear_cache")
-    }
-
-    func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {
-        context.calloutHistory.remove { callout in
-            guard let poiCallout = callout as? POICallout else {
-                return false
-            }
-
-            return poiCallout.key == markerID
-        }
-
-        Task { @MainActor [context] in
-            guard let markerEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byID: markerID)?.entityKey else {
-                return
-            }
-
-            context.calloutHistory.remove { callout in
-                guard let poiCallout = callout as? POICallout else {
-                    return false
-                }
-
-                return poiCallout.key == markerEntityKey
-            }
-        }
-    }
-
     func spatialDataEntityCurrentUserLocation() -> CLLocation? {
         context.geolocationManager.location
     }
@@ -376,6 +203,93 @@ final class AppContextDataRuntimeProviders: DataRuntimeProviders {
 
     func spatialDataContextProcessEvent(_ event: Event) {
         context.eventProcessor.process(event)
+    }
+}
+
+@MainActor
+extension RouteRuntime.Integration {
+    static func appContext(_ context: AppContext) -> Self {
+        Self(
+            currentUserLocation: { [unowned context] in
+                context.geolocationManager.location
+            },
+            activeRouteDatabaseID: { [unowned context] in
+                guard let routeGuidance = context.eventProcessor.activeBehavior as? RouteGuidance else {
+                    return nil
+                }
+
+                guard case let .database(activeID) = routeGuidance.content.source else {
+                    return nil
+                }
+
+                return activeID
+            },
+            deactivateActiveBehavior: { [unowned context] in
+                context.eventProcessor.deactivateCustom()
+            },
+            storeRouteInCloud: { [unowned context] route in
+                context.cloudKeyValueStore.store(route: route)
+            },
+            updateRouteInCloud: { [unowned context] route in
+                context.cloudKeyValueStore.update(route: route)
+            },
+            removeRouteFromCloud: { [unowned context] route in
+                context.cloudKeyValueStore.remove(route: route)
+            },
+            currentMotionActivityRawValue: { [unowned context] in
+                context.motionActivityContext.currentActivity.rawValue
+            }
+        )
+    }
+}
+
+@MainActor
+extension ReferenceEntityRuntime.Integration {
+    static func appContext(_ context: AppContext) -> Self {
+        Self(
+            updateReferenceInCloud: { [unowned context] markerParameters in
+                context.cloudKeyValueStore.update(markerParameters: markerParameters)
+            },
+            removeReferenceFromCloud: { [unowned context] markerID in
+                context.cloudKeyValueStore.remove(referenceEntityID: markerID)
+            },
+            setDestinationTemporaryIfMatchingID: { [unowned context] id in
+                guard let destinationManager = context.spatialDataContext.destinationManager as? DestinationManager else {
+                    return false
+                }
+
+                return try destinationManager.setDestinationTemporaryIfMatchingID(id)
+            },
+            clearDestinationForCacheReset: { [unowned context] in
+                try await context.spatialDataContext.destinationManager.clearDestinationAsync(logContext: "settings.clear_cache")
+            },
+            removeCalloutHistoryForMarkerID: { [unowned context] markerID in
+                context.calloutHistory.remove { callout in
+                    guard let poiCallout = callout as? POICallout else {
+                        return false
+                    }
+
+                    return poiCallout.key == markerID
+                }
+
+                Task { @MainActor [context] in
+                    guard let markerEntityKey = await DataContractRegistry.spatialRead.referenceEntity(byID: markerID)?.entityKey else {
+                        return
+                    }
+
+                    context.calloutHistory.remove { callout in
+                        guard let poiCallout = callout as? POICallout else {
+                            return false
+                        }
+
+                        return poiCallout.key == markerEntityKey
+                    }
+                }
+            },
+            processEvent: { [unowned context] event in
+                context.eventProcessor.process(event)
+            }
+        )
     }
 }
 
@@ -1504,7 +1418,8 @@ class AppContext {
         }
 
         DataContractRegistry.configureWithRealmDefaults()
-
+        RouteRuntime.configure(with: .appContext(self))
+        ReferenceEntityRuntime.configure(with: .appContext(self))
         DataRuntimeProviderRegistry.configure(with: AppContextDataRuntimeProviders(context: self))
         UIRuntimeProviderRegistry.configure(with: AppContextUIRuntimeProviders(context: self))
         BehaviorRuntimeProviderRegistry.configure(with: AppContextBehaviorRuntimeProviders(context: self))

@@ -84,7 +84,7 @@ Completed:
 - Shared cardinal-movement phrase families (`directions.traveling.*`, `directions.facing.*`, `directions.heading.*`, and `directions.along.*`) also now live in `apps/common/Sources/SSLanguage`; iOS location callouts route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
 - Shared named-location and junction-summary phrase families (`directions.nearest_road_name_*`, `directions.poi_name_*`, `directions.intersection_with_name*`, and `directions.roundabout_with_exits*`) also now live in `apps/common/Sources/SSLanguage`; iOS location callouts route through the shared helpers and the duplicated asset entries have been removed from `apps/ios/GuideDogs/Assets/Localization/**`.
 - The localization validator now checks both the iOS app bundle and `apps/common/Sources/SSLanguage/Resources`, and fails if `SSLanguage`-owned helper keys are duplicated back into the iOS app assets.
-- Realm replaceability readiness is now explicitly audited: the caller boundary is largely clean, but backend extraction is still blocked by mixed Realm files that directly use `DataRuntimeProviderRegistry`, `NotificationCenter`, `GDATelemetry`, or app-lifecycle globals; the current classification lives in `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`.
+- Realm replaceability readiness is now explicitly audited: the caller boundary is largely clean, `RealmRoute.swift` and `RealmReferenceEntity.swift` no longer reach through `DataRuntimeProviderRegistry`, but backend extraction is still blocked by mixed Realm files that directly use `NotificationCenter`, `GDATelemetry`, or the remaining runtime globals in `GDASpatialDataResultEntity.swift` / `SpatialDataContext.swift`; the current classification lives in `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`.
 
 In progress:
 - Keep app-level storage usage readable, contract-first, and free of direct Realm object-model dependencies.
@@ -161,7 +161,7 @@ Remaining focus:
 - Migrated the remaining production edit/import/tutorial/configuration call sites onto async marker-aware `LocationDetail` loads, rewired POI table cells to update marker/accessibility state through reuse-safe async refresh instead of sync adapter lookups, removed the last synchronous `MarkerEditViewRepresentable(entity:...)` convenience entry point, and trimmed the destination-key lookup fallback inside `LocationDetail`.
 - Removed the remaining internal `LocationDetail` sync fallbacks by dropping `Source.entity`/`referenceEntity(source:)` storage lookups, moving closest-location resolution onto `LocationDetail`, and updating route/tour guidance to rely on the detail's async-resolved entity/marker state instead of re-querying Realm-backed adapters.
 - Rewired the remaining `WaypointAddList` preview to construct its sample marker detail directly and removed the deprecated sync `LocationDetail` marker/entity ID loaders, leaving no callers on those sync entry points.
-- Audited every file under `Data/Infrastructure/Realm/**`, recorded the current backend-ready vs mixed vs runtime-owned classification in `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`, and fixed the next backend-proof slice on the `DataRuntimeProviderRegistry` chokepoints in `RealmRoute.swift` and `RealmReferenceEntity.swift`.
+- Audited every file under `Data/Infrastructure/Realm/**`, recorded the current backend-ready vs mixed vs runtime-owned classification in `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md`, and fixed the first runtime-decoupling slice by replacing the `DataRuntimeProviderRegistry` chokepoints in `RealmRoute.swift` and `RealmReferenceEntity.swift` with explicit `RouteRuntime` / `ReferenceEntityRuntime` integrations configured from `AppContext`.
 - Moved `Quadrant`, `CompassDirection`, and the heading-to-quadrant bucketing helpers into `SSGeo`, replaced the `SpatialDataView`-owned heading helper logic with the shared API, and reduced the iOS helper files to compatibility aliases.
 - Moved the runtime-neutral `GeometryUtils` path/bearing/interpolation/centroid math into `SSGeo`, left `GeometryUtils` in `apps/ios` as the Apple-framework bridge for polygon/VectorTile-specific work, and added focused `SSGeo` test coverage for the extracted path helpers.
 - Moved the shared Web-Mercator projection, closest-edge, and polygon-containment math into `SSGeo`, rewired `VectorTile` and `GeometryUtils` to delegate to those shared helpers, and restored the legacy two-point containment behavior covered by the iOS unit tests.
@@ -171,13 +171,13 @@ Remaining focus:
 - Revalidated targeted modularization coverage with simulator-backed local runs.
 
 ## Next Steps
-1. Split the mixed `RealmRoute.swift` and `RealmReferenceEntity.swift` files so their `DataRuntimeProviderRegistry` usage moves behind iOS-owned runtime adapters or explicit backend callback dependencies while the persistence/model logic stays backend-local.
-2. Isolate notification/telemetry side effects next in `Route+Realm.swift`, `RealmSpatialWriteContract.swift`, and `RealmMigrationTools.swift`; do not let backend extraction depend on `NotificationCenter` or `GDATelemetry` directly.
+1. Isolate notification/telemetry side effects next in `Route+Realm.swift`, `RealmSpatialWriteContract.swift`, and `RealmMigrationTools.swift`; do not let backend extraction depend on `NotificationCenter` or `GDATelemetry` directly.
+2. Re-audit the remaining runtime-global usage in `GDASpatialDataResultEntity.swift` and `SpatialDataContext.swift`, and keep those files out of the first backend target/package candidate until their app/runtime dependencies are either injected or explicitly left in iOS runtime code.
 3. Keep `SpatialDataContext.swift`, `Samplable.swift`, and `DataContractRegistry+RealmDefaults.swift` in `apps/ios` runtime/composition code and exclude them from the first backend target/package candidate.
 4. Extract the remaining backend-ready Realm infrastructure into a backend target/package only after the mixed files above no longer depend on app/runtime globals.
 
 ## Handoff
 - Use `docs/plans/data_modularization_north_star.md` for the stable target.
 - Use this file for current status only.
-- Use `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md` for the current file-by-file Realm replaceability inventory and the agreed first decoupling slice.
+- Use `docs/plans/artifacts/2026-03-11-realm-readiness-audit.md` for the current file-by-file Realm replaceability inventory; the first decoupling slice in that audit is now complete.
 - Start the next slice with one focused cleanup only when the target type/helper cluster is clearly portable, validate with `--output quiet`, then update this file only if the current status or next steps materially changed.

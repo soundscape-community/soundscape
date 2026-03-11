@@ -135,46 +135,24 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         func poi(byKey key: String) async -> POI? { nil }
     }
 
-    final class CloudDispatchProbeRuntimeProviders: DataRuntimeProviders {
+    final class CloudDispatchProbeRuntimeProviders {
         private(set) var referenceUpdateMarkerParametersCalls = 0
         private(set) var referenceRemoveMarkerIDCalls = 0
 
-        func routeCurrentUserLocation() -> CLLocation? { nil }
-        func routeActiveRouteDatabaseID() -> String? { nil }
-        func routeDeactivateActiveBehavior() {}
-        func routeStoreInCloud(_ route: Route) {}
-        func routeUpdateInCloud(_ route: Route) {}
-        func routeRemoveFromCloud(_ route: Route) {}
-        func routeCurrentMotionActivityRawValue() -> String { "unknown" }
-
-        func referenceCurrentUserLocation() -> CLLocation? { nil }
-
-        func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
-            referenceUpdateMarkerParametersCalls += 1
+        func referenceIntegration() -> ReferenceEntityRuntime.Integration {
+            .init(
+                updateReferenceInCloud: { [self] _ in
+                    referenceUpdateMarkerParametersCalls += 1
+                },
+                removeReferenceFromCloud: { [self] _ in
+                    referenceRemoveMarkerIDCalls += 1
+                },
+                setDestinationTemporaryIfMatchingID: { _ in false },
+                clearDestinationForCacheReset: {},
+                removeCalloutHistoryForMarkerID: { _ in },
+                processEvent: { _ in }
+            )
         }
-
-        func referenceRemoveFromCloud(markerID: String) {
-            referenceRemoveMarkerIDCalls += 1
-        }
-        func referenceProcessEvent(_ event: Event) {}
-        func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool { false }
-        func referenceClearDestinationForCacheReset() async throws {}
-        func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {}
-
-        func spatialDataEntityCurrentUserLocation() -> CLLocation? { nil }
-
-        func destinationManagerCurrentUserLocation() -> CLLocation? { nil }
-        func destinationManagerIsRouteGuidanceActive() -> Bool { false }
-        func destinationManagerIsRouteOrTourGuidanceActive() -> Bool { false }
-        func destinationManagerIsBeaconCalloutGeneratorBlocked() -> Bool { false }
-        func destinationManagerProcessEvent(_ event: Event) {}
-
-        func spatialDataContextCurrentUserLocation() -> CLLocation? { nil }
-        func spatialDataContextPerformInitialCloudSync(_ completion: @escaping () -> Void) { completion() }
-        func spatialDataContextClearCalloutHistory() {}
-        func spatialDataContextIsApplicationInNormalState() -> Bool { false }
-        func spatialDataContextUpdateAudioEngineUserLocation(_ location: CLLocation) {}
-        func spatialDataContextProcessEvent(_ event: Event) {}
     }
 
     override func setUpWithError() throws {
@@ -184,6 +162,8 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
 
     override func tearDownWithError() throws {
         DataContractRegistry.resetForTesting()
+        RouteRuntime.resetForTesting()
+        ReferenceEntityRuntime.resetForTesting()
         DataRuntimeProviderRegistry.resetForTesting()
         try clearAllRoutes()
     }
@@ -742,7 +722,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         DataContractRegistry.configure(spatialRead: readMock)
 
         let runtimeProviders = CloudDispatchProbeRuntimeProviders()
-        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+        ReferenceEntityRuntime.configure(with: runtimeProviders.referenceIntegration())
 
         let markerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(entityKey: entityKey,
                                                                                        nickname: "Cloud Name",
@@ -770,7 +750,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         DataContractRegistry.configure(spatialRead: readMock)
 
         let runtimeProviders = CloudDispatchProbeRuntimeProviders()
-        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+        ReferenceEntityRuntime.configure(with: runtimeProviders.referenceIntegration())
 
         let markerID = try await DataContractRegistry.spatialWrite.addReferenceEntity(location: location,
                                                                                        nickname: "Cloud Location",
@@ -1103,7 +1083,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         storeOnlyPOI.key = removedEntityKey
 
         let runtimeProviders = CloudDispatchProbeRuntimeProviders()
-        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+        ReferenceEntityRuntime.configure(with: runtimeProviders.referenceIntegration())
 
         try await DataContractRegistry.spatialWrite.removeReferenceEntity(id: removedMarkerID)
 
@@ -1225,7 +1205,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         DataContractRegistry.configure(spatialRead: readMock)
 
         let runtimeProviders = CloudDispatchProbeRuntimeProviders()
-        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+        ReferenceEntityRuntime.configure(with: runtimeProviders.referenceIntegration())
 
         try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: markerID,
                                                                           location: nil,
@@ -1270,7 +1250,7 @@ final class RouteStorageProviderDispatchTests: XCTestCase {
         DataContractRegistry.configure(spatialRead: readMock)
 
         let runtimeProviders = CloudDispatchProbeRuntimeProviders()
-        DataRuntimeProviderRegistry.configure(with: runtimeProviders)
+        ReferenceEntityRuntime.configure(with: runtimeProviders.referenceIntegration())
 
         try await DataContractRegistry.spatialWrite.updateReferenceEntity(id: markerID,
                                                                           location: nil,

@@ -27,7 +27,6 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var routeUpdated: [Route] = []
         var routeRemoved: [Route] = []
 
-        var referenceLocation: CLLocation?
         var referenceUpdatedMarkerParameters: [MarkerParameters] = []
         var referenceRemovedCloudMarkerIDs: [String] = []
         var referenceSetDestinationResult = false
@@ -51,66 +50,45 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         var updatedAudioEngineLocations: [CLLocation] = []
         var spatialDataContextProcessedEventNames: [String] = []
 
-        func routeCurrentUserLocation() -> CLLocation? {
-            routeLocation
+        func routeIntegration() -> RouteRuntime.Integration {
+            .init(
+                currentUserLocation: { [self] in routeLocation },
+                activeRouteDatabaseID: { [self] in routeID },
+                deactivateActiveBehavior: { [self] in routeDeactivateCount += 1 },
+                storeRouteInCloud: { [self] route in routeStored.append(route) },
+                updateRouteInCloud: { [self] route in routeUpdated.append(route) },
+                removeRouteFromCloud: { [self] route in routeRemoved.append(route) },
+                currentMotionActivityRawValue: { [self] in routeMotion }
+            )
         }
 
-        func routeActiveRouteDatabaseID() -> String? {
-            routeID
-        }
+        func referenceIntegration() -> ReferenceEntityRuntime.Integration {
+            .init(
+                updateReferenceInCloud: { [self] markerParameters in
+                    referenceUpdatedMarkerParameters.append(markerParameters)
+                },
+                removeReferenceFromCloud: { [self] markerID in
+                    referenceRemovedCloudMarkerIDs.append(markerID)
+                },
+                setDestinationTemporaryIfMatchingID: { [self] _ in
+                    if let referenceSetDestinationError {
+                        throw referenceSetDestinationError
+                    }
 
-        func routeDeactivateActiveBehavior() {
-            routeDeactivateCount += 1
-        }
-
-        func routeStoreInCloud(_ route: Route) {
-            routeStored.append(route)
-        }
-
-        func routeUpdateInCloud(_ route: Route) {
-            routeUpdated.append(route)
-        }
-
-        func routeRemoveFromCloud(_ route: Route) {
-            routeRemoved.append(route)
-        }
-
-        func routeCurrentMotionActivityRawValue() -> String {
-            routeMotion
-        }
-
-        func referenceCurrentUserLocation() -> CLLocation? {
-            referenceLocation
-        }
-
-        func referenceUpdateInCloud(_ markerParameters: MarkerParameters) {
-            referenceUpdatedMarkerParameters.append(markerParameters)
-        }
-
-        func referenceRemoveFromCloud(markerID: String) {
-            referenceRemovedCloudMarkerIDs.append(markerID)
-        }
-
-        func referenceProcessEvent(_ event: Event) {
-            referenceProcessedEventNames.append(event.name)
-        }
-
-        func referenceSetDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
-            if let referenceSetDestinationError {
-                throw referenceSetDestinationError
-            }
-
-            return referenceSetDestinationResult
-        }
-
-        func referenceClearDestinationForCacheReset() async throws {
-            if let referenceClearError {
-                throw referenceClearError
-            }
-        }
-
-        func referenceRemoveCalloutHistoryForMarkerID(_ markerID: String) {
-            referenceRemovedCalloutMarkerIDs.append(markerID)
+                    return referenceSetDestinationResult
+                },
+                clearDestinationForCacheReset: { [self] in
+                    if let referenceClearError {
+                        throw referenceClearError
+                    }
+                },
+                removeCalloutHistoryForMarkerID: { [self] markerID in
+                    referenceRemovedCalloutMarkerIDs.append(markerID)
+                },
+                processEvent: { [self] event in
+                    referenceProcessedEventNames.append(event.name)
+                }
+            )
         }
 
         func spatialDataEntityCurrentUserLocation() -> CLLocation? {
@@ -164,6 +142,8 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
     }
 
     override func tearDown() {
+        RouteRuntime.resetForTesting()
+        ReferenceEntityRuntime.resetForTesting()
         DataRuntimeProviderRegistry.resetForTesting()
         super.tearDown()
     }
@@ -174,7 +154,7 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         provider.routeLocation = location
         provider.routeID = "route-123"
         provider.routeMotion = "walking"
-        DataRuntimeProviderRegistry.configure(with: provider)
+        RouteRuntime.configure(with: provider.routeIntegration())
 
         let route = Route()
 
@@ -195,10 +175,8 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
 
     func testReferenceEntityRuntimeDispatchesAndPropagatesErrors() async {
         let provider = MockDataRuntimeProviders()
-        let location = CLLocation(latitude: 47.61, longitude: -122.33)
-        provider.referenceLocation = location
         provider.referenceSetDestinationResult = true
-        DataRuntimeProviderRegistry.configure(with: provider)
+        ReferenceEntityRuntime.configure(with: provider.referenceIntegration())
 
         let entity = ReferenceEntity(id: UUID().uuidString,
                                      entityKey: nil,
@@ -211,7 +189,6 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
                                      estimatedAddress: nil,
                                      annotation: nil)
 
-        XCTAssertEqual(ReferenceEntityRuntime.currentUserLocation(), location)
         XCTAssertTrue((try? ReferenceEntityRuntime.setDestinationTemporaryIfMatchingID("destination-1")) ?? false)
 
         let cloudEntity = GenericLocation(lat: 47.63,
@@ -296,13 +273,15 @@ final class DataRuntimeProviderDispatchTests: XCTestCase {
         XCTAssertEqual(provider.spatialDataContextProcessedEventNames, [BehaviorActivatedEvent().name])
     }
 
-    func testProviderResetClearsInjectedProvider() {
+    func testRuntimeResetClearsInjectedProviders() {
         let provider = MockDataRuntimeProviders()
         provider.routeLocation = CLLocation(latitude: 47.66, longitude: -122.38)
+        RouteRuntime.configure(with: provider.routeIntegration())
         DataRuntimeProviderRegistry.configure(with: provider)
 
         XCTAssertNotNil(RouteRuntime.currentUserLocation())
 
+        RouteRuntime.resetForTesting()
         DataRuntimeProviderRegistry.resetForTesting()
 
         XCTAssertNil(RouteRuntime.currentUserLocation())

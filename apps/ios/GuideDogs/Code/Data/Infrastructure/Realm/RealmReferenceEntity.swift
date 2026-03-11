@@ -103,32 +103,77 @@ extension ReferenceEntity {
 
 @MainActor
 enum ReferenceEntityRuntime {
-    static func currentUserLocation() -> CLLocation? {
-        DataRuntimeProviderRegistry.providers.referenceCurrentUserLocation()
+    struct Integration {
+        var updateReferenceInCloud: (MarkerParameters) -> Void
+        var removeReferenceFromCloud: (String) -> Void
+        var setDestinationTemporaryIfMatchingID: (String) throws -> Bool
+        var clearDestinationForCacheReset: () async throws -> Void
+        var removeCalloutHistoryForMarkerID: (String) -> Void
+        var processEvent: (Event) -> Void
+
+        static let unconfigured = Self(
+            updateReferenceInCloud: { _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            removeReferenceFromCloud: { _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            setDestinationTemporaryIfMatchingID: { _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+                return false
+            },
+            clearDestinationForCacheReset: {
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            removeCalloutHistoryForMarkerID: { _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            },
+            processEvent: { _ in
+                ReferenceEntityRuntime.debugAssertUnconfigured(#function)
+            }
+        )
+    }
+
+    private static var integration = Integration.unconfigured
+
+    static func configure(with integration: Integration) {
+        self.integration = integration
+    }
+
+    static func resetForTesting() {
+        integration = .unconfigured
     }
 
     static func updateReferenceInCloud(_ markerParameters: MarkerParameters) {
-        DataRuntimeProviderRegistry.providers.referenceUpdateInCloud(markerParameters)
+        integration.updateReferenceInCloud(markerParameters)
     }
 
     static func removeReferenceFromCloud(markerID: String) {
-        DataRuntimeProviderRegistry.providers.referenceRemoveFromCloud(markerID: markerID)
+        integration.removeReferenceFromCloud(markerID)
     }
 
     static func setDestinationTemporaryIfMatchingID(_ id: String) throws -> Bool {
-        try DataRuntimeProviderRegistry.providers.referenceSetDestinationTemporaryIfMatchingID(id)
+        try integration.setDestinationTemporaryIfMatchingID(id)
     }
 
     static func clearDestinationForCacheReset() async throws {
-        try await DataRuntimeProviderRegistry.providers.referenceClearDestinationForCacheReset()
+        try await integration.clearDestinationForCacheReset()
     }
 
     static func removeCalloutHistoryForMarkerID(_ markerID: String) {
-        DataRuntimeProviderRegistry.providers.referenceRemoveCalloutHistoryForMarkerID(markerID)
+        integration.removeCalloutHistoryForMarkerID(markerID)
     }
 
     static func processEvent(_ event: Event) {
-        DataRuntimeProviderRegistry.providers.referenceProcessEvent(event)
+        integration.processEvent(event)
+    }
+
+    nonisolated private static func debugAssertUnconfigured(_ method: StaticString) {
+#if DEBUG
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            assertionFailure("ReferenceEntityRuntime is unconfigured when calling \(method)")
+        }
+#endif
     }
 }
 
