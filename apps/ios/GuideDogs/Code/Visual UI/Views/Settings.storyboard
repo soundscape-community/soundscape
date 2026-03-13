@@ -37,7 +37,7 @@
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="highlightedColor" red="0.1333333333" green="0.25882352939999997" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.language.screen_title.2"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.language.screen_title"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                         <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="globe" catalog="system" id="1L7-AG-6Os" customClass="TintedImageView" customModule="Soundscape" customModuleProvider="target">
