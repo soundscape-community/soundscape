@@ -21,12 +21,26 @@ class SettingsViewController: BaseTableViewController {
         // case telemetry = 6
     }
     
+<<<<<<< Updated upstream
     private enum CalloutsRow: Int, CaseIterable {
         case all = 0
         case poi = 1
         case mobility = 2
         case beacon = 3
         case shake = 4
+=======
+    /// Rows in the "Callouts" section
+    private enum CalloutsRow: Int, CaseIterable {
+        case all = 0
+        case soundEffects = 1
+        case delays = 2
+        case poi = 3
+        case mobility = 4
+        case safety = 5
+        case intersection = 6
+        case beacon = 7
+        case shake = 8
+>>>>>>> Stashed changes
     }
     
     private static let cellIdentifiers: [IndexPath: String] = [
@@ -51,12 +65,19 @@ class SettingsViewController: BaseTableViewController {
         // IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
     ]
     
+<<<<<<< Updated upstream
     private static let collapsibleCalloutIndexPaths: [IndexPath] = [
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue)
     ]
+=======
+    /// Which sub‑rows collapse/expand under "Allow Callouts"
+    private static let collapsibleCalloutIndexPaths: [IndexPath] = CalloutsRow.allCases
+        .filter { $0 != .all }
+        .map { IndexPath(row: $0.rawValue, section: Section.callouts.rawValue) }
+>>>>>>> Stashed changes
     
     // MARK: Properties
 
@@ -84,7 +105,7 @@ class SettingsViewController: BaseTableViewController {
         switch sectionType {
         case .general: return 6
         case .audio: return 1
-        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 5 : 1
+        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? CalloutsRow.allCases.count : 1
         case .streetPreview: return 1
         case .troubleshooting: return 1
         case .about: return 1
@@ -99,26 +120,37 @@ class SettingsViewController: BaseTableViewController {
             return tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
         }
 
+<<<<<<< Updated upstream
         switch sectionType {
-        case .callouts:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! CalloutSettingsCellView
-            cell.delegate = self
-
-            if let rowType = CalloutsRow(rawValue: indexPath.row) {
-                switch rowType {
-                case .all: cell.type = .all
-                case .poi: cell.type = .poi
-                case .mobility: cell.type = .mobility
-                case .beacon: cell.type = .beacon
-                case .shake: cell.type = .shake
-                }
-            }
-            
+=======
+        if Section(rawValue: indexPath.section) == .callouts,
+           let rowType = CalloutsRow(rawValue: indexPath.row),
+           rowType == .soundEffects || rowType == .delays {
+            let cell = makeProgrammaticCalloutCell(for: rowType)
+            configureCalloutCell(cell, at: indexPath)
             return cell
+        }
+        
+        let identifier = SettingsViewController.cellIdentifiers[indexPath] ?? "default"
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier,
+                                                 for: indexPath)
+        
+        switch Section(rawValue: indexPath.section) {
+>>>>>>> Stashed changes
+        case .callouts:
+            let calloutCell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! CalloutSettingsCellView
+            configureCalloutCell(calloutCell, at: indexPath)
+            return calloutCell
             
+<<<<<<< Updated upstream
         // case .telemetry:
         //     let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! TelemetrySettingsTableViewCell
         //     cell.parent = self
+=======
+        case .telemetry:
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! TelemetrySettingsTableViewCell
+            cell.parent = self
+>>>>>>> Stashed changes
             
         //     return cell
             
@@ -133,9 +165,73 @@ class SettingsViewController: BaseTableViewController {
         
     }
     
+<<<<<<< Updated upstream
     // MARK: UITableViewDataSource
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+=======
+    private func configureCalloutCell(_ cell: CalloutSettingsCellView,
+                                      at indexPath: IndexPath) {
+        cell.delegate = self
+        guard let rowType = CalloutsRow(rawValue: indexPath.row) else {
+            return
+        }
+        
+        switch rowType {
+        case .all:
+            cell.type = .all
+        case .soundEffects:
+            cell.type = .soundEffects
+        case .delays:
+            cell.type = .delays
+        case .poi:
+            cell.type = .poi
+        case .mobility:
+            // the "Mobility" toggle now maps to the transportation case
+            cell.type = .transportation
+        case .safety:
+            cell.type = .safety
+        case .intersection:
+            cell.type = .intersection
+        case .beacon:
+            cell.type = .beacon
+        case .shake:
+            cell.type = .shake
+        }
+    }
+
+    private func makeProgrammaticCalloutCell(for rowType: CalloutsRow) -> CalloutSettingsCellView {
+        let cell = CalloutSettingsCellView(style: .subtitle, reuseIdentifier: "callout.dynamic.\(rowType.rawValue)")
+        cell.selectionStyle = .none
+        cell.backgroundColor = UIColor(named: "Background 1")
+        cell.textLabel?.textColor = .white
+        cell.detailTextLabel?.textColor = Colors.Foreground.primary
+
+        let settingSwitch = UISwitch(frame: .zero)
+        settingSwitch.onTintColor = .white
+        settingSwitch.thumbTintColor = UIColor(named: "Background Base")
+        settingSwitch.addTarget(cell, action: #selector(CalloutSettingsCellView.onSettingValueChanged(_:)), for: .valueChanged)
+        cell.accessoryView = settingSwitch
+
+        switch rowType {
+        case .soundEffects:
+            cell.textLabel?.text = GDLocalizedString("callouts.sound_effects")
+            cell.detailTextLabel?.text = GDLocalizedString("callouts.sound_effects.info")
+        case .delays:
+            cell.textLabel?.text = GDLocalizedString("callouts.delays")
+            cell.detailTextLabel?.text = GDLocalizedString("callouts.delays.info")
+        default:
+            break
+        }
+
+        return cell
+    }
+
+    // MARK: Headers & Footers
+    
+    override func tableView(_ tableView: UITableView,
+                            titleForHeaderInSection section: Int) -> String? {
+>>>>>>> Stashed changes
         guard let sectionType = Section(rawValue: section) else { return nil }
 
         switch sectionType {
