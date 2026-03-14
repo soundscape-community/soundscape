@@ -85,7 +85,7 @@ class InteractiveBeaconViewModel: ObservableObject {
         bearingToBeacon = heading.bearing(to: bearingToLocation)
         isBeaconInBounds = AppContext.shared.spatialDataContext.destinationManager.isBeaconInBounds
         
-        if bearingToBeacon > 345.0 || bearingToBeacon < 15.0 {
+        if bearingToBeacon >= 350.0 || bearingToBeacon <= 10.0 {
             beaconOrientation = .ahead
         } else if bearingToBeacon > 165.0 && bearingToBeacon < 195.0 {
             beaconOrientation = .behind
