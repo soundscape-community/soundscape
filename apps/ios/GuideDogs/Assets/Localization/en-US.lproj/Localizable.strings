@@ -2905,7 +2905,7 @@
 "first_launch.welcome_audio_text" = "Welcome! Soundscape helps you stay aware of where you are and where you're going by using unique audio guidance and by calling out roads, intersections, and places as you approach them. Press the Next button to begin.";
 
 /* Notification, Permission is required */
-"first_launch.permission_required" = "This permission is required";
+"first_launch.permission_required" = "This permission is required.";
 
 /* Notification, Soundscap Language {NumberedPlaceholder="Soundscape"} */
 "first_launch.soundscape_language" = "Soundscape Language";
