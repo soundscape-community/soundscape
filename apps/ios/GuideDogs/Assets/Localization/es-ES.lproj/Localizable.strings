@@ -527,11 +527,11 @@
 
 
 /*  */
-"voice.voice_cell.selected.acc_hint" = "Esta voz está seleccionada actualmente. Desliza rápidamente hacia arriba o hacia abajo para probarla.";
+"voice.voice_cell.selected.acc_hint" = "Esta voz está seleccionada actualmente. Desliza rápidamente hacia arriba o hacia abajo para obtener una vista previa.";
 
 
 /*  */
-"voice.voice_cell.use.acc_hint" = "Pulsa dos veces para usar esta voz. Desliza rápidamente hacia arriba o hacia abajo para probarla.";
+"voice.voice_cell.use.acc_hint" = "Pulsa dos veces para usar esta voz. Desliza rápidamente hacia arriba o hacia abajo para obtener una vista previa.";
 
 
 /*  */
@@ -999,7 +999,7 @@
 
 
 /*  */
-"preview.tutorial.content.3" = "En cada cruce, puedes usar el teléfono de nuevo para elegir qué carretera recorrer, o puedes explorar tu entorno inmediato con los botones habituales de Soundscape de la parte inferior de la pantalla. Puedes pulsar en \"Explorar cerca\" para iniciar la señal de audio en cualquier punto de interés, cambiar tu ubicación o simplemente explorar el área con mayor detalle.";
+"preview.tutorial.content.3" = "En cada cruce, puedes volver a usar el teléfono para elegir qué carretera recorrer, o puedes explorar tu entorno inmediato con los botones habituales de Soundscape de la parte inferior de la pantalla. Puedes pulsar en \"Explorar cerca\" para iniciar la señal de audio en cualquier punto de interés, cambiar tu ubicación o simplemente explorar el área con mayor detalle.";
 
 
 /*  */
@@ -1559,7 +1559,7 @@
 
 
 /*  */
-"url_resource.alert.route.import_existing.message" = "¿Deseas reemplazarla? Al sustituir esta ruta, también se reemplazarán los marcadores usados en esta ruta.";
+"url_resource.alert.route.import_existing.message" = "¿Deseas reemplazarla? Al sustituir esta ruta también se reemplazarán los marcadores usados en esta ruta.";
 
 
 /*  */
@@ -2059,7 +2059,7 @@
 
 
 /*  */
-"directions.unknown_address" = "La dirección es desconocida";
+"directions.unknown_address" = "Dirección desconocida";
 
 
 /*  */
@@ -2762,11 +2762,11 @@
 
 
 /*  */
-"devices.connect_headset.calibrate" = "Los auriculares tienen que calibrarse. Quítatelos y sacúdelos con suavidad en todas las direcciones durante unos 10 segundos, y vuelve a colocártelos. Se debe repetir si el timbre de calibración sigue sonando.";
+"devices.connect_headset.calibrate" = "Los auriculares tienen que calibrarse. Quítatelos y sacúdelos con suavidad en todas las direcciones durante unos 10 segundos, y vuelve a colocártelos. Deberás repetir esta operación si el timbre de calibración sigue sonando.";
 
 
 /*  */
-"devices.connect_headset.calibrate.in_ear" = "Los auriculares tienen que calibrarse. Sacude la cabeza con suavidad en todas las direcciones durante unos 10 segundos. Se debe repetir si el timbre de calibración sigue sonando.";
+"devices.connect_headset.calibrate.in_ear" = "Los auriculares tienen que calibrarse. Sacude la cabeza con suavidad en todas las direcciones durante unos 10 segundos. Deberás repetir esta operación si el timbre de calibración sigue sonando.";
 
 
 /*  */
@@ -2802,7 +2802,7 @@
 
 
 /*  */
-"devices.forget_headset.prompt.explanation" = "Esto desconectará los auriculares de Soundscape. Puedes conectarte a Soundscape de nuevo en el futuro desde aquí.";
+"devices.forget_headset.prompt.explanation" = "Esto desconectará los auriculares de Soundscape. Puedes volver a conectarte a Soundscape Más adelante desde aquí.";
 
 
 /*  */
@@ -2890,7 +2890,7 @@
 
 
 /*  */
-"behavior.experiences.reset.prompt" = "Restablecer esta actividad eliminará tu progreso actual y te permitirá iniciar la actividad de nuevo. También puedes buscar actualizaciones. De esta manera, se descargará información actualizada para esta actividad si hay actualizaciones disponibles.";
+"behavior.experiences.reset.prompt" = "Al restablecer esta actividad se eliminará tu progreso actual y te permitirá iniciar la actividad de nuevo. También puedes buscar actualizaciones. De esta manera, se descargará información actualizada para esta actividad si hay actualizaciones disponibles.";
 
 
 /*  */
@@ -3174,7 +3174,7 @@
 
 
 /*  */
-"tutorial.beacons.text.IntroPart1" = "Cuando estableces una señal en una ubicación, Soundscape reproducirá un sonido procedente de la dirección de esa ubicación. Este tutorial te guiará por el proceso de establecimiento de una señal y cómo usarla.";
+"tutorial.beacons.text.IntroPart1" = "Al establecer una señal en una ubicación, Soundscape reproducirá un sonido proveniente de la dirección de esta ubicación. Este tutorial te guiará por el establecimiento de una señal y cómo usarla.";
 
 
 /*  */
@@ -3202,7 +3202,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HoldingPhone.great" = "¡Excelente! Mantener el teléfono en posición horizontal de esta manera solo es necesario cuando no te mueves. Mientras caminas, puedes colocar el teléfono en un bolso o un bolsillo al que puedas tener fácil acceso.";
+"tutorial.beacons.text.HoldingPhone.great" = "¡Excelente! Mantener el teléfono en posición horizontal de esta manera solo es necesario cuando no te mueves. Mientras camines, puedes colocar el teléfono en un bolso o un bolsillo al que puedas tener fácil acceso.";
 
 
 /*  */
@@ -3250,7 +3250,7 @@
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "Conforme avances en tu recorrido, Soundscape irá actualizando ocasionalmente la distancia hasta el lugar marcado por la señal con un aviso como éste.";
+"tutorial.beacons.text.AutomaticCallout" = "Conforme avances en tu recorrido, Soundscape irá actualizando ocasionalmente la distancia hasta la ubicación marcada por la señal con un aviso como este.";
 
 
 /*  */
@@ -3298,7 +3298,7 @@
 
 
 /*  */
-"help.offline.page_title" = "¿Por qué Soundscape está funcionando sin conexión?";
+"help.offline.page_title" = "¿Por qué está Soundscape funcionando sin conexión?";
 
 
 /*  */
@@ -3422,11 +3422,11 @@
 
 
 /*  */
-"first_launch.welcome_audio_text" = "¡Bienvenido! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, cruces y lugares cuando te acercas. Pulsa el botón Siguiente para comenzar.";
+"first_launch.welcome_audio_text" = "¡Bienvenido! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de carreteras, cruces y lugares cuando te acercas a ellos. Pulsa el botón Siguiente para comenzar.";
 
 
 /*  */
-"first_launch.permission_required" = "Este permiso es obligatorio";
+"first_launch.permission_required" = "Este permiso es obligatorio.";
 
 
 /*  */
