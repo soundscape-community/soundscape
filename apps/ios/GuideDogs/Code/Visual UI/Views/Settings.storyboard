@@ -1065,7 +1065,7 @@
                         </connections>
                     </tableView>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.language.screen_title.2"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.language.screen_title"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="largeBannerContainerView" destination="OwD-aa-xRl" id="NFz-Lw-bk2"/>
