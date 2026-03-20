@@ -5,7 +5,7 @@
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
 //
-
+//  Allows audio to fade in whenver needed.
 import AVFoundation
 
 class FadeableAudioPlayer: AVAudioPlayer {
