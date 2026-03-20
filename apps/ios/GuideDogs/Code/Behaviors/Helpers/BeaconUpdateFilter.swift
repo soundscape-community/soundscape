@@ -54,7 +54,7 @@ class BeaconUpdateFilter {
     
     // MARK: State Properties
     
-    /// State of the filter (location and time) when the most recent update occured
+    /// State of the filter (location and time) when the most recent update occurred
     private(set) var lastUpdate: FilterUpdateSnapshot?
     
     /// Indicates if the filter is in the reset state (`false`) or if `update(...)` has been called (`true`)

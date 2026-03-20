@@ -140,7 +140,7 @@ class AudioSessionManager {
         } catch let error as NSError {
             let avError = AVAudioSession.ErrorCode(rawValue: error.code) ?? .unspecified
             
-            GDLogAudioSessionWarn("An error occured setting the audio session category: \(error) \(avError.description)")
+            GDLogAudioSessionWarn("An error occurred setting the audio session category: \(error) \(avError.description)")
             
             var telemetryInfo = currentStateInfo
             telemetryInfo["error.code"] = String(error.code)
@@ -180,7 +180,7 @@ class AudioSessionManager {
         } catch let error as NSError {
             let avError = AVAudioSession.ErrorCode(rawValue: error.code) ?? .unspecified
             
-            GDLogAudioSessionWarn("An error occured activating the audio session: \(error) \(avError.description)")
+            GDLogAudioSessionWarn("An error occurred activating the audio session: \(error) \(avError.description)")
             
             var telemetryInfo = currentStateInfo
             telemetryInfo["error.code"] = String(error.code)
@@ -221,7 +221,7 @@ class AudioSessionManager {
         } catch let error as NSError {
             let avError = AVAudioSession.ErrorCode(rawValue: error.code) ?? .unspecified
 
-            GDLogAudioSessionWarn("An error occured deactivating the audio session: \(error) \(avError.description)")
+            GDLogAudioSessionWarn("An error occurred deactivating the audio session: \(error) \(avError.description)")
 
             var telemetryInfo = currentStateInfo
             telemetryInfo["error.code"] = String(error.code)
