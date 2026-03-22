@@ -5,10 +5,11 @@
 //  Copyright (c) Microsoft Corporation.
 //  Licensed under the MIT License.
 //
-
 import CoreLocation
 
 class CheckAudioEvent: UserInitiatedEvent { }
+
+class AnnounceGPSAccuracyEvent: UserInitiatedEvent { }
 
 class TTSVoicePreviewEvent: UserInitiatedEvent {
     var voiceName: String
@@ -73,7 +74,8 @@ class SystemGenerator: ManualGenerator {
         CheckAudioEvent.self,
         TTSVoicePreviewEvent.self,
         GenericAnnouncementEvent.self,
-        RepeatCalloutEvent.self
+        RepeatCalloutEvent.self,
+        AnnounceGPSAccuracyEvent.self
     ]
     
     private unowned let geo: GeolocationManagerProtocol
@@ -151,9 +153,9 @@ class SystemGenerator: ManualGenerator {
             }
             
             return .playCallouts(CalloutGroup([event.callout], repeatingFromLocation: location, action: .interruptAndClear, logContext: "repeat_callout"))
-            
         default:
             return nil
         }
     }
+        
 }

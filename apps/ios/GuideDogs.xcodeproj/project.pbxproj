@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		16D1436A2E8334A10054EB5C /* GPSAccuracyAnnouncementGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D143692E8334960054EB5C /* GPSAccuracyAnnouncementGenerator.swift */; };
 		2809B80C2379E95B00F6C9AC /* calibration_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80B2379E95B00F6C9AC /* calibration_success.wav */; };
 		2809B80E2379E9A000F6C9AC /* connection_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80D2379E9A000F6C9AC /* connection_success.wav */; };
 		2809B8102379E9C700F6C9AC /* low_confidence.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80F2379E9C700F6C9AC /* low_confidence.wav */; };
@@ -780,6 +781,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		16D143692E8334960054EB5C /* GPSAccuracyAnnouncementGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSAccuracyAnnouncementGenerator.swift; sourceTree = "<group>"; };
 		2809B80B2379E95B00F6C9AC /* calibration_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = calibration_success.wav; path = Assets/Sounds/calibration_success.wav; sourceTree = "<group>"; };
 		2809B80D2379E9A000F6C9AC /* connection_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = connection_success.wav; path = Assets/Sounds/connection_success.wav; sourceTree = "<group>"; };
 		2809B80F2379E9C700F6C9AC /* low_confidence.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = low_confidence.wav; path = Assets/Sounds/low_confidence.wav; sourceTree = "<group>"; };
@@ -2006,6 +2008,7 @@
 				2810C6B227C82BD1004E7386 /* ExplorationGenerator.swift */,
 				B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */,
 				28CDCC9427D963C60099A2EB /* BeaconCalloutGenerator.swift */,
+				16D143692E8334960054EB5C /* GPSAccuracyAnnouncementGenerator.swift */,
 			);
 			path = Default;
 			sourceTree = "<group>";
@@ -5294,6 +5297,7 @@
 				C3A326281DDA41E400E770B6 /* DebugSettingsContext.swift in Sources */,
 				624C969D285147A9001F84F8 /* MapViewControllerRepresentable.swift in Sources */,
 				288E5FE0269504D500F7D4CD /* ConditionalAccessibilityAction.swift in Sources */,
+				16D1436A2E8334A10054EB5C /* GPSAccuracyAnnouncementGenerator.swift in Sources */,
 				2817389E22BBD7AF00EFDD62 /* Result+Extensions.swift in Sources */,
 				C3DA72C2224D41EC0062DB81 /* RequestToken.swift in Sources */,
 				28863A7024C8DA3100194458 /* LayeredSound.swift in Sources */,
