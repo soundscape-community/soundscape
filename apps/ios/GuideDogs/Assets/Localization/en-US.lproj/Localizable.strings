@@ -3754,12 +3754,10 @@
 
 // MARK: GPS Accuracy Announcement
 
-/* GPS accuracy announcement.
-   %@ is a localized distance string, e.g. "10 meters" or "30 feet". */
+/* GPS accuracy announcement. %@ is a localized distance string, e.g. "10 meters" or "30 feet". */
 "gps.accuracy.announce" = "GPS accuracy is about %@";
 
-/* GPS accuracy improved announcement.
-   %@ is a localized distance string, e.g. "8 meters" or "25 feet". */
+/* GPS accuracy improved announcement. %@ is a localized distance string, e.g. "8 meters" or "25 feet". */
 "gps.accuracy.improved" = "GPS accuracy has improved to about %@";
 
 /* Announce when GPS accuracy information is unavailable. */
@@ -3767,13 +3765,16 @@
 
 // MARK: GPS Accuracy Button Accessibility
 
+/* Title */
 "settings.callouts.gps_announcements.title" = "GPS Accuracy";
+/* Info */
 "settings.callouts.gps_announcements.info" = "Announces GPS accuracy when the app is launched";
 
 // MARK: Announcements: poor / ok / good (first announcement flow)
 
 /* %@ is a localized distance string for the current accuracy. */
 "gps.accuracy.good" = "GPS accuracy is good, about %@";
+/* %@ is a localized distance string for the current accuracy. */
 "gps.accuracy.ok" = "GPS accuracy is ok, about %@";
 
 /* %@ is a localized distance string for the threshold, e.g. "20 meters" or "60 feet". */
