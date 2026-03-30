@@ -12,6 +12,8 @@ import CoreLocation
 
 extension Notification.Name {
     static let automaticCalloutsEnabledChanged = Notification.Name("GDAAutomaticCalloutsChanged")
+    static let calloutsEarconEnabled = Notification.Name("GDASettingsCalloutsEarconEnabled")
+     static let calloutsDelayEnabled = Notification.Name("GDASettingsCalloutsDelayEnabled")
     static let shakeCalloutsEnabledChanged = Notification.Name("GDAShakeCalloutsChanged")
     static let autoCalloutCategorySenseChanged = Notification.Name("GDAAutomaticCalloutSenseChanged")
     static let beaconVolumeChanged = Notification.Name("GDABeaconVolumeChanged")
@@ -44,6 +46,8 @@ class SettingsContext {
         fileprivate static let useOldBeacon              = "GDASettingsUseOldBeacon"
         fileprivate static let playBeaconStartEndMelody  = "GDAPlayBeaconStartEndMelody"
         fileprivate static let automaticCalloutsEnabled  = "GDASettingsAutomaticCalloutsEnabled"
+        fileprivate static let calloutsEarconEnabled     = "GDASettingsCalloutsEarconEnabled"
+        fileprivate static let calloutsDelayEnabled      = "GDASettingsCalloutsDelayEnabled"
         fileprivate static let shakeCalloutsEnabled      = "GDASettingsShakeCalloutsEnabled"
         fileprivate static let sensePlace                = "GDASettingsPlaceSenseEnabled"
         fileprivate static let senseLandmark             = "GDASettingsLandmarkSenseEnabled"
@@ -99,6 +103,8 @@ class SettingsContext {
             Keys.useOldBeacon: false,
             Keys.playBeaconStartEndMelody: false,
             Keys.automaticCalloutsEnabled: true,
+            Keys.calloutsEarconEnabled: true,
+            Keys.calloutsDelayEnabled: true,
             Keys.shakeCalloutsEnabled: false,
             Keys.sensePlace: true,
             Keys.senseLandmark: true,
@@ -423,6 +429,26 @@ extension SettingsContext: AutoCalloutSettingsProvider {
             userDefaults.set(newValue, forKey: Keys.automaticCalloutsEnabled)
             
             NotificationCenter.default.post(name: .automaticCalloutsEnabledChanged, object: self, userInfo: [Keys.enabled: newValue])
+        }
+    }
+    
+    var calloutsEarconEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.calloutsEarconEnabled)
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.calloutsEarconEnabled)
+            NotificationCenter.default.post(name: .calloutsEarconEnabled, object: self)
+        }
+    }
+    
+    var calloutsDelayEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.calloutsDelayEnabled)
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.calloutsDelayEnabled)
+            NotificationCenter.default.post(name: .calloutsDelayEnabled, object: self)
         }
     }
     
