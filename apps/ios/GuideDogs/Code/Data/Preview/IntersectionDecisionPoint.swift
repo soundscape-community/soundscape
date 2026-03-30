@@ -99,9 +99,20 @@ struct IntersectionDecisionPoint: RootedPreviewGraph {
             let earcon = GlyphSound(.poiSense, compass: direction)
             let tts = TTSSound(approach, compass: direction)
             
-            guard let ttsSound = ConcatenatedSound(earcon, tts), let layered = LayeredSound(ttsSound, GlyphSound(.travelEnd, compass: direction)) else {
+            let baseSound:Sound
+            if SettingsContext.shared.calloutsEarconEnabled {
+                guard let concatenated = ConcatenatedSound(earcon, tts) else {
+                    GDLogPreviewError("Failed to concatenate sounds for intersection callout")
+                    return []
+                }
+                baseSound = concatenated
+            } else {
+                baseSound = tts
+            }
+            
+            guard let layered = LayeredSound(baseSound, GlyphSound(.travelEnd, compass: direction)) else {
                 GDLogPreviewError("Unable to concatenate and layer sounds...")
-                return []
+                    return []
             }
             
             guard let roads = roads, !roads.isEmpty else {
