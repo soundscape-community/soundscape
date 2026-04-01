@@ -722,7 +722,6 @@
 		C3BC95DD2322D6F600B78903 /* RawCourseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BC95DC2322D6F600B78903 /* RawCourseProvider.swift */; };
 		C3BC95DF2322D70A00B78903 /* FilteredCourseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BC95DE2322D70A00B78903 /* FilteredCourseProvider.swift */; };
 		C3BC95E12322D72200B78903 /* RawCourseProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BC95E02322D72200B78903 /* RawCourseProviderDelegate.swift */; };
-		C3BF661F2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3BF661E2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib */; };
 		C3CEF6FC23020341001E84D4 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CEF6FB23020341001E84D4 /* UIDevice+Extensions.swift */; };
 		C3D46E4D20A0F84500A88DE4 /* FirstLaunchVoiceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3D46E4C20A0F84500A88DE4 /* FirstLaunchVoiceTableViewCell.xib */; };
 		C3D6BAE51F7329BE009EEDE6 /* OSMServiceModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D6BAE41F7329BE009EEDE6 /* OSMServiceModelProtocol.swift */; };
@@ -1523,7 +1522,6 @@
 		C3BC95DC2322D6F600B78903 /* RawCourseProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RawCourseProvider.swift; path = Code/Sensors/Geolocation/Providers/RawCourseProvider.swift; sourceTree = "<group>"; };
 		C3BC95DE2322D70A00B78903 /* FilteredCourseProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FilteredCourseProvider.swift; path = Code/Sensors/Geolocation/Providers/FilteredCourseProvider.swift; sourceTree = "<group>"; };
 		C3BC95E02322D72200B78903 /* RawCourseProviderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RawCourseProviderDelegate.swift; path = "Code/Sensors/Geolocation/Provider Delegates/RawCourseProviderDelegate.swift"; sourceTree = "<group>"; };
-		C3BF661E2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = RouteGuidanceActiveBanner.xib; path = "Code/Visual UI/Controls/Banners/RouteGuidanceActiveBanner.xib"; sourceTree = "<group>"; };
 		C3CEF6FB23020341001E84D4 /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIDevice+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		C3D46E4C20A0F84500A88DE4 /* FirstLaunchVoiceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FirstLaunchVoiceTableViewCell.xib; path = "Code/Visual UI/Controls/Voice Settings/Voice Cells/FirstLaunchVoiceTableViewCell.xib"; sourceTree = "<group>"; };
 		C3D6BAE41F7329BE009EEDE6 /* OSMServiceModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OSMServiceModelProtocol.swift; path = Code/Data/Services/OSM/OSMServiceModelProtocol.swift; sourceTree = "<group>"; };
@@ -3982,7 +3980,6 @@
 		C3652798224AC52B0056F570 /* Banners */ = {
 			isa = PBXGroup;
 			children = (
-				C3BF661E2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib */,
 				C378BE8122458AE7007489B2 /* OnlineBanner.xib */,
 				C378BE7F2245888A007489B2 /* OfflineDefaultBanner.xib */,
 				C378BE8322458E2F007489B2 /* OfflineSearchBanner.xib */,
@@ -4689,7 +4686,6 @@
 				62403FF524CF42C7005CB80D /* PreviewControlView.xib in Resources */,
 				2896375E26D6DD3C001694C0 /* Shimmer_B.wav in Resources */,
 				2896376F26D6E39D001694C0 /* Tactile_OffAxis.wav in Resources */,
-				C3BF661F2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib in Resources */,
 				316B3F6C2283924E0025526D /* InfoPlist.strings in Resources */,
 				DCE4D2AD2D7CE40F00B5DA4B /* NewFeatures.json in Resources */,
 				280AFCD72295C77000012BEA /* online.wav in Resources */,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="SKe-a6-Z8X">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="sRB-A7-Ube">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -169,71 +169,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Jh-gr-Juj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1576.8" y="447.52623688155927"/>
-        </scene>
-        <!--main-->
-        <scene sceneID="Qlc-Vt-EAh">
-            <objects>
-                <viewControllerPlaceholder storyboardName="main" id="vNC-8a-eau" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="FBe-7y-SH6"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Nhq-bn-flb" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="986" y="-262"/>
-        </scene>
-        <!--First Launch Initialization View Controller-->
-        <scene sceneID="kbD-DR-OuV">
-            <objects>
-                <viewController modalTransitionStyle="crossDissolve" id="guF-F8-FKq" customClass="FirstLaunchInitializationViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="oed-7e-Wbr"/>
-                        <viewControllerLayoutGuide type="bottom" id="QfL-6n-YYP"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="DUe-2e-Op7">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="i6W-1a-Meu">
-                                <rect key="frame" x="281.66666666666669" y="281.66666666666669" width="37" height="37"/>
-                            </activityIndicatorView>
-                        </subviews>
-                        <color key="backgroundColor" red="0.12867569919999999" green="0.13345718379999999" blue="0.20067968959999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="i6W-1a-Meu" firstAttribute="centerY" secondItem="DUe-2e-Op7" secondAttribute="centerY" id="aLl-rc-UXB"/>
-                            <constraint firstItem="i6W-1a-Meu" firstAttribute="centerX" secondItem="DUe-2e-Op7" secondAttribute="centerX" id="wQt-CF-Kh9"/>
-                        </constraints>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="boolean" keyPath="accessibilityIgnoresInvertColors" value="YES"/>
-                        </userDefinedRuntimeAttributes>
-                    </view>
-                    <navigationItem key="navigationItem" id="I9h-u4-5Fy"/>
-                    <connections>
-                        <segue destination="vNC-8a-eau" kind="show" identifier="completeFirstLaunch" id="Tj4-rC-rR2"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="GdA-uz-1wc" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="214" y="-260"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="yaF-kr-EVC">
-            <objects>
-                <navigationController navigationBarHidden="YES" id="SKe-a6-Z8X" sceneMemberID="viewController">
-                    <nil key="simulatedTopBarMetrics"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="PQs-yu-UxM">
-                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="boolean" keyPath="view.accessibilityIgnoresInvertColors" value="YES"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <segue destination="uqS-nX-08r" kind="relationship" relationship="rootViewController" id="CIu-5N-2VU"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="mQj-Xu-XF2" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-4681" y="-1135"/>
         </scene>
         <!--LocationViewController-->
         <scene sceneID="aQO-LL-sXl">
@@ -493,7 +428,6 @@
                         <outlet property="enableButton" destination="2i8-rP-UDC" id="DKY-g2-VXO"/>
                         <outlet property="headerLabel" destination="3dD-YQ-5WX" id="I4Q-Rl-wLm"/>
                         <segue destination="zc6-P6-GnT" kind="unwind" identifier="UnwindToHomeSegue" unwindAction="unwindToHomeWithSegue:" id="PBr-9k-b0O"/>
-                        <segue destination="guF-F8-FKq" kind="show" identifier="finishInitializationSegue" id="tse-Nk-LUu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8b2-fo-ew8" userLabel="First Responder" sceneMemberID="firstResponder"/>

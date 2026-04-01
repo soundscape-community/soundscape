@@ -96,7 +96,7 @@ class MotionPermissionViewController: UIViewController {
             performSegue(withIdentifier: "UnwindToHomeSegue", sender: nil)
         } else {
             FirstUseExperience.setDidComplete(for: .oobe)
-            performSegue(withIdentifier: "finishInitializationSegue", sender: nil)
+            LaunchHelper.configureAppView(with: .main)
         }
     }
     
