@@ -122,12 +122,14 @@ struct Configuration {
 enum ToolError: Error, CustomStringConvertible {
     case invalidArguments(String)
     case fileReadFailed(String)
+    case encodingFailed(String)
     case xmlParseFailed(String)
 
     var description: String {
         switch self {
         case .invalidArguments(let message),
              .fileReadFailed(let message),
+             .encodingFailed(let message),
              .xmlParseFailed(let message):
             return message
         }
@@ -729,7 +731,7 @@ do {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let data = try encoder.encode(reports)
         guard let output = String(data: data, encoding: .utf8) else {
-            throw ToolError.fileReadFailed("Unable to encode JSON output")
+            throw ToolError.encodingFailed("Unable to encode JSON output")
         }
         print(output)
     case .text:
