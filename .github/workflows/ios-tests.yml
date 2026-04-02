@@ -20,6 +20,7 @@ jobs:
         runs-on: macos-15
         steps:
             - uses: actions/checkout@v6
+            # Keep CI on the newest stable Xcode available on the macOS 15 runner image.
             - uses: maxim-lobanov/setup-xcode@v1
               with:
                 xcode-version: latest-stable
@@ -34,6 +35,7 @@ jobs:
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace
+                # Disable TSan in GitHub Actions only until the audio-engine race is fixed in code.
                 -scheme Soundscape -enableThreadSanitizer NO
                 -destination "platform=iOS Simulator,OS=26.2,name=iPhone 17 Pro"
                 CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
@@ -46,5 +48,6 @@ jobs:
             - name: Test
               run: >
                 xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace
+                # Local scheme/test-plan sanitizer settings remain unchanged.
                 -scheme Soundscape -enableThreadSanitizer NO
                 -destination "platform=iOS Simulator,OS=26.2,name=iPhone 17 Pro"
