@@ -9,9 +9,12 @@
 import SwiftUI
 
 class VolumeControlsHostViewController: UIHostingController<AnyView> {
+    init() {
+        super.init(rootView: AnyView(VolumeControls()))
+    }
+
+    @available(*, unavailable, message: "Use init()")
     required init?(coder aDecoder: NSCoder) {
-        let view = VolumeControls()
-        
-        super.init(coder: aDecoder, rootView: AnyView(view))
+        fatalError("Use init()")
     }
 }

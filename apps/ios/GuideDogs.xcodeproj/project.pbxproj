@@ -410,9 +410,7 @@
 		62403FDE24C24456005CB80D /* LocationAccessibilityActionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FDD24C24456005CB80D /* LocationAccessibilityActionDelegate.swift */; };
 		62403FE224C6228F005CB80D /* CalloutButtonPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */; };
 		62403FEE24CA3F75005CB80D /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FED24CA3F75005CB80D /* PreviewViewController.swift */; };
-		62403FF524CF42C7005CB80D /* PreviewControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 62403FF424CF42C7005CB80D /* PreviewControlView.xib */; };
 		62403FFE24CF4452005CB80D /* PreviewControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FFD24CF4452005CB80D /* PreviewControlViewController.swift */; };
-		6240400B24CFA6E6005CB80D /* VirtualLocationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6240400A24CFA6E6005CB80D /* VirtualLocationView.xib */; };
 		6240400D24CFA6FD005CB80D /* VirtualLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6240400C24CFA6FD005CB80D /* VirtualLocationViewController.swift */; };
 		6240401424D1FB4B005CB80D /* ExpandableMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6240401324D1FB4B005CB80D /* ExpandableMapViewController.swift */; };
 		62494FFC26FAAFD1008D842B /* ShareRouteAlertObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62494FFB26FAAFD1008D842B /* ShareRouteAlertObserver.swift */; };
@@ -1183,9 +1181,7 @@
 		62403FDD24C24456005CB80D /* LocationAccessibilityActionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAccessibilityActionDelegate.swift; sourceTree = "<group>"; };
 		62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CalloutButtonPanelViewController.swift; path = "Code/Visual UI/View Controllers/Home/CalloutButtonPanelViewController.swift"; sourceTree = "<group>"; };
 		62403FED24CA3F75005CB80D /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewViewController.swift; path = "Code/Visual UI/View Controllers/Preview/PreviewViewController.swift"; sourceTree = "<group>"; };
-		62403FF424CF42C7005CB80D /* PreviewControlView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PreviewControlView.xib; path = "Code/Visual UI/Controls/Preview/PreviewControlView.xib"; sourceTree = "<group>"; };
 		62403FFD24CF4452005CB80D /* PreviewControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewControlViewController.swift; path = "Code/Visual UI/Controls/Preview/PreviewControlViewController.swift"; sourceTree = "<group>"; };
-		6240400A24CFA6E6005CB80D /* VirtualLocationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = VirtualLocationView.xib; path = "Code/Visual UI/Controls/Preview/VirtualLocationView.xib"; sourceTree = "<group>"; };
 		6240400C24CFA6FD005CB80D /* VirtualLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VirtualLocationViewController.swift; path = "Code/Visual UI/Controls/Preview/VirtualLocationViewController.swift"; sourceTree = "<group>"; };
 		6240401324D1FB4B005CB80D /* ExpandableMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExpandableMapViewController.swift; path = "Code/Visual UI/View Controllers/POI Table/Location Detail/ExpandableMapViewController.swift"; sourceTree = "<group>"; };
 		62494FFB26FAAFD1008D842B /* ShareRouteAlertObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ShareRouteAlertObserver.swift; path = Code/Notifications/Observers/Alert/ShareRouteAlertObserver.swift; sourceTree = "<group>"; };
@@ -2921,7 +2917,6 @@
 		6240400524CF6403005CB80D /* Control View */ = {
 			isa = PBXGroup;
 			children = (
-				62403FF424CF42C7005CB80D /* PreviewControlView.xib */,
 				62403FFD24CF4452005CB80D /* PreviewControlViewController.swift */,
 			);
 			name = "Control View";
@@ -2931,7 +2926,6 @@
 			isa = PBXGroup;
 			children = (
 				6240400524CF6403005CB80D /* Control View */,
-				6240400A24CFA6E6005CB80D /* VirtualLocationView.xib */,
 				6240400C24CFA6FD005CB80D /* VirtualLocationViewController.swift */,
 			);
 			name = "Virtual Location";
@@ -4673,10 +4667,8 @@
 				31C70505218BABCC00EC5267 /* Localizable.strings in Resources */,
 				282B62F224EC4FA6007E5F8A /* Travel_inter_v2_spatial_48k.wav in Resources */,
 				2896378226D7012D001694C0 /* Signal_A+.wav in Resources */,
-				6240400B24CFA6E6005CB80D /* VirtualLocationView.xib in Resources */,
 				282B62EE24EC4FA6007E5F8A /* SS_beaconFound2_48k.wav in Resources */,
 				28C64E3023E8C57D00134190 /* mode_exit.wav in Resources */,
-				62403FF524CF42C7005CB80D /* PreviewControlView.xib in Resources */,
 				2896375E26D6DD3C001694C0 /* Shimmer_B.wav in Resources */,
 				2896376F26D6E39D001694C0 /* Tactile_OffAxis.wav in Resources */,
 				316B3F6C2283924E0025526D /* InfoPlist.strings in Resources */,

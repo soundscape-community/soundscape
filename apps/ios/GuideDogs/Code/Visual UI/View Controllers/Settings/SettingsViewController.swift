@@ -10,6 +10,7 @@ import UIKit
 
 
 class SettingsViewController: BaseTableViewController {
+    private static let volumeSettingsIndexPath = IndexPath(row: 3, section: Section.general.rawValue)
     
     private enum Section: Int, CaseIterable {
         case general = 0
@@ -131,6 +132,18 @@ class SettingsViewController: BaseTableViewController {
             return tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
         }
         
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        defer {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+
+        guard indexPath == SettingsViewController.volumeSettingsIndexPath else {
+            return
+        }
+
+        navigationController?.pushViewController(VolumeControlsHostViewController(), animated: true)
     }
     
     // MARK: UITableViewDataSource

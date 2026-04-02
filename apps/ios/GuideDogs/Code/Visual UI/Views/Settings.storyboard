@@ -604,9 +604,6 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" name="Background 1"/>
                                 <color key="tintColor" name="Foreground 1"/>
-                                <connections>
-                                    <segue destination="OAh-w7-42k" kind="show" id="got-C1-sUM"/>
-                                </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="streetPreview" textLabel="Hfo-h2-3QF" imageView="V7c-Jp-nJI" style="IBUITableViewCellStyleDefault" id="9db-e2-GB6" customClass="StreetPreviewRoadsCell" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="671.33333206176758" width="393" height="44"/>
@@ -785,16 +782,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vxR-Bi-JU3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="717" y="-228"/>
-        </scene>
-        <!--Volume Controls Host View Controller-->
-        <scene sceneID="Qwy-H2-O8i">
-            <objects>
-                <hostingController id="OAh-w7-42k" customClass="VolumeControlsHostViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="ooD-Zm-Bae"/>
-                </hostingController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Usb-JF-dSm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="765" y="509"/>
         </scene>
         <!--Beacon Selection Host View Controller-->
         <scene sceneID="Oww-yq-9BS">
