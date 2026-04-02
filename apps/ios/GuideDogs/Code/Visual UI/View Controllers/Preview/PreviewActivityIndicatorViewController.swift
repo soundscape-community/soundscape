@@ -6,7 +6,7 @@
 //  Licensed under the MIT License.
 //
 
-import Foundation
+import UIKit
 
 class PreviewActivityIndicatorViewController: UIViewController {
     
@@ -22,13 +22,11 @@ class PreviewActivityIndicatorViewController: UIViewController {
         }
     }
     
-    // MARK: `IBOutlet`
-    
-    @IBOutlet private weak var imageView: UIImageView!
-    @IBOutlet private weak var progressView: UIProgressView!
-    @IBOutlet private weak var progressViewLabel: UILabel!
-    
     // MARK: Properties
+
+    private let imageView = UIImageView()
+    private let progressView = UIProgressView(progressViewStyle: .default)
+    private let progressViewLabel = UILabel()
     
     private var token: NSKeyValueObservation?
     
@@ -43,6 +41,54 @@ class PreviewActivityIndicatorViewController: UIViewController {
     }
     
     // MARK: View Life Cycle
+
+    override func loadView() {
+        let view = UIView()
+        view.backgroundColor = Colors.Background.tertiary
+        view.accLabelLocalization = "general.loading.no_punctuation"
+
+        let contentStack = UIStackView()
+        contentStack.axis = .vertical
+        contentStack.alignment = .center
+        contentStack.spacing = 48
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+
+        imageView.contentMode = .scaleAspectFit
+        imageView.adjustsImageSizeForAccessibilityContentSizeCategory = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+
+        progressView.progressTintColor = Colors.Highlight.yellow
+
+        progressViewLabel.accessibilityIdentifier = "label.getting_things_ready"
+        progressViewLabel.textAlignment = .center
+        progressViewLabel.numberOfLines = 0
+        progressViewLabel.adjustsFontForContentSizeCategory = true
+        progressViewLabel.font = .preferredFont(forTextStyle: .footnote)
+        progressViewLabel.textColor = Colors.Highlight.yellow
+
+        let progressStack = UIStackView(arrangedSubviews: [progressView, progressViewLabel])
+        progressStack.axis = .vertical
+        progressStack.spacing = 16
+
+        contentStack.addArrangedSubview(imageView)
+        contentStack.addArrangedSubview(progressStack)
+        view.addSubview(contentStack)
+
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 102),
+            contentStack.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            contentStack.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+            contentStack.topAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor),
+            view.safeAreaLayoutGuide.bottomAnchor.constraint(greaterThanOrEqualTo: contentStack.bottomAnchor),
+            contentStack.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor),
+            view.safeAreaLayoutGuide.trailingAnchor.constraint(greaterThanOrEqualTo: contentStack.trailingAnchor),
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 64),
+            view.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: progressView.trailingAnchor, constant: 64)
+        ])
+
+        self.view = view
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
