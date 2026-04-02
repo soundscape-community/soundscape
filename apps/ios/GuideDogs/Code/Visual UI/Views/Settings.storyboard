@@ -711,7 +711,6 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <connections>
                         <outlet property="largeBannerContainerView" destination="pTk-gU-RHw" id="tYG-qc-yH1"/>
-                        <segue destination="WVo-7a-Sqp" kind="presentation" identifier="ShowLoadingModalSegue" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="lEf-wm-yda"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="E13-7d-Sce" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -722,47 +721,6 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="30" y="-244"/>
-        </scene>
-        <!--Loading Modal View Controller-->
-        <scene sceneID="YDZ-Pz-eIS">
-            <objects>
-                <viewController storyboardIdentifier="LoadingModal" id="WVo-7a-Sqp" customClass="LoadingModalViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="NP6-96-KIg"/>
-                        <viewControllerLayoutGuide type="bottom" id="Xih-jG-70G"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Igh-fv-NSB">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="S3t-Sg-ASl">
-                                <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
-                            </activityIndicatorView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading Message..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kuo-JQ-xyD">
-                                <rect key="frame" x="0.0" y="444.66666666666674" width="393" height="407.33333333333326"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.75" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="Xih-jG-70G" firstAttribute="top" secondItem="kuo-JQ-xyD" secondAttribute="bottom" id="5NX-KI-bU4"/>
-                            <constraint firstItem="S3t-Sg-ASl" firstAttribute="centerX" secondItem="Igh-fv-NSB" secondAttribute="centerX" id="7Vo-pC-qmi"/>
-                            <constraint firstItem="kuo-JQ-xyD" firstAttribute="top" secondItem="S3t-Sg-ASl" secondAttribute="bottom" id="ORL-ip-qbZ"/>
-                            <constraint firstItem="kuo-JQ-xyD" firstAttribute="leading" secondItem="Igh-fv-NSB" secondAttribute="leading" id="jUj-VI-4pL"/>
-                            <constraint firstItem="S3t-Sg-ASl" firstAttribute="centerY" secondItem="Igh-fv-NSB" secondAttribute="centerY" id="obz-1k-v8S"/>
-                            <constraint firstAttribute="trailing" secondItem="kuo-JQ-xyD" secondAttribute="trailing" id="wNS-hJ-1OA"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="activityIndicatorView" destination="S3t-Sg-ASl" id="nzE-FL-uLt"/>
-                        <outlet property="loadingMessageLabel" destination="kuo-JQ-xyD" id="oea-Mx-fP2"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jHW-u0-0Y0" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-716" y="509"/>
         </scene>
         <!--VoiceSettings-->
         <scene sceneID="i4f-8a-4ht">
