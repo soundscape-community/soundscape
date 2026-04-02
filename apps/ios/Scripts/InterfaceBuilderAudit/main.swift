@@ -1,4 +1,4 @@
-#!/usr/bin/env xcrun --sdk macosx swift
+#!/usr/bin/env -S xcrun --sdk macosx swift
 
 //
 //  main.swift
@@ -248,8 +248,15 @@ let countedViewTags: Set<String> = [
 let candidateClassifications: Set<Classification> = [.staleSymbol, .unreferenced, .projectOrphan]
 
 func loadFile(at absolutePath: String, relativeTo rootPath: String) throws -> SourceFile {
-    guard let content = try? String(contentsOfFile: absolutePath, encoding: .utf8) else {
+    let data: Data
+    do {
+        data = try Data(contentsOf: URL(fileURLWithPath: absolutePath))
+    } catch {
         throw ToolError.fileReadFailed("Unable to read file: \(absolutePath)")
+    }
+
+    guard let content = String(data: data, encoding: .utf8) else {
+        throw ToolError.encodingFailed("Unable to decode file as UTF-8: \(absolutePath)")
     }
 
     let relativePath = String(absolutePath.dropFirst(rootPath.count + 1))
@@ -492,6 +499,18 @@ func customClassStatus(for className: String?, declaredTypes: Set<String>) -> Cu
     return declaredTypes.contains(className) ? .declared : .missing
 }
 
+func mergedCustomClassStatus(for classNames: [String?], declaredTypes: Set<String>) -> CustomClassStatus {
+    let statuses = classNames.map { customClassStatus(for: $0, declaredTypes: declaredTypes) }
+
+    if statuses.contains(.missing) {
+        return .missing
+    }
+    if statuses.contains(.declared) {
+        return .declared
+    }
+    return .none
+}
+
 func classifyStoryboard(
     asset: StoryboardAsset,
     projectMembership: Bool,
@@ -623,18 +642,13 @@ func synchronizedRootPaths(in projectContent: String) -> [String] {
 
 func isProjectTracked(relativePath: String, projectContent: String, synchronizedRootPaths: [String]) -> Bool {
     let guideDogsRelativePath = relativePath.replacingOccurrences(of: "apps/ios/GuideDogs/", with: "")
-    let lastPathComponent = URL(fileURLWithPath: guideDogsRelativePath).lastPathComponent
-    let candidates = Array(Set([guideDogsRelativePath, lastPathComponent]))
+    let escapedPath = NSRegularExpression.escapedPattern(for: guideDogsRelativePath)
+    let quotedPattern = #"\bpath = "\#(escapedPath)";"#
+    let unquotedPattern = #"\bpath = \#(escapedPath);"#
 
-    for candidate in candidates {
-        let escapedCandidate = NSRegularExpression.escapedPattern(for: candidate)
-        let quotedPattern = #"\bpath = "\#(escapedCandidate)";"#
-        let unquotedPattern = #"\bpath = \#(escapedCandidate);"#
-
-        if firstRegexMatch(in: projectContent, pattern: quotedPattern) != nil ||
-            firstRegexMatch(in: projectContent, pattern: unquotedPattern) != nil {
-            return true
-        }
+    if firstRegexMatch(in: projectContent, pattern: quotedPattern) != nil ||
+        firstRegexMatch(in: projectContent, pattern: unquotedPattern) != nil {
+        return true
     }
 
     let normalizedPath = (guideDogsRelativePath as NSString).standardizingPath
@@ -686,9 +700,9 @@ do {
                 synchronizedRootPaths: synchronizedRoots
             )
 
-            var directEvidence = exactLineMatches("\"\(storyboard.name)\"", in: evidenceFiles, kinds: fileKinds, excluding: storyboard.relativePath)
+            var directEvidence = exactLineMatches("\"\(storyboard.name)\"", in: swiftFiles, kinds: fileKinds)
             directEvidence.append(contentsOf: exactLineMatches(">\(storyboard.name)<", in: plistFiles, kinds: fileKinds))
-            directEvidence.append(contentsOf: exactLineMatches("\(storyboard.name).storyboard", in: evidenceFiles, kinds: fileKinds, excluding: storyboard.relativePath))
+            directEvidence.append(contentsOf: exactLineMatches("\"\(storyboard.name).storyboard\"", in: swiftFiles + plistFiles, kinds: fileKinds))
             directEvidence = deduplicate(directEvidence)
 
             let indirectEvidence = deduplicate(
@@ -723,12 +737,8 @@ do {
                 var sceneIndirectEvidence: [Evidence] = []
 
                 if let identifier = scene.storyboardIdentifier {
-                    sceneDirectEvidence.append(contentsOf: exactLineMatches(identifier, in: evidenceFiles, kinds: fileKinds, excluding: storyboard.relativePath))
+                    sceneDirectEvidence.append(contentsOf: exactLineMatches("\"\(identifier)\"", in: swiftFiles, kinds: fileKinds))
                     sceneIndirectEvidence.append(contentsOf: exactLineMatches("referencedIdentifier=\"\(identifier)\"", in: storyboardFiles, kinds: fileKinds, excluding: storyboard.relativePath))
-                }
-
-                if let customClass = scene.customClass {
-                    sceneDirectEvidence.append(contentsOf: symbolLineMatches(customClass, in: swiftFiles, kinds: fileKinds))
                 }
 
                 if scene.isInitialScene {
@@ -778,10 +788,14 @@ do {
                 projectContent: projectContent,
                 synchronizedRootPaths: synchronizedRoots
             )
-            let matches = deduplicate(exactLineMatches(xib.name, in: evidenceFiles, kinds: fileKinds, excluding: xib.relativePath))
+            var matches = symbolLineMatches(xib.name, in: swiftFiles, kinds: fileKinds)
+            matches.append(contentsOf: exactLineMatches("\"\(xib.name)\"", in: swiftFiles, kinds: fileKinds))
+            matches = deduplicate(matches)
 
-            let preferredCustomClass = xib.fileOwnerClass ?? xib.rootCustomClass
-            let customStatus = customClassStatus(for: preferredCustomClass, declaredTypes: declaredTypes)
+            let customStatus = mergedCustomClassStatus(
+                for: [xib.fileOwnerClass, xib.rootCustomClass],
+                declaredTypes: declaredTypes
+            )
             let wrapperOnly = xib.rootTag == "view" && xib.fileOwnerClass != nil
             let classification = classifyXib(
                 projectMembership: projectMembership,
