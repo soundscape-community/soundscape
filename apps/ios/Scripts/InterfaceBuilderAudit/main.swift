@@ -88,7 +88,13 @@ struct Configuration {
 
     private static func discoverRepoRoot() throws -> String {
         let fileManager = FileManager.default
-        var currentURL = URL(fileURLWithPath: fileManager.currentDirectoryPath, isDirectory: true)
+        let startURL = URL(fileURLWithPath: fileManager.currentDirectoryPath, isDirectory: true)
+        return try discoverRepoRoot(startingAt: startURL)
+    }
+
+    private static func discoverRepoRoot(startingAt startURL: URL) throws -> String {
+        let fileManager = FileManager.default
+        var currentURL = startURL.standardizedFileURL
 
         while true {
             let guideDogsProject = currentURL
@@ -99,6 +105,16 @@ struct Configuration {
 
             if fileManager.fileExists(atPath: guideDogsProject.path) {
                 return currentURL.path
+            }
+
+            let iosRootProject = currentURL
+                .appendingPathComponent("GuideDogs.xcodeproj")
+                .appendingPathComponent("project.pbxproj")
+
+            if fileManager.fileExists(atPath: iosRootProject.path),
+               currentURL.lastPathComponent == "ios",
+               currentURL.deletingLastPathComponent().lastPathComponent == "apps" {
+                return currentURL.deletingLastPathComponent().deletingLastPathComponent().path
             }
 
             let parentURL = currentURL.deletingLastPathComponent()
@@ -115,7 +131,7 @@ struct Configuration {
         guard FileManager.default.fileExists(atPath: url.path) else {
             throw ToolError.invalidArguments("Root path does not exist: \(path)")
         }
-        return url.standardizedFileURL.path
+        return try discoverRepoRoot(startingAt: url)
     }
 }
 
@@ -423,6 +439,37 @@ func exactLineMatches(_ token: String, in files: [SourceFile], kinds: [String: E
     }
 }
 
+func symbolLineMatches(_ token: String, in files: [SourceFile], kinds: [String: EvidenceKind], excluding excludedPath: String? = nil) -> [Evidence] {
+    guard !token.isEmpty else {
+        return []
+    }
+
+    let escapedToken = NSRegularExpression.escapedPattern(for: token)
+    let regex = try! NSRegularExpression(pattern: #"\b\#(escapedToken)\b"#)
+
+    return files.flatMap { file -> [Evidence] in
+        guard file.relativePath != excludedPath else {
+            return []
+        }
+
+        return file.lines.enumerated().compactMap { index, line in
+            let trimmedLine = line.trimmingCharacters(in: .whitespaces)
+            guard !isCommentLine(trimmedLine),
+                  !isTypeDeclarationLine(trimmedLine, token: token),
+                  let kind = kinds[file.relativePath] else {
+                return nil
+            }
+
+            let range = NSRange(trimmedLine.startIndex..., in: trimmedLine)
+            guard regex.firstMatch(in: trimmedLine, range: range) != nil else {
+                return nil
+            }
+
+            return Evidence(kind: kind, path: file.relativePath, line: index + 1, text: trimmedLine)
+        }
+    }
+}
+
 func deduplicate(_ evidence: [Evidence]) -> [Evidence] {
     var seen: Set<String> = []
     var result: [Evidence] = []
@@ -548,18 +595,53 @@ func referencedPaths(from evidence: [Evidence]) -> [String] {
     Array(Set(evidence.map(\.path))).sorted()
 }
 
-func isProjectTracked(relativePath: String, projectContent: String) -> Bool {
-    let guideDogsRelativePath = relativePath.replacingOccurrences(of: "apps/ios/GuideDogs/", with: "")
-    if projectContent.contains(guideDogsRelativePath) {
-        return true
-    }
+func isCommentLine(_ line: String) -> Bool {
+    let trimmedLine = line.trimmingCharacters(in: .whitespaces)
+    return trimmedLine.hasPrefix("//") || trimmedLine.hasPrefix("/*") || trimmedLine.hasPrefix("*") || trimmedLine.hasPrefix("*/")
+}
 
-    var currentDirectory = (guideDogsRelativePath as NSString).deletingLastPathComponent
-    while !currentDirectory.isEmpty {
-        if projectContent.contains(#"path = "\#(currentDirectory)";"#) {
+func isTypeDeclarationLine(_ line: String, token: String) -> Bool {
+    let escapedToken = NSRegularExpression.escapedPattern(for: token)
+    let regex = try! NSRegularExpression(pattern: #"\b(class|struct|enum|protocol|extension|typealias)\s+\#(escapedToken)\b"#)
+    let range = NSRange(line.startIndex..., in: line)
+    return regex.firstMatch(in: line, range: range) != nil
+}
+
+func synchronizedRootPaths(in projectContent: String) -> [String] {
+    let quotedPaths = matches(
+        in: projectContent,
+        pattern: #"(?s)\bisa = PBXFileSystemSynchronizedRootGroup;.*?\bpath = "([^"]+)";"#
+    ).map { ($0.capture(1) as NSString).standardizingPath }
+
+    let unquotedPaths = matches(
+        in: projectContent,
+        pattern: #"(?s)\bisa = PBXFileSystemSynchronizedRootGroup;.*?\bpath = ([^";]+);"#
+    ).map { ($0.capture(1).trimmingCharacters(in: .whitespacesAndNewlines) as NSString).standardizingPath }
+
+    return Array(Set(quotedPaths + unquotedPaths)).sorted()
+}
+
+func isProjectTracked(relativePath: String, projectContent: String, synchronizedRootPaths: [String]) -> Bool {
+    let guideDogsRelativePath = relativePath.replacingOccurrences(of: "apps/ios/GuideDogs/", with: "")
+    let lastPathComponent = URL(fileURLWithPath: guideDogsRelativePath).lastPathComponent
+    let candidates = Array(Set([guideDogsRelativePath, lastPathComponent]))
+
+    for candidate in candidates {
+        let escapedCandidate = NSRegularExpression.escapedPattern(for: candidate)
+        let quotedPattern = #"\bpath = "\#(escapedCandidate)";"#
+        let unquotedPattern = #"\bpath = \#(escapedCandidate);"#
+
+        if firstRegexMatch(in: projectContent, pattern: quotedPattern) != nil ||
+            firstRegexMatch(in: projectContent, pattern: unquotedPattern) != nil {
             return true
         }
-        currentDirectory = (currentDirectory as NSString).deletingLastPathComponent
+    }
+
+    let normalizedPath = (guideDogsRelativePath as NSString).standardizingPath
+    for synchronizedRootPath in synchronizedRootPaths {
+        if normalizedPath == synchronizedRootPath || normalizedPath.hasPrefix(synchronizedRootPath + "/") {
+            return true
+        }
     }
 
     return false
@@ -593,11 +675,16 @@ do {
     })
 
     let projectContent = projectFile.content
+    let synchronizedRoots = synchronizedRootPaths(in: projectContent)
     var reports: [AssetReport] = []
 
     if configuration.selection != .xib {
         for storyboard in storyboards {
-            let projectMembership = isProjectTracked(relativePath: storyboard.relativePath, projectContent: projectContent)
+            let projectMembership = isProjectTracked(
+                relativePath: storyboard.relativePath,
+                projectContent: projectContent,
+                synchronizedRootPaths: synchronizedRoots
+            )
 
             var directEvidence = exactLineMatches("\"\(storyboard.name)\"", in: evidenceFiles, kinds: fileKinds, excluding: storyboard.relativePath)
             directEvidence.append(contentsOf: exactLineMatches(">\(storyboard.name)<", in: plistFiles, kinds: fileKinds))
@@ -641,7 +728,7 @@ do {
                 }
 
                 if let customClass = scene.customClass {
-                    sceneDirectEvidence.append(contentsOf: exactLineMatches(customClass, in: swiftFiles + storyboardFiles, kinds: fileKinds, excluding: storyboard.relativePath))
+                    sceneDirectEvidence.append(contentsOf: symbolLineMatches(customClass, in: swiftFiles, kinds: fileKinds))
                 }
 
                 if scene.isInitialScene {
@@ -686,7 +773,11 @@ do {
 
     if configuration.selection != .storyboard {
         for xib in xibs {
-            let projectMembership = isProjectTracked(relativePath: xib.relativePath, projectContent: projectContent)
+            let projectMembership = isProjectTracked(
+                relativePath: xib.relativePath,
+                projectContent: projectContent,
+                synchronizedRootPaths: synchronizedRoots
+            )
             let matches = deduplicate(exactLineMatches(xib.name, in: evidenceFiles, kinds: fileKinds, excluding: xib.relativePath))
 
             let preferredCustomClass = xib.fileOwnerClass ?? xib.rootCustomClass
