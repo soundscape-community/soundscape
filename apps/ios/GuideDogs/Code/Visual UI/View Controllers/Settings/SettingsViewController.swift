@@ -26,7 +26,8 @@ class SettingsViewController: BaseTableViewController {
         case poi = 1
         case mobility = 2
         case beacon = 3
-        case shake = 4
+        case gpsAnnouncements = 4
+        case shake = 5
     }
     
     private static let cellIdentifiers: [IndexPath: String] = [
@@ -43,7 +44,10 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue): "poiCallouts",
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue): "mobilityCallouts",
         IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue): "beaconCallouts",
+        IndexPath(row: CalloutsRow.gpsAnnouncements.rawValue, section: Section.callouts.rawValue): "gpsAnnouncementsCallouts",
         IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue): "shakeCallouts",
+    
+        
         
         IndexPath(row: 0, section: Section.streetPreview.rawValue): "streetPreview",
         IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
@@ -55,6 +59,7 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue),
+        IndexPath(row: CalloutsRow.gpsAnnouncements.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue)
     ]
     
@@ -84,7 +89,7 @@ class SettingsViewController: BaseTableViewController {
         switch sectionType {
         case .general: return 6
         case .audio: return 1
-        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 5 : 1
+        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 6 : 1
         case .streetPreview: return 1
         case .troubleshooting: return 1
         case .about: return 1
@@ -110,6 +115,7 @@ class SettingsViewController: BaseTableViewController {
                 case .poi: cell.type = .poi
                 case .mobility: cell.type = .mobility
                 case .beacon: cell.type = .beacon
+                case .gpsAnnouncements: cell.type = .gpsAnnouncements
                 case .shake: cell.type = .shake
                 }
             }
@@ -242,3 +248,4 @@ extension SettingsViewController: LargeBannerContainerView {
     }
     
 }
+
