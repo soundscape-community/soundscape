@@ -32,10 +32,10 @@ jobs:
               working-directory: apps/ios
               run: |
                 swift Scripts/LocalizationLinter/main.swift
+            # Disable TSan in GitHub Actions only until the audio-engine race is fixed in code.
             - name: Build
               run: >
                 xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace
-                # Disable TSan in GitHub Actions only until the audio-engine race is fixed in code.
                 -scheme Soundscape -enableThreadSanitizer NO
                 -destination "platform=iOS Simulator,OS=26.2,name=iPhone 17 Pro"
                 CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
@@ -45,9 +45,9 @@ jobs:
               with:
                 name: xcodebuild-log
                 path: xcodebuild.log
+            # Local scheme/test-plan sanitizer settings remain unchanged.
             - name: Test
               run: >
                 xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace
-                # Local scheme/test-plan sanitizer settings remain unchanged.
                 -scheme Soundscape -enableThreadSanitizer NO
                 -destination "platform=iOS Simulator,OS=26.2,name=iPhone 17 Pro"
