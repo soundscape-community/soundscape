@@ -610,8 +610,6 @@
 		C30EF61F2089475D00BEA785 /* VoiceSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30EF61E2089475D00BEA785 /* VoiceSettingsTableViewController.swift */; };
 		C30EF6212089481100BEA785 /* SpeakingRateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30EF6202089481100BEA785 /* SpeakingRateTableViewCell.swift */; };
 		C30EF62320894AD400BEA785 /* VoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30EF62220894AD400BEA785 /* VoiceTableViewCell.swift */; };
-		C310219C210FB4CA008163F8 /* POITableViewCellEmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = C310219B210FB4CA008163F8 /* POITableViewCellEmpty.xib */; };
-		C31021B121127613008163F8 /* POITableViewCellEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31021B021127613008163F8 /* POITableViewCellEmpty.swift */; };
 		C317F24E2370E9AF000579BA /* NotificationContainerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C317F24D2370E9AF000579BA /* NotificationContainerManager.swift */; };
 		C317F26523722ECF000579BA /* NotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C317F26423722ECF000579BA /* NotificationObserver.swift */; };
 		C317F26923722F1A000579BA /* NotificationObserverDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C317F26823722F1A000579BA /* NotificationObserverDelegate.swift */; };
@@ -722,7 +720,6 @@
 		C3BC95DD2322D6F600B78903 /* RawCourseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BC95DC2322D6F600B78903 /* RawCourseProvider.swift */; };
 		C3BC95DF2322D70A00B78903 /* FilteredCourseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BC95DE2322D70A00B78903 /* FilteredCourseProvider.swift */; };
 		C3BC95E12322D72200B78903 /* RawCourseProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BC95E02322D72200B78903 /* RawCourseProviderDelegate.swift */; };
-		C3BF661F2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3BF661E2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib */; };
 		C3CEF6FC23020341001E84D4 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3CEF6FB23020341001E84D4 /* UIDevice+Extensions.swift */; };
 		C3D46E4D20A0F84500A88DE4 /* FirstLaunchVoiceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3D46E4C20A0F84500A88DE4 /* FirstLaunchVoiceTableViewCell.xib */; };
 		C3D6BAE51F7329BE009EEDE6 /* OSMServiceModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D6BAE41F7329BE009EEDE6 /* OSMServiceModelProtocol.swift */; };
@@ -1413,8 +1410,6 @@
 		C30EF61E2089475D00BEA785 /* VoiceSettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VoiceSettingsTableViewController.swift; path = "Code/Visual UI/View Controllers/Settings/Voice/VoiceSettingsTableViewController.swift"; sourceTree = "<group>"; };
 		C30EF6202089481100BEA785 /* SpeakingRateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpeakingRateTableViewCell.swift; path = "Code/Visual UI/Controls/Voice Settings/SpeakingRateTableViewCell.swift"; sourceTree = "<group>"; };
 		C30EF62220894AD400BEA785 /* VoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VoiceTableViewCell.swift; path = "Code/Visual UI/Controls/Voice Settings/VoiceTableViewCell.swift"; sourceTree = "<group>"; };
-		C310219B210FB4CA008163F8 /* POITableViewCellEmpty.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = POITableViewCellEmpty.xib; path = "Code/Visual UI/Controls/UITableView/POITableViewCellEmpty.xib"; sourceTree = "<group>"; };
-		C31021B021127613008163F8 /* POITableViewCellEmpty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = POITableViewCellEmpty.swift; path = "Code/Visual UI/Controls/UITableView/POITableViewCellEmpty.swift"; sourceTree = "<group>"; };
 		C317F24D2370E9AF000579BA /* NotificationContainerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationContainerManager.swift; path = Code/Notifications/NotificationContainerManager.swift; sourceTree = "<group>"; };
 		C317F26423722ECF000579BA /* NotificationObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationObserver.swift; path = Code/Notifications/Observers/NotificationObserver.swift; sourceTree = "<group>"; };
 		C317F26823722F1A000579BA /* NotificationObserverDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationObserverDelegate.swift; path = Code/Notifications/Observers/NotificationObserverDelegate.swift; sourceTree = "<group>"; };
@@ -1523,7 +1518,6 @@
 		C3BC95DC2322D6F600B78903 /* RawCourseProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RawCourseProvider.swift; path = Code/Sensors/Geolocation/Providers/RawCourseProvider.swift; sourceTree = "<group>"; };
 		C3BC95DE2322D70A00B78903 /* FilteredCourseProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FilteredCourseProvider.swift; path = Code/Sensors/Geolocation/Providers/FilteredCourseProvider.swift; sourceTree = "<group>"; };
 		C3BC95E02322D72200B78903 /* RawCourseProviderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RawCourseProviderDelegate.swift; path = "Code/Sensors/Geolocation/Provider Delegates/RawCourseProviderDelegate.swift"; sourceTree = "<group>"; };
-		C3BF661E2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = RouteGuidanceActiveBanner.xib; path = "Code/Visual UI/Controls/Banners/RouteGuidanceActiveBanner.xib"; sourceTree = "<group>"; };
 		C3CEF6FB23020341001E84D4 /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIDevice+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		C3D46E4C20A0F84500A88DE4 /* FirstLaunchVoiceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = FirstLaunchVoiceTableViewCell.xib; path = "Code/Visual UI/Controls/Voice Settings/Voice Cells/FirstLaunchVoiceTableViewCell.xib"; sourceTree = "<group>"; };
 		C3D6BAE41F7329BE009EEDE6 /* OSMServiceModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OSMServiceModelProtocol.swift; path = Code/Data/Services/OSM/OSMServiceModelProtocol.swift; sourceTree = "<group>"; };
@@ -3954,8 +3948,6 @@
 			children = (
 				568480A31CBDA685004B4227 /* POITableViewCell.swift */,
 				C35D99A9206EBE960025446C /* POITableViewCell.xib */,
-				C310219B210FB4CA008163F8 /* POITableViewCellEmpty.xib */,
-				C31021B021127613008163F8 /* POITableViewCellEmpty.swift */,
 				C31BEE2A2216015A00EE9284 /* POITableViewHeaderView.xib */,
 				C31BEE132214D9AC00EE9284 /* POITableViewHeaderView.swift */,
 				C34333AB221CDA3B00D9CECD /* FilterTableViewHeaderView.xib */,
@@ -3982,7 +3974,6 @@
 		C3652798224AC52B0056F570 /* Banners */ = {
 			isa = PBXGroup;
 			children = (
-				C3BF661E2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib */,
 				C378BE8122458AE7007489B2 /* OnlineBanner.xib */,
 				C378BE7F2245888A007489B2 /* OfflineDefaultBanner.xib */,
 				C378BE8322458E2F007489B2 /* OfflineSearchBanner.xib */,
@@ -4678,7 +4669,6 @@
 				287D3E9122DE897C0084B92B /* UnitsOfMeasureTableViewCell.xib in Resources */,
 				2896376026D6DD3C001694C0 /* Shimmer_Behind.wav in Resources */,
 				2896376126D6DD3C001694C0 /* Shimmer_A+.wav in Resources */,
-				C310219C210FB4CA008163F8 /* POITableViewCellEmpty.xib in Resources */,
 				286708D125005912002F962B /* street_non_1c.wav in Resources */,
 				31C70505218BABCC00EC5267 /* Localizable.strings in Resources */,
 				282B62F224EC4FA6007E5F8A /* Travel_inter_v2_spatial_48k.wav in Resources */,
@@ -4689,7 +4679,6 @@
 				62403FF524CF42C7005CB80D /* PreviewControlView.xib in Resources */,
 				2896375E26D6DD3C001694C0 /* Shimmer_B.wav in Resources */,
 				2896376F26D6E39D001694C0 /* Tactile_OffAxis.wav in Resources */,
-				C3BF661F2204DA4C00F28130 /* RouteGuidanceActiveBanner.xib in Resources */,
 				316B3F6C2283924E0025526D /* InfoPlist.strings in Resources */,
 				DCE4D2AD2D7CE40F00B5DA4B /* NewFeatures.json in Resources */,
 				280AFCD72295C77000012BEA /* online.wav in Resources */,
@@ -5321,7 +5310,6 @@
 				283C058023DB6DBF0086C01F /* SynchronouslyGeneratedSound.swift in Sources */,
 				28A32E4321BB310C005322D6 /* AudioEngine.swift in Sources */,
 				288A3AAB255F04B4007F1A57 /* TTSVoiceValidator.swift in Sources */,
-				C31021B121127613008163F8 /* POITableViewCellEmpty.swift in Sources */,
 				C3F6A58C226F746C00C922F7 /* TableViewDataSourcePrefetching.swift in Sources */,
 				62B9B41B2698DB8D007F9DB9 /* WaypointDetailClusterAnnotationView.swift in Sources */,
 				C3BC95D5231F054F00B78903 /* HeadingType.swift in Sources */,
