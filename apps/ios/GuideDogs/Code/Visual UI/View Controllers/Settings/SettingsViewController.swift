@@ -10,6 +10,7 @@ import UIKit
 
 
 class SettingsViewController: BaseTableViewController {
+    private static let beaconSettingsIndexPath = IndexPath(row: 2, section: Section.general.rawValue)
     private static let volumeSettingsIndexPath = IndexPath(row: 3, section: Section.general.rawValue)
     
     private enum Section: Int, CaseIterable {
@@ -139,11 +140,14 @@ class SettingsViewController: BaseTableViewController {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
-        guard indexPath == SettingsViewController.volumeSettingsIndexPath else {
-            return
+        switch indexPath {
+        case SettingsViewController.beaconSettingsIndexPath:
+            navigationController?.pushViewController(BeaconSelectionHostViewController(), animated: true)
+        case SettingsViewController.volumeSettingsIndexPath:
+            navigationController?.pushViewController(VolumeControlsHostViewController(), animated: true)
+        default:
+            break
         }
-
-        navigationController?.pushViewController(VolumeControlsHostViewController(), animated: true)
     }
     
     // MARK: UITableViewDataSource

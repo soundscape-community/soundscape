@@ -567,9 +567,6 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" name="Background 1"/>
                                 <color key="tintColor" name="Foreground 1"/>
-                                <connections>
-                                    <segue destination="kgF-3B-POU" kind="show" id="SXd-bE-aWf"/>
-                                </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="volumeSettings" textLabel="M9z-tj-Jqd" imageView="Y2O-sy-jp9" style="IBUITableViewCellStyleDefault" id="tzH-RS-Fsb" userLabel="Volume Settings" customClass="CustomDisclosureTableViewCell" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="627.33333206176758" width="393" height="44"/>
@@ -782,16 +779,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vxR-Bi-JU3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="717" y="-228"/>
-        </scene>
-        <!--Beacon Selection Host View Controller-->
-        <scene sceneID="Oww-yq-9BS">
-            <objects>
-                <hostingController id="kgF-3B-POU" customClass="BeaconSelectionHostViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="TbY-4W-rKW"/>
-                </hostingController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="bAk-yc-0ko" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="29" y="509"/>
         </scene>
         <!--About-->
         <scene sceneID="cTW-0T-CTz">
