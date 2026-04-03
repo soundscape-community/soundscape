@@ -111,7 +111,7 @@ struct IntersectionDecisionPoint: RootedPreviewGraph {
             }
             
             guard let layered = LayeredSound(baseSound, GlyphSound(.travelEnd, compass: direction)) else {
-                GDLogPreviewError("Unable to concatenate and layer sounds...")
+                GDLogPreviewError("Unable to concatenate and layer sounds   ")
                     return []
             }
             
