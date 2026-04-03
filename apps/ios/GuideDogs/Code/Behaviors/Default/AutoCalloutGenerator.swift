@@ -118,7 +118,9 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
     // MARK: - Private Constants
     
     private let inVehicleBeaconUpdateDistance: CLLocationDistance = 1000.0 // meters
-    private let calloutDelay = 0.75
+    private var calloutDelay: Double {
+        return SettingsContext.shared.calloutsDelayEnabled ? 0.75 : 0.0
+    }
     
     // MARK: - Private Properties
     
