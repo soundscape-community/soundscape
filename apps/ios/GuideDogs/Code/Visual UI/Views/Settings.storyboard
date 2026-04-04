@@ -823,7 +823,6 @@
                     <connections>
                         <outlet property="largeBannerContainerView" destination="XDA-Md-TsG" id="jtY-ng-N06"/>
                         <segue destination="7G3-p5-R5o" kind="show" identifier="ShowThirdPartyNoticesSegue" id="SPW-UB-0Ho"/>
-                        <segue destination="cV6-tJ-Lov" kind="show" identifier="ShowVersionHistorySegue" id="kWb-2C-vBK"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OYr-S2-Tgw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -884,64 +883,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jmh-jh-7dt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1848" y="-1428"/>
-        </scene>
-        <!--What's New?-->
-        <scene sceneID="spE-BA-iWA">
-            <objects>
-                <tableViewController title="What's New?" id="cV6-tJ-Lov" customClass="VersionHistoryTableViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="60" sectionHeaderHeight="18" sectionFooterHeight="18" id="Ghn-Zm-Bk2">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="749"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" name="Background Base"/>
-                        <color key="tintColor" name="Foreground 1"/>
-                        <color key="separatorColor" name="Background 3"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="fPr-HR-cw1">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="0.0"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        </view>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="featureCell" textLabel="6W8-aG-Pww" detailTextLabel="2Ol-y1-OWm" rowHeight="80" style="IBUITableViewCellStyleSubtitle" id="f4k-Z5-6Nh">
-                                <rect key="frame" x="0.0" y="55.333332061767578" width="393" height="80"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="f4k-Z5-6Nh" id="Wkm-BY-Ohz">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="80"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Feature Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="6W8-aG-Pww">
-                                            <rect key="frame" x="19.999999999999993" y="19" width="95.333333333333329" height="20.333333333333332"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <color key="highlightedColor" red="0.1333333333" green="0.25882352939999997" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Feature description" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2Ol-y1-OWm">
-                                            <rect key="frame" x="20.000000000000007" y="42.333333333333329" width="117.66666666666667" height="15.666666666666666"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                            <color key="textColor" red="0.6705882353" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="highlightedColor" red="0.0" green="0.32852089410000002" blue="0.57488495110000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" name="Background 1"/>
-                            </tableViewCell>
-                        </prototypes>
-                        <sections/>
-                        <connections>
-                            <outlet property="dataSource" destination="cV6-tJ-Lov" id="GVL-Bu-L7Z"/>
-                            <outlet property="delegate" destination="cV6-tJ-Lov" id="ti8-fb-HQq"/>
-                        </connections>
-                    </tableView>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.about.title.whats_new"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <outlet property="largeBannerContainerView" destination="fPr-HR-cw1" id="K1Z-Eh-Rsr"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="VA5-t3-Nbb" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1848" y="-746"/>
         </scene>
         <!--manageDevices-->
         <scene sceneID="Xxu-RM-vaK">

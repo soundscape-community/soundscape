@@ -9,14 +9,36 @@
 import UIKit
 
 class VersionHistoryTableViewController: BaseTableViewController {
+    private static let featureCellReuseIdentifier = "featureCell"
 
     // MARK: - Properties
 
     private let features = NewFeatures.allFeaturesHistory()
-    
-    @IBOutlet weak var largeBannerContainerView: UIView!
+    private(set) var largeBannerContainerView: UIView! = UIView(frame: .zero)
+
+    init() {
+        super.init(style: .grouped)
+    }
+
+    @available(*, unavailable, message: "Use init()")
+    required init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
 
     // MARK: View Life Cycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        title = GDLocalizedString("settings.about.title.whats_new")
+
+        tableView.tableHeaderView = largeBannerContainerView
+        tableView.tintColor = Colors.Foreground.primary
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 80
+        tableView.sectionHeaderHeight = 18
+        tableView.sectionFooterHeight = 18
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -51,12 +73,22 @@ class VersionHistoryTableViewController: BaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "featureCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: VersionHistoryTableViewController.featureCellReuseIdentifier)
+            ?? UITableViewCell(style: .subtitle, reuseIdentifier: VersionHistoryTableViewController.featureCellReuseIdentifier)
 
         let feature = features(for: indexPath.section)[indexPath.row]
         
         cell.textLabel?.text = feature.localizedTitle
         cell.detailTextLabel?.text = feature.localizedDescription
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        cell.textLabel?.textColor = Colors.Foreground.primary
+        cell.textLabel?.adjustsFontForContentSizeCategory = true
+        cell.detailTextLabel?.numberOfLines = 0
+        cell.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .footnote)
+        cell.detailTextLabel?.textColor = UIColor(red: 0.6705882353, green: 0.9607843137, blue: 0.9607843137, alpha: 1)
+        cell.detailTextLabel?.adjustsFontForContentSizeCategory = true
+        cell.backgroundColor = Colors.Background.primary
 
         return cell
     }
@@ -83,6 +115,12 @@ class VersionHistoryTableViewController: BaseTableViewController {
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
+
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        super.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
+
+        cell.detailTextLabel?.textColor = UIColor(red: 0.6705882353, green: 0.9607843137, blue: 0.9607843137, alpha: 1)
+    }
     
 }
 
@@ -90,6 +128,7 @@ extension VersionHistoryTableViewController: LargeBannerContainerView {
     
     func setLargeBannerHeight(_ height: CGFloat) {
         largeBannerContainerView.setHeight(height)
+        tableView.tableHeaderView = largeBannerContainerView
         tableView.reloadData()
     }
     

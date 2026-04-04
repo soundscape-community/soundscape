@@ -17,10 +17,15 @@ class AboutHeaderCell: UITableViewCell {
 class AboutApplicationViewController: BaseTableViewController {
     
     // MARK: Cell Content
+    private enum NavigationTarget {
+        case storyboardSegue(String)
+        case versionHistory
+    }
+    
     private struct AboutLinkCellModel {
         let localizedTitle: String
         
-        let segue: String?
+        let navigationTarget: NavigationTarget?
         let url: URL?
         
         let telemetryEventName: String?
@@ -28,14 +33,21 @@ class AboutApplicationViewController: BaseTableViewController {
         init(localizedTitle: String, url: URL, event: String? = nil) {
             self.localizedTitle = localizedTitle
             self.url = url
-            self.segue = nil
+            self.navigationTarget = nil
             self.telemetryEventName = event
         }
         
         init(localizedTitle: String, segue: String, event: String? = nil) {
             self.localizedTitle = localizedTitle
             self.url = nil
-            self.segue = segue
+            self.navigationTarget = .storyboardSegue(segue)
+            self.telemetryEventName = event
+        }
+        
+        init(localizedTitle: String, navigationTarget: NavigationTarget, event: String? = nil) {
+            self.localizedTitle = localizedTitle
+            self.url = nil
+            self.navigationTarget = navigationTarget
             self.telemetryEventName = event
         }
     }
@@ -48,7 +60,7 @@ class AboutApplicationViewController: BaseTableViewController {
     
     private var aboutLinks: [AboutLinkCellModel] {
         var links = [
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), segue: "ShowVersionHistorySegue"),
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), navigationTarget: .versionHistory),
             AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Privacy Policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale), event: "about.privacy_policy"),
             AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Services Agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale), event: "about.services_agreement"),
             AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), segue: "ShowThirdPartyNoticesSegue"),
@@ -131,8 +143,14 @@ class AboutApplicationViewController: BaseTableViewController {
         }
         
         // If the cell has a segue, perform it
-        if let segue = model.segue {
-            performSegue(withIdentifier: segue, sender: self)
+        if let navigationTarget = model.navigationTarget {
+            switch navigationTarget {
+            case .storyboardSegue(let segue):
+                performSegue(withIdentifier: segue, sender: self)
+            case .versionHistory:
+                navigationController?.pushViewController(VersionHistoryTableViewController(), animated: true)
+            }
+            
             return
         }
         
