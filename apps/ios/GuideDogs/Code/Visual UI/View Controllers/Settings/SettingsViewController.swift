@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 
 class SettingsViewController: BaseTableViewController {
@@ -145,7 +146,8 @@ class SettingsViewController: BaseTableViewController {
 
         switch indexPath {
         case SettingsViewController.languageSettingsIndexPath:
-            navigationController?.pushViewController(LanguageSettingsHostViewController(), animated: true)
+            let controller = UIHostingController(rootView: LanguageSettingsView())
+            navigationController?.pushViewController(controller, animated: true)
         case SettingsViewController.beaconSettingsIndexPath:
             navigationController?.pushViewController(BeaconSelectionHostViewController(), animated: true)
         case SettingsViewController.volumeSettingsIndexPath:

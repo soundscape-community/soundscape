@@ -36,49 +36,43 @@ struct LanguageSettingsView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color.quaternaryBackground.ignoresSafeArea()
+        Form {
+            Section(GDLocalizedString("settings.section.units")) {
+                LanguageSettingsUnitsRow(unitPreference: $unitPreference)
+            }
 
-            ScrollView {
-                VStack(spacing: 0) {
-                    TableHeaderCell(text: GDLocalizedString("settings.section.units"))
-
-                    LanguageSettingsUnitsRow(unitPreference: $unitPreference)
-
-                    TableHeaderCell(text: GDLocalizedString("settings.language.screen_title"))
-
-                    ForEach(Array(supportedLocales.enumerated()), id: \.element.identifierHyphened) { index, locale in
-                        Button {
-                            selectLocale(locale)
-                        } label: {
-                            LanguageSettingsLocaleRow(
-                                locale: locale,
-                                appLocale: selectedLocale,
-                                isSelected: locale.identifierHyphened == selectedLocale.identifierHyphened,
-                                showsDivider: index < supportedLocales.count - 1
-                            )
-                        }
-                        .buttonStyle(.plain)
+            Section(GDLocalizedString("settings.language.screen_title")) {
+                ForEach(supportedLocales, id: \.identifierHyphened) { locale in
+                    Button {
+                        selectLocale(locale)
+                    } label: {
+                        LanguageSettingsLocaleRow(
+                            locale: locale,
+                            appLocale: selectedLocale,
+                            isSelected: locale.identifierHyphened == selectedLocale.identifierHyphened
+                        )
                     }
+                    .buttonStyle(.plain)
                 }
             }
-            .navigationTitle(GDLocalizedString("settings.language.screen_title.2"))
-            .onAppear(perform: trackScreenView)
-            .onChange(of: unitPreference, perform: updateUnitsPreference)
-            .alert(
-                confirmationTitle,
-                isPresented: isShowingConfirmation,
-                presenting: pendingLocale
-            ) { pendingLocale in
-                let localeName = pendingLocale.localizedDescription(with: selectedLocale)
+        }
+        .navigationTitle(GDLocalizedString("settings.language.screen_title.2"))
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: trackScreenView)
+        .onChange(of: unitPreference, perform: updateUnitsPreference)
+        .alert(
+            confirmationTitle,
+            isPresented: isShowingConfirmation,
+            presenting: pendingLocale
+        ) { pendingLocale in
+            let localeName = pendingLocale.localizedDescription(with: selectedLocale)
 
-                Button(GDLocalizedString("settings.language.change_alert_action", localeName)) {
-                    confirmLocaleChange(pendingLocale)
-                }
+            Button(GDLocalizedString("settings.language.change_alert_action", localeName)) {
+                confirmLocaleChange(pendingLocale)
+            }
 
-                Button(GDLocalizedString("general.alert.cancel"), role: .cancel) {
-                    self.pendingLocale = nil
-                }
+            Button(GDLocalizedString("general.alert.cancel"), role: .cancel) {
+                self.pendingLocale = nil
             }
         }
     }
@@ -135,8 +129,7 @@ private struct LanguageSettingsUnitsRow: View {
             }
         }
         .pickerStyle(.segmented)
-        .padding()
-        .background(Color.primaryBackground)
+        .labelsHidden()
         .accessibilityLabel(GDLocalizedTextView("settings.section.units"))
     }
 }
@@ -167,7 +160,6 @@ private struct LanguageSettingsLocaleRow: View {
     let locale: Locale
     let appLocale: Locale
     let isSelected: Bool
-    let showsDivider: Bool
 
     private var title: String {
         locale.localizedDescription
@@ -180,7 +172,6 @@ private struct LanguageSettingsLocaleRow: View {
 
     private var titleText: some View {
         Text(titleAttributedString)
-            .foregroundColor(.primaryForeground)
             .accessibleTextFormat()
     }
 
@@ -195,7 +186,7 @@ private struct LanguageSettingsLocaleRow: View {
         if let subtitle {
             Text(subtitleAttributedString(subtitle))
                 .font(.subheadline)
-                .foregroundColor(Color.secondaryForeground)
+                .foregroundStyle(.secondary)
                 .accessibleTextFormat()
         }
     }
@@ -207,38 +198,26 @@ private struct LanguageSettingsLocaleRow: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(alignment: .firstTextBaseline, spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    titleText
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                titleText
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                if subtitle != nil {
+                    subtitleText
                         .frame(maxWidth: .infinity, alignment: .leading)
-
-                    if subtitle != nil {
-                        subtitleText
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                }
-
-                Spacer(minLength: 12)
-
-                if isSelected {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(Color.primaryForeground)
-                        .accessibilityHidden(true)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(Color.primaryBackground)
 
-            if showsDivider {
-                Divider()
-                    .background(Color.tertiaryBackground)
-                    .padding(.horizontal, 8)
+            Spacer(minLength: 12)
+
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .foregroundStyle(.tint)
+                    .accessibilityHidden(true)
             }
         }
         .contentShape(Rectangle())
-        .background(Color.primaryBackground)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
