@@ -8,7 +8,7 @@
 
 import UIKit
 
-class VersionHistoryTableViewController: BaseTableViewController {
+class VersionHistoryTableViewController: BaseTableViewController, LargeBannerTableHeaderContainerView {
     private static let featureCellReuseIdentifier = "featureCell"
 
     // MARK: - Properties
@@ -32,7 +32,7 @@ class VersionHistoryTableViewController: BaseTableViewController {
 
         title = GDLocalizedString("settings.about.title.whats_new")
 
-        updateLargeBannerContainerViewFrame()
+        syncLargeBannerTableHeaderFrame()
         tableView.tintColor = Colors.Foreground.primary
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
@@ -45,7 +45,7 @@ class VersionHistoryTableViewController: BaseTableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        updateLargeBannerContainerViewFrame()
+        syncLargeBannerTableHeaderFrame()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -130,31 +130,4 @@ class VersionHistoryTableViewController: BaseTableViewController {
         cell.detailTextLabel?.textColor = UIColor(red: 0.6705882353, green: 0.9607843137, blue: 0.9607843137, alpha: 1)
     }
 
-    private func updateLargeBannerContainerViewFrame() {
-        let headerHeight = largeBannerContainerView.frame.height
-        let headerWidth = tableView.bounds.width
-
-        guard headerWidth > 0 else {
-            return
-        }
-
-        largeBannerContainerView.frame = CGRect(x: 0, y: 0, width: headerWidth, height: headerHeight)
-
-        if headerHeight > 0 {
-            tableView.tableHeaderView = largeBannerContainerView
-        } else if tableView.tableHeaderView != nil {
-            tableView.tableHeaderView = nil
-        }
-    }
-    
-}
-
-extension VersionHistoryTableViewController: LargeBannerContainerView {
-    
-    func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerView.setHeight(height)
-        updateLargeBannerContainerViewFrame()
-        tableView.reloadData()
-    }
-    
 }

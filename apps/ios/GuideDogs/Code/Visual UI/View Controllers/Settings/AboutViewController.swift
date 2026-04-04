@@ -77,7 +77,7 @@ class AboutHeaderCell: UITableViewCell {
     }
 }
 
-class AboutApplicationViewController: BaseTableViewController {
+class AboutApplicationViewController: BaseTableViewController, LargeBannerTableHeaderContainerView {
     private static let aboutHeaderHeight: CGFloat = 220
     private static let thirdPartyNoticesStoryboardIdentifier = "thirdPartyNotices"
     
@@ -153,7 +153,7 @@ class AboutApplicationViewController: BaseTableViewController {
         tableView.registerCell(AboutHeaderCell.self)
         tableView.registerCell(CustomDisclosureTableViewCell.self)
 
-        updateLargeBannerContainerViewFrame()
+        syncLargeBannerTableHeaderFrame()
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.tintColor = Colors.Foreground.primary
         tableView.separatorColor = Colors.Background.tertiary
@@ -164,7 +164,7 @@ class AboutApplicationViewController: BaseTableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        updateLargeBannerContainerViewFrame()
+        syncLargeBannerTableHeaderFrame()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -269,31 +269,4 @@ class AboutApplicationViewController: BaseTableViewController {
         indexPath == headerPath ? AboutApplicationViewController.aboutHeaderHeight : 44
     }
 
-    private func updateLargeBannerContainerViewFrame() {
-        let headerHeight = largeBannerContainerView.frame.height
-        let headerWidth = tableView.bounds.width
-
-        guard headerWidth > 0 else {
-            return
-        }
-
-        largeBannerContainerView.frame = CGRect(x: 0, y: 0, width: headerWidth, height: headerHeight)
-
-        if headerHeight > 0 {
-            tableView.tableHeaderView = largeBannerContainerView
-        } else if tableView.tableHeaderView != nil {
-            tableView.tableHeaderView = nil
-        }
-    }
-    
-}
-
-extension AboutApplicationViewController: LargeBannerContainerView {
-    
-    func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerView.setHeight(height)
-        updateLargeBannerContainerViewFrame()
-        tableView.reloadData()
-    }
-    
 }
