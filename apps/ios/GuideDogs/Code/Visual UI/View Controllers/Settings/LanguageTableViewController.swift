@@ -47,8 +47,10 @@ class LanguageTableViewController: UITableViewController {
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 60
-        tableView.sectionHeaderHeight = 18
-        tableView.sectionFooterHeight = 18
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 18
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.estimatedSectionFooterHeight = 18
     }
 
     override func viewDidLayoutSubviews() {

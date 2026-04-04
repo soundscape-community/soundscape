@@ -36,8 +36,10 @@ class VersionHistoryTableViewController: BaseTableViewController {
         tableView.tintColor = Colors.Foreground.primary
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
-        tableView.sectionHeaderHeight = 18
-        tableView.sectionFooterHeight = 18
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 18
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.estimatedSectionFooterHeight = 18
     }
 
     override func viewDidLayoutSubviews() {

@@ -33,6 +33,10 @@ class HelpPageFAQListTableViewController: BaseTableViewController {
         tableView.registerCell(CustomDisclosureTableViewCell.self)
         tableView.tintColor = Colors.Foreground.primary
         tableView.separatorColor = Colors.Background.tertiary
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 18
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.estimatedSectionFooterHeight = 18
     }
 
     // MARK: UITableViewDataSource

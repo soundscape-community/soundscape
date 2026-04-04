@@ -42,8 +42,10 @@ class SiriShortcutsTableViewController: BaseTableViewController {
         tableView.tintColor = Colors.Foreground.primary
         tableView.separatorColor = Colors.Background.tertiary
         tableView.rowHeight = 60
-        tableView.sectionHeaderHeight = 18
-        tableView.sectionFooterHeight = 18
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 18
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.estimatedSectionFooterHeight = 18
         
         reloadShortcuts()
         
