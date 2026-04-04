@@ -1,5 +1,11 @@
 # Agent Notes
 
+## Copyright notices
+
+- Never add new `Copyright (c) Microsoft Corporation.` notices to files changed in this repository.
+- For new files or when adding a header to a file that should carry the community notice, use `Copyright (c) Soundscape Community Contributors.`
+- Do not remove or rewrite existing Microsoft copyright notices in established files unless a Microsoft notice was added to a non-Microsoft file by mistake and you are correcting that mistake.
+
 ## iOS Interface Builder cleanup
 
 Use `apps/ios/Scripts/InterfaceBuilderAudit/main.swift` before removing storyboard or xib assets from the iOS app.

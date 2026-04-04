@@ -2,7 +2,7 @@
 //  LanguageSettingsHostViewController.swift
 //  Soundscape
 //
-//  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
