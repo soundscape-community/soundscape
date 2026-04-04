@@ -271,7 +271,6 @@ class HelpViewController: BaseTableViewController {
     private struct Segues {
         static let OpenHelpPage = "OpenHelpPage"
         static let OpenGenericHelpPage = "OpenGenericHelpPage"
-        static let OpenFAQListHelpPage = "OpenFAQListHelpPage"
         static let OpenDestinationTutorial = "destinationTutorial"
         static let OpenMarkerTutorial = "markerTutorial"
         static let OpenOfflinePage = "showOfflineInfo"
@@ -450,7 +449,15 @@ class HelpViewController: BaseTableViewController {
             if helpPages[page] is SectionedHelpPage {
                 performSegue(withIdentifier: Segues.OpenHelpPage, sender: self)
             } else if helpPages[page] is FAQListHelpPage {
-                performSegue(withIdentifier: Segues.OpenFAQListHelpPage, sender: self)
+                guard let content = helpPages[page] as? FAQListHelpPage else {
+                    return
+                }
+
+                let viewController = HelpPageFAQListTableViewController()
+                viewController.loadContent(content)
+
+                GDATelemetry.trackScreenView(helpPages[page].telemetryLabel)
+                navigationController?.pushViewController(viewController, animated: true)
             } else {
                 performSegue(withIdentifier: Segues.OpenGenericHelpPage, sender: self)
             }
@@ -469,14 +476,6 @@ class HelpViewController: BaseTableViewController {
             guard let content = helpPages[page] as? SectionedHelpPage else { return }
             
             helpVC.loadContent(content)
-            GDATelemetry.trackScreenView(helpPages[page].telemetryLabel)
-            
-        case let faqVC as HelpPageFAQListTableViewController:
-            // Pass the selected object to the new view controller.
-            guard let page = helpPages.firstIndex(where: { $0.index == currentIndex }) else { return }
-            guard let content = helpPages[page] as? FAQListHelpPage else { return }
-            
-            faqVC.loadContent(content)
             GDATelemetry.trackScreenView(helpPages[page].telemetryLabel)
             
         case let genericVC as HelpPageGenericViewController:
