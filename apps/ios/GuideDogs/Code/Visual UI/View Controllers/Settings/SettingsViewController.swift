@@ -13,6 +13,7 @@ class SettingsViewController: BaseTableViewController {
     private static let languageSettingsIndexPath = IndexPath(row: 0, section: Section.general.rawValue)
     private static let beaconSettingsIndexPath = IndexPath(row: 2, section: Section.general.rawValue)
     private static let volumeSettingsIndexPath = IndexPath(row: 3, section: Section.general.rawValue)
+    private static let siriShortcutsIndexPath = IndexPath(row: 5, section: Section.general.rawValue)
     
     private enum Section: Int, CaseIterable {
         case general = 0
@@ -148,6 +149,8 @@ class SettingsViewController: BaseTableViewController {
             navigationController?.pushViewController(BeaconSelectionHostViewController(), animated: true)
         case SettingsViewController.volumeSettingsIndexPath:
             navigationController?.pushViewController(VolumeControlsHostViewController(), animated: true)
+        case SettingsViewController.siriShortcutsIndexPath:
+            navigationController?.pushViewController(SiriShortcutsTableViewController(), animated: true)
         default:
             break
         }

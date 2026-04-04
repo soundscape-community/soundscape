@@ -11,6 +11,7 @@ import IntentsUI
 import CocoaLumberjackSwift
 
 class SiriShortcutsTableViewController: BaseTableViewController {
+    private static let siriShortcutCellReuseIdentifier = "siriShortcutCell"
     
     // MARK: Properties
     
@@ -22,12 +23,27 @@ class SiriShortcutsTableViewController: BaseTableViewController {
     /// `Any` can be `INShortcut` or `INVoiceShortcut`.
     private var displayShortcuts: [Any] = []
     
+    init() {
+        super.init(style: .grouped)
+    }
+    
+    @available(*, unavailable, message: "Use init()")
+    required init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
+    
     // MARK: View Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = GDLocalizedString("siri_shortcuts.title.beta")
+        tableView.backgroundColor = Colors.Background.quaternary
+        tableView.tintColor = Colors.Foreground.primary
+        tableView.separatorColor = Colors.Background.tertiary
+        tableView.rowHeight = 60
+        tableView.sectionHeaderHeight = 18
+        tableView.sectionFooterHeight = 18
         
         reloadShortcuts()
         
@@ -136,9 +152,17 @@ class SiriShortcutsTableViewController: BaseTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "siriShortcutCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: SiriShortcutsTableViewController.siriShortcutCellReuseIdentifier)
+            ?? UITableViewCell(style: .value1, reuseIdentifier: SiriShortcutsTableViewController.siriShortcutCellReuseIdentifier)
         
         cell.accessibilityTraits = [.button]
+        cell.backgroundColor = Colors.Background.primary
+        cell.textLabel?.textColor = Colors.Foreground.primary
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontForContentSizeCategory = true
+        cell.detailTextLabel?.textColor = UIColor(red: 0.6705882353, green: 0.9607843137, blue: 0.9607843137, alpha: 1.0)
+        cell.detailTextLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.detailTextLabel?.adjustsFontForContentSizeCategory = true
         cell.detailTextLabel?.accessibilityLabel = nil
         
         let displayShortcut = displayShortcut(at: indexPath)
