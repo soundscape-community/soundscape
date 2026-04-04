@@ -792,11 +792,11 @@ do {
                 projectContent: projectContent,
                 synchronizedRootPaths: synchronizedRoots
             )
-            var directEvidence = symbolLineMatches(xib.name, in: swiftFiles, kinds: fileKinds)
-            directEvidence.append(contentsOf: exactLineMatches("\"\(xib.name)\"", in: swiftFiles, kinds: fileKinds))
+            var directEvidence = exactLineMatches("\"\(xib.name)\"", in: swiftFiles, kinds: fileKinds)
             directEvidence = deduplicate(directEvidence)
 
             var indirectEvidence: [Evidence] = []
+            indirectEvidence.append(contentsOf: symbolLineMatches(xib.name, in: swiftFiles, kinds: fileKinds))
             if let fileOwnerClass = xib.fileOwnerClass {
                 indirectEvidence.append(contentsOf: symbolLineMatches(fileOwnerClass, in: swiftFiles, kinds: fileKinds))
             }
