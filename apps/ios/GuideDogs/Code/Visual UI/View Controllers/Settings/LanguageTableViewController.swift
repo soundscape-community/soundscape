@@ -36,7 +36,7 @@ class LanguageTableViewController: UITableViewController, LargeBannerTableHeader
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = GDLocalizedString("settings.language.screen_title")
+        title = GDLocalizedString("settings.language.screen_title.2")
         
         tableView.registerCell(UnitsOfMeasureTableViewCell.self)
         
