@@ -56,9 +56,6 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" name="Background 1"/>
                                 <color key="tintColor" name="Foreground 1"/>
-                                <connections>
-                                    <segue destination="Vrs-lu-RFH" kind="show" id="jYE-W9-nCa"/>
-                                </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="manageDevices" textLabel="Ilj-13-m1r" imageView="ozz-CI-zQP" style="IBUITableViewCellStyleDefault" id="vbJ-8r-cPx" userLabel="Audio AR Headset" customClass="CustomDisclosureTableViewCell" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="99.333332061767578" width="393" height="44"/>
@@ -948,64 +945,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VA5-t3-Nbb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1848" y="-746"/>
-        </scene>
-        <!--Language-->
-        <scene sceneID="WAD-hi-Ul7">
-            <objects>
-                <tableViewController title="Language" id="Vrs-lu-RFH" customClass="LanguageTableViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="60" sectionHeaderHeight="18" sectionFooterHeight="18" id="jo0-AK-0oI">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="749"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" name="Background Base"/>
-                        <color key="tintColor" name="Foreground 1"/>
-                        <color key="separatorColor" name="Background 3"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="OwD-aa-xRl">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="0.0"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        </view>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="languageCell" textLabel="n32-Wb-j2m" detailTextLabel="Oyq-Vq-Agq" style="IBUITableViewCellStyleSubtitle" id="KSY-Yd-c89">
-                                <rect key="frame" x="0.0" y="55.333332061767578" width="393" height="60"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KSY-Yd-c89" id="rFU-a9-9Og">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="60"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Language (Native)" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="n32-Wb-j2m">
-                                            <rect key="frame" x="20" y="8.9999999999999982" width="140.33333333333334" height="20.333333333333332"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <color key="highlightedColor" red="0.1333333333" green="0.25882352939999997" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Language (Current)" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Oyq-Vq-Agq">
-                                            <rect key="frame" x="20" y="32.333333333333329" width="119" height="15.666666666666666"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                            <color key="textColor" red="0.6705882353" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="highlightedColor" red="0.14117647059999999" green="0.2274509804" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" name="Background 1"/>
-                            </tableViewCell>
-                        </prototypes>
-                        <sections/>
-                        <connections>
-                            <outlet property="dataSource" destination="Vrs-lu-RFH" id="6Mg-3D-r7h"/>
-                            <outlet property="delegate" destination="Vrs-lu-RFH" id="k3h-dx-eP1"/>
-                        </connections>
-                    </tableView>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.language.screen_title"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <outlet property="largeBannerContainerView" destination="OwD-aa-xRl" id="NFz-Lw-bk2"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6i8-gi-CLe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="29" y="-944"/>
         </scene>
         <!--manageDevices-->
         <scene sceneID="Xxu-RM-vaK">

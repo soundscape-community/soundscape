@@ -9,6 +9,7 @@
 import UIKit
 
 class LanguageTableViewController: UITableViewController {
+    private static let languageCellReuseIdentifier = "languageCell"
     
     private struct Section {
         static let units = 0
@@ -19,18 +20,35 @@ class LanguageTableViewController: UITableViewController {
     
     private let locales = LocalizationContext.supportedLocales
     private var selectedLocale = LocalizationContext.currentAppLocale
-
-    @IBOutlet weak var largeBannerContainerView: UIView!
+    private(set) var largeBannerContainerView: UIView! = UIView(frame: .zero)
+    
+    init() {
+        super.init(style: .grouped)
+    }
+    
+    @available(*, unavailable, message: "Use init()")
+    required init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
     
     // MARK: View Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = GDLocalizedString("settings.language.screen_title")
+        
         tableView.registerCell(UnitsOfMeasureTableViewCell.self)
         
+        tableView.tableHeaderView = largeBannerContainerView
+        tableView.backgroundColor = Colors.Background.quaternary
+        tableView.tintColor = Colors.Foreground.primary
+        tableView.separatorColor = Colors.Background.tertiary
+        
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 44
+        tableView.estimatedRowHeight = 60
+        tableView.sectionHeaderHeight = 18
+        tableView.sectionFooterHeight = 18
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -113,7 +131,8 @@ class LanguageTableViewController: UITableViewController {
             return cell
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "languageCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: LanguageTableViewController.languageCellReuseIdentifier)
+            ?? UITableViewCell(style: .subtitle, reuseIdentifier: LanguageTableViewController.languageCellReuseIdentifier)
         
         let locale = locales[indexPath.row]
         
@@ -137,6 +156,9 @@ class LanguageTableViewController: UITableViewController {
             cell.accessoryType = .none
             cell.selectionStyle = .default
         }
+        
+        cell.backgroundColor = Colors.Background.primary
+        cell.tintColor = Colors.Foreground.primary
         
         return cell
     }
@@ -168,6 +190,7 @@ extension LanguageTableViewController: LargeBannerContainerView {
     
     func setLargeBannerHeight(_ height: CGFloat) {
         largeBannerContainerView.setHeight(height)
+        tableView.tableHeaderView = largeBannerContainerView
         tableView.reloadData()
     }
     

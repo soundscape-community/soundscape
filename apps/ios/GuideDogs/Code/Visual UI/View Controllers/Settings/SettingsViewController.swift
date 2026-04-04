@@ -10,6 +10,7 @@ import UIKit
 
 
 class SettingsViewController: BaseTableViewController {
+    private static let languageSettingsIndexPath = IndexPath(row: 0, section: Section.general.rawValue)
     private static let beaconSettingsIndexPath = IndexPath(row: 2, section: Section.general.rawValue)
     private static let volumeSettingsIndexPath = IndexPath(row: 3, section: Section.general.rawValue)
     
@@ -141,6 +142,8 @@ class SettingsViewController: BaseTableViewController {
         }
 
         switch indexPath {
+        case SettingsViewController.languageSettingsIndexPath:
+            navigationController?.pushViewController(LanguageTableViewController(), animated: true)
         case SettingsViewController.beaconSettingsIndexPath:
             navigationController?.pushViewController(BeaconSelectionHostViewController(), animated: true)
         case SettingsViewController.volumeSettingsIndexPath:
