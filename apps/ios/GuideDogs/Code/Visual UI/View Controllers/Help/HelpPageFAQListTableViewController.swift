@@ -11,20 +11,17 @@ import UIKit
 class HelpPageFAQListTableViewController: BaseTableViewController {
     private static let faqViewStoryboardIdentifier = "helpFAQPage"
 
-    private var faqList: FAQListHelpPage!
+    private let faqList: FAQListHelpPage
 
-    init() {
+    init(faqList: FAQListHelpPage) {
+        self.faqList = faqList
         super.init(style: .grouped)
+        title = faqList.title
     }
 
-    @available(*, unavailable, message: "Use init()")
+    @available(*, unavailable, message: "Use init(faqList:)")
     required init?(coder: NSCoder) {
-        fatalError("Use init()")
-    }
-    
-    func loadContent(_ content: FAQListHelpPage) {
-        faqList = content
-        title = content.title
+        fatalError("Use init(faqList:)")
     }
 
     override func viewDidLoad() {

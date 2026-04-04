@@ -453,8 +453,7 @@ class HelpViewController: BaseTableViewController {
                     return
                 }
 
-                let viewController = HelpPageFAQListTableViewController()
-                viewController.loadContent(content)
+                let viewController = HelpPageFAQListTableViewController(faqList: content)
 
                 GDATelemetry.trackScreenView(helpPages[page].telemetryLabel)
                 navigationController?.pushViewController(viewController, animated: true)

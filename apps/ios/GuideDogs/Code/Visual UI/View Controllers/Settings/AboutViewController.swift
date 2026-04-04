@@ -157,6 +157,8 @@ class AboutApplicationViewController: BaseTableViewController {
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.tintColor = Colors.Foreground.primary
         tableView.separatorColor = Colors.Background.tertiary
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 44
     }
 
     override func viewDidLayoutSubviews() {
@@ -260,7 +262,7 @@ class AboutApplicationViewController: BaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        indexPath == headerPath ? AboutApplicationViewController.aboutHeaderHeight : 44
+        indexPath == headerPath ? AboutApplicationViewController.aboutHeaderHeight : UITableView.automaticDimension
     }
 
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

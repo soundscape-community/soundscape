@@ -34,8 +34,6 @@ class CustomDisclosureTableViewCell: UITableViewCell {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-
-        configureAccessoryView()
     }
     
     override func awakeFromNib() {
