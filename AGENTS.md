@@ -31,12 +31,19 @@ It classifies assets and storyboard scenes as:
 
 Use the script to drive cleanup batches. Do not delete storyboard/xib files based only on visual inspection; confirm the candidate with the audit output and then verify the runtime path in code.
 
+Additional xib caution:
+
+- Treat `unreferenced` xibs with a `File's Owner` custom class or IBOutlet wiring as suspicious until you verify the runtime construction path in code.
+- A xib can be live even when Swift only instantiates the owning controller class and never mentions the xib filename directly.
+- Build success is not enough to prove a xib is dead; nib-backed controllers can fail only at runtime when outlets load as `nil`.
+
 Current intended workflow for IB removal:
 
 1. Run `InterfaceBuilderAudit`.
 2. Start with `stale_symbol` and `unreferenced` candidates.
-3. Remove the IB asset plus its project-file references in the same change.
-4. Replace dead segue or storyboard navigation paths with explicit programmatic routing.
-5. Re-run the audit and confirm the candidate set shrinks as expected.
+3. For xibs, inspect the file owner and root custom class, then confirm whether those classes are instantiated anywhere even if the xib name is not searched directly.
+4. Remove the IB asset plus its project-file references in the same change.
+5. Replace dead segue or storyboard navigation paths with explicit programmatic routing.
+6. Re-run the audit and confirm the candidate set shrinks as expected.
 
 If the script itself changes, keep this note aligned with its supported flags and classifications.

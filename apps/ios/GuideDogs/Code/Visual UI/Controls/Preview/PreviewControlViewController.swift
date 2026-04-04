@@ -41,6 +41,14 @@ class PreviewControlViewController: UIViewController {
             configureView()
         }
     }
+
+    init() {
+        super.init(nibName: "PreviewControlView", bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     // MARK: View Life Cycle
     

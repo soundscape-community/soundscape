@@ -8,7 +8,8 @@
 
 import UIKit
 
-class LanguageTableViewController: UITableViewController {
+class LanguageTableViewController: UITableViewController, LargeBannerTableHeaderContainerView {
+    private static let languageCellReuseIdentifier = "languageCell"
     
     private struct Section {
         static let units = 0
@@ -19,18 +20,43 @@ class LanguageTableViewController: UITableViewController {
     
     private let locales = LocalizationContext.supportedLocales
     private var selectedLocale = LocalizationContext.currentAppLocale
-
-    @IBOutlet weak var largeBannerContainerView: UIView!
+    private(set) var largeBannerContainerView: UIView! = UIView(frame: .zero)
+    
+    init() {
+        super.init(style: .grouped)
+    }
+    
+    @available(*, unavailable, message: "Use init()")
+    required init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
     
     // MARK: View Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = GDLocalizedString("settings.language.screen_title.2")
+        
         tableView.registerCell(UnitsOfMeasureTableViewCell.self)
         
+        syncLargeBannerTableHeaderFrame()
+        tableView.backgroundColor = Colors.Background.quaternary
+        tableView.tintColor = Colors.Foreground.primary
+        tableView.separatorColor = Colors.Background.tertiary
+        
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 44
+        tableView.estimatedRowHeight = 60
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 18
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.estimatedSectionFooterHeight = 18
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        syncLargeBannerTableHeaderFrame()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -113,7 +139,8 @@ class LanguageTableViewController: UITableViewController {
             return cell
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "languageCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: LanguageTableViewController.languageCellReuseIdentifier)
+            ?? UITableViewCell(style: .subtitle, reuseIdentifier: LanguageTableViewController.languageCellReuseIdentifier)
         
         let locale = locales[indexPath.row]
         
@@ -138,6 +165,9 @@ class LanguageTableViewController: UITableViewController {
             cell.selectionStyle = .default
         }
         
+        cell.backgroundColor = Colors.Background.primary
+        cell.tintColor = Colors.Foreground.primary
+        
         return cell
     }
     
@@ -161,14 +191,5 @@ class LanguageTableViewController: UITableViewController {
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
-}
 
-extension LanguageTableViewController: LargeBannerContainerView {
-    
-    func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerView.setHeight(height)
-        tableView.reloadData()
-    }
-    
 }

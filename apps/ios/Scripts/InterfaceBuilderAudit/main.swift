@@ -559,7 +559,8 @@ func classifyScene(
 func classifyXib(
     projectMembership: Bool,
     customClassStatus: CustomClassStatus,
-    evidence: [Evidence],
+    directEvidence: [Evidence],
+    indirectEvidence: [Evidence],
     wrapperOnly: Bool
 ) -> Classification {
     if !projectMembership {
@@ -568,11 +569,14 @@ func classifyXib(
     if customClassStatus == .missing {
         return .staleSymbol
     }
-    if wrapperOnly, !evidence.isEmpty {
+    if wrapperOnly, !directEvidence.isEmpty || !indirectEvidence.isEmpty {
         return .wrapperOnly
     }
-    if !evidence.isEmpty {
+    if !directEvidence.isEmpty {
         return .activeDirect
+    }
+    if !indirectEvidence.isEmpty {
+        return .activeIndirect
     }
     return .unreferenced
 }
@@ -788,9 +792,18 @@ do {
                 projectContent: projectContent,
                 synchronizedRootPaths: synchronizedRoots
             )
-            var matches = symbolLineMatches(xib.name, in: swiftFiles, kinds: fileKinds)
-            matches.append(contentsOf: exactLineMatches("\"\(xib.name)\"", in: swiftFiles, kinds: fileKinds))
-            matches = deduplicate(matches)
+            var directEvidence = exactLineMatches("\"\(xib.name)\"", in: swiftFiles, kinds: fileKinds)
+            directEvidence = deduplicate(directEvidence)
+
+            var indirectEvidence: [Evidence] = []
+            indirectEvidence.append(contentsOf: symbolLineMatches(xib.name, in: swiftFiles, kinds: fileKinds))
+            if let fileOwnerClass = xib.fileOwnerClass {
+                indirectEvidence.append(contentsOf: symbolLineMatches(fileOwnerClass, in: swiftFiles, kinds: fileKinds))
+            }
+            if let rootCustomClass = xib.rootCustomClass {
+                indirectEvidence.append(contentsOf: symbolLineMatches(rootCustomClass, in: swiftFiles, kinds: fileKinds))
+            }
+            indirectEvidence = deduplicate(indirectEvidence)
 
             let customStatus = mergedCustomClassStatus(
                 for: [xib.fileOwnerClass, xib.rootCustomClass],
@@ -800,9 +813,11 @@ do {
             let classification = classifyXib(
                 projectMembership: projectMembership,
                 customClassStatus: customStatus,
-                evidence: matches,
+                directEvidence: directEvidence,
+                indirectEvidence: indirectEvidence,
                 wrapperOnly: wrapperOnly
             )
+            let xibEvidence = deduplicate(directEvidence + indirectEvidence)
 
             reports.append(
                 AssetReport(
@@ -813,8 +828,8 @@ do {
                     classification: classification,
                     customClassStatus: customStatus,
                     projectMembership: projectMembership,
-                    referencedFrom: referencedPaths(from: matches),
-                    evidence: matches,
+                    referencedFrom: referencedPaths(from: xibEvidence),
+                    evidence: xibEvidence,
                     notes: reportNote(for: xib)
                 )
             )
