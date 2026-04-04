@@ -145,7 +145,7 @@ class SettingsViewController: BaseTableViewController {
 
         switch indexPath {
         case SettingsViewController.languageSettingsIndexPath:
-            navigationController?.pushViewController(LanguageTableViewController(), animated: true)
+            navigationController?.pushViewController(LanguageSettingsHostViewController(), animated: true)
         case SettingsViewController.beaconSettingsIndexPath:
             navigationController?.pushViewController(BeaconSelectionHostViewController(), animated: true)
         case SettingsViewController.volumeSettingsIndexPath:
