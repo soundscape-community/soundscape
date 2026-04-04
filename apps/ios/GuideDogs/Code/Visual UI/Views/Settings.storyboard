@@ -438,9 +438,6 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" name="Background 1"/>
                                 <color key="tintColor" name="Foreground 1"/>
-                                <connections>
-                                    <segue destination="Cga-sE-k8S" kind="show" id="yOK-1p-anq"/>
-                                </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="telemetry" textLabel="C8r-O8-QXY" imageView="Y3m-JJ-WMK" style="IBUITableViewCellStyleDefault" id="a9k-U3-Iyd" userLabel="Share Data" customClass="TelemetrySettingsTableViewCell" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="495.33333206176758" width="393" height="44"/>
@@ -732,107 +729,10 @@
             </objects>
             <point key="canvasLocation" x="717" y="-228"/>
         </scene>
-        <!--About-->
-        <scene sceneID="cTW-0T-CTz">
-            <objects>
-                <tableViewController title="About" id="Cga-sE-k8S" customClass="AboutApplicationViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="0i1-ZR-Y6A">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="749"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" name="Background Base"/>
-                        <color key="tintColor" name="Foreground 1"/>
-                        <color key="separatorColor" name="Background 3"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="XDA-Md-TsG">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="0.0"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        </view>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="AboutHeaderCellPrototype" rowHeight="220" id="0k3-yX-3bv" customClass="AboutHeaderCell" customModule="Soundscape" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="393" height="220"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0k3-yX-3bv" id="oZ4-Dg-47z">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="220"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launchScreenLogo" translatesAutoresizingMaskIntoConstraints="NO" id="o2V-ys-ava">
-                                            <rect key="frame" x="146.66666666666666" y="24" width="100" height="100"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="100" id="7f0-Nk-Nrm"/>
-                                                <constraint firstAttribute="width" constant="100" id="vgy-qJ-Tz7"/>
-                                            </constraints>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Soundscape" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e5G-LK-lvD">
-                                            <rect key="frame" x="32" y="138" width="329" height="20.333333333333343"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version X.x.x (build)" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SsT-2X-tjR">
-                                            <rect key="frame" x="32" y="158.66666666666666" width="329" height="18"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" red="0.098039215690000001" green="0.098039215690000001" blue="0.14901960780000001" alpha="1" colorSpace="calibratedRGB"/>
-                                    <constraints>
-                                        <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="SsT-2X-tjR" secondAttribute="bottom" constant="24" id="51Z-sG-ue0"/>
-                                        <constraint firstItem="o2V-ys-ava" firstAttribute="centerX" secondItem="oZ4-Dg-47z" secondAttribute="centerX" id="IQX-r7-2XP"/>
-                                        <constraint firstItem="SsT-2X-tjR" firstAttribute="leading" secondItem="oZ4-Dg-47z" secondAttribute="leading" constant="32" id="LJF-ru-8Oo"/>
-                                        <constraint firstAttribute="trailing" secondItem="SsT-2X-tjR" secondAttribute="trailing" constant="32" id="T90-1E-ItR"/>
-                                        <constraint firstItem="SsT-2X-tjR" firstAttribute="firstBaseline" secondItem="e5G-LK-lvD" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="dh8-KC-m7h"/>
-                                        <constraint firstItem="o2V-ys-ava" firstAttribute="top" secondItem="oZ4-Dg-47z" secondAttribute="top" constant="24" id="kLG-Ev-sX8"/>
-                                        <constraint firstItem="e5G-LK-lvD" firstAttribute="leading" secondItem="oZ4-Dg-47z" secondAttribute="leading" constant="32" id="qkO-UP-wXQ"/>
-                                        <constraint firstItem="e5G-LK-lvD" firstAttribute="top" secondItem="o2V-ys-ava" secondAttribute="bottom" constant="14" id="sKf-Tw-iXV"/>
-                                        <constraint firstAttribute="trailing" secondItem="e5G-LK-lvD" secondAttribute="trailing" constant="32" id="ttw-Jl-VTF"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" name="Background 1"/>
-                                <connections>
-                                    <outlet property="versionLabel" destination="SsT-2X-tjR" id="kA7-nU-RBl"/>
-                                </connections>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="AboutLinkCellPrototype" textLabel="d1n-JS-YdZ" style="IBUITableViewCellStyleDefault" id="tvI-f8-Wtk" customClass="CustomDisclosureTableViewCell" customModule="Soundscape" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="270" width="393" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tvI-f8-Wtk" id="hOu-u2-94G">
-                                    <rect key="frame" x="0.0" y="0.0" width="362.66666666666669" height="44"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="About Link Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" id="d1n-JS-YdZ">
-                                            <rect key="frame" x="20" y="0.0" width="334.66666666666669" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <color key="highlightedColor" red="0.1333333333" green="0.25882352939999997" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" name="Background 1"/>
-                            </tableViewCell>
-                        </prototypes>
-                        <sections/>
-                        <connections>
-                            <outlet property="dataSource" destination="Cga-sE-k8S" id="q7c-dB-rYf"/>
-                            <outlet property="delegate" destination="Cga-sE-k8S" id="JXd-Kb-f0T"/>
-                        </connections>
-                    </tableView>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.section.about"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <outlet property="largeBannerContainerView" destination="XDA-Md-TsG" id="jtY-ng-N06"/>
-                        <segue destination="7G3-p5-R5o" kind="show" identifier="ShowThirdPartyNoticesSegue" id="SPW-UB-0Ho"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="OYr-S2-Tgw" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1044" y="-943"/>
-        </scene>
         <!--AboutApplicationViewController-->
         <scene sceneID="ha6-OQ-NQt">
             <objects>
-                <viewController id="7G3-p5-R5o" userLabel="AboutApplicationViewController" customClass="ThirdPartyNoticesViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="thirdPartyNotices" id="7G3-p5-R5o" userLabel="AboutApplicationViewController" customClass="ThirdPartyNoticesViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wRM-yS-Wqu"/>
                         <viewControllerLayoutGuide type="bottom" id="yhW-wL-uJU"/>
