@@ -153,10 +153,16 @@ class AboutApplicationViewController: BaseTableViewController {
         tableView.registerCell(AboutHeaderCell.self)
         tableView.registerCell(CustomDisclosureTableViewCell.self)
 
-        tableView.tableHeaderView = largeBannerContainerView
+        updateLargeBannerContainerViewFrame()
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.tintColor = Colors.Foreground.primary
         tableView.separatorColor = Colors.Background.tertiary
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        updateLargeBannerContainerViewFrame()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -260,6 +266,23 @@ class AboutApplicationViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         indexPath == headerPath ? AboutApplicationViewController.aboutHeaderHeight : 44
     }
+
+    private func updateLargeBannerContainerViewFrame() {
+        let headerHeight = largeBannerContainerView.frame.height
+        let headerWidth = tableView.bounds.width
+
+        guard headerWidth > 0 else {
+            return
+        }
+
+        largeBannerContainerView.frame = CGRect(x: 0, y: 0, width: headerWidth, height: headerHeight)
+
+        if headerHeight > 0 {
+            tableView.tableHeaderView = largeBannerContainerView
+        } else if tableView.tableHeaderView != nil {
+            tableView.tableHeaderView = nil
+        }
+    }
     
 }
 
@@ -267,7 +290,7 @@ extension AboutApplicationViewController: LargeBannerContainerView {
     
     func setLargeBannerHeight(_ height: CGFloat) {
         largeBannerContainerView.setHeight(height)
-        tableView.tableHeaderView = largeBannerContainerView
+        updateLargeBannerContainerViewFrame()
         tableView.reloadData()
     }
     

@@ -40,7 +40,7 @@ class LanguageTableViewController: UITableViewController {
         
         tableView.registerCell(UnitsOfMeasureTableViewCell.self)
         
-        tableView.tableHeaderView = largeBannerContainerView
+        updateLargeBannerContainerViewFrame()
         tableView.backgroundColor = Colors.Background.quaternary
         tableView.tintColor = Colors.Foreground.primary
         tableView.separatorColor = Colors.Background.tertiary
@@ -49,6 +49,12 @@ class LanguageTableViewController: UITableViewController {
         tableView.estimatedRowHeight = 60
         tableView.sectionHeaderHeight = 18
         tableView.sectionFooterHeight = 18
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        updateLargeBannerContainerViewFrame()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -183,6 +189,23 @@ class LanguageTableViewController: UITableViewController {
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
+
+    private func updateLargeBannerContainerViewFrame() {
+        let headerHeight = largeBannerContainerView.frame.height
+        let headerWidth = tableView.bounds.width
+
+        guard headerWidth > 0 else {
+            return
+        }
+
+        largeBannerContainerView.frame = CGRect(x: 0, y: 0, width: headerWidth, height: headerHeight)
+
+        if headerHeight > 0 {
+            tableView.tableHeaderView = largeBannerContainerView
+        } else if tableView.tableHeaderView != nil {
+            tableView.tableHeaderView = nil
+        }
+    }
     
 }
 
@@ -190,7 +213,7 @@ extension LanguageTableViewController: LargeBannerContainerView {
     
     func setLargeBannerHeight(_ height: CGFloat) {
         largeBannerContainerView.setHeight(height)
-        tableView.tableHeaderView = largeBannerContainerView
+        updateLargeBannerContainerViewFrame()
         tableView.reloadData()
     }
     
