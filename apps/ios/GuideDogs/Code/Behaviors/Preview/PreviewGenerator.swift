@@ -106,14 +106,17 @@ struct PreviewGenerator<DecisionPoint: RootedPreviewGraph>: ManualGenerator {
                 let formattedDistance = LanguageFormatter.formattedDistance(from: SettingsContext.shared.enterImmediateVicinityDistance)
                 
                 callouts.append(GenericCallout(.preview, description: "arrived at beacon (in preview)") { (_, _, _) -> [Sound] in
-                    let earcon = GlyphSound(.beaconFound)
                     let tts = TTSSound(GDLocalizedString("beacon.beacon_location_within_audio_beacon_muted", formattedDistance), at: event.location)
-                    
-                    guard let layered = LayeredSound(earcon, tts) else {
-                        return [earcon, tts]
+
+                    if SettingsContext.shared.calloutsEarconEnabled {
+                        let earcon = GlyphSound(.beaconFound)
+                        guard let layered = LayeredSound(earcon, tts) else {
+                            return [earcon, tts]
+                        }
+                        return [layered]
                     }
-                    
-                    return [layered]
+
+                    return [tts]
                 })
             } else {
                 let formattedDistance = LanguageFormatter.string(from: event.distance, accuracy: 0.0, name: GDLocalizedString("beacon.generic_name"))
