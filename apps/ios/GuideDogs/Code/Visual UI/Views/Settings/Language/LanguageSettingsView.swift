@@ -38,7 +38,12 @@ struct LanguageSettingsView: View {
     var body: some View {
         Form {
             Section(GDLocalizedString("settings.section.units")) {
-                LanguageSettingsUnitsRow(unitPreference: $unitPreference)
+                Picker(GDLocalizedString("settings.section.units"), selection: $unitPreference) {
+                    ForEach(UnitPreference.allCases) { preference in
+                        Text(GDLocalizedString(preference.titleKey)).tag(preference)
+                    }
+                }
+                .pickerStyle(.segmented)
             }
 
             Section(GDLocalizedString("settings.language.screen_title")) {
@@ -116,21 +121,6 @@ struct LanguageSettingsView: View {
 
     private func trackScreenView() {
         GDATelemetry.trackScreenView("settings.language")
-    }
-}
-
-private struct LanguageSettingsUnitsRow: View {
-    @Binding var unitPreference: LanguageSettingsView.UnitPreference
-
-    var body: some View {
-        Picker(GDLocalizedString("settings.section.units"), selection: $unitPreference) {
-            ForEach(LanguageSettingsView.UnitPreference.allCases) { preference in
-                Text(GDLocalizedString(preference.titleKey)).tag(preference)
-            }
-        }
-        .pickerStyle(.segmented)
-        .labelsHidden()
-        .accessibilityLabel(GDLocalizedTextView("settings.section.units"))
     }
 }
 
