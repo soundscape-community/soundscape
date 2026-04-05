@@ -3,7 +3,8 @@
 ## Copyright notices
 
 - Never add new `Copyright (c) Microsoft Corporation.` notices to files changed in this repository.
-- For new files or when adding a header to a file that should carry the community notice, use `Copyright (c) Soundscape Community Contributors.`
+- Add `Copyright (c) Soundscape Community Contributors.` to new code files.
+- When modifying an existing code file that already has a Microsoft copyright notice, keep the Microsoft notice and add the Soundscape Community Contributors notice as well.
 - Do not remove or rewrite existing Microsoft copyright notices in established files unless a Microsoft notice was added to a non-Microsoft file by mistake and you are correcting that mistake.
 
 ## iOS Interface Builder cleanup
