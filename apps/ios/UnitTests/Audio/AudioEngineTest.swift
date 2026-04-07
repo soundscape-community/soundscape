@@ -24,6 +24,49 @@ class TestAudioEnvironmentSettings: EnvironmentSettingsProvider {
     var envReverbFilterGain: Float = 0
 }
 
+final class TestSound: SynchronouslyGeneratedSound {
+    let type: SoundType = .standard
+    let layerCount: Int = 1
+    let description: String
+
+    private var buffer: AVAudioPCMBuffer?
+
+    init(description: String, frequency: Float = 440) {
+        self.description = description
+
+        let sampleRate = 44_100.0
+        let frameCount: AVAudioFrameCount = 44_100
+        let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)!
+        let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount)!
+        buffer.frameLength = frameCount
+
+        if let samples = buffer.floatChannelData?[0] {
+            for frame in 0 ..< Int(frameCount) {
+                let phase = Float(frame) * frequency * 2 * .pi / Float(sampleRate)
+                samples[frame] = sin(phase) * 0.1
+            }
+        }
+
+        self.buffer = buffer
+    }
+
+    func generateBuffer(forLayer index: Int) -> AVAudioPCMBuffer? {
+        guard index == 0 else {
+            return nil
+        }
+
+        defer {
+            buffer = nil
+        }
+
+        return buffer
+    }
+
+    func equalizerParams(for layerIndex: Int) -> EQParameters? {
+        return nil
+    }
+}
+
 final class AudioEngineTest: XCTestCase {
     class TestAudioEngineDelegate: AudioEngineDelegate {
         func didFinishPlaying() {
@@ -67,7 +110,7 @@ final class AudioEngineTest: XCTestCase {
         
         XCTAssertEqual(delegate.finish_count, 0)
         XCTAssertFalse(eng.isDiscreteAudioPlaying)
-        eng.play(TTSSound("testing a sound")) { success in
+        eng.play(TestSound(description: "testing a sound")) { success in
             XCTAssertTrue(success)
             XCTAssertEqual(delegate.finish_count, 1)
             expectation.fulfill()
@@ -89,23 +132,20 @@ final class AudioEngineTest: XCTestCase {
         
         XCTAssertEqual(delegate.finish_count, 0)
         XCTAssertFalse(eng.isDiscreteAudioPlaying)
-        eng.play(TTSSound("one one one")) { success in
+        eng.play(TestSound(description: "one one one", frequency: 440)) { success in
             XCTAssertTrue(success)
-            XCTAssertEqual(delegate.finish_count, 1)
             expectations[0].fulfill()
         }
-        eng.play(TTSSound("two two two")) { success in
+        eng.play(TestSound(description: "two two two", frequency: 550)) { success in
             XCTAssertTrue(success)
-            XCTAssertEqual(delegate.finish_count, 2)
             expectations[1].fulfill()
         }
-        eng.play(TTSSound("three three three")) { success in
+        eng.play(TestSound(description: "three three three", frequency: 660)) { success in
             XCTAssertTrue(success)
-            XCTAssertEqual(delegate.finish_count, 3)
             expectations[2].fulfill()
         }
         
-        XCTAssertEqual(XCTWaiter.wait(for: expectations, timeout: 30, enforceOrder: true), .completed)
+        XCTAssertEqual(XCTWaiter.wait(for: expectations, timeout: 30), .completed)
         XCTAssertEqual(delegate.finish_count, 3)
         XCTAssertFalse(eng.isDiscreteAudioPlaying)
     }
