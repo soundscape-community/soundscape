@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -21,10 +22,6 @@ class StatusTableViewController: BaseTableViewController {
     
     private struct CellIdentifier {
         static let gps = "GPSStatus"
-    }
-    
-    private struct Segue {
-        static let showLoadingModal = "ShowLoadingModalSegue"
     }
     
     var reenableCalloutsAfterReload = false
@@ -54,14 +51,6 @@ class StatusTableViewController: BaseTableViewController {
         
         NotificationCenter.default.removeObserver(self, name: Notification.Name.spatialDataStateChanged, object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name.locationUpdated, object: AppContext.shared.spatialDataContext)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? LoadingModalViewController {
-            vc.loadingMessage = GDLocalizedString("text.cleaning_things")
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(spatialDataStateChanged(_:)), name: Notification.Name.spatialDataStateChanged, object: nil)
-        }
     }
     
     @objc
@@ -257,7 +246,7 @@ extension StatusTableViewController {
                 self.reenableCalloutsAfterReload = true
                 SettingsContext.shared.automaticCalloutsEnabled = false
             }    
-            self.performSegue(withIdentifier: Segue.showLoadingModal, sender: self)
+            self.presentLoadingModal()
             
             // Check that tiles can be downloaded before we attempt to delete the cache
             AppContext.shared.spatialDataContext.checkServiceConnection { [weak self] (success) in
@@ -305,7 +294,7 @@ extension StatusTableViewController {
                 self.reenableCalloutsAfterReload = true
                 SettingsContext.shared.automaticCalloutsEnabled = false
             }    
-            self.performSegue(withIdentifier: Segue.showLoadingModal, sender: self)
+            self.presentLoadingModal()
             
             // Check that tiles can be downloaded before we attempt to delete the cache
             AppContext.shared.spatialDataContext.checkServiceConnection { [weak self] (success) in
@@ -384,6 +373,19 @@ extension StatusTableViewController {
         GDLogSpatialDataWarn("Cached data deleted and addresses restored")
     }
     
+    private func presentLoadingModal() {
+        let viewController = LoadingModalViewController(loadingMessage: GDLocalizedString("text.cleaning_things"))
+        viewController.modalPresentationStyle = .overCurrentContext
+        viewController.modalTransitionStyle = .crossDissolve
+
+        present(viewController, animated: true)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(spatialDataStateChanged(_:)),
+                                               name: Notification.Name.spatialDataStateChanged,
+                                               object: nil)
+    }
+
     private func displayUnableToClearCacheWarning() {
         // Dismiss the loading screen
         dismiss(animated: true) { [weak self] in
