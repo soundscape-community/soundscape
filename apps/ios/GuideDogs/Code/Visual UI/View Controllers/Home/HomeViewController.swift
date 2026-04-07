@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -418,8 +419,6 @@ class HomeViewController: UIViewController {
             vc.logContext = telemetryContext
         } else if let vc = segue.destination as? StandbyViewController {
             vc.delegate = self
-        } else if let vc = segue.destination as? LoadingModalViewController {
-            vc.loadingMessage = GDLocalizedString("general.loading.almost_ready")
         } else if let vc = segue.destination as? LocationDetailViewController {
             let locationDetail = sender as? LocationDetail
             vc.locationDetail = locationDetail
