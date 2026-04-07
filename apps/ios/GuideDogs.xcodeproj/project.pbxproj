@@ -158,8 +158,6 @@
 		2873D649211CFF5D0034A297 /* DynamicLaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2873D648211CFF5D0034A297 /* DynamicLaunchViewController.swift */; };
 		2873D64B211E05250034A297 /* LaunchHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2873D64A211E05250034A297 /* LaunchHelper.swift */; };
 		287D3E8D22DE50340084B92B /* StatusTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287D3E8C22DE50340084B92B /* StatusTableViewController.swift */; };
-		287D3E9022DE897C0084B92B /* UnitsOfMeasureTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287D3E8E22DE897C0084B92B /* UnitsOfMeasureTableViewCell.swift */; };
-		287D3E9122DE897C0084B92B /* UnitsOfMeasureTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 287D3E8F22DE897C0084B92B /* UnitsOfMeasureTableViewCell.xib */; };
 		287D3E9422DFCE730084B92B /* TelemetrySettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287D3E9322DFCE730084B92B /* TelemetrySettingsTableViewCell.swift */; };
 		287D3E9A22E0D7FB0084B92B /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287D3E9822E0D7FB0084B92B /* ButtonTableViewCell.swift */; };
 		287D3E9B22E0D7FB0084B92B /* ButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 287D3E9922E0D7FB0084B92B /* ButtonTableViewCell.xib */; };
@@ -354,7 +352,6 @@
 		31CA500E21715F7700049ADF /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA500D21715F7700049ADF /* Array+Extensions.swift */; };
 		31D0D7301E031A0E0087C847 /* UINavigationItem+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D0D72F1E031A0E0087C847 /* UINavigationItem+Extension.swift */; };
 		31D62B821DFD9B8800C5A2D8 /* ThirdPartyNoticesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D62B811DFD9B8800C5A2D8 /* ThirdPartyNoticesViewController.swift */; };
-		31E2EBD121E40192002AD6BB /* LanguageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E2EBD021E40192002AD6BB /* LanguageTableViewController.swift */; };
 		31F12C4222569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist in Resources */ = {isa = PBXBuildFile; fileRef = 31F12C4122569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist */; };
 		31F1370422B867B800FC1860 /* GeolocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F1370322B867B800FC1860 /* GeolocationManager.swift */; };
 		31FE6C78233A7B760098D8C5 /* TelemetryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE6C77233A7B760098D8C5 /* TelemetryHelper.swift */; };
@@ -925,8 +922,6 @@
 		2873D64A211E05250034A297 /* LaunchHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LaunchHelper.swift; path = "Code/Visual UI/View Controllers/Launch/LaunchHelper.swift"; sourceTree = "<group>"; };
 		2876EE142433FE5600B0A137 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		287D3E8C22DE50340084B92B /* StatusTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusTableViewController.swift; path = "Code/Visual UI/View Controllers/Settings/StatusTableViewController.swift"; sourceTree = "<group>"; };
-		287D3E8E22DE897C0084B92B /* UnitsOfMeasureTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UnitsOfMeasureTableViewCell.swift; path = "Code/Visual UI/Controls/Voice Settings/UnitsOfMeasureTableViewCell.swift"; sourceTree = "<group>"; };
-		287D3E8F22DE897C0084B92B /* UnitsOfMeasureTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = UnitsOfMeasureTableViewCell.xib; path = "Code/Visual UI/Controls/Voice Settings/UnitsOfMeasureTableViewCell.xib"; sourceTree = "<group>"; };
 		287D3E9322DFCE730084B92B /* TelemetrySettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TelemetrySettingsTableViewCell.swift; path = "Code/Visual UI/Controls/Settings/TelemetrySettingsTableViewCell.swift"; sourceTree = "<group>"; };
 		287D3E9822E0D7FB0084B92B /* ButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ButtonTableViewCell.swift; path = "Code/Visual UI/Controls/Troubleshooting/ButtonTableViewCell.swift"; sourceTree = "<group>"; };
 		287D3E9922E0D7FB0084B92B /* ButtonTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ButtonTableViewCell.xib; path = "Code/Visual UI/Controls/Troubleshooting/ButtonTableViewCell.xib"; sourceTree = "<group>"; };
@@ -1124,7 +1119,6 @@
 		31CA500D21715F7700049ADF /* Array+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Array+Extensions.swift"; path = "Code/App/Framework Extensions/Base Type Extensions/Array+Extensions.swift"; sourceTree = "<group>"; };
 		31D0D72F1E031A0E0087C847 /* UINavigationItem+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UINavigationItem+Extension.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UINavigationItem+Extension.swift"; sourceTree = "<group>"; };
 		31D62B811DFD9B8800C5A2D8 /* ThirdPartyNoticesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThirdPartyNoticesViewController.swift; path = "Code/Visual UI/View Controllers/Settings/ThirdPartyNoticesViewController.swift"; sourceTree = "<group>"; };
-		31E2EBD021E40192002AD6BB /* LanguageTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LanguageTableViewController.swift; path = "Code/Visual UI/View Controllers/Settings/LanguageTableViewController.swift"; sourceTree = "<group>"; };
 		31F12C4122569E9100BDA072 /* StreetSuffixAbbreviations_fr.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = StreetSuffixAbbreviations_fr.plist; path = Assets/PropertyLists/StreetSuffixAbbreviations_fr.plist; sourceTree = "<group>"; };
 		31F1370322B867B800FC1860 /* GeolocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeolocationManager.swift; path = "Code/Sensors/Geolocation/Geolocation Manager/GeolocationManager.swift"; sourceTree = "<group>"; };
 		31FE6C77233A7B760098D8C5 /* TelemetryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TelemetryHelper.swift; path = Code/App/Logging/TelemetryHelper.swift; sourceTree = "<group>"; };
@@ -1615,7 +1609,6 @@
 				568480921CBC9CEE004B4227 /* SettingsViewController.swift */,
 				31D62B811DFD9B8800C5A2D8 /* ThirdPartyNoticesViewController.swift */,
 				31ACEE4D20B776D700916B9B /* VersionHistoryTableViewController.swift */,
-				31E2EBD021E40192002AD6BB /* LanguageTableViewController.swift */,
 				287D3E8C22DE50340084B92B /* StatusTableViewController.swift */,
 				C30EF61E2089475D00BEA785 /* VoiceSettingsTableViewController.swift */,
 				B92EA05D27AC80E900127A9A /* SiriShortcutsTableViewController.swift */,
@@ -3715,8 +3708,6 @@
 				C30EF6202089481100BEA785 /* SpeakingRateTableViewCell.swift */,
 				C30EF62220894AD400BEA785 /* VoiceTableViewCell.swift */,
 				C338FF0B20AA2312003BEBF2 /* VoiceTableViewCellDelegate.swift */,
-				287D3E8E22DE897C0084B92B /* UnitsOfMeasureTableViewCell.swift */,
-				287D3E8F22DE897C0084B92B /* UnitsOfMeasureTableViewCell.xib */,
 			);
 			name = "Voice Settings";
 			sourceTree = "<group>";
@@ -4666,7 +4657,6 @@
 				2896377D26D70123001694C0 /* Drop_A.wav in Resources */,
 				2896377726D70036001694C0 /* Ping_B.wav in Resources */,
 				284749C22511751000E430CC /* 2.4_roadFinder_loop_rev2_wFades.wav in Resources */,
-				287D3E9122DE897C0084B92B /* UnitsOfMeasureTableViewCell.xib in Resources */,
 				2896376026D6DD3C001694C0 /* Shimmer_Behind.wav in Resources */,
 				2896376126D6DD3C001694C0 /* Shimmer_A+.wav in Resources */,
 				286708D125005912002F962B /* street_non_1c.wav in Resources */,
@@ -4868,7 +4858,6 @@
 				28BD33DD23DB5AFA00566523 /* SoundType.swift in Sources */,
 				28FCD315281C93F0007CEFE7 /* HandledEventAction.swift in Sources */,
 				28EB9C75237CBA3A0064E7EF /* ExperimentConfiguration.swift in Sources */,
-				31E2EBD121E40192002AD6BB /* LanguageTableViewController.swift in Sources */,
 				627004F126055AE000FBF5E5 /* DeviceReachabilityAlertObserver.swift in Sources */,
 				28E60D5A1FE99BBE00EAB5C0 /* RealmMigrationTools.swift in Sources */,
 				31F1370422B867B800FC1860 /* GeolocationManager.swift in Sources */,
@@ -4909,7 +4898,6 @@
 				C365279A224AC5520056F570 /* BannerViewControllerDelegate.swift in Sources */,
 				C37E33C623677ED80033D640 /* ModalView.swift in Sources */,
 				C34333B2221E2C3B00D9CECD /* FilterTableViewHeaderViewConfigurator.swift in Sources */,
-				287D3E9022DE897C0084B92B /* UnitsOfMeasureTableViewCell.swift in Sources */,
 				289AE43B21E6794A00B7B153 /* Behavior.swift in Sources */,
 				B9EE98081E3656B7007ADBED /* UIDeviceManager.swift in Sources */,
 				28BA4A852655A98B00E1D273 /* UserLocationStore.swift in Sources */,
