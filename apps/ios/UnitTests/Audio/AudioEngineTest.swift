@@ -198,19 +198,25 @@ final class TTSSoundTest: XCTestCase {
 
         let sound = TTSSound("testing the tts pipeline")
         var buffers: [AVAudioPCMBuffer] = []
+        let deadline = Date().addingTimeInterval(60)
+        let maxBuffers = 200
+        var reachedTerminalNil = false
 
-        while true {
+        while Date() < deadline && buffers.count < maxBuffers {
             let timeout = buffers.isEmpty ? 30.0 : 10.0
             let nextBuffer = try waitForAudioBuffer(sound.nextBuffer(forLayer: 0), timeout: timeout)
 
             guard let buffer = nextBuffer else {
+                reachedTerminalNil = true
                 break
             }
 
             buffers.append(buffer)
         }
 
+        XCTAssertTrue(reachedTerminalNil, "TTSSound did not emit a terminal nil before the test deadline or buffer limit")
         XCTAssertFalse(buffers.isEmpty)
+        XCTAssertLessThan(buffers.count, maxBuffers, "TTSSound produced unexpectedly many buffers without terminating")
         XCTAssertTrue(buffers.allSatisfy { $0.frameLength > 0 })
         XCTAssertTrue(buffers.allSatisfy { $0.format.commonFormat == .pcmFormatFloat32 })
     }
