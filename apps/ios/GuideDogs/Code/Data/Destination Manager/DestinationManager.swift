@@ -574,8 +574,7 @@ class DestinationManager: DestinationManagerProtocol {
         }
         
         let bearingToClosestLocation = userLocation.bearing(to: beaconLocation)
-        
-        guard let directionRange = DirectionRange(direction: bearingToClosestLocation, windowRange: 45) else {
+        guard let directionRange = DirectionRange(direction: bearingToClosestLocation, windowRange: 20) else {
             return false
         }
         
