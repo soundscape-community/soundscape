@@ -9,6 +9,26 @@ import XCTest
 @testable import Soundscape
 import AVFAudio
 
+private enum PromiseWaitError: Error {
+    case timedOut
+}
+
+private func waitForAudioBuffer(_ promise: Promise<AVAudioPCMBuffer?>, timeout: TimeInterval) throws -> AVAudioPCMBuffer? {
+    let expectation = XCTestExpectation(description: "Wait for audio buffer")
+    var buffer: AVAudioPCMBuffer?
+
+    promise.then { value in
+        buffer = value
+        expectation.fulfill()
+    }
+
+    guard XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed else {
+        throw PromiseWaitError.timedOut
+    }
+
+    return buffer
+}
+
 class TestAudioEnvironmentSettings: EnvironmentSettingsProvider {
     var envRenderingAlgorithm: AVAudio3DMixingRenderingAlgorithm = .auto
     var envRenderingDistance: Double = 40
@@ -150,4 +170,48 @@ final class AudioEngineTest: XCTestCase {
         XCTAssertFalse(eng.isDiscreteAudioPlaying)
     }
 
+}
+
+final class TTSSoundTest: XCTestCase {
+    private func warmUpTTSIfAvailable() throws {
+        guard let voice = TTSConfigHelper.defaultVoice(forLocale: LocalizationContext.currentAppLocale) else {
+            throw XCTSkip("No default TTS voice is available for \(LocalizationContext.currentAppLocale.identifier)")
+        }
+
+        guard TTSAudioBufferPublisher("soundscape tts warmup", voiceIdentifier: voice.identifier) != nil else {
+            throw XCTSkip("Unable to initialize TTS publisher for voice \(voice.identifier)")
+        }
+
+        let warmupSound = TTSSound("soundscape tts warmup")
+
+        do {
+            guard try waitForAudioBuffer(warmupSound.nextBuffer(forLayer: 0), timeout: 45) != nil else {
+                throw XCTSkip("TTS voice \(voice.identifier) did not render audio in this simulator")
+            }
+        } catch PromiseWaitError.timedOut {
+            throw XCTSkip("TTS voice \(voice.identifier) did not become ready within 45 seconds")
+        }
+    }
+
+    func testTTSSoundProducesFloat32BuffersAndCompletes() throws {
+        try warmUpTTSIfAvailable()
+
+        let sound = TTSSound("testing the tts pipeline")
+        var buffers: [AVAudioPCMBuffer] = []
+
+        while true {
+            let timeout = buffers.isEmpty ? 30.0 : 10.0
+            let nextBuffer = try waitForAudioBuffer(sound.nextBuffer(forLayer: 0), timeout: timeout)
+
+            guard let buffer = nextBuffer else {
+                break
+            }
+
+            buffers.append(buffer)
+        }
+
+        XCTAssertFalse(buffers.isEmpty)
+        XCTAssertTrue(buffers.allSatisfy { $0.frameLength > 0 })
+        XCTAssertTrue(buffers.allSatisfy { $0.format.commonFormat == .pcmFormatFloat32 })
+    }
 }
