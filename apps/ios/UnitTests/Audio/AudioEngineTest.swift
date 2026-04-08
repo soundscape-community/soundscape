@@ -165,7 +165,7 @@ final class AudioEngineTest: XCTestCase {
             expectations[2].fulfill()
         }
         
-        XCTAssertEqual(XCTWaiter.wait(for: expectations, timeout: 30), .completed)
+        XCTAssertEqual(XCTWaiter.wait(for: expectations, timeout: 30, enforceOrder: true), .completed)
         XCTAssertEqual(delegate.finish_count, 3)
         XCTAssertFalse(eng.isDiscreteAudioPlaying)
     }
