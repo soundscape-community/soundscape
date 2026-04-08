@@ -1626,6 +1626,18 @@
 /* Button, Allow Callouts */
 "callouts.allow_callouts" = "Allow Callouts";
 
+/* Toggle label for enabling/disabling callout sound effects */
+"callouts.sound_effects" = "Sound Effects";
+
+/* Toggle description for enabling/disabling callout sound effects */
+"callouts.sound_effects.info" = "Sounds that play before spoken callouts";
+
+/* Toggle label for enabling/disabling pauses between automatic callouts */
+"callouts.delays" = "Delays";
+
+/* Toggle description for enabling/disabling pauses between automatic callouts */
+"callouts.delays.info" = "Short pauses between automatic callouts";
+
 /* Callouts Title, Places and Landmarks */
 "callouts.places_and_landmarks" = "Places and Landmarks";
 

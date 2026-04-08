@@ -118,7 +118,10 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
     // MARK: - Private Constants
     
     private let inVehicleBeaconUpdateDistance: CLLocationDistance = 1000.0 // meters
-    private let calloutDelay = 0.75
+    private let defaultCalloutDelay: TimeInterval = 0.75
+    private var calloutDelay: TimeInterval? {
+        return settings.calloutDelaysEnabled ? defaultCalloutDelay : nil
+    }
     
     // MARK: - Private Properties
     
@@ -435,7 +438,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
         
         guard let dataView = spatialData.getDataView(for: location, searchDistance: context.searchDistance) else {
             let callouts = filterAnnounceablePOIs(prioritizedPOIs, near: location, context: context) {
-                return POICallout(.auto, poi: $0, location: location)
+                return POICallout(.auto, poi: $0, location: location, includePrefixSound: settings.calloutSoundEffectsEnabled)
             }
             
             if callouts.isEmpty {
@@ -452,11 +455,11 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
         
         // Get the POIs sorted by distance, and filtered for duplicate names
         let prioritizedCallouts = filterAnnounceablePOIs(prioritizedPOIs, near: location, context: context) {
-            return POICallout(.auto, poi: $0, location: location)
+            return POICallout(.auto, poi: $0, location: location, includePrefixSound: settings.calloutSoundEffectsEnabled)
         }
         
         let defaultCallouts = !settings.automaticCalloutsEnabled ? [] : filterAnnounceablePOIs(dataView.pois, near: location, context: context) {
-            return POICallout(.auto, key: $0.key, location: location)
+            return POICallout(.auto, key: $0.key, location: location, includePrefixSound: settings.calloutSoundEffectsEnabled)
         }
 
         if defaultCallouts.count + prioritizedCallouts.count == 0 {
