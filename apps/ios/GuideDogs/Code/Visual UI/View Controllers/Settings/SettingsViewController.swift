@@ -27,6 +27,8 @@ class SettingsViewController: BaseTableViewController {
         case mobility = 2
         case beacon = 3
         case shake = 4
+        case soundEffects = 5
+        case delays = 6
     }
     
     private static let cellIdentifiers: [IndexPath: String] = [
@@ -36,6 +38,8 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: 3, section: Section.general.rawValue): "volumeSettings",
         IndexPath(row: 4, section: Section.general.rawValue): "manageDevices",
         IndexPath(row: 5, section: Section.general.rawValue): "siriShortcuts",
+        IndexPath(row: CalloutsRow.soundEffects.rawValue, section: Section.callouts.rawValue): "shakeCallouts",
+        IndexPath(row: CalloutsRow.delays.rawValue, section: Section.callouts.rawValue): "shakeCallouts",
         
         IndexPath(row: 0, section: Section.audio.rawValue): "mixAudio",
 
@@ -55,7 +59,10 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue)
+        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue),
+        IndexPath(row: CalloutsRow.soundEffects.rawValue, section: Section.callouts.rawValue),
+        IndexPath(row: CalloutsRow.delays.rawValue, section: Section.callouts.rawValue)
+        
     ]
     
     // MARK: Properties
@@ -84,7 +91,7 @@ class SettingsViewController: BaseTableViewController {
         switch sectionType {
         case .general: return 6
         case .audio: return 1
-        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 5 : 1
+        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 7 : 1
         case .streetPreview: return 1
         case .troubleshooting: return 1
         case .about: return 1
@@ -111,6 +118,8 @@ class SettingsViewController: BaseTableViewController {
                 case .mobility: cell.type = .mobility
                 case .beacon: cell.type = .beacon
                 case .shake: cell.type = .shake
+                case .soundEffects: cell.type = .soundEffects
+                case .delays: cell.type = .delays
                 }
             }
             

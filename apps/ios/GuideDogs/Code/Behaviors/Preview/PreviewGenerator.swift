@@ -122,14 +122,17 @@ struct PreviewGenerator<DecisionPoint: RootedPreviewGraph>: ManualGenerator {
                 let formattedDistance = LanguageFormatter.string(from: event.distance, accuracy: 0.0, name: GDLocalizedString("beacon.generic_name"))
                 
                 callouts.append(GenericCallout(.preview, description: "beacon update (in preview)") { (_, _, _) -> [Sound] in
-                    let earcon = GlyphSound(SuperCategory.places.glyph, at: event.location)
                     let tts = TTSSound(formattedDistance, at: event.location)
-                    
-                    guard let layered = LayeredSound(earcon, tts) else {
-                        return [earcon, tts]
+
+                    if SettingsContext.shared.calloutsEarconEnabled {
+                        let earcon = GlyphSound(SuperCategory.places.glyph, at: event.location)
+                        guard let layered = LayeredSound(earcon, tts) else {
+                            return [earcon, tts]
+                        }
+                        return [layered]
                     }
-                    
-                    return [layered]
+
+                    return [tts]
                 })
             }
             
@@ -149,14 +152,17 @@ struct PreviewGenerator<DecisionPoint: RootedPreviewGraph>: ManualGenerator {
             
         case let event as BehaviorDeactivatedEvent:
             let callouts = [GenericCallout(.preview, description: "preview ended") { (_, _, _) -> [Sound] in
-                let earcon = GlyphSound(.previewEnd)
                 let tts = TTSSound(GDLocalizedString("preview.callout.end"))
-                
-                guard let layered = LayeredSound(earcon, tts) else {
-                    return [earcon, tts]
+
+                if SettingsContext.shared.calloutsEarconEnabled {
+                    let earcon = GlyphSound(.previewEnd)
+                    guard let layered = LayeredSound(earcon, tts) else {
+                        return [earcon, tts]
+                    }
+                    return [layered]
                 }
-                
-                return [layered]
+
+                return [tts]
             }]
             
             // Play the sound that caps off the end of the preview mode

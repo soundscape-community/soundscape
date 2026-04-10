@@ -13,7 +13,7 @@ protocol CalloutSettingsCellViewDelegate: AnyObject {
 }
 
 internal enum CalloutSettingCellType {
-    case all, poi, mobility, beacon, shake
+    case all, poi, mobility, beacon, shake, soundEffects, delays
 }
 
 class CalloutSettingsCellView: UITableViewCell {
@@ -44,6 +44,14 @@ class CalloutSettingsCellView: UITableViewCell {
                 return
             case .shake:
                 settingSwitch.isOn = SettingsContext.shared.shakeCalloutsEnabled
+            case .soundEffects:
+                textLabel?.text = "Sound Effects"
+                detailTextLabel?.text = "Sounds played before callout"
+                settingSwitch.isOn = SettingsContext.shared.calloutsEarconEnabled
+            case .delays:
+                textLabel?.text = "Delays"
+                detailTextLabel?.text = "Short pauses between callouts"
+                settingSwitch.isOn = SettingsContext.shared.calloutsDelayEnabled
             }
         }
     }
@@ -97,6 +105,12 @@ class CalloutSettingsCellView: UITableViewCell {
         case .shake:
             SettingsContext.shared.shakeCalloutsEnabled = isOn
             GDATelemetry.track("settings.shake_callouts", value: isOn.description)
+        case .soundEffects:
+            SettingsContext.shared.calloutsEarconEnabled = isOn
+            GDATelemetry.track("settings.callouts_earcon", value: isOn.description)
+        case .delays:
+            SettingsContext.shared.calloutsDelayEnabled = isOn
+            GDATelemetry.track("settings.callouts_delay", value: isOn.description)
         }
     }
 }
