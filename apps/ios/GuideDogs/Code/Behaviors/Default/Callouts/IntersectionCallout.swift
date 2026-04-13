@@ -54,7 +54,7 @@ struct IntersectionCallout: CalloutProtocol {
         var sounds: [Sound] = []
         
         // Add the sound effect
-        if includePrefixSound {
+        if includePrefixSound && SettingsContext.shared.calloutsEarconEnabled{
             sounds.append(GlyphSound(.poiSense, direction: .ahead))
         }
         

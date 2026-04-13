@@ -76,7 +76,7 @@ struct DestinationCallout: POICalloutProtocol {
         case .auto, .beaconChanged, .preview:
             var sounds = [Sound]()
             
-            if includePrefixSound {
+            if includePrefixSound && SettingsContext.shared.calloutsEarconEnabled{
                 let category = SuperCategory(rawValue: marker.getPOI().superCategory) ?? SuperCategory.undefined
                 sounds.append(GlyphSound(category.glyph, at: markerLocation))
             }

@@ -99,7 +99,7 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
         }
         
         // If we aren't playing the mode enter/exit sounds, play the category sound instead
-        if includePrefixSound {
+        if includePrefixSound && SettingsContext.shared.calloutsEarconEnabled{
             sounds.append(GlyphSound(.locationSense, direction: .ahead))
         }
         
