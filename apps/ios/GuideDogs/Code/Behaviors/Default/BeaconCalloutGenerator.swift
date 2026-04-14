@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -62,7 +63,6 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     // MARK: - Private Constants
     
     private let inVehicleBeaconUpdateDistance: CLLocationDistance = 1000.0 // meters
-    private let calloutDelay: TimeInterval = 0.75
     
     // MARK: - Private Properties
     
@@ -73,6 +73,10 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     private var userLocation: CLLocation?
     private var destinationKey: String?
     private var beaconUpdateFilter: MotionActivityUpdateFilter
+
+    private var calloutDelay: TimeInterval {
+        return settings.calloutPausesEnabled ? 0.75 : 0.0
+    }
     
     // MARK: - Initialization
     
@@ -100,7 +104,8 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
         switch event {
         case let event as BeaconCalloutEvent:
-            return .playCallouts(CalloutGroup([DestinationCallout(.auto, event.beaconId)], action: .interruptAndClear, logContext: event.logContext))
+            let callout = DestinationCallout(.auto, event.beaconId, false, settings.calloutSoundEffectsEnabled)
+            return .playCallouts(CalloutGroup([callout], action: .interruptAndClear, logContext: event.logContext))
             
         case let event as BeaconChangedEvent:
             guard settings.automaticCalloutsEnabled else {
@@ -302,7 +307,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
         configureDestinationUpdates()
         
         // Build the destination callout
-        return [DestinationCallout(origin, key, causedAudioDisable)]
+        return [DestinationCallout(origin, key, causedAudioDisable, settings.calloutSoundEffectsEnabled)]
     }
     
     // MARK: - Helper Methods

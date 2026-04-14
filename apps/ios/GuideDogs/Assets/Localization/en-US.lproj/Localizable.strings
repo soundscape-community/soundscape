@@ -1650,6 +1650,18 @@
 /*  Shake callouts info */
 "callouts.shake_callouts.info" = "Shake the device to repeat the last callout";
 
+/* Title for a toggle under Manage Callouts. Controls whether callouts include a leading sound effect. */
+"callouts.sound_effects" = "Sound Effects";
+
+/* Description for Manage Callouts sound effects toggle. */
+"callouts.sound_effects.info" = "Sounds that play before the spoken messages";
+
+/* Title for a toggle under Manage Callouts. Controls whether callouts pause between announcements. */
+"callouts.delay_between" = "Delays";
+
+/* Description for Manage Callouts delay toggle. */
+"callouts.delay_between.info" = "Short pauses between callouts";
+
 /* Callouts Title, Automatic Callouts */
 "callouts.automatic_callouts" = "Automatic Callouts";
 
