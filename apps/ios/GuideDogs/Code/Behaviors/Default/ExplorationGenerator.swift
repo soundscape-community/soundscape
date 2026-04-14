@@ -198,7 +198,7 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
             callouts.append(RelativeStringCallout(event.mode.origin, event.mode.noCalloutsMessage, position: 0.0))
         }
         
-        let group = CalloutGroup(callouts, action: .interruptAndClear, playModeSounds: true, logContext: event.logContext)
+        let group = CalloutGroup(callouts, action: .interruptAndClear, playModeSounds: true, calloutDelay: SettingsContext.shared.calloutsDelayEnabled ? 0.75 : 0.0, logContext: event.logContext)
         group.delegate = self
         group.onComplete = event.completionHandler
         
