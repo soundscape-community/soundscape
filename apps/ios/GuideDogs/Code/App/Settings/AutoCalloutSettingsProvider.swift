@@ -24,10 +24,10 @@ protocol AutoCalloutSettingsProvider: AnyObject {
     /// Whether landmark callouts are enabled
     var landmarkSenseEnabled: Bool { get set }
     
-    /// Whether mobility callouts are enabled (intersections, transit info, etc.)
+    /// Whether mobility callouts are enabled
     var mobilitySenseEnabled: Bool { get set }
     
-    /// Whether information callouts are enabled/
+    /// Whether information callouts are enabled
     var informationSenseEnabled: Bool { get set }
     
     /// Whether safety callouts are enabled

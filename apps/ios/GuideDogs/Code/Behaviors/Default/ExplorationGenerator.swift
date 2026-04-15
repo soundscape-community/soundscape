@@ -124,7 +124,9 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
             return nil
         }
     }
-    
+    /// Handles manual exploration events by the home screen buttons
+    /// Around Me, Ahead of Me, My Location, Nearby Markers
+    /// Generates callouts for POIs in the direction and returns them as a CalloutGroup
     func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
         guard let event = event as? ExplorationModeToggled else {
             return nil
@@ -197,7 +199,8 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
         if callouts.isEmpty {
             callouts.append(RelativeStringCallout(event.mode.origin, event.mode.noCalloutsMessage, position: 0.0))
         }
-        
+        /// This part is for the manual exploration buttons, (Around Me and Ahead of Me options)
+        /// calloutdelay will be set to 0 when the user disables the delay in settings, or there will be a 0.75 second delay
         let group = CalloutGroup(callouts, action: .interruptAndClear, playModeSounds: true, calloutDelay: SettingsContext.shared.calloutsDelayEnabled ? 0.75 : 0.0, logContext: event.logContext)
         group.delegate = self
         group.onComplete = event.completionHandler

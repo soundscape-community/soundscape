@@ -106,9 +106,11 @@ class CalloutSettingsCellView: UITableViewCell {
             SettingsContext.shared.shakeCalloutsEnabled = isOn
             GDATelemetry.track("settings.shake_callouts", value: isOn.description)
         case .soundEffects:
+            // Enabling/Disabling sound effects for callouts
             SettingsContext.shared.calloutsEarconEnabled = isOn
             GDATelemetry.track("settings.callouts_earcon", value: isOn.description)
         case .delays:
+            // Allowing delays between the automatic callouts
             SettingsContext.shared.calloutsDelayEnabled = isOn
             GDATelemetry.track("settings.callouts_delay", value: isOn.description)
         }
