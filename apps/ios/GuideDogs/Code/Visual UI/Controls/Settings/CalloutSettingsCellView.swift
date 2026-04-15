@@ -45,12 +45,12 @@ class CalloutSettingsCellView: UITableViewCell {
             case .shake:
                 settingSwitch.isOn = SettingsContext.shared.shakeCalloutsEnabled
             case .soundEffects:
-                textLabel?.text = "Sound Effects"
-                detailTextLabel?.text = "Sounds played before callout"
+                textLabel?.text = GDLocalizedString("callouts.sound_effects")
+                detailTextLabel?.text = GDLocalizedString("callouts.sound_effects.info")
                 settingSwitch.isOn = SettingsContext.shared.calloutsEarconEnabled
             case .delays:
-                textLabel?.text = "Delays"
-                detailTextLabel?.text = "Short pauses between callouts"
+                textLabel?.text = GDLocalizedString("callouts.delays")
+                detailTextLabel?.text = GDLocalizedString("callouts.delays.info")
                 settingSwitch.isOn = SettingsContext.shared.calloutsDelayEnabled
             }
         }

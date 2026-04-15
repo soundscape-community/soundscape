@@ -1611,6 +1611,10 @@
 // MARK: - Callouts
 //------------------------------------------------------------------------------
 
+
+
+
+
 /* Title for the button panel at the bottom of the home view */
 "callouts.panel.title" = "Hear My Surroundings";
 
@@ -1625,6 +1629,18 @@
 
 /* Button, Allow Callouts */
 "callouts.allow_callouts" = "Allow Callouts";
+
+/* Toggle label for disabling and enabling sound effects*/
+"callouts.sound_effects" = "Sound Effects";
+
+/* Toggle label for enabling/disabling callout sound effects*/
+"callouts.sound_effects.info" = "Sounds that play before callouts";
+
+/* Toggle label for enabling and disabling delays between callouts */
+"callouts.delays" = "Delays";
+
+/* Toggle description for enabling/disabling pauses between automatic callouts */
+"callouts.delays.info" = "Short pauses between callouts";
 
 /* Callouts Title, Places and Landmarks */
 "callouts.places_and_landmarks" = "Places and Landmarks";
