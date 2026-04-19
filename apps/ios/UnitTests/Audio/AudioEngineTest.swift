@@ -200,10 +200,6 @@ final class TTSSoundTest: XCTestCase {
             throw XCTSkip("No default TTS voice is available for \(LocalizationContext.currentAppLocale.identifier)")
         }
 
-        guard TTSAudioBufferPublisher("soundscape tts warmup", voiceIdentifier: voice.identifier) != nil else {
-            throw XCTSkip("Unable to initialize TTS publisher for voice \(voice.identifier)")
-        }
-
         let warmupSound = TTSSound("soundscape tts warmup")
 
         do {
@@ -236,9 +232,14 @@ final class TTSSoundTest: XCTestCase {
             buffers.append(buffer)
         }
 
-        XCTAssertTrue(reachedTerminalNil, "TTSSound did not emit a terminal nil before the test deadline or buffer limit")
+        if !reachedTerminalNil {
+            if buffers.count >= maxBuffers {
+                XCTFail("TTSSound produced \(buffers.count) buffers without emitting terminal nil (cap=\(maxBuffers))")
+            } else {
+                XCTFail("TTSSound did not emit terminal nil before deadline (produced \(buffers.count) buffers)")
+            }
+        }
         XCTAssertFalse(buffers.isEmpty)
-        XCTAssertLessThan(buffers.count, maxBuffers, "TTSSound produced unexpectedly many buffers without terminating")
         XCTAssertTrue(buffers.allSatisfy { $0.frameLength > 0 })
         XCTAssertTrue(buffers.allSatisfy { $0.format.commonFormat == .pcmFormatFloat32 })
     }
