@@ -3,7 +3,6 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
-//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -971,8 +970,9 @@ class AudioEngine: AudioEngineProtocol {
                 return
             }
             
-            // Discard an empty current sounds object only after its active player has finished.
-            if let currentSounds = self.currentSounds, currentSounds.isEmpty, self.currentQueuePlayerID == nil {
+            // In some cases we have a value in `currentSounds`, but it's sounds array is empty.
+            // In this case discard the current sounds object.
+            if let currentSounds = self.currentSounds, currentSounds.isEmpty {
                 self.currentSounds = nil
             }
             

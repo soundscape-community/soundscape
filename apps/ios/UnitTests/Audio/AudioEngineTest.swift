@@ -51,11 +51,11 @@ final class TestSound: SynchronouslyGeneratedSound {
 
     private var buffer: AVAudioPCMBuffer?
 
-    init(description: String, frequency: Float = 440) {
+    init(description: String, frequency: Float = 440, duration: TimeInterval = 1.0) {
         self.description = description
 
         let sampleRate = 44_100.0
-        let frameCount: AVAudioFrameCount = 44_100
+        let frameCount = AVAudioFrameCount(sampleRate * duration)
         let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)!
         let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount)!
         buffer.frameLength = frameCount
@@ -155,18 +155,40 @@ final class AudioEngineTest: XCTestCase {
         eng.play(TestSound(description: "one one one", frequency: 440)) { success in
             XCTAssertTrue(success)
             expectations[0].fulfill()
+
+            eng.play(TestSound(description: "two two two", frequency: 550)) { success in
+                XCTAssertTrue(success)
+                expectations[1].fulfill()
+
+                eng.play(TestSound(description: "three three three", frequency: 660)) { success in
+                    XCTAssertTrue(success)
+                    expectations[2].fulfill()
+                }
+            }
         }
-        eng.play(TestSound(description: "two two two", frequency: 550)) { success in
-            XCTAssertTrue(success)
-            expectations[1].fulfill()
-        }
-        eng.play(TestSound(description: "three three three", frequency: 660)) { success in
-            XCTAssertTrue(success)
-            expectations[2].fulfill()
-        }
-        
+
         XCTAssertEqual(XCTWaiter.wait(for: expectations, timeout: 30, enforceOrder: true), .completed)
         XCTAssertEqual(delegate.finish_count, 3)
+        XCTAssertFalse(eng.isDiscreteAudioPlaying)
+    }
+
+    func testSoundPlayedAfterStopDiscreteIsNotConsumedByInterruptedSequence() throws {
+        audioEngine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
+        let eng = audioEngine!
+        let interrupted = XCTestExpectation(description: "interrupted sound")
+        let replacement = XCTestExpectation(description: "replacement sound")
+
+        eng.play(TestSound(description: "interrupted", duration: 2.0)) { success in
+            XCTAssertFalse(success)
+            interrupted.fulfill()
+        }
+        eng.stopDiscrete()
+        eng.play(TestSound(description: "replacement", duration: 0.1)) { success in
+            XCTAssertTrue(success)
+            replacement.fulfill()
+        }
+
+        XCTAssertEqual(XCTWaiter.wait(for: [interrupted, replacement], timeout: 5), .completed)
         XCTAssertFalse(eng.isDiscreteAudioPlaying)
     }
 
