@@ -28,6 +28,7 @@ class PreviewViewController: UIViewController {
     @IBOutlet weak var activityIndicatorContainerView: UIView!
     @IBOutlet weak var tutorialContainerView: UIView!
     @IBOutlet weak var exitBarButtonItem: UIBarButtonItem!
+    @IBOutlet weak var calloutPanelContainerView: UIView!
     @IBOutlet var calloutPanelContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerViewHeightConstraint: NSLayoutConstraint!
     var roadToggleButton: UIBarButtonItem!
@@ -81,6 +82,8 @@ class PreviewViewController: UIViewController {
         super.viewDidLoad()
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
+
+        configureCalloutButtonPanelView()
         
         // Initialize the road toggle button (this handles initial creation - all further updates are
         // handled by `configureToggleButton()`
@@ -173,9 +176,6 @@ class PreviewViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let viewController = segue.destination as? PreviewTutorialViewController {
             viewController.delegate = self
-        } else if let vc = segue.destination as? CalloutButtonPanelViewController {
-            calloutButtonViewController = vc
-            calloutButtonViewController?.logContext = "preview"
         } else if let vc = segue.destination as? SearchTableViewController {
             vc.logContext = "preview"
             vc.onDismissPreviewHandler = onDismissHandler
@@ -200,6 +200,25 @@ class PreviewViewController: UIViewController {
         } else {
             setOverrideTraitCollection(nil, forChild: child)
         }
+    }
+
+    private func configureCalloutButtonPanelView() {
+        let viewController = CalloutButtonPanelViewController()
+        viewController.logContext = "preview"
+
+        addChild(viewController)
+        calloutPanelContainerView.addSubview(viewController.view)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            viewController.view.leadingAnchor.constraint(equalTo: calloutPanelContainerView.leadingAnchor),
+            viewController.view.trailingAnchor.constraint(equalTo: calloutPanelContainerView.trailingAnchor),
+            viewController.view.topAnchor.constraint(equalTo: calloutPanelContainerView.topAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: calloutPanelContainerView.bottomAnchor)
+        ])
+
+        viewController.didMove(toParent: self)
+        calloutButtonViewController = viewController
     }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {

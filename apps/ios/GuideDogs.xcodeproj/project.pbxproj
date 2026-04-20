@@ -127,7 +127,6 @@
 		286DC6AE21E6B61B001CD88A /* Verbosity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286DC6AD21E6B61B001CD88A /* Verbosity.swift */; };
 		286DC6B021E6BADB001CD88A /* RouteGuidanceState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286DC6AF21E6BADB001CD88A /* RouteGuidanceState.swift */; };
 		286DC6B421E94FFB001CD88A /* QueueAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286DC6B321E94FFB001CD88A /* QueueAction.swift */; };
-		286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */ = {isa = PBXBuildFile; productRef = 286F409C2624FF6000C3F80B /* NVActivityIndicatorView */; };
 		2870DA7B20447E4B00971F75 /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2870DA7A20447E4B00971F75 /* ReusableView.swift */; };
 		2870DA7D20447EA700971F75 /* NibLoadableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2870DA7C20447EA700971F75 /* NibLoadableView.swift */; };
 		2870DA7F2044872300971F75 /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2870DA7E2044872300971F75 /* UICollectionView+Extensions.swift */; };
@@ -1581,7 +1580,6 @@
 			files = (
 				283B0307264B03920092F74F /* SDWebImageSwiftUI in Frameworks */,
 				2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
-				286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */,
 				2866A7D5262502D500EBA2D8 /* CocoaLumberjackSwift in Frameworks */,
 				91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */,
 				286145EB2625099F000E5525 /* SDWebImage in Frameworks */,
@@ -4467,7 +4465,6 @@
 			);
 			name = Soundscape;
 			packageProductDependencies = (
-				286F409C2624FF6000C3F80B /* NVActivityIndicatorView */,
 				2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
 				2866A7CE2625028600EBA2D8 /* Reachability */,
 				2866A7D4262502D500EBA2D8 /* CocoaLumberjackSwift */,
@@ -4547,7 +4544,6 @@
 			);
 			mainGroup = D3D7CFBF1B3D96460020B5E9;
 			packageReferences = (
-				286F409B2624FF6000C3F80B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */,
 				2866A7BF2625013400EBA2D8 /* XCRemoteSwiftPackageReference "DZNEmptyDataSet" */,
 				2866A7CD2625028600EBA2D8 /* XCRemoteSwiftPackageReference "Reachability" */,
 				2866A7D3262502D500EBA2D8 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
@@ -5971,14 +5967,6 @@
 				minimumVersion = 3.7.4;
 			};
 		};
-		286F409B2624FF6000C3F80B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ninjaprox/NVActivityIndicatorView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.1.1;
-			};
-		};
 		28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-cocoa";
@@ -6027,11 +6015,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2866A7D3262502D500EBA2D8 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
 			productName = CocoaLumberjackSwift;
-		};
-		286F409C2624FF6000C3F80B /* NVActivityIndicatorView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 286F409B2624FF6000C3F80B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */;
-			productName = NVActivityIndicatorView;
 		};
 		28F1ECE1262505DC00E964C0 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
