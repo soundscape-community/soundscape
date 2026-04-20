@@ -63,6 +63,7 @@ class HomeViewController: UIViewController {
     
     @IBOutlet var searchContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var calloutPanelContainerView: UIView!
     @IBOutlet var calloutPanelContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerTopConstraints: [NSLayoutConstraint]!
     
@@ -136,6 +137,8 @@ class HomeViewController: UIViewController {
         self.definesPresentationContext = true
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
+
+        configureCalloutButtonPanelView()
         
         // Subscribe to notifications
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleLocationUpdatedNotification), name: Notification.Name.locationUpdated, object: nil)
@@ -312,6 +315,25 @@ class HomeViewController: UIViewController {
             NSLayoutConstraint.activate(cardContainerTopConstraints)
         }
     }
+
+    private func configureCalloutButtonPanelView() {
+        let viewController = CalloutButtonPanelViewController()
+        viewController.logContext = telemetryContext
+
+        addChild(viewController)
+        calloutPanelContainerView.addSubview(viewController.view)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            viewController.view.leadingAnchor.constraint(equalTo: calloutPanelContainerView.leadingAnchor),
+            viewController.view.trailingAnchor.constraint(equalTo: calloutPanelContainerView.trailingAnchor),
+            viewController.view.topAnchor.constraint(equalTo: calloutPanelContainerView.topAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: calloutPanelContainerView.bottomAnchor)
+        ])
+
+        viewController.didMove(toParent: self)
+        calloutButtonViewController = viewController
+    }
     
     private func showOrRefreshExperiences() {
         if navigationController?.visibleViewController is HomeViewController {
@@ -424,9 +446,6 @@ class HomeViewController: UIViewController {
             vc.locationDetail = locationDetail
         } else if let vc = segue.destination as? CardStateViewController {
             cardViewController = vc
-        } else if let vc = segue.destination as? CalloutButtonPanelViewController {
-            calloutButtonViewController = vc
-            calloutButtonViewController?.logContext = telemetryContext
         } else if let navigationController = segue.destination as? UINavigationController,
                   let viewController = navigationController.topViewController as? PreviewViewController {
             let locationDetail = sender as? LocationDetail
