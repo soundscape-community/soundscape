@@ -374,7 +374,6 @@
 		6216288C2853EF1B00B1FF5B /* RoundedBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6216288B2853EF1B00B1FF5B /* RoundedBorder.swift */; };
 		6216288F2853EF4700B1FF5B /* DisabledButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6216288E2853EF4700B1FF5B /* DisabledButtonStyle.swift */; };
 		621628912853EF9900B1FF5B /* DateComponentsFormatter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621628902853EF9900B1FF5B /* DateComponentsFormatter+Extension.swift */; };
-		621628AC286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621628AB286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift */; };
 		621628BA2874CA8E00B1FF5B /* ColorPaletteKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621628B92874CA8E00B1FF5B /* ColorPaletteKey.swift */; };
 		6218860427C5A27800E70422 /* FirstLaunchTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6218860327C5A27800E70422 /* FirstLaunchTermsView.swift */; };
 		622AB2F6263767A8006BB729 /* MKMapViewDelegate+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622AB2F5263767A8006BB729 /* MKMapViewDelegate+Extensions.swift */; };
@@ -1143,7 +1142,6 @@
 		6216288B2853EF1B00B1FF5B /* RoundedBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedBorder.swift; sourceTree = "<group>"; };
 		6216288E2853EF4700B1FF5B /* DisabledButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisabledButtonStyle.swift; sourceTree = "<group>"; };
 		621628902853EF9900B1FF5B /* DateComponentsFormatter+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "DateComponentsFormatter+Extension.swift"; path = "Code/App/Framework Extensions/String Extensions/DateComponentsFormatter+Extension.swift"; sourceTree = "<group>"; };
-		621628AB286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UINavigationBarAppearance+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UINavigationBarAppearance+Extensions.swift"; sourceTree = "<group>"; };
 		621628B92874CA8E00B1FF5B /* ColorPaletteKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteKey.swift; sourceTree = "<group>"; };
 		6218860327C5A27800E70422 /* FirstLaunchTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FirstLaunchTermsView.swift; path = "Code/Visual UI/View Controllers/Launch/First Launch/FirstLaunchTermsView.swift"; sourceTree = "<group>"; };
 		622AB2F5263767A8006BB729 /* MKMapViewDelegate+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MKMapViewDelegate+Extensions.swift"; path = "Code/App/Framework Extensions/MapKit/MKMapViewDelegate+Extensions.swift"; sourceTree = "<group>"; };
@@ -2471,7 +2469,6 @@
 				B9DD64F41E718F5E00ADFC3F /* MessageUI+Extensions.swift */,
 				62403FDB24C21E59005CB80D /* UISearchController+Extensions.swift */,
 				629A08BE24F5C9D4008204A9 /* UIBarButtonItem+Extensions.swift */,
-				621628AB286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift */,
 			);
 			name = UIKit;
 			sourceTree = "<group>";
@@ -4773,7 +4770,6 @@
 				286A251C22F3553A008F8327 /* RoundedView.swift in Sources */,
 				28A16127283C4A3E0081CFA4 /* TourWaypointArrivalCallout.swift in Sources */,
 				284C9AF023886BF500CBA392 /* DynamicAudioEngineAssets.swift in Sources */,
-				621628AC286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift in Sources */,
 				288E5FDE268A55BC00F7D4CD /* FilterUpdateSnapshot.swift in Sources */,
 				B9E1FD6927CC4DC000EEE775 /* ActivityType.swift in Sources */,
 				C3060705205C544E00C39489 /* AddressGeocoderProtocol.swift in Sources */,

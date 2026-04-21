@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -38,7 +39,6 @@ struct ModalNavigationView: ViewModifier {
         NavigationView {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .navigationBarStyle(style: style)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
