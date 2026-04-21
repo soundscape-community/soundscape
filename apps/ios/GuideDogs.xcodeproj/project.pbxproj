@@ -404,7 +404,6 @@
 		623E010C24476BF70081CA5B /* ShareMarkerAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E010B24476BF70081CA5B /* ShareMarkerAlert.swift */; };
 		62403FDC24C21E59005CB80D /* UISearchController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FDB24C21E59005CB80D /* UISearchController+Extensions.swift */; };
 		62403FDE24C24456005CB80D /* LocationAccessibilityActionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FDD24C24456005CB80D /* LocationAccessibilityActionDelegate.swift */; };
-		62403FE224C6228F005CB80D /* CalloutButtonPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */; };
 		62403FEE24CA3F75005CB80D /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FED24CA3F75005CB80D /* PreviewViewController.swift */; };
 		62403FF524CF42C7005CB80D /* PreviewControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 62403FF424CF42C7005CB80D /* PreviewControlView.xib */; };
 		62403FFE24CF4452005CB80D /* PreviewControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FFD24CF4452005CB80D /* PreviewControlViewController.swift */; };
@@ -1174,7 +1173,6 @@
 		623E010B24476BF70081CA5B /* ShareMarkerAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ShareMarkerAlert.swift; path = "Code/Visual UI/View Controllers/Alerts/ShareMarkerAlert.swift"; sourceTree = "<group>"; };
 		62403FDB24C21E59005CB80D /* UISearchController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UISearchController+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UISearchController+Extensions.swift"; sourceTree = "<group>"; };
 		62403FDD24C24456005CB80D /* LocationAccessibilityActionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAccessibilityActionDelegate.swift; sourceTree = "<group>"; };
-		62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CalloutButtonPanelViewController.swift; path = "Code/Visual UI/View Controllers/Home/CalloutButtonPanelViewController.swift"; sourceTree = "<group>"; };
 		62403FED24CA3F75005CB80D /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewViewController.swift; path = "Code/Visual UI/View Controllers/Preview/PreviewViewController.swift"; sourceTree = "<group>"; };
 		62403FF424CF42C7005CB80D /* PreviewControlView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PreviewControlView.xib; path = "Code/Visual UI/Controls/Preview/PreviewControlView.xib"; sourceTree = "<group>"; };
 		62403FFD24CF4452005CB80D /* PreviewControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewControlViewController.swift; path = "Code/Visual UI/Controls/Preview/PreviewControlViewController.swift"; sourceTree = "<group>"; };
@@ -2886,7 +2884,6 @@
 			children = (
 				568480901CBC9C94004B4227 /* HomeViewController.swift */,
 				31013A6420D9ACBE00205D1F /* HomeViewController+RemoteControl.swift */,
-				62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -4731,7 +4728,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3A5847A22BAF9070014C55E /* DeviceHeadingProvider.swift in Sources */,
-				62403FE224C6228F005CB80D /* CalloutButtonPanelViewController.swift in Sources */,
 				28BD33D723D8C98800566523 /* AudioEngineProtocol.swift in Sources */,
 				28A16136283D870D0081CFA4 /* GuidedTourAction.swift in Sources */,
 				286DC6B421E94FFB001CD88A /* QueueAction.swift in Sources */,

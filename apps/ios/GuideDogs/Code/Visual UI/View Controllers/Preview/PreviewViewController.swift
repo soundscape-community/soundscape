@@ -36,7 +36,7 @@ class PreviewViewController: UIViewController {
     // MARK: Properties
     
     private var virtualLocationViewController: VirtualLocationViewController?
-    private weak var calloutButtonViewController: CalloutButtonPanelViewController?
+    private weak var calloutButtonViewController: CalloutButtonPanelHostingViewController?
     private weak var activityIndicatorViewController: PreviewActivityIndicatorViewController?
     private var isActivatedAndStartedSubscriber: AnyCancellable?
     private var isStoppedAndDeactivatedSubscriber: AnyCancellable?
@@ -203,8 +203,7 @@ class PreviewViewController: UIViewController {
     }
 
     private func configureCalloutButtonPanelView() {
-        let viewController = CalloutButtonPanelViewController()
-        viewController.logContext = "preview"
+        let viewController = CalloutButtonPanelHostingViewController(logContext: "preview")
 
         addChild(viewController)
         calloutPanelContainerView.addSubview(viewController.view)
@@ -228,7 +227,7 @@ class PreviewViewController: UIViewController {
             virtualLocationHeightConstraint.constant = container.preferredContentSize.height
         }
         
-        if container is CalloutButtonPanelViewController {
+        if container is CalloutButtonPanelHostingViewController {
             calloutPanelContainerHeightConstraint.constant = container.preferredContentSize.height
         }
         
@@ -511,13 +510,13 @@ class PreviewViewController: UIViewController {
         
         switch userAction {
         case .myLocation:
-            calloutButtonViewController?.handleDidToggleLocateNotification(notification)
+            NotificationCenter.default.post(name: Notification.Name.didToggleLocate, object: notification.object)
         case .aroundMe:
-            calloutButtonViewController?.handleDidToggleOrientateNotification(notification)
+            NotificationCenter.default.post(name: Notification.Name.didToggleOrientate, object: notification.object)
         case .aheadOfMe:
-            calloutButtonViewController?.handleDidToggleLookAheadNotification(notification)
+            NotificationCenter.default.post(name: Notification.Name.didToggleLookAhead, object: notification.object)
         case .nearbyMarkers:
-            calloutButtonViewController?.handleDidToggleMarkedPointsNotification(notification)
+            NotificationCenter.default.post(name: Notification.Name.didToggleMarkedPoints, object: notification.object)
         case .search:
             self.performSegue(withIdentifier: Segue.showPOISelection, sender: userAction)
         case .saveMarker:
