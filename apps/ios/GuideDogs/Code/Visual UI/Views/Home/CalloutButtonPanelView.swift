@@ -53,6 +53,14 @@ final class CalloutButtonPanelModel: ObservableObject {
     }
 
     func perform(_ action: CalloutButtonPanelAction, sender: AnyObject? = nil) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.perform(action, sender: sender)
+            }
+
+            return
+        }
+
         activeAction = action
 
         let completion: (Bool) -> Void = { [weak self] _ in
