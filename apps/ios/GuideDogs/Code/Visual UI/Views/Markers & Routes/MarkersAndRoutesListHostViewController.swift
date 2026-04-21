@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -30,6 +31,14 @@ class MarkersAndRoutesListHostViewController: UIHostingController<AnyView> {
         
         // Configure the back button
         navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
+
+        // Configure the navigation bar
+        let navigationBar = navigationController?.navigationBar
+        navigationBar?.configureAppearance(for: .default)
+        navigationBar?.standardAppearance.shadowColor = .clear
+        navigationBar?.scrollEdgeAppearance?.shadowColor = .clear
+        navigationBar?.compactAppearance?.shadowColor = .clear
+        navigationBar?.compactScrollEdgeAppearance?.shadowColor = .clear
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

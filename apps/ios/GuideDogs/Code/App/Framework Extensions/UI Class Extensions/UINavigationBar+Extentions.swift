@@ -85,7 +85,13 @@ extension UINavigationBar {
         compactScrollEdgeAppearance = appearance
         
         // Set the back button
-        items?.forEach({ $0.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem })
+        items?.forEach {
+            $0.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
+            $0.leftBarButtonItem?.configureSoundscapeNavigationButton()
+            $0.rightBarButtonItem?.configureSoundscapeNavigationButton()
+            $0.leftBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton() }
+            $0.rightBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton() }
+        }
     }
     
 }
