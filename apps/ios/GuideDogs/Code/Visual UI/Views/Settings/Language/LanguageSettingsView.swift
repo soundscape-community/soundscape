@@ -36,17 +36,20 @@ struct LanguageSettingsView: View {
     }
 
     var body: some View {
-        Form {
-            Section(GDLocalizedString("settings.section.units")) {
+        List {
+            Section(header: LanguageSettingsSectionHeader(text: GDLocalizedString("settings.section.units"))) {
                 Picker(GDLocalizedString("settings.section.units"), selection: $unitPreference) {
                     ForEach(UnitPreference.allCases) { preference in
                         Text(GDLocalizedString(preference.titleKey)).tag(preference)
                     }
                 }
                 .pickerStyle(.segmented)
+                .tint(.primaryForeground)
+                .listRowBackground(Color.primaryBackground)
+                .listRowSeparatorTint(Color.secondaryBackground)
             }
 
-            Section(GDLocalizedString("settings.language.screen_title")) {
+            Section(header: LanguageSettingsSectionHeader(text: GDLocalizedString("settings.language.screen_title"))) {
                 ForEach(supportedLocales, id: \.identifierHyphened) { locale in
                     Button {
                         selectLocale(locale)
@@ -58,9 +61,15 @@ struct LanguageSettingsView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                    .listRowBackground(Color.primaryBackground)
+                    .listRowSeparatorTint(Color.secondaryBackground)
                 }
             }
         }
+        .languageSettingsListBackground()
+        .background(Color.quaternaryBackground.ignoresSafeArea())
+        .listStyle(PlainListStyle())
+        .tint(.primaryForeground)
         .navigationTitle(GDLocalizedString("settings.language.screen_title.2"))
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: trackScreenView)
@@ -146,6 +155,17 @@ private extension LanguageSettingsView {
     }
 }
 
+private struct LanguageSettingsSectionHeader: View {
+    let text: String
+
+    var body: some View {
+        Text(text.localizedUppercase)
+            .font(.caption)
+            .foregroundColor(.primaryForeground)
+            .accessibilityAddTraits(.isHeader)
+    }
+}
+
 private struct LanguageSettingsLocaleRow: View {
     let locale: Locale
     let appLocale: Locale
@@ -162,6 +182,7 @@ private struct LanguageSettingsLocaleRow: View {
 
     private var titleText: some View {
         Text(titleAttributedString)
+            .foregroundColor(.primaryForeground)
             .accessibleTextFormat()
     }
 
@@ -176,7 +197,7 @@ private struct LanguageSettingsLocaleRow: View {
         if let subtitle {
             Text(subtitleAttributedString(subtitle))
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.secondaryForeground)
                 .accessibleTextFormat()
         }
     }
@@ -203,14 +224,26 @@ private struct LanguageSettingsLocaleRow: View {
 
             if isSelected {
                 Image(systemName: "checkmark")
-                    .foregroundStyle(.tint)
+                    .foregroundColor(.primaryForeground)
                     .accessibilityHidden(true)
             }
         }
+        .padding(.vertical, 6.0)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func languageSettingsListBackground() -> some View {
+        if #available(iOS 16.0, *) {
+            scrollContentBackground(.hidden)
+        } else {
+            self
+        }
     }
 }
 
