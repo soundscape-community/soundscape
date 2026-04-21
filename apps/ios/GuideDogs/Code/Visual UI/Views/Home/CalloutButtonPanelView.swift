@@ -223,6 +223,7 @@ private struct CalloutButton: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(action.accessibilityLabel))
         .accessibilityHint(Text(action.accessibilityHint))
+        .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier(action.accessibilityIdentifier)
     }
 
