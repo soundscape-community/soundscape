@@ -8,21 +8,12 @@
 
 import SwiftUI
 
-extension Notification.Name {
-    static let didToggleLocate = Notification.Name("DidToggleLocate")
-    static let didToggleOrientate = Notification.Name("DidToggleOrientate")
-    static let didToggleLookAhead = Notification.Name("DidToggleLookAhead")
-    static let didToggleMarkedPoints = Notification.Name("DidToggleMarkedPoints")
-}
-
 struct CalloutButtonPanelView: View {
 
-    private let logContext: String?
+    @ObservedObject private var model: CalloutButtonPanelModel
 
-    @State private var activeAction: CalloutButtonPanelAction?
-
-    init(logContext: String?) {
-        self.logContext = logContext
+    init(model: CalloutButtonPanelModel) {
+        self.model = model
     }
 
     var body: some View {
@@ -38,39 +29,39 @@ struct CalloutButtonPanelView: View {
                 ForEach(CalloutButtonPanelAction.allCases) { action in
                     CalloutButton(
                         action: action,
-                        isActive: activeAction == action
+                        isActive: model.activeAction == action
                     ) {
-                        perform(action)
+                        model.perform(action)
                     }
                 }
             }
             .padding(.top, 4)
         }
         .background(Color.clear)
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.didToggleLocate)) { notification in
-            perform(.locate, sender: notification.object as AnyObject?)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.didToggleOrientate)) { notification in
-            perform(.aroundMe, sender: notification.object as AnyObject?)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.didToggleLookAhead)) { notification in
-            perform(.aheadOfMe, sender: notification.object as AnyObject?)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.didToggleMarkedPoints)) { notification in
-            perform(.nearbyMarkers, sender: notification.object as AnyObject?)
-        }
     }
 
-    private func perform(_ action: CalloutButtonPanelAction, sender: AnyObject? = nil) {
+}
+
+final class CalloutButtonPanelModel: ObservableObject {
+
+    @Published private(set) var activeAction: CalloutButtonPanelAction?
+
+    private let logContext: String?
+
+    init(logContext: String?) {
+        self.logContext = logContext
+    }
+
+    func perform(_ action: CalloutButtonPanelAction, sender: AnyObject? = nil) {
         activeAction = action
 
-        let completion: (Bool) -> Void = { _ in
+        let completion: (Bool) -> Void = { [weak self] _ in
             DispatchQueue.main.async {
-                guard activeAction == action else {
+                guard self?.activeAction == action else {
                     return
                 }
 
-                activeAction = nil
+                self?.activeAction = nil
             }
         }
 
@@ -88,7 +79,7 @@ struct CalloutButtonPanelView: View {
 
 }
 
-private enum CalloutButtonPanelAction: CaseIterable, Identifiable {
+enum CalloutButtonPanelAction: CaseIterable, Identifiable {
     case locate
     case aroundMe
     case aheadOfMe
@@ -96,6 +87,21 @@ private enum CalloutButtonPanelAction: CaseIterable, Identifiable {
 
     var id: Self {
         self
+    }
+
+    init?(userAction: UserAction) {
+        switch userAction {
+        case .myLocation:
+            self = .locate
+        case .aroundMe:
+            self = .aroundMe
+        case .aheadOfMe:
+            self = .aheadOfMe
+        case .nearbyMarkers:
+            self = .nearbyMarkers
+        case .search, .saveMarker, .streetPreview:
+            return nil
+        }
     }
 
     var mode: ExplorationGenerator.Mode {

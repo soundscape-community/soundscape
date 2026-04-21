@@ -11,10 +11,17 @@ import SwiftUI
 
 class CalloutButtonPanelHostingViewController: UIHostingController<CalloutButtonPanelView> {
 
+    // MARK: Properties
+
+    private let model: CalloutButtonPanelModel
+
     // MARK: Initialization
 
     init(logContext: String?) {
-        super.init(rootView: CalloutButtonPanelView(logContext: logContext))
+        let model = CalloutButtonPanelModel(logContext: logContext)
+        self.model = model
+
+        super.init(rootView: CalloutButtonPanelView(model: model))
 
         view.backgroundColor = .clear
     }
@@ -22,6 +29,12 @@ class CalloutButtonPanelHostingViewController: UIHostingController<CalloutButton
     @available(*, unavailable, message: "Use init(logContext:)")
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("Use init(logContext:)")
+    }
+
+    // MARK: Callout Actions
+
+    func perform(_ action: CalloutButtonPanelAction, sender: AnyObject? = nil) {
+        model.perform(action, sender: sender)
     }
 
     // MARK: View Life Cycle
