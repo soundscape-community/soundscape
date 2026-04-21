@@ -1,8 +1,7 @@
 //
-//  CalloutButtonViewController.swift
+//  CalloutButtonPanelView.swift
 //  Soundscape
 //
-//  Copyright (c) Microsoft Corporation.
 //  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
@@ -16,99 +15,62 @@ extension Notification.Name {
     static let didToggleMarkedPoints = Notification.Name("DidToggleMarkedPoints")
 }
 
-class CalloutButtonPanelViewController: UIHostingController<CalloutButtonPanelView> {
+struct CalloutButtonPanelView: View {
 
-    private let model: CalloutButtonPanelModel
+    private let logContext: String?
 
-    var logContext: String? {
-        get {
-            model.logContext
+    @State private var activeAction: CalloutButtonPanelAction?
+
+    init(logContext: String?) {
+        self.logContext = logContext
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(GDLocalizedString("callouts.panel.title").uppercasedWithAppLocale())
+                .font(.caption)
+                .foregroundColor(.primaryForeground)
+                .accessibilityAddTraits(.isHeader)
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+
+            HStack(spacing: 0) {
+                ForEach(CalloutButtonPanelAction.allCases) { action in
+                    CalloutButton(
+                        action: action,
+                        isActive: activeAction == action
+                    ) {
+                        perform(action)
+                    }
+                }
+            }
+            .padding(.top, 4)
         }
-        set {
-            model.logContext = newValue
+        .background(Color.clear)
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.didToggleLocate)) { notification in
+            perform(.locate, sender: notification.object as AnyObject?)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.didToggleOrientate)) { notification in
+            perform(.aroundMe, sender: notification.object as AnyObject?)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.didToggleLookAhead)) { notification in
+            perform(.aheadOfMe, sender: notification.object as AnyObject?)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.didToggleMarkedPoints)) { notification in
+            perform(.nearbyMarkers, sender: notification.object as AnyObject?)
         }
     }
 
-    // MARK: Initialization
-
-    init() {
-        let model = CalloutButtonPanelModel()
-        self.model = model
-
-        super.init(rootView: CalloutButtonPanelView(model: model))
-
-        view.backgroundColor = .clear
-    }
-
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
-        let model = CalloutButtonPanelModel()
-        self.model = model
-
-        super.init(coder: aDecoder, rootView: CalloutButtonPanelView(model: model))
-
-        view.backgroundColor = .clear
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    // MARK: View Life Cycle
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(self.handleDidToggleLocateNotification), name: Notification.Name.didToggleLocate, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.handleDidToggleOrientateNotification), name: Notification.Name.didToggleOrientate, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.handleDidToggleLookAheadNotification), name: Notification.Name.didToggleLookAhead, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.handleDidToggleMarkedPointsNotification), name: Notification.Name.didToggleMarkedPoints, object: nil)
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        let width = preferredContentSize.width
-        let height = UIView.preferredContentHeightCompressedHeight(for: view)
-
-        preferredContentSize = CGSize(width: width, height: height)
-    }
-
-    // MARK: Notifications
-
-    @objc func handleDidToggleLocateNotification(_ notification: Notification) {
-        model.perform(.locate, sender: notification.object as AnyObject?)
-    }
-
-    @objc func handleDidToggleOrientateNotification(_ notification: Notification) {
-        model.perform(.aroundMe, sender: notification.object as AnyObject?)
-    }
-
-    @objc func handleDidToggleLookAheadNotification(_ notification: Notification) {
-        model.perform(.aheadOfMe, sender: notification.object as AnyObject?)
-    }
-
-    @objc func handleDidToggleMarkedPointsNotification(_ notification: Notification) {
-        model.perform(.nearbyMarkers, sender: notification.object as AnyObject?)
-    }
-
-}
-
-final class CalloutButtonPanelModel: ObservableObject {
-
-    @Published var activeAction: CalloutButtonPanelAction?
-
-    var logContext: String?
-
-    func perform(_ action: CalloutButtonPanelAction, sender: AnyObject? = nil) {
+    private func perform(_ action: CalloutButtonPanelAction, sender: AnyObject? = nil) {
         activeAction = action
 
-        let completion: (Bool) -> Void = { [weak self] _ in
+        let completion: (Bool) -> Void = { _ in
             DispatchQueue.main.async {
-                guard self?.activeAction == action else {
+                guard activeAction == action else {
                     return
                 }
 
-                self?.activeAction = nil
+                activeAction = nil
             }
         }
 
@@ -126,7 +88,7 @@ final class CalloutButtonPanelModel: ObservableObject {
 
 }
 
-enum CalloutButtonPanelAction: CaseIterable, Identifiable {
+private enum CalloutButtonPanelAction: CaseIterable, Identifiable {
     case locate
     case aroundMe
     case aheadOfMe
@@ -213,36 +175,6 @@ enum CalloutButtonPanelAction: CaseIterable, Identifiable {
             return "ic_markers_32px"
         }
     }
-}
-
-struct CalloutButtonPanelView: View {
-
-    @ObservedObject var model: CalloutButtonPanelModel
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(GDLocalizedString("callouts.panel.title").uppercasedWithAppLocale())
-                .font(.caption)
-                .foregroundColor(.primaryForeground)
-                .accessibilityAddTraits(.isHeader)
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
-
-            HStack(spacing: 0) {
-                ForEach(CalloutButtonPanelAction.allCases) { action in
-                    CalloutButton(
-                        action: action,
-                        isActive: model.activeAction == action
-                    ) {
-                        model.perform(action)
-                    }
-                }
-            }
-            .padding(.top, 4)
-        }
-        .background(Color.clear)
-    }
-
 }
 
 private struct CalloutButton: View {

@@ -97,7 +97,7 @@ class HomeViewController: UIViewController {
     
     // Callout Button Panel
     
-    private weak var calloutButtonViewController: CalloutButtonPanelViewController?
+    private weak var calloutButtonViewController: CalloutButtonPanelHostingViewController?
     
     // MARK: View Life Cycle
     
@@ -295,7 +295,7 @@ class HomeViewController: UIViewController {
             previousSearchContainerHeight = container.preferredContentSize.height
         }
         
-        if container is CalloutButtonPanelViewController {
+        if container is CalloutButtonPanelHostingViewController {
             calloutPanelContainerHeightConstraint.constant = container.preferredContentSize.height
         }
         
@@ -317,8 +317,7 @@ class HomeViewController: UIViewController {
     }
 
     private func configureCalloutButtonPanelView() {
-        let viewController = CalloutButtonPanelViewController()
-        viewController.logContext = telemetryContext
+        let viewController = CalloutButtonPanelHostingViewController(logContext: telemetryContext)
 
         addChild(viewController)
         calloutPanelContainerView.addSubview(viewController.view)
@@ -556,13 +555,13 @@ extension HomeViewController {
         
         switch userAction {
         case .myLocation:
-            calloutButtonViewController?.handleDidToggleLocateNotification(notification)
+            NotificationCenter.default.post(name: Notification.Name.didToggleLocate, object: notification.object)
         case .aroundMe:
-            calloutButtonViewController?.handleDidToggleOrientateNotification(notification)
+            NotificationCenter.default.post(name: Notification.Name.didToggleOrientate, object: notification.object)
         case .aheadOfMe:
-            calloutButtonViewController?.handleDidToggleLookAheadNotification(notification)
+            NotificationCenter.default.post(name: Notification.Name.didToggleLookAhead, object: notification.object)
         case .nearbyMarkers:
-            calloutButtonViewController?.handleDidToggleMarkedPointsNotification(notification)
+            NotificationCenter.default.post(name: Notification.Name.didToggleMarkedPoints, object: notification.object)
         case .search, .saveMarker, .streetPreview:
             break
         }
