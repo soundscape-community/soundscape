@@ -508,15 +508,12 @@ class PreviewViewController: UIViewController {
         
         GDLogAppInfo("Continuing user action: \(userAction.rawValue) (street preview)")
         
+        if let action = CalloutButtonPanelAction(userAction: userAction) {
+            calloutButtonViewController?.perform(action, sender: notification.object as AnyObject?)
+            return
+        }
+
         switch userAction {
-        case .myLocation:
-            NotificationCenter.default.post(name: Notification.Name.didToggleLocate, object: notification.object)
-        case .aroundMe:
-            NotificationCenter.default.post(name: Notification.Name.didToggleOrientate, object: notification.object)
-        case .aheadOfMe:
-            NotificationCenter.default.post(name: Notification.Name.didToggleLookAhead, object: notification.object)
-        case .nearbyMarkers:
-            NotificationCenter.default.post(name: Notification.Name.didToggleMarkedPoints, object: notification.object)
         case .search:
             self.performSegue(withIdentifier: Segue.showPOISelection, sender: userAction)
         case .saveMarker:
@@ -524,6 +521,8 @@ class PreviewViewController: UIViewController {
             break
         case .streetPreview:
             // Already in street preview
+            break
+        case .myLocation, .aroundMe, .aheadOfMe, .nearbyMarkers:
             break
         }
     }

@@ -542,6 +542,10 @@ extension HomeViewController {
         
         lastLocation = location
     }
+
+    func performCalloutButtonAction(_ action: CalloutButtonPanelAction, sender: AnyObject? = nil) {
+        calloutButtonViewController?.perform(action, sender: sender)
+    }
     
     @objc private func continueUserAction(_ notification: Notification) {
         guard !AppContext.shared.isStreetPreviewing else {
@@ -553,17 +557,8 @@ extension HomeViewController {
         
         GDLogAppInfo("Continuing user action: \(userAction.rawValue)")
         
-        switch userAction {
-        case .myLocation:
-            NotificationCenter.default.post(name: Notification.Name.didToggleLocate, object: notification.object)
-        case .aroundMe:
-            NotificationCenter.default.post(name: Notification.Name.didToggleOrientate, object: notification.object)
-        case .aheadOfMe:
-            NotificationCenter.default.post(name: Notification.Name.didToggleLookAhead, object: notification.object)
-        case .nearbyMarkers:
-            NotificationCenter.default.post(name: Notification.Name.didToggleMarkedPoints, object: notification.object)
-        case .search, .saveMarker, .streetPreview:
-            break
+        if let action = CalloutButtonPanelAction(userAction: userAction) {
+            performCalloutButtonAction(action, sender: notification.object as AnyObject?)
         }
     }
     
