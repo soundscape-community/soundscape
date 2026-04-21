@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -425,6 +426,7 @@ class PreviewViewController: UIViewController {
             self.navigationController?.popToViewController(self, animated: true)
         }
         
+        navigationController?.navigationBar.configureAppearance(for: isHidden ? .transparentLightTitle : .default)
         configureContainerView(activityIndicatorContainerView, isHidden: isHidden, navigationBarIsHidden: false, roadToggleItemIsHidden: !isHidden)
     }
     
