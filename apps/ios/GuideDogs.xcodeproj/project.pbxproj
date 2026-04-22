@@ -127,7 +127,6 @@
 		286DC6AE21E6B61B001CD88A /* Verbosity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286DC6AD21E6B61B001CD88A /* Verbosity.swift */; };
 		286DC6B021E6BADB001CD88A /* RouteGuidanceState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286DC6AF21E6BADB001CD88A /* RouteGuidanceState.swift */; };
 		286DC6B421E94FFB001CD88A /* QueueAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286DC6B321E94FFB001CD88A /* QueueAction.swift */; };
-		286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */ = {isa = PBXBuildFile; productRef = 286F409C2624FF6000C3F80B /* NVActivityIndicatorView */; };
 		2870DA7B20447E4B00971F75 /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2870DA7A20447E4B00971F75 /* ReusableView.swift */; };
 		2870DA7D20447EA700971F75 /* NibLoadableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2870DA7C20447EA700971F75 /* NibLoadableView.swift */; };
 		2870DA7F2044872300971F75 /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2870DA7E2044872300971F75 /* UICollectionView+Extensions.swift */; };
@@ -375,7 +374,6 @@
 		6216288C2853EF1B00B1FF5B /* RoundedBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6216288B2853EF1B00B1FF5B /* RoundedBorder.swift */; };
 		6216288F2853EF4700B1FF5B /* DisabledButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6216288E2853EF4700B1FF5B /* DisabledButtonStyle.swift */; };
 		621628912853EF9900B1FF5B /* DateComponentsFormatter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621628902853EF9900B1FF5B /* DateComponentsFormatter+Extension.swift */; };
-		621628AC286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621628AB286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift */; };
 		621628BA2874CA8E00B1FF5B /* ColorPaletteKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621628B92874CA8E00B1FF5B /* ColorPaletteKey.swift */; };
 		6218860427C5A27800E70422 /* FirstLaunchTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6218860327C5A27800E70422 /* FirstLaunchTermsView.swift */; };
 		622AB2F6263767A8006BB729 /* MKMapViewDelegate+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622AB2F5263767A8006BB729 /* MKMapViewDelegate+Extensions.swift */; };
@@ -405,7 +403,6 @@
 		623E010C24476BF70081CA5B /* ShareMarkerAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E010B24476BF70081CA5B /* ShareMarkerAlert.swift */; };
 		62403FDC24C21E59005CB80D /* UISearchController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FDB24C21E59005CB80D /* UISearchController+Extensions.swift */; };
 		62403FDE24C24456005CB80D /* LocationAccessibilityActionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FDD24C24456005CB80D /* LocationAccessibilityActionDelegate.swift */; };
-		62403FE224C6228F005CB80D /* CalloutButtonPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */; };
 		62403FEE24CA3F75005CB80D /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FED24CA3F75005CB80D /* PreviewViewController.swift */; };
 		62403FF524CF42C7005CB80D /* PreviewControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 62403FF424CF42C7005CB80D /* PreviewControlView.xib */; };
 		62403FFE24CF4452005CB80D /* PreviewControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62403FFD24CF4452005CB80D /* PreviewControlViewController.swift */; };
@@ -1145,7 +1142,6 @@
 		6216288B2853EF1B00B1FF5B /* RoundedBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedBorder.swift; sourceTree = "<group>"; };
 		6216288E2853EF4700B1FF5B /* DisabledButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisabledButtonStyle.swift; sourceTree = "<group>"; };
 		621628902853EF9900B1FF5B /* DateComponentsFormatter+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "DateComponentsFormatter+Extension.swift"; path = "Code/App/Framework Extensions/String Extensions/DateComponentsFormatter+Extension.swift"; sourceTree = "<group>"; };
-		621628AB286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UINavigationBarAppearance+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UINavigationBarAppearance+Extensions.swift"; sourceTree = "<group>"; };
 		621628B92874CA8E00B1FF5B /* ColorPaletteKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteKey.swift; sourceTree = "<group>"; };
 		6218860327C5A27800E70422 /* FirstLaunchTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FirstLaunchTermsView.swift; path = "Code/Visual UI/View Controllers/Launch/First Launch/FirstLaunchTermsView.swift"; sourceTree = "<group>"; };
 		622AB2F5263767A8006BB729 /* MKMapViewDelegate+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MKMapViewDelegate+Extensions.swift"; path = "Code/App/Framework Extensions/MapKit/MKMapViewDelegate+Extensions.swift"; sourceTree = "<group>"; };
@@ -1175,7 +1171,6 @@
 		623E010B24476BF70081CA5B /* ShareMarkerAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ShareMarkerAlert.swift; path = "Code/Visual UI/View Controllers/Alerts/ShareMarkerAlert.swift"; sourceTree = "<group>"; };
 		62403FDB24C21E59005CB80D /* UISearchController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UISearchController+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UISearchController+Extensions.swift"; sourceTree = "<group>"; };
 		62403FDD24C24456005CB80D /* LocationAccessibilityActionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAccessibilityActionDelegate.swift; sourceTree = "<group>"; };
-		62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CalloutButtonPanelViewController.swift; path = "Code/Visual UI/View Controllers/Home/CalloutButtonPanelViewController.swift"; sourceTree = "<group>"; };
 		62403FED24CA3F75005CB80D /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewViewController.swift; path = "Code/Visual UI/View Controllers/Preview/PreviewViewController.swift"; sourceTree = "<group>"; };
 		62403FF424CF42C7005CB80D /* PreviewControlView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PreviewControlView.xib; path = "Code/Visual UI/Controls/Preview/PreviewControlView.xib"; sourceTree = "<group>"; };
 		62403FFD24CF4452005CB80D /* PreviewControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewControlViewController.swift; path = "Code/Visual UI/Controls/Preview/PreviewControlViewController.swift"; sourceTree = "<group>"; };
@@ -1581,7 +1576,6 @@
 			files = (
 				283B0307264B03920092F74F /* SDWebImageSwiftUI in Frameworks */,
 				2866A7CF2625028600EBA2D8 /* Reachability in Frameworks */,
-				286F409D2624FF6000C3F80B /* NVActivityIndicatorView in Frameworks */,
 				2866A7D5262502D500EBA2D8 /* CocoaLumberjackSwift in Frameworks */,
 				91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */,
 				286145EB2625099F000E5525 /* SDWebImage in Frameworks */,
@@ -2475,7 +2469,6 @@
 				B9DD64F41E718F5E00ADFC3F /* MessageUI+Extensions.swift */,
 				62403FDB24C21E59005CB80D /* UISearchController+Extensions.swift */,
 				629A08BE24F5C9D4008204A9 /* UIBarButtonItem+Extensions.swift */,
-				621628AB286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift */,
 			);
 			name = UIKit;
 			sourceTree = "<group>";
@@ -2888,7 +2881,6 @@
 			children = (
 				568480901CBC9C94004B4227 /* HomeViewController.swift */,
 				31013A6420D9ACBE00205D1F /* HomeViewController+RemoteControl.swift */,
-				62403FE124C6228F005CB80D /* CalloutButtonPanelViewController.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -4467,7 +4459,6 @@
 			);
 			name = Soundscape;
 			packageProductDependencies = (
-				286F409C2624FF6000C3F80B /* NVActivityIndicatorView */,
 				2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
 				2866A7CE2625028600EBA2D8 /* Reachability */,
 				2866A7D4262502D500EBA2D8 /* CocoaLumberjackSwift */,
@@ -4547,7 +4538,6 @@
 			);
 			mainGroup = D3D7CFBF1B3D96460020B5E9;
 			packageReferences = (
-				286F409B2624FF6000C3F80B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */,
 				2866A7BF2625013400EBA2D8 /* XCRemoteSwiftPackageReference "DZNEmptyDataSet" */,
 				2866A7CD2625028600EBA2D8 /* XCRemoteSwiftPackageReference "Reachability" */,
 				2866A7D3262502D500EBA2D8 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
@@ -4735,7 +4725,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3A5847A22BAF9070014C55E /* DeviceHeadingProvider.swift in Sources */,
-				62403FE224C6228F005CB80D /* CalloutButtonPanelViewController.swift in Sources */,
 				28BD33D723D8C98800566523 /* AudioEngineProtocol.swift in Sources */,
 				28A16136283D870D0081CFA4 /* GuidedTourAction.swift in Sources */,
 				286DC6B421E94FFB001CD88A /* QueueAction.swift in Sources */,
@@ -4781,7 +4770,6 @@
 				286A251C22F3553A008F8327 /* RoundedView.swift in Sources */,
 				28A16127283C4A3E0081CFA4 /* TourWaypointArrivalCallout.swift in Sources */,
 				284C9AF023886BF500CBA392 /* DynamicAudioEngineAssets.swift in Sources */,
-				621628AC286BA69100B1FF5B /* UINavigationBarAppearance+Extensions.swift in Sources */,
 				288E5FDE268A55BC00F7D4CD /* FilterUpdateSnapshot.swift in Sources */,
 				B9E1FD6927CC4DC000EEE775 /* ActivityType.swift in Sources */,
 				C3060705205C544E00C39489 /* AddressGeocoderProtocol.swift in Sources */,
@@ -5461,7 +5449,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZED_STRING_MACRO_NAMES = (
 					NSLocalizedString,
 					CFLocalizedString,
@@ -5692,7 +5680,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZED_STRING_MACRO_NAMES = (
 					NSLocalizedString,
 					CFLocalizedString,
@@ -5753,7 +5741,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZED_STRING_MACRO_NAMES = (
 					NSLocalizedString,
 					CFLocalizedString,
@@ -5971,14 +5959,6 @@
 				minimumVersion = 3.7.4;
 			};
 		};
-		286F409B2624FF6000C3F80B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ninjaprox/NVActivityIndicatorView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.1.1;
-			};
-		};
 		28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-cocoa";
@@ -6027,11 +6007,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2866A7D3262502D500EBA2D8 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
 			productName = CocoaLumberjackSwift;
-		};
-		286F409C2624FF6000C3F80B /* NVActivityIndicatorView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 286F409B2624FF6000C3F80B /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */;
-			productName = NVActivityIndicatorView;
 		};
 		28F1ECE1262505DC00E964C0 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;

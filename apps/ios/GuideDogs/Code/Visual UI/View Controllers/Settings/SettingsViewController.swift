@@ -74,6 +74,8 @@ class SettingsViewController: BaseTableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        navigationController?.navigationBar.configureAppearance(for: .default)
+
         GDLogActionInfo("Opened 'Settings'")
 
         GDATelemetry.trackScreenView("settings")

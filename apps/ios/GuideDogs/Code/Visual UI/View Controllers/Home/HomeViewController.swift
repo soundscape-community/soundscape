@@ -63,6 +63,7 @@ class HomeViewController: UIViewController {
     
     @IBOutlet var searchContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var calloutPanelContainerView: UIView!
     @IBOutlet var calloutPanelContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerTopConstraints: [NSLayoutConstraint]!
     
@@ -96,7 +97,7 @@ class HomeViewController: UIViewController {
     
     // Callout Button Panel
     
-    private weak var calloutButtonViewController: CalloutButtonPanelViewController?
+    private weak var calloutButtonViewController: CalloutButtonPanelHostingViewController?
     
     // MARK: View Life Cycle
     
@@ -136,6 +137,8 @@ class HomeViewController: UIViewController {
         self.definesPresentationContext = true
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
+
+        configureCalloutButtonPanelView()
         
         // Subscribe to notifications
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleLocationUpdatedNotification), name: Notification.Name.locationUpdated, object: nil)
@@ -292,7 +295,7 @@ class HomeViewController: UIViewController {
             previousSearchContainerHeight = container.preferredContentSize.height
         }
         
-        if container is CalloutButtonPanelViewController {
+        if container is CalloutButtonPanelHostingViewController {
             calloutPanelContainerHeightConstraint.constant = container.preferredContentSize.height
         }
         
@@ -311,6 +314,24 @@ class HomeViewController: UIViewController {
             searchContainerHeightConstraint.constant = previousSearchContainerHeight
             NSLayoutConstraint.activate(cardContainerTopConstraints)
         }
+    }
+
+    private func configureCalloutButtonPanelView() {
+        let viewController = CalloutButtonPanelHostingViewController(logContext: telemetryContext)
+
+        addChild(viewController)
+        calloutPanelContainerView.addSubview(viewController.view)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            viewController.view.leadingAnchor.constraint(equalTo: calloutPanelContainerView.leadingAnchor),
+            viewController.view.trailingAnchor.constraint(equalTo: calloutPanelContainerView.trailingAnchor),
+            viewController.view.topAnchor.constraint(equalTo: calloutPanelContainerView.topAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: calloutPanelContainerView.bottomAnchor)
+        ])
+
+        viewController.didMove(toParent: self)
+        calloutButtonViewController = viewController
     }
     
     private func showOrRefreshExperiences() {
@@ -424,9 +445,6 @@ class HomeViewController: UIViewController {
             vc.locationDetail = locationDetail
         } else if let vc = segue.destination as? CardStateViewController {
             cardViewController = vc
-        } else if let vc = segue.destination as? CalloutButtonPanelViewController {
-            calloutButtonViewController = vc
-            calloutButtonViewController?.logContext = telemetryContext
         } else if let navigationController = segue.destination as? UINavigationController,
                   let viewController = navigationController.topViewController as? PreviewViewController {
             let locationDetail = sender as? LocationDetail
@@ -524,6 +542,10 @@ extension HomeViewController {
         
         lastLocation = location
     }
+
+    func performCalloutButtonAction(_ action: CalloutButtonPanelAction, sender: AnyObject? = nil) {
+        calloutButtonViewController?.perform(action, sender: sender)
+    }
     
     @objc private func continueUserAction(_ notification: Notification) {
         guard !AppContext.shared.isStreetPreviewing else {
@@ -535,17 +557,8 @@ extension HomeViewController {
         
         GDLogAppInfo("Continuing user action: \(userAction.rawValue)")
         
-        switch userAction {
-        case .myLocation:
-            calloutButtonViewController?.handleDidToggleLocateNotification(notification)
-        case .aroundMe:
-            calloutButtonViewController?.handleDidToggleOrientateNotification(notification)
-        case .aheadOfMe:
-            calloutButtonViewController?.handleDidToggleLookAheadNotification(notification)
-        case .nearbyMarkers:
-            calloutButtonViewController?.handleDidToggleMarkedPointsNotification(notification)
-        case .search, .saveMarker, .streetPreview:
-            break
+        if let action = CalloutButtonPanelAction(userAction: userAction) {
+            performCalloutButtonAction(action, sender: notification.object as AnyObject?)
         }
     }
     
