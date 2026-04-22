@@ -11,16 +11,86 @@ import SafariServices
 import CocoaLumberjackSwift
 
 class AboutHeaderCell: UITableViewCell {
-    @IBOutlet weak var versionLabel: UILabel!
+    private let logoImageView = UIImageView(image: UIImage(named: "launchScreenLogo"))
+    private let titleLabel = UILabel()
+    private let versionLabel = UILabel()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        configureViewHierarchy()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+
+        configureViewHierarchy()
+    }
+
+    func configure(versionText: String) {
+        versionLabel.text = versionText
+    }
+
+    private func configureViewHierarchy() {
+        selectionStyle = .none
+        backgroundColor = Colors.Background.primary
+        contentView.backgroundColor = Colors.Background.primary
+
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        versionLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        logoImageView.contentMode = .scaleAspectFit
+
+        titleLabel.text = GDLocalizationUnnecessary("Soundscape")
+        titleLabel.font = .preferredFont(forTextStyle: .headline)
+        titleLabel.adjustsFontForContentSizeCategory = true
+        titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 0
+        titleLabel.textColor = Colors.Foreground.primary
+
+        versionLabel.font = .preferredFont(forTextStyle: .subheadline)
+        versionLabel.adjustsFontForContentSizeCategory = true
+        versionLabel.textAlignment = .center
+        versionLabel.numberOfLines = 0
+        versionLabel.textColor = Colors.Foreground.primary
+
+        contentView.addSubview(logoImageView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(versionLabel)
+
+        NSLayoutConstraint.activate([
+            logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            logoImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 100),
+            logoImageView.heightAnchor.constraint(equalToConstant: 100),
+
+            titleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 14),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
+
+            versionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            versionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            versionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
+            versionLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -24)
+        ])
+    }
 }
 
-class AboutApplicationViewController: BaseTableViewController {
+class AboutApplicationViewController: BaseTableViewController, LargeBannerTableHeaderContainerView {
+    private static let aboutHeaderHeight: CGFloat = 220
+    private static let thirdPartyNoticesStoryboardIdentifier = "thirdPartyNotices"
     
     // MARK: Cell Content
+    private enum NavigationTarget {
+        case versionHistory
+        case thirdPartyNotices
+    }
+    
     private struct AboutLinkCellModel {
         let localizedTitle: String
         
-        let segue: String?
+        let navigationTarget: NavigationTarget?
         let url: URL?
         
         let telemetryEventName: String?
@@ -28,14 +98,14 @@ class AboutApplicationViewController: BaseTableViewController {
         init(localizedTitle: String, url: URL, event: String? = nil) {
             self.localizedTitle = localizedTitle
             self.url = url
-            self.segue = nil
+            self.navigationTarget = nil
             self.telemetryEventName = event
         }
         
-        init(localizedTitle: String, segue: String, event: String? = nil) {
+        init(localizedTitle: String, navigationTarget: NavigationTarget, event: String? = nil) {
             self.localizedTitle = localizedTitle
             self.url = nil
-            self.segue = segue
+            self.navigationTarget = navigationTarget
             self.telemetryEventName = event
         }
     }
@@ -45,13 +115,14 @@ class AboutApplicationViewController: BaseTableViewController {
     private let sectionCount = 1
     
     private let headerPath = IndexPath(row: 0, section: 0)
+    private(set) var largeBannerContainerView: UIView! = UIView(frame: .zero)
     
     private var aboutLinks: [AboutLinkCellModel] {
         var links = [
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), segue: "ShowVersionHistorySegue"),
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), navigationTarget: .versionHistory),
             AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Privacy Policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale), event: "about.privacy_policy"),
             AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Services Agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale), event: "about.services_agreement"),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), segue: "ShowThirdPartyNoticesSegue"),
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), navigationTarget: .thirdPartyNotices),
             AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("YouTube Channel"), url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale), event: "about.youtube_channel")
         ]
         
@@ -62,15 +133,38 @@ class AboutApplicationViewController: BaseTableViewController {
         
         return links
     }
-    
-    @IBOutlet weak var largeBannerContainerView: UIView!
+
+    init() {
+        super.init(style: .plain)
+    }
+
+    @available(*, unavailable, message: "Use init()")
+    required init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
     
     // MARK: View Life Cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.tableView.tableFooterView = UIView(frame: .zero) // Removes the footer separators
+
+        title = GDLocalizedString("settings.section.about")
+
+        tableView.registerCell(AboutHeaderCell.self)
+        tableView.registerCell(CustomDisclosureTableViewCell.self)
+
+        syncLargeBannerTableHeaderFrame()
+        tableView.tableFooterView = UIView(frame: .zero)
+        tableView.tintColor = Colors.Foreground.primary
+        tableView.separatorColor = Colors.Background.tertiary
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 44
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        syncLargeBannerTableHeaderFrame()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -96,20 +190,24 @@ class AboutApplicationViewController: BaseTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Handle the header cell separately
         if indexPath == headerPath {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "AboutHeaderCellPrototype", for: indexPath) as! AboutHeaderCell
-            cell.versionLabel.text = GDLocalizedString("settings.version.about.version", AppContext.appVersion, AppContext.appBuild)
+            let cell: AboutHeaderCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+            cell.configure(versionText: GDLocalizedString("settings.version.about.version", AppContext.appVersion, AppContext.appBuild))
             return cell
         }
         
         // Make sure the index path is valid, otherwise return a default cell
         guard indexPath.section < sectionCount, indexPath.row - 1 < aboutLinks.count, indexPath.row > 0 else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "AboutLinkCellPrototype", for: indexPath)
-            return cell
+            return UITableViewCell(style: .default, reuseIdentifier: nil)
         }
         
         // Set the title for the cell
-        let cell = tableView.dequeueReusableCell(withIdentifier: "AboutLinkCellPrototype", for: indexPath)
+        let cell: CustomDisclosureTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
         cell.textLabel?.text = aboutLinks[indexPath.row - 1].localizedTitle
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontForContentSizeCategory = true
+        cell.backgroundColor = Colors.Background.primary
+        cell.accessibilityTraits = [.button]
         
         return cell
     }
@@ -130,9 +228,17 @@ class AboutApplicationViewController: BaseTableViewController {
             GDATelemetry.trackScreenView(eventName)
         }
         
-        // If the cell has a segue, perform it
-        if let segue = model.segue {
-            performSegue(withIdentifier: segue, sender: self)
+        // If the cell navigates in-app, push the destination.
+        if let navigationTarget = model.navigationTarget {
+            switch navigationTarget {
+            case .versionHistory:
+                navigationController?.pushViewController(VersionHistoryTableViewController(), animated: true)
+            case .thirdPartyNotices:
+                let storyboard = UIStoryboard(name: "Settings", bundle: nil)
+                let viewController = storyboard.instantiateViewController(withIdentifier: AboutApplicationViewController.thirdPartyNoticesStoryboardIdentifier)
+                navigationController?.pushViewController(viewController, animated: true)
+            }
+            
             return
         }
         
@@ -154,14 +260,13 @@ class AboutApplicationViewController: BaseTableViewController {
         
         present(safariVC, animated: true, completion: nil)
     }
-    
-}
 
-extension AboutApplicationViewController: LargeBannerContainerView {
-    
-    func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerView.setHeight(height)
-        tableView.reloadData()
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        indexPath == headerPath ? AboutApplicationViewController.aboutHeaderHeight : UITableView.automaticDimension
     }
-    
+
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        indexPath == headerPath ? AboutApplicationViewController.aboutHeaderHeight : 44
+    }
+
 }

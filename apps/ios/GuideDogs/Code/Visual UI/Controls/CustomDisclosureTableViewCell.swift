@@ -25,14 +25,26 @@ class CustomDisclosureTableViewCell: UITableViewCell {
         spinner.startAnimating()
         return spinner
     }
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        configureAccessoryView()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        // Initialization code
-        self.accessoryView = disclosureImage
-        
-        self.selectionStyle = .default
+
+        configureAccessoryView()
+    }
+
+    private func configureAccessoryView() {
+        accessoryView = disclosureImage
+        selectionStyle = .default
     }
     
     func showActivityIndicator() {

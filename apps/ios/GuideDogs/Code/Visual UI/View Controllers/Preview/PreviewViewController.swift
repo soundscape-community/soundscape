@@ -114,6 +114,14 @@ class PreviewViewController: UIViewController {
         
         // Save view controller
         virtualLocationViewController = viewController
+
+        let activityIndicatorViewController = PreviewActivityIndicatorViewController()
+        addChild(activityIndicatorViewController)
+        activityIndicatorContainerView.addSubview(activityIndicatorViewController.view)
+        activityIndicatorViewController.view.frame = activityIndicatorContainerView.bounds
+        activityIndicatorViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        activityIndicatorViewController.didMove(toParent: self)
+        self.activityIndicatorViewController = activityIndicatorViewController
         
         if FirstUseExperience.didComplete(.previewTutorial) == false {
             GDATelemetry.track("preview.tutorial.presented")
@@ -168,8 +176,6 @@ class PreviewViewController: UIViewController {
         } else if let vc = segue.destination as? CalloutButtonPanelViewController {
             calloutButtonViewController = vc
             calloutButtonViewController?.logContext = "preview"
-        } else if let viewController = segue.destination as? PreviewActivityIndicatorViewController {
-            activityIndicatorViewController = viewController
         } else if let vc = segue.destination as? SearchTableViewController {
             vc.logContext = "preview"
             vc.onDismissPreviewHandler = onDismissHandler

@@ -9,21 +9,31 @@
 import UIKit
 
 class HelpPageFAQListTableViewController: BaseTableViewController {
-    
-    private struct Segue {
-        static let OpenFAQHelpPage = "OpenFAQHelpPage"
-    }
-    
-    private struct Cell {
-        static let QuestionCell = "QuestionCell"
+    private static let faqViewStoryboardIdentifier = "helpFAQPage"
+
+    private let faqList: FAQListHelpPage
+
+    init(faqList: FAQListHelpPage) {
+        self.faqList = faqList
+        super.init(style: .grouped)
+        title = faqList.title
     }
 
-    private var faqList: FAQListHelpPage!
-    
-    private var currentIndex: IndexPath?
-    
-    func loadContent(_ content: FAQListHelpPage) {
-        faqList = content
+    @available(*, unavailable, message: "Use init(faqList:)")
+    required init?(coder: NSCoder) {
+        fatalError("Use init(faqList:)")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        tableView.registerCell(CustomDisclosureTableViewCell.self)
+        tableView.tintColor = Colors.Foreground.primary
+        tableView.separatorColor = Colors.Background.tertiary
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 18
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.estimatedSectionFooterHeight = 18
     }
 
     // MARK: UITableViewDataSource
@@ -51,13 +61,18 @@ class HelpPageFAQListTableViewController: BaseTableViewController {
     // MARK: UITableViewDelegate
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Cell.QuestionCell, for: indexPath)
+        let cell: CustomDisclosureTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
         
         guard indexPath.section < faqList.sections.count, indexPath.row < faqList.sections[indexPath.section].faqs.count else {
             return cell
         }
         
         cell.textLabel?.text = faqList.sections[indexPath.section].faqs[indexPath.row].question
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontForContentSizeCategory = true
+        cell.backgroundColor = Colors.Background.primary
+        cell.accessibilityTraits = [.button]
         
         return cell
     }
@@ -68,25 +83,16 @@ class HelpPageFAQListTableViewController: BaseTableViewController {
         guard indexPath.section < faqList.sections.count, indexPath.row < faqList.sections[indexPath.section].faqs.count else {
             return
         }
-        
-        currentIndex = indexPath
-        
-        performSegue(withIdentifier: Segue.OpenFAQHelpPage, sender: self)
-    }
-    
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let vc = segue.destination as? HelpPageFAQViewController else {
+        let storyboard = UIStoryboard(name: "Help", bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: HelpPageFAQListTableViewController.faqViewStoryboardIdentifier)
+
+        guard let faqViewController = viewController as? HelpPageFAQViewController else {
             return
         }
-        
-        guard let index = currentIndex else {
-            return
-        }
-        
-        vc.faq = faqList.sections[index.section].faqs[index.row]
+
+        faqViewController.faq = faqList.sections[indexPath.section].faqs[indexPath.row]
+        navigationController?.pushViewController(faqViewController, animated: true)
     }
 
 }

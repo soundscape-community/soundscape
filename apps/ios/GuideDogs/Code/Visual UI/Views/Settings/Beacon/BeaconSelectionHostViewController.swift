@@ -9,9 +9,12 @@
 import SwiftUI
 
 class BeaconSelectionHostViewController: UIHostingController<AnyView> {
+    init() {
+        super.init(rootView: AnyView(BeaconSelectionView()))
+    }
+
+    @available(*, unavailable, message: "Use init()")
     required init?(coder aDecoder: NSCoder) {
-        let view = BeaconSelectionView()
-        
-        super.init(coder: aDecoder, rootView: AnyView(view))
+        fatalError("Use init()")
     }
 }

@@ -59,7 +59,6 @@
                         <outlet property="largeBannerContainerView" destination="Fd2-uH-xFR" id="0XS-rW-ns6"/>
                         <segue destination="deu-ZT-efG" kind="show" identifier="OpenHelpPage" id="Bug-NN-z9X"/>
                         <segue destination="DA9-qa-U77" kind="show" identifier="OpenGenericHelpPage" id="Lzn-ri-89o"/>
-                        <segue destination="ID7-Dj-jiD" kind="show" identifier="OpenFAQListHelpPage" id="SaT-EE-iYk"/>
                         <segue destination="uNA-Wd-4g7" kind="show" identifier="markerTutorial" id="uyY-1c-12g"/>
                         <segue destination="D2X-Oa-hFN" kind="show" identifier="destinationTutorial" id="LfE-yV-Mqc"/>
                         <segue destination="GdR-lA-crN" kind="show" identifier="showOfflineInfo" id="jNF-Is-uIz"/>
@@ -297,56 +296,10 @@
             </objects>
             <point key="canvasLocation" x="1319" y="-595"/>
         </scene>
-        <!--Frequently Asked Questions-->
-        <scene sceneID="yGU-eg-QjF">
-            <objects>
-                <tableViewController title="Frequently Asked Questions" id="ID7-Dj-jiD" customClass="HelpPageFAQListTableViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="7Vz-89-W9g">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="804"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" name="Background Base"/>
-                        <color key="tintColor" name="Foreground 1"/>
-                        <color key="separatorColor" name="Background 3"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="QuestionCell" textLabel="toJ-XF-oW2" style="IBUITableViewCellStyleDefault" id="nEw-lc-Q1V" customClass="CustomDisclosureTableViewCell" customModule="Soundscape" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="55.5" width="414" height="43.5"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nEw-lc-Q1V" id="agb-Eh-ecJ">
-                                    <rect key="frame" x="0.0" y="0.0" width="383.5" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Question?" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="toJ-XF-oW2">
-                                            <rect key="frame" x="20" y="0.0" width="355.5" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="highlightedColor" red="0.098039215690000001" green="0.098039215690000001" blue="0.14901960780000001" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" name="Background 1"/>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="ID7-Dj-jiD" id="GGq-Vh-hjs"/>
-                            <outlet property="delegate" destination="ID7-Dj-jiD" id="umg-0E-jEy"/>
-                        </connections>
-                    </tableView>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="localization" value="faq.title"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <segue destination="vsj-yu-qxK" kind="show" identifier="OpenFAQHelpPage" id="sg9-hs-NoQ"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Quw-BG-Xf8" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1318" y="858"/>
-        </scene>
         <!--FAQ Title-->
         <scene sceneID="k3m-OY-845">
             <objects>
-                <viewController title="FAQ Title" id="vsj-yu-qxK" customClass="HelpPageFAQViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="helpFAQPage" title="FAQ Title" id="vsj-yu-qxK" customClass="HelpPageFAQViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="tTn-jS-EFt"/>
                         <viewControllerLayoutGuide type="bottom" id="2N7-Xr-Jku"/>

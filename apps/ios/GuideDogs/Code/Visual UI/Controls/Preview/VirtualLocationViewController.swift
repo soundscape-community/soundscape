@@ -104,6 +104,14 @@ class VirtualLocationViewController: UIViewController {
             return .orientation
         }
     }
+
+    init() {
+        super.init(nibName: "VirtualLocationView", bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     // MARK: View Life Cycle
     
