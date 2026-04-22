@@ -18,6 +18,7 @@ extension Notification.Name {
     static let ttsVolumeChanged = Notification.Name("GDATTSVolumeChanged")
     static let otherVolumeChanged = Notification.Name("GDAOtherVolumeChanged")
     static let beaconGainChanged = Notification.Name("GDABeaconGainChanged")
+    static let beaconRingingAngleChanged = Notification.Name("GDABeaconRingingAngleChanged")
     
     static let previewIntersectionsIncludeUnnamedRoadsDidChange = Notification.Name("PreviewIntersectionsIncludeUnnamedRoadsDidChange")
 }
@@ -59,6 +60,7 @@ class SettingsContext {
         fileprivate static let markerSortStyle           = "GDAMarkerSortStyle"
         fileprivate static let leaveImmediateVicinityDistance = "GDALeaveImmediateVicinityDistance"
         fileprivate static let enterImmediateVicinityDistance = "GDAEnterImmediateVicinityDistance"
+        fileprivate static let beaconRingingAngle        =      "GDABeaconRingingAngle"
         
         fileprivate static let ttsGain = "GDATTSAudioGain"
         fileprivate static let beaconGain = "GDABeaconAudioGain"
@@ -111,7 +113,8 @@ class SettingsContext {
             Keys.audioSessionMixesWithOthers: true,
             Keys.markerSortStyle: SortStyle.distance.rawValue,
             Keys.leaveImmediateVicinityDistance: 30.0,
-            Keys.enterImmediateVicinityDistance: 15.0
+            Keys.enterImmediateVicinityDistance: 15.0,
+            Keys.beaconRingingAngle: 10.0
         ])
         
         resetLocaleIfNeeded()
@@ -410,6 +413,18 @@ class SettingsContext {
             userDefaults.set(newValue, forKey: Keys.enterImmediateVicinityDistance)
             // Ensure leave is always 15m greater than enter
             userDefaults.set(newValue + 15.0, forKey: Keys.leaveImmediateVicinityDistance)
+        }
+    }
+    
+    var beaconRingingAngle: Double {
+        get {
+            return userDefaults.double(forKey: Keys.beaconRingingAngle)
+        }
+        set {
+            let clamped = max(5.0, min(newValue, 20.0))
+            userDefaults.set(clamped, forKey: Keys.beaconRingingAngle)
+            
+            NotificationCenter.default.post(name: .beaconRingingAngleChanged, object: nil)
         }
     }
 }

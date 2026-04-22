@@ -515,6 +515,12 @@
 /* Title of a section in the beacon settings page where the user can select the distance threshold when a beacon automatically stops playing. */
 "beacon.settings.vicinity" = "Audio Mute Distance";
 
+/* Title of a section in the beacon settings page where the user can adjust the angular width of the 'ahead' sound. */
+"beacon.settings.ringing_angle" = "Ringing Sound Angle";
+
+/* Description for the Ringing Sound Angle setting explaining that it adjusts the width of the beacon's 'ahead' sound. */
+"beacon.settings.ringing_angle.explanation" = "Adjust the width of the area where the beacon audio is most intense (5° to 20°).";
+
 /* Title of a section in the beacon settings page where the user can select a style for their beacon. The various styles mainly differ in the sounds that are played for the beacon, though there are two styles that include some haptics as well. */
 "beacon.settings.style" = "Audio Styles";
 
