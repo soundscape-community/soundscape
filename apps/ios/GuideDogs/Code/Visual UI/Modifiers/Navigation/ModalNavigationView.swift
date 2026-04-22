@@ -39,6 +39,7 @@ struct ModalNavigationView: ViewModifier {
         NavigationView {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .navigationBarStyle(style: style)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
