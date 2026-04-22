@@ -59,6 +59,14 @@ class InteractiveBeaconViewModel: ObservableObject {
             
             self.updateCurrentValues()
         }))
+        
+        listeners.append(
+            NotificationCenter.default.publisher(for: .beaconRingingAngleChanged)
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in
+                    self?.updateCurrentValues()
+                }
+        )
     }
     
     deinit {
@@ -85,7 +93,9 @@ class InteractiveBeaconViewModel: ObservableObject {
         bearingToBeacon = heading.bearing(to: bearingToLocation)
         isBeaconInBounds = AppContext.shared.spatialDataContext.destinationManager.isBeaconInBounds
         
-        if bearingToBeacon >= 350.0 || bearingToBeacon <= 10.0 {
+        let angle = SettingsContext.shared.beaconRingingAngle
+        
+        if bearingToBeacon >= (360.0 - angle) || bearingToBeacon <= angle {
             beaconOrientation = .ahead
         } else if bearingToBeacon > 165.0 && bearingToBeacon < 195.0 {
             beaconOrientation = .behind
