@@ -54,11 +54,15 @@ extension DynamicAudioEngineAsset {
         }
     }
     
-    /// A default beacon asset selector for three regions (On Axis, Off Axis)
+    /// A default beacon asset selector for two regions (On Axis, Off Axis)
     ///
-    /// The two regions are defined as follows:
-    ///  * On Axis: Central 45 degrees, `(angle >= 337.5 || angle <= 22.5)`
-    ///  * Off Axis: Remaining window, `(angle <  337.5 && angle >  22.5)`
+    /// The regions are defined dynamically based on `beaconRingingAngle`:
+    ///  * On Axis: Central cone around POI direction,
+    ///    `(angle >= 360 - threshold || angle <= threshold)`
+    ///  * Off Axis: Remaining angular space
+    ///
+    /// - Note: `threshold` is configurable via SettingsContext and defines
+    ///         how precise the user must be to hear the "on-axis" sound.
     ///
     /// - Returns: An asset selector
     static func standardTwoRegionSelector() -> AssetSelector? {
@@ -76,24 +80,32 @@ extension DynamicAudioEngineAsset {
                 
                 let angle = userHeading.add(degrees: -poiBearing)
                 
-                // 45 degree window for the V1SensoryBeatOn sound
-                if angle >= 337.5 || angle <= 22.5 {
+                // Configurable angle (in degrees) defining the width of the forward (on-axis) region.
+                let threshold = SettingsContext.shared.beaconRingingAngle
+                
+                if angle >= (360.0 - threshold) || angle <= threshold {
                     return (assets[0], 1.0)
                 } else {
                     return (assets[1], 1.0)
                 }
             }
-            
             return nil
         }
     }
     
     /// A default beacon asset selector for three regions (A+, A, Behind)
     ///
-    /// The three regions are defined as follows:
-    ///  * A+: Central 30 degrees, `(angle >= 345 || angle <= 15)`
-    ///  * A: 110 degree windows to either side of A+, `(angle >= 235 && angle <= 345) || (angle >= 15 && angle <= 125)`
-    ///  * Behind: Remaining window, `(angle >  125 && angle <  235)`
+    /// The regions are defined dynamically using `beaconRingingAngle`:
+    ///  * A+ (On Axis): Central cone,
+    ///    `(angle >= 360 - threshold || angle <= threshold)`
+    ///
+    ///  * A (Near Axis): Side regions expanding from A+,
+    ///    `(angle >= 235 && angle <= 360 - threshold) || (angle >= threshold && angle <= 125)`
+    ///
+    ///  * Behind: Remaining angular space,
+    ///    `(angle > 125 && angle < 235)`
+    ///
+    /// - Note: Increasing `threshold` widens the A+ region and reduces precision.
     ///
     /// - Returns: An asset selector
     static func standardThreeRegionSelector() -> AssetSelector? {
@@ -105,32 +117,40 @@ extension DynamicAudioEngineAsset {
         
         return { input in
             if case .heading(let userHeading, let poiBearing) = input {
-                guard let userHeading = userHeading else {
-                    return (assets[2], 1.0)
-                }
-                
+                guard let userHeading = userHeading else { return (assets[2], 1.0) }
                 let angle = userHeading.add(degrees: -poiBearing)
                 
-                if angle >= 345 || angle <= 15 {
+                // Configurable angle (in degrees) defining the width of the forward (on-axis) region.
+                let threshold = SettingsContext.shared.beaconRingingAngle
+                if angle >= (360.0 - threshold) || angle <= threshold {
                     return (assets[0], 1.0)
-                } else if (angle >= 235 && angle <= 345) || (angle >= 15 && angle <= 125) {
+                } else if (angle >= 235 && angle <= (360.0 - threshold)) || (angle >= threshold && angle <= 125) {
                     return (assets[1], 1.0)
                 } else {
                     return (assets[2], 1.0)
                 }
             }
-            
             return nil
         }
     }
     
-    /// A default beacon asset selector for three regions (A+, A, B, Behind)
+    /// A default beacon asset selector for four regions (A+, A, B, Behind)
     ///
-    /// The two regions are defined as follows:
-    ///  * A+: Central 30 degrees, `(angle >= 345 || angle <= 15)`
-    ///  * A: 40 degree windows, `(angle >= 305 && angle <= 345) || (angle >= 15 && angle <= 55)`
-    ///  * B: 70 degree windows, `(angle >= 235 && angle <= 305) || (angle >= 55 && angle <= 125)`
-    ///  * Behind: Remaining window, `angle >  125 && angle <  235`
+    /// The regions are defined dynamically using `beaconRingingAngle`:
+    ///  * A+ (On Axis): Central cone,
+    ///    `(angle >= 360 - threshold || angle <= threshold)`
+    ///
+    ///  * A: Narrow side regions near the forward direction,
+    ///    `(angle >= 305 && angle <= 360 - threshold) || (angle >= threshold && angle <= 55)`
+    ///
+    ///  * B: Wider side regions,
+    ///    `(angle >= 235 && angle <= 305) || (angle >= 55 && angle <= 125)`
+    ///
+    ///  * Behind: Remaining angular space,
+    ///    `(angle > 125 && angle < 235)`
+    ///
+    /// - Note: `threshold` controls how wide the forward-facing region is.
+    ///         Larger values make the beacon easier to trigger but less precise.
     ///
     /// - Returns: An asset selector
     static func standardFourRegionSelector() -> AssetSelector? {
@@ -142,15 +162,14 @@ extension DynamicAudioEngineAsset {
         
         return { input in
             if case .heading(let userHeading, let poiBearing) = input {
-                guard let userHeading = userHeading else {
-                    return (assets[3], 1.0)
-                }
-                
+                guard let userHeading = userHeading else { return (assets[3], 1.0) }
                 let angle = userHeading.add(degrees: -poiBearing)
                 
-                if angle >= 345 || angle <= 15 {
+                // Configurable angle (in degrees) defining the width of the forward (on-axis) region.
+                let threshold = SettingsContext.shared.beaconRingingAngle
+                if angle >= (360.0 - threshold) || angle <= threshold {
                     return (assets[0], 1.0)
-                } else if (angle >= 305 && angle <= 345) || (angle >= 15 && angle <= 55) {
+                } else if (angle >= 305 && angle <= (360.0 - threshold)) || (angle >= threshold && angle <= 55) {
                     return (assets[1], 1.0)
                 } else if (angle >= 235 && angle <= 305) || (angle >= 55 && angle <= 125) {
                     return (assets[2], 1.0)
