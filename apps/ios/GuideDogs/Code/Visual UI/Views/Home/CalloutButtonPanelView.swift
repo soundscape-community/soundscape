@@ -46,6 +46,8 @@ final class CalloutButtonPanelModel: ObservableObject {
 
     @Published private(set) var activeAction: CalloutButtonPanelAction?
 
+    private var activeActionRequestID: UUID?
+
     private let logContext: String?
 
     init(logContext: String?) {
@@ -61,14 +63,18 @@ final class CalloutButtonPanelModel: ObservableObject {
             return
         }
 
+        let requestID = UUID()
+        activeActionRequestID = requestID
         activeAction = action
 
         let completion: (Bool) -> Void = { [weak self] _ in
             DispatchQueue.main.async {
-                guard self?.activeAction == action else {
+                guard self?.activeAction == action,
+                      self?.activeActionRequestID == requestID else {
                     return
                 }
 
+                self?.activeActionRequestID = nil
                 self?.activeAction = nil
             }
         }

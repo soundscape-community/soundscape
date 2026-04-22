@@ -33,8 +33,6 @@ extension UIBarButtonItem {
         configuration.baseForegroundColor = Colors.Foreground.primary ?? .white
         button.configuration = configuration
         button.addTarget(target, action: action, for: .touchUpInside)
-        button.accessibilityIdentifier = "BackButton"
-        button.accessibilityLabel = title
         button.sizeToFit()
 
         let item = UIBarButtonItem(customView: button)
