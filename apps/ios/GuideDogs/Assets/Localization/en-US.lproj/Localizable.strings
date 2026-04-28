@@ -1630,10 +1630,10 @@
 /* Button, Allow Callouts */
 "callouts.allow_callouts" = "Allow Callouts";
 
-/* Toggle label for disabling and enabling sound effects*/
+/* Toggle label for disabling and enabling sound effects */
 "callouts.sound_effects" = "Sound Effects";
 
-/* Toggle label for enabling/disabling callout sound effects*/
+/* Toggle label for enabling/disabling callout sound effects */
 "callouts.sound_effects.info" = "Sounds that play before callouts";
 
 /* Toggle label for enabling and disabling delays between callouts */
