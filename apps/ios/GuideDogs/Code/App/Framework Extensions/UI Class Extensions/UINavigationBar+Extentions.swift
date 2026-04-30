@@ -37,6 +37,7 @@ extension UINavigationBar {
         appearance.buttonAppearance = buttonAppearance
         appearance.backButtonAppearance = buttonAppearance
         appearance.doneButtonAppearance = buttonAppearance
+        appearance.configureBackIndicator(foregroundColor: color)
         
         apply(appearance)
         
@@ -57,6 +58,7 @@ extension UINavigationBar {
         appearance.buttonAppearance = buttonAppearance
         appearance.backButtonAppearance = buttonAppearance
         appearance.doneButtonAppearance = buttonAppearance
+        appearance.configureBackIndicator(foregroundColor: color)
         
         apply(appearance)
         
@@ -76,7 +78,7 @@ extension UINavigationBar {
 
         return appearance
     }
-    
+
     private func apply(_ appearance: UINavigationBarAppearance) {
         // Apply the given appearance
         standardAppearance = appearance
@@ -94,4 +96,17 @@ extension UINavigationBar {
         }
     }
     
+}
+
+private extension UINavigationBarAppearance {
+
+    func configureBackIndicator(foregroundColor: UIColor) {
+        guard #available(iOS 26.0, *),
+              let image = UIImage(systemName: "chevron.left")?.withTintColor(foregroundColor, renderingMode: .alwaysOriginal) else {
+            return
+        }
+
+        setBackIndicatorImage(image, transitionMaskImage: image)
+    }
+
 }

@@ -530,6 +530,7 @@
 		91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */ = {isa = PBXBuildFile; productRef = 91172A722AD8D56D00E6E8E9 /* CoreGPX */; };
 		914BAAF32AD745E400CB2171 /* DestinationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */; };
 		914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */; };
+		914BAB012AD7490100CB2171 /* NavigationControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAB002AD7490100CB2171 /* NavigationControllerTest.swift */; };
 		915FF9F62ADE4BAF002B3690 /* AuthoredActivityContentTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915FF9F42ADE3F91002B3690 /* AuthoredActivityContentTest.swift */; };
 		91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */; };
 		91C82ABE2A6B08500086D126 /* RouteGuidanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */; };
@@ -1318,6 +1319,7 @@
 		20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaviLensWakeOnForegroundTest.swift; sourceTree = "<group>"; };
 		914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DestinationManagerTest.swift; sourceTree = "<group>"; };
 		914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngineTest.swift; sourceTree = "<group>"; };
+		914BAB002AD7490100CB2171 /* NavigationControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControllerTest.swift; sourceTree = "<group>"; };
 		914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtilsTest.swift; sourceTree = "<group>"; };
 		915FF9F42ADE3F91002B3690 /* AuthoredActivityContentTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthoredActivityContentTest.swift; sourceTree = "<group>"; };
@@ -3523,6 +3525,7 @@
 			children = (
 				914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */,
 				20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */,
+				914BAB002AD7490100CB2171 /* NavigationControllerTest.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -4721,6 +4724,7 @@
 				91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */,
 				91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */,
 				666CA3EAAA904E6EBFA10A53 /* NaviLensWakeOnForegroundTest.swift in Sources */,
+				914BAB012AD7490100CB2171 /* NavigationControllerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
