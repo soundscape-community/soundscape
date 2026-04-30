@@ -38,51 +38,6 @@ class NavigationController: UINavigationController {
         notificationController.navigationController(self, willShow: first, animated: true)
     }
 
-    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        configureNavigationButton(for: viewController, shouldShowBackButton: viewControllers.isEmpty == false)
-
-        super.pushViewController(viewController, animated: animated)
-
-        DispatchQueue.main.async { [weak self, weak viewController] in
-            guard let self, let viewController else {
-                return
-            }
-
-            self.configureNavigationButton(for: viewController, shouldShowBackButton: self.viewControllers.first !== viewController)
-        }
-    }
-
-    override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
-        for (index, viewController) in viewControllers.enumerated() {
-            configureNavigationButton(for: viewController, shouldShowBackButton: index > 0)
-        }
-
-        super.setViewControllers(viewControllers, animated: animated)
-    }
-
-    private func configureNavigationButton(for viewController: UIViewController, shouldShowBackButton: Bool) {
-        guard #available(iOS 26.0, *) else {
-            return
-        }
-
-        if shouldShowBackButton {
-            viewController.navigationItem.hidesBackButton = true
-            viewController.navigationItem.leftItemsSupplementBackButton = false
-        }
-
-        if viewController.navigationItem.leftBarButtonItem == nil,
-           shouldShowBackButton,
-           let backButton = UIBarButtonItem.soundscapeBackButton(target: self, action: #selector(popCurrentViewController)) {
-            viewController.navigationItem.leftBarButtonItem = backButton
-        } else {
-            viewController.navigationItem.leftBarButtonItem?.configureSoundscapeNavigationButton()
-        }
-    }
-
-    @objc private func popCurrentViewController() {
-        popViewController(animated: true)
-    }
-    
 }
 
 extension NavigationController {

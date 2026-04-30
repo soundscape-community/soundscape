@@ -190,6 +190,16 @@ private extension UINavigationBarAppearance {
         self.buttonAppearance = buttonAppearance
         backButtonAppearance = buttonAppearance
         doneButtonAppearance = buttonAppearance
+        configureBackIndicator(foregroundColor: style.foregroundUIColor)
+    }
+
+    func configureBackIndicator(foregroundColor: UIColor) {
+        guard #available(iOS 26.0, *),
+              let image = UIImage(systemName: "chevron.left")?.withTintColor(foregroundColor, renderingMode: .alwaysOriginal) else {
+            return
+        }
+
+        setBackIndicatorImage(image, transitionMaskImage: image)
     }
     
 }
