@@ -527,11 +527,11 @@
 
 
 /*  */
-"voice.voice_cell.selected.acc_hint" = "Esta voz está seleccionada actualmente. Desliza rápidamente hacia arriba o hacia abajo para probarla.";
+"voice.voice_cell.selected.acc_hint" = "Esta voz está seleccionada actualmente. Desliza rápidamente hacia arriba o hacia abajo para obtener una vista previa.";
 
 
 /*  */
-"voice.voice_cell.use.acc_hint" = "Pulsa dos veces para usar esta voz. Desliza rápidamente hacia arriba o hacia abajo para probarla.";
+"voice.voice_cell.use.acc_hint" = "Pulsa dos veces para usar esta voz. Desliza rápidamente hacia arriba o hacia abajo para obtener una vista previa.";
 
 
 /*  */
@@ -999,7 +999,7 @@
 
 
 /*  */
-"preview.tutorial.content.3" = "En cada cruce, puedes usar el teléfono de nuevo para elegir qué carretera recorrer, o puedes explorar tu entorno inmediato con los botones habituales de Soundscape de la parte inferior de la pantalla. Puedes pulsar en \"Explorar cerca\" para iniciar la señal de audio en cualquier punto de interés, cambiar tu ubicación o simplemente explorar el área con mayor detalle.";
+"preview.tutorial.content.3" = "En cada cruce, puedes volver a usar el teléfono para elegir qué carretera recorrer, o puedes explorar tu entorno inmediato con los botones habituales de Soundscape de la parte inferior de la pantalla. Puedes pulsar en \"Explorar cerca\" para iniciar la señal de audio en cualquier punto de interés, cambiar tu ubicación o simplemente explorar el área con mayor detalle.";
 
 
 /*  */
@@ -1559,7 +1559,7 @@
 
 
 /*  */
-"url_resource.alert.route.import_existing.message" = "¿Deseas reemplazarla? Al sustituir esta ruta, también se reemplazarán los marcadores usados en esta ruta.";
+"url_resource.alert.route.import_existing.message" = "¿Deseas reemplazarla? Al sustituir esta ruta también se reemplazarán los marcadores usados en esta ruta.";
 
 
 /*  */
@@ -2059,7 +2059,7 @@
 
 
 /*  */
-"directions.unknown_address" = "La dirección es desconocida";
+"directions.unknown_address" = "Dirección desconocida";
 
 
 /*  */
@@ -2762,11 +2762,11 @@
 
 
 /*  */
-"devices.connect_headset.calibrate" = "Los auriculares tienen que calibrarse. Quítatelos y sacúdelos con suavidad en todas las direcciones durante unos 10 segundos, y vuelve a colocártelos. Se debe repetir si el timbre de calibración sigue sonando.";
+"devices.connect_headset.calibrate" = "Los auriculares tienen que calibrarse. Quítatelos y sacúdelos con suavidad en todas las direcciones durante unos 10 segundos, y vuelve a colocártelos. Deberás repetir esta operación si el timbre de calibración sigue sonando.";
 
 
 /*  */
-"devices.connect_headset.calibrate.in_ear" = "Los auriculares tienen que calibrarse. Sacude la cabeza con suavidad en todas las direcciones durante unos 10 segundos. Se debe repetir si el timbre de calibración sigue sonando.";
+"devices.connect_headset.calibrate.in_ear" = "Los auriculares tienen que calibrarse. Sacude la cabeza con suavidad en todas las direcciones durante unos 10 segundos. Deberás repetir esta operación si el timbre de calibración sigue sonando.";
 
 
 /*  */
@@ -2802,7 +2802,7 @@
 
 
 /*  */
-"devices.forget_headset.prompt.explanation" = "Esto desconectará los auriculares de Soundscape. Puedes conectarte a Soundscape de nuevo en el futuro desde aquí.";
+"devices.forget_headset.prompt.explanation" = "Esto desconectará los auriculares de Soundscape. Puedes volver a conectarte a Soundscape Más adelante desde aquí.";
 
 
 /*  */
@@ -2890,7 +2890,7 @@
 
 
 /*  */
-"behavior.experiences.reset.prompt" = "Restablecer esta actividad eliminará tu progreso actual y te permitirá iniciar la actividad de nuevo. También puedes buscar actualizaciones. De esta manera, se descargará información actualizada para esta actividad si hay actualizaciones disponibles.";
+"behavior.experiences.reset.prompt" = "Al restablecer esta actividad se eliminará tu progreso actual y te permitirá iniciar la actividad de nuevo. También puedes buscar actualizaciones. De esta manera, se descargará información actualizada para esta actividad si hay actualizaciones disponibles.";
 
 
 /*  */
@@ -3174,7 +3174,7 @@
 
 
 /*  */
-"tutorial.beacons.text.IntroPart1" = "Cuando estableces una señal en una ubicación, Soundscape reproducirá un sonido procedente de la dirección de esa ubicación. Este tutorial te guiará por el proceso de establecimiento de una señal y cómo usarla.";
+"tutorial.beacons.text.IntroPart1" = "Al establecer una señal en una ubicación, Soundscape reproducirá un sonido proveniente de la dirección de esta ubicación. Este tutorial te guiará por el establecimiento de una señal y cómo usarla.";
 
 
 /*  */
@@ -3202,7 +3202,7 @@
 
 
 /*  */
-"tutorial.beacons.text.HoldingPhone.great" = "¡Excelente! Mantener el teléfono en posición horizontal de esta manera solo es necesario cuando no te mueves. Mientras caminas, puedes colocar el teléfono en un bolso o un bolsillo al que puedas tener fácil acceso.";
+"tutorial.beacons.text.HoldingPhone.great" = "¡Excelente! Mantener el teléfono en posición horizontal de esta manera solo es necesario cuando no te mueves. Mientras camines, puedes colocar el teléfono en un bolso o un bolsillo al que puedas tener fácil acceso.";
 
 
 /*  */
@@ -3250,7 +3250,7 @@
 
 
 /*  */
-"tutorial.beacons.text.AutomaticCallout" = "Conforme avances en tu recorrido, Soundscape irá actualizando ocasionalmente la distancia hasta el lugar marcado por la señal con un aviso como éste.";
+"tutorial.beacons.text.AutomaticCallout" = "Conforme avances en tu recorrido, Soundscape irá actualizando ocasionalmente la distancia hasta la ubicación marcada por la señal con un aviso como este.";
 
 
 /*  */
@@ -3298,7 +3298,7 @@
 
 
 /*  */
-"help.offline.page_title" = "¿Por qué Soundscape está funcionando sin conexión?";
+"help.offline.page_title" = "¿Por qué está Soundscape funcionando sin conexión?";
 
 
 /*  */
@@ -3422,11 +3422,11 @@
 
 
 /*  */
-"first_launch.welcome_audio_text" = "¡Bienvenido! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de caminos, cruces y lugares cuando te acercas. Pulsa el botón Siguiente para comenzar.";
+"first_launch.welcome_audio_text" = "¡Bienvenido! Soundscape te ayuda a estar al tanto de dónde estás y hacia dónde vas, usando una guía de audio única y avisando de carreteras, cruces y lugares cuando te acercas a ellos. Pulsa el botón Siguiente para comenzar.";
 
 
 /*  */
-"first_launch.permission_required" = "Este permiso es obligatorio";
+"first_launch.permission_required" = "Este permiso es obligatorio.";
 
 
 /*  */
@@ -4436,7 +4436,7 @@
 "help.using_headsets.bose_frames.when" = "Puedes usar Bose Frames en cualquier momento con Soundscape. El uso de Bose Frames te proporciona un audio de alta calidad que no dificulta la audición ambiental y te permite tener una experiencia mayor de manos libres.";
 "help.using_headsets.bose_frames.how.3" = "<b>Uso de los controles multimedia en los auriculares</b>:<br/> cuando los controles multimedia estén habilitados en la configuración de Soundscape, podrás usarlos en las Bose Frames para silenciar o reactivar la señal, avisar de tu ubicación o repetir el último aviso de llamada. Para obtener más información, ve la sección de ayuda \"Uso de controles multimedia\".";
 "help.using_headsets.bose_frames.how.1" = "<b>Conexión de un dispositivo</b>:<br/> ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
-"help.using_headsets.bose_frames.how.4" = "<b>Solución de problemas de los auriculares</b>:<br/> si tienes problemas para conectar las Bose Frames a Soundscape, asegúrate de que son de uno de los modelos compatibles: Altos o Rondos. Si son uno de estos modelos, asegúrate de que las Frames aparecen en la aplicación Bose Connect. Si se muestran y sigues teniendo problemas con la conexión, intenta desemparejar y volver a emparejar los auriculares a través del menú Bluetooth del teléfono.<br>Nos encantaría escuchar tus comentarios sobre la compatibilidad con las Bose Frames. Puedes contactarnos eligiendo la opción \"Enviar comentarios\" en el menú.";
+"help.using_headsets.bose_frames.how.4" = "<b>Solución de problemas de los auriculares</b>:<br/> si tienes problemas para conectar las Bose Frames a Soundscape, asegúrate de que son de uno de los modelos compatibles: Alto o Rondo. Si son uno de estos modelos, asegúrate de que las Frames aparecen en la aplicación Bose Connect. Si se muestran y sigues teniendo problemas con la conexión, intenta desemparejar y volver a emparejar los auriculares a través del menú Bluetooth del teléfono.<br>Nos encantaría escuchar tus comentarios sobre la compatibilidad con las Bose Frames. Puedes contactarnos eligiendo la opción \"Enviar comentarios\" en el menú.";
 "help.using_headsets.bose_frames.how.2" = "<b>Calibración de los auriculares</b>:<br/> tus Bose Frames tendrán que calibrarse para saber con precisión hacia dónde estás mirando. cada vez que las conectes a Soundscape, se te informará que se las necesitan calibrar mediante un timbre de audio. Para calibrar las Bose Frames, sigue las instrucciones que aparecen en la pantalla. Cuando el timbre deje de sonar, las Bose Frames estarán calibradas. Soundscape seguirá ahora la dirección de tu cabeza para que no tengas que llevar el teléfono en la mano. Puedes repetir esta calibración en cualquier momento, incluso si no está sonando el timbre, si crees que la precisión del audio espacial no es buena.";
 "help.using_headsets.bose_frames.what" = "Soundscape admite audio espacial con seguimiento de cabeza al usar las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames le indicarán a Soundscape la dirección en la que está orientada tu cabeza. Esto le ayuda a Soundscape a mejorar tu experiencia de audio, haciéndola más natural a medida que te mueves por el mundo. Cuando usas Soundscape con las Bose Frames conectadas, no es necesario sostener el teléfono para que la aplicación funcione bien.";
 "whats_new.1_3_0.0.title" = "Compatibilidad con Bose Frames";
