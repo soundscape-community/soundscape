@@ -52,7 +52,7 @@ extension HomeViewController: RemoteCommandManagerDelegate {
     }
     
     private func handleMyLocation() -> Bool {
-        NotificationCenter.default.post(name: Notification.Name.didToggleLocate, object: self)
+        performCalloutButtonAction(.locate, sender: self)
         return true
     }
     
@@ -89,7 +89,7 @@ extension HomeViewController: RemoteCommandManagerDelegate {
     }
     
     private func handleAroundMe() -> Bool {
-        NotificationCenter.default.post(name: Notification.Name.didToggleOrientate, object: self)
+        performCalloutButtonAction(.aroundMe, sender: self)
         return true
     }
 }

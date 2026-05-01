@@ -193,9 +193,6 @@
                                     <constraint firstAttribute="height" priority="750" constant="141" id="0TV-gM-vwc"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="141" id="WSK-ot-nIM"/>
                                 </constraints>
-                                <connections>
-                                    <segue destination="ulv-7k-6QZ" kind="embed" id="XW3-Tk-73Y"/>
-                                </connections>
                             </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1tq-V7-uX0" userLabel="Activity Indiactor">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -253,6 +250,7 @@
                     <connections>
                         <outlet property="activityIndicatorContainerView" destination="1tq-V7-uX0" id="abi-X4-Oeh"/>
                         <outlet property="calloutPanelContainerHeightConstraint" destination="0TV-gM-vwc" id="CjC-ad-Wtb"/>
+                        <outlet property="calloutPanelContainerView" destination="hPc-KV-50q" id="8uT-g4-VPQ"/>
                         <outlet property="cardContainerViewHeightConstraint" destination="OUc-EB-xrJ" id="lab-BY-eiF"/>
                         <outlet property="exitBarButtonItem" destination="vG0-IX-1Oi" id="PQZ-cJ-ztq"/>
                         <outlet property="largeBannerContainerHeightConstraint" destination="V6q-lD-NSt" id="Uko-7G-Q05"/>
@@ -287,14 +285,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cRX-G3-nYN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="876" y="163"/>
-        </scene>
-        <!--CalloutButtonPanel-->
-        <scene sceneID="Mnq-C4-hzJ">
-            <objects>
-                <viewControllerPlaceholder storyboardName="main" referencedIdentifier="CalloutButtonPanel" id="ulv-7k-6QZ" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ws1-h3-mbl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="150" y="529"/>
         </scene>
         <!--Preview Tutorial View Controller-->
         <scene sceneID="PAK-WM-GTa">

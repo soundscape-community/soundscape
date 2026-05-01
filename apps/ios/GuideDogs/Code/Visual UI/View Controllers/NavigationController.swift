@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -36,7 +37,7 @@ class NavigationController: UINavigationController {
         // already been loaded, then manually notify the notification controller
         notificationController.navigationController(self, willShow: first, animated: true)
     }
-    
+
 }
 
 extension NavigationController {

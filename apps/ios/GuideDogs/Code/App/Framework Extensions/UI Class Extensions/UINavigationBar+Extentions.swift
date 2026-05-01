@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -26,8 +27,7 @@ extension UINavigationBar {
     
     private func configureDefaultAppearance() {
         let color = Colors.Foreground.primary ?? UIColor.white
-        let buttonAppearance = UIBarButtonItemAppearance()
-        buttonAppearance.normal.titleTextAttributes = [.foregroundColor: color]
+        let buttonAppearance = UIBarButtonItemAppearance.soundscapeNavigationAppearance(foregroundColor: color)
         
         let appearance = UINavigationBarAppearance()
         
@@ -35,16 +35,20 @@ extension UINavigationBar {
         appearance.backgroundColor = Colors.Background.primary
         appearance.titleTextAttributes = [.foregroundColor: color]
         appearance.buttonAppearance = buttonAppearance
+        appearance.backButtonAppearance = buttonAppearance
+        appearance.doneButtonAppearance = buttonAppearance
+        appearance.configureSoundscapeBackIndicator(foregroundColor: color)
         
         apply(appearance)
         
         tintColor = color
+        barTintColor = Colors.Background.primary
+        isTranslucent = false
     }
     
     private func configureTransparentAppearance() {
         let color = Colors.Foreground.primary ?? UIColor.white
-        let buttonAppearance = UIBarButtonItemAppearance()
-        buttonAppearance.normal.titleTextAttributes = [.foregroundColor: color]
+        let buttonAppearance = UIBarButtonItemAppearance.soundscapeNavigationAppearance(foregroundColor: color)
         
         let appearance = UINavigationBarAppearance()
         
@@ -52,20 +56,61 @@ extension UINavigationBar {
         appearance.backgroundColor = .clear
         appearance.titleTextAttributes = [.foregroundColor: color]
         appearance.buttonAppearance = buttonAppearance
+        appearance.backButtonAppearance = buttonAppearance
+        appearance.doneButtonAppearance = buttonAppearance
+        appearance.configureSoundscapeBackIndicator(foregroundColor: color)
         
         apply(appearance)
         
         tintColor = color
+        barTintColor = .clear
+        isTranslucent = true
     }
-    
+
     private func apply(_ appearance: UINavigationBarAppearance) {
         // Apply the given appearance
         standardAppearance = appearance
         scrollEdgeAppearance = appearance
         compactAppearance = appearance
+        compactScrollEdgeAppearance = appearance
         
         // Set the back button
-        items?.forEach({ $0.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem })
+        items?.forEach {
+            $0.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
+            $0.leftBarButtonItem?.configureSoundscapeNavigationButton()
+            $0.rightBarButtonItem?.configureSoundscapeNavigationButton()
+            $0.leftBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton() }
+            $0.rightBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton() }
+        }
     }
     
+}
+
+extension UINavigationBarAppearance {
+
+    func configureSoundscapeBackIndicator(foregroundColor: UIColor) {
+        guard #available(iOS 26.0, *),
+              let image = UIImage(systemName: "chevron.left")?.withTintColor(foregroundColor, renderingMode: .alwaysOriginal) else {
+            return
+        }
+
+        setBackIndicatorImage(image, transitionMaskImage: image)
+    }
+
+}
+
+extension UIBarButtonItemAppearance {
+
+    static func soundscapeNavigationAppearance(foregroundColor: UIColor) -> UIBarButtonItemAppearance {
+        let appearance = UIBarButtonItemAppearance()
+        let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: foregroundColor]
+
+        appearance.normal.titleTextAttributes = attributes
+        appearance.highlighted.titleTextAttributes = attributes
+        appearance.focused.titleTextAttributes = attributes
+        appearance.disabled.titleTextAttributes = [.foregroundColor: foregroundColor.withAlphaComponent(0.35)]
+
+        return appearance
+    }
+
 }

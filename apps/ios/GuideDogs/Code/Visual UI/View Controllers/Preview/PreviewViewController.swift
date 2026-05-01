@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -28,6 +29,7 @@ class PreviewViewController: UIViewController {
     @IBOutlet weak var activityIndicatorContainerView: UIView!
     @IBOutlet weak var tutorialContainerView: UIView!
     @IBOutlet weak var exitBarButtonItem: UIBarButtonItem!
+    @IBOutlet weak var calloutPanelContainerView: UIView!
     @IBOutlet var calloutPanelContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerViewHeightConstraint: NSLayoutConstraint!
     var roadToggleButton: UIBarButtonItem!
@@ -35,7 +37,7 @@ class PreviewViewController: UIViewController {
     // MARK: Properties
     
     private var virtualLocationViewController: VirtualLocationViewController?
-    private weak var calloutButtonViewController: CalloutButtonPanelViewController?
+    private weak var calloutButtonViewController: CalloutButtonPanelHostingViewController?
     private weak var activityIndicatorViewController: PreviewActivityIndicatorViewController?
     private var isActivatedAndStartedSubscriber: AnyCancellable?
     private var isStoppedAndDeactivatedSubscriber: AnyCancellable?
@@ -81,6 +83,8 @@ class PreviewViewController: UIViewController {
         super.viewDidLoad()
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
+
+        configureCalloutButtonPanelView()
         
         // Initialize the road toggle button (this handles initial creation - all further updates are
         // handled by `configureToggleButton()`
@@ -173,9 +177,6 @@ class PreviewViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let viewController = segue.destination as? PreviewTutorialViewController {
             viewController.delegate = self
-        } else if let vc = segue.destination as? CalloutButtonPanelViewController {
-            calloutButtonViewController = vc
-            calloutButtonViewController?.logContext = "preview"
         } else if let vc = segue.destination as? SearchTableViewController {
             vc.logContext = "preview"
             vc.onDismissPreviewHandler = onDismissHandler
@@ -201,6 +202,24 @@ class PreviewViewController: UIViewController {
             setOverrideTraitCollection(nil, forChild: child)
         }
     }
+
+    private func configureCalloutButtonPanelView() {
+        let viewController = CalloutButtonPanelHostingViewController(logContext: "preview")
+
+        addChild(viewController)
+        calloutPanelContainerView.addSubview(viewController.view)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            viewController.view.leadingAnchor.constraint(equalTo: calloutPanelContainerView.leadingAnchor),
+            viewController.view.trailingAnchor.constraint(equalTo: calloutPanelContainerView.trailingAnchor),
+            viewController.view.topAnchor.constraint(equalTo: calloutPanelContainerView.topAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: calloutPanelContainerView.bottomAnchor)
+        ])
+
+        viewController.didMove(toParent: self)
+        calloutButtonViewController = viewController
+    }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
         super.preferredContentSizeDidChange(forChildContentContainer: container)
@@ -209,7 +228,7 @@ class PreviewViewController: UIViewController {
             virtualLocationHeightConstraint.constant = container.preferredContentSize.height
         }
         
-        if container is CalloutButtonPanelViewController {
+        if container is CalloutButtonPanelHostingViewController {
             calloutPanelContainerHeightConstraint.constant = container.preferredContentSize.height
         }
         
@@ -407,6 +426,7 @@ class PreviewViewController: UIViewController {
             self.navigationController?.popToViewController(self, animated: true)
         }
         
+        navigationController?.navigationBar.configureAppearance(for: isHidden ? .transparentLightTitle : .default)
         configureContainerView(activityIndicatorContainerView, isHidden: isHidden, navigationBarIsHidden: false, roadToggleItemIsHidden: !isHidden)
     }
     
@@ -490,15 +510,12 @@ class PreviewViewController: UIViewController {
         
         GDLogAppInfo("Continuing user action: \(userAction.rawValue) (street preview)")
         
+        if let action = CalloutButtonPanelAction(userAction: userAction) {
+            calloutButtonViewController?.perform(action, sender: notification.object as AnyObject?)
+            return
+        }
+
         switch userAction {
-        case .myLocation:
-            calloutButtonViewController?.handleDidToggleLocateNotification(notification)
-        case .aroundMe:
-            calloutButtonViewController?.handleDidToggleOrientateNotification(notification)
-        case .aheadOfMe:
-            calloutButtonViewController?.handleDidToggleLookAheadNotification(notification)
-        case .nearbyMarkers:
-            calloutButtonViewController?.handleDidToggleMarkedPointsNotification(notification)
         case .search:
             self.performSegue(withIdentifier: Segue.showPOISelection, sender: userAction)
         case .saveMarker:
@@ -506,6 +523,8 @@ class PreviewViewController: UIViewController {
             break
         case .streetPreview:
             // Already in street preview
+            break
+        case .myLocation, .aroundMe, .aheadOfMe, .nearbyMarkers:
             break
         }
     }

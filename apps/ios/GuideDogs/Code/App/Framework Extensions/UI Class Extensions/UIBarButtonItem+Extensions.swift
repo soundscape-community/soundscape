@@ -3,15 +3,23 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import Foundation
+import UIKit
 
 extension UIBarButtonItem {
     
     static var defaultBackBarButtonItem: UIBarButtonItem {
-        return UIBarButtonItem(title: GDLocalizedString("ui.back_button.title"), style: .plain, target: nil, action: nil)
+        UIBarButtonItem(title: GDLocalizedString("ui.back_button.title"), style: .plain, target: nil, action: nil)
+    }
+
+    func configureSoundscapeNavigationButton() {
+        if #available(iOS 26.0, *) {
+            hidesSharedBackground = true
+            sharesBackground = false
+        }
     }
     
 }

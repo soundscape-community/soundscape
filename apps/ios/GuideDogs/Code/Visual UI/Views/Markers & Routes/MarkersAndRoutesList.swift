@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -92,12 +93,6 @@ struct MarkersAndRoutesList: View {
                                           for: .selected)
         appearance.setTitleTextAttributes([.foregroundColor: Colors.Foreground.primary!],
                                           for: .normal)
-        
-        let proxy = UINavigationBar.appearance()
-        proxy.configureAppearance(for: .default)
-        proxy.standardAppearance.shadowColor = .clear
-        proxy.scrollEdgeAppearance?.shadowColor = .clear
-        proxy.compactAppearance?.shadowColor = .clear
     }
     
     var body: some View {
