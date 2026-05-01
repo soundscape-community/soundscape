@@ -27,7 +27,7 @@ extension UINavigationBar {
     
     private func configureDefaultAppearance() {
         let color = Colors.Foreground.primary ?? UIColor.white
-        let buttonAppearance = makeButtonAppearance(foregroundColor: color)
+        let buttonAppearance = UIBarButtonItemAppearance.soundscapeNavigationAppearance(foregroundColor: color)
         
         let appearance = UINavigationBarAppearance()
         
@@ -37,7 +37,7 @@ extension UINavigationBar {
         appearance.buttonAppearance = buttonAppearance
         appearance.backButtonAppearance = buttonAppearance
         appearance.doneButtonAppearance = buttonAppearance
-        appearance.configureBackIndicator(foregroundColor: color)
+        appearance.configureSoundscapeBackIndicator(foregroundColor: color)
         
         apply(appearance)
         
@@ -48,7 +48,7 @@ extension UINavigationBar {
     
     private func configureTransparentAppearance() {
         let color = Colors.Foreground.primary ?? UIColor.white
-        let buttonAppearance = makeButtonAppearance(foregroundColor: color)
+        let buttonAppearance = UIBarButtonItemAppearance.soundscapeNavigationAppearance(foregroundColor: color)
         
         let appearance = UINavigationBarAppearance()
         
@@ -58,25 +58,13 @@ extension UINavigationBar {
         appearance.buttonAppearance = buttonAppearance
         appearance.backButtonAppearance = buttonAppearance
         appearance.doneButtonAppearance = buttonAppearance
-        appearance.configureBackIndicator(foregroundColor: color)
+        appearance.configureSoundscapeBackIndicator(foregroundColor: color)
         
         apply(appearance)
         
         tintColor = color
         barTintColor = .clear
         isTranslucent = true
-    }
-
-    private func makeButtonAppearance(foregroundColor: UIColor) -> UIBarButtonItemAppearance {
-        let appearance = UIBarButtonItemAppearance()
-        let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: foregroundColor]
-
-        appearance.normal.titleTextAttributes = attributes
-        appearance.highlighted.titleTextAttributes = attributes
-        appearance.focused.titleTextAttributes = attributes
-        appearance.disabled.titleTextAttributes = [.foregroundColor: foregroundColor.withAlphaComponent(0.35)]
-
-        return appearance
     }
 
     private func apply(_ appearance: UINavigationBarAppearance) {
@@ -98,15 +86,31 @@ extension UINavigationBar {
     
 }
 
-private extension UINavigationBarAppearance {
+extension UINavigationBarAppearance {
 
-    func configureBackIndicator(foregroundColor: UIColor) {
+    func configureSoundscapeBackIndicator(foregroundColor: UIColor) {
         guard #available(iOS 26.0, *),
               let image = UIImage(systemName: "chevron.left")?.withTintColor(foregroundColor, renderingMode: .alwaysOriginal) else {
             return
         }
 
         setBackIndicatorImage(image, transitionMaskImage: image)
+    }
+
+}
+
+extension UIBarButtonItemAppearance {
+
+    static func soundscapeNavigationAppearance(foregroundColor: UIColor) -> UIBarButtonItemAppearance {
+        let appearance = UIBarButtonItemAppearance()
+        let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: foregroundColor]
+
+        appearance.normal.titleTextAttributes = attributes
+        appearance.highlighted.titleTextAttributes = attributes
+        appearance.focused.titleTextAttributes = attributes
+        appearance.disabled.titleTextAttributes = [.foregroundColor: foregroundColor.withAlphaComponent(0.35)]
+
+        return appearance
     }
 
 }

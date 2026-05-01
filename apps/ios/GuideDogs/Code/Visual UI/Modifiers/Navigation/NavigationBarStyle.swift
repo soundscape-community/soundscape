@@ -186,34 +186,11 @@ private extension UINavigationBarAppearance {
         backgroundColor = style.backgroundUIColor
         titleTextAttributes = [.foregroundColor: style.foregroundUIColor]
         
-        let buttonAppearance = UIBarButtonItemAppearance(foregroundColor: style.foregroundUIColor)
+        let buttonAppearance = UIBarButtonItemAppearance.soundscapeNavigationAppearance(foregroundColor: style.foregroundUIColor)
         self.buttonAppearance = buttonAppearance
         backButtonAppearance = buttonAppearance
         doneButtonAppearance = buttonAppearance
-        configureBackIndicator(foregroundColor: style.foregroundUIColor)
-    }
-
-    func configureBackIndicator(foregroundColor: UIColor) {
-        guard #available(iOS 26.0, *),
-              let image = UIImage(systemName: "chevron.left")?.withTintColor(foregroundColor, renderingMode: .alwaysOriginal) else {
-            return
-        }
-
-        setBackIndicatorImage(image, transitionMaskImage: image)
-    }
-    
-}
-
-private extension UIBarButtonItemAppearance {
-    
-    convenience init(foregroundColor: UIColor) {
-        self.init()
-        
-        let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: foregroundColor]
-        normal.titleTextAttributes = attributes
-        highlighted.titleTextAttributes = attributes
-        focused.titleTextAttributes = attributes
-        disabled.titleTextAttributes = [.foregroundColor: foregroundColor.withAlphaComponent(0.35)]
+        configureSoundscapeBackIndicator(foregroundColor: style.foregroundUIColor)
     }
     
 }
