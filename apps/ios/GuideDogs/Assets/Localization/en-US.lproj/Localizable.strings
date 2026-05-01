@@ -2905,7 +2905,7 @@
 "first_launch.welcome_audio_text" = "Welcome! Soundscape helps you stay aware of where you are and where you're going by using unique audio guidance and by calling out roads, intersections, and places as you approach them. Press the Next button to begin.";
 
 /* Notification, Permission is required */
-"first_launch.permission_required" = "This permission is required";
+"first_launch.permission_required" = "This permission is required.";
 
 /* Notification, Soundscap Language {NumberedPlaceholder="Soundscape"} */
 "first_launch.soundscape_language" = "Soundscape Language";
@@ -3209,7 +3209,7 @@
 "help.using_headsets.bose_frames.how.3" = "<b>Using the Media Controls on your Headphones</b>:<br/> When media controls are enabled in the Soundscape settings, you can use the media controls on your Bose Frames to mute or unmute the beacon, to call out your location or to repeat the last callout. For more information, see the \"Using Media Controls\" help section.";
 
 /* Trouble shooting information for Bose Frames */
-"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br/> If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - the Altos or Rondos. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>We would love to hear your feedback about the Bose Frames support. You can contact us by choosing the \"Send Feedback\" option in the menu.";
+"help.using_headsets.bose_frames.how.4" = "<b>Troubleshooting your headphones</b>:<br/> If you are having trouble connecting your Bose Frames to Soundscape, ensure they are one of the supported models - Alto or Rondo. If they are one of these models, then ensure that the Frames are appearing in the Bose Connect app. If they are showing and you are still having trouble with the connection, try unpairing and re-pairing the headphones via your phone's Bluetooth menu.<br>We would love to hear your feedback about the Bose Frames support. You can contact us by choosing the \"Send Feedback\" option in the menu.";
 
 //------------------------------------------------------------------------------
 // MARK: - OSM Tags
