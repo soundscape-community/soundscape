@@ -25,7 +25,7 @@ struct IntersectionCallout: CalloutProtocol {
         return "intersection"
     }
     
-    let includePrefixSound = true
+    let includePrefixSound: Bool
     
     var prefixSound: Sound? {
         return GlyphSound(SuperCategory.intersections.glyph)
@@ -38,11 +38,12 @@ struct IntersectionCallout: CalloutProtocol {
         return SpatialDataCache.intersectionByKey(key)
     }
     
-    init(_ calloutOrigin: CalloutOrigin, _ intersectionKey: String, _ isRoundabout: Bool = false, _ userHeading: CLLocationDirection) {
+    init(_ calloutOrigin: CalloutOrigin, _ intersectionKey: String, _ isRoundabout: Bool = false, _ userHeading: CLLocationDirection, includePrefixSound: Bool = true) {
         self.origin = calloutOrigin
         self.key = intersectionKey
         self.isRoundabout = isRoundabout
         self.heading = userHeading
+        self.includePrefixSound = includePrefixSound
     }
     
     func sounds(for location: CLLocation?, isRepeat: Bool, automotive: Bool = false) -> Sounds {
