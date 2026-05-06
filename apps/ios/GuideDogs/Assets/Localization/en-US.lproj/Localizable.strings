@@ -715,6 +715,18 @@
 /* Button, Launch NaviLens */
 "beacon.action.navilens" = "Launch NaviLens";
 
+/* Button, Open NaviLens */
+"recommender.navilens.open" = "Open NaviLens";
+
+/* VoiceOver hint for the button to open NaviLens */
+"recommender.navilens.open.hint" = "Double tap to open NaviLens";
+
+/* Button, Show Nearby NaviLens Codes */
+"recommender.navilens.show_nearby" = "Show Nearby NaviLens Codes";
+
+/* VoiceOver hint for the button to show nearby NaviLens codes */
+"recommender.navilens.show_nearby.hint" = "Double tap to show nearby NaviLens codes";
+
 /* Notification, Double tap to unmute or mute the audio beacon */
 "beacon.action.mute_unmute_beacon.acc_hint" = "Double tap to mute or unmute the audio beacon";
 

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -12,11 +13,13 @@ struct RecommenderContainerView<Content: View>: View {
     
     // MARK: Properties
     
+    let combinesAccessibilityChildren: Bool
     let content: () -> Content
     
     // MARK: Initialization
     
-    init(@ViewBuilder content: @escaping () -> Content) {
+    init(combinesAccessibilityChildren: Bool = true, @ViewBuilder content: @escaping () -> Content) {
+        self.combinesAccessibilityChildren = combinesAccessibilityChildren
         self.content = content
     }
     
@@ -40,7 +43,7 @@ struct RecommenderContainerView<Content: View>: View {
         .padding(.vertical, 12.0)
         .frame(maxWidth: .infinity, alignment: .leading)
         .linearGradientBackground(.blue)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: combinesAccessibilityChildren ? .combine : .contain)
     }
     
 }

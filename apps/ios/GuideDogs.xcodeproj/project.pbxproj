@@ -529,6 +529,7 @@
 		62EACA2626697F2E00DBDECC /* LocationDetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EACA2526697F2E00DBDECC /* LocationDetailAnnotationView.swift */; };
 		62EACA2B26697F4300DBDECC /* WaypointDetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EACA2A26697F4300DBDECC /* WaypointDetailAnnotationView.swift */; };
 		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
+		666CA3EAAA904E6EBFA10A53 /* NaviLensWakeOnForegroundTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */; };
 		91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */ = {isa = PBXBuildFile; productRef = 91172A722AD8D56D00E6E8E9 /* CoreGPX */; };
 		914BAAF32AD745E400CB2171 /* DestinationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */; };
 		914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */; };
@@ -1319,6 +1320,7 @@
 		62EACA2526697F2E00DBDECC /* LocationDetailAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailAnnotationView.swift; sourceTree = "<group>"; };
 		62EACA2A26697F4300DBDECC /* WaypointDetailAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointDetailAnnotationView.swift; sourceTree = "<group>"; };
 		6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExternalNavigationApps.swift; path = Code/App/ExternalNavigationApps.swift; sourceTree = "<group>"; };
+		20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaviLensWakeOnForegroundTest.swift; sourceTree = "<group>"; };
 		914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DestinationManagerTest.swift; sourceTree = "<group>"; };
 		914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngineTest.swift; sourceTree = "<group>"; };
 		914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3528,6 +3530,7 @@
 			isa = PBXGroup;
 			children = (
 				914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */,
+				20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -4727,6 +4730,7 @@
 				AC3A3EE22C40C9080061EEB8 /* NearbyTableFilterTest.swift in Sources */,
 				91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */,
 				91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */,
+				666CA3EAAA904E6EBFA10A53 /* NaviLensWakeOnForegroundTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
