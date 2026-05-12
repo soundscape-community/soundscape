@@ -31,6 +31,8 @@ final class NaviLensWakeOnForeground {
     }
 
     func sleepUntilForeground() -> Bool {
+        assertMainThread()
+
         guard appState() == .normal else {
             return false
         }
@@ -48,6 +50,8 @@ final class NaviLensWakeOnForeground {
     }
 
     func wakeUp() {
+        assertMainThread()
+
         guard cancelPendingWake() else {
             return
         }
@@ -57,6 +61,8 @@ final class NaviLensWakeOnForeground {
 
     @discardableResult
     private func cancelPendingWake() -> Bool {
+        assertMainThread()
+
         guard let observer = appDidBecomeActiveObserver else {
             return false
         }
@@ -64,6 +70,10 @@ final class NaviLensWakeOnForeground {
         notificationCenter.removeObserver(observer)
         appDidBecomeActiveObserver = nil
         return true
+    }
+
+    private func assertMainThread() {
+        assert(Thread.isMainThread, "NaviLensWakeOnForeground must be used on the main thread")
     }
 }
 

@@ -59,6 +59,8 @@ struct NavilensRecommenderView: View {
         let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
 
         guard let viewController = storyboard.instantiateViewController(identifier: "NearbyTableViewController") as? NearbyTableViewController else {
+            GDLogAppError("Failed to instantiate NearbyTableViewController from POITable storyboard")
+            assertionFailure("Failed to instantiate NearbyTableViewController from POITable storyboard")
             return
         }
 
