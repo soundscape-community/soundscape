@@ -62,9 +62,9 @@ class NavilensRecommender: Recommender {
             return
         }
         
-        // Search for NaviLens-enabled POIs within 30 meters of given location
+        // Search for NaviLens-enabled POIs within 100 meters of given location
         let navilensOnly = Filter.superCategories(orExpected: [SuperCategory.navilens])
-        let navilensInRangeDistance: CLLocationDistance = 30
+        let navilensInRangeDistance: CLLocationDistance = 100
 
         guard let dataView = AppContext.shared.spatialDataContext.getDataView(for: location, searchDistance: navilensInRangeDistance) else {
             return
@@ -79,7 +79,7 @@ class NavilensRecommender: Recommender {
         }
 
         if location.distance(from: first.centroidLocation) > navilensInRangeDistance {
-            // Nearest NaviLens-enabled POI is >30m away
+            // Nearest NaviLens-enabled POI is >100m away
             return
         }
 

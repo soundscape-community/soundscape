@@ -331,7 +331,7 @@
         <!--Nearby Places-->
         <scene sceneID="iL5-Rj-LfD">
             <objects>
-                <tableViewController title="Nearby Places" id="eWR-kU-gGf" customClass="NearbyTableViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="NearbyTableViewController" title="Nearby Places" id="eWR-kU-gGf" customClass="NearbyTableViewController" customModule="Soundscape" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="TN8-0o-Ade">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="208"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
