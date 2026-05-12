@@ -29,7 +29,7 @@ class PreviewViewController: UIViewController {
     @IBOutlet weak var activityIndicatorContainerView: UIView!
     @IBOutlet weak var tutorialContainerView: UIView!
     @IBOutlet weak var exitBarButtonItem: UIBarButtonItem!
-    @IBOutlet weak var calloutPanelContainerView: UIView!
+    @IBOutlet var calloutPanelContainerView: UIView!
     @IBOutlet var calloutPanelContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerViewHeightConstraint: NSLayoutConstraint!
     var roadToggleButton: UIBarButtonItem!

@@ -63,7 +63,7 @@ class HomeViewController: UIViewController {
     
     @IBOutlet var searchContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var calloutPanelContainerView: UIView!
+    @IBOutlet var calloutPanelContainerView: UIView!
     @IBOutlet var calloutPanelContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var cardContainerTopConstraints: [NSLayoutConstraint]!
     
