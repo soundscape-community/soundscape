@@ -272,18 +272,7 @@ class HomeViewController: UIViewController {
     }
     
     private func updateCalloutButtonTraits() {
-        guard let child = calloutButtonViewController else {
-            return
-        }
-        
-        // When the preferredContentSizeCategory is an accessibility size, we override the default behavior in the
-        // callout button panel because of the limited available space. We cap the maximum content size category to
-        // be `.accessibilityMedium`.
-        if traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
-            setOverrideTraitCollection(UITraitCollection(preferredContentSizeCategory: .accessibilityMedium), forChild: child)
-        } else {
-            setOverrideTraitCollection(nil, forChild: child)
-        }
+        CalloutButtonPanelHostingViewController.updateTraitOverride(for: calloutButtonViewController, in: self)
     }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
@@ -317,21 +306,11 @@ class HomeViewController: UIViewController {
     }
 
     private func configureCalloutButtonPanelView() {
-        let viewController = CalloutButtonPanelHostingViewController(logContext: telemetryContext)
-
-        addChild(viewController)
-        calloutPanelContainerView.addSubview(viewController.view)
-        viewController.view.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            viewController.view.leadingAnchor.constraint(equalTo: calloutPanelContainerView.leadingAnchor),
-            viewController.view.trailingAnchor.constraint(equalTo: calloutPanelContainerView.trailingAnchor),
-            viewController.view.topAnchor.constraint(equalTo: calloutPanelContainerView.topAnchor),
-            viewController.view.bottomAnchor.constraint(equalTo: calloutPanelContainerView.bottomAnchor)
-        ])
-
-        viewController.didMove(toParent: self)
-        calloutButtonViewController = viewController
+        calloutButtonViewController = CalloutButtonPanelHostingViewController.embed(
+            in: self,
+            containerView: calloutPanelContainerView,
+            logContext: telemetryContext
+        )
     }
     
     private func showOrRefreshExperiences() {
