@@ -2424,7 +2424,7 @@
 "devices.troubleshoot.reconnect" = "Reconnect";
 
 /* Custom alert description displayed when AirPods head tracking is not supported on the given iOS or device {NumberedPlaceholder="Apple AirPods", "iOS 14.4", "iPhone 7"} */
-"devices.airpods_unavailable.alert.description" = "This device does not support head tracking with Apple AirPods. Check that your device is an iPhone 7 or later and is running iOS 14.4 or later.";
+"devices.airpods_unavailable.alert.description" = "This device does not support head tracking with Apple AirPods. Check that your device is an iPhone 7 or later.";
 
 /* Title for the alert that is displayed when a head tracking device is available, %@ is the name of the device, "Do you want to enable head tracking with your Apple AirPods?", {NumberedPlaceholder="%@"} */
 "devices.reachability.alert.title" = "Turn on Head Tracking with %@";
