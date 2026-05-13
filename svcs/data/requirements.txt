@@ -1,4 +1,4 @@
-aiohttp==3.9.1
+aiohttp==3.13.4
 aiopg==1.4.0
 Faker==37.1.0
 prometheus-client==0.21.1
