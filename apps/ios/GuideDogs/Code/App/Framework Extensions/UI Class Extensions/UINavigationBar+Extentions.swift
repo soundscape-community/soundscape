@@ -19,52 +19,14 @@ extension UINavigationBar {
     }
     
     func configureAppearance(for style: Style) {
-        switch style {
-        case .default: configureDefaultAppearance()
-        case .transparentLightTitle: configureTransparentAppearance()
-        }
-    }
-    
-    private func configureDefaultAppearance() {
-        let color = Colors.Foreground.primary ?? UIColor.white
-        let buttonAppearance = UIBarButtonItemAppearance.soundscapeNavigationAppearance(foregroundColor: color)
-        
-        let appearance = UINavigationBarAppearance()
-        
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = Colors.Background.primary
-        appearance.titleTextAttributes = [.foregroundColor: color]
-        appearance.buttonAppearance = buttonAppearance
-        appearance.backButtonAppearance = buttonAppearance
-        appearance.doneButtonAppearance = buttonAppearance
-        appearance.configureSoundscapeBackIndicator(foregroundColor: color)
-        
+        let appearance = UINavigationBarAppearance.soundscapeAppearance(for: style)
+
+        tintColor = style.foregroundColor
+        barTintColor = style.backgroundColor
+        isTranslucent = style.isTranslucent
+        overrideUserInterfaceStyle = .dark
+
         apply(appearance)
-        
-        tintColor = color
-        barTintColor = Colors.Background.primary
-        isTranslucent = false
-    }
-    
-    private func configureTransparentAppearance() {
-        let color = Colors.Foreground.primary ?? UIColor.white
-        let buttonAppearance = UIBarButtonItemAppearance.soundscapeNavigationAppearance(foregroundColor: color)
-        
-        let appearance = UINavigationBarAppearance()
-        
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .clear
-        appearance.titleTextAttributes = [.foregroundColor: color]
-        appearance.buttonAppearance = buttonAppearance
-        appearance.backButtonAppearance = buttonAppearance
-        appearance.doneButtonAppearance = buttonAppearance
-        appearance.configureSoundscapeBackIndicator(foregroundColor: color)
-        
-        apply(appearance)
-        
-        tintColor = color
-        barTintColor = .clear
-        isTranslucent = true
     }
 
     private func apply(_ appearance: UINavigationBarAppearance) {
@@ -77,16 +39,67 @@ extension UINavigationBar {
         // Set the back button
         items?.forEach {
             $0.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
-            $0.leftBarButtonItem?.configureSoundscapeNavigationButton()
-            $0.rightBarButtonItem?.configureSoundscapeNavigationButton()
-            $0.leftBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton() }
-            $0.rightBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton() }
+            $0.leftBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: tintColor)
+            $0.rightBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: tintColor)
+            $0.leftBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton(foregroundColor: tintColor) }
+            $0.rightBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton(foregroundColor: tintColor) }
         }
     }
     
 }
 
+extension UINavigationBar.Style {
+
+    var foregroundColor: UIColor {
+        Colors.Foreground.primary ?? .white
+    }
+
+    var backgroundColor: UIColor {
+        switch self {
+        case .default: return Colors.Background.primary ?? UIColor.Theme.darkBlue
+        case .transparentLightTitle: return .clear
+        }
+    }
+
+    var isTranslucent: Bool {
+        switch self {
+        case .default: return false
+        case .transparentLightTitle: return true
+        }
+    }
+
+    var usesTransparentBackground: Bool {
+        switch self {
+        case .default: return false
+        case .transparentLightTitle: return true
+        }
+    }
+
+}
+
 extension UINavigationBarAppearance {
+
+    static func soundscapeAppearance(for style: UINavigationBar.Style) -> UINavigationBarAppearance {
+        let appearance = UINavigationBarAppearance()
+        let foregroundColor = style.foregroundColor
+
+        if style.usesTransparentBackground {
+            appearance.configureWithTransparentBackground()
+        } else {
+            appearance.configureWithOpaqueBackground()
+        }
+
+        appearance.backgroundColor = style.backgroundColor
+        appearance.titleTextAttributes = [.foregroundColor: foregroundColor]
+
+        let buttonAppearance = UIBarButtonItemAppearance.soundscapeNavigationAppearance(foregroundColor: foregroundColor)
+        appearance.buttonAppearance = buttonAppearance
+        appearance.backButtonAppearance = buttonAppearance
+        appearance.doneButtonAppearance = buttonAppearance
+        appearance.configureSoundscapeBackIndicator(foregroundColor: foregroundColor)
+
+        return appearance
+    }
 
     func configureSoundscapeBackIndicator(foregroundColor: UIColor) {
         guard #available(iOS 26.0, *),

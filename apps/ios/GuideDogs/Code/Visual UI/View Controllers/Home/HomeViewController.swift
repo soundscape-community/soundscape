@@ -137,6 +137,7 @@ class HomeViewController: UIViewController {
         self.definesPresentationContext = true
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
+        configureNavigationBarButtonContrast()
 
         configureCalloutButtonPanelView()
         
@@ -209,6 +210,7 @@ class HomeViewController: UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: true)
         // Transparent navigation bar
         navigationController?.navigationBar.configureAppearance(for: .transparentLightTitle)
+        configureNavigationBarButtonContrast()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleAppWillEnterForeground(_:)), name: Notification.Name.appWillEnterForeground, object: nil)
         
@@ -303,6 +305,13 @@ class HomeViewController: UIViewController {
             searchContainerHeightConstraint.constant = previousSearchContainerHeight
             NSLayoutConstraint.activate(cardContainerTopConstraints)
         }
+    }
+
+    private func configureNavigationBarButtonContrast() {
+        let foregroundColor = UINavigationBar.Style.transparentLightTitle.foregroundColor
+
+        navigationItem.leftBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: foregroundColor)
+        navigationItem.rightBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: foregroundColor)
     }
 
     private func configureCalloutButtonPanelView() {
