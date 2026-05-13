@@ -169,6 +169,14 @@ private extension UINavigationBar {
         tintColor = style.foregroundUIColor
         barTintColor = style.backgroundUIColor
         isTranslucent = style.isTranslucent
+        overrideUserInterfaceStyle = .dark
+
+        items?.forEach {
+            $0.leftBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: style.foregroundUIColor)
+            $0.rightBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: style.foregroundUIColor)
+            $0.leftBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton(foregroundColor: style.foregroundUIColor) }
+            $0.rightBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton(foregroundColor: style.foregroundUIColor) }
+        }
     }
     
 }
