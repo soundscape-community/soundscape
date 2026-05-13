@@ -312,6 +312,8 @@ class HomeViewController: UIViewController {
 
         navigationItem.leftBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: foregroundColor)
         navigationItem.rightBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: foregroundColor)
+        navigationItem.leftBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton(foregroundColor: foregroundColor) }
+        navigationItem.rightBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton(foregroundColor: foregroundColor) }
     }
 
     private func configureCalloutButtonPanelView() {
