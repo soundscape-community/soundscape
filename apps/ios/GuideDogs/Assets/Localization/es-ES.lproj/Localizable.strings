@@ -2842,7 +2842,7 @@
 
 
 /*  */
-"devices.airpods_unavailable.alert.description" = "Este dispositivo no admite el seguimiento de cabeza con Apple AirPods. Comprueba que el dispositivo es un iPhone 7 o posterior y que está ejecutando iOS 14.4 o posterior.";
+"devices.airpods_unavailable.alert.description" = "Este dispositivo no admite el seguimiento de cabeza con Apple AirPods. Comprueba que el dispositivo es un iPhone 7 o posterior.";
 
 
 /*  */
@@ -4461,3 +4461,7 @@
 "troubleshooting.user_data" = "Datos de usuario";
 "troubleshooting.user_data.button" = "Eliminar todos los marcadores y rutas";
 "troubleshooting.user_data.explanation" = "Borra todos los datos de mapas, incluidos los marcadores y rutas guardados. Esta acción no se puede deshacer.";
+"recommender.navilens.open" = "Abrir NaviLens";
+"recommender.navilens.open.hint" = "Pulsa dos veces para abrir NaviLens";
+"recommender.navilens.show_nearby" = "Mostrar códigos NaviLens cercanos";
+"recommender.navilens.show_nearby.hint" = "Pulsa dos veces para mostrar códigos NaviLens cercanos";
