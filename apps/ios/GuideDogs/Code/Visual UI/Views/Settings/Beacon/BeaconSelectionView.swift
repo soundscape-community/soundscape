@@ -16,6 +16,7 @@ struct BeaconSelectionView: View {
     @State var selectedBeaconKey: String
     @State var areMelodiesEnabled: Bool
     @State var enterImmediateVicinityDistance: Double
+    @State var beaconRingingAngle: Double
     
     let initialBeacon: String
     let initialMelodies: Bool
@@ -24,6 +25,7 @@ struct BeaconSelectionView: View {
         _selectedBeaconKey = State(initialValue: SettingsContext.shared.selectedBeacon)
         _areMelodiesEnabled = State(initialValue: SettingsContext.shared.playBeaconStartAndEndMelodies)
         _enterImmediateVicinityDistance = State(initialValue: SettingsContext.shared.enterImmediateVicinityDistance)
+        _beaconRingingAngle = State(initialValue: SettingsContext.shared.beaconRingingAngle)
         initialBeacon = SettingsContext.shared.selectedBeacon
         initialMelodies = SettingsContext.shared.playBeaconStartAndEndMelodies
     }
@@ -58,6 +60,23 @@ struct BeaconSelectionView: View {
                     .onChange(of: enterImmediateVicinityDistance, perform: { _ in
                         SettingsContext.shared.enterImmediateVicinityDistance = enterImmediateVicinityDistance
                     })
+                    
+                    TableHeaderCell(text: GDLocalizedString("beacon.settings.ringing_angle"))
+                        .accessibility(hidden: true)
+                    HStack(spacing: 0) {
+                        GDLocalizedTextView("beacon.settings.ringing_angle.explanation")
+                            .font(.caption)
+                            .foregroundColor(.primaryForeground)
+                            .padding()
+
+                        Spacer()
+                    }
+
+                    BeaconAngleSlider(current: beaconRingingAngle) { newValue in
+                        beaconRingingAngle = newValue
+                        SettingsContext.shared.beaconRingingAngle = newValue
+                    }
+                    .accessibility(label: GDLocalizedTextView("beacon.settings.ringing_angle"))
 
                     TableHeaderCell(text: GDLocalizedString("beacon.settings.style"))
 
