@@ -114,7 +114,7 @@ class SettingsContext {
             Keys.markerSortStyle: SortStyle.distance.rawValue,
             Keys.leaveImmediateVicinityDistance: 30.0,
             Keys.enterImmediateVicinityDistance: 15.0,
-            Keys.beaconRingingAngle: 10.0
+            Keys.beaconRingingAngle: 15.0
         ])
         
         resetLocaleIfNeeded()
