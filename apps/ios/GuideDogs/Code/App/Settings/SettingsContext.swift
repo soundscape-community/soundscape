@@ -44,6 +44,8 @@ class SettingsContext {
         fileprivate static let useOldBeacon              = "GDASettingsUseOldBeacon"
         fileprivate static let playBeaconStartEndMelody  = "GDAPlayBeaconStartEndMelody"
         fileprivate static let automaticCalloutsEnabled  = "GDASettingsAutomaticCalloutsEnabled"
+        fileprivate static let calloutSoundEffectsEnabled = "GDASettingsCalloutSoundEffectsEnabled"
+        fileprivate static let calloutDelaysEnabled      = "GDASettingsCalloutDelaysEnabled"
         fileprivate static let shakeCalloutsEnabled      = "GDASettingsShakeCalloutsEnabled"
         fileprivate static let sensePlace                = "GDASettingsPlaceSenseEnabled"
         fileprivate static let senseLandmark             = "GDASettingsLandmarkSenseEnabled"
@@ -99,6 +101,8 @@ class SettingsContext {
             Keys.useOldBeacon: false,
             Keys.playBeaconStartEndMelody: false,
             Keys.automaticCalloutsEnabled: true,
+            Keys.calloutSoundEffectsEnabled: true,
+            Keys.calloutDelaysEnabled: true,
             Keys.shakeCalloutsEnabled: false,
             Keys.sensePlace: true,
             Keys.senseLandmark: true,
@@ -423,6 +427,24 @@ extension SettingsContext: AutoCalloutSettingsProvider {
             userDefaults.set(newValue, forKey: Keys.automaticCalloutsEnabled)
             
             NotificationCenter.default.post(name: .automaticCalloutsEnabledChanged, object: self, userInfo: [Keys.enabled: newValue])
+        }
+    }
+
+    var calloutSoundEffectsEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.calloutSoundEffectsEnabled)
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.calloutSoundEffectsEnabled)
+        }
+    }
+
+    var calloutDelaysEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.calloutDelaysEnabled)
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.calloutDelaysEnabled)
         }
     }
     
