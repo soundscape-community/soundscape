@@ -4484,7 +4484,7 @@
 "whats_new.1_3_0.1.title" = "Testing in Texas";
 "whats_new.1_3_0.1.description" = "If you live in the Austin or San Antonio areas in Texas and would like to help us test a feature we are working on with NaviLens, please get in touch via the \"Send Feedback\" button from the menu.";
 "whats_new.1_3_2.0.title" = "Improved NaviLens Integration";
-"whats_new.1_3_2.0.description" = "Soundscape now announces when there are NaviLens codes nearby. You can find NaviLens Codes in Nearby Places.";
+"whats_new.1_3_2.0.description" = "Soundscape now announces when there are NaviLens codes nearby. You can find NaviLens codes in Nearby Places.";
 "whats_new.1_3_2.1.title" = "Route Reversal";
 "whats_new.1_3_2.1.description" = "You can now reverse a route. This creates a new route with all the waypoints in the opposite order.";
 "whats_new.1_8_1.0.title" = "Language Updates";
@@ -4494,6 +4494,7 @@
 "whats_new.1_8_2.0.title" = "Adjust the Audio Beacon Angle in Settings";
 "whats_new.1_8_2.0.description" = "You can now adjust the angle of the beacon's ringing sound.";
 "whats_new.1_8_2.1.title" = "NaviLens Suggestions Now Offer Separate Actions to Open NaviLens or Show Nearby Codes";
+"whats_new.1_8_2.1.description" = "";
 "beacon.action.navilens" = "Launch NaviLens";
 "location_detail.action.beacon_or_navilens.hint" = "Double tap to launch NaviLens or set an audio beacon, based on how close this location is";
 "troubleshooting.tile_server_url.explanation" = "This is the server from which Soundscape retrieves map data. You normally should not need to change this unless you are developing or testing Soundscape.";

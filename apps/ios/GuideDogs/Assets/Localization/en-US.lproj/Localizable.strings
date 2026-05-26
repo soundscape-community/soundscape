@@ -3545,7 +3545,7 @@
 "whats_new.1_3_2.0.title" = "Improved NaviLens Integration";
 
 /* Description for a What's New item about NaviLens improvements */
-"whats_new.1_3_2.0.description" = "Soundscape now announces when there are NaviLens codes nearby. You can find NaviLens Codes in Nearby Places.";
+"whats_new.1_3_2.0.description" = "Soundscape now announces when there are NaviLens codes nearby. You can find NaviLens codes in Nearby Places.";
 
 /* Title for a What's New item about reversing routes */
 "whats_new.1_3_2.1.title" = "Route Reversal";
@@ -3573,6 +3573,9 @@
 
 /* Title for a What's New item about NaviLens suggestion actions */
 "whats_new.1_8_2.1.title" = "NaviLens Suggestions Now Offer Separate Actions to Open NaviLens or Show Nearby Codes";
+
+/* Empty description for a What's New item that only needs a title */
+"whats_new.1_8_2.1.description" = "";
 
 /* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settin gs app. {NumberedPlaceholder="iOS"} */
 "voice.apple.additional" = "Additional voices, including enhanced quality voices, can be downloaded in the Read & Speak section of the iOS accessibility settings.";
