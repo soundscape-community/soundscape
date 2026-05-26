@@ -2885,7 +2885,7 @@
 
 
 /*  */
-"devices.airpods_unavailable.alert.description" = "This device does not support head tracking with Apple AirPods. Check that your device is an iPhone 7 or later and is running iOS 14.4 or later.";
+"devices.airpods_unavailable.alert.description" = "This device does not support head tracking with Apple AirPods. Check that your device is an iPhone 7 or later.";
 
 
 /*  */
@@ -4490,3 +4490,9 @@
 "troubleshooting.user_data" = "User Data";
 "troubleshooting.user_data.button" = "Delete All Markers and Routes";
 "troubleshooting.user_data.explanation" = "Delete all map data, including saved markers and routes. This action cannot be undone.";
+"recommender.navilens.open" = "Open NaviLens";
+"recommender.navilens.open.hint" = "Double tap to open NaviLens";
+"recommender.navilens.show_nearby" = "Show Nearby NaviLens Codes";
+"recommender.navilens.show_nearby.hint" = "Double tap to show nearby NaviLens codes";
+"beacon.settings.ringing_angle" = "Ringing Sound Angle";
+"beacon.settings.ringing_angle.explanation" = "Adjust the width of the area where the beacon audio is most intense (5° to 20°).";
