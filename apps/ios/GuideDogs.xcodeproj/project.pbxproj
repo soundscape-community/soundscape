@@ -525,8 +525,8 @@
 		62EACA2126697ED400DBDECC /* WaypointDetailAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EACA2026697ED400DBDECC /* WaypointDetailAnnotation.swift */; };
 		62EACA2626697F2E00DBDECC /* LocationDetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EACA2526697F2E00DBDECC /* LocationDetailAnnotationView.swift */; };
 		62EACA2B26697F4300DBDECC /* WaypointDetailAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EACA2A26697F4300DBDECC /* WaypointDetailAnnotationView.swift */; };
-		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
 		666CA3EAAA904E6EBFA10A53 /* NaviLensWakeOnForegroundTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */; };
+		6A4891BB2A5E66DE0002D146 /* ExternalNavigationApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */; };
 		91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */ = {isa = PBXBuildFile; productRef = 91172A722AD8D56D00E6E8E9 /* CoreGPX */; };
 		914BAAF32AD745E400CB2171 /* DestinationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */; };
 		914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */; };
@@ -773,6 +773,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaviLensWakeOnForegroundTest.swift; sourceTree = "<group>"; };
 		2809B80B2379E95B00F6C9AC /* calibration_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = calibration_success.wav; path = Assets/Sounds/calibration_success.wav; sourceTree = "<group>"; };
 		2809B80D2379E9A000F6C9AC /* connection_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = connection_success.wav; path = Assets/Sounds/connection_success.wav; sourceTree = "<group>"; };
 		2809B80F2379E9C700F6C9AC /* low_confidence.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = low_confidence.wav; path = Assets/Sounds/low_confidence.wav; sourceTree = "<group>"; };
@@ -1316,7 +1317,6 @@
 		62EACA2526697F2E00DBDECC /* LocationDetailAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailAnnotationView.swift; sourceTree = "<group>"; };
 		62EACA2A26697F4300DBDECC /* WaypointDetailAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaypointDetailAnnotationView.swift; sourceTree = "<group>"; };
 		6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExternalNavigationApps.swift; path = Code/App/ExternalNavigationApps.swift; sourceTree = "<group>"; };
-		20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaviLensWakeOnForegroundTest.swift; sourceTree = "<group>"; };
 		914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DestinationManagerTest.swift; sourceTree = "<group>"; };
 		914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngineTest.swift; sourceTree = "<group>"; };
 		914BAB002AD7490100CB2171 /* NavigationControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControllerTest.swift; sourceTree = "<group>"; };
@@ -5486,7 +5486,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/SoundscapeDF.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = "";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5517,7 +5517,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.8.1;
+				MARKETING_VERSION = 1.8.2;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DADHOC";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-adhoc";
@@ -5778,7 +5778,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
@@ -5810,7 +5810,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.8.1;
+				MARKETING_VERSION = 1.8.2;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "services.soundscape-debug";
@@ -5841,7 +5841,7 @@
 				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
@@ -5871,7 +5871,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/GuideDogs",
 				);
-				MARKETING_VERSION = 1.8.1;
+				MARKETING_VERSION = 1.8.2;
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = services.soundscape;
