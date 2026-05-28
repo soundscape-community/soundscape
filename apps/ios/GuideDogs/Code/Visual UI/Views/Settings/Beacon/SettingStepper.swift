@@ -9,17 +9,19 @@
 import SwiftUI
 
 /// Defines a stepper (increment/decrement buttons) that can be used for settings like Enter Vicinity Distance.
-/// Takes a step size, min, max, and localization key for printing the value with units..
+/// Takes a label, step size, min, max, and localization key for printing the value with units..
 /// `unitsLocalization` should be a localization key like "distance.format.meters".
 struct SettingStepper: View {
     @Binding var value: Double
+    private let titleLocalization: String
     private let unitsLocalization: String
     private let stepSize: Double
     private let minValue: Double
     private let maxValue: Double
     
-    init(value: Binding<Double>, unitsLocalization: String, stepSize: Double, minValue: Double, maxValue: Double) {
+    init(value: Binding<Double>, titleLocalization: String, unitsLocalization: String, stepSize: Double, minValue: Double, maxValue: Double) {
         self._value = value
+        self.titleLocalization = titleLocalization
         self.unitsLocalization = unitsLocalization
         self.stepSize = stepSize
         self.minValue = minValue
@@ -42,11 +44,18 @@ struct SettingStepper: View {
             /// We don't use the native `Stepper` because the increment/decrement
             /// controls can't be styled, and the defaults are low contrast.
             HStack {
-                // truncate `value` at the decimal point
-                Text(GDLocalizedString(unitsLocalization, String(format: "%.0f", value)))
-                    .foregroundColor(.primaryForeground)
-                    .font(.body)
-                    .lineLimit(nil)
+                VStack(alignment: .leading, spacing: 4) {
+                    GDLocalizedTextView(titleLocalization)
+                        .foregroundColor(.primaryForeground)
+                        .font(.body)
+                        .lineLimit(nil)
+
+                    // truncate `value` at the decimal point
+                    Text(GDLocalizedString(unitsLocalization, String(format: "%.0f", value)))
+                        .foregroundColor(.secondaryForeground)
+                        .font(.body)
+                        .lineLimit(nil)
+                }
 
                 Spacer()
 
@@ -75,6 +84,7 @@ struct SettingStepper: View {
             .padding()
             .background(Color.primaryBackground)
             .accessibilityElement(children: .ignore)
+            .accessibilityLabel(GDLocalizedString(titleLocalization))
             .accessibilityValue(GDLocalizedString(unitsLocalization, String(format: "%.0f", value)))
             .accessibilityAdjustableAction { direction in
                 switch direction {

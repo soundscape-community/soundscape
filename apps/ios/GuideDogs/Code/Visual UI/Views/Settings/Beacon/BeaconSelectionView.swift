@@ -37,9 +37,6 @@ struct BeaconSelectionView: View {
             
             ScrollView {
                 VStack(spacing: 0) {
-                    TableHeaderCell(text: GDLocalizedString("beacon.settings.cues"))
-                        .accessibility(hidden: true)
-                    
                     Toggle(GDLocalizedString("beacon.settings.melodies"), isOn: $areMelodiesEnabled)
                         .locationNameTextFormat()
                         .padding()
@@ -49,10 +46,9 @@ struct BeaconSelectionView: View {
                             beaconDemo.play(styleChanged: true)
                         })
 
-                    TableHeaderCell(text: GDLocalizedString("beacon.settings.vicinity"))
-
                     SettingStepper(
                         value: $enterImmediateVicinityDistance,
+                        titleLocalization: "beacon.settings.vicinity",
                         unitsLocalization: "distance.format.meters",
                         stepSize: 5.0,
                         minValue: 0.0,
@@ -61,10 +57,9 @@ struct BeaconSelectionView: View {
                     .onChange(of: enterImmediateVicinityDistance, perform: { _ in
                         SettingsContext.shared.enterImmediateVicinityDistance = enterImmediateVicinityDistance
                     })
-                    
-                    TableHeaderCell(text: GDLocalizedString("beacon.settings.ringing_angle"))
+
                     HStack(spacing: 0) {
-                        GDLocalizedTextView("beacon.settings.ringing_angle.explanation")
+                        GDLocalizedTextView("beacon.settings.vicinity.explanation")
                             .font(.caption)
                             .foregroundColor(.primaryForeground)
                             .padding()
@@ -75,6 +70,15 @@ struct BeaconSelectionView: View {
                     BeaconAngleSlider(current: beaconRingingAngle) { newValue in
                         beaconRingingAngle = newValue
                         SettingsContext.shared.beaconRingingAngle = newValue
+                    }
+
+                    HStack(spacing: 0) {
+                        GDLocalizedTextView("beacon.settings.ringing_angle.explanation")
+                            .font(.caption)
+                            .foregroundColor(.primaryForeground)
+                            .padding()
+
+                        Spacer()
                     }
 
                     TableHeaderCell(text: GDLocalizedString("beacon.settings.style"))
