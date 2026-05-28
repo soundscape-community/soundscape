@@ -3530,7 +3530,7 @@
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
 
 /* Description of the categories in places nearby feature */
-"whats_new.1_2_0.2.description" = "You can now filter the Places Nearby list by categories such as Public Transit, Food & Drink, etc.";
+"whats_new.1_2_0.2.description" = "You can now filter the \"Places Nearby\" list by categories such as \"Public Transit\", \"Food & Drink\", etc.";
 
 /* Title of the Bose Frames support feature */
 "whats_new.1_3_0.0.title" = "Bose Frames Support";
@@ -3548,7 +3548,7 @@
 "whats_new.1_3_2.0.title" = "Improved NaviLens Integration";
 
 /* Description for a What's New item about NaviLens improvements */
-"whats_new.1_3_2.0.description" = "Soundscape now announces when there are NaviLens codes nearby. You can find NaviLens codes in Nearby Places.";
+"whats_new.1_3_2.0.description" = "Soundscape now announces when there are NaviLens codes nearby. You can find the \"NaviLens Codes\" category in the \"Places Nearby\" list.";
 
 /* Title for a What's New item about reversing routes */
 "whats_new.1_3_2.1.title" = "Route Reversal";
@@ -3620,7 +3620,7 @@
 "faq.what_can_I_set.question" = "What can I set as a beacon?";
 
 /* An 'audio beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. Intersection - A junction where two or more roads meet or cross., Marker - A location that has been marked as important by the user or application. This can be an address, a business or a custom place such as an entrance, a bus stop or a bench. Point of interest - A specific location that someone may find useful or interesting. Quotation marks are written as \" */
-"faq.what_can_I_set.answer" = "You can set an audio beacon on any business, place, point of interest, address, or intersection. There are a few ways to set a location as a beacon. First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. Then from the \"Location Details\" screen, select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you've selected. The name of the place along with its distance and physical address, if available, will now be displayed on the main screen.";
+"faq.what_can_I_set.answer" = "You can set an audio beacon on any business, place, point of interest, address, or intersection. There are a few ways to set a beacon on a location. First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. Then from the \"Location Details\" screen, select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you've selected. The name of the place along with its distance and physical address, if available, will now be displayed on the main screen.";
 
 /* A 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. */
 "faq.how_to_use_beacon.question" = "How do I use a beacon like a pro?";
@@ -3780,7 +3780,7 @@
 "faq.tip.setting_beacon_on_address" = "You can set a beacon on any address. From the home screen, tap on the search bar and then type the address. After selecting the address in the search results, a \"Location Details\" screen will be shown containing the option to \"Start Audio Beacon\" on the address. In this way, you can set a beacon on businesses, places, points of interest, and residences that are not in Open Street Map.";
 
 /* 'Nearby Places' is a screen in the app that shows a list of places that are close to the user. Quotes written as \" */
-"faq.tip.finding_bus_stops" = "You can find nearby bus stops by selecting the \"Public Transit\" filter in the Places Nearby list.";
+"faq.tip.finding_bus_stops" = "You can find nearby bus stops by selecting the \"Public Transit\" filter in the \"Places Nearby\" list.";
 
 /* Preserve meters unit - Do not convert. The 'beacon' is an audio signal that helps fix the position of a location - the audio signal is played from the direction of a location which helps navigating towards that direction. {NumberedPlaceholder="50"} */
 "faq.tip.turning_beacon_off" = "You can turn on and off the rhythmic sound of the beacon using the mute button on the home screen. If the beacon is muted, you will still get updates about the distance to your destination every 50 meters or so.";

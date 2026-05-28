@@ -3114,7 +3114,7 @@
 
 
 /*  */
-"tutorial.markers.text.Intro" = "Con Soundscape, puedes marcar cualquier cosa de tu alrededor que te interese. Por ejemplo, puedes marcar tu casa, tu parada de autobús o incluso el lugar donde te encuentras.\nIntentémoslo. Presiona el botón Agregar marcador a continuación y selecciona como ejemplo una dirección o un lugar cercanos para marcarlos.";
+"tutorial.markers.text.Intro" = "Con Soundscape, puedes marcar cualquier cosa de tu alrededor que te interese. Por ejemplo, puedes marcar tu casa, tu parada de autobús o incluso el lugar donde te encuentras.\nIntentémoslo. Presiona el botón Agregar marcador a continuación y selecciona, como ejemplo, una dirección o un lugar cercano para marcar.";
 
 
 /*  */
@@ -4154,7 +4154,7 @@
 
 
 /*  */
-"faq.what_can_I_set.answer" = "Puedes establecer una señal de audio en cualquier negocio, lugar, punto de interés, dirección o cruce. Hay varias formas de establecer una ubicación como señal. Primero, ve los detalles de una ubicación mediante la barra de búsqueda para buscar un lugar, o pulsando uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. Luego, en la pantalla \"Detalles de la ubicación\", selecciona el botón \"Iniciar señal de audio\". Al pulsarlo, volverás a la pantalla de inicio y se activará una señal audible proveniente de la dirección del lugar que has seleccionado. El nombre del lugar junto con su distancia y dirección física, si están disponibles, aparecerán ahora en la pantalla principal.";
+"faq.what_can_I_set.answer" = "Puedes establecer una señal de audio en cualquier negocio, lugar, punto de interés, dirección o cruce. Hay varias formas de establecer una señal en una ubicación. Primero, ve los detalles de una ubicación mediante la barra de búsqueda para buscar un lugar, o pulsando uno de los botones \"Lugares cercanos\", \"Marcadores y rutas\" o \"Ubicación actual\" y seleccionando una ubicación. Luego, en la pantalla \"Detalles de la ubicación\", selecciona el botón \"Iniciar señal de audio\". Al pulsarlo, volverás a la pantalla de inicio y se activará una señal audible proveniente de la dirección del lugar que has seleccionado. El nombre del lugar junto con su distancia y dirección física, si están disponibles, aparecerán ahora en la pantalla principal.";
 
 
 /*  */
@@ -4362,7 +4362,7 @@
 
 
 /*  */
-"faq.tip.finding_bus_stops" = "Para encontrar paradas de autobús cercanos, selecciona el filtro \"Transporte público\" en la lista Lugares cercanos.";
+"faq.tip.finding_bus_stops" = "Para encontrar paradas de autobús cercanas, selecciona el filtro \"Transporte público\" en la lista \"Lugares cercanos\".";
 
 
 /*  */
@@ -4418,7 +4418,7 @@
 "whats_new.1_2_0.0.title" = "Agitar para repetir el último aviso";
 "whats_new.1_2_0.1.title" = "Configuración de la distancia de silencio de la señal";
 "whats_new.1_2_0.2.title" = "Categorías en lugares cercanos";
-"whats_new.1_2_0.2.description" = "Ahora puedes filtrar la lista de lugares cercanos por categorías como Transporte público, Comida y bebida, etc.";
+"whats_new.1_2_0.2.description" = "Ahora puedes filtrar la lista \"Lugares cercanos\" por categorías como \"Transporte público\", \"Comida y bebida\", etc.";
 "osm.tag.bar" = "Bar";
 "osm.tag.fast_food" = "Comida rápida";
 "osm.tag.ice_cream" = "Heladería";
@@ -4467,3 +4467,15 @@
 "recommender.navilens.show_nearby.hint" = "Pulsa dos veces para mostrar códigos NaviLens cercanos";
 "beacon.settings.ringing_angle" = "Ángulo del sonido del timbre";
 "beacon.settings.ringing_angle.explanation" = "Ajuste la anchura del ángulo en el que el sonido de la señal es más intenso (entre 5° y 20°).";
+"whats_new.1_3_2.0.title" = "Integración mejorada de NaviLens";
+"whats_new.1_3_2.0.description" = "Ahora Soundscape te avisa cuando hay códigos NaviLens cerca. Puedes encontrar la categoría \"Códigos NaviLens\" en la lista \"Lugares cercanos\".";
+"whats_new.1_3_2.1.title" = "Rutas de regreso";
+"whats_new.1_3_2.1.description" = "Ahora puedes invertir una ruta. Esto crea una nueva ruta con todos los puntos en orden inverso.";
+"whats_new.1_8_1.0.title" = "Actualizaciones de idiomas";
+"whats_new.1_8_1.0.description" = "Se ha añadido compatibilidad con el persa y el ruso.";
+"whats_new.1_8_1.1.title" = "Corrección de errores";
+"whats_new.1_8_1.1.description" = "Se ha corregido el desplazamiento en los marcadores y las rutas, y se ha solucionado un problema por el que la búsqueda no mostraba todos los resultados.";
+"whats_new.1_8_2.0.title" = "Ajusta el ángulo de la señal de audio en los ajustes";
+"whats_new.1_8_2.0.description" = "Ahora puedes ajustar el ángulo del sonido de timbre de la señal.";
+"whats_new.1_8_2.1.title" = "Las sugerencias de NaviLens ahora ofrecen acciones independientes para abrir NaviLens o mostrar códigos cercanos";
+"beacon.settings.vicinity.explanation" = "Ajusta la distancia a la que el sonido de la señal se silencia automáticamente a medida que te acercas.";
