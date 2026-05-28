@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -26,9 +27,6 @@ struct BeaconAngleSlider: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                GDLocalizedTextView("beacon.settings.ringing_angle")
-                    .font(.subheadline)
-                    .foregroundColor(.primaryForeground)
                 Spacer()
                 Text("\(Int(angle))°")
                     .font(.system(.body, design: .monospaced))
