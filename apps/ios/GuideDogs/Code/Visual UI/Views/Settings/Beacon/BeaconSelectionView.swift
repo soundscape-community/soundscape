@@ -76,7 +76,6 @@ struct BeaconSelectionView: View {
                         beaconRingingAngle = newValue
                         SettingsContext.shared.beaconRingingAngle = newValue
                     }
-                    .accessibility(label: GDLocalizedTextView("beacon.settings.ringing_angle"))
 
                     TableHeaderCell(text: GDLocalizedString("beacon.settings.style"))
 
