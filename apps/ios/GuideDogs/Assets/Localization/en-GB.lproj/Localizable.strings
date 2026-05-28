@@ -4200,7 +4200,7 @@
 
 
 /*  */
-"faq.what_can_I_set.answer" = "You can set an audio beacon on any business, place, point of interest, address, or intersection. There are a few ways to set a location as a beacon. First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. Then from the location details screen, select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you've selected. The name of the place along with its distance and physical address, if available, will now be displayed on the main screen.";
+"faq.what_can_I_set.answer" = "You can set an audio beacon on any business, place, point of interest, address, or intersection. There are a few ways to set a beacon on a location. First, view the details for a location by either using the search bar to search for a place, or tapping one of the \"Places Nearby\", \"Markers & Routes\", or \"Current Location\" buttons and selecting a location. Then from the location details screen, select the \"Start Audio Beacon\" button. Tapping this will return you to the home screen and turn on an audible beacon coming from the direction of the place you've selected. The name of the place along with its distance and physical address, if available, will now be displayed on the main screen.";
 
 
 /*  */
@@ -4408,7 +4408,7 @@
 
 
 /*  */
-"faq.tip.finding_bus_stops" = "You can find nearby bus stops by selecting the \"Public Transport\" filter in the Places Nearby list.";
+"faq.tip.finding_bus_stops" = "You can find nearby bus stops by selecting the \"Public Transport\" filter in the \"Places Nearby\" list.";
 
 
 /*  */
@@ -4458,7 +4458,7 @@
 "whats_new.1_2_0.0.description" = "You can now shake your device to repeat the last callout. To enable this feature, switch on the \"Repeat Callouts\" toggle in settings.";
 "whats_new.1_2_0.1.title" = "Beacon Mute Distance Setting";
 "whats_new.1_2_0.2.title" = "Categories in Places Nearby";
-"whats_new.1_2_0.2.description" = "You can now filter the Places Nearby list by categories such as Public Transport, Food & Drink, etc.";
+"whats_new.1_2_0.2.description" = "You can now filter the \"Places Nearby\" list by categories such as \"Public Transport\", \"Food & Drink\", etc.";
 "settings.about.title.copyright" = "Copyright Notices";
 "first_launch.permissions.motion" = "Motion & Fitness";
 "osm.tag.bar" = "Bar";
@@ -4487,7 +4487,7 @@
 "whats_new.1_3_0.1.title" = "Testing in Texas";
 "whats_new.1_3_0.1.description" = "If you live in the Austin or San Antonio areas in Texas and would like to help us test a feature we are working on with NaviLens, please get in touch via the \"Send Feedback\" button from the menu.";
 "whats_new.1_3_2.0.title" = "Improved NaviLens Integration";
-"whats_new.1_3_2.0.description" = "Soundscape now announces when there are NaviLens codes nearby. You can find NaviLens codes in Nearby Places.";
+"whats_new.1_3_2.0.description" = "Soundscape now announces when there are NaviLens codes nearby. You can find the \"NaviLens Codes\" category in the \"Places Nearby\" list.";
 "whats_new.1_3_2.1.title" = "Route Reversal";
 "whats_new.1_3_2.1.description" = "You can now reverse a route. This creates a new route with all the waypoints in the opposite order.";
 "whats_new.1_8_1.0.title" = "Language Updates";
