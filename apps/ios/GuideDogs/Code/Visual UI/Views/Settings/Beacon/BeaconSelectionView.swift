@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -62,7 +63,6 @@ struct BeaconSelectionView: View {
                     })
                     
                     TableHeaderCell(text: GDLocalizedString("beacon.settings.ringing_angle"))
-                        .accessibility(hidden: true)
                     HStack(spacing: 0) {
                         GDLocalizedTextView("beacon.settings.ringing_angle.explanation")
                             .font(.caption)
