@@ -512,10 +512,13 @@
 "beacon.settings_title" = "Beacon Settings";
 
 
-/* Title of a section in the beacon settings page where the user can select the distance threshold when a beacon automatically stops playing. */
+/* Title of a setting in the beacon settings page where the user can select the distance threshold when a beacon automatically stops playing. */
 "beacon.settings.vicinity" = "Audio Mute Distance";
 
-/* Title of a section in the beacon settings page where the user can adjust the angular width of the 'ahead' sound. */
+/* Description for the Audio Mute Distance setting explaining that it adjusts when beacon audio is muted. */
+"beacon.settings.vicinity.explanation" = "Adjust the distance at which beacon audio automatically mutes as you approach.";
+
+/* Title of a setting in the beacon settings page where the user can adjust the angular width of the 'ahead' sound. */
 "beacon.settings.ringing_angle" = "Ringing Sound Angle";
 
 /* Description for the Ringing Sound Angle setting explaining that it adjusts the width of the beacon's 'ahead' sound. */
