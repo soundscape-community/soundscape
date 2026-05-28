@@ -32,6 +32,7 @@ struct BeaconAngleSlider: View {
                     .font(.system(.body, design: .monospaced))
                     .fontWeight(.bold)
                     .foregroundColor(.secondaryForeground)
+                    .accessibilityHidden(true)
             }
             .padding(.horizontal)
             .padding(.top, 8)
