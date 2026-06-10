@@ -19,6 +19,7 @@ from pathlib import Path
 
 import aiopg
 import psycopg2
+import psycopg2.extensions
 from prometheus_client import REGISTRY, Gauge, Histogram, start_http_server
 
 from ingest_non_osm import import_non_osm_data, provision_non_osm_data_async
@@ -97,6 +98,28 @@ def build_postgres_dsn(dbname: str) -> str:
     user = os.environ.get("POSTGIS_USER", "osm")
     password = os.environ.get("POSTGIS_PASSWORD", "osm")
     return f"host={host} port={port} user={user} password={password} dbname={dbname}"
+
+
+def build_imposm_dsn(dsn: str) -> str:
+    if dsn.startswith("postgis://"):
+        return dsn
+    if dsn.startswith("postgres://") or dsn.startswith("postgresql://"):
+        parsed = urllib.parse.urlsplit(dsn)
+        return urllib.parse.urlunsplit(("postgis", parsed.netloc, parsed.path, parsed.query, parsed.fragment))
+
+    args = psycopg2.extensions.parse_dsn(dsn)
+    user = urllib.parse.quote(args.get("user", ""), safe="")
+    password = urllib.parse.quote(args.get("password", ""), safe="")
+    host = args.get("host", "")
+    port = args.get("port", "")
+    dbname = urllib.parse.quote(args.get("dbname", ""), safe="")
+    auth = user
+    if password:
+        auth = f"{auth}:{password}"
+    hostport = host
+    if port:
+        hostport = f"{hostport}:{port}"
+    return f"postgis://{auth}@{hostport}/{dbname}"
 
 
 def default_osm_dsn() -> str:
@@ -287,20 +310,29 @@ def download_seed(url: str, destination: Path):
 
 def sync_pbf(config: IngestConfig, extract: dict) -> bool:
     path = pbf_path(config, extract)
+    seeded = False
     if not path.exists():
         download_seed(extract["url"], path)
-        return True
+        seeded = True
 
     if not config.sourceupdate:
         logger.info("Source updates disabled; keeping existing PBF")
-        return False
+        return seeded
 
     updated = False
     while True:
-        result = subprocess.run(["pyosmium-up-to-date", str(path)], check=False)
+        result = subprocess.run(["pyosmium-up-to-date", str(path)], check=False, capture_output=True, text=True)
+        stderr = getattr(result, "stderr", "") or ""
+        stdout = getattr(result, "stdout", "") or ""
+        if stdout:
+            logger.info("pyosmium-up-to-date: %s", stdout.strip())
+        if stderr:
+            logger.warning("pyosmium-up-to-date: %s", stderr.strip())
         if result.returncode == 0:
-            return updated
+            return seeded or updated
         if result.returncode == 1:
+            if "Traceback" in stderr or "ImportError" in stderr:
+                raise PbfSyncError(stderr.strip())
             updated = True
             logger.info("pyosmium applied diffs to %s; checking again", path)
             continue
@@ -342,7 +374,7 @@ def import_write(config: IngestConfig, incremental: bool):
         config.mapping,
         "-write",
         "-connection",
-        config.dsn,
+        build_imposm_dsn(config.dsn),
         "-srid",
         "4326",
         "-cachedir",
@@ -365,7 +397,7 @@ def import_rotate(config: IngestConfig, incremental: bool):
         "-mapping",
         config.mapping,
         "-connection",
-        config.dsn,
+        build_imposm_dsn(config.dsn),
         "-srid",
         "4326",
         "-deployproduction",
@@ -387,6 +419,8 @@ def import_extracts_and_write(config: IngestConfig, extract: dict, incremental: 
 
 
 def dsn_dbname(dsn: str) -> str:
+    if dsn.startswith("postgres://") or dsn.startswith("postgresql://") or dsn.startswith("postgis://"):
+        return urllib.parse.unquote(urllib.parse.urlsplit(dsn).path.lstrip("/"))
     for part in dsn.split():
         if part.startswith("dbname="):
             return part.split("=", 1)[1]
@@ -394,13 +428,6 @@ def dsn_dbname(dsn: str) -> str:
 
 
 async def provision_database_async(postgres_dsn: str, osm_dsn: str, dbname: str):
-    async with aiopg.connect(dsn=postgres_dsn) as conn:
-        cursor = await conn.cursor()
-        try:
-            escaped_dbname = dbname.replace('"', '""')
-            await cursor.execute(f'CREATE DATABASE "{escaped_dbname}"')
-        except psycopg2.ProgrammingError:
-            logger.warning('Database already existed at "%s"', postgres_dsn)
     async with aiopg.connect(dsn=osm_dsn) as conn:
         cursor = await conn.cursor()
         await cursor.execute("CREATE EXTENSION IF NOT EXISTS postgis")
@@ -424,7 +451,19 @@ def run_async(coro):
 
 def provision_database(config: IngestConfig):
     start = datetime.now(timezone.utc)
-    run_async(provision_database_async(config.dsn_init, config.dsn, dsn_dbname(config.dsn)))
+    dbname = dsn_dbname(config.dsn)
+    conn = psycopg2.connect(config.dsn_init)
+    conn.autocommit = True
+    try:
+        with conn.cursor() as cursor:
+            try:
+                escaped_dbname = dbname.replace('"', '""')
+                cursor.execute(f'CREATE DATABASE "{escaped_dbname}"')
+            except psycopg2.errors.DuplicateDatabase:
+                logger.warning('Database "%s" already existed', dbname)
+    finally:
+        conn.close()
+    run_async(provision_database_async(config.dsn_init, config.dsn, dbname))
     end = datetime.now(timezone.utc)
     telemetry_log(config, "provision_database", start, end)
 

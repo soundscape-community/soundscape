@@ -80,8 +80,7 @@ async def import_non_osm_data_async(csv_dir, osm_dsn, logger):
 
 
 def import_non_osm_data(csv_dir, osm_dsn, logger):
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(import_non_osm_data_async(csv_dir, osm_dsn, logger))
+    asyncio.run(import_non_osm_data_async(csv_dir, osm_dsn, logger))
 
 
 def build_postgres_dsn():

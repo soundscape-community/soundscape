@@ -132,7 +132,7 @@ def test_pyosmium_return_codes(tmp_path, monkeypatch):
 
     calls = []
 
-    def fake_run(cmd, check=False):
+    def fake_run(cmd, check=False, **kwargs):
         calls.append(cmd)
         return SimpleNamespace(returncode=0)
 
@@ -142,16 +142,65 @@ def test_pyosmium_return_codes(tmp_path, monkeypatch):
 
     returns = [1, 1, 0]
 
-    def fake_run_updates(cmd, check=False):
+    def fake_run_updates(cmd, check=False, **kwargs):
         return SimpleNamespace(returncode=returns.pop(0))
 
     monkeypatch.setattr(ingest.subprocess, "run", fake_run_updates)
     assert ingest.sync_pbf(cfg, ext) is True
     assert returns == []
 
-    monkeypatch.setattr(ingest.subprocess, "run", lambda cmd, check=False: SimpleNamespace(returncode=2))
+    monkeypatch.setattr(ingest.subprocess, "run", lambda cmd, check=False, **kwargs: SimpleNamespace(returncode=2))
     with pytest.raises(ingest.PbfSyncError):
         ingest.sync_pbf(cfg, ext)
+
+
+def test_pyosmium_import_error_fails_fast(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_pyosmium_import_error")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+
+    monkeypatch.setattr(
+        ingest.subprocess,
+        "run",
+        lambda cmd, check=False, **kwargs: SimpleNamespace(returncode=1, stderr="ImportError: missing library"),
+    )
+
+    with pytest.raises(ingest.PbfSyncError, match="ImportError"):
+        ingest.sync_pbf(cfg, ext)
+
+
+def test_seeded_pbf_is_checked_with_pyosmium(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_seed_pyosmium")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    calls = []
+
+    def fake_download(url, destination):
+        destination.write_text("pbf", encoding="utf8")
+
+    def fake_run(cmd, check=False, **kwargs):
+        calls.append(cmd)
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(ingest, "download_seed", fake_download)
+    monkeypatch.setattr(ingest.subprocess, "run", fake_run)
+
+    assert ingest.sync_pbf(cfg, ext) is True
+    assert calls == [["pyosmium-up-to-date", str(ingest.pbf_path(cfg, ext))]]
+
+
+def test_imposm_dsn_is_url_encoded():
+    ingest = load_ingest("ingest_imposm_dsn")
+
+    assert (
+        ingest.build_imposm_dsn("host=postgis port=5432 user=postgres password=secret dbname=osm")
+        == "postgis://postgres:secret@postgis:5432/osm"
+    )
+    assert (
+        ingest.build_imposm_dsn("postgresql://user:pass@db.example:5432/osm")
+        == "postgis://user:pass@db.example:5432/osm"
+    )
 
 
 def test_unchanged_state_skips_database_import(tmp_path, monkeypatch):
