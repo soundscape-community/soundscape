@@ -1,4 +1,4 @@
-# Copyright (c) Soundscape Community.
+# Copyright (c) Soundscape Community Contributors.
 # Licensed under the MIT License.
 """
 Defines methods used by ingest.py to populate the non_osm_data table.
@@ -15,8 +15,6 @@ import asyncio
 import logging
 
 import aiopg
-
-from kubescape import SoundscapeKube
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
@@ -86,11 +84,18 @@ def import_non_osm_data(csv_dir, osm_dsn, logger):
     loop.run_until_complete(import_non_osm_data_async(csv_dir, osm_dsn, logger))
 
 
+def build_postgres_dsn():
+    host = os.environ.get("POSTGIS_HOST", "localhost")
+    port = os.environ.get("POSTGIS_PORT", "5432")
+    user = os.environ.get("POSTGIS_USER", "osm")
+    password = os.environ.get("POSTGIS_PASSWORD", "osm")
+    dbname = os.environ.get("POSTGIS_DBNAME", "osm")
+    return f"host={host} port={port} user={user} password={password} dbname={dbname}"
+
+
 if __name__ == "__main__":
-    namespace = os.environ['NAMESPACE']
-    kube = SoundscapeKube(None, namespace)
     import_non_osm_data(
         csv_dir="/non_osm_data",
-        osm_dsn=kube.databases["osm"]["dsn2"],
+        osm_dsn=os.environ.get("DSN") or build_postgres_dsn(),
         logger=logger
     )

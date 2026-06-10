@@ -4,7 +4,7 @@
 
 FROM python:3.12-slim-bookworm AS final
 
-ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute IMPOSM_BINARY_RELEASE=0.11.1 IMPOSM_BINARY_SHA256=67b6c0e20379e8f3bf8eedaf0bc035420d4c38c54c9c698304a2bb3f9ec00260
+ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping IMPOSM_BINARY_RELEASE=0.11.1 IMPOSM_BINARY_SHA256=67b6c0e20379e8f3bf8eedaf0bc035420d4c38c54c9c698304a2bb3f9ec00260
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates wget tar gzip \
@@ -16,12 +16,12 @@ RUN apt-get update \
  && wget -q -O $INGEST/postgis-vt-util.sql https://raw.githubusercontent.com/mapbox/postgis-vt-util/master/postgis-vt-util.sql \
  && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt requirements_kubernetes.txt ingest.py ingest_non_osm.py kubescape.py extracts.json tilefunc.sql $INGEST/
+COPY requirements.txt ingest.py ingest_non_osm.py extracts.json tilefunc.sql $INGEST/
 COPY soundscape/other/mapping.yml $MAPPING/mapping.yml
 
-RUN python -m pip install --no-cache-dir -r $INGEST/requirements.txt -r $INGEST/requirements_kubernetes.txt
+RUN python -m pip install --no-cache-dir -r $INGEST/requirements.txt
 
-CMD ["sh", "-c", "rm -f $TILES/*.pbf && rm -rf $TILES/imposm_cache $TILES/imposm_expired $TILES/imposm_diff && exec python $INGEST/ingest.py \
+CMD ["sh", "-c", "mkdir -p $TILES && exec python $INGEST/ingest.py \
         --imposm $INGEST/imposm3/imposm \
         --mapping $MAPPING/mapping.yml \
         --where $GEN_REGIONS \
@@ -31,8 +31,8 @@ CMD ["sh", "-c", "rm -f $TILES/*.pbf && rm -rf $TILES/imposm_cache $TILES/imposm
         --pbfdir $TILES \
         --expiredir $TILES/imposm_expired \
         --verbose \
-        --updatemodel importloop \
-        --delay $LOOP_TIME \
+        --interval-days $INGEST_INTERVAL_DAYS \
+        --retry-days $INGEST_RETRY_DAYS \
         --telemetry \
         --extradatadir $EXTRADATA \
         $INGEST_FLAGS"]

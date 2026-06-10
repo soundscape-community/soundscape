@@ -6,14 +6,9 @@ telemetryKey: <SOME TELEMETRY KEY>
 containerRegistry: <YOUR FAVORITE CONTAINER REGISTRY>
 keyVault: <Your favorite keyvault>
 
-ingesterImage: soundscape/ingest
 tilesrvImage: soundscape/tilesrv
 
 config:
-  region: washington
-  regionStorage: 30Gi
-  loopInterval: 14400
-  ingestFlags: ""
   tileServerReplicas: 2
 
 resources: {}

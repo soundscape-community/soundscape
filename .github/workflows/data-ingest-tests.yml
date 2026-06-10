@@ -1,0 +1,28 @@
+name: Data ingest tests
+
+on:
+  pull_request:
+    paths:
+      - "svcs/data/**"
+      - ".github/workflows/data-ingest-tests.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "svcs/data/**"
+      - ".github/workflows/data-ingest-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r svcs/data/requirements.txt -r svcs/data/requirements-dev.txt
+      - name: Run ingest tests
+        run: python3 -m pytest svcs/data/tests
