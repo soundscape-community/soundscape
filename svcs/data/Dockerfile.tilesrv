@@ -1,14 +1,15 @@
 # Copyright (c) Microsoft Corporation.
+# Copyright (c) Soundscape Community Contributors.
 # Licensed under the MIT License.
 
-FROM mcr.microsoft.com/cbl-mariner/base/core:2.0 as installer
+FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS installer
 
 RUN tdnf -y update \
  && tdnf install -y dnf \
  && mkdir /staging \
- && dnf install -y --release=2.0 --installroot /staging prebuilt-ca-certificates python3 python3-pip
+ && dnf install -y --release=3.0 --installroot /staging prebuilt-ca-certificates python3 python3-pip
 
-FROM mcr.microsoft.com/cbl-mariner/distroless/base:2.0 as final
+FROM mcr.microsoft.com/azurelinux/distroless/base:3.0 AS final
 
 COPY --from=installer /staging/ /
 

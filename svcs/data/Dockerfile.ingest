@@ -1,14 +1,15 @@
 # Copyright (c) Microsoft Corporation.
+# Copyright (c) Soundscape Community Contributors.
 # Licensed under the MIT License.
 
-FROM mcr.microsoft.com/cbl-mariner/base/core:2.0 as installer
+FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS installer
 
 RUN tdnf -y update \
  && tdnf install -y dnf \
  && mkdir /staging \
- && dnf install -y --release=2.0 --installroot /staging prebuilt-ca-certificates wget python3 python3-pip python3-setuptools
+ && dnf install -y --release=3.0 --installroot /staging prebuilt-ca-certificates wget python3 python3-pip python3-setuptools
 
-FROM mcr.microsoft.com/cbl-mariner/base/core:2.0 as imposm
+FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS imposm
 
 ENV IMPOSM_BINARY_RELEASE=0.11.1
 
@@ -17,7 +18,7 @@ RUN tdnf -y update \
  && mkdir -p /ingest/imposm3 \
  && wget -q -O - https://github.com/omniscale/imposm3/releases/download/v$IMPOSM_BINARY_RELEASE/imposm-$IMPOSM_BINARY_RELEASE-linux-x86-64.tar.gz | tar -xz --strip-components=1 -C /ingest/imposm3
 
-FROM mcr.microsoft.com/cbl-mariner/distroless/base:2.0 as final
+FROM mcr.microsoft.com/azurelinux/distroless/base:3.0 AS final
 
 ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute
 
