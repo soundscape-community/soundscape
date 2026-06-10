@@ -2,7 +2,7 @@
 # data for Washington, DC, and runs a Soundscape GeoJSON tile server.
 #
 # the following variables can be set in .env:
-# GEN_REGIONS: set to exactly one location listed in extracts.json, or add one
+# GEN_REGION: set to one location listed in extracts.json, or add one
 # from the available downloads at http://download.geofabrik.de/
 # INGEST_INTERVAL_DAYS: The time between successful database updates in days.
 # INGEST_RETRY_DAYS: The time before retrying after a failed update in days.
@@ -59,7 +59,7 @@ services:
     build:
       dockerfile: Dockerfile.ingest
     environment:
-      - GEN_REGIONS=${GEN_REGIONS:-district-of-columbia}
+      - GEN_REGION=${GEN_REGION:-district-of-columbia}
       - INGEST_INTERVAL_DAYS=${INGEST_INTERVAL_DAYS:-7}
       - INGEST_RETRY_DAYS=${INGEST_RETRY_DAYS:-1}
       - POSTGIS_HOST=postgis

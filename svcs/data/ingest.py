@@ -115,7 +115,7 @@ def env_float(name: str, default: float) -> float:
 
 
 def env_regions() -> list[str] | None:
-    value = os.environ.get("GEN_REGIONS")
+    value = os.environ.get("GEN_REGION") or os.environ.get("GEN_REGIONS")
     if not value:
         return None
     return value.split()
@@ -206,7 +206,7 @@ def load_selected_extract(config: IngestConfig) -> dict:
     if len(selected) != 1:
         names = ", ".join(config.where) if config.where else "<none>"
         raise ValueError(
-            f"GEN_REGIONS/--where must resolve to exactly one extract; "
+            f"GEN_REGION/--where must resolve to exactly one extract; "
             f"matched {len(selected)} for {names}"
         )
     return selected[0]

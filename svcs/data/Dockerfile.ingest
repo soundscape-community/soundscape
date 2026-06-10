@@ -21,10 +21,10 @@ COPY soundscape/other/mapping.yml $MAPPING/mapping.yml
 
 RUN python -m pip install --no-cache-dir -r $INGEST/requirements.txt
 
-CMD ["sh", "-c", "mkdir -p $TILES && exec python $INGEST/ingest.py \
+CMD ["sh", "-c", "exec python $INGEST/ingest.py \
         --imposm $INGEST/imposm3/imposm \
         --mapping $MAPPING/mapping.yml \
-        --where $GEN_REGIONS \
+        --where $GEN_REGION \
         --extracts $INGEST/extracts.json \
         --cachedir $TILES/imposm_cache  \
         --diffdir $TILES/imposm_diff \

@@ -92,6 +92,17 @@ def test_single_region_validation(tmp_path):
         ingest.load_selected_extract(base_config(ingest, tmp_path, extracts=str(extracts_file), where=["a", "b"]))
 
 
+def test_region_env_prefers_singular_with_legacy_fallback(monkeypatch):
+    ingest = load_ingest("ingest_region_env")
+
+    monkeypatch.delenv("GEN_REGION", raising=False)
+    monkeypatch.setenv("GEN_REGIONS", "legacy")
+    assert ingest.env_regions() == ["legacy"]
+
+    monkeypatch.setenv("GEN_REGION", "current")
+    assert ingest.env_regions() == ["current"]
+
+
 def test_seed_download_uses_temp_file_and_atomic_rename(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_seed")
     destination = tmp_path / "region.osm.pbf"
