@@ -2,26 +2,16 @@
 # Copyright (c) Soundscape Community Contributors.
 # Licensed under the MIT License.
 
-FROM python:3.12-slim-bookworm AS assets
+FROM python:3.12-slim-bookworm AS final
 
-ENV IMPOSM_BINARY_RELEASE=0.11.1
+ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute IMPOSM_BINARY_RELEASE=0.11.1
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates wget tar gzip \
- && mkdir -p /ingest/imposm3 \
- && wget -q -O - https://github.com/omniscale/imposm3/releases/download/v$IMPOSM_BINARY_RELEASE/imposm-$IMPOSM_BINARY_RELEASE-linux-x86-64.tar.gz | tar -xz --strip-components=1 -C /ingest/imposm3 \
- && wget -q -O /ingest/postgis-vt-util.sql https://raw.githubusercontent.com/mapbox/postgis-vt-util/master/postgis-vt-util.sql \
+ && mkdir -p $INGEST/imposm3 \
+ && wget -q -O - https://github.com/omniscale/imposm3/releases/download/v$IMPOSM_BINARY_RELEASE/imposm-$IMPOSM_BINARY_RELEASE-linux-x86-64.tar.gz | tar -xz --strip-components=1 -C $INGEST/imposm3 \
+ && wget -q -O $INGEST/postgis-vt-util.sql https://raw.githubusercontent.com/mapbox/postgis-vt-util/master/postgis-vt-util.sql \
  && rm -rf /var/lib/apt/lists/*
-
-FROM python:3.12-slim-bookworm AS final
-
-ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute
-
-RUN apt-get update \
- && apt-get install -y --no-install-recommends wget \
- && rm -rf /var/lib/apt/lists/*
-
-COPY --from=assets /ingest/ $INGEST/
 
 COPY requirements.txt requirements_kubernetes.txt ingest.py ingest_non_osm.py kubescape.py extracts.json tilefunc.sql $INGEST/
 COPY soundscape/other/mapping.yml $MAPPING/mapping.yml
