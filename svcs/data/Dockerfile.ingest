@@ -2,37 +2,29 @@
 # Copyright (c) Soundscape Community Contributors.
 # Licensed under the MIT License.
 
-FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS installer
-
-RUN tdnf -y update \
- && tdnf install -y dnf \
- && mkdir /staging \
- && dnf install -y --release=3.0 --installroot /staging prebuilt-ca-certificates wget python3 python3-pip python3-setuptools
-
-FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS imposm
+FROM python:3.12-slim-bookworm AS assets
 
 ENV IMPOSM_BINARY_RELEASE=0.11.1
 
-RUN tdnf -y update \
- && tdnf install -y ca-certificates-microsoft wget tar gzip \
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates wget tar gzip \
  && mkdir -p /ingest/imposm3 \
- && wget -q -O - https://github.com/omniscale/imposm3/releases/download/v$IMPOSM_BINARY_RELEASE/imposm-$IMPOSM_BINARY_RELEASE-linux-x86-64.tar.gz | tar -xz --strip-components=1 -C /ingest/imposm3
+ && wget -q -O - https://github.com/omniscale/imposm3/releases/download/v$IMPOSM_BINARY_RELEASE/imposm-$IMPOSM_BINARY_RELEASE-linux-x86-64.tar.gz | tar -xz --strip-components=1 -C /ingest/imposm3 \
+ && wget -q -O /ingest/postgis-vt-util.sql https://raw.githubusercontent.com/mapbox/postgis-vt-util/master/postgis-vt-util.sql \
+ && rm -rf /var/lib/apt/lists/*
 
-FROM mcr.microsoft.com/azurelinux/distroless/base:3.0 AS final
+FROM python:3.12-slim-bookworm AS final
 
 ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping UPDATE_FREQUENCY=minute
 
-COPY --from=imposm /ingest/ $INGEST/
-COPY --from=installer /staging/ /
+COPY --from=assets /ingest/ $INGEST/
 
 COPY requirements.txt requirements_kubernetes.txt ingest.py ingest_non_osm.py kubescape.py extracts.json tilefunc.sql $INGEST/
 COPY soundscape/other/mapping.yml $MAPPING/mapping.yml
-RUN wget -q -O $INGEST/postgis-vt-util.sql https://raw.githubusercontent.com/mapbox/postgis-vt-util/master/postgis-vt-util.sql
 
-RUN /usr/bin/pip3 install -r $INGEST/requirements.txt -r $INGEST/requirements_kubernetes.txt
+RUN python -m pip install --no-cache-dir -r $INGEST/requirements.txt -r $INGEST/requirements_kubernetes.txt
 
-CMD  rm -f $TILES/*.pbf && rm -rf $TILES/imposm_cache $TILES/imposm_expired $TILES/imposm_diff && \
-    python3 $INGEST/ingest.py \
+CMD ["sh", "-c", "rm -f $TILES/*.pbf && rm -rf $TILES/imposm_cache $TILES/imposm_expired $TILES/imposm_diff && exec python $INGEST/ingest.py \
         --imposm $INGEST/imposm3/imposm \
         --mapping $MAPPING/mapping.yml \
         --where $GEN_REGIONS \
@@ -46,4 +38,4 @@ CMD  rm -f $TILES/*.pbf && rm -rf $TILES/imposm_cache $TILES/imposm_expired $TIL
         --delay $LOOP_TIME \
         --telemetry \
         --extradatadir $EXTRADATA \
-        $INGEST_FLAGS
+        $INGEST_FLAGS"]
