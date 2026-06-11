@@ -2,6 +2,7 @@
 # Licensed under the MIT License.
 
 import importlib.util
+import io
 import json
 import subprocess
 import sys
@@ -108,20 +109,52 @@ def test_seed_download_uses_temp_file_and_atomic_rename(tmp_path, monkeypatch):
     destination = tmp_path / "region.osm.pbf"
     seen = {}
 
-    def fake_urlretrieve(url, tmp):
-        seen["url"] = url
-        seen["tmp"] = Path(tmp)
-        assert not destination.exists()
-        Path(tmp).write_text("pbf", encoding="utf8")
+    class Response(io.BytesIO):
+        def close(self):
+            seen["closed"] = True
+            super().close()
 
-    monkeypatch.setattr(ingest.urllib.request, "urlretrieve", fake_urlretrieve)
+    def fake_urlopen(url, timeout):
+        seen["url"] = url
+        seen["timeout"] = timeout
+        assert not destination.exists()
+        return Response(b"pbf")
+
+    monkeypatch.setattr(ingest.urllib.request, "urlopen", fake_urlopen)
 
     ingest.download_seed("https://example.test/region.osm.pbf", destination)
 
     assert seen["url"] == "https://example.test/region.osm.pbf"
-    assert seen["tmp"].name == ".region.osm.pbf.download"
-    assert destination.read_text(encoding="utf8") == "pbf"
-    assert not seen["tmp"].exists()
+    assert seen["timeout"] == 60
+    assert seen["closed"] is True
+    assert destination.read_bytes() == b"pbf"
+    assert not (tmp_path / ".region.osm.pbf.download").exists()
+
+
+def test_seed_download_removes_temp_file_on_failure(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_seed_failure")
+    destination = tmp_path / "region.osm.pbf"
+
+    class BrokenResponse:
+        def read(self, size=-1):
+            tmp = tmp_path / ".region.osm.pbf.download"
+            assert tmp.exists()
+            raise TimeoutError("timed out")
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(
+        ingest.urllib.request,
+        "urlopen",
+        lambda url, timeout: BrokenResponse(),
+    )
+
+    with pytest.raises(TimeoutError):
+        ingest.download_seed("https://example.test/region.osm.pbf", destination)
+
+    assert not destination.exists()
+    assert not (tmp_path / ".region.osm.pbf.download").exists()
 
 
 def test_pyosmium_return_codes(tmp_path, monkeypatch):
@@ -143,6 +176,7 @@ def test_pyosmium_return_codes(tmp_path, monkeypatch):
     returns = [1, 1, 0]
 
     def fake_run_updates(cmd, check=False, **kwargs):
+        ingest.pbf_path(cfg, ext).write_text("pbf" + ("!" * len(returns)), encoding="utf8")
         return SimpleNamespace(returncode=returns.pop(0))
 
     monkeypatch.setattr(ingest.subprocess, "run", fake_run_updates)
@@ -151,6 +185,41 @@ def test_pyosmium_return_codes(tmp_path, monkeypatch):
 
     monkeypatch.setattr(ingest.subprocess, "run", lambda cmd, check=False, **kwargs: SimpleNamespace(returncode=2))
     with pytest.raises(ingest.PbfSyncError):
+        ingest.sync_pbf(cfg, ext)
+
+
+def test_pyosmium_update_without_pbf_marker_change_fails_fast(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_pyosmium_unchanged")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+
+    monkeypatch.setattr(
+        ingest.subprocess,
+        "run",
+        lambda cmd, check=False, **kwargs: SimpleNamespace(returncode=1),
+    )
+
+    with pytest.raises(ingest.PbfSyncError, match="PBF file did not change"):
+        ingest.sync_pbf(cfg, ext)
+
+
+def test_pyosmium_exceeding_max_passes_raises(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_pyosmium_max_passes")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+    markers = [{"pass": index} for index in range(10)]
+
+    monkeypatch.setattr(ingest, "MAX_PYOSMIUM_UPDATE_PASSES", 3)
+    monkeypatch.setattr(ingest, "pbf_marker", lambda path, selected: markers.pop(0))
+    monkeypatch.setattr(
+        ingest.subprocess,
+        "run",
+        lambda cmd, check=False, **kwargs: SimpleNamespace(returncode=1),
+    )
+
+    with pytest.raises(ingest.PbfSyncError, match="exceeded 3 update passes"):
         ingest.sync_pbf(cfg, ext)
 
 
@@ -226,11 +295,32 @@ def test_missing_or_changed_state_imports_database(tmp_path, monkeypatch):
     imported = []
 
     monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: False)
-    monkeypatch.setattr(ingest, "import_database", lambda config, selected: imported.append(selected["name"]))
+
+    def fake_import(config, selected):
+        imported.append(selected["name"])
+        return True
+
+    monkeypatch.setattr(ingest, "import_database", fake_import)
 
     assert ingest.run_cycle(cfg, ext) is True
     assert imported == ["district-of-columbia"]
     assert json.loads(ingest.state_path(cfg).read_text(encoding="utf8"))["pbf"] == path.name
+
+
+def test_skipimport_does_not_advance_ingest_state(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_skipimport_state")
+    cfg = base_config(ingest, tmp_path, skipimport=True)
+    ext = extract()
+    path = ingest.pbf_path(cfg, ext)
+    path.write_text("pbf", encoding="utf8")
+    imported = []
+
+    monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: False)
+    monkeypatch.setattr(ingest, "import_database", lambda config, selected: imported.append(selected["name"]) or False)
+
+    assert ingest.run_cycle(cfg, ext) is True
+    assert imported == ["district-of-columbia"]
+    assert not ingest.state_path(cfg).exists()
 
 
 def test_lock_wraps_update_and_import(tmp_path, monkeypatch):

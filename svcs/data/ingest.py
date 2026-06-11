@@ -9,6 +9,7 @@ import fcntl
 import json
 import logging
 import os
+import shutil
 import subprocess
 import time
 import urllib.parse
@@ -48,6 +49,8 @@ last_event_time = existing_or_new_metric(
 SECONDS_PER_DAY = 24 * 60 * 60
 STATE_FILE = "ingest-state.json"
 LOCK_FILE = "ingest.lock"
+SEED_DOWNLOAD_TIMEOUT_SECONDS = 60
+MAX_PYOSMIUM_UPDATE_PASSES = 500
 
 logger = logging.getLogger(__name__)
 
@@ -301,7 +304,12 @@ def download_seed(url: str, destination: Path):
     tmp = destination.with_name(f".{destination.name}.download")
     logger.info("Initial seed download from %s to %s", url, destination)
     try:
-        urllib.request.urlretrieve(url, tmp)
+        response = urllib.request.urlopen(url, timeout=SEED_DOWNLOAD_TIMEOUT_SECONDS)
+        try:
+            with open(tmp, "wb") as tmp_file:
+                shutil.copyfileobj(response, tmp_file)
+        finally:
+            response.close()
         os.replace(tmp, destination)
     finally:
         with contextlib.suppress(FileNotFoundError):
@@ -320,7 +328,8 @@ def sync_pbf(config: IngestConfig, extract: dict) -> bool:
         return seeded
 
     updated = False
-    while True:
+    for _ in range(MAX_PYOSMIUM_UPDATE_PASSES):
+        before_marker = pbf_marker(path, extract)
         result = subprocess.run(["pyosmium-up-to-date", str(path)], check=False, capture_output=True, text=True)
         stderr = getattr(result, "stderr", "") or ""
         stdout = getattr(result, "stdout", "") or ""
@@ -333,10 +342,14 @@ def sync_pbf(config: IngestConfig, extract: dict) -> bool:
         if result.returncode == 1:
             if "Traceback" in stderr or "ImportError" in stderr:
                 raise PbfSyncError(stderr.strip())
+            after_marker = pbf_marker(path, extract)
+            if after_marker == before_marker:
+                raise PbfSyncError("pyosmium-up-to-date reported updates but the PBF file did not change")
             updated = True
             logger.info("pyosmium applied diffs to %s; checking again", path)
             continue
         raise PbfSyncError(f"pyosmium-up-to-date failed with return code {result.returncode}")
+    raise PbfSyncError(f"pyosmium-up-to-date exceeded {MAX_PYOSMIUM_UPDATE_PASSES} update passes")
 
 
 def import_extract(config: IngestConfig, extract: dict, cache: str, incremental: bool):
@@ -427,7 +440,7 @@ def dsn_dbname(dsn: str) -> str:
     return os.environ.get("POSTGIS_DBNAME", "osm")
 
 
-async def provision_database_async(postgres_dsn: str, osm_dsn: str, dbname: str):
+async def provision_database_async(osm_dsn: str):
     async with aiopg.connect(dsn=osm_dsn) as conn:
         cursor = await conn.cursor()
         await cursor.execute("CREATE EXTENSION IF NOT EXISTS postgis")
@@ -463,7 +476,7 @@ def provision_database(config: IngestConfig):
                 logger.warning('Database "%s" already existed', dbname)
     finally:
         conn.close()
-    run_async(provision_database_async(config.dsn_init, config.dsn, dbname))
+    run_async(provision_database_async(config.dsn))
     end = datetime.now(timezone.utc)
     telemetry_log(config, "provision_database", start, end)
 
@@ -472,7 +485,8 @@ def provision_database_soundscape(config: IngestConfig):
     run_async(provision_database_soundscape_async(config.dsn))
 
 
-def import_database(config: IngestConfig, extract: dict):
+def import_database(config: IngestConfig, extract: dict) -> bool:
+    osm_imported = False
     try:
         if config.provision:
             logger.info("Provisioning database: START")
@@ -481,6 +495,7 @@ def import_database(config: IngestConfig, extract: dict):
 
         if not config.skipimport:
             import_extracts_and_write(config, extract, incremental=False)
+            osm_imported = True
 
         if config.extradatadir:
             try:
@@ -491,6 +506,7 @@ def import_database(config: IngestConfig, extract: dict):
                 raise NonOsmIngestError(str(exc)) from exc
 
         provision_database_soundscape(config)
+        return osm_imported
     except NonOsmIngestError:
         raise
     except Exception as exc:
@@ -544,8 +560,9 @@ def run_cycle(config: IngestConfig, extract: dict) -> bool:
 
         if should_import:
             logger.info("PBF state changed or missing; importing database")
-            import_database(config, extract)
-            write_state(state_path(config), marker)
+            osm_imported = import_database(config, extract)
+            if osm_imported:
+                write_state(state_path(config), marker)
         else:
             logger.info("PBF state unchanged; skipping database import")
 
