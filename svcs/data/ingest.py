@@ -54,6 +54,7 @@ SEED_DOWNLOAD_TIMEOUT_SECONDS = 60
 SEED_DOWNLOAD_PROGRESS_SECONDS = 5 * 60
 IMPOSM_LAST_STATE = "last.state.txt"
 NTFY_ERROR_THROTTLE_SECONDS = 60 * 60
+NON_OSM_IMPORT_INTERVAL_SECONDS = SECONDS_PER_DAY
 
 logger = logging.getLogger(__name__)
 
@@ -505,14 +506,19 @@ def import_database(config: IngestConfig, extract: dict) -> bool:
         raise DbIngestError(str(exc)) from exc
 
 
+def import_non_osm(config: IngestConfig):
+    if not config.extradatadir:
+        return
+    try:
+        logger.info("Importing non-OSM data: START")
+        import_non_osm_data(config.extradatadir, config.dsn, logger)
+        logger.info("Importing non-OSM data: DONE")
+    except Exception as exc:
+        raise NonOsmIngestError(str(exc)) from exc
+
+
 def run_startup_imports(config: IngestConfig):
-    if config.extradatadir:
-        try:
-            logger.info("Importing non-OSM data: START")
-            import_non_osm_data(config.extradatadir, config.dsn, logger)
-            logger.info("Importing non-OSM data: DONE")
-        except Exception as exc:
-            raise NonOsmIngestError(str(exc)) from exc
+    import_non_osm(config)
     try:
         provision_database_soundscape(config)
     except Exception as exc:
@@ -607,6 +613,23 @@ def stream_process_output(config: IngestConfig, region: str, pipe, alerted_error
         maybe_alert_imposm_output(config, region, message, alerted_errors, monotonic)
 
 
+def run_daily_non_osm_imports(
+    config: IngestConfig,
+    region: str,
+    stop_event: threading.Event,
+    interval_seconds: float = NON_OSM_IMPORT_INTERVAL_SECONDS,
+):
+    if not config.extradatadir:
+        return
+
+    while not stop_event.wait(interval_seconds):
+        try:
+            import_non_osm(config)
+        except NonOsmIngestError as exc:
+            logger.exception("Daily non-OSM import failed")
+            send_ntfy_notification(config, region, "non_osm_import", exc, interval_seconds)
+
+
 def run_imposm(config: IngestConfig, extract: dict, popen_factory=subprocess.Popen, monotonic=time.monotonic) -> int:
     command = [config.imposm, "run", "-config", str(imposm_config_path(config))]
     logger.info("Starting Imposm update supervisor: %s", command)
@@ -618,7 +641,16 @@ def run_imposm(config: IngestConfig, extract: dict, popen_factory=subprocess.Pop
         bufsize=1,
     )
     alerted_errors: dict[str, float] = {}
+    stop_event = threading.Event()
     threads = []
+    if config.extradatadir:
+        thread = threading.Thread(
+            target=run_daily_non_osm_imports,
+            args=(config, extract["name"], stop_event),
+            daemon=True,
+        )
+        thread.start()
+        threads.append(thread)
     for pipe in (process.stdout, process.stderr):
         if pipe is None:
             continue
@@ -630,6 +662,7 @@ def run_imposm(config: IngestConfig, extract: dict, popen_factory=subprocess.Pop
         thread.start()
         threads.append(thread)
     returncode = process.wait()
+    stop_event.set()
     for thread in threads:
         thread.join()
     exc = RuntimeError(f"imposm run exited with status {returncode}")

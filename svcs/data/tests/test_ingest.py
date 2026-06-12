@@ -406,6 +406,60 @@ def test_imposm_run_nonzero_exit_notifies_and_returns_status(tmp_path, monkeypat
     assert "status 2" in str(notifications[-1][3])
 
 
+def test_daily_non_osm_import_runs_once_per_interval_and_alerts_on_failure(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_daily_non_osm")
+    cfg = base_config(ingest, tmp_path, extradatadir="/non-osm", ntfy_topic="topic")
+    imports = []
+    notifications = []
+
+    class StopEvent:
+        def __init__(self):
+            self.waits = 0
+
+        def wait(self, seconds):
+            self.waits += 1
+            assert seconds == ingest.NON_OSM_IMPORT_INTERVAL_SECONDS
+            return self.waits > 2
+
+    def fake_import(config):
+        imports.append(config.extradatadir)
+        if len(imports) == 2:
+            raise ingest.NonOsmIngestError("daily import failed")
+
+    monkeypatch.setattr(ingest, "import_non_osm", fake_import)
+    monkeypatch.setattr(ingest, "send_ntfy_notification", lambda *args: notifications.append(args))
+
+    ingest.run_daily_non_osm_imports(cfg, "dc", StopEvent())
+
+    assert imports == ["/non-osm", "/non-osm"]
+    assert notifications[0][2] == "non_osm_import"
+    assert notifications[0][4] == ingest.NON_OSM_IMPORT_INTERVAL_SECONDS
+
+
+def test_imposm_run_starts_daily_non_osm_scheduler_when_configured(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_imposm_daily_non_osm")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), extradatadir="/non-osm")
+    ext = extract()
+    scheduler_calls = []
+
+    class Process:
+        def __init__(self):
+            self.stdout = io.StringIO("")
+            self.stderr = io.StringIO("")
+
+        def wait(self):
+            return 2
+
+    def fake_scheduler(config, region, stop_event):
+        scheduler_calls.append((config.extradatadir, region, stop_event.is_set()))
+
+    monkeypatch.setattr(ingest, "run_daily_non_osm_imports", fake_scheduler)
+    monkeypatch.setattr(ingest, "send_ntfy_notification", lambda *args: None)
+
+    assert ingest.run_imposm(cfg, ext, popen_factory=lambda command, **kwargs: Process()) == 2
+    assert scheduler_calls == [("/non-osm", "district-of-columbia", False)]
+
+
 def test_non_osm_direct_dsn_uses_compose_env(monkeypatch):
     spec = importlib.util.spec_from_file_location("non_osm_under_test", NON_OSM_PATH)
     module = importlib.util.module_from_spec(spec)
