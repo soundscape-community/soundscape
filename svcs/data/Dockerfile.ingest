@@ -4,7 +4,7 @@
 
 FROM python:3.12-slim-bookworm AS final
 
-ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping IMPOSM_BINARY_RELEASE=0.11.1 IMPOSM_BINARY_SHA256=67b6c0e20379e8f3bf8eedaf0bc035420d4c38c54c9c698304a2bb3f9ec00260
+ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping IMPOSM_BINARY_RELEASE=0.14.2 IMPOSM_BINARY_SHA256=0a41b91d0a0befe9f76d734faebd701bbe5dfd26ea4a3c96d69f44fc95a6fec2
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates wget tar gzip libexpat1 \

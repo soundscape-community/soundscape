@@ -6,11 +6,12 @@ import argparse
 import asyncio
 import contextlib
 import fcntl
+import hashlib
 import json
 import logging
 import os
-import shutil
 import subprocess
+import threading
 import time
 import urllib.parse
 import urllib.request
@@ -50,7 +51,9 @@ SECONDS_PER_DAY = 24 * 60 * 60
 STATE_FILE = "ingest-state.json"
 LOCK_FILE = "ingest.lock"
 SEED_DOWNLOAD_TIMEOUT_SECONDS = 60
-MAX_PYOSMIUM_UPDATE_PASSES = 500
+SEED_DOWNLOAD_PROGRESS_SECONDS = 5 * 60
+IMPOSM_LAST_STATE = "last.state.txt"
+NTFY_ERROR_THROTTLE_SECONDS = 60 * 60
 
 logger = logging.getLogger(__name__)
 
@@ -247,6 +250,10 @@ def pbf_path(config: IngestConfig, extract: dict) -> Path:
     return Path(config.pbfdir) / pbf_name(extract)
 
 
+def imposm_config_path(config: IngestConfig) -> Path:
+    return Path(config.config)
+
+
 def state_path(config: IngestConfig) -> Path:
     return Path(config.pbfdir) / STATE_FILE
 
@@ -299,136 +306,121 @@ def write_state(path: Path, marker: dict):
     os.replace(tmp, path)
 
 
-def download_seed(url: str, destination: Path):
+def response_content_length(response) -> int | None:
+    headers = getattr(response, "headers", None)
+    value = None
+    if headers is not None:
+        value = headers.get("Content-Length")
+    if value is None and hasattr(response, "getheader"):
+        value = response.getheader("Content-Length")
+    if not value:
+        return None
+    return int(value)
+
+
+def download_seed(url: str, destination: Path, sha256: str | None = None, monotonic=time.monotonic):
     destination.parent.mkdir(parents=True, exist_ok=True)
     tmp = destination.with_name(f".{destination.name}.download")
     logger.info("Initial seed download from %s to %s", url, destination)
     try:
         response = urllib.request.urlopen(url, timeout=SEED_DOWNLOAD_TIMEOUT_SECONDS)
         try:
+            expected_length = response_content_length(response)
+            actual_length = 0
+            digest = hashlib.sha256()
+            last_progress = monotonic()
             with open(tmp, "wb") as tmp_file:
-                shutil.copyfileobj(response, tmp_file)
+                while True:
+                    chunk = response.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    tmp_file.write(chunk)
+                    actual_length += len(chunk)
+                    if sha256:
+                        digest.update(chunk)
+                    now = monotonic()
+                    if now - last_progress >= SEED_DOWNLOAD_PROGRESS_SECONDS:
+                        logger.info("Downloaded %d bytes for %s", actual_length, destination)
+                        last_progress = now
         finally:
             response.close()
+        if expected_length is not None and actual_length != expected_length:
+            raise PbfSyncError(
+                f"seed download size mismatch for {destination}: expected {expected_length}, got {actual_length}"
+            )
+        if sha256 and digest.hexdigest().lower() != sha256.lower():
+            raise PbfSyncError(f"seed download checksum mismatch for {destination}")
         os.replace(tmp, destination)
     finally:
         with contextlib.suppress(FileNotFoundError):
             os.unlink(tmp)
 
 
-def sync_pbf(config: IngestConfig, extract: dict) -> bool:
-    path = pbf_path(config, extract)
-    seeded = False
-    if not path.exists():
-        download_seed(extract["url"], path)
-        seeded = True
-
-    if not config.sourceupdate:
-        logger.info("Source updates disabled; keeping existing PBF")
-        return seeded
-
-    updated = False
-    for _ in range(MAX_PYOSMIUM_UPDATE_PASSES):
-        before_marker = pbf_marker(path, extract)
-        result = subprocess.run(["pyosmium-up-to-date", str(path)], check=False, capture_output=True, text=True)
-        stderr = getattr(result, "stderr", "") or ""
-        stdout = getattr(result, "stdout", "") or ""
-        if stdout:
-            logger.info("pyosmium-up-to-date: %s", stdout.strip())
-        if stderr:
-            logger.warning("pyosmium-up-to-date: %s", stderr.strip())
-        if result.returncode == 0:
-            return seeded or updated
-        if result.returncode == 1:
-            if "Traceback" in stderr or "ImportError" in stderr:
-                raise PbfSyncError(stderr.strip())
-            after_marker = pbf_marker(path, extract)
-            if after_marker == before_marker:
-                raise PbfSyncError("pyosmium-up-to-date reported updates but the PBF file did not change")
-            updated = True
-            logger.info("pyosmium applied diffs to %s; checking again", path)
-            continue
-        raise PbfSyncError(f"pyosmium-up-to-date failed with return code {result.returncode}")
-    raise PbfSyncError(f"pyosmium-up-to-date exceeded {MAX_PYOSMIUM_UPDATE_PASSES} update passes")
+def has_diff_state(config: IngestConfig) -> bool:
+    cachedir = Path(config.cachedir)
+    diff_state = Path(config.diffdir) / IMPOSM_LAST_STATE
+    if not diff_state.is_file() or not cachedir.is_dir():
+        return False
+    try:
+        next(cachedir.iterdir())
+    except StopIteration:
+        return False
+    return True
 
 
-def import_extract(config: IngestConfig, extract: dict, cache: str, incremental: bool):
+def build_imposm_config(config: IngestConfig, extract: dict) -> dict:
+    return {
+        "cachedir": config.cachedir,
+        "diffdir": config.diffdir,
+        "connection": build_imposm_dsn(config.dsn),
+        "mapping": config.mapping,
+        "srid": 4326,
+        "replication_url": extract["replication_url"],
+        "replication_interval": extract.get("replication_interval", "24h"),
+        "expiretiles_dir": config.expiredir,
+        "schemas": {
+            "import": "import",
+            "production": "public",
+            "backup": "backup",
+        },
+    }
+
+
+def write_imposm_config(config: IngestConfig, extract: dict) -> Path:
+    path = imposm_config_path(config)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(f"{path.suffix}.tmp")
+    with open(tmp, "w", encoding="utf8") as config_file:
+        json.dump(build_imposm_config(config, extract), config_file, sort_keys=True, indent=2)
+        config_file.write("\n")
+    os.replace(tmp, path)
+    return path
+
+
+def import_extract(config: IngestConfig, extract: dict):
     pbf = pbf_name(extract)
     logger.info("Import of %s: START", pbf)
     start = datetime.now(timezone.utc)
     imposm_args = [
         config.imposm,
         "import",
-        "-mapping",
-        config.mapping,
+        "-config",
+        str(imposm_config_path(config)),
         "-read",
         str(Path(config.pbfdir) / pbf),
-        "-srid",
-        "4326",
-        cache,
-        "-cachedir",
-        config.cachedir,
+        "-write",
+        "-diff",
+        "-deployproduction",
+        "-overwritecache",
     ]
-    if incremental:
-        imposm_args.extend(["-diff", "-diffdir", config.diffdir])
     subprocess.run(imposm_args, check=True)
     end = datetime.now(timezone.utc)
     telemetry_log(config, "import_extract", start, end)
     logger.info("Import of %s: DONE", pbf)
 
 
-def import_write(config: IngestConfig, incremental: bool):
-    logger.info("Writing OSM tables: START")
-    start = datetime.now(timezone.utc)
-    imposm_args = [
-        config.imposm,
-        "import",
-        "-mapping",
-        config.mapping,
-        "-write",
-        "-connection",
-        build_imposm_dsn(config.dsn),
-        "-srid",
-        "4326",
-        "-cachedir",
-        config.cachedir,
-    ]
-    if incremental:
-        imposm_args.extend(["-diff", "-diffdir", config.diffdir])
-    subprocess.run(imposm_args, check=True)
-    end = datetime.now(timezone.utc)
-    telemetry_log(config, "import_write", start, end)
-    logger.info("Writing OSM tables: DONE")
-
-
-def import_rotate(config: IngestConfig, incremental: bool):
-    logger.info("Table rotation: START")
-    start = datetime.now(timezone.utc)
-    imposm_args = [
-        config.imposm,
-        "import",
-        "-mapping",
-        config.mapping,
-        "-connection",
-        build_imposm_dsn(config.dsn),
-        "-srid",
-        "4326",
-        "-deployproduction",
-        "-cachedir",
-        config.cachedir,
-    ]
-    if incremental:
-        imposm_args.extend(["-diff", "-diffdir", config.diffdir])
-    subprocess.run(imposm_args, check=True)
-    end = datetime.now(timezone.utc)
-    telemetry_log(config, "import_rotate", start, end)
-    logger.info("Table rotation: DONE")
-
-
-def import_extracts_and_write(config: IngestConfig, extract: dict, incremental: bool):
-    import_extract(config, extract, "-overwritecache", incremental)
-    import_write(config, incremental)
-    import_rotate(config, incremental)
+def import_extracts_and_write(config: IngestConfig, extract: dict):
+    import_extract(config, extract)
 
 
 def dsn_dbname(dsn: str) -> str:
@@ -494,7 +486,7 @@ def import_database(config: IngestConfig, extract: dict) -> bool:
             logger.info("Provisioning database: DONE")
 
         if not config.skipimport:
-            import_extracts_and_write(config, extract, incremental=False)
+            import_extracts_and_write(config, extract)
             osm_imported = True
 
         if config.extradatadir:
@@ -511,6 +503,47 @@ def import_database(config: IngestConfig, extract: dict) -> bool:
         raise
     except Exception as exc:
         raise DbIngestError(str(exc)) from exc
+
+
+def run_startup_imports(config: IngestConfig):
+    if config.extradatadir:
+        try:
+            logger.info("Importing non-OSM data: START")
+            import_non_osm_data(config.extradatadir, config.dsn, logger)
+            logger.info("Importing non-OSM data: DONE")
+        except Exception as exc:
+            raise NonOsmIngestError(str(exc)) from exc
+    try:
+        provision_database_soundscape(config)
+    except Exception as exc:
+        raise DbIngestError(str(exc)) from exc
+
+
+def bootstrap(config: IngestConfig, extract: dict) -> bool:
+    with ingest_lock(config):
+        write_imposm_config(config, extract)
+        if config.provision:
+            try:
+                logger.info("Provisioning database: START")
+                provision_database(config)
+                logger.info("Provisioning database: DONE")
+            except Exception as exc:
+                raise DbIngestError(str(exc)) from exc
+
+        if not has_diff_state(config):
+            if config.skipimport:
+                logger.info("Skipping initial OSM import because --skipimport is set")
+            else:
+                download_seed(extract["url"], pbf_path(config, extract), extract.get("sha256"))
+                try:
+                    import_extracts_and_write(config, extract)
+                except Exception as exc:
+                    raise DbIngestError(str(exc)) from exc
+        else:
+            logger.info("Existing Imposm diff state found; skipping seed download and initial import")
+
+        run_startup_imports(config)
+    return True
 
 
 def ntfy_url(config: IngestConfig) -> str:
@@ -544,71 +577,90 @@ def send_ntfy_notification(config: IngestConfig, region: str, stage: str, exc: E
         logger.warning("Failed to send ntfy notification", exc_info=True)
 
 
-def run_cycle(config: IngestConfig, extract: dict) -> bool:
-    start = datetime.now(timezone.utc)
-    with ingest_lock(config):
-        try:
-            pbf_changed = sync_pbf(config, extract)
-        except Exception as exc:
-            raise PbfSyncError(str(exc)) from exc
-
-        marker = pbf_marker(pbf_path(config, extract), extract)
-        prior_state = read_state(state_path(config))
-        should_import = pbf_changed or prior_state is None or any(
-            prior_state.get(key) != marker[key] for key in ("region", "url", "pbf", "size", "mtime_ns")
-        )
-
-        if should_import:
-            logger.info("PBF state changed or missing; importing database")
-            osm_imported = import_database(config, extract)
-            if osm_imported:
-                write_state(state_path(config), marker)
-        else:
-            logger.info("PBF state unchanged; skipping database import")
-
-    end = datetime.now(timezone.utc)
-    telemetry_log(config, "ingest_cycle", start, end)
-    return True
-
-
 def seconds_from_days(days: float) -> float:
     return days * SECONDS_PER_DAY
 
 
-def run_scheduler(config: IngestConfig, extract: dict, sleep=time.sleep, monotonic=time.monotonic):
-    interval_seconds = seconds_from_days(config.interval_days)
-    retry_seconds = seconds_from_days(config.retry_days)
-    next_run = monotonic()
+def maybe_alert_imposm_output(config: IngestConfig, region: str, line: str, alerted_errors: dict[str, float], monotonic):
+    if "[fatal]" in line:
+        send_ntfy_notification(config, region, "imposm_run", RuntimeError(line), 0)
+        return
+    if "[error]" not in line:
+        return
+    now = monotonic()
+    last_alert = alerted_errors.get(line)
+    if last_alert is not None and now - last_alert < NTFY_ERROR_THROTTLE_SECONDS:
+        return
+    alerted_errors[line] = now
+    send_ntfy_notification(config, region, "imposm_run", RuntimeError(line), 0)
 
-    while True:
-        now = monotonic()
-        if now < next_run:
-            sleep(next_run - now)
 
-        cycle_due = next_run
-        success = False
-        try:
-            success = run_cycle(config, extract)
-        except PbfSyncError as exc:
-            logger.exception("PBF sync failed")
-            send_ntfy_notification(config, extract["name"], "pbf_sync", exc, retry_seconds)
-        except NonOsmIngestError as exc:
-            logger.exception("Non-OSM import failed")
-            send_ntfy_notification(config, extract["name"], "non_osm_import", exc, retry_seconds)
-        except DbIngestError as exc:
-            logger.exception("Database ingest failed")
-            send_ntfy_notification(config, extract["name"], "database_ingest", exc, retry_seconds)
-        except Exception as exc:
-            logger.exception("Unexpected ingest cycle failure")
-            send_ntfy_notification(config, extract["name"], "cycle", exc, retry_seconds)
+def stream_process_output(config: IngestConfig, region: str, pipe, alerted_errors: dict[str, float], monotonic):
+    for line in iter(pipe.readline, ""):
+        message = line.rstrip()
+        if not message:
+            continue
+        if "[fatal]" in message or "[error]" in message:
+            logger.error("imposm run: %s", message)
+        else:
+            logger.info("imposm run: %s", message)
+        maybe_alert_imposm_output(config, region, message, alerted_errors, monotonic)
 
-        if config.run_once:
-            return success
 
-        delay = interval_seconds if success else retry_seconds
-        next_run = cycle_due + delay
-        if next_run <= monotonic():
-            next_run = monotonic()
+def run_imposm(config: IngestConfig, extract: dict, popen_factory=subprocess.Popen, monotonic=time.monotonic) -> int:
+    command = [config.imposm, "run", "-config", str(imposm_config_path(config))]
+    logger.info("Starting Imposm update supervisor: %s", command)
+    process = popen_factory(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        bufsize=1,
+    )
+    alerted_errors: dict[str, float] = {}
+    threads = []
+    for pipe in (process.stdout, process.stderr):
+        if pipe is None:
+            continue
+        thread = threading.Thread(
+            target=stream_process_output,
+            args=(config, extract["name"], pipe, alerted_errors, monotonic),
+            daemon=True,
+        )
+        thread.start()
+        threads.append(thread)
+    returncode = process.wait()
+    for thread in threads:
+        thread.join()
+    exc = RuntimeError(f"imposm run exited with status {returncode}")
+    send_ntfy_notification(config, extract["name"], "imposm_run_exit", exc, 0)
+    return returncode if returncode != 0 else 1
+
+
+def run_ingest(config: IngestConfig, extract: dict) -> int:
+    start = datetime.now(timezone.utc)
+    try:
+        bootstrap(config, extract)
+    except NonOsmIngestError as exc:
+        logger.exception("Non-OSM import failed")
+        send_ntfy_notification(config, extract["name"], "non_osm_import", exc, seconds_from_days(config.retry_days))
+        return 1
+    except DbIngestError as exc:
+        logger.exception("Database ingest failed")
+        send_ntfy_notification(config, extract["name"], "database_ingest", exc, seconds_from_days(config.retry_days))
+        return 1
+    except Exception as exc:
+        logger.exception("Unexpected bootstrap failure")
+        send_ntfy_notification(config, extract["name"], "bootstrap", exc, seconds_from_days(config.retry_days))
+        return 1
+    finally:
+        end = datetime.now(timezone.utc)
+        telemetry_log(config, "ingest_bootstrap", start, end)
+
+    if not config.sourceupdate:
+        logger.info("Source updates disabled; not starting imposm run")
+        return 0
+    return run_imposm(config, extract)
 
 
 def main(argv=None) -> int:
@@ -620,8 +672,7 @@ def main(argv=None) -> int:
 
     try:
         extract = load_selected_extract(config)
-        success = run_scheduler(config, extract)
-        return 0 if success else 1
+        return run_ingest(config, extract)
     finally:
         logging.shutdown()
 
