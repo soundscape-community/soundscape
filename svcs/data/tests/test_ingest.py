@@ -241,11 +241,18 @@ def write_diff_state(ingest, cfg):
     (Path(cfg.diffdir) / ingest.IMPOSM_LAST_STATE).write_text("sequenceNumber=1\n", encoding="utf8")
 
 
+def write_ingest_state(ingest, cfg, ext):
+    seed_path = ingest.pbf_path(cfg, ext)
+    seed_path.write_text("pbf", encoding="utf8")
+    ingest.write_state(ingest.state_path(cfg), ingest.pbf_marker(seed_path, ext))
+
+
 def test_existing_diff_state_starts_imposm_run_without_seed_download(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_existing_diff")
     cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
     ext = extract()
     write_diff_state(ingest, cfg)
+    write_ingest_state(ingest, cfg, ext)
     events = []
 
     monkeypatch.setattr(ingest, "download_seed", lambda *args: pytest.fail("seed should not be downloaded"))
@@ -255,6 +262,39 @@ def test_existing_diff_state_starts_imposm_run_without_seed_download(tmp_path, m
 
     assert ingest.run_ingest(cfg, ext) == 7
     assert events == ["soundscape", ("run", "district-of-columbia")]
+
+
+def test_region_change_downloads_seed_even_with_existing_diff_state(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_region_change")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
+    previous = extract("united-kingdom", "https://example.test/uk.osm.pbf")
+    selected = extract("world", "https://example.test/world.osm.pbf")
+    write_diff_state(ingest, cfg)
+    write_ingest_state(ingest, cfg, previous)
+    events = []
+
+    def fake_download(url, destination, sha256=None):
+        events.append(("download", url, destination.name))
+        destination.write_text("world pbf", encoding="utf8")
+
+    def fake_import(config, selected_extract):
+        events.append(("import", selected_extract["name"]))
+
+    monkeypatch.setattr(ingest, "download_seed", fake_download)
+    monkeypatch.setattr(ingest, "import_extracts_and_write", fake_import)
+    monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: events.append("soundscape"))
+
+    assert ingest.bootstrap(cfg, selected) is True
+    assert events == [
+        ("download", "https://example.test/world.osm.pbf", "world.osm.pbf"),
+        ("import", "world"),
+        "soundscape",
+    ]
+
+    state = ingest.read_state(ingest.state_path(cfg))
+    assert state["region"] == "world"
+    assert state["url"] == "https://example.test/world.osm.pbf"
+    assert state["pbf"] == "world.osm.pbf"
 
 
 def test_missing_diff_state_downloads_seed_and_imports(tmp_path, monkeypatch):
@@ -312,6 +352,7 @@ def test_no_sourceupdate_skips_imposm_run(tmp_path, monkeypatch):
     cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), sourceupdate=False)
     ext = extract()
     write_diff_state(ingest, cfg)
+    write_ingest_state(ingest, cfg, ext)
 
     monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: None)
     monkeypatch.setattr(ingest, "run_imposm", lambda *args: pytest.fail("imposm run should be skipped"))

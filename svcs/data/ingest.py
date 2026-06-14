@@ -295,6 +295,9 @@ def read_state(path: Path) -> dict | None:
             return json.load(state_file)
     except FileNotFoundError:
         return None
+    except json.JSONDecodeError:
+        logger.warning("Ignoring unreadable ingest state at %s", path)
+        return None
 
 
 def write_state(path: Path, marker: dict):
@@ -367,6 +370,34 @@ def has_diff_state(config: IngestConfig) -> bool:
     except StopIteration:
         return False
     return True
+
+
+def state_matches_extract(state: dict | None, extract: dict) -> bool:
+    if state is None:
+        return False
+    return (
+        state.get("region") == extract["name"]
+        and state.get("url") == extract["url"]
+        and state.get("pbf") == pbf_name(extract)
+    )
+
+
+def has_current_diff_state(config: IngestConfig, extract: dict) -> bool:
+    if not has_diff_state(config):
+        return False
+
+    state_file = state_path(config)
+    state = read_state(state_file)
+    if state_matches_extract(state, extract):
+        return True
+
+    previous = state.get("region", "<unknown>") if state else "<missing>"
+    logger.info(
+        "Existing Imposm diff state is not for selected region %s; previous region: %s",
+        extract["name"],
+        previous,
+    )
+    return False
 
 
 def build_imposm_config(config: IngestConfig, extract: dict) -> dict:
@@ -536,15 +567,17 @@ def bootstrap(config: IngestConfig, extract: dict) -> bool:
             except Exception as exc:
                 raise DbIngestError(str(exc)) from exc
 
-        if not has_diff_state(config):
+        if not has_current_diff_state(config, extract):
             if config.skipimport:
                 logger.info("Skipping initial OSM import because --skipimport is set")
             else:
-                download_seed(extract["url"], pbf_path(config, extract), extract.get("sha256"))
+                seed_path = pbf_path(config, extract)
+                download_seed(extract["url"], seed_path, extract.get("sha256"))
                 try:
                     import_extracts_and_write(config, extract)
                 except Exception as exc:
                     raise DbIngestError(str(exc)) from exc
+                write_state(state_path(config), pbf_marker(seed_path, extract))
         else:
             logger.info("Existing Imposm diff state found; skipping seed download and initial import")
 
