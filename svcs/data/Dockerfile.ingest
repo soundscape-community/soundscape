@@ -24,7 +24,7 @@ RUN python -m pip install --no-cache-dir -r $INGEST/requirements.txt
 CMD ["sh", "-c", "exec python $INGEST/ingest.py \
         --imposm $INGEST/imposm3/imposm \
         --mapping $MAPPING/mapping.yml \
-        --where $GEN_REGION \
+        --where \"${GEN_REGION}\" \
         --extracts $INGEST/extracts.json \
         --cachedir $TILES/imposm_cache  \
         --diffdir $TILES/imposm_diff \
