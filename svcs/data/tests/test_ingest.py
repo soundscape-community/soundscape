@@ -49,7 +49,7 @@ def base_config(ingest, tmp_path, **overrides):
         dsn_init="host=postgis dbname=postgres",
         dsn="host=postgis dbname=osm",
         verbose=False,
-        run_once=True,
+        run_once=False,
         ntfy_topic=None,
         ntfy_server="https://ntfy.sh",
         ntfy_token=None,
@@ -360,6 +360,19 @@ def test_no_sourceupdate_skips_imposm_run(tmp_path, monkeypatch):
     assert ingest.run_ingest(cfg, ext) == 0
 
 
+def test_run_once_skips_imposm_run(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_run_once")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), run_once=True)
+    ext = extract()
+    write_diff_state(ingest, cfg)
+    write_ingest_state(ingest, cfg, ext)
+
+    monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: None)
+    monkeypatch.setattr(ingest, "run_imposm", lambda *args: pytest.fail("imposm run should be skipped"))
+
+    assert ingest.run_ingest(cfg, ext) == 0
+
+
 def test_ntfy_payload_and_disabled_mode(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_ntfy")
     cfg = base_config(
@@ -445,6 +458,26 @@ def test_imposm_run_nonzero_exit_notifies_and_returns_status(tmp_path, monkeypat
     assert captured["kwargs"]["stderr"] == subprocess.PIPE
     assert notifications[-1][2] == "imposm_run_exit"
     assert "status 2" in str(notifications[-1][3])
+
+
+def test_imposm_run_zero_exit_returns_success_without_notification(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_imposm_clean_exit")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), ntfy_topic="topic")
+    ext = extract()
+    notifications = []
+
+    class Process:
+        def __init__(self):
+            self.stdout = io.StringIO("")
+            self.stderr = io.StringIO("")
+
+        def wait(self):
+            return 0
+
+    monkeypatch.setattr(ingest, "send_ntfy_notification", lambda *args: notifications.append(args))
+
+    assert ingest.run_imposm(cfg, ext, popen_factory=lambda command, **kwargs: Process()) == 0
+    assert notifications == []
 
 
 def test_daily_non_osm_import_runs_once_per_interval_and_alerts_on_failure(tmp_path, monkeypatch):

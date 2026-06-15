@@ -698,9 +698,12 @@ def run_imposm(config: IngestConfig, extract: dict, popen_factory=subprocess.Pop
     stop_event.set()
     for thread in threads:
         thread.join()
+    if returncode == 0:
+        logger.info("imposm run exited cleanly")
+        return 0
     exc = RuntimeError(f"imposm run exited with status {returncode}")
     send_ntfy_notification(config, extract["name"], "imposm_run_exit", exc, 0)
-    return returncode if returncode != 0 else 1
+    return returncode
 
 
 def run_ingest(config: IngestConfig, extract: dict) -> int:
@@ -723,6 +726,9 @@ def run_ingest(config: IngestConfig, extract: dict) -> int:
         end = datetime.now(timezone.utc)
         telemetry_log(config, "ingest_bootstrap", start, end)
 
+    if config.run_once:
+        logger.info("Run-once mode enabled; not starting imposm run")
+        return 0
     if not config.sourceupdate:
         logger.info("Source updates disabled; not starting imposm run")
         return 0
