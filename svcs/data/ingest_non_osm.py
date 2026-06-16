@@ -12,6 +12,7 @@ container, e.g.
 import os
 import csv
 import asyncio
+import contextlib
 import logging
 
 import aiopg
@@ -21,22 +22,24 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger()
 
 
+async def create_non_osm_data_table_async(cursor):
+    await cursor.execute(
+        """CREATE TABLE IF NOT EXISTS non_osm_data (
+            id BIGSERIAL PRIMARY KEY,
+            osm_id BIGINT,
+            feature_type TEXT,
+            feature_value TEXT,
+            properties HSTORE,
+            geom GEOMETRY(Point, 4326)
+        )"""
+    )
+
+
 async def provision_non_osm_data_async(osm_dsn):
     # Create a table into which we can load extra (non-OSM) data from CSV.
     async with aiopg.connect(dsn=osm_dsn) as conn:
         cursor = await conn.cursor()
-        await cursor.execute(
-            """CREATE TABLE IF NOT EXISTS non_osm_data (
-                id BIGSERIAL PRIMARY KEY,
-                osm_id BIGINT,
-                feature_type TEXT,
-                feature_value TEXT,
-                properties HSTORE,
-                geom GEOMETRY(Point, 4326)
-            )"""
-        )
-        # Remove any existing data
-        await cursor.execute("TRUNCATE non_osm_data")
+        await create_non_osm_data_table_async(cursor)
 
 
 async def import_non_osm_data_async(csv_dir, osm_dsn, logger):
@@ -47,36 +50,43 @@ async def import_non_osm_data_async(csv_dir, osm_dsn, logger):
 
     async with aiopg.connect(dsn=osm_dsn) as conn:
         cursor = await conn.cursor()
+        await cursor.execute("BEGIN")
+        try:
+            await create_non_osm_data_table_async(cursor)
+            await cursor.execute("TRUNCATE non_osm_data")
 
-        # Remove any existing data
-        await cursor.execute("TRUNCATE non_osm_data")
+            for csv_path in os.listdir(csv_dir):
+                with open(os.path.join(csv_dir, csv_path), encoding="utf8") as f:
+                    rowcount = 0
+                    for row in csv.DictReader(f):
+                        rowcount += 1
+                        osm_id += 1
 
-        for csv_path in os.listdir(csv_dir):
-            with open(os.path.join(csv_dir, csv_path), encoding="utf8") as f:
-                rowcount = 0
-                for row in csv.DictReader(f):
-                    rowcount += 1
-                    osm_id += 1
+                        # After removing required columns, the remaining fields in
+                        # the row will be stored in the item's properties field.
+                        feat_type = row.pop("feature_type")
+                        feat_value = row.pop('feature_value')
+                        long = float(row.pop("longitude"))
+                        lat = float(row.pop("latitude"))
+                        props = row
 
-                    # After removing required columns, the remaining fields in
-                    # the row will be stored in the item's properties field.
-                    feat_type = row.pop("feature_type")
-                    feat_value = row.pop('feature_value')
-                    long = float(row.pop("longitude"))
-                    lat = float(row.pop("latitude"))
-                    props = row
-
-                    await cursor.execute(
-                        """INSERT INTO non_osm_data
-                        (osm_id, feature_type, feature_value, properties, geom)
-                        VALUES
-                        (%s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))""", (
-                            osm_id, feat_type, feat_value, props, long, lat
+                        await cursor.execute(
+                            """INSERT INTO non_osm_data
+                            (osm_id, feature_type, feature_value, properties, geom)
+                            VALUES
+                            (%s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))""", (
+                                osm_id, feat_type, feat_value, props, long, lat
+                            )
                         )
-                    )
 
-                logger.info(
-                    "Loaded {0} rows from {1}".format(rowcount, csv_path))
+                    logger.info(
+                        "Loaded {0} rows from {1}".format(rowcount, csv_path))
+
+            await cursor.execute("COMMIT")
+        except Exception:
+            with contextlib.suppress(Exception):
+                await cursor.execute("ROLLBACK")
+            raise
 
 
 def import_non_osm_data(csv_dir, osm_dsn, logger):

@@ -28,6 +28,40 @@ def load_ingest(module_name="ingest_under_test"):
     return module
 
 
+def load_non_osm(module_name="non_osm_under_test"):
+    spec = importlib.util.spec_from_file_location(module_name, NON_OSM_PATH)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+class FakeAsyncCursor:
+    def __init__(self):
+        self.commands = []
+
+    async def execute(self, sql, params=None):
+        self.commands.append((sql, params))
+
+
+class FakeAiopgConnection:
+    def __init__(self, cursor):
+        self.cursor_instance = cursor
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        pass
+
+    async def cursor(self):
+        return self.cursor_instance
+
+
+def sql_texts(cursor):
+    return [" ".join(sql.split()) for sql, _ in cursor.commands]
+
+
 def base_config(ingest, tmp_path, **overrides):
     config = ingest.IngestConfig(
         skipimport=False,
@@ -535,10 +569,7 @@ def test_imposm_run_starts_daily_non_osm_scheduler_when_configured(tmp_path, mon
 
 
 def test_non_osm_direct_dsn_uses_compose_env(monkeypatch):
-    spec = importlib.util.spec_from_file_location("non_osm_under_test", NON_OSM_PATH)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules["non_osm_under_test"] = module
-    spec.loader.exec_module(module)
+    module = load_non_osm("non_osm_direct_dsn")
 
     monkeypatch.setenv("POSTGIS_HOST", "postgis")
     monkeypatch.setenv("POSTGIS_PORT", "5432")
@@ -547,6 +578,86 @@ def test_non_osm_direct_dsn_uses_compose_env(monkeypatch):
     monkeypatch.setenv("POSTGIS_DBNAME", "osm")
 
     assert module.build_postgres_dsn() == "host=postgis port=5432 user=postgres password=secret dbname=osm"
+
+
+def test_non_osm_provisioning_creates_schema_without_truncating(monkeypatch):
+    module = load_non_osm("non_osm_provision_schema")
+    cursor = FakeAsyncCursor()
+
+    monkeypatch.setattr(
+        module.aiopg,
+        "connect",
+        lambda dsn: FakeAiopgConnection(cursor),
+    )
+
+    module.asyncio.run(module.provision_non_osm_data_async("host=postgis dbname=osm"))
+
+    texts = sql_texts(cursor)
+    assert len(texts) == 1
+    assert "CREATE TABLE IF NOT EXISTS non_osm_data" in texts[0]
+    assert all("TRUNCATE non_osm_data" not in text for text in texts)
+
+
+def test_non_osm_import_reloads_data_in_transaction(tmp_path, monkeypatch):
+    module = load_non_osm("non_osm_import_transaction")
+    cursor = FakeAsyncCursor()
+    csv_path = tmp_path / "stops.csv"
+    csv_path.write_text(
+        "feature_type,feature_value,longitude,latitude,name\n"
+        "transit,stop,-122.1,47.6,Stop A\n",
+        encoding="utf8",
+    )
+
+    monkeypatch.setattr(
+        module.aiopg,
+        "connect",
+        lambda dsn: FakeAiopgConnection(cursor),
+    )
+
+    module.asyncio.run(module.import_non_osm_data_async(tmp_path, "host=postgis dbname=osm", module.logger))
+
+    texts = sql_texts(cursor)
+    assert texts[0] == "BEGIN"
+    assert "CREATE TABLE IF NOT EXISTS non_osm_data" in texts[1]
+    assert texts[2] == "TRUNCATE non_osm_data"
+    assert "INSERT INTO non_osm_data" in texts[3]
+    assert texts[-1] == "COMMIT"
+    assert all("ROLLBACK" not in text for text in texts)
+    assert cursor.commands[3][1] == (
+        10**17 + 1,
+        "transit",
+        "stop",
+        {"name": "Stop A"},
+        -122.1,
+        47.6,
+    )
+
+
+def test_non_osm_import_rolls_back_on_failure(tmp_path, monkeypatch):
+    module = load_non_osm("non_osm_import_rollback")
+    cursor = FakeAsyncCursor()
+    csv_path = tmp_path / "stops.csv"
+    csv_path.write_text(
+        "feature_type,feature_value,longitude,latitude\n"
+        "transit,stop,not-a-number,47.6\n",
+        encoding="utf8",
+    )
+
+    monkeypatch.setattr(
+        module.aiopg,
+        "connect",
+        lambda dsn: FakeAiopgConnection(cursor),
+    )
+
+    with pytest.raises(ValueError):
+        module.asyncio.run(module.import_non_osm_data_async(tmp_path, "host=postgis dbname=osm", module.logger))
+
+    texts = sql_texts(cursor)
+    assert texts[0] == "BEGIN"
+    assert "CREATE TABLE IF NOT EXISTS non_osm_data" in texts[1]
+    assert texts[2] == "TRUNCATE non_osm_data"
+    assert texts[-1] == "ROLLBACK"
+    assert all("COMMIT" not in text for text in texts)
 
 
 def test_import_database_wraps_subprocess_failures_as_db_errors(tmp_path, monkeypatch):
