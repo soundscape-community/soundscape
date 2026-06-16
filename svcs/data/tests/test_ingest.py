@@ -639,10 +639,12 @@ def test_non_osm_import_reloads_data_in_transaction(tmp_path, monkeypatch):
     assert texts[0] == "BEGIN"
     assert "CREATE TABLE IF NOT EXISTS non_osm_data" in texts[1]
     assert texts[2] == "TRUNCATE non_osm_data"
-    assert "INSERT INTO non_osm_data" in texts[3]
+    assert texts[3] == "SAVEPOINT non_osm_file"
+    assert "INSERT INTO non_osm_data" in texts[4]
+    assert texts[5] == "RELEASE SAVEPOINT non_osm_file"
     assert texts[-1] == "COMMIT"
     assert all("ROLLBACK" not in text for text in texts)
-    assert cursor.commands[3][1] == (
+    assert cursor.commands[4][1] == (
         10**17 + 1,
         "transit",
         "stop",
@@ -677,13 +679,19 @@ def test_non_osm_import_skips_non_csv_entries(tmp_path, monkeypatch):
     assert texts[-1] == "COMMIT"
 
 
-def test_non_osm_import_rolls_back_on_failure(tmp_path, monkeypatch):
-    module = load_non_osm("non_osm_import_rollback")
+def test_non_osm_import_reports_bad_file_after_committing_other_files(tmp_path, monkeypatch):
+    module = load_non_osm("non_osm_import_partial_failure")
     cursor = FakeAsyncCursor()
-    csv_path = tmp_path / "stops.csv"
-    csv_path.write_text(
+    bad_path = tmp_path / "bad.csv"
+    bad_path.write_text(
         "feature_type,feature_value,longitude,latitude\n"
         "transit,stop,not-a-number,47.6\n",
+        encoding="utf8",
+    )
+    good_path = tmp_path / "good.csv"
+    good_path.write_text(
+        "feature_type,feature_value,longitude,latitude,name\n"
+        "transit,stop,-122.1,47.6,Stop A\n",
         encoding="utf8",
     )
 
@@ -693,15 +701,21 @@ def test_non_osm_import_rolls_back_on_failure(tmp_path, monkeypatch):
         lambda dsn: FakeAiopgConnection(cursor),
     )
 
-    with pytest.raises(ValueError):
+    with pytest.raises(RuntimeError, match="successful files were committed.*bad.csv.*ValueError"):
         module.asyncio.run(module.import_non_osm_data_async(tmp_path, "host=postgis dbname=osm", module.logger))
 
     texts = sql_texts(cursor)
     assert texts[0] == "BEGIN"
     assert "CREATE TABLE IF NOT EXISTS non_osm_data" in texts[1]
     assert texts[2] == "TRUNCATE non_osm_data"
-    assert texts[-1] == "ROLLBACK"
-    assert all("COMMIT" not in text for text in texts)
+    assert texts[3] == "SAVEPOINT non_osm_file"
+    assert texts[4] == "ROLLBACK TO SAVEPOINT non_osm_file"
+    assert texts[5] == "RELEASE SAVEPOINT non_osm_file"
+    assert texts[6] == "SAVEPOINT non_osm_file"
+    assert "INSERT INTO non_osm_data" in texts[7]
+    assert texts[8] == "RELEASE SAVEPOINT non_osm_file"
+    assert texts[-1] == "COMMIT"
+    assert all(text != "ROLLBACK" for text in texts)
 
 
 def test_import_database_wraps_subprocess_failures_as_db_errors(tmp_path, monkeypatch):
