@@ -197,8 +197,8 @@ def test_seed_download_removes_temp_file_on_failure(tmp_path, monkeypatch):
     assert not (tmp_path / ".region.osm.pbf.download").exists()
 
 
-def test_bootstrap_import_does_not_call_pyosmium(tmp_path, monkeypatch):
-    ingest = load_ingest("ingest_no_pyosmium")
+def test_bootstrap_import_runs_imposm_import(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_imposm_import")
     cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
     ext = extract()
     calls = []
@@ -215,7 +215,6 @@ def test_bootstrap_import_does_not_call_pyosmium(tmp_path, monkeypatch):
     monkeypatch.setattr(ingest.subprocess, "run", fake_run)
 
     assert ingest.bootstrap(cfg, ext) is True
-    assert all(cmd[0] != "pyosmium-up-to-date" for cmd in calls)
     assert calls == [
         [
             "imposm",

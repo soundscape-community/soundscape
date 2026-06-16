@@ -5,7 +5,8 @@ The services for Soundscape consist of:
 * A tile service that constructs GeoJSON tiles on demand from the PostGIS database
 * Additional services which could not be released to open source.
 
-Kubernetes is used for installation/orchestration of these services.  A HELM chart for the service is (provided)[../svcs/data/soundscape].
+The current local service stack is orchestrated with Docker Compose. See
+[`svcs/data/docker-compose.yml`](../svcs/data/docker-compose.yml).
 
 # Ingester automation
 
