@@ -16,6 +16,7 @@ import contextlib
 import logging
 
 import aiopg
+import psycopg2.extensions
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
@@ -56,7 +57,11 @@ async def import_non_osm_data_async(csv_dir, osm_dsn, logger):
             await cursor.execute("TRUNCATE non_osm_data")
 
             for csv_path in os.listdir(csv_dir):
-                with open(os.path.join(csv_dir, csv_path), encoding="utf8") as f:
+                full_path = os.path.join(csv_dir, csv_path)
+                if not os.path.isfile(full_path) or not csv_path.lower().endswith(".csv"):
+                    continue
+
+                with open(full_path, encoding="utf8") as f:
                     rowcount = 0
                     for row in csv.DictReader(f):
                         rowcount += 1
@@ -99,7 +104,13 @@ def build_postgres_dsn():
     user = os.environ.get("POSTGIS_USER", "osm")
     password = os.environ.get("POSTGIS_PASSWORD", "osm")
     dbname = os.environ.get("POSTGIS_DBNAME", "osm")
-    return f"host={host} port={port} user={user} password={password} dbname={dbname}"
+    return psycopg2.extensions.make_dsn(
+        host=host,
+        port=port,
+        user=user,
+        password=password,
+        dbname=dbname,
+    )
 
 
 if __name__ == "__main__":

@@ -579,6 +579,26 @@ def test_non_osm_direct_dsn_uses_compose_env(monkeypatch):
     assert module.build_postgres_dsn() == "host=postgis port=5432 user=postgres password=secret dbname=osm"
 
 
+def test_non_osm_direct_dsn_escapes_libpq_values(monkeypatch):
+    module = load_non_osm("non_osm_direct_dsn_escaped")
+
+    monkeypatch.setenv("POSTGIS_HOST", "post gis")
+    monkeypatch.setenv("POSTGIS_PORT", "5432")
+    monkeypatch.setenv("POSTGIS_USER", "post gres")
+    monkeypatch.setenv("POSTGIS_PASSWORD", "sec ret'\\")
+    monkeypatch.setenv("POSTGIS_DBNAME", "os m")
+
+    parsed = module.psycopg2.extensions.parse_dsn(module.build_postgres_dsn())
+
+    assert parsed == {
+        "user": "post gres",
+        "password": "sec ret'\\",
+        "dbname": "os m",
+        "host": "post gis",
+        "port": "5432",
+    }
+
+
 def test_non_osm_provisioning_creates_schema_without_truncating(monkeypatch):
     module = load_non_osm("non_osm_provision_schema")
     cursor = FakeAsyncCursor()
@@ -630,6 +650,31 @@ def test_non_osm_import_reloads_data_in_transaction(tmp_path, monkeypatch):
         -122.1,
         47.6,
     )
+
+
+def test_non_osm_import_skips_non_csv_entries(tmp_path, monkeypatch):
+    module = load_non_osm("non_osm_import_csv_filter")
+    cursor = FakeAsyncCursor()
+    csv_path = tmp_path / "stops.CSV"
+    csv_path.write_text(
+        "feature_type,feature_value,longitude,latitude,name\n"
+        "transit,stop,-122.1,47.6,Stop A\n",
+        encoding="utf8",
+    )
+    (tmp_path / ".DS_Store").write_text("not,csv\n", encoding="utf8")
+    (tmp_path / "nested.csv").mkdir()
+
+    monkeypatch.setattr(
+        module.aiopg,
+        "connect",
+        lambda dsn: FakeAiopgConnection(cursor),
+    )
+
+    module.asyncio.run(module.import_non_osm_data_async(tmp_path, "host=postgis dbname=osm", module.logger))
+
+    texts = sql_texts(cursor)
+    assert sum("INSERT INTO non_osm_data" in text for text in texts) == 1
+    assert texts[-1] == "COMMIT"
 
 
 def test_non_osm_import_rolls_back_on_failure(tmp_path, monkeypatch):
