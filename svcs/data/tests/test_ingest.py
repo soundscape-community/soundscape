@@ -107,16 +107,9 @@ def write_extracts(path, extracts):
 
 
 def test_import_is_safe(monkeypatch):
-    called = False
+    monkeypatch.setattr(sys, "argv", ["ingest.py", "--invalid-argument"])
 
-    def fail_if_called(*args, **kwargs):
-        nonlocal called
-        called = True
-
-    monkeypatch.setattr(sys, "argv", ["ingest.py"])
-    ingest = load_ingest("ingest_import_safe")
-    monkeypatch.setattr(ingest, "main", fail_if_called)
-    assert called is False
+    load_ingest("ingest_import_safe")
 
 
 def test_single_region_validation(tmp_path):
