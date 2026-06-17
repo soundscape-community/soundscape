@@ -2,9 +2,15 @@
 # data for Washington, DC, and runs a Soundscape GeoJSON tile server.
 #
 # the following variables can be set in .env:
-# GEN_REGIONS: set to any location listed in extracts.json, or add new ones
+# GEN_REGION: set to one location listed in extracts.json, or add one
 # from the available downloads at http://download.geofabrik.de/
-# LOOP_TIME: The time between database updates in seconds.
+# INGEST_INTERVAL_DAYS: The time between successful database updates in days.
+# INGEST_RETRY_DAYS: The time before retrying after a failed update in days.
+# INGEST_PBF_REUSE_DAYS: Reuse an existing bootstrap PBF if it is this recent.
+# NTFY_TOPIC: Optional ntfy.sh topic for ingest failure notifications.
+# NTFY_SERVER: Optional ntfy server, default https://ntfy.sh.
+# NTFY_TOKEN: Optional ntfy bearer token.
+# NTFY_PRIORITY: Optional ntfy priority, default high.
 #
 # To run:
 #   $ docker-compose up --build
@@ -30,8 +36,6 @@
 # docker compose rm tilesrv-blue
 #
 # For the next update swap blue and green in the instructions above.
-version: '3.8'
-
 volumes:
   postgis:
   tiles:
@@ -56,14 +60,19 @@ services:
     build:
       dockerfile: Dockerfile.ingest
     environment:
-      - GEN_REGIONS=${GEN_REGIONS:-district-of-columbia}
-      - LOOP_TIME=${LOOP_TIME:-14400}
-      - NAMESPACE=soundscape
+      - GEN_REGION=${GEN_REGION:-district-of-columbia}
+      - INGEST_INTERVAL_DAYS=${INGEST_INTERVAL_DAYS:-7}
+      - INGEST_RETRY_DAYS=${INGEST_RETRY_DAYS:-1}
+      - INGEST_PBF_REUSE_DAYS=${INGEST_PBF_REUSE_DAYS:-5}
       - POSTGIS_HOST=postgis
       - POSTGIS_PORT=5432
       - POSTGIS_USER=postgres
       - POSTGIS_PASSWORD=secret
       - POSTGIS_DBNAME=osm
+      - NTFY_TOPIC=${NTFY_TOPIC:-}
+      - NTFY_SERVER=${NTFY_SERVER:-https://ntfy.sh}
+      - NTFY_TOKEN=${NTFY_TOKEN:-}
+      - NTFY_PRIORITY=${NTFY_PRIORITY:-high}
     volumes:
       - tiles:/tiles
       - ./non_osm_data:/non_osm_data
