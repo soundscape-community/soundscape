@@ -78,6 +78,7 @@ class IngestConfig:
     telemetry: bool
     interval_days: float
     retry_days: float
+    pbf_reuse_days: float
     extracts: str
     mapping: str
     imposm: str
@@ -160,6 +161,7 @@ def parse_args(argv=None) -> IngestConfig:
     parser.add_argument("--telemetry", action="store_true", help="generate telemetry")
     parser.add_argument("--interval-days", type=float, default=env_float("INGEST_INTERVAL_DAYS", 7))
     parser.add_argument("--retry-days", type=float, default=env_float("INGEST_RETRY_DAYS", 1))
+    parser.add_argument("--pbf-reuse-days", type=float, default=env_float("INGEST_PBF_REUSE_DAYS", 5))
     parser.add_argument("--run-once", action="store_true", help="run one ingest cycle and exit")
 
     parser.add_argument("--extracts", type=str, default="extracts.json", help="extracts file")
@@ -187,6 +189,8 @@ def parse_args(argv=None) -> IngestConfig:
         parser.error("--interval-days must be greater than zero")
     if args.retry_days <= 0:
         parser.error("--retry-days must be greater than zero")
+    if args.pbf_reuse_days <= 0:
+        parser.error("--pbf-reuse-days must be greater than zero")
 
     return IngestConfig(
         skipimport=args.skipimport,
@@ -194,6 +198,7 @@ def parse_args(argv=None) -> IngestConfig:
         telemetry=args.telemetry,
         interval_days=args.interval_days,
         retry_days=args.retry_days,
+        pbf_reuse_days=args.pbf_reuse_days,
         extracts=args.extracts,
         mapping=args.mapping,
         imposm=args.imposm,
@@ -358,6 +363,18 @@ def download_seed(url: str, destination: Path, sha256: str | None = None, monoto
     finally:
         with contextlib.suppress(FileNotFoundError):
             os.unlink(tmp)
+
+
+def pbf_is_recent(path: Path, max_age_days: float, now=time.time) -> bool:
+    try:
+        stat = path.stat()
+    except FileNotFoundError:
+        return False
+    if not path.is_file():
+        return False
+    max_age_seconds = seconds_from_days(max_age_days)
+    age_seconds = now() - stat.st_mtime
+    return age_seconds <= max_age_seconds
 
 
 def has_diff_state(config: IngestConfig) -> bool:
@@ -572,7 +589,14 @@ def bootstrap(config: IngestConfig, extract: dict) -> bool:
                 logger.info("Skipping initial OSM import because --skipimport is set")
             else:
                 seed_path = pbf_path(config, extract)
-                download_seed(extract["url"], seed_path, extract.get("sha256"))
+                if pbf_is_recent(seed_path, config.pbf_reuse_days):
+                    logger.info(
+                        "Reusing recent bootstrap PBF at %s; max age %.2f days",
+                        seed_path,
+                        config.pbf_reuse_days,
+                    )
+                else:
+                    download_seed(extract["url"], seed_path, extract.get("sha256"))
                 try:
                     import_extracts_and_write(config, extract)
                 except Exception as exc:

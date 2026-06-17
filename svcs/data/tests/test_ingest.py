@@ -4,8 +4,10 @@
 import importlib.util
 import io
 import json
+import os
 import subprocess
 import sys
+import time
 from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
@@ -69,6 +71,7 @@ def base_config(ingest, tmp_path, **overrides):
         telemetry=False,
         interval_days=7,
         retry_days=1,
+        pbf_reuse_days=5,
         extracts=str(tmp_path / "extracts.json"),
         mapping="mapping.yml",
         imposm="imposm",
@@ -135,6 +138,17 @@ def test_region_env_prefers_singular_with_legacy_fallback(monkeypatch):
 
     monkeypatch.setenv("GEN_REGION", "current")
     assert ingest.env_regions() == ["current"]
+
+
+def test_pbf_reuse_days_defaults_to_env_and_cli_overrides(monkeypatch):
+    ingest = load_ingest("ingest_pbf_reuse_days")
+
+    monkeypatch.setenv("INGEST_PBF_REUSE_DAYS", "3.5")
+    assert ingest.parse_args(["--where", "district-of-columbia"]).pbf_reuse_days == 3.5
+    assert ingest.parse_args(["--where", "district-of-columbia", "--pbf-reuse-days", "2"]).pbf_reuse_days == 2
+
+    with pytest.raises(SystemExit):
+        ingest.parse_args(["--where", "district-of-columbia", "--pbf-reuse-days", "0"])
 
 
 def test_seed_download_uses_temp_file_and_atomic_rename(tmp_path, monkeypatch):
@@ -323,11 +337,41 @@ def test_region_change_downloads_seed_even_with_existing_diff_state(tmp_path, mo
     assert state["pbf"] == "world.osm.pbf"
 
 
-def test_missing_diff_state_downloads_seed_and_imports(tmp_path, monkeypatch):
+def test_recent_pbf_skips_download_but_still_imports(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_recent_pbf")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
+    ext = extract()
+    seed_path = ingest.pbf_path(cfg, ext)
+    seed_path.write_text("recent pbf", encoding="utf8")
+    events = []
+
+    def fake_import(config, selected):
+        events.append(("import", selected["name"]))
+
+    monkeypatch.setattr(ingest, "download_seed", lambda *args: pytest.fail("recent seed should not be downloaded"))
+    monkeypatch.setattr(ingest, "import_extracts_and_write", fake_import)
+    monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: events.append("soundscape"))
+
+    assert ingest.bootstrap(cfg, ext) is True
+    assert events == [
+        ("import", "district-of-columbia"),
+        "soundscape",
+    ]
+
+    state = ingest.read_state(ingest.state_path(cfg))
+    assert state["region"] == "district-of-columbia"
+    assert state["url"] == "https://example.test/district.osm.pbf"
+    assert state["pbf"] == "district.osm.pbf"
+
+
+def test_stale_pbf_downloads_seed_and_imports(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_missing_diff")
     cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
     ext = extract()
-    ingest.pbf_path(cfg, ext).write_text("stale pbf", encoding="utf8")
+    seed_path = ingest.pbf_path(cfg, ext)
+    seed_path.write_text("stale pbf", encoding="utf8")
+    stale_time = time.time() - ingest.seconds_from_days(cfg.pbf_reuse_days + 1)
+    os.utime(seed_path, (stale_time, stale_time))
     events = []
 
     def fake_download(url, destination, sha256=None):
