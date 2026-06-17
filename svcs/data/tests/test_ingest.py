@@ -399,6 +399,44 @@ def test_run_once_skips_imposm_run(tmp_path, monkeypatch):
     assert ingest.run_ingest(cfg, ext) == 0
 
 
+def test_supervise_ingest_retries_failed_service_cycle(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_supervise_retry")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), retry_days=0.25)
+    ext = extract()
+    attempts = []
+    sleeps = []
+
+    def fake_load(selected_config):
+        assert selected_config is cfg
+        return ext
+
+    def fake_run(selected_config, selected_extract):
+        assert selected_config is cfg
+        assert selected_extract is ext
+        attempts.append(len(attempts))
+        return 1 if len(attempts) == 1 else 0
+
+    monkeypatch.setattr(ingest, "load_selected_extract", fake_load)
+    monkeypatch.setattr(ingest, "run_ingest", fake_run)
+
+    assert ingest.supervise_ingest(cfg, sleeper=sleeps.append) == 0
+    assert attempts == [0, 1]
+    assert sleeps == [ingest.seconds_from_days(0.25)]
+
+
+def test_supervise_ingest_run_once_returns_failed_cycle(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_supervise_run_once_failure")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), run_once=True)
+    ext = extract()
+    sleeps = []
+
+    monkeypatch.setattr(ingest, "load_selected_extract", lambda config: ext)
+    monkeypatch.setattr(ingest, "run_ingest", lambda config, selected: 1)
+
+    assert ingest.supervise_ingest(cfg, sleeper=sleeps.append) == 1
+    assert sleeps == []
+
+
 def test_ntfy_payload_and_disabled_mode(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_ntfy")
     cfg = base_config(

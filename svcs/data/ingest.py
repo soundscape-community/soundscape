@@ -735,6 +735,21 @@ def run_ingest(config: IngestConfig, extract: dict) -> int:
     return run_imposm(config, extract)
 
 
+def supervise_ingest(config: IngestConfig, sleeper=time.sleep) -> int:
+    extract = load_selected_extract(config)
+    retry_seconds = seconds_from_days(config.retry_days)
+    while True:
+        status = run_ingest(config, extract)
+        if status == 0 or config.run_once:
+            return status
+        logger.warning(
+            "Ingest cycle failed with status %s; retrying in %.2f hours",
+            status,
+            retry_seconds / 3600,
+        )
+        sleeper(retry_seconds)
+
+
 def main(argv=None) -> int:
     config = parse_args(argv)
     configure_logging(config.verbose)
@@ -743,8 +758,7 @@ def main(argv=None) -> int:
         start_http_server(8000)
 
     try:
-        extract = load_selected_extract(config)
-        return run_ingest(config, extract)
+        return supervise_ingest(config)
     finally:
         logging.shutdown()
 
