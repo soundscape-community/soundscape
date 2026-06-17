@@ -4454,9 +4454,9 @@
 "route_detail.action.start_reversed_route" = "Iniciar ruta de regreso";
 "faq.tip.reverse_route" = "Cuando selecciones \"Iniciar ruta de regreso\" en la pantalla \"Detalles de la ruta\", será más fácil tomar una ruta de regreso, y se guardará una copia de la ruta con los puntos en orden inverso. Ten en cuenta que \"Iniciar ruta de regreso\" no guardará otra copia de la ruta ya guardada.";
 "help.text.routes.content.how.1a" = "<b>Seguimiento de una ruta</b>:<br/> selecciona tu ruta en la página \"Marcadores y rutas\" y, a continuación, \"Iniciar ruta\". Volverás a la pantalla de inicio y Soundscape establecerá una señal en el primer punto de ruta. A medida que vayas por la ruta, la señal avanzará al siguiente punto hasta completar la ruta. Si en cualquier momento deseas saltar hacia delante o hacia atrás un punto de ruta, pulsa en \"Siguiente punto de ruta\" o \"Punto de ruta anterior\".";
-"location_detail.action.beacon_or_navilens.hint" = "Pulsa dos veces para iniciar NaviLens o establecer una señal de audio según qué tan cerca esté esta ubicación";
+"location_detail.action.navilens.hint" = "Pulsa dos veces para abrir NaviLens";
 "beacon.suggest_navilens" = "Usa el botón NaviLens para llegar a tu destino.";
-"location_detail.action.beacon_or_navilens" = "Iniciar NaviLens o señal de audio";
+"location_detail.action.navilens" = "Abrir NaviLens";
 "filter.navilens" = "Códigos NaviLens";
 "troubleshooting.user_data" = "Datos de usuario";
 "troubleshooting.user_data.button" = "Eliminar todos los marcadores y rutas";

@@ -63,4 +63,47 @@ final class NearbyTableFilterTest: XCTestCase {
         XCTAssertEqual(filter1, filter2)
         XCTAssertNotEqual(filter1, filter3)
     }
+
+    func testLocationActionsExcludeNaviLensForStandardLocation() throws {
+        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "Space Needle")
+        let detail = LocationDetail(screenshot: location)
+
+        let actions = LocationAction.actions(for: detail)
+
+        XCTAssertTrue(matches(actions[0], .beacon))
+        XCTAssertFalse(actions.contains(where: { matches($0, .navilens) }))
+    }
+
+    func testLocationActionsPlaceNaviLensAfterBeacon() throws {
+        let location = GenericLocation(lat: 47.6205, lon: -122.3493, name: "NaviLens Code")
+        location.superCategory = SuperCategory.navilens.rawValue
+        let detail = LocationDetail(screenshot: location)
+
+        let actions = LocationAction.actions(for: detail)
+
+        XCTAssertEqual(actions.count, 5)
+        XCTAssertTrue(matches(actions[0], .beacon))
+        XCTAssertTrue(matches(actions[1], .navilens))
+        XCTAssertTrue(matches(actions[2], .save(isEnabled: true)))
+        XCTAssertTrue(matches(actions[3], .preview))
+        XCTAssertTrue(matches(actions[4], .share(isEnabled: true)))
+        XCTAssertEqual(LocationAction.navilens.text, GDLocalizedString("location_detail.action.navilens"))
+        XCTAssertEqual(LocationAction.navilens.accessibilityHint, GDLocalizedString("location_detail.action.navilens.hint"))
+    }
+
+    private func matches(_ lhs: LocationAction, _ rhs: LocationAction) -> Bool {
+        switch (lhs, rhs) {
+        case (.save(let lhsEnabled), .save(let rhsEnabled)):
+            return lhsEnabled == rhsEnabled
+        case (.edit, .edit),
+             (.beacon, .beacon),
+             (.preview, .preview),
+             (.navilens, .navilens):
+            return true
+        case (.share(let lhsEnabled), .share(let rhsEnabled)):
+            return lhsEnabled == rhsEnabled
+        default:
+            return false
+        }
+    }
 }

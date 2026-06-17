@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -345,13 +346,7 @@ extension LocationDetailViewController: LocationActionDelegate {
                         self.present(firstUseAlert, animated: true, completion: nil)
                     }
                 case .navilens:
-                    // Set a beacon on the given location
-                    // and segue to the home view
-                    try guideToNaviLens(detail: detail)
-                    
-                    if let home = self.navigationController?.viewControllers.first as? HomeViewController {
-                        home.shouldFocusOnBeacon = true
-                    }
+                    launchNaviLens(detail: detail)
                     
                     if self.isPresentedModally && !self.isInPreviewController {
                         self.dismiss(animated: true)

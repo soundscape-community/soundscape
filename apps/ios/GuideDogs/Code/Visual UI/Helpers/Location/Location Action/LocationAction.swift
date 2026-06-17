@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -33,8 +34,7 @@ enum LocationAction {
     static func actions(for detail: LocationDetail) -> [LocationAction] {
         var result: [LocationAction] = [.beacon]
         if detail.source.hasNaviLens {
-            // NaviLens action replaces beacon action
-            result = [.navilens]
+            result.append(.navilens)
         }
         if detail.isMarker {
             result += [.edit, .preview, .share(isEnabled: true)]
@@ -76,7 +76,7 @@ enum LocationAction {
         case .beacon: return GDLocalizedString("location_detail.action.beacon")
         case .preview: return GDLocalizedString("preview.title")
         case .share: return GDLocalizedString("share.title")
-        case .navilens: return GDLocalizedString("location_detail.action.beacon_or_navilens")
+        case .navilens: return GDLocalizedString("location_detail.action.navilens")
         }
     }
     
@@ -87,7 +87,7 @@ enum LocationAction {
         case .beacon: return isEnabled ? GDLocalizedString("location_detail.action.beacon.hint") : GDLocalizedString("location_detail.action.beacon.hint.disabled")
         case .preview: return isEnabled ? GDLocalizedString("location_detail.action.preview.hint") : GDLocalizedString("location_detail.action.preview.hint.disabled")
         case .share(let isEnabled): return isEnabled ? GDLocalizedString("location_detail.action.share.hint") : GDLocalizedString("location_detail.disabled.share")
-        case .navilens: return GDLocalizedString("location_detail.action.beacon_or_navilens.hint")
+        case .navilens: return GDLocalizedString("location_detail.action.navilens.hint")
         }
     }
     

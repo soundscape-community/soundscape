@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -88,9 +89,7 @@ class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccess
                     }
 
                 case .navilens:
-                    // Set a beacon on the given location
-                    // and segue to the home view
-                    try guideToNaviLens(detail: detail)
+                    launchNaviLens(detail: detail)
                     self.popToRootViewController(animated: true)
                 }
             } catch let error as LocationActionError {

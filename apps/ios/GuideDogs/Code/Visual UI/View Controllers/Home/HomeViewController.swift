@@ -695,9 +695,7 @@ extension HomeViewController: LocationActionDelegate {
                         self.present(firstUseAlert, animated: true, completion: nil)
                     }
                 case .navilens:
-                    // Set a beacon on the given location
-                    // and segue to the home view
-                    try guideToNaviLens(detail: detail)
+                    launchNaviLens(detail: detail)
                     self.navigationController?.popToRootViewController(animated: true)
                 }
             } catch let error as LocationActionError {

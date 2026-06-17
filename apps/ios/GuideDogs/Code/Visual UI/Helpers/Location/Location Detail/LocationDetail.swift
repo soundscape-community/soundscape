@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -371,6 +372,11 @@ extension LocationDetail {
     init(location: CLLocation, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         let source: Source = .coordinate(at: location)
         self.init(source: source, location: location, centerLocation: location, estimated: nil, imported: imported, telemetryContext: telemetryContext)
+    }
+
+    init(screenshot poi: GenericLocation, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
+        let source: Source = .screenshots(poi: poi)
+        self.init(source: source, location: poi.location, centerLocation: poi.location, estimated: nil, imported: imported, telemetryContext: telemetryContext)
     }
     
     init(entity: POI, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
