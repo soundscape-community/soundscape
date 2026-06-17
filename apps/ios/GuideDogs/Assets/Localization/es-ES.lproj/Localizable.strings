@@ -4477,5 +4477,6 @@
 "whats_new.1_8_1.1.description" = "Se ha corregido el desplazamiento en los marcadores y las rutas, y se ha solucionado un problema por el que la búsqueda no mostraba todos los resultados.";
 "whats_new.1_8_2.0.title" = "Ajusta el ángulo de la señal de audio en los ajustes";
 "whats_new.1_8_2.0.description" = "Ahora puedes ajustar el ángulo del sonido de timbre de la señal.";
-"whats_new.1_8_2.1.title" = "Las sugerencias de NaviLens ahora ofrecen acciones independientes para abrir NaviLens o mostrar códigos cercanos";
+"whats_new.1_8_2.1.title" = "Abrir NaviLens o Mostrar códigos cercanos";
 "beacon.settings.vicinity.explanation" = "Ajusta la distancia a la que el sonido de la señal se silencia automáticamente a medida que te acercas.";
+"whats_new.1_8_2.1.description" = "Al llegar a un lugar equipado con NaviLens, ahora puedes abrir la aplicación NaviLens o ver una lista de códigos cercanos.";

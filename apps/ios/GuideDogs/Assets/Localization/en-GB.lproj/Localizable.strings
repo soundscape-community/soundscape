@@ -1615,7 +1615,7 @@
 
 
 /*  */
-"routes.no_routes.hint.2" = "While out on your route with Soundscape, you will be informed on arrival to each waypoint, and the audio beacon will automatically advance to the next waypoint.";
+"routes.no_routes.hint.2" = "While out on your route with Soundscape, you will be informed on arrival at each waypoint, and the audio beacon will automatically advance to the next waypoint.";
 
 
 /*  */
@@ -3808,7 +3808,7 @@
 
 
 /*  */
-"help.text.routes.content.what" = "Routes are a series of waypoints. You will be informed on arrival to each waypoint, and the audio beacon will automatically advance to the next waypoint.";
+"help.text.routes.content.what" = "Routes are a series of waypoints. You will be informed on arrival at each waypoint, and the audio beacon will automatically advance to the next waypoint.";
 
 
 /*  */
@@ -4496,8 +4496,8 @@
 "whats_new.1_8_1.1.description" = "Fixed scrolling in markers and routes, and fixed an issue where search would not show all results.";
 "whats_new.1_8_2.0.title" = "Adjust the Audio Beacon Angle in Settings";
 "whats_new.1_8_2.0.description" = "You can now adjust the angle of the beacon's ringing sound.";
-"whats_new.1_8_2.1.title" = "NaviLens Suggestions Now Offer Separate Actions to Open NaviLens or Show Nearby Codes";
-"whats_new.1_8_2.1.description" = "";
+"whats_new.1_8_2.1.title" = "Open NaviLens or Show Nearby Codes";
+"whats_new.1_8_2.1.description" = "On arrival at a NaviLens-equipped location, you can now open the NaviLens app or show a list of nearby codes.";
 "beacon.action.navilens" = "Launch NaviLens";
 "location_detail.action.navilens.hint" = "Double tap to open NaviLens";
 "troubleshooting.tile_server_url.explanation" = "This is the server from which Soundscape retrieves map data. You normally should not need to change this unless you are developing or testing Soundscape.";

@@ -1401,7 +1401,7 @@
 "routes.no_routes.hint.1" = "You can create a route for yourself or for someone else by organizing a set of markers as waypoints on a route.";
 
 /* This text is displayed to the user when they navigate to the routes list but have not yet created any routes. It explains that the beacon will automatically shift between the route waypoints as they walk the route. */
-"routes.no_routes.hint.2" = "While out on your route with Soundscape, you will be informed on arrival to each waypoint, and the audio beacon will automatically advance to the next waypoint.";
+"routes.no_routes.hint.2" = "While out on your route with Soundscape, you will be informed on arrival at each waypoint, and the audio beacon will automatically advance to the next waypoint.";
 
 /* Text for the first paragraph displayed when the waypoints list is empty for a route */
 "route.no_waypoints.hint.1" = "Name your route and add an optional description. You can then add waypoints as you go or pick them from your list of markers.";
@@ -3185,7 +3185,7 @@
 "help.text.customizing_markers.content.2" = "From this Edit screen, you can also delete a marker if you no longer need it.";
 
 /* Help content explaining what the "routes" feature is */
-"help.text.routes.content.what" = "Routes are a series of waypoints. You will be informed on arrival to each waypoint, and the audio beacon will automatically advance to the next waypoint.";
+"help.text.routes.content.what" = "Routes are a series of waypoints. You will be informed on arrival at each waypoint, and the audio beacon will automatically advance to the next waypoint.";
 
 /* Help content explaining when a user might choose to use the routes feature */
 "help.text.routes.content.when" = "You may want to create and use a route somewhere you know to make sure you keep on track, or you may want to use it as a tool to help familiarize yourself along a new journey.";
@@ -3575,10 +3575,10 @@
 "whats_new.1_8_2.0.description" = "You can now adjust the angle of the beacon's ringing sound.";
 
 /* Title for a What's New item about NaviLens suggestion actions */
-"whats_new.1_8_2.1.title" = "NaviLens Suggestions Now Offer Separate Actions to Open NaviLens or Show Nearby Codes";
+"whats_new.1_8_2.1.title" = "Open NaviLens or Show Nearby Codes";
 
 /* Empty description for a What's New item that only needs a title */
-"whats_new.1_8_2.1.description" = "";
+"whats_new.1_8_2.1.description" = "On arrival at a NaviLens-equipped location, you can now open the NaviLens app or show a list of nearby codes.";
 
 /* Description of how users can download new voices. "Settings" and "Spoken Content" should be translated in the same way they are translated in the iOS Settin gs app. {NumberedPlaceholder="iOS"} */
 "voice.apple.additional" = "Additional voices, including enhanced quality voices, can be downloaded in the Read & Speak section of the iOS accessibility settings.";
