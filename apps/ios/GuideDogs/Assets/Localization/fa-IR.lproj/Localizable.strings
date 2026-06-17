@@ -612,12 +612,12 @@
 "location_detail.title.waypoint" = "جزئیات ایستگاه";
 /* Title for the action to set a beacon */
 "location_detail.action.beacon" = "شروع نشانهٔ صوتی";
-/* Text label for the action to start audio beacon at a NaviLens-enabled location */
-"location_detail.action.beacon_or_navilens" = "شروع NaviLens یا نشانهٔ صوتی";
+/* Text label for the action to open NaviLens */
+"location_detail.action.navilens" = "باز کردن NaviLens";
 /* Voiceover hint for the action to set a beacon */
 "location_detail.action.beacon.hint" = "برای تنظیم یک نشانهٔ صوتی در این مکان دو بار ضربه بزنید";
-/* Voiceover hint for the action to set a beacon or launch NaviLens */
-"location_detail.action.beacon_or_navilens.hint" = "بسته به نزدیکی این مکان، برای راه‌اندازی NaviLens یا تنظیم یک نشانهٔ صوتی دو بار ضربه بزنید";
+/* Voiceover hint for the action to open NaviLens */
+"location_detail.action.navilens.hint" = "برای باز کردن NaviLens دو بار ضربه بزنید";
 /* Text displayed when audio beacon action is disabled */
 "location_detail.action.beacon.hint.disabled" = "تنظیم یک نشانهٔ صوتی جدید در حین فعال بودن راهنمای مسیر غیرفعال است";
 /* Voiceover hint for the action to save marker */
@@ -2468,8 +2468,6 @@
 "donation.body" = "لطفاً با حمایت مالی در صفحه جمع‌آوری کمک‌های مالی ما، از توسعه مداوم برنامه جامعه Soundscape حمایت کنید. هر کمک مالی ما را یک قدم به چشم‌انداز خود نزدیک‌تر می‌کند تا به تحقق جهانی کمک کنیم که در آن همه از طریق فناوری بهبودبخش زندگی ما، دسترسی برابری به اطلاعات پیرامون خود داشته باشند.";
 /* Donation link title */
 "donation.link" = "رفتن به صفحه جمع‌آوری کمک‌های مالی";
-
-
 
 
 

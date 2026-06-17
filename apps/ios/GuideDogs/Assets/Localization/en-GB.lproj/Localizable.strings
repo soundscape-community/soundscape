@@ -1029,7 +1029,7 @@
 "location_detail.action.beacon" = "Start Audio Beacon";
 
 /*  */
-"location_detail.action.beacon_or_navilens" = "Start NaviLens or Audio Beacon";
+"location_detail.action.navilens" = "Open NaviLens";
 
 /*  */
 "location_detail.action.beacon.hint" = "Double tap to set an audio beacon at this location";
@@ -4499,7 +4499,7 @@
 "whats_new.1_8_2.1.title" = "NaviLens Suggestions Now Offer Separate Actions to Open NaviLens or Show Nearby Codes";
 "whats_new.1_8_2.1.description" = "";
 "beacon.action.navilens" = "Launch NaviLens";
-"location_detail.action.beacon_or_navilens.hint" = "Double tap to launch NaviLens or set an audio beacon, based on how close this location is";
+"location_detail.action.navilens.hint" = "Double tap to open NaviLens";
 "troubleshooting.tile_server_url.explanation" = "This is the server from which Soundscape retrieves map data. You normally should not need to change this unless you are developing or testing Soundscape.";
 "troubleshooting.tile_server_url" = "Tile Server URL";
 "troubleshooting.user_data" = "User Data";
