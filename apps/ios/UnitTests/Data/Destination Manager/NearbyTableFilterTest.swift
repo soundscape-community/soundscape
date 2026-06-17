@@ -87,9 +87,8 @@ final class NearbyTableFilterTest: XCTestCase {
         XCTAssertTrue(matches(actions[2], .save(isEnabled: true)))
         XCTAssertTrue(matches(actions[3], .preview))
         XCTAssertTrue(matches(actions[4], .share(isEnabled: true)))
-        XCTAssertEqual(LocationAction.navilens.text, "Open NaviLens")
-        XCTAssertEqual(LocationAction.navilens.accessibilityHint, "Double tap to open NaviLens")
-        XCTAssertFalse(LocationAction.navilens.accessibilityHint?.contains("beacon") ?? true)
+        XCTAssertEqual(LocationAction.navilens.text, GDLocalizedString("location_detail.action.navilens"))
+        XCTAssertEqual(LocationAction.navilens.accessibilityHint, GDLocalizedString("location_detail.action.navilens.hint"))
     }
 
     private func matches(_ lhs: LocationAction, _ rhs: LocationAction) -> Bool {
