@@ -14,6 +14,7 @@ enum KnownExperiment: CaseIterable {
     // Supports client experimentation
     // For each experiment, add a case to `KnownExperiment`
     //
+    case placeholder // TODO: Replace with real experiments
     
     var uuid: UUID {
         /*

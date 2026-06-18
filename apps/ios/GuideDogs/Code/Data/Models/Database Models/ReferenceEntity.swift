@@ -406,7 +406,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
     static func update(entity: ReferenceEntity, location: CLLocationCoordinate2D? = nil, nickname: String?, address: String?, annotation: String?, context: String? = nil, isTemp: Bool) throws {
         var locChanged: Bool = false
-        if let loc = location, loc != entity.coordinate {
+        if let loc = location, !loc.isNear(to: entity.coordinate) {
             locChanged = true
         }
         

@@ -11,7 +11,7 @@ import CoreLocation
 import CocoaLumberjackSwift
 import CoreGPX
 
-struct RoadAdjacentDataView: AdjacentDataView, Equatable {
+struct RoadAdjacentDataView: AdjacentDataView /*, fixme Equatable  */ {
     
     typealias ReferenceEntityID = String
 
@@ -412,4 +412,38 @@ extension RoadAdjacentDataView {
         return updatedHistory
     }
     
+}
+
+// MARK: Equatable Conformance
+// this emulates the old custom Equatable conformance extension on CLLocationCoordinate2D, which was not based on exact equality.
+extension RoadAdjacentDataView: Equatable {
+    static func ==(lhs: RoadAdjacentDataView, rhs: RoadAdjacentDataView) -> Bool {
+        guard lhs.endpoint == rhs.endpoint,
+              lhs.direction == rhs.direction,
+              lhs.style    == rhs.style,
+              lhs.adjacent == rhs.adjacent,
+              lhs.coordinatesToEndpoint.count
+                == rhs.coordinatesToEndpoint.count,
+              lhs.adjacentCalloutLocationsHistory.count
+                == rhs.adjacentCalloutLocationsHistory.count
+        else {
+            return false
+        }
+        
+        // 2) compare the two coordinate arrays element-wise
+        for (c1, c2) in zip(lhs.coordinatesToEndpoint, rhs.coordinatesToEndpoint) {
+            if !c1.isNear(to: c2) { return false }
+        }
+        
+        // 3) compare the dictionary of callout locations
+        for (key, loc1) in lhs.adjacentCalloutLocationsHistory {
+            guard let loc2 = rhs.adjacentCalloutLocationsHistory[key],
+                  loc1.isNear(to: loc2)
+            else {
+                return false
+            }
+        }
+        
+        return true
+    }
 }

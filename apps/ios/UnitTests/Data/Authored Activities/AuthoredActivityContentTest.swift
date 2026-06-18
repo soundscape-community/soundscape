@@ -84,10 +84,10 @@ final class AuthoredActivityContentTest: XCTestCase {
         
         XCTAssertEqual(activity.waypoints.count, 2)
         if let wpt0 = activity.waypoints.first, let wpt1 = activity.waypoints.last {
-            XCTAssertEqual(wpt0.coordinate, CLLocationCoordinate2DMake(0, 0))
+            XCTAssertTrue(wpt0.coordinate.isNear(to: CLLocationCoordinate2DMake(0, 0)))
             XCTAssertEqual(wpt0.name, "first waypoint")
             XCTAssertEqual(wpt0.description, "waypoint0")
-            XCTAssertEqual(wpt1.coordinate, CLLocationCoordinate2DMake(1, 0))
+            XCTAssertTrue(wpt1.coordinate.isNear(to: CLLocationCoordinate2DMake(1, 0)))
             XCTAssertEqual(wpt1.name, "second waypoint")
             XCTAssertEqual(wpt1.description, "waypoint1")
             // TODO: optional waypoint properties
@@ -171,10 +171,10 @@ final class AuthoredActivityContentTest: XCTestCase {
         
         XCTAssertEqual(activity.waypoints.count, 2)
         if let wpt0 = activity.waypoints.first, let wpt1 = activity.waypoints.last {
-            XCTAssertEqual(wpt0.coordinate, CLLocationCoordinate2DMake(0, 0))
+            XCTAssertTrue(wpt0.coordinate.isNear(to: CLLocationCoordinate2DMake(0, 0)))
             XCTAssertEqual(wpt0.name, "first point")
             XCTAssertEqual(wpt0.description, "point0")
-            XCTAssertEqual(wpt1.coordinate, CLLocationCoordinate2DMake(1, 0))
+            XCTAssertTrue(wpt1.coordinate.isNear(to: CLLocationCoordinate2DMake(1, 0)))
             XCTAssertEqual(wpt1.name, "second point")
             XCTAssertEqual(wpt1.description, "point1")
             // TODO: optional waypoint properties
@@ -183,7 +183,7 @@ final class AuthoredActivityContentTest: XCTestCase {
         // POIs are the top-level waypoints
         XCTAssertEqual(activity.pois.count, 1)
         if let poi0 = activity.pois.first {
-            XCTAssertEqual(poi0.coordinate, CLLocationCoordinate2DMake(0.5, 0))
+            XCTAssertTrue(poi0.coordinate.isNear(to: CLLocationCoordinate2DMake(0.5, 0)))
             XCTAssertEqual(poi0.name, "Cool POI")
             XCTAssertEqual(poi0.description, "is optional")
         }

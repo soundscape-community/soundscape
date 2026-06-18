@@ -176,7 +176,7 @@ class BeaconDetailStore: ObservableObject {
             
             let newValue = BeaconDetail.updateLocationDetailIfNeeded(for: oldValue)
             
-            guard newValue.locationDetail.source != oldValue.locationDetail.source || newValue.locationDetail.location.coordinate != oldValue.locationDetail.location.coordinate else {
+            guard newValue.locationDetail.source != oldValue.locationDetail.source || !newValue.locationDetail.location.coordinate.isNear(to: oldValue.locationDetail.location.coordinate) else {
                 return
             }
             

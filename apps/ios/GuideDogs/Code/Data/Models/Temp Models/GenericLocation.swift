@@ -92,7 +92,7 @@ class GenericLocation: SelectablePOI {
     // MARK: Methods
 
     func contains(location: CLLocationCoordinate2D) -> Bool {
-        return location == self.location.coordinate
+        return location.isNear(to: self.location.coordinate)
     }
     
     func updateDistanceAndBearing(with location: CLLocation) {
