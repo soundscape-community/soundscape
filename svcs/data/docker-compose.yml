@@ -4,6 +4,7 @@
 # the following variables can be set in .env:
 # GEN_REGION: set to one location listed in extracts.json, or add one
 # from the available downloads at http://download.geofabrik.de/
+# INGEST_MODE: weekly-pbf for periodic pyosmium PBF refreshes, or imposm-run for the Imposm supervisor.
 # INGEST_INTERVAL_DAYS: The time between successful database updates in days.
 # INGEST_RETRY_DAYS: The time before retrying after a failed update in days.
 # INGEST_PBF_REUSE_DAYS: Reuse an existing bootstrap PBF if it is this recent.
@@ -60,7 +61,8 @@ services:
     build:
       dockerfile: Dockerfile.ingest
     environment:
-      - GEN_REGION=${GEN_REGION:-district-of-columbia}
+      - GEN_REGION=${GEN_REGION:-world}
+      - INGEST_MODE=${INGEST_MODE:-weekly-pbf}
       - INGEST_INTERVAL_DAYS=${INGEST_INTERVAL_DAYS:-7}
       - INGEST_RETRY_DAYS=${INGEST_RETRY_DAYS:-1}
       - INGEST_PBF_REUSE_DAYS=${INGEST_PBF_REUSE_DAYS:-5}

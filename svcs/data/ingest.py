@@ -55,6 +55,10 @@ SEED_DOWNLOAD_PROGRESS_SECONDS = 5 * 60
 IMPOSM_LAST_STATE = "last.state.txt"
 NTFY_ERROR_THROTTLE_SECONDS = 60 * 60
 NON_OSM_IMPORT_INTERVAL_SECONDS = SECONDS_PER_DAY
+INGEST_MODE_WEEKLY_PBF = "weekly-pbf"
+INGEST_MODE_IMPOSM_RUN = "imposm-run"
+INGEST_MODES = (INGEST_MODE_WEEKLY_PBF, INGEST_MODE_IMPOSM_RUN)
+IMPORT_STATE_TABLE = "soundscape_osm_import_state"
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +77,7 @@ class NonOsmIngestError(RuntimeError):
 
 @dataclass
 class IngestConfig:
+    ingest_mode: str
     skipimport: bool
     sourceupdate: bool
     telemetry: bool
@@ -155,6 +160,12 @@ def env_regions() -> list[str] | None:
 def parse_args(argv=None) -> IngestConfig:
     parser = argparse.ArgumentParser(description="ingestion engine for Soundscape")
 
+    parser.add_argument(
+        "--ingest-mode",
+        choices=INGEST_MODES,
+        default=os.environ.get("INGEST_MODE", INGEST_MODE_WEEKLY_PBF),
+        help="ingest strategy",
+    )
     parser.add_argument("--skipimport", action="store_true", help="skips import task", default=False)
     parser.add_argument("--sourceupdate", action="store_true", help="update source data", default=True)
     parser.add_argument("--no-sourceupdate", dest="sourceupdate", action="store_false", help="skip source data updates")
@@ -193,6 +204,7 @@ def parse_args(argv=None) -> IngestConfig:
         parser.error("--pbf-reuse-days must be greater than zero")
 
     return IngestConfig(
+        ingest_mode=args.ingest_mode,
         skipimport=args.skipimport,
         sourceupdate=args.sourceupdate,
         telemetry=args.telemetry,
@@ -287,6 +299,18 @@ def pbf_marker(path: Path, extract: dict) -> dict:
     stat = path.stat()
     return {
         "region": extract["name"],
+        "sequence_number": pbf_replication_sequence(path),
+        "url": extract["url"],
+        "pbf": path.name,
+        "size": stat.st_size,
+        "mtime_ns": stat.st_mtime_ns,
+    }
+
+
+def legacy_pbf_marker(path: Path, extract: dict) -> dict:
+    stat = path.stat()
+    return {
+        "region": extract["name"],
         "url": extract["url"],
         "pbf": path.name,
         "size": stat.st_size,
@@ -363,6 +387,55 @@ def download_seed(url: str, destination: Path, sha256: str | None = None, monoto
     finally:
         with contextlib.suppress(FileNotFoundError):
             os.unlink(tmp)
+
+
+def sync_pbf(config: IngestConfig, extract: dict):
+    seed_path = pbf_path(config, extract)
+    if pbf_is_recent(seed_path, config.pbf_reuse_days):
+        logger.info(
+            "Reusing recent PBF at %s before pyosmium sync; max age %.2f days",
+            seed_path,
+            config.pbf_reuse_days,
+        )
+    else:
+        download_seed(extract["url"], seed_path, extract.get("sha256"))
+
+    command = ["pyosmium-up-to-date", str(seed_path)]
+    logger.info("Updating PBF with pyosmium: %s", command)
+    try:
+        subprocess.run(command, check=True)
+    except Exception as exc:
+        raise PbfSyncError(str(exc)) from exc
+
+    pbf_replication_sequence(seed_path)
+
+
+def pbf_replication_sequence(path: Path) -> int:
+    try:
+        import osmium
+    except ImportError as exc:
+        raise PbfSyncError("pyosmium is required to read PBF replication sequence metadata") from exc
+
+    try:
+        reader = osmium.io.Reader(str(path))
+        try:
+            raw_sequence = reader.header().get("osmosis_replication_sequence_number")
+        finally:
+            reader.close()
+    except Exception as exc:
+        raise PbfSyncError(f"unable to read PBF header metadata from {path}: {exc}") from exc
+
+    if raw_sequence is None or raw_sequence == "":
+        raise PbfSyncError(f"PBF header missing osmosis_replication_sequence_number: {path}")
+    try:
+        sequence = int(raw_sequence)
+    except (TypeError, ValueError) as exc:
+        raise PbfSyncError(
+            f"invalid osmosis_replication_sequence_number in {path}: {raw_sequence!r}"
+        ) from exc
+    if sequence < 0:
+        raise PbfSyncError(f"invalid osmosis_replication_sequence_number in {path}: {sequence}")
+    return sequence
 
 
 def pbf_is_recent(path: Path, max_age_days: float, now=time.time) -> bool:
@@ -446,7 +519,86 @@ def write_imposm_config(config: IngestConfig, extract: dict) -> Path:
     return path
 
 
-def import_extract(config: IngestConfig, extract: dict):
+def import_extract(config: IngestConfig, extract: dict, cache="-overwritecache", incremental=False):
+    pbf = pbf_name(extract)
+    logger.info("Import of %s: START", pbf)
+    start = datetime.now(timezone.utc)
+    imposm_args = [
+        config.imposm,
+        "import",
+        "-mapping",
+        config.mapping,
+        "-read",
+        str(Path(config.pbfdir) / pbf),
+        "-srid",
+        "4326",
+        cache,
+        "-cachedir",
+        config.cachedir,
+    ]
+    if incremental:
+        imposm_args.extend(["-diff", "-diffdir", config.diffdir])
+    subprocess.run(imposm_args, check=True)
+    end = datetime.now(timezone.utc)
+    telemetry_log(config, "import_extract", start, end)
+    logger.info("Import of %s: DONE", pbf)
+
+
+def import_write(config: IngestConfig, incremental=False):
+    logger.info("Writing OSM tables: START")
+    start = datetime.now(timezone.utc)
+    imposm_args = [
+        config.imposm,
+        "import",
+        "-mapping",
+        config.mapping,
+        "-write",
+        "-connection",
+        build_imposm_dsn(config.dsn),
+        "-srid",
+        "4326",
+        "-cachedir",
+        config.cachedir,
+    ]
+    if incremental:
+        imposm_args.extend(["-diff", "-diffdir", config.diffdir])
+    subprocess.run(imposm_args, check=True)
+    end = datetime.now(timezone.utc)
+    telemetry_log(config, "import_write", start, end)
+    logger.info("Writing OSM tables: DONE")
+
+
+def import_rotate(config: IngestConfig, incremental=False):
+    logger.info("Table rotation: START")
+    start = datetime.now(timezone.utc)
+    imposm_args = [
+        config.imposm,
+        "import",
+        "-mapping",
+        config.mapping,
+        "-connection",
+        build_imposm_dsn(config.dsn),
+        "-srid",
+        "4326",
+        "-deployproduction",
+        "-cachedir",
+        config.cachedir,
+    ]
+    if incremental:
+        imposm_args.extend(["-diff", "-diffdir", config.diffdir])
+    subprocess.run(imposm_args, check=True)
+    end = datetime.now(timezone.utc)
+    telemetry_log(config, "import_rotate", start, end)
+    logger.info("Table rotation: DONE")
+
+
+def import_extracts_and_write(config: IngestConfig, extract: dict, incremental=False):
+    import_extract(config, extract, "-overwritecache", incremental)
+    import_write(config, incremental)
+    import_rotate(config, incremental)
+
+
+def import_extract_for_imposm_run(config: IngestConfig, extract: dict):
     pbf = pbf_name(extract)
     logger.info("Import of %s: START", pbf)
     start = datetime.now(timezone.utc)
@@ -466,10 +618,6 @@ def import_extract(config: IngestConfig, extract: dict):
     end = datetime.now(timezone.utc)
     telemetry_log(config, "import_extract", start, end)
     logger.info("Import of %s: DONE", pbf)
-
-
-def import_extracts_and_write(config: IngestConfig, extract: dict):
-    import_extract(config, extract)
 
 
 def dsn_dbname(dsn: str) -> str:
@@ -526,6 +674,90 @@ def provision_database_soundscape(config: IngestConfig):
     run_async(provision_database_soundscape_async(config.dsn))
 
 
+def ensure_import_state_table(cursor):
+    cursor.execute(
+        f"""
+        CREATE TABLE IF NOT EXISTS {IMPORT_STATE_TABLE} (
+            region text NOT NULL,
+            sequence_number bigint NOT NULL,
+            source_url text NOT NULL,
+            pbf_filename text NOT NULL,
+            imported_at timestamptz NOT NULL DEFAULT now(),
+            file_size bigint,
+            file_mtime_ns bigint,
+            PRIMARY KEY (region, sequence_number)
+        )
+        """
+    )
+
+
+def read_import_state(config: IngestConfig, region: str, sequence_number: int) -> dict | None:
+    conn = psycopg2.connect(config.dsn)
+    try:
+        with conn:
+            with conn.cursor() as cursor:
+                ensure_import_state_table(cursor)
+                cursor.execute(
+                    f"""
+                    SELECT region, sequence_number, source_url, pbf_filename, imported_at, file_size, file_mtime_ns
+                    FROM {IMPORT_STATE_TABLE}
+                    WHERE region = %s AND sequence_number = %s
+                    """,
+                    (region, sequence_number),
+                )
+                row = cursor.fetchone()
+        if row is None:
+            return None
+        return {
+            "region": row[0],
+            "sequence_number": row[1],
+            "url": row[2],
+            "pbf": row[3],
+            "imported_at": row[4],
+            "size": row[5],
+            "mtime_ns": row[6],
+        }
+    finally:
+        conn.close()
+
+
+def import_state_matches(state: dict | None, marker: dict) -> bool:
+    if state is None:
+        return False
+    return state.get("region") == marker["region"] and state.get("sequence_number") == marker["sequence_number"]
+
+
+def write_import_state(config: IngestConfig, marker: dict):
+    conn = psycopg2.connect(config.dsn)
+    try:
+        with conn:
+            with conn.cursor() as cursor:
+                ensure_import_state_table(cursor)
+                cursor.execute(
+                    f"""
+                    INSERT INTO {IMPORT_STATE_TABLE}
+                        (region, sequence_number, source_url, pbf_filename, imported_at, file_size, file_mtime_ns)
+                    VALUES (%s, %s, %s, %s, now(), %s, %s)
+                    ON CONFLICT (region, sequence_number) DO UPDATE SET
+                        source_url = EXCLUDED.source_url,
+                        pbf_filename = EXCLUDED.pbf_filename,
+                        imported_at = EXCLUDED.imported_at,
+                        file_size = EXCLUDED.file_size,
+                        file_mtime_ns = EXCLUDED.file_mtime_ns
+                    """,
+                    (
+                        marker["region"],
+                        marker["sequence_number"],
+                        marker["url"],
+                        marker["pbf"],
+                        marker["size"],
+                        marker["mtime_ns"],
+                    ),
+                )
+    finally:
+        conn.close()
+
+
 def import_database(config: IngestConfig, extract: dict) -> bool:
     osm_imported = False
     try:
@@ -535,7 +767,7 @@ def import_database(config: IngestConfig, extract: dict) -> bool:
             logger.info("Provisioning database: DONE")
 
         if not config.skipimport:
-            import_extracts_and_write(config, extract)
+            import_extracts_and_write(config, extract, incremental=False)
             osm_imported = True
 
         if config.extradatadir:
@@ -598,14 +830,63 @@ def bootstrap(config: IngestConfig, extract: dict) -> bool:
                 else:
                     download_seed(extract["url"], seed_path, extract.get("sha256"))
                 try:
-                    import_extracts_and_write(config, extract)
+                    import_extract_for_imposm_run(config, extract)
                 except Exception as exc:
                     raise DbIngestError(str(exc)) from exc
-                write_state(state_path(config), pbf_marker(seed_path, extract))
+                write_state(state_path(config), legacy_pbf_marker(seed_path, extract))
         else:
             logger.info("Existing Imposm diff state found; skipping seed download and initial import")
 
         run_startup_imports(config)
+    return True
+
+
+def run_weekly_cycle(config: IngestConfig, extract: dict) -> bool:
+    start = datetime.now(timezone.utc)
+    with ingest_lock(config):
+        write_imposm_config(config, extract)
+        if config.provision:
+            try:
+                logger.info("Provisioning database: START")
+                provision_database(config)
+                logger.info("Provisioning database: DONE")
+            except Exception as exc:
+                raise DbIngestError(str(exc)) from exc
+
+        sync_pbf(config, extract)
+        marker = pbf_marker(pbf_path(config, extract), extract)
+        try:
+            prior_state = read_import_state(config, marker["region"], marker["sequence_number"])
+        except Exception as exc:
+            raise DbIngestError(str(exc)) from exc
+
+        if import_state_matches(prior_state, marker):
+            logger.info(
+                "PBF sequence %s for %s is already imported; skipping OSM import",
+                marker["sequence_number"],
+                marker["region"],
+            )
+            try:
+                run_startup_imports(config)
+            except NonOsmIngestError:
+                raise
+            except Exception as exc:
+                raise DbIngestError(str(exc)) from exc
+        else:
+            logger.info(
+                "Importing %s PBF sequence %s",
+                marker["region"],
+                marker["sequence_number"],
+            )
+            osm_imported = import_database(config, extract)
+            if osm_imported:
+                try:
+                    write_import_state(config, marker)
+                except Exception as exc:
+                    raise DbIngestError(str(exc)) from exc
+
+    end = datetime.now(timezone.utc)
+    telemetry_log(config, "ingest_cycle", start, end)
     return True
 
 
@@ -759,6 +1040,41 @@ def run_ingest(config: IngestConfig, extract: dict) -> int:
     return run_imposm(config, extract)
 
 
+def run_weekly_ingest(config: IngestConfig, extract: dict) -> int:
+    try:
+        run_weekly_cycle(config, extract)
+        return 0
+    except PbfSyncError as exc:
+        logger.exception("PBF sync failed")
+        send_ntfy_notification(config, extract["name"], "pbf_sync", exc, seconds_from_days(config.retry_days))
+        return 1
+    except NonOsmIngestError as exc:
+        logger.exception("Non-OSM import failed")
+        send_ntfy_notification(config, extract["name"], "non_osm_import", exc, seconds_from_days(config.retry_days))
+        return 1
+    except DbIngestError as exc:
+        logger.exception("Database ingest failed")
+        send_ntfy_notification(config, extract["name"], "database_ingest", exc, seconds_from_days(config.retry_days))
+        return 1
+    except Exception as exc:
+        logger.exception("Unexpected ingest cycle failure")
+        send_ntfy_notification(config, extract["name"], "cycle", exc, seconds_from_days(config.retry_days))
+        return 1
+
+
+def supervise_weekly_ingest(config: IngestConfig, sleeper=time.sleep) -> int:
+    extract = load_selected_extract(config)
+    interval_seconds = seconds_from_days(config.interval_days)
+    retry_seconds = seconds_from_days(config.retry_days)
+    while True:
+        status = run_weekly_ingest(config, extract)
+        if config.run_once:
+            return status
+        delay = interval_seconds if status == 0 else retry_seconds
+        logger.info("Next weekly PBF ingest cycle in %.2f hours", delay / 3600)
+        sleeper(delay)
+
+
 def supervise_ingest(config: IngestConfig, sleeper=time.sleep) -> int:
     extract = load_selected_extract(config)
     retry_seconds = seconds_from_days(config.retry_days)
@@ -782,7 +1098,9 @@ def main(argv=None) -> int:
         start_http_server(8000)
 
     try:
-        return supervise_ingest(config)
+        if config.ingest_mode == INGEST_MODE_IMPOSM_RUN:
+            return supervise_ingest(config)
+        return supervise_weekly_ingest(config)
     finally:
         logging.shutdown()
 
