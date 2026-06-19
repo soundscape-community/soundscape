@@ -52,7 +52,6 @@ STATE_FILE = "ingest-state.json"
 LOCK_FILE = "ingest.lock"
 SEED_DOWNLOAD_TIMEOUT_SECONDS = 60
 SEED_DOWNLOAD_PROGRESS_SECONDS = 5 * 60
-PYOSMIUM_UPDATE_SUFFIX = ".pyosmium-update"
 IMPOSM_LAST_STATE = "last.state.txt"
 NTFY_ERROR_THROTTLE_SECONDS = 60 * 60
 NON_OSM_IMPORT_INTERVAL_SECONDS = SECONDS_PER_DAY
@@ -415,20 +414,6 @@ def run_pyosmium_up_to_date(path: Path, runner=subprocess.run):
     )
 
 
-def pyosmium_update_path(path: Path) -> Path:
-    return path.with_name(f".{path.name}{PYOSMIUM_UPDATE_SUFFIX}")
-
-
-def copy_pbf_for_pyosmium_update(source: Path, destination: Path):
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    command = ["cp", "--reflink=auto", str(source), str(destination)]
-    logger.info("Copying PBF for pyosmium update: %s", command)
-    try:
-        subprocess.run(command, check=True)
-    except Exception as exc:
-        raise PbfSyncError(str(exc)) from exc
-
-
 def sync_pbf(config: IngestConfig, extract: dict):
     seed_path = pbf_path(config, extract)
     if pbf_is_recent(seed_path, config.pbf_reuse_days):
@@ -440,15 +425,7 @@ def sync_pbf(config: IngestConfig, extract: dict):
     else:
         download_seed(extract["url"], seed_path, extract.get("sha256"))
 
-    update_path = pyosmium_update_path(seed_path)
-    try:
-        copy_pbf_for_pyosmium_update(seed_path, update_path)
-        run_pyosmium_up_to_date(update_path)
-        pbf_replication_sequence(update_path)
-        os.replace(update_path, seed_path)
-    finally:
-        with contextlib.suppress(FileNotFoundError):
-            os.unlink(update_path)
+    run_pyosmium_up_to_date(seed_path)
 
     pbf_replication_sequence(seed_path)
 
