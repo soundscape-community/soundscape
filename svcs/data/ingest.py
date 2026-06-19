@@ -76,6 +76,10 @@ class NonOsmIngestError(RuntimeError):
     pass
 
 
+class BootstrapIngestError(RuntimeError):
+    pass
+
+
 @dataclass
 class IngestConfig:
     ingest_mode: str
@@ -127,13 +131,20 @@ def build_imposm_dsn(dsn: str) -> str:
     host = args.get("host", "")
     port = args.get("port", "")
     dbname = urllib.parse.quote(args.get("dbname", ""), safe="")
-    auth = user
+    auth = ""
+    if user:
+        auth = user
     if password:
         auth = f"{auth}:{password}"
     hostport = host
     if port:
         hostport = f"{hostport}:{port}"
-    return f"postgis://{auth}@{hostport}/{dbname}"
+    netloc = hostport
+    if auth:
+        netloc = f"{auth}@{hostport}"
+    if netloc:
+        return f"postgis://{netloc}/{dbname}"
+    return f"postgis:///{dbname}"
 
 
 def default_osm_dsn() -> str:
@@ -643,12 +654,8 @@ def import_extract_for_imposm_run(config: IngestConfig, extract: dict):
 
 
 def dsn_dbname(dsn: str) -> str:
-    if dsn.startswith("postgres://") or dsn.startswith("postgresql://") or dsn.startswith("postgis://"):
-        return urllib.parse.unquote(urllib.parse.urlsplit(dsn).path.lstrip("/"))
-    for part in dsn.split():
-        if part.startswith("dbname="):
-            return part.split("=", 1)[1]
-    return os.environ.get("POSTGIS_DBNAME", "osm")
+    args = psycopg2.extensions.parse_dsn(dsn)
+    return args.get("dbname") or os.environ.get("POSTGIS_DBNAME", "osm")
 
 
 async def provision_database_async(osm_dsn: str):
@@ -840,7 +847,9 @@ def bootstrap(config: IngestConfig, extract: dict) -> bool:
 
         if not has_current_diff_state(config, extract):
             if config.skipimport:
-                logger.info("Skipping initial OSM import because --skipimport is set")
+                raise BootstrapIngestError(
+                    "--skipimport requires existing Imposm cache/diff state for the selected region"
+                )
             else:
                 seed_path = pbf_path(config, extract)
                 if pbf_is_recent(seed_path, config.pbf_reuse_days):
@@ -900,12 +909,21 @@ def run_weekly_cycle(config: IngestConfig, extract: dict) -> bool:
                 marker["region"],
                 marker["sequence_number"],
             )
-            osm_imported = import_database(config, extract)
-            if osm_imported:
-                try:
+            try:
+                if config.provision:
+                    logger.info("Provisioning database: START")
+                    provision_database(config)
+                    logger.info("Provisioning database: DONE")
+
+                if not config.skipimport:
+                    import_extracts_and_write(config, extract, incremental=False)
                     write_import_state(config, marker)
-                except Exception as exc:
-                    raise DbIngestError(str(exc)) from exc
+
+                run_startup_imports(config)
+            except NonOsmIngestError:
+                raise
+            except Exception as exc:
+                raise DbIngestError(str(exc)) from exc
 
     end = datetime.now(timezone.utc)
     telemetry_log(config, "ingest_cycle", start, end)

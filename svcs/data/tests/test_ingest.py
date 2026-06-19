@@ -331,7 +331,7 @@ def test_generated_imposm_config_includes_daily_replication(tmp_path):
 
     assert generated["cachedir"] == cfg.cachedir
     assert generated["diffdir"] == cfg.diffdir
-    assert generated["connection"] == "postgis://@postgis/osm"
+    assert generated["connection"] == "postgis://postgis/osm"
     assert generated["mapping"] == cfg.mapping
     assert generated["srid"] == 4326
     assert generated["replication_url"] == "https://example.test/updates/"
@@ -355,6 +355,18 @@ def test_imposm_dsn_is_url_encoded():
         ingest.build_imposm_dsn("postgresql://user:pass@db.example:5432/osm")
         == "postgis://user:pass@db.example:5432/osm"
     )
+    assert ingest.build_imposm_dsn("host=postgis dbname=osm") == "postgis://postgis/osm"
+    assert ingest.build_imposm_dsn("dbname=osm") == "postgis:///osm"
+
+
+def test_dsn_dbname_uses_psycopg_parser(monkeypatch):
+    ingest = load_ingest("ingest_dsn_dbname")
+
+    assert ingest.dsn_dbname("host=postgis dbname='my osm db'") == "my osm db"
+    assert ingest.dsn_dbname("postgresql://user:pass@db.example:5432/url_db") == "url_db"
+
+    monkeypatch.setenv("POSTGIS_DBNAME", "env_osm")
+    assert ingest.dsn_dbname("host=postgis") == "env_osm"
 
 
 def test_import_state_matches_region_and_sequence_only():
@@ -407,8 +419,9 @@ def test_weekly_changed_sequence_imports_and_updates_db_state(tmp_path, monkeypa
         "read_import_state",
         lambda config, region, sequence_number: {"region": "district-of-columbia", "sequence_number": 42},
     )
-    monkeypatch.setattr(ingest, "import_database", lambda config, selected: True)
+    monkeypatch.setattr(ingest, "import_extracts_and_write", lambda config, selected, incremental=False: None)
     monkeypatch.setattr(ingest, "write_import_state", lambda config, marker: written.append(marker))
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
 
     assert ingest.run_weekly_cycle(cfg, ext) is True
     assert written[0]["region"] == "district-of-columbia"
@@ -429,8 +442,13 @@ def test_weekly_changed_region_imports_even_with_same_sequence(tmp_path, monkeyp
         "read_import_state",
         lambda config, region, sequence_number: None,
     )
-    monkeypatch.setattr(ingest, "import_database", lambda config, selected: imported.append(selected["name"]) or True)
+    monkeypatch.setattr(
+        ingest,
+        "import_extracts_and_write",
+        lambda config, selected, incremental=False: imported.append(selected["name"]),
+    )
     monkeypatch.setattr(ingest, "write_import_state", lambda config, marker: None)
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
 
     assert ingest.run_weekly_cycle(cfg, ext) is True
     assert imported == ["world"]
@@ -445,10 +463,43 @@ def test_weekly_skipimport_does_not_update_db_state(tmp_path, monkeypatch):
     monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: None)
     monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: 42)
     monkeypatch.setattr(ingest, "read_import_state", lambda config, region, sequence_number: None)
-    monkeypatch.setattr(ingest, "import_database", lambda config, selected: False)
+    monkeypatch.setattr(ingest, "import_extracts_and_write", lambda *args: pytest.fail("skipimport must not import OSM"))
     monkeypatch.setattr(ingest, "write_import_state", lambda *args: pytest.fail("skipimport must not update state"))
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
 
     assert ingest.run_weekly_cycle(cfg, ext) is True
+
+
+def test_weekly_import_state_is_written_before_non_osm_failure(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_state_before_non_osm")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), extradatadir="/non-osm")
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+    events = []
+
+    monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: None)
+    monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: 44)
+    monkeypatch.setattr(ingest, "read_import_state", lambda config, region, sequence_number: None)
+    monkeypatch.setattr(
+        ingest,
+        "import_extracts_and_write",
+        lambda config, selected, incremental=False: events.append("osm"),
+    )
+    monkeypatch.setattr(
+        ingest,
+        "write_import_state",
+        lambda config, marker: events.append(("state", marker["sequence_number"])),
+    )
+    monkeypatch.setattr(
+        ingest,
+        "import_non_osm",
+        lambda config: (_ for _ in ()).throw(ingest.NonOsmIngestError("non-osm failed")),
+    )
+
+    with pytest.raises(ingest.NonOsmIngestError):
+        ingest.run_weekly_cycle(cfg, ext)
+
+    assert events == ["osm", ("state", 44)]
 
 
 def test_weekly_import_uses_three_phase_imposm_without_diff(tmp_path, monkeypatch):
@@ -640,6 +691,21 @@ def test_run_once_skips_imposm_run(tmp_path, monkeypatch):
     monkeypatch.setattr(ingest, "run_imposm", lambda *args: pytest.fail("imposm run should be skipped"))
 
     assert ingest.run_ingest(cfg, ext) == 0
+
+
+def test_imposm_run_skipimport_without_diff_state_fails_fast(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_skipimport_missing_diff")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), skipimport=True)
+    ext = extract()
+    notifications = []
+
+    monkeypatch.setattr(ingest, "run_imposm", lambda *args: pytest.fail("imposm run should not start"))
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda *args: pytest.fail("startup imports should not run"))
+    monkeypatch.setattr(ingest, "send_ntfy_notification", lambda *args: notifications.append(args))
+
+    assert ingest.run_ingest(cfg, ext) == 1
+    assert notifications[0][2] == "bootstrap"
+    assert isinstance(notifications[0][3], ingest.BootstrapIngestError)
 
 
 def test_supervise_ingest_retries_failed_service_cycle(tmp_path, monkeypatch):
