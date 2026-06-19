@@ -282,6 +282,64 @@ def test_pyosmium_up_to_date_fails_on_non_retryable_exit(tmp_path):
         ingest.run_pyosmium_up_to_date(path, runner=lambda command, check=False: SimpleNamespace(returncode=2))
 
 
+def test_sync_pbf_updates_temp_copy_then_atomically_replaces_seed(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_sync_temp_replace")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    seed_path = ingest.pbf_path(cfg, ext)
+    seed_path.write_text("old pbf", encoding="utf8")
+    events = []
+
+    def fake_copy(source, destination):
+        events.append(("copy", source.name, destination.name))
+        destination.write_text(source.read_text(encoding="utf8"), encoding="utf8")
+
+    def fake_update(path):
+        events.append(("update", path.name))
+        path.write_text("updated pbf", encoding="utf8")
+
+    monkeypatch.setattr(ingest, "download_seed", lambda *args: pytest.fail("recent PBF should be reused"))
+    monkeypatch.setattr(ingest, "copy_pbf_for_pyosmium_update", fake_copy)
+    monkeypatch.setattr(ingest, "run_pyosmium_up_to_date", fake_update)
+    monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: events.append(("header", path.name)) or 42)
+
+    ingest.sync_pbf(cfg, ext)
+
+    assert events == [
+        ("copy", "district.osm.pbf", ".district.osm.pbf.pyosmium-update"),
+        ("update", ".district.osm.pbf.pyosmium-update"),
+        ("header", ".district.osm.pbf.pyosmium-update"),
+        ("header", "district.osm.pbf"),
+    ]
+    assert seed_path.read_text(encoding="utf8") == "updated pbf"
+    assert not ingest.pyosmium_update_path(seed_path).exists()
+
+
+def test_sync_pbf_leaves_seed_unchanged_when_temp_update_fails(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_sync_temp_failure")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    seed_path = ingest.pbf_path(cfg, ext)
+    seed_path.write_text("old pbf", encoding="utf8")
+
+    def fake_copy(source, destination):
+        destination.write_text(source.read_text(encoding="utf8"), encoding="utf8")
+
+    def fail_update(path):
+        path.write_text("corrupt temp", encoding="utf8")
+        raise ingest.PbfSyncError("interrupted")
+
+    monkeypatch.setattr(ingest, "download_seed", lambda *args: pytest.fail("recent PBF should be reused"))
+    monkeypatch.setattr(ingest, "copy_pbf_for_pyosmium_update", fake_copy)
+    monkeypatch.setattr(ingest, "run_pyosmium_up_to_date", fail_update)
+
+    with pytest.raises(ingest.PbfSyncError, match="interrupted"):
+        ingest.sync_pbf(cfg, ext)
+
+    assert seed_path.read_text(encoding="utf8") == "old pbf"
+    assert not ingest.pyosmium_update_path(seed_path).exists()
+
+
 def test_bootstrap_import_runs_imposm_import(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_imposm_import")
     cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
