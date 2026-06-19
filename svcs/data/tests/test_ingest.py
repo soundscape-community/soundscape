@@ -166,6 +166,10 @@ def test_ingest_mode_defaults_to_weekly_and_env_can_select_imposm_run(monkeypatc
         == ingest.INGEST_MODE_WEEKLY_PBF
     )
 
+    monkeypatch.setenv("INGEST_MODE", "invalid")
+    with pytest.raises(SystemExit):
+        ingest.parse_args(["--where", "district-of-columbia"])
+
 
 def fake_osmium_module(sequence):
     class Reader:

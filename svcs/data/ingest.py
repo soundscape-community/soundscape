@@ -197,6 +197,8 @@ def parse_args(argv=None) -> IngestConfig:
     parser.add_argument("--ntfy-priority", default=os.environ.get("NTFY_PRIORITY", "high"))
 
     args = parser.parse_args(argv)
+    if args.ingest_mode not in INGEST_MODES:
+        parser.error(f"--ingest-mode must be one of: {', '.join(INGEST_MODES)}")
     if args.interval_days <= 0:
         parser.error("--interval-days must be greater than zero")
     if args.retry_days <= 0:
