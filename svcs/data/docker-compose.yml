@@ -63,6 +63,7 @@ services:
     environment:
       - GEN_REGION=${GEN_REGION:-world}
       - INGEST_MODE=${INGEST_MODE:-weekly-pbf}
+      - INGEST_FLAGS=${INGEST_FLAGS:-}
       - INGEST_INTERVAL_DAYS=${INGEST_INTERVAL_DAYS:-7}
       - INGEST_RETRY_DAYS=${INGEST_RETRY_DAYS:-1}
       - INGEST_PBF_REUSE_DAYS=${INGEST_PBF_REUSE_DAYS:-5}
