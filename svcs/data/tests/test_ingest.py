@@ -255,6 +255,33 @@ def test_seed_download_removes_temp_file_on_failure(tmp_path, monkeypatch):
     assert not (tmp_path / ".region.osm.pbf.download").exists()
 
 
+def test_pyosmium_up_to_date_loops_until_fully_current(tmp_path):
+    ingest = load_ingest("ingest_pyosmium_loop")
+    path = tmp_path / "region.osm.pbf"
+    calls = []
+    results = [1, 1, 0]
+
+    def fake_run(command, check=False):
+        calls.append((command, check))
+        return SimpleNamespace(returncode=results.pop(0))
+
+    ingest.run_pyosmium_up_to_date(path, runner=fake_run)
+
+    assert calls == [
+        (["pyosmium-up-to-date", str(path)], False),
+        (["pyosmium-up-to-date", str(path)], False),
+        (["pyosmium-up-to-date", str(path)], False),
+    ]
+
+
+def test_pyosmium_up_to_date_fails_on_non_retryable_exit(tmp_path):
+    ingest = load_ingest("ingest_pyosmium_non_retryable")
+    path = tmp_path / "region.osm.pbf"
+
+    with pytest.raises(ingest.PbfSyncError, match="status 2"):
+        ingest.run_pyosmium_up_to_date(path, runner=lambda command, check=False: SimpleNamespace(returncode=2))
+
+
 def test_bootstrap_import_runs_imposm_import(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_imposm_import")
     cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))

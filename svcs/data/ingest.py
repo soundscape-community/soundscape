@@ -55,6 +55,7 @@ SEED_DOWNLOAD_PROGRESS_SECONDS = 5 * 60
 IMPOSM_LAST_STATE = "last.state.txt"
 NTFY_ERROR_THROTTLE_SECONDS = 60 * 60
 NON_OSM_IMPORT_INTERVAL_SECONDS = SECONDS_PER_DAY
+PYOSMIUM_UP_TO_DATE_MAX_ATTEMPTS = 100
 INGEST_MODE_WEEKLY_PBF = "weekly-pbf"
 INGEST_MODE_IMPOSM_RUN = "imposm-run"
 INGEST_MODES = (INGEST_MODE_WEEKLY_PBF, INGEST_MODE_IMPOSM_RUN)
@@ -389,6 +390,30 @@ def download_seed(url: str, destination: Path, sha256: str | None = None, monoto
             os.unlink(tmp)
 
 
+def run_pyosmium_up_to_date(path: Path, runner=subprocess.run):
+    command = ["pyosmium-up-to-date", str(path)]
+    logger.info("Updating PBF with pyosmium: %s", command)
+    for attempt in range(1, PYOSMIUM_UP_TO_DATE_MAX_ATTEMPTS + 1):
+        try:
+            result = runner(command, check=False)
+        except Exception as exc:
+            raise PbfSyncError(str(exc)) from exc
+        if result.returncode == 0:
+            return
+        if result.returncode != 1:
+            raise PbfSyncError(f"pyosmium-up-to-date exited with status {result.returncode}")
+        logger.info(
+            "pyosmium-up-to-date applied partial updates to %s; continuing sync attempt %d",
+            path,
+            attempt + 1,
+        )
+
+    raise PbfSyncError(
+        f"pyosmium-up-to-date did not reach the latest state after "
+        f"{PYOSMIUM_UP_TO_DATE_MAX_ATTEMPTS} attempts"
+    )
+
+
 def sync_pbf(config: IngestConfig, extract: dict):
     seed_path = pbf_path(config, extract)
     if pbf_is_recent(seed_path, config.pbf_reuse_days):
@@ -400,12 +425,7 @@ def sync_pbf(config: IngestConfig, extract: dict):
     else:
         download_seed(extract["url"], seed_path, extract.get("sha256"))
 
-    command = ["pyosmium-up-to-date", str(seed_path)]
-    logger.info("Updating PBF with pyosmium: %s", command)
-    try:
-        subprocess.run(command, check=True)
-    except Exception as exc:
-        raise PbfSyncError(str(exc)) from exc
+    run_pyosmium_up_to_date(seed_path)
 
     pbf_replication_sequence(seed_path)
 
