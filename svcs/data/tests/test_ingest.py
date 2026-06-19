@@ -267,7 +267,7 @@ def test_pyosmium_up_to_date_loops_until_fully_current(tmp_path):
 
     ingest.run_pyosmium_up_to_date(path, runner=fake_run)
 
-    command = ["pyosmium-up-to-date", "--size", "5000", str(path)]
+    command = ["pyosmium-up-to-date", "--format", "pbf,add_metadata=false", "--size", "5000", str(path)]
     assert calls == [
         (command, False),
         (command, False),

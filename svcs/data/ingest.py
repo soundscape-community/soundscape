@@ -391,7 +391,7 @@ def download_seed(url: str, destination: Path, sha256: str | None = None, monoto
 
 
 def run_pyosmium_up_to_date(path: Path, runner=subprocess.run):
-    command = ["pyosmium-up-to-date", "--size", "5000", str(path)]
+    command = ["pyosmium-up-to-date", "--format", "pbf,add_metadata=false", "--size", "5000", str(path)]
     logger.info("Updating PBF with pyosmium: %s", command)
     for attempt in range(1, PYOSMIUM_UP_TO_DATE_MAX_ATTEMPTS + 1):
         try:
