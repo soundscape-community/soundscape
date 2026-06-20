@@ -184,7 +184,7 @@ def parse_args(argv=None) -> IngestConfig:
     parser.add_argument("--telemetry", action="store_true", help="generate telemetry")
     parser.add_argument("--interval-days", type=float, default=env_float("INGEST_INTERVAL_DAYS", 7))
     parser.add_argument("--retry-days", type=float, default=env_float("INGEST_RETRY_DAYS", 1))
-    parser.add_argument("--pbf-reuse-days", type=float, default=env_float("INGEST_PBF_REUSE_DAYS", 5))
+    parser.add_argument("--pbf-reuse-days", type=float, default=env_float("INGEST_PBF_REUSE_DAYS", 14))
     parser.add_argument("--run-once", action="store_true", help="run one ingest cycle and exit")
 
     parser.add_argument("--extracts", type=str, default="extracts.json", help="extracts file")
@@ -1108,7 +1108,7 @@ def supervise_weekly_ingest(config: IngestConfig, sleeper=time.sleep) -> int:
     retry_seconds = seconds_from_days(config.retry_days)
     while True:
         status = run_weekly_ingest(config, extract)
-        if config.run_once:
+        if config.run_once or not config.sourceupdate:
             return status
         delay = interval_seconds if status == 0 else retry_seconds
         logger.info("Next weekly PBF ingest cycle in %.2f hours", delay / 3600)

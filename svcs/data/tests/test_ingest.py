@@ -144,6 +144,9 @@ def test_region_env_prefers_singular_with_legacy_fallback(monkeypatch):
 def test_pbf_reuse_days_defaults_to_env_and_cli_overrides(monkeypatch):
     ingest = load_ingest("ingest_pbf_reuse_days")
 
+    monkeypatch.delenv("INGEST_PBF_REUSE_DAYS", raising=False)
+    assert ingest.parse_args(["--where", "district-of-columbia"]).pbf_reuse_days == 14
+
     monkeypatch.setenv("INGEST_PBF_REUSE_DAYS", "3.5")
     assert ingest.parse_args(["--where", "district-of-columbia"]).pbf_reuse_days == 3.5
     assert ingest.parse_args(["--where", "district-of-columbia", "--pbf-reuse-days", "2"]).pbf_reuse_days == 2
@@ -678,6 +681,24 @@ def test_no_sourceupdate_skips_imposm_run(tmp_path, monkeypatch):
     monkeypatch.setattr(ingest, "run_imposm", lambda *args: pytest.fail("imposm run should be skipped"))
 
     assert ingest.run_ingest(cfg, ext) == 0
+
+
+def test_weekly_no_sourceupdate_exits_after_first_cycle(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_no_sourceupdate")
+    cfg = base_config(ingest, tmp_path, sourceupdate=False)
+    ext = extract()
+    cycles = []
+
+    monkeypatch.setattr(ingest, "load_selected_extract", lambda config: ext)
+    monkeypatch.setattr(ingest, "run_weekly_ingest", lambda config, selected: cycles.append(selected) or 0)
+
+    status = ingest.supervise_weekly_ingest(
+        cfg,
+        sleeper=lambda delay: pytest.fail("weekly ingest should not schedule another cycle"),
+    )
+
+    assert status == 0
+    assert cycles == [ext]
 
 
 def test_run_once_skips_imposm_run(tmp_path, monkeypatch):
