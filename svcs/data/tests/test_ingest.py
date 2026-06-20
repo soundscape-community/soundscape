@@ -282,6 +282,29 @@ def test_pyosmium_up_to_date_loops_until_fully_current(tmp_path):
     ]
 
 
+def test_pyosmium_up_to_date_removes_stale_temp_files_before_run(tmp_path):
+    ingest = load_ingest("ingest_pyosmium_temp_cleanup")
+    path = tmp_path / "planet-latest.osm.pbf"
+    stale = tmp_path / "tmpvkhgq8bi-planet-latest.osm.pbf"
+    other_region = tmp_path / "tmpvkhgq8bi-other.osm.pbf"
+    download_temp = tmp_path / ".planet-latest.osm.pbf.download"
+    stale.write_text("partial pyosmium output", encoding="utf8")
+    other_region.write_text("other region temp", encoding="utf8")
+    download_temp.write_text("seed download", encoding="utf8")
+
+    def fake_run(command, check=False):
+        assert not stale.exists()
+        assert other_region.exists()
+        assert download_temp.exists()
+        return SimpleNamespace(returncode=0)
+
+    ingest.run_pyosmium_up_to_date(path, runner=fake_run)
+
+    assert not stale.exists()
+    assert other_region.exists()
+    assert download_temp.exists()
+
+
 def test_pyosmium_up_to_date_fails_on_non_retryable_exit(tmp_path):
     ingest = load_ingest("ingest_pyosmium_non_retryable")
     path = tmp_path / "region.osm.pbf"
@@ -422,7 +445,7 @@ def test_weekly_changed_sequence_imports_and_updates_db_state(tmp_path, monkeypa
         "read_import_state",
         lambda config, region, sequence_number: {"region": "district-of-columbia", "sequence_number": 42},
     )
-    monkeypatch.setattr(ingest, "import_extracts_and_write", lambda config, selected, incremental=False: None)
+    monkeypatch.setattr(ingest, "import_weekly_extracts_and_write", lambda config, selected: None)
     monkeypatch.setattr(ingest, "write_import_state", lambda config, marker: written.append(marker))
     monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
 
@@ -447,8 +470,8 @@ def test_weekly_changed_region_imports_even_with_same_sequence(tmp_path, monkeyp
     )
     monkeypatch.setattr(
         ingest,
-        "import_extracts_and_write",
-        lambda config, selected, incremental=False: imported.append(selected["name"]),
+        "import_weekly_extracts_and_write",
+        lambda config, selected: imported.append(selected["name"]),
     )
     monkeypatch.setattr(ingest, "write_import_state", lambda config, marker: None)
     monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
@@ -466,7 +489,7 @@ def test_weekly_skipimport_does_not_update_db_state(tmp_path, monkeypatch):
     monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: None)
     monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: 42)
     monkeypatch.setattr(ingest, "read_import_state", lambda config, region, sequence_number: None)
-    monkeypatch.setattr(ingest, "import_extracts_and_write", lambda *args: pytest.fail("skipimport must not import OSM"))
+    monkeypatch.setattr(ingest, "import_weekly_extracts_and_write", lambda *args: pytest.fail("skipimport must not import OSM"))
     monkeypatch.setattr(ingest, "write_import_state", lambda *args: pytest.fail("skipimport must not update state"))
     monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
 
@@ -485,8 +508,8 @@ def test_weekly_import_state_is_written_before_non_osm_failure(tmp_path, monkeyp
     monkeypatch.setattr(ingest, "read_import_state", lambda config, region, sequence_number: None)
     monkeypatch.setattr(
         ingest,
-        "import_extracts_and_write",
-        lambda config, selected, incremental=False: events.append("osm"),
+        "import_weekly_extracts_and_write",
+        lambda config, selected: events.append("osm"),
     )
     monkeypatch.setattr(
         ingest,
@@ -525,6 +548,59 @@ def test_weekly_import_uses_three_phase_imposm_without_diff(tmp_path, monkeypatc
     assert "-write" in calls[1]
     assert "-deployproduction" in calls[2]
     assert all("-diff" not in cmd for cmd in calls)
+
+
+def test_weekly_import_drops_backup_schema_before_write(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_drop_backup")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    events = []
+
+    monkeypatch.setattr(ingest, "import_extract", lambda config, selected, cache, incremental: events.append("read"))
+    monkeypatch.setattr(ingest, "drop_backup_schema", lambda config: events.append("drop_backup"))
+    monkeypatch.setattr(ingest, "import_write", lambda config, incremental=False: events.append("write"))
+    monkeypatch.setattr(ingest, "import_rotate", lambda config, incremental=False: events.append("rotate"))
+
+    ingest.import_weekly_extracts_and_write(cfg, ext)
+
+    assert events == ["read", "drop_backup", "write", "rotate"]
+
+
+def test_drop_backup_schema_cascades(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_drop_backup_schema")
+    cfg = base_config(ingest, tmp_path)
+    commands = []
+    closed = []
+
+    class Cursor:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def execute(self, sql):
+            commands.append(sql)
+
+    class Connection:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def cursor(self):
+            return Cursor()
+
+        def close(self):
+            closed.append(True)
+
+    monkeypatch.setattr(ingest.psycopg2, "connect", lambda dsn: Connection())
+
+    ingest.drop_backup_schema(cfg)
+
+    assert commands == ["DROP SCHEMA IF EXISTS backup CASCADE"]
+    assert closed == [True]
 
 
 def write_diff_state(ingest, cfg):

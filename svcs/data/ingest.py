@@ -403,7 +403,20 @@ def download_seed(url: str, destination: Path, sha256: str | None = None, monoto
             os.unlink(tmp)
 
 
+def remove_stale_pyosmium_temp_files(path: Path):
+    for candidate in path.parent.glob(f"tmp*-{path.name}"):
+        if not (candidate.is_file() or candidate.is_symlink()):
+            logger.warning("Ignoring non-file pyosmium temp path at %s", candidate)
+            continue
+        try:
+            candidate.unlink()
+            logger.info("Removed stale pyosmium temp file at %s", candidate)
+        except OSError as exc:
+            raise PbfSyncError(f"failed to remove stale pyosmium temp file {candidate}: {exc}") from exc
+
+
 def run_pyosmium_up_to_date(path: Path, runner=subprocess.run):
+    remove_stale_pyosmium_temp_files(path)
     command = ["pyosmium-up-to-date", "--format", "pbf,add_metadata=false", "--size", "5000", str(path)]
     logger.info("Updating PBF with pyosmium: %s", command)
     for attempt in range(1, PYOSMIUM_UP_TO_DATE_MAX_ATTEMPTS + 1):
@@ -625,10 +638,28 @@ def import_rotate(config: IngestConfig, incremental=False):
     logger.info("Table rotation: DONE")
 
 
+def drop_backup_schema(config: IngestConfig):
+    logger.info("Dropping backup schema before weekly OSM write")
+    conn = psycopg2.connect(config.dsn)
+    try:
+        with conn:
+            with conn.cursor() as cursor:
+                cursor.execute("DROP SCHEMA IF EXISTS backup CASCADE")
+    finally:
+        conn.close()
+
+
 def import_extracts_and_write(config: IngestConfig, extract: dict, incremental=False):
     import_extract(config, extract, "-overwritecache", incremental)
     import_write(config, incremental)
     import_rotate(config, incremental)
+
+
+def import_weekly_extracts_and_write(config: IngestConfig, extract: dict):
+    import_extract(config, extract, "-overwritecache", incremental=False)
+    drop_backup_schema(config)
+    import_write(config, incremental=False)
+    import_rotate(config, incremental=False)
 
 
 def import_extract_for_imposm_run(config: IngestConfig, extract: dict):
@@ -916,7 +947,7 @@ def run_weekly_cycle(config: IngestConfig, extract: dict) -> bool:
                     logger.info("Provisioning database: DONE")
 
                 if not config.skipimport:
-                    import_extracts_and_write(config, extract, incremental=False)
+                    import_weekly_extracts_and_write(config, extract)
                     write_import_state(config, marker)
 
                 run_startup_imports(config)
