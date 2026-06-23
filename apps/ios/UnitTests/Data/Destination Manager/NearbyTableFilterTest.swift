@@ -91,6 +91,28 @@ final class NearbyTableFilterTest: XCTestCase {
         XCTAssertEqual(LocationAction.navilens.accessibilityHint, GDLocalizedString("location_detail.action.navilens.hint"))
     }
 
+    func testNaviLensRecommenderUsesNearbyPlaceAccessibilityActionOrder() throws {
+        let poi = GenericLocation(lat: 47.6205, lon: -122.3493, name: "NaviLens Code")
+        poi.superCategory = SuperCategory.navilens.rawValue
+        let detail = LocationDetail(screenshot: poi)
+
+        let nearbyPlaceActionNames = LocationAction.actions(for: detail)
+            .reversed()
+            .filter(\.isEnabled)
+            .map(\.text)
+        let recommenderActionNames = LocationAction.enabledAccessibilityActions(for: poi)
+            .map(\.text)
+
+        XCTAssertEqual(recommenderActionNames, nearbyPlaceActionNames)
+        XCTAssertEqual(recommenderActionNames, [
+            LocationAction.share(isEnabled: true).text,
+            LocationAction.preview.text,
+            LocationAction.save(isEnabled: true).text,
+            LocationAction.navilens.text,
+            LocationAction.beacon.text
+        ])
+    }
+
     private func matches(_ lhs: LocationAction, _ rhs: LocationAction) -> Bool {
         switch (lhs, rhs) {
         case (.save(let lhsEnabled), .save(let rhsEnabled)):
