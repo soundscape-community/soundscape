@@ -366,7 +366,13 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
             return nil
         }
 
-        let callouts = [WaypointDistanceCallout(index: current.index, waypoint: current.waypoint)]
+        let callouts: [CalloutProtocol]
+        if let beaconId = current.waypoint.beaconId ?? AppContext.shared.spatialDataContext.destinationManager.destinationKey {
+            callouts = [DestinationCallout(.auto, beaconId)]
+        } else {
+            callouts = [WaypointDistanceCallout(index: current.index, waypoint: current.waypoint)]
+        }
+
         let group = CalloutGroup(callouts, action: .interruptAndClear, logContext: "route_guidance.manual_waypoint_callout")
 
         currentManualWaypointGroupID = group.id
