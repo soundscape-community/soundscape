@@ -49,15 +49,18 @@ enum LocationAction {
     }
     
     // MARK: Accessibility Custom Actions
+
+    static func enabledAccessibilityActions(for detail: LocationDetail) -> [LocationAction] {
+        return actions(for: detail).reversed().filter({ $0.isEnabled })
+    }
     
-    static func accessibilityCustomActions(for entity: POI, callback: @escaping (LocationAction, POI) -> Void) -> [UIAccessibilityCustomAction] {
+    static func enabledAccessibilityActions(for entity: POI) -> [LocationAction] {
         let detail = LocationDetail(entity: entity)
-        
-        return actions(for: detail).reversed().compactMap({ (action) in
-            guard action.isEnabled else {
-                return nil
-            }
-            
+        return enabledAccessibilityActions(for: detail)
+    }
+
+    static func accessibilityCustomActions(for entity: POI, callback: @escaping (LocationAction, POI) -> Void) -> [UIAccessibilityCustomAction] {
+        return enabledAccessibilityActions(for: entity).map({ (action) in
             let name = action.text
             
             return UIAccessibilityCustomAction(name: name) { (_) -> Bool in

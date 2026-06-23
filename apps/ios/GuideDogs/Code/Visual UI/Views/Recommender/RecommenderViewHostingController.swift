@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -13,9 +14,9 @@ import CocoaLumberjackSwift
 class RecommenderViewHostingController: UIHostingController<AnyView> {
     
     required init?(coder aDecoder: NSCoder) {
-        let navHelper = ViewNavigationHelper()
+        let navHelper = RecommenderNavigationHelper()
         let view = RecommenderView(viewModel: RecommenderViewModel())
-            .environmentObject(navHelper)
+            .environmentObject(navHelper as ViewNavigationHelper)
         
         super.init(coder: aDecoder, rootView: AnyView(view))
         
