@@ -63,6 +63,7 @@ class RouteGuidance: BehaviorBase {
     private var isFinished = false
     /// Receives `dynamicPlayerFinished` events
     private var beaconObserver: AnyCancellable?
+    private var shouldRestoreBeaconAudioOnWake = false
     /// Unless `shouldResume = true`, the route's state will be reset each time the route is activated
     var shouldResume = false
 
@@ -131,11 +132,6 @@ class RouteGuidance: BehaviorBase {
     }
 
     override func activate(with parent: Behavior?) {
-        let gen = RouteGuidanceGenerator(self, motionActivity: motionActivity, alreadyCompleted: progress.isDone)
-
-        manualGenerators.append(gen)
-        autoGenerators.append(gen)
-
         if case .database(let id) = content.source {
             do {
                 try Route.updateLastSelectedDate(id: id)
@@ -144,12 +140,19 @@ class RouteGuidance: BehaviorBase {
             }
         }
 
+        pendingBeaconArgs = nil
+        isArrivingAtWaypoint = false
+
         if shouldResume {
             // Do not reset the route state
             // Reset `shouldResume`
             shouldResume = false
+            arrivedAtFinalWaypoint = state.isFinal
+            isFinished = state.isFinal
         } else {
             // Reset the route state
+            arrivedAtFinalWaypoint = false
+            isFinished = false
             state.totalTime = 0.0
             state.isFinal = false
             state.waypointIndex = 0
@@ -172,6 +175,11 @@ class RouteGuidance: BehaviorBase {
         guard let current = currentWaypoint else {
             return
         }
+
+        let gen = RouteGuidanceGenerator(self, motionActivity: motionActivity, alreadyCompleted: progress.isDone)
+
+        manualGenerators.append(gen)
+        autoGenerators.append(gen)
 
         // Make sure there isn't an existing beacon when we start the first route beacon
         if AppContext.shared.spatialDataContext.destinationManager.isDestinationSet {
@@ -246,6 +254,7 @@ class RouteGuidance: BehaviorBase {
         nearestIntersectionKey = nil
 
         saveState()
+        lastSaveTime = nil
         clearBeacon()
         updateNowPlayingInfo(nil)
 
@@ -260,11 +269,13 @@ class RouteGuidance: BehaviorBase {
         let manager = AppContext.shared.spatialDataContext.destinationManager
 
         // Ensure the beacon audio turns off when the app enters sleep mode
-        if manager.isAudioEnabled {
+        shouldRestoreBeaconAudioOnWake = manager.isAudioEnabled
+        if shouldRestoreBeaconAudioOnWake {
             manager.toggleDestinationAudio(forceMelody: false)
         }
 
         saveState()
+        lastSaveTime = nil
     }
 
     override func wake() {
@@ -275,7 +286,10 @@ class RouteGuidance: BehaviorBase {
 
         // Ensure the beacon audio turns on when the app wakes up
         let manager = AppContext.shared.spatialDataContext.destinationManager
-        manager.toggleDestinationAudio(forceMelody: true)
+        if shouldRestoreBeaconAudioOnWake && !manager.isAudioEnabled {
+            manager.toggleDestinationAudio(forceMelody: true)
+        }
+        shouldRestoreBeaconAudioOnWake = false
     }
 
     /// Adds the index of the current waypoint to the visited waypoints and then switches to
@@ -426,7 +440,7 @@ class RouteGuidance: BehaviorBase {
     }
 
     func setBeacon(waypointIndex index: Int, enableAudio: Bool = true) {
-        guard index < content.waypoints.count else {
+        guard index >= 0 && index < content.waypoints.count else {
             return
         }
 
@@ -492,16 +506,24 @@ class RouteGuidance: BehaviorBase {
             try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "route_guidance.set_beacon")
             GDLogInfo(.routeGuidance, "Awaiting finish of current route beacon...")
         } catch {
+            pendingBeaconArgs = nil
+            NotificationCenter.default.post(name: .routeGuidanceTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: false])
             GDLogError(.routeGuidance, "Error: Unable to remove current beacon in Route Guidance!")
         }
     }
 
     private func completeSetBeacon(waypoint: LocationDetail, enableAudio: Bool) {
+        defer {
+            NotificationCenter.default.post(name: .routeGuidanceTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: false])
+        }
+
         guard let userLocation = userLocation ?? AppContext.shared.geolocationManager.location else {
+            GDLogError(.routeGuidance, "Error: Unable to set route beacon without a user location!")
             return
         }
 
         guard let location = waypoint.source.closestLocation(from: userLocation, useEntranceIfAvailable: true) else {
+            GDLogError(.routeGuidance, "Error: Unable to resolve route waypoint location!")
             return
         }
 
@@ -530,9 +552,6 @@ class RouteGuidance: BehaviorBase {
         } catch {
             GDLogError(.routeGuidance, "Error: Unable to set beacon in Route Guidance!")
         }
-
-        // Once the new beacon has been set, indicate that the transition is complete
-        NotificationCenter.default.post(name: .routeGuidanceTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: false])
     }
 
     private func clearBeacon() {

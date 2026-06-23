@@ -209,12 +209,37 @@ class RouteGuidanceTest: XCTestCase {
         XCTAssertEqual(route.currentWaypoint!.waypoint.location.coordinate, activity.waypoints[3].coordinate)
         XCTAssertEqual(route.progress.completed, 0)
 
+        // Go to -1 (out of bound, so fails and stays at 3)
+        route.setBeacon(waypointIndex: -1, enableAudio: false)
+        XCTAssertNotNil(route.currentWaypoint)
+        XCTAssertEqual(route.currentWaypoint!.index, 3)
+        XCTAssertEqual(route.currentWaypoint!.waypoint.location.coordinate, activity.waypoints[3].coordinate)
+        XCTAssertEqual(route.progress.completed, 0)
+
         // Go back to 0
         route.setBeacon(waypointIndex: 0, enableAudio: false)
         XCTAssertNotNil(route.currentWaypoint)
         XCTAssertEqual(route.currentWaypoint!.index, 0)
         XCTAssertEqual(route.currentWaypoint!.waypoint.location.coordinate, activity.waypoints[0].coordinate)
         XCTAssertEqual(route.progress.completed, 0)
+
+        XCTAssertNil(route.deactivate())
+    }
+
+    func testSinglePointFreshActivationAfterCompletionResetsProgress() throws {
+        let route = RouteGuidance(RouteGuidanceTest.activity_single_waypoint(), spatialData: spatial, motion: motion)
+        route.activate(with: nil)
+        XCTAssert(route.completeCurrentWaypoint())
+        XCTAssertTrue(route.progress.isDone)
+        XCTAssertTrue(route.state.isFinal)
+
+        XCTAssertNil(route.deactivate())
+        route.activate(with: nil)
+
+        XCTAssertFalse(route.progress.isDone)
+        XCTAssertEqual(route.progress.completed, 0)
+        XCTAssertFalse(route.state.isFinal)
+        XCTAssertEqual(route.state.visited.count, 0)
 
         XCTAssertNil(route.deactivate())
     }

@@ -57,6 +57,7 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
     private var currentArrivalGroupID: UUID?
     private var currentDepartureGroupID: UUID?
     private var currentDistanceGroupID: UUID?
+    private var currentManualWaypointGroupID: UUID?
     private var currentIntersectionGroupID: UUID?
 
     private var isGuidanceReady: Bool = false
@@ -368,7 +369,7 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
         let callouts = [WaypointDistanceCallout(index: current.index, waypoint: current.waypoint)]
         let group = CalloutGroup(callouts, action: .interruptAndClear, logContext: "route_guidance.manual_waypoint_callout")
 
-        currentDistanceGroupID = group.id
+        currentManualWaypointGroupID = group.id
         group.delegate = self
 
         GDLogInfo(.routeGuidance, "Created manual waypoint callout group \(group.id)")
@@ -477,6 +478,8 @@ extension RouteGuidanceGenerator: CalloutGroupDelegate {
         if let id = currentDistanceGroupID, group.id == id {
             distanceCalloutFilter.didUpdate(success: true)
             currentDistanceGroupID = nil
+        } else if let id = currentManualWaypointGroupID, group.id == id {
+            currentManualWaypointGroupID = nil
         } else if let id = currentDepartureGroupID, group.id == id {
             currentDepartureGroupID = nil
         } else if let id = currentArrivalGroupID, group.id == id {
