@@ -66,6 +66,7 @@ def sql_texts(cursor):
 
 def base_config(ingest, tmp_path, **overrides):
     config = ingest.IngestConfig(
+        ingest_mode=ingest.INGEST_MODE_WEEKLY_PBF,
         skipimport=False,
         sourceupdate=True,
         telemetry=False,
@@ -143,12 +144,69 @@ def test_region_env_prefers_singular_with_legacy_fallback(monkeypatch):
 def test_pbf_reuse_days_defaults_to_env_and_cli_overrides(monkeypatch):
     ingest = load_ingest("ingest_pbf_reuse_days")
 
+    monkeypatch.delenv("INGEST_PBF_REUSE_DAYS", raising=False)
+    assert ingest.parse_args(["--where", "district-of-columbia"]).pbf_reuse_days == 14
+
     monkeypatch.setenv("INGEST_PBF_REUSE_DAYS", "3.5")
     assert ingest.parse_args(["--where", "district-of-columbia"]).pbf_reuse_days == 3.5
     assert ingest.parse_args(["--where", "district-of-columbia", "--pbf-reuse-days", "2"]).pbf_reuse_days == 2
 
     with pytest.raises(SystemExit):
         ingest.parse_args(["--where", "district-of-columbia", "--pbf-reuse-days", "0"])
+
+
+def test_ingest_mode_defaults_to_weekly_and_env_can_select_imposm_run(monkeypatch):
+    ingest = load_ingest("ingest_mode")
+
+    monkeypatch.delenv("INGEST_MODE", raising=False)
+    assert ingest.parse_args(["--where", "district-of-columbia"]).ingest_mode == ingest.INGEST_MODE_WEEKLY_PBF
+
+    monkeypatch.setenv("INGEST_MODE", ingest.INGEST_MODE_IMPOSM_RUN)
+    assert ingest.parse_args(["--where", "district-of-columbia"]).ingest_mode == ingest.INGEST_MODE_IMPOSM_RUN
+
+    assert (
+        ingest.parse_args(["--where", "district-of-columbia", "--ingest-mode", ingest.INGEST_MODE_WEEKLY_PBF]).ingest_mode
+        == ingest.INGEST_MODE_WEEKLY_PBF
+    )
+
+    monkeypatch.setenv("INGEST_MODE", "invalid")
+    with pytest.raises(SystemExit):
+        ingest.parse_args(["--where", "district-of-columbia"])
+
+
+def fake_osmium_module(sequence):
+    class Reader:
+        def __init__(self, path):
+            self.path = path
+            self.closed = False
+
+        def header(self):
+            return {"osmosis_replication_sequence_number": sequence}
+
+        def close(self):
+            self.closed = True
+
+    return SimpleNamespace(io=SimpleNamespace(Reader=Reader))
+
+
+def test_pbf_replication_sequence_reads_pyosmium_header(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_pbf_header")
+    path = tmp_path / "region.osm.pbf"
+    path.write_text("pbf", encoding="utf8")
+    monkeypatch.setitem(sys.modules, "osmium", fake_osmium_module("12345"))
+
+    assert ingest.pbf_replication_sequence(path) == 12345
+
+
+@pytest.mark.parametrize("sequence", [None, "", "not-a-number", "-1"])
+def test_pbf_replication_sequence_rejects_missing_or_invalid_sequence(tmp_path, monkeypatch, sequence):
+    ingest = load_ingest(f"ingest_pbf_bad_header_{sequence}")
+    path = tmp_path / "region.osm.pbf"
+    path.write_text("pbf", encoding="utf8")
+    monkeypatch.setitem(sys.modules, "osmium", fake_osmium_module(sequence))
+
+    with pytest.raises(ingest.PbfSyncError):
+        ingest.pbf_replication_sequence(path)
 
 
 def test_seed_download_uses_temp_file_and_atomic_rename(tmp_path, monkeypatch):
@@ -204,6 +262,57 @@ def test_seed_download_removes_temp_file_on_failure(tmp_path, monkeypatch):
     assert not (tmp_path / ".region.osm.pbf.download").exists()
 
 
+def test_pyosmium_up_to_date_loops_until_fully_current(tmp_path):
+    ingest = load_ingest("ingest_pyosmium_loop")
+    path = tmp_path / "region.osm.pbf"
+    calls = []
+    results = [1, 1, 0]
+
+    def fake_run(command, check=False):
+        calls.append((command, check))
+        return SimpleNamespace(returncode=results.pop(0))
+
+    ingest.run_pyosmium_up_to_date(path, runner=fake_run)
+
+    command = ["pyosmium-up-to-date", "--format", "pbf,add_metadata=false", "--size", "5000", str(path)]
+    assert calls == [
+        (command, False),
+        (command, False),
+        (command, False),
+    ]
+
+
+def test_pyosmium_up_to_date_removes_stale_temp_files_before_run(tmp_path):
+    ingest = load_ingest("ingest_pyosmium_temp_cleanup")
+    path = tmp_path / "planet-latest.osm.pbf"
+    stale = tmp_path / "tmpvkhgq8bi-planet-latest.osm.pbf"
+    other_region = tmp_path / "tmpvkhgq8bi-other.osm.pbf"
+    download_temp = tmp_path / ".planet-latest.osm.pbf.download"
+    stale.write_text("partial pyosmium output", encoding="utf8")
+    other_region.write_text("other region temp", encoding="utf8")
+    download_temp.write_text("seed download", encoding="utf8")
+
+    def fake_run(command, check=False):
+        assert not stale.exists()
+        assert other_region.exists()
+        assert download_temp.exists()
+        return SimpleNamespace(returncode=0)
+
+    ingest.run_pyosmium_up_to_date(path, runner=fake_run)
+
+    assert not stale.exists()
+    assert other_region.exists()
+    assert download_temp.exists()
+
+
+def test_pyosmium_up_to_date_fails_on_non_retryable_exit(tmp_path):
+    ingest = load_ingest("ingest_pyosmium_non_retryable")
+    path = tmp_path / "region.osm.pbf"
+
+    with pytest.raises(ingest.PbfSyncError, match="status 2"):
+        ingest.run_pyosmium_up_to_date(path, runner=lambda command, check=False: SimpleNamespace(returncode=2))
+
+
 def test_bootstrap_import_runs_imposm_import(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_imposm_import")
     cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
@@ -248,7 +357,7 @@ def test_generated_imposm_config_includes_daily_replication(tmp_path):
 
     assert generated["cachedir"] == cfg.cachedir
     assert generated["diffdir"] == cfg.diffdir
-    assert generated["connection"] == "postgis://@postgis/osm"
+    assert generated["connection"] == "postgis://postgis/osm"
     assert generated["mapping"] == cfg.mapping
     assert generated["srid"] == 4326
     assert generated["replication_url"] == "https://example.test/updates/"
@@ -272,6 +381,226 @@ def test_imposm_dsn_is_url_encoded():
         ingest.build_imposm_dsn("postgresql://user:pass@db.example:5432/osm")
         == "postgis://user:pass@db.example:5432/osm"
     )
+    assert ingest.build_imposm_dsn("host=postgis dbname=osm") == "postgis://postgis/osm"
+    assert ingest.build_imposm_dsn("dbname=osm") == "postgis:///osm"
+
+
+def test_dsn_dbname_uses_psycopg_parser(monkeypatch):
+    ingest = load_ingest("ingest_dsn_dbname")
+
+    assert ingest.dsn_dbname("host=postgis dbname='my osm db'") == "my osm db"
+    assert ingest.dsn_dbname("postgresql://user:pass@db.example:5432/url_db") == "url_db"
+
+    monkeypatch.setenv("POSTGIS_DBNAME", "env_osm")
+    assert ingest.dsn_dbname("host=postgis") == "env_osm"
+
+
+def test_import_state_matches_region_and_sequence_only():
+    ingest = load_ingest("ingest_marker_compare")
+    marker = {
+        "region": "district-of-columbia",
+        "sequence_number": 42,
+        "url": "https://example.test/new.osm.pbf",
+        "pbf": "new.osm.pbf",
+    }
+
+    assert ingest.import_state_matches({"region": "district-of-columbia", "sequence_number": 42}, marker) is True
+    assert ingest.import_state_matches({"region": "district-of-columbia", "sequence_number": 43}, marker) is False
+    assert ingest.import_state_matches({"region": "world", "sequence_number": 42}, marker) is False
+    assert ingest.import_state_matches(None, marker) is False
+
+
+def test_weekly_unchanged_region_sequence_skips_osm_import(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_skip")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+    events = []
+
+    monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: events.append(("sync", selected["name"])))
+    monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: 42)
+    monkeypatch.setattr(
+        ingest,
+        "read_import_state",
+        lambda config, region, sequence_number: {"region": "district-of-columbia", "sequence_number": 42},
+    )
+    monkeypatch.setattr(ingest, "import_database", lambda *args: pytest.fail("OSM import should be skipped"))
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda config: events.append("startup"))
+
+    assert ingest.run_weekly_cycle(cfg, ext) is True
+    assert events == [("sync", "district-of-columbia"), "startup"]
+
+
+def test_weekly_changed_sequence_imports_and_updates_db_state(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_changed_sequence")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"))
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+    written = []
+
+    monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: None)
+    monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: 43)
+    monkeypatch.setattr(
+        ingest,
+        "read_import_state",
+        lambda config, region, sequence_number: {"region": "district-of-columbia", "sequence_number": 42},
+    )
+    monkeypatch.setattr(ingest, "import_weekly_extracts_and_write", lambda config, selected: None)
+    monkeypatch.setattr(ingest, "write_import_state", lambda config, marker: written.append(marker))
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
+
+    assert ingest.run_weekly_cycle(cfg, ext) is True
+    assert written[0]["region"] == "district-of-columbia"
+    assert written[0]["sequence_number"] == 43
+
+
+def test_weekly_changed_region_imports_even_with_same_sequence(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_changed_region")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), where=["world"])
+    ext = extract("world", "https://example.test/world.osm.pbf")
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+    imported = []
+
+    monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: None)
+    monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: 42)
+    monkeypatch.setattr(
+        ingest,
+        "read_import_state",
+        lambda config, region, sequence_number: None,
+    )
+    monkeypatch.setattr(
+        ingest,
+        "import_weekly_extracts_and_write",
+        lambda config, selected: imported.append(selected["name"]),
+    )
+    monkeypatch.setattr(ingest, "write_import_state", lambda config, marker: None)
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
+
+    assert ingest.run_weekly_cycle(cfg, ext) is True
+    assert imported == ["world"]
+
+
+def test_weekly_skipimport_does_not_update_db_state(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_skipimport")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), skipimport=True)
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+
+    monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: None)
+    monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: 42)
+    monkeypatch.setattr(ingest, "read_import_state", lambda config, region, sequence_number: None)
+    monkeypatch.setattr(ingest, "import_weekly_extracts_and_write", lambda *args: pytest.fail("skipimport must not import OSM"))
+    monkeypatch.setattr(ingest, "write_import_state", lambda *args: pytest.fail("skipimport must not update state"))
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda config: None)
+
+    assert ingest.run_weekly_cycle(cfg, ext) is True
+
+
+def test_weekly_import_state_is_written_before_non_osm_failure(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_state_before_non_osm")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), extradatadir="/non-osm")
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+    events = []
+
+    monkeypatch.setattr(ingest, "sync_pbf", lambda config, selected: None)
+    monkeypatch.setattr(ingest, "pbf_replication_sequence", lambda path: 44)
+    monkeypatch.setattr(ingest, "read_import_state", lambda config, region, sequence_number: None)
+    monkeypatch.setattr(
+        ingest,
+        "import_weekly_extracts_and_write",
+        lambda config, selected: events.append("osm"),
+    )
+    monkeypatch.setattr(
+        ingest,
+        "write_import_state",
+        lambda config, marker: events.append(("state", marker["sequence_number"])),
+    )
+    monkeypatch.setattr(
+        ingest,
+        "import_non_osm",
+        lambda config: (_ for _ in ()).throw(ingest.NonOsmIngestError("non-osm failed")),
+    )
+
+    with pytest.raises(ingest.NonOsmIngestError):
+        ingest.run_weekly_cycle(cfg, ext)
+
+    assert events == ["osm", ("state", 44)]
+
+
+def test_weekly_import_uses_three_phase_imposm_without_diff(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_imposm_commands")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    ingest.pbf_path(cfg, ext).write_text("pbf", encoding="utf8")
+    calls = []
+
+    monkeypatch.setattr(
+        ingest.subprocess,
+        "run",
+        lambda cmd, check=False, **kwargs: calls.append(cmd) or SimpleNamespace(returncode=0),
+    )
+
+    ingest.import_extracts_and_write(cfg, ext, incremental=False)
+
+    assert len(calls) == 3
+    assert "-read" in calls[0]
+    assert "-write" in calls[1]
+    assert "-deployproduction" in calls[2]
+    assert all("-diff" not in cmd for cmd in calls)
+
+
+def test_weekly_import_drops_backup_schema_before_write(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_drop_backup")
+    cfg = base_config(ingest, tmp_path)
+    ext = extract()
+    events = []
+
+    monkeypatch.setattr(ingest, "import_extract", lambda config, selected, cache, incremental: events.append("read"))
+    monkeypatch.setattr(ingest, "drop_backup_schema", lambda config: events.append("drop_backup"))
+    monkeypatch.setattr(ingest, "import_write", lambda config, incremental=False: events.append("write"))
+    monkeypatch.setattr(ingest, "import_rotate", lambda config, incremental=False: events.append("rotate"))
+
+    ingest.import_weekly_extracts_and_write(cfg, ext)
+
+    assert events == ["read", "drop_backup", "write", "rotate"]
+
+
+def test_drop_backup_schema_cascades(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_drop_backup_schema")
+    cfg = base_config(ingest, tmp_path)
+    commands = []
+    closed = []
+
+    class Cursor:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def execute(self, sql):
+            commands.append(sql)
+
+    class Connection:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def cursor(self):
+            return Cursor()
+
+        def close(self):
+            closed.append(True)
+
+    monkeypatch.setattr(ingest.psycopg2, "connect", lambda dsn: Connection())
+
+    ingest.drop_backup_schema(cfg)
+
+    assert commands == ["DROP SCHEMA IF EXISTS backup CASCADE"]
+    assert closed == [True]
 
 
 def write_diff_state(ingest, cfg):
@@ -284,7 +613,7 @@ def write_diff_state(ingest, cfg):
 def write_ingest_state(ingest, cfg, ext):
     seed_path = ingest.pbf_path(cfg, ext)
     seed_path.write_text("pbf", encoding="utf8")
-    ingest.write_state(ingest.state_path(cfg), ingest.pbf_marker(seed_path, ext))
+    ingest.write_state(ingest.state_path(cfg), ingest.legacy_pbf_marker(seed_path, ext))
 
 
 def test_existing_diff_state_starts_imposm_run_without_seed_download(tmp_path, monkeypatch):
@@ -296,7 +625,7 @@ def test_existing_diff_state_starts_imposm_run_without_seed_download(tmp_path, m
     events = []
 
     monkeypatch.setattr(ingest, "download_seed", lambda *args: pytest.fail("seed should not be downloaded"))
-    monkeypatch.setattr(ingest, "import_extracts_and_write", lambda *args: pytest.fail("import should be skipped"))
+    monkeypatch.setattr(ingest, "import_extract_for_imposm_run", lambda *args: pytest.fail("import should be skipped"))
     monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: events.append("soundscape"))
     monkeypatch.setattr(ingest, "run_imposm", lambda config, selected: events.append(("run", selected["name"])) or 7)
 
@@ -321,7 +650,7 @@ def test_region_change_downloads_seed_even_with_existing_diff_state(tmp_path, mo
         events.append(("import", selected_extract["name"]))
 
     monkeypatch.setattr(ingest, "download_seed", fake_download)
-    monkeypatch.setattr(ingest, "import_extracts_and_write", fake_import)
+    monkeypatch.setattr(ingest, "import_extract_for_imposm_run", fake_import)
     monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: events.append("soundscape"))
 
     assert ingest.bootstrap(cfg, selected) is True
@@ -349,7 +678,7 @@ def test_recent_pbf_skips_download_but_still_imports(tmp_path, monkeypatch):
         events.append(("import", selected["name"]))
 
     monkeypatch.setattr(ingest, "download_seed", lambda *args: pytest.fail("recent seed should not be downloaded"))
-    monkeypatch.setattr(ingest, "import_extracts_and_write", fake_import)
+    monkeypatch.setattr(ingest, "import_extract_for_imposm_run", fake_import)
     monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: events.append("soundscape"))
 
     assert ingest.bootstrap(cfg, ext) is True
@@ -382,7 +711,7 @@ def test_stale_pbf_downloads_seed_and_imports(tmp_path, monkeypatch):
         events.append(("import", selected["name"]))
 
     monkeypatch.setattr(ingest, "download_seed", fake_download)
-    monkeypatch.setattr(ingest, "import_extracts_and_write", fake_import)
+    monkeypatch.setattr(ingest, "import_extract_for_imposm_run", fake_import)
     monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: events.append("soundscape"))
 
     assert ingest.bootstrap(cfg, ext) is True
@@ -407,7 +736,7 @@ def test_lock_wraps_bootstrap(tmp_path, monkeypatch):
 
     monkeypatch.setattr(ingest.fcntl, "flock", fake_flock)
     monkeypatch.setattr(ingest, "download_seed", fake_download)
-    monkeypatch.setattr(ingest, "import_extracts_and_write", lambda config, selected: events.append(("import", None)))
+    monkeypatch.setattr(ingest, "import_extract_for_imposm_run", lambda config, selected: events.append(("import", None)))
     monkeypatch.setattr(ingest, "provision_database_soundscape", lambda config: None)
 
     ingest.bootstrap(cfg, ext)
@@ -430,6 +759,24 @@ def test_no_sourceupdate_skips_imposm_run(tmp_path, monkeypatch):
     assert ingest.run_ingest(cfg, ext) == 0
 
 
+def test_weekly_no_sourceupdate_exits_after_first_cycle(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_weekly_no_sourceupdate")
+    cfg = base_config(ingest, tmp_path, sourceupdate=False)
+    ext = extract()
+    cycles = []
+
+    monkeypatch.setattr(ingest, "load_selected_extract", lambda config: ext)
+    monkeypatch.setattr(ingest, "run_weekly_ingest", lambda config, selected: cycles.append(selected) or 0)
+
+    status = ingest.supervise_weekly_ingest(
+        cfg,
+        sleeper=lambda delay: pytest.fail("weekly ingest should not schedule another cycle"),
+    )
+
+    assert status == 0
+    assert cycles == [ext]
+
+
 def test_run_once_skips_imposm_run(tmp_path, monkeypatch):
     ingest = load_ingest("ingest_run_once")
     cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), run_once=True)
@@ -441,6 +788,21 @@ def test_run_once_skips_imposm_run(tmp_path, monkeypatch):
     monkeypatch.setattr(ingest, "run_imposm", lambda *args: pytest.fail("imposm run should be skipped"))
 
     assert ingest.run_ingest(cfg, ext) == 0
+
+
+def test_imposm_run_skipimport_without_diff_state_fails_fast(tmp_path, monkeypatch):
+    ingest = load_ingest("ingest_skipimport_missing_diff")
+    cfg = base_config(ingest, tmp_path, config=str(tmp_path / "imposm.json"), skipimport=True)
+    ext = extract()
+    notifications = []
+
+    monkeypatch.setattr(ingest, "run_imposm", lambda *args: pytest.fail("imposm run should not start"))
+    monkeypatch.setattr(ingest, "run_startup_imports", lambda *args: pytest.fail("startup imports should not run"))
+    monkeypatch.setattr(ingest, "send_ntfy_notification", lambda *args: notifications.append(args))
+
+    assert ingest.run_ingest(cfg, ext) == 1
+    assert notifications[0][2] == "bootstrap"
+    assert isinstance(notifications[0][3], ingest.BootstrapIngestError)
 
 
 def test_supervise_ingest_retries_failed_service_cycle(tmp_path, monkeypatch):
@@ -798,7 +1160,7 @@ def test_import_database_wraps_subprocess_failures_as_db_errors(tmp_path, monkey
     cfg = base_config(ingest, tmp_path)
     ext = extract()
 
-    def fail_import(config, selected):
+    def fail_import(config, selected, incremental=False):
         raise subprocess.CalledProcessError(1, ["imposm"])
 
     monkeypatch.setattr(ingest, "import_extracts_and_write", fail_import)
