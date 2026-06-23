@@ -3,11 +3,14 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 protocol AutoCalloutSettingsProvider: AnyObject {
     var automaticCalloutsEnabled: Bool { get set }
+    var calloutSoundEffectsEnabled: Bool { get set }
+    var calloutPausesEnabled: Bool { get set }
     var placeSenseEnabled: Bool { get set }
     var landmarkSenseEnabled: Bool { get set }
     var mobilitySenseEnabled: Bool { get set }

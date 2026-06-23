@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -118,7 +119,6 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
     // MARK: - Private Constants
     
     private let inVehicleBeaconUpdateDistance: CLLocationDistance = 1000.0 // meters
-    private let calloutDelay = 0.75
     
     // MARK: - Private Properties
     
@@ -141,6 +141,10 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
     }
     
     // MARK: - Helper Properties
+
+    private var calloutDelay: TimeInterval {
+        return settings.calloutPausesEnabled ? 0.75 : 0.0
+    }
     
     private var calloutRangeContext: CalloutRangeContext {
         return spatialData.motionActivityContext.isInVehicle ? .automotive : .standard
@@ -435,7 +439,7 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
         
         guard let dataView = spatialData.getDataView(for: location, searchDistance: context.searchDistance) else {
             let callouts = filterAnnounceablePOIs(prioritizedPOIs, near: location, context: context) {
-                return POICallout(.auto, poi: $0, location: location)
+                return POICallout(.auto, poi: $0, location: location, includePrefixSound: settings.calloutSoundEffectsEnabled)
             }
             
             if callouts.isEmpty {
@@ -452,11 +456,11 @@ class AutoCalloutGenerator: AutomaticGenerator, ManualGenerator {
         
         // Get the POIs sorted by distance, and filtered for duplicate names
         let prioritizedCallouts = filterAnnounceablePOIs(prioritizedPOIs, near: location, context: context) {
-            return POICallout(.auto, poi: $0, location: location)
+            return POICallout(.auto, poi: $0, location: location, includePrefixSound: settings.calloutSoundEffectsEnabled)
         }
         
         let defaultCallouts = !settings.automaticCalloutsEnabled ? [] : filterAnnounceablePOIs(dataView.pois, near: location, context: context) {
-            return POICallout(.auto, key: $0.key, location: location)
+            return POICallout(.auto, key: $0.key, location: location, includePrefixSound: settings.calloutSoundEffectsEnabled)
         }
 
         if defaultCallouts.count + prioritizedCallouts.count == 0 {
