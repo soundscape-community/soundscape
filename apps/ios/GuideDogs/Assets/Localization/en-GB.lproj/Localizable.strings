@@ -4471,10 +4471,6 @@
 "mail.gmail" = "Gmail";
 "mail.spark" = "Spark";
 "mail.airmail" = "Airmail";
-"donation.body" = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to information on their surroundings through our life-enhancing technology.";
-"menu.donate" = "Donate";
-"donation.title" = "Donate to Soundscape Community";
-"donation.link" = "Go to Fundraising Page";
 "help.using_headsets.bose_frames.how.1" = "<b>Connecting a Device</b>:<br/> Go to the \"Head Tracking Headphones\" item in the Soundscape menu to connect your Bose Frames and follow the instructions on screen. Note that you will need to pair your Bose Frames to your phone in the Bluetooth settings before connecting them in Soundscape.";
 "help.using_headsets.bose_frames.when" = "You can use Bose Frames with Soundscape anytime you would normally use Soundscape. Using Bose Frames provides you with high quality audio that does not occlude environmental audio and allows you to have a more hands-free experience.";
 "help.using_headsets.bose_frames.title" = "Using Bose Frames";

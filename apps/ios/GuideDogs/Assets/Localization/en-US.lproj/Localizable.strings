@@ -2216,9 +2216,6 @@
 /* Button, Continue */
 "ui.continue" = "Continue";
 
-/* Title, Donate */
-"menu.donate" = "Donate";
-
 /* Title, Activities, In this context, "Recreational Activity" is referring to outdoor activities like hiking, kayaking, snoeshoeing, etc. */
 "menu.events" = "Recreational Activities";
 
@@ -3799,12 +3796,3 @@
 
 /* Describe feature for automatically reversing a route. Quotes written as \" */
 "faq.tip.reverse_route" = "Selecting \"Start Reversed Route\" from the \"Route Details\" screen allows you to take a route in reverse, and it saves a copy of the route with the waypoints in reverse order. Note that \"Start Reversed Route\" will not save another copy of the same route if it's already saved.";
-
-/* Title for donation screen */
-"donation.title" = "Donate to Soundscape Community";
-
-/* text for donation screen */
-"donation.body" = "Please support the ongoing development of the Soundscape Community app by donating on our fundraising page. Every donation brings us a step closer to our vision of helping bring about a world where EVERYONE has equal access to information on their surroundings through our life-enhancing technology.";
-
-/* Donation link title */
-"donation.link" = "Go to Fundraising Page";
