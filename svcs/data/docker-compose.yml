@@ -61,7 +61,7 @@ services:
     build:
       dockerfile: Dockerfile.ingest
     environment:
-      - GEN_REGION=${GEN_REGION:-world}
+      - GEN_REGION=${GEN_REGION:-district-of-columbia}
       - INGEST_MODE=${INGEST_MODE:-weekly-pbf}
       - INGEST_FLAGS=${INGEST_FLAGS:-}
       - INGEST_INTERVAL_DAYS=${INGEST_INTERVAL_DAYS:-7}
