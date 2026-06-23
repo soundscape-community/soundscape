@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -11,7 +12,7 @@ import CoreLocation
 import SwiftUI
 
 struct BeaconActionHandler {
-    
+
     ///
     /// `createMarker(detail: BeaconDetail)`
     ///
@@ -23,26 +24,26 @@ struct BeaconActionHandler {
         guard let key = detail.locationDetail.beaconId else {
             return nil
         }
-        
+
         guard let beacon = SpatialDataCache.referenceEntityByKey(key) else {
             // Failed to fetch beacon
             return nil
         }
-        
+
         guard beacon.isTemp else {
             return nil
         }
-        
+
         let config = EditMarkerConfig(detail: LocationDetail(marker: beacon),
                                       route: nil,
                                       context: "beacon_view",
                                       addOrUpdateAction: .popViewController,
                                       deleteAction: nil,
                                       leftBarButtonItemIsHidden: false)
-        
+
         return MarkerEditViewRepresentable(config: config).makeViewController()
     }
-    
+
     ///
     /// `callout(detail: BeaconDetail)`
     ///
@@ -50,10 +51,19 @@ struct BeaconActionHandler {
     ///
     /// queues a call out for the given audio beacon
     ///
-    static func callout(detail: BeaconDetail) {
-        callout(detail: detail.locationDetail)
+    @discardableResult
+    static func callout(detail: BeaconDetail) -> Bool {
+        if let routeDetail = detail.routeDetail {
+            guard let routeGuidance = routeDetail.guidance else {
+                return false
+            }
+
+            return routeGuidance.callOutCurrentWaypoint()
+        }
+
+        return callout(detail: detail.locationDetail)
     }
-    
+
     ///
     /// `callout(detail: LocationDetail)`
     ///
@@ -61,15 +71,17 @@ struct BeaconActionHandler {
     ///
     /// queues a call out for the given audio beacon
     ///
-    static func callout(detail: LocationDetail) {
+    @discardableResult
+    static func callout(detail: LocationDetail) -> Bool {
         guard let key = detail.beaconId else {
-            return
+            return false
         }
-        
+
         AppContext.process(BeaconCalloutEvent(beaconId: key, logContext: "home_screen"))
         GDATelemetry.track("beacon.callout")
+        return true
     }
-    
+
     ///
     /// `toggleAudio`
     ///
@@ -80,11 +92,11 @@ struct BeaconActionHandler {
             // Failed to toggle audio
             return
         }
-        
+
         let isAudioEnabled = AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled
         GDATelemetry.track("beacon.toggle_audio", value: String(isAudioEnabled))
     }
-    
+
     ///
     /// `moreInformation(detail: BeaconDetail, userLocation: CLLocation)`
     ///
@@ -97,13 +109,13 @@ struct BeaconActionHandler {
     static func moreInformation(detail: BeaconDetail, userLocation: CLLocation?) {
         let dLabel = detail.labels.moreInformation(userLocation: userLocation)
         let moreInformation = dLabel.accessibilityText ?? dLabel.text
-        
+
         // Post accessibility annoucement
         UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: moreInformation)
-        
+
         GDATelemetry.track("beacon.more_info")
     }
-    
+
     ///
     /// `remove`
     ///
@@ -114,23 +126,23 @@ struct BeaconActionHandler {
             guard routeDetail.isGuidanceActive else {
                 return
             }
-            
+
             AppContext.shared.eventProcessor.deactivateCustom()
         } else {
             guard AppContext.shared.spatialDataContext.destinationManager.destinationKey == detail.locationDetail.beaconId else {
                 // There is no beacon to clear
                 return
             }
-            
+
             do {
                 // Try to remove the beacon
                 try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "home_screen")
             } catch {
                 return
             }
-            
+
             GDLogActionInfo("Clear destination")
         }
     }
-    
+
 }

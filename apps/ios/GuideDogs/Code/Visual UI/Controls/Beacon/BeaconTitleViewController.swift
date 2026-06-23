@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -335,9 +336,7 @@ private extension UIAccessibilityCustomAction {
     
     static func callout(_ beacon: BeaconDetail) -> UIAccessibilityCustomAction {
         return UIAccessibilityCustomAction(name: BeaconAction.callout.text, actionHandler: { _ in
-            BeaconActionHandler.callout(detail: beacon)
-            
-            return true
+            return BeaconActionHandler.callout(detail: beacon)
         })
     }
     
