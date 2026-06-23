@@ -100,7 +100,7 @@ final class NearbyTableFilterTest: XCTestCase {
             .reversed()
             .filter(\.isEnabled)
             .map(\.text)
-        let recommenderActionNames = LocationAction.enabledAccessibilityActions(for: detail)
+        let recommenderActionNames = LocationAction.enabledAccessibilityActions(for: poi)
             .map(\.text)
 
         XCTAssertEqual(recommenderActionNames, nearbyPlaceActionNames)

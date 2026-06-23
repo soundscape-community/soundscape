@@ -212,7 +212,7 @@ class RecommenderNavigationHelper: ViewNavigationHelper, LocationAccessibilityAc
             viewController = current.parent
         }
 
-        return host
+        return nil
     }
 
 }

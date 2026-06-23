@@ -55,7 +55,12 @@ enum LocationAction {
     }
     
     static func enabledAccessibilityActions(for entity: POI) -> [LocationAction] {
-        let detail = LocationDetail(entity: entity)
+        let detail: LocationDetail
+        if let genericLocation = entity as? GenericLocation {
+            detail = LocationDetail(screenshot: genericLocation)
+        } else {
+            detail = LocationDetail(entity: entity)
+        }
         return enabledAccessibilityActions(for: detail)
     }
 
