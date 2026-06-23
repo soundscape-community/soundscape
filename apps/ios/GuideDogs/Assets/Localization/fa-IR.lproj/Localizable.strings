@@ -1425,8 +1425,6 @@
 "ui.menu.close" = "بستن منو";
 /* Button, Continue */
 "ui.continue" = "ادامه";
-/* Title, Donate */
-"menu.donate" = "حمایت مالی";
 /* Title, Activities, In this context, "Recreational Activity" is referring to outdoor activities like hiking, kayaking, snoeshoeing, etc. */
 "menu.events" = "فعالیت‌های تفریحی";
 /* Title, Head Tracking Headphones, "head tracking headphones" is a term that refers to headphones which include sensors that track a person's head movements */
@@ -2462,17 +2460,6 @@
 "faq.tip.two_finger_double_tap" = "دو بار ضربه زدن با دو انگشت روی صفحه، هرگونه اعلان صوتی فعال را بی‌صدا می‌کند.";
 /* Describe feature for automatically reversing a route. Quotes written as " */
 "faq.tip.reverse_route" = "انتخاب «شروع مسیر معکوس» از صفحه «جزئیات مسیر» به شما امکان می‌دهد یک مسیر را به صورت معکوس طی کنید و یک کپی از مسیر را با ایستگاه‌ها در ترتیب معکوس ذخیره می‌کند. توجه داشته باشید که «شروع مسیر معکوس» اگر مسیر قبلاً ذخیره شده باشد، کپی دیگری از همان مسیر را ذخیره نخواهد کرد.";
-/* Title for donation screen */
-"donation.title" = "حمایت مالی از جامعه Soundscape";
-/* text for donation screen */
-"donation.body" = "لطفاً با حمایت مالی در صفحه جمع‌آوری کمک‌های مالی ما، از توسعه مداوم برنامه جامعه Soundscape حمایت کنید. هر کمک مالی ما را یک قدم به چشم‌انداز خود نزدیک‌تر می‌کند تا به تحقق جهانی کمک کنیم که در آن همه از طریق فناوری بهبودبخش زندگی ما، دسترسی برابری به اطلاعات پیرامون خود داشته باشند.";
-/* Donation link title */
-"donation.link" = "رفتن به صفحه جمع‌آوری کمک‌های مالی";
-
-
-
-
-
 
 
 
