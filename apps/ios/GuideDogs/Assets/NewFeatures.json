@@ -63,5 +63,12 @@
       "Title": "whats_new.1_8_2.1.title",
       "Description": "whats_new.1_8_2.1.description"
     }
+  ],
+  "1.8.5": [
+    {
+      "Order": "0",
+      "Title": "whats_new.1_8_5.0.title",
+      "Description": "whats_new.1_8_5.0.description"
+    }
   ]
 }
