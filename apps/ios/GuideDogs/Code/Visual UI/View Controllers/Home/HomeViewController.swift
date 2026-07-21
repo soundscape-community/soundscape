@@ -26,7 +26,6 @@ class HomeViewController: UIViewController {
         
         // Main Menu Segues
         
-        static let showRecreationActivities = "ShowRecreationActivities"
         static let showManageDevices = "ShowManageDevices"
         static let showStatus = "ShowStatus"
         static let showHelp = "ShowHelpSegue"
@@ -38,7 +37,7 @@ class HomeViewController: UIViewController {
         /// - Returns: The segue associated with this menu item
         static func segue(for menuItem: MenuItem) -> String? {
             switch menuItem {
-            case .recreation: return Segue.showRecreationActivities
+            case .recreation: return nil
             case .devices:    return Segue.showManageDevices
             case .help:       return Segue.showHelp
             case .settings:   return Segue.showSettings
@@ -322,27 +321,31 @@ class HomeViewController: UIViewController {
             logContext: telemetryContext
         )
     }
+
+    private func showRecreationActivities() {
+        show(AuthoredActivitiesListHostingController(), sender: self)
+    }
     
     private func showOrRefreshExperiences() {
         if navigationController?.visibleViewController is HomeViewController {
             
-            // The HomeViewController is currently the visible VC - segue to the AuthoredActivitiesList
-            performSegue(withIdentifier: Segue.showRecreationActivities, sender: self)
+            // The HomeViewController is currently visible - show the AuthoredActivitiesList
+            showRecreationActivities()
             
         } else if let vc = navigationController?.visibleViewController as? MenuViewController {
             
-            // The MenuViewController is currently the visible VC - dismiss it and segue to the AdaptiveSportsEventsList
+            // The MenuViewController is currently visible - dismiss it and show the AuthoredActivitiesList
             vc.dismiss(animated: true) { [weak self] in
-                self?.performSegue(withIdentifier: Segue.showRecreationActivities, sender: self)
+                self?.showRecreationActivities()
             }
             
         } else {
             
-            // Some other view controller is currently the visible VC - return to home and then segue to the AuthoredActivitiesList
+            // Return to home and then show the AuthoredActivitiesList
             CATransaction.begin()
             navigationController?.popToViewController(self, animated: true)
             CATransaction.setCompletionBlock { [weak self] in
-                self?.performSegue(withIdentifier: Segue.showRecreationActivities, sender: self)
+                self?.showRecreationActivities()
             }
             CATransaction.commit()
             
@@ -477,11 +480,15 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
             guard finished else {
                 return
             }
+
+            if dismissed.selected == .recreation {
+                self?.showRecreationActivities()
+                return
+            }
             
             guard let segue = Segue.segue(for: dismissed.selected) else {
                 return
             }
-
 
             self?.performSegue(withIdentifier: segue, sender: self)
         }
