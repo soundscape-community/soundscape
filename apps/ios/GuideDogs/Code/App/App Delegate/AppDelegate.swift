@@ -49,10 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             pushNotificationManager.didFinishLaunchingWithOptions(launchOptions)
         }
 
-        if let url = launchOptions?[.url] as? URL {
-            return openURLResource(url)
-        }
-        
         return true
     }
 
