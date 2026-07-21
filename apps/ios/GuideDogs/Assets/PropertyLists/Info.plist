@@ -16,28 +16,7 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>services.soundscape.doc</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Microsoft Soundscape app route and marker file</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
 				<string>com.microsoft.soundscape.doc</string>
-			</array>
-			<key>NSExportableTypes</key>
-			<string>NSExportableTypes</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Openscape route and marker file</string>
-			<key>LSHandlerRank</key>
-			<string>Default</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>io.openscape.doc</string>
 			</array>
 		</dict>
 	</array>
@@ -183,12 +162,12 @@
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>
-			<string>io.openscape.doc</string>
+			<string>services.soundscape.doc</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>openscape</string>
+					<string>soundscape</string>
 				</array>
 			</dict>
 		</dict>
@@ -212,46 +191,6 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>soundscape</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.content</string>
-				<string>public.data</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>Soundscape route and marker file</string>
-			<key>UTTypeIconFiles</key>
-			<array/>
-			<key>UTTypeIdentifier</key>
-			<string>services.soundscape.doc</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>soundscape</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.content</string>
-				<string>public.data</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>Openscape route and marker file</string>
-			<key>UTTypeIconFiles</key>
-			<array/>
-			<key>UTTypeIdentifier</key>
-			<string>io.openscape.doc</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>openscape</string>
 				</array>
 			</dict>
 		</dict>

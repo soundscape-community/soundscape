@@ -3,18 +3,19 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import Foundation
+enum URLResourceIdentifier {
+    case gpx
+    case route
 
-enum URLResourceIdentifier: String {
-    /*
-     Important!
-     
-     `URLResourceIdentifier` raw value should be the document type identifier and should match the identifier provided in the Info.plist (`Imported Type Identifiers` and `Exported Type Identifiers`)
-     */
-    case gpx = "com.topografix.gpx"
-    case route = "services.soundscape.doc"
-    case openscape_route = "io.openscape.doc"
+    init?(pathExtension: String) {
+        switch pathExtension.lowercased() {
+        case "gpx": self = .gpx
+        case "soundscape": self = .route
+        default: return nil
+        }
+    }
 }
