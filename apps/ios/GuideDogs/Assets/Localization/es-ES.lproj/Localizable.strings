@@ -343,7 +343,7 @@
 
 
 /*  */
-"device_motion.authorize.description" = "Esto permite a Soundscape mejorar tu experiencia en función de si caminas, te desplazas en un vehículo o permaneces quieto. La aplicación necesita tu permiso para usar Actividad física. Antes de autorizar a Soundscape para que use este permiso, es posible que tengas que activar Seguimiento deportivo en Ajustes → Privacidad y seguridad → Actividad física.";
+"device_motion.authorize.description" = "Esto permite a Soundscape mejorar tu experiencia en función de si caminas, te desplazas en un vehículo o permaneces quieto. La aplicación necesita tu permiso para usar Actividad física. Antes de autorizar a Soundscape para que use este permiso, es posible que tengas que habilitar Seguimiento deportivo en Ajustes → Privacidad y seguridad → Actividad física.";
 
 
 /*  */
@@ -1867,7 +1867,7 @@
 
 
 /*  */
-"filter.not_available" = "Algunos filtros de categoría no están disponibles. Aún así, para examinar lugares cercanos, selecciona \"%@\"";
+"filter.not_available" = "Algunos filtros de categoría no están disponibles. Aun así, para examinar lugares cercanos, selecciona \"%@\"";
 
 
 /*  */
@@ -1979,7 +1979,7 @@
 
 
 /*  */
-"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Usa los servicios de localización pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa el botón siguiente para reactivar ahora.";
+"sleep.snoozing.message" = "Soundscape se encuentra actualmente pospuesto. Cuando salgas de tu ubicación actual, Soundscape se volverá a reactivar automáticamente. Usa los servicios de localización, pero en un modo de bajo consumo para conservar la batería del teléfono. Pulsa el botón siguiente para reactivar ahora.";
 
 
 /*  */
@@ -2714,7 +2714,7 @@
 
 
 /*  */
-"devices.explain_ar.connected.airpods" = "Tus AirPods están listos para usar. ¡Guarda el teléfono en el bolsillo y empieza a moverte! Soundscape está siguiendo la orientación de tu cabeza para que no tengas que llevar el teléfono en la mano.";
+"devices.explain_ar.connected.airpods" = "Tus AirPods están listos para usar. ¡Guarda el teléfono en el bolsillo y empieza a moverte! Soundscape está siguiendo la orientación de tu cabeza, por lo que no tienes que llevar el teléfono en la mano.";
 
 
 /*  */
@@ -2770,7 +2770,7 @@
 
 
 /*  */
-"devices.connect_headset.completed.airpods" = "¡Enhorabuena! Tus AirPods están listos para usar. ¡Guarda el teléfono en el bolsillo y empieza a moverte! Soundscape seguirá ahora la orientación de tu cabeza para que no tengas que llevar el teléfono en la mano. Un solo clic en el botón de los auriculares silenciará o reactivará la señal, un doble clic avisará de tu ubicación y un triple clic repetirá el último aviso.";
+"devices.connect_headset.completed.airpods" = "¡Enhorabuena! Tus AirPods están listos para usar. ¡Guarda el teléfono en el bolsillo y empieza a moverte! Soundscape está siguiendo ahora la orientación de tu cabeza, por lo que no tienes que llevar el teléfono en la mano. Un solo clic en el botón de los auriculares silenciará o reactivará la señal, un doble clic avisará de tu ubicación y un triple clic repetirá el último aviso.";
 
 
 /*  */
@@ -3726,7 +3726,7 @@
 
 
 /*  */
-"help.text.remote_control.what" = "Puedes obtener acceso a determinadas características de Soundscape con los botones de control multimedia de tus auriculares. Esta funcionalidad funciona con auriculares Bluetooth o por cable que tengan botones de control multimedia, como Reproducir, Pausa, Siguiente, Anterior y otros. Distintos modelos de auriculares con micrófono pueden incluir diferentes botones; consulta la lista de acciones a continuación para determinar cuáles están disponibles para ti.<br>Ten en cuenta que esta característica solo funciona con auriculares con micrófono que admitan controles multimedia de Apple (como reproducir y pausa).";
+"help.text.remote_control.what" = "Puedes obtener acceso a determinadas características de Soundscape con los botones de control multimedia de tus auriculares. Esta funcionalidad funciona con auriculares con cable o Bluetooth que tengan botones de control multimedia, como Reproducir, Pausa, Siguiente, Anterior y otros. Distintos modelos de auriculares pueden incluir diferentes botones; consulta la lista de acciones a continuación para determinar cuáles están disponibles para ti.<br>Ten en cuenta que esta característica solo funciona con auriculares que admitan controles multimedia de Apple (como reproducir y pausa).";
 
 
 /*  */
@@ -4234,7 +4234,7 @@
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Soundscape tiene una lista de avisoss recientes para que puedas volver a visitar avisos que te hayas perdido. Para encontrarla, pulsa en la barra de búsqueda en la pantalla principal. En la parte inferior de esta página, hay una sección \"Avisos recientes\" donde aparecerá el aviso que te perdiste. También puedes agitar tu teléfono para repetir el último aviso. Para habilitar esta función, ve a la sección \"Avisos\" en la pantalla \"Ajustes\" y activa \"Repetir avisos\".";
+"faq.miss_a_callout.answer" = "Soundscape tiene una lista de avisos recientes para que puedas volver a visitar avisos que te hayas perdido. Para encontrarla, pulsa en la barra de búsqueda en la pantalla principal. En la parte inferior de esta página, hay una sección \"Avisos recientes\" donde aparecerá el aviso que te perdiste. También puedes agitar tu teléfono para repetir el último aviso. Para habilitar esta función, ve a la sección \"Avisos\" en la pantalla \"Ajustes\" y activa \"Repetir avisos\".";
 
 
 /*  */
@@ -4334,7 +4334,7 @@
 
 
 /*  */
-"faq.holding_phone_flat.answer" = "¡No, no! Cuando camines, puedes meter el teléfono en una bolsa o bolsillo o donde sea conveniente. Soundscape usará la dirección hacia la que caminas para averiguar qué avisos emitirá a tu izquierda y a tu derecha. Cuando dejes de moverte, Soundscape no sabrá hacia dónde estás orientado. Si la señal de audio está activada, observarás que se calla hasta que vuelvas a moverte. Puedes sacar el teléfono para presionar los botones de ubicación y exploración en la parte inferior de la pantalla principal en cualquier momento, pero asegúrate de sujetarlo con la parte superior apuntando en la dirección en la que estás mirando y con la pantalla hacia arriba. En esta posición \"plana\", Soundscape usará la brújula del teléfono para determinar hacia qué dirección estás orientado y proporcionar avisos espaciales precisos. Si la señal está activada, también observarás que el volumen se restablece por completo.";
+"faq.holding_phone_flat.answer" = "¡No, no! Cuando camines, puedes meter el teléfono en una bolsa, en un bolsillo o donde sea conveniente. Soundscape usará la dirección hacia la que caminas para averiguar qué avisos emitirá a tu izquierda y a tu derecha. Cuando dejes de moverte, Soundscape no sabrá hacia dónde estás orientado. Si la señal de audio está activada, observarás que se calla hasta que vuelvas a moverte. Puedes sacar el teléfono para presionar los botones de ubicación y exploración en la parte inferior de la pantalla principal en cualquier momento, pero asegúrate de sujetarlo con la parte superior apuntando en la dirección en la que estás mirando y con la pantalla hacia arriba. En esta posición \"plana\", Soundscape usará la brújula del teléfono para determinar hacia qué dirección estás orientado y proporcionar avisos espaciales precisos. Si la señal está activada, también observarás que el volumen se restablece por completo.";
 
 
 /*  */
@@ -4424,20 +4424,20 @@
 "osm.tag.ice_cream" = "Heladería";
 "whats_new.1_2_0.0.description" = "Ahora puedes agitar tu dispositivo para repetir el último aviso. Para habilitar esta función, activa el botón \"Repetir avisos\" en los ajustes.";
 "whats_new.1_2_0.1.description" = "Ahora puedes ajustar la distancia a la que la señal se silencia automáticamente cuando te acercas. Simplemente ve a la configuración de la señal de audio y mueve el control deslizante \"Distancia de silenciar el audio\".";
-"devices.connect_headset.completed.boseframes" = "¡Enhorabuena! Tus Bose Frames están listas para usar. ¡Guarda el teléfono en el bolsillo y empieza a moverte! Soundscape seguirá ahora la orientación de tu cabeza para que no tengas que llevar el teléfono en la mano.";
+"devices.connect_headset.completed.boseframes" = "¡Enhorabuena! Tus Bose Frames están listas para usar. ¡Guarda el teléfono en el bolsillo y empieza a moverte! Soundscape está siguiendo ahora la orientación de tu cabeza, por lo que no tienes que llevar el teléfono en la mano.";
 "devices.callouts.check_audio.bose_frames" = "Bose Frames conectadas.";
 "devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape está buscando tus Bose Frames. Asegúrate de que están conectadas al teléfono.";
-"devices.explain_ar.connected.boseframes" = "Tus Bose Frames están listas para usar. ¡Guarda el teléfono en el bolsillo y empieza a moverte! Soundscape está siguiendo la orientación de tu cabeza para que no tengas que llevar el teléfono en la mano.";
+"devices.explain_ar.connected.boseframes" = "Tus Bose Frames están listas para usar. ¡Guarda el teléfono en el bolsillo y empieza a moverte! Soundscape está siguiendo la orientación de tu cabeza, por lo que no tienes que llevar el teléfono en la mano.";
 "help.using_headsets.bose_frames.title" = "Uso de Bose Frames";
 "help.using_headsets.bose_frames.when" = "Puedes usar Bose Frames en cualquier momento con Soundscape. El uso de Bose Frames te proporciona un audio de alta calidad que no dificulta la audición ambiental y te permite tener una experiencia mayor de manos libres.";
 "help.using_headsets.bose_frames.how.3" = "<b>Uso de los controles multimedia en los auriculares</b>:<br/> cuando los controles multimedia estén habilitados en la configuración de Soundscape, podrás usarlos en las Bose Frames para silenciar o reactivar la señal, avisar de tu ubicación o repetir el último aviso de llamada. Para obtener más información, ve la sección de ayuda \"Uso de controles multimedia\".";
 "help.using_headsets.bose_frames.how.1" = "<b>Conexión de un dispositivo</b>:<br/> ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape para conectar las Bose Frames y sigue las instrucciones que aparecen en pantalla. Ten en cuenta que tendrás que emparejar las Bose Frames en los ajustes de Bluetooth del teléfono antes de conectarlas a Soundscape.";
 "help.using_headsets.bose_frames.how.4" = "<b>Solución de problemas de los auriculares</b>:<br/> si tienes problemas para conectar las Bose Frames a Soundscape, asegúrate de que son de uno de los modelos compatibles: Alto o Rondo. Si son uno de estos modelos, asegúrate de que las Frames aparecen en la aplicación Bose Connect. Si se muestran y sigues teniendo problemas con la conexión, intenta desemparejar y volver a emparejar los auriculares a través del menú Bluetooth del teléfono.";
-"help.using_headsets.bose_frames.how.2" = "<b>Calibración de los auriculares</b>:<br/> tus Bose Frames tendrán que calibrarse para saber con precisión hacia dónde estás mirando. cada vez que las conectes a Soundscape, se te informará que se las necesitan calibrar mediante un timbre de audio. Para calibrar las Bose Frames, sigue las instrucciones que aparecen en la pantalla. Cuando el timbre deje de sonar, las Bose Frames estarán calibradas. Soundscape seguirá ahora la dirección de tu cabeza para que no tengas que llevar el teléfono en la mano. Puedes repetir esta calibración en cualquier momento, incluso si no está sonando el timbre, si crees que la precisión del audio espacial no es buena.";
+"help.using_headsets.bose_frames.how.2" = "<b>Calibración de los auriculares</b>:<br/> tus Bose Frames tendrán que calibrarse para saber con precisión hacia dónde estás mirando. Cada vez que las conectes a Soundscape, se te informará de que se las necesitan calibrar mediante un timbre de audio. Para calibrar las Bose Frames, sigue las instrucciones que aparecen en la pantalla. Cuando el timbre deje de sonar, las Bose Frames estarán calibradas. Soundscape seguirá ahora la dirección de tu cabeza, por lo que no tienes que llevar el teléfono en la mano. Puedes repetir esta calibración en cualquier momento, incluso si no está sonando el timbre, si crees que la precisión del audio espacial no es buena.";
 "help.using_headsets.bose_frames.what" = "Soundscape admite audio espacial con seguimiento de cabeza al usar las versiones Alto o Rondo de Bose Frames. Cuando se conecten, los sensores de las Bose Frames le indicarán a Soundscape la dirección en la que está orientada tu cabeza. Esto le ayuda a Soundscape a mejorar tu experiencia de audio, haciéndola más natural a medida que te mueves por el mundo. Cuando usas Soundscape con las Bose Frames conectadas, no es necesario sostener el teléfono para que la aplicación funcione bien.";
 "whats_new.1_3_0.0.title" = "Compatibilidad con Bose Frames";
 "whats_new.1_3_0.0.description" = "Ahora Soundscape admite seguimiento de cabeza con las versiones Alto o Rondo de Bose Frames. Cuando se conecten, tus Bose Frames indicarán a Soundscape hacia dónde estás mirando, lo que ayudará a Soundscape a mejorar tu experiencia de audio. Para conectar tus Bose Frames a Soundscape, ve a la opción \"Auriculares con seguimiento de cabeza\" en el menú de Soundscape. Nos encantaría escuchar tus comentarios sobre la compatibilidad con las Bose Frames. Puedes contactarnos eligiendo la opción \"Enviar comentarios\" en el menú.";
-"whats_new.1_3_0.1.description" = "Si vives en las áreas de Austin o San Antonio en Texas y deseas ayudarnos a probar una función en la que estamos trabajando con NaviLens, comuníquate con nosotros a través del botón \"Enviar comentarios\" del menú.";
+"whats_new.1_3_0.1.description" = "Si vives en las áreas de Austin o San Antonio en Texas y deseas ayudarnos a probar una función en la que estamos trabajando con NaviLens, comunícate con nosotros a través del botón \"Enviar comentarios\" del menú.";
 "whats_new.1_3_0.1.title" = "Prueba en Texas";
 "beacon.action.navilens" = "Iniciar NaviLens";
 "troubleshooting.tile_server_url" = "URL del servidor de teselas";
@@ -4462,17 +4462,19 @@
 "recommender.navilens.show_nearby" = "Mostrar códigos NaviLens cercanos";
 "recommender.navilens.show_nearby.hint" = "Pulsa dos veces para mostrar códigos NaviLens cercanos";
 "beacon.settings.ringing_angle" = "Ángulo del sonido del timbre";
-"beacon.settings.ringing_angle.explanation" = "Ajuste la anchura del ángulo en el que el sonido de la señal es más intenso (entre 5° y 20°).";
+"beacon.settings.ringing_angle.explanation" = "Ajusta la anchura del ángulo en el que el sonido de la señal es más intenso (entre 5° y 20°).";
 "whats_new.1_3_2.0.title" = "Integración mejorada de NaviLens";
 "whats_new.1_3_2.0.description" = "Ahora Soundscape te avisa cuando hay códigos NaviLens cerca. Puedes encontrar la categoría \"Códigos NaviLens\" en la lista \"Lugares cercanos\".";
 "whats_new.1_3_2.1.title" = "Rutas de regreso";
 "whats_new.1_3_2.1.description" = "Ahora puedes invertir una ruta. Esto crea una nueva ruta con todos los puntos en orden inverso.";
 "whats_new.1_8_1.0.title" = "Actualizaciones de idiomas";
 "whats_new.1_8_1.0.description" = "Se ha añadido compatibilidad con el persa y el ruso.";
-"whats_new.1_8_1.1.title" = "Corrección de errores";
+"whats_new.1_8_1.1.title" = "Correcciones de errores";
 "whats_new.1_8_1.1.description" = "Se ha corregido el desplazamiento en los marcadores y las rutas, y se ha solucionado un problema por el que la búsqueda no mostraba todos los resultados.";
-"whats_new.1_8_2.0.title" = "Ajusta el ángulo de la señal de audio en los ajustes";
+"whats_new.1_8_2.0.title" = "Ajustar el ángulo de la señal de audio en los ajustes";
 "whats_new.1_8_2.0.description" = "Ahora puedes ajustar el ángulo del sonido de timbre de la señal.";
-"whats_new.1_8_2.1.title" = "Abrir NaviLens o Mostrar códigos cercanos";
+"whats_new.1_8_2.1.title" = "Abrir NaviLens o mostrar códigos cercanos";
 "beacon.settings.vicinity.explanation" = "Ajusta la distancia a la que el sonido de la señal se silencia automáticamente a medida que te acercas.";
 "whats_new.1_8_2.1.description" = "Al llegar a un lugar equipado con NaviLens, ahora puedes abrir la aplicación NaviLens o ver una lista de códigos cercanos.";
+"whats_new.1_8_5.0.title" = "Correcciones de errores";
+"whats_new.1_8_5.0.description" = "Se ha solucionado un problema que impedía importar rutas compartidas.";

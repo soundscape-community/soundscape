@@ -4507,3 +4507,5 @@
 "recommender.navilens.show_nearby.hint" = "Double tap to show nearby NaviLens codes";
 "beacon.settings.ringing_angle" = "Ringing Sound Angle";
 "beacon.settings.ringing_angle.explanation" = "Adjust the width of the area where the beacon audio is most intense (5° to 20°).";
+"whats_new.1_8_5.0.title" = "Bug Fixes";
+"whats_new.1_8_5.0.description" = "Fixed an issue that prevented shared routes from being imported.";
