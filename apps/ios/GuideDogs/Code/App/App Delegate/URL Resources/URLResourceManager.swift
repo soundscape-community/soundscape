@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -59,16 +60,15 @@ class URLResourceManager {
      Delegates URL resources to the appropriate handler.
      
      Returns TRUE if the resource type is supported by the app and has a corresponding handler
-     Returns FALSE if the resource type is not supported
+    Returns FALSE if the resource type is not supported
      */
     func onOpenResource(from url: URL) -> Bool {
-        guard let iRawValue = try? url.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier else {
+        guard let identifier = URLResourceIdentifier(pathExtension: url.pathExtension) else {
+            GDLogURLResourceError("Unsupported incoming file: \(url.lastPathComponent)")
             return false
         }
-        
-        guard let identifier = URLResourceIdentifier(rawValue: iRawValue) else {
-            return false
-        }
+
+        GDLogURLResourceVerbose("Opening incoming file: \(url.lastPathComponent)")
         
         queue.async { [weak self] in
             guard let `self` = self else {
@@ -93,7 +93,6 @@ class URLResourceManager {
         switch resource.identifier {
         case .gpx: handler = gpxHandler
         case .route: handler = routeHandler
-        case .openscape_route: handler = routeHandler
         }
         
         handler.handleURLResource(with: resource.url)

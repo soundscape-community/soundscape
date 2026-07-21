@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -47,6 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let launchOptions = launchOptions {
             pushNotificationManager.didFinishLaunchingWithOptions(launchOptions)
         }
+
+        if let url = launchOptions?[.url] as? URL {
+            return openURLResource(url)
+        }
         
         return true
     }
@@ -56,6 +61,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        return openURLResource(url)
+    }
+
+    private func openURLResource(_ url: URL) -> Bool {
+        GDLogAppInfo("Application asked to open file: \(url.lastPathComponent)")
+
         if let components = URLComponents(url: url, resolvingAgainstBaseURL: true){
            if let source = components.queryItems?.first(where: { $0.name == "source" })?.value {
             GDLogAppInfo("App opened from source: \(source)")
