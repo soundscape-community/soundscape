@@ -13,6 +13,7 @@ import SwiftUI
 
 class SettingsViewController: BaseTableViewController {
     private static let languageSettingsIndexPath = IndexPath(row: 0, section: Section.general.rawValue)
+    private static let voiceSettingsIndexPath = IndexPath(row: 1, section: Section.general.rawValue)
     private static let beaconSettingsIndexPath = IndexPath(row: 2, section: Section.general.rawValue)
     private static let volumeSettingsIndexPath = IndexPath(row: 3, section: Section.general.rawValue)
     private static let siriShortcutsIndexPath = IndexPath(row: 5, section: Section.general.rawValue)
@@ -150,6 +151,9 @@ class SettingsViewController: BaseTableViewController {
         switch indexPath {
         case SettingsViewController.languageSettingsIndexPath:
             let controller = UIHostingController(rootView: LanguageSettingsView())
+            navigationController?.pushViewController(controller, animated: true)
+        case SettingsViewController.voiceSettingsIndexPath:
+            let controller = UIHostingController(rootView: VoiceSettingsView())
             navigationController?.pushViewController(controller, animated: true)
         case SettingsViewController.beaconSettingsIndexPath:
             navigationController?.pushViewController(BeaconSelectionHostViewController(), animated: true)

@@ -605,8 +605,6 @@
 		C30DDADF2255796B00104085 /* NotificationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DDADE2255796B00104085 /* NotificationProtocol.swift */; };
 		C30DDAE9225684BC00104085 /* GDASpatialDataResultEntity+Typeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DDAE8225684BC00104085 /* GDASpatialDataResultEntity+Typeable.swift */; };
 		C30DDAEC2256935F00104085 /* Typeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DDAEB2256935F00104085 /* Typeable.swift */; };
-		C30EF61F2089475D00BEA785 /* VoiceSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30EF61E2089475D00BEA785 /* VoiceSettingsTableViewController.swift */; };
-		C30EF6212089481100BEA785 /* SpeakingRateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30EF6202089481100BEA785 /* SpeakingRateTableViewCell.swift */; };
 		C30EF62320894AD400BEA785 /* VoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30EF62220894AD400BEA785 /* VoiceTableViewCell.swift */; };
 		C317F24E2370E9AF000579BA /* NotificationContainerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C317F24D2370E9AF000579BA /* NotificationContainerManager.swift */; };
 		C317F26523722ECF000579BA /* NotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C317F26423722ECF000579BA /* NotificationObserver.swift */; };
@@ -1406,8 +1404,6 @@
 		C30DDADE2255796B00104085 /* NotificationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationProtocol.swift; path = Code/Notifications/Notifications/NotificationProtocol.swift; sourceTree = "<group>"; };
 		C30DDAE8225684BC00104085 /* GDASpatialDataResultEntity+Typeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "GDASpatialDataResultEntity+Typeable.swift"; path = "Code/Data/Models/Extensions/OSM Entity/GDASpatialDataResultEntity+Typeable.swift"; sourceTree = "<group>"; };
 		C30DDAEB2256935F00104085 /* Typeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Typeable.swift; path = Code/Data/Models/Helpers/Types/Typeable.swift; sourceTree = "<group>"; };
-		C30EF61E2089475D00BEA785 /* VoiceSettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VoiceSettingsTableViewController.swift; path = "Code/Visual UI/View Controllers/Settings/Voice/VoiceSettingsTableViewController.swift"; sourceTree = "<group>"; };
-		C30EF6202089481100BEA785 /* SpeakingRateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpeakingRateTableViewCell.swift; path = "Code/Visual UI/Controls/Voice Settings/SpeakingRateTableViewCell.swift"; sourceTree = "<group>"; };
 		C30EF62220894AD400BEA785 /* VoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VoiceTableViewCell.swift; path = "Code/Visual UI/Controls/Voice Settings/VoiceTableViewCell.swift"; sourceTree = "<group>"; };
 		C317F24D2370E9AF000579BA /* NotificationContainerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationContainerManager.swift; path = Code/Notifications/NotificationContainerManager.swift; sourceTree = "<group>"; };
 		C317F26423722ECF000579BA /* NotificationObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationObserver.swift; path = Code/Notifications/Observers/NotificationObserver.swift; sourceTree = "<group>"; };
@@ -1614,7 +1610,6 @@
 				31D62B811DFD9B8800C5A2D8 /* ThirdPartyNoticesViewController.swift */,
 				31ACEE4D20B776D700916B9B /* VersionHistoryTableViewController.swift */,
 				287D3E8C22DE50340084B92B /* StatusTableViewController.swift */,
-				C30EF61E2089475D00BEA785 /* VoiceSettingsTableViewController.swift */,
 				B92EA05D27AC80E900127A9A /* SiriShortcutsTableViewController.swift */,
 			);
 			name = Settings;
@@ -3719,7 +3714,6 @@
 			isa = PBXGroup;
 			children = (
 				C33084DD209D1094007FF6DC /* Voice Cells */,
-				C30EF6202089481100BEA785 /* SpeakingRateTableViewCell.swift */,
 				C30EF62220894AD400BEA785 /* VoiceTableViewCell.swift */,
 				C338FF0B20AA2312003BEBF2 /* VoiceTableViewCellDelegate.swift */,
 			);
@@ -4976,7 +4970,6 @@
 				B9243A7024E1DAC40044ECC6 /* DirectionRange.swift in Sources */,
 				62D73709249A935D00BA0A6D /* LocationDetail.swift in Sources */,
 				6249500326FBE247008D842B /* RouteEditViewRepresentable.swift in Sources */,
-				C30EF61F2089475D00BEA785 /* VoiceSettingsTableViewController.swift in Sources */,
 				62A61232243F9542008A8174 /* MPEditAnnotationTableViewCell.swift in Sources */,
 				31B94363212B6E4400AB12B2 /* GDATelemetry.swift in Sources */,
 				31FE6C78233A7B760098D8C5 /* TelemetryHelper.swift in Sources */,
@@ -5224,7 +5217,6 @@
 				623D3C35264C592F0005F405 /* RouteWaypoint.swift in Sources */,
 				31ACEE4E20B776D700916B9B /* VersionHistoryTableViewController.swift in Sources */,
 				622CAFA026AB38A900F804D6 /* BeaconTitleViewController.swift in Sources */,
-				C30EF6212089481100BEA785 /* SpeakingRateTableViewCell.swift in Sources */,
 				C37E33D32367C11C0033D640 /* HeadsetCalibrationModalViewObserver.swift in Sources */,
 				28EB9C79237CC7D90064E7EF /* ExperimentServiceModel.swift in Sources */,
 				B9D3FF951E11AF7300501DA3 /* LocalizationContext.swift in Sources */,

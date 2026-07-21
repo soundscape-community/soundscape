@@ -127,9 +127,6 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" name="Background 1"/>
                                 <color key="tintColor" name="Foreground 1"/>
-                                <connections>
-                                    <segue destination="vbs-qw-GY9" kind="show" id="63S-we-Nd6"/>
-                                </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="siriShortcuts" textLabel="otp-Yg-No4" imageView="k5P-R0-5zU" style="IBUITableViewCellStyleDefault" id="89u-6v-FlZ" userLabel="Siri Shortcuts" customClass="CustomDisclosureTableViewCell" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="187.33333206176758" width="393" height="44"/>
@@ -712,14 +709,6 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="30" y="-244"/>
-        </scene>
-        <!--VoiceSettings-->
-        <scene sceneID="i4f-8a-4ht">
-            <objects>
-                <viewControllerPlaceholder storyboardName="VoiceSettings" id="vbs-qw-GY9" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fGS-2N-MXC" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="707" y="-289"/>
         </scene>
         <!--troubleshooting-->
         <scene sceneID="U2t-nO-poO">
