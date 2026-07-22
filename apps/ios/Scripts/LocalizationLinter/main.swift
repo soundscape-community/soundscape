@@ -5,6 +5,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -305,10 +306,13 @@ class StringsFile: File {
     
     // MARK: Constants
     
-    // Match:
+    // Match either:
     // /* comment */
     // "key" = "string";
-    static let regexPattern = "\\/\\* (?<comment>.*?) \\*\\/\n\"(?<key>.*?)\" = \"(?<value>.*?)\";"
+    //
+    // Or Weblate-generated entries without comments:
+    // "key" = "string";
+    static let regexPattern = "(?:\\/\\* (?<comment>.*?) \\*\\/\n)?\"(?<key>.*?)\" = \"(?<value>.*?)\";"
     
     static let wordCountRegex = "\\W*\\w+\\W*"
     
@@ -394,11 +398,15 @@ class StringsFile: File {
         let matches = NSRegularExpression.matches(pattern: StringsFile.regexPattern, in: content)
         
         let translations = matches.compactMap { (match) -> Translation? in
-            guard let commentRange = Range(match.range(withName: "comment"), in: content) else { return nil }
             guard let keyRange = Range(match.range(withName: "key"), in: content) else { return nil }
             guard let valueRange = Range(match.range(withName: "value"), in: content) else { return nil }
             
-            let comment = String(content[commentRange])
+            let comment: String
+            if let commentRange = Range(match.range(withName: "comment"), in: content) {
+                comment = String(content[commentRange])
+            } else {
+                comment = ""
+            }
             let key = String(content[keyRange])
             let value = String(content[valueRange])
             

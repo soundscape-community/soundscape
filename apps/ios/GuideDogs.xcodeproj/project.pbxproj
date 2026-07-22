@@ -1208,6 +1208,8 @@
 		6258B3892469DB220051F60B /* UniversalLinkVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UniversalLinkVersion.swift; path = "Code/App/App Delegate/User Activities/Universal Links/Components/UniversalLinkVersion.swift"; sourceTree = "<group>"; };
 		6258B39124732D590051F60B /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6258B39224732D590051F60B /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		E54190012E5F000100000001 /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		E54190022E5F000100000002 /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6258B39324732D840051F60B /* fr-FR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fr-FR"; path = "fr-FR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6258B39424732D840051F60B /* fr-FR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fr-FR"; path = "fr-FR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		6258B39524732D8D0051F60B /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -4531,6 +4533,7 @@
 				"en-GB",
 				"fr-CA",
 				"es-ES",
+				"es-419",
 				"fr-FR",
 				"pt-BR",
 				"de-DE",
@@ -5371,6 +5374,7 @@
 				316B3F70228392850025526D /* fr-CA */,
 				C3FA2F02236B557F00ADB8BC /* sv-SE */,
 				6258B39124732D590051F60B /* es-ES */,
+				E54190022E5F000100000002 /* es-419 */,
 				6258B39324732D840051F60B /* fr-FR */,
 				6258B39624732D8D0051F60B /* pt-BR */,
 				B9978B9725DDBE80005DA642 /* de-DE */,
@@ -5396,6 +5400,7 @@
 				319688E6222EF3280009DA69 /* fr-CA */,
 				C3FA2F03236B557F00ADB8BC /* sv-SE */,
 				6258B39224732D590051F60B /* es-ES */,
+				E54190012E5F000100000001 /* es-419 */,
 				6258B39424732D840051F60B /* fr-FR */,
 				6258B39524732D8D0051F60B /* pt-BR */,
 				B9978B9625DDBE73005DA642 /* de-DE */,
