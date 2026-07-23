@@ -85,20 +85,7 @@ class LocalizationContext {
     /// 3. The app's development locale
     static var currentAppLocale: Locale {
         get {
-            let currentAppLocale = resolveAppLocale(
-                selectedLocale: SettingsContext.shared.locale,
-                supportedLocales: supportedLocales,
-                preferredLocalization: Bundle.main.preferredLocalizations.first,
-                developmentLocalization: Bundle.main.developmentLocalization
-            )
-            
-            // Store the locale and bundle
-            if currentAppLocale != _currentAppLocale {
-                _currentAppLocale = currentAppLocale
-                currentAppLocaleBundle = Bundle(locale: currentAppLocale) ?? defaultDevelopmentBundle
-            }
-            
-            return currentAppLocale
+            return currentLocalization().locale
         }
         set(newLocale) {
             guard let bundle = Bundle(locale: newLocale) else {
@@ -106,9 +93,11 @@ class LocalizationContext {
                 return
             }
 
+            localizationLock.lock()
+            cachedLocalization = AppLocalization(locale: newLocale, bundle: bundle)
+            localizationLock.unlock()
+
             SettingsContext.shared.locale = newLocale
-            _currentAppLocale = newLocale
-            currentAppLocaleBundle = bundle
             
             configureAccessibilityLanguage()
             
@@ -119,9 +108,14 @@ class LocalizationContext {
             }
         }
     }
-    
-    static private var _currentAppLocale: Locale?
-    static private var currentAppLocaleBundle: Bundle?
+
+    private struct AppLocalization {
+        let locale: Locale
+        let bundle: Bundle
+    }
+
+    private static let localizationLock = NSLock()
+    private static var cachedLocalization: AppLocalization?
     
     static var currentLanguageCode: String {
         return currentAppLocale.languageCode ?? defaultLanguageCode
@@ -132,9 +126,41 @@ class LocalizationContext {
     }
     
     /// The development app locale ("en-US")
-    static var developmentLocale = Bundle.main.developmentLocale ?? Locale.enUS
-    
-    static private let defaultDevelopmentBundle = Bundle(locale: developmentLocale)!
+    static let developmentLocale = Bundle.main.developmentLocale ?? Locale.enUS
+
+    static private let defaultDevelopmentBundle: Bundle = {
+        guard let bundle = Bundle(locale: developmentLocale) else {
+            DDLogError("Localization error: Unable to resolve development locale bundle \"\(developmentLocale.identifier)\"")
+            return Bundle.main
+        }
+
+        return bundle
+    }()
+
+    private static func currentLocalization() -> AppLocalization {
+        let developmentBundle = defaultDevelopmentBundle
+
+        localizationLock.lock()
+        defer { localizationLock.unlock() }
+
+        if let cachedLocalization {
+            return cachedLocalization
+        }
+
+        let locale = resolveAppLocale(
+            selectedLocale: SettingsContext.shared.locale,
+            supportedLocales: supportedLocales,
+            preferredLocalization: Bundle.main.preferredLocalizations.first,
+            developmentLocalization: Bundle.main.developmentLocalization
+        )
+        let localization = AppLocalization(
+            locale: locale,
+            bundle: Bundle(locale: locale) ?? developmentBundle
+        )
+        cachedLocalization = localization
+
+        return localization
+    }
 
     static func resolveAppLocale(
         selectedLocale: Locale?,
@@ -211,12 +237,11 @@ class LocalizationContext {
             return key
         }
 
-        // Resolve the app locale before reading the cached localization bundle.
-        _ = currentAppLocale
+        let localization = currentLocalization()
 
         return localizedString(
             key,
-            bundle: currentAppLocaleBundle ?? defaultDevelopmentBundle,
+            bundle: localization.bundle,
             fallbackBundle: defaultDevelopmentBundle
         )
     }
