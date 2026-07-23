@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -79,36 +80,24 @@ class LocalizationContext {
     }
     
     /// The current app locale. This will return one of the following:
-    /// 1. The user selected app locale (if a selection has been made)
-    /// 2. The device locale (if supported by the app)
-    /// 3. The default English locale
+    /// 1. The user-selected app locale (if a valid selection has been made)
+    /// 2. The localization selected by iOS from the user's preferred languages
+    /// 3. The app's development locale
     static var currentAppLocale: Locale {
         get {
-            let currentAppLocale: Locale
-            
-            // Check if the user has selected a locale
-            if let locale = SettingsContext.shared.locale {
-                currentAppLocale = locale
-            } else if let firstSupportedLocale = firstSupportedLocale {
-                // If not, check if the device's locale is supported
-                currentAppLocale = firstSupportedLocale
-            } else {
-                // If not, fallback to the default English locale (en-US or en-GB)
-                currentAppLocale = deviceLocale.defaultEnglish
-            }
-            
-            // Store the locale and bundle
-            if currentAppLocale != _currentAppLocale {
-                _currentAppLocale = currentAppLocale
-                currentAppLocaleBundle = Bundle(locale: currentAppLocale)
-            }
-            
-            return currentAppLocale
+            return currentLocalization().locale
         }
         set(newLocale) {
+            guard let bundle = Bundle(locale: newLocale) else {
+                DDLogError("Localization error: Unsupported app locale \"\(newLocale.identifier)\"")
+                return
+            }
+
+            localizationLock.lock()
+            cachedLocalization = AppLocalization(locale: newLocale, bundle: bundle)
+            localizationLock.unlock()
+
             SettingsContext.shared.locale = newLocale
-            _currentAppLocale = newLocale
-            currentAppLocaleBundle = Bundle(locale: newLocale)!
             
             configureAccessibilityLanguage()
             
@@ -119,11 +108,14 @@ class LocalizationContext {
             }
         }
     }
-    
-    static private var _currentAppLocale: Locale?
-    static private var currentAppLocaleBundle: Bundle?
-    
-    static private let defaultEnglishBundle = Bundle(locale: deviceLocale.defaultEnglish)!
+
+    private struct AppLocalization {
+        let locale: Locale
+        let bundle: Bundle
+    }
+
+    private static let localizationLock = NSLock()
+    private static var cachedLocalization: AppLocalization?
     
     static var currentLanguageCode: String {
         return currentAppLocale.languageCode ?? defaultLanguageCode
@@ -134,44 +126,64 @@ class LocalizationContext {
     }
     
     /// The development app locale ("en-US")
-    static var developmentLocale = Bundle.main.developmentLocale!
-    
+    static let developmentLocale = Bundle.main.developmentLocale ?? Locale.enUS
+
     static private let defaultDevelopmentBundle = Bundle(locale: developmentLocale)!
-    
-    private static var _firstSupportedLocale: Locale?
-    
-    static var firstSupportedLocale: Locale? {
-        if let firstSupportedLocale = _firstSupportedLocale {
-            return firstSupportedLocale
+
+    private static func currentLocalization() -> AppLocalization {
+        let developmentBundle = defaultDevelopmentBundle
+
+        localizationLock.lock()
+        defer { localizationLock.unlock() }
+
+        if let cachedLocalization {
+            return cachedLocalization
         }
-        
-        for preferredLocale in Locale.preferredLocales {
-            if preferredLocale == Locale.enUS {
-                _firstSupportedLocale = Locale.enUS
-                break
-            } else if preferredLocale == Locale.enGB {
-                _firstSupportedLocale = Locale.enGB
-                break
-            } else if preferredLocale.languageCode == Locale.en.languageCode {
-                _firstSupportedLocale = deviceLocale.defaultEnglish
-                break
-            } else if let locale = supportedLocales.first(where: { $0 == preferredLocale }) {
-                _firstSupportedLocale = locale
-                break
-            }
+
+        let locale = resolveAppLocale(
+            selectedLocale: SettingsContext.shared.locale,
+            supportedLocales: supportedLocales,
+            preferredLocalization: Bundle.main.preferredLocalizations.first,
+            developmentLocalization: Bundle.main.developmentLocalization
+        )
+        let localization = AppLocalization(
+            locale: locale,
+            bundle: Bundle(locale: locale) ?? developmentBundle
+        )
+        cachedLocalization = localization
+
+        return localization
+    }
+
+    static func resolveAppLocale(
+        selectedLocale: Locale?,
+        supportedLocales: [Locale],
+        preferredLocalization: String?,
+        developmentLocalization: String?
+    ) -> Locale {
+        if let selectedLocale,
+           let supportedLocale = supportedLocale(matching: selectedLocale.identifier, in: supportedLocales) {
+            return supportedLocale
         }
-        // Fallback: match only on language part if no exact match found
-        if _firstSupportedLocale == nil {
-            for preferredLocale in Locale.preferredLocales {
-                if let languageCode = preferredLocale.languageCode,
-                   let locale = supportedLocales.first(where: { $0.languageCode == languageCode }) {
-                    _firstSupportedLocale = locale
-                    break
-                }
-            }
+
+        if let preferredLocalization,
+           let supportedLocale = supportedLocale(matching: preferredLocalization, in: supportedLocales) {
+            return supportedLocale
         }
-        
-        return _firstSupportedLocale
+
+        if let developmentLocalization {
+            return supportedLocale(matching: developmentLocalization, in: supportedLocales)
+                ?? Locale(identifier: developmentLocalization)
+        }
+
+        return Locale.enUS
+    }
+
+    private static func supportedLocale(matching identifier: String, in supportedLocales: [Locale]) -> Locale? {
+        let normalizedIdentifier = Locale(identifier: identifier).identifierHyphened.lowercased()
+        return supportedLocales.first {
+            $0.identifierHyphened.lowercased() == normalizedIdentifier
+        }
     }
     
     // MARK: Properties
@@ -217,36 +229,36 @@ class LocalizationContext {
             DDLogWarn("Localized string error: key is nil")
             return key
         }
-        
-        // If the current language does not contain the translation for the key, use the fallback language
-        return NSLocalizedString(key,
-                                 bundle: currentAppLocaleBundle ?? defaultEnglishBundle,
-                                 value: localizedStringFallbackLanguage(key),
-                                 comment: "")
+
+        let localization = currentLocalization()
+
+        return localizedString(
+            key,
+            bundle: localization.bundle,
+            fallbackBundle: defaultDevelopmentBundle
+        )
     }
-    
-    private static func localizedStringFallbackLanguage(_ key: String) -> String {
+
+    static func localizedString(_ key: String, bundle: Bundle, fallbackBundle: Bundle) -> String {
         guard !key.isEmpty else {
             DDLogWarn("Localized string error: key is nil")
             return key
         }
-        
-        let defaultEnglishLocale = deviceLocale.defaultEnglish
-        
-        // Try the default English language ("en-US" or "en-GB")
-        if let string = nsLocalizedString(key, bundle: defaultEnglishBundle) {
-            return string
-        }
-        
-        // If the default English language was "en-GB", try "en-US" (the base development language)
-        if defaultEnglishLocale != developmentLocale,
-            let string = nsLocalizedString(key, bundle: defaultDevelopmentBundle) {
-            return string
-        }
-        
-        DDLogWarn("Localization error: Localized string not found for key \"\(key)\"")
 
-        return key
+        let fallback: String
+        if let developmentString = nsLocalizedString(key, bundle: fallbackBundle) {
+            fallback = developmentString
+        } else {
+            DDLogWarn("Localization error: Localized string not found for key \"\(key)\"")
+            fallback = key
+        }
+
+        return NSLocalizedString(
+            key,
+            bundle: bundle,
+            value: fallback,
+            comment: ""
+        )
     }
     
     /// Returns the localized string using the native `NSLocalizedString` function,
@@ -321,28 +333,11 @@ extension Bundle {
 }
 
 extension Locale {
-    /// The locale for English (without region)
-    static let en = Locale(identifier: "en")
-    
     /// The locale for English (United States)
     static let enUS = Locale(identifier: "en-US")
     
-    /// The locale for English (United Kingdom)
-    static let enGB = Locale(identifier: "en-GB")
-    
     /// Locale for French (France)
     static let frFr = Locale(identifier: "fr-FR")
-    
-    /// Returns the `preferredLanguages` objects as `Locale` objects
-    static var preferredLocales: [Locale] {
-        return Locale.preferredLanguages.map { Locale(identifier: $0) }
-    }
-    
-    /// The default English locale. This follows the suggested standard were users in the US will default to
-    /// "English (United States)", and users outside the US will default to "English (United Kingdom)".
-    var defaultEnglish: Locale {
-        return self.identifier == Locale.enUS.identifier ? Locale.enUS : Locale.enGB
-    }
     
     /// Returns the identifier with a hyphen ("-"), if an underscore ("_") is used, e.g. "en_US" -> "en-US".
     ///
