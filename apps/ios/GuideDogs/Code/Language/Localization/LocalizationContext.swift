@@ -128,14 +128,7 @@ class LocalizationContext {
     /// The development app locale ("en-US")
     static let developmentLocale = Bundle.main.developmentLocale ?? Locale.enUS
 
-    static private let defaultDevelopmentBundle: Bundle = {
-        guard let bundle = Bundle(locale: developmentLocale) else {
-            DDLogError("Localization error: Unable to resolve development locale bundle \"\(developmentLocale.identifier)\"")
-            return Bundle.main
-        }
-
-        return bundle
-    }()
+    static private let defaultDevelopmentBundle = Bundle(locale: developmentLocale)!
 
     private static func currentLocalization() -> AppLocalization {
         let developmentBundle = defaultDevelopmentBundle
