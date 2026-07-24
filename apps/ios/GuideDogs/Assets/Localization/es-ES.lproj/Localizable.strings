@@ -3522,7 +3522,7 @@
 
 
 /*  */
-"first_launch.callouts.listen" = "Escucha un ejemplo sobre de lo que Soundscape podría avisar en tu próximo paseo";
+"first_launch.callouts.listen" = "Escucha un ejemplo de lo que Soundscape podría avisarte en tu próximo paseo";
 
 
 /*  */
@@ -3714,7 +3714,7 @@
 
 
 /*  */
-"help.text.ahead_of_me.what" = "El botón <em>\"Delante de mí\"</em> te informa de hasta cinco elementos que se encuentran delante de ti. <em>\"Delante de mí\"</em> está pensado para explorar el camino por delante de ti cuando estás conociendo una zona nueva.";
+"help.text.ahead_of_me.what" = "El botón <em>\"Delante de mí\"</em> te informa de hasta cinco elementos que están delante de ti. <em>\"Delante de mí\"</em> está pensado para explorar lo que se encuentra delante de ti cuando estás conociendo una zona nueva.";
 
 
 /*  */
@@ -4262,7 +4262,7 @@
 
 
 /*  */
-"faq.battery_impact.answer" = "La duración de la batería varía en gran medida en función del modelo y la antigüedad de tu iPhone. El mayor consumo de la batería se produce al tener la pantalla encendida, por lo que para maximizar su duración, debes mantener la pantalla bloqueada siempre que sea posible. Para ayudar a minimizar el impacto en la batería de iPhone, Soundscape tiene un modo de suspensión y un modo de aplazamiento. Para reducir aún más el uso de la batería, cuando no uses Soundscape, debes forzar cerrar la aplicación con el Selector de aplicación de iPhone.";
+"faq.battery_impact.answer" = "La duración de la batería varía en gran medida en función del modelo y la antigüedad de tu iPhone. El mayor consumo de la batería se produce al tener la pantalla encendida, por lo que para maximizar su duración, debes mantener la pantalla bloqueada siempre que sea posible. Para ayudar a minimizar el impacto en la batería de iPhone, Soundscape tiene un modo de suspensión y un modo de aplazamiento. Para reducir aún más el uso de la batería, cuando no uses Soundscape, debes forzar el cierre de la aplicación desde el selector de aplicaciones del iPhone.";
 
 
 /*  */
