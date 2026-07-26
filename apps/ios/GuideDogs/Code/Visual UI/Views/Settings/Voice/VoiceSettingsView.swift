@@ -31,15 +31,9 @@ struct VoiceSettingsView: View {
                 .listRowSeparatorTint(Color.secondaryBackground)
             }
 
-            voiceSection(
-                title: model.currentLanguageSectionTitle,
-                voices: model.voicesInCurrentLanguage
-            )
-
-            voiceSection(
-                title: GDLocalizedString("voice.apple.other_languages"),
-                voices: model.voicesInOtherLanguages
-            )
+            ForEach(model.languageSections) { section in
+                voiceSection(section)
+            }
         }
         .voiceSettingsListBackground()
         .background(Color.quaternaryBackground.ignoresSafeArea())
@@ -82,25 +76,55 @@ struct VoiceSettingsView: View {
         )
     }
 
-    private func voiceSection(title: String, voices: [AVSpeechSynthesisVoice]) -> some View {
-        Section(header: VoiceSettingsSectionHeader(text: title)) {
-            ForEach(voices, id: \.identifier) { voice in
-                Button {
-                    model.selectVoice(voice)
+    private func voiceSection(_ section: VoiceCatalogueLanguageSection) -> some View {
+        Section(header: VoiceSettingsSectionHeader(text: section.title)) {
+            ForEach(section.standardVoices) { voice in
+                voiceButton(voice)
+            }
+
+            ForEach(section.providerSections) { providerSection in
+                DisclosureGroup(
+                    isExpanded: model.isExpandedBinding(
+                        localeIdentifier: section.localeIdentifier,
+                        provider: providerSection.provider
+                    )
+                ) {
+                    ForEach(providerSection.voices) { voice in
+                        voiceButton(voice)
+                    }
                 } label: {
-                    VoiceSettingsVoiceRow(
-                        voice: voice,
-                        subtitle: model.detail(for: voice),
-                        isSelected: model.selectedVoiceIdentifier == voice.identifier,
-                        isPreviewing: model.previewingVoiceIdentifier == voice.identifier
+                    VoiceSettingsProviderRow(
+                        title: model.title(for: providerSection.provider),
+                        selectedVoice: providerSection.selectedVoice(
+                            identifier: model.selectedVoiceIdentifier
+                        ),
+                        isPreviewing: providerSection.selectedVoice(
+                            identifier: model.previewingVoiceIdentifier
+                        ) != nil
                     )
                 }
-                .buttonStyle(.plain)
-                .accessibilityFocused($focusedVoiceIdentifier, equals: voice.identifier)
+                .tint(.primaryForeground)
                 .listRowBackground(Color.primaryBackground)
                 .listRowSeparatorTint(Color.secondaryBackground)
             }
         }
+    }
+
+    private func voiceButton(_ voice: VoiceCatalogueDescriptor) -> some View {
+        Button {
+            model.selectVoice(identifier: voice.identifier)
+        } label: {
+            VoiceSettingsVoiceRow(
+                voice: voice,
+                subtitle: model.detail(for: voice),
+                isSelected: model.selectedVoiceIdentifier == voice.identifier,
+                isPreviewing: model.previewingVoiceIdentifier == voice.identifier
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityFocused($focusedVoiceIdentifier, equals: voice.identifier)
+        .listRowBackground(Color.primaryBackground)
+        .listRowSeparatorTint(Color.secondaryBackground)
     }
 }
 
@@ -128,16 +152,17 @@ private struct VoiceSettingsSpeakingRateSlider: View {
 
 @MainActor
 private final class VoiceSettingsModel: ObservableObject {
-    @Published private(set) var voicesInCurrentLanguage: [AVSpeechSynthesisVoice] = []
-    @Published private(set) var voicesInOtherLanguages: [AVSpeechSynthesisVoice] = []
+    @Published private(set) var languageSections: [VoiceCatalogueLanguageSection] = []
     @Published private(set) var selectedVoiceIdentifier: String?
     @Published private(set) var defaultVoiceIdentifier: String?
     @Published private(set) var previewingVoiceIdentifier: String?
     @Published private(set) var pendingEnhancedVoiceIdentifier: String?
     @Published private(set) var voiceToFocus: String?
+    @Published private(set) var expandedProvider: VoiceCatalogueProviderExpansion?
     @Published var speakingRate: Float
 
     private let currentLocale = LocalizationContext.currentAppLocale
+    private var voicesByIdentifier: [String: AVSpeechSynthesisVoice] = [:]
     private var didMuteCallouts = false
     private var didMuteBeacon = false
     private var isScreenVisible = false
@@ -146,14 +171,6 @@ private final class VoiceSettingsModel: ObservableObject {
 
     var additionalVoicesGuidance: String {
         "\(GDLocalizedString("voice.apple.additional")) \(GDLocalizedString("voice.apple.no_siri"))"
-    }
-
-    var currentLanguageSectionTitle: String {
-        guard let languageCode = currentLocale.languageCode else {
-            return currentLocale.localizedDescription
-        }
-
-        return currentLocale.localizedString(forLanguageCode: languageCode) ?? currentLocale.localizedDescription
     }
 
     init() {
@@ -209,7 +226,11 @@ private final class VoiceSettingsModel: ObservableObject {
         reloadVoices()
     }
 
-    func selectVoice(_ voice: AVSpeechSynthesisVoice) {
+    func selectVoice(identifier: String) {
+        guard let voice = voice(withIdentifier: identifier) else {
+            return
+        }
+
         guard voice.hasEnhancedVersion(), selectedVoiceIdentifier != voice.identifier else {
             commitVoiceSelection(voice)
             return
@@ -255,22 +276,41 @@ private final class VoiceSettingsModel: ObservableObject {
         )
     }
 
-    func detail(for voice: AVSpeechSynthesisVoice) -> String {
-        var detail = ""
-        let voiceLocale = Locale(identifier: voice.language)
-
-        if voiceLocale.languageCode != currentLocale.languageCode {
-            detail = voiceLocale.localizedDescription
-        } else if let regionCode = voiceLocale.regionCode {
-            detail = voiceLocale.localizedString(forRegionCode: regionCode) ?? ""
-        }
-
+    func detail(for voice: VoiceCatalogueDescriptor) -> String {
         guard voice.identifier == defaultVoiceIdentifier else {
-            return detail
+            return ""
         }
 
-        return GDLocalizedString("voice.apple.default", detail)
+        return GDLocalizedString("voice.apple.default", "")
             .trimmingCharacters(in: .whitespaces)
+    }
+
+    func title(for provider: VoiceCatalogueProviderGroup) -> String {
+        switch provider {
+        case .eloquence:
+            return "Eloquence"
+        case .eSpeak:
+            return "eSpeak"
+        case .other:
+            return GDLocalizedString("voice.settings.other_voices")
+        }
+    }
+
+    func isExpandedBinding(
+        localeIdentifier: String,
+        provider: VoiceCatalogueProviderGroup
+    ) -> Binding<Bool> {
+        let expansion = VoiceCatalogueProviderExpansion(
+            localeIdentifier: localeIdentifier,
+            provider: provider
+        )
+
+        return Binding(
+            get: { self.expandedProvider == expansion },
+            set: { isExpanded in
+                self.expandedProvider = isExpanded ? expansion : nil
+            }
+        )
     }
 
     private func resetDeletedSelectedVoiceIfNeeded() {
@@ -290,18 +330,39 @@ private final class VoiceSettingsModel: ObservableObject {
     }
 
     private func reloadVoices() {
-        voicesInCurrentLanguage = TTSConfigHelper.loadVoices(
-            forCurrentLanguage: true,
-            currentLocale: currentLocale
-        )
-        voicesInOtherLanguages = TTSConfigHelper.loadVoices(
-            forCurrentLanguage: false,
-            currentLocale: currentLocale
-        )
+        let voices = TTSConfigHelper.loadVoices()
+        voicesByIdentifier = Dictionary(uniqueKeysWithValues: voices.map { ($0.identifier, $0) })
+        rebuildCatalogue()
+
+        if let expandedProvider,
+           !languageSections.contains(where: { section in
+               section.localeIdentifier == expandedProvider.localeIdentifier
+                   && section.providerSections.contains {
+                       $0.provider == expandedProvider.provider
+                   }
+           }) {
+            self.expandedProvider = nil
+        }
+    }
+
+    private func rebuildCatalogue() {
+        languageSections = VoiceCatalogue(
+            voices: voicesByIdentifier.values.map {
+                VoiceCatalogueDescriptor(
+                    identifier: $0.identifier,
+                    name: $0.name,
+                    localeIdentifier: $0.language
+                )
+            },
+            selectedVoiceIdentifier: selectedVoiceIdentifier,
+            defaultVoiceIdentifier: defaultVoiceIdentifier,
+            appLocale: currentLocale,
+            displayLocale: currentLocale
+        ).sections
     }
 
     private func voice(withIdentifier identifier: String) -> AVSpeechSynthesisVoice? {
-        (voicesInCurrentLanguage + voicesInOtherLanguages).first { $0.identifier == identifier }
+        voicesByIdentifier[identifier]
     }
 
     private func commitVoiceSelection(_ voice: AVSpeechSynthesisVoice) {
@@ -312,6 +373,7 @@ private final class VoiceSettingsModel: ObservableObject {
         previewingVoiceIdentifier = voice.identifier
         selectedVoiceIdentifier = voice.identifier
         SettingsContext.shared.voiceId = voice.identifier
+        rebuildCatalogue()
 
         AppContext.shared.eventProcessor.hush()
 
@@ -408,7 +470,7 @@ private struct VoiceSettingsSectionHeader: View {
 }
 
 private struct VoiceSettingsVoiceRow: View {
-    let voice: AVSpeechSynthesisVoice
+    let voice: VoiceCatalogueDescriptor
     let subtitle: String
     let isSelected: Bool
     let isPreviewing: Bool
@@ -453,7 +515,7 @@ private struct VoiceSettingsVoiceRow: View {
 
     private var localizedVoiceName: AttributedString {
         var name = AttributedString(voice.name)
-        name.languageIdentifier = voice.language
+        name.languageIdentifier = voice.localeIdentifier
         return name
     }
 
@@ -461,6 +523,52 @@ private struct VoiceSettingsVoiceRow: View {
         var localizedSubtitle = AttributedString(subtitle)
         localizedSubtitle.languageIdentifier = LocalizationContext.currentAppLocale.identifierHyphened
         return localizedSubtitle
+    }
+}
+
+private struct VoiceSettingsProviderRow: View {
+    let title: String
+    let selectedVoice: VoiceCatalogueDescriptor?
+    let isPreviewing: Bool
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .foregroundColor(.primaryForeground)
+                    .accessibleTextFormat()
+
+                if let selectedVoice {
+                    Text(localizedName(selectedVoice))
+                        .font(.caption)
+                        .foregroundColor(.secondaryForeground)
+                        .accessibleTextFormat()
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            if isPreviewing {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .tint(.primaryForeground)
+                    .accessibilityHidden(true)
+            }
+
+            if selectedVoice != nil {
+                Image(systemName: "checkmark")
+                    .foregroundColor(.primaryForeground)
+                    .accessibilityHidden(true)
+            }
+        }
+        .padding(.vertical, 6.0)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(selectedVoice == nil ? [] : .isSelected)
+    }
+
+    private func localizedName(_ voice: VoiceCatalogueDescriptor) -> AttributedString {
+        var name = AttributedString(voice.name)
+        name.languageIdentifier = voice.localeIdentifier
+        return name
     }
 }
 
