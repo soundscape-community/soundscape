@@ -34,7 +34,7 @@ struct VoiceSettingsView: View {
                 voiceSection(section)
             }
         }
-        .voiceSettingsListBackground()
+        .settingsListBackground()
         .background(Color.quaternaryBackground.ignoresSafeArea())
         .listStyle(PlainListStyle())
         .tint(.primaryForeground)
@@ -547,16 +547,5 @@ private struct VoiceSettingsCategoryRow: View {
         var name = AttributedString(voice.name)
         name.languageIdentifier = voice.localeIdentifier
         return name
-    }
-}
-
-private extension View {
-    @ViewBuilder
-    func voiceSettingsListBackground() -> some View {
-        if #available(iOS 16.0, *) {
-            scrollContentBackground(.hidden)
-        } else {
-            self
-        }
     }
 }
