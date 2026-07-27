@@ -88,14 +88,6 @@
             </objects>
             <point key="canvasLocation" x="440" y="-538"/>
         </scene>
-        <!--availableRecreationActivities-->
-        <scene sceneID="Jp7-ts-HAe">
-            <objects>
-                <viewControllerPlaceholder storyboardName="RecreationalActivities" referencedIdentifier="availableRecreationActivities" id="qYh-X2-fJT" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6D8-aX-H2M" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="374" y="-788"/>
-        </scene>
         <!--Beacon View Hosting Controller-->
         <scene sceneID="VbI-NV-Cie">
             <objects>
@@ -352,7 +344,6 @@
                         <segue destination="KdS-rN-o6n" kind="show" identifier="RequestMotionFitness" id="yUo-Mb-Mju"/>
                         <segue destination="Grr-Cc-oJv" kind="presentation" identifier="showStandbyScreen" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="qKv-y2-EwR"/>
                         <segue destination="nmk-Fj-d9J" kind="show" identifier="EnableMotionFitness" id="eBT-M7-MQe"/>
-                        <segue destination="qYh-X2-fJT" kind="show" identifier="ShowRecreationActivities" id="A9K-HT-444"/>
                         <segue destination="2Rp-FL-DpL" kind="show" identifier="ShowManageDevices" id="ybG-P0-eHe"/>
                         <segue destination="f3H-T1-Txl" kind="show" identifier="ShowStatus" id="Vd7-cG-0Ca"/>
                         <segue destination="6K2-3p-ww3" kind="show" identifier="LocationDetailView" id="9hD-GO-Vl6"/>

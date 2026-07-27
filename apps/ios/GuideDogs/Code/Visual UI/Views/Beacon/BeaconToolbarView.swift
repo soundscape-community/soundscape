@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -82,9 +83,10 @@ struct BeaconToolbarView: View {
                 
                 // View details
                 Button(action: {
-                    let storyboard = UIStoryboard(name: "RecreationalActivities", bundle: Bundle.main)
-                    let viewController = storyboard.instantiateViewController(withIdentifier: "RouteDetailsView")
-                    
+                    guard let viewController = RouteDetailsViewHostingController.makeForActiveRoute() else {
+                        return
+                    }
+
                     navHelper.pushViewController(viewController, animated: true)
                 }, label: {
                     Image(systemName: "info.circle.fill")

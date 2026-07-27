@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -31,8 +32,7 @@ struct AnyViewControllerRepresentable: ViewControllerRepresentable {
             sIdentifier = "Help"
             vIdentifier = "OfflinePage"
         case .routeGuidance:
-            sIdentifier = "RecreationalActivities"
-            vIdentifier = "RouteDetailsView"
+            return RouteDetailsViewHostingController.makeForActiveRoute()
         case .manageDevices:
             sIdentifier = "Devices"
             vIdentifier = "manageDevices"
