@@ -301,7 +301,10 @@ private final class VoiceSettingsModel: ObservableObject {
 
     private func reloadVoices() {
         let voices = TTSConfigHelper.loadVoices()
-        voicesByIdentifier = Dictionary(uniqueKeysWithValues: voices.map { ($0.identifier, $0) })
+        voicesByIdentifier = Dictionary(
+            voices.map { ($0.identifier, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
         rebuildCatalogue()
 
         if let expandedCategory,
