@@ -38,19 +38,8 @@ struct TTSConfigHelper {
     }
         
     static func loadVoices() -> [AVSpeechSynthesisVoice] {
-        let availableVoices = AVSpeechSynthesisVoice.speechVoices().filter({ !self.disallowedVoices.contains($0.identifier) })
-        let enhancedVoiceIdStubs: [String] = availableVoices.compactMap { $0.quality == .enhanced ? $0.identifier.replacingOccurrences(of: "premium", with: "") : nil }
-        let currentIdentifier = SettingsContext.shared.voiceId
-        
-        // Condense the list of voices such that we keep only the enhanced version if both an enhanced and default version exist
-        return availableVoices.filter { (voice) -> Bool in
-            // Keep all enhanced quality voices
-            guard voice.quality == .default, voice.identifier != currentIdentifier else {
-                return true
-            }
-            
-            // Remove any default quality voices which matching enhanced voices
-            return !enhancedVoiceIdStubs.contains(voice.identifier.replacingOccurrences(of: "compact", with: ""))
+        AVSpeechSynthesisVoice.speechVoices().filter {
+            !disallowedVoices.contains($0.identifier)
         }
     }
 }
