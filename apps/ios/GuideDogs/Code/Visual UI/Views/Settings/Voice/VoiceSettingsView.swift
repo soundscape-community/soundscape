@@ -82,18 +82,44 @@ struct VoiceSettingsView: View {
                 voiceButton(voice)
             }
 
+            if !section.noveltyVoices.isEmpty {
+                DisclosureGroup(
+                    isExpanded: model.isExpandedBinding(
+                        localeIdentifier: section.localeIdentifier,
+                        group: .novelty
+                    )
+                ) {
+                    ForEach(section.noveltyVoices) { voice in
+                        voiceButton(voice)
+                    }
+                } label: {
+                    VoiceSettingsCategoryRow(
+                        title: GDLocalizedString("voice.settings.novelty"),
+                        selectedVoice: section.noveltyVoices.first {
+                            $0.identifier == model.selectedVoiceIdentifier
+                        },
+                        isPreviewing: section.noveltyVoices.contains {
+                            $0.identifier == model.previewingVoiceIdentifier
+                        }
+                    )
+                }
+                .tint(.primaryForeground)
+                .listRowBackground(Color.primaryBackground)
+                .listRowSeparatorTint(Color.secondaryBackground)
+            }
+
             ForEach(section.providerSections) { providerSection in
                 DisclosureGroup(
                     isExpanded: model.isExpandedBinding(
                         localeIdentifier: section.localeIdentifier,
-                        provider: providerSection.provider
+                        group: .provider(providerSection.provider)
                     )
                 ) {
                     ForEach(providerSection.voices) { voice in
                         voiceButton(voice)
                     }
                 } label: {
-                    VoiceSettingsProviderRow(
+                    VoiceSettingsCategoryRow(
                         title: model.title(for: providerSection.provider),
                         selectedVoice: providerSection.selectedVoice(
                             identifier: model.selectedVoiceIdentifier
@@ -158,7 +184,7 @@ private final class VoiceSettingsModel: ObservableObject {
     @Published private(set) var previewingVoiceIdentifier: String?
     @Published private(set) var pendingEnhancedVoiceIdentifier: String?
     @Published private(set) var voiceToFocus: String?
-    @Published private(set) var expandedProvider: VoiceCatalogueProviderExpansion?
+    @Published private(set) var expandedCategory: VoiceCatalogueExpansion?
     @Published var speakingRate: Float
 
     private let currentLocale = LocalizationContext.currentAppLocale
@@ -168,6 +194,7 @@ private final class VoiceSettingsModel: ObservableObject {
     private var isScreenVisible = false
     private var previewTask: Task<Void, Never>?
     private var rateAnnouncementTask: Task<Void, Never>?
+    private var displayedLocaleOrder: [String]?
 
     var additionalVoicesGuidance: String {
         "\(GDLocalizedString("voice.apple.additional")) \(GDLocalizedString("voice.apple.no_siri"))"
@@ -298,17 +325,17 @@ private final class VoiceSettingsModel: ObservableObject {
 
     func isExpandedBinding(
         localeIdentifier: String,
-        provider: VoiceCatalogueProviderGroup
+        group: VoiceCatalogueCollapsedGroup
     ) -> Binding<Bool> {
-        let expansion = VoiceCatalogueProviderExpansion(
+        let expansion = VoiceCatalogueExpansion(
             localeIdentifier: localeIdentifier,
-            provider: provider
+            group: group
         )
 
         return Binding(
-            get: { self.expandedProvider == expansion },
+            get: { self.expandedCategory == expansion },
             set: { isExpanded in
-                self.expandedProvider = isExpanded ? expansion : nil
+                self.expandedCategory = isExpanded ? expansion : nil
             }
         )
     }
@@ -334,31 +361,41 @@ private final class VoiceSettingsModel: ObservableObject {
         voicesByIdentifier = Dictionary(uniqueKeysWithValues: voices.map { ($0.identifier, $0) })
         rebuildCatalogue()
 
-        if let expandedProvider,
+        if let expandedCategory,
            !languageSections.contains(where: { section in
-               section.localeIdentifier == expandedProvider.localeIdentifier
-                   && section.providerSections.contains {
-                       $0.provider == expandedProvider.provider
-                   }
+               guard section.localeIdentifier == expandedCategory.localeIdentifier else {
+                   return false
+               }
+
+               switch expandedCategory.group {
+               case .novelty:
+                   return !section.noveltyVoices.isEmpty
+               case let .provider(provider):
+                   return section.providerSections.contains { $0.provider == provider }
+               }
            }) {
-            self.expandedProvider = nil
+            self.expandedCategory = nil
         }
     }
 
     private func rebuildCatalogue() {
-        languageSections = VoiceCatalogue(
+        let sections = VoiceCatalogue(
             voices: voicesByIdentifier.values.map {
                 VoiceCatalogueDescriptor(
                     identifier: $0.identifier,
                     name: $0.name,
-                    localeIdentifier: $0.language
+                    localeIdentifier: $0.language,
+                    isNovelty: $0.isNoveltyVoice
                 )
             },
             selectedVoiceIdentifier: selectedVoiceIdentifier,
             defaultVoiceIdentifier: defaultVoiceIdentifier,
             appLocale: currentLocale,
-            displayLocale: currentLocale
+            displayLocale: currentLocale,
+            preservedLocaleOrder: displayedLocaleOrder
         ).sections
+        languageSections = sections
+        displayedLocaleOrder = sections.map(\.localeIdentifier)
     }
 
     private func voice(withIdentifier identifier: String) -> AVSpeechSynthesisVoice? {
@@ -526,7 +563,7 @@ private struct VoiceSettingsVoiceRow: View {
     }
 }
 
-private struct VoiceSettingsProviderRow: View {
+private struct VoiceSettingsCategoryRow: View {
     let title: String
     let selectedVoice: VoiceCatalogueDescriptor?
     let isPreviewing: Bool

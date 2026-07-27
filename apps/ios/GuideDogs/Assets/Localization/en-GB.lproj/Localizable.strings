@@ -511,6 +511,9 @@
 /*  */
 "voice.settings.other_voices" = "Other Voices";
 
+/*  */
+"voice.settings.novelty" = "Novelty";
+
 
 /*  */
 "voice.voices" = "Voices";

@@ -455,6 +455,9 @@
 /* Label for a collapsed group containing voices from providers other than Eloquence and eSpeak */
 "voice.settings.other_voices" = "Other Voices";
 
+/* Label for the collapsed group containing novelty speech voices */
+"voice.settings.novelty" = "Novelty";
+
 /* Screen title to select a speech voice to for use. */
 "voice.voices" = "Voices";
 

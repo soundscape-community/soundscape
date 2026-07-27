@@ -12,6 +12,19 @@ struct VoiceCatalogueDescriptor: Equatable, Identifiable {
     let identifier: String
     let name: String
     let localeIdentifier: String
+    let isNovelty: Bool
+
+    init(
+        identifier: String,
+        name: String,
+        localeIdentifier: String,
+        isNovelty: Bool = false
+    ) {
+        self.identifier = identifier
+        self.name = name
+        self.localeIdentifier = localeIdentifier
+        self.isNovelty = isNovelty
+    }
 
     var id: String {
         identifier
@@ -71,6 +84,7 @@ struct VoiceCatalogueLanguageSection: Equatable, Identifiable {
     let localeIdentifier: String
     let title: String
     let standardVoices: [VoiceCatalogueDescriptor]
+    let noveltyVoices: [VoiceCatalogueDescriptor]
     let providerSections: [VoiceCatalogueProviderSection]
 
     var id: String {
@@ -78,13 +92,18 @@ struct VoiceCatalogueLanguageSection: Equatable, Identifiable {
     }
 
     var allVoices: [VoiceCatalogueDescriptor] {
-        standardVoices + providerSections.flatMap(\.voices)
+        standardVoices + noveltyVoices + providerSections.flatMap(\.voices)
     }
 }
 
-struct VoiceCatalogueProviderExpansion: Equatable {
+enum VoiceCatalogueCollapsedGroup: Equatable {
+    case novelty
+    case provider(VoiceCatalogueProviderGroup)
+}
+
+struct VoiceCatalogueExpansion: Equatable {
     let localeIdentifier: String
-    let provider: VoiceCatalogueProviderGroup
+    let group: VoiceCatalogueCollapsedGroup
 }
 
 struct VoiceCatalogue {
@@ -95,7 +114,8 @@ struct VoiceCatalogue {
         selectedVoiceIdentifier: String?,
         defaultVoiceIdentifier: String?,
         appLocale: Locale,
-        displayLocale: Locale
+        displayLocale: Locale,
+        preservedLocaleOrder: [String]? = nil
     ) {
         let groupedVoices = Dictionary(grouping: voices) {
             Self.canonicalLocaleIdentifier($0.localeIdentifier)
@@ -107,12 +127,20 @@ struct VoiceCatalogue {
             appLocale: appLocale
         )
 
+        let localeOrder = preservedLocaleOrder.map {
+            Dictionary(uniqueKeysWithValues: $0.enumerated().map { ($1, $0) })
+        }
+
         sections = groupedVoices.map { localeIdentifier, voices in
             let sortedVoices = voices.sorted {
                 Self.voiceIsOrderedBefore($0, $1, locale: displayLocale)
             }
+            let separatesNoveltyVoices = localeIdentifier == "en-US"
             let providerSections = VoiceCatalogueProviderGroup.allCases.compactMap { provider in
-                let providerVoices = sortedVoices.filter { $0.providerGroup == provider }
+                let providerVoices = sortedVoices.filter {
+                    $0.providerGroup == provider
+                        && (!separatesNoveltyVoices || !$0.isNovelty)
+                }
                 return providerVoices.isEmpty
                     ? nil
                     : VoiceCatalogueProviderSection(provider: provider, voices: providerVoices)
@@ -122,11 +150,34 @@ struct VoiceCatalogue {
                 localeIdentifier: localeIdentifier,
                 title: displayLocale.localizedString(forIdentifier: localeIdentifier)
                     ?? Locale(identifier: localeIdentifier).localizedDescription(with: displayLocale),
-                standardVoices: sortedVoices.filter { $0.providerGroup == nil },
+                standardVoices: sortedVoices.filter {
+                    $0.providerGroup == nil
+                        && (!separatesNoveltyVoices || !$0.isNovelty)
+                },
+                noveltyVoices: separatesNoveltyVoices
+                    ? sortedVoices.filter(\.isNovelty)
+                    : [],
                 providerSections: providerSections
             )
         }
         .sorted {
+            if let localeOrder {
+                let lhsIndex = localeOrder[$0.localeIdentifier]
+                let rhsIndex = localeOrder[$1.localeIdentifier]
+
+                if let lhsIndex, let rhsIndex, lhsIndex != rhsIndex {
+                    return lhsIndex < rhsIndex
+                }
+
+                if lhsIndex != nil, rhsIndex == nil {
+                    return true
+                }
+
+                if lhsIndex == nil, rhsIndex != nil {
+                    return false
+                }
+            }
+
             if $0.localeIdentifier == selectedLocaleIdentifier {
                 return true
             }
