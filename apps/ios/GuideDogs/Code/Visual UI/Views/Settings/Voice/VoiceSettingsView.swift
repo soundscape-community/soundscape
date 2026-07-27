@@ -11,7 +11,6 @@ import SwiftUI
 
 struct VoiceSettingsView: View {
     @StateObject private var model = VoiceSettingsModel()
-    @AccessibilityFocusState private var focusedVoiceIdentifier: String?
 
     var body: some View {
         List {
@@ -46,34 +45,6 @@ struct VoiceSettingsView: View {
         .onReceive(NotificationCenter.default.publisher(for: .appWillEnterForeground)) { _ in
             model.appWillEnterForeground()
         }
-        .onChange(of: model.voiceToFocus) { voiceIdentifier in
-            focusedVoiceIdentifier = voiceIdentifier
-        }
-        .alert(
-            GDLocalizedString("voice.settings.enhanced_available.title"),
-            isPresented: isShowingEnhancedVoiceAlert
-        ) {
-            Button(GDLocalizedString("voice.settings.enhanced_available.button")) {
-                model.confirmEnhancedVoiceSelection()
-            }
-
-            Button(GDLocalizedString("general.alert.cancel"), role: .cancel) {
-                model.cancelEnhancedVoiceSelection()
-            }
-        } message: {
-            Text(GDLocalizedString("voice.settings.enhanced_available"))
-        }
-    }
-
-    private var isShowingEnhancedVoiceAlert: Binding<Bool> {
-        Binding(
-            get: { model.pendingEnhancedVoiceIdentifier != nil },
-            set: { isPresented in
-                if !isPresented {
-                    model.cancelEnhancedVoiceSelection()
-                }
-            }
-        )
     }
 
     private func voiceSection(_ section: VoiceCatalogueLanguageSection) -> some View {
@@ -148,7 +119,6 @@ struct VoiceSettingsView: View {
             )
         }
         .buttonStyle(.plain)
-        .accessibilityFocused($focusedVoiceIdentifier, equals: voice.identifier)
         .listRowBackground(Color.primaryBackground)
         .listRowSeparatorTint(Color.secondaryBackground)
     }
@@ -182,8 +152,6 @@ private final class VoiceSettingsModel: ObservableObject {
     @Published private(set) var selectedVoiceIdentifier: String?
     @Published private(set) var defaultVoiceIdentifier: String?
     @Published private(set) var previewingVoiceIdentifier: String?
-    @Published private(set) var pendingEnhancedVoiceIdentifier: String?
-    @Published private(set) var voiceToFocus: String?
     @Published private(set) var expandedCategory: VoiceCatalogueExpansion?
     @Published var speakingRate: Float
 
@@ -258,32 +226,7 @@ private final class VoiceSettingsModel: ObservableObject {
             return
         }
 
-        guard voice.hasEnhancedVersion(), selectedVoiceIdentifier != voice.identifier else {
-            commitVoiceSelection(voice)
-            return
-        }
-
-        guard !voice.hasEnhancedVersionDownloaded() else {
-            commitVoiceSelection(voice)
-            return
-        }
-
-        pendingEnhancedVoiceIdentifier = voice.identifier
-    }
-
-    func confirmEnhancedVoiceSelection() {
-        guard let identifier = pendingEnhancedVoiceIdentifier,
-              let voice = voice(withIdentifier: identifier) else {
-            pendingEnhancedVoiceIdentifier = nil
-            return
-        }
-
-        pendingEnhancedVoiceIdentifier = nil
         commitVoiceSelection(voice)
-    }
-
-    func cancelEnhancedVoiceSelection() {
-        pendingEnhancedVoiceIdentifier = nil
     }
 
     func speakingRateEditingChanged(_ isEditing: Bool) {
@@ -405,7 +348,6 @@ private final class VoiceSettingsModel: ObservableObject {
     private func commitVoiceSelection(_ voice: AVSpeechSynthesisVoice) {
         previewTask?.cancel()
         rateAnnouncementTask?.cancel()
-        voiceToFocus = nil
         defaultVoiceIdentifier = nil
         previewingVoiceIdentifier = voice.identifier
         selectedVoiceIdentifier = voice.identifier
@@ -446,8 +388,6 @@ private final class VoiceSettingsModel: ObservableObject {
         }
 
         previewingVoiceIdentifier = nil
-        voiceToFocus = identifier
-        GDLogAppVerbose("Updated VO focus on selected voice")
     }
 
     private func announceSpeakingRateTest() {
@@ -484,8 +424,6 @@ private final class VoiceSettingsModel: ObservableObject {
         previewTask = nil
         rateAnnouncementTask?.cancel()
         rateAnnouncementTask = nil
-        pendingEnhancedVoiceIdentifier = nil
-        voiceToFocus = nil
 
         if previewingVoiceIdentifier != nil {
             previewingVoiceIdentifier = nil
