@@ -24,18 +24,6 @@ Open Xcode and you should be prompted with installing the command line tools, or
 xcode-select --install
 ```
 
-## Install Fastlane (optional)
-
-Installing Fastlane requires a [Ruby](https://www.ruby-lang.org/) installation.
-
-> __Note:__ while macOS comes with a version of Ruby installed, you should install and use a non-system [Ruby](https://www.ruby-lang.org/) using a version manager like [RVM](https://rvm.io/)
-
-In the iOS project folder `apps/ios`, run the following command to install the dependencies from the `Gemfile`:
-
-```sh
-bundle install
-```
-
 ## Opening the Project
 
 At this point, you can open the `GuideDogs.xcworkspace` file, which is the main entry point to the Xcode project.
