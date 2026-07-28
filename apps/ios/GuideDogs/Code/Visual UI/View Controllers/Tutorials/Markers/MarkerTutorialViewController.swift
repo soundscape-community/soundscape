@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -16,9 +17,12 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     
     // MARK: Types
     
-    private struct Segues {
-        static let showAddMarker = "showAddMarker"
-        static let showSetAudioBeacon = "showSetAudioBeacon"
+    private struct MarkerTutorialPage {
+        let title: String
+        let image: UIImage
+        let text: String
+        let buttonTitle: String?
+        let action: MarkerTutorialAction?
     }
     
     private struct PageIndexes {
@@ -31,48 +35,47 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     
     // MARK: Properties
 
-    private let tutorial = Tutorial(pages: [
+    private let tutorial = [
         // Intro
-        Page(title: GDLocalizedString("tutorial.markers.getting_started"),
-             image: UIImage(named: "Markers tutorial - 01")!,
-             text: GDLocalizedString("tutorial.markers.text.Intro"),
-             buttonTitle: GDLocalizedString("tutorial.markers.add_marker"),
-             buttonAction: #selector(addMarkerAction)),
+        MarkerTutorialPage(title: GDLocalizedString("tutorial.markers.getting_started"),
+                           image: UIImage(named: "Markers tutorial - 01")!,
+                           text: GDLocalizedString("tutorial.markers.text.Intro"),
+                           buttonTitle: GDLocalizedString("tutorial.markers.add_marker"),
+                           action: .addMarker),
         
         // Edit Marker
-        Page(title: GDLocalizedString("tutorial.markers.mark_your_world"),
-             image: UIImage(named: "Markers tutorial - 02")!,
-             text: GDLocalizedString("tutorial.markers.text.EditMarker"),
-             buttonTitle: nil,
-             buttonAction: nil),
-        Page(title: GDLocalizedString("tutorial.markers.mark_your_world"),
-             image: UIImage(named: "Markers tutorial - 02")!,
-             text: GDLocalizationUnnecessary("placeholder_page_for_select_marker_screen"),
-             buttonTitle: nil,
-             buttonAction: nil),
+        MarkerTutorialPage(title: GDLocalizedString("tutorial.markers.mark_your_world"),
+                           image: UIImage(named: "Markers tutorial - 02")!,
+                           text: GDLocalizedString("tutorial.markers.text.EditMarker"),
+                           buttonTitle: nil,
+                           action: nil),
+        MarkerTutorialPage(title: GDLocalizedString("tutorial.markers.mark_your_world"),
+                           image: UIImage(named: "Markers tutorial - 02")!,
+                           text: GDLocalizationUnnecessary("placeholder_page_for_select_marker_screen"),
+                           buttonTitle: nil,
+                           action: nil),
 
         // Nearby Markers
-        Page(title: GDLocalizedString("tutorial.markers.experience_your_world"),
-             image: UIImage(named: "Markers tutorial - 04")!,
-             text: GDLocalizedString("tutorial.markers.text.NearbyMarkers"),
-             buttonTitle: GDLocalizedString("callouts.nearby_markers"),
-             buttonAction: #selector(nearbyMarkersAction)),
+        MarkerTutorialPage(title: GDLocalizedString("tutorial.markers.experience_your_world"),
+                           image: UIImage(named: "Markers tutorial - 04")!,
+                           text: GDLocalizedString("tutorial.markers.text.NearbyMarkers"),
+                           buttonTitle: GDLocalizedString("callouts.nearby_markers"),
+                           action: .nearbyMarkers),
         
         // Audio Beacon
-        Page(title: GDLocalizedString("tutorial.markers.experience_your_world"),
-             image: UIImage(named: "Markers tutorial - 04")!,
-             text: GDLocalizedString("tutorial.markers.text.AudioBeacon"),
-             buttonTitle: nil,
-             buttonAction: nil),
+        MarkerTutorialPage(title: GDLocalizedString("tutorial.markers.experience_your_world"),
+                           image: UIImage(named: "Markers tutorial - 04")!,
+                           text: GDLocalizedString("tutorial.markers.text.AudioBeacon"),
+                           buttonTitle: nil,
+                           action: nil),
         
         // Wrap Up
-        Page(title: GDLocalizedString("tutorial.markers.experience_your_world"),
-             image: UIImage(named: "Markers tutorial - 05")!,
-             text: GDLocalizedString("tutorial.markers.text.WrapUp"),
-             buttonTitle: nil,
-             buttonAction: nil)
-        ]
-    )
+        MarkerTutorialPage(title: GDLocalizedString("tutorial.markers.experience_your_world"),
+                           image: UIImage(named: "Markers tutorial - 05")!,
+                           text: GDLocalizedString("tutorial.markers.text.WrapUp"),
+                           buttonTitle: nil,
+                           action: nil)
+    ]
     
     // These page indexes represents pages that text should be delayed to accommodate VoiceOver callouts
     private var pageIndexesForVoiceOverDelayedPlay: [Int] {
@@ -89,16 +92,8 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     
     var player: FadeableAudioPlayer?
     private var presentedAlertController: UIAlertController?
-
-    // UI Outlets
-    
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var headTitle: UILabel!
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var actionButton: UIButton!
-    @IBOutlet weak var exitButton: UIButton!
-    @IBOutlet weak var actionButtonLabel: UILabel!
-    var scrollViewBottomConstraint: NSLayoutConstraint?
+    private let viewState = MarkerTutorialViewState(exitTitle: GDLocalizedString("tutorial.skip"))
+    private var hostingController: UIHostingController<MarkerTutorialView>?
     
     // Tutorial state properties
     
@@ -111,9 +106,50 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     private var didSetAudioBeacon = false
 
     /// Used for telemetry to identify the context (source) of the viewing this screen
-    var logContext: String?
+    private(set) var logContext: String?
+
+    // MARK: Initialization
+
+    init(logContext: String? = nil) {
+        self.logContext = logContext
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
 
     // MARK: Lifecycle
+
+    override func loadView() {
+        let rootView = MarkerTutorialView(
+            state: viewState,
+            onAction: { [weak self] action in
+                self?.perform(action)
+            },
+            onExit: { [weak self] in
+                self?.tryExitTutorial()
+            }
+        )
+        let hostingController = UIHostingController(rootView: rootView)
+
+        addChild(hostingController)
+        view = UIView()
+        view.backgroundColor = UIColor(red: 36.0 / 255.0,
+                                       green: 58.0 / 255.0,
+                                       blue: 102.0 / 255.0,
+                                       alpha: 1)
+        view.addSubview(hostingController.view)
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        hostingController.didMove(toParent: self)
+        self.hostingController = hostingController
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -127,12 +163,6 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         toggleAppCalloutsOff()
         clearView()
         started = true
-        headTitle.isAccessibilityElement = true
-        pageTextLabel.isAccessibilityElement = true
-        
-        exitButton.setTitle(GDLocalizedString("tutorial.skip"), for: .normal)
-        
-        configureScrollViewBottomConstraint()
         
         GDATelemetry.trackScreenView("tutorial.markers", with: logContext == nil ? nil : ["context": logContext!])
         
@@ -209,6 +239,16 @@ class MarkerTutorialViewController: BaseTutorialViewController {
 
         super.stop()
     }
+
+    override internal func updatePageText(_ text: String) {
+        DispatchQueue.main.async { [weak self] in
+            guard self?.viewState.text != text else {
+                return
+            }
+
+            self?.viewState.updateText(text)
+        }
+    }
     
     // MARK: Tutorial Flow
 
@@ -227,29 +267,31 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     }
     
     private func showPage(with index: UInt) {
-        guard index <= tutorial.pages.count else {
+        guard index < tutorial.count else {
             return
         }
         
         currentPageIndex = index
         
-        show(page: tutorial.pages[Int(index)])
+        show(page: tutorial[Int(index)])
     }
     
-    private func show(page: Page) {
+    private func show(page: MarkerTutorialPage) {
         if currentPageIndex! == PageIndexes.editMarker {
             editMarkerAction()
             return
         }
         
         DispatchQueue.main.async {
-            self.headTitle.text = page.title
-            self.imageView.image = page.image
+            self.viewState.show(title: page.title,
+                                image: page.image,
+                                text: nil,
+                                actionTitle: page.buttonTitle,
+                                action: page.action,
+                                hidesContentFromAccessibility: self.currentPageIndex != UInt(PageIndexes.intro))
         }
-        changeActionButton(with: page.buttonTitle, action: page.buttonAction)
 
         if page.buttonTitle == nil {
-            hideActionButton(true)
             UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: nil)
         } else if currentPageIndex! == PageIndexes.intro {
             // Clear destination if needed
@@ -258,21 +300,16 @@ class MarkerTutorialViewController: BaseTutorialViewController {
             // Hush speech or beacon if playing
             AppContext.shared.eventProcessor.hush(playSound: false)
             
-            hideActionButton(false)
-            actionButton.showAnimated { [weak self] (_) in
+            DispatchQueue.main.async { [weak self] in
+                self?.viewState.revealAction()
                 UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: nil)
-                self?.configureScrollViewBottomConstraint()
             }
-            actionButtonLabel.showAnimated()
         }
         
         guard let currentPageIndex = currentPageIndex, currentPageIndex > 0 else {
             updatePageText(page.text)
             return
         }
-        
-        headTitle.isAccessibilityElement = false
-        pageTextLabel.isAccessibilityElement = false
         
         playMusic()
 
@@ -282,7 +319,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         let shouldDelayTextPlay = UIAccessibility.isVoiceOverRunning && pageIndexesForVoiceOverDelayedPlay.contains(Int(currentPageIndex))
         if shouldDelayTextPlay {
             // Clear current text before delay
-            self.pageTextLabel.text = nil
+            self.viewState.updateText(nil)
         }
         
         play(delay: shouldDelayTextPlay ? 1.5 : 0.0, text: page.text) { [weak self] (_) in
@@ -303,11 +340,10 @@ class MarkerTutorialViewController: BaseTutorialViewController {
             if page.buttonTitle == nil {
                 self.showNextPage()
             } else {
-                self.actionButton.showAnimated { [weak self] (_) in
-                    UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: self?.actionButton)
-                    self?.configureScrollViewBottomConstraint()
+                DispatchQueue.main.async { [weak self] in
+                    self?.viewState.revealAction()
+                    UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: nil)
                 }
-                self.actionButtonLabel.showAnimated()
             }
         }
     }
@@ -336,18 +372,34 @@ class MarkerTutorialViewController: BaseTutorialViewController {
 
     private func hasFinishedTutorial() -> Bool {
         guard let currentPageIndex = currentPageIndex else { return false }
-        return currentPageIndex == tutorial.pages.count - 1
+        return currentPageIndex == tutorial.count - 1
     }
     
     // MARK: UI Actions
-    
-    @objc func addMarkerAction() {
+
+    private func perform(_ action: MarkerTutorialAction) {
+        switch action {
+        case .addMarker:
+            addMarkerAction()
+        case .nearbyMarkers:
+            nearbyMarkersAction()
+        }
+    }
+
+    private func addMarkerAction() {
         GDATelemetry.track("tutorial.markers.add_marker")
 
-        self.performSegue(withIdentifier: Segues.showAddMarker, sender: nil)
+        let storyboard = UIStoryboard(name: "POITable", bundle: .main)
+        guard let viewController = storyboard.instantiateInitialViewController() as? SearchTableViewController else {
+            GDLogAppError("Marker tutorial: unable to load POI table.")
+            return
+        }
+
+        viewController.delegate = self
+        navigationController?.pushViewController(viewController, animated: true)
     }
     
-    @objc func editMarkerAction() {
+    private func editMarkerAction() {
         let detail: LocationDetail
             
         if let referenceEntity = referenceEntity {
@@ -368,7 +420,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         }
     }
     
-    @objc func nearbyMarkersAction() {
+    private func nearbyMarkersAction() {
         guard !pressedNearbyMarkers else {
             return
         }
@@ -387,10 +439,6 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         AppContext.process(event)
     }
     
-    @objc func audioBeaconAction() {
-        self.performSegue(withIdentifier: Segues.showSetAudioBeacon, sender: nil)
-    }
-    
     private func presentExitAlert() {
         let alert = UIAlertController(title: GDLocalizedString("tutorial.exit.alert_title"),
                                       message: nil,
@@ -407,8 +455,8 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         presentedAlertController = alert
     }
     
-    @IBAction func tryExitTutorial() {
-        if currentPageIndex! == PageIndexes.intro {
+    private func tryExitTutorial() {
+        if currentPageIndex == UInt(PageIndexes.intro) {
             // Do not present alert if user is on the intro page
             exitTutorial()
         } else {
@@ -450,43 +498,8 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         }
     }
     
-    // MARK: UI Changes
-    
-    private func changeActionButton(with title: String?, action: Selector?) {
-        actionButtonLabel.text = title
-        actionButton.accessibilityLabel = title
-        
-        // Remove all assosiated actions
-        self.actionButton.removeTarget(nil, action: nil, for: .allEvents)
-        
-        // Add new action
-        if let action = action {
-            self.actionButton.addTarget(self, action: action, for: .touchUpInside)
-        }
-    }
-    
-    private func hideActionButton(_ hide: Bool) {
-        actionButton.isHidden = hide
-        actionButtonLabel.isHidden = hide
-
-        configureScrollViewBottomConstraint()
-    }
-    
-    private func configureScrollViewBottomConstraint() {
-        if actionButton.isHidden, let constraint = scrollViewBottomConstraint {
-            constraint.isActive = false
-        } else {
-            scrollViewBottomConstraint = scrollView.bottomAnchor.constraint(equalTo: actionButton.topAnchor, constant: -12)
-            scrollViewBottomConstraint!.isActive = true
-        }
-    }
-    
     private func clearView() {
-        headTitle.text = nil
-        imageView.image = nil
-        pageTextLabel.text = nil
-        hideActionButton(true)
-        changeActionButton(with: nil, action: nil)
+        viewState.clear()
     }
     
     // MARK: Audio Beacon
@@ -528,23 +541,6 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         }
     }
     
-    // MARK: Navigation
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-
-        if let vc = segue.destination as? SearchTableViewController {
-            vc.delegate = self
-        }
-    }
-    
-    @IBAction func unwindToMarkerTutorial(segue: UIStoryboardSegue) {
-        // TODO: How should this be handled without the unwind segue occurring anymore
-//        if segue.source is EditMarkerViewHostViewController {
-//            markerEdited = referenceEntity != nil
-//        }
-    }
-
 }
 
 // MARK: POITableViewDelegate

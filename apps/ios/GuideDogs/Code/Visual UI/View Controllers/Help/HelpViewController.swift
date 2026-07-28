@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -272,7 +273,6 @@ class HelpViewController: BaseTableViewController {
         static let OpenHelpPage = "OpenHelpPage"
         static let OpenGenericHelpPage = "OpenGenericHelpPage"
         static let OpenDestinationTutorial = "destinationTutorial"
-        static let OpenMarkerTutorial = "markerTutorial"
         static let OpenOfflinePage = "showOfflineInfo"
     }
     
@@ -414,7 +414,8 @@ class HelpViewController: BaseTableViewController {
             if indexPath.row == Row.destinations {
                 performSegue(withIdentifier: Segues.OpenDestinationTutorial, sender: self)
             } else if indexPath.row == Row.markers {
-                performSegue(withIdentifier: Segues.OpenMarkerTutorial, sender: self)
+                let viewController = MarkerTutorialViewController(logContext: "help_screen")
+                navigationController?.pushViewController(viewController, animated: true)
             }
             
         default:
@@ -487,9 +488,6 @@ class HelpViewController: BaseTableViewController {
             
         case let destinationVC as DestinationTutorialIntroViewController:
             destinationVC.logContext = "help_screen"
-            
-        case let markerVC as MarkerTutorialViewController:
-            markerVC.logContext = "help_screen"
             
         default:
             return

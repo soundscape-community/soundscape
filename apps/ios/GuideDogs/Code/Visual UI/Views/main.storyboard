@@ -146,14 +146,6 @@
             </objects>
             <point key="canvasLocation" x="376" y="-493"/>
         </scene>
-        <!--MarkerTutorialViewController-->
-        <scene sceneID="0xe-KD-lHI">
-            <objects>
-                <viewControllerPlaceholder storyboardName="MarkerTutorial" referencedIdentifier="MarkerTutorialViewController" id="qek-OV-8Qp" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="wkj-Wn-cWW" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="376" y="-122"/>
-        </scene>
         <!--DestinationTutorialIntroViewController-->
         <scene sceneID="abw-Ca-PQh">
             <objects>
@@ -339,7 +331,6 @@
                         <segue destination="pfC-Pn-ECg" kind="show" identifier="ShowDestinationTutorialSegue" id="0Ic-V1-UiT"/>
                         <segue destination="Vxc-X8-GjU" kind="show" identifier="toSelectDestination" id="HBj-gn-sh2"/>
                         <segue destination="jZ0-AP-7FI" kind="show" identifier="AuthorizeMotionFitness" id="syg-Dz-JPd"/>
-                        <segue destination="qek-OV-8Qp" kind="show" identifier="ShowMarkerTutorialSegue" id="MTq-zo-ZtK"/>
                         <segue destination="xdo-Jj-rtT" kind="show" identifier="RequestLocationServices" id="lzr-95-5fE"/>
                         <segue destination="KdS-rN-o6n" kind="show" identifier="RequestMotionFitness" id="yUo-Mb-Mju"/>
                         <segue destination="Grr-Cc-oJv" kind="presentation" identifier="showStandbyScreen" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="qKv-y2-EwR"/>

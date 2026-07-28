@@ -428,8 +428,6 @@ class HomeViewController: UIViewController {
         } else if let vc = segue.destination as? DestinationTutorialIntroViewController {
             vc.source = self
             vc.logContext = telemetryContext
-        } else if let vc = segue.destination as? MarkerTutorialViewController {
-            vc.logContext = telemetryContext
         } else if let vc = segue.destination as? StandbyViewController {
             vc.delegate = self
         } else if let vc = segue.destination as? LocationDetailViewController {
