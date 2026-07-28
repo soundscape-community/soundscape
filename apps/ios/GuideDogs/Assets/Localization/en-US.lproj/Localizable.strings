@@ -3808,3 +3808,43 @@
 
 /* Describe feature for automatically reversing a route. Quotes written as \" */
 "faq.tip.reverse_route" = "Selecting \"Start Reversed Route\" from the \"Route Details\" screen allows you to take a route in reverse, and it saves a copy of the route with the waypoints in reverse order. Note that \"Start Reversed Route\" will not save another copy of the same route if it's already saved.";
+
+// MARK: GPX Recording
+
+"gpx_recording.title" = "GPX Recording";
+"gpx_recording.explanation" = "Record your journey as a GPX file. Recording continues while you use other parts of Soundscape and while the app is in the background. It pauses during Sleep or Snooze and resumes when Soundscape wakes.";
+"gpx_recording.status" = "Status";
+"gpx_recording.status.loading" = "Loading";
+"gpx_recording.status.idle" = "Not recording";
+"gpx_recording.status.starting" = "Starting";
+"gpx_recording.status.recording" = "Recording";
+"gpx_recording.status.paused" = "Paused during Sleep or Snooze";
+"gpx_recording.status.awaiting_name" = "Ready to save";
+"gpx_recording.status.saving" = "Saving";
+"gpx_recording.status.recovered" = "Interrupted recording recovered";
+"gpx_recording.point_count" = "%d recorded points";
+"gpx_recording.start" = "Start recording";
+"gpx_recording.stop" = "Stop recording";
+"gpx_recording.saved" = "Saved recordings";
+"gpx_recording.saved.empty" = "No saved recordings";
+"gpx_recording.storage.icloud" = "iCloud Drive";
+"gpx_recording.storage.local" = "On My iPhone";
+"gpx_recording.share.hint" = "Shares this GPX recording";
+"gpx_recording.name.title" = "Name Recording";
+"gpx_recording.name.prompt" = "Enter a unique file name";
+"gpx_recording.name" = "Recording name";
+"gpx_recording.save" = "Save";
+"gpx_recording.discard" = "Discard";
+"gpx_recording.discard.confirm" = "Discard this recording? This cannot be undone.";
+"gpx_recording.recover.save" = "Name and save recording";
+"gpx_recording.save_options" = "iCloud save failed";
+"gpx_recording.retry_icloud" = "Retry iCloud Drive";
+"gpx_recording.save_local" = "Save On My iPhone";
+"gpx_recording.error.no_points" = "No location points have been recorded yet.";
+"gpx_recording.error.invalid_name" = "Enter a safe file name without slashes, colons, or a trailing period.";
+"gpx_recording.error.duplicate_name" = "A recording with this name already exists.";
+"gpx_recording.error.draft_unavailable" = "The protected recording draft could not be opened.";
+"gpx_recording.error.icloud_unavailable" = "iCloud Drive is currently unavailable.";
+"gpx_recording.error.download_timeout" = "The iCloud recording could not be downloaded in time. Please try again.";
+"gpx_recording.error.share_unavailable" = "The sharing screen is currently unavailable.";
+"gpx_recording.error.accessibility" = "Storage error: %@";

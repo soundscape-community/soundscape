@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E200000131C0000100C0FFEE /* InternalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200000031C0000100C0FFEE /* InternalStorage.swift */; };
+		A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000831B3000100C0FFEE /* GPXRecordingTests.swift */; };
+		A100000231B3000100C0FFEE /* GPXRecordingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000131B3000100C0FFEE /* GPXRecordingModels.swift */; };
+		A100000431B3000100C0FFEE /* GPXRecordingServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000331B3000100C0FFEE /* GPXRecordingServices.swift */; };
+		A100000631B3000100C0FFEE /* GPXRecordingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000531B3000100C0FFEE /* GPXRecordingController.swift */; };
 		2809B80C2379E95B00F6C9AC /* calibration_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80B2379E95B00F6C9AC /* calibration_success.wav */; };
 		2809B80E2379E9A000F6C9AC /* connection_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80D2379E9A000F6C9AC /* connection_success.wav */; };
 		2809B8102379E9C700F6C9AC /* low_confidence.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80F2379E9C700F6C9AC /* low_confidence.wav */; };
@@ -775,6 +780,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E200000031C0000100C0FFEE /* InternalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InternalStorage.swift; path = "Code/App/Framework Extensions/Base Type Extensions/InternalStorage.swift"; sourceTree = "<group>"; };
+		A100000831B3000100C0FFEE /* GPXRecordingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXRecordingTests.swift; sourceTree = "<group>"; };
+		A100000131B3000100C0FFEE /* GPXRecordingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingModels.swift; path = "Code/GPX Recording/GPXRecordingModels.swift"; sourceTree = "<group>"; };
+		A100000331B3000100C0FFEE /* GPXRecordingServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingServices.swift; path = "Code/GPX Recording/GPXRecordingServices.swift"; sourceTree = "<group>"; };
+		A100000531B3000100C0FFEE /* GPXRecordingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingController.swift; path = "Code/GPX Recording/GPXRecordingController.swift"; sourceTree = "<group>"; };
 		20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaviLensWakeOnForegroundTest.swift; sourceTree = "<group>"; };
 		2809B80B2379E95B00F6C9AC /* calibration_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = calibration_success.wav; path = Assets/Sounds/calibration_success.wav; sourceTree = "<group>"; };
 		2809B80D2379E9A000F6C9AC /* connection_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = connection_success.wav; path = Assets/Sounds/connection_success.wav; sourceTree = "<group>"; };
@@ -1598,6 +1608,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A100000731B3000100C0FFEE /* GPX Recording */ = {
+			isa = PBXGroup;
+			children = (
+				A100000831B3000100C0FFEE /* GPXRecordingTests.swift */,
+			);
+			path = "GPX Recording";
+			sourceTree = "<group>";
+		};
+		A100000031B3000100C0FFEE /* GPX Recording */ = {
+			isa = PBXGroup;
+			children = (
+				A100000131B3000100C0FFEE /* GPXRecordingModels.swift */,
+				A100000331B3000100C0FFEE /* GPXRecordingServices.swift */,
+				A100000531B3000100C0FFEE /* GPXRecordingController.swift */,
+			);
+			name = "GPX Recording";
+			sourceTree = "<group>";
+		};
 		2809B80A2379E8F100F6C9AC /* Calibration */ = {
 			isa = PBXGroup;
 			children = (
@@ -3530,6 +3558,7 @@
 		914DEBD92A3CE7E6007B161C /* App */ = {
 			isa = PBXGroup;
 			children = (
+				A100000731B3000100C0FFEE /* GPX Recording */,
 				914DEBDB2A3CE85D007B161C /* Helpers */,
 			);
 			path = App;
@@ -4032,6 +4061,7 @@
 		C36E562A22A87E3B00E89C6D /* Base Type Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				E200000031C0000100C0FFEE /* InternalStorage.swift */,
 				31CA500D21715F7700049ADF /* Array+Extensions.swift */,
 				C36E562B22A87E5300E89C6D /* Array+POI.swift */,
 				286A2AEF2256813400A74724 /* Data+Extensions.swift */,
@@ -4289,6 +4319,7 @@
 		D378E0DF1B3D97E200909E29 /* Code */ = {
 			isa = PBXGroup;
 			children = (
+				A100000031B3000100C0FFEE /* GPX Recording */,
 				D378E0E01B3D97E900909E29 /* App */,
 				568480871CB73E90004B4227 /* Visual UI */,
 				C3A5847322BAF8260014C55E /* Data */,
@@ -4732,6 +4763,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */,
 				915FF9F62ADE4BAF002B3690 /* AuthoredActivityContentTest.swift in Sources */,
 				914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */,
 				F100000131A2000100C0FFEE /* VoiceCatalogueTests.swift in Sources */,
@@ -4751,6 +4783,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E200000131C0000100C0FFEE /* InternalStorage.swift in Sources */,
+				A100000231B3000100C0FFEE /* GPXRecordingModels.swift in Sources */,
+				A100000431B3000100C0FFEE /* GPXRecordingServices.swift in Sources */,
+				A100000631B3000100C0FFEE /* GPXRecordingController.swift in Sources */,
 				C3A5847A22BAF9070014C55E /* DeviceHeadingProvider.swift in Sources */,
 				28BD33D723D8C98800566523 /* AudioEngineProtocol.swift in Sources */,
 				28A16136283D870D0081CFA4 /* GuidedTourAction.swift in Sources */,
@@ -5502,7 +5538,7 @@
 				BUNDLE_SPOKEN_NAME = "Soundscape Adhoc";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_STATIC_ANALYZER_MODE = deep;
-				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/SoundscapeDF.entitlements;
+				CODE_SIGN_ENTITLEMENTS = GuideDogs/Assets/PropertyLists/Soundscape.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
@@ -5864,7 +5900,7 @@
 				DEVELOPMENT_TEAM = X4H33NKGKY;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_BITCODE = NO;
-				FILE_SHARING_ENABLED = NO;
+				FILE_SHARING_ENABLED = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
