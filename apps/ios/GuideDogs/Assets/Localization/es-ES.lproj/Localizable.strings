@@ -4478,3 +4478,5 @@
 "whats_new.1_8_2.1.description" = "Al llegar a un lugar equipado con NaviLens, ahora puedes abrir la aplicación NaviLens o ver una lista de códigos cercanos.";
 "whats_new.1_8_5.0.title" = "Correcciones de errores";
 "whats_new.1_8_5.0.description" = "Se ha solucionado un problema que impedía importar rutas compartidas.";
+"voice.settings.other_voices" = "Otras voces";
+"voice.settings.novelty" = "Divertidas";
