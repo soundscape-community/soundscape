@@ -109,7 +109,7 @@ final class MarkerTutorialViewStateTests: XCTestCase {
         XCTAssertEqual(controller.children.count, 1)
         XCTAssertTrue(String(describing: type(of: controller.children[0])).contains("UIHostingController"))
         XCTAssertTrue(navigationController.isNavigationBarHidden)
-        XCTAssertEqual(controller.view.backgroundColor, Colors.Background.markerTutorial)
+        XCTAssertEqual(controller.view.backgroundColor, Colors.Background.tutorial)
 
         navigationController.beginAppearanceTransition(false, animated: false)
         navigationController.endAppearanceTransition()

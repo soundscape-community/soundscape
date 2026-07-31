@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -37,6 +38,16 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
     var demoStarted = false
     var beaconStarted = false
     var beaconCompleted = false
+
+    init() {
+        super.init(title: GDLocalizedString("tutorial.beacon.the_audio_beacon"),
+                   imageName: "destination_graphic02",
+                   text: GDLocalizedString("tutorial.beacon.the_audio_beacon.text"))
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("DestinationTutorialBeaconPage must be created programmatically")
+    }
     
     // MARK: Methods
     
@@ -48,7 +59,7 @@ class DestinationTutorialBeaconPage: DestinationTutorialPage {
         }
         
         let entityName = entity.name.isEmpty ? GDLocalizedString("poi.unknown") : entity.name
-        pageTextLabel.text = GDLocalizedString("tutorial.beacon.poi_selected", entityName)
+        viewState.updateText(GDLocalizedString("tutorial.beacon.poi_selected", entityName))
     }
     
     override func viewDidAppear(_ animated: Bool) {

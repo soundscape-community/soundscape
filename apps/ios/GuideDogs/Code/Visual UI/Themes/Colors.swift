@@ -27,10 +27,10 @@ struct Colors {
         static let quaternary: UIColor? = UIColor(named: "Background Base")
         static let error: UIColor? = UIColor(named: "Background Error")
         static let menuAlternate: UIColor? = UIColor(named: "Menu Alternate")
-        static let markerTutorial = UIColor(red: 36.0 / 255.0,
-                                            green: 58.0 / 255.0,
-                                            blue: 102.0 / 255.0,
-                                            alpha: 1)
+        static let tutorial = UIColor(red: 36.0 / 255.0,
+                                      green: 58.0 / 255.0,
+                                      blue: 102.0 / 255.0,
+                                      alpha: 1)
     }
     
     struct Highlight {

@@ -59,23 +59,12 @@
                         <outlet property="largeBannerContainerView" destination="Fd2-uH-xFR" id="0XS-rW-ns6"/>
                         <segue destination="deu-ZT-efG" kind="show" identifier="OpenHelpPage" id="Bug-NN-z9X"/>
                         <segue destination="DA9-qa-U77" kind="show" identifier="OpenGenericHelpPage" id="Lzn-ri-89o"/>
-                        <segue destination="D2X-Oa-hFN" kind="show" identifier="destinationTutorial" id="LfE-yV-Mqc"/>
                         <segue destination="GdR-lA-crN" kind="show" identifier="showOfflineInfo" id="jNF-Is-uIz"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JwB-et-agg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-257" y="112"/>
-        </scene>
-        <!--DestinationTutorialIntroViewController-->
-        <scene sceneID="XhX-RS-3aa">
-            <objects>
-                <viewControllerPlaceholder storyboardName="DestinationTutorial" referencedIdentifier="DestinationTutorialIntroViewController" id="D2X-Oa-hFN" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="JFU-gi-ZwZ"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="LVq-h3-py3" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-613" y="571"/>
         </scene>
         <!--Help Page Title-->
         <scene sceneID="b9X-Os-024">

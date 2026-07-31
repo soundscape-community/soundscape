@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -16,13 +17,23 @@ class DestinationTutorialInfoPage: DestinationTutorialPage {
     let mobilitySkills = GDLocalizedString("tutorial.beacons.text.MobilitySkills")
     let automaticCallout = GDLocalizedString("tutorial.beacons.text.AutomaticCallout")
     let homeScreen = GDLocalizedString("tutorial.beacons.text.HomeScreen")
+
+    init() {
+        super.init(title: GDLocalizedString("tutorial.beacon.found_the_beacon"),
+                   imageName: "destination_graphic03",
+                   text: GDLocalizedString("tutorial.beacons.text.MobilitySkills"))
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("DestinationTutorialInfoPage must be created programmatically")
+    }
     
     // MARK: Methods
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        pageTextLabel.text = mobilitySkills
+        viewState.updateText(mobilitySkills)
         
         AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
         

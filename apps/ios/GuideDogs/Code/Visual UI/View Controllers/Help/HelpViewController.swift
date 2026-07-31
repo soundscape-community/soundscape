@@ -272,7 +272,6 @@ class HelpViewController: BaseTableViewController {
     private struct Segues {
         static let OpenHelpPage = "OpenHelpPage"
         static let OpenGenericHelpPage = "OpenGenericHelpPage"
-        static let OpenDestinationTutorial = "destinationTutorial"
         static let OpenOfflinePage = "showOfflineInfo"
     }
     
@@ -412,7 +411,8 @@ class HelpViewController: BaseTableViewController {
             
         case Section.tutorials:
             if indexPath.row == Row.destinations {
-                performSegue(withIdentifier: Segues.OpenDestinationTutorial, sender: self)
+                let viewController = DestinationTutorialIntroViewController(source: self, logContext: "help_screen")
+                navigationController?.pushViewController(viewController, animated: true)
             } else if indexPath.row == Row.markers {
                 let viewController = MarkerTutorialViewController(logContext: "help_screen")
                 navigationController?.pushViewController(viewController, animated: true)
@@ -485,9 +485,6 @@ class HelpViewController: BaseTableViewController {
             
             genericVC.loadContent(content)
             GDATelemetry.trackScreenView(helpPages[page].telemetryLabel)
-            
-        case let destinationVC as DestinationTutorialIntroViewController:
-            destinationVC.logContext = "help_screen"
             
         default:
             return

@@ -79,7 +79,7 @@ struct MarkerTutorialView: View {
 
     @AccessibilityFocusState private var isActionFocused: Bool
 
-    private let backgroundColor = Color(Colors.Background.markerTutorial)
+    private let backgroundColor = Color(Colors.Background.tutorial)
 
     var body: some View {
         ZStack {

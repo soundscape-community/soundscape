@@ -135,7 +135,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
 
         addChild(hostingController)
         view = UIView()
-        view.backgroundColor = Colors.Background.markerTutorial
+        view.backgroundColor = Colors.Background.tutorial
         view.addSubview(hostingController.view)
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
