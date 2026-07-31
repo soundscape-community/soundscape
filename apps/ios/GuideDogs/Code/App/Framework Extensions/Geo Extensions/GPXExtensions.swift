@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -39,10 +40,10 @@ extension GPXBounds {
             if location.coordinate.latitude > maxLatitude {
                 maxLatitude = location.coordinate.latitude
             }
-            if location.coordinate.latitude < minLongitude {
+            if location.coordinate.longitude < minLongitude {
                 minLongitude = location.coordinate.longitude
             }
-            if location.coordinate.latitude > maxLongitude {
+            if location.coordinate.longitude > maxLongitude {
                 maxLongitude = location.coordinate.longitude
             }
         }
@@ -72,19 +73,24 @@ extension GPXRoot {
     }
     
     class func createGPX(withTrackLocations trackLocations: [GPXLocation]) -> GPXRoot {
+        return createGPX(withTrackLocationSegments: [trackLocations])
+    }
+
+    class func createGPX(withTrackLocationSegments trackLocationSegments: [[GPXLocation]]) -> GPXRoot {
         let root = GPXRoot.defaultRoot()
-        root.metadata?.bounds = GPXBounds(with: trackLocations)
-        
-        let trackSegment = GPXTrackSegment()
-        for gpxLocation in trackLocations {
-            trackSegment.add(trackpoint: GPXTrackPoint(with: gpxLocation))
-        }
-        
+        let allLocations = trackLocationSegments.flatMap { $0 }
+        root.metadata?.bounds = GPXBounds(with: allLocations)
+
         let track = GPXTrack()
-        track.add(trackSegment: trackSegment)
-        
+        for locations in trackLocationSegments where !locations.isEmpty {
+            let trackSegment = GPXTrackSegment()
+            for gpxLocation in locations {
+                trackSegment.add(trackpoint: GPXTrackPoint(with: gpxLocation))
+            }
+            track.add(trackSegment: trackSegment)
+        }
         root.add(track: track)
-        
+
         return root
     }
 }
@@ -104,7 +110,7 @@ extension GPXExtensionsElement {
             return
         }
         
-        let new_element = GPXExtensionsElement(name: value)
+        let new_element = GPXExtensionsElement(name: name)
         new_element.text = value
         children.append(new_element)
     }

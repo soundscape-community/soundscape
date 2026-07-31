@@ -38,6 +38,7 @@ class HomeViewController: UIViewController {
         static func segue(for menuItem: MenuItem) -> String? {
             switch menuItem {
             case .recreation: return nil
+            case .gpxRecording: return nil
             case .devices:    return Segue.showManageDevices
             case .help:       return Segue.showHelp
             case .settings:   return Segue.showSettings
@@ -483,6 +484,11 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
 
             if dismissed.selected == .recreation {
                 self?.showRecreationActivities()
+                return
+            }
+
+            if dismissed.selected == .gpxRecording {
+                self?.show(GPXRecordingHostingController(), sender: self)
                 return
             }
             

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 //  This is a convenience class that only exists until we have a long term solution for
@@ -562,21 +563,7 @@ class AuthoredActivityLoader {
     // MARK: Directories
     
     private var activitiesDirectory: URL? {
-        guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            return nil
-        }
-        
-        let dir = documents.appendingPathComponent("SharedExperiences")
-        
-        if !FileManager.default.fileExists(atPath: dir.path) {
-            do {
-                try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                return nil
-            }
-        }
-        
-        return dir
+        try? InternalStorage.directory(named: "SharedExperiences")
     }
     
     private func contentURL(activityID: String) -> URL? {

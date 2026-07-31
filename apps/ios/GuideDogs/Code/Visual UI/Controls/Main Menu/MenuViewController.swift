@@ -11,12 +11,13 @@ import UIKit
 import SafariServices
 
 enum MenuItem {
-    case home, recreation, devices, help, settings, status, feedback, rate, share
+    case home, recreation, gpxRecording, devices, help, settings, status, feedback, rate, share
     
     var localizedString: String {
         switch self {
         case .home:       return GDLocalizedString("ui.menu.close")
         case .recreation: return GDLocalizedString("menu.events")
+        case .gpxRecording: return GDLocalizedString("gpx_recording.title")
         case .devices:    return GDLocalizedString("menu.devices")
         case .help:       return GDLocalizedString("menu.help_and_tutorials")
         case .settings:   return GDLocalizedString("settings.screen_title")
@@ -31,6 +32,7 @@ enum MenuItem {
         switch self {
         case .home:       return GDLocalizedString("ui.menu.close")
         case .recreation: return GDLocalizedString("menu.events")
+        case .gpxRecording: return GDLocalizedString("gpx_recording.title")
         case .devices:    return GDLocalizedString("menu.devices")
         case .help:       return GDLocalizedString("menu.help_and_tutorials")
         case .settings:   return GDLocalizedString("settings.screen_title")
@@ -45,6 +47,7 @@ enum MenuItem {
         switch self {
         case .home:       return UIImage(named: "ic_chevron_left_28px")
         case .recreation: return UIImage(named: "nordic_walking_white_28dp")
+        case .gpxRecording: return UIImage(systemName: "record.circle")
         case .devices:    return UIImage(named: "baseline-headset-28px")
         case .help:       return UIImage(named: "ic_help_outline_28px")
         case .settings:   return UIImage(named: "ic_settings_28px")
@@ -66,6 +69,7 @@ class MenuViewController: UIViewController {
         // Build views for menu items
         menuView.addMenuItem(.devices)
         menuView.addMenuItem(.recreation)
+        menuView.addMenuItem(.gpxRecording)
         menuView.addMenuItem(.settings)
         menuView.addMenuItem(.help)
         menuView.addMenuItem(.feedback)
