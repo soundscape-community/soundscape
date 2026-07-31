@@ -9,27 +9,12 @@
 import Foundation
 import CoreLocation
 
-enum GPXRecordingStorageLocation: String, Codable, Sendable {
-    case iCloud
-    case local
-
-    var localizedName: String {
-        switch self {
-        case .iCloud:
-            return GDLocalizedString("gpx_recording.storage.icloud")
-        case .local:
-            return GDLocalizedString("gpx_recording.storage.local")
-        }
-    }
-}
-
 struct GPXRecordingFile: Identifiable, Equatable, Sendable {
     let url: URL
     let modifiedAt: Date
-    let storageLocation: GPXRecordingStorageLocation
 
     var id: String {
-        "\(storageLocation.rawValue):\(url.standardizedFileURL.path)"
+        url.standardizedFileURL.path
     }
 
     var displayName: String {
@@ -136,7 +121,6 @@ enum GPXRecordingError: LocalizedError, Equatable {
     case duplicateName
     case draftUnavailable
     case storage(String)
-    case iCloudSave(String)
 
     var errorDescription: String? {
         switch self {
@@ -148,7 +132,7 @@ enum GPXRecordingError: LocalizedError, Equatable {
             return GDLocalizedString("gpx_recording.error.duplicate_name")
         case .draftUnavailable:
             return GDLocalizedString("gpx_recording.error.draft_unavailable")
-        case .storage(let description), .iCloudSave(let description):
+        case .storage(let description):
             return description
         }
     }
@@ -186,8 +170,7 @@ protocol GPXRecordingDraftStore: Sendable {
 
 protocol GPXRecordingRepository: Sendable {
     func recordings() async throws -> [GPXRecordingFile]
-    func preferredStorageLocation() async -> GPXRecordingStorageLocation
     func nameExists(_ name: String) async throws -> Bool
-    func save(gpx: String, named name: String, to location: GPXRecordingStorageLocation) async throws -> GPXRecordingFile
+    func save(gpx: String, named name: String) async throws -> GPXRecordingFile
     func prepareForSharing(_ file: GPXRecordingFile) async throws -> URL
 }

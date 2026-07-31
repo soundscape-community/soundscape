@@ -3827,7 +3827,6 @@
 "gpx_recording.stop" = "Stop recording";
 "gpx_recording.saved" = "Saved recordings";
 "gpx_recording.saved.empty" = "No saved recordings";
-"gpx_recording.storage.icloud" = "iCloud Drive";
 "gpx_recording.storage.local" = "On My iPhone";
 "gpx_recording.share.hint" = "Shares this GPX recording";
 "gpx_recording.name.title" = "Name Recording";
@@ -3837,14 +3836,9 @@
 "gpx_recording.discard" = "Discard";
 "gpx_recording.discard.confirm" = "Discard this recording? This cannot be undone.";
 "gpx_recording.recover.save" = "Name and save recording";
-"gpx_recording.save_options" = "iCloud save failed";
-"gpx_recording.retry_icloud" = "Retry iCloud Drive";
-"gpx_recording.save_local" = "Save On My iPhone";
 "gpx_recording.error.no_points" = "No location points have been recorded yet.";
 "gpx_recording.error.invalid_name" = "Enter a safe file name without slashes, colons, or a trailing period.";
 "gpx_recording.error.duplicate_name" = "A recording with this name already exists.";
 "gpx_recording.error.draft_unavailable" = "The protected recording draft could not be opened.";
-"gpx_recording.error.icloud_unavailable" = "iCloud Drive is currently unavailable.";
-"gpx_recording.error.download_timeout" = "The iCloud recording could not be downloaded in time. Please try again.";
 "gpx_recording.error.share_unavailable" = "The sharing screen is currently unavailable.";
 "gpx_recording.error.accessibility" = "Storage error: %@";

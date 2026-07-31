@@ -10,76 +10,83 @@ import SwiftUI
 
 struct GPXRecordingView: View {
     @ObservedObject var controller: GPXRecordingController
-    @Environment(\.presentationMode) private var presentationMode
     @State private var showDiscardConfirmation = false
 
     var body: some View {
         List {
             Section {
                 Text(GDLocalizedString("gpx_recording.explanation"))
+                    .foregroundColor(.primaryForeground)
                     .fixedSize(horizontal: false, vertical: true)
 
                 HStack {
                     Text(GDLocalizedString("gpx_recording.status"))
+                        .foregroundColor(.primaryForeground)
                     Spacer()
                     Text(statusText)
+                        .foregroundColor(statusColor)
                         .fontWeight(.semibold)
                         .accessibilityIdentifier("gpx-recording-status")
                 }
 
                 if controller.pointCount > 0 {
                     Text(String(format: GDLocalizedString("gpx_recording.point_count"), controller.pointCount))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.secondaryForeground)
                 }
 
                 controls
             }
+            .listRowBackground(Color.primaryBackground)
+            .listRowSeparatorTint(Color.secondaryBackground)
 
             if let error = controller.error {
                 Section {
-                    Text(error.localizedDescription)
-                        .foregroundColor(.red)
+                    Label(error.localizedDescription, systemImage: "exclamationmark.triangle.fill")
+                        .foregroundColor(.primaryForeground)
                         .accessibilityLabel(String(format: GDLocalizedString("gpx_recording.error.accessibility"), error.localizedDescription))
                 }
+                .listRowBackground(Color.errorBackground)
             }
 
-            if controller.failedCloudSave {
-                Section(header: Text(GDLocalizedString("gpx_recording.save_options"))) {
-                    Button(GDLocalizedString("gpx_recording.retry_icloud")) {
-                        controller.retryCloudSave()
-                    }
-                    Button(GDLocalizedString("gpx_recording.save_local")) {
-                        controller.saveLocally()
-                    }
-                    Button(GDLocalizedString("gpx_recording.discard"), role: .destructive) {
-                        showDiscardConfirmation = true
-                    }
-                }
-            }
-
-            Section(header: Text(GDLocalizedString("gpx_recording.saved"))) {
+            Section(header: GPXRecordingSectionHeader(text: GDLocalizedString("gpx_recording.saved"))) {
                 if controller.recordings.isEmpty {
                     Text(GDLocalizedString("gpx_recording.saved.empty"))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.secondaryForeground)
                 } else {
                     ForEach(controller.recordings) { file in
                         Button {
                             controller.share(file)
                         } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(file.displayName)
-                                    .foregroundColor(.primary)
-                                Text(file.storageLocation.localizedName)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                            HStack(spacing: 12) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(file.displayName)
+                                        .foregroundColor(.primaryForeground)
+                                    Text(GDLocalizedString("gpx_recording.storage.local"))
+                                        .font(.caption)
+                                        .foregroundColor(.secondaryForeground)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                                Image(systemName: "square.and.arrow.up")
+                                    .foregroundColor(.tertiaryForeground)
+                                    .accessibilityHidden(true)
                             }
+                            .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
                         .accessibilityHint(GDLocalizedString("gpx_recording.share.hint"))
                     }
                 }
             }
+            .listRowBackground(Color.primaryBackground)
+            .listRowSeparatorTint(Color.secondaryBackground)
         }
+        .settingsListBackground()
+        .background(Color.quaternaryBackground.ignoresSafeArea())
+        .listStyle(.plain)
+        .tint(.primaryForeground)
         .navigationTitle(GDLocalizedString("gpx_recording.title"))
+        .navigationBarStyle(style: .darkBlue)
         .refreshable {
             await controller.refresh()
         }
@@ -89,27 +96,28 @@ struct GPXRecordingView: View {
         .fullScreenCover(isPresented: namingPresented) {
             NavigationView {
                 Form {
-                    Section(header: Text(GDLocalizedString("gpx_recording.name.prompt"))) {
+                    Section(header: GPXRecordingSectionHeader(text: GDLocalizedString("gpx_recording.name.prompt"))) {
                         TextField(GDLocalizedString("gpx_recording.name"), text: $controller.proposedName)
                             .textInputAutocapitalization(.never)
                             .disableAutocorrection(true)
+                            .textFieldStyle(.roundedBorder)
+                            .foregroundColor(.quaternaryBackground)
                     }
+                    .listRowBackground(Color.primaryBackground)
+                    .listRowSeparatorTint(Color.secondaryBackground)
+
                     if let error = controller.error {
-                        Text(error.localizedDescription)
-                            .foregroundColor(.red)
-                    }
-                    if controller.failedCloudSave {
-                        Section(header: Text(GDLocalizedString("gpx_recording.save_options"))) {
-                            Button(GDLocalizedString("gpx_recording.retry_icloud")) {
-                                controller.retryCloudSave()
-                            }
-                            Button(GDLocalizedString("gpx_recording.save_local")) {
-                                controller.saveLocally()
-                            }
-                        }
+                        Label(error.localizedDescription, systemImage: "exclamationmark.triangle.fill")
+                            .foregroundColor(.primaryForeground)
+                            .listRowBackground(Color.errorBackground)
                     }
                 }
+                .settingsListBackground()
+                .background(Color.quaternaryBackground.ignoresSafeArea())
+                .listStyle(.plain)
+                .tint(.primaryForeground)
                 .navigationTitle(GDLocalizedString("gpx_recording.name.title"))
+                .navigationBarStyle(style: .darkBlue)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(GDLocalizedString("gpx_recording.discard"), role: .destructive) {
@@ -133,6 +141,7 @@ struct GPXRecordingView: View {
                     Button(GDLocalizedString("general.alert.cancel"), role: .cancel) {}
                 }
             }
+            .navigationViewStyle(.stack)
         }
         .confirmationDialog(GDLocalizedString("gpx_recording.discard.confirm"),
                             isPresented: $showDiscardConfirmation,
@@ -151,28 +160,58 @@ struct GPXRecordingView: View {
             HStack {
                 Spacer()
                 ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .primaryForeground))
                 Spacer()
             }
             .accessibilityLabel(statusText)
         case .idle:
-            Button(GDLocalizedString("gpx_recording.start")) {
+            GPXRecordingActionButton(
+                title: GDLocalizedString("gpx_recording.start"),
+                systemImage: "record.circle",
+                backgroundColor: .primaryForeground,
+                foregroundColor: .primaryBackground
+            ) {
                 controller.start()
             }
-            .buttonStyle(.borderedProminent)
         case .recording, .paused:
-            Button(GDLocalizedString("gpx_recording.stop"), role: .destructive) {
+            GPXRecordingActionButton(
+                title: GDLocalizedString("gpx_recording.stop"),
+                systemImage: "stop.fill",
+                backgroundColor: .errorBackground,
+                foregroundColor: .primaryForeground
+            ) {
                 controller.stop()
             }
-            .buttonStyle(.borderedProminent)
         case .recoverableInterruption:
-            Button(GDLocalizedString("gpx_recording.recover.save")) {
+            GPXRecordingActionButton(
+                title: GDLocalizedString("gpx_recording.recover.save"),
+                systemImage: "square.and.arrow.down",
+                backgroundColor: .primaryForeground,
+                foregroundColor: .primaryBackground
+            ) {
                 controller.prepareRecoveredDraftForSaving()
             }
-            Button(GDLocalizedString("gpx_recording.discard"), role: .destructive) {
+            GPXRecordingActionButton(
+                title: GDLocalizedString("gpx_recording.discard"),
+                systemImage: "trash",
+                backgroundColor: .errorBackground,
+                foregroundColor: .primaryForeground
+            ) {
                 showDiscardConfirmation = true
             }
         case .awaitingName:
             EmptyView()
+        }
+    }
+
+    private var statusColor: Color {
+        switch controller.state {
+        case .recording:
+            return .yellowHighlight
+        case .paused, .recoverableInterruption:
+            return .tertiaryForeground
+        default:
+            return .secondaryForeground
         }
     }
 
@@ -205,6 +244,35 @@ struct GPXRecordingView: View {
     }
 }
 
+private struct GPXRecordingSectionHeader: View {
+    let text: String
+
+    var body: some View {
+        Text(text.localizedUppercase)
+            .font(.caption)
+            .foregroundColor(.primaryForeground)
+            .accessibilityAddTraits(.isHeader)
+    }
+}
+
+private struct GPXRecordingActionButton: View {
+    let title: String
+    let systemImage: String
+    let backgroundColor: Color
+    let foregroundColor: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(title, systemImage: systemImage)
+                .font(.body.bold())
+                .foregroundColor(foregroundColor)
+                .roundedBackground(backgroundColor)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 final class GPXRecordingHostingController: UIHostingController<GPXRecordingView> {
     @MainActor
     convenience init() {
@@ -214,6 +282,7 @@ final class GPXRecordingHostingController: UIHostingController<GPXRecordingView>
     @MainActor
     init(controller: GPXRecordingController) {
         super.init(rootView: GPXRecordingView(controller: controller))
+        view.backgroundColor = Colors.Background.quaternary
     }
 
     @available(*, unavailable)

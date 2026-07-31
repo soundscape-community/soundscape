@@ -80,18 +80,6 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
-	<key>NSUbiquitousContainers</key>
-	<dict>
-		<key>iCloud.services.soundscape</key>
-		<dict>
-			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
-			<true/>
-			<key>NSUbiquitousContainerName</key>
-			<string>Soundscape</string>
-			<key>NSUbiquitousContainerSupportedFolderLevels</key>
-			<string>Any</string>
-		</dict>
-	</dict>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>

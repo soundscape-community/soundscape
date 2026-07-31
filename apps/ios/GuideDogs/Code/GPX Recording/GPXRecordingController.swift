@@ -19,7 +19,6 @@ final class GPXRecordingController: ObservableObject {
     @Published private(set) var pointCount = 0
     @Published var error: GPXRecordingError?
     @Published var proposedName = ""
-    @Published private(set) var failedCloudSave = false
 
     private let draftStore: GPXRecordingDraftStore
     private let repository: GPXRecordingRepository
@@ -86,7 +85,6 @@ final class GPXRecordingController: ObservableObject {
             return
         }
         error = nil
-        failedCloudSave = false
         state = .starting
         let startedAt = Date()
         Task {
@@ -126,13 +124,12 @@ final class GPXRecordingController: ObservableObject {
         state = .awaitingName
     }
 
-    func save(to forcedLocation: GPXRecordingStorageLocation? = nil) {
-        guard state == .awaitingName || failedCloudSave else {
+    func save() {
+        guard state == .awaitingName else {
             return
         }
         let requestedName = proposedName
         state = .saving
-        failedCloudSave = false
         error = nil
 
         Task {
@@ -144,25 +141,15 @@ final class GPXRecordingController: ObservableObject {
                 guard let draft = try await draftStore.recover(), draft.pointCount > 0 else {
                     throw GPXRecordingError.noPoints
                 }
-                let destination: GPXRecordingStorageLocation
-                if let forcedLocation {
-                    destination = forcedLocation
-                } else {
-                    destination = await repository.preferredStorageLocation()
-                }
-                let file = try await repository.save(gpx: GPXRecordingDocumentBuilder.makeGPX(from: draft),
-                                                     named: name,
-                                                     to: destination)
+                _ = try await repository.save(gpx: GPXRecordingDocumentBuilder.makeGPX(from: draft),
+                                              named: name)
                 try await draftStore.discard()
                 pointCount = 0
                 state = .idle
-                GDATelemetry.track("gpx_recording.save", with: ["destination": file.storageLocation.rawValue])
+                GDATelemetry.track("gpx_recording.save", with: ["destination": "local"])
                 await refresh()
             } catch let recordingError as GPXRecordingError {
                 error = recordingError
-                if case .iCloudSave = recordingError {
-                    failedCloudSave = true
-                }
                 state = .awaitingName
             } catch {
                 self.error = .storage(error.localizedDescription)
@@ -171,21 +158,12 @@ final class GPXRecordingController: ObservableObject {
         }
     }
 
-    func retryCloudSave() {
-        save(to: .iCloud)
-    }
-
-    func saveLocally() {
-        save(to: .local)
-    }
-
     func discard() {
         Task {
             do {
                 try await draftStore.discard()
                 pointCount = 0
                 error = nil
-                failedCloudSave = false
                 state = .idle
                 GDATelemetry.track("gpx_recording.discard")
             } catch {

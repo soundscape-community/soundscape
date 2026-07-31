@@ -56,37 +56,27 @@ final class GPXRecordingTests: XCTestCase {
         XCTAssertEqual(recovered?.pointCount, 0)
     }
 
-    func testRepositoryCombinesLocationsNewestFirstAndDetectsGlobalDuplicate() async throws {
+    func testRepositoryListsLocalFilesNewestFirstAndDetectsDuplicate() async throws {
         let local = makeTemporaryDirectory()
-        let cloud = makeTemporaryDirectory()
-        let repository = FileGPXRecordingRepository(localRoot: local, cloudRootProvider: { cloud })
+        let repository = FileGPXRecordingRepository(localRoot: local)
 
-        _ = try await repository.save(gpx: "<gpx/>", named: "Local", to: .local)
+        _ = try await repository.save(gpx: "<gpx/>", named: "First")
         try await Task.sleep(nanoseconds: 10_000_000)
-        _ = try await repository.save(gpx: "<gpx/>", named: "Cloud", to: .iCloud)
+        _ = try await repository.save(gpx: "<gpx/>", named: "Second")
 
         let files = try await repository.recordings()
-        XCTAssertEqual(files.map(\.displayName), ["Cloud", "Local"])
-        XCTAssertEqual(files.map(\.storageLocation), [.iCloud, .local])
-        let duplicateExists = try await repository.nameExists("cLoUd.gpx")
+        XCTAssertEqual(files.map(\.displayName), ["Second", "First"])
+        let duplicateExists = try await repository.nameExists("sEcOnD.gpx")
         XCTAssertTrue(duplicateExists)
         await XCTAssertThrowsErrorAsync {
-            _ = try await repository.save(gpx: "<gpx/>", named: "LOCAL", to: .iCloud)
+            _ = try await repository.save(gpx: "<gpx/>", named: "FIRST")
         }
-    }
-
-    func testRepositoryFallsBackToLocalWhenCloudUnavailable() async {
-        let repository = FileGPXRecordingRepository(localRoot: makeTemporaryDirectory(),
-                                                    cloudRootProvider: { nil })
-        let location = await repository.preferredStorageLocation()
-        XCTAssertEqual(location, .local)
     }
 
     @MainActor
     func testRepeatedStartCreatesOnlyOneDraft() async throws {
         let draftStore = SuspendedDraftStore()
-        let repository = FileGPXRecordingRepository(localRoot: makeTemporaryDirectory(),
-                                                    cloudRootProvider: { nil })
+        let repository = FileGPXRecordingRepository(localRoot: makeTemporaryDirectory())
         let controller = GPXRecordingController(draftStore: draftStore, repository: repository)
 
         await waitForState(.idle, controller: controller)

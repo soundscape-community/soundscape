@@ -103,35 +103,22 @@ actor FileGPXRecordingDraftStore: GPXRecordingDraftStore {
 }
 
 actor FileGPXRecordingRepository: GPXRecordingRepository {
-    static let iCloudContainerIdentifier = "iCloud.services.soundscape"
-
     private let fileManager: FileManager
     private let localRootOverride: URL?
-    private let cloudRootProvider: @Sendable () -> URL?
 
     init(fileManager: FileManager = .default,
-         localRoot: URL? = nil,
-         cloudRootProvider: (@Sendable () -> URL?)? = nil) {
+         localRoot: URL? = nil) {
         self.fileManager = fileManager
         localRootOverride = localRoot
-        self.cloudRootProvider = cloudRootProvider ?? {
-            FileManager.default.url(forUbiquityContainerIdentifier: FileGPXRecordingRepository.iCloudContainerIdentifier)
-        }
     }
 
     func recordings() throws -> [GPXRecordingFile] {
-        let local = try files(in: localDirectory(), location: .local)
-        let cloud = try cloudDirectory().map { try files(in: $0, location: .iCloud) } ?? []
-        return (local + cloud).sorted {
+        try files(in: localDirectory()).sorted {
             if $0.modifiedAt == $1.modifiedAt {
                 return $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending
             }
             return $0.modifiedAt > $1.modifiedAt
         }
-    }
-
-    func preferredStorageLocation() -> GPXRecordingStorageLocation {
-        cloudDirectory() == nil ? .local : .iCloud
     }
 
     func nameExists(_ name: String) throws -> Bool {
@@ -141,24 +128,14 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
         }
     }
 
-    func save(gpx: String, named name: String, to location: GPXRecordingStorageLocation) throws -> GPXRecordingFile {
+    func save(gpx: String, named name: String) throws -> GPXRecordingFile {
         let normalized = try GPXRecordingNameValidator.normalizedName(name)
         guard try !nameExists(normalized) else {
             throw GPXRecordingError.duplicateName
         }
 
-        let directory: URL
-        switch location {
-        case .local:
-            directory = localDirectory()
-        case .iCloud:
-            guard let cloudDirectory = cloudDirectory() else {
-                throw GPXRecordingError.iCloudSave(GDLocalizedString("gpx_recording.error.icloud_unavailable"))
-            }
-            directory = cloudDirectory
-        }
-
         do {
+            let directory = localDirectory()
             try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
             let destination = directory.appendingPathComponent(normalized).appendingPathExtension("gpx")
             let temporary = fileManager.temporaryDirectory
@@ -184,38 +161,16 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
             }
 
             return GPXRecordingFile(url: destination,
-                                    modifiedAt: resourceDate(for: destination),
-                                    storageLocation: location)
+                                    modifiedAt: resourceDate(for: destination))
         } catch let error as GPXRecordingError {
             throw error
         } catch {
-            if location == .iCloud {
-                throw GPXRecordingError.iCloudSave(error.localizedDescription)
-            }
             throw GPXRecordingError.storage(error.localizedDescription)
         }
     }
 
-    func prepareForSharing(_ file: GPXRecordingFile) async throws -> URL {
-        guard file.storageLocation == .iCloud else {
-            return file.url
-        }
-
-        let values = try file.url.resourceValues(forKeys: [.ubiquitousItemDownloadingStatusKey])
-        if values.ubiquitousItemDownloadingStatus == .current {
-            return file.url
-        }
-
-        try fileManager.startDownloadingUbiquitousItem(at: file.url)
-        for _ in 0..<60 {
-            try Task.checkCancellation()
-            let current = try file.url.resourceValues(forKeys: [.ubiquitousItemDownloadingStatusKey])
-            if current.ubiquitousItemDownloadingStatus == .current {
-                return file.url
-            }
-            try await Task.sleep(nanoseconds: 500_000_000)
-        }
-        throw GPXRecordingError.storage(GDLocalizedString("gpx_recording.error.download_timeout"))
+    func prepareForSharing(_ file: GPXRecordingFile) -> URL {
+        file.url
     }
 
     private func localDirectory() -> URL {
@@ -223,13 +178,7 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
         return root.appendingPathComponent("GPX recordings", isDirectory: true)
     }
 
-    private func cloudDirectory() -> URL? {
-        cloudRootProvider()?
-            .appendingPathComponent("Documents", isDirectory: true)
-            .appendingPathComponent("GPX recordings", isDirectory: true)
-    }
-
-    private func files(in directory: URL, location: GPXRecordingStorageLocation) throws -> [GPXRecordingFile] {
+    private func files(in directory: URL) throws -> [GPXRecordingFile] {
         guard fileManager.fileExists(atPath: directory.path) else {
             return []
         }
@@ -239,8 +188,7 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
             .filter { $0.pathExtension.caseInsensitiveCompare("gpx") == .orderedSame }
             .map {
                 GPXRecordingFile(url: $0,
-                                 modifiedAt: resourceDate(for: $0),
-                                 storageLocation: location)
+                                 modifiedAt: resourceDate(for: $0))
             }
     }
 
