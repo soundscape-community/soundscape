@@ -3,195 +3,187 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import UIKit
 import AVFoundation
+import UIKit
 
-class DestinationTutorialViewController: CustomPageViewController, AVAudioPlayerDelegate {
-    
-    @IBOutlet weak var exitButton: UIButton!
-    
+class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate {
+    private(set) var steps: [DestinationTutorialPage] = []
+    private(set) var currentPageIndex = 0
     private var presentedAlertController: UIAlertController?
+    private var currentPage: DestinationTutorialPage?
+    private var didDisableCallouts = false
+
     var player: FadeableAudioPlayer?
     var backgroundVolume: Float = 0.1
     var fadeInDuration: TimeInterval = 1.5
-    
     var entityKey: String?
-    
-    /// Reference to the original view controller that launched the demo (e.g. home or help)
     weak var source: UIViewController?
-    
-    override func loadSteps() {
-        steps = ["beacon", "home", "callouts"].map({ (page) -> UIViewController in
-            return self.loadPage("DestinationTutorial", "\(page)DTViewController")
-        })
-        
-        for step in steps ?? [] {
-            if let page = step as? DestinationTutorialPage {
-                page.delegate = self
-                page.pageFinished = false
-            }
+
+    init(source: UIViewController?, entityKey: String?) {
+        self.source = source
+        self.entityKey = entityKey
+        super.init(nibName: nil, bundle: nil)
+        steps = [DestinationTutorialBeaconPage(),
+                 DestinationTutorialInfoPage(),
+                 DestinationTutorialMutePage()]
+        for page in steps {
+            page.delegate = self
         }
     }
-    
+
+    required init?(coder: NSCoder) {
+        fatalError("DestinationTutorialViewController must be created programmatically")
+    }
+
     override func viewDidLoad() {
-        delegate = self
-        
-        // This must be set before calling super.viewDidLoad() in order to disable gestures
-        allowsGestures = false
-        
         super.viewDidLoad()
-        
-        guard let player = FadeableAudioPlayer.fadeablePlayer(with: "tutorial_background_music", fileTypeHint: AVFileType.mp3.rawValue) else {
+        view.backgroundColor = Colors.Background.tutorial
+        showPage(at: 0, animated: false)
+
+        guard let player = FadeableAudioPlayer.fadeablePlayer(with: "tutorial_background_music",
+                                                               fileTypeHint: AVFileType.mp3.rawValue) else {
             GDLogAppError("Destination tutorial error: file not found.")
             return
         }
-        
-        exitButton.setTitle(GDLocalizedString("tutorial.skip"), for: .normal)
-        
-        player.numberOfLoops = -1 // play indefinitely
+        player.numberOfLoops = -1
         player.delegate = self
         self.player = player
-        
-        NotificationCenter.default.post(name: NSNotification.Name.disableMagicTap, object: self)
-        NotificationCenter.default.post(name: NSNotification.Name.disableDestinationGeofence, object: self)
-        
+
+        NotificationCenter.default.post(name: .disableMagicTap, object: self)
+        NotificationCenter.default.post(name: .disableDestinationGeofence, object: self)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleAudioSessionInterruption(_:)),
                                                name: AVAudioSession.interruptionNotification,
                                                object: AppContext.shared.audioEngine.session)
     }
-    
-    @objc func handleAudioSessionInterruption(_ notification: NSNotification) {
+
+    @objc private func handleAudioSessionInterruption(_ notification: NSNotification) {
         tutorialComplete()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        pageControl.isHidden = true
-        
+        AppContext.shared.isInTutorialMode = true
         navigationController?.setNavigationBarHidden(true, animated: true)
-        
         player?.fadeIn(to: backgroundVolume, duration: fadeInDuration)
-        
         if SettingsContext.shared.automaticCalloutsEnabled {
-            // Toggle callouts off for now
+            didDisableCallouts = true
             AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
         }
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
         navigationController?.setNavigationBarHidden(false, animated: true)
-        
-        player?.fadeOut { [weak self] in
-            self?.player = nil
+        cleanupTutorialState()
+    }
+
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        presentedAlertController = nil
+        super.dismiss(animated: flag, completion: completion)
+    }
+
+    @discardableResult
+    func goToNextPage() -> Bool {
+        guard currentPageIndex + 1 < steps.count else { return false }
+        currentPageIndex += 1
+        showPage(at: currentPageIndex, animated: view.window != nil)
+        return true
+    }
+
+    private func showPage(at index: Int, animated: Bool) {
+        let next = steps[index]
+        let previous = currentPage
+        addChild(next)
+        next.view.frame = view.bounds
+        next.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        let install = {
+            previous?.willMove(toParent: nil)
+            previous?.view.removeFromSuperview()
+            previous?.removeFromParent()
+            self.view.addSubview(next.view)
+            next.didMove(toParent: self)
+            self.currentPage = next
         }
-        
-        NotificationCenter.default.post(name: NSNotification.Name.enableMagicTap, object: self)
-        NotificationCenter.default.post(name: NSNotification.Name.enableDestinationGeofence, object: self)
-        
-        AppContext.shared.eventProcessor.hush(playSound: false)
-        
-        if !SettingsContext.shared.automaticCalloutsEnabled {
-            // Toggle callouts back on
-            AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
-        }
-        
-        guard !AppContext.shared.spatialDataContext.destinationManager.isDestinationSet else {
-            // Remove destination by clearing from cache
-            try? AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tutorial.beacon.clear_test_beacon")
+
+        guard animated, let previous = previous else {
+            install()
             return
         }
+        previous.willMove(toParent: nil)
+        transition(from: previous, to: next, duration: 0.3, options: .transitionCrossDissolve) {
+            previous.removeFromParent()
+            next.didMove(toParent: self)
+            self.currentPage = next
+        }
     }
-    
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        // Remove reference to `presentedAlertController`
-        presentedAlertController = nil
-        
-        super.dismiss(animated: true, completion: completion)
+
+    func exitTutorial() {
+        let alert = UIAlertController(title: GDLocalizedString("tutorial.exit.alert_title"),
+                                      message: nil,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel))
+        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.exit"), style: .destructive) { [weak self] _ in
+            self?.finish(finished: false)
+        })
+        present(alert, animated: true)
+        presentedAlertController = alert
     }
-    
-    @IBAction func exitTutorial() {
-        let title = GDLocalizedString("tutorial.exit.alert_title")
-        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.exit"), style: .destructive, handler: { (_) in
-            // Make sure all of the delayed calls to play(...) end appropriately
-            for step in self.steps ?? [] {
-                if let page = step as? DestinationTutorialPage {
-                    page.pageFinished = true
-                }
-            }
-            
-            NotificationCenter.default.removeObserver(self,
-                                                      name: AVAudioSession.interruptionNotification,
-                                                      object: AppContext.shared.audioEngine.session)
-            
-            if self.navigationController?.presentingViewController != nil {
-                FirstUseExperience.setDidComplete(for: .beaconTutorial)
-                self.dismiss(animated: true, completion: nil)
-            } else {
-                self.performSegue(withIdentifier: "ExitTutorialSegue", sender: self)
-            }
-            
-            AppContext.shared.isInTutorialMode = false
-            
+
+    private func finish(finished: Bool) {
+        steps.forEach { $0.pageFinished = true }
+        NotificationCenter.default.removeObserver(self,
+                                                  name: AVAudioSession.interruptionNotification,
+                                                  object: AppContext.shared.audioEngine.session)
+        FirstUseExperience.setDidComplete(for: .beaconTutorial)
+        AppContext.shared.isInTutorialMode = false
+
+        if finished {
+            GDATelemetry.track("tutorial.beacon.finished")
+            GDATelemetry.helper?.tutorialBeaconStatus = "finished"
+            GDATelemetry.helper?.tutorialBeaconCount += 1
+        } else {
             GDATelemetry.track("tutorial.beacon.exit")
             if GDATelemetry.helper?.tutorialBeaconStatus != "finished" {
                 GDATelemetry.helper?.tutorialBeaconStatus = "exited"
             }
-        }))
-        
-        present(alert, animated: true, completion: nil)
-        
-        // Save reference to alert
-        presentedAlertController = alert
-    }
-}
+        }
 
-extension DestinationTutorialViewController: CustomPageViewControllerDelegate {
-    func pageChanged() {
-        // Currently, we aren't changing any content when the page changes, so this impl is empty
+        if navigationController?.presentingViewController != nil {
+            dismiss(animated: true)
+        } else if let source = source {
+            navigationController?.popToViewController(source, animated: true)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
+    }
+
+    private func cleanupTutorialState() {
+        player?.fadeOut { [weak self] in self?.player = nil }
+        NotificationCenter.default.post(name: .enableMagicTap, object: self)
+        NotificationCenter.default.post(name: .enableDestinationGeofence, object: self)
+        AppContext.shared.eventProcessor.hush(playSound: false)
+
+        if didDisableCallouts, !SettingsContext.shared.automaticCalloutsEnabled {
+            AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
+        }
+        didDisableCallouts = false
+
+        if AppContext.shared.spatialDataContext.destinationManager.isDestinationSet {
+            try? AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tutorial.beacon.clear_test_beacon")
+        }
     }
 }
 
 extension DestinationTutorialViewController: DestinationTutorialPageDelegate {
-    func getEntityKey() -> String? {
-        return entityKey
-    }
-    
-    func pauseBackgroundTrack(_ completion: (() -> Void)?) {
-        player?.fadeOut(completion)
-    }
-    
-    func resumeBackgroundTrack() {
-        player?.fadeIn(to: backgroundVolume, duration: fadeInDuration)
-    }
-    
-    func pageComplete() {
-        goToNextPage()
-    }
-    
-    func tutorialComplete() {
-        NotificationCenter.default.removeObserver(self,
-                                                  name: AVAudioSession.interruptionNotification,
-                                                  object: AppContext.shared.audioEngine.session)
-        
-        if self.navigationController?.presentingViewController != nil {
-            FirstUseExperience.setDidComplete(for: .beaconTutorial)
-            self.dismiss(animated: true, completion: nil)
-        } else {
-            self.performSegue(withIdentifier: "ExitTutorialSegue", sender: self)
-        }
-        
-        GDATelemetry.track("tutorial.beacon.finished")
-        GDATelemetry.helper?.tutorialBeaconStatus = "finished"
-        GDATelemetry.helper?.tutorialBeaconCount += 1
-    }
+    func getEntityKey() -> String? { entityKey }
+    func pauseBackgroundTrack(_ completion: (() -> Void)?) { player?.fadeOut(completion) }
+    func resumeBackgroundTrack() { player?.fadeIn(to: backgroundVolume, duration: fadeInDuration) }
+    func pageComplete() { _ = goToNextPage() }
+    func tutorialComplete() { finish(finished: true) }
 }

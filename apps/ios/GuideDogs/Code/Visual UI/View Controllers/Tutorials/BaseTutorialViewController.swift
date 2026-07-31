@@ -3,24 +3,11 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import UIKit
-
-// MARK: Types
-
-struct Tutorial {
-    let pages: [Page]
-}
-
-struct Page {
-    let title: String
-    let image: UIImage
-    let text: String
-    let buttonTitle: String?
-    let buttonAction: Selector?
-}
 
 // MARK: - Notification Names
 
@@ -32,10 +19,7 @@ extension Notification.Name {
 // MARK: -
 
 class BaseTutorialViewController: UIViewController {
-
-    // MARK: Properties
-    
-    @IBOutlet weak var pageTextLabel: UILabel!
+    private var didDisableAppCallouts = false
     
     var pageFinished = false
     
@@ -103,33 +87,21 @@ class BaseTutorialViewController: UIViewController {
     }
     
     internal func updatePageText(_ text: String) {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard self.pageTextLabel.text != text else {
-                return
-            }
-            
-            let animations: (() -> Void) = { [weak self] in
-                self?.pageTextLabel.text = text
-            }
-            
-            UIView.transition(with: self.pageTextLabel, duration: 0.50, options: .transitionCrossDissolve, animations: animations, completion: nil)
-        }
+        // Subclasses with visible announcement text override this hook.
     }
     
     // MARK: Handle other app audio
     
     internal func toggleAppCalloutsOn() {
-        if !SettingsContext.shared.automaticCalloutsEnabled {
+        if didDisableAppCallouts, !SettingsContext.shared.automaticCalloutsEnabled {
             AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
         }
+        didDisableAppCallouts = false
     }
     
     internal func toggleAppCalloutsOff() {
         if SettingsContext.shared.automaticCalloutsEnabled {
+            didDisableAppCallouts = true
             AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
         }
     }

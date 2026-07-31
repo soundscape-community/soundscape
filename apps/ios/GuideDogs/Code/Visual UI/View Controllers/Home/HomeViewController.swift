@@ -425,11 +425,6 @@ class HomeViewController: UIViewController {
             vc.displayAsModal = true
         } else if let vc = segue.destination as? MotionPermissionViewController {
             vc.displayAsModal = true
-        } else if let vc = segue.destination as? DestinationTutorialIntroViewController {
-            vc.source = self
-            vc.logContext = telemetryContext
-        } else if let vc = segue.destination as? MarkerTutorialViewController {
-            vc.logContext = telemetryContext
         } else if let vc = segue.destination as? StandbyViewController {
             vc.delegate = self
         } else if let vc = segue.destination as? LocationDetailViewController {
@@ -445,15 +440,6 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func unwindToHome(segue: UIStoryboardSegue) {
-        if segue.source is DestinationTutorialViewController {
-            FirstUseExperience.setDidComplete(for: .beaconTutorial)
-        }
-        
-        if segue.source is DestinationTutorialIntroViewController {
-            // The user skipped the demo, so prevent it from showing again
-            FirstUseExperience.setDidComplete(for: .beaconTutorial)
-        }
-        
         // Transparent navigation bar
         navigationController?.navigationBar.configureAppearance(for: .transparentLightTitle)
     }

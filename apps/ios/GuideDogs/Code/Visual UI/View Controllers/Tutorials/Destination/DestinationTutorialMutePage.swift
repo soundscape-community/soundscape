@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -18,13 +19,23 @@ class DestinationTutorialMutePage: DestinationTutorialPage {
     // MARK: Properties
     
     var magicTapOccurred = false
+
+    init() {
+        super.init(title: GDLocalizedString("tutorial.beacon.need_some_silence"),
+                   imageName: "destination_graphic04",
+                   text: GDLocalizedString("tutorial.beacons.text.Mute"))
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("DestinationTutorialMutePage must be created programmatically")
+    }
     
     // MARK: Methods
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        pageTextLabel.text = mute
+        viewState.updateText(mute)
         
         NotificationCenter.default.addObserver(self, selector: #selector(onMagicTapOccurred), name: Notification.Name.magicTapOccurred, object: nil)
         
