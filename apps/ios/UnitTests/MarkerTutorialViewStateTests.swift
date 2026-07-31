@@ -88,12 +88,13 @@ final class MarkerTutorialViewStateTests: XCTestCase {
     }
 
     func testControllerRendersSwiftUISurfaceAndRestoresNavigationBar() {
+        let previousTutorialMode = AppContext.shared.isInTutorialMode
         let controller = MarkerTutorialViewController(logContext: "simulator_smoke_test")
         let navigationController = UINavigationController(rootViewController: controller)
 
         defer {
             controller.stop()
-            AppContext.shared.isInTutorialMode = false
+            AppContext.shared.isInTutorialMode = previousTutorialMode
         }
 
         controller.loadViewIfNeeded()
@@ -108,11 +109,7 @@ final class MarkerTutorialViewStateTests: XCTestCase {
         XCTAssertEqual(controller.children.count, 1)
         XCTAssertTrue(String(describing: type(of: controller.children[0])).contains("UIHostingController"))
         XCTAssertTrue(navigationController.isNavigationBarHidden)
-        XCTAssertEqual(controller.view.backgroundColor,
-                       UIColor(red: 36.0 / 255.0,
-                               green: 58.0 / 255.0,
-                               blue: 102.0 / 255.0,
-                               alpha: 1))
+        XCTAssertEqual(controller.view.backgroundColor, Colors.Background.markerTutorial)
 
         navigationController.beginAppearanceTransition(false, animated: false)
         navigationController.endAppearanceTransition()
@@ -137,6 +134,7 @@ final class MarkerTutorialViewStateTests: XCTestCase {
         let windowScene = try XCTUnwrap(
             UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first
         )
+        let previousKeyWindow = windowScene.windows.first(where: \.isKeyWindow)
         let window = UIWindow(windowScene: windowScene)
         window.frame = UIScreen.main.bounds
         window.windowLevel = .alert + 1
@@ -144,6 +142,7 @@ final class MarkerTutorialViewStateTests: XCTestCase {
 
         defer {
             window.isHidden = true
+            previousKeyWindow?.makeKey()
         }
 
         window.makeKeyAndVisible()

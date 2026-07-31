@@ -135,10 +135,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
 
         addChild(hostingController)
         view = UIView()
-        view.backgroundColor = UIColor(red: 36.0 / 255.0,
-                                       green: 58.0 / 255.0,
-                                       blue: 102.0 / 255.0,
-                                       alpha: 1)
+        view.backgroundColor = Colors.Background.markerTutorial
         view.addSubview(hostingController.view)
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -282,14 +279,12 @@ class MarkerTutorialViewController: BaseTutorialViewController {
             return
         }
         
-        DispatchQueue.main.async {
-            self.viewState.show(title: page.title,
-                                image: page.image,
-                                text: nil,
-                                actionTitle: page.buttonTitle,
-                                action: page.action,
-                                hidesContentFromAccessibility: self.currentPageIndex != UInt(PageIndexes.intro))
-        }
+        viewState.show(title: page.title,
+                       image: page.image,
+                       text: nil,
+                       actionTitle: page.buttonTitle,
+                       action: page.action,
+                       hidesContentFromAccessibility: currentPageIndex != UInt(PageIndexes.intro))
 
         if page.buttonTitle == nil {
             UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: nil)
