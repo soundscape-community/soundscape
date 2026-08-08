@@ -8,6 +8,8 @@
 
 protocol AutoCalloutSettingsProvider: AnyObject {
     var automaticCalloutsEnabled: Bool { get set }
+    var calloutSoundEffectsEnabled: Bool { get set }
+    var calloutDelaysEnabled: Bool { get set }
     var placeSenseEnabled: Bool { get set }
     var landmarkSenseEnabled: Bool { get set }
     var mobilitySenseEnabled: Bool { get set }
