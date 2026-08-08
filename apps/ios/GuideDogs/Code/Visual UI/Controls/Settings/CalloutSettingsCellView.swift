@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -13,7 +14,7 @@ protocol CalloutSettingsCellViewDelegate: AnyObject {
 }
 
 internal enum CalloutSettingCellType {
-    case all, poi, mobility, beacon, shake
+    case all, poi, mobility, beacon, shake, soundEffects, delays
 }
 
 class CalloutSettingsCellView: UITableViewCell {
@@ -44,6 +45,12 @@ class CalloutSettingsCellView: UITableViewCell {
                 return
             case .shake:
                 settingSwitch.isOn = SettingsContext.shared.shakeCalloutsEnabled
+                return
+            case .soundEffects:
+                settingSwitch.isOn = SettingsContext.shared.calloutSoundEffectsEnabled
+                return
+            case .delays:
+                settingSwitch.isOn = SettingsContext.shared.calloutPausesEnabled
             }
         }
     }
@@ -97,6 +104,14 @@ class CalloutSettingsCellView: UITableViewCell {
         case .shake:
             SettingsContext.shared.shakeCalloutsEnabled = isOn
             GDATelemetry.track("settings.shake_callouts", value: isOn.description)
+            return
+        case .soundEffects:
+            SettingsContext.shared.calloutSoundEffectsEnabled = isOn
+            GDATelemetry.track("settings.callout_sound_effects", value: isOn.description)
+            return
+        case .delays:
+            SettingsContext.shared.calloutPausesEnabled = isOn
+            GDATelemetry.track("settings.callout_delay", value: isOn.description)
         }
     }
 }

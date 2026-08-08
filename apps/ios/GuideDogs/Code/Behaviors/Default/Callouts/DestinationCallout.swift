@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -23,7 +24,7 @@ struct DestinationCallout: POICalloutProtocol {
         return "destination"
     }
     
-    let includePrefixSound = true
+    let includePrefixSound: Bool
     
     var prefixSound: Sound? {
         return GlyphSound(.startJourney)
@@ -52,10 +53,11 @@ struct DestinationCallout: POICalloutProtocol {
         return marker?.getPOI()
     }
     
-    init(_ calloutOrigin: CalloutOrigin, _ entityKey: String, _ causedAudioDisabled: Bool = false) {
+    init(_ calloutOrigin: CalloutOrigin, _ entityKey: String, _ causedAudioDisabled: Bool = false, _ includePrefixSound: Bool = true) {
         self.origin = calloutOrigin
         self.entityKey = entityKey
         self.causedAudioDisabled = causedAudioDisabled
+        self.includePrefixSound = includePrefixSound
     }
     
     func hasSameEntity(_ rhs: POICallout) -> Bool {
