@@ -10,7 +10,9 @@ import SwiftUI
 
 struct GPXRecordingView: View {
     @ObservedObject var controller: GPXRecordingController
-    @State private var showDiscardConfirmation = false
+    @State private var showRecordingDiscardConfirmation = false
+    @State private var showNamingDiscardConfirmation = false
+    @FocusState private var isNameFieldFocused: Bool
 
     var body: some View {
         List {
@@ -102,6 +104,7 @@ struct GPXRecordingView: View {
                             .disableAutocorrection(true)
                             .textFieldStyle(.roundedBorder)
                             .foregroundColor(.quaternaryBackground)
+                            .focused($isNameFieldFocused)
                     }
                     .listRowBackground(Color.primaryBackground)
                     .listRowSeparatorTint(Color.secondaryBackground)
@@ -118,10 +121,13 @@ struct GPXRecordingView: View {
                 .tint(.primaryForeground)
                 .navigationTitle(GDLocalizedString("gpx_recording.name.title"))
                 .navigationBarStyle(style: .darkBlue)
+                .onAppear {
+                    isNameFieldFocused = true
+                }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(GDLocalizedString("gpx_recording.discard"), role: .destructive) {
-                            showDiscardConfirmation = true
+                            showNamingDiscardConfirmation = true
                         }
                     }
                     ToolbarItem(placement: .confirmationAction) {
@@ -132,9 +138,8 @@ struct GPXRecordingView: View {
                     }
                 }
                 .interactiveDismissDisabled()
-                .confirmationDialog(GDLocalizedString("gpx_recording.discard.confirm"),
-                                    isPresented: $showDiscardConfirmation,
-                                    titleVisibility: .visible) {
+                .alert(GDLocalizedString("gpx_recording.discard.confirm"),
+                       isPresented: $showNamingDiscardConfirmation) {
                     Button(GDLocalizedString("gpx_recording.discard"), role: .destructive) {
                         controller.discard()
                     }
@@ -143,9 +148,8 @@ struct GPXRecordingView: View {
             }
             .navigationViewStyle(.stack)
         }
-        .confirmationDialog(GDLocalizedString("gpx_recording.discard.confirm"),
-                            isPresented: $showDiscardConfirmation,
-                            titleVisibility: .visible) {
+        .alert(GDLocalizedString("gpx_recording.discard.confirm"),
+               isPresented: $showRecordingDiscardConfirmation) {
             Button(GDLocalizedString("gpx_recording.discard"), role: .destructive) {
                 controller.discard()
             }
@@ -197,7 +201,7 @@ struct GPXRecordingView: View {
                 backgroundColor: .errorBackground,
                 foregroundColor: .primaryForeground
             ) {
-                showDiscardConfirmation = true
+                showRecordingDiscardConfirmation = true
             }
         case .awaitingName:
             EmptyView()
