@@ -31,6 +31,10 @@ class DestinationTutorialMutePage: DestinationTutorialPage {
     }
     
     // MARK: Methods
+
+    override func accessibilityPerformMagicTap() -> Bool {
+        LaunchHelper.performMagicTap()
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

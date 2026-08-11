@@ -52,6 +52,7 @@ struct DestinationTutorialPageView: View {
     @ObservedObject var state: DestinationTutorialViewState
     let onAction: (DestinationTutorialAction) -> Void
     let onExit: () -> Void
+    let onMagicTap: () -> Void
 
     private let backgroundColor = Color(Colors.Background.tutorial)
 
@@ -72,9 +73,8 @@ struct DestinationTutorialPageView: View {
 
                         Image(uiImage: state.image)
                             .resizable()
-                            .aspectRatio(125.0 / 53.0, contentMode: .fill)
-                            .frame(maxWidth: .infinity)
-                            .clipped()
+                            .scaledToFit()
+                            .frame(maxWidth: state.image.size.width)
                             .accessibilityHidden(true)
 
                         Text(state.text)
@@ -113,6 +113,7 @@ struct DestinationTutorialPageView: View {
             }
         }
         .animation(.easeInOut(duration: 0.5), value: state.text)
+        .accessibilityAction(.magicTap, onMagicTap)
     }
 }
 
@@ -157,7 +158,8 @@ class DestinationTutorialPage: BaseTutorialViewController {
         let rootView = DestinationTutorialPageView(
             state: viewState,
             onAction: { [weak self] action in self?.perform(action) },
-            onExit: { [weak self] in self?.exitPage() }
+            onExit: { [weak self] in self?.exitPage() },
+            onMagicTap: { [weak self] in _ = self?.accessibilityPerformMagicTap() }
         )
         let hostingController = UIHostingController(rootView: rootView)
         addChild(hostingController)

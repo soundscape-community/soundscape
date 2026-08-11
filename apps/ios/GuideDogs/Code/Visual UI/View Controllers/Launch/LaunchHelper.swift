@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -24,6 +25,18 @@ class LaunchHelper {
     
     fileprivate static var windowConfigured: Bool = false
     fileprivate static var magicTapEnabled: Bool = true
+
+    @discardableResult
+    class func performMagicTap() -> Bool {
+        guard magicTapEnabled else {
+            return false
+        }
+
+        AppContext.shared.eventProcessor.toggleAudio()
+        NotificationCenter.default.post(name: .magicTapOccurred, object: self)
+
+        return true
+    }
     
     class func configureAppView(with launchStoryboard: LaunchStoryboard) {
         guard let window = UIApplication.shared.windows.first(where: \.isKeyWindow) else {
@@ -138,16 +151,7 @@ extension UIWindow {
     }
     
     @objc fileprivate func handleMagicTap() -> Bool {
-        guard LaunchHelper.magicTapEnabled else {
-            return false
-        }
-        
-        // Hush callouts
-        AppContext.shared.eventProcessor.toggleAudio()
-        
-        NotificationCenter.default.post(name: NSNotification.Name.magicTapOccurred, object: self)
-        
-        return true
+        LaunchHelper.performMagicTap()
     }
     
     @objc func disableMagicTap() {

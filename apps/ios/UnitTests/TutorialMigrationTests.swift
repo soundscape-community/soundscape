@@ -12,6 +12,33 @@ import XCTest
 @testable import Soundscape
 
 final class TutorialMigrationTests: XCTestCase {
+    func testDestinationPageForwardsSwiftUIMagicTapToViewController() {
+        final class MagicTapPage: DestinationTutorialPage {
+            private(set) var magicTapCount = 0
+
+            init() {
+                super.init(title: "Title", imageName: "destination_graphic04", text: "Text")
+            }
+
+            required init?(coder: NSCoder) {
+                fatalError("MagicTapPage must be created programmatically")
+            }
+
+            override func accessibilityPerformMagicTap() -> Bool {
+                magicTapCount += 1
+                return true
+            }
+        }
+
+        let page = MagicTapPage()
+        page.loadViewIfNeeded()
+
+        let hostingController = page.children.first as? UIHostingController<DestinationTutorialPageView>
+        hostingController?.rootView.onMagicTap()
+
+        XCTAssertEqual(page.magicTapCount, 1)
+    }
+
     func testDestinationStateUpdatesTextAndActionVisibility() {
         let state = DestinationTutorialViewState(title: "Title",
                                                  image: UIImage(),
