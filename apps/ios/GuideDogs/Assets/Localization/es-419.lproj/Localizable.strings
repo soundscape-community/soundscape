@@ -1187,3 +1187,5 @@
 "faq.tip.create_marker_at_bus_stop" = "Si hay una ruta de autobús que toma a menudo, establezca sus paradas de recogida y salida como marcadores. De esta manera se guardarán para que pueda volver a encontrarlas fácilmente, sólo tiene que ir a \"Marcadores y rutas\" desde la pantalla principal y encontrarlas en la página \"Marcadores\". Puede establecer una señal en ellas y recibirá actualizaciones periódicas sobre lo cerca que está a la parada de salida. Nota: puede desactivar el sonido rítmico y seguirá obteniendo actualizaciones de la distancia por el camino.";
 "faq.tip.two_finger_double_tap" = "Para silenciar los avisos activos, pulse en la pantalla dos veces con dos dedos.";
 "faq.tip.reverse_route" = "Cuando seleccione \"Iniciar ruta de regreso\" en la pantalla \"Detalles de la ruta\", será más fácil tomar una ruta de regreso, y se guardará una copia de la ruta con los puntos en orden inverso. Tenga en cuenta que \"Iniciar ruta de regreso\" no guardará otra copia de la ruta ya guardada.";
+"voice.settings.other_voices" = "Otras voces";
+"voice.settings.novelty" = "Divertidas";
