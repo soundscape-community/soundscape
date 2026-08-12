@@ -62,7 +62,7 @@ class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate
     }
 
     @objc private func handleAudioSessionInterruption(_ notification: NSNotification) {
-        tutorialComplete()
+        finish(finished: false)
     }
 
     override func viewWillAppear(_ animated: Bool) {

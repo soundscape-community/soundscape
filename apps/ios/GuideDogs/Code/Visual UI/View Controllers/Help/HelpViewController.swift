@@ -410,6 +410,10 @@ class HelpViewController: BaseTableViewController {
             UIApplication.shared.open(AppContext.Links.companySupportURL)
             
         case Section.tutorials:
+            guard !(AppContext.shared.eventProcessor.activeBehavior is RouteGuidance) else {
+                return
+            }
+
             if indexPath.row == Row.destinations {
                 let viewController = DestinationTutorialIntroViewController(source: self, logContext: "help_screen")
                 navigationController?.pushViewController(viewController, animated: true)

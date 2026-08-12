@@ -142,8 +142,13 @@ class DestinationTutorialPage: BaseTutorialViewController {
 
     init(title: String, imageName: String, text: String,
          actionTitle: String? = nil, action: DestinationTutorialAction? = nil) {
+        let image = UIImage(named: imageName)
+        if image == nil {
+            GDLogAppError("Destination tutorial: missing image asset \(imageName).")
+        }
+
         viewState = DestinationTutorialViewState(title: title,
-                                                 image: UIImage(named: imageName)!,
+                                                 image: image ?? UIImage(),
                                                  text: text,
                                                  actionTitle: actionTitle,
                                                  action: action)
