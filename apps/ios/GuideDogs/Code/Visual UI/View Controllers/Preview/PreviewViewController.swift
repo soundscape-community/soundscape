@@ -39,6 +39,7 @@ class PreviewViewController: UIViewController {
     private var virtualLocationViewController: VirtualLocationViewController?
     private weak var calloutButtonViewController: CalloutButtonPanelHostingViewController?
     private weak var activityIndicatorViewController: PreviewActivityIndicatorViewController?
+    private var previewTutorialViewController: PreviewTutorialViewController?
     private var isActivatedAndStartedSubscriber: AnyCancellable?
     private var isStoppedAndDeactivatedSubscriber: AnyCancellable?
     private var userActionSubscriber: AnyCancellable?
@@ -132,6 +133,14 @@ class PreviewViewController: UIViewController {
             
             // Update state
             isPresentingTutorialViewController = true
+
+            let tutorialViewController = PreviewTutorialViewController(delegate: self)
+            addChild(tutorialViewController)
+            tutorialContainerView.addSubview(tutorialViewController.view)
+            tutorialViewController.view.frame = tutorialContainerView.bounds
+            tutorialViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            tutorialViewController.didMove(toParent: self)
+            previewTutorialViewController = tutorialViewController
             
             // Configure tutorial view on first launch
             configureTutorialView(isHidden: false)
@@ -175,9 +184,7 @@ class PreviewViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let viewController = segue.destination as? PreviewTutorialViewController {
-            viewController.delegate = self
-        } else if let vc = segue.destination as? SearchTableViewController {
+        if let vc = segue.destination as? SearchTableViewController {
             vc.logContext = "preview"
             vc.onDismissPreviewHandler = onDismissHandler
         }
@@ -525,6 +532,11 @@ extension PreviewViewController: PreviewTutorialDelegate {
         
         // Update state
         isPresentingTutorialViewController = false
+
+        previewTutorialViewController?.willMove(toParent: nil)
+        previewTutorialViewController?.view.removeFromSuperview()
+        previewTutorialViewController?.removeFromParent()
+        previewTutorialViewController = nil
         
         if let initializationResult = initializationResult {
             // Process result
