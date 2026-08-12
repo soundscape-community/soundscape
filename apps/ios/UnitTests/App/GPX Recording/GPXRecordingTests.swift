@@ -56,6 +56,34 @@ final class GPXRecordingTests: XCTestCase {
         XCTAssertEqual(recovered?.pointCount, 0)
     }
 
+    func testDraftRecoveryIgnoresMalformedUnterminatedTrailingEntry() async throws {
+        let root = makeTemporaryDirectory()
+        let store = FileGPXRecordingDraftStore(root: root)
+        let first = point(latitude: 51, longitude: -0.1, timestamp: Date(timeIntervalSince1970: 1))
+
+        try await store.create(startedAt: Date(timeIntervalSince1970: 0))
+        try await store.append(first)
+        try append(Data(#"{"type":"point""#.utf8),
+                   to: draftEntriesURL(root: root))
+
+        let recovered = try await store.recover()
+        XCTAssertEqual(recovered?.segments, [[first]])
+        XCTAssertEqual(recovered?.pointCount, 1)
+    }
+
+    func testDraftRecoveryRejectsMalformedCompletedEntry() async throws {
+        let root = makeTemporaryDirectory()
+        let store = FileGPXRecordingDraftStore(root: root)
+
+        try await store.create(startedAt: Date(timeIntervalSince1970: 0))
+        try append(Data("not-json\n".utf8),
+                   to: draftEntriesURL(root: root))
+
+        await XCTAssertThrowsErrorAsync {
+            _ = try await store.recover()
+        }
+    }
+
     func testRepositoryListsLocalFilesNewestFirstAndDetectsDuplicate() async throws {
         let local = makeTemporaryDirectory()
         let repository = FileGPXRecordingRepository(localRoot: local)
@@ -91,6 +119,30 @@ final class GPXRecordingTests: XCTestCase {
         await waitUntil(controller: controller) {
             $0.state == .recording || $0.state == .paused
         }
+    }
+
+    @MainActor
+    func testStoppingWithoutPointsDiscardsDraftAndReturnsToIdle() async throws {
+        let draftStore = SuspendedDraftStore()
+        let repository = FileGPXRecordingRepository(localRoot: makeTemporaryDirectory())
+        let controller = GPXRecordingController(draftStore: draftStore, repository: repository)
+
+        await waitForState(.idle, controller: controller)
+        controller.start()
+        _ = await waitForCreateCount(draftStore)
+        await draftStore.finishCreating()
+        await waitUntil(controller: controller) {
+            $0.state == .recording || $0.state == .paused
+        }
+
+        controller.stop()
+        XCTAssertEqual(controller.state, .starting)
+
+        await waitForState(.idle, controller: controller)
+        let discardCount = await draftStore.discardCount
+        XCTAssertEqual(discardCount, 1)
+        XCTAssertEqual(controller.pointCount, 0)
+        XCTAssertNil(controller.error)
     }
 
     func testGPXBuilderCreatesOneTrackWithSegmentsAndCorrectBounds() throws {
@@ -132,6 +184,18 @@ final class GPXRecordingTests: XCTestCase {
         return directory
     }
 
+    private func draftEntriesURL(root: URL) -> URL {
+        root.appendingPathComponent("GPX Recording Draft", isDirectory: true)
+            .appendingPathComponent("entries.jsonl")
+    }
+
+    private func append(_ data: Data, to url: URL) throws {
+        let handle = try FileHandle(forWritingTo: url)
+        defer { try? handle.close() }
+        try handle.seekToEnd()
+        try handle.write(contentsOf: data)
+    }
+
     @MainActor
     private func waitForState(_ state: GPXRecordingState,
                               controller: GPXRecordingController) async {
@@ -161,6 +225,7 @@ final class GPXRecordingTests: XCTestCase {
 
 private actor SuspendedDraftStore: GPXRecordingDraftStore {
     private(set) var createCount = 0
+    private(set) var discardCount = 0
     private var createContinuation: CheckedContinuation<Void, Never>?
 
     func create(startedAt: Date) async throws {
@@ -178,7 +243,9 @@ private actor SuspendedDraftStore: GPXRecordingDraftStore {
         nil
     }
 
-    func discard() async throws {}
+    func discard() async throws {
+        discardCount += 1
+    }
 
     func finishCreating() {
         createContinuation?.resume()

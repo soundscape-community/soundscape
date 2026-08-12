@@ -108,7 +108,18 @@ final class GPXRecordingController: ObservableObject {
             return
         }
         guard pointCount > 0 else {
-            error = .noPoints
+            state = .starting
+            error = nil
+            Task {
+                do {
+                    try await draftStore.discard()
+                    GDATelemetry.track("gpx_recording.discard")
+                } catch {
+                    self.error = .storage(error.localizedDescription)
+                }
+                pointCount = 0
+                state = .idle
+            }
             return
         }
         proposedName = Self.defaultName()

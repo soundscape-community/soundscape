@@ -65,8 +65,18 @@ actor FileGPXRecordingDraftStore: GPXRecordingDraftStore {
         let data = try Data(contentsOf: entriesURL)
         var segments: [[GPXRecordingPoint]] = []
 
-        for line in data.split(separator: 0x0A) {
-            let entry = try decoder.decode(GPXRecordingDraftEntry.self, from: Data(line))
+        let lines = data.split(separator: 0x0A)
+        for (index, line) in lines.enumerated() {
+            let entry: GPXRecordingDraftEntry
+            do {
+                entry = try decoder.decode(GPXRecordingDraftEntry.self, from: Data(line))
+            } catch {
+                let isUncommittedTrailingEntry = index == lines.indices.last && data.last != 0x0A
+                guard !isUncommittedTrailingEntry else {
+                    break
+                }
+                throw error
+            }
             switch entry {
             case .segment:
                 segments.append([])
