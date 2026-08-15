@@ -62,7 +62,10 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     // MARK: - Private Constants
     
     private let inVehicleBeaconUpdateDistance: CLLocationDistance = 1000.0 // meters
-    private let calloutDelay: TimeInterval = 0.75
+    private let defaultCalloutDelay: TimeInterval = 0.75
+    private var calloutDelay: TimeInterval? {
+        return settings.calloutDelaysEnabled ? defaultCalloutDelay : nil
+    }
     
     // MARK: - Private Properties
     
@@ -100,7 +103,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
     func handle(event: UserInitiatedEvent, verbosity: Verbosity) -> HandledEventAction? {
         switch event {
         case let event as BeaconCalloutEvent:
-            return .playCallouts(CalloutGroup([DestinationCallout(.auto, event.beaconId)], action: .interruptAndClear, logContext: event.logContext))
+            return .playCallouts(CalloutGroup([DestinationCallout(.auto, event.beaconId, includePrefixSound: settings.calloutSoundEffectsEnabled)], action: .interruptAndClear, logContext: event.logContext))
             
         case let event as BeaconChangedEvent:
             guard settings.automaticCalloutsEnabled else {
@@ -302,7 +305,7 @@ class BeaconCalloutGenerator: AutomaticGenerator, ManualGenerator {
         configureDestinationUpdates()
         
         // Build the destination callout
-        return [DestinationCallout(origin, key, causedAudioDisable)]
+        return [DestinationCallout(origin, key, causedAudioDisable, includePrefixSound: settings.calloutSoundEffectsEnabled)]
     }
     
     // MARK: - Helper Methods

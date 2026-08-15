@@ -136,7 +136,11 @@ class IntersectionGenerator: AutomaticGenerator {
             return .noAction
             
         case let event as IntersectionArrivalEvent:
-            let callout = IntersectionCallout(.intersection, event.key, event.isRoundabout, event.heading)
+            let callout = IntersectionCallout(.intersection,
+                                              event.key,
+                                              event.isRoundabout,
+                                              event.heading,
+                                              includePrefixSound: SettingsContext.shared.calloutSoundEffectsEnabled)
             
             GDATelemetry.track("callout", with: ["context": "intersection.arrival",
                                                  "type": callout.logCategory,
@@ -146,7 +150,9 @@ class IntersectionGenerator: AutomaticGenerator {
             return .playCallouts(CalloutGroup([callout], action: .interruptAndClear, logContext: "intersections"))
             
         case let event as IntersectionDepartureEvent:
-            let callout = event.geocodedLocation.buildCallout(origin: .intersection, sound: true, useClosestRoadIfAvailable: true)
+            let callout = event.geocodedLocation.buildCallout(origin: .intersection,
+                                                              sound: SettingsContext.shared.calloutSoundEffectsEnabled,
+                                                              useClosestRoadIfAvailable: true)
             return .playCallouts(CalloutGroup([callout], action: .enqueue, logContext: "intersections"))
             
         default:
