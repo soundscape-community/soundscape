@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E300000131C1000100C0FFEE /* InternalStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E300000031C1000100C0FFEE /* InternalStorageTests.swift */; };
 		E200000131C0000100C0FFEE /* InternalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200000031C0000100C0FFEE /* InternalStorage.swift */; };
 		A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000831B3000100C0FFEE /* GPXRecordingTests.swift */; };
 		A100000231B3000100C0FFEE /* GPXRecordingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000131B3000100C0FFEE /* GPXRecordingModels.swift */; };
@@ -780,7 +781,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E200000031C0000100C0FFEE /* InternalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InternalStorage.swift; path = "Code/App/Framework Extensions/Base Type Extensions/InternalStorage.swift"; sourceTree = "<group>"; };
+		E300000031C1000100C0FFEE /* InternalStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalStorageTests.swift; sourceTree = "<group>"; };
+		E200000031C0000100C0FFEE /* InternalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InternalStorage.swift; path = Code/App/Helpers/InternalStorage.swift; sourceTree = "<group>"; };
 		A100000831B3000100C0FFEE /* GPXRecordingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXRecordingTests.swift; sourceTree = "<group>"; };
 		A100000131B3000100C0FFEE /* GPXRecordingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingModels.swift; path = "Code/GPX Recording/GPXRecordingModels.swift"; sourceTree = "<group>"; };
 		A100000331B3000100C0FFEE /* GPXRecordingServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingServices.swift; path = "Code/GPX Recording/GPXRecordingServices.swift"; sourceTree = "<group>"; };
@@ -2523,6 +2525,7 @@
 		28D7573A2425395A002F0E7A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				E200000031C0000100C0FFEE /* InternalStorage.swift */,
 				282A806D23F7238000993B7D /* NSException Handling */,
 				31BC2554219CE41500F1DFE0 /* DirectoryObserver.swift */,
 				B93629B11FCF1C3000BAF3A6 /* GeometryUtils.swift */,
@@ -3567,6 +3570,7 @@
 		914DEBDB2A3CE85D007B161C /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				E300000031C1000100C0FFEE /* InternalStorageTests.swift */,
 				914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */,
 				20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */,
 				914BAB002AD7490100CB2171 /* NavigationControllerTest.swift */,
@@ -4061,7 +4065,6 @@
 		C36E562A22A87E3B00E89C6D /* Base Type Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				E200000031C0000100C0FFEE /* InternalStorage.swift */,
 				31CA500D21715F7700049ADF /* Array+Extensions.swift */,
 				C36E562B22A87E5300E89C6D /* Array+POI.swift */,
 				286A2AEF2256813400A74724 /* Data+Extensions.swift */,
@@ -4763,6 +4766,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E300000131C1000100C0FFEE /* InternalStorageTests.swift in Sources */,
 				A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */,
 				915FF9F62ADE4BAF002B3690 /* AuthoredActivityContentTest.swift in Sources */,
 				914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */,
