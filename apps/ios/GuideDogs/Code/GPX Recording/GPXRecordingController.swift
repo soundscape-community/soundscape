@@ -154,7 +154,11 @@ final class GPXRecordingController: ObservableObject {
                 }
                 _ = try await repository.save(gpx: GPXRecordingDocumentBuilder.makeGPX(from: draft),
                                               named: name)
-                try await draftStore.discard()
+                do {
+                    try await draftStore.discard()
+                } catch {
+                    self.error = .storage(error.localizedDescription)
+                }
                 pointCount = 0
                 state = .idle
                 GDATelemetry.track("gpx_recording.save", with: ["destination": "local"])
@@ -288,7 +292,7 @@ final class GPXRecordingController: ObservableObject {
 
     private static func defaultName() -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone.current
         formatter.dateFormat = "yyyy-MM-dd HH-mm-ss"
         return formatter.string(from: Date())

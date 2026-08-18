@@ -26,6 +26,7 @@ final class GPXRecordingTests: XCTestCase {
         XCTAssertEqual(try GPXRecordingNameValidator.normalizedName(" Morning walk.GPX "), "Morning walk")
         XCTAssertThrowsError(try GPXRecordingNameValidator.normalizedName(""))
         XCTAssertThrowsError(try GPXRecordingNameValidator.normalizedName("../walk"))
+        XCTAssertThrowsError(try GPXRecordingNameValidator.normalizedName(".walk"))
         XCTAssertThrowsError(try GPXRecordingNameValidator.normalizedName("walk:one"))
         XCTAssertThrowsError(try GPXRecordingNameValidator.normalizedName("walk."))
     }
@@ -145,6 +146,28 @@ final class GPXRecordingTests: XCTestCase {
         XCTAssertNil(controller.error)
     }
 
+    @MainActor
+    func testSuccessfulSaveRemainsCompleteWhenDraftCleanupFails() async throws {
+        let draftStore = FailingDiscardDraftStore(
+            draft: GPXRecordingDraft(startedAt: Date(),
+                                     segments: [[point(latitude: 51,
+                                                       longitude: -0.1,
+                                                       timestamp: Date())]])
+        )
+        let repository = FileGPXRecordingRepository(localRoot: makeTemporaryDirectory())
+        let controller = GPXRecordingController(draftStore: draftStore, repository: repository)
+
+        await waitForState(.recoverableInterruption, controller: controller)
+        controller.prepareRecoveredDraftForSaving()
+        controller.proposedName = "Saved recording"
+        controller.save()
+
+        await waitForState(.idle, controller: controller)
+        XCTAssertEqual(controller.recordings.map(\.displayName), ["Saved recording"])
+        XCTAssertEqual(controller.pointCount, 0)
+        XCTAssertNotNil(controller.error)
+    }
+
     func testGPXBuilderCreatesOneTrackWithSegmentsAndCorrectBounds() throws {
         let first = point(latitude: 10, longitude: 100, timestamp: Date(timeIntervalSince1970: 1))
         let second = point(latitude: 20, longitude: -30, timestamp: Date(timeIntervalSince1970: 2))
@@ -207,6 +230,7 @@ final class GPXRecordingTests: XCTestCase {
                            condition: (GPXRecordingController) -> Bool) async {
         for _ in 0..<100 where !condition(controller) {
             await Task.yield()
+            try? await Task.sleep(nanoseconds: 1_000_000)
         }
         XCTAssertTrue(condition(controller))
     }
@@ -220,6 +244,28 @@ final class GPXRecordingTests: XCTestCase {
             try? await Task.sleep(nanoseconds: 1_000_000)
         }
         return await draftStore.createCount
+    }
+}
+
+private actor FailingDiscardDraftStore: GPXRecordingDraftStore {
+    private let draft: GPXRecordingDraft
+
+    init(draft: GPXRecordingDraft) {
+        self.draft = draft
+    }
+
+    func create(startedAt: Date) async throws {}
+
+    func append(_ point: GPXRecordingPoint) async throws {}
+
+    func beginSegment() async throws {}
+
+    func recover() async throws -> GPXRecordingDraft? {
+        draft
+    }
+
+    func discard() async throws {
+        throw CocoaError(.fileWriteNoPermission)
     }
 }
 

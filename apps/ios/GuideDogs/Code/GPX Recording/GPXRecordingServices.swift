@@ -24,8 +24,12 @@ actor FileGPXRecordingDraftStore: GPXRecordingDraftStore {
 
     init(fileManager: FileManager = .default, root: URL? = nil) {
         self.fileManager = fileManager
-        let applicationSupport = root ?? fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        directory = applicationSupport.appendingPathComponent("GPX Recording Draft", isDirectory: true)
+        if let root {
+            directory = root.appendingPathComponent("GPX Recording Draft", isDirectory: true)
+        } else {
+            directory = (try? InternalStorage.directory(named: "GPX Recording Draft", fileManager: fileManager))
+                ?? fileManager.temporaryDirectory.appendingPathComponent("GPX Recording Draft", isDirectory: true)
+        }
         metadataURL = directory.appendingPathComponent("metadata.json")
         entriesURL = directory.appendingPathComponent("entries.jsonl")
         encoder = JSONEncoder()
@@ -123,7 +127,7 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
     }
 
     func recordings() throws -> [GPXRecordingFile] {
-        try files(in: localDirectory()).sorted {
+        try files(in: try localDirectory()).sorted {
             if $0.modifiedAt == $1.modifiedAt {
                 return $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending
             }
@@ -145,14 +149,15 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
         }
 
         do {
-            let directory = localDirectory()
+            let directory = try localDirectory()
             try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
             let destination = directory.appendingPathComponent(normalized).appendingPathExtension("gpx")
             let temporary = fileManager.temporaryDirectory
                 .appendingPathComponent(UUID().uuidString)
                 .appendingPathExtension("gpx")
             defer { try? fileManager.removeItem(at: temporary) }
-            try Data(gpx.utf8).write(to: temporary, options: [.atomic, .completeFileProtection])
+            try Data(gpx.utf8).write(to: temporary,
+                                     options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
 
             var coordinationError: NSError?
             var writeError: Error?
@@ -183,8 +188,13 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
         file.url
     }
 
-    private func localDirectory() -> URL {
-        let root = localRootOverride ?? fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    private func localDirectory() throws -> URL {
+        if let localRootOverride {
+            return localRootOverride.appendingPathComponent("GPX recordings", isDirectory: true)
+        }
+        guard let root = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            throw CocoaError(.fileNoSuchFile)
+        }
         return root.appendingPathComponent("GPX recordings", isDirectory: true)
     }
 

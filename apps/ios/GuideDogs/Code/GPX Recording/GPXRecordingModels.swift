@@ -151,6 +151,7 @@ enum GPXRecordingNameValidator {
         guard !name.isEmpty,
               name != ".",
               name != "..",
+              !name.hasPrefix("."),
               !name.hasSuffix("."),
               name.rangeOfCharacter(from: unsafe) == nil else {
             throw GPXRecordingError.invalidName

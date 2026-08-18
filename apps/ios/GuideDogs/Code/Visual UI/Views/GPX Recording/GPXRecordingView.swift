@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct GPXRecordingView: View {
     @ObservedObject var controller: GPXRecordingController
@@ -32,7 +33,7 @@ struct GPXRecordingView: View {
                 }
 
                 if controller.pointCount > 0 {
-                    Text(String(format: GDLocalizedString("gpx_recording.point_count"), controller.pointCount))
+                    Text(pointCountText)
                         .foregroundColor(.secondaryForeground)
                 }
 
@@ -95,6 +96,14 @@ struct GPXRecordingView: View {
         .onAppear {
             controller.screenAppeared()
         }
+        .onChange(of: controller.error?.localizedDescription) { description in
+            guard let description else {
+                return
+            }
+            UIAccessibility.post(notification: .announcement,
+                                 argument: String(format: GDLocalizedString("gpx_recording.error.accessibility"),
+                                                  description))
+        }
         .fullScreenCover(isPresented: namingPresented) {
             NavigationView {
                 Form {
@@ -155,6 +164,13 @@ struct GPXRecordingView: View {
             }
             Button(GDLocalizedString("general.alert.cancel"), role: .cancel) {}
         }
+    }
+
+    private var pointCountText: String {
+        if controller.pointCount == 1 {
+            return GDLocalizedString("gpx_recording.point_count.singular")
+        }
+        return String(format: GDLocalizedString("gpx_recording.point_count"), controller.pointCount)
     }
 
     @ViewBuilder
