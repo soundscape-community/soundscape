@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -38,6 +39,18 @@ class HapticPulseBeacon: HapticBeacon {
     static var description: String {
         return String(describing: self)
     }
+
+    static func audioVolume(userHeading: CLLocationDirection,
+                            beaconBearing: CLLocationDirection,
+                            fullVolumeAngle: CLLocationDirection,
+                            audioWindow: CLLocationDirection = 60.0) -> Float {
+        let relativeBearing = userHeading.bearing(to: beaconBearing)
+        let distance = min(relativeBearing, 360.0 - relativeBearing)
+        let fadeWidth = audioWindow / 2.0 - fullVolumeAngle
+        let volume = distance <= fullVolumeAngle ? 1.0 : 1.0 - max(min((distance - fullVolumeAngle) / fadeWidth, 1.0), 0.0)
+
+        return Float(volume)
+    }
     
     required init(at: CLLocation) {
         beaconLocation = at
@@ -70,8 +83,10 @@ class HapticPulseBeacon: HapticBeacon {
             }
         }
         
-        // Create a target that spans the A+ and A regions but cuts off before B and Behind
-        let target = WandTarget(orientation, window: includeAHaptics ? 110.0 : 30.0)
+        // The focus window controls haptic feedback. Audio uses its own wider window below so
+        // it can fade out after the phone leaves the haptic focus region.
+        let focusWindow = includeAHaptics ? 110.0 : SettingsContext.shared.beaconRingingAngle * 2.0
+        let target = WandTarget(orientation, window: focusWindow)
         let heading = AppContext.shared.geolocationManager.heading(orderedBy: [.device])
         
         wand.start(with: [target], heading: heading)
@@ -112,23 +127,18 @@ class HapticPulseBeacon: HapticBeacon {
     
     func wandDidStart(_ wand: Wand) {
         // Set up the ambient audio for the road finder
-        let silentDistance = 15.0
-        let maxDistance = audioWindow / 2 - silentDistance
-        
         PreviewWandAsset.selector = { [weak self] input -> (PreviewWandAsset, PreviewWandAsset.Volume)? in
-            if case .heading(let userHeading, _) = input {
+            if case .heading(let userHeading, let beaconBearing) = input {
                 guard let `self` = self, let heading = userHeading else {
                     return (PreviewWandAsset.noTarget, 0.0)
                 }
+
+                let volume = HapticPulseBeacon.audioVolume(userHeading: heading,
+                                                           beaconBearing: beaconBearing,
+                                                           fullVolumeAngle: SettingsContext.shared.beaconRingingAngle,
+                                                           audioWindow: self.audioWindow)
                 
-                guard self.isBeaconFocussed else {
-                    return (PreviewWandAsset.noTarget, 0.0)
-                }
-                
-                let distance = self.wand.angleFromCurrentTarget(heading) ?? 0.0
-                let volume = distance < silentDistance ? 1.0 : 1.0 - max(min((distance - silentDistance) / maxDistance, 1.0), 0.0)
-                
-                return (PreviewWandAsset.noTarget, Float(volume))
+                return (PreviewWandAsset.noTarget, volume)
             }
             
             return nil

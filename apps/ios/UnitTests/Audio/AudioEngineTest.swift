@@ -88,6 +88,24 @@ final class TestSound: SynchronouslyGeneratedSound {
 }
 
 final class AudioEngineTest: XCTestCase {
+    func testHapticPulseAudioVolumeIsSymmetric() {
+        for beaconBearing in [0.0, 90.0, 180.0, 270.0] {
+            for offset in [0.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0] {
+                let counterClockwiseHeading = beaconBearing.add(degrees: -offset)
+                let clockwiseHeading = beaconBearing.add(degrees: offset)
+                let counterClockwiseVolume = HapticPulseBeacon.audioVolume(userHeading: counterClockwiseHeading,
+                                                                            beaconBearing: beaconBearing,
+                                                                            fullVolumeAngle: 15.0)
+                let clockwiseVolume = HapticPulseBeacon.audioVolume(userHeading: clockwiseHeading,
+                                                                     beaconBearing: beaconBearing,
+                                                                     fullVolumeAngle: 15.0)
+
+                XCTAssertEqual(counterClockwiseVolume, clockwiseVolume, accuracy: 0.0001,
+                               "Volume differs at bearing \(beaconBearing) and offset \(offset)")
+            }
+        }
+    }
+
     class TestAudioEngineDelegate: AudioEngineDelegate {
         func didFinishPlaying() {
             finish_count += 1
