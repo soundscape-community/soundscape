@@ -3,13 +3,14 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 
 enum RouteGuidanceStateError: Error {
-    case noDocumentsDirectory
+    case noApplicationSupportDirectory
 }
 
 struct RouteGuidanceState: Codable, CustomStringConvertible {
@@ -45,17 +46,17 @@ struct RouteGuidanceState: Codable, CustomStringConvertible {
 
 extension RouteGuidanceState {
     
-    /// Save's the state to a file in the user's documents directory (in the subdirectory
+    /// Saves the state to an internal application support file (in the subdirectory
     /// `SharedExperiences/State/`).
     ///
     /// - Parameter id: ID of the shared content experience this state cooresponds to
     /// - Throws: Throws if the data cannot be encoded
     func save(id: String) throws {
-        guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            throw RouteGuidanceStateError.noDocumentsDirectory
+        guard let directory = try? InternalStorage.directory(named: "SharedExperiences") else {
+            throw RouteGuidanceStateError.noApplicationSupportDirectory
         }
         
-        let stateDir = documents.appendingPathComponent("SharedExperiences").appendingPathComponent("State")
+        let stateDir = directory.appendingPathComponent("State")
         let url = stateDir.appendingPathComponent("\(id).json")
         
         // Check for directories and create them if necessary
@@ -73,11 +74,11 @@ extension RouteGuidanceState {
     /// - Parameter id: ID of the shared content experience this state cooresponds to
     /// - Returns: The loaded state for the shared content experience if it exists or nil otherwise
     static func load(id: String) -> RouteGuidanceState? {
-        guard let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+        guard let directory = try? InternalStorage.directory(named: "SharedExperiences") else {
             return nil
         }
         
-        let url = dir.appendingPathComponent("SharedExperiences").appendingPathComponent("State").appendingPathComponent("\(id).json")
+        let url = directory.appendingPathComponent("State").appendingPathComponent("\(id).json")
         
         guard FileManager.default.fileExists(atPath: url.path) else {
             return nil

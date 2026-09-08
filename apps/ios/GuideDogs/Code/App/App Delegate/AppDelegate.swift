@@ -36,6 +36,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Check if we need to migrate Realm before we do anything else
         RealmMigrationTools.migrate(database: RealmHelper.databaseConfig, cache: RealmHelper.cacheConfig)
+
+        do {
+            try InternalStorage.migrateLegacyStorageIfNeeded()
+        } catch {
+            // Internal storage is non-critical. Continue launching and retry the
+            // idempotent migration on the next launch.
+            GDLogAppError("Unable to migrate legacy internal storage: \(error.localizedDescription)")
+        }
         
         if FirstUseExperience.didComplete(.oobe) {
             // Only increment app use count if the user has completed onboarding

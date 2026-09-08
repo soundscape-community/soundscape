@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -149,12 +150,12 @@ extension DeviceManager: DeviceDelegate {
 fileprivate extension DeviceManager {
     
     private static var persistedDevicesURL: URL? {
-        guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            DDLogError("[Device Manager] Could not access the documents directory")
+        do {
+            return try InternalStorage.file(named: "PariedExternalDevice.json")
+        } catch {
+            DDLogError("[Device Manager] Could not access application support: \(error.localizedDescription)")
             return nil
         }
-        
-        return documents.appendingPathComponent("PariedExternalDevice.json")
     }
     
     static func storedDevices() -> [Device] {

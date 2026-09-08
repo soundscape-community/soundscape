@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -39,7 +40,12 @@ class ExperimentManager {
     weak var delegate: ExperimentManagerDelegate?
     
     private lazy var directory: URL? = {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Experiments")
+        do {
+            return try InternalStorage.directory(named: "Experiments")
+        } catch {
+            GDLogAppError("Unable to access experiment storage: \(error.localizedDescription)")
+            return nil
+        }
     }()
     
     private lazy var url: URL? = {

@@ -3808,3 +3808,101 @@
 
 /* Describe feature for automatically reversing a route. Quotes written as \" */
 "faq.tip.reverse_route" = "Selecting \"Start Reversed Route\" from the \"Route Details\" screen allows you to take a route in reverse, and it saves a copy of the route with the waypoints in reverse order. Note that \"Start Reversed Route\" will not save another copy of the same route if it's already saved.";
+
+// MARK: GPX Recording
+
+/* Title of the screen for recording a journey as a GPX file. */
+"gpx_recording.title" = "GPX Recording";
+
+/* Explanation of GPX journey recording behavior, including background recording and pausing during Sleep or Snooze. */
+"gpx_recording.explanation" = "Record your journey as a GPX file. Recording continues while you use other parts of Soundscape and while the app is in the background. It pauses during Sleep or Snooze and resumes when Soundscape wakes.";
+
+/* Label for the current GPX recording status. */
+"gpx_recording.status" = "Status";
+
+/* GPX recording status shown while saved recordings and any interrupted draft are loading. */
+"gpx_recording.status.loading" = "Loading";
+
+/* GPX recording status shown when no journey is being recorded. */
+"gpx_recording.status.idle" = "Not recording";
+
+/* GPX recording status shown while a new recording is being prepared. */
+"gpx_recording.status.starting" = "Starting";
+
+/* GPX recording status shown while a journey is being recorded. */
+"gpx_recording.status.recording" = "Recording";
+
+/* GPX recording status shown when recording is paused because Soundscape is in Sleep or Snooze mode. */
+"gpx_recording.status.paused" = "Paused during Sleep or Snooze";
+
+/* GPX recording status shown after recording has stopped and is ready to be named and saved. */
+"gpx_recording.status.awaiting_name" = "Ready to save";
+
+/* GPX recording status shown while the recording is being saved. */
+"gpx_recording.status.saving" = "Saving";
+
+/* GPX recording status shown when an interrupted recording has been recovered. */
+"gpx_recording.status.recovered" = "Interrupted recording recovered";
+
+/* Number of recorded location points in the current GPX recording. %d is the number of points. {NumberedPlaceholder="%d"} */
+"gpx_recording.point_count" = "%d recorded points";
+
+/* Singular number of recorded location points in the current GPX recording. */
+"gpx_recording.point_count.singular" = "1 recorded point";
+
+/* Button title that starts recording a journey. */
+"gpx_recording.start" = "Start recording";
+
+/* Button title that stops recording a journey. */
+"gpx_recording.stop" = "Stop recording";
+
+/* Section title for GPX recordings saved on the device. */
+"gpx_recording.saved" = "Saved recordings";
+
+/* Message shown when there are no saved GPX recordings. */
+"gpx_recording.saved.empty" = "No saved recordings";
+
+/* Name of the on-device storage location for saved recordings. "On My iPhone" is a term from the iOS Files app and should use Apple's localized term. {NumberedPlaceholder="iPhone"} */
+"gpx_recording.storage.local" = "On My iPhone";
+
+/* Accessibility hint for a button that shares a saved GPX recording. */
+"gpx_recording.share.hint" = "Shares this GPX recording";
+
+/* Title of the screen for naming a GPX recording before saving it. */
+"gpx_recording.name.title" = "Name Recording";
+
+/* Section title prompting the user to enter a unique GPX recording file name. */
+"gpx_recording.name.prompt" = "Enter a unique file name";
+
+/* Placeholder for the field where the user names a GPX recording. */
+"gpx_recording.name" = "Recording name";
+
+/* Button title that saves a GPX recording. */
+"gpx_recording.save" = "Save";
+
+/* Button title that discards a GPX recording. */
+"gpx_recording.discard" = "Discard";
+
+/* Confirmation message shown before permanently discarding a GPX recording. */
+"gpx_recording.discard.confirm" = "Discard this recording? This cannot be undone.";
+
+/* Button title that opens naming and saving for an interrupted GPX recording. */
+"gpx_recording.recover.save" = "Name and save recording";
+
+/* Error shown when the user tries to save a GPX recording with no recorded location points. */
+"gpx_recording.error.no_points" = "No location points have been recorded yet.";
+
+/* Error shown when the proposed GPX recording file name contains unsupported characters or formatting. */
+"gpx_recording.error.invalid_name" = "Enter a safe file name without slashes, colons, or periods at the beginning or end.";
+
+/* Error shown when a GPX recording already exists with the proposed file name. */
+"gpx_recording.error.duplicate_name" = "A recording with this name already exists.";
+
+/* Error shown when the app cannot open the protected GPX recording draft. */
+"gpx_recording.error.draft_unavailable" = "The protected recording draft could not be opened.";
+
+/* Error shown when the app cannot present the screen for sharing a GPX recording. */
+"gpx_recording.error.share_unavailable" = "The sharing screen is currently unavailable.";
+
+/* Accessibility label and announcement for a GPX recording error. %@ is the error description. {NumberedPlaceholder="%@"} */
+"gpx_recording.error.accessibility" = "Error: %@";

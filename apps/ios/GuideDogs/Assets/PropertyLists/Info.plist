@@ -79,7 +79,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<false/>
+	<true/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Soundscape uses Bluetooth LE to connect to accessories.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
