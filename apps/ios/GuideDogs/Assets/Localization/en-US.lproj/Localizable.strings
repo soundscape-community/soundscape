@@ -3866,7 +3866,7 @@
 "gpx_recording.storage.local" = "On My iPhone";
 
 /* Accessibility hint for a button that shares a saved GPX recording. */
-"gpx_recording.share.hint" = "Shares this GPX recording";
+"gpx_recording.share.hint" = "Double tap to share this GPX recording";
 
 /* Title of the screen for naming a GPX recording before saving it. */
 "gpx_recording.name.title" = "Name Recording";
