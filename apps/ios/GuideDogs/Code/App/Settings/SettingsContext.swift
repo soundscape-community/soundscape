@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -45,6 +46,8 @@ class SettingsContext {
         fileprivate static let useOldBeacon              = "GDASettingsUseOldBeacon"
         fileprivate static let playBeaconStartEndMelody  = "GDAPlayBeaconStartEndMelody"
         fileprivate static let automaticCalloutsEnabled  = "GDASettingsAutomaticCalloutsEnabled"
+        fileprivate static let calloutSoundEffectsEnabled = "GDASettingsCalloutSoundEffectsEnabled"
+        fileprivate static let calloutPausesEnabled      = "GDASettingsCalloutPausesEnabled"
         fileprivate static let shakeCalloutsEnabled      = "GDASettingsShakeCalloutsEnabled"
         fileprivate static let sensePlace                = "GDASettingsPlaceSenseEnabled"
         fileprivate static let senseLandmark             = "GDASettingsLandmarkSenseEnabled"
@@ -101,6 +104,8 @@ class SettingsContext {
             Keys.useOldBeacon: false,
             Keys.playBeaconStartEndMelody: false,
             Keys.automaticCalloutsEnabled: true,
+            Keys.calloutSoundEffectsEnabled: true,
+            Keys.calloutPausesEnabled: true,
             Keys.shakeCalloutsEnabled: false,
             Keys.sensePlace: true,
             Keys.senseLandmark: true,
@@ -438,6 +443,24 @@ extension SettingsContext: AutoCalloutSettingsProvider {
             userDefaults.set(newValue, forKey: Keys.automaticCalloutsEnabled)
             
             NotificationCenter.default.post(name: .automaticCalloutsEnabledChanged, object: self, userInfo: [Keys.enabled: newValue])
+        }
+    }
+
+    var calloutSoundEffectsEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.calloutSoundEffectsEnabled)
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.calloutSoundEffectsEnabled)
+        }
+    }
+
+    var calloutPausesEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.calloutPausesEnabled)
+        }
+        set(newValue) {
+            userDefaults.set(newValue, forKey: Keys.calloutPausesEnabled)
         }
     }
     
