@@ -22,6 +22,7 @@ final class GPXRecordingController: ObservableObject {
 
     private let draftStore: GPXRecordingDraftStore
     private let repository: GPXRecordingRepository
+    private var refreshRequest = 0
     private var locationTask: Task<Void, Never>?
     private var observers: [NSObjectProtocol] = []
 
@@ -160,9 +161,9 @@ final class GPXRecordingController: ObservableObject {
                     self.error = .storage(error.localizedDescription)
                 }
                 pointCount = 0
-                state = .idle
                 GDATelemetry.track("gpx_recording.save", with: ["destination": "local"])
                 await refresh()
+                state = .idle
             } catch let recordingError as GPXRecordingError {
                 error = recordingError
                 state = .awaitingName
@@ -174,7 +175,9 @@ final class GPXRecordingController: ObservableObject {
     }
 
     func discard() {
+        guard state != .saving else { return }
         Task {
+            guard state != .saving else { return }
             do {
                 try await draftStore.discard()
                 pointCount = 0
@@ -188,9 +191,14 @@ final class GPXRecordingController: ObservableObject {
     }
 
     func refresh() async {
+        refreshRequest += 1
+        let request = refreshRequest
         do {
-            recordings = try await repository.recordings()
+            let files = try await repository.recordings()
+            guard request == refreshRequest else { return }
+            recordings = files
         } catch {
+            guard request == refreshRequest else { return }
             self.error = .storage(error.localizedDescription)
         }
     }

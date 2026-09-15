@@ -138,6 +138,7 @@ struct GPXRecordingView: View {
                         Button(GDLocalizedString("gpx_recording.discard"), role: .destructive) {
                             showNamingDiscardConfirmation = true
                         }
+                        .disabled(controller.state == .saving)
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(GDLocalizedString("gpx_recording.save")) {
