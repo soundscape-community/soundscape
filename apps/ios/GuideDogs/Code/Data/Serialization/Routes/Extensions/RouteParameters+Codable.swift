@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -15,8 +16,11 @@ extension RouteParameters {
     static func decode(_ data: Data) -> RouteParameters? {
         let decoder = JSONDecoder()
 
-        guard let parameters = try? decoder.decode(RouteParameters.self, from: data) else {
-            GDLogURLResourceError("Failed to decode")
+        let parameters: RouteParameters
+        do {
+            parameters = try decoder.decode(RouteParameters.self, from: data)
+        } catch {
+            GDLogURLResourceError("Failed to decode \(data.count)-byte route document: \(error)")
             return nil
         }
         
@@ -29,8 +33,11 @@ extension RouteParameters {
             try? FileManager.default.removeItem(at: url)
         }
         
-        guard let data = try? Data(contentsOf: url) else {
-            GDLogURLResourceError("Failed to decode - Failed to fetch data from file URL")
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch {
+            GDLogURLResourceError("Failed to decode - Failed to fetch data from file URL: \(error)")
             return nil
         }
         

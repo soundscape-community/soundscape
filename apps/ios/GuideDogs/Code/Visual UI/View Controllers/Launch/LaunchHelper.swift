@@ -23,7 +23,7 @@ class LaunchHelper {
         case firstLaunch = "FirstLaunch"
     }
     
-    fileprivate static var windowConfigured: Bool = false
+    fileprivate static weak var configuredWindow: UIWindow?
     fileprivate static var magicTapEnabled: Bool = true
 
     @discardableResult
@@ -39,7 +39,7 @@ class LaunchHelper {
     }
     
     class func configureAppView(with launchStoryboard: LaunchStoryboard) {
-        guard let window = UIApplication.shared.windows.first(where: \.isKeyWindow) else {
+        guard let window = AppContext.window else {
             return
         }
         
@@ -125,7 +125,7 @@ extension UIWindow {
     // MARK: Configuration
     
     fileprivate func configureWindow() {
-        guard !LaunchHelper.windowConfigured else {
+        guard LaunchHelper.configuredWindow !== self else {
             return
         }
         
@@ -141,7 +141,7 @@ extension UIWindow {
         NotificationCenter.default.addObserver(self, selector: #selector(disableMagicTap), name: NSNotification.Name.disableMagicTap, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(enableMagicTap), name: NSNotification.Name.enableMagicTap, object: nil)
         
-        LaunchHelper.windowConfigured = true
+        LaunchHelper.configuredWindow = self
     }
     
     // MARK: Actions
