@@ -68,7 +68,7 @@ final class GPXRecordingController: ObservableObject {
             queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated {
-                self?.requestRefresh()
+                _ = self?.requestRefresh()
             }
         }
         observers.append(foregroundObserver)
