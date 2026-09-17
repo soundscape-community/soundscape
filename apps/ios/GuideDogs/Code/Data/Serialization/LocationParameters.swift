@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -18,6 +19,32 @@ struct LocationParameters: Codable {
     let coordinate: CoordinateParameters
     let entity: EntityParameters?
     
+}
+
+extension LocationParameters {
+    private enum CodingKeys: String, CodingKey {
+        case name, address, coordinate, entity
+    }
+
+    private struct EntitySource: Decodable {
+        let source: Int
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        address = try container.decodeIfPresent(String.self, forKey: .address)
+        coordinate = try container.decode(CoordinateParameters.self, forKey: .coordinate)
+
+        // Shared documents include a name and coordinates even when their entity
+        // provider is no longer supported by this version of the app.
+        if let provider = try container.decodeIfPresent(EntitySource.self, forKey: .entity),
+           EntityParameters.Source(rawValue: provider.source) == nil {
+            entity = nil
+        } else {
+            entity = try container.decodeIfPresent(EntityParameters.self, forKey: .entity)
+        }
+    }
 }
 
 extension LocationParameters {

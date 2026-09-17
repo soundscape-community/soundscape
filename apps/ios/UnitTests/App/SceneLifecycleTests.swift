@@ -91,6 +91,112 @@ final class SceneLifecycleTests: XCTestCase {
         XCTAssertEqual(handler.notificationPayloads.count, 1)
         XCTAssertEqual(handler.notificationPayloads[0]["aps"] as? [String: String], ["alert": "Open Soundscape"])
     }
+
+    func testIncomingRouteIsCopiedBeforeQueuedImportAndPreservesOriginal() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let importDirectory = root.appendingPathComponent("Staged", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let manager = URLResourceManager(importDirectory: importDirectory)
+        let coldSource = root.appendingPathComponent("cold.soundscape")
+        let warmSource = root.appendingPathComponent("warm.soundscape")
+        try makeRouteFile(at: coldSource, name: "Cold import")
+        try makeRouteFile(at: warmSource, name: "Warm import")
+
+        let coldImported = expectation(description: "Cold route imported after its source disappeared")
+        let warmImported = expectation(description: "Warm route imported from its staged copy")
+        let observer = NotificationCenter.default.addObserver(forName: .didImportRoute, object: nil, queue: .main) { notification in
+            guard let route = notification.userInfo?[RouteResourceHandler.Keys.route] as? Route else { return }
+            switch route.name {
+            case "Cold import": coldImported.fulfill()
+            case "Warm import": warmImported.fulfill()
+            default: break
+            }
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+
+        XCTAssertTrue(manager.onOpenResource(from: coldSource))
+        try FileManager.default.removeItem(at: coldSource)
+        NotificationCenter.default.post(name: .homeViewControllerDidLoad, object: nil)
+        wait(for: [coldImported], timeout: 5)
+
+        XCTAssertTrue(manager.onOpenResource(from: warmSource))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: warmSource.path))
+        try FileManager.default.removeItem(at: warmSource)
+        wait(for: [warmImported], timeout: 5)
+
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: importDirectory.path), [])
+    }
+
+    func testMissingIncomingFileReportsImportFailure() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let manager = URLResourceManager(importDirectory: root.appendingPathComponent("Staged", isDirectory: true))
+        let routeFailed = expectation(description: "Missing route reports import failure")
+        let gpxFailed = expectation(description: "Missing GPX reports import failure")
+        let routeObserver = NotificationCenter.default.addObserver(forName: .didFailToImportRoute, object: nil, queue: .main) { _ in
+            routeFailed.fulfill()
+        }
+        let gpxObserver = NotificationCenter.default.addObserver(forName: .didImportGPXResource, object: nil, queue: .main) { notification in
+            XCTAssertEqual(notification.userInfo?[GPXResourceHandler.Keys.filename] as? String, "missing.gpx")
+            XCTAssertNotNil(notification.userInfo?[GPXResourceHandler.Keys.error] as? Error)
+            gpxFailed.fulfill()
+        }
+        defer {
+            NotificationCenter.default.removeObserver(routeObserver)
+            NotificationCenter.default.removeObserver(gpxObserver)
+        }
+
+        XCTAssertTrue(manager.onOpenResource(from: root.appendingPathComponent("missing.soundscape")))
+        XCTAssertTrue(manager.onOpenResource(from: root.appendingPathComponent("missing.gpx")))
+        NotificationCenter.default.post(name: .homeViewControllerDidLoad, object: nil)
+        wait(for: [routeFailed, gpxFailed], timeout: 5)
+    }
+
+    func testRouteDocumentWithUnsupportedEntitySourceUsesWaypointCoordinates() throws {
+        let document = """
+        {
+          "id": "route-id",
+          "name": "Shared route",
+          "waypoints": [{
+            "index": 0,
+            "markerId": "marker-id",
+            "marker": {
+              "nickname": "Stop",
+              "location": {
+                "name": "Waypoint",
+                "coordinate": {"latitude": 55.9, "longitude": -3.1},
+                "entity": {"source": 1, "lookupInformation": "old-provider-id"}
+              }
+            }
+          }]
+        }
+        """
+
+        let route = try XCTUnwrap(RouteParameters.decode(Data(document.utf8)))
+        let marker = try XCTUnwrap(route.waypoints.first?.marker)
+        XCTAssertEqual(marker.location.name, "Waypoint")
+        XCTAssertEqual(marker.location.coordinate.latitude, 55.9)
+        XCTAssertEqual(marker.location.coordinate.longitude, -3.1)
+        XCTAssertNil(marker.location.entity)
+        XCTAssertEqual(marker.nickname, "Stop")
+
+        let supportedDocument = document.replacingOccurrences(of: "\"source\": 1", with: "\"source\": 0")
+        let supportedRoute = try XCTUnwrap(RouteParameters.decode(Data(supportedDocument.utf8)))
+        XCTAssertEqual(supportedRoute.waypoints.first?.marker?.location.entity?.source, .osm)
+    }
+
+    private func makeRouteFile(at url: URL, name: String) throws {
+        let parameters = RouteParameters(id: UUID().uuidString,
+                                         name: name,
+                                         routeDescription: nil,
+                                         waypoints: [],
+                                         createdDate: nil,
+                                         lastUpdatedDate: nil,
+                                         lastSelectedDate: nil)
+        try XCTUnwrap(RouteParameters.encode(parameters)).write(to: url)
+    }
 }
 
 private final class IncomingEventSpy: SceneIncomingEventHandling {
