@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -864,7 +865,7 @@ extension SpatialDataContext {
     }
     
     private func showQuotaViolationAlert() {
-        guard let rootViewController = UIApplication.shared.delegate?.window??.rootViewController else { return }
+        guard let rootViewController = AppContext.rootViewController else { return }
         
         let alertController = UIAlertController(title: GDLocalizedString("icloud.kv_store.quota_violation_alert.title"),
                                                 message: GDLocalizedString("icloud.kv_store.quota_violation_alert.message"),

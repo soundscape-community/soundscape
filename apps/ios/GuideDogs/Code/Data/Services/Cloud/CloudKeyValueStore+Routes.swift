@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -201,8 +202,7 @@ extension CloudKeyValueStore {
             CloudKeyValueStore.errorAlert = nil
         })
         
-        guard let window = UIApplication.shared.windows.first(where: \.isKeyWindow),
-              let rootViewController = window.rootViewController,
+        guard let rootViewController = AppContext.rootViewController,
               let alert = CloudKeyValueStore.errorAlert else {
                   return
               }

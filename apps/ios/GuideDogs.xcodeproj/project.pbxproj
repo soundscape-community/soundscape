@@ -10,6 +10,7 @@
 		E300000131C1000100C0FFEE /* InternalStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E300000031C1000100C0FFEE /* InternalStorageTests.swift */; };
 		E200000131C0000100C0FFEE /* InternalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200000031C0000100C0FFEE /* InternalStorage.swift */; };
 		A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000831B3000100C0FFEE /* GPXRecordingTests.swift */; };
+		A79A54E02D578F5A00A1B001 /* SceneLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79A54E12D578F5A00A1B001 /* SceneLifecycleTests.swift */; };
 		A100000231B3000100C0FFEE /* GPXRecordingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000131B3000100C0FFEE /* GPXRecordingModels.swift */; };
 		A100000431B3000100C0FFEE /* GPXRecordingServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000331B3000100C0FFEE /* GPXRecordingServices.swift */; };
 		A100000631B3000100C0FFEE /* GPXRecordingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000531B3000100C0FFEE /* GPXRecordingController.swift */; };
@@ -575,6 +576,7 @@
 		B97140DA204835BC00B15BD0 /* Roundabout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97140D9204835BB00B15BD0 /* Roundabout.swift */; };
 		B97140DE2048896800B15BD0 /* RoadDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97140DD2048896800B15BD0 /* RoadDirection.swift */; };
 		B971F0A61EE2B12A0001CAF1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B971F0A51EE2B12A0001CAF1 /* AppDelegate.swift */; };
+		A79A54D32D578F5A00A1B001 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79A54D42D578F5A00A1B001 /* SceneDelegate.swift */; };
 		B971F0A81EE2B37B0001CAF1 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B971F0A71EE2B37B0001CAF1 /* AppContext.swift */; };
 		B9776F1A24ECA61900AC8656 /* StreetPreviewRoadsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9776F1924ECA61900AC8656 /* StreetPreviewRoadsCell.swift */; };
 		B97791511E8ED1B100498320 /* UINavigationBar+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97791501E8ED1B100498320 /* UINavigationBar+Extentions.swift */; };
@@ -785,6 +787,7 @@
 		E300000031C1000100C0FFEE /* InternalStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalStorageTests.swift; sourceTree = "<group>"; };
 		E200000031C0000100C0FFEE /* InternalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InternalStorage.swift; path = Code/App/Helpers/InternalStorage.swift; sourceTree = "<group>"; };
 		A100000831B3000100C0FFEE /* GPXRecordingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXRecordingTests.swift; sourceTree = "<group>"; };
+		A79A54E12D578F5A00A1B001 /* SceneLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneLifecycleTests.swift; sourceTree = "<group>"; };
 		A100000131B3000100C0FFEE /* GPXRecordingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingModels.swift; path = "Code/GPX Recording/GPXRecordingModels.swift"; sourceTree = "<group>"; };
 		A100000331B3000100C0FFEE /* GPXRecordingServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingServices.swift; path = "Code/GPX Recording/GPXRecordingServices.swift"; sourceTree = "<group>"; };
 		A100000531B3000100C0FFEE /* GPXRecordingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingController.swift; path = "Code/GPX Recording/GPXRecordingController.swift"; sourceTree = "<group>"; };
@@ -1379,6 +1382,7 @@
 		B97140D9204835BB00B15BD0 /* Roundabout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Roundabout.swift; path = Code/Data/Models/Helpers/Roundabout.swift; sourceTree = "<group>"; };
 		B97140DD2048896800B15BD0 /* RoadDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RoadDirection.swift; path = Code/Data/Models/Helpers/RoadDirection.swift; sourceTree = "<group>"; };
 		B971F0A51EE2B12A0001CAF1 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "Code/App/App Delegate/AppDelegate.swift"; sourceTree = "<group>"; };
+		A79A54D42D578F5A00A1B001 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "Code/App/App Delegate/SceneDelegate.swift"; sourceTree = "<group>"; };
 		B971F0A71EE2B37B0001CAF1 /* AppContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppContext.swift; path = Code/App/AppContext.swift; sourceTree = "<group>"; };
 		B9776F1924ECA61900AC8656 /* StreetPreviewRoadsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StreetPreviewRoadsCell.swift; path = "Code/Visual UI/Controls/Settings/StreetPreviewRoadsCell.swift"; sourceTree = "<group>"; };
 		B97791501E8ED1B100498320 /* UINavigationBar+Extentions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UINavigationBar+Extentions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UINavigationBar+Extentions.swift"; sourceTree = "<group>"; };
@@ -3486,6 +3490,7 @@
 			isa = PBXGroup;
 			children = (
 				B971F0A51EE2B12A0001CAF1 /* AppDelegate.swift */,
+				A79A54D42D578F5A00A1B001 /* SceneDelegate.swift */,
 				625F8522243BDA9F0085AE05 /* User Activities */,
 				62E92B2C26546163001C5AC2 /* URL Resources */,
 			);
@@ -3564,6 +3569,7 @@
 		914DEBD92A3CE7E6007B161C /* App */ = {
 			isa = PBXGroup;
 			children = (
+				A79A54E12D578F5A00A1B001 /* SceneLifecycleTests.swift */,
 				A100000731B3000100C0FFEE /* GPX Recording */,
 				914DEBDB2A3CE85D007B161C /* Helpers */,
 			);
@@ -4769,6 +4775,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A79A54E02D578F5A00A1B001 /* SceneLifecycleTests.swift in Sources */,
 				E300000131C1000100C0FFEE /* InternalStorageTests.swift in Sources */,
 				A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */,
 				915FF9F62ADE4BAF002B3690 /* AuthoredActivityContentTest.swift in Sources */,
@@ -5082,6 +5089,7 @@
 				C3BC95DB2321DA6A00B78903 /* HeadingValue.swift in Sources */,
 				C317F24E2370E9AF000579BA /* NotificationContainerManager.swift in Sources */,
 				B971F0A61EE2B12A0001CAF1 /* AppDelegate.swift in Sources */,
+				A79A54D32D578F5A00A1B001 /* SceneDelegate.swift in Sources */,
 				6277B9AF25A51F830022A937 /* KalmanFilter+CLLocation.swift in Sources */,
 				62B14C2027B722C000D24EA1 /* LaunchActivityCoordinator.swift in Sources */,
 				620118DC24AD691B004B0380 /* ActivityIndicatorTableViewCell.swift in Sources */,

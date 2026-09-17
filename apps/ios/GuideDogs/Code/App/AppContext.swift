@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -120,8 +121,15 @@ class AppContext {
     
     /// Returns the root view controller for the current app window
     class var rootViewController: UIViewController? {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return nil }
-        return appDelegate.window?.rootViewController
+        return window?.rootViewController
+    }
+
+    /// The key window in the app's single window scene.
+    class var window: UIWindow? {
+        return UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)
     }
     
     static var memoryAllocated: UInt64? {
