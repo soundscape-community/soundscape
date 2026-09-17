@@ -3841,6 +3841,12 @@
 /* GPX recording status shown while the recording is being saved. */
 "gpx_recording.status.saving" = "Saving";
 
+/* Status while pending recording points finish saving to the draft */
+"gpx_recording.status.stopping" = "Stopping";
+
+/* Status while deleting a recording draft */
+"gpx_recording.status.discarding" = "Discarding";
+
 /* GPX recording status shown when an interrupted recording has been recovered. */
 "gpx_recording.status.recovered" = "Interrupted recording recovered";
 

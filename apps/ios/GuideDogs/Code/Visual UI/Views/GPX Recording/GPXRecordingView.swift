@@ -52,7 +52,15 @@ struct GPXRecordingView: View {
             }
 
             Section(header: GPXRecordingSectionHeader(text: GDLocalizedString("gpx_recording.saved"))) {
-                if controller.recordings.isEmpty {
+                if controller.isRefreshing {
+                    ProgressView(GDLocalizedString("gpx_recording.status.loading"))
+                }
+                if let error = controller.refreshError {
+                    Label(error.localizedDescription, systemImage: "exclamationmark.triangle.fill")
+                        .foregroundColor(.primaryForeground)
+                        .listRowBackground(Color.errorBackground)
+                }
+                if controller.recordings.isEmpty && !controller.isRefreshing && controller.refreshError == nil {
                     Text(GDLocalizedString("gpx_recording.saved.empty"))
                         .foregroundColor(.secondaryForeground)
                 } else {
@@ -104,6 +112,12 @@ struct GPXRecordingView: View {
                                  argument: String(format: GDLocalizedString("gpx_recording.error.accessibility"),
                                                   description))
         }
+        .onChange(of: controller.refreshError?.localizedDescription) { description in
+            guard let description else { return }
+            UIAccessibility.post(notification: .announcement,
+                                 argument: String(format: GDLocalizedString("gpx_recording.error.accessibility"),
+                                                  description))
+        }
         .fullScreenCover(isPresented: namingPresented) {
             NavigationView {
                 Form {
@@ -114,9 +128,15 @@ struct GPXRecordingView: View {
                             .textFieldStyle(.roundedBorder)
                             .foregroundColor(.quaternaryBackground)
                             .focused($isNameFieldFocused)
+                            .disabled(controller.state != .awaitingName)
                     }
                     .listRowBackground(Color.primaryBackground)
                     .listRowSeparatorTint(Color.secondaryBackground)
+
+                    if controller.state == .saving || controller.state == .discarding {
+                        ProgressView(statusText)
+                            .listRowBackground(Color.primaryBackground)
+                    }
 
                     if let error = controller.error {
                         Label(error.localizedDescription, systemImage: "exclamationmark.triangle.fill")
@@ -138,13 +158,13 @@ struct GPXRecordingView: View {
                         Button(GDLocalizedString("gpx_recording.discard"), role: .destructive) {
                             showNamingDiscardConfirmation = true
                         }
-                        .disabled(controller.state == .saving)
+                        .disabled(controller.state != .awaitingName)
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(GDLocalizedString("gpx_recording.save")) {
                             controller.save()
                         }
-                        .disabled(controller.state == .saving)
+                        .disabled(controller.state != .awaitingName)
                     }
                 }
                 .interactiveDismissDisabled()
@@ -177,7 +197,7 @@ struct GPXRecordingView: View {
     @ViewBuilder
     private var controls: some View {
         switch controller.state {
-        case .loading, .starting, .saving:
+        case .loading, .starting, .saving, .stopping, .discarding:
             HStack {
                 Spacer()
                 ProgressView()
@@ -252,6 +272,10 @@ struct GPXRecordingView: View {
             return GDLocalizedString("gpx_recording.status.awaiting_name")
         case .saving:
             return GDLocalizedString("gpx_recording.status.saving")
+        case .stopping:
+            return GDLocalizedString("gpx_recording.status.stopping")
+        case .discarding:
+            return GDLocalizedString("gpx_recording.status.discarding")
         case .recoverableInterruption:
             return GDLocalizedString("gpx_recording.status.recovered")
         }
@@ -259,7 +283,7 @@ struct GPXRecordingView: View {
 
     private var namingPresented: Binding<Bool> {
         Binding(
-            get: { controller.state == .awaitingName || controller.state == .saving },
+            get: { controller.isNamingPresented },
             set: { _ in }
         )
     }

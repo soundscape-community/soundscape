@@ -20,6 +20,13 @@ struct GPXRecordingFile: Identifiable, Equatable, Sendable {
     var displayName: String {
         url.deletingPathExtension().lastPathComponent
     }
+
+    static func newestFirst(_ lhs: Self, _ rhs: Self) -> Bool {
+        if lhs.modifiedAt == rhs.modifiedAt {
+            return lhs.displayName.localizedCaseInsensitiveCompare(rhs.displayName) == .orderedAscending
+        }
+        return lhs.modifiedAt > rhs.modifiedAt
+    }
 }
 
 struct GPXRecordingPoint: Codable, Equatable, Sendable {
@@ -110,8 +117,10 @@ enum GPXRecordingState: Equatable, Sendable {
     case starting
     case recording
     case paused
+    case stopping
     case awaitingName
     case saving
+    case discarding
     case recoverableInterruption
 }
 
@@ -172,6 +181,6 @@ protocol GPXRecordingDraftStore: Sendable {
 protocol GPXRecordingRepository: Sendable {
     func recordings() async throws -> [GPXRecordingFile]
     func nameExists(_ name: String) async throws -> Bool
-    func save(gpx: String, named name: String) async throws -> GPXRecordingFile
+    func save(draft: GPXRecordingDraft, named name: String) async throws -> GPXRecordingFile
     func prepareForSharing(_ file: GPXRecordingFile) async throws -> URL
 }

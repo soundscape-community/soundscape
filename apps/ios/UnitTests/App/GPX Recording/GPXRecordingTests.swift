@@ -90,16 +90,19 @@ final class GPXRecordingTests: XCTestCase {
         let local = makeTemporaryDirectory()
         let repository = FileGPXRecordingRepository(localRoot: local)
 
-        _ = try await repository.save(gpx: "<gpx/>", named: "First")
+        let draft = GPXRecordingDraft(startedAt: Date(), segments: [[
+            point(latitude: 51, longitude: -0.1, timestamp: Date())
+        ]])
+        _ = try await repository.save(draft: draft, named: "First")
         try await Task.sleep(nanoseconds: 10_000_000)
-        _ = try await repository.save(gpx: "<gpx/>", named: "Second")
+        _ = try await repository.save(draft: draft, named: "Second")
 
         let files = try await repository.recordings()
         XCTAssertEqual(files.map(\.displayName), ["Second", "First"])
         let duplicateExists = try await repository.nameExists("sEcOnD.gpx")
         XCTAssertTrue(duplicateExists)
         await XCTAssertThrowsErrorAsync {
-            _ = try await repository.save(gpx: "<gpx/>", named: "FIRST")
+            _ = try await repository.save(draft: draft, named: "FIRST")
         }
     }
 
@@ -138,7 +141,7 @@ final class GPXRecordingTests: XCTestCase {
         }
 
         controller.stop()
-        XCTAssertEqual(controller.state, .starting)
+        XCTAssertEqual(controller.state, .stopping)
 
         await waitForState(.idle, controller: controller)
         let discardCount = await draftStore.discardCount
@@ -170,12 +173,12 @@ final class GPXRecordingTests: XCTestCase {
     }
 
     @MainActor
-    func testSaveWaitsForRefreshAfterSuccessfulCleanup() async {
+    func testSaveCompletesBeforeRefreshAfterSuccessfulCleanup() async {
         await checkSaveCompletion(cleanupFails: false, refreshFails: false)
     }
 
     @MainActor
-    func testSaveWaitsForRefreshAfterFailedCleanup() async {
+    func testSaveCompletesBeforeRefreshAfterFailedCleanup() async {
         await checkSaveCompletion(cleanupFails: true, refreshFails: false)
     }
 
@@ -185,7 +188,7 @@ final class GPXRecordingTests: XCTestCase {
     }
 
     @MainActor
-    func testRefreshFailureReplacesCleanupError() async {
+    func testRefreshFailureDoesNotReplaceCleanupError() async {
         await checkSaveCompletion(cleanupFails: true, refreshFails: true)
     }
 
@@ -200,35 +203,39 @@ final class GPXRecordingTests: XCTestCase {
         addTeardownBlock { await repository.releaseAll() }
         let controller = GPXRecordingController(draftStore: draftStore, repository: repository)
         await waitForState(.recoverableInterruption, controller: controller)
+        await controller.waitForPendingRefresh()
         controller.prepareRecoveredDraftForSaving()
         controller.proposedName = "Saved recording"
-        // The queued discard must recheck state when its task begins.
-        controller.discard()
         controller.save()
-        await fulfillment(of: [listingStarted], timeout: 5)
         XCTAssertEqual(controller.state, .saving)
-        XCTAssertTrue(controller.recordings.isEmpty)
         for _ in 0..<3 {
             controller.save()
             controller.start()
             controller.discard()
         }
         XCTAssertEqual(controller.state, .saving)
+        await fulfillment(of: [listingStarted], timeout: 5)
+        await controller.waitForPendingOperations()
+        XCTAssertEqual(controller.state, .idle)
+        XCTAssertTrue(controller.isRefreshing)
         let saved = await repository.savedFiles
         XCTAssertEqual(saved.map(\.displayName), ["Saved recording"])
+        XCTAssertEqual(controller.recordings, saved)
         await repository.release(2, result: refreshFails
             ? .failure(CocoaError(.fileReadNoPermission)) : .success(saved))
-        await waitForState(.idle, controller: controller)
-        XCTAssertEqual(controller.recordings, refreshFails ? [] : saved)
+        await controller.waitForPendingRefresh()
+        XCTAssertFalse(controller.isRefreshing)
+        XCTAssertEqual(controller.recordings, saved)
         XCTAssertEqual(controller.pointCount, 0)
-        let expectedError = refreshFails ? CocoaError(.fileReadNoPermission).localizedDescription
-            : cleanupFails ? CocoaError(.fileWriteNoPermission).localizedDescription : nil
+        let expectedError = cleanupFails ? CocoaError(.fileWriteNoPermission).localizedDescription : nil
         if case .storage(let message) = controller.error {
             XCTAssertEqual(message, expectedError)
         } else {
             XCTAssertNil(expectedError)
             XCTAssertNil(controller.error)
         }
+        XCTAssertEqual(controller.refreshError,
+                       refreshFails ? .storage(CocoaError(.fileReadNoPermission).localizedDescription) : nil)
         controller.save()
         let writeCount = await repository.savedFiles.count
         let createCount = await draftStore.createCount
@@ -248,6 +255,7 @@ final class GPXRecordingTests: XCTestCase {
                 addTeardownBlock { await repository.releaseAll() }
                 let controller = GPXRecordingController(draftStore: SuspendedDraftStore(), repository: repository)
                 await waitForState(.idle, controller: controller)
+                await controller.waitForPendingRefresh()
                 let firstFinished = expectation(description: "Earlier refresh finished")
                 Task {
                     await controller.refresh()
@@ -265,16 +273,345 @@ final class GPXRecordingTests: XCTestCase {
                     ? .failure(CocoaError(.fileReadNoPermission)) : .success([latest]))
                 await fulfillment(of: [secondFinished], timeout: 5)
                 let expectedFiles = controller.recordings
-                let expectedError = controller.error?.localizedDescription
+                let expectedError = controller.refreshError?.localizedDescription
                 XCTAssertEqual(expectedFiles, latestFails ? [] : [latest])
                 XCTAssertEqual(expectedError == nil, !latestFails)
                 await repository.release(2, result: staleFails
                     ? .failure(CocoaError(.fileReadCorruptFile)) : .success([]))
                 await fulfillment(of: [firstFinished], timeout: 5)
                 XCTAssertEqual(controller.recordings, expectedFiles)
-                XCTAssertEqual(controller.error?.localizedDescription, expectedError)
+                XCTAssertEqual(controller.refreshError?.localizedDescription, expectedError)
+                XCTAssertNil(controller.error)
             }
         }
+    }
+
+    @MainActor
+    func testInitialLoadIgnoresListingSupersededByRefresh() async {
+        for staleFails in [false, true] {
+            let loadStarted = expectation(description: "Initial listing started")
+            let refreshStarted = expectation(description: "Refresh started")
+            let repository = ControlledRecordingRepository(starts: [1: loadStarted, 2: refreshStarted])
+            addTeardownBlock { await repository.releaseAll() }
+            let controller = GPXRecordingController(draftStore: SuspendedDraftStore(), repository: repository)
+            await fulfillment(of: [loadStarted], timeout: 5)
+            let refreshFinished = expectation(description: "Refresh finished")
+            Task {
+                await controller.refresh()
+                refreshFinished.fulfill()
+            }
+            await fulfillment(of: [refreshStarted], timeout: 5)
+            let latest = GPXRecordingFile(url: URL(fileURLWithPath: "/latest.gpx"), modifiedAt: Date())
+            await repository.release(2, result: .success([latest]))
+            await fulfillment(of: [refreshFinished], timeout: 5)
+            XCTAssertEqual(controller.recordings, [latest])
+            let stalePublished = expectation(description: "Initial listing must not publish over refresh")
+            stalePublished.isInverted = true
+            let filesSubscription = controller.$recordings.dropFirst().sink { _ in stalePublished.fulfill() }
+            let errorSubscription = controller.$refreshError.compactMap { $0 }.sink { _ in stalePublished.fulfill() }
+            await repository.release(1, result: staleFails
+                ? .failure(CocoaError(.fileReadCorruptFile)) : .success([]))
+            await fulfillment(of: [stalePublished], timeout: 0.1)
+            filesSubscription.cancel()
+            errorSubscription.cancel()
+            XCTAssertEqual(controller.recordings, [latest])
+            XCTAssertNil(controller.error)
+        }
+    }
+
+    @MainActor
+    func testSaveInvalidatesEarlierListingAndAllowsNewSessionDuringRefresh() async {
+        for latestFails in [false, true] {
+            let draftStore = RecordingDraftStore(
+                draft: GPXRecordingDraft(startedAt: Date(), segments: [[
+                    point(latitude: 51, longitude: -0.1, timestamp: Date())
+                ]]), cleanupFails: false)
+            let earlierStarted = expectation(description: "Pre-save listing started")
+            let latestStarted = expectation(description: "Post-save listing started")
+            let repository = ControlledRecordingRepository(starts: [2: earlierStarted, 3: latestStarted])
+            addTeardownBlock { await repository.releaseAll() }
+            let controller = GPXRecordingController(draftStore: draftStore, repository: repository)
+            await waitForState(.recoverableInterruption, controller: controller)
+            await controller.waitForPendingRefresh()
+            let earlierFinished = expectation(description: "Pre-save listing finished")
+            Task {
+                await controller.refresh()
+                earlierFinished.fulfill()
+            }
+            await fulfillment(of: [earlierStarted], timeout: 5)
+            controller.prepareRecoveredDraftForSaving()
+            controller.proposedName = "Saved recording"
+            controller.save()
+            await fulfillment(of: [latestStarted], timeout: 5)
+            await controller.waitForPendingOperations()
+            XCTAssertEqual(controller.state, .idle)
+            let saved = await repository.savedFiles
+            await repository.release(2, result: .success([]))
+            await fulfillment(of: [earlierFinished], timeout: 5)
+            XCTAssertEqual(controller.recordings, saved)
+            controller.start()
+            await controller.waitForPendingOperations()
+            let newState = controller.state
+            XCTAssertTrue(newState == .recording || newState == .paused)
+            await repository.release(3, result: latestFails
+                ? .failure(CocoaError(.fileReadNoPermission)) : .success(saved))
+            await controller.waitForPendingRefresh()
+            XCTAssertEqual(controller.state, newState)
+            XCTAssertEqual(controller.recordings, saved)
+            XCTAssertEqual(controller.refreshError == nil, !latestFails)
+            XCTAssertNil(controller.error)
+            XCTAssertEqual(controller.pointCount, 0)
+        }
+    }
+
+    @MainActor
+    func testStopDrainsAcceptedPointsAndRejectsLaterPoints() async throws {
+        let store = ControlledDraftStore()
+        addTeardownBlock { await store.releaseAll() }
+        let controller = makeController(store: store)
+        await controller.waitForPendingOperations()
+        controller.start()
+        await controller.waitForPendingOperations()
+        let first = point(latitude: 51, longitude: 1, timestamp: Date())
+        let second = point(latitude: 52, longitude: 2, timestamp: Date())
+        let writing = expectation(description: "First point write suspended")
+        await store.suspend(.append, started: writing)
+        controller.capture(first)
+        await fulfillment(of: [writing], timeout: 5)
+        controller.capture(second)
+        controller.stop()
+        XCTAssertEqual(controller.state, .stopping)
+        XCTAssertEqual(controller.pointCount, 0)
+        controller.capture(point(latitude: 53, longitude: 3, timestamp: Date()))
+        controller.start()
+        controller.save()
+        controller.discard()
+        controller.stop()
+        await store.release(.append)
+        await controller.waitForPendingOperations()
+        XCTAssertEqual(controller.state, .awaitingName)
+        XCTAssertEqual(controller.pointCount, 2)
+        let draft = try await store.recover()
+        XCTAssertEqual(draft?.segments, [[first, second]])
+        let events = await store.events
+        XCTAssertEqual(events.filter { $0 == .create }.count, 1)
+        XCTAssertFalse(events.contains(.discard))
+    }
+
+    @MainActor
+    func testResumeCannotOverrideStopOrSleepEvenWhenSegmentFails() async {
+        for stopping in [false, true] {
+            for segmentFails in [false, true] {
+                let store = ControlledDraftStore()
+                addTeardownBlock { await store.releaseAll() }
+                let controller = makeController(store: store)
+                await controller.waitForPendingOperations()
+                controller.start()
+                await controller.waitForPendingOperations()
+                controller.capture(point(latitude: 51, longitude: 1, timestamp: Date()))
+                await controller.waitForPendingOperations()
+                controller.operationStateChanged(to: .sleep)
+                let segmentStarted = expectation(description: "Resume segment suspended")
+                await store.suspend(.segment, started: segmentStarted, fails: segmentFails)
+                controller.operationStateChanged(to: .normal)
+                await fulfillment(of: [segmentStarted], timeout: 5)
+                if stopping {
+                    controller.stop()
+                } else {
+                    controller.operationStateChanged(to: .sleep)
+                }
+                await store.release(.segment)
+                await controller.waitForPendingOperations()
+                XCTAssertEqual(controller.state, stopping ? .awaitingName : .paused)
+                XCTAssertNil(controller.error)
+                XCTAssertEqual(controller.pointCount, 1)
+
+                if !stopping { controller.stop() }
+                await controller.waitForPendingOperations()
+                controller.discard()
+                await controller.waitForPendingOperations()
+                controller.operationStateChanged(to: .normal)
+                controller.start()
+                await controller.waitForPendingOperations()
+                XCTAssertEqual(controller.state, .recording)
+                XCTAssertEqual(controller.pointCount, 0)
+                XCTAssertNil(controller.error)
+            }
+        }
+    }
+
+    @MainActor
+    func testSegmentBoundaryFollowsAcceptedWrites() async throws {
+        let store = ControlledDraftStore()
+        addTeardownBlock { await store.releaseAll() }
+        let controller = makeController(store: store)
+        await controller.waitForPendingOperations()
+        controller.start()
+        await controller.waitForPendingOperations()
+        let first = point(latitude: 51, longitude: 1, timestamp: Date())
+        let second = point(latitude: 52, longitude: 2, timestamp: Date())
+        let writing = expectation(description: "Point write suspended")
+        await store.suspend(.append, started: writing)
+        controller.capture(first)
+        await fulfillment(of: [writing], timeout: 5)
+        controller.operationStateChanged(to: .sleep)
+        controller.capture(second) // Paused points are not accepted.
+        controller.operationStateChanged(to: .normal)
+        controller.capture(second) // Resume has not committed the segment yet.
+        await store.release(.append)
+        await controller.waitForPendingOperations()
+        XCTAssertEqual(controller.state, .recording)
+        controller.capture(second)
+        controller.stop()
+        await controller.waitForPendingOperations()
+        let draft = try await store.recover()
+        XCTAssertEqual(draft?.segments, [[first], [second]])
+        XCTAssertEqual(controller.pointCount, 2)
+    }
+
+    @MainActor
+    func testDiscardReservesTransitionAndRestoresPreviousStateOnFailure() async {
+        for naming in [false, true] {
+            for fails in [false, true] {
+                let store = ControlledDraftStore(draft: sampleDraft())
+                addTeardownBlock { await store.releaseAll() }
+                let repository = ControlledRecordingRepository(starts: [:])
+                let controller = makeController(store: store, repository: repository)
+                await controller.waitForPendingOperations()
+                if naming { controller.prepareRecoveredDraftForSaving() }
+                let deleting = expectation(description: "Discard suspended")
+                await store.suspend(.discard, started: deleting, fails: fails)
+                controller.discard()
+                XCTAssertEqual(controller.state, .discarding)
+                XCTAssertEqual(controller.isNamingPresented, naming)
+                controller.save()
+                controller.start()
+                controller.discard()
+                await fulfillment(of: [deleting], timeout: 5)
+                controller.save()
+                await store.release(.discard)
+                await controller.waitForPendingOperations()
+                XCTAssertEqual(controller.state, fails ? (naming ? .awaitingName : .recoverableInterruption) : .idle)
+                XCTAssertEqual(controller.pointCount, fails ? 1 : 0)
+                XCTAssertEqual(controller.error != nil, fails)
+                XCTAssertEqual(controller.isNamingPresented, fails && naming)
+                let files = await repository.savedFiles
+                let events = await store.events
+                XCTAssertTrue(files.isEmpty)
+                XCTAssertEqual(events.filter { $0 == .discard }.count, 1)
+                if fails {
+                    controller.discard()
+                    await controller.waitForPendingOperations()
+                    XCTAssertEqual(controller.state, .idle)
+                    XCTAssertNil(controller.error)
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func testSaveBlocksDiscardUntilCleanupCompletes() async {
+        let store = ControlledDraftStore(draft: sampleDraft())
+        addTeardownBlock { await store.releaseAll() }
+        let listing = expectation(description: "Reconciliation started")
+        let earlierStarted = expectation(description: "Listing before commit started")
+        let repository = ControlledRecordingRepository(starts: [2: earlierStarted, 3: listing])
+        addTeardownBlock { await repository.releaseAll() }
+        let controller = makeController(store: store, repository: repository)
+        await controller.waitForPendingOperations()
+        await controller.waitForPendingRefresh()
+        let earlierFinished = expectation(description: "Listing before commit finished")
+        Task {
+            await controller.refresh()
+            earlierFinished.fulfill()
+        }
+        await fulfillment(of: [earlierStarted], timeout: 5)
+        controller.prepareRecoveredDraftForSaving()
+        controller.proposedName = "Saved recording"
+        let cleanup = expectation(description: "Cleanup suspended")
+        await store.suspend(.discard, started: cleanup)
+        controller.save()
+        await fulfillment(of: [cleanup], timeout: 5)
+        XCTAssertEqual(controller.state, .saving)
+        XCTAssertEqual(controller.recordings.map(\.displayName), ["Saved recording"])
+        await repository.release(2, result: .failure(CocoaError(.fileReadNoPermission)))
+        await fulfillment(of: [earlierFinished], timeout: 5)
+        await controller.waitForPendingRefresh()
+        XCTAssertFalse(controller.isRefreshing)
+        XCTAssertNil(controller.refreshError)
+        XCTAssertEqual(controller.recordings.map(\.displayName), ["Saved recording"])
+        controller.discard()
+        controller.start()
+        controller.save()
+        await store.release(.discard)
+        await controller.waitForPendingOperations()
+        XCTAssertEqual(controller.state, .idle)
+        await fulfillment(of: [listing], timeout: 5)
+        let saved = await repository.savedFiles
+        XCTAssertEqual(saved.count, 1)
+        let events = await store.events
+        XCTAssertEqual(events.filter { $0 == .discard }.count, 1)
+        await repository.release(3, result: .success(saved))
+        await controller.waitForPendingRefresh()
+    }
+
+    @MainActor
+    func testFailedPointIsNotCountedAndEmptyStopCleanupCanBeRetried() async {
+        let store = ControlledDraftStore()
+        let controller = makeController(store: store)
+        await controller.waitForPendingOperations()
+        controller.start()
+        await controller.waitForPendingOperations()
+        await store.failNext(.append)
+        controller.capture(point(latitude: 51, longitude: 1, timestamp: Date()))
+        await controller.waitForPendingOperations()
+        XCTAssertEqual(controller.pointCount, 0)
+        XCTAssertNotNil(controller.error)
+        await store.failNext(.discard)
+        controller.stop()
+        await controller.waitForPendingOperations()
+        XCTAssertEqual(controller.state, .recoverableInterruption)
+        controller.discard()
+        await controller.waitForPendingOperations()
+        XCTAssertEqual(controller.state, .idle)
+        XCTAssertNil(controller.error)
+    }
+
+    @MainActor
+    func testDuplicateSaveLeavesDraftAvailableForRetry() async {
+        let store = ControlledDraftStore(draft: sampleDraft())
+        let repository = FileGPXRecordingRepository(localRoot: makeTemporaryDirectory())
+        let controller = makeController(store: store, repository: repository)
+        await controller.waitForPendingOperations()
+        _ = try? await repository.save(draft: sampleDraft(), named: "Existing")
+        controller.prepareRecoveredDraftForSaving()
+        controller.proposedName = "existing"
+        controller.save()
+        await controller.waitForPendingOperations()
+        XCTAssertEqual(controller.state, .awaitingName)
+        XCTAssertEqual(controller.error, .duplicateName)
+        XCTAssertEqual(controller.pointCount, 1)
+        controller.proposedName = "New"
+        controller.save()
+        await controller.waitForPendingOperations()
+        await controller.waitForPendingRefresh()
+        XCTAssertEqual(controller.state, .idle)
+        XCTAssertEqual(Set(controller.recordings.map(\.displayName)), Set(["Existing", "New"]))
+    }
+
+    @MainActor
+    private func makeController(store: ControlledDraftStore,
+                                repository: GPXRecordingRepository? = nil) -> GPXRecordingController {
+        GPXRecordingController(draftStore: store,
+                               repository: repository ?? FileGPXRecordingRepository(localRoot: makeTemporaryDirectory()),
+                               initialOperationState: .normal,
+                               observeEvents: false)
+    }
+
+    private func sampleDraft() -> GPXRecordingDraft {
+        GPXRecordingDraft(startedAt: Date(), segments: [[
+            point(latitude: 51, longitude: -0.1, timestamp: Date())
+        ]])
     }
 
     func testGPXBuilderCreatesOneTrackWithSegmentsAndCorrectBounds() throws {
@@ -440,7 +777,7 @@ private actor ControlledRecordingRepository: GPXRecordingRepository {
 
     func recordings() async throws -> [GPXRecordingFile] {
         listingCount += 1
-        guard listingCount > 1, !released else { return [] }
+        guard (listingCount > 1 || starts[1] != nil), !released else { return [] }
         let request = listingCount
         return try await withCheckedThrowingContinuation { continuation in
             continuations[request] = continuation
@@ -463,13 +800,86 @@ private actor ControlledRecordingRepository: GPXRecordingRepository {
 
     func nameExists(_ name: String) async throws -> Bool { false }
 
-    func save(gpx: String, named name: String) async throws -> GPXRecordingFile {
+    func save(draft: GPXRecordingDraft, named name: String) async throws -> GPXRecordingFile {
         let file = GPXRecordingFile(url: URL(fileURLWithPath: "/\(name).gpx"), modifiedAt: Date())
         savedFiles.append(file)
         return file
     }
 
     func prepareForSharing(_ file: GPXRecordingFile) async throws -> URL { file.url }
+}
+
+private actor ControlledDraftStore: GPXRecordingDraftStore {
+    enum Operation: Hashable { case create, append, segment, recover, discard }
+
+    private var draft: GPXRecordingDraft?
+    private var starts: [Operation: XCTestExpectation] = [:]
+    private var failures: Set<Operation> = []
+    private var continuations: [Operation: CheckedContinuation<Void, Error>] = [:]
+    private var released = false
+    private(set) var events: [Operation] = []
+
+    init(draft: GPXRecordingDraft? = nil) { self.draft = draft }
+
+    func suspend(_ operation: Operation, started: XCTestExpectation, fails: Bool = false) {
+        starts[operation] = started
+        if fails { failures.insert(operation) }
+    }
+
+    func failNext(_ operation: Operation) { failures.insert(operation) }
+
+    func release(_ operation: Operation) {
+        continuations.removeValue(forKey: operation)?.resume()
+    }
+
+    func releaseAll() {
+        released = true
+        let pending = continuations.values
+        continuations.removeAll()
+        for continuation in pending { continuation.resume(throwing: CancellationError()) }
+    }
+
+    private func perform(_ operation: Operation) async throws {
+        events.append(operation)
+        let fails = failures.remove(operation) != nil
+        if let started = starts.removeValue(forKey: operation), !released {
+            try await withCheckedThrowingContinuation { continuation in
+                continuations[operation] = continuation
+                started.fulfill()
+            }
+        }
+        if fails { throw CocoaError(.fileWriteNoPermission) }
+    }
+
+    func create(startedAt: Date) async throws {
+        try await perform(.create)
+        draft = GPXRecordingDraft(startedAt: startedAt, segments: [[]])
+    }
+
+    func append(_ point: GPXRecordingPoint) async throws {
+        try await perform(.append)
+        guard let draft else { throw GPXRecordingError.draftUnavailable }
+        var segments = draft.segments
+        if segments.isEmpty { segments.append([]) }
+        segments[segments.count - 1].append(point)
+        self.draft = GPXRecordingDraft(startedAt: draft.startedAt, segments: segments)
+    }
+
+    func beginSegment() async throws {
+        try await perform(.segment)
+        guard let draft, draft.segments.last?.isEmpty == false else { return }
+        self.draft = GPXRecordingDraft(startedAt: draft.startedAt, segments: draft.segments + [[]])
+    }
+
+    func recover() async throws -> GPXRecordingDraft? {
+        try await perform(.recover)
+        return draft
+    }
+
+    func discard() async throws {
+        try await perform(.discard)
+        draft = nil
+    }
 }
 
 private actor RecordingDraftStore: GPXRecordingDraftStore {
