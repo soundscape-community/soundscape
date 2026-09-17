@@ -4526,6 +4526,8 @@
 "gpx_recording.status.paused" = "Paused during Sleep or Snooze";
 "gpx_recording.status.awaiting_name" = "Ready to save";
 "gpx_recording.status.saving" = "Saving";
+"gpx_recording.status.stopping" = "Stopping";
+"gpx_recording.status.discarding" = "Discarding";
 "gpx_recording.status.recovered" = "Interrupted recording recovered";
 "gpx_recording.point_count" = "%d recorded points";
 "gpx_recording.point_count.singular" = "1 recorded point";

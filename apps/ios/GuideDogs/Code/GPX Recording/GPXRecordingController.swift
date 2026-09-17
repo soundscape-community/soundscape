@@ -17,19 +17,37 @@ final class GPXRecordingController: ObservableObject {
     @Published private(set) var state: GPXRecordingState = .loading
     @Published private(set) var recordings: [GPXRecordingFile] = []
     @Published private(set) var pointCount = 0
+    @Published private(set) var isRefreshing = false
+    @Published private(set) var refreshError: GPXRecordingError?
     @Published var error: GPXRecordingError?
     @Published var proposedName = ""
 
     private let draftStore: GPXRecordingDraftStore
     private let repository: GPXRecordingRepository
-    private var locationTask: Task<Void, Never>?
+    private var refreshRequest = 0
+    private var refreshTask: Task<Void, Never>?
+    private var operationTask: Task<Void, Never>?
+    private var operationRequest = 0
+    private var session = UUID()
+    private var transitionRevision = 0
+    private var operationState: OperationState
+    private var discardReturnState: GPXRecordingState?
     private var observers: [NSObjectProtocol] = []
 
     init(draftStore: GPXRecordingDraftStore = FileGPXRecordingDraftStore(),
-         repository: GPXRecordingRepository = FileGPXRecordingRepository()) {
+         repository: GPXRecordingRepository = FileGPXRecordingRepository(),
+         initialOperationState: OperationState = AppContext.shared.state,
+         observeEvents: Bool = true) {
         self.draftStore = draftStore
         self.repository = repository
+        operationState = initialOperationState
 
+        enqueue { controller, _ in await controller.load() }
+        requestRefresh()
+        guard observeEvents else { return }
+
+        // NotificationCenter delivers these callbacks on the main queue. Admit events
+        // synchronously there so a later Stop cannot overtake an accepted point.
         let stateObserver = NotificationCenter.default.addObserver(
             forName: .appOperationStateDidChange,
             object: nil,
@@ -38,8 +56,8 @@ final class GPXRecordingController: ObservableObject {
             guard let operationState = notification.userInfo?[AppContext.Keys.operationState] as? OperationState else {
                 return
             }
-            Task { @MainActor [weak self] in
-                await self?.operationStateChanged(to: operationState)
+            MainActor.assumeIsolated {
+                self?.operationStateChanged(to: operationState)
             }
         }
         observers.append(stateObserver)
@@ -49,35 +67,61 @@ final class GPXRecordingController: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            Task { @MainActor [weak self] in
-                await self?.refresh()
+            MainActor.assumeIsolated {
+                _ = self?.requestRefresh()
             }
         }
         observers.append(foregroundObserver)
 
-        let stream = Self.locationStream()
-        locationTask = Task { @MainActor [weak self] in
-            for await point in stream {
-                guard let self, !Task.isCancelled else {
-                    return
-                }
-                await self.capture(point)
+        let locationObserver = NotificationCenter.default.addObserver(
+            forName: .locationUpdated,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let location = notification.userInfo?[SpatialDataContext.Keys.location] as? CLLocation else {
+                return
+            }
+            MainActor.assumeIsolated {
+                let heading = AppContext.shared.geolocationManager.presentationHeading.value
+                let activity = AppContext.shared.motionActivityContext.currentActivity.rawValue
+                self?.capture(GPXRecordingPoint(location: location, heading: heading, motionActivity: activity))
             }
         }
-
-        Task { @MainActor [weak self] in
-            await self?.load()
-        }
+        observers.append(locationObserver)
     }
 
     deinit {
-        locationTask?.cancel()
         observers.forEach(NotificationCenter.default.removeObserver)
     }
 
     func screenAppeared() {
         GDATelemetry.trackScreenView("gpx_recording")
-        Task { await refresh() }
+        requestRefresh()
+    }
+
+    var isNamingPresented: Bool {
+        state == .awaitingName || state == .saving
+            || (state == .discarding && discardReturnState == .awaitingName)
+    }
+
+    // A finite chain owns accepted work independently of screen lifetime. Each task
+    // waits for its predecessor, including all of that operation's suspension points.
+    private func enqueue(_ operation: @escaping @MainActor (GPXRecordingController, UUID) async -> Void) {
+        let previous = operationTask
+        let acceptedSession = session
+        operationRequest += 1
+        let request = operationRequest
+        operationTask = Task {
+            await previous?.value
+            if acceptedSession == session {
+                await operation(self, acceptedSession)
+            }
+            if request == operationRequest { operationTask = nil }
+        }
+    }
+
+    func waitForPendingOperations() async {
+        while let operationTask { await operationTask.value }
     }
 
     func start() {
@@ -85,20 +129,24 @@ final class GPXRecordingController: ObservableObject {
             return
         }
         error = nil
+        session = UUID()
+        transitionRevision += 1
         state = .starting
         let startedAt = Date()
-        Task {
+        enqueue { controller, session in
             do {
-                try await draftStore.create(startedAt: startedAt)
-                pointCount = 0
-                state = AppContext.shared.state == .normal ? .recording : .paused
+                try await controller.draftStore.create(startedAt: startedAt)
+                guard controller.session == session else { return }
+                controller.pointCount = 0
+                controller.state = controller.operationState == .normal ? .recording : .paused
                 GDATelemetry.track("gpx_recording.start")
-                if state == .paused {
+                if controller.state == .paused {
                     GDATelemetry.track("gpx_recording.pause")
                 }
             } catch {
-                self.error = .storage(error.localizedDescription)
-                state = .idle
+                guard controller.session == session else { return }
+                controller.error = .storage(error.localizedDescription)
+                controller.state = .idle
             }
         }
     }
@@ -107,24 +155,26 @@ final class GPXRecordingController: ObservableObject {
         guard state == .recording || state == .paused else {
             return
         }
-        guard pointCount > 0 else {
-            state = .starting
-            error = nil
-            Task {
+        transitionRevision += 1
+        state = .stopping
+        enqueue { controller, session in
+            if controller.pointCount == 0 {
                 do {
-                    try await draftStore.discard()
+                    try await controller.draftStore.discard()
+                    guard controller.session == session else { return }
+                    controller.state = .idle
                     GDATelemetry.track("gpx_recording.discard")
                 } catch {
-                    self.error = .storage(error.localizedDescription)
+                    guard controller.session == session else { return }
+                    controller.error = .storage(error.localizedDescription)
+                    controller.state = .recoverableInterruption
                 }
-                pointCount = 0
-                state = .idle
+            } else {
+                controller.proposedName = Self.defaultName()
+                controller.state = .awaitingName
+                GDATelemetry.track("gpx_recording.stop")
             }
-            return
         }
-        proposedName = Self.defaultName()
-        state = .awaitingName
-        GDATelemetry.track("gpx_recording.stop")
     }
 
     func prepareRecoveredDraftForSaving() {
@@ -143,56 +193,95 @@ final class GPXRecordingController: ObservableObject {
         state = .saving
         error = nil
 
-        Task {
+        enqueue { controller, session in
             do {
                 let name = try GPXRecordingNameValidator.normalizedName(requestedName)
-                guard try await !repository.nameExists(name) else {
-                    throw GPXRecordingError.duplicateName
-                }
-                guard let draft = try await draftStore.recover(), draft.pointCount > 0 else {
+                guard let draft = try await controller.draftStore.recover(), draft.pointCount > 0 else {
                     throw GPXRecordingError.noPoints
                 }
-                _ = try await repository.save(gpx: GPXRecordingDocumentBuilder.makeGPX(from: draft),
-                                              named: name)
+                let file = try await controller.repository.save(draft: draft, named: name)
+                guard controller.session == session else { return }
+                // Invalidate every listing begun before this commit, then publish it
+                // immediately. Reconciliation has a separate lifetime and error channel.
+                controller.refreshRequest += 1
+                controller.refreshTask = nil
+                controller.isRefreshing = false
+                controller.refreshError = nil
+                controller.recordings = (controller.recordings.filter { $0.id != file.id } + [file])
+                    .sorted(by: GPXRecordingFile.newestFirst)
                 do {
-                    try await draftStore.discard()
+                    try await controller.draftStore.discard()
                 } catch {
-                    self.error = .storage(error.localizedDescription)
+                    controller.error = .storage(error.localizedDescription)
                 }
-                pointCount = 0
-                state = .idle
+                guard controller.session == session else { return }
+                controller.pointCount = 0
                 GDATelemetry.track("gpx_recording.save", with: ["destination": "local"])
-                await refresh()
+                controller.state = .idle
+                controller.requestRefresh()
             } catch let recordingError as GPXRecordingError {
-                error = recordingError
-                state = .awaitingName
+                guard controller.session == session else { return }
+                controller.error = recordingError
+                controller.state = .awaitingName
             } catch {
-                self.error = .storage(error.localizedDescription)
-                state = .awaitingName
+                guard controller.session == session else { return }
+                controller.error = .storage(error.localizedDescription)
+                controller.state = .awaitingName
             }
         }
     }
 
     func discard() {
-        Task {
+        guard state == .awaitingName || state == .recoverableInterruption else { return }
+        let previousState = state
+        discardReturnState = previousState
+        transitionRevision += 1
+        state = .discarding
+        error = nil
+        enqueue { controller, session in
             do {
-                try await draftStore.discard()
-                pointCount = 0
-                error = nil
-                state = .idle
+                try await controller.draftStore.discard()
+                guard controller.session == session else { return }
+                controller.pointCount = 0
+                controller.state = .idle
                 GDATelemetry.track("gpx_recording.discard")
             } catch {
-                self.error = .storage(error.localizedDescription)
+                guard controller.session == session else { return }
+                controller.error = .storage(error.localizedDescription)
+                controller.state = previousState
             }
+            controller.discardReturnState = nil
         }
     }
 
     func refresh() async {
-        do {
-            recordings = try await repository.recordings()
-        } catch {
-            self.error = .storage(error.localizedDescription)
+        await requestRefresh().value
+    }
+
+    func waitForPendingRefresh() async {
+        while let refreshTask { await refreshTask.value }
+    }
+
+    @discardableResult
+    private func requestRefresh() -> Task<Void, Never> {
+        refreshRequest += 1
+        let request = refreshRequest
+        isRefreshing = true
+        refreshError = nil
+        let task = Task {
+            do {
+                let files = try await repository.recordings()
+                guard request == refreshRequest else { return }
+                recordings = files
+            } catch {
+                guard request == refreshRequest else { return }
+                refreshError = .storage(error.localizedDescription)
+            }
+            isRefreshing = false
+            refreshTask = nil
         }
+        refreshTask = task
+        return task
     }
 
     func share(_ file: GPXRecordingFile) {
@@ -217,10 +306,7 @@ final class GPXRecordingController: ObservableObject {
 
     private func load() async {
         do {
-            async let draft = draftStore.recover()
-            async let files = repository.recordings()
-            let (recoveredDraft, savedFiles) = try await (draft, files)
-            recordings = savedFiles
+            let recoveredDraft = try await draftStore.recover()
             pointCount = recoveredDraft?.pointCount ?? 0
             if let recoveredDraft {
                 if recoveredDraft.pointCount > 0 {
@@ -238,55 +324,46 @@ final class GPXRecordingController: ObservableObject {
         }
     }
 
-    private func capture(_ point: GPXRecordingPoint) async {
+    func capture(_ point: GPXRecordingPoint) {
         guard state == .recording else {
             return
         }
-        do {
-            try await draftStore.append(point)
-            pointCount += 1
-        } catch {
-            self.error = .storage(error.localizedDescription)
+        enqueue { controller, session in
+            do {
+                try await controller.draftStore.append(point)
+                guard controller.session == session else { return }
+                controller.pointCount += 1
+            } catch {
+                guard controller.session == session else { return }
+                controller.error = .storage(error.localizedDescription)
+            }
         }
     }
 
-    private func operationStateChanged(to operationState: OperationState) async {
+    func operationStateChanged(to operationState: OperationState) {
+        guard operationState != self.operationState else { return }
+        self.operationState = operationState
+        transitionRevision += 1
+        let revision = transitionRevision
         switch (state, operationState) {
         case (.recording, .sleep), (.recording, .snooze):
             state = .paused
             GDATelemetry.track("gpx_recording.pause")
         case (.paused, .normal):
-            do {
-                try await draftStore.beginSegment()
-                state = .recording
-                GDATelemetry.track("gpx_recording.resume")
-            } catch {
-                self.error = .storage(error.localizedDescription)
+            enqueue { controller, session in
+                guard controller.transitionRevision == revision else { return }
+                do {
+                    try await controller.draftStore.beginSegment()
+                    guard controller.session == session, controller.transitionRevision == revision else { return }
+                    controller.state = .recording
+                    GDATelemetry.track("gpx_recording.resume")
+                } catch {
+                    guard controller.session == session, controller.transitionRevision == revision else { return }
+                    controller.error = .storage(error.localizedDescription)
+                }
             }
         default:
             break
-        }
-    }
-
-    private static func locationStream() -> AsyncStream<GPXRecordingPoint> {
-        AsyncStream { continuation in
-            let observer = NotificationCenter.default.addObserver(
-                forName: .locationUpdated,
-                object: nil,
-                queue: .main
-            ) { notification in
-                guard let location = notification.userInfo?[SpatialDataContext.Keys.location] as? CLLocation else {
-                    return
-                }
-                let heading = AppContext.shared.geolocationManager.presentationHeading.value
-                let activity = AppContext.shared.motionActivityContext.currentActivity.rawValue
-                continuation.yield(GPXRecordingPoint(location: location,
-                                                     heading: heading,
-                                                     motionActivity: activity))
-            }
-            continuation.onTermination = { _ in
-                NotificationCenter.default.removeObserver(observer)
-            }
         }
     }
 

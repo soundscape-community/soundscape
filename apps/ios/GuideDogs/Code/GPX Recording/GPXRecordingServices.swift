@@ -127,12 +127,7 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
     }
 
     func recordings() throws -> [GPXRecordingFile] {
-        try files(in: try localDirectory()).sorted {
-            if $0.modifiedAt == $1.modifiedAt {
-                return $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending
-            }
-            return $0.modifiedAt > $1.modifiedAt
-        }
+        try files(in: try localDirectory()).sorted(by: GPXRecordingFile.newestFirst)
     }
 
     func nameExists(_ name: String) throws -> Bool {
@@ -142,13 +137,14 @@ actor FileGPXRecordingRepository: GPXRecordingRepository {
         }
     }
 
-    func save(gpx: String, named name: String) throws -> GPXRecordingFile {
+    func save(draft: GPXRecordingDraft, named name: String) throws -> GPXRecordingFile {
         let normalized = try GPXRecordingNameValidator.normalizedName(name)
         guard try !nameExists(normalized) else {
             throw GPXRecordingError.duplicateName
         }
 
         do {
+            let gpx = GPXRecordingDocumentBuilder.makeGPX(from: draft)
             let directory = try localDirectory()
             try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
             let destination = directory.appendingPathComponent(normalized).appendingPathExtension("gpx")
