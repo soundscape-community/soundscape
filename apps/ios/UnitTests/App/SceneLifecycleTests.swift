@@ -79,20 +79,24 @@ final class SceneLifecycleTests: XCTestCase {
         let warmURL = URL(fileURLWithPath: "/tmp/warm.soundscape")
         let coldActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
         let warmActivity = NSUserActivity(activityType: "services.soundscape.activity.search")
+        let notificationPayload: PushNotification.Payload = ["aps": ["alert": "Open Soundscape"]]
 
-        delegate.routeIncomingEvents(urls: [coldURL], activities: [coldActivity])
+        delegate.routeIncomingEvents(urls: [coldURL], activities: [coldActivity], notificationPayload: notificationPayload)
         delegate.routeIncomingEvents(urls: [warmURL], activities: [warmActivity])
 
         XCTAssertEqual(handler.urls, [coldURL, warmURL])
         XCTAssertEqual(handler.activities.count, 2)
         XCTAssertTrue(handler.activities[0] === coldActivity)
         XCTAssertTrue(handler.activities[1] === warmActivity)
+        XCTAssertEqual(handler.notificationPayloads.count, 1)
+        XCTAssertEqual(handler.notificationPayloads[0]["aps"] as? [String: String], ["alert": "Open Soundscape"])
     }
 }
 
 private final class IncomingEventSpy: SceneIncomingEventHandling {
     var urls: [URL] = []
     var activities: [NSUserActivity] = []
+    var notificationPayloads: [PushNotification.Payload] = []
 
     func openURLResource(_ url: URL) -> Bool {
         urls.append(url)
@@ -102,5 +106,9 @@ private final class IncomingEventSpy: SceneIncomingEventHandling {
     func handle(_ userActivity: NSUserActivity) -> Bool {
         activities.append(userActivity)
         return true
+    }
+
+    func handleLaunchNotification(payload: PushNotification.Payload) {
+        notificationPayloads.append(payload)
     }
 }

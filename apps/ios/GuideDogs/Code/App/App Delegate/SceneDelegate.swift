@@ -11,6 +11,7 @@ import UIKit
 protocol SceneIncomingEventHandling: AnyObject {
     func openURLResource(_ url: URL) -> Bool
     func handle(_ userActivity: NSUserActivity) -> Bool
+    func handleLaunchNotification(payload: PushNotification.Payload)
 }
 
 extension AppDelegate: SceneIncomingEventHandling {}
@@ -23,7 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         routeIncomingEvents(urls: connectionOptions.urlContexts.map(\.url),
-                            activities: Array(connectionOptions.userActivities))
+                            activities: Array(connectionOptions.userActivities),
+                            notificationPayload: connectionOptions.notificationResponse?.notification.request.content.userInfo)
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -34,8 +36,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         routeIncomingEvents(urls: [], activities: [userActivity])
     }
 
-    func routeIncomingEvents(urls: [URL], activities: [NSUserActivity]) {
+    func routeIncomingEvents(urls: [URL], activities: [NSUserActivity], notificationPayload: PushNotification.Payload? = nil) {
         guard let handler = incomingEventHandler ?? (UIApplication.shared.delegate as? SceneIncomingEventHandling) else { return }
+
+        if let notificationPayload = notificationPayload {
+            handler.handleLaunchNotification(payload: notificationPayload)
+        }
 
         for url in urls {
             _ = handler.openURLResource(url)

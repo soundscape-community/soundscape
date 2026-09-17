@@ -62,6 +62,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return userActivityManager.onContinueUserActivity(userActivity)
     }
 
+    func handleLaunchNotification(payload: PushNotification.Payload) {
+        pushNotificationManager.didReceiveLaunchNotification(payload: payload)
+    }
+
     func openURLResource(_ url: URL) -> Bool {
         GDLogAppInfo("Application asked to open file: \(url.lastPathComponent)")
 

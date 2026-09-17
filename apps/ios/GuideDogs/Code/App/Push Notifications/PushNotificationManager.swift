@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -118,7 +119,11 @@ class PushNotificationManager: NSObject {
     
     func didFinishLaunchingWithOptions(_ launchOptions: [UIApplication.LaunchOptionsKey: Any]) {
         guard let remoteNotification = launchOptions[.remoteNotification] as? PushNotification.Payload else { return }
-        let pushNotification = PushNotification(payload: remoteNotification, arrivalContext: .launch)
+        didReceiveLaunchNotification(payload: remoteNotification)
+    }
+
+    func didReceiveLaunchNotification(payload: PushNotification.Payload) {
+        let pushNotification = PushNotification(payload: payload, arrivalContext: .launch)
         didReceive(pushNotification: pushNotification)
     }
     
