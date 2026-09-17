@@ -275,20 +275,20 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.mobility"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Intersection and transportation info" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="mMk-Pn-ghc">
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Transportation and accessibility info" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="mMk-Pn-ghc">
                                             <rect key="frame" x="20" y="25.333333333333332" width="200" height="14.333333333333334"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                             <color key="textColor" red="0.6705882353" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="highlightedColor" red="0.1333333333" green="0.25882352939999997" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.mobility.info"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.mobility.transportation_info"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LEO-Ou-dfU">
                                             <rect key="frame" x="318" y="6" width="59" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                            <accessibility key="accessibilityConfiguration" label="Streets and Places"/>
+                                            <accessibility key="accessibilityConfiguration" label="Mobility"/>
                                             <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="thumbTintColor" red="0.098039215690000001" green="0.18823529410000001" blue="0.29803921570000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <connections>
@@ -304,6 +304,54 @@
                                 </accessibility>
                                 <connections>
                                     <outlet property="accessoryView" destination="LEO-Ou-dfU" id="MEf-JX-bUu"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="intersectionCallouts" editingAccessoryType="checkmark" textLabel="int-sc-002" detailTextLabel="int-sc-003" style="IBUITableViewCellStyleSubtitle" id="int-sc-000" userLabel="Intersections" customClass="CalloutSettingsCellView" customModule="Soundscape" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="319.33333206176758" width="393" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="int-sc-000" id="int-sc-001">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Intersections" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="int-sc-002">
+                                            <rect key="frame" x="20" y="5" width="60" height="20.333333333333332"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="highlightedColor" red="0.1333333333" green="0.25882352939999997" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.intersections"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Nearby road intersections" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="int-sc-003">
+                                            <rect key="frame" x="20" y="25.333333333333332" width="200" height="14.333333333333334"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                            <color key="textColor" red="0.6705882353" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="highlightedColor" red="0.1333333333" green="0.25882352939999997" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="callouts.intersections.info"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="int-sc-004">
+                                            <rect key="frame" x="318" y="6" width="59" height="31"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <accessibility key="accessibilityConfiguration" label="Intersections"/>
+                                            <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="thumbTintColor" red="0.098039215690000001" green="0.18823529410000001" blue="0.29803921570000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <action selector="onSettingValueChanged:" destination="int-sc-000" eventType="valueChanged" id="int-sc-005"/>
+                                            </connections>
+                                        </switch>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" name="Background 1"/>
+                                <color key="tintColor" name="Foreground 1"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" button="YES"/>
+                                </accessibility>
+                                <connections>
+                                    <outlet property="accessoryView" destination="int-sc-004" id="int-sc-006"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="beaconCallouts" editingAccessoryType="checkmark" textLabel="ExI-qt-25c" detailTextLabel="sNf-y6-Ghm" style="IBUITableViewCellStyleSubtitle" id="Pjb-ed-VL9" userLabel="Beacons" customClass="CalloutSettingsCellView" customModule="Soundscape" customModuleProvider="target">

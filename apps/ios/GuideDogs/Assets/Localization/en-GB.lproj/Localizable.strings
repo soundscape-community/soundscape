@@ -1945,6 +1945,15 @@
 /*  */
 "callouts.mobility.info" = "Intersection and transportation info";
 
+/* Mobility callout settings description, excluding road intersections. */
+"callouts.mobility.transportation_info" = "Transportation and accessibility info";
+
+/* Title for the independent intersection callout toggle. */
+"callouts.intersections" = "Intersections";
+
+/* Intersection callout settings description. */
+"callouts.intersections.info" = "Nearby road intersections";
+
 
 /*  */
 "callouts.audio_beacon" = "Distance to the Audio Beacon";

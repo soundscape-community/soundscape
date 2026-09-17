@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -13,7 +14,7 @@ protocol CalloutSettingsCellViewDelegate: AnyObject {
 }
 
 internal enum CalloutSettingCellType {
-    case all, poi, mobility, beacon, shake
+    case all, poi, mobility, intersections, beacon, shake
 }
 
 class CalloutSettingsCellView: UITableViewCell {
@@ -38,6 +39,11 @@ class CalloutSettingsCellView: UITableViewCell {
                 return
             case .mobility:
                 settingSwitch.isOn = SettingsContext.shared.mobilitySenseEnabled
+                settingSwitch.accessibilityLabel = GDLocalizedString("callouts.mobility")
+                return
+            case .intersections:
+                settingSwitch.isOn = SettingsContext.shared.intersectionSenseEnabled
+                settingSwitch.accessibilityLabel = GDLocalizedString("callouts.intersections")
                 return
             case .beacon:
                 settingSwitch.isOn = SettingsContext.shared.destinationSenseEnabled
@@ -82,11 +88,15 @@ class CalloutSettingsCellView: UITableViewCell {
             return
             
         case .mobility:
-            // Mobility, Safety, and Intersection Sense
+            // Mobility and Safety Senses
             SettingsContext.shared.mobilitySenseEnabled = isOn
             SettingsContext.shared.safetySenseEnabled = isOn
+            log(["mobility", "safety"])
+            return
+
+        case .intersections:
             SettingsContext.shared.intersectionSenseEnabled = isOn
-            log(["mobility", "safety", "intersections"])
+            log(["intersections"])
             return
             
         case .beacon:
