@@ -28,11 +28,6 @@ extension RouteParameters {
     }
     
     static func decode(from url: URL) -> RouteParameters? {
-        defer {
-            // Remove document from cache
-            try? FileManager.default.removeItem(at: url)
-        }
-        
         let data: Data
         do {
             data = try Data(contentsOf: url)
