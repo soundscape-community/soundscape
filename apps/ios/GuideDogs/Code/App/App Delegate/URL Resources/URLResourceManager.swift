@@ -105,7 +105,7 @@ class URLResourceManager {
             reportImportFailure(for: resource)
             return
         }
-        defer { try? fileManager.removeItem(at: url.deletingLastPathComponent()) }
+        defer { removeStagedResource(at: url) }
 
         let handler: URLResourceHandler
         
@@ -143,6 +143,25 @@ class URLResourceManager {
         } catch {
             try? fileManager.removeItem(at: directory)
             throw error
+        }
+    }
+
+    private func removeStagedResource(at url: URL) {
+        if fileManager.fileExists(atPath: url.path) {
+            do {
+                try fileManager.removeItem(at: url)
+            } catch {
+                GDLogURLResourceError("Failed to remove staged URL resource \(url.lastPathComponent): \(error.localizedDescription)")
+            }
+        }
+
+        let directory = url.deletingLastPathComponent()
+        if fileManager.fileExists(atPath: directory.path) {
+            do {
+                try fileManager.removeItem(at: directory)
+            } catch {
+                GDLogURLResourceError("Failed to remove staged URL directory \(directory.lastPathComponent): \(error.localizedDescription)")
+            }
         }
     }
 
