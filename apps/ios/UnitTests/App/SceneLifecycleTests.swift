@@ -129,6 +129,64 @@ final class SceneLifecycleTests: XCTestCase {
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: importDirectory.path), [])
     }
 
+    func testInvalidIncomingFilesArePreservedAndStagingIsCleaned() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let staging = root.appendingPathComponent("Staged", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let manager = URLResourceManager(importDirectory: staging)
+        let directory = root.appendingPathComponent("directory.soundscape", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let oversized = root.appendingPathComponent("oversized.soundscape")
+        XCTAssertTrue(FileManager.default.createFile(atPath: oversized.path, contents: nil))
+        let handle = try FileHandle(forWritingTo: oversized)
+        try handle.truncate(atOffset: 50 * 1024 * 1024 + 1)
+        try handle.close()
+        let malformed = root.appendingPathComponent("malformed.soundscape")
+        try Data("not JSON".utf8).write(to: malformed)
+
+        let failed = expectation(description: "Invalid files report import failure")
+        failed.expectedFulfillmentCount = 3
+        let observer = NotificationCenter.default.addObserver(forName: .didFailToImportRoute, object: nil, queue: .main) { _ in
+            failed.fulfill()
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+        for source in [directory, oversized] {
+            XCTAssertTrue(manager.onOpenResource(from: source))
+            // Rejected during staging, before the home screen is ready.
+            XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: staging.path), [])
+        }
+        XCTAssertTrue(manager.onOpenResource(from: malformed))
+        NotificationCenter.default.post(name: .homeViewControllerDidLoad, object: nil)
+        wait(for: [failed], timeout: 5)
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: staging.path), [])
+        for source in [directory, oversized, malformed] {
+            XCTAssertTrue(FileManager.default.fileExists(atPath: source.path))
+        }
+    }
+
+    func testOnlyExpiredImportDirectoriesAreRemovedAtStartup() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let expired = root.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let recent = root.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let unrelated = root.appendingPathComponent("Unrelated", isDirectory: true)
+        let oldDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
+        for directory in [expired, recent, unrelated] {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try Data("staged".utf8).write(to: directory.appendingPathComponent("route.soundscape"))
+        }
+        for directory in [expired, unrelated] {
+            try FileManager.default.setAttributes([.modificationDate: oldDate], ofItemAtPath: directory.path)
+        }
+        let manager = URLResourceManager(importDirectory: root)
+        withExtendedLifetime(manager) {
+            XCTAssertFalse(FileManager.default.fileExists(atPath: expired.path))
+            XCTAssertTrue(FileManager.default.fileExists(atPath: recent.path))
+            XCTAssertTrue(FileManager.default.fileExists(atPath: unrelated.path))
+        }
+    }
+
     func testMissingIncomingFileReportsImportFailure() throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         defer { try? FileManager.default.removeItem(at: root) }

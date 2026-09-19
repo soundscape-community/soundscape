@@ -31,6 +31,7 @@ class URLResourceManager {
     private var queue = DispatchQueue(label: "services.soundscape.urlresourcemanager")
     private let fileManager: FileManager
     private let importDirectory: URL
+    private static let maximumImportSize = 50 * 1024 * 1024
     // Handlers
     private let gpxHandler = GPXResourceHandler()
     private let routeHandler = RouteResourceHandler()
@@ -41,6 +42,7 @@ class URLResourceManager {
          importDirectory: URL = FileManager.default.temporaryDirectory.appendingPathComponent("Incoming URL Resources", isDirectory: true)) {
         self.fileManager = fileManager
         self.importDirectory = importDirectory
+        removeExpiredStagingDirectories()
         listeners.append(NotificationCenter.default.publisher(for: .homeViewControllerDidLoad)
                             .receive(on: RunLoop.main)
                             .sink(receiveValue: { [weak self] _ in
@@ -78,6 +80,7 @@ class URLResourceManager {
 
         let stagedURL: Result<URL, Error>
         do {
+            // Preserve the incoming file before the system's open-URL callback returns.
             stagedURL = .success(try stageIncomingFile(at: url))
         } catch {
             GDLogURLResourceError("Failed to copy incoming file \(url.lastPathComponent): \(error)")
@@ -118,6 +121,7 @@ class URLResourceManager {
     }
 
     private func stageIncomingFile(at source: URL) throws -> URL {
+        guard source.isFileURL else { throw CocoaError(.fileReadUnsupportedScheme) }
         let directory = importDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         let destination = directory.appendingPathComponent(source.lastPathComponent)
@@ -131,6 +135,13 @@ class URLResourceManager {
             var copyError: Error?
             NSFileCoordinator().coordinate(readingItemAt: source, options: [], error: &coordinationError) { coordinatedSource in
                 do {
+                    let values = try coordinatedSource.resourceValues(forKeys: [.isRegularFileKey, .fileSizeKey])
+                    guard values.isRegularFile == true else {
+                        throw CocoaError(.fileReadUnknown, userInfo: [NSLocalizedDescriptionKey: "Only regular files can be imported."])
+                    }
+                    guard let size = values.fileSize, size <= Self.maximumImportSize else {
+                        throw CocoaError(.fileReadTooLarge)
+                    }
                     try fileManager.copyItem(at: coordinatedSource, to: destination)
                 } catch {
                     copyError = error
@@ -141,27 +152,42 @@ class URLResourceManager {
             }
             return destination
         } catch {
-            try? fileManager.removeItem(at: directory)
+            removeStagingDirectory(at: directory)
             throw error
         }
     }
 
     private func removeStagedResource(at url: URL) {
-        if fileManager.fileExists(atPath: url.path) {
-            do {
-                try fileManager.removeItem(at: url)
-            } catch {
-                GDLogURLResourceError("Failed to remove staged URL resource \(url.lastPathComponent): \(error.localizedDescription)")
-            }
-        }
+        removeStagingDirectory(at: url.deletingLastPathComponent())
+    }
 
-        let directory = url.deletingLastPathComponent()
-        if fileManager.fileExists(atPath: directory.path) {
-            do {
-                try fileManager.removeItem(at: directory)
-            } catch {
-                GDLogURLResourceError("Failed to remove staged URL directory \(directory.lastPathComponent): \(error.localizedDescription)")
+    private func removeStagingDirectory(at directory: URL) {
+        do {
+            try fileManager.removeItem(at: directory)
+        } catch CocoaError.fileNoSuchFile {
+            // A GPX handler or the system may already have removed the staged item.
+        } catch {
+            GDLogURLResourceError("Failed to remove staged URL directory \(directory.lastPathComponent): \(error.localizedDescription)")
+        }
+    }
+
+    private func removeExpiredStagingDirectories() {
+        let keys: Set<URLResourceKey> = [.isDirectoryKey, .isSymbolicLinkKey, .contentModificationDateKey]
+        let cutoff = Date().addingTimeInterval(-7 * 24 * 60 * 60)
+        do {
+            let directories = try fileManager.contentsOfDirectory(at: importDirectory,
+                                                                   includingPropertiesForKeys: Array(keys))
+            for directory in directories where UUID(uuidString: directory.lastPathComponent) != nil {
+                let values = try directory.resourceValues(forKeys: keys)
+                if values.isDirectory == true, values.isSymbolicLink != true,
+                   let modified = values.contentModificationDate, modified < cutoff {
+                    removeStagingDirectory(at: directory)
+                }
             }
+        } catch CocoaError.fileReadNoSuchFile {
+            // No imports have been staged yet.
+        } catch {
+            GDLogURLResourceError("Failed to inspect expired URL staging directories: \(error.localizedDescription)")
         }
     }
 
