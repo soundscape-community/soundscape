@@ -1221,3 +1221,5 @@
 "gpx_recording.error.draft_unavailable" = "No se ha podido abrir el borrador de la grabación protegida.";
 "gpx_recording.error.share_unavailable" = "La pantalla de compartir no está disponible actualmente.";
 "gpx_recording.error.accessibility" = "Error: %@";
+"gpx_recording.status.stopping" = "Deteniendo";
+"gpx_recording.status.discarding" = "Descartando";
