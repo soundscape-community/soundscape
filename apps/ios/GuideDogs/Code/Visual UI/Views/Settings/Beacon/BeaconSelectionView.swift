@@ -16,7 +16,7 @@ struct BeaconSelectionView: View {
     @State var isPresented: Bool = false
     @State var selectedBeaconKey: String
     @State var areMelodiesEnabled: Bool
-    @State var enterImmediateVicinityDistance: Double
+    @State var arrivalDistance: Double
     @State var beaconRingingAngle: Double
     
     let initialBeacon: String
@@ -25,7 +25,7 @@ struct BeaconSelectionView: View {
     init() {
         _selectedBeaconKey = State(initialValue: SettingsContext.shared.selectedBeacon)
         _areMelodiesEnabled = State(initialValue: SettingsContext.shared.playBeaconStartAndEndMelodies)
-        _enterImmediateVicinityDistance = State(initialValue: SettingsContext.shared.enterImmediateVicinityDistance)
+        _arrivalDistance = State(initialValue: SettingsContext.shared.enterImmediateVicinityDistance)
         _beaconRingingAngle = State(initialValue: SettingsContext.shared.beaconRingingAngle)
         initialBeacon = SettingsContext.shared.selectedBeacon
         initialMelodies = SettingsContext.shared.playBeaconStartAndEndMelodies
@@ -47,19 +47,19 @@ struct BeaconSelectionView: View {
                         })
 
                     SettingStepper(
-                        value: $enterImmediateVicinityDistance,
-                        titleLocalization: "beacon.settings.vicinity",
+                        value: $arrivalDistance,
+                        titleLocalization: "beacon.settings.arrival_distance",
                         unitsLocalization: "distance.format.meters",
-                        stepSize: 5.0,
-                        minValue: 0.0,
-                        maxValue: 50.0
+                        stepSize: SettingsContext.ArrivalDistance.step,
+                        minValue: SettingsContext.ArrivalDistance.minimum,
+                        maxValue: SettingsContext.ArrivalDistance.maximum
                     )
-                    .onChange(of: enterImmediateVicinityDistance, perform: { _ in
-                        SettingsContext.shared.enterImmediateVicinityDistance = enterImmediateVicinityDistance
+                    .onChange(of: arrivalDistance, perform: { _ in
+                        SettingsContext.shared.enterImmediateVicinityDistance = arrivalDistance
                     })
 
                     HStack(spacing: 0) {
-                        GDLocalizedTextView("beacon.settings.vicinity.explanation")
+                        GDLocalizedTextView("beacon.settings.arrival_distance.explanation")
                             .font(.caption)
                             .foregroundColor(.primaryForeground)
                             .padding()

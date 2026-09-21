@@ -589,6 +589,12 @@
 "beacon.settings.vicinity.explanation" = "Adjust the distance at which beacon audio automatically mutes as you approach.";
 
 /*  */
+"beacon.settings.arrival_distance" = "Arrival Distance";
+
+/*  */
+"beacon.settings.arrival_distance.explanation" = "Adjust the distance at which beacon audio automatically mutes and route or activity waypoints are completed.";
+
+/*  */
 "beacon.settings.style" = "Audio Styles";
 
 

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -44,7 +45,7 @@ class BeaconUpdateFilter {
     
     /// Range defining the distances from the beacon over which callout frequency should
     /// be interpolated using the callout distance range
-    let baseBeaconDistanceRange: Range<CLLocationDistance>
+    private(set) var baseBeaconDistanceRange: Range<CLLocationDistance>
     
     private var shouldIgnoreFirstUpdate: Bool = false
     
@@ -89,6 +90,18 @@ class BeaconUpdateFilter {
     }
     
     // MARK: Methods
+
+    /// Updates the distances over which callout frequency is interpolated without
+    /// resetting the current beacon or the most recent update.
+    func updateBeaconDistanceRange(_ beaconDistance: Range<CLLocationDistance>) {
+        guard beaconDistance != baseBeaconDistanceRange else {
+            return
+        }
+
+        baseBeaconDistanceRange = beaconDistance
+        slope = (baseUpdateDistanceRange.upperBound - baseUpdateDistanceRange.lowerBound) /
+                (beaconDistance.upperBound - beaconDistance.lowerBound)
+    }
     
     func start(beaconLocation: CLLocation, shouldIgnoreFirstUpdate: Bool = false) {
         // Ensure we are starting in a clean state

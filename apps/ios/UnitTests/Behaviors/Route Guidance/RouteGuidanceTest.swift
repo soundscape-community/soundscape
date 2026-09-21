@@ -289,3 +289,55 @@ class RouteGuidanceTest: XCTestCase {
 
     // TODO: There are definitely more tests we should add here
 }
+
+final class BeaconUpdateFilterTest: XCTestCase {
+    private final class TestMotionActivity: MotionActivityProtocol {
+        var isWalking: Bool = true
+        var isInVehicle: Bool = false
+        var currentActivity: ActivityType = .walking
+
+        func startActivityUpdates() { }
+        func stopActivityUpdates() { }
+    }
+
+    func testUpdatingBeaconDistanceRangePreservesStateAndRecalculatesThreshold() {
+        let motionActivity = TestMotionActivity()
+        let beacon = CLLocation(latitude: 0.0, longitude: 0.0)
+        let nearbyLocation = CLLocation(latitude: 0.000225, longitude: 0.0)
+        let filter = BeaconUpdateFilter(updateDistance: 10.0 ..< 25.0,
+                                        beaconDistance: 1.0 ..< 100.0,
+                                        motionActivity: motionActivity)
+
+        filter.start(beaconLocation: beacon, shouldIgnoreFirstUpdate: true)
+        XCTAssertFalse(filter.shouldUpdate(location: nearbyLocation))
+        let previousUpdate = filter.lastUpdate
+
+        filter.updateBeaconDistanceRange(50.0 ..< 100.0)
+        XCTAssertTrue(filter.shouldUpdate(location: nearbyLocation))
+
+        filter.updateBeaconDistanceRange(1.0 ..< 100.0)
+        XCTAssertFalse(filter.shouldUpdate(location: nearbyLocation))
+        XCTAssertEqual(filter.lastUpdate?.time, previousUpdate?.time)
+        XCTAssertEqual(filter.lastUpdate?.location.coordinate.latitude,
+                       previousUpdate?.location.coordinate.latitude)
+        XCTAssertEqual(filter.lastUpdate?.location.coordinate.longitude,
+                       previousUpdate?.location.coordinate.longitude)
+    }
+
+    func testUpdatingBeaconDistanceRangeBeforeCompletionUsesNewArrivalThreshold() {
+        let motionActivity = TestMotionActivity()
+        let beacon = CLLocation(latitude: 0.0, longitude: 0.0)
+        let nearbyLocation = CLLocation(latitude: 0.000225, longitude: 0.0)
+        let fartherLocation = CLLocation(latitude: 0.000675, longitude: 0.0)
+        let filter = BeaconUpdateFilter(updateDistance: 10.0 ..< 25.0,
+                                        beaconDistance: 50.0 ..< 100.0,
+                                        motionActivity: motionActivity)
+
+        filter.start(beaconLocation: beacon)
+        filter.isUpdating(location: nearbyLocation)
+        filter.updateBeaconDistanceRange(1.0 ..< 100.0)
+        filter.didUpdate(success: true)
+
+        XCTAssertTrue(filter.shouldUpdate(location: fartherLocation))
+    }
+}

@@ -524,6 +524,12 @@
 /* Description for the Audio Mute Distance setting explaining that it adjusts when beacon audio is muted. */
 "beacon.settings.vicinity.explanation" = "Adjust the distance at which beacon audio automatically mutes as you approach.";
 
+/* Title of the shared distance setting used to mute beacon audio and complete route or activity waypoints. */
+"beacon.settings.arrival_distance" = "Arrival Distance";
+
+/* Description for the Arrival Distance setting explaining its effect on beacons and waypoints. */
+"beacon.settings.arrival_distance.explanation" = "Adjust the distance at which beacon audio automatically mutes and route or activity waypoints are completed.";
+
 /* Title of a setting in the beacon settings page where the user can adjust the angular width of the 'ahead' sound. */
 "beacon.settings.ringing_angle" = "Ringing Sound Angle";
 

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -613,7 +614,10 @@ class DestinationManager: DestinationManagerProtocol {
         if isWithinGeofence && distance >= SettingsContext.shared.leaveImmediateVicinityDistance {
             // Left immediate vicinity
             return false
-        } else if !isWithinGeofence && distance <= SettingsContext.shared.enterImmediateVicinityDistance {
+        } else if !isWithinGeofence && SettingsContext.isWithinArrivalDistance(
+            distance,
+            arrivalDistance: SettingsContext.shared.enterImmediateVicinityDistance
+        ) {
             // Entered immediate vicinity
             return true
         }
