@@ -17,11 +17,13 @@ class StatusTableViewController: BaseTableViewController {
         static let audio = 1
         static let url = 2
         static let cache = 3
-        static let userData = 4 
+        static let userData = 4
+        static let advanced = 5
     }
     
     private struct CellIdentifier {
         static let gps = "GPSStatus"
+        static let advanced = "AdvancedSetting"
     }
     
     var reenableCalloutsAfterReload = false
@@ -33,6 +35,7 @@ class StatusTableViewController: BaseTableViewController {
         tableView.rowHeight = UITableView.automaticDimension
         
         tableView.registerCell(ButtonTableViewCell.self)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: CellIdentifier.advanced)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onLocationUpdated(notification:)),
@@ -63,7 +66,7 @@ class StatusTableViewController: BaseTableViewController {
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 5 
+        return 6
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -73,6 +76,7 @@ class StatusTableViewController: BaseTableViewController {
         case Section.url:     return 1
         case Section.cache:   return 1
         case Section.userData: return 1 
+        case Section.advanced: return 1
         default:              return 0
         }
     }
@@ -84,6 +88,7 @@ class StatusTableViewController: BaseTableViewController {
         case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url")
         case Section.cache:   return GDLocalizedString("troubleshooting.cache")
         case Section.userData: return GDLocalizedString("troubleshooting.user_data") 
+        case Section.advanced: return GDLocalizationUnnecessary("Advanced")
         default:              return nil
         }
     }
@@ -172,6 +177,23 @@ class StatusTableViewController: BaseTableViewController {
             cell.button.backgroundColor = Colors.Background.error
             cell.label.text = GDLocalizedString("troubleshooting.user_data.button")
             return cell
+
+        case Section.advanced:
+            let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.advanced, for: indexPath)
+            let settingSwitch: UISwitch
+
+            if let existingSwitch = cell.accessoryView as? UISwitch {
+                settingSwitch = existingSwitch
+            } else {
+                settingSwitch = UISwitch()
+                settingSwitch.addTarget(self, action: #selector(kalmanFilterSettingChanged(_:)), for: .valueChanged)
+                cell.accessoryView = settingSwitch
+            }
+
+            cell.selectionStyle = .none
+            cell.textLabel?.text = GDLocalizationUnnecessary("Disable Kalman filter")
+            settingSwitch.isOn = !SettingsContext.shared.kalmanFilterEnabled
+            return cell
             
         default:
             fatalError()
@@ -182,6 +204,10 @@ class StatusTableViewController: BaseTableViewController {
 }
 
 extension StatusTableViewController {
+    @objc func kalmanFilterSettingChanged(_ sender: UISwitch) {
+        SettingsContext.shared.kalmanFilterEnabled = !sender.isOn
+    }
+
     @objc func urlTouchUpInside() {
         let alertController = UIAlertController(title: GDLocalizedString("troubleshooting.tile_server_url"), message: nil, preferredStyle: .alert)
         alertController.addTextField { textField in

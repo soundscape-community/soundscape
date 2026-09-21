@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -500,17 +501,26 @@ extension CoreLocationManager: CLLocationManagerDelegate {
             return
         }
         
-        // Process via Kalman filter
-        let filteredLocation = filter.process(location: location)
+        let processedLocation = processLocation(location)
         
         if locationUpdateActivity == .startingSignificantChange {
             // When monitoring for significant change in location, use the
             // first location update as the origin
-            startMonitoringSignificantLocationChanges(filteredLocation)
+            startMonitoringSignificantLocationChanges(processedLocation)
         } else {
             // Process location update
-            didUpdateLocation(filteredLocation)
+            didUpdateLocation(processedLocation)
         }
+    }
+
+    func processLocation(_ location: CLLocation) -> CLLocation {
+        guard SettingsContext.shared.kalmanFilterEnabled else {
+            // Ensure re-enabling the filter starts from a current location rather than a stale estimate.
+            filter.reset()
+            return location
+        }
+
+        return filter.process(location: location)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -57,6 +58,7 @@ class SettingsContext {
         fileprivate static let pushNotificationTags      = "GDASettingsPushNotificationTags"
         fileprivate static let previewIntersectionsIncludeUnnamedRoads = "GDASettingsPreviewIntersectionsIncludeUnnamedRoads"
         fileprivate static let audioSessionMixesWithOthers = "GDAAudioSessionMixesWithOthers"
+        fileprivate static let kalmanFilterEnabled        = "GDASettingsKalmanFilterEnabled"
         fileprivate static let markerSortStyle           = "GDAMarkerSortStyle"
         fileprivate static let leaveImmediateVicinityDistance = "GDALeaveImmediateVicinityDistance"
         fileprivate static let enterImmediateVicinityDistance = "GDAEnterImmediateVicinityDistance"
@@ -111,6 +113,7 @@ class SettingsContext {
             Keys.senseDestination: true,
             Keys.previewIntersectionsIncludeUnnamedRoads: false,
             Keys.audioSessionMixesWithOthers: true,
+            Keys.kalmanFilterEnabled: true,
             Keys.markerSortStyle: SortStyle.distance.rawValue,
             Keys.leaveImmediateVicinityDistance: 30.0,
             Keys.enterImmediateVicinityDistance: 15.0,
@@ -310,6 +313,15 @@ class SettingsContext {
         }
         set {
             userDefaults.set(newValue, forKey: Keys.audioSessionMixesWithOthers)
+        }
+    }
+
+    var kalmanFilterEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.kalmanFilterEnabled)
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.kalmanFilterEnabled)
         }
     }
     
