@@ -515,8 +515,6 @@ extension CoreLocationManager: CLLocationManagerDelegate {
 
     func processLocation(_ location: CLLocation) -> CLLocation {
         guard SettingsContext.shared.kalmanFilterEnabled else {
-            // Ensure re-enabling the filter starts from a current location rather than a stale estimate.
-            filter.reset()
             return location
         }
 

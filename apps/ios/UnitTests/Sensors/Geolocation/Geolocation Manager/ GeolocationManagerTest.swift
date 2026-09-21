@@ -206,7 +206,7 @@ final class CoreLocationManagerTest: XCTestCase {
         XCTAssertEqual(processed.coordinate.longitude, raw.coordinate.longitude)
     }
 
-    func testReenabledKalmanFilterStartsWithCleanState() {
+    func testDisabledKalmanFilterDoesNotDiscardExistingState() {
         let manager = CoreLocationManager()
         SettingsContext.shared.kalmanFilterEnabled = true
         _ = manager.processLocation(makeLocation(latitude: 51.0,
@@ -223,8 +223,8 @@ final class CoreLocationManagerTest: XCTestCase {
 
         let processed = manager.processLocation(current)
 
-        XCTAssertEqual(processed.coordinate.latitude, current.coordinate.latitude)
-        XCTAssertEqual(processed.coordinate.longitude, current.coordinate.longitude)
+        XCTAssertNotEqual(processed.coordinate.latitude, current.coordinate.latitude)
+        XCTAssertNotEqual(processed.coordinate.longitude, current.coordinate.longitude)
     }
 
     private func makeLocation(latitude: CLLocationDegrees,
