@@ -4,6 +4,7 @@
 //
 //  Created by Kai on 7/11/23.
 //  Copyright © 2023 Microsoft. All rights reserved.
+//  Copyright (c) Soundscape Community Contributors.
 //
 
 import XCTest
@@ -160,4 +161,81 @@ class GeolocationManagerTest: XCTestCase {
     
     // NOTE: device heading provider is locked to be the default
     // but we should probably still add tests
+}
+
+final class CoreLocationManagerTest: XCTestCase {
+    private var previousKalmanFilterEnabled = true
+
+    override func setUp() {
+        super.setUp()
+        previousKalmanFilterEnabled = SettingsContext.shared.kalmanFilterEnabled
+    }
+
+    override func tearDown() {
+        SettingsContext.shared.kalmanFilterEnabled = previousKalmanFilterEnabled
+        super.tearDown()
+    }
+
+    func testEnabledKalmanFilterSmoothsLocationUpdates() {
+        SettingsContext.shared.kalmanFilterEnabled = true
+        let manager = CoreLocationManager()
+        let first = makeLocation(latitude: 51.0, longitude: -0.1, timestamp: Date(timeIntervalSince1970: 0))
+        let second = makeLocation(latitude: 51.001, longitude: -0.099, timestamp: Date(timeIntervalSince1970: 1))
+
+        _ = manager.processLocation(first)
+        let processed = manager.processLocation(second)
+
+        XCTAssertNotEqual(processed.coordinate.latitude, second.coordinate.latitude)
+        XCTAssertNotEqual(processed.coordinate.longitude, second.coordinate.longitude)
+    }
+
+    func testDisabledKalmanFilterReturnsRawLocation() {
+        let manager = CoreLocationManager()
+        SettingsContext.shared.kalmanFilterEnabled = true
+        _ = manager.processLocation(makeLocation(latitude: 51.0,
+                                                 longitude: -0.1,
+                                                 timestamp: Date(timeIntervalSince1970: 0)))
+        SettingsContext.shared.kalmanFilterEnabled = false
+        let raw = makeLocation(latitude: 51.001,
+                               longitude: -0.099,
+                               timestamp: Date(timeIntervalSince1970: 1))
+
+        let processed = manager.processLocation(raw)
+
+        XCTAssertEqual(processed.coordinate.latitude, raw.coordinate.latitude)
+        XCTAssertEqual(processed.coordinate.longitude, raw.coordinate.longitude)
+    }
+
+    func testDisabledKalmanFilterDoesNotDiscardExistingState() {
+        let manager = CoreLocationManager()
+        SettingsContext.shared.kalmanFilterEnabled = true
+        _ = manager.processLocation(makeLocation(latitude: 51.0,
+                                                 longitude: -0.1,
+                                                 timestamp: Date(timeIntervalSince1970: 0)))
+        SettingsContext.shared.kalmanFilterEnabled = false
+        _ = manager.processLocation(makeLocation(latitude: 52.0,
+                                                 longitude: -1.0,
+                                                 timestamp: Date(timeIntervalSince1970: 1)))
+        SettingsContext.shared.kalmanFilterEnabled = true
+        let current = makeLocation(latitude: 53.0,
+                                   longitude: -2.0,
+                                   timestamp: Date(timeIntervalSince1970: 2))
+
+        let processed = manager.processLocation(current)
+
+        XCTAssertNotEqual(processed.coordinate.latitude, current.coordinate.latitude)
+        XCTAssertNotEqual(processed.coordinate.longitude, current.coordinate.longitude)
+    }
+
+    private func makeLocation(latitude: CLLocationDegrees,
+                              longitude: CLLocationDegrees,
+                              timestamp: Date) -> CLLocation {
+        return CLLocation(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
+                          altitude: 0,
+                          horizontalAccuracy: 5,
+                          verticalAccuracy: 5,
+                          course: -1,
+                          speed: -1,
+                          timestamp: timestamp)
+    }
 }
