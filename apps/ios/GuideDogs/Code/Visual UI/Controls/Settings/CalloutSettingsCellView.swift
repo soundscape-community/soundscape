@@ -13,7 +13,14 @@ protocol CalloutSettingsCellViewDelegate: AnyObject {
 }
 
 internal enum CalloutSettingCellType {
+<<<<<<< Updated upstream
     case all, poi, mobility, beacon, shake
+=======
+    case all, soundEffects, delays, poi, beacon, shake
+    case transportation
+    case intersection
+    case safety
+>>>>>>> Stashed changes
 }
 
 class CalloutSettingsCellView: UITableViewCell {
@@ -32,7 +39,14 @@ class CalloutSettingsCellView: UITableViewCell {
             switch type {
             case .all:
                 settingSwitch.isOn = SettingsContext.shared.automaticCalloutsEnabled
+<<<<<<< Updated upstream
                 return
+=======
+            case .soundEffects:
+                settingSwitch.isOn = SettingsContext.shared.calloutSoundEffectsEnabled
+            case .delays:
+                settingSwitch.isOn = SettingsContext.shared.calloutDelaysEnabled
+>>>>>>> Stashed changes
             case .poi:
                 settingSwitch.isOn = SettingsContext.shared.placeSenseEnabled
                 return
@@ -71,8 +85,17 @@ class CalloutSettingsCellView: UITableViewCell {
         case .all:
             SettingsContext.shared.automaticCalloutsEnabled = isOn
             GDATelemetry.track("settings.allow_callouts", value: isOn.description)
+<<<<<<< Updated upstream
             return
             
+=======
+        case .soundEffects:
+            SettingsContext.shared.calloutSoundEffectsEnabled = isOn
+            GDATelemetry.track("settings.callout_sound_effects", value: isOn.description)
+        case .delays:
+            SettingsContext.shared.calloutDelaysEnabled = isOn
+            GDATelemetry.track("settings.callout_delays", value: isOn.description)
+>>>>>>> Stashed changes
         case .poi:
             // Places, Landmark, and Information Senses
             SettingsContext.shared.placeSenseEnabled = isOn
