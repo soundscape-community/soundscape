@@ -519,12 +519,6 @@
 
 
 /* Title of the shared distance setting used to mute beacon audio and advance routes or activities. */
-"beacon.settings.vicinity" = "Arrival Distance";
-
-/* Description for the Arrival Distance setting explaining its effect on beacons, routes, and activities. */
-"beacon.settings.vicinity.explanation" = "Adjust the distance at which beacon audio automatically mutes and a route or activity automatically switches to the next waypoint.";
-
-/* Title of the shared distance setting used to mute beacon audio and advance routes or activities. */
 "beacon.settings.arrival_distance" = "Arrival Distance";
 
 /* Description for the Arrival Distance setting explaining its effect on beacons, routes, and activities. */

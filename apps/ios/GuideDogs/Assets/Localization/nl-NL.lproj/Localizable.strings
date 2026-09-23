@@ -4409,7 +4409,6 @@
 "callouts.shake_callouts" = "Aankondigingen herhalen";
 "callouts.shake_callouts.info" = "Schud het apparaat om de laatste aankondiging te herhalen";
 "osm.tag.landmark" = "Oriëntatiepunt";
-"beacon.settings.vicinity" = "Voer nabijheidsafstand in";
 "osm.tag.public_garden" = "Publiek toegankelijke tuin";
 "osm.tag.green_space" = "Groen";
 "whats_new.1_2_0.0.title" = "Schud om de laatste melding te herhalen";
