@@ -25,6 +25,13 @@ extension Notification.Name {
 }
 
 class SettingsContext {
+    enum ArrivalDistance {
+        static let minimum: CLLocationDistance = 1.0
+        static let defaultValue: CLLocationDistance = 10.0
+        static let maximum: CLLocationDistance = 50.0
+        static let step: CLLocationDistance = 1.0
+        static let exitHysteresis: CLLocationDistance = 15.0
+    }
     
     struct Keys {
         // MARK: Internal UserDefaults Keys
@@ -79,13 +86,23 @@ class SettingsContext {
     
     // MARK: User Defaults
     
-    private var userDefaults: UserDefaults {
-        return UserDefaults.standard
-    }
+    private let userDefaults: UserDefaults
+    private var cachedArrivalDistance: CLLocationDistance
     
     // MARK: Initialization
     
-    init() {
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+
+        let persistedArrivalDistance: CLLocationDistance
+        if userDefaults.object(forKey: Keys.enterImmediateVicinityDistance) == nil {
+            persistedArrivalDistance = ArrivalDistance.defaultValue
+        } else {
+            persistedArrivalDistance = userDefaults.double(forKey: Keys.enterImmediateVicinityDistance)
+        }
+
+        cachedArrivalDistance = Self.validatedArrivalDistance(persistedArrivalDistance)
+
         // register default values
         userDefaults.register(defaults: [
             Keys.appUseCount: 0,
@@ -115,12 +132,34 @@ class SettingsContext {
             Keys.audioSessionMixesWithOthers: true,
             Keys.kalmanFilterEnabled: true,
             Keys.markerSortStyle: SortStyle.distance.rawValue,
-            Keys.leaveImmediateVicinityDistance: 30.0,
-            Keys.enterImmediateVicinityDistance: 15.0,
+            Keys.leaveImmediateVicinityDistance: ArrivalDistance.defaultValue + ArrivalDistance.exitHysteresis,
+            Keys.enterImmediateVicinityDistance: ArrivalDistance.defaultValue,
             Keys.beaconRingingAngle: 15.0
         ])
+
+        persistArrivalDistance(cachedArrivalDistance)
         
         resetLocaleIfNeeded()
+    }
+
+    private static func validatedArrivalDistance(_ value: CLLocationDistance) -> CLLocationDistance {
+        guard value.isFinite else {
+            return ArrivalDistance.defaultValue
+        }
+
+        return min(max(value, ArrivalDistance.minimum), ArrivalDistance.maximum)
+    }
+
+    static func isWithinArrivalDistance(_ distance: CLLocationDistance,
+                                        arrivalDistance: CLLocationDistance) -> Bool {
+        return distance <= arrivalDistance
+    }
+
+    private func persistArrivalDistance(_ value: CLLocationDistance) {
+        cachedArrivalDistance = Self.validatedArrivalDistance(value)
+        userDefaults.set(cachedArrivalDistance, forKey: Keys.enterImmediateVicinityDistance)
+        userDefaults.set(cachedArrivalDistance + ArrivalDistance.exitHysteresis,
+                         forKey: Keys.leaveImmediateVicinityDistance)
     }
     
     private func resetLocaleIfNeeded() {
@@ -408,23 +447,19 @@ class SettingsContext {
     
     var leaveImmediateVicinityDistance: CLLocationDistance {
         get {
-            return userDefaults.double(forKey: Keys.leaveImmediateVicinityDistance) as CLLocationDistance
+            return cachedArrivalDistance + ArrivalDistance.exitHysteresis
         }
         set {
-            userDefaults.set(newValue, forKey: Keys.leaveImmediateVicinityDistance)
-            // Ensure leave is always 15m greater than enter
-            userDefaults.set(max(newValue - 15.0, 0.0), forKey: Keys.enterImmediateVicinityDistance)
+            persistArrivalDistance(newValue - ArrivalDistance.exitHysteresis)
         }
     }
     
     var enterImmediateVicinityDistance: CLLocationDistance {
         get {
-            return userDefaults.double(forKey: Keys.enterImmediateVicinityDistance) as CLLocationDistance
+            return cachedArrivalDistance
         }
         set {
-            userDefaults.set(newValue, forKey: Keys.enterImmediateVicinityDistance)
-            // Ensure leave is always 15m greater than enter
-            userDefaults.set(newValue + 15.0, forKey: Keys.leaveImmediateVicinityDistance)
+            persistArrivalDistance(newValue)
         }
     }
     

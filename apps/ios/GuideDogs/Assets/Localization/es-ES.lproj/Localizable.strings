@@ -4399,7 +4399,6 @@
 "callouts.shake_callouts" = "Repetir avisos";
 "callouts.shake_callouts.info" = "Agita el dispositivo para repetir el último aviso";
 "mail.dispatch" = "Dispatch";
-"beacon.settings.vicinity" = "Distancia de silenciar el audio";
 "osm.tag.landmark" = "Punto de referencia";
 "osm.tag.pub" = "Pub";
 "osm.tag.coffee_shop" = "Cafetería";
@@ -4474,7 +4473,6 @@
 "whats_new.1_8_2.0.title" = "Ajustar el ángulo de la señal de audio en los ajustes";
 "whats_new.1_8_2.0.description" = "Ahora puedes ajustar el ángulo del sonido de timbre de la señal.";
 "whats_new.1_8_2.1.title" = "Abrir NaviLens o mostrar códigos cercanos";
-"beacon.settings.vicinity.explanation" = "Ajusta la distancia a la que el sonido de la señal se silencia automáticamente a medida que te acercas.";
 "whats_new.1_8_2.1.description" = "Al llegar a un lugar equipado con NaviLens, ahora puedes abrir la aplicación NaviLens o ver una lista de códigos cercanos.";
 "whats_new.1_8_5.0.title" = "Correcciones de errores";
 "whats_new.1_8_5.0.description" = "Se ha solucionado un problema que impedía importar rutas compartidas.";

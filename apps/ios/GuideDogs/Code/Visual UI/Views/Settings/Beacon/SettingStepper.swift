@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-/// Defines a stepper (increment/decrement buttons) that can be used for settings like Enter Vicinity Distance.
+/// Defines a stepper (increment/decrement buttons) that can be used for settings like Arrival Distance.
 /// Takes a label, step size, min, max, and localization key for printing the value with units..
 /// `unitsLocalization` should be a localization key like "distance.format.meters".
 struct SettingStepper: View {

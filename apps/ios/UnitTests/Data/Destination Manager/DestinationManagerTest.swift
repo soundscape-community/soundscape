@@ -4,6 +4,7 @@
 //
 //  Created by Kai on 10/3/23.
 //  Copyright © 2023 Microsoft. All rights reserved.
+//  Copyright (c) Soundscape Community Contributors.
 //
 
 import XCTest
@@ -94,4 +95,98 @@ final class DestinationManagerTest: XCTestCase {
     
     
 
+}
+
+final class SettingsContextTest: XCTestCase {
+    private let arrivalKey = "GDAEnterImmediateVicinityDistance"
+    private let leaveKey = "GDALeaveImmediateVicinityDistance"
+    private var suiteNames: [String] = []
+
+    override func tearDown() {
+        for suiteName in suiteNames {
+            UserDefaults.standard.removePersistentDomain(forName: suiteName)
+        }
+
+        suiteNames.removeAll()
+        super.tearDown()
+    }
+
+    private func makeUserDefaults() -> UserDefaults {
+        let suiteName = "SettingsContextTest.\(UUID().uuidString)"
+        suiteNames.append(suiteName)
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+        return defaults
+    }
+
+    func testFreshStoreUsesDefaultArrivalDistanceAndHysteresis() {
+        let defaults = makeUserDefaults()
+        let settings = SettingsContext(userDefaults: defaults)
+
+        XCTAssertEqual(settings.enterImmediateVicinityDistance, 10.0)
+        XCTAssertEqual(settings.leaveImmediateVicinityDistance, 25.0)
+        XCTAssertEqual(defaults.double(forKey: arrivalKey), 10.0)
+        XCTAssertEqual(defaults.double(forKey: leaveKey), 25.0)
+    }
+
+    func testValidPersistedArrivalDistancesSurviveInitialization() {
+        for value in [1.0, 25.0, 50.0] {
+            let defaults = makeUserDefaults()
+            defaults.set(value, forKey: arrivalKey)
+
+            let settings = SettingsContext(userDefaults: defaults)
+
+            XCTAssertEqual(settings.enterImmediateVicinityDistance, value)
+            XCTAssertEqual(settings.leaveImmediateVicinityDistance, value + 15.0)
+        }
+    }
+
+    func testPersistedArrivalDistanceIsMigratedAndClamped() {
+        for (persisted, expected) in [(0.0, 1.0), (-10.0, 1.0), (75.0, 50.0)] {
+            let defaults = makeUserDefaults()
+            defaults.set(persisted, forKey: arrivalKey)
+
+            let settings = SettingsContext(userDefaults: defaults)
+
+            XCTAssertEqual(settings.enterImmediateVicinityDistance, expected)
+            XCTAssertEqual(defaults.double(forKey: arrivalKey), expected)
+            XCTAssertEqual(defaults.double(forKey: leaveKey), expected + 15.0)
+        }
+    }
+
+    func testArrivalDistanceReadsFromCacheAndSetterPersistsBothDistances() {
+        let defaults = makeUserDefaults()
+        let settings = SettingsContext(userDefaults: defaults)
+
+        defaults.set(42.0, forKey: arrivalKey)
+        defaults.set(57.0, forKey: leaveKey)
+        XCTAssertEqual(settings.enterImmediateVicinityDistance, 10.0)
+        XCTAssertEqual(settings.leaveImmediateVicinityDistance, 25.0)
+
+        settings.enterImmediateVicinityDistance = 30.0
+        XCTAssertEqual(settings.enterImmediateVicinityDistance, 30.0)
+        XCTAssertEqual(settings.leaveImmediateVicinityDistance, 45.0)
+        XCTAssertEqual(defaults.double(forKey: arrivalKey), 30.0)
+        XCTAssertEqual(defaults.double(forKey: leaveKey), 45.0)
+
+        settings.leaveImmediateVicinityDistance = 35.0
+        XCTAssertEqual(settings.enterImmediateVicinityDistance, 20.0)
+        XCTAssertEqual(settings.leaveImmediateVicinityDistance, 35.0)
+        XCTAssertEqual(defaults.double(forKey: arrivalKey), 20.0)
+        XCTAssertEqual(defaults.double(forKey: leaveKey), 35.0)
+    }
+
+    func testArrivalDistanceBoundaryIsInclusive() {
+        XCTAssertFalse(SettingsContext.isWithinArrivalDistance(10.01, arrivalDistance: 10.0))
+        XCTAssertTrue(SettingsContext.isWithinArrivalDistance(10.0, arrivalDistance: 10.0))
+        XCTAssertTrue(SettingsContext.isWithinArrivalDistance(9.99, arrivalDistance: 10.0))
+    }
+
+    func testArrivalDistanceControlConstants() {
+        XCTAssertEqual(SettingsContext.ArrivalDistance.minimum, 1.0)
+        XCTAssertEqual(SettingsContext.ArrivalDistance.defaultValue, 10.0)
+        XCTAssertEqual(SettingsContext.ArrivalDistance.maximum, 50.0)
+        XCTAssertEqual(SettingsContext.ArrivalDistance.step, 1.0)
+        XCTAssertEqual(SettingsContext.ArrivalDistance.exitHysteresis, 15.0)
+    }
 }

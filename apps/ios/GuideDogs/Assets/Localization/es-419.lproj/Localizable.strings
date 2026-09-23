@@ -152,8 +152,6 @@
 "voice.settings.enhanced_available.button" = "Usar versión actual";
 "voice.apple.no_siri" = "Tenga en cuenta que las voces de Siri no están disponibles en Soundscape y no figuran en la lista de abajo.";
 "beacon.settings_title" = "Configuración de señales";
-"beacon.settings.vicinity" = "Distancia de silenciar el audio";
-"beacon.settings.vicinity.explanation" = "Ajuste la distancia a la que el sonido de la señal se silencia automáticamente a medida que se acerca.";
 "beacon.settings.ringing_angle" = "Ángulo del sonido del timbre";
 "beacon.settings.ringing_angle.explanation" = "Ajuste la anchura del ángulo en el que el sonido de la señal es más intenso (entre 5° y 20°).";
 "beacon.settings.style" = "Estilos de audio";

@@ -51,7 +51,6 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
     }
 
     private let distanceCalloutFilter: BeaconUpdateFilter
-    private let arrivalDistance: CLLocationDistance = 12.0
 
     private var currentActivationGroupID: UUID?
     private var currentArrivalGroupID: UUID?
@@ -83,7 +82,10 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
     init(_ owner: RouteGuidance, motionActivity: MotionActivityProtocol, alreadyCompleted: Bool) {
         self.owner = owner
         self.alreadyCompleted = alreadyCompleted
-        distanceCalloutFilter = BeaconUpdateFilter(updateDistance: 10.0 ..< 25.0, beaconDistance: 12.0 ..< 100.0, motionActivity: motionActivity)
+        let arrivalDistance = SettingsContext.shared.enterImmediateVicinityDistance
+        distanceCalloutFilter = BeaconUpdateFilter(updateDistance: 10.0 ..< 25.0,
+                                                   beaconDistance: arrivalDistance ..< 100.0,
+                                                   motionActivity: motionActivity)
     }
 
     func cancelCalloutsForEntity(id: String) {
@@ -147,11 +149,14 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
                 return nil
             }
 
+            let arrivalDistance = SettingsContext.shared.enterImmediateVicinityDistance
+            distanceCalloutFilter.updateBeaconDistanceRange(arrivalDistance ..< 100.0)
+
             // Check to see if the user has arrived at the current waypoint. Rather than directly generating
             // callouts now, instead signal to the RouteGuidance behavior that the current waypoint has been
             // completed. This will cause the current beacon to be finished (playing the arrival melody) and
             // then the WaypointArrivalEvent will be sent, causing the actual arrival callouts to be generated.
-            if checkArrival(for: locationEvent, verbosity: verbosity) {
+            if checkArrival(for: locationEvent, arrivalDistance: arrivalDistance, verbosity: verbosity) {
                 awaitingNextWaypoint = true
                 return .noAction
             }
@@ -241,7 +246,9 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
         }
     }
 
-    private func checkArrival(for locationEvent: LocationUpdatedEvent, verbosity: Verbosity) -> Bool {
+    private func checkArrival(for locationEvent: LocationUpdatedEvent,
+                              arrivalDistance: CLLocationDistance,
+                              verbosity: Verbosity) -> Bool {
         // Make sure we currently have a flag
         guard let current = owner.currentWaypoint  else {
             return false
@@ -256,7 +263,10 @@ class RouteGuidanceGenerator: AutomaticGenerator, ManualGenerator {
             owner.addBlocked(auto: AutoCalloutGenerator.self)
         }
 
-        guard distance < arrivalDistance else {
+        guard SettingsContext.isWithinArrivalDistance(
+            distance,
+            arrivalDistance: arrivalDistance
+        ) else {
             return false
         }
 
@@ -482,6 +492,8 @@ extension RouteGuidanceGenerator: CalloutGroupDelegate {
     private func clearFilter(for group: CalloutGroup) {
         // Signal to the appropriate filter that the update is done
         if let id = currentDistanceGroupID, group.id == id {
+            let arrivalDistance = SettingsContext.shared.enterImmediateVicinityDistance
+            distanceCalloutFilter.updateBeaconDistanceRange(arrivalDistance ..< 100.0)
             distanceCalloutFilter.didUpdate(success: true)
             currentDistanceGroupID = nil
         } else if let id = currentManualWaypointGroupID, group.id == id {
