@@ -583,16 +583,16 @@
 "beacon.settings_title" = "Beacon Settings";
 
 /*  */
-"beacon.settings.vicinity" = "Audio Mute Distance";
+"beacon.settings.vicinity" = "Arrival Distance";
 
 /*  */
-"beacon.settings.vicinity.explanation" = "Adjust the distance at which beacon audio automatically mutes as you approach.";
+"beacon.settings.vicinity.explanation" = "Adjust the distance at which beacon audio automatically mutes and a route or activity automatically switches to the next waypoint.";
 
 /*  */
 "beacon.settings.arrival_distance" = "Arrival Distance";
 
 /*  */
-"beacon.settings.arrival_distance.explanation" = "Adjust the distance at which beacon audio automatically mutes and route or activity waypoints are completed.";
+"beacon.settings.arrival_distance.explanation" = "Adjust the distance at which beacon audio automatically mutes and a route or activity automatically switches to the next waypoint.";
 
 /*  */
 "beacon.settings.style" = "Audio Styles";
@@ -4253,7 +4253,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several metres, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, and the beacon will turn off. You can adjust the distance at which the beacon goes silent by going to \"Audio Beacon\" from the \"Settings\" screen and then moving the \"Audio Mute Distance\" slider up or down.";
+"faq.how_close_to_destination.answer" = "Soundscape can determine the location of your destination to within several metres, but not less. When Soundscape determines that you are close to your destination, you will hear a final callout that your destination is nearby, the beacon will turn off, and a route or activity will automatically switch to the next waypoint. You can adjust this distance by going to \"Audio Beacon\" from the \"Settings\" screen and changing the \"Arrival Distance\" setting.";
 
 
 /*  */
