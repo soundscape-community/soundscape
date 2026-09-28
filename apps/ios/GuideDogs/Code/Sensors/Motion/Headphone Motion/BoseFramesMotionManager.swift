@@ -346,7 +346,11 @@ extension BoseFramesMotionManager: BoseBLEStateChangeDelegate {
             /// Was connected, signal that we just disconnected
             if (oldManagerStatus > .disconnected) {
                 self.disconnect()
-                AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: .disconnected))
+                AppContext.process(HeadsetConnectionEvent(
+                    BoseFramesMotionManager.DEVICE_MODEL_NAME,
+                    state: .disconnected,
+                    calloutName: GDLocalizedString("devices.bose_frames.callout_name")
+                ))
             }
 
         case .initializing:
@@ -360,7 +364,11 @@ extension BoseFramesMotionManager: BoseBLEStateChangeDelegate {
             connectionTimer = nil
 
             NotificationCenter.default.post(name: Notification.Name.boseFramesDeviceConnected, object: nil)
-            AppContext.process(HeadsetConnectionEvent(BoseFramesMotionManager.DEVICE_MODEL_NAME, state: isFirstConnection ? .firstConnection : .reconnected))
+            AppContext.process(HeadsetConnectionEvent(
+                BoseFramesMotionManager.DEVICE_MODEL_NAME,
+                state: isFirstConnection ? .firstConnection : .reconnected,
+                calloutName: GDLocalizedString("devices.bose_frames.callout_name")
+            ))
             
             self.status.value = .ready
             self.deviceDelegate?.didConnectDevice(self)

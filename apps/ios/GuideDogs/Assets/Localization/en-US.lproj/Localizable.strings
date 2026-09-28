@@ -617,6 +617,9 @@
 /* Settings About Title, Privacy and Cookies */
 "settings.about.title.privacy" = "Soundscape Community Privacy Statement";
 
+/* Label for the Privacy Policy link in Settings > About */
+"settings.about.title.privacy_policy" = "Privacy Policy";
+
 /* Settings About Title, Service Agreement */
 "settings.about.title.service_agreement" = "Services Agreement";
 
@@ -625,6 +628,9 @@
 
 /* Settings About Title, Copyright Notices */
 "settings.about.title.copyright" = "Copyright Notices";
+
+/* Label for the YouTube channel link in Settings > About */
+"settings.about.title.youtube_channel" = "YouTube Channel";
 
 //------------------------------------------------------------------------------
 // MARK: Settings (New Feature)
@@ -2411,6 +2417,12 @@
 
 /* Callout for when an AR headset has been connected, %@ device name, "AirPods Pro connected." */
 "devices.callouts.connected" = "%@ connected.";
+
+/* Short spoken name used in Bose Frames connection callouts */
+"devices.bose_frames.callout_name" = "Bose Frames";
+
+/* Label for Bose Frames in the headphone selection menu */
+"devices.bose_frames.selector_title" = "Bose Frames Alto or Rondo";
 
 /* Callout for when an AR headset needs to be calibrated */
 "devices.callouts.needs_calibration" = "Your headphones need to be calibrated. Remove them from your head and gently shake them in all directions.";

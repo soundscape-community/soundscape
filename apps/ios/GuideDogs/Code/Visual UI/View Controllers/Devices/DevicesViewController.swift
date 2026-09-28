@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -743,7 +744,7 @@ class DevicesViewController: UIViewController {
                 self?.state = .pairingAudio
             }))
             
-            alert.addAction(UIAlertAction(title: GDLocalizationUnnecessary(BoseFramesMotionManager.DEVICE_MODEL_NAME), style: .default, handler: { [weak self] (_) in
+            alert.addAction(UIAlertAction(title: GDLocalizedString("devices.bose_frames.selector_title"), style: .default, handler: { [weak self] (_) in
                 self?.selectedDeviceType = BoseFramesMotionManager.self
                 self?.state = .pairingAudio
             }))
@@ -818,7 +819,8 @@ class DevicesViewController: UIViewController {
                     AppContext.shared.deviceManager.remove(device: device)
                     self?.state = .disconnected
                     self?.connectedDevice = nil
-                    AppContext.shared.eventProcessor.process(HeadsetConnectionEvent(name, state: .disconnected))
+                    let calloutName = device is BoseFramesMotionManager ? GDLocalizedString("devices.bose_frames.callout_name") : name
+                    AppContext.shared.eventProcessor.process(HeadsetConnectionEvent(name, state: .disconnected, calloutName: calloutName))
                 }
             }))
             
