@@ -3766,7 +3766,7 @@
 
 
 /*  */
-"help.text.routes.content.what" = "Las rutas son una serie de puntos de referencia. Se te informará a la llegada a cada uno de ellos, y la señal de audio avanzará automáticamente al siguiente.";
+"help.text.routes.content.what" = "Las rutas son una serie de puntos de ruta. Se te informará a la llegada a cada uno de ellos, y la señal de audio avanzará automáticamente al siguiente.";
 
 
 /*  */
@@ -4194,7 +4194,7 @@
 
 
 /*  */
-"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que estás cerca de tu destino, escucharás un último aviso de que tu destino está cerca y la señal se apagará. Puedes ajustar la distancia a la que la señal se silencia de la forma siguiente: ve a \"Señal de audio\" en la pantalla \"Ajustes\" y mueve el control deslizante \"Distancia de silenciar el audio\" hacia arriba o hacia abajo.";
+"faq.how_close_to_destination.answer" = "Soundscape puede determinar la ubicación de tu destino con una precisión de varios metros, pero no menos. Cuando Soundscape determine que estás cerca de tu destino, escucharás un último aviso de que tu destino está cerca, la señal se apagará y la ruta o actividad pasará automáticamente al siguiente punto de ruta. Puedes ajustar esta distancia de la forma siguiente: ve a \"Señal de audio\" en la pantalla \"Ajustes\" y modifica el parámetro \"Distancia de llegada\".";
 
 
 /*  */
@@ -4512,3 +4512,5 @@
 "gpx_recording.error.accessibility" = "Error: %@";
 "gpx_recording.status.stopping" = "Deteniendo";
 "gpx_recording.status.discarding" = "Descartando";
+"beacon.settings.arrival_distance" = "Distancia de llegada";
+"beacon.settings.arrival_distance.explanation" = "Ajusta la distancia a la que se silencia automáticamente el audio de la señal y una ruta o actividad pasa automáticamente al siguiente punto de ruta.";
