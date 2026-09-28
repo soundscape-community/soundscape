@@ -22,6 +22,12 @@ struct BeaconAngleSlider: View {
     var step: Double {
         largeStep ? 5.0 : 1.0
     }
+
+    private var formattedAngle: AttributedString {
+        var formattedAngle = AttributedString("\(Int(angle))°")
+        formattedAngle.languageIdentifier = LocalizationContext.currentAppLocale.identifierHyphened
+        return formattedAngle
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -31,7 +37,7 @@ struct BeaconAngleSlider: View {
                     .foregroundColor(.primaryForeground)
                     .accessibilityHidden(true)
                 Spacer()
-                Text("\(Int(angle))°")
+                Text(formattedAngle)
                     .font(.system(.body, design: .monospaced))
                     .fontWeight(.bold)
                     .foregroundColor(.secondaryForeground)
@@ -49,7 +55,7 @@ struct BeaconAngleSlider: View {
             .padding(.horizontal)
             .padding(.bottom, 8)
             .accessibilityLabel(GDLocalizedTextView("beacon.settings.ringing_angle"))
-            .accessibilityValue(Text("\(Int(angle))°"))
+            .accessibilityValue(Text(formattedAngle))
         }
         .background(Color.primaryBackground)
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.voiceOverStatusDidChangeNotification)) { _ in
