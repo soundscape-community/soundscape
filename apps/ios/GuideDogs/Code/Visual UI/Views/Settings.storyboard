@@ -288,7 +288,7 @@
                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LEO-Ou-dfU">
                                             <rect key="frame" x="318" y="6" width="59" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                            <accessibility key="accessibilityConfiguration" label="Mobility"/>
+                                            <accessibility key="accessibilityConfiguration" label="Streets and Places"/>
                                             <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="thumbTintColor" red="0.098039215690000001" green="0.18823529410000001" blue="0.29803921570000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <connections>
@@ -336,7 +336,6 @@
                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="int-sc-004">
                                             <rect key="frame" x="318" y="6" width="59" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                            <accessibility key="accessibilityConfiguration" label="Intersections"/>
                                             <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="thumbTintColor" red="0.098039215690000001" green="0.18823529410000001" blue="0.29803921570000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <connections>

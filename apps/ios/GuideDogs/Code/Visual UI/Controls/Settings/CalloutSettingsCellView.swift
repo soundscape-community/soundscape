@@ -29,6 +29,7 @@ class CalloutSettingsCellView: UITableViewCell {
             
             // Update the switch
             settingSwitch.isEnabled = type == .all || SettingsContext.shared.automaticCalloutsEnabled
+            settingSwitch.accessibilityLabel = textLabel?.text
             
             switch type {
             case .all:
@@ -39,11 +40,9 @@ class CalloutSettingsCellView: UITableViewCell {
                 return
             case .mobility:
                 settingSwitch.isOn = SettingsContext.shared.mobilitySenseEnabled
-                settingSwitch.accessibilityLabel = GDLocalizedString("callouts.mobility")
                 return
             case .intersections:
                 settingSwitch.isOn = SettingsContext.shared.intersectionSenseEnabled
-                settingSwitch.accessibilityLabel = GDLocalizedString("callouts.intersections")
                 return
             case .beacon:
                 settingSwitch.isOn = SettingsContext.shared.destinationSenseEnabled
