@@ -126,6 +126,14 @@ final class SceneLifecycleTests: XCTestCase {
         try FileManager.default.removeItem(at: warmSource)
         wait(for: [warmImported], timeout: 5)
 
+        // The import notification can arrive before the manager's queue removes the staged copy.
+        let stagingCleaned = XCTNSPredicateExpectation(
+            predicate: NSPredicate { _, _ in
+                (try? FileManager.default.contentsOfDirectory(atPath: importDirectory.path).isEmpty) == true
+            },
+            object: nil
+        )
+        XCTAssertEqual(XCTWaiter.wait(for: [stagingCleaned], timeout: 5), .completed)
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: importDirectory.path), [])
     }
 
