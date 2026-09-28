@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -11,7 +12,7 @@ import CoreLocation
 import CocoaLumberjackSwift
 import CoreGPX
 
-struct RoadAdjacentDataView: AdjacentDataView /*, fixme Equatable  */ {
+struct RoadAdjacentDataView: AdjacentDataView {
     
     typealias ReferenceEntityID = String
 
@@ -41,7 +42,7 @@ struct RoadAdjacentDataView: AdjacentDataView /*, fixme Equatable  */ {
         //   1. a named walking path will always return `false`;
         //   2. if `SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads` is set to `.standard`, an unnamed service road will return `true`;
         //   3. if it is set to `.strict`, an unnamed service road will return `false`
-        
+
         // Walking paths, cycleways, stairs, etc. are never main edges regardless of whether they are
         // named or not (Note: this intentionally uses .standard rather than the current value of
         // `SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads` since we are only concerned
@@ -49,7 +50,7 @@ struct RoadAdjacentDataView: AdjacentDataView /*, fixme Equatable  */ {
         guard direction.road.isMainRoad(context: .standard, detectionType: .roadType) else {
             return false
         }
-        
+
         // Check if we consider this edge a main road by name
         let secondaryRoadsContext: SecondaryRoadsContext = SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads ? .standard : .strict
         return direction.road.isMainRoad(context: secondaryRoadsContext, detectionType: .roadName)
@@ -62,7 +63,7 @@ struct RoadAdjacentDataView: AdjacentDataView /*, fixme Equatable  */ {
         direction = RoadDirection(result.road, result.bearing, Direction(from: result.bearing))
         coordinatesToEndpoint = result.coordinatesToIntersection
         style = result.style
-        
+
         // Transform the OSM road coordinates to walking path coordinates
         let walkingPathToIntersection = GeometryUtils.interpolateToEqualDistance(coordinates: result.coordinatesToIntersection,
                                                                                  distance: CLLocationDistance.averageWalkingSpeed)
@@ -415,9 +416,10 @@ extension RoadAdjacentDataView {
 }
 
 // MARK: Equatable Conformance
-// this emulates the old custom Equatable conformance extension on CLLocationCoordinate2D, which was not based on exact equality.
+// This preserves the approximate coordinate equality formerly provided by
+// CLLocationCoordinate2D's custom Equatable conformance.
 extension RoadAdjacentDataView: Equatable {
-    static func ==(lhs: RoadAdjacentDataView, rhs: RoadAdjacentDataView) -> Bool {
+    static func == (lhs: RoadAdjacentDataView, rhs: RoadAdjacentDataView) -> Bool {
         guard lhs.endpoint == rhs.endpoint,
               lhs.direction == rhs.direction,
               lhs.style    == rhs.style,
@@ -429,13 +431,13 @@ extension RoadAdjacentDataView: Equatable {
         else {
             return false
         }
-        
-        // 2) compare the two coordinate arrays element-wise
+
+        // Compare the two coordinate arrays element-wise.
         for (c1, c2) in zip(lhs.coordinatesToEndpoint, rhs.coordinatesToEndpoint) {
             if !c1.isNear(to: c2) { return false }
         }
-        
-        // 3) compare the dictionary of callout locations
+
+        // Compare the dictionary of callout locations.
         for (key, loc1) in lhs.adjacentCalloutLocationsHistory {
             guard let loc2 = rhs.adjacentCalloutLocationsHistory[key],
                   loc1.isNear(to: loc2)
@@ -443,7 +445,7 @@ extension RoadAdjacentDataView: Equatable {
                 return false
             }
         }
-        
+
         return true
     }
 }

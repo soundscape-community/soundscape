@@ -83,8 +83,7 @@ struct LocationDetail {
                     return false
                 }
                 
-                return lhsAt.coordinate.isNear(to: rhsAt.coordinate
-)
+                return lhsAt.coordinate.isNear(to: rhsAt.coordinate)
             case let .designData(lhsAt, lhsAddress):
                 guard case let .designData(rhsAt, rhsAddress) = rhs else {
                     return false
