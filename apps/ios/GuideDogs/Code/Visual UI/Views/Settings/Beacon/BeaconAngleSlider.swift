@@ -49,7 +49,7 @@ struct BeaconAngleSlider: View {
             .padding(.horizontal)
             .padding(.bottom, 8)
             .accessibilityLabel(GDLocalizedTextView("beacon.settings.ringing_angle"))
-            .accessibilityValue(Text("\(Int(angle)) degrees"))
+            .accessibilityValue(Text("\(Int(angle))°"))
         }
         .background(Color.primaryBackground)
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.voiceOverStatusDidChangeNotification)) { _ in
