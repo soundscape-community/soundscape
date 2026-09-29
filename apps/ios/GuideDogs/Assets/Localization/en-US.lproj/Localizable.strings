@@ -520,6 +520,12 @@
 /* Title of the shared distance setting used to mute beacon audio and advance routes or activities. */
 "beacon.settings.arrival_distance" = "Arrival Distance";
 
+/* Accessibility hint for the arrival distance value and text field. */
+"beacon.settings.arrival_distance.edit_hint" = "Enter a distance in meters, from 1 to 50, with up to two decimal places.";
+
+/* Error shown when exact arrival distance entry is invalid. */
+"beacon.settings.arrival_distance.invalid" = "Enter a number from 1 to 50 with up to two decimal places.";
+
 /* Description for the Arrival Distance setting explaining its effect on beacons, routes, and activities. */
 "beacon.settings.arrival_distance.explanation" = "Adjust the distance at which beacon audio automatically mutes and a route or activity automatically switches to the next waypoint.";
 
