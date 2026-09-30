@@ -4,7 +4,6 @@
 //
 //  Copyright (c) Microsoft Corporation.
 //  Copyright (c) Soundscape Community Contributors.
-//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -93,7 +92,7 @@ class SettingsContext {
     
     // MARK: Initialization
     
-    init(userDefaults: UserDefaults = .standarduserDefaults: UserDefaults = .standard) {
+    init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
 
         let persistedArrivalDistance: CLLocationDistance
@@ -104,8 +103,6 @@ class SettingsContext {
         }
 
         cachedArrivalDistance = Self.validatedArrivalDistance(persistedArrivalDistance)
-
-        self.userDefaults = userDefaults
 
         // register default values
         userDefaults.register(defaults: [
