@@ -4,6 +4,7 @@
 //
 //  Copyright (c) Microsoft Corporation.
 //  Copyright (c) Soundscape Community Contributors.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -64,6 +65,7 @@ class SettingsContext {
         fileprivate static let apnsDeviceToken           = "GDASettingsAPNsDeviceToken"
         fileprivate static let pushNotificationTags      = "GDASettingsPushNotificationTags"
         fileprivate static let previewIntersectionsIncludeUnnamedRoads = "GDASettingsPreviewIntersectionsIncludeUnnamedRoads"
+        fileprivate static let naviLensAutoSnoozeEnabled  = "GDANaviLensAutoSnoozeEnabled"
         fileprivate static let audioSessionMixesWithOthers = "GDAAudioSessionMixesWithOthers"
         fileprivate static let kalmanFilterEnabled        = "GDASettingsKalmanFilterEnabled"
         fileprivate static let markerSortStyle           = "GDAMarkerSortStyle"
@@ -91,7 +93,7 @@ class SettingsContext {
     
     // MARK: Initialization
     
-    init(userDefaults: UserDefaults = .standard) {
+    init(userDefaults: UserDefaults = .standarduserDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
 
         let persistedArrivalDistance: CLLocationDistance
@@ -102,6 +104,8 @@ class SettingsContext {
         }
 
         cachedArrivalDistance = Self.validatedArrivalDistance(persistedArrivalDistance)
+
+        self.userDefaults = userDefaults
 
         // register default values
         userDefaults.register(defaults: [
@@ -131,6 +135,7 @@ class SettingsContext {
             Keys.previewIntersectionsIncludeUnnamedRoads: false,
             Keys.audioSessionMixesWithOthers: true,
             Keys.kalmanFilterEnabled: true,
+            Keys.naviLensAutoSnoozeEnabled: true,
             Keys.markerSortStyle: SortStyle.distance.rawValue,
             Keys.leaveImmediateVicinityDistance: ArrivalDistance.defaultValue + ArrivalDistance.exitHysteresis,
             Keys.enterImmediateVicinityDistance: ArrivalDistance.defaultValue,
@@ -364,6 +369,17 @@ class SettingsContext {
         }
     }
     
+    // MARK: NaviLens
+
+    var naviLensAutoSnoozeEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: Keys.naviLensAutoSnoozeEnabled)
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.naviLensAutoSnoozeEnabled)
+        }
+    }
+
     // MARK: Audio Beacon
     
     var selectedBeacon: String {

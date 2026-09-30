@@ -383,6 +383,15 @@
 /* Settings title,General Settings */
 "settings.section.general" = "General";
 
+/* Section header for settings related to the NaviLens app */
+"settings.section.navilens" = "NaviLens";
+
+/* Switch that controls whether Soundscape snoozes when opening NaviLens */
+"settings.navilens.auto_snooze.title" = "Snooze When Opening NaviLens";
+
+/* Description of the NaviLens auto-snooze switch */
+"settings.navilens.auto_snooze.description" = "Automatically snooze Soundscape when opening NaviLens and resume when you return. Turn off to keep Soundscape active.";
+
 /* Settings title,Units of Measure */
 "settings.section.units" = "Units of Measure";
 

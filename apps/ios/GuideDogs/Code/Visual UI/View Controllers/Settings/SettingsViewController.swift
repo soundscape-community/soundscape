@@ -24,9 +24,10 @@ class SettingsViewController: BaseTableViewController {
         case audio = 1
         case callouts = 2
         case streetPreview = 3
-        case troubleshooting = 4
-        case about = 5
-        // case telemetry = 6
+        case naviLens = 4
+        case troubleshooting = 5
+        case about = 6
+        // case telemetry = 7
     }
     
     private enum CalloutsRow: Int, CaseIterable {
@@ -56,6 +57,7 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue): "shakeCallouts",
         
         IndexPath(row: 0, section: Section.streetPreview.rawValue): "streetPreview",
+        IndexPath(row: 0, section: Section.naviLens.rawValue): "naviLensAutoSnooze",
         IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
         IndexPath(row: 0, section: Section.about.rawValue): "about",
         // IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
@@ -99,6 +101,7 @@ class SettingsViewController: BaseTableViewController {
         case .audio: return 1
         case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? CalloutsRow.allCases.count : 1
         case .streetPreview: return 1
+        case .naviLens: return 1
         case .troubleshooting: return 1
         case .about: return 1
         // case .telemetry: return 1
@@ -136,6 +139,11 @@ class SettingsViewController: BaseTableViewController {
             
         //     return cell
             
+        case .naviLens:
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
+            (cell.accessoryView as? UISwitch)?.isOn = SettingsContext.shared.naviLensAutoSnoozeEnabled
+            return cell
+
         case .audio:
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! MixAudioSettingCell
             cell.delegate = self
@@ -172,6 +180,10 @@ class SettingsViewController: BaseTableViewController {
         }
     }
     
+    @IBAction func onNaviLensAutoSnoozeChanged(_ sender: UISwitch) {
+        SettingsContext.shared.naviLensAutoSnoozeEnabled = sender.isOn
+    }
+
     // MARK: UITableViewDataSource
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -183,6 +195,7 @@ class SettingsViewController: BaseTableViewController {
         case .callouts: return GDLocalizedString("menu.manage_callouts")
         case .about: return GDLocalizedString("settings.section.about")
         case .streetPreview: return GDLocalizedString("preview.title")
+        case .naviLens: return GDLocalizedString("settings.section.navilens")
         case .troubleshooting: return GDLocalizedString("settings.section.troubleshooting")
         // case .telemetry: return GDLocalizedString("settings.section.telemetry")
         }
@@ -193,6 +206,7 @@ class SettingsViewController: BaseTableViewController {
 
         switch sectionType {
         case .audio: return GDLocalizedString("settings.audio.mix_with_others.description")
+        case .naviLens: return GDLocalizedString("settings.navilens.auto_snooze.description")
         case .streetPreview: return GDLocalizedString("preview.include_unnamed_roads.subtitle")
         // case .telemetry: return GDLocalizedString("settings.section.telemetry.footer")
         default: return nil
