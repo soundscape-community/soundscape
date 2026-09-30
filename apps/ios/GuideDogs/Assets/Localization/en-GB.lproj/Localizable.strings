@@ -4559,3 +4559,7 @@
 "gpx_recording.error.draft_unavailable" = "The protected recording draft could not be opened.";
 "gpx_recording.error.share_unavailable" = "The sharing screen is currently unavailable.";
 "gpx_recording.error.accessibility" = "Error: %@";
+"settings.about.title.privacy_policy" = "Privacy Policy";
+"settings.about.title.youtube_channel" = "YouTube Channel";
+"devices.bose_frames.callout_name" = "Bose Frames";
+"devices.bose_frames.selector_title" = "Bose Frames Alto or Rondo";
