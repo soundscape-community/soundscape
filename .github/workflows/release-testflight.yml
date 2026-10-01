@@ -1,0 +1,57 @@
+# Copyright (c) Soundscape Community Contributors.
+name: Release uploaded build to external TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "External TestFlight group names or IDs, separated by commas"
+        required: true
+        type: string
+      app_version:
+        description: "App version (blank selects the latest uploaded iOS build)"
+        required: false
+        type: string
+      build_number:
+        description: "Build number (blank selects the latest upload for the version)"
+        required: false
+        type: string
+      changelog:
+        description: "What to Test (blank preserves the notes already in App Store Connect)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-testflight-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: Production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - name: Install Fastlane
+        run: gem install fastlane --version 2.240.1 --no-document
+      - name: Distribute uploaded build
+        env:
+          APP_STORE_P8_BASE64: ${{ secrets.APP_STORE_P8_BASE64 }}
+          APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
+          APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
+          TESTFLIGHT_GROUPS: ${{ inputs.groups }}
+          TESTFLIGHT_APP_VERSION: ${{ inputs.app_version }}
+          TESTFLIGHT_BUILD_NUMBER: ${{ inputs.build_number }}
+          TESTFLIGHT_CHANGELOG: ${{ inputs.changelog }}
+          FASTLANE_SKIP_UPDATE_CHECK: "true"
+          FASTLANE_HIDE_CHANGELOG: "true"
+          FASTLANE_OPT_OUT_USAGE: "true"
+        run: ruby apps/ios/Scripts/ci/release-testflight.rb
