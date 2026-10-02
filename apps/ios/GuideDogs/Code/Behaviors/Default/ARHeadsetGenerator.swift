@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -19,10 +20,12 @@ class HeadsetConnectionEvent: StateChangedEvent {
     
     let headsetName: String
     let state: State
-    
-    init(_ headsetName: String, state: State) {
+    let calloutName: String
+
+    init(_ headsetName: String, state: State, calloutName: String? = nil) {
         self.headsetName = headsetName
         self.state = state
+        self.calloutName = calloutName ?? headsetName
     }
 }
 
@@ -109,7 +112,7 @@ class ARHeadsetGenerator: AutomaticGenerator {
             return CalloutGroup([earcon], logContext: "ar_headset")
             
         case .reconnected:
-            let callout = StringCallout(.arHeadset, GDLocalizedString("devices.callouts.connected", event.headsetName))
+            let callout = StringCallout(.arHeadset, GDLocalizedString("devices.callouts.connected", event.calloutName))
             let earcon = GlyphCallout(.arHeadset, .connectionSuccess)
             return CalloutGroup([earcon, callout], logContext: "ar_headset")
             
@@ -117,7 +120,7 @@ class ARHeadsetGenerator: AutomaticGenerator {
             previousCalibrationState = .needsCalibrating
             stopCalibrationTrack()
             
-            let callout = StringCallout(.arHeadset, GDLocalizedString("devices.callouts.disconnected", event.headsetName))
+            let callout = StringCallout(.arHeadset, GDLocalizedString("devices.callouts.disconnected", event.calloutName))
             let earcon = GlyphCallout(.arHeadset, .invalidFunction)
             return CalloutGroup([earcon, callout], logContext: "ar_headset")
         }

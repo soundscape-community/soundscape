@@ -7,13 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E300000131C1000100C0FFEE /* InternalStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E300000031C1000100C0FFEE /* InternalStorageTests.swift */; };
-		E200000131C0000100C0FFEE /* InternalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200000031C0000100C0FFEE /* InternalStorage.swift */; };
-		A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000831B3000100C0FFEE /* GPXRecordingTests.swift */; };
-		A79A54E02D578F5A00A1B001 /* SceneLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79A54E12D578F5A00A1B001 /* SceneLifecycleTests.swift */; };
-		A100000231B3000100C0FFEE /* GPXRecordingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000131B3000100C0FFEE /* GPXRecordingModels.swift */; };
-		A100000431B3000100C0FFEE /* GPXRecordingServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000331B3000100C0FFEE /* GPXRecordingServices.swift */; };
-		A100000631B3000100C0FFEE /* GPXRecordingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000531B3000100C0FFEE /* GPXRecordingController.swift */; };
 		2809B80C2379E95B00F6C9AC /* calibration_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80B2379E95B00F6C9AC /* calibration_success.wav */; };
 		2809B80E2379E9A000F6C9AC /* connection_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80D2379E9A000F6C9AC /* connection_success.wav */; };
 		2809B8102379E9C700F6C9AC /* low_confidence.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80F2379E9C700F6C9AC /* low_confidence.wav */; };
@@ -536,10 +529,7 @@
 		91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */ = {isa = PBXBuildFile; productRef = 91172A722AD8D56D00E6E8E9 /* CoreGPX */; };
 		914BAAF32AD745E400CB2171 /* DestinationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */; };
 		914BAAFD2AD7483300CB2171 /* AudioEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */; };
-		F100000131A2000100C0FFEE /* VoiceCatalogueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000031A2000100C0FFEE /* VoiceCatalogueTests.swift */; };
 		914BAB012AD7490100CB2171 /* NavigationControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BAB002AD7490100CB2171 /* NavigationControllerTest.swift */; };
-		D4A72B0131A1000100C0FFEE /* URLResourceIdentifierTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A72B0031A1000100C0FFEE /* URLResourceIdentifierTest.swift */; };
-		D4A72B1131A2000100C0FFEE /* LocalizationContextTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A72B1031A2000100C0FFEE /* LocalizationContextTest.swift */; };
 		915FF9F62ADE4BAF002B3690 /* AuthoredActivityContentTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915FF9F42ADE3F91002B3690 /* AuthoredActivityContentTest.swift */; };
 		91C82AAD2A5DCF040086D126 /*  GeolocationManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */; };
 		91C82ABE2A6B08500086D126 /* RouteGuidanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */; };
@@ -549,6 +539,12 @@
 		9A6990762D5BDB8900D37B7D /* BoseFramesBLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A69906E2D5BDB8900D37B7D /* BoseFramesBLEDevice.swift */; };
 		9A6990782D5BDC1D00D37B7D /* BoseFramesMotionManagerReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6990772D5BDC1D00D37B7D /* BoseFramesMotionManagerReachability.swift */; };
 		9A69907B2D5BDC5E00D37B7D /* BoseFramesMotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A69907A2D5BDC5E00D37B7D /* BoseFramesMotionManager.swift */; };
+		A100000231B3000100C0FFEE /* GPXRecordingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000131B3000100C0FFEE /* GPXRecordingModels.swift */; };
+		A100000431B3000100C0FFEE /* GPXRecordingServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000331B3000100C0FFEE /* GPXRecordingServices.swift */; };
+		A100000631B3000100C0FFEE /* GPXRecordingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000531B3000100C0FFEE /* GPXRecordingController.swift */; };
+		A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000831B3000100C0FFEE /* GPXRecordingTests.swift */; };
+		A79A54D32D578F5A00A1B001 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79A54D42D578F5A00A1B001 /* SceneDelegate.swift */; };
+		A79A54E02D578F5A00A1B001 /* SceneLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79A54E12D578F5A00A1B001 /* SceneLifecycleTests.swift */; };
 		AC3A3EE22C40C9080061EEB8 /* NearbyTableFilterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3A3EE12C40C9080061EEB8 /* NearbyTableFilterTest.swift */; };
 		B90C27D61EAF81D600007368 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C27D51EAF81D600007368 /* Sound.swift */; };
 		B918EE9825100FFF00A5354A /* CalloutRangeContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */; };
@@ -576,7 +572,6 @@
 		B97140DA204835BC00B15BD0 /* Roundabout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97140D9204835BB00B15BD0 /* Roundabout.swift */; };
 		B97140DE2048896800B15BD0 /* RoadDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97140DD2048896800B15BD0 /* RoadDirection.swift */; };
 		B971F0A61EE2B12A0001CAF1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B971F0A51EE2B12A0001CAF1 /* AppDelegate.swift */; };
-		A79A54D32D578F5A00A1B001 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79A54D42D578F5A00A1B001 /* SceneDelegate.swift */; };
 		B971F0A81EE2B37B0001CAF1 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B971F0A71EE2B37B0001CAF1 /* AppContext.swift */; };
 		B9776F1A24ECA61900AC8656 /* StreetPreviewRoadsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9776F1924ECA61900AC8656 /* StreetPreviewRoadsCell.swift */; };
 		B97791511E8ED1B100498320 /* UINavigationBar+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97791501E8ED1B100498320 /* UINavigationBar+Extentions.swift */; };
@@ -755,10 +750,14 @@
 		D30355D31B61401D00E1DDED /* GDAJSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D30355D21B61401D00E1DDED /* GDAJSONObject.m */; };
 		D395B0F71B41DA15005A6407 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D395B0F61B41DA15005A6407 /* Images.xcassets */; };
 		D4A72B0131A1000100C0FFEE /* URLResourceIdentifierTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A72B0031A1000100C0FFEE /* URLResourceIdentifierTest.swift */; };
-		F2A1000131B0000100C0FFEE /* MarkerTutorialViewStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1000031B0000100C0FFEE /* MarkerTutorialViewStateTests.swift */; };
-		F2A2000131B0000100C0FFEE /* TutorialMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A2000031B0000100C0FFEE /* TutorialMigrationTests.swift */; };
+		D4A72B1131A2000100C0FFEE /* LocalizationContextTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A72B1031A2000100C0FFEE /* LocalizationContextTest.swift */; };
 		DCAAD87F2BC1E95F0018D135 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DCAAD87E2BC1E95F0018D135 /* PrivacyInfo.xcprivacy */; };
 		DCE4D2AD2D7CE40F00B5DA4B /* NewFeatures.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE4D2AC2D7CE40F00B5DA4B /* NewFeatures.json */; };
+		E200000131C0000100C0FFEE /* InternalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200000031C0000100C0FFEE /* InternalStorage.swift */; };
+		E300000131C1000100C0FFEE /* InternalStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E300000031C1000100C0FFEE /* InternalStorageTests.swift */; };
+		F100000131A2000100C0FFEE /* VoiceCatalogueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000031A2000100C0FFEE /* VoiceCatalogueTests.swift */; };
+		F2A1000131B0000100C0FFEE /* MarkerTutorialViewStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1000031B0000100C0FFEE /* MarkerTutorialViewStateTests.swift */; };
+		F2A2000131B0000100C0FFEE /* TutorialMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A2000031B0000100C0FFEE /* TutorialMigrationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -784,13 +783,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E300000031C1000100C0FFEE /* InternalStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalStorageTests.swift; sourceTree = "<group>"; };
-		E200000031C0000100C0FFEE /* InternalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InternalStorage.swift; path = Code/App/Helpers/InternalStorage.swift; sourceTree = "<group>"; };
-		A100000831B3000100C0FFEE /* GPXRecordingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXRecordingTests.swift; sourceTree = "<group>"; };
-		A79A54E12D578F5A00A1B001 /* SceneLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneLifecycleTests.swift; sourceTree = "<group>"; };
-		A100000131B3000100C0FFEE /* GPXRecordingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingModels.swift; path = "Code/GPX Recording/GPXRecordingModels.swift"; sourceTree = "<group>"; };
-		A100000331B3000100C0FFEE /* GPXRecordingServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingServices.swift; path = "Code/GPX Recording/GPXRecordingServices.swift"; sourceTree = "<group>"; };
-		A100000531B3000100C0FFEE /* GPXRecordingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingController.swift; path = "Code/GPX Recording/GPXRecordingController.swift"; sourceTree = "<group>"; };
 		20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaviLensWakeOnForegroundTest.swift; sourceTree = "<group>"; };
 		2809B80B2379E95B00F6C9AC /* calibration_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = calibration_success.wav; path = Assets/Sounds/calibration_success.wav; sourceTree = "<group>"; };
 		2809B80D2379E9A000F6C9AC /* connection_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = connection_success.wav; path = Assets/Sounds/connection_success.wav; sourceTree = "<group>"; };
@@ -1224,8 +1216,6 @@
 		6258B3892469DB220051F60B /* UniversalLinkVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UniversalLinkVersion.swift; path = "Code/App/App Delegate/User Activities/Universal Links/Components/UniversalLinkVersion.swift"; sourceTree = "<group>"; };
 		6258B39124732D590051F60B /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6258B39224732D590051F60B /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		E54190012E5F000100000001 /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		E54190022E5F000100000002 /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6258B39324732D840051F60B /* fr-FR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fr-FR"; path = "fr-FR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		6258B39424732D840051F60B /* fr-FR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fr-FR"; path = "fr-FR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		6258B39524732D8D0051F60B /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -1338,22 +1328,23 @@
 		6A4891BA2A5E66DE0002D146 /* ExternalNavigationApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExternalNavigationApps.swift; path = Code/App/ExternalNavigationApps.swift; sourceTree = "<group>"; };
 		914BAAF22AD745E400CB2171 /* DestinationManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DestinationManagerTest.swift; sourceTree = "<group>"; };
 		914BAAFC2AD7483300CB2171 /* AudioEngineTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngineTest.swift; sourceTree = "<group>"; };
-		F100000031A2000100C0FFEE /* VoiceCatalogueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceCatalogueTests.swift; sourceTree = "<group>"; };
 		914BAB002AD7490100CB2171 /* NavigationControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControllerTest.swift; sourceTree = "<group>"; };
-		D4A72B0031A1000100C0FFEE /* URLResourceIdentifierTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLResourceIdentifierTest.swift; sourceTree = "<group>"; };
-		D4A72B1031A2000100C0FFEE /* LocalizationContextTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizationContextTest.swift; sourceTree = "<group>"; };
 		914DEBCD2A3CE6B9007B161C /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtilsTest.swift; sourceTree = "<group>"; };
 		915FF9F42ADE3F91002B3690 /* AuthoredActivityContentTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthoredActivityContentTest.swift; sourceTree = "<group>"; };
 		91C82AAC2A5DCF040086D126 /*  GeolocationManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = " GeolocationManagerTest.swift"; path = "UnitTests/Sensors/Geolocation/Geolocation Manager/ GeolocationManagerTest.swift"; sourceTree = SOURCE_ROOT; };
 		91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteGuidanceTest.swift; path = "UnitTests/Behaviors/Route Guidance/RouteGuidanceTest.swift"; sourceTree = SOURCE_ROOT; };
-		F2A1000031B0000100C0FFEE /* MarkerTutorialViewStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MarkerTutorialViewStateTests.swift; path = UnitTests/MarkerTutorialViewStateTests.swift; sourceTree = SOURCE_ROOT; };
-		F2A2000031B0000100C0FFEE /* TutorialMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TutorialMigrationTests.swift; path = UnitTests/TutorialMigrationTests.swift; sourceTree = SOURCE_ROOT; };
 		9A69906E2D5BDB8900D37B7D /* BoseFramesBLEDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseFramesBLEDevice.swift; path = Code/Devices/BLE/BoseFramesBLEDevice.swift; sourceTree = "<group>"; };
 		9A69906F2D5BDB8900D37B7D /* BoseSensorConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseSensorConfiguration.swift; path = Code/Devices/BLE/BoseSensorConfiguration.swift; sourceTree = "<group>"; };
 		9A6990702D5BDB8900D37B7D /* BoseSensorDataProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseSensorDataProcessor.swift; path = Code/Devices/BLE/BoseSensorDataProcessor.swift; sourceTree = "<group>"; };
 		9A6990772D5BDC1D00D37B7D /* BoseFramesMotionManagerReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseFramesMotionManagerReachability.swift; path = "Code/Sensors/Motion/Headphone Motion/BoseFramesMotionManagerReachability.swift"; sourceTree = "<group>"; };
 		9A69907A2D5BDC5E00D37B7D /* BoseFramesMotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoseFramesMotionManager.swift; path = "Code/Sensors/Motion/Headphone Motion/BoseFramesMotionManager.swift"; sourceTree = "<group>"; };
+		A100000131B3000100C0FFEE /* GPXRecordingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingModels.swift; path = "Code/GPX Recording/GPXRecordingModels.swift"; sourceTree = "<group>"; };
+		A100000331B3000100C0FFEE /* GPXRecordingServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingServices.swift; path = "Code/GPX Recording/GPXRecordingServices.swift"; sourceTree = "<group>"; };
+		A100000531B3000100C0FFEE /* GPXRecordingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPXRecordingController.swift; path = "Code/GPX Recording/GPXRecordingController.swift"; sourceTree = "<group>"; };
+		A100000831B3000100C0FFEE /* GPXRecordingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXRecordingTests.swift; sourceTree = "<group>"; };
+		A79A54D42D578F5A00A1B001 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "Code/App/App Delegate/SceneDelegate.swift"; sourceTree = "<group>"; };
+		A79A54E12D578F5A00A1B001 /* SceneLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneLifecycleTests.swift; sourceTree = "<group>"; };
 		AC3A3EE12C40C9080061EEB8 /* NearbyTableFilterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyTableFilterTest.swift; sourceTree = "<group>"; };
 		B90C27D51EAF81D600007368 /* Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Sound.swift; path = Code/Audio/Protocols/Sound.swift; sourceTree = "<group>"; };
 		B918EE9725100FFF00A5354A /* CalloutRangeContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalloutRangeContext.swift; sourceTree = "<group>"; };
@@ -1382,7 +1373,6 @@
 		B97140D9204835BB00B15BD0 /* Roundabout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Roundabout.swift; path = Code/Data/Models/Helpers/Roundabout.swift; sourceTree = "<group>"; };
 		B97140DD2048896800B15BD0 /* RoadDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RoadDirection.swift; path = Code/Data/Models/Helpers/RoadDirection.swift; sourceTree = "<group>"; };
 		B971F0A51EE2B12A0001CAF1 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "Code/App/App Delegate/AppDelegate.swift"; sourceTree = "<group>"; };
-		A79A54D42D578F5A00A1B001 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "Code/App/App Delegate/SceneDelegate.swift"; sourceTree = "<group>"; };
 		B971F0A71EE2B37B0001CAF1 /* AppContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppContext.swift; path = Code/App/AppContext.swift; sourceTree = "<group>"; };
 		B9776F1924ECA61900AC8656 /* StreetPreviewRoadsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StreetPreviewRoadsCell.swift; path = "Code/Visual UI/Controls/Settings/StreetPreviewRoadsCell.swift"; sourceTree = "<group>"; };
 		B97791501E8ED1B100498320 /* UINavigationBar+Extentions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UINavigationBar+Extentions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/UINavigationBar+Extentions.swift"; sourceTree = "<group>"; };
@@ -1580,10 +1570,18 @@
 		D3D7CFC81B3D96470020B5E9 /* Soundscape.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soundscape.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3E2A6361CAD5CA100A5192A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		D4A72B0031A1000100C0FFEE /* URLResourceIdentifierTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLResourceIdentifierTest.swift; sourceTree = "<group>"; };
+		D4A72B1031A2000100C0FFEE /* LocalizationContextTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizationContextTest.swift; sourceTree = "<group>"; };
 		DCAAD87E2BC1E95F0018D135 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Assets/PropertyLists/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DCE09DD62E54AC9500B66BDF /* fa-IR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fa-IR"; path = "fa-IR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		DCE09DD72E54AE7400B66BDF /* fa-IR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fa-IR"; path = "fa-IR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		DCE4D2AC2D7CE40F00B5DA4B /* NewFeatures.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = NewFeatures.json; path = Assets/NewFeatures.json; sourceTree = "<group>"; };
+		E200000031C0000100C0FFEE /* InternalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InternalStorage.swift; path = Code/App/Helpers/InternalStorage.swift; sourceTree = "<group>"; };
+		E300000031C1000100C0FFEE /* InternalStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalStorageTests.swift; sourceTree = "<group>"; };
+		E54190012E5F000100000001 /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		E54190022E5F000100000002 /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		F100000031A2000100C0FFEE /* VoiceCatalogueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceCatalogueTests.swift; sourceTree = "<group>"; };
+		F2A1000031B0000100C0FFEE /* MarkerTutorialViewStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MarkerTutorialViewStateTests.swift; path = UnitTests/MarkerTutorialViewStateTests.swift; sourceTree = SOURCE_ROOT; };
+		F2A2000031B0000100C0FFEE /* TutorialMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TutorialMigrationTests.swift; path = UnitTests/TutorialMigrationTests.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -1616,24 +1614,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A100000731B3000100C0FFEE /* GPX Recording */ = {
-			isa = PBXGroup;
-			children = (
-				A100000831B3000100C0FFEE /* GPXRecordingTests.swift */,
-			);
-			path = "GPX Recording";
-			sourceTree = "<group>";
-		};
-		A100000031B3000100C0FFEE /* GPX Recording */ = {
-			isa = PBXGroup;
-			children = (
-				A100000131B3000100C0FFEE /* GPXRecordingModels.swift */,
-				A100000331B3000100C0FFEE /* GPXRecordingServices.swift */,
-				A100000531B3000100C0FFEE /* GPXRecordingController.swift */,
-			);
-			name = "GPX Recording";
-			sourceTree = "<group>";
-		};
 		2809B80A2379E8F100F6C9AC /* Calibration */ = {
 			isa = PBXGroup;
 			children = (
@@ -3558,14 +3538,6 @@
 			path = UnitTests;
 			sourceTree = "<group>";
 		};
-		D4A72B1231A2000100C0FFEE /* Language */ = {
-			isa = PBXGroup;
-			children = (
-				D4A72B1031A2000100C0FFEE /* LocalizationContextTest.swift */,
-			);
-			path = Language;
-			sourceTree = "<group>";
-		};
 		914DEBD92A3CE7E6007B161C /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -3643,6 +3615,24 @@
 				91C82ABD2A6B08500086D126 /* RouteGuidanceTest.swift */,
 			);
 			path = "Route Guidance";
+			sourceTree = "<group>";
+		};
+		A100000031B3000100C0FFEE /* GPX Recording */ = {
+			isa = PBXGroup;
+			children = (
+				A100000131B3000100C0FFEE /* GPXRecordingModels.swift */,
+				A100000331B3000100C0FFEE /* GPXRecordingServices.swift */,
+				A100000531B3000100C0FFEE /* GPXRecordingController.swift */,
+			);
+			name = "GPX Recording";
+			sourceTree = "<group>";
+		};
+		A100000731B3000100C0FFEE /* GPX Recording */ = {
+			isa = PBXGroup;
+			children = (
+				A100000831B3000100C0FFEE /* GPXRecordingTests.swift */,
+			);
+			path = "GPX Recording";
 			sourceTree = "<group>";
 		};
 		B91D3F6227AB5546004159A8 /* User Actions */ = {
@@ -4481,6 +4471,14 @@
 			);
 			name = Soundscape;
 			path = GuideDogs;
+			sourceTree = "<group>";
+		};
+		D4A72B1231A2000100C0FFEE /* Language */ = {
+			isa = PBXGroup;
+			children = (
+				D4A72B1031A2000100C0FFEE /* LocalizationContextTest.swift */,
+			);
+			path = Language;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

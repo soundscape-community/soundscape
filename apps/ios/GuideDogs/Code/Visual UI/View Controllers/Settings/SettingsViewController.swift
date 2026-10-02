@@ -33,8 +33,9 @@ class SettingsViewController: BaseTableViewController {
         case all = 0
         case poi = 1
         case mobility = 2
-        case beacon = 3
-        case shake = 4
+        case intersections = 3
+        case beacon = 4
+        case shake = 5
     }
     
     private static let cellIdentifiers: [IndexPath: String] = [
@@ -50,6 +51,7 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: CalloutsRow.all.rawValue, section: Section.callouts.rawValue): "allCallouts",
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue): "poiCallouts",
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue): "mobilityCallouts",
+        IndexPath(row: CalloutsRow.intersections.rawValue, section: Section.callouts.rawValue): "intersectionCallouts",
         IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue): "beaconCallouts",
         IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue): "shakeCallouts",
         
@@ -62,6 +64,7 @@ class SettingsViewController: BaseTableViewController {
     private static let collapsibleCalloutIndexPaths: [IndexPath] = [
         IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue),
+        IndexPath(row: CalloutsRow.intersections.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue),
         IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue)
     ]
@@ -94,7 +97,7 @@ class SettingsViewController: BaseTableViewController {
         switch sectionType {
         case .general: return 6
         case .audio: return 1
-        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? 5 : 1
+        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? CalloutsRow.allCases.count : 1
         case .streetPreview: return 1
         case .troubleshooting: return 1
         case .about: return 1
@@ -119,6 +122,7 @@ class SettingsViewController: BaseTableViewController {
                 case .all: cell.type = .all
                 case .poi: cell.type = .poi
                 case .mobility: cell.type = .mobility
+                case .intersections: cell.type = .intersections
                 case .beacon: cell.type = .beacon
                 case .shake: cell.type = .shake
                 }

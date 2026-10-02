@@ -22,6 +22,14 @@ struct BeaconAngleSlider: View {
     var step: Double {
         largeStep ? 5.0 : 1.0
     }
+
+    private var localizedAngle: String {
+        let formatter = MeasurementFormatter()
+        formatter.locale = LocalizationContext.currentAppLocale
+        formatter.unitOptions = .providedUnit
+        formatter.unitStyle = .long
+        return formatter.string(from: Measurement(value: angle, unit: UnitAngle.degrees))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -49,7 +57,7 @@ struct BeaconAngleSlider: View {
             .padding(.horizontal)
             .padding(.bottom, 8)
             .accessibilityLabel(GDLocalizedTextView("beacon.settings.ringing_angle"))
-            .accessibilityValue(Text("\(Int(angle)) degrees"))
+            .accessibilityValue(localizedAngle)
         }
         .background(Color.primaryBackground)
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.voiceOverStatusDidChangeNotification)) { _ in

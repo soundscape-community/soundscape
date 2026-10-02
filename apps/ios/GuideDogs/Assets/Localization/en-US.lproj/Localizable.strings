@@ -617,6 +617,9 @@
 /* Settings About Title, Privacy and Cookies */
 "settings.about.title.privacy" = "Soundscape Community Privacy Statement";
 
+/* Label for the Privacy Policy link in Settings > About */
+"settings.about.title.privacy_policy" = "Privacy Policy";
+
 /* Settings About Title, Service Agreement */
 "settings.about.title.service_agreement" = "Services Agreement";
 
@@ -625,6 +628,9 @@
 
 /* Settings About Title, Copyright Notices */
 "settings.about.title.copyright" = "Copyright Notices";
+
+/* Label for the YouTube channel link in Settings > About */
+"settings.about.title.youtube_channel" = "YouTube Channel";
 
 //------------------------------------------------------------------------------
 // MARK: Settings (New Feature)
@@ -1665,6 +1671,15 @@
 /* Callouts Information, Intersection and transportation information */
 "callouts.mobility.info" = "Intersection and transportation info";
 
+/* Mobility callout settings description, excluding road intersections. */
+"callouts.mobility.transportation_info" = "Transportation and accessibility info";
+
+/* Title for the independent intersection callout toggle. */
+"callouts.intersections" = "Intersections";
+
+/* Intersection callout settings description. */
+"callouts.intersections.info" = "Nearby road intersections";
+
 /* Title for a toggle under the Manage Callouts settings section. This toggle enables or disables periodic callouts that inform the user about their distance from the location of the audio beacon. */
 "callouts.audio_beacon" = "Distance to the Audio Beacon";
 
@@ -2402,6 +2417,12 @@
 
 /* Callout for when an AR headset has been connected, %@ device name, "AirPods Pro connected." */
 "devices.callouts.connected" = "%@ connected.";
+
+/* Short spoken name used in Bose Frames connection callouts */
+"devices.bose_frames.callout_name" = "Bose Frames";
+
+/* Label for Bose Frames in the headphone selection menu */
+"devices.bose_frames.selector_title" = "Bose Frames Alto or Rondo";
 
 /* Callout for when an AR headset needs to be calibrated */
 "devices.callouts.needs_calibration" = "Your headphones need to be calibrated. Remove them from your head and gently shake them in all directions.";
@@ -3772,7 +3793,7 @@
 "faq.personalize_experience.question" = "In what ways can I personalize my Soundscape experience?";
 
 /* All of the terms in the string "Settings > Accessibility > Spoken Content > Voices" should be translated such that they are consistant with those in the iOS Settings app. Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. Callout - a short audio clip with speech and/or sound effect serving as a piece of information. For example, the application can output an audio callout to notify the user that the battery is low. 'Nearby Markers' is the name of one of the buttons in the app. 'Voiceover' is an iPhone feature to help people who are visually impaired use the iPhone. 'Audio Ducking' is the name of an accessibility feature on the iPhone which reduces the volume of an app while 'Voiceover' is speaking. 'Touch ID' is the name of the iPhone feature for unlocking your phone using your finger print. 'Face ID' is the name of the iPhone feature for unlocking your phone using your face. 'Passcode' and 'iPhone Unlock' are all names of sections in the iPhone 'Settings' app. 'My Location', 'Around Me' and 'Ahead of Me' are buttons in the Soundscape app. {NumberedPlaceholder="Soundscape", "VoiceOver","Touch ID", "Face ID","iOS"} */
-"faq.personalize_experience.answer" = "Soundscape allows you to customize three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from the \"General\" section select \"Voice\" to adjust the Speaking Rate and Voice settings. Additional voices, including enhanced quality voices, can be downloaded in the iOS Settings app at Settings > Accessibility > Read & Speak > Voices.\n2. Measuring Distance: Soundscape allows you to hear all distances in either feet or meters. From the Menu, select \"Settings\" and then from the \"General\" section select \"Language & Region\". The \"Units of Measure\" section allows you to toggle between two options: Imperial (feet) and Metric (meters).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the \"Nearby Markers\" button at the bottom of the home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following settings can influence Soundscape's behavior:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the main screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning the Speak Hints setting on.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the \"My Location\", \"Around Me\", and \"Ahead of Me\" buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
+"faq.personalize_experience.answer" = "Soundscape allows you to customize three key aspects of the callouts you hear as you are walking:\n\n1. Voice: You can choose which of the available voices on iOS you would like Soundscape to use, as well as the speed at which callouts are spoken. From the Menu, select \"Settings\" and then from the \"General\" section select \"Voice\" to adjust the Speaking Rate and Voice settings. Additional voices, including enhanced quality voices, can be downloaded in the iOS Settings app at Settings > Accessibility > Read & Speak > Voices.\n2. Measuring Distance: Soundscape allows you to hear all distances in either feet or meters. From the Menu, select \"Settings\" and then from the \"General\" section select \"Language & Region\". The \"Units of Measure\" section allows you to toggle between two options: Imperial (feet) and Metric (meters).\n3. Markers: You can mark your world with anything you care about. You can mark things that are personal and relevant to you like your home, your office and your preferred grocery store. Then Soundscape will automatically call out marked places as you walk by or approach them, or you can also use the \"Nearby Markers\" button at the bottom of the home screen to hear a spatial callout of marked places around you. These markers will remain personal to you and will not be available to anyone else.\n\nIn addition to the above, the following settings can influence Soundscape's behavior:\n\n1. VoiceOver Tips: When VoiceOver tips are turned ON, you will hear more information about all the buttons on the main screen. You can turn on VoiceOver tips by navigating to the iOS Settings app and going to Accessibility > VoiceOver > Verbosity, and turning on Hints.\n2. Audio Ducking: Soundscape is designed to work with Audio Ducking turned OFF. When Audio Ducking is on, automatic callouts can be difficult to hear if VoiceOver is used simultaneously. We recommend turning Audio Ducking off to make it easier to hear all automatic callouts. Audio ducking can be turned off in VoiceOver settings or via the VoiceOver rotor.\n3. Touch ID or Face ID to Unlock: Setting your phone to unlock using Touch ID or Face ID will make unlocking the phone fast and easy, and in turn, allow you to access the \"My Location\", \"Around Me\", and \"Ahead of Me\" buttons as quickly as possible when you are on the go. Set up Touch ID or Face ID unlocking in the iOS Settings app.";
 
 /* Soundscape - The app that explores the use of innovative audio-based technology to enable people, particularly those with blindness or low vision, to build a richer awareness of their surroundings, thus becoming more confident and empowered to get around by using 3D audio cues to enrich ambient awareness and provide a new way to relate to the environment. {NumberedPlaceholder="Soundscape","Open Street Map"} */
 "faq.what_is_osm.question" = "What is Open Street Map and why do we use it for Soundscape?";

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -120,10 +121,10 @@ class AboutApplicationViewController: BaseTableViewController, LargeBannerTableH
     private var aboutLinks: [AboutLinkCellModel] {
         var links = [
             AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), navigationTarget: .versionHistory),
-            AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Privacy Policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale), event: "about.privacy_policy"),
-            AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Services Agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale), event: "about.services_agreement"),
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.privacy_policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale), event: "about.privacy_policy"),
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.service_agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale), event: "about.services_agreement"),
             AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), navigationTarget: .thirdPartyNotices),
-            AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("YouTube Channel"), url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale), event: "about.youtube_channel")
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.youtube_channel"), url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale), event: "about.youtube_channel")
         ]
         
         if LocalizationContext.currentAppLocale == Locale.frFr {

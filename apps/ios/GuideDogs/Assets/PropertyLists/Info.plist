@@ -80,8 +80,6 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
-	<key>UIFileSharingEnabled</key>
-	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Soundscape uses Bluetooth LE to connect to accessories.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
@@ -116,14 +114,6 @@
 	<string></string>
 	<key>SOUNDSCAPE_AZURE_NH_PATH</key>
 	<string></string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-		<string>bluetooth-central</string>
-		<string>location</string>
-	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>Launch-Static</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -143,6 +133,16 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>bluetooth-central</string>
+		<string>location</string>
+	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch-Static</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>bluetooth-le</string>
