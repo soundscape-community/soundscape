@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -165,11 +166,11 @@ extension Road {
         guard let roadCoordinates = coordinates else { return .none }
         let intersectionCoordinate = intersection.coordinate
         
-        if intersectionCoordinate == roadCoordinates.first {
+        if intersectionCoordinate.isNear(to: roadCoordinates.first) {
             return .leading
-        } else if intersectionCoordinate == roadCoordinates.last {
+        } else if intersectionCoordinate.isNear(to: roadCoordinates.last) {
             return .trailing
-        } else if roadCoordinates.contains(intersectionCoordinate) {
+        } else if roadCoordinates.contains(where: {$0.isNear(to: intersectionCoordinate) }) {
             return .leadingAndTrailing
         }
         
