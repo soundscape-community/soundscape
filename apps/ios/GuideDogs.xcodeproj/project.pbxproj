@@ -758,6 +758,7 @@
 		F100000131A2000100C0FFEE /* VoiceCatalogueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000031A2000100C0FFEE /* VoiceCatalogueTests.swift */; };
 		F2A1000131B0000100C0FFEE /* MarkerTutorialViewStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1000031B0000100C0FFEE /* MarkerTutorialViewStateTests.swift */; };
 		F2A2000131B0000100C0FFEE /* TutorialMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A2000031B0000100C0FFEE /* TutorialMigrationTests.swift */; };
+		A215022231C2000100C0FFEE /* SearchResultsUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A215022231C2000200C0FFEE /* SearchResultsUpdaterTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1582,6 +1583,7 @@
 		F100000031A2000100C0FFEE /* VoiceCatalogueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceCatalogueTests.swift; sourceTree = "<group>"; };
 		F2A1000031B0000100C0FFEE /* MarkerTutorialViewStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MarkerTutorialViewStateTests.swift; path = UnitTests/MarkerTutorialViewStateTests.swift; sourceTree = SOURCE_ROOT; };
 		F2A2000031B0000100C0FFEE /* TutorialMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TutorialMigrationTests.swift; path = UnitTests/TutorialMigrationTests.swift; sourceTree = SOURCE_ROOT; };
+		A215022231C2000200C0FFEE /* SearchResultsUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SearchResultsUpdaterTests.swift; path = "Visual UI/SearchResultsUpdaterTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -3526,6 +3528,7 @@
 		914DEBCE2A3CE6B9007B161C /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				A215022231C2000200C0FFEE /* SearchResultsUpdaterTests.swift */,
 				F2A1000031B0000100C0FFEE /* MarkerTutorialViewStateTests.swift */,
 				F2A2000031B0000100C0FFEE /* TutorialMigrationTests.swift */,
 				914BAAFB2AD747C200CB2171 /* Audio */,
@@ -4773,6 +4776,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A215022231C2000100C0FFEE /* SearchResultsUpdaterTests.swift in Sources */,
 				A79A54E02D578F5A00A1B001 /* SceneLifecycleTests.swift in Sources */,
 				E300000131C1000100C0FFEE /* InternalStorageTests.swift in Sources */,
 				A100000931B3000100C0FFEE /* GPXRecordingTests.swift in Sources */,

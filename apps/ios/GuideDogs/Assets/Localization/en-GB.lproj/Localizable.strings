@@ -1785,6 +1785,15 @@
 "markers.annotation" = "Annotation";
 
 
+/* Search scope, restrict search to places within 25 km of the current location. */
+"search.scope.nearby" = "Nearby";
+
+/* Search scope, allow searching for places worldwide. */
+"search.scope.anywhere" = "Anywhere";
+
+/* No results within the Nearby search scope. Anywhere is the name of the other scope button. */
+"search.no_results_found_nearby" = "No results found nearby. Try editing your search or select Anywhere.";
+
 /*  */
 "search.no_results_found_with_action" = "No results found. Edit text or press Search for more.";
 
