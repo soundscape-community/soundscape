@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -57,6 +58,8 @@ class SearchResultsTableViewController: UITableViewController {
     let searchResultsUpdater = SearchResultsUpdater()
     private var tableViewDataSource: UITableViewDataSource?
     private var tableViewDelegate: UITableViewDelegate?
+    private var statusMessage: String?
+    private var tableUpdateGeneration = UUID()
     private var currentVoiceoverAnnoucement: String?
     private(set) var isPresentingDefaultResults = false
     private var recentDataSource: UITableViewDataSource = TableViewDataSource<ListItem, ListItemTableViewCellConfigurator>(header: nil, models: [], cellConfigurator: ListItemTableViewCellConfigurator())
@@ -119,8 +122,9 @@ class SearchResultsTableViewController: UITableViewController {
         
         GDATelemetry.track("search.started", with: ["context": telemetryContext])
         
-        // Reset wasSearchCancelled flag
+        // Reset search presentation state when returning to recent places.
         wasSearchCancelled = false
+        statusMessage = nil
         
         let configurator = ListItemTableViewCellConfigurator()
         // Initialize `cellConfigurator` to display distances from the
@@ -168,7 +172,10 @@ class SearchResultsTableViewController: UITableViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        searchResultsUpdater.cancel()
         searchResultsUpdater.delegate = nil
+        tableUpdateGeneration = UUID()
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.annouce(annoucement:)), object: currentVoiceoverAnnoucement)
     }
     
     @objc private func dismissViewController() {
@@ -178,7 +185,11 @@ class SearchResultsTableViewController: UITableViewController {
     // MARK: `UITableView`
     
     private func updateTableView(dataSource: UITableViewDataSource, delegate: UITableViewDelegate, voiceoverAnnoucement: String?, isDefaultResults: Bool) {
+        let generation = UUID()
+        tableUpdateGeneration = generation
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.annouce(annoucement:)), object: currentVoiceoverAnnoucement)
         DispatchQueue.main.async {
+            guard self.tableUpdateGeneration == generation else { return }
             // Cancel previous request to make a Voiceover annoucement
             NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.annouce(annoucement:)), object: self.currentVoiceoverAnnoucement)
             
@@ -238,7 +249,7 @@ class SearchResultsTableViewController: UITableViewController {
     
     private func updateTableView(searchResults: [POI], searchLocation: CLLocation?) {
         if searchResults.isEmpty {
-            updateTableView(dataSource: recentDataSource, delegate: recentDelegate, voiceoverAnnoucement: nil, isDefaultResults: true)
+            updateTableView(searchForMore: nil)
         } else {
             var dataSource: UITableViewDataSource
             let delegate = TableViewDelegate.make(selectDelegate: self)
@@ -322,7 +333,22 @@ class SearchResultsTableViewController: UITableViewController {
     /// This is because when we show a footer, the `DZNEmptyDataSet` view and
     /// the footer display on top of each other.
     private func updateNoResultsView() {
-        let show = self.tableView.visibleCells.isEmpty && !(searchController?.searchBar.searchTextField.isEditing ?? false)
+        if let message = statusMessage {
+            let label = UILabel()
+            label.text = message
+            label.textColor = Colors.Foreground.primary ?? UIColor.white
+            label.font = UIFont.preferredFont(forTextStyle: .body)
+            label.adjustsFontForContentSizeCategory = true
+            label.textAlignment = .center
+            label.numberOfLines = 0
+            let width = max(1, view.bounds.width - 40)
+            let height = label.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude)).height + 40
+            label.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: height)
+            tableView.tableHeaderView = label
+            return
+        }
+        let hasRows = (0..<tableView.numberOfSections).contains { tableView.numberOfRows(inSection: $0) > 0 }
+        let show = !hasRows && !(searchController?.searchBar.searchTextField.isEditing ?? false)
         
         if show {
             self.tableView.tableHeaderView = SearchResultsTableViewController.noResultsLabel(with: self.view.bounds.width)
@@ -372,32 +398,38 @@ class SearchResultsTableViewController: UITableViewController {
 
 extension SearchResultsTableViewController: SearchResultsUpdaterDelegate {
     
-    func searchResultsDidStartUpdating() {
-        let dataSource: UITableViewDataSource
-        let delegate = TableViewDelegate.make(selectDelegate: self)
-        let voiceoverAnnoucement: String?
-        
-        if AppContext.shared.offlineContext.state == .online {
-            // We are waiting for results to be returned
-            dataSource = StaticTableViewDataSource(header: nil, cells: [Results.searching])
-            voiceoverAnnoucement = nil
-        } else {
-            // Search is disabled while offline
-            dataSource = StaticTableViewDataSource(header: nil, cells: [Results.offline])
-            voiceoverAnnoucement = GDLocalizedString("searching.offline")
+    func searchResultsDidUpdate(_ state: SearchResultsState) {
+        statusMessage = nil
+        switch state {
+        case .idle:
+            updateTableView(dataSource: recentDataSource, delegate: recentDelegate,
+                            voiceoverAnnoucement: nil, isDefaultResults: true)
+        case .loading, .offline:
+            let isOffline: Bool
+            if case .offline = state { isOffline = true } else { isOffline = false }
+            if !isOffline { wasSearchCancelled = false }
+            let dataSource = StaticTableViewDataSource(header: nil, cells: [isOffline ? Results.offline : Results.searching])
+            updateTableView(dataSource: dataSource, delegate: TableViewDelegate.make(selectDelegate: self),
+                            voiceoverAnnoucement: isOffline ? GDLocalizedString("searching.offline") : nil,
+                            isDefaultResults: false)
+        case .places(let places, let location):
+            updateTableView(searchResults: places, searchLocation: location)
+        case .noResults(let searchForMore):
+            statusMessage = GDLocalizedString(searchForMore == nil
+                ? "search.no_results_found_with_hint" : "search.no_results_found_with_action")
+            updateTableView(searchForMore: searchForMore)
+        case .locationUnavailable, .failure:
+            if case .locationUnavailable = state {
+                statusMessage = GDLocalizedString("general.error.location_services_find_location_error")
+            } else {
+                statusMessage = GDLocalizedString("general.alert.error.message")
+            }
+            let dataSource = StaticTableViewDataSource(header: nil, cells: [Results]())
+            updateTableView(dataSource: dataSource, delegate: TableViewDelegate(),
+                            voiceoverAnnoucement: statusMessage, isDefaultResults: false)
         }
-        
-        updateTableView(dataSource: dataSource, delegate: delegate, voiceoverAnnoucement: voiceoverAnnoucement, isDefaultResults: false)
     }
-    
-    func searchResultsDidUpdate(_ searchResults: [POI], searchLocation: CLLocation?) {
-        updateTableView(searchResults: searchResults, searchLocation: searchLocation)
-    }
-    
-    func searchResultsDidUpdate(_ searchForMore: String?) {
-        updateTableView(searchForMore: searchForMore)
-    }
-    
+
     func searchWasCancelled() {
         wasSearchCancelled = true
     }
@@ -470,14 +502,8 @@ extension SearchResultsTableViewController: TableViewSelectDelegate {
         // Stop editing and remove current search results
         searchController?.searchBar.searchTextField.endEditing(false)
         
-        // Indicate that the new search text is complete
-        searchResultsUpdater.context = .completeSearchText
-        
-        // Update search bar text
         searchController?.searchBar.text = searchString
-        
-        // Reset context
-        searchResultsUpdater.context = .partialSearchText
+        searchResultsUpdater.updateQuery(searchString, submitted: true)
     }
     
     private func dismissOnDidSelectSearchResult(_ entity: POI) {
