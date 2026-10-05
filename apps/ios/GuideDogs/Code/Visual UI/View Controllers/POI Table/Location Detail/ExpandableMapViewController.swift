@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -131,7 +132,7 @@ class ExpandableMapViewController: UIViewController {
         //
         // Currently, editing is not supported for waypoints
         // or routes
-        if let accessibilityEditableMapViewModel = accessibilityEditableMapViewModel, case .location(let detail) = style {
+        if isEditable, let accessibilityEditableMapViewModel = accessibilityEditableMapViewModel, case .location(let detail) = style {
             let content = AccessibilityEditableMapView(detail: detail) { [weak self] newValue in
                 guard let `self` = self else {
                     return
@@ -176,9 +177,13 @@ class ExpandableMapViewController: UIViewController {
                                 //
                                 // Currently, editing is not supported for waypoints
                                 // or routes
-                                if self.accessibilityEditableMapViewModel != nil, case .location = self.style {
-                                    self.accessibilityEditableMapView.isHidden = !UIAccessibility.isVoiceOverRunning
+                                let canEditLocation: Bool
+                                if self.isEditable, self.accessibilityEditableMapViewModel != nil, case .location = self.style {
+                                    canEditLocation = true
+                                } else {
+                                    canEditLocation = false
                                 }
+                                self.accessibilityEditableMapView.isHidden = !canEditLocation || !UIAccessibility.isVoiceOverRunning
                                 
                                 self.mapView.accessibilityElementsHidden = UIAccessibility.isVoiceOverRunning
                                 self.fullScreenButton.accessibilityElementsHidden = UIAccessibility.isVoiceOverRunning

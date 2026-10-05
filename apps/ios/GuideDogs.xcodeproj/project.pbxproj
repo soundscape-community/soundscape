@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF3180010000000000000001 /* LocationDetailMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3180010000000000000002 /* LocationDetailMapTests.swift */; };
 		2809B80C2379E95B00F6C9AC /* calibration_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80B2379E95B00F6C9AC /* calibration_success.wav */; };
 		2809B80E2379E9A000F6C9AC /* connection_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80D2379E9A000F6C9AC /* connection_success.wav */; };
 		2809B8102379E9C700F6C9AC /* low_confidence.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80F2379E9C700F6C9AC /* low_confidence.wav */; };
@@ -783,6 +784,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AF3180010000000000000002 /* LocationDetailMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailMapTests.swift; sourceTree = "<group>"; };
 		20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaviLensWakeOnForegroundTest.swift; sourceTree = "<group>"; };
 		2809B80B2379E95B00F6C9AC /* calibration_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = calibration_success.wav; path = Assets/Sounds/calibration_success.wav; sourceTree = "<group>"; };
 		2809B80D2379E9A000F6C9AC /* connection_success.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = connection_success.wav; path = Assets/Sounds/connection_success.wav; sourceTree = "<group>"; };
@@ -3555,6 +3557,7 @@
 				914DEBDC2A3CE901007B161C /* GeometryUtilsTest.swift */,
 				20EB7956C9AA4CB8A103128F /* NaviLensWakeOnForegroundTest.swift */,
 				914BAB002AD7490100CB2171 /* NavigationControllerTest.swift */,
+				AF3180010000000000000002 /* LocationDetailMapTests.swift */,
 				D4A72B0031A1000100C0FFEE /* URLResourceIdentifierTest.swift */,
 			);
 			path = Helpers;
@@ -4786,6 +4789,7 @@
 				91DC0CF92A46134600244CC8 /* GeometryUtilsTest.swift in Sources */,
 				666CA3EAAA904E6EBFA10A53 /* NaviLensWakeOnForegroundTest.swift in Sources */,
 				914BAB012AD7490100CB2171 /* NavigationControllerTest.swift in Sources */,
+				AF3180010000000000000001 /* LocationDetailMapTests.swift in Sources */,
 				D4A72B0131A1000100C0FFEE /* URLResourceIdentifierTest.swift in Sources */,
 				D4A72B1131A2000100C0FFEE /* LocalizationContextTest.swift in Sources */,
 				F2A1000131B0000100C0FFEE /* MarkerTutorialViewStateTests.swift in Sources */,

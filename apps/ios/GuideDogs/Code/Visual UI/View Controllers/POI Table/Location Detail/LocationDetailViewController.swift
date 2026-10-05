@@ -150,7 +150,7 @@ class LocationDetailViewController: UIViewController {
                 viewController.isEditable = false
             } else if let detail = locationDetail {
                 viewController.style = .location(detail: detail)
-                viewController.isEditable = true
+                viewController.isEditable = detail.isMarker
             }
             
             viewController.isExpanded = false
@@ -210,8 +210,10 @@ class LocationDetailViewController: UIViewController {
             
             if let detail = self.waypointDetail {
                 self.detailMapViewController?.style = .waypoint(detail: detail)
+                self.detailMapViewController?.isEditable = false
             } else if let detail = self.locationDetail {
                 self.detailMapViewController?.style = .location(detail: detail)
+                self.detailMapViewController?.isEditable = detail.isMarker
             }
         }
     }
