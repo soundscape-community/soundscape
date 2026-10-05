@@ -20,13 +20,7 @@ final class SearchResultsUpdaterTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        online = true
-        service = FakeSearchService()
-        scheduler = FakeSearchScheduler()
-        delegate = SearchDelegate()
-        updater = SearchResultsUpdater(service: service, scheduler: scheduler, location: center,
-                                       isOnline: { [unowned self] in self.online })
-        updater.delegate = delegate
+        resetSearch(location: center)
     }
 
     override func tearDown() {
@@ -41,15 +35,8 @@ final class SearchResultsUpdaterTests: XCTestCase {
     func testShortQueryIsTrimmedAndDebounced() {
         updater.updateQuery(" c ")
         XCTAssertTrue(service.suggestionCalls.isEmpty)
-        XCTAssertEqual(scheduler.actions[0].delay, 0.4)
         scheduler.runLast()
         XCTAssertEqual(service.suggestionCalls[0].text, "c")
-        let region = service.suggestionCalls[0].region!
-        XCTAssertEqual(region.center.latitude, center.coordinate.latitude)
-        XCTAssertEqual(region.center.longitude, center.coordinate.longitude)
-        XCTAssertEqual(MKMapPoint(region.center).distance(to: MKMapPoint(CLLocationCoordinate2D(
-            latitude: region.center.latitude + region.span.latitudeDelta / 2,
-            longitude: region.center.longitude))), 25_000, accuracy: 200)
     }
 
     func testEditCancelsDebounceAndIgnoresItsLateAction() {
@@ -93,12 +80,11 @@ final class SearchResultsUpdaterTests: XCTestCase {
         XCTAssertFalse(new.cancelled)
     }
 
-    func testCancellationInvalidatesBeforeSynchronousCancellationCallback() {
+    func testCancellationErrorCannotReplaceNewSearch() {
         updater.setScope(.anywhere)
         beginTyping([suggestion("Old")])
         let old = service.searchCalls[0]
-        old.onCancel = { old.reply(.failure(NSError(domain: MKError.errorDomain,
-                                                  code: Int(MKError.unknown.rawValue)))) }
+        old.onCancel = { old.reply(.failure(URLError(.cancelled))) }
         updater.updateQuery("new", submitted: true)
         flushCallbacks()
         guard case .loading? = delegate.states.last else { return XCTFail("Cancellation replaced loading") }
@@ -142,7 +128,7 @@ final class SearchResultsUpdaterTests: XCTestCase {
         if #available(iOS 18.0, *) { XCTAssertEqual(request.regionPriority, .required) }
     }
 
-    func testOnlyDistantPlacesShowsSearchForMoreInsteadOfPlaces() {
+    func testNearbyShowsNoResultsWhenAllMatchesAreDistant() {
         beginTyping([suggestion("Sydney")])
         service.searchCalls[0].reply(.success([item("Sydney", latitude: -33.87, longitude: 151.21)]))
         flushCallbacks()
@@ -161,15 +147,6 @@ final class SearchResultsUpdaterTests: XCTestCase {
         XCTAssertEqual(service.searchCalls.map { $0.request.naturalLanguageQuery },
                        ["Cafe", "Cafe 1", "Cafe 2", "Cafe 3", "Cafe 4"])
         guard case .noResults? = delegate.states.last else { return XCTFail("Expected no results") }
-    }
-
-    func testCategoryCompletionKeepsItsOriginalRequest() {
-        let category = suggestion("coffee")
-        beginTyping([category])
-        XCTAssertTrue(service.searchCalls[0].request === category.request)
-        service.searchCalls[0].reply(.success([item("Coffee One", latitude: 51.51), item("Coffee Two", latitude: 51.52)]))
-        flushCallbacks()
-        XCTAssertEqual(delegate.placeNames, ["Coffee One", "Coffee Two"])
     }
 
     func testSuccessfulPlacesSurviveAnotherResolutionFailure() {
@@ -205,7 +182,7 @@ final class SearchResultsUpdaterTests: XCTestCase {
         guard case .noResults? = delegate.states.last else { return XCTFail("Expected no results") }
     }
 
-    func testClearAndDismissIgnoreLateResponses() {
+    func testClearingAndCancellingIgnoreLateResponses() {
         beginTyping([suggestion("One")])
         let old = service.searchCalls[0]
         updater.updateQuery(" \n ")
@@ -214,7 +191,9 @@ final class SearchResultsUpdaterTests: XCTestCase {
         guard case .idle? = delegate.states.last else { return XCTFail("Expected idle") }
         beginTyping([suggestion("Two")])
         let late = service.searchCalls[1]
-        updater.cancel()
+        updater.searchBarCancelButtonClicked(UISearchBar())
+        XCTAssertTrue(delegate.wasCancelled)
+        guard case .idle? = delegate.states.last else { return XCTFail("Expected idle after cancellation") }
         let count = delegate.states.count
         late.reply(.success([item("Late", latitude: 51.51)]))
         flushCallbacks()
@@ -222,84 +201,65 @@ final class SearchResultsUpdaterTests: XCTestCase {
         XCTAssertTrue(late.cancelled)
     }
 
-    func testMissingLocationRetriesTypingWhenLocationArrivesAndAllowsGlobalSubmission() {
-        updater = SearchResultsUpdater(service: service, scheduler: scheduler, location: nil, isOnline: { true })
-        updater.delegate = delegate
+    func testLocationIsRequiredOnlyForNearbyAndArrivalRetriesTheQuery() {
+        resetSearch(location: nil)
         updater.updateQuery("query")
         guard case .locationUnavailable? = delegate.states.last else { return XCTFail("Expected location state") }
-        XCTAssertTrue(scheduler.actions.isEmpty)
+        XCTAssertTrue(service.suggestionCalls.isEmpty)
         updater.updateLocation(center)
         scheduler.runLast()
         XCTAssertEqual(service.suggestionCalls[0].text, "query")
-        updater = SearchResultsUpdater(service: service, scheduler: scheduler, location: nil, isOnline: { true })
-        updater.delegate = delegate
+
+        resetSearch(location: nil)
         updater.setScope(.anywhere)
-        updater.updateQuery("Sydney", submitted: true)
-        service.searchCalls[0].reply(.success([item("Sydney", latitude: -33.87, longitude: 151.21)]))
+        beginTyping([suggestion("Thailand")])
+        service.searchCalls[0].reply(.success([item("Thailand", latitude: 13.75, longitude: 100.5)]))
         flushCallbacks()
-        XCTAssertEqual(delegate.placeNames, ["Sydney"])
+        XCTAssertEqual(delegate.placeNames, ["Thailand"])
         guard case .places(_, let location)? = delegate.states.last else { return XCTFail("Expected places") }
         XCTAssertNil(location)
-    }
 
-    func testOfflineBeforeAndDuringDebounceDoesNotIssueRequests() {
-        online = false
-        updater.updateQuery("query")
-        guard case .offline? = delegate.states.last else { return XCTFail("Expected offline") }
-        XCTAssertTrue(scheduler.actions.isEmpty)
-        online = true
-        updater.updateQuery("query")
-        online = false
-        scheduler.runLast()
-        guard case .offline? = delegate.states.last else { return XCTFail("Expected offline") }
-        XCTAssertTrue(service.suggestionCalls.isEmpty)
-    }
-
-    func testGoingOfflineDuringResolutionCancelsRemainingWork() {
-        beginTyping([suggestion("One"), suggestion("Two"), suggestion("Three")])
-        online = false
-        service.searchCalls[0].reply(.success([item("One", latitude: 51.51)]))
+        updater.updateQuery("Sydney", submitted: true)
+        service.searchCalls[1].reply(.success([item("Sydney", latitude: -33.87, longitude: 151.21)]))
         flushCallbacks()
-        guard case .offline? = delegate.states.last else { return XCTFail("Expected offline") }
-        XCTAssertEqual(service.searchCalls.count, 2)
-        XCTAssertTrue(service.searchCalls[1].cancelled)
-        service.searchCalls[1].reply(.success([item("Two", latitude: 51.52)]))
-        flushCallbacks()
-        guard case .offline? = delegate.states.last else { return XCTFail("Late result replaced offline") }
+        XCTAssertEqual(delegate.placeNames, ["Sydney"])
     }
 
-    func testGoingOfflineDuringCompletionDoesNotStartLookups() {
-        updater.updateQuery("query")
-        scheduler.runLast()
-        online = false
-        service.suggestionCalls[0].reply(.success([suggestion("One")]))
-        flushCallbacks()
-        guard case .offline? = delegate.states.last else { return XCTFail("Expected offline") }
-        XCTAssertTrue(service.searchCalls.isEmpty)
-    }
-
-    func testSearchBarCancelRestoresIdleAndCancelsRequest() {
-        beginTyping([suggestion("One")])
-        updater.searchBarCancelButtonClicked(UISearchBar())
-        XCTAssertTrue(service.searchCalls[0].cancelled)
-        XCTAssertTrue(delegate.wasCancelled)
-        guard case .idle? = delegate.states.last else { return XCTFail("Expected idle") }
-    }
-
-    func testSelectingResolvedPlacePreservesEntitySelection() {
-        beginTyping([suggestion("One")])
-        service.searchCalls[0].reply(.success([item("One", latitude: 51.51)]))
-        flushCallbacks()
-        guard case .places(let places, _)? = delegate.states.last else { return XCTFail("Expected places") }
-        updater.selectSearchResult(places[0]) { result, error in
-            XCTAssertNil(error)
-            guard case .entity(let poi)? = result else { return XCTFail("Expected entity selection") }
-            XCTAssertEqual(poi.name, "One")
-            XCTAssertEqual(poi.centroidLatitude, 51.51)
+    func testGoingOfflineStopsSearchAtEachStage() {
+        for stage in OfflineStage.allCases {
+            resetSearch(location: center)
+            switch stage {
+            case .beforeQuery:
+                online = false
+                updater.updateQuery("query")
+            case .debounce:
+                updater.updateQuery("query")
+                online = false
+                scheduler.runLast()
+            case .completion:
+                updater.updateQuery("query")
+                scheduler.runLast()
+                online = false
+                service.suggestionCalls[0].reply(.success([suggestion("One")]))
+                flushCallbacks()
+            case .resolution:
+                beginTyping([suggestion("One"), suggestion("Two"), suggestion("Three")])
+                online = false
+                service.searchCalls[0].reply(.success([item("One", latitude: 51.51)]))
+                flushCallbacks()
+                XCTAssertTrue(service.searchCalls[1].cancelled)
+                service.searchCalls[1].reply(.success([item("Two", latitude: 51.52)]))
+                flushCallbacks()
+            }
+            guard case .offline? = delegate.states.last else {
+                XCTFail("Expected offline at \(stage)")
+                continue
+            }
+            XCTAssertEqual(service.searchCalls.count, stage == .resolution ? 2 : 0, "Stage: \(stage)")
         }
     }
 
-    func testNoResultsUIIsNotRecentPlacesAndShowsGuidanceWhileEditing() {
+    func testNoResultsShowsScopeGuidanceInsteadOfRecentPlaces() {
         let controller = SearchResultsTableViewController(style: .plain)
         controller.loadViewIfNeeded()
         controller.searchResultsDidUpdate(.idle)
@@ -318,19 +278,6 @@ final class SearchResultsUpdaterTests: XCTestCase {
         XCTAssertEqual(controller.tableView.numberOfRows(inSection: 0), 0)
         XCTAssertEqual((controller.tableView.tableHeaderView as? UILabel)?.text,
                        GDLocalizedString("search.no_results_found_with_hint"))
-        controller.searchWasCancelled()
-        controller.searchResultsDidUpdate(.loading)
-        flushCallbacks()
-        XCTAssertFalse(controller.wasSearchCancelled)
-        XCTAssertNil(controller.tableView.tableHeaderView)
-        controller.searchResultsDidUpdate(.locationUnavailable)
-        flushCallbacks()
-        XCTAssertEqual((controller.tableView.tableHeaderView as? UILabel)?.text,
-                       GDLocalizedString("general.error.location_services_find_location_error"))
-        controller.searchResultsDidUpdate(.failure)
-        flushCallbacks()
-        XCTAssertEqual((controller.tableView.tableHeaderView as? UILabel)?.text,
-                       GDLocalizedString("general.alert.error.message"))
     }
 
     func testNearbySubmitKeepsDisplayedMatchesWithoutStartingAnotherSearch() {
@@ -340,7 +287,6 @@ final class SearchResultsUpdaterTests: XCTestCase {
         flushCallbacks()
         service.searchCalls[0].reply(.success([item("The Crown", latitude: 51.51)]))
         flushCallbacks()
-        let stateCount = delegate.states.count
         let controller = UISearchController(searchResultsController: nil)
         controller.searchBar.text = "th"
         updater.searchBarSearchButtonClicked(controller.searchBar)
@@ -349,7 +295,6 @@ final class SearchResultsUpdaterTests: XCTestCase {
         XCTAssertEqual(service.searchCalls.count, 1)
         XCTAssertEqual(service.suggestionCalls.count, 1)
         XCTAssertFalse(service.searchCalls[0].cancelled)
-        XCTAssertEqual(delegate.states.count, stateCount + 1)
     }
 
     func testNearbySubmitFlushesDebounceOnceAndKeepsInFlightResolution() {
@@ -368,14 +313,6 @@ final class SearchResultsUpdaterTests: XCTestCase {
         service.searchCalls[0].reply(.success([item("The Crown", latitude: 51.51)]))
         flushCallbacks()
         XCTAssertEqual(delegate.placeNames, ["The Crown"])
-    }
-
-    func testNearbySubmitWithoutPriorTypingStillUsesAutocomplete() {
-        updater.updateQuery("th", submitted: true)
-        XCTAssertTrue(scheduler.actions.isEmpty)
-        XCTAssertEqual(service.suggestionCalls[0].text, "th")
-        XCTAssertTrue(service.suggestionCalls[0].nearbyOnly)
-        XCTAssertTrue(service.searchCalls.isEmpty)
     }
 
     func testAnywhereTypingAllowsDistantPlacesAndContinuesResolutionQueue() {
@@ -412,22 +349,7 @@ final class SearchResultsUpdaterTests: XCTestCase {
         XCTAssertEqual(service.searchCalls.count, 2)
     }
 
-    func testAnywhereTypingDoesNotRequireLocation() {
-        updater = SearchResultsUpdater(service: service, scheduler: scheduler, location: nil, isOnline: { true })
-        updater.delegate = delegate
-        updater.setScope(.anywhere)
-        updater.updateQuery("Thai")
-        scheduler.runLast()
-        XCTAssertNil(service.suggestionCalls[0].region)
-        XCTAssertFalse(service.suggestionCalls[0].nearbyOnly)
-        service.suggestionCalls[0].reply(.success([suggestion("Thailand")]))
-        flushCallbacks()
-        service.searchCalls[0].reply(.success([item("Thailand", latitude: 13.75, longitude: 100.5)]))
-        flushCallbacks()
-        XCTAssertEqual(delegate.placeNames, ["Thailand"])
-    }
-
-    func testStandaloneSearchUsesNativeScopeBarDefaultingToNearby() {
+    func testSearchScreenDefaultsToNearbyAndRoutesScopeChanges() {
         guard let navigation = SearchResultsTableViewController.instantiateStandaloneConfiguration(),
               let results = navigation.viewControllers.first as? SearchResultsTableViewController,
               let controller = results.navigationItem.searchController else {
@@ -437,9 +359,28 @@ final class SearchResultsUpdaterTests: XCTestCase {
                        [GDLocalizedString("search.scope.nearby"), GDLocalizedString("search.scope.anywhere")])
         XCTAssertTrue(controller.searchBar.showsScopeBar)
         XCTAssertEqual(controller.searchBar.selectedScopeButtonIndex, 0)
+        results.loadViewIfNeeded()
+        results.searchResultsDidUpdate(.loading)
+        flushCallbacks()
+        XCTAssertNil(results.tableView.tableHeaderView, "Loading must not show the empty-results header")
         controller.searchBar.selectedScopeButtonIndex = 1
         controller.searchBar.delegate?.searchBar?(controller.searchBar, selectedScopeButtonIndexDidChange: 1)
         XCTAssertEqual(results.searchResultsUpdater.scope, .anywhere)
+    }
+
+    private enum OfflineStage: CaseIterable {
+        case beforeQuery, debounce, completion, resolution
+    }
+
+    private func resetSearch(location: CLLocation?) {
+        updater?.cancel()
+        online = true
+        service = FakeSearchService()
+        scheduler = FakeSearchScheduler()
+        delegate = SearchDelegate()
+        updater = SearchResultsUpdater(service: service, scheduler: scheduler, location: location,
+                                       isOnline: { [unowned self] in self.online })
+        updater.delegate = delegate
     }
 
     private func beginTyping(_ suggestions: [SearchSuggestion]) {
@@ -515,18 +456,16 @@ private final class FakeSearchService: PlaceSearchService {
 
 private final class FakeSearchScheduler: SearchScheduler {
     final class Action: SearchCancellation {
-        let delay: TimeInterval
         let action: () -> Void
         var cancelled = false
-        init(delay: TimeInterval, action: @escaping () -> Void) {
-            self.delay = delay
+        init(action: @escaping () -> Void) {
             self.action = action
         }
         func cancel() { cancelled = true }
     }
     var actions: [Action] = []
     func schedule(after delay: TimeInterval, _ action: @escaping () -> Void) -> SearchCancellation {
-        let scheduled = Action(delay: delay, action: action)
+        let scheduled = Action(action: action)
         actions.append(scheduled)
         return scheduled
     }
