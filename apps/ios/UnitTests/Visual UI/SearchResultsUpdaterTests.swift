@@ -368,6 +368,28 @@ final class SearchResultsUpdaterTests: XCTestCase {
         XCTAssertEqual(results.searchResultsUpdater.scope, .anywhere)
     }
 
+    func testReturningToStandaloneSearchClearsQueryWhenRestoringRecentPlaces() {
+        guard let navigation = SearchResultsTableViewController.instantiateStandaloneConfiguration(),
+              let results = navigation.viewControllers.first as? SearchResultsTableViewController,
+              let controller = results.navigationItem.searchController else {
+            return XCTFail("Could not construct the search screen")
+        }
+        results.loadViewIfNeeded()
+        results.viewWillAppear(false)
+        controller.searchBar.text = "th"
+        results.searchResultsDidUpdate(.noResults)
+        flushCallbacks()
+        XCTAssertFalse(results.isPresentingDefaultResults)
+
+        results.viewWillDisappear(false)
+        results.viewWillAppear(false)
+        flushCallbacks()
+
+        XCTAssertTrue(controller.searchBar.text?.isEmpty ?? true)
+        XCTAssertTrue(results.isPresentingDefaultResults)
+        results.viewWillDisappear(false)
+    }
+
     private enum OfflineStage: CaseIterable {
         case beforeQuery, debounce, completion, resolution
     }

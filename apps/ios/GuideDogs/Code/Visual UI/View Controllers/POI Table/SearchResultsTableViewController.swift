@@ -125,6 +125,9 @@ class SearchResultsTableViewController: UITableViewController {
         // Reset search presentation state when returning to recent places.
         wasSearchCancelled = false
         statusMessage = nil
+        if viewConfiguration == .standalone {
+            navigationItem.searchController?.searchBar.text = nil
+        }
         
         let configurator = ListItemTableViewCellConfigurator()
         // Initialize `cellConfigurator` to display distances from the
