@@ -229,27 +229,9 @@ class SearchResultsTableViewController: UITableViewController {
         }
     }
     
-    private func updateTableView(searchForMore: String?) {
-        var models: [String] = []
-        var annoucement = GDLocalizedString("search.no_results_found_with_hint")
-        
-        // Press the search button for more results
-        // if it has not already been pressed
-        if let searchForMore = searchForMore {
-            models = [searchForMore]
-            annoucement = GDLocalizedString("search.no_results_found_with_action")
-        }
-        
-        let configurator = SearchTableViewCellConfigurator()
-        let dataSource = TableViewDataSource(header: nil, models: models, cellConfigurator: configurator)
-        let delegate = TableViewDelegate.make(selectDelegate: self)
-        
-        updateTableView(dataSource: dataSource, delegate: delegate, voiceoverAnnoucement: annoucement, isDefaultResults: false)
-    }
-    
     private func updateTableView(searchResults: [POI], searchLocation: CLLocation?) {
         if searchResults.isEmpty {
-            updateTableView(searchForMore: nil)
+            searchResultsDidUpdate(.noResults)
         } else {
             var dataSource: UITableViewDataSource
             let delegate = TableViewDelegate.make(selectDelegate: self)
@@ -414,10 +396,13 @@ extension SearchResultsTableViewController: SearchResultsUpdaterDelegate {
                             isDefaultResults: false)
         case .places(let places, let location):
             updateTableView(searchResults: places, searchLocation: location)
-        case .noResults(let searchForMore):
-            statusMessage = GDLocalizedString(searchForMore == nil
-                ? "search.no_results_found_with_hint" : "search.no_results_found_with_action")
-            updateTableView(searchForMore: searchForMore)
+        case .noResults:
+            statusMessage = searchResultsUpdater.scope == .nearby
+                ? GDLocalizedString("search.no_results_found_nearby")
+                : GDLocalizedString("search.no_results_found_with_hint")
+            let dataSource = StaticTableViewDataSource(header: nil, cells: [Results]())
+            updateTableView(dataSource: dataSource, delegate: TableViewDelegate(),
+                            voiceoverAnnoucement: statusMessage, isDefaultResults: false)
         case .locationUnavailable, .failure:
             if case .locationUnavailable = state {
                 statusMessage = GDLocalizedString("general.error.location_services_find_location_error")
@@ -463,11 +448,7 @@ extension SearchResultsTableViewController: TableViewSelectDelegate {
             return
         }
         
-        if let searchString: String = tableViewDataSource.model(for: indexPath) {
-            GDATelemetry.track("search_for_more_selected.search", with: ["context": telemetryContext])
-            
-            didSelectSearchStringResult(searchString)
-        } else if let poi: POI = tableViewDataSource.model(for: indexPath) {
+        if let poi: POI = tableViewDataSource.model(for: indexPath) {
             didSelectEntityResult(poi)
         } else if let listItem: ListItem = tableViewDataSource.model(for: indexPath) {
             didSelectEntityResult(listItem.item)

@@ -1543,6 +1543,15 @@
 // MARK: - Search
 //------------------------------------------------------------------------------
 
+/* Search scope, restrict search to places within 25 km of the current location. */
+"search.scope.nearby" = "Nearby";
+
+/* Search scope, allow searching for places worldwide. */
+"search.scope.anywhere" = "Anywhere";
+
+/* No results within the Nearby search scope. Anywhere is the name of the other scope button. */
+"search.no_results_found_nearby" = "No results found nearby. Try editing your search or select Anywhere.";
+
 /* Search results, No results found. Edit text or press Search for more. */
 "search.no_results_found_with_action" = "No results found. Edit text or press Search for more.";
 
