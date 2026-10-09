@@ -517,7 +517,6 @@
 /* Title of the settings screen for beacons. This screen allows users to configure the way the audio beacon sounds. See Terms for the definition of "beacon". */
 "beacon.settings_title" = "Beacon Settings";
 
-
 /* Title of the shared distance setting used to mute beacon audio and advance routes or activities. */
 "beacon.settings.arrival_distance" = "Arrival Distance";
 
@@ -547,6 +546,9 @@
 
 /* This text explains to users what they should be listening for when they are choosing a new beacon audio style */
 "beacon.settings.explanation" = "Select a beacon style that is comfortable to listen to and is easily heard outdoors and in noisy surroundings. Make sure you can easily determine its direction through your preferred listening device (headphones or phone speaker).";
+
+/* Description of Audio Beacon Settings */
+"beacon.settings.description" = "Settings to change Audio Beacon features including the audio style, ringing sound angle, departure and arrival cues, and arrival distance.";
 
 //------------------------------------------------------------------------------
 // MARK: Settings (Bluetooth Peripherals)

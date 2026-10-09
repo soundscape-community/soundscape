@@ -199,6 +199,7 @@ class SettingsViewController: BaseTableViewController {
         case .audio: return GDLocalizedString("settings.audio.mix_with_others.description")
         case .streetPreview: return GDLocalizedString("preview.include_unnamed_roads.subtitle")
         // case .telemetry: return GDLocalizedString("settings.section.telemetry.footer")
+        case .beacon: return GDLocalizedString("beacon.settings.description")
         default: return nil
         }
     }

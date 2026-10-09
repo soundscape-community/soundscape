@@ -611,6 +611,8 @@
 /*  */
 "beacon.settings.explanation" = "Select a beacon style that is comfortable to listen to and is easily heard outdoors and in noisy surroundings. Make sure you can easily determine its direction through your preferred listening device (headphones or phone speaker).";
 
+/*  */
+"beacon.settings.description" = "Settings to change Audio Beacon features including the audio style, ringing sound angle, departure and arrival cues, and arrival distance.";
 
 /*  */
 "settings.bluetooth.forget" = "Forget This Device";
