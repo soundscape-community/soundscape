@@ -247,11 +247,11 @@
 
 
 /*  */
-"general.error.location_services.authorize.instructions" = "1. Ouvrez l’application Réglages ci-dessous\n2. Sélectionnez « Localisation »\n3. Sélectionnez « Toujours » ou « Pendant l’utilisation de l’application »";
+"general.error.location_services.authorize.instructions" = "1. Ouvrez l’app Réglages ci-dessous\n2. Sélectionnez Localisation\n3. Sélectionnez Toujours ou Lorsque l’app est active";
 
 
 /*  */
-"general.error.location_services.precise_location.instructions" = "1. Ouvrez l’application Réglages ci-dessous\n2. Sélectionnez « Localisation »\n3. Activez « Localisation précise »";
+"general.error.location_services.precise_location.instructions" = "1. Ouvrez l’app Réglages ci-dessous\n2. Sélectionnez Localisation\n3. Activez Position exacte";
 
 
 /*  */
@@ -267,11 +267,11 @@
 
 
 /*  */
-"general.error.location_services_enable_instructions.2" = "Activez les services de localisation dans l’application Réglages pour continuer.\n\n1. Appuyez sur le bouton Retour (intitulé Réglages)\n2. Sélectionnez Confidentialité\n3. Sélectionnez Services de localisation\n4. Activez les services de localisation";
+"general.error.location_services_enable_instructions.2" = "Activez le service de localisation dans l’app Réglages pour continuer.\n\n1. Appuyez sur le bouton Retour jusqu’à revenir aux réglages principaux\n2. Sélectionnez Confidentialité et sécurité\n3. Sélectionnez Service de localisation\n4. Activez Service de localisation";
 
 
 /*  */
-"general.error.location_services_enable_instructions.3" = "Activez les services de localisation dans l’application Réglages pour continuer.\n\n1. Appuyez sur Ouvrir Réglages\n2. Appuyez sur le bouton Retour (intitulé Réglages)\n3. Sélectionnez Confidentialité\n4. Sélectionnez Services de localisation\n5. Activez les services de localisation";
+"general.error.location_services_enable_instructions.3" = "Activez le service de localisation dans l’app Réglages pour continuer.\n\n1. Appuyez sur Ouvrir Réglages\n2. Appuyez sur le bouton Retour jusqu’à revenir aux réglages principaux\n3. Sélectionnez Confidentialité et sécurité\n4. Sélectionnez Service de localisation\n5. Activez Service de localisation";
 
 
 /*  */
@@ -335,7 +335,7 @@
 
 
 /*  */
-"device_motion.enable.instructions" = "Activez Suivi forme dans l’application Réglages pour continuer.\n\n1. Appuyez sur Ouvrir réglages.\n2. Appuyez sur le bouton Retour (intitulé Réglages)\n3. Sélectionnez Confidentialité\n4. Sélectionnez Mouvements et forme\n5. Activer Suivi forme\n6. Redémarrez Soundscape";
+"device_motion.enable.instructions" = "Activez Suivi forme dans l’app Réglages pour continuer.\n\n1. Appuyez sur Ouvrir Réglages\n2. Appuyez sur le bouton Retour jusqu’à revenir aux réglages principaux\n3. Sélectionnez Confidentialité et sécurité\n4. Sélectionnez Mouvements et forme\n5. Activez Suivi forme\n6. Redémarrez Soundscape";
 
 
 /*  */
@@ -343,7 +343,7 @@
 
 
 /*  */
-"device_motion.authorize.description" = "Cette option permet à Soundscape d’améliorer votre expérience que vous soyez à pied, en voiture ou immobile. L’application nécessite votre autorisation pour utiliser Mouvements et forme. Avant d’autoriser Soundscape à utiliser cette option, vous devrez peut-être activer Suivi forme sous Réglages → Confidentialité → Mouvements et forme.";
+"device_motion.authorize.description" = "Cela permet à Soundscape d’améliorer votre expérience selon que vous marchez, êtes dans un véhicule ou restez immobile. L’app a besoin de votre autorisation pour utiliser Mouvements et forme. Avant d’autoriser Soundscape à utiliser cette autorisation, vous devrez peut-être activer Suivi forme dans Réglages → Confidentialité et sécurité → Mouvements et forme.";
 
 
 /*  */
@@ -363,11 +363,11 @@
 
 
 /*  */
-"settings.clear_cache.markers.alert_title" = "Conserver les Marqueurs et Itinéraires ?";
+"settings.clear_cache.markers.alert_title" = "Supprimer les marqueurs et les itinéraires ?";
 
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Choisissez \"Supprimer\" pour supprimer les Marqueurs, les balises et les Itinéraires, ou \"Conserver\" pour supprimer uniquement les données de carte. L’opération \"Supprimer\" réinitialise entièrement l’application et ne peut pas être annulée.";
+"settings.clear_cache.markers.alert_message" = "Voulez-vous vraiment supprimer tous les marqueurs et itinéraires ? Choisir « Supprimer » supprimera tous les marqueurs et itinéraires enregistrés, puis effacera les données cartographiques mises en cache. Cette action est irréversible !";
 
 
 /*  */
@@ -559,11 +559,11 @@
 
 
 /*  */
-"voice.settings.enhanced_available.title" = "Voix améliorée disponible !";
+"voice.settings.enhanced_available.title" = "Voix améliorée disponible!";
 
 
 /*  */
-"voice.settings.enhanced_available" = "Une version de qualité supérieure de cette voix peut être disponible. Pour la télécharger, ainsi que d’autres voix, accédez à la section Contenu énoncé des réglages d’accessibilité d’iOS.";
+"voice.settings.enhanced_available" = "Une version de qualité supérieure de cette voix peut être disponible. Pour la télécharger, ainsi que d’autres voix, accédez à la section Lire et énoncer des réglages d’accessibilité d’iOS.";
 
 
 /*  */
@@ -1807,7 +1807,7 @@
 
 
 /*  */
-"search.button.markers.accessibility_hint" = "Appuyez deux fois pour sélectionner ou modifier les marqueurs que vous avez enregistrés";
+"search.button.markers.accessibility_hint" = "Appuyez deux fois pour sélectionner ou modifier vos marqueurs et itinéraires enregistrés.";
 
 
 /*  */
@@ -3127,7 +3127,7 @@
 
 
 /*  */
-"tutorial.markers.text.WrapUp" = "Parfait, vous faites à présent face à votre marqueur, @!marker_name!!.\nIl semble que vous ayez tout compris.\nVous pouvez gérer votre liste de marqueurs en sélectionnant Gérer les marqueurs sur le menu.\nVous pouvez toujours consulter les pages Aide et didacticiels pour relire ce didacticiel ou consulter un guide complet sur tout ce que vous pouvez faire avec des marqueurs. La balise que vous avez définie pour ce didacticiel sera à présent effacée et vous serez redirigé vers l’écran précédent.";
+"tutorial.markers.text.WrapUp" = "Parfait, vous faites maintenant face à votre marqueur, @!marker_name!!.\nVous avez compris !\nVous pouvez gérer votre liste de marqueurs en sélectionnant Marqueurs et itinéraires sur l’écran d’accueil.\nVous pouvez toujours consulter les pages Aide et didacticiels pour refaire ce didacticiel ou lire un guide complet sur tout ce que vous pouvez faire avec les marqueurs. La balise définie pour ce didacticiel va maintenant être supprimée et vous reviendrez à l’écran précédent.";
 
 
 /*  */
@@ -3287,11 +3287,11 @@
 
 
 /*  */
-"settings.help.section.home_screen_buttons" = "Boutons de l’écran d’accueil";
+"settings.help.section.home_screen_buttons" = "Boutons de localisation et d’exploration";
 
 
 /*  */
-"help.config.voices.content" = "Soundscape peut utiliser n’importe quelle voix téléchargée dans l’application Réglages iOS, à l’exception des voix de Siri qui ne sont pas disponibles pour Soundscape. Nous vous recommandons de sélectionner l’une des voix « Premium », car elles ont une qualité vocale bien supérieure, mais pour cela, vous devez d’abord télécharger une voix premium. Vous pouvez télécharger des voix dans l’application Réglages d’iOS en accédant à Accessibilité > Contenu énoncé > Voix et en appuyant sur une voix. Au sein de l’application Soundscape, vous pouvez sélectionner la voix de votre choix à utiliser en accédant à Réglages dans le menu principal, puis en appuyant sur « Voix ».";
+"help.config.voices.content" = "Soundscape peut utiliser toutes les voix que vous avez téléchargées dans l’app Réglages d’iOS, à l’exception des voix de Siri, qui ne sont pas disponibles dans Soundscape. Nous vous recommandons de choisir l’une des voix de meilleure qualité « Améliorée », mais vous devrez d’abord la télécharger. Pour télécharger des voix dans l’app Réglages d’iOS, accédez à Accessibilité > Lire et énoncer > Voix, puis touchez une voix. (Dans les versions d’iOS antérieures à iOS 26, « Lire et énoncer » s’appelle « Contenu énoncé ».) Dans Soundscape, pour sélectionner la voix souhaitée, ouvrez « Réglages » depuis le menu, puis sélectionnez « Voix » dans la section « Général ».";
 
 
 /*  */
@@ -3639,7 +3639,7 @@
 
 
 /*  */
-"help.text.destination_beacons.how.1" = "<b> Pour définir une balise </b>:<br/> Tout d’abord, consultez les détails d’un emplacement en utilisant la barre de recherche pour rechercher un emplacement ou en appuyant sur le bouton « Emplacements à proximité », « Marqueurs enregistrés » ou « Emplacement actuel » et en sélectionnant un emplacement. Vous pouvez sélectionner le bouton « Démarrer la balise sonore » à partir de l’écran Détails de l’emplacement. Après avoir appuyé sur ce bouton, vous serez redirigé vers l’écran d’accueil et une balise sonore venant de la direction de l’emplacement que vous avez choisi sera activée. Le nom de l’emplacement que vous avez sélectionné ainsi que sa distance et son adresse physique, si elle est disponible, s’afficheront désormais sur l’écran principal de l’application.";
+"help.text.destination_beacons.how.1" = "<b>Pour définir une balise</b> :<br/> Commencez par afficher les détails d’un emplacement en utilisant la barre de recherche, ou en appuyant sur l’un des boutons « Lieux à proximité », « Marqueurs et itinéraires » ou « Position actuelle », puis en sélectionnant un emplacement. Sur l’écran « Détails de l’emplacement », sélectionnez ensuite le bouton « Démarrer la balise sonore ». Vous revenez alors à l’écran d’accueil et une balise sonore provenant de la direction du lieu sélectionné est activée. Le nom du lieu, sa distance et son adresse physique, si elle est disponible, s’affichent alors sur l’écran principal.";
 
 
 /*  */
@@ -3683,7 +3683,7 @@
 
 
 /*  */
-"help.text.my_location.how" = "Comme avec les quatre boutons situés en bas de l’écran d’accueil, tenez votre téléphone à plat (écran face au ciel) et le haut de votre téléphone pointé vers la direction face à vous avant d’appuyer sur le bouton <em>\"Mon emplacement\"</em>. Cette opération agit comme une boussole et indique à l’application la direction dans laquelle vous êtes. Appuyez simplement sur le bouton <em>\"Mon emplacement\"</em> et vous entendrez quatre points d’intérêt à proximité.";
+"help.text.my_location.how" = "Comme pour les quatre boutons situés en bas de l’écran d’accueil, tenez votre téléphone à plat, écran orienté vers le ciel, avec le haut du téléphone pointant dans la direction à laquelle vous faites face avant d’appuyer sur le bouton <em>« Ma position »</em>. Le téléphone agit alors comme une boussole et indique à l’app la direction à laquelle vous faites face. Appuyez simplement sur le bouton <em>« Ma position »</em> et écoutez.";
 
 
 /*  */
@@ -3695,7 +3695,7 @@
 
 
 /*  */
-"help.text.nearby_markers.how" = "Comme avec les quatre boutons situés en bas de l’écran d’accueil, tenez votre téléphone à plat (écran face au ciel) et le haut de votre téléphone pointé vers la direction face à vous avant d’appuyer sur le bouton <em>\"Marqueurs à proximité\"</em>. Cette opération agit comme une boussole et indique à l’application quelle direction vous fait face. Appuyez simplement sur le bouton <em>\"Marqueurs à proximité\"</em> et vous entendrez quatre points d’intérêt à proximité.";
+"help.text.nearby_markers.how" = "Comme pour les quatre boutons situés en bas de l’écran d’accueil, tenez votre téléphone à plat, écran orienté vers le ciel, avec le haut du téléphone pointant dans la direction à laquelle vous faites face avant d’appuyer sur le bouton <em>« Marqueurs à proximité »</em>. Le téléphone agit alors comme une boussole et indique à l’app la direction à laquelle vous faites face. Appuyez simplement sur le bouton <em>« Marqueurs à proximité »</em> pour entendre jusqu’à quatre marqueurs proches de vous.";
 
 
 /*  */
@@ -3707,11 +3707,11 @@
 
 
 /*  */
-"help.text.around_me.how" = "Comme avec les quatre boutons situés en bas de l’écran d’accueil, tenez votre téléphone à plat (écran face au ciel) et le haut de votre téléphone pointé vers la direction face à vous avant d’appuyer sur le bouton <em>\"Autour de moi\"</em>. Cette opération agit comme une boussole et indique à l’application la direction dans laquelle vous êtes. Appuyez simplement sur le bouton <em>\"Autour de moi\"</em> et vous entendrez quatre points d’intérêt se trouvant à proximité.";
+"help.text.around_me.how" = "Comme pour les quatre boutons situés en bas de l’écran d’accueil, tenez votre téléphone à plat, écran orienté vers le ciel, avec le haut du téléphone pointant dans la direction à laquelle vous faites face avant d’appuyer sur le bouton <em>« Autour de moi »</em>. Le téléphone agit alors comme une boussole et indique à l’app la direction à laquelle vous faites face. Appuyez simplement sur le bouton <em>« Autour de moi »</em> pour entendre quatre points d’intérêt répartis autour de vous.";
 
 
 /*  */
-"help.text.ahead_of_me.what" = "Le bouton <em>\"Devant moi\"</em> vous indique environ quatre repères vous faisant face. <em>\"Devant moi\"</em> est conçu pour vous permettre d’explorer ce qui vous entoure lorsque vous découvrez un nouveau lieu.";
+"help.text.ahead_of_me.what" = "Le bouton <em>« Devant moi »</em> vous renseigne sur un maximum de cinq éléments situés devant vous. <em>« Devant moi »</em> est conçu pour vous aider à explorer ce qui se trouve devant vous lorsque vous découvrez un nouvel endroit.";
 
 
 /*  */
@@ -3719,7 +3719,7 @@
 
 
 /*  */
-"help.text.ahead_of_me.how" = "Comme avec les quatre boutons situés en bas de l’écran d’accueil, tenez votre téléphone à plat (écran face au ciel) et le haut de votre téléphone pointé vers la direction face à vous avant d’appuyer sur le bouton <em>\"Devant moi\"</em>. Cette opération agit comme une boussole et indique à l’application la direction dans laquelle vous êtes. Appuyez simplement sur le bouton <em>\"Devant moi\"</em> et vous entendrez plusieurs points d’intérêt se trouvant à proximité.";
+"help.text.ahead_of_me.how" = "Comme pour les quatre boutons situés en bas de l’écran d’accueil, tenez votre téléphone à plat, écran orienté vers le ciel, avec le haut du téléphone pointant dans la direction à laquelle vous faites face avant d’appuyer sur le bouton <em>« Devant moi »</em>. Le téléphone agit alors comme une boussole et indique à l’app la direction à laquelle vous faites face. Appuyez simplement sur le bouton <em>« Devant moi »</em> pour entendre plusieurs points d’intérêt situés approximativement devant vous.";
 
 
 /*  */
@@ -4108,7 +4108,7 @@
 
 
 /*  */
-"voice.apple.additional" = "Des voix supplémentaires, notamment des voix de qualité améliorée, peuvent être téléchargées dans la section Contenu énoncé des réglages d’accessibilité d’iOS.";
+"voice.apple.additional" = "Des voix supplémentaires, notamment des voix de qualité améliorée, peuvent être téléchargées dans la section Lire et énoncer des réglages d’accessibilité d’iOS.";
 
 
 /*  */
@@ -4200,7 +4200,7 @@
 
 
 /*  */
-"faq.turn_beacon_back_on.answer" = "Oui, vous pouvez réactiver la balise lorsque Soundscape l’a désactivée en sélectionnant le bouton « Réactiver le son de la balise ». Toutefois, étant donné que les services de localisation ne sont précis qu’à environ 10 mètres, nous ne pouvons pas garantir le comportement de la balise si vous vous trouvez à quelques mètres de votre destination.";
+"faq.turn_beacon_back_on.answer" = "Oui. Vous pouvez réactiver la balise après que Soundscape l’a désactivée en sélectionnant le bouton « Réactiver le son de la balise ». Toutefois, comme le service de localisation n’est précis qu’à environ 10 mètres, nous ne pouvons pas garantir le comportement de la balise lorsque vous vous trouvez à quelques mètres de votre destination.";
 
 
 /*  */
@@ -4232,7 +4232,7 @@
 
 
 /*  */
-"faq.miss_a_callout.answer" = "Soundscape dispose d’une liste de vos récentes notifications activées afin que vous puissiez consulter celles que vous pourriez avoir manquées. Pour cela, appuyez sur la barre de recherche de l’écran d’accueil de Soundscape. Au bas de cette page, vous trouverez une section intitulée « Notifications activées récentes », présentant une liste des notifications activées manquées.";
+"faq.miss_a_callout.answer" = "Soundscape conserve une liste de vos annonces récentes afin que vous puissiez réécouter celles que vous avez peut-être manquées. Pour la trouver, appuyez sur la barre de recherche de l’écran d’accueil. Au bas de cette page, la section « Annonces récentes » répertorie l’annonce que vous avez manquée. Vous pouvez également secouer votre téléphone pour répéter la dernière annonce. Pour activer cette fonction, accédez à la section « Annonces » de l’écran « Réglages », puis activez « Répéter les annonces ».";
 
 
 /*  */
@@ -4260,7 +4260,7 @@
 
 
 /*  */
-"faq.battery_impact.answer" = "L’autonomie de la batterie varie considérablement en fonction de votre iPhone et de son âge. La plus grande contrainte pour votre batterie est l’écran qui reste allumé. Donc, pour optimiser l’autonomie de la batterie de votre téléphone, vous devez garder l’écran verrouillé dès que possible. Pour contribuer à minimiser l’impact sur la batterie de votre iPhone, Soundscape dispose maintenant des modes Mettre en veille et Désactiver temporairement. Pour réduire davantage la quantité de batterie consommée, lorsque vous n’utilisez pas Soundscape, vous devez forcer sa fermeture via le multitâche visuel de votre iPhone. ";
+"faq.battery_impact.answer" = "L’autonomie de la batterie varie considérablement selon le modèle et l’âge de votre iPhone. L’écran allumé est ce qui consomme le plus de batterie ; pour maximiser l’autonomie de votre téléphone, gardez donc l’écran verrouillé chaque fois que possible. Pour limiter davantage l’impact sur la batterie de votre iPhone, Soundscape propose les modes Veille et Désactivation temporaire. Pour réduire encore la consommation de batterie, lorsque vous n’utilisez pas Soundscape, forcez sa fermeture à l’aide du sélecteur d’app de votre iPhone.";
 
 
 /*  */
@@ -4268,7 +4268,7 @@
 
 
 /*  */
-"faq.sleep_mode_battery.answer" = "Pour mettre Soundscape en mode Mettre en veille, sélectionnez le bouton « Mettre en veille » dans le coin supérieur droit de l’écran. Lorsque vous sélectionnez cette option, Soundscape arrête d’utiliser les services de localisation et les données mobiles jusqu’à ce que vous choisissiez de le sortir de veille.";
+"faq.sleep_mode_battery.answer" = "Pour mettre Soundscape en mode Veille, sélectionnez le bouton « Veille » dans le coin supérieur droit de l’écran d’accueil. Soundscape cesse alors d’utiliser le service de localisation et les données cellulaires jusqu’à ce que vous le réveilliez.";
 
 
 /*  */
@@ -4292,7 +4292,7 @@
 
 
 /*  */
-"faq.background_battery_impact.answer" = "Soundscape est une application basée sur la localisation qui utilise les services de localisation pour déterminer votre localisation. Dans nos tests, Soundscape ne consomme pas plus la batterie qu’une application de carte moyenne ; mais si vous êtes préoccupé par la consommation de la batterie lorsque vous utilisez votre téléphone, voici quelques conseils qui vont vous aider à réduire la consommation :\n\n1. Désactivez l’affichage de l’écran autant que possible lorsque vous n’interagissez pas avec l’application.\n2 Lorsque vous n’utilisez pas l’application, fermez-la. Soundscape utilise les services de localisation en permanence lorsqu’il s’exécute afin de toujours connaître votre emplacement, même lorsque vous ne bougez pas. N’oubliez pas de redémarrer l’application quand vous reprenez votre parcours.\n3. Par temps froid, conservez votre téléphone au chaud, car les batteries sont moins performantes lorsqu’il fait plus froid.";
+"faq.background_battery_impact.answer" = "Soundscape utilise le service de localisation pour déterminer votre position. Lors de nos tests, Soundscape ne consomme pas plus de batterie qu’une app de cartographie moyenne. Si la consommation de batterie de votre téléphone vous préoccupe, voici quelques conseils pour la réduire :\n\n1. Éteignez l’écran autant que possible lorsque vous n’interagissez pas avec l’app.\n2. Lorsque vous n’utilisez pas l’app, fermez-la. Soundscape utilise continuellement le service de localisation lorsqu’il est en cours d’exécution afin de toujours connaître votre position, même lorsque vous ne bougez pas. N’oubliez pas de relancer l’app lorsque vous reprenez votre trajet.\n3. Par temps froid, gardez votre téléphone au chaud, car les batteries sont moins performantes à basse température.";
 
 
 /*  */
@@ -4340,7 +4340,7 @@
 
 
 /*  */
-"faq.personalize_experience.answer" = "Soundscape vous permet de personnaliser trois aspects clés des notifications activées que vous entendez lorsque vous marchez :\n\n1. Voix : vous pouvez choisir l’une des voix disponibles dans iOS à utiliser dans Soundscape, ainsi que la vitesse à laquelle les notifications sont énoncées. Dans le menu, sélectionnez Réglages, puis Voix pour ajuster le débit vocal et les réglages de la voix. Des voix supplémentaires et des voix améliorées avec une qualité supérieures peuvent être téléchargées dans l’application Réglages d’iOS en accédant à Réglages > Accessibilité >Contenu énoncé > Voix. \n2. Mesure de la distance : Soundscape vous permet d’entendre toutes les distances en mètres ou en pieds. Dans le menu, sélectionnez Réglages. La section Unités de mesure vous permet de basculer entre deux options : Impériales (pieds) et Métriques (mètres).\n3. Marqueurs : vous pouvez marquer tout ce qui vous intéresse dans votre environnement. Vous pouvez marquer des éléments personnels et pertinents pour vous, comme votre domicile, votre bureau et votre épicerie préférée. Puis, Soundscape annonce automatiquement les emplacements marqués lorsque vous marchez ou vous en approchez, ou vous pouvez également utiliser le bouton Marqueurs à proximité en bas de l’écran d’accueil de Soundscape pour entendre une notification spatiale des emplacements marqués autour de vous. Ces marqueurs restent personnels et ne sont disponibles pour personnes d’autre.\n\nOutre ce qui précède, les réglages suivants du VoiceOver peuvent influencer le comportement de Soundscape :\n\n1. Conseils sur le VoiceOver : lorsque les conseils sur le VoiceOver sont ACTIVÉS, vous entendez plus d’informations sur tous les boutons de l’écran principal de Soundscape. Pour activer les conseils sur le VoiceOver, accédez aux réglages de l’iPhone, à Accessibilité, VoiceOver, Détails, Conseils de prononciation et ACTIVEZ le réglage.\n2. Immersion audio : Soundscape est conçu pour fonctionner avec l’option Immersion audio DÉSACTIVÉE. Si l’immersion audio est activée, les notifications activées automatiques peuvent être difficiles à entendre si le VoiceOver est utilisé simultanément. Nous vous recommandons de désactiver Immersion audio pour faciliter l’audition de toutes les notifications activées automatiques lorsque vous interagissez avec le téléphone. L’immersion audio peut être désactivée dans les réglages de VoiceOver ou via le rotor de VoiceOver.\n3 Touch ID ou Face ID pour déverrouiller : configurer votre téléphone de manière à le déverrouiller à l’aide de Touch ID ou de Face ID accélère et simplifie le déverrouillage du téléphone et vous permet ensuite d’accéder aux boutons Mon emplacement, Autour de moi, Devant moi aussi vite que possible lorsque vous êtes en déplacement. Configurez le déverrouillage à l’aide de Touch ID ou de Face ID dans les réglages d’iOS.";
+"faq.personalize_experience.answer" = "Soundscape vous permet de personnaliser trois aspects essentiels des annonces que vous entendez lorsque vous marchez :\n\n1. Voix : vous pouvez choisir la voix iOS que Soundscape utilise, ainsi que la vitesse à laquelle les annonces sont énoncées. Dans le menu, sélectionnez « Réglages », puis « Voix » dans la section « Général » pour ajuster le débit vocal et la voix. Des voix supplémentaires, notamment des voix de qualité améliorée, peuvent être téléchargées dans l’app Réglages d’iOS sous Réglages > Accessibilité > Lire et énoncer > Voix.\n2. Mesure des distances : Soundscape peut annoncer les distances en pieds ou en mètres. Dans le menu, sélectionnez « Réglages », puis « Langue et région » dans la section « Général ». La section « Unités de mesure » permet de choisir entre deux options : Impérial (pieds) et Métrique (mètres).\n3. Marqueurs : vous pouvez marquer tout ce qui compte pour vous dans votre environnement, par exemple votre domicile, votre bureau ou votre magasin préféré. Soundscape annoncera automatiquement les lieux marqués lorsque vous passez à proximité ou vous en approchez. Vous pouvez aussi utiliser le bouton « Marqueurs à proximité » au bas de l’écran d’accueil pour entendre une annonce spatiale des lieux marqués autour de vous. Ces marqueurs restent privés et ne sont accessibles à personne d’autre.\n\nEn plus de ces réglages, les options suivantes peuvent influencer le comportement de Soundscape :\n\n1. Conseils VoiceOver : lorsqu’ils sont activés, VoiceOver fournit davantage d’informations sur les boutons de l’écran principal. Pour les activer, accédez à Réglages > Accessibilité > VoiceOver > Verbosité et activez les conseils pratiques.\n2. Atténuation de l’audio : Soundscape est conçu pour fonctionner avec l’atténuation de l’audio désactivée. Lorsqu’elle est activée, les annonces automatiques peuvent être difficiles à entendre si VoiceOver parle en même temps. Nous recommandons de désactiver l’atténuation de l’audio pour mieux entendre toutes les annonces automatiques. Vous pouvez la régler dans Réglages > Accessibilité > VoiceOver > Audio ou à l’aide du rotor VoiceOver.\n3. Touch ID ou Face ID pour le déverrouillage : configurer votre téléphone pour le déverrouiller avec Touch ID ou Face ID permet d’accéder plus rapidement aux boutons « Ma position », « Autour de moi » et « Devant moi » lorsque vous êtes en déplacement. Configurez Touch ID ou Face ID dans l’app Réglages d’iOS.";
 
 
 /*  */
@@ -4376,8 +4376,144 @@
 
 
 /*  */
-"faq.tip.create_marker_at_bus_stop" = "Si vous prenez régulièrement un itinéraire en autobus, définissez les arrêts où vous montez et descendez par des marqueurs. Ainsi, ils seront enregistrés et vous pourrez les retrouver facilement, en accédant simplement à « Gérer les marqueurs » dans le menu et en les recherchant dans la liste. Vous pouvez définir une balise sur eux et vous recevrez des mises à jour périodiques sur la distance à laquelle vous vous trouvez par rapport à l’arrêt où vous descendez. Remarque : même si vous désactivez le son rythmique, vous obtiendrez les mises à jour de la distance pendant votre trajet.";
+"faq.tip.create_marker_at_bus_stop" = "Si vous empruntez régulièrement une ligne de bus, définissez votre arrêt de départ et votre arrêt d’arrivée comme marqueurs. Ils seront ainsi enregistrés et vous pourrez facilement les retrouver : depuis l’écran d’accueil, accédez à « Marqueurs et itinéraires », puis recherchez-les dans la page « Marqueurs ». Vous pouvez placer une balise sur ces marqueurs et recevoir des mises à jour régulières sur la distance qui vous sépare de votre arrêt d’arrivée. Remarque : vous pouvez désactiver le son rythmique tout en continuant à recevoir les mises à jour de distance.";
 
 
 /*  */
 "faq.tip.two_finger_double_tap" = "Appuyer sur l’écran à deux reprises avec deux doigts désactive le son de toutes les notifications actives.";
+"mail.default" = "Par défaut";
+"mail.protonmail" = "Proton Mail";
+"mail.fastmail" = "Fastmail";
+"mail.msoutlook" = "Microsoft Outlook";
+"mail.gmail" = "Gmail";
+"mail.airmail" = "Airmail";
+"mail.dispatch" = "Dispatch";
+"mail.spark" = "Spark";
+"mail.yahoo" = "Yahoo Mail";
+"settings.about.title.copyright" = "Mentions relatives aux droits d’auteur";
+"filter.parks" = "Parcs";
+"settings.about.title.youtube_channel" = "Chaîne YouTube";
+"filter.navilens" = "Codes NaviLens";
+"callouts.shake_callouts" = "Répéter les annonces";
+"settings.about.title.privacy_policy" = "Politique de confidentialité";
+"callouts.intersections.info" = "Intersections routières à proximité";
+"callouts.shake_callouts.info" = "Secouez l’appareil pour répéter la dernière annonce";
+"callouts.mobility.transportation_info" = "Informations sur les transports et l’accessibilité";
+"osm.tag.landmark" = "Point de repère";
+"callouts.intersections" = "Intersections";
+"osm.tag.bar" = "Bar";
+"osm.tag.coffee_shop" = "Café";
+"osm.tag.monument" = "Monument";
+"osm.tag.fast_food" = "Restauration rapide";
+"osm.tag.pub" = "Pub";
+"osm.tag.statue" = "Statue";
+"osm.tag.museum" = "Musée";
+"osm.tag.nature_reserve" = "Réserve naturelle";
+"osm.tag.historic" = "Site historique";
+"osm.tag.cathedral" = "Cathédrale";
+"osm.tag.field" = "Champ";
+"osm.tag.green_space" = "Espace vert";
+"osm.tag.botanical_garden" = "Jardin botanique";
+"osm.tag.public_garden" = "Jardin public";
+"osm.tag.reserve" = "Réserve";
+"osm.tag.ice_cream" = "Glacier";
+"osm.tag.recreation_area" = "Zone de loisirs";
+"whats_new.1_2_0.1.description" = "Vous pouvez maintenant régler la distance à laquelle la balise est automatiquement mise en sourdine lorsque vous vous en approchez. Accédez aux réglages de la balise sonore et déplacez le curseur « Distance de mise en sourdine ».";
+"whats_new.1_2_0.0.description" = "Vous pouvez maintenant secouer votre appareil pour répéter la dernière annonce. Pour activer cette fonctionnalité, activez l’option « Répéter les annonces » dans les réglages.";
+"whats_new.1_2_0.2.title" = "Catégories dans Lieux à proximité";
+"whats_new.1_2_0.1.title" = "Réglage de la distance de mise en sourdine de la balise";
+"whats_new.1_2_0.0.title" = "Secouez pour répéter la dernière annonce";
+"whats_new.1_3_0.1.title" = "Tests au Texas";
+"whats_new.1_3_0.1.description" = "Si vous vivez dans la région d’Austin ou de San Antonio, au Texas, et souhaitez nous aider à tester une fonctionnalité que nous développons avec NaviLens, contactez-nous à l’aide du bouton « Envoyer des commentaires » dans le menu.";
+"whats_new.1_2_0.2.description" = "Vous pouvez maintenant filtrer la liste « Lieux à proximité » par catégories telles que « Transport public », « Alimentation et boissons », etc.";
+"whats_new.1_3_0.0.description" = "Soundscape prend désormais en charge le suivi des mouvements de la tête avec les versions Alto ou Rondo des Bose Frames. Une fois connectées, vos Bose Frames indiquent à Soundscape la direction dans laquelle vous regardez, ce qui améliore votre expérience audio. Pour connecter vos Bose Frames à Soundscape, accédez à « Casque avec l’option Head Tracking » dans le menu Soundscape. Nous aimerions connaître votre avis sur la prise en charge des Bose Frames. Vous pouvez nous contacter en choisissant « Envoyer des commentaires » dans le menu.";
+"whats_new.1_3_0.0.title" = "Prise en charge des Bose Frames";
+"whats_new.1_3_2.0.description" = "Soundscape annonce désormais la présence de codes NaviLens à proximité. Vous trouverez la catégorie « Codes NaviLens » dans la liste « Lieux à proximité ».";
+"whats_new.1_3_2.0.title" = "Intégration de NaviLens améliorée";
+"whats_new.1_3_2.1.title" = "Inversion des itinéraires";
+"whats_new.1_8_1.0.title" = "Mises à jour des langues";
+"whats_new.1_8_1.1.title" = "Corrections de bugs";
+"whats_new.1_3_2.1.description" = "Vous pouvez maintenant inverser un itinéraire. Un nouvel itinéraire est créé avec tous les points de passage dans l’ordre inverse.";
+"whats_new.1_8_1.0.description" = "Ajout de la prise en charge du persan/farsi et du russe.";
+"whats_new.1_8_2.1.description" = "À votre arrivée dans un lieu équipé de NaviLens, vous pouvez désormais ouvrir l’app NaviLens ou afficher la liste des codes à proximité.";
+"whats_new.1_8_1.1.description" = "Correction du défilement dans les marqueurs et les itinéraires, ainsi que d’un problème qui empêchait la recherche d’afficher tous les résultats.";
+"whats_new.1_8_2.0.description" = "Vous pouvez maintenant régler l’angle du son de la balise.";
+"whats_new.1_8_2.1.title" = "Ouvrez NaviLens ou affichez les codes à proximité";
+"whats_new.1_8_2.0.title" = "Réglez l’angle de la balise sonore dans les réglages";
+"whats_new.1_8_5.0.description" = "Correction d’un problème qui empêchait l’importation des itinéraires partagés.";
+"whats_new.1_8_5.0.title" = "Corrections de bugs";
+"devices.callouts.check_audio.bose_frames" = "Bose Frames connectées.";
+"devices.connect_headset.completed.boseframes" = "Félicitations ! Vos Bose Frames sont prêtes à l’emploi : vous pouvez mettre votre téléphone dans votre poche et partir ! Soundscape va maintenant suivre la direction de votre tête, vous n’avez donc pas besoin de tenir votre téléphone à la main.";
+"devices.explain_ar.connected.boseframes" = "Vos Bose Frames sont prêtes à l’emploi : vous pouvez mettre votre téléphone dans votre poche et partir ! Soundscape suit la direction de votre tête, vous n’avez donc pas besoin de tenir votre téléphone à la main.";
+"devices.bose_frames.callout_name" = "Bose Frames";
+"devices.callouts.check_audio.bose_frames.disconnected" = "Soundscape recherche vos Bose Frames. Vérifiez qu’elles sont connectées à votre téléphone.";
+"help.using_headsets.bose_frames.when" = "Vous pouvez utiliser les Bose Frames avec Soundscape chaque fois que vous utiliseriez normalement Soundscape. Les Bose Frames offrent un son de grande qualité sans masquer les sons ambiants et permettent une utilisation plus mains libres.";
+"help.using_headsets.bose_frames.how.1" = "<b>Connexion d’un appareil</b> :<br/> Accédez à « Casque avec l’option Head Tracking » dans le menu Soundscape pour connecter vos Bose Frames, puis suivez les instructions à l’écran. Vous devez d’abord jumeler vos Bose Frames avec votre téléphone dans les réglages Bluetooth avant de les connecter dans Soundscape.";
+"help.using_headsets.bose_frames.title" = "Utiliser les Bose Frames";
+"devices.bose_frames.selector_title" = "Bose Frames Alto ou Rondo";
+"help.using_headsets.bose_frames.what" = "Soundscape prend en charge l’audio spatial avec suivi des mouvements de la tête lorsque vous utilisez les versions Alto ou Rondo des Bose Frames. Une fois connectées, les capteurs des Bose Frames indiquent à Soundscape la direction dans laquelle votre tête est orientée. Soundscape peut ainsi améliorer votre expérience audio et la rendre plus naturelle pendant vos déplacements. Lorsque vous utilisez Soundscape avec des Bose Frames connectées, vous n’avez pas besoin de tenir votre téléphone pour que l’app fonctionne correctement.";
+"help.text.routes.content.how.1a" = "<b>Suivre un itinéraire</b> :<br/> Sélectionnez votre itinéraire sur la page « Marqueurs et itinéraires », puis sélectionnez « Démarrer un itinéraire ». Vous revenez à l’écran d’accueil et Soundscape place une balise sur le premier point de passage. Au fur et à mesure que vous suivez l’itinéraire, la balise passe au point de passage suivant jusqu’à la fin de l’itinéraire. Si vous souhaitez avancer ou revenir d’un point de passage à tout moment, appuyez sur « Point de passage suivant » ou « Point de passage précédent ».";
+"help.using_headsets.bose_frames.how.3" = "<b>Utilisation des commandes multimédias du casque</b> :<br/> Lorsque les commandes multimédias sont activées dans les réglages de Soundscape, vous pouvez utiliser celles de vos Bose Frames pour mettre la balise en sourdine ou réactiver son son, annoncer votre position ou répéter la dernière annonce. Pour en savoir plus, consultez la section d’aide « Utilisation des commandes multimédias ».";
+"help.using_headsets.bose_frames.how.4" = "<b>Dépannage du casque</b> :<br/> Si vous avez des difficultés à connecter vos Bose Frames à Soundscape, vérifiez qu’il s’agit d’un modèle pris en charge, Alto ou Rondo. Si c’est le cas, vérifiez que les Frames apparaissent dans l’app Bose Connect. Si elles y apparaissent mais que le problème de connexion persiste, essayez de dissocier puis de jumeler à nouveau le casque depuis le menu Bluetooth de votre téléphone.";
+"help.using_headsets.bose_frames.how.2" = "<b>Étalonnage de votre casque</b> :<br/> Vos Bose Frames doivent être étalonnées pour déterminer précisément la direction dans laquelle vous regardez. Chaque fois que vous les connectez à Soundscape, un signal sonore vous indique qu’un étalonnage est nécessaire. Pour étalonner vos Bose Frames, suivez les instructions à l’écran. Lorsque le signal sonore s’arrête, vos Bose Frames sont étalonnées et Soundscape suit alors la direction de votre tête, vous n’avez donc plus besoin de tenir votre téléphone à la main. Vous pouvez répéter cet étalonnage à tout moment, même si le signal sonore ne retentit pas, si la précision de l’audio spatial vous semble insuffisante.";
+"troubleshooting.user_data" = "Données utilisateur";
+"troubleshooting.user_data.explanation" = "Supprime toutes les données cartographiques, y compris les marqueurs et itinéraires enregistrés. Cette action est irréversible.";
+"troubleshooting.user_data.button" = "Supprimer tous les marqueurs et itinéraires";
+"troubleshooting.tile_server_url.explanation" = "Il s’agit du serveur à partir duquel Soundscape récupère les données cartographiques. Vous ne devriez normalement pas avoir à le modifier, sauf si vous développez ou testez Soundscape.";
+"troubleshooting.tile_server_url" = "URL du serveur de tuiles";
+"route_detail.action.start_reversed_route.disabled.hint" = "Ajoutez des points de passage avant de démarrer l’itinéraire en sens inverse";
+"route_detail.reverse.error.title" = "Échec de l’inversion de l’itinéraire";
+"route_detail.action.start_reversed_route" = "Démarrer l’itinéraire en sens inverse";
+"directions.navilens_available" = "NaviLens disponible";
+"route_detail.action.start_reversed_route.hint" = "Touchez deux fois pour démarrer cet itinéraire en sens inverse";
+"route_detail.reverse.error.message" = "Une erreur s’est produite lors de l’inversion de l’itinéraire. Réessayez.";
+"routes.reverse_name_format" = "Inversion de %@";
+"beacon.action.navilens" = "Lancer NaviLens";
+"beacon.suggest_navilens" = "Utilisez le bouton NaviLens pour vous rendre à votre destination.";
+"faq.tip.reverse_route" = "Sélectionnez « Démarrer l’itinéraire en sens inverse » dans l’écran « Détails de l’itinéraire » pour parcourir un itinéraire en sens inverse. Une copie de l’itinéraire est enregistrée avec les points de passage dans l’ordre inverse. « Démarrer l’itinéraire en sens inverse » n’enregistre pas une nouvelle copie du même itinéraire si elle existe déjà.";
+"beacon.settings.ringing_angle.explanation" = "Réglez la largeur de la zone où le son de la balise est le plus intense (de 5° à 20°).";
+"beacon.settings.arrival_distance" = "Distance d’arrivée";
+"recommender.navilens.open" = "Ouvrir NaviLens";
+"beacon.settings.arrival_distance.explanation" = "Réglez la distance à laquelle le son de la balise se met automatiquement en sourdine et à laquelle un itinéraire ou une activité passe automatiquement au point de passage suivant.";
+"beacon.settings.ringing_angle" = "Angle du son de la balise";
+"recommender.navilens.show_nearby.hint" = "Touchez deux fois pour afficher les codes NaviLens à proximité";
+"location_detail.action.navilens" = "Ouvrir NaviLens";
+"location_detail.action.navilens.hint" = "Touchez deux fois pour ouvrir NaviLens";
+"recommender.navilens.show_nearby" = "Afficher les codes NaviLens à proximité";
+"recommender.navilens.open.hint" = "Touchez deux fois pour ouvrir NaviLens";
+"voice.settings.other_voices" = "Autres voix";
+"voice.settings.novelty" = "Voix fantaisie";
+"gpx_recording.title" = "Enregistrement GPX";
+"gpx_recording.status" = "État";
+"gpx_recording.status.idle" = "Aucun enregistrement en cours";
+"gpx_recording.status.loading" = "Chargement";
+"gpx_recording.explanation" = "Enregistrez votre trajet dans un fichier GPX. L’enregistrement se poursuit lorsque vous utilisez d’autres parties de Soundscape et lorsque l’app est en arrière-plan. Il se met en pause pendant les modes Veille ou Snooze et reprend lorsque Soundscape se réactive.";
+"gpx_recording.status.awaiting_name" = "Prêt à enregistrer";
+"gpx_recording.status.recording" = "Enregistrement en cours";
+"gpx_recording.status.paused" = "En pause pendant les modes Veille ou Snooze";
+"gpx_recording.status.starting" = "Démarrage";
+"gpx_recording.status.saving" = "Enregistrement";
+"gpx_recording.stop" = "Arrêter l’enregistrement";
+"gpx_recording.start" = "Démarrer l’enregistrement";
+"gpx_recording.status.recovered" = "Enregistrement interrompu récupéré";
+"gpx_recording.point_count" = "%d points enregistrés";
+"gpx_recording.point_count.singular" = "1 point enregistré";
+"gpx_recording.saved" = "Enregistrements sauvegardés";
+"gpx_recording.saved.empty" = "Aucun enregistrement sauvegardé";
+"gpx_recording.share.hint" = "Touchez deux fois pour partager cet enregistrement GPX";
+"gpx_recording.storage.local" = "Sur mon iPhone";
+"gpx_recording.name.title" = "Nommer l’enregistrement";
+"gpx_recording.name" = "Nom de l’enregistrement";
+"gpx_recording.save" = "Enregistrer";
+"gpx_recording.discard" = "Ignorer";
+"gpx_recording.name.prompt" = "Saisissez un nom de fichier unique";
+"gpx_recording.discard.confirm" = "Ignorer cet enregistrement ? Cette action est irréversible.";
+"gpx_recording.error.draft_unavailable" = "Impossible d’ouvrir le brouillon d’enregistrement protégé.";
+"gpx_recording.error.duplicate_name" = "Un enregistrement portant ce nom existe déjà.";
+"gpx_recording.recover.save" = "Nommer et enregistrer l’enregistrement";
+"gpx_recording.error.no_points" = "Aucun point de localisation n’a encore été enregistré.";
+"gpx_recording.error.invalid_name" = "Saisissez un nom de fichier valide, sans barre oblique ni deux-points, et sans point au début ou à la fin.";
+"gpx_recording.error.share_unavailable" = "L’écran de partage est actuellement indisponible.";
+"gpx_recording.status.stopping" = "Arrêt";
+"gpx_recording.status.discarding" = "Suppression";
+"gpx_recording.error.accessibility" = "Erreur : %@";
