@@ -21,9 +21,9 @@ class SettingsViewController: BaseTableViewController {
     
     private enum Section: Int, CaseIterable {
         case general = 0
-        case audio = 1
-        case beacon = 2
-        case callouts = 3
+        case beacon = 1
+        case callouts = 2
+        case audio = 3
         case streetPreview = 4
         case troubleshooting = 5
         case about = 6
@@ -98,12 +98,12 @@ class SettingsViewController: BaseTableViewController {
         
         switch sectionType {
         case .general: return 5
-        case .audio: return 1
+        case .beacon: return 1
         case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? CalloutsRow.allCases.count : 1
+        case .audio: return 1
         case .streetPreview: return 1
         case .troubleshooting: return 1
         case .about: return 1
-        case .beacon: return 1
         // case .telemetry: return 1
         }
     }
