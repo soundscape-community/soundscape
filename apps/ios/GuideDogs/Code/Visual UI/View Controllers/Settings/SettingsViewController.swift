@@ -14,9 +14,9 @@ import SwiftUI
 class SettingsViewController: BaseTableViewController {
     private static let languageSettingsIndexPath = IndexPath(row: 0, section: Section.general.rawValue)
     private static let voiceSettingsIndexPath = IndexPath(row: 1, section: Section.general.rawValue)
-    private static let volumeSettingsIndexPath = IndexPath(row: 3, section: Section.general.rawValue)
+    private static let volumeSettingsIndexPath = IndexPath(row: 2, section: Section.general.rawValue)
+    private static let siriShortcutsIndexPath = IndexPath(row: 4, section: Section.general.rawValue)
     private static let beaconSettingsIndexPath = IndexPath(row: 0, section: Section.beacon.rawValue)
-    private static let siriShortcutsIndexPath = IndexPath(row: 5, section: Section.general.rawValue)
     private static let aboutSettingsIndexPath = IndexPath(row: 0, section: Section.about.rawValue)
     
     private enum Section: Int, CaseIterable {
