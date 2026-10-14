@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -13,3 +14,7 @@
 
 // `$(inherited)` - Feature flags defined in `FeatureFlags-Debug.xcconfig`
 OTHER_SWIFT_FLAGS = $(inherited)
+
+// Optional OTLP logs configuration. No collector ships by default.
+SOUNDSCAPE_OTEL_LOGS_ENDPOINT =
+SOUNDSCAPE_OTEL_LOGS_HEADERS =

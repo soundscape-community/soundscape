@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -99,7 +100,7 @@ class TelemetryHelper {
             GDATelemetry.track("app.state", value: UIApplication.shared.applicationState.description)
         }
         
-        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: OperationQueue.current) { (_) in
+        NotificationCenter.default.addObserver(forName: .appDidEnterBackground, object: nil, queue: OperationQueue.current) { (_) in
             GDATelemetry.track("app.state", value: UIApplication.shared.applicationState.description)
         }
     }

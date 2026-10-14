@@ -28,7 +28,7 @@ class SettingsViewController: BaseTableViewController {
         case naviLens = 5
         case troubleshooting = 6
         case about = 7
-        // case telemetry = 8
+        case telemetry = 8
     }
     
     private enum CalloutsRow: Int, CaseIterable {
@@ -62,7 +62,7 @@ class SettingsViewController: BaseTableViewController {
         IndexPath(row: 0, section: Section.naviLens.rawValue): "naviLensAutoSnooze",
         IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
         IndexPath(row: 0, section: Section.about.rawValue): "about",
-        // IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
+        IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
     ]
     
     private static let collapsibleCalloutIndexPaths: [IndexPath] = [
@@ -89,6 +89,7 @@ class SettingsViewController: BaseTableViewController {
         GDATelemetry.trackScreenView("settings")
 
         self.title = GDLocalizedString("settings.screen_title")
+        tableView.reloadData()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -107,7 +108,7 @@ class SettingsViewController: BaseTableViewController {
         case .naviLens: return 1
         case .troubleshooting: return 1
         case .about: return 1
-        // case .telemetry: return 1
+        case .telemetry: return 1
         }
     }
     
@@ -136,11 +137,12 @@ class SettingsViewController: BaseTableViewController {
             
             return cell
             
-        // case .telemetry:
-        //     let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! TelemetrySettingsTableViewCell
-        //     cell.parent = self
+        case .telemetry:
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! TelemetrySettingsTableViewCell
+            cell.parent = self
+            cell.configure()
             
-        //     return cell
+            return cell
             
         case .naviLens:
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
@@ -200,7 +202,7 @@ class SettingsViewController: BaseTableViewController {
         case .streetPreview: return GDLocalizedString("preview.title")
         case .naviLens: return GDLocalizedString("settings.section.navilens")
         case .troubleshooting: return GDLocalizedString("settings.section.troubleshooting")
-        // case .telemetry: return GDLocalizedString("settings.section.telemetry")
+        case .telemetry: return GDLocalizedString("settings.section.telemetry")
         case .beacon: return GDLocalizedString("beacon.audio_beacon")
         }
     }
@@ -212,7 +214,7 @@ class SettingsViewController: BaseTableViewController {
         case .audio: return GDLocalizedString("settings.audio.mix_with_others.description")
         case .naviLens: return GDLocalizedString("settings.navilens.auto_snooze.description")
         case .streetPreview: return GDLocalizedString("preview.include_unnamed_roads.subtitle")
-        // case .telemetry: return GDLocalizedString("settings.section.telemetry.footer")
+        case .telemetry: return GDLocalizedString("settings.section.telemetry.footer")
         case .beacon: return GDLocalizedString("beacon.settings.description")
         default: return nil
         }

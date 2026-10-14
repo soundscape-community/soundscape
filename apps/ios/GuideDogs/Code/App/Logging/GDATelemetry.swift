@@ -3,11 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
-// This is just a stub, MS used AppCenter which is being depricated.
 
 import Foundation
+import UIKit
 
 public class GDATelemetry {
     
@@ -15,15 +16,47 @@ public class GDATelemetry {
     
     static var debugLog = false
     
+    private static let controller: TelemetryController = {
+        let testing = ProcessInfo.processInfo.arguments.contains("-TESTING") ||
+            ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || NSClassFromString("XCTestCase") != nil
+        let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("SoundscapeTelemetry", isDirectory: true)
+        return TelemetryController(enabled: enabled,
+            configuration: testing ? nil : TelemetryConfiguration(info: Bundle.main.infoDictionary ?? [:]),
+            storage: TelemetryStorage(root: root))
+    }()
+
+    private static let consentChanges = NSLock()
+
+    class func initialize() { _ = controller }
+
     class var enabled: Bool {
-        get {
-            return !SettingsContext.shared.telemetryOptout
-        }
+        get { !SettingsContext.shared.telemetryOptout }
         set {
+            consentChanges.lock()
+            defer { consentChanges.unlock() }
+            // Initialize against the old preference before changing consent.
+            let pipeline = controller
+            if !newValue { pipeline.setEnabled(false) }
+            // Do not save renewed consent until revoked storage is gone.
+            if newValue && !pipeline.setEnabled(true) { return }
             SettingsContext.shared.telemetryOptout = !newValue
-                    }
+        }
     }
-    
+
+    class func persistInBackground() {
+        guard enabled else { return }
+        var task: UIBackgroundTaskIdentifier = .invalid
+        let finish = {
+            if task != .invalid {
+                UIApplication.shared.endBackgroundTask(task)
+                task = .invalid
+            }
+        }
+        task = UIApplication.shared.beginBackgroundTask(withName: "Persist telemetry", expirationHandler: finish)
+        controller.persist { DispatchQueue.main.async(execute: finish) }
+    }
+
     class func trackScreenView(_ screenName: String, with properties: [String: String]? = nil) {
         var propertiesToSend = properties ?? [:]
         propertiesToSend["screen_name"] = screenName
@@ -36,17 +69,15 @@ public class GDATelemetry {
     }
     
     class func track(_ eventName: String, with properties: [String: String]? = nil) {
-        var propertiesToSend = properties ?? [:]
-        propertiesToSend["user_id"] = SettingsContext.shared.clientId
-        
-        // Add default event properties
-        if let helper = helper {
-            propertiesToSend = propertiesToSend.merging(helper.eventSnapshot) { (current, _) in current }
-        }
-        
-        if debugLog {
-            print("[TEL] Event tracked: \(eventName)" + (propertiesToSend.isEmpty ? "" : " \(propertiesToSend)"))
+        guard enabled, controller.collecting else { return }
+        let timestamp = Date()
+        controller.record {
+            let event = TelemetryEvent(name: eventName, timestamp: timestamp, properties: properties ?? [:],
+                                       clientID: SettingsContext.shared.clientId, snapshot: helper?.eventSnapshot ?? [:])
+            if debugLog {
+                print("[TEL] Event tracked: \(eventName) \(event.attributes)")
+            }
+            return event
         }
     }
-    
 }

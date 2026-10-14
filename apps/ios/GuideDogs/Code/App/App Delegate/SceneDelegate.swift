@@ -61,6 +61,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         GDLogAppInfo("Application did enter background")
         AppContext.appState = .background
         notificationCenter.post(name: .appDidEnterBackground, object: nil)
+        GDATelemetry.persistInBackground()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {

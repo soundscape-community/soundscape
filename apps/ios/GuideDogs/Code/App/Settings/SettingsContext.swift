@@ -116,7 +116,7 @@ class SettingsContext {
             Keys.ttsGain: 5,
             Keys.beaconGain: 5,
             Keys.afxGain: 5,
-            Keys.telemetryOptout: (BuildSettings.configuration != .release),
+            Keys.telemetryOptout: true,
             Keys.selectedBeaconName: V2Beacon.description,
             Keys.useOldBeacon: false,
             Keys.playBeaconStartEndMelody: false,
