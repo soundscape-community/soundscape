@@ -99,7 +99,7 @@
 "settings.clear_cache.alert_title" = "¿Desea eliminar los datos almacenados?";
 "settings.clear_cache.alert_message" = "Soundscape almacena datos de mapas para reducir el uso de datos celulares y el consumo de la batería. Eliminar los datos almacenados requerirá que Soundscape vuelva a cargar los datos.";
 "settings.clear_cache.markers.alert_title" = "¿Desea eliminar marcadores y rutas?";
-"settings.clear_cache.markers.alert_message" = "¿Seguro que desea eliminar todos los marcadores y rutas? ¡Elegir \"Eliminar\" restablecerá la aplicación a un estado de recién instalada y no se podrá deshacer!";
+"settings.clear_cache.markers.alert_message" = "¿Seguro que desea eliminar todos los marcadores y rutas? Si selecciona \"Eliminar\", se borrarán todos los marcadores y rutas guardados y, a continuación, se borrarán los datos de mapas almacenados. ¡Esta acción no se puede deshacer!";
 "settings.clear_cache.no_service.title" = "No se pueden borrar los datos de mapas almacenados";
 "settings.clear_cache.no_service.message" = "Soundscape no puede conectarse ahora a Internet. Se requiere una conexión a Internet al borrar los datos de mapas almacenados para que se puedan actualizar los datos.";
 "settings.telemetry.optout.alert_title" = "Rechazo de telemetría";
@@ -1230,3 +1230,9 @@
 "callouts.intersections.info" = "Cruces de carreteras cercanos";
 "devices.bose_frames.callout_name" = "Bose Frames";
 "devices.bose_frames.selector_title" = "Bose Frames Alto o Rondo";
+"beacon.settings.description" = "Ajustes para modificar las funciones de la señal de audio, como el estilo de audio, el ángulo del sonido del timbre, las indicaciones de salida y llegada, y la distancia de llegada.";
+"beacon.settings.arrival_distance.edit_hint" = "Introduzca una distancia en metros, de 1 a 50, con un máximo de dos decimales.";
+"beacon.settings.arrival_distance.invalid" = "Introduzca un número del 1 al 50 con un máximo de dos decimales.";
+"settings.section.navilens" = "NaviLens";
+"settings.navilens.auto_snooze.title" = "Suspender al abrir NaviLens";
+"settings.navilens.auto_snooze.description" = "Poner en pausa automáticamente Soundscape al abrir NaviLens y reanudarlo cuando vuelva. Desactívelo para mantener Soundscape activo.";
