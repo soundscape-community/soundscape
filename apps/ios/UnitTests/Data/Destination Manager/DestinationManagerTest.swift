@@ -189,4 +189,41 @@ final class SettingsContextTest: XCTestCase {
         XCTAssertEqual(SettingsContext.ArrivalDistance.step, 1.0)
         XCTAssertEqual(SettingsContext.ArrivalDistance.exitHysteresis, 15.0)
     }
+
+    func testArrivalDistanceExactEntryFormattingAndPersistence() {
+        XCTAssertEqual(ArrivalDistanceValue.displayNumber(10, locale: Locale(identifier: "en_GB")), "10")
+        XCTAssertEqual(ArrivalDistanceValue.displayNumber(10.5, locale: Locale(identifier: "en_GB")), "10.5")
+        XCTAssertEqual(ArrivalDistanceValue.displayNumber(10.25, locale: Locale(identifier: "en_GB")), "10.25")
+        XCTAssertEqual(ArrivalDistanceValue.displayNumber(10.25, locale: Locale(identifier: "fr_FR")), "10,25")
+
+        let defaults = makeUserDefaults()
+        let settings = SettingsContext(userDefaults: defaults)
+        settings.enterImmediateVicinityDistance = 10.25
+        XCTAssertEqual(settings.enterImmediateVicinityDistance, 10.25)
+        XCTAssertEqual(settings.leaveImmediateVicinityDistance, 25.25)
+        XCTAssertEqual(defaults.double(forKey: arrivalKey), 10.25)
+    }
+
+    func testArrivalDistanceExactEntryAcceptsLocalizedHundredths() {
+        let enGB = Locale(identifier: "en_GB")
+        let frFR = Locale(identifier: "fr_FR")
+        let parse: (String, Locale) -> Double? = {
+            ArrivalDistanceValue.parse($0, locale: $1, minValue: 1, maxValue: 50)
+        }
+
+        XCTAssertEqual(parse("1", enGB), 1)
+        XCTAssertEqual(parse("50.00", enGB), 50)
+        XCTAssertEqual(parse("10.5", enGB), 10.5)
+        XCTAssertEqual(parse("10.25", enGB), 10.25)
+        XCTAssertEqual(parse(" 10,25 ", frFR), 10.25)
+        XCTAssertEqual(parse("10.25", frFR), 10.25)
+        XCTAssertEqual(parse("10,25", enGB), 10.25)
+    }
+
+    func testArrivalDistanceExactEntryRejectsInvalidValues() {
+        let locale = Locale(identifier: "en_GB")
+        for input in ["", " ", ".", "1.", "abc", "0.99", "50.01", "1.234", "1,2,3", "1 2", "-1", "NaN"] {
+            XCTAssertNil(ArrivalDistanceValue.parse(input, locale: locale, minValue: 1, maxValue: 50), input)
+        }
+    }
 }
