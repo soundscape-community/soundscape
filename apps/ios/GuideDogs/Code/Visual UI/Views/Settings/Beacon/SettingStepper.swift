@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 enum ArrivalDistanceValue {
     static func displayNumber(_ value: Double, locale: Locale) -> String {
@@ -91,6 +92,10 @@ struct SettingStepper: View {
         GDLocalizedString(unitsLocalization, "").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private var validationMessage: String {
+        GDLocalizedString("beacon.settings.arrival_distance.invalid")
+    }
+
     private func increment() {
         value = min(max(value + stepSize, minValue), maxValue)
     }
@@ -115,6 +120,16 @@ struct SettingStepper: View {
         guard let parsed = ArrivalDistanceValue.parse(draftValue, locale: locale, minValue: minValue, maxValue: maxValue) else {
             showsValidationError = true
             isFieldFocused = true
+            let rejectedValue = draftValue
+            // Let the error layout and field focus settle before queuing speech after Done.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                guard isEditing, showsValidationError, draftValue == rejectedValue else { return }
+                let announcement = NSAttributedString(
+                    string: validationMessage,
+                    attributes: [.accessibilitySpeechQueueAnnouncement: true]
+                )
+                UIAccessibility.post(notification: .announcement, argument: announcement)
+            }
             return
         }
 
@@ -208,7 +223,7 @@ struct SettingStepper: View {
             }
 
             if showsValidationError {
-                Text(GDLocalizedString("beacon.settings.arrival_distance.invalid"))
+                Text(validationMessage)
                     .font(.caption)
                     .foregroundColor(.red)
                     .accessibilityAddTraits(.isStaticText)
