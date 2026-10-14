@@ -3402,7 +3402,7 @@
 
 
 /*  */
-"terms_of_use.medical_safety_disclaimer" = "Confirma que Soundscape (1) no se ha diseñado, pensado ni puesto a disposición como dispositivo médico, y (2) no se ha diseñado o pensado para sustituir un dispositivo, diagnóstico, tratamiento o criterio médico profesional.\n\nAviso de seguridad\nSoundscape es una ayuda de navegación y no se debe usar en lugar de las habilidades de movilidad, el sentido común y el conocimiento del entorno. Tenga cuidado al navegar por su entorno, ya que los datos de mapas incorporados en el programa Soundscape se capturan desde un programa externo y, por tanto, puede haber limitaciones con la precisión de la información presentada.";
+"terms_of_use.medical_safety_disclaimer" = "Confirma que Soundscape (1) no se ha diseñado, pensado ni puesto a disposición como dispositivo médico, y (2) no se ha diseñado o pensado para sustituir el asesoramiento, diagnóstico, tratamiento o criterio médico profesional.\n\nAviso de seguridad\nSoundscape es una ayuda de navegación y no se debe usar en lugar de las habilidades de movilidad, el sentido común y el conocimiento del entorno. Tenga cuidado al navegar por su entorno, ya que los datos de mapas incorporados en el programa Soundscape se capturan desde un programa externo y, por tanto, puede haber limitaciones con la precisión de la información presentada.";
 
 
 /*  */
@@ -3746,7 +3746,7 @@
 
 
 /*  */
-"help.text.markers.content.3" = "Para que conozcas los lugares marcados, Soundscape avisará automáticamente de ellos mientras pasas a pie o te aproximas a ellos o bien, puedes usar el botón \"Marcadores cercanos\" de la parte inferior de la pantalla principal para oír un aviso espacial de los lugares marcados a tu alrededor. Además, puedes establecer una señal de audio en cualquier lugar marcado. Cuando hagas esto, se oirá la señal de audio de Soundscape que conoces y podrá actuar de la manera habitual.";
+"help.text.markers.content.3" = "Para que conozcas los lugares marcados, Soundscape avisará automáticamente de ellos mientras pasas a pie o te aproximas a ellos o bien, puedes usar el botón \"Marcadores cercanos\" de la parte inferior de la pantalla principal para oír un aviso espacial de los lugares marcados a tu alrededor. Además, puedes establecer una señal de audio en cualquier lugar marcado. Cuando hagas esto, se oirá la señal de audio de Soundscape que conoces y podrás usarla de la manera habitual.";
 
 
 /*  */
@@ -4514,3 +4514,10 @@
 "gpx_recording.status.discarding" = "Descartando";
 "beacon.settings.arrival_distance" = "Distancia de llegada";
 "beacon.settings.arrival_distance.explanation" = "Ajusta la distancia a la que se silencia automáticamente el audio de la señal y una ruta o actividad pasa automáticamente al siguiente punto de ruta.";
+"callouts.mobility.transportation_info" = "Información sobre transporte y accesibilidad";
+"callouts.intersections" = "Cruces";
+"callouts.intersections.info" = "Cruces de carreteras cercanos";
+"settings.about.title.privacy_policy" = "Política de privacidad";
+"settings.about.title.youtube_channel" = "Canal de YouTube";
+"devices.bose_frames.callout_name" = "Bose Frames";
+"devices.bose_frames.selector_title" = "Bose Frames Alto o Rondo";
