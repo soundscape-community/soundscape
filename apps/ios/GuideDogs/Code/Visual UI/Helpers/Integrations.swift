@@ -30,10 +30,10 @@ final class NaviLensWakeOnForeground {
         self.wake = wake
     }
 
-    func sleepUntilForeground() -> Bool {
+    func sleepUntilForeground(autoSnoozeEnabled: Bool) -> Bool {
         assertMainThread()
 
-        guard appState() == .normal else {
+        guard autoSnoozeEnabled, appState() == .normal else {
             return false
         }
 
@@ -79,7 +79,7 @@ final class NaviLensWakeOnForeground {
 
 func launchNaviLensApp() {
     let wakeOnForeground = NaviLensWakeOnForeground.shared
-    let didScheduleWake = wakeOnForeground.sleepUntilForeground()
+    let didScheduleWake = wakeOnForeground.sleepUntilForeground(autoSnoozeEnabled: SettingsContext.shared.naviLensAutoSnoozeEnabled)
 
     // Launch NaviLens app, or open App Store listing if not installed
     let navilensUrl = URL(string: "navilens://")!

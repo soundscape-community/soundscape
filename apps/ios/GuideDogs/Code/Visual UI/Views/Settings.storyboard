@@ -684,6 +684,43 @@
                                     <outlet property="accessoryView" destination="R58-yg-AlH" id="dY7-f1-Ca6"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="naviLensAutoSnooze" textLabel="NLs-002-199" style="IBUITableViewCellStyleDefault" id="NLs-000-199">
+                                <rect key="frame" x="0.0" y="671.33333206176758" width="393" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NLs-000-199" id="NLs-001-199">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Snooze When Opening NaviLens" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="NLs-002-199">
+                                            <rect key="frame" x="59" y="0.0" width="314" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="localization" value="settings.navilens.auto_snooze.title"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NLs-003-199">
+                                            <rect key="frame" x="221" y="6" width="56" height="31"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="accLabelLocalization" value="settings.navilens.auto_snooze.title"/>
+                                            </userDefinedRuntimeAttributes>
+                                            <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="thumbTintColor" red="0.098039215690000001" green="0.18823529410000001" blue="0.29803921570000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <action selector="onNaviLensAutoSnoozeChanged:" destination="hMR-GT-OEB" eventType="valueChanged" id="NLs-004-199"/>
+                                            </connections>
+                                        </switch>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" name="Background 1"/>
+                                <color key="tintColor" name="Foreground 1"/>
+                                <connections>
+                                    <outlet property="accessoryView" destination="NLs-003-199" id="NLs-006-199"/>
+                                </connections>
+                            </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="mixAudio" textLabel="VSq-h5-uRj" imageView="43Y-tn-4fp" style="IBUITableViewCellStyleDefault" id="lEG-3Q-zvI" userLabel="Mix Audio" customClass="MixAudioSettingCell" customModule="Soundscape" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="715.33333206176758" width="393" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
