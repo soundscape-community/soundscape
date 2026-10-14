@@ -4571,3 +4571,6 @@
 "settings.about.title.youtube_channel" = "YouTube Channel";
 "devices.bose_frames.callout_name" = "Bose Frames";
 "devices.bose_frames.selector_title" = "Bose Frames Alto or Rondo";
+"settings.section.navilens" = "NaviLens";
+"settings.navilens.auto_snooze.title" = "Snooze When Opening NaviLens";
+"settings.navilens.auto_snooze.description" = "Automatically snooze Soundscape when opening NaviLens and resume when you return. Turn off to keep Soundscape active.";
