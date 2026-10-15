@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -39,11 +40,11 @@ struct OnboardingPromptView: View {
                 Spacer()
                 
                 Button {
-                    // If onboarding has already been completed,
-                    // then onboarding was started from app settings
-                    GDATelemetry.track("onboarding.completed", with: [ "first_launch": "\(!FirstUseExperience.didComplete(.oobe))"])
-                    
-                    viewModel.dismiss()
+                    if SettingsContext.shared.telemetryConsentChoiceMade {
+                        completeOnboarding()
+                    } else {
+                        viewModel.isPresentingTelemetryConsent = true
+                    }
                 } label: {
                     GDLocalizedTextView("first_launch.prompt.button")
                         .onboardingButtonTextStyle()
@@ -53,11 +54,24 @@ struct OnboardingPromptView: View {
                 Spacer()
             }
         }
+        .fullScreenCover(isPresented: $viewModel.isPresentingTelemetryConsent, onDismiss: completeOnboarding) {
+            TelemetryConsentView {
+                viewModel.isPresentingTelemetryConsent = false
+            }
+        }
         .onAppear {
             GDATelemetry.trackScreenView("onboarding.prompt")
             
             animateView()
         }
+    }
+
+    private func completeOnboarding() {
+        guard SettingsContext.shared.telemetryConsentChoiceMade, !viewModel.didComplete else { return }
+        viewModel.didComplete = true
+        GDATelemetry.track("onboarding.completed", with: [ "first_launch": "\(!FirstUseExperience.didComplete(.oobe))"])
+        viewModel.deactivateOnboarding()
+        viewModel.dismiss()
     }
     
     private func animateView() {

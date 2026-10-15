@@ -49,6 +49,7 @@ class SettingsContext {
         fileprivate static let ttsVolume                 = "GDATTSVolume"
         fileprivate static let otherVolume               = "GDAOtherVolume"
         fileprivate static let telemetryOptout           = "GDASettingsTelemetryOptout"
+        fileprivate static let telemetryConsentChoiceMade = "GDASettingsTelemetryConsentChoiceMade"
         fileprivate static let selectedBeaconName        = "GDASelectedBeaconName"
         fileprivate static let useOldBeacon              = "GDASettingsUseOldBeacon"
         fileprivate static let playBeaconStartEndMelody  = "GDAPlayBeaconStartEndMelody"
@@ -117,6 +118,7 @@ class SettingsContext {
             Keys.beaconGain: 5,
             Keys.afxGain: 5,
             Keys.telemetryOptout: true,
+            Keys.telemetryConsentChoiceMade: false,
             Keys.selectedBeaconName: V2Beacon.description,
             Keys.useOldBeacon: false,
             Keys.playBeaconStartEndMelody: false,
@@ -335,6 +337,15 @@ class SettingsContext {
         set(newValue) {
             userDefaults.set(newValue, forKey: Keys.telemetryOptout)
         }
+    }
+
+    var telemetryConsentChoiceMade: Bool {
+        get { userDefaults.bool(forKey: Keys.telemetryConsentChoiceMade) }
+        set { userDefaults.set(newValue, forKey: Keys.telemetryConsentChoiceMade) }
+    }
+
+    var telemetryEnabled: Bool {
+        telemetryConsentChoiceMade && !telemetryOptout
     }
     
     var previewIntersectionsIncludeUnnamedRoads: Bool {

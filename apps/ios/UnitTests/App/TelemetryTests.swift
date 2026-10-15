@@ -85,7 +85,7 @@ final class TelemetryTests: XCTestCase {
             .emit(to: provider.get(instrumentationScopeName: "tests"))
         let record = try XCTUnwrap(exporter.records.protectedValue.first)
         XCTAssertEqual(record.eventName, "device_snapshot")
-        XCTAssertEqual(record.body, .string("device_snapshot"))
+        XCTAssertNil(record.body)
         XCTAssertEqual(record.severity, .info)
         XCTAssertEqual(record.timestamp, timestamp)
         XCTAssertEqual(record.attributes["locale"], .string("en-GB"))
@@ -118,6 +118,55 @@ final class TelemetryTests: XCTestCase {
         XCTAssertFalse(SettingsContext(userDefaults: defaults).telemetryOptout)
         defaults.set(true, forKey: "GDASettingsTelemetryOptout")
         XCTAssertTrue(SettingsContext(userDefaults: defaults).telemetryOptout)
+    }
+
+    func testSharingRequiresAnExplicitChoiceAndBothChoicesSurviveRelaunch() throws {
+        let suite = "TelemetryTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let settings = SettingsContext(userDefaults: defaults)
+        XCTAssertFalse(settings.telemetryConsentChoiceMade)
+        XCTAssertFalse(settings.telemetryEnabled)
+
+        // A legacy preference alone must not authorize collection.
+        for optedOut in [false, true] {
+            settings.telemetryOptout = optedOut
+            let relaunched = SettingsContext(userDefaults: defaults)
+            XCTAssertFalse(relaunched.telemetryConsentChoiceMade)
+            XCTAssertFalse(relaunched.telemetryEnabled)
+            XCTAssertNil(defaults.persistentDomain(forName: suite)?["GDASettingsTelemetryConsentChoiceMade"])
+        }
+
+        for optedOut in [false, true] {
+            settings.telemetryOptout = optedOut
+            settings.telemetryConsentChoiceMade = true
+            let relaunched = SettingsContext(userDefaults: defaults)
+            XCTAssertTrue(relaunched.telemetryConsentChoiceMade)
+            XCTAssertEqual(relaunched.telemetryEnabled, !optedOut)
+            XCTAssertEqual(relaunched.telemetryOptout, optedOut)
+        }
+    }
+
+    func testTelemetryChangesRecordBothExplicitChoices() {
+        let defaults = UserDefaults.standard
+        let choiceKey = "GDASettingsTelemetryConsentChoiceMade"
+        let optoutKey = "GDASettingsTelemetryOptout"
+        let previousChoice = defaults.object(forKey: choiceKey)
+        let previousOptout = defaults.object(forKey: optoutKey)
+        let previousEnabled = GDATelemetry.enabled
+        defer {
+            GDATelemetry.enabled = previousEnabled
+            defaults.set(previousChoice, forKey: choiceKey)
+            defaults.set(previousOptout, forKey: optoutKey)
+        }
+
+        for sharingEnabled in [true, false] {
+            SettingsContext.shared.telemetryConsentChoiceMade = false
+            GDATelemetry.enabled = sharingEnabled
+            XCTAssertTrue(SettingsContext.shared.telemetryConsentChoiceMade)
+            XCTAssertEqual(SettingsContext.shared.telemetryOptout, !sharingEnabled)
+            XCTAssertEqual(GDATelemetry.enabled, sharingEnabled)
+        }
     }
 
     func testBackgroundDrainPersistsWithoutUploadingAndRelaunchReplays() throws {

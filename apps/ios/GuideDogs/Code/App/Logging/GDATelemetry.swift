@@ -31,7 +31,7 @@ public class GDATelemetry {
     class func initialize() { _ = controller }
 
     class var enabled: Bool {
-        get { !SettingsContext.shared.telemetryOptout }
+        get { SettingsContext.shared.telemetryEnabled }
         set {
             consentChanges.lock()
             defer { consentChanges.unlock() }
@@ -39,8 +39,9 @@ public class GDATelemetry {
             let pipeline = controller
             if !newValue { pipeline.setEnabled(false) }
             // Do not save renewed consent until revoked storage is gone.
-            if newValue && !pipeline.setEnabled(true) { return }
-            SettingsContext.shared.telemetryOptout = !newValue
+            let enabled = newValue && pipeline.setEnabled(true)
+            SettingsContext.shared.telemetryOptout = !enabled
+            SettingsContext.shared.telemetryConsentChoiceMade = true
         }
     }
 

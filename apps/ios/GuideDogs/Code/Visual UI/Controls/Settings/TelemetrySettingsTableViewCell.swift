@@ -29,7 +29,7 @@ class TelemetrySettingsTableViewCell: UITableViewCell {
     }
 
     @IBAction func onSettingValueChanged(_ sender: Any) {
-        let prevOptedOut = SettingsContext.shared.telemetryOptout
+        let prevOptedOut = !GDATelemetry.enabled
         
         if prevOptedOut {
             GDATelemetry.enabled = true

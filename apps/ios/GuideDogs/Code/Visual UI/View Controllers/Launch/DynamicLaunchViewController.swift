@@ -3,10 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import UIKit
+import SwiftUI
 
 import Combine
 
@@ -14,6 +16,8 @@ class DynamicLaunchViewController: UIViewController {
 
     private var validator: TTSVoiceValidator?
     private var cancellable: AnyCancellable?
+    private var didBeginInitialization = false
+    private var didConfigureInitialAppView = false
     
     /// Called after the view controller's view is loaded into memory.
     ///
@@ -51,6 +55,9 @@ class DynamicLaunchViewController: UIViewController {
     /// - Parameter animated: If `true`, the view was added to the window using an animation.
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        guard !didBeginInitialization else { return }
+        didBeginInitialization = true
         
         // Always turn callouts on when the app starts
         SettingsContext.shared.automaticCalloutsEnabled = true
@@ -115,11 +122,23 @@ extension DynamicLaunchViewController: ExperimentManagerDelegate {
     }
     
     private func configureInitialAppView() {
+        guard !didConfigureInitialAppView else { return }
+        didConfigureInitialAppView = true
+
         // Configure the appropriate view for the app
         if FirstUseExperience.didComplete(.oobe) {
-            AppContext.shared.start()
-            
-            LaunchHelper.configureAppView(with: .main)
+            if SettingsContext.shared.telemetryConsentChoiceMade {
+                showMainView()
+            } else {
+                let controller = UIHostingController(rootView: TelemetryConsentView { [weak self] in
+                    self?.dismiss(animated: true) {
+                        self?.showMainView()
+                    }
+                })
+                controller.modalPresentationStyle = .fullScreen
+                controller.isModalInPresentation = true
+                present(controller, animated: true)
+            }
         } else {
             // Since this is a first launch, set the app version for the new features feature to the current version
             SettingsContext.shared.newFeaturesLastDisplayedVersion = AppContext.appVersion
@@ -128,5 +147,10 @@ extension DynamicLaunchViewController: ExperimentManagerDelegate {
             // will run both the permissions request screens and the First Launch screens
             LaunchHelper.configureAppView(with: .firstLaunch)
         }
+    }
+
+    private func showMainView() {
+        AppContext.shared.start()
+        LaunchHelper.configureAppView(with: .main)
     }
 }

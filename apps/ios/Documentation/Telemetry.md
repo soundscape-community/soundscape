@@ -1,8 +1,17 @@
 # Telemetry
 
-Telemetry is optional and defaults to **off** in Debug, AdHoc, and Release. Existing
-saved preferences are preserved. Settings → Telemetry → Share Usage Data controls
-consent. No collector configuration is included in the repository.
+Telemetry is optional and defaults to **off** in Debug, AdHoc, and Release. A shared
+SwiftUI consent screen appears at the end of onboarding, or on launch for existing
+users who have not answered it. Users must choose Share Usage Data or Don't Share;
+the screen cannot be dismissed without a choice. Both answers are remembered using
+`GDASettingsTelemetryConsentChoiceMade`, separately from the existing opt-out
+preference. An old enabled preference alone does not authorize collection: sharing
+is paused until a choice is recorded, and old queued records are purged by the
+existing disabled-launch cleanup. Settings → Telemetry → Share Usage Data lets
+users change their choice later. A confirmed settings change also records a choice;
+canceling the opt-out confirmation does not. If enabling fails during storage
+cleanup, sharing remains disabled and the choice is still remembered. No collector
+configuration is included in the repository.
 
 ## Source inventory
 
@@ -186,6 +195,12 @@ For device verification with a test collector:
    snapshot and interaction log records arrive with the expected attributes.
 2. Use VoiceOver to focus and toggle Share Usage Data. Check the label, confirmation,
    cancellation (switch returns on), and confirmed opt-out (switch stays off).
+   On a fresh installation, finish onboarding and check both consent choices,
+   VoiceOver, large text, and blocked swipe/accessibility-escape dismissal. Relaunch
+   and replay onboarding to confirm the prompt is skipped after either answer.
+   Upgrade an installation with telemetry previously enabled but no choice key:
+   verify collection stays off until the launch consent screen is answered. Terminate
+   before answering and confirm the screen appears again on the next launch.
 3. Disable networking, generate events, background and relaunch the app, then restore
    networking. Verify persisted records replay with their original timestamps.
 4. While offline, opt out and re-enable. Restore networking and confirm no records
