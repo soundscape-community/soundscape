@@ -4,6 +4,97 @@ Telemetry is optional and defaults to **off** in Debug, AdHoc, and Release. Exis
 saved preferences are preserved. Settings → Telemetry → Share Usage Data controls
 consent. No collector configuration is included in the repository.
 
+## Source inventory
+
+Run the standalone Swift inventory script from the repository root:
+
+```sh
+apps/ios/Scripts/TelemetryInventory/main.swift > telemetry-inventory.json
+```
+
+From `apps/ios`, use `./Scripts/TelemetryInventory/main.swift`. The script discovers
+the repository from the current directory; `--root <repository>` selects it
+explicitly, and `--help` describes usage. It requires the macOS Swift toolchain
+available through `xcrun`, with no additional dependencies or app build.
+
+Stdout contains pretty-printed JSON with stable ordering and a trailing newline:
+
+- `eventIds`: sorted, unique literal event IDs. Screen views contribute
+  `screen_view`, rather than their screen names.
+- `screenNames`: sorted, unique literal names passed to `trackScreenView`.
+- `calls`: every recognized `GDATelemetry.track` or `trackScreenView` call in
+  `GuideDogs/**/*.swift`, ordered by file and source position. Each record includes
+  `api`, repository-relative `file`, one-based `line` and `column`, and the original
+  `nameExpression`. `eventId` is omitted when computed; `screenName` is present
+  only for literal screen names. Repeated calls remain separate records.
+- Each call's `properties` lists keys and sorted `valueExpressions` containing
+  Swift source text. `unresolvedPropertyExpressions` retains dictionary sources or
+  computed keys that could not be analyzed, even when other keys were extracted.
+
+For example, `trackScreenView("home")` contributes `screen_view`, screen name
+`home`, and property `screen_name` with source expression `"home"`. The `value:`
+overload contributes a `value` property. Interpolated or concatenated event names
+remain expressions; the script does not expand enums or evaluate app code.
+
+Property analysis extracts inline dictionaries, explicit dictionary/nil ternary
+alternatives, and local dictionary initializers, replacements, and subscript
+assignments preceding each call. It respects nested local declarations and keeps
+possible keys across conditional branches. These are possible call-site keys,
+not a guarantee of presence, reachability, or the final value at runtime. Value
+expressions are retained rather than evaluated, and assignments after a call do
+not change its record.
+
+This is a bounded source scanner, not a Swift compiler or whole-program analysis.
+Shared/computed providers such as `helper.deviceSnapshot` and `currentStateInfo`,
+and transformations such as `logContext.map { ... }`, remain unresolved. It does
+not trace dictionary mutation through helper calls or infer runtime values.
+Recognized dictionary mutation methods and inout uses are flagged as unresolved;
+previously known keys are retained conservatively.
+Automatically attached event snapshots, `user_id`, and OpenTelemetry resource
+attributes are outside this inventory. All conditional-compilation branches are
+scanned; tests, scripts, and dependencies outside `GuideDogs` are excluded. Comments
+and string contents do not count as calls, and internal unqualified forwarding
+calls in `GDATelemetry` are not counted again.
+
+Invalid arguments, unreadable files, and unbalanced source delimiters produce an
+error on stderr and a nonzero exit without partial JSON. Unresolved expressions
+are normal inventory results and do not fail the command.
+
+Run the standalone fixture checks with:
+
+```sh
+apps/ios/Scripts/TelemetryInventory/tests.swift
+```
+
+These compile the script once and scan temporary repositories, without building
+or changing the app.
+
+### HTML report
+
+Select `--html` to generate a self-contained report that opens locally in
+a browser, without external scripts, styles, fonts, or a server:
+
+```sh
+apps/ios/Scripts/TelemetryInventory/main.swift --html > telemetry-inventory.html
+```
+
+JSON is the default when `--html` is omitted. Both formats write to stdout and
+support `--root <repository>`.
+
+The report shows inventory totals and expandable event groups, sorted by literal
+event ID followed by computed name expression. Repeated event IDs share a group;
+each group retains every call site's source location, name/screen information,
+possible property keys, value expressions, and unresolved property sources.
+
+Search matches event IDs, screen names, properties, source expressions, and files
+case-insensitively. **Needs review only** limits the report to groups containing
+computed event/screen names or unresolved property sources. Filters apply to whole
+groups: all call sites within a matching group remain available. Summary totals
+describe the full inventory; the status shows how many groups match the filters.
+Groups start collapsed, and all details remain usable without JavaScript;
+JavaScript enables search and filtering. The property-analysis limits above apply
+equally to the report.
+
 ## Collector configuration
 
 Set these build settings for each configuration that should support telemetry:
