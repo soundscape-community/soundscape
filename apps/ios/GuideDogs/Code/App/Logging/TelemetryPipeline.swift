@@ -55,7 +55,6 @@ struct TelemetryEvent {
     func emit(to logger: OpenTelemetryApi.Logger) {
         logger.logRecordBuilder()
             .setEventName(name)
-            .setBody(.string(name))
             .setTimestamp(timestamp)
             .setSeverity(.info)
             .setAttributes(attributes)

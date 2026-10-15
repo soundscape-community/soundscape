@@ -34,8 +34,8 @@ command line. Verify the expanded values in the built app's Info.plist.
 ## Records and delivery
 
 OpenTelemetry Swift and Swift Core are pinned to 2.6.0. Existing `GDATelemetry`
-calls emit INFO logs with the event name in both `eventName` and the string body,
-the occurrence timestamp, and string attributes. `user_id` is the existing client
+calls emit INFO logs with the event name in `eventName`, no body, the occurrence
+timestamp, and string attributes. `user_id` is the existing client
 ID and overrides caller properties. Caller properties override helper snapshot
 properties. Screen views use `screen_view` and `screen_name`; value events use
 `value`. Existing device, app, accessibility, and experiment snapshots remain.
