@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -123,7 +124,7 @@ class EditableMapViewController: UIViewController {
             // Selected location is at the center of the map
             let newLocation = CLLocation(mapView.centerCoordinate)
             
-            if newLocation.coordinate != detail.centerLocation.coordinate {
+            if !newLocation.coordinate.isNear(to: detail.centerLocation.coordinate) {
                 // Notify the delegate
                 delegate?.viewController(self, didUpdateLocation: LocationDetail(detail, withUpdatedLocation: newLocation))
             }
@@ -132,7 +133,7 @@ class EditableMapViewController: UIViewController {
             dismiss(animated: true, completion: nil)
         } else {
             // `Edit` selected
-            if detail.centerLocation.coordinate == mapView.centerCoordinate {
+            if detail.centerLocation.coordinate.isNear(to: mapView.centerCoordinate) {
                 // Map region is centered at the given location
                 // Immediately configure the view
                 configureForEditLocation()

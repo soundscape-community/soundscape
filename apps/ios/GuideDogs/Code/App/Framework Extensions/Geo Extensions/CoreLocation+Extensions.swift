@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -134,11 +135,11 @@ extension Array where Element == CLLocation {
 }
 
 extension CLLocationCoordinate2D {
-    
+
     var isValidLocationCoordinate: Bool {
-        return CLLocationCoordinate2DIsValid(self) && self != CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+        return CLLocationCoordinate2DIsValid(self) && !self.isNear(to: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
     }
-    
+
     func distance(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
         return CLLocation(latitude: self.latitude, longitude: self.longitude)
             .distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
@@ -165,7 +166,7 @@ extension CLLocationCoordinate2D {
         }
         
         // Check if the coordinates are the same
-        guard self != coordinate else {
+        guard !isNear(to: coordinate) else {
             return 0
         }
         
@@ -221,13 +222,17 @@ extension CLLocationCoordinate2D {
     
 }
 
-extension CLLocationCoordinate2D: Equatable {
-    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
-        return lhs.equalTo(coordinate: rhs, threshold: 0.0000009)
-    }
+extension CLLocationCoordinate2D {
     
-    private func equalTo(coordinate: CLLocationCoordinate2D, threshold: CLLocationDegrees) -> Bool {
+    public func isNear(to coordinate: CLLocationCoordinate2D, threshold: CLLocationDegrees = 0.0000009) -> Bool {
         return fabs(self.latitude - coordinate.latitude) <= threshold && fabs(self.longitude - coordinate.longitude) <= threshold
+    }
+
+    public func isNear(to coordinate: CLLocationCoordinate2D?, threshold: CLLocationDegrees = 0.0000009) -> Bool {
+        guard let coordinate = coordinate else {
+            return false
+        }
+        return isNear(to: coordinate, threshold: threshold)
     }
 }
 

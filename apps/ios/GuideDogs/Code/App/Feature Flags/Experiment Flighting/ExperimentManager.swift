@@ -15,6 +15,10 @@ enum KnownExperiment: CaseIterable {
     // Supports client experimentation
     // For each experiment, add a case to `KnownExperiment`
     //
+    case placeholder // TODO: Replace with real experiments
+
+    // Do not expose the placeholder as a configured experiment or include it in telemetry.
+    static let allCases: [KnownExperiment] = []
     
     var uuid: UUID {
         /*
