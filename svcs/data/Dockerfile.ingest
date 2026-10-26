@@ -7,6 +7,7 @@ FROM python:3.12-slim-bookworm AS final
 ENV PYTHONUNBUFFERED=true INGEST=/ingest EXTRADATA=/non_osm_data TILES=/tiles MAPPING=/mapping IMPOSM_BINARY_RELEASE=0.14.2 IMPOSM_BINARY_SHA256=0a41b91d0a0befe9f76d734faebd701bbe5dfd26ea4a3c96d69f44fc95a6fec2
 
 RUN apt-get update \
+ && apt-get upgrade -y \
  && apt-get install -y --no-install-recommends ca-certificates wget tar gzip libexpat1 \
  && wget -q -O /tmp/imposm.tar.gz https://github.com/omniscale/imposm3/releases/download/v$IMPOSM_BINARY_RELEASE/imposm-$IMPOSM_BINARY_RELEASE-linux-x86-64.tar.gz \
  && echo "$IMPOSM_BINARY_SHA256  /tmp/imposm.tar.gz" | sha256sum -c - \
@@ -19,7 +20,13 @@ RUN apt-get update \
 COPY requirements.txt ingest.py ingest_non_osm.py extracts.json tilefunc.sql $INGEST/
 COPY soundscape/other/mapping.yml $MAPPING/mapping.yml
 
-RUN python -m pip install --no-cache-dir -r $INGEST/requirements.txt
+# Install with patched pip, then remove build tooling and its vendored libraries
+# from the runtime image, including the ensurepip bootstrap wheel.
+RUN python -m pip install --no-cache-dir --upgrade "pip==26.2.2" \
+ && python -m pip install --no-cache-dir -r $INGEST/requirements.txt \
+ && python -m pip check \
+ && python -m pip uninstall -y pip \
+ && rm -rf /usr/local/lib/python3.12/ensurepip/_bundled
 
 CMD ["sh", "-c", "exec python $INGEST/ingest.py \
         --imposm $INGEST/imposm3/imposm \
