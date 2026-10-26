@@ -36,8 +36,8 @@ assessment of the deployed database or host Caddy installation.
 - Smoke checks against a disposable PostgreSQL 15 instance exercise psycopg2,
   aiopg pooling, both tile URL formats, an unsupported zoom returning 404, health,
   and metrics. Tile checks pass using the rebuilt tile server image. A stub SQL
-  tile function verifies database/HTTP integration; a full OSM import and real
-  PostGIS tile generation were not performed.
+  tile function provided the initial database/HTTP integration check; a subsequent
+  full region test also passed (below).
 - The ingest image passes CLI checks for ingest, Imposm, and pyosmium, plus writing
   and reading replication metadata in a tiny PBF.
 - Trivy 0.76.1 reports zero Python package vulnerabilities and zero Debian
@@ -64,8 +64,42 @@ assessment of the deployed database or host Caddy installation.
   findings in gosu. These counts describe that cached image, not today's registry
   tag or production. Choose a supported image with the deployed PostgreSQL major,
   verify backups and PostGIS extension upgrades, and pin its version before
-  rollout. Pulling an unpinned tag can cross PostgreSQL majors and require a data
-  migration, so this change does not replace the database image.
+  rollout. The separate `.github/workflows/generate_json_tiles.yml` workflow pins
+  `postgis/postgis:10-2.5` (PostgreSQL 10 / PostGIS 2.5); that pin does not apply to
+  Compose. A PostgreSQL minor/security update within the same major does not
+  normally require a database migration. The migration concern applies only if
+  an unpinned image update crosses PostgreSQL majors. This change does not replace
+  the database image.
+
+## Full region import and tile requests
+
+A subsequent end-to-end test used both updated images and a fresh, disposable
+PostgreSQL 17.5 / PostGIS 3.5.2 database from the cached PostGIS image described
+above. It did not use a stub tile function or an existing application database.
+
+- Ran the ingest container with `--where district-of-columbia --provision
+  --run-once`, the default `weekly-pbf` mode, the real mapping, isolated cache/PBF
+  directories, and the repository's sample non-OSM data.
+- Downloaded the 21 MB Geofabrik PBF, ran `pyosmium-up-to-date`, imported and
+  deployed tables with Imposm, installed `postgis-vt-util.sql` and `tilefunc.sql`,
+  and recorded replication sequence 4952. The container exited successfully.
+- Verified 94,728 roads, 216,129 places, 785 entrances, and one non-OSM row.
+- Started the updated tile server and requested these real tiles:
+
+| Location | Tile | Features |
+| --- | --- | ---: |
+| White House | `/16/18743/25070.json` | 1,116 |
+| Capitol | `/16/18748/25072.json` | 1,197 |
+| Georgetown | `/16/18737/25068.json` | 1,445 |
+| National Mall | `/16/18744/25072.json` | 638 |
+
+For every tile, both the plain and `/tiles/` URL returned HTTP 200 with identical
+GeoJSON, valid feature/geometry/properties fields, and a feature count matching
+`SELECT count(*) FROM soundscape_tile(...)`. Health and metrics returned 200;
+unsupported zoom and unknown routes returned 404; a tile outside the extract
+returned an empty feature collection. This validates fresh imports and serving
+on PostgreSQL 17; it does not validate a PostgreSQL major upgrade, an existing
+production database, continuous replication, or a full planet import.
 
 ## Repeating the checks
 
