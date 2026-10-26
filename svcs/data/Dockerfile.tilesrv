@@ -6,8 +6,18 @@ FROM python:3.12-slim-bookworm AS final
 
 ENV PYTHONUNBUFFERED=true TILESRV=/tilesrv
 
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt gentiles.py $TILESRV/
 
-RUN python -m pip install --no-cache-dir -r $TILESRV/requirements.txt
+# Install with patched pip, then remove build tooling and its vendored libraries
+# from the runtime image, including the ensurepip bootstrap wheel.
+RUN python -m pip install --no-cache-dir --upgrade "pip==26.2.2" \
+ && python -m pip install --no-cache-dir -r $TILESRV/requirements.txt \
+ && python -m pip check \
+ && python -m pip uninstall -y pip \
+ && rm -rf /usr/local/lib/python3.12/ensurepip/_bundled
 
 ENTRYPOINT ["sh", "-c", "exec python /tilesrv/gentiles.py --verbose --dsn \"$DSN\""]
