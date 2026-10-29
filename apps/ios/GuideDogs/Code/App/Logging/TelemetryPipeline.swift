@@ -38,17 +38,47 @@ struct TelemetryConfiguration {
     }
 }
 
+/// A process-local usage session. Backgrounding and device lock do not end it.
+final class TelemetrySession {
+    static let sleepTimeout: TimeInterval = 30 * 60
+
+    private struct State {
+        var id = UUID().uuidString
+        var sleepingSince: Date?
+    }
+
+    private let state = Locked(initialValue: State())
+
+    var id: String { state.protectedValue.id }
+
+    func operationStateChanged(to operationState: OperationState, at now: Date = Date()) {
+        state.locking { state in
+            switch operationState {
+            case .sleep, .snooze:
+                // Switching between sleep and snooze must not restart the timeout.
+                if state.sleepingSince == nil { state.sleepingSince = now }
+            case .normal:
+                if let since = state.sleepingSince, now.timeIntervalSince(since) >= Self.sleepTimeout {
+                    state.id = UUID().uuidString
+                }
+                state.sleepingSince = nil
+            }
+        }
+    }
+}
+
 struct TelemetryEvent {
     let name: String
     let timestamp: Date
     let attributes: [String: AttributeValue]
 
     init(name: String, timestamp: Date = Date(), properties: [String: String] = [:],
-         clientID: String, snapshot: [String: String] = [:]) {
+         clientID: String, sessionID: String, snapshot: [String: String] = [:]) {
         self.name = name
         self.timestamp = timestamp
         var values = properties.merging(snapshot) { current, _ in current }
         values["user_id"] = clientID
+        values["session_id"] = sessionID
         // Identify this occurrence once; exports and persisted retries reuse these attributes.
         values["event_id"] = UUID().uuidString
         attributes = values.mapValues { .string($0) }

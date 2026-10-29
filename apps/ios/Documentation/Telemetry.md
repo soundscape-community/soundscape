@@ -59,8 +59,8 @@ and transformations such as `logContext.map { ... }`, remain unresolved. It does
 not trace dictionary mutation through helper calls or infer runtime values.
 Recognized dictionary mutation methods and inout uses are flagged as unresolved;
 previously known keys are retained conservatively.
-Automatically attached event snapshots, `user_id`, `event_id`, and OpenTelemetry resource
-attributes are outside this inventory. All conditional-compilation branches are
+Automatically attached event snapshots, `user_id`, `event_id`, `session_id`, and
+OpenTelemetry resource attributes are outside this inventory. All conditional-compilation branches are
 scanned; tests, scripts, and dependencies outside `GuideDogs` are excluded. Comments
 and string contents do not count as calls, and internal unqualified forwarding
 calls in `GDATelemetry` are not counted again.
@@ -156,6 +156,24 @@ the original ID lets Mixpanel recognize the repeated event without relying on
 the collector's fallback hash of event fields, which can merge distinct occurrences
 with identical attributes and timestamps.
 
+The string attribute `session_id` is a random UUID for the current usage session.
+Every new app process starts a fresh session. Backgrounding, foregrounding, phone
+lock, and ordinary inactivity keep the same ID because background use is normal.
+Entering Soundscape sleep mode (the home screen Sleep button) keeps the ID until
+wake: returning to normal operation after **at least 30 continuous minutes** in
+sleep or snooze generates a new UUID before the `wake_state.normal` event is
+recorded. Switching between sleep and "wake when I leave" snooze does not restart
+the timeout. Short sleeps keep the session and do not accumulate toward 30 minutes.
+Other paths into Soundscape sleep mode, such as the NaviLens integration, follow
+the same rule. Device sleep alone never starts this timeout.
+
+Session tracking is in memory and independent of consent; it does not collect or
+export events while sharing is disabled. Each event captures its session ID at
+creation, after merging properties and snapshots so neither can override it.
+Batching, persistence, retries, and replay retain that original session ID, even
+after wake or a relaunch has started a new session. Neither `session_id` nor
+`event_id` changes the existing client `user_id`.
+
 The pipeline is:
 
 ```text
@@ -202,6 +220,8 @@ AdHoc, and Release. Run `apps/ios/Scripts/LocalizationLinter/main.swift` from
 `apps/ios`. Tests cover configuration, consent defaults and saved preferences,
 event mapping, distinct UUIDs for identical occurrences, protected `event_id`
 precedence, stable IDs through repeated emission, OTLP serialization,
+session UUIDs, background continuity, short sleeps, the 30-minute wake boundary,
+sleep/snooze transitions, captured session IDs after wake,
 offline persistence/relaunch replay, failed uploads, expiry,
 pruning, corruption, background draining, rapid opt-out/re-enable, disk-write
 revocation, HTTP cancellation, and the settings switch's accessibility label.
@@ -222,5 +242,12 @@ For device verification with a test collector:
    networking. Verify persisted records replay with their original timestamps and
    `event_id` values. Retry an upload and confirm both OTLP requests carry the same
    ID, which Vector maps to Mixpanel's `$insert_id`.
+   Confirm replay also retains the original `session_id`, while newly created
+   events after relaunch have a new session ID.
 4. While offline, opt out and re-enable. Restore networking and confirm no records
    from the previous consent period arrive. Repeat while an upload is in progress.
+5. Background and foreground the app, including locking and unlocking the phone,
+   and verify `session_id` stays the same. Use the home screen Sleep button and
+   wake before 30 minutes: the ID stays the same. Sleep for at least 30 minutes
+   (including time in snooze), then wake manually or by moving: the wake event and
+   subsequent events use a new ID. Events recorded before wake keep their old ID.

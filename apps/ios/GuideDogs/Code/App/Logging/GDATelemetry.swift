@@ -15,6 +15,8 @@ public class GDATelemetry {
     static var helper: TelemetryHelper?
     
     static var debugLog = false
+
+    static let session = TelemetrySession()
     
     private static let controller: TelemetryController = {
         let testing = ProcessInfo.processInfo.arguments.contains("-TESTING") ||
@@ -28,7 +30,10 @@ public class GDATelemetry {
 
     private static let consentChanges = NSLock()
 
-    class func initialize() { _ = controller }
+    class func initialize() {
+        _ = session
+        _ = controller
+    }
 
     class var enabled: Bool {
         get { SettingsContext.shared.telemetryEnabled }
@@ -74,7 +79,8 @@ public class GDATelemetry {
         let timestamp = Date()
         controller.record {
             let event = TelemetryEvent(name: eventName, timestamp: timestamp, properties: properties ?? [:],
-                                       clientID: SettingsContext.shared.clientId, snapshot: helper?.eventSnapshot ?? [:])
+                                       clientID: SettingsContext.shared.clientId, sessionID: session.id,
+                                       snapshot: helper?.eventSnapshot ?? [:])
             if debugLog {
                 print("[TEL] Event tracked: \(eventName) \(event.attributes)")
             }

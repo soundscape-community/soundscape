@@ -46,7 +46,7 @@ final class TelemetryTests: XCTestCase {
     }
 
     private func event(_ name: String = "test") -> TelemetryEvent {
-        TelemetryEvent(name: name, clientID: "test-client")
+        TelemetryEvent(name: name, clientID: "test-client", sessionID: "test-session")
     }
 
     private func eventID(_ attributes: [String: AttributeValue]) throws -> String {
@@ -90,8 +90,10 @@ final class TelemetryTests: XCTestCase {
         let provider = LoggerProviderBuilder().with(processors: [processor]).build()
         let timestamp = Date(timeIntervalSince1970: 123456)
         TelemetryEvent(name: "device_snapshot", timestamp: timestamp,
-                       properties: ["locale": "en-GB", "user_id": "caller", "event_id": "caller"], clientID: "client",
-                       snapshot: ["locale": "en-US", "app.state": "active", "user_id": "snapshot", "event_id": "snapshot"])
+                       properties: ["locale": "en-GB", "user_id": "caller", "event_id": "caller", "session_id": "caller"],
+                       clientID: "client", sessionID: "session",
+                       snapshot: ["locale": "en-US", "app.state": "active", "user_id": "snapshot",
+                                  "event_id": "snapshot", "session_id": "snapshot"])
             .emit(to: provider.get(instrumentationScopeName: "tests"))
         let record = try XCTUnwrap(exporter.records.protectedValue.first)
         XCTAssertEqual(record.eventName, "device_snapshot")
@@ -100,6 +102,7 @@ final class TelemetryTests: XCTestCase {
         XCTAssertEqual(record.timestamp, timestamp)
         XCTAssertEqual(record.attributes["locale"], .string("en-GB"))
         XCTAssertEqual(record.attributes["user_id"], .string("client"))
+        XCTAssertEqual(record.attributes["session_id"], .string("session"))
         XCTAssertEqual(record.attributes["app.state"], .string("active"))
         let eventID = try eventID(record.attributes)
         XCTAssertEqual(UUID(uuidString: eventID)?.uuidString, eventID)
@@ -107,8 +110,8 @@ final class TelemetryTests: XCTestCase {
 
     func testSeparateEventsReceiveDifferentUUIDs() throws {
         let timestamp = Date(timeIntervalSince1970: 123456)
-        let first = try eventID(TelemetryEvent(name: "test", timestamp: timestamp, clientID: "client").attributes)
-        let second = try eventID(TelemetryEvent(name: "test", timestamp: timestamp, clientID: "client").attributes)
+        let first = try eventID(TelemetryEvent(name: "test", timestamp: timestamp, clientID: "client", sessionID: "session").attributes)
+        let second = try eventID(TelemetryEvent(name: "test", timestamp: timestamp, clientID: "client", sessionID: "session").attributes)
         XCTAssertFalse(first.isEmpty)
         XCTAssertFalse(second.isEmpty)
         XCTAssertNotEqual(first, second)
@@ -116,25 +119,98 @@ final class TelemetryTests: XCTestCase {
         XCTAssertEqual(UUID(uuidString: second)?.uuidString, second)
     }
 
-    func testEventIDCannotBeOverriddenAndSurvivesRepeatedEmission() throws {
+    func testEventAndSessionIDsCannotBeOverriddenAndSurviveRepeatedEmission() throws {
         let exporter = RecordingLogExporter()
         let processor = SimpleLogRecordProcessor(logRecordExporter: exporter)
         let provider = LoggerProviderBuilder().with(processors: [processor]).build()
         let logger = provider.get(instrumentationScopeName: "tests")
         for (properties, snapshot) in [
-            (["event_id": "caller"], [:]),
-            ([:], ["event_id": "snapshot"]),
-            (["event_id": "caller"], ["event_id": "snapshot"])
+            (["event_id": "caller", "session_id": "caller"], [:]),
+            ([:], ["event_id": "snapshot", "session_id": "snapshot"]),
+            (["event_id": "caller", "session_id": "caller"], ["event_id": "snapshot", "session_id": "snapshot"])
         ] {
-            let original = TelemetryEvent(name: "test", properties: properties, clientID: "client", snapshot: snapshot)
+            let original = TelemetryEvent(name: "test", properties: properties, clientID: "client",
+                                          sessionID: "session", snapshot: snapshot)
             let eventID = try eventID(original.attributes)
             XCTAssertNotNil(UUID(uuidString: eventID))
             original.emit(to: logger)
             original.emit(to: logger)
             XCTAssertEqual(exporter.records.protectedValue.suffix(2).map { $0.attributes["event_id"] },
                            [.string(eventID), .string(eventID)])
+            XCTAssertEqual(exporter.records.protectedValue.suffix(2).map { $0.attributes["session_id"] },
+                           [.string("session"), .string("session")])
         }
         XCTAssertEqual(exporter.records.protectedValue.count, 6)
+    }
+
+    func testNewAppProcessesHaveDifferentSessionUUIDs() {
+        let first = TelemetrySession()
+        let second = TelemetrySession()
+        XCTAssertNotNil(UUID(uuidString: first.id))
+        XCTAssertNotNil(UUID(uuidString: second.id))
+        XCTAssertNotEqual(first.id, second.id)
+    }
+
+    func testShortSleepPreservesSessionAndThirtyMinuteSleepRotatesOnlyOnWake() {
+        let session = TelemetrySession()
+        let originalID = session.id
+        let start = Date(timeIntervalSince1970: 123456)
+        session.operationStateChanged(to: .sleep, at: start)
+        session.operationStateChanged(to: .normal, at: start.addingTimeInterval(30 * 60 - 1))
+        XCTAssertEqual(session.id, originalID)
+
+        let nextSleep = start.addingTimeInterval(60 * 60)
+        session.operationStateChanged(to: .sleep, at: nextSleep)
+        // Events recorded during sleep still belong to the existing session.
+        XCTAssertEqual(session.id, originalID)
+        session.operationStateChanged(to: .normal, at: nextSleep.addingTimeInterval(30 * 60))
+        let newID = session.id
+        XCTAssertNotEqual(newID, originalID)
+        XCTAssertNotNil(UUID(uuidString: newID))
+        session.operationStateChanged(to: .normal, at: nextSleep.addingTimeInterval(2 * 60 * 60))
+        XCTAssertEqual(session.id, newID, "Active time must not expire a session")
+    }
+
+    func testSleepAndSnoozeShareOneTimeoutAndShortSleepsDoNotAccumulate() {
+        let session = TelemetrySession()
+        let originalID = session.id
+        let start = Date(timeIntervalSince1970: 123456)
+        for minutes in [0.0, 30.0] {
+            let sleep = start.addingTimeInterval(minutes * 60)
+            session.operationStateChanged(to: .sleep, at: sleep)
+            session.operationStateChanged(to: .normal, at: sleep.addingTimeInterval(20 * 60))
+            XCTAssertEqual(session.id, originalID)
+        }
+
+        session.operationStateChanged(to: .sleep, at: start.addingTimeInterval(60 * 60))
+        session.operationStateChanged(to: .snooze, at: start.addingTimeInterval(80 * 60))
+        session.operationStateChanged(to: .sleep, at: start.addingTimeInterval(85 * 60))
+        session.operationStateChanged(to: .normal, at: start.addingTimeInterval(90 * 60))
+        XCTAssertNotEqual(session.id, originalID)
+
+        let afterSleep = session.id
+        session.operationStateChanged(to: .snooze, at: start.addingTimeInterval(100 * 60))
+        session.operationStateChanged(to: .normal, at: start.addingTimeInterval(131 * 60))
+        XCTAssertNotEqual(session.id, afterSleep)
+    }
+
+    func testEventsKeepTheirCapturedSessionAfterWake() {
+        let session = TelemetrySession()
+        let originalID = session.id
+        let original = TelemetryEvent(name: "before_sleep", clientID: "client", sessionID: session.id)
+        let start = Date(timeIntervalSince1970: 123456)
+        session.operationStateChanged(to: .sleep, at: start)
+        session.operationStateChanged(to: .normal, at: start.addingTimeInterval(31 * 60))
+        let wake = TelemetryEvent(name: "wake_state.normal", clientID: "client", sessionID: session.id)
+        let exporter = RecordingLogExporter()
+        let processor = SimpleLogRecordProcessor(logRecordExporter: exporter)
+        let provider = LoggerProviderBuilder().with(processors: [processor]).build()
+        let logger = provider.get(instrumentationScopeName: "tests")
+        original.emit(to: logger)
+        wake.emit(to: logger)
+        XCTAssertNotEqual(originalID, session.id)
+        XCTAssertEqual(exporter.records.protectedValue.map { $0.attributes["session_id"] },
+                       [.string(originalID), .string(session.id)])
     }
 
     func testConfigurationFailsClosed() {
@@ -217,7 +293,9 @@ final class TelemetryTests: XCTestCase {
         let storage = TelemetryStorage(root: root)
         let exporter = RecordingLogExporter()
         let first = TelemetryController(enabled: true, configuration: configuration, storage: storage) { _, _ in exporter }
-        let original = event("offline")
+        let session = TelemetrySession()
+        let originalSessionID = session.id
+        let original = TelemetryEvent(name: "offline", clientID: "test-client", sessionID: originalSessionID)
         let originalEventID = try eventID(original.attributes)
         first.record { original }
         drain(first)
@@ -234,6 +312,7 @@ final class TelemetryTests: XCTestCase {
         try FileManager.default.moveItem(at: persisted, to: directory.appendingPathComponent(previousLaunch))
 
         let relaunched = TelemetryController(enabled: true, configuration: configuration, storage: storage) { _, _ in exporter }
+        XCTAssertNotEqual(TelemetrySession().id, originalSessionID)
         let delivered = expectation(description: "replayed after relaunch")
         DispatchQueue.global().async {
             for _ in 0..<400 {
@@ -244,6 +323,7 @@ final class TelemetryTests: XCTestCase {
         wait(for: [delivered], timeout: 12)
         XCTAssertEqual(exporter.records.protectedValue.map(\.eventName), ["offline"])
         XCTAssertEqual(exporter.records.protectedValue.first?.attributes["event_id"], .string(originalEventID))
+        XCTAssertEqual(exporter.records.protectedValue.first?.attributes["session_id"], .string(originalSessionID))
         XCTAssertEqual(exporter.records.protectedValue.first?.resource.attributes["service.name"], .string("soundscape"))
         XCTAssertNotNil(exporter.records.protectedValue.first?.resource.attributes["service.version"])
         XCTAssertNotNil(exporter.records.protectedValue.first?.resource.attributes["service.build"])
@@ -265,6 +345,7 @@ final class TelemetryTests: XCTestCase {
         _ = decorator.forceFlush()
         XCTAssertEqual(exporter.records.protectedValue.count, 1)
         XCTAssertEqual(exporter.records.protectedValue.first?.attributes["event_id"], .string(originalEventID))
+        XCTAssertEqual(exporter.records.protectedValue.first?.attributes["session_id"], originalRecords.first?.attributes["session_id"])
         XCTAssertTrue(try files(root).isEmpty)
         decorator.shutdown()
     }
@@ -295,6 +376,8 @@ final class TelemetryTests: XCTestCase {
             XCTAssertEqual(logs.first?.eventName, "test")
             let eventID = logs.first?.attributes.first(where: { $0.key == "event_id" })?.value.stringValue
             XCTAssertEqual(eventID, originalEventID)
+            let sessionID = logs.first?.attributes.first(where: { $0.key == "session_id" })?.value.stringValue
+            XCTAssertEqual(sessionID, "test-session")
         }
         decorator.shutdown()
     }
