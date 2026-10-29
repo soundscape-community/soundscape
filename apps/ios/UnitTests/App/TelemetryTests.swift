@@ -49,6 +49,16 @@ final class TelemetryTests: XCTestCase {
         TelemetryEvent(name: name, clientID: "test-client")
     }
 
+    private func eventID(_ attributes: [String: AttributeValue]) throws -> String {
+        let value: String?
+        if case .string(let string) = attributes["event_id"] {
+            value = string
+        } else {
+            value = nil
+        }
+        return try XCTUnwrap(value, "event_id must be a string attribute")
+    }
+
     private func records() -> [ReadableLogRecord] {
         let exporter = RecordingLogExporter()
         let processor = SimpleLogRecordProcessor(logRecordExporter: exporter)
@@ -80,8 +90,8 @@ final class TelemetryTests: XCTestCase {
         let provider = LoggerProviderBuilder().with(processors: [processor]).build()
         let timestamp = Date(timeIntervalSince1970: 123456)
         TelemetryEvent(name: "device_snapshot", timestamp: timestamp,
-                       properties: ["locale": "en-GB", "user_id": "caller"], clientID: "client",
-                       snapshot: ["locale": "en-US", "app.state": "active", "user_id": "snapshot"])
+                       properties: ["locale": "en-GB", "user_id": "caller", "event_id": "caller"], clientID: "client",
+                       snapshot: ["locale": "en-US", "app.state": "active", "user_id": "snapshot", "event_id": "snapshot"])
             .emit(to: provider.get(instrumentationScopeName: "tests"))
         let record = try XCTUnwrap(exporter.records.protectedValue.first)
         XCTAssertEqual(record.eventName, "device_snapshot")
@@ -91,6 +101,40 @@ final class TelemetryTests: XCTestCase {
         XCTAssertEqual(record.attributes["locale"], .string("en-GB"))
         XCTAssertEqual(record.attributes["user_id"], .string("client"))
         XCTAssertEqual(record.attributes["app.state"], .string("active"))
+        let eventID = try eventID(record.attributes)
+        XCTAssertEqual(UUID(uuidString: eventID)?.uuidString, eventID)
+    }
+
+    func testSeparateEventsReceiveDifferentUUIDs() throws {
+        let timestamp = Date(timeIntervalSince1970: 123456)
+        let first = try eventID(TelemetryEvent(name: "test", timestamp: timestamp, clientID: "client").attributes)
+        let second = try eventID(TelemetryEvent(name: "test", timestamp: timestamp, clientID: "client").attributes)
+        XCTAssertFalse(first.isEmpty)
+        XCTAssertFalse(second.isEmpty)
+        XCTAssertNotEqual(first, second)
+        XCTAssertEqual(UUID(uuidString: first)?.uuidString, first)
+        XCTAssertEqual(UUID(uuidString: second)?.uuidString, second)
+    }
+
+    func testEventIDCannotBeOverriddenAndSurvivesRepeatedEmission() throws {
+        let exporter = RecordingLogExporter()
+        let processor = SimpleLogRecordProcessor(logRecordExporter: exporter)
+        let provider = LoggerProviderBuilder().with(processors: [processor]).build()
+        let logger = provider.get(instrumentationScopeName: "tests")
+        for (properties, snapshot) in [
+            (["event_id": "caller"], [:]),
+            ([:], ["event_id": "snapshot"]),
+            (["event_id": "caller"], ["event_id": "snapshot"])
+        ] {
+            let original = TelemetryEvent(name: "test", properties: properties, clientID: "client", snapshot: snapshot)
+            let eventID = try eventID(original.attributes)
+            XCTAssertNotNil(UUID(uuidString: eventID))
+            original.emit(to: logger)
+            original.emit(to: logger)
+            XCTAssertEqual(exporter.records.protectedValue.suffix(2).map { $0.attributes["event_id"] },
+                           [.string(eventID), .string(eventID)])
+        }
+        XCTAssertEqual(exporter.records.protectedValue.count, 6)
     }
 
     func testConfigurationFailsClosed() {
@@ -173,7 +217,9 @@ final class TelemetryTests: XCTestCase {
         let storage = TelemetryStorage(root: root)
         let exporter = RecordingLogExporter()
         let first = TelemetryController(enabled: true, configuration: configuration, storage: storage) { _, _ in exporter }
-        first.record { self.event("offline") }
+        let original = event("offline")
+        let originalEventID = try eventID(original.attributes)
+        first.record { original }
         drain(first)
         XCTAssertEqual(exporter.attempts.protectedValue, 0)
         let directory = try storage.open(resuming: true)
@@ -197,6 +243,7 @@ final class TelemetryTests: XCTestCase {
         }
         wait(for: [delivered], timeout: 12)
         XCTAssertEqual(exporter.records.protectedValue.map(\.eventName), ["offline"])
+        XCTAssertEqual(exporter.records.protectedValue.first?.attributes["event_id"], .string(originalEventID))
         XCTAssertEqual(exporter.records.protectedValue.first?.resource.attributes["service.name"], .string("soundscape"))
         XCTAssertNotNil(exporter.records.protectedValue.first?.resource.attributes["service.version"])
         XCTAssertNotNil(exporter.records.protectedValue.first?.resource.attributes["service.build"])
@@ -209,12 +256,15 @@ final class TelemetryTests: XCTestCase {
         exporter.result.protectedValue = .failure
         let decorator = PersistenceLogExporterDecorator(logRecordExporter: exporter, storageURL: root,
             exportCondition: { false }, performancePreset: TelemetryController.persistencePreset)
-        XCTAssertEqual(decorator.export(logRecords: records()), .success)
+        let originalRecords = records()
+        let originalEventID = try eventID(XCTUnwrap(originalRecords.first).attributes)
+        XCTAssertEqual(decorator.export(logRecords: originalRecords), .success)
         _ = decorator.forceFlush()
         XCTAssertFalse(try files(root).isEmpty)
         exporter.result.protectedValue = .success
         _ = decorator.forceFlush()
         XCTAssertEqual(exporter.records.protectedValue.count, 1)
+        XCTAssertEqual(exporter.records.protectedValue.first?.attributes["event_id"], .string(originalEventID))
         XCTAssertTrue(try files(root).isEmpty)
         decorator.shutdown()
     }
@@ -226,7 +276,9 @@ final class TelemetryTests: XCTestCase {
             envVarHeaders: [("Authorization", "Bearer test")], requeueOnFailure: false)
         let decorator = PersistenceLogExporterDecorator(logRecordExporter: otlp, storageURL: root,
             exportCondition: { false }, performancePreset: TelemetryController.persistencePreset)
-        _ = decorator.export(logRecords: records())
+        let originalRecords = records()
+        let originalEventID = try eventID(XCTUnwrap(originalRecords.first).attributes)
+        _ = decorator.export(logRecords: originalRecords)
         _ = decorator.forceFlush()
         XCTAssertFalse(try files(root).isEmpty)
         _ = decorator.forceFlush()
@@ -241,6 +293,8 @@ final class TelemetryTests: XCTestCase {
             let logs = payload.resourceLogs.flatMap(\.scopeLogs).flatMap(\.logRecords)
             XCTAssertEqual(logs.count, 1, "HTTP must not also requeue failed persisted logs")
             XCTAssertEqual(logs.first?.eventName, "test")
+            let eventID = logs.first?.attributes.first(where: { $0.key == "event_id" })?.value.stringValue
+            XCTAssertEqual(eventID, originalEventID)
         }
         decorator.shutdown()
     }

@@ -49,6 +49,8 @@ struct TelemetryEvent {
         self.timestamp = timestamp
         var values = properties.merging(snapshot) { current, _ in current }
         values["user_id"] = clientID
+        // Identify this occurrence once; exports and persisted retries reuse these attributes.
+        values["event_id"] = UUID().uuidString
         attributes = values.mapValues { .string($0) }
     }
 

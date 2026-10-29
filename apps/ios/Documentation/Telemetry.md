@@ -59,7 +59,7 @@ and transformations such as `logContext.map { ... }`, remain unresolved. It does
 not trace dictionary mutation through helper calls or infer runtime values.
 Recognized dictionary mutation methods and inout uses are flagged as unresolved;
 previously known keys are retained conservatively.
-Automatically attached event snapshots, `user_id`, and OpenTelemetry resource
+Automatically attached event snapshots, `user_id`, `event_id`, and OpenTelemetry resource
 attributes are outside this inventory. All conditional-compilation branches are
 scanned; tests, scripts, and dependencies outside `GuideDogs` are excluded. Comments
 and string contents do not count as calls, and internal unqualified forwarding
@@ -142,6 +142,20 @@ properties. Screen views use `screen_view` and `screen_name`; value events use
 The resource contains `service.name=soundscape`, `service.version`, and
 `service.build`. Pipeline startup does not instantiate `AppContext`.
 
+Each `TelemetryEvent` generates a UUID once at creation and exports it as the
+string attribute `event_id`. It is assigned after merging caller properties and
+snapshots, so neither can override it. The same ID travels through batching, disk
+persistence, retries, and relaunch replay; export never regenerates it. Distinct
+occurrences receive distinct IDs even when their names, attributes, and timestamps
+otherwise match. This per-occurrence UUID is separate from the event names listed
+as `eventIds` by the source inventory above.
+
+Vector maps `event_id` to Mixpanel's `$insert_id` for deduplication. An upload can
+succeed while its response is lost, causing the app or Vector to retry. Reusing
+the original ID lets Mixpanel recognize the repeated event without relying on
+the collector's fallback hash of event fields, which can merge distinct occurrences
+with identical attributes and timestamps.
+
 The pipeline is:
 
 ```text
@@ -176,7 +190,8 @@ real export (the existing `-TESTING` launch argument or XCTest detection); unit
 tests use injected exporters and URLProtocol stubs.
 
 Delivery is best effort. Records in memory can be lost on abrupt termination,
-and ambiguous network failures can cause duplicates. Retention and storage limits
+and ambiguous network failures can cause repeated delivery; the stable `event_id`
+supports downstream deduplication. Retention and storage limits
 also discard records. Automatic tracing, metrics, and crash reporting are outside
 this integration.
 
@@ -185,7 +200,9 @@ this integration.
 Run the Soundscape scheme's UnitTests, including `TelemetryTests`, and build Debug,
 AdHoc, and Release. Run `apps/ios/Scripts/LocalizationLinter/main.swift` from
 `apps/ios`. Tests cover configuration, consent defaults and saved preferences,
-event mapping, offline persistence/relaunch replay, failed uploads, expiry,
+event mapping, distinct UUIDs for identical occurrences, protected `event_id`
+precedence, stable IDs through repeated emission, OTLP serialization,
+offline persistence/relaunch replay, failed uploads, expiry,
 pruning, corruption, background draining, rapid opt-out/re-enable, disk-write
 revocation, HTTP cancellation, and the settings switch's accessibility label.
 
@@ -202,6 +219,8 @@ For device verification with a test collector:
    verify collection stays off until the launch consent screen is answered. Terminate
    before answering and confirm the screen appears again on the next launch.
 3. Disable networking, generate events, background and relaunch the app, then restore
-   networking. Verify persisted records replay with their original timestamps.
+   networking. Verify persisted records replay with their original timestamps and
+   `event_id` values. Retry an upload and confirm both OTLP requests carry the same
+   ID, which Vector maps to Mixpanel's `$insert_id`.
 4. While offline, opt out and re-enable. Restore networking and confirm no records
    from the previous consent period arrive. Repeat while an upload is in progress.
