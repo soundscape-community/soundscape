@@ -40,11 +40,7 @@ struct OnboardingPromptView: View {
                 Spacer()
                 
                 Button {
-                    if SettingsContext.shared.telemetryConsentChoiceMade {
-                        completeOnboarding()
-                    } else {
-                        viewModel.isPresentingTelemetryConsent = true
-                    }
+                    viewModel.requestCompletion()
                 } label: {
                     GDLocalizedTextView("first_launch.prompt.button")
                         .onboardingButtonTextStyle()
@@ -54,7 +50,7 @@ struct OnboardingPromptView: View {
                 Spacer()
             }
         }
-        .fullScreenCover(isPresented: $viewModel.isPresentingTelemetryConsent, onDismiss: completeOnboarding) {
+        .fullScreenCover(isPresented: $viewModel.isPresentingTelemetryConsent, onDismiss: viewModel.completeOnboarding) {
             TelemetryConsentView {
                 viewModel.isPresentingTelemetryConsent = false
             }
@@ -66,14 +62,6 @@ struct OnboardingPromptView: View {
         }
     }
 
-    private func completeOnboarding() {
-        guard SettingsContext.shared.telemetryConsentChoiceMade, !viewModel.didComplete else { return }
-        viewModel.didComplete = true
-        GDATelemetry.track("onboarding.completed", with: [ "first_launch": "\(!FirstUseExperience.didComplete(.oobe))"])
-        viewModel.deactivateOnboarding()
-        viewModel.dismiss()
-    }
-    
     private func animateView() {
         if UIAccessibility.isVoiceOverRunning || UIApplication.shared.preferredContentSizeCategory.isAccessibilityCategory {
             titleIsHidden = false

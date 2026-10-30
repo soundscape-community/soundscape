@@ -42,7 +42,7 @@ struct TelemetryConsentView: View {
     private func choose(sharingEnabled: Bool) {
         guard !didChoose else { return }
         didChoose = true
-        GDATelemetry.enabled = sharingEnabled
+        GDATelemetry.setConsent(sharingEnabled: sharingEnabled)
         onChoice()
     }
 }

@@ -275,14 +275,14 @@ final class TelemetryTests: XCTestCase {
         let previousOptout = defaults.object(forKey: optoutKey)
         let previousEnabled = GDATelemetry.enabled
         defer {
-            GDATelemetry.enabled = previousEnabled
+            GDATelemetry.setConsent(sharingEnabled: previousEnabled)
             defaults.set(previousChoice, forKey: choiceKey)
             defaults.set(previousOptout, forKey: optoutKey)
         }
 
         for sharingEnabled in [true, false] {
             SettingsContext.shared.telemetryConsentChoiceMade = false
-            GDATelemetry.enabled = sharingEnabled
+            GDATelemetry.setConsent(sharingEnabled: sharingEnabled)
             XCTAssertTrue(SettingsContext.shared.telemetryConsentChoiceMade)
             XCTAssertEqual(SettingsContext.shared.telemetryOptout, !sharingEnabled)
             XCTAssertEqual(GDATelemetry.enabled, sharingEnabled)

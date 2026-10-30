@@ -32,7 +32,7 @@ class TelemetrySettingsTableViewCell: UITableViewCell {
         let prevOptedOut = !GDATelemetry.enabled
         
         if prevOptedOut {
-            GDATelemetry.enabled = true
+            GDATelemetry.setConsent(sharingEnabled: true)
             configure()
             GDATelemetry.track("settings.telemetry_optout", value: String(false))
         } else {
@@ -46,7 +46,7 @@ class TelemetrySettingsTableViewCell: UITableViewCell {
             }))
             
             alert.addAction(UIAlertAction(title: GDLocalizedString("settings.telemetry.optout.action"), style: .destructive, handler: { _ in
-                GDATelemetry.enabled = false
+                GDATelemetry.setConsent(sharingEnabled: false)
             }))
             
             parent?.present(alert, animated: true, completion: nil)

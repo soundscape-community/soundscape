@@ -50,20 +50,10 @@ struct OnboardingWelcomeView: View {
         }
         .accentColor(.primaryForeground)
         .onAppear {
-            guard !viewModel.isOnboardingActive, !viewModel.didComplete else { return }
-            viewModel.isOnboardingActive = true
-            GDATelemetry.trackScreenView("onboarding.welcome")
-            
-            // If onboarding has already been completed,
-            // then onboarding was started from app settings
-            GDATelemetry.track("onboarding.started", with: [ "first_launch": "\(!FirstUseExperience.didComplete(.oobe))"])
-            
-            AppContext.shared.eventProcessor.activateCustom(behavior: OnboardingBehavior(context: context))
+            viewModel.activateOnboarding(context: context)
         }
         .onDisappear {
-            // A full-screen consent presentation must not complete onboarding.
-            guard !viewModel.isPresentingTelemetryConsent else { return }
-            viewModel.deactivateOnboarding()
+            viewModel.onboardingDidDisappear()
         }
     }
     

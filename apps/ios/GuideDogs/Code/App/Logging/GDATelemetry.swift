@@ -35,19 +35,18 @@ public class GDATelemetry {
         _ = controller
     }
 
-    class var enabled: Bool {
-        get { SettingsContext.shared.telemetryEnabled }
-        set {
-            consentChanges.lock()
-            defer { consentChanges.unlock() }
-            // Initialize against the old preference before changing consent.
-            let pipeline = controller
-            if !newValue { pipeline.setEnabled(false) }
-            // Do not save renewed consent until revoked storage is gone.
-            let enabled = newValue && pipeline.setEnabled(true)
-            SettingsContext.shared.telemetryOptout = !enabled
-            SettingsContext.shared.telemetryConsentChoiceMade = true
-        }
+    class var enabled: Bool { SettingsContext.shared.telemetryEnabled }
+
+    class func setConsent(sharingEnabled: Bool) {
+        consentChanges.lock()
+        defer { consentChanges.unlock() }
+        // Initialize against the old preference before changing consent.
+        let pipeline = controller
+        if !sharingEnabled { pipeline.setEnabled(false) }
+        // Do not save renewed consent until revoked storage is gone.
+        let effectiveEnabled = sharingEnabled && pipeline.setEnabled(true)
+        SettingsContext.shared.telemetryOptout = !effectiveEnabled
+        SettingsContext.shared.telemetryConsentChoiceMade = true
     }
 
     class func persistInBackground() {
