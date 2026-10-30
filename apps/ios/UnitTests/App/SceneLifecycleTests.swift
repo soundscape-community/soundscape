@@ -42,6 +42,7 @@ final class SceneLifecycleTests: XCTestCase {
         var validationCount = 0
         delegate.validateActive = { validationCount += 1 }
         let previousState = AppContext.appState
+        let originalSessionID = GDATelemetry.session.id
         let names: [Notification.Name] = [.appDidEnterBackground, .appWillEnterForeground, .appDidBecomeActive]
         var received: [Notification.Name] = []
         let observers = names.map { name in
@@ -67,6 +68,7 @@ final class SceneLifecycleTests: XCTestCase {
         XCTAssertEqual(AppContext.appState, .active)
         XCTAssertEqual(validationCount, 1)
         XCTAssertEqual(received, names)
+        XCTAssertEqual(GDATelemetry.session.id, originalSessionID, "Background and foreground transitions must preserve the usage session")
     }
 
     @MainActor

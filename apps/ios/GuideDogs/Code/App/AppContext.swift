@@ -87,6 +87,8 @@ class AppContext {
                 return
             }
             
+            // Rotate before recording the wake event or notifying other event producers.
+            GDATelemetry.session.operationStateChanged(to: state)
             GDATelemetry.track("wake_state.\(state.rawValue)")
 
             if state != .normal {

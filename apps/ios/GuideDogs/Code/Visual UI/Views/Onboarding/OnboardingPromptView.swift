@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -39,11 +40,7 @@ struct OnboardingPromptView: View {
                 Spacer()
                 
                 Button {
-                    // If onboarding has already been completed,
-                    // then onboarding was started from app settings
-                    GDATelemetry.track("onboarding.completed", with: [ "first_launch": "\(!FirstUseExperience.didComplete(.oobe))"])
-                    
-                    viewModel.dismiss()
+                    viewModel.requestCompletion()
                 } label: {
                     GDLocalizedTextView("first_launch.prompt.button")
                         .onboardingButtonTextStyle()
@@ -53,13 +50,18 @@ struct OnboardingPromptView: View {
                 Spacer()
             }
         }
+        .fullScreenCover(isPresented: $viewModel.isPresentingTelemetryConsent, onDismiss: viewModel.completeOnboarding) {
+            TelemetryConsentView {
+                viewModel.isPresentingTelemetryConsent = false
+            }
+        }
         .onAppear {
             GDATelemetry.trackScreenView("onboarding.prompt")
             
             animateView()
         }
     }
-    
+
     private func animateView() {
         if UIAccessibility.isVoiceOverRunning || UIApplication.shared.preferredContentSizeCategory.isAccessibilityCategory {
             titleIsHidden = false
