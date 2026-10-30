@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -405,7 +406,7 @@ extension ActivityPOI: POI {
     }
     
     func contains(location: CLLocationCoordinate2D) -> Bool {
-        return coordinate == location
+        return coordinate.isNear(to: location)
     }
     
     func closestLocation(from location: CLLocation, useEntranceIfAvailable: Bool) -> CLLocation {
