@@ -127,9 +127,16 @@ SOUNDSCAPE_OTEL_LOGS_ENDPOINT = https:/$()/collector.example.org/v1/logs
 SOUNDSCAPE_OTEL_LOGS_HEADERS = {"Authorization":"Bearer token"}
 ```
 
-The Debug, AdHoc, and Release xcconfigs contain empty defaults. Replace these
-values in your distribution configuration or override them on the xcodebuild
-command line. Verify the expanded values in the built app's Info.plist.
+The Debug, AdHoc, and Release xcconfigs contain empty defaults and optionally
+include `GuideDogs/Assets/Configurations/Local.xcconfig` after those defaults.
+To configure builds on your machine, create that file with the settings above.
+It is ignored by Git and applies to builds from both Xcode and xcodebuild.
+Leave it absent to keep telemetry disabled by default, including in forks, so
+fork builds do not send data to the upstream project's collector.
+
+For distribution builds, provision the local file on the build machine or override
+these settings on the xcodebuild command line. Verify the expanded values in the
+built app's Info.plist.
 
 ## Records and delivery
 

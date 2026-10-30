@@ -466,6 +466,25 @@ final class TelemetryTests: XCTestCase {
         }
     }
 
+    func testStorageThroughSymlinkPreservesCurrentDirectoryAndRecords() throws {
+        let manager = FileManager.default
+        let actual = root.appendingPathComponent("actual", isDirectory: true)
+        let alias = root.appendingPathComponent("alias", isDirectory: true)
+        try manager.createDirectory(at: actual, withIntermediateDirectories: true)
+        try manager.createSymbolicLink(atPath: alias.path, withDestinationPath: actual.path)
+        let storage = TelemetryStorage(root: alias.appendingPathComponent("telemetry", isDirectory: true))
+        let directory = try storage.open(resuming: false)
+        let record = directory.appendingPathComponent("saved-record")
+        try Data("persisted event".utf8).write(to: record)
+        let stale = storage.root.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try manager.createDirectory(at: stale, withIntermediateDirectories: true)
+
+        XCTAssertEqual(try storage.open(resuming: true), directory)
+        XCTAssertEqual(try Data(contentsOf: record), Data("persisted event".utf8))
+        XCTAssertTrue(manager.fileExists(atPath: storage.root.appendingPathComponent("current").path))
+        XCTAssertFalse(manager.fileExists(atPath: stale.path))
+    }
+
     func testStorageProtectionAndBackupExclusion() throws {
         let directory = try TelemetryStorage(root: root).open(resuming: false)
         XCTAssertEqual(try root.resourceValues(forKeys: [.isExcludedFromBackupKey]).isExcludedFromBackup, true)

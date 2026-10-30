@@ -195,8 +195,10 @@ struct TelemetryStorage {
         let directory = root.appendingPathComponent(identifier, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true,
                                                 attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
+        // Directory enumeration can resolve /var to /private/var on devices.
+        // These are direct children, so compare names rather than aliased URLs.
         for child in try FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil)
-            where child != marker && child != directory {
+            where child.lastPathComponent != marker.lastPathComponent && child.lastPathComponent != identifier {
             try FileManager.default.removeItem(at: child)
         }
         try identifier.write(to: marker, atomically: true, encoding: .utf8)
