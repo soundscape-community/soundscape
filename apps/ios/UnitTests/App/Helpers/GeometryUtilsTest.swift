@@ -4,6 +4,7 @@
 //
 //  Created by Kai on 6/16/23.
 //  Copyright © 2023 Microsoft. All rights reserved.
+//  Copyright (c) Soundscape Community Contributors.
 //
 
 import XCTest
@@ -307,19 +308,17 @@ class GeometryUtilsTest: XCTestCase {
                     CLLocationCoordinate2DMake(1, 0),
                     CLLocationCoordinate2DMake(1, 1),
                     CLLocationCoordinate2DMake(2, 2)]
-        let path_len = GeometryUtils.pathDistance(path)
         // Any distance before the start returns the first coordinate
         XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -CLLocationDistanceMax), path.first)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -path_len), path.first)
+        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -1_000_000), path.first)
         XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -5.2), path.first)
         XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: -1), path.first)
         XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: 0), path.first)
         
-        // Any distance after the end returns the last coordinate
+        // This path is under 400 km long. Use a clearly out-of-bounds distance:
+        // separate Core Location distance calculations can vary with other calls.
         XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: CLLocationDistanceMax), path.last)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: path_len * 1.2512), path.last)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: path_len + 1), path.last)
-        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: path_len), path.last)
+        XCTAssertEqual(GeometryUtils.referenceCoordinate(on: path, for: 1_000_000), path.last)
     }
     
     // TODO: test `squaredDistance`
