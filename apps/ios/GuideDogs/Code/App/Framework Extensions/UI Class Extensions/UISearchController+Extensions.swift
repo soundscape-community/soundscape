@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -34,6 +35,9 @@ extension UISearchController {
         self.searchResultsUpdater = searchResultsController.searchResultsUpdater
         // Configure `UISearchBar`
         self.searchBar.delegate = searchResultsController.searchResultsUpdater
+        self.searchBar.scopeButtonTitles = [SearchResultsUpdater.Scope.nearby.title, SearchResultsUpdater.Scope.anywhere.title]
+        self.searchBar.selectedScopeButtonIndex = searchResultsController.searchResultsUpdater.scope.rawValue
+        self.searchBar.showsScopeBar = true
         self.searchBar.placeholder = GDLocalizedString("search.choose_destination")
         self.searchBar.searchTextField.textColor = Colors.Background.secondary
         self.searchBar.searchTextField.tintColor = Colors.Background.secondary
