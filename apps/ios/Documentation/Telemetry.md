@@ -28,14 +28,17 @@ update the App Store privacy answers automatically.
 | Fitness | `routes.added.activity`, derived from Motion & Fitness activity detection | Analytics |
 | Other Data Types | App preferences and accessibility settings | Analytics |
 
-These categories are linked to the user via the installation identifier. It is
-an app-installation identifier, not an account identifier or the advertising ID;
-its wire key `user_id` does not determine Apple's data category. The consent screen
-describes sharing as anonymous; the manifest separately declares the persistent
-installation linkage using Apple's terminology. The English settings footer
-describes this identifier. Existing translations of the settings footer
-must be updated before submission; some still claim that no personal data is
-collected. Accessibility settings describe enabled system features, not a stated
+These categories are declared **not linked to the user's identity**
+(`NSPrivacyCollectedDataTypeLinked = false`). Soundscape has no user accounts and
+collects no identity information. The random installation identifier correlates
+reports from the same installation; it is not connected to a real-world identity,
+an account, or an advertising identifier. Neither Soundscape nor its analytics
+providers link these reports to identity information or identity-enabling datasets.
+The wire key `user_id` does not determine Apple's data category. The consent screen
+describes sharing as anonymous, and the English settings footer describes the
+installation identifier. Reassess this declaration if identity collection or
+identity linking is introduced. Accessibility settings describe enabled system
+features, not a stated
 diagnosis or disability; reassess Sensitive Info if the payload or its use changes.
 
 Tracking is declared false based on analytics/diagnostics-only use: no advertising,
