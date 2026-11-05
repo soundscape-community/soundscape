@@ -22,7 +22,6 @@ class OnboardingViewModel: ObservableObject {
     func activateOnboarding(context: OnboardingBehavior.Context) {
         guard !isOnboardingActive, !didComplete else { return }
         isOnboardingActive = true
-        GDATelemetry.trackScreenView("onboarding.welcome")
         // Completed onboarding means this flow was opened from app settings.
         GDATelemetry.track("onboarding.started", with: ["first_launch": "\(!FirstUseExperience.didComplete(.oobe))"])
         AppContext.shared.eventProcessor.activateCustom(behavior: OnboardingBehavior(context: context))

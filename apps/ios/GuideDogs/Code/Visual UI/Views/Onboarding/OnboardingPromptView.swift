@@ -56,7 +56,6 @@ struct OnboardingPromptView: View {
             }
         }
         .onAppear {
-            GDATelemetry.trackScreenView("onboarding.prompt")
             
             animateView()
         }

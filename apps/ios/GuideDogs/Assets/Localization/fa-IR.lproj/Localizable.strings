@@ -274,6 +274,15 @@
 "settings.section.telemetry" = "تله‌متری";
 /* Settings title, Share Usage Data */
 "settings.section.share_usage_data" = "اشتراک‌گذاری داده‌های استفاده";
+
+/* Title of the required telemetry consent screen */
+"telemetry.consent.title" = "به بهبود Soundscape کمک کنید";
+
+/* Explains optional anonymous usage sharing and the exclusion of precise location */
+"telemetry.consent.message" = "با اشتراک‌گذاری اطلاعات درباره نحوه استفاده خود از برنامه، به بهبود Soundscape کمک کنید. همه داده‌های به‌اشتراک‌گذاشته‌شده ناشناس هستند و موقعیت مکانی دقیق شما هرگز به اشتراک گذاشته نمی‌شود. می‌توانید هر زمان که بخواهید انتخاب خود را در تنظیمات تغییر دهید.";
+
+/* Declines usage sharing and remembers the choice */
+"telemetry.consent.dont_share" = "عدم اشتراک‌گذاری";
 /* Footer to Telemetry settings selection, help app improve by automatically sending diagnostics and data usage from the user. Personal data not collected {NumberedPlaceholder="Soundscape"} */
 "settings.section.telemetry.footer" = "با ارسال خودکار داده‌های تشخیصی، گزارش خطا و استفاده، به بهبود Soundscape کمک کنید. هیچ داده شخصی جمع‌آوری نمی‌شود.";
 /* Settings title, Language */

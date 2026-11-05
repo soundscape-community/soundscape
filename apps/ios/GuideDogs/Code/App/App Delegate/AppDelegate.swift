@@ -74,7 +74,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let components = URLComponents(url: url, resolvingAgainstBaseURL: true){
            if let source = components.queryItems?.first(where: { $0.name == "source" })?.value {
             GDLogAppInfo("App opened from source: \(source)")
-            GDATelemetry.track("app.open", with: ["source": source])
            }
         } else {
             GDLogAppError("Handling incoming shared URL failed - unable to parse URL components")

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -57,7 +58,6 @@ struct WaypointCard: View {
                     
                     if isCurrent {
                         Button {
-                            GDATelemetry.track("waypoint_card.callout.selected")
                             
                             repeatLastCallout()
                         } label: {
@@ -81,7 +81,6 @@ struct WaypointCard: View {
                 }
                 
                 Button {
-                    GDATelemetry.track("waypoint_card.detail_view.selected")
                     
                     isWaypointDetailViewPresented = true
                 } label: {

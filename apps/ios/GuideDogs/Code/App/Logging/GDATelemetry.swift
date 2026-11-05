@@ -28,7 +28,52 @@ public class GDATelemetry {
             storage: TelemetryStorage(root: root))
     }()
 
-    private static let consentChanges = NSLock()
+    // Serialize session rotation, consent, snapshot announcements and event enqueueing.
+    private static let eventChanges = NSRecursiveLock()
+    private static var context = TelemetryContextState()
+
+    static let contextDidChange = Notification.Name("TelemetryContextDidChange")
+
+    class func snapshotsReady() {
+        eventChanges.lock()
+        context.ready = true
+        recordSnapshotIfNeeded()
+        eventChanges.unlock()
+        NotificationCenter.default.post(name: contextDidChange, object: nil)
+    }
+
+    class func operationStateChanged(to state: OperationState) {
+        eventChanges.lock()
+        let previousID = session.id
+        session.operationStateChanged(to: state)
+        let rotated = previousID != session.id
+        if rotated { recordSnapshotIfNeeded() }
+        eventChanges.unlock()
+        if rotated { NotificationCenter.default.post(name: contextDidChange, object: nil) }
+    }
+
+    private class func recordSnapshotIfNeeded() {
+        guard let helper = helper,
+              context.claimSnapshot(sessionID: session.id, collecting: enabled && controller.collecting) else { return }
+        GDATelemetry.track("session.snapshot", with: helper.sessionSnapshot)
+    }
+
+    class func trackNaviLensSuggestion() {
+        eventChanges.lock()
+        defer { eventChanges.unlock() }
+        guard context.claimSuggestion(sessionID: session.id, collecting: enabled && controller.collecting,
+                                      active: UIApplication.shared.applicationState == .active) else { return }
+        GDATelemetry.track("navilens.suggested")
+    }
+
+    class func captureOccurrence() -> TelemetryOccurrence? {
+        eventChanges.lock()
+        defer { eventChanges.unlock() }
+        guard enabled, controller.collecting else { return nil }
+        recordSnapshotIfNeeded()
+        return TelemetryOccurrence(timestamp: Date(), sessionID: session.id,
+                                   consentEpoch: context.consentEpoch, snapshot: helper?.eventSnapshot ?? [:])
+    }
 
     class func initialize() {
         _ = session
@@ -38,8 +83,7 @@ public class GDATelemetry {
     class var enabled: Bool { SettingsContext.shared.telemetryEnabled }
 
     class func setConsent(sharingEnabled: Bool) {
-        consentChanges.lock()
-        defer { consentChanges.unlock() }
+        eventChanges.lock()
         // Initialize against the old preference before changing consent.
         let pipeline = controller
         if !sharingEnabled { pipeline.setEnabled(false) }
@@ -47,6 +91,10 @@ public class GDATelemetry {
         let effectiveEnabled = sharingEnabled && pipeline.setEnabled(true)
         SettingsContext.shared.telemetryOptout = !effectiveEnabled
         SettingsContext.shared.telemetryConsentChoiceMade = true
+        if !effectiveEnabled { context.revokeConsent() }
+        recordSnapshotIfNeeded()
+        eventChanges.unlock()
+        NotificationCenter.default.post(name: contextDidChange, object: nil)
     }
 
     class func persistInBackground() {
@@ -62,24 +110,22 @@ public class GDATelemetry {
         controller.persist { DispatchQueue.main.async(execute: finish) }
     }
 
-    class func trackScreenView(_ screenName: String, with properties: [String: String]? = nil) {
-        var propertiesToSend = properties ?? [:]
-        propertiesToSend["screen_name"] = screenName
-
-        track("screen_view", with: propertiesToSend)
-    }
-    
     class func track(_ eventName: String, value: String) {
         track(eventName, with: ["value": value])
     }
     
-    class func track(_ eventName: String, with properties: [String: String]? = nil) {
+    class func track(_ eventName: String, with properties: [String: String]? = nil,
+                     occurrence: TelemetryOccurrence? = nil) {
+        eventChanges.lock()
+        defer { eventChanges.unlock() }
         guard enabled, controller.collecting else { return }
-        let timestamp = Date()
+        if let occurrence = occurrence, occurrence.consentEpoch != context.consentEpoch { return }
+        recordSnapshotIfNeeded()
+        let timestamp = occurrence?.timestamp ?? Date()
         controller.record {
             let event = TelemetryEvent(name: eventName, timestamp: timestamp, properties: properties ?? [:],
-                                       clientID: SettingsContext.shared.clientId, sessionID: session.id,
-                                       snapshot: helper?.eventSnapshot ?? [:])
+                                       clientID: SettingsContext.shared.clientId, sessionID: occurrence?.sessionID ?? session.id,
+                                       snapshot: occurrence?.snapshot ?? helper?.eventSnapshot ?? [:])
             if debugLog {
                 print("[TEL] Event tracked: \(eventName) \(event.attributes)")
             }

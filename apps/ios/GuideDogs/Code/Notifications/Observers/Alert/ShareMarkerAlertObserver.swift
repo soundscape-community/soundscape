@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -69,14 +70,12 @@ class ShareMarkerAlertObserver: NotificationObserver {
     // MARK: Alerts
     
     private func defaultAlertActionHandler(_ action: UIAlertAction) {
-        GDATelemetry.track("deeplink.share_marker.alert_cancel")
         
         // Reset `currentAlert` after it has been presented
         self.currentAlert = nil
     }
     
     private func presentImportMarkerAlert(location: POI, nickname: String?, annotation: String?) {
-        GDATelemetry.track("deeplink.share_marker.alert_import")
         
         // Save the imported location as a marker
         let markerHandler: (UIAlertAction) -> Void = { [weak self] (_) in
@@ -144,15 +143,12 @@ class ShareMarkerAlertObserver: NotificationObserver {
     }
     
     private func presentImportExistingMarkerAlert(existingMarker: ReferenceEntity, nickname: String?, annotation: String?) {
-        GDATelemetry.track("deeplink.share_marker.alert_existing")
         
         let replaceHandler: (UIAlertAction) -> Void = { [weak self] (_) in
             guard let `self` = self else {
                 return
             }
-            
-            GDATelemetry.track("deeplink.share_marker.replace")
-            
+
             // Reset `currentAlert` after it has been presented
             self.currentAlert = nil
             

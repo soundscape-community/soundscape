@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -29,13 +30,7 @@ class ThirdPartyNoticesViewController: UIViewController {
         
         loadLicenses()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("settings.about.third_party_notices")
-    }
-    
+
     // MARK: Actions
     
     private func loadLicenses() {

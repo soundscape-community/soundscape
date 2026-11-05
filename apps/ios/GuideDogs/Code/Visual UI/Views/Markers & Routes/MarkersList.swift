@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -50,9 +51,7 @@ struct MarkersList: View {
         } else if loader.markerIDs.isEmpty {
             EmptyMarkerOrRoutesView(.markers)
                 .background(Color.quaternaryBackground)
-                .onAppear {
-                    GDATelemetry.trackScreenView("markers_list.empty")
-                }
+
         } else {
             List {
                 SortStyleCell(listName: GDLocalizedString("markers.title"), sort: _sort)
@@ -80,9 +79,7 @@ struct MarkersList: View {
                 EmptyView()
             }
             .accessibilityHidden(true)
-            .onAppear {
-                GDATelemetry.trackScreenView("markers_list")
-            }
+
         }
     }
     

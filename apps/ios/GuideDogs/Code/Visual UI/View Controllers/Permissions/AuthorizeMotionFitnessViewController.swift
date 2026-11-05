@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -26,9 +27,7 @@ class AuthorizeMotionFitnessViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("authorize_motion_fitness_services")
-        
+
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
@@ -42,7 +41,6 @@ class AuthorizeMotionFitnessViewController: UIViewController {
     
     @IBAction func onEnableButtonTouchUp(_ sender: UIButton) {
         if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-            GDATelemetry.track("open_settings", with: ["context": "authorize_fitness_tracking"])
             UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
         }
     }

@@ -13,6 +13,109 @@ canceling the opt-out confirmation does not. If enabling fails during storage
 cleanup, sharing remains disabled and the choice is still remembered. No collector
 configuration is included in the repository.
 
+## Apple privacy declarations
+
+The app's `Assets/PropertyLists/PrivacyInfo.xcprivacy` declares the current telemetry
+payload as follows. Use the same classifications in App Store Connect for a
+distribution build with a configured collector; editing the manifest does not
+update the App Store privacy answers automatically.
+
+| Apple data type | Exported information | Purpose |
+| --- | --- | --- |
+| Device ID | The random, persistent installation identifier exported as `user_id` | Analytics |
+| Product Interaction | Usage events, sessions, tutorial progress, beacon and route actions | Analytics |
+| Other Diagnostic Data | Audio/migration errors, offline state, device model/OS and audio/headset context | Analytics, App Functionality |
+| Fitness | `routes.added.activity`, derived from Motion & Fitness activity detection | Analytics |
+| Other Data Types | App preferences and accessibility settings | Analytics |
+
+These categories are linked to the user via the installation identifier. It is
+an app-installation identifier, not an account identifier or the advertising ID;
+its wire key `user_id` does not determine Apple's data category. The consent screen
+describes sharing as anonymous; the manifest separately declares the persistent
+installation linkage using Apple's terminology. The English settings footer
+describes this identifier. Existing translations of the settings footer
+must be updated before submission; some still claim that no personal data is
+collected. Accessibility settings describe enabled system features, not a stated
+diagnosis or disability; reassess Sensitive Info if the payload or its use changes.
+
+Tracking is declared false based on analytics/diagnostics-only use: no advertising,
+cross-company advertising measurement, or data-broker sharing. This assumes the
+collector and analytics provider follow the same restriction. Persistent first-party
+analytics alone is not Apple's definition of tracking. Do not enable automatic IP
+geolocation or add fields or integrations without revisiting these declarations.
+The current telemetry payload has no location coordinates, search text, user audio,
+crash reports, or performance measurements; on-device use alone does not make those
+types collected by telemetry. Review other app services separately for the complete
+App Store privacy answers.
+
+Before submitting a distribution build:
+
+1. Match the manifest, App Store Connect answers, translated consent/settings text,
+   and published privacy policy to the actual production payload and processing.
+   The policy must explain collection, purposes, third-party processing, retention,
+   deletion, and how users withdraw consent. Opting out purges local telemetry; it
+   does not delete reports previously received by the collector.
+   The current in-app link is `https://vially.io/privacy-policy`, which redirects
+   to Vially's general website policy. At review time it does not describe
+   Soundscape telemetry or Mixpanel; update that policy or the link before release.
+2. Review whether the Motion & Fitness activity field is necessary. Declaring
+   Fitness describes collection; it does not grant permission for every use.
+   Apple imposes additional restrictions on health/fitness data in that context.
+   Remove this telemetry field if it is unnecessary, then remove its declaration
+   only once no other exported field requires it.
+3. Archive the actual distribution configuration, generate Xcode's privacy report,
+   inspect the app and dependency manifests in the archive, and run Organizer's
+   Validate App. Manifest syntax validation alone is not App Review approval.
+4. Exercise both consent choices and opt-out against the production-configured
+   build, and describe the optional telemetry and settings path in review notes.
+
+Apple references: [manifest structure](https://developer.apple.com/documentation/technotes/tn3184-adding-data-collection-details-to-your-privacy-manifest),
+[data types, linkage, tracking and App Store answers](https://developer.apple.com/app-store/app-privacy-details/),
+and [App Review privacy rules](https://developer.apple.com/app-store/review/guidelines/#privacy).
+
+## Collected events
+
+The app emits 24 event names. Screen views, `app.open`, dynamically named events,
+settings-change events, accessibility-change events and experiment snapshots are
+not collected. The remaining events cover onboarding start/completion, beacon
+add/arrival/removal, route creation, GPX saving, app-rating prompts/actions,
+selected deep-link actions, offline state, and selected audio/migration errors.
+
+`session.snapshot` replaces the separate `app_snapshot`, `device_snapshot` and
+`ios_accessibility` events. It carries the following context as string attributes:
+
+- `app.*`: version/build, language/voice/rate, units, callout
+  and audio-mixing settings, beacon style/melodies, volumes and tutorial status.
+- `device.*`: locale, model identifier, OS version and audio output type.
+- `accessibility.*`: VoiceOver, mono audio, Speak Screen/Selection, bold text,
+  content size, grayscale, inverted/darker colours, AssistiveTouch and Switch Control.
+
+The prefixes are prepended to the former keys, for example `app.settings.voice`,
+`device.os.version` and `accessibility.voice_over`. Shared event attributes and
+identifiers are still attached. Beacon/headset state uses the shared `beacon.state`
+and `ar_headset.state` attributes, without duplicate `app.*` fields. First-use date
+and accumulated marker/beacon counters are not exported. The beacon-set counter
+is retained locally for reminder scheduling. All accessibility fields are retained.
+Initial context is captured after launch setup and
+saved-voice validation, then once per new session ID. Early startup errors may
+precede the initial snapshot. Enabling sharing after initialization emits current
+context; renewed consent emits fresh context even within the same session. No
+pre-consent activity is replayed. Mixpanel can derive sessions from `session_id`;
+this snapshot is context, not an explicit session-start event.
+
+`navilens.suggested` records the first visible recommendation card while the app
+is active in each session. Refreshes and navigation do not add impressions. A
+visible card is reconsidered on foregrounding, session rotation and consent changes.
+An impression already collected in a session is not repeated after renewed consent.
+
+`navilens.launch` records each user launch attempt when the system open request
+completes, with `destination` (`navilens` or `app_store`) and `success` (`true` or
+`false`). Recommendation, location, accessibility and beacon-toolbar launch paths
+share this instrumentation. Timestamp, session ID and shared context are captured
+at the initiating action. Revocation invalidates pending attempts, including if
+sharing is subsequently re-enabled. Neither NaviLens event includes POI names,
+identifiers, addresses or coordinates.
+
 ## Source inventory
 
 Run the standalone Swift inventory script from the repository root:
@@ -54,7 +157,7 @@ expressions are retained rather than evaluated, and assignments after a call do
 not change its record.
 
 This is a bounded source scanner, not a Swift compiler or whole-program analysis.
-Shared/computed providers such as `helper.deviceSnapshot` and `currentStateInfo`,
+Shared/computed providers such as `helper.sessionSnapshot` and `currentStateInfo`,
 and transformations such as `logContext.map { ... }`, remain unresolved. It does
 not trace dictionary mutation through helper calls or infer runtime values.
 Recognized dictionary mutation methods and inout uses are flagged as unresolved;
@@ -168,8 +271,9 @@ Every new app process starts a fresh session. Backgrounding, foregrounding, phon
 lock, and ordinary inactivity keep the same ID because background use is normal.
 Entering Soundscape sleep mode (the home screen Sleep button) keeps the ID until
 wake: returning to normal operation after **at least 30 continuous minutes** in
-sleep or snooze generates a new UUID before the `wake_state.normal` event is
-recorded. Switching between sleep and "wake when I leave" snooze does not restart
+sleep or snooze generates a new UUID and, when collection is enabled and launch
+initialization is complete, emits `session.snapshot` before subsequent events.
+Switching between sleep and "wake when I leave" snooze does not restart
 the timeout. Short sleeps keep the session and do not accumulate toward 30 minutes.
 Other paths into Soundscape sleep mode, such as the NaviLens integration, follow
 the same rule. Device sleep alone never starts this timeout.
@@ -205,7 +309,7 @@ reopens the same directory. On scene backgrounding, an iOS background task drain
 the memory batch to disk without waiting for the stored backlog to upload.
 
 Confirming opt-out revokes collection and request starts, cancels outstanding
-URLSession requests, suppresses the opt-out event, and serializes shutdown and
+URLSession requests, invalidates pending launch telemetry, and serializes shutdown and
 memory/disk cleanup. Re-enabling waits for queued cleanup and synchronously purges
 old storage before the enabled preference is saved, then creates a fresh consent
 period. If purging fails, consent remains disabled. Revoked tokens

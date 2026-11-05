@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -34,7 +35,6 @@ struct BeaconMapCard: View {
         VStack(spacing: 0.0) {
             HStack(alignment: .top, spacing: 12.0) {
                 Button {
-                    GDATelemetry.track("beacon_map_card.detail_view.selected", with: ["style": style.description])
                     
                     isMapDetailViewPresented = true
                 } label: {
@@ -45,7 +45,6 @@ struct BeaconMapCard: View {
                 Spacer()
                 
                 Button {
-                    GDATelemetry.track("beacon_map_card.full_screen.selected")
                     
                     isFullScreenViewPresented = true
                 } label: {
@@ -65,9 +64,7 @@ struct BeaconMapCard: View {
                     // Currently, detail view is only supported for waypoint annotations
                     return
                 }
-                
-                GDATelemetry.track("beacon_map_card.annotation.selected")
-                
+
                 selectedAnnotation = annotation.asIdentifiable
             }
         )

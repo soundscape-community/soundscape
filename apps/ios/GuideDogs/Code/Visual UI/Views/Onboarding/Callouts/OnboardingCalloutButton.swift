@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -68,18 +69,15 @@ struct OnboardingCalloutButton: View {
         // If the button is animating, audio is already
         // playing
         if audioButtonIsAnimating {
-            GDATelemetry.track("onboarding.callout.hushed")
             
              AppContext.shared.eventProcessor.hush(playSound: true)
             
             stopAnimation(audioDidComplete: false)
         } else {
-            GDATelemetry.track("onboarding.callout.started")
             
             startAnimation()
             
             AppContext.process(OnboardingExampleCalloutEvent { _ in
-                GDATelemetry.track("onboarding.callout.completed")
                 
                 stopAnimation()
             })

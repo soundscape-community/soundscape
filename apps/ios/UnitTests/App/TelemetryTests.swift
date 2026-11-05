@@ -89,14 +89,14 @@ final class TelemetryTests: XCTestCase {
         let processor = SimpleLogRecordProcessor(logRecordExporter: exporter)
         let provider = LoggerProviderBuilder().with(processors: [processor]).build()
         let timestamp = Date(timeIntervalSince1970: 123456)
-        TelemetryEvent(name: "device_snapshot", timestamp: timestamp,
+        TelemetryEvent(name: "session.snapshot", timestamp: timestamp,
                        properties: ["locale": "en-GB", "user_id": "caller", "event_id": "caller", "session_id": "caller"],
                        clientID: "client", sessionID: "session",
                        snapshot: ["locale": "en-US", "app.state": "active", "user_id": "snapshot",
                                   "event_id": "snapshot", "session_id": "snapshot"])
             .emit(to: provider.get(instrumentationScopeName: "tests"))
         let record = try XCTUnwrap(exporter.records.protectedValue.first)
-        XCTAssertEqual(record.eventName, "device_snapshot")
+        XCTAssertEqual(record.eventName, "session.snapshot")
         XCTAssertNil(record.body)
         XCTAssertEqual(record.severity, .info)
         XCTAssertEqual(record.timestamp, timestamp)
@@ -201,7 +201,7 @@ final class TelemetryTests: XCTestCase {
         let start = Date(timeIntervalSince1970: 123456)
         session.operationStateChanged(to: .sleep, at: start)
         session.operationStateChanged(to: .normal, at: start.addingTimeInterval(31 * 60))
-        let wake = TelemetryEvent(name: "wake_state.normal", clientID: "client", sessionID: session.id)
+        let wake = TelemetryEvent(name: "session.snapshot", clientID: "client", sessionID: session.id)
         let exporter = RecordingLogExporter()
         let processor = SimpleLogRecordProcessor(logRecordExporter: exporter)
         let provider = LoggerProviderBuilder().with(processors: [processor]).build()
@@ -211,6 +211,58 @@ final class TelemetryTests: XCTestCase {
         XCTAssertNotEqual(originalID, session.id)
         XCTAssertEqual(exporter.records.protectedValue.map { $0.attributes["session_id"] },
                        [.string(originalID), .string(session.id)])
+    }
+
+    func testSnapshotWaitsForInitializationAndCollectionAndDeduplicatesPerSession() {
+        var context = TelemetryContextState()
+        XCTAssertFalse(context.claimSnapshot(sessionID: "first", collecting: true))
+        context.ready = true
+        XCTAssertFalse(context.claimSnapshot(sessionID: "first", collecting: false))
+        XCTAssertTrue(context.claimSnapshot(sessionID: "first", collecting: true))
+        XCTAssertFalse(context.claimSnapshot(sessionID: "first", collecting: true))
+        // Repeated readiness/foreground callbacks do not announce another snapshot.
+        context.ready = true
+        XCTAssertFalse(context.claimSnapshot(sessionID: "first", collecting: true))
+        XCTAssertTrue(context.claimSnapshot(sessionID: "next", collecting: true))
+        XCTAssertFalse(context.claimSnapshot(sessionID: "next", collecting: true))
+    }
+
+    func testRenewedConsentAllowsFreshContextAndInvalidatesPendingOccurrences() {
+        var context = TelemetryContextState()
+        context.ready = true
+        let epoch = context.consentEpoch
+        XCTAssertTrue(context.claimSnapshot(sessionID: "session", collecting: true))
+        context.revokeConsent()
+        XCTAssertNotEqual(epoch, context.consentEpoch)
+        XCTAssertFalse(context.claimSnapshot(sessionID: "session", collecting: false))
+        XCTAssertTrue(context.claimSnapshot(sessionID: "session", collecting: true))
+        XCTAssertFalse(context.claimSnapshot(sessionID: "session", collecting: true))
+    }
+
+    func testSuggestionRequiresVisibleActiveEligibleContextAndCountsOncePerSession() {
+        var context = TelemetryContextState()
+        XCTAssertFalse(context.claimSuggestion(sessionID: "first", collecting: true, active: true))
+        context.ready = true
+        XCTAssertFalse(context.claimSuggestion(sessionID: "first", collecting: false, active: true))
+        XCTAssertFalse(context.claimSuggestion(sessionID: "first", collecting: true, active: false))
+        XCTAssertTrue(context.claimSuggestion(sessionID: "first", collecting: true, active: true))
+        XCTAssertFalse(context.claimSuggestion(sessionID: "first", collecting: true, active: true))
+        context.revokeConsent()
+        XCTAssertFalse(context.claimSuggestion(sessionID: "first", collecting: true, active: true))
+        XCTAssertTrue(context.claimSuggestion(sessionID: "next", collecting: true, active: true))
+    }
+
+    func testSnapshotPrefixesEveryFieldWithoutChangingStringValues() {
+        let app = ["version": "1.2", "settings.allow_callouts": "true", "volume.tts": "0.7"]
+        let device = ["locale": "en_GB", "model": "iPhone17,1", "os.version": "18.0", "audio.output": "headphones"]
+        let accessibility = ["voice_over": "true", "content_size": "UICTContentSizeCategoryL"]
+        let snapshot = TelemetryContextState.snapshot(app: app, device: device, accessibility: accessibility)
+        XCTAssertEqual(snapshot.count, app.count + device.count + accessibility.count)
+        for (prefix, fields) in [("app", app), ("device", device), ("accessibility", accessibility)] {
+            for (key, value) in fields { XCTAssertEqual(snapshot["\(prefix).\(key)"], value) }
+        }
+        XCTAssertNil(snapshot["locale"])
+        XCTAssertNil(snapshot["experiment"])
     }
 
     func testConfigurationFailsClosed() {

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -86,14 +87,6 @@ struct OnboardingAuthorizationView: View {
                 })
                 .accessibilityHidden(true)
         }
-        .onAppear {
-            GDATelemetry.trackScreenView("onboarding.authorization")
-            
-            logAuthorizationStatus(onAppear: true)
-        }
-        .onDisappear {
-            logAuthorizationStatus(onAppear: false)
-        }
         .onChange(of: location.authorizationStatus, perform: { _ in
             tryRequestAuthorization()
         })
@@ -116,18 +109,7 @@ struct OnboardingAuthorizationView: View {
             isNavigationLinkActive = true
         }
     }
-    
-    // MARK: Telemetry
-    
-    private func logAuthorizationStatus(onAppear: Bool) {
-        let suffix = onAppear ? "appear" : "disappear"
-        let event = "onboarding.authorzation_status.\(suffix)"
-        
-        GDATelemetry.track(event, with: [
-            location.service.rawValue: location.authorizationStatus.rawValue,
-            motion.service.rawValue: motion.authorizationStatus.rawValue
-        ])
-    }
+
     
 }
 

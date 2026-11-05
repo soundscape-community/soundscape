@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -55,13 +56,7 @@ class SiriShortcutsTableViewController: BaseTableViewController {
                                                name: Notification.Name.appWillEnterForeground,
                                                object: nil)
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("settings.siri_shortcuts")
-    }
-    
+
     // MARK: Methods
     
     private func reloadDisplayShortcuts() {
@@ -233,11 +228,7 @@ extension SiriShortcutsTableViewController: INUIAddVoiceShortcutViewControllerDe
             reloadShortcuts()
             self.dismiss(animated: true, completion: nil)
         }
-        
-        guard let userActivity = voiceShortcut?.shortcut.userActivity,
-              let userAction = UserAction(userActivity: userActivity) else { return }
-        
-        GDATelemetry.track("user_activity.voice.added", value: userAction.rawValue)
+
     }
     
     func addVoiceShortcutViewControllerDidCancel(_ controller: INUIAddVoiceShortcutViewController) {
@@ -263,19 +254,10 @@ extension SiriShortcutsTableViewController: INUIEditVoiceShortcutViewControllerD
                 self?.reloadShortcuts()
             }
         }
-        
-        guard let userActivity = voiceShortcut?.shortcut.userActivity,
-              let userAction = UserAction(userActivity: userActivity) else { return }
-        
-        GDATelemetry.track("user_activity.voice.updated", value: userAction.rawValue)
+
     }
     
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController, didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
-        if let voiceShortcut = voiceShortcuts.first(where: { $0.identifier == deletedVoiceShortcutIdentifier }),
-           let userActivity = voiceShortcut.shortcut.userActivity,
-           let userAction = UserAction(userActivity: userActivity) {
-            GDATelemetry.track("user_activity.voice.deleted", value: userAction.rawValue)
-        }
         
         controller.dismiss(animated: true) { [weak self] in
             // Shortcuts update only after the dismissal of the screen

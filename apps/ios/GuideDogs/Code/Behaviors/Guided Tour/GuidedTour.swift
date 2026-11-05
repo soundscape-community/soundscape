@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -226,7 +227,6 @@ class GuidedTour: BehaviorBase {
         }
         
         super.activate(with: parent)
-        GDATelemetry.track("tourguide.started", with: ["context": telemetryContext])
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
             guard let location = AppContext.shared.geolocationManager.location else {
@@ -256,9 +256,7 @@ class GuidedTour: BehaviorBase {
         saveState()
         clearBeacon()
         updateNowPlayingInfo(nil)
-        
-        GDATelemetry.track("tourguide.stopped", with: ["context": telemetryContext, "completed": String(state.isFinal)])
-        
+
         DispatchQueue.main.async {
             AppContext.process(RemoveRegisteredPOIs())
         }
@@ -298,18 +296,15 @@ class GuidedTour: BehaviorBase {
         
         // If this waypoint was already completed, then just move onto the next one
         guard !state.visited.contains(index) else {
-            GDATelemetry.track("tourguide.waypoint_revisited", with: ["context": telemetryContext])
             nextWaypoint(automatic: true)
             return true
         }
         
         state.visited.append(index)
-        GDATelemetry.track("tourguide.waypoint_visited", with: ["context": telemetryContext])
         
         // If the route is complete, turn off the audio beacon. The beacon will still be set on the last waypoint, but the
         // audio will be disabled. The user can turn it on if they wish.
         guard index != content.waypoints.count - 1 else {
-            GDATelemetry.track("tourguide.final_waypoint.arrival")
             
             arrivedAtFinalWaypoint = true
             
@@ -334,7 +329,6 @@ class GuidedTour: BehaviorBase {
             
             nearestIntersectionKey = nil
             saveState(finalize: true)
-            GDATelemetry.track("tourguide.completed", with: ["context": telemetryContext])
             return true
         }
         
@@ -402,7 +396,6 @@ class GuidedTour: BehaviorBase {
         // Save state after everything else so that the stateChanged event gets sent when all state is done changing
         saveState()
         
-        GDATelemetry.track("tourguide.next", with: ["context": telemetryContext, "automatic": "\(automatic)", "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
     }
     
     /// Updates the `waypointIndex` property of the state object to be the index of the
@@ -432,7 +425,6 @@ class GuidedTour: BehaviorBase {
             GDLogInfo(.routeGuidance, "Tour Guide: Current waypoint is not known")
         }
         
-        GDATelemetry.track("tourguide.previous", with: ["context": telemetryContext, "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
     }
     
     func setBeacon(waypointIndex index: Int, enableAudio: Bool = true) {

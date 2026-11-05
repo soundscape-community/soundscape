@@ -1,0 +1,11 @@
+/* Settings title, Share Usage Data */
+"settings.section.share_usage_data" = "Делиться данными об использовании";
+
+/* Title of the required telemetry consent screen */
+"telemetry.consent.title" = "Помогите улучшить Soundscape";
+
+/* Explains optional anonymous usage sharing and the exclusion of precise location */
+"telemetry.consent.message" = "Помогите улучшить Soundscape, поделившись информацией о том, как вы используете приложение. Все передаваемые данные анонимны, а ваше точное местоположение никогда не передаётся. Вы можете в любой момент изменить свой выбор в настройках.";
+
+/* Declines usage sharing and remembers the choice */
+"telemetry.consent.dont_share" = "Не делиться";

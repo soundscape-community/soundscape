@@ -68,13 +68,6 @@ class DynamicLaunchViewController: UIViewController {
         // Instantie the telemetry helper with the appContext object
         GDATelemetry.helper = TelemetryHelper(appContext: AppContext.shared)
         
-        // Do some logging since the app has launched
-        if let helper = GDATelemetry.helper {
-            GDATelemetry.track("device_snapshot", with: helper.deviceSnapshot)
-            GDATelemetry.track("app_snapshot", with: helper.appSnapshot)
-            GDATelemetry.track("ios_accessibility", with: helper.accessibilityFeatures)
-        }
-        
         guard let id = SettingsContext.shared.voiceId else {
             completeInitialization()
             return
@@ -97,6 +90,8 @@ class DynamicLaunchViewController: UIViewController {
     }
     
     private func completeInitialization() {
+        GDATelemetry.snapshotsReady()
+
         // Initialize the experiment manager before displaying the initial view
         AppContext.shared.experimentManager.delegate = self
         AppContext.shared.experimentManager.initialize()
@@ -109,11 +104,6 @@ class DynamicLaunchViewController: UIViewController {
 
 extension DynamicLaunchViewController: ExperimentManagerDelegate {
     func onExperimentManagerReady() {
-        // Log experiment state
-        if let helper = GDATelemetry.helper {
-            GDATelemetry.track("experiment_snapshot", with: helper.experimentSnapshot)
-        }
-        
         DispatchQueue.main.async {
             AppContext.shared.experimentManager.delegate = nil
             

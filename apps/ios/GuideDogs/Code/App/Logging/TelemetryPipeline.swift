@@ -67,6 +67,48 @@ final class TelemetrySession {
     }
 }
 
+/// Guarded by GDATelemetry's event lock. Consent epochs also invalidate pending opens.
+struct TelemetryContextState {
+    var ready = false
+    private(set) var consentEpoch = UUID()
+    private var snapshotSessionID: String?
+    private var suggestionSessionID: String?
+
+    mutating func revokeConsent() {
+        consentEpoch = UUID()
+        snapshotSessionID = nil
+    }
+
+    mutating func claimSnapshot(sessionID: String, collecting: Bool) -> Bool {
+        guard collecting, ready, snapshotSessionID != sessionID else { return false }
+        snapshotSessionID = sessionID
+        return true
+    }
+
+    mutating func claimSuggestion(sessionID: String, collecting: Bool, active: Bool) -> Bool {
+        guard collecting, active, ready, suggestionSessionID != sessionID else { return false }
+        suggestionSessionID = sessionID
+        return true
+    }
+
+    static func snapshot(app: [String: String], device: [String: String],
+                         accessibility: [String: String]) -> [String: String] {
+        var result = [String: String]()
+        for (prefix, values) in [("app", app), ("device", device), ("accessibility", accessibility)] {
+            for (key, value) in values { result["\(prefix).\(key)"] = value }
+        }
+        return result
+    }
+}
+
+/// Context captured at the user's action, rather than at asynchronous completion.
+struct TelemetryOccurrence {
+    let timestamp: Date
+    let sessionID: String
+    let consentEpoch: UUID
+    let snapshot: [String: String]
+}
+
 struct TelemetryEvent {
     let name: String
     let timestamp: Date

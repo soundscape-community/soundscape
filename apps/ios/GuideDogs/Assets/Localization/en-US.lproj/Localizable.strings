@@ -416,8 +416,8 @@
 /* Declines usage sharing and remembers the choice */
 "telemetry.consent.dont_share" = "Don’t Share";
 
-/* Footer to Telemetry settings selection, help app improve by automatically sending diagnostics and data usage from the user. Personal data not collected {NumberedPlaceholder="Soundscape"} */
-"settings.section.telemetry.footer" = "Help Soundscape improve by automatically sending diagnostics, error reporting, and usage data. No personal data is collected.";
+/* Footer describing optional telemetry and its persistent installation identifier {NumberedPlaceholder="Soundscape"} */
+"settings.section.telemetry.footer" = "Help Soundscape improve by sharing usage events, diagnostics, app and accessibility settings, and motion activity. Reports include a random identifier for this installation. Sharing is optional and can be turned off at any time.";
 
 /* Settings title, Language */
 "settings.language.screen_title" = "Language";

@@ -453,6 +453,15 @@
 /*  */
 "settings.section.share_usage_data" = "Compartilhar Dados de Uso";
 
+/* Title of the required telemetry consent screen */
+"telemetry.consent.title" = "Ajude a melhorar o Soundscape";
+
+/* Explains optional anonymous usage sharing and the exclusion of precise location */
+"telemetry.consent.message" = "Ajude a melhorar o Soundscape compartilhando informações sobre como você usa o aplicativo. Todos os dados compartilhados são anônimos e sua localização precisa nunca é compartilhada. Você pode alterar sua escolha a qualquer momento em Ajustes.";
+
+/* Declines usage sharing and remembers the choice */
+"telemetry.consent.dont_share" = "Não compartilhar";
+
 
 /*  */
 "settings.section.telemetry.footer" = "Ajude a aprimorar o Soundscape ao enviar automaticamente diagnósticos, relatórios de erros e dados de uso. Dados pessoais não serão coletados.";

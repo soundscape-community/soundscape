@@ -95,7 +95,6 @@ final class GPXRecordingController: ObservableObject {
     }
 
     func screenAppeared() {
-        GDATelemetry.trackScreenView("gpx_recording")
         requestRefresh()
     }
 
@@ -139,10 +138,6 @@ final class GPXRecordingController: ObservableObject {
                 guard controller.session == session else { return }
                 controller.pointCount = 0
                 controller.state = controller.operationState == .normal ? .recording : .paused
-                GDATelemetry.track("gpx_recording.start")
-                if controller.state == .paused {
-                    GDATelemetry.track("gpx_recording.pause")
-                }
             } catch {
                 guard controller.session == session else { return }
                 controller.error = .storage(error.localizedDescription)
@@ -163,7 +158,6 @@ final class GPXRecordingController: ObservableObject {
                     try await controller.draftStore.discard()
                     guard controller.session == session else { return }
                     controller.state = .idle
-                    GDATelemetry.track("gpx_recording.discard")
                 } catch {
                     guard controller.session == session else { return }
                     controller.error = .storage(error.localizedDescription)
@@ -172,7 +166,6 @@ final class GPXRecordingController: ObservableObject {
             } else {
                 controller.proposedName = Self.defaultName()
                 controller.state = .awaitingName
-                GDATelemetry.track("gpx_recording.stop")
             }
         }
     }
@@ -244,7 +237,6 @@ final class GPXRecordingController: ObservableObject {
                 guard controller.session == session else { return }
                 controller.pointCount = 0
                 controller.state = .idle
-                GDATelemetry.track("gpx_recording.discard")
             } catch {
                 guard controller.session == session else { return }
                 controller.error = .storage(error.localizedDescription)
@@ -294,12 +286,10 @@ final class GPXRecordingController: ObservableObject {
                 }
                 activity.popoverPresentationController?.sourceView = viewController.view
                 activity.completionWithItemsHandler = { _, completed, _, _ in
-                    GDATelemetry.track("gpx_recording.share", with: ["outcome": completed ? "completed" : "cancelled"])
                 }
                 viewController.present(activity, animated: true)
             } catch {
                 self.error = .storage(error.localizedDescription)
-                GDATelemetry.track("gpx_recording.share", with: ["outcome": "failed"])
             }
         }
     }
@@ -348,7 +338,6 @@ final class GPXRecordingController: ObservableObject {
         switch (state, operationState) {
         case (.recording, .sleep), (.recording, .snooze):
             state = .paused
-            GDATelemetry.track("gpx_recording.pause")
         case (.paused, .normal):
             enqueue { controller, session in
                 guard controller.transitionRevision == revision else { return }
@@ -356,7 +345,6 @@ final class GPXRecordingController: ObservableObject {
                     try await controller.draftStore.beginSegment()
                     guard controller.session == session, controller.transitionRevision == revision else { return }
                     controller.state = .recording
-                    GDATelemetry.track("gpx_recording.resume")
                 } catch {
                     guard controller.session == session, controller.transitionRevision == revision else { return }
                     controller.error = .storage(error.localizedDescription)

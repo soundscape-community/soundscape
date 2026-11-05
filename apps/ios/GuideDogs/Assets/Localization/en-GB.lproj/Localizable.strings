@@ -462,7 +462,7 @@
 
 
 /*  */
-"settings.section.telemetry.footer" = "Help Soundscape improve by automatically sending diagnostics, error reporting, and usage data. No personal data is collected.";
+"settings.section.telemetry.footer" = "Help Soundscape improve by sharing usage events, diagnostics, app and accessibility settings, and motion activity. Reports include a random identifier for this installation. Sharing is optional and can be turned off at any time.";
 
 
 /*  */

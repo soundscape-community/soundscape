@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -28,7 +29,6 @@ class StreetPreviewRoadsCell: UITableViewCell {
         
         SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads = settingSwitch.isOn
         
-        GDATelemetry.track("preview.include_unnamed_roads", with: ["value": "\(SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads)", "context": "app_settings"])
     }
 
 }

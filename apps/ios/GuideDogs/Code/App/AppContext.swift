@@ -87,9 +87,8 @@ class AppContext {
                 return
             }
             
-            // Rotate before recording the wake event or notifying other event producers.
-            GDATelemetry.session.operationStateChanged(to: state)
-            GDATelemetry.track("wake_state.\(state.rawValue)")
+            // Announce a new session before notifying other event producers.
+            GDATelemetry.operationStateChanged(to: state)
 
             if state != .normal {
                 AudioSessionManager.removeNowPlayingInfo()

@@ -117,13 +117,7 @@ class SearchTableViewController: BaseTableViewController {
         
         updateTableView()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView(title ?? "Select a Location", with: ["context": delegate?.usageLog ?? logContext])
-    }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -258,7 +252,6 @@ extension SearchTableViewController: TableViewSelectDelegate {
             }
             
             if self.tableView.cellForRow(at: indexPath)?.reuseIdentifier == MoreLocations.currentLocation.identifier {
-                GDATelemetry.track("poi_selected.current_location", with: ["context": self.delegate?.usageLog ?? ""])
                 
                 // Selected current location cell
                 guard let location = AppContext.shared.geolocationManager.location else {

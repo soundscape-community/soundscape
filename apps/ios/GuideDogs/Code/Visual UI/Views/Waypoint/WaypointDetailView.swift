@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -74,23 +75,18 @@ struct WaypointDetailView: View {
         .padding(24.0)
         .background(Color.tertiaryBackground.ignoresSafeArea())
         .navigationBarTitle(GDLocalizedString("location_detail.title.waypoint"))
-        .onAppear {
-            GDATelemetry.trackScreenView("waypoint_detail.tour", with: ["isActivityActive": waypoint.routeDetail.isGuidanceActive.description, "image_count": "\(waypoint.locationDetail?.images?.count ?? 0)", "audio_count": "\(waypoint.locationDetail?.audio?.count ?? 0)"])
-        }
+
     }
     
     private func handle(action: LocationAction) {
         switch action {
         case .edit:
-            GDATelemetry.track("waypoint_detail.action", with: ["action": "edit"])
             isNavigationLinkActive = true
         case .share(let isEnabled):
             guard isEnabled else {
                 return
             }
-            
-            GDATelemetry.track("waypoint_detail.action", with: ["action": "share"])
-            
+
             isShareAlertPresented = true
         default:
             // Action is not supported

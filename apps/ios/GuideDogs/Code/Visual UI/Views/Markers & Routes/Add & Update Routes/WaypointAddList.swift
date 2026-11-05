@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -82,9 +83,7 @@ struct WaypointAddList: View {
             }
         }
         .navigationBarTitle(GDLocalizedTextView("route_detail.edit.waypoints_button"), displayMode: .inline)
-        .onAppear {
-            GDATelemetry.trackScreenView("waypoint_add")
-        }
+
     }
     
 }

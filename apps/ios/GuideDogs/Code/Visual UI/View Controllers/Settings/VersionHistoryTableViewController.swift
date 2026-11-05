@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -48,12 +49,6 @@ class VersionHistoryTableViewController: BaseTableViewController, LargeBannerTab
         syncLargeBannerTableHeaderFrame()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("settings.about.whats_new")
-    }
-    
     // MARK: - Helper methods
 
     private func versions() -> [VersionString] {

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 
 import CoreLocation
@@ -61,27 +62,5 @@ extension CalloutProtocol {
     func equals(rhs: CalloutProtocol) -> Bool {
         return id == rhs.id
     }
-    
-    func logHistoryAction(_ action: String) {
-        // If this callout is displayed in the history, find its index
-        guard let index = AppContext.shared.calloutHistory.visibleIndex(of: self) else {
-            return
-        }
-        
-        // Only 3 types are displayed in History. Figure out which one this is.
-        let type: String
-        if self is POICallout {
-            type = "poi"
-        } else if self is IntersectionCallout {
-            type = "intersection"
-        } else {
-            type = "location"
-        }
-        
-        var params: [String: Any] = [:]
-        params["type"] = type
-        params["index"] = index
-        
-        GDATelemetry.track("voice_over_action.\(action)", with: ["type:": type, "index": String(index)])
-    }
+
 }

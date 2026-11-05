@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -237,7 +238,6 @@ struct EditMarkerView: View {
         .toolbar { toolbarItems }
         .alert(isPresented: $showAlert, content: { alertView })
         .onAppear {
-            GDATelemetry.trackScreenView("marker_edit")
             
             isFetchingNameAndAddress = true
             LocationDetail.fetchNameAndAddressIfNeeded(for: locationDetail) { (newValue) in
@@ -338,11 +338,6 @@ struct EditMarkerView: View {
             
             try ReferenceEntity.update(entity: entity, location: coordinate, nickname: nickname, address: address, annotation: annotation, context: config.context, isTemp: false)
             
-            GDATelemetry.track("markers.edited", with: [
-                "includesAnnotation": String(!(annotation?.isEmpty ?? true)),
-                "updatedLocation": String(coordinate != nil),
-                "context": config.context ?? "none"
-            ])
         }
     }
     

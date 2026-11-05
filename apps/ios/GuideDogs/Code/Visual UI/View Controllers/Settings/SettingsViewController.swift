@@ -10,7 +10,6 @@
 import UIKit
 import SwiftUI
 
-
 class SettingsViewController: BaseTableViewController {
     private static let languageSettingsIndexPath = IndexPath(row: 0, section: Section.general.rawValue)
     private static let voiceSettingsIndexPath = IndexPath(row: 1, section: Section.general.rawValue)
@@ -85,8 +84,6 @@ class SettingsViewController: BaseTableViewController {
         navigationController?.navigationBar.configureAppearance(for: .default)
 
         GDLogActionInfo("Opened 'Settings'")
-
-        GDATelemetry.trackScreenView("settings")
 
         self.title = GDLocalizedString("settings.screen_title")
         tableView.reloadData()
@@ -252,10 +249,7 @@ extension SettingsViewController: MixAudioSettingCellDelegate {
         alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: { [weak self] (_) in
             // Toggle the setting back off
             settingSwitch.isOn = false
-            
-            // Track that the user decided not to enable media controls
-            GDATelemetry.track("settings.mix_audio.cancel", with: ["context": "app_settings"])
-            
+
             self?.focusOnCell(cell)
         }))
         
@@ -266,9 +260,6 @@ extension SettingsViewController: MixAudioSettingCellDelegate {
         SettingsContext.shared.audioSessionMixesWithOthers = newValue
         AppContext.shared.audioEngine.mixWithOthers = newValue
         
-        GDATelemetry.track("settings.mix_audio",
-                           with: ["value": "\(SettingsContext.shared.audioSessionMixesWithOthers)",
-                                  "context": "app_settings"])
     }
     
     private func focusOnCell(_ cell: MixAudioSettingCell) {

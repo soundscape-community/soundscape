@@ -34,7 +34,6 @@ class TelemetrySettingsTableViewCell: UITableViewCell {
         if prevOptedOut {
             GDATelemetry.setConsent(sharingEnabled: true)
             configure()
-            GDATelemetry.track("settings.telemetry_optout", value: String(false))
         } else {
             let alert = UIAlertController(title: GDLocalizedString("settings.telemetry.optout.alert_title"),
                                           message: GDLocalizedString("settings.telemetry.optout.alert_message"),
