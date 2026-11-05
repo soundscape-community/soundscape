@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -361,19 +362,6 @@ class ExplorationGenerator: ManualGenerator, AutomaticGenerator {
         
         GDLogInfo(.autoCallout, "Toggled \(event.mode) \(toggledOn ? "on" : "off") (location: \(locationString))")
         
-        var properties: [String: String] = ["context": event.logContext, "start": String(toggledOn)]
-        
-        // No need to log all details for command 'end' event (start = `false`)
-        guard toggledOn else {
-            GDATelemetry.track("command.\(event.mode.rawValue)", with: properties)
-            return
-        }
-        
-        properties["is_flat"] = String(deviceMotion.isFlat)
-        properties["has_heading"] = String(geo.collectionHeading.value != nil)
-        properties["activity"] = motionActivity.currentActivity.rawValue
-        
-        GDATelemetry.track("command.\(event.mode.rawValue)", with: properties)
     }
     
     func cancelCalloutsForEntity(id: String) {

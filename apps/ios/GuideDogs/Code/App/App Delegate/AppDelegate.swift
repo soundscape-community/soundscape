@@ -32,6 +32,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: UIApplicationDelegate
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        GDATelemetry.initialize()
+
         // Check if we need to migrate Realm before we do anything else
         RealmMigrationTools.migrate(database: RealmHelper.databaseConfig, cache: RealmHelper.cacheConfig)
 
@@ -72,7 +74,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let components = URLComponents(url: url, resolvingAgainstBaseURL: true){
            if let source = components.queryItems?.first(where: { $0.name == "source" })?.value {
             GDLogAppInfo("App opened from source: \(source)")
-            GDATelemetry.track("app.open", with: ["source": source])
            }
         } else {
             GDLogAppError("Handling incoming shared URL failed - unable to parse URL components")

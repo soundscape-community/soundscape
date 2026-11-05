@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -18,13 +19,7 @@ class StandbyViewController: UIViewController {
     @IBOutlet weak var wakeContainer: UIView!
     @IBOutlet weak var illustrationImage: UIImageView!
     @IBOutlet var buttonSpacingConstraint: NSLayoutConstraint!
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("standby")
-    }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         AppContext.shared.goToSleep()
         

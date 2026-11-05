@@ -453,6 +453,15 @@
 /*  */
 "settings.section.share_usage_data" = "使用状況データの共有";
 
+/* Title of the required telemetry consent screen */
+"telemetry.consent.title" = "Soundscapeの改善にご協力ください";
+
+/* Explains optional anonymous usage sharing and the exclusion of precise location */
+"telemetry.consent.message" = "アプリの利用状況に関する情報を共有して、Soundscapeの改善にご協力ください。共有されるデータはすべて匿名で、正確な位置情報が共有されることはありません。この選択は、いつでも「設定」で変更できます。";
+
+/* Declines usage sharing and remembers the choice */
+"telemetry.consent.dont_share" = "共有しない";
+
 
 /*  */
 "settings.section.telemetry.footer" = "診断、エラー レポート、使用状況データを自動的に送信すると、Soundscape の改善に役立ちます。個人情報は収集されません。";

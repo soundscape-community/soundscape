@@ -453,6 +453,15 @@
 /*  */
 "settings.section.share_usage_data" = "Jaa käyttötiedot";
 
+/* Title of the required telemetry consent screen */
+"telemetry.consent.title" = "Auta parantamaan Soundscapea";
+
+/* Explains optional anonymous usage sharing and the exclusion of precise location */
+"telemetry.consent.message" = "Auta parantamaan Soundscapea jakamalla tietoja siitä, miten käytät sovellusta. Kaikki jaettavat tiedot ovat anonyymejä, eikä tarkkaa sijaintiasi koskaan jaeta. Voit muuttaa valintaasi milloin tahansa asetuksissa.";
+
+/* Declines usage sharing and remembers the choice */
+"telemetry.consent.dont_share" = "Älä jaa";
+
 
 /*  */
 "settings.section.telemetry.footer" = "Auta Soundscapea parantamaan toimintaansa lähettämällä automaattisesti virheraportteja sekä diagnostiikka- ja käyttötietoja. Henkilökohtaisia tietoja ei kerätä.";

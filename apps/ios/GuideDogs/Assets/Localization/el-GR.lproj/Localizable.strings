@@ -453,6 +453,15 @@
 /*  */
 "settings.section.share_usage_data" = "Κοινή χρήση δεδομένων χρήσης";
 
+/* Title of the required telemetry consent screen */
+"telemetry.consent.title" = "Βοηθήστε στη βελτίωση του Soundscape";
+
+/* Explains optional anonymous usage sharing and the exclusion of precise location */
+"telemetry.consent.message" = "Βοηθήστε στη βελτίωση του Soundscape κοινοποιώντας πληροφορίες σχετικά με τον τρόπο που χρησιμοποιείτε την εφαρμογή. Όλα τα δεδομένα που κοινοποιούνται είναι ανώνυμα και η ακριβής τοποθεσία σας δεν κοινοποιείται ποτέ. Μπορείτε να αλλάξετε την επιλογή σας ανά πάσα στιγμή στις Ρυθμίσεις.";
+
+/* Declines usage sharing and remembers the choice */
+"telemetry.consent.dont_share" = "Να μη γίνει κοινή χρήση";
+
 
 /*  */
 "settings.section.telemetry.footer" = "Βοηθήστε το Soundscape να βελτιωθεί στέλνοντας αυτόματα διαγνωστικά, αναφέροντας σφάλματα και δεδομένα χρήσης. Δεν συλλέγονται προσωπικά δεδομένα.";

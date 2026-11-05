@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -373,16 +374,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             
             if !temporary {
                 AppContext.shared.cloudKeyValueStore.store(referenceEntity: reference)
-                
-                let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-                
-                if entity is Address {
-                    GDATelemetry.track("markers.added", with: ["type": "address", "includesAnnotation": includesAnnotation, "context": context ?? "none"])
-                    GDATelemetry.helper?.markerCountAddress += 1
-                } else {
-                    GDATelemetry.track("markers.added", with: ["type": "poi", "includesAnnotation": includesAnnotation, "context": context ?? "none"])
-                    GDATelemetry.helper?.markerCountPOI += 1
-                }
+
                 
                 NSUserActivity(userAction: .saveMarker).becomeCurrent()
             }
@@ -465,10 +457,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             try entity.updateLastSelectedDate(to: now)
             
             AppContext.shared.cloudKeyValueStore.update(referenceEntity: entity)
-            
-            let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-            GDATelemetry.track("markers.edited", with: ["includesAnnotation": includesAnnotation, "context": context ?? "none"])
-            
+
             ReferenceEntity.notifyEntityUpdated(entity.id)
             
             if locChanged {
@@ -538,10 +527,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             
             if !temporary {
                 AppContext.shared.cloudKeyValueStore.store(referenceEntity: reference)
-                
-                let includesAnnotation = annotation?.isEmpty ?? true ? "false" : "true"
-                GDATelemetry.track("markers.added", with: ["type": "generic_location", "includesAnnotation": includesAnnotation, "context": context ?? "none"])
-                GDATelemetry.helper?.markerCountLocation += 1
+
                 
                 NSUserActivity(userAction: .saveMarker).becomeCurrent()
             }
@@ -612,9 +598,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         try database.write {
             database.delete(entity)
         }
-        
-        GDATelemetry.track("markers.removed")
-        GDATelemetry.helper?.markerCountRemoved += 1
+
         
         ReferenceEntity.notifyEntityRemoved(id)
     }
@@ -639,9 +623,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             
             try database.write {
                 database.delete(entity)
-                
-                GDATelemetry.track("markers.removed")
-                GDATelemetry.helper?.markerCountRemoved += 1
+
                 
                 ReferenceEntity.notifyEntityRemoved(id)
             }

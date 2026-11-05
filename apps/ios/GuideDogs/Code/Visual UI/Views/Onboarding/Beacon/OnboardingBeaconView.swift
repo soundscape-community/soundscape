@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -73,7 +74,6 @@ struct OnboardingBeaconView: View {
             OnboardingBeaconAudioView(isPresented: $isAudioViewPresented)
         }
         .onAppear {
-            GDATelemetry.trackScreenView("onboarding.beacon_picker")
             
             AppContext.shared.start(fromFirstLaunch: true)
         }

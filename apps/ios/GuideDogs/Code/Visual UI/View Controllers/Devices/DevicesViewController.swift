@@ -286,8 +286,7 @@ class DevicesViewController: UIViewController {
                             // TODO: Device is ready and not connected for the first time. Should be send it to "Calibrating" or "testHeadSet" instead?
                             self.state = device.isFirstConnection ? .completedPairing : .connected
                         }
-                        
-                        
+
                         if oldViewState == self.state {
                             // If `renderView` is not automatically called because
                             // of a new value for `state`, call it manually
@@ -462,9 +461,7 @@ class DevicesViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("devices")
-        
+
         AppContext.shared.deviceManager.delegate = self
 
         // Set the device currently connected AppContext.shared.deviceManager.devices.first is NOT guaranteed to be the one connected!

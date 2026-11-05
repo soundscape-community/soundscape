@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -430,9 +431,7 @@ class SpatialDataCache: NSObject {
         geocoder.geocodeAddressString(address: address, in: region) { (results) in
             guard let results = results  else {
                 GDLogSpatialDataError("Geocode Coordinate Error - No results returned")
-                
-                GDATelemetry.track("geocode.coordinates.error.no_results")
-                
+
                 completionHandler(nil)
                 return
             }

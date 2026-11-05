@@ -42,13 +42,7 @@ class StatusTableViewController: BaseTableViewController {
                                                name: Notification.Name.locationUpdated,
                                                object: AppContext.shared.spatialDataContext)
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("settings.troubleshooting")
-    }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -239,8 +233,7 @@ extension StatusTableViewController {
 
         present(alertController, animated: true)
     }
-    
-    
+
     @objc func crosscheckTouchUpInside() {
         GDLogAppInfo("Play crosscheck audio")
         AppContext.process(CheckAudioEvent())
@@ -366,9 +359,7 @@ extension StatusTableViewController {
         }
         
         let success = AppContext.shared.spatialDataContext.clearCache()
-        
-        GDATelemetry.track("settings.clear_cache", with: ["keep_user_data": String(!deletePORs)])
-        
+
         guard success else {
             GDLogSpatialDataError("Error attempting to delete cached data!")
             return

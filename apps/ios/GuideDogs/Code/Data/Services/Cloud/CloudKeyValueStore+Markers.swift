@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -75,7 +76,6 @@ extension CloudKeyValueStore {
             set(object: data, forKey: CloudKeyValueStore.key(for: referenceEntity))
         } else {
             GDLogCloudInfo("Failed to initialize marker parameters")
-            GDATelemetry.track("marker_backup.error.parameters_failed_to_initialize")
         }
     }
     

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -36,9 +37,7 @@ struct OnboardingBeaconAudioView: View {
             }
             .padding(.horizontal, 24.0)
         }
-        .onAppear {
-            GDATelemetry.trackScreenView("onboarding.beacon_audio")
-        }
+
     }
     
 }

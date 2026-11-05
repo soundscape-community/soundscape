@@ -80,7 +80,6 @@ class NearbyTableViewController: BaseTableViewController, POITableViewController
             }
             
             alertController.addAction(UIAlertAction(title: title, style: .default, handler: { (_) in
-                GDATelemetry.track("nearby.filter.selected", with: ["filter": filter.type?.rawValue ?? "all", "context": self.delegate?.usageLog ?? ""])
                 
                 self.currentFilter = filter
             }))
@@ -118,9 +117,7 @@ class NearbyTableViewController: BaseTableViewController, POITableViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.track("nearby_places.viewed", with: ["filter": currentFilter.type?.rawValue ?? "all", "context": delegate?.usageLog ?? ""])
-        
+
         if let delegate = delegate, delegate.doneNavigationItem {
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: GDLocalizedString("general.alert.done"), style: .done, target: self, action: #selector(self.onDone))
         }
@@ -204,7 +201,6 @@ class NearbyTableViewController: BaseTableViewController, POITableViewController
 extension NearbyTableViewController: TableViewSelectDelegate {
     
     func didSelect(rowAtIndexPath indexPath: IndexPath) {
-        GDATelemetry.track("poi_selected.nearby", with: ["filter": currentFilter.type?.rawValue ?? "all", "context": delegate?.usageLog ?? ""])
         
         guard let tableViewDataSource = tableViewDataSource as? TableViewDataSourceProtocol else {
             return
@@ -280,13 +276,11 @@ extension NearbyTableViewController: FilterTableViewHeaderViewDelegate {
     }
     
     private func didClearFilter() {
-        GDATelemetry.track("nearby.filter.cleared", with: ["filter": "all", "context": delegate?.usageLog ?? ""])
         
         currentFilter = NearbyTableFilter.defaultFilter
     }
     
     private func didSetFilter() {
-        GDATelemetry.track("nearby.filter.set", with: ["context": delegate?.usageLog ?? ""])
         
         present(filterAlertController, animated: true, completion: nil)
     }
@@ -296,7 +290,6 @@ extension NearbyTableViewController: FilterTableViewHeaderViewDelegate {
 extension NearbyTableViewController: LocationAccessibilityActionDelegate {
     
     func didSelectLocationAction(_ action: LocationAction, entity: POI) {
-        GDATelemetry.track(action.telemetryEvent, with: ["context": telemetryContext, "source": "accessibility_action"])
         
         let detail = LocationDetail(entity: entity, telemetryContext: self.telemetryContext)
         

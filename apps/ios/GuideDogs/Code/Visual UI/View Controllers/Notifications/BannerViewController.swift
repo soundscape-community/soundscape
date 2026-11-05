@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -27,7 +28,6 @@ class BannerViewController: ConfigurableViewController {
     // MARK: Actions
     
     @IBAction func onTouchUpInside() {
-        GDATelemetry.track("banner_selected", with: ["nibName": nibName ?? "unknown"])
         
         delegate?.didSelect(self)
     }

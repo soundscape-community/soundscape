@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -194,7 +195,6 @@ extension CloudKeyValueStore {
                                         object: self,
                                         userInfo: forwardNotificationUserInfo)
         
-        GDATelemetry.track("cloud_sync.store_did_change", value: reason.description)
     }
     
     @objc private func appDidBecomeActive(_ notification: Notification) {

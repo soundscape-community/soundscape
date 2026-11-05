@@ -72,7 +72,6 @@ struct LanguageSettingsView: View {
         .tint(.primaryForeground)
         .navigationTitle(GDLocalizedString("settings.language.screen_title.2"))
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear(perform: trackScreenView)
         .onChange(of: unitPreference, perform: updateUnitsPreference)
         .alert(
             confirmationTitle,
@@ -115,22 +114,14 @@ struct LanguageSettingsView: View {
         pendingLocale = nil
 
         LocalizationContext.currentAppLocale = locale
-        GDATelemetry.track("settings.language.first_launch.user_change", with: ["locale": locale.identifier])
         LaunchHelper.configureAppView(with: .main)
     }
 
     private func updateUnitsPreference(_ preference: UnitPreference) {
         SettingsContext.shared.metricUnits = preference == .metric
 
-        GDATelemetry.track(
-            "settings.units_of_measure",
-            with: ["units": SettingsContext.shared.metricUnits ? "metric" : "imperial"]
-        )
     }
 
-    private func trackScreenView() {
-        GDATelemetry.trackScreenView("settings.language")
-    }
 }
 
 private extension LanguageSettingsView {

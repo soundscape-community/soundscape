@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>SOUNDSCAPE_OTEL_LOGS_ENDPOINT</key>
+	<string>$(SOUNDSCAPE_OTEL_LOGS_ENDPOINT)</string>
+	<key>SOUNDSCAPE_OTEL_LOGS_HEADERS</key>
+	<string>$(SOUNDSCAPE_OTEL_LOGS_HEADERS)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en_US</string>
 	<key>CFBundleDisplayName</key>

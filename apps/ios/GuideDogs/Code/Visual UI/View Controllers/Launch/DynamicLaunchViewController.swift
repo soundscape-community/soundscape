@@ -3,10 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import UIKit
+import SwiftUI
 
 import Combine
 
@@ -14,6 +16,8 @@ class DynamicLaunchViewController: UIViewController {
 
     private var validator: TTSVoiceValidator?
     private var cancellable: AnyCancellable?
+    private var didBeginInitialization = false
+    private var didConfigureInitialAppView = false
     
     /// Called after the view controller's view is loaded into memory.
     ///
@@ -51,6 +55,9 @@ class DynamicLaunchViewController: UIViewController {
     /// - Parameter animated: If `true`, the view was added to the window using an animation.
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        guard !didBeginInitialization else { return }
+        didBeginInitialization = true
         
         // Always turn callouts on when the app starts
         SettingsContext.shared.automaticCalloutsEnabled = true
@@ -60,13 +67,6 @@ class DynamicLaunchViewController: UIViewController {
         
         // Instantie the telemetry helper with the appContext object
         GDATelemetry.helper = TelemetryHelper(appContext: AppContext.shared)
-        
-        // Do some logging since the app has launched
-        if let helper = GDATelemetry.helper {
-            GDATelemetry.track("device_snapshot", with: helper.deviceSnapshot)
-            GDATelemetry.track("app_snapshot", with: helper.appSnapshot)
-            GDATelemetry.track("ios_accessibility", with: helper.accessibilityFeatures)
-        }
         
         guard let id = SettingsContext.shared.voiceId else {
             completeInitialization()
@@ -90,6 +90,8 @@ class DynamicLaunchViewController: UIViewController {
     }
     
     private func completeInitialization() {
+        GDATelemetry.snapshotsReady()
+
         // Initialize the experiment manager before displaying the initial view
         AppContext.shared.experimentManager.delegate = self
         AppContext.shared.experimentManager.initialize()
@@ -102,11 +104,6 @@ class DynamicLaunchViewController: UIViewController {
 
 extension DynamicLaunchViewController: ExperimentManagerDelegate {
     func onExperimentManagerReady() {
-        // Log experiment state
-        if let helper = GDATelemetry.helper {
-            GDATelemetry.track("experiment_snapshot", with: helper.experimentSnapshot)
-        }
-        
         DispatchQueue.main.async {
             AppContext.shared.experimentManager.delegate = nil
             
@@ -115,11 +112,23 @@ extension DynamicLaunchViewController: ExperimentManagerDelegate {
     }
     
     private func configureInitialAppView() {
+        guard !didConfigureInitialAppView else { return }
+        didConfigureInitialAppView = true
+
         // Configure the appropriate view for the app
         if FirstUseExperience.didComplete(.oobe) {
-            AppContext.shared.start()
-            
-            LaunchHelper.configureAppView(with: .main)
+            if SettingsContext.shared.telemetryConsentChoiceMade {
+                showMainView()
+            } else {
+                let controller = UIHostingController(rootView: TelemetryConsentView { [weak self] in
+                    self?.dismiss(animated: true) {
+                        self?.showMainView()
+                    }
+                })
+                controller.modalPresentationStyle = .fullScreen
+                controller.isModalInPresentation = true
+                present(controller, animated: true)
+            }
         } else {
             // Since this is a first launch, set the app version for the new features feature to the current version
             SettingsContext.shared.newFeaturesLastDisplayedVersion = AppContext.appVersion
@@ -128,5 +137,10 @@ extension DynamicLaunchViewController: ExperimentManagerDelegate {
             // will run both the permissions request screens and the First Launch screens
             LaunchHelper.configureAppView(with: .firstLaunch)
         }
+    }
+
+    private func showMainView() {
+        AppContext.shared.start()
+        LaunchHelper.configureAppView(with: .main)
     }
 }

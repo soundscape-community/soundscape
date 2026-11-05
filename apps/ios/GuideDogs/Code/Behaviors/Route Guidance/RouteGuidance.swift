@@ -228,7 +228,6 @@ class RouteGuidance: BehaviorBase {
         }
 
         super.activate(with: parent)
-        GDATelemetry.track("routeguidance.started", with: ["context": telemetryContext])
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
             guard let location = AppContext.shared.geolocationManager.location else {
@@ -257,8 +256,6 @@ class RouteGuidance: BehaviorBase {
         lastSaveTime = nil
         clearBeacon()
         updateNowPlayingInfo(nil)
-
-        GDATelemetry.track("routeguidance.stopped", with: ["context": telemetryContext, "completed": String(state.isFinal)])
 
         return super.deactivate()
     }
@@ -303,13 +300,11 @@ class RouteGuidance: BehaviorBase {
 
         // If this waypoint was already completed, then just move onto the next one
         guard !state.visited.contains(index) else {
-            GDATelemetry.track("routeguidance.waypoint_revisited", with: ["context": telemetryContext])
             nextWaypoint(automatic: true)
             return true
         }
 
         state.visited.append(index)
-        GDATelemetry.track("routeguidance.waypoint_visited", with: ["context": telemetryContext])
 
         // If the route is complete, turn off the audio beacon. The beacon will still be set on the last waypoint, but the
         // audio will be disabled. The user can turn it on if they wish.
@@ -337,7 +332,6 @@ class RouteGuidance: BehaviorBase {
 
             nearestIntersectionKey = nil
             saveState(finalize: true)
-            GDATelemetry.track("routeguidance.completed", with: ["context": telemetryContext])
             return true
         }
 
@@ -406,7 +400,6 @@ class RouteGuidance: BehaviorBase {
         // Save state after everything else so that the stateChanged event gets sent when all state is done changing
         saveState()
 
-        GDATelemetry.track("routeguidance.next", with: ["context": telemetryContext, "automatic": "\(automatic)", "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
     }
 
     /// Updates the `waypointIndex` property of the state object to be the index of the
@@ -436,7 +429,6 @@ class RouteGuidance: BehaviorBase {
             GDLogInfo(.routeGuidance, "Route Guidance: Current waypoint is not known")
         }
 
-        GDATelemetry.track("routeguidance.previous", with: ["context": telemetryContext, "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
     }
 
     func setBeacon(waypointIndex index: Int, enableAudio: Bool = true) {

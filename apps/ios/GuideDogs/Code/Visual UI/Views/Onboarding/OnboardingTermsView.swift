@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -24,7 +25,6 @@ struct OnboardingTermsView: View {
     var body: some View {
         VStack(spacing: 0.0) {
             FirstLaunchTermsView {
-                GDATelemetry.track("onboarding.terms.accepted")
                 
                 isNavigationLinkActive = true
             }
@@ -41,9 +41,7 @@ struct OnboardingTermsView: View {
         .linearGradientBackground(.darkBlue, ignoresSafeArea: true)
         .navigationBarHidden(true)
         .accessibilityIgnoresInvertColors(true)
-        .onAppear {
-            GDATelemetry.trackScreenView("onboarding.terms")
-        }
+
     }
     
 }

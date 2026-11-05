@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -36,9 +37,7 @@ struct OnboardingCalloutView: View {
             OnboardingNavigationLink(destination: destination)
                 .if(!didComplete, transform: { $0.hidden() })
         }
-        .onAppear {
-            GDATelemetry.trackScreenView("onboarding.callout")
-        }
+
     }
     
 }

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -19,16 +20,20 @@ class TelemetrySettingsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        // Initialization code
-        telemetrySwitch?.isOn = !SettingsContext.shared.telemetryOptout
+        configure()
+    }
+
+    func configure() {
+        telemetrySwitch?.isOn = GDATelemetry.enabled
+        telemetrySwitch?.accessibilityLabel = GDLocalizedString("settings.section.share_usage_data")
     }
 
     @IBAction func onSettingValueChanged(_ sender: Any) {
-        let prevOptedOut = SettingsContext.shared.telemetryOptout
+        let prevOptedOut = !GDATelemetry.enabled
         
         if prevOptedOut {
-            GDATelemetry.enabled = true
-            GDATelemetry.track("settings.telemetry_optout", value: String(false))
+            GDATelemetry.setConsent(sharingEnabled: true)
+            configure()
         } else {
             let alert = UIAlertController(title: GDLocalizedString("settings.telemetry.optout.alert_title"),
                                           message: GDLocalizedString("settings.telemetry.optout.alert_message"),
@@ -40,9 +45,7 @@ class TelemetrySettingsTableViewCell: UITableViewCell {
             }))
             
             alert.addAction(UIAlertAction(title: GDLocalizedString("settings.telemetry.optout.action"), style: .destructive, handler: { _ in
-                // Send a "user opted-out" event before opting-out
-                GDATelemetry.track("settings.telemetry_optout", value: String(true))
-                GDATelemetry.enabled = false
+                GDATelemetry.setConsent(sharingEnabled: false)
             }))
             
             parent?.present(alert, animated: true, completion: nil)

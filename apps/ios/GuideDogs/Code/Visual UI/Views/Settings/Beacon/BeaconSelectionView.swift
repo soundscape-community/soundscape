@@ -18,17 +18,12 @@ struct BeaconSelectionView: View {
     @State var areMelodiesEnabled: Bool
     @State var arrivalDistance: Double
     @State var beaconRingingAngle: Double
-    
-    let initialBeacon: String
-    let initialMelodies: Bool
-    
+
     init() {
         _selectedBeaconKey = State(initialValue: SettingsContext.shared.selectedBeacon)
         _areMelodiesEnabled = State(initialValue: SettingsContext.shared.playBeaconStartAndEndMelodies)
         _arrivalDistance = State(initialValue: SettingsContext.shared.enterImmediateVicinityDistance)
         _beaconRingingAngle = State(initialValue: SettingsContext.shared.beaconRingingAngle)
-        initialBeacon = SettingsContext.shared.selectedBeacon
-        initialMelodies = SettingsContext.shared.playBeaconStartAndEndMelodies
     }
     
     var body: some View {
@@ -126,29 +121,10 @@ struct BeaconSelectionView: View {
         .navigationTitle(GDLocalizedString("beacon.settings_title"))
         .onAppear {
             beaconDemo.prepare(disableMelodies: false)
-            
-            GDATelemetry.trackScreenView("beacon_settings")
-            
+
             isPresented = true
         }
         .onDisappear(perform: {
-            if SettingsContext.shared.selectedBeacon != initialBeacon {
-                let props = [
-                    "from": initialBeacon,
-                    "to": selectedBeaconKey
-                ]
-                
-                GDATelemetry.track("beacon.style_changed", with: props)
-            }
-            
-            if SettingsContext.shared.playBeaconStartAndEndMelodies != initialMelodies {
-                if initialMelodies {
-                    GDATelemetry.track("beacon.melodiesDisabled")
-                } else {
-                    GDATelemetry.track("beacon.melodiesEnabled")
-                }
-            }
-            
             beaconDemo.restoreState()
             
             isPresented = false

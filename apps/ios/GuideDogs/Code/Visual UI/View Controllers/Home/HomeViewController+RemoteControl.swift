@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -13,7 +14,6 @@ private var isRepeating = false
 extension HomeViewController: RemoteCommandManagerDelegate {
     
     func remoteCommandManager(_ remoteCommandManager: RemoteCommandManager, handle event: RemoteCommand) -> Bool {
-        GDATelemetry.track("remote_command.\(event.rawValue)")
         
         // Disallow remote command events when in sleep/snooze mode
         guard AppContext.shared.state == .normal else {
@@ -78,9 +78,7 @@ extension HomeViewController: RemoteCommandManagerDelegate {
     
     private func handleToggleCallouts() -> Bool {
         AppContext.process(ToggleAutoCalloutsEvent(playSound: true))
-        
-        GDATelemetry.track("settings.allow_callouts", value: String(SettingsContext.shared.automaticCalloutsEnabled))
-        
+
         // Play announcement
         AppContext.shared.audioEngine.stopDiscrete()
         let announcement = SettingsContext.shared.automaticCalloutsEnabled ? GDLocalizedString("callouts.callouts_on") : GDLocalizedString("callouts.callouts_off")

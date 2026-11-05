@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -125,9 +126,7 @@ class HeadphoneMotionManager: NSObject, UserHeadingProvider, Device {
         }
         
         GDLogHeadphoneMotionInfo("Starting headphone motion updates...")
-        
-        GDATelemetry.track("headphone_motion.start_updates")
-        
+
         // Start headphone motion updates
         motionManager.startDeviceMotionUpdates(to: queue) { [weak self] (newValue, error) in
             guard let `self` = self else {
@@ -172,9 +171,7 @@ class HeadphoneMotionManager: NSObject, UserHeadingProvider, Device {
         }
         
         GDLogHeadphoneMotionInfo("Stopping headphone motion updates...")
-        
-        GDATelemetry.track("headphone_motion.stop_updates")
-        
+
         // Stop headphone motion updates
         motionManager.stopDeviceMotionUpdates()
     }
@@ -232,9 +229,7 @@ extension HeadphoneMotionManager: CMHeadphoneMotionManagerDelegate {
     
     func headphoneMotionManagerDidConnect(_ manager: CMHeadphoneMotionManager) {
         GDLogHeadphoneMotionInfo("Headphone Motion Manager did connect...")
-        
-        GDATelemetry.track("headphone_motion.did_connect")
-        
+
         // `HeapdhoneMotionManager` is connected, but has not calibrated
         // Update `HeadphoneMotionManager.status` to indicate that it is connected,
         // but wait until it is calibrated to update the device state
@@ -249,9 +244,7 @@ extension HeadphoneMotionManager: CMHeadphoneMotionManagerDelegate {
     
     func headphoneMotionManagerDidDisconnect(_ manager: CMHeadphoneMotionManager) {
         GDLogHeadphoneMotionInfo("Headphone Motion Manager did disconnect...")
-        
-        GDATelemetry.track("headphone_motion.did_disconnect")
-        
+
         // Stop calibrating
         calibrationManager.stopCalibrating()
         

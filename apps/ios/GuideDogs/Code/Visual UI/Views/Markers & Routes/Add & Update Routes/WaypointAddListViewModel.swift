@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -68,9 +69,7 @@ class WaypointAddListViewModel: ObservableObject {
             // Element is already a waypoint
             return
         }
-        
-        GDATelemetry.track("waypoint.add")
-        
+
         // Add to waypoint list
         waypoints.append(element)
         
@@ -85,9 +84,7 @@ class WaypointAddListViewModel: ObservableObject {
             // Invalid index
             return
         }
-        
-        GDATelemetry.track("waypoint.remove")
-        
+
         // Remove from waypoint list
         let element = waypoints.remove(at: index)
         

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -49,16 +50,10 @@ struct OnboardingWelcomeView: View {
         }
         .accentColor(.primaryForeground)
         .onAppear {
-            GDATelemetry.trackScreenView("onboarding.welcome")
-            
-            // If onboarding has already been completed,
-            // then onboarding was started from app settings
-            GDATelemetry.track("onboarding.started", with: [ "first_launch": "\(!FirstUseExperience.didComplete(.oobe))"])
-            
-            AppContext.shared.eventProcessor.activateCustom(behavior: OnboardingBehavior(context: context))
+            viewModel.activateOnboarding(context: context)
         }
         .onDisappear {
-            AppContext.shared.eventProcessor.deactivateCustom()
+            viewModel.onboardingDidDisappear()
         }
     }
     

@@ -141,13 +141,7 @@ class PushNotificationManager: NSObject {
                       pushNotification.originContext.rawValue,
                       pushNotification.arrivalContext.rawValue,
                       pushNotification.payload))
-        
-        GDATelemetry.track("push.received_notification", with: [
-            "origin_context": pushNotification.originContext.rawValue,
-            "arrival_context": pushNotification.arrivalContext.rawValue,
-            "local_identifier": pushNotification.localIdentifier ?? "none"
-        ])
-        
+
         NotificationCenter.default.post(name: Notification.Name.pushNotificationReceived,
                                         object: nil,
                                         userInfo: [NotificationKeys.pushNotification: pushNotification])

@@ -221,12 +221,7 @@ class TourGenerator: AutomaticGenerator, ManualGenerator {
             }
             
             let callout = IntersectionCallout(.intersection, event.key, event.isRoundabout, event.heading)
-            
-            GDATelemetry.track("callout", with: ["context": "intersection.arrival",
-                                                 "type": callout.logCategory,
-                                                 "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
-                                                 "audio.output": AppContext.shared.audioEngine.outputType])
-            
+
             let group = CalloutGroup([callout], action: .interruptAndClear, logContext: "intersections")
             currentIntersectionGroupID = group.id
             group.delegate = self

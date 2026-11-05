@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -24,9 +25,7 @@ class EnableLocationServicesViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("enable_location_services")
-        
+
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
@@ -38,7 +37,6 @@ class EnableLocationServicesViewController: UIViewController {
     
     @IBAction func onEnableButtonTouchUp(_ sender: UIButton) {
         if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-            GDATelemetry.track("open_settings", with: ["context": "enable_location_services"])
             UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
         }
     }

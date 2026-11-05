@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -53,7 +54,6 @@ struct OnboardingHeadphoneView: View {
             }
         }
         .onAppear {
-            GDATelemetry.trackScreenView("onboarding.headphone")
             
             animateView()
         }

@@ -87,7 +87,8 @@ class AppContext {
                 return
             }
             
-            GDATelemetry.track("wake_state.\(state.rawValue)")
+            // Announce a new session before notifying other event producers.
+            GDATelemetry.operationStateChanged(to: state)
 
             if state != .normal {
                 AudioSessionManager.removeNowPlayingInfo()
