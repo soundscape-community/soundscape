@@ -154,43 +154,43 @@ final class TelemetryTests: XCTestCase {
     func testShortSleepPreservesSessionAndThirtyMinuteSleepRotatesOnlyOnWake() {
         let session = TelemetrySession()
         let originalID = session.id
-        let start = Date(timeIntervalSince1970: 123456)
+        let start: TimeInterval = 123456
         session.operationStateChanged(to: .sleep, at: start)
-        session.operationStateChanged(to: .normal, at: start.addingTimeInterval(30 * 60 - 1))
+        session.operationStateChanged(to: .normal, at: start + (30 * 60 - 1))
         XCTAssertEqual(session.id, originalID)
 
-        let nextSleep = start.addingTimeInterval(60 * 60)
+        let nextSleep = start + (60 * 60)
         session.operationStateChanged(to: .sleep, at: nextSleep)
         // Events recorded during sleep still belong to the existing session.
         XCTAssertEqual(session.id, originalID)
-        session.operationStateChanged(to: .normal, at: nextSleep.addingTimeInterval(30 * 60))
+        session.operationStateChanged(to: .normal, at: nextSleep + (30 * 60))
         let newID = session.id
         XCTAssertNotEqual(newID, originalID)
         XCTAssertNotNil(UUID(uuidString: newID))
-        session.operationStateChanged(to: .normal, at: nextSleep.addingTimeInterval(2 * 60 * 60))
+        session.operationStateChanged(to: .normal, at: nextSleep + (2 * 60 * 60))
         XCTAssertEqual(session.id, newID, "Active time must not expire a session")
     }
 
     func testSleepAndSnoozeShareOneTimeoutAndShortSleepsDoNotAccumulate() {
         let session = TelemetrySession()
         let originalID = session.id
-        let start = Date(timeIntervalSince1970: 123456)
+        let start: TimeInterval = 123456
         for minutes in [0.0, 30.0] {
-            let sleep = start.addingTimeInterval(minutes * 60)
+            let sleep = start + (minutes * 60)
             session.operationStateChanged(to: .sleep, at: sleep)
-            session.operationStateChanged(to: .normal, at: sleep.addingTimeInterval(20 * 60))
+            session.operationStateChanged(to: .normal, at: sleep + (20 * 60))
             XCTAssertEqual(session.id, originalID)
         }
 
-        session.operationStateChanged(to: .sleep, at: start.addingTimeInterval(60 * 60))
-        session.operationStateChanged(to: .snooze, at: start.addingTimeInterval(80 * 60))
-        session.operationStateChanged(to: .sleep, at: start.addingTimeInterval(85 * 60))
-        session.operationStateChanged(to: .normal, at: start.addingTimeInterval(90 * 60))
+        session.operationStateChanged(to: .sleep, at: start + (60 * 60))
+        session.operationStateChanged(to: .snooze, at: start + (80 * 60))
+        session.operationStateChanged(to: .sleep, at: start + (85 * 60))
+        session.operationStateChanged(to: .normal, at: start + (90 * 60))
         XCTAssertNotEqual(session.id, originalID)
 
         let afterSleep = session.id
-        session.operationStateChanged(to: .snooze, at: start.addingTimeInterval(100 * 60))
-        session.operationStateChanged(to: .normal, at: start.addingTimeInterval(131 * 60))
+        session.operationStateChanged(to: .snooze, at: start + (100 * 60))
+        session.operationStateChanged(to: .normal, at: start + (131 * 60))
         XCTAssertNotEqual(session.id, afterSleep)
     }
 
@@ -198,9 +198,9 @@ final class TelemetryTests: XCTestCase {
         let session = TelemetrySession()
         let originalID = session.id
         let original = TelemetryEvent(name: "before_sleep", clientID: "client", sessionID: session.id)
-        let start = Date(timeIntervalSince1970: 123456)
+        let start: TimeInterval = 123456
         session.operationStateChanged(to: .sleep, at: start)
-        session.operationStateChanged(to: .normal, at: start.addingTimeInterval(31 * 60))
+        session.operationStateChanged(to: .normal, at: start + (31 * 60))
         let wake = TelemetryEvent(name: "session.snapshot", clientID: "client", sessionID: session.id)
         let exporter = RecordingLogExporter()
         let processor = SimpleLogRecordProcessor(logRecordExporter: exporter)
@@ -279,6 +279,24 @@ final class TelemetryTests: XCTestCase {
         XCTAssertEqual(config?.headers.first?.0, "Authorization")
         XCTAssertEqual(config?.headers.first?.1, "Bearer token")
         XCTAssertEqual(configuration.headers.count, 0)
+    }
+
+    func testHeaderValuesRejectControlsExceptHorizontalTab() throws {
+        let controls = Array(UInt8(0)...31) + [127]
+        for byte in controls where byte != 9 {
+            let headers = try JSONSerialization.data(withJSONObject: ["Authorization": "before\(Character(UnicodeScalar(byte)))after"])
+            XCTAssertNil(TelemetryConfiguration(info: [
+                "SOUNDSCAPE_OTEL_LOGS_ENDPOINT": "https://host/v1/logs",
+                "SOUNDSCAPE_OTEL_LOGS_HEADERS": String(decoding: headers, as: UTF8.self)
+            ]), "Control byte \(byte) must be rejected")
+        }
+        let value = "Bearer\ttoken ~ café"
+        let headers = try JSONSerialization.data(withJSONObject: ["Authorization": value])
+        let config = try XCTUnwrap(TelemetryConfiguration(info: [
+            "SOUNDSCAPE_OTEL_LOGS_ENDPOINT": "https://host/v1/logs",
+            "SOUNDSCAPE_OTEL_LOGS_HEADERS": String(decoding: headers, as: UTF8.self)
+        ]))
+        XCTAssertEqual(config.headers.first?.1, value)
     }
 
     func testDefaultIsOptedOutAndSavedChoicesSurviveInitialization() throws {

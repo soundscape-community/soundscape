@@ -31,7 +31,9 @@ struct TelemetryConfiguration {
                       !key.isEmpty && key.utf8.allSatisfy { byte in
                           (65...90).contains(byte) || (97...122).contains(byte) || (48...57).contains(byte) ||
                           "!#$%&'*+-.^_`|~".utf8.contains(byte)
-                      } && !value.contains("\r") && !value.contains("\n")
+                      } && value.utf8.allSatisfy { byte in
+                          byte == 9 || (byte >= 32 && byte != 127)
+                      }
                   }) else { return nil }
             headers = dictionary.sorted { $0.key < $1.key }.map { ($0.key, $0.value) }
         }
@@ -44,21 +46,23 @@ final class TelemetrySession {
 
     private struct State {
         var id = UUID().uuidString
-        var sleepingSince: Date?
+        var sleepingSince: TimeInterval?
     }
 
     private let state = Locked(initialValue: State())
 
     var id: String { state.protectedValue.id }
 
-    func operationStateChanged(to operationState: OperationState, at now: Date = Date()) {
+    /// Elapsed seconds from a monotonic clock that includes device sleep, independent of wall-clock changes.
+    func operationStateChanged(to operationState: OperationState,
+                               at now: TimeInterval = TimeInterval(clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW)) / 1_000_000_000) {
         state.locking { state in
             switch operationState {
             case .sleep, .snooze:
                 // Switching between sleep and snooze must not restart the timeout.
                 if state.sleepingSince == nil { state.sleepingSince = now }
             case .normal:
-                if let since = state.sleepingSince, now.timeIntervalSince(since) >= Self.sleepTimeout {
+                if let since = state.sleepingSince, now - since >= Self.sleepTimeout {
                     state.id = UUID().uuidString
                 }
                 state.sleepingSince = nil

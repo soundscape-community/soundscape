@@ -162,6 +162,11 @@ and transformations such as `logContext.map { ... }`, remain unresolved. It does
 not trace dictionary mutation through helper calls or infer runtime values.
 Recognized dictionary mutation methods and inout uses are flagged as unresolved;
 previously known keys are retained conservatively.
+When `#if`/`#else` branches redeclare the same local dictionary name, only the
+last scanned declaration supplies properties to calls after the branches.
+Those property keys are not unioned across declarations. This currently affects
+no telemetry call sites in the app; conditional-compilation property analysis
+remains a scanner limitation.
 Automatically attached event snapshots, `user_id`, `event_id`, `session_id`, and
 OpenTelemetry resource attributes are outside this inventory. All conditional-compilation branches are
 scanned; tests, scripts, and dependencies outside `GuideDogs` are excluded. Comments
@@ -216,7 +221,8 @@ Set these build settings for each configuration that should support telemetry:
   URL, fragments, missing hosts, and missing paths are rejected.
 - `SOUNDSCAPE_OTEL_LOGS_HEADERS`: optional JSON dictionary whose keys and values
   are strings, for example `{"Authorization":"Bearer token"}`. Empty means no
-  extra headers. Invalid JSON or invalid header names/line breaks disable telemetry.
+  extra headers. Invalid JSON, invalid header names, or control characters in
+  header values (except horizontal tab) disable telemetry.
 
 These settings are expanded into Info.plist. Missing or invalid configuration
 stops collection as well as export, even if the saved preference is enabled.
@@ -277,6 +283,10 @@ Switching between sleep and "wake when I leave" snooze does not restart
 the timeout. Short sleeps keep the session and do not accumulate toward 30 minutes.
 Other paths into Soundscape sleep mode, such as the NaviLens integration, follow
 the same rule. Device sleep alone never starts this timeout.
+The timeout uses elapsed seconds from `CLOCK_MONOTONIC_RAW`, which advances during
+device sleep and is unaffected by wall-clock adjustments. Device sleep counts
+toward the timeout only while Soundscape is already in sleep or snooze mode.
+Event occurrence timestamps continue to use wall-clock dates.
 
 Session tracking is in memory and independent of consent; it does not collect or
 export events while sharing is disabled. Each event captures its session ID at
