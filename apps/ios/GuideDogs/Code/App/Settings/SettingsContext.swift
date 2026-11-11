@@ -12,6 +12,7 @@ import AVFoundation
 import CoreLocation
 
 extension Notification.Name {
+    static let delayedStartChanged = Notification.Name("GDADelayedStartChanged")
     static let automaticCalloutsEnabledChanged = Notification.Name("GDAAutomaticCalloutsChanged")
     static let shakeCalloutsEnabledChanged = Notification.Name("GDAShakeCalloutsChanged")
     static let autoCalloutCategorySenseChanged = Notification.Name("GDAAutomaticCalloutSenseChanged")
@@ -69,6 +70,7 @@ class SettingsContext {
         fileprivate static let kalmanFilterEnabled        = "GDASettingsKalmanFilterEnabled"
         fileprivate static let markerSortStyle           = "GDAMarkerSortStyle"
         fileprivate static let leaveImmediateVicinityDistance = "GDALeaveImmediateVicinityDistance"
+        fileprivate static let delayedStartEnabled = "GDADelayedStartEnabled"
         fileprivate static let enterImmediateVicinityDistance = "GDAEnterImmediateVicinityDistance"
         fileprivate static let beaconRingingAngle        =      "GDABeaconRingingAngle"
         
@@ -135,6 +137,7 @@ class SettingsContext {
             Keys.naviLensAutoSnoozeEnabled: true,
             Keys.markerSortStyle: SortStyle.distance.rawValue,
             Keys.leaveImmediateVicinityDistance: ArrivalDistance.defaultValue + ArrivalDistance.exitHysteresis,
+            Keys.delayedStartEnabled: false,
             Keys.enterImmediateVicinityDistance: ArrivalDistance.defaultValue,
             Keys.beaconRingingAngle: 15.0
         ])
@@ -467,6 +470,15 @@ class SettingsContext {
         }
     }
     
+    var delayedStartEnabled: Bool {
+        get { userDefaults.bool(forKey: Keys.delayedStartEnabled) }
+        set {
+            guard newValue != delayedStartEnabled else { return }
+            userDefaults.set(newValue, forKey: Keys.delayedStartEnabled)
+            NotificationCenter.default.post(name: .delayedStartChanged, object: self)
+        }
+    }
+
     var enterImmediateVicinityDistance: CLLocationDistance {
         get {
             return cachedArrivalDistance

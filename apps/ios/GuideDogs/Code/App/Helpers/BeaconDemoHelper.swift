@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -27,9 +28,24 @@ class BeaconDemoHelper {
     private var shouldRestoreState: Bool = false
     private var systemState: AudioSystemState?
     private var beaconTimer: AnyCancellable?
+    private var previewDestinationKey: String?
     
-    private var userLocation: CLLocation? {
-        return AppContext.shared.geolocationManager.location
+    private let beaconManager: DestinationManagerProtocol
+    private let currentLocation: () -> CLLocation?
+
+    init(destinationManager: DestinationManagerProtocol = AppContext.shared.spatialDataContext.destinationManager,
+         userLocation: @escaping () -> CLLocation? = { AppContext.shared.geolocationManager.location }) {
+        beaconManager = destinationManager
+        currentLocation = userLocation
+    }
+
+    private var userLocation: CLLocation? { currentLocation() }
+
+    private func hush() {
+        if beaconManager.destinationKey == previewDestinationKey, beaconManager.isAudioEnabled {
+            beaconManager.toggleDestinationAudio()
+        }
+        AppContext.shared.eventProcessor.hush(playSound: false, hushBeacon: false)
     }
     
     private var defaultBeaconLocation: CLLocation? {
@@ -48,9 +64,9 @@ class BeaconDemoHelper {
     ///
     /// - Parameter disableMelodies: This value overrides the system setting for `SettingsContext.shared.playBeaconStartAndEndMelodies`
     func prepare(disableMelodies: Bool = true) {
+        guard systemState == nil else { return }
         let calloutsEnabled = SettingsContext.shared.automaticCalloutsEnabled
         let beaconMelodiesEnabled = SettingsContext.shared.playBeaconStartAndEndMelodies
-        let beaconManager = AppContext.shared.spatialDataContext.destinationManager
         
         var originalBeacon: BeaconType?
         if let ref = beaconManager.destination {
@@ -72,8 +88,10 @@ class BeaconDemoHelper {
                                        wereBeaconMelodiesDisabled: disableMelodies,
                                        originalBeaconMelodiesState: beaconMelodiesEnabled,
                                        wereCalloutsEnabled: calloutsEnabled)
+        previewDestinationKey = beaconManager.destinationKey
         
-        AppContext.shared.eventProcessor.hush(playSound: false)
+        (beaconManager as? DestinationManager)?.beginBeaconDemo()
+        hush()
         SettingsContext.shared.automaticCalloutsEnabled = false
         
         if disableMelodies {
@@ -82,7 +100,8 @@ class BeaconDemoHelper {
     }
     
     func play(styleChanged: Bool = false, shouldTimeOut: Bool = true, newBeaconLocation: CLLocation? = nil, logContext: String = "volume_controls.demo") {
-        let beaconManager = AppContext.shared.spatialDataContext.destinationManager
+        // Navigation may have replaced or removed the destination while settings were open.
+        guard systemState != nil, beaconManager.destinationKey == previewDestinationKey else { return }
         let currentBeaconLocation = newBeaconLocation ?? defaultBeaconLocation
         
         guard beaconTimer == nil else {
@@ -91,13 +110,14 @@ class BeaconDemoHelper {
             
             if styleChanged, let beaconLocation = currentBeaconLocation {
                 // If the beacon is currently on and the style changed, toggle it off and then back on so that the change in beacon takes place.
-                AppContext.shared.eventProcessor.hush(playSound: false)
+                hush()
                 
                 _ = try? beaconManager.setDestination(location: beaconLocation,
                                                       address: nil,
                                                       enableAudio: true,
                                                       userLocation: userLocation,
                                                       logContext: logContext)
+                previewDestinationKey = beaconManager.destinationKey
             }
             
             if shouldTimeOut {
@@ -105,7 +125,7 @@ class BeaconDemoHelper {
                     .autoconnect()
                     .first()
                     .sink { [weak self] _ in
-                        AppContext.shared.eventProcessor.hush(playSound: false)
+                        self?.hush()
                         self?.beaconTimer = nil
                     }
             }
@@ -114,7 +134,7 @@ class BeaconDemoHelper {
         }
         
         // Hush the other possible demo sounds
-        AppContext.shared.eventProcessor.hush(playSound: false)
+        hush()
         
         beaconTimer?.cancel()
         
@@ -130,24 +150,25 @@ class BeaconDemoHelper {
                                               enableAudio: true,
                                               userLocation: userLocation,
                                               logContext: logContext)
+        previewDestinationKey = beaconManager.destinationKey
         
         if shouldTimeOut {
             beaconTimer = Timer.publish(every: 8.0, on: RunLoop.main, in: .common)
                 .autoconnect()
                 .first()
                 .sink { [weak self] _ in
-                    AppContext.shared.eventProcessor.hush(playSound: false)
+                    self?.hush()
                     self?.beaconTimer = nil
                 }
         }
     }
     
     func updateBeaconLocation(_ newBeaconLocation: CLLocation) {
-        guard let userLocation = userLocation else {
+        guard beaconManager.destinationKey == previewDestinationKey, let userLocation = userLocation else {
             return
         }
         
-        AppContext.shared.spatialDataContext.destinationManager.updateDestinationLocation(newBeaconLocation, userLocation: userLocation)
+        beaconManager.updateDestinationLocation(newBeaconLocation, userLocation: userLocation)
     }
     
     func restoreState(logContext: String = "volume_controls.demo") {
@@ -164,40 +185,45 @@ class BeaconDemoHelper {
             SettingsContext.shared.playBeaconStartAndEndMelodies = systemState.originalBeaconMelodiesState
         }
         
-        // If a demo hasn't played, we shouldn't attempt to restore the state (no state change occurred)
+        var restoredOriginal = false
+        defer {
+            (beaconManager as? DestinationManager)?.endBeaconDemo(restoreAudio: restoredOriginal, userLocation: userLocation)
+            self.systemState = nil
+            shouldRestoreState = false
+            previewDestinationKey = nil
+        }
+
+        // Restore only the destination this session still owns, never a later navigation choice.
+        guard beaconManager.destinationKey == previewDestinationKey else { return }
+
+        // No replacement is needed when the original beacon was already silent.
         guard shouldRestoreState || systemState.wasBeaconEnabled else {
+            restoredOriginal = systemState.originalBeacon != nil
             return
         }
-        
-        AppContext.shared.eventProcessor.hush(playSound: false)
-        
-        let beaconManager = AppContext.shared.spatialDataContext.destinationManager
-        try? beaconManager.clearDestination(logContext: logContext)
-        
-        guard let originalBeacon = systemState.originalBeacon else {
-            return
-        }
-        
-        let user = AppContext.shared.geolocationManager.location
-        
-        switch originalBeacon {
-        case .location(loc: let loc, address: let address):
-            _ = try? beaconManager.setDestination(location: loc,
-                                                  address: address,
-                                                  enableAudio: systemState.wasBeaconEnabled,
-                                                  userLocation: user,
-                                                  logContext: logContext + ".restoring_original")
-        case .entity(id: let id, address: let address):
-            _ = try? beaconManager.setDestination(entityKey: id,
-                                                  enableAudio: systemState.wasBeaconEnabled,
-                                                  userLocation: user,
-                                                  estimatedAddress: address,
-                                                  logContext: logContext + ".restoring_original")
-        case .ref(id: let id):
-            _ = try? beaconManager.setDestination(referenceID: id,
-                                                  enableAudio: systemState.wasBeaconEnabled,
-                                                  userLocation: user,
-                                                  logContext: logContext + ".restoring_original")
+
+        hush()
+        do {
+            try beaconManager.clearDestination(logContext: logContext)
+            guard let originalBeacon = systemState.originalBeacon else { return }
+
+            // Restore the destination silently, then let the manager reconcile current arrival,
+            // temporary suppression and any setting changes made while the demo was open.
+            let user = userLocation
+            switch originalBeacon {
+            case .location(loc: let loc, address: let address):
+                try beaconManager.setDestination(location: loc, address: address, enableAudio: false,
+                                                 userLocation: user, logContext: logContext + ".restoring_original")
+            case .entity(id: let id, address: let address):
+                try beaconManager.setDestination(entityKey: id, enableAudio: false, userLocation: user,
+                                                 estimatedAddress: address, logContext: logContext + ".restoring_original")
+            case .ref(id: let id):
+                try beaconManager.setDestination(referenceID: id, enableAudio: false,
+                                                 userLocation: user, logContext: logContext + ".restoring_original")
+            }
+            restoredOriginal = true
+        } catch {
+            GDLogAppError("Unable to restore beacon after demo: \(error)")
         }
     }
 }

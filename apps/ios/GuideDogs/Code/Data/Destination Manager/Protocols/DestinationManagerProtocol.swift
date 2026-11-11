@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -48,6 +49,8 @@ protocol DestinationManagerProtocol: AnyObject {
     func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
 
     func clearDestination(logContext: String?) throws
+
+    func cancelDelayedStart()
     
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool

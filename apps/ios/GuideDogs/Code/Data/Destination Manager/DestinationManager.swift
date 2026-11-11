@@ -24,6 +24,45 @@ enum DestinationManagerError: Error {
     case referenceEntityDoesNotExist
 }
 
+/// Per-destination state only: restoring the app never starts continuous audio.
+enum DelayedBeaconStart: Equatable {
+    static let activationDistance: CLLocationDistance = 300
+
+    case inactive
+    case pending
+    case resumeWhenAllowed
+    case armed
+    case waitingForExit
+
+    static func afterManualMute(enabled: Bool, distance: CLLocationDistance?) -> Self {
+        guard enabled else { return .inactive }
+        // Without a location, require a known outside fix before re-arming.
+        return distance.map { $0 > activationDistance ? .armed : .waitingForExit } ?? .waitingForExit
+    }
+
+    mutating func disable() {
+        // Only an initial automatic delay may resume when the setting is disabled.
+        // Re-arming after a manual mute must preserve that intentional silence.
+        switch self {
+        case .pending: self = .resumeWhenAllowed
+        case .armed, .waitingForExit: self = .inactive
+        case .inactive, .resumeWhenAllowed: break
+        }
+    }
+
+    mutating func shouldActivate(distance: CLLocationDistance, hasArrived: Bool) -> Bool {
+        guard self != .inactive else { return false }
+        guard !hasArrived else {
+            self = .inactive
+            return false
+        }
+        if self == .waitingForExit, distance > Self.activationDistance {
+            self = .armed
+        }
+        return self == .resumeWhenAllowed || ((self == .pending || self == .armed) && distance <= Self.activationDistance)
+    }
+}
+
 class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Notification Keys
@@ -73,6 +112,30 @@ class DestinationManager: DestinationManagerProtocol {
         return beaconPlayerId != nil || hapticBeacon != nil
     }
     
+    private(set) var delayedStartState: DelayedBeaconStart = .inactive
+    private struct DemoAudioState {
+        let destinationKey: String?
+        var delayedStart: DelayedBeaconStart
+        var wasEnabled: Bool
+    }
+    private var demoAudioState: DemoAudioState?
+    private var audioEngineIsStopped = false
+    private var lastUserLocation: CLLocation?
+    private let activeBehavior: () -> Behavior
+
+    private var isVirtualPreview: Bool {
+        var behavior: Behavior? = activeBehavior()
+        while let current = behavior {
+            if current is StreetPreviewBehavior { return true }
+            behavior = current.parent
+        }
+        return false
+    }
+
+    private var isAutomaticStartSuppressed: Bool {
+        demoAudioState != nil || audioEngineIsStopped || isVirtualPreview || (activeBehavior() as? BehaviorBase)?.isInSleepMode == true
+    }
+
     private var beaconClosestLocation: CLLocation?
     private var temporaryBeaconClosestLocation: CLLocation?
     private var isGeofenceEnabled: Bool = true
@@ -152,11 +215,16 @@ class DestinationManager: DestinationManagerProtocol {
 
     // MARK: Initialization
     
-    init(userLocation: CLLocation? = nil, audioEngine engine: AudioEngineProtocol, collectionHeading: Heading) {
+    init(userLocation: CLLocation? = nil, audioEngine engine: AudioEngineProtocol, collectionHeading: Heading,
+         activeBehavior: @escaping () -> Behavior = { AppContext.shared.eventProcessor.activeBehavior }) {
+        self.activeBehavior = activeBehavior
+        lastUserLocation = userLocation
         self.collectionHeading = collectionHeading
         
         audioEngine = engine
         
+        NotificationCenter.default.addObserver(self, selector: #selector(onDelayedStartChanged), name: .delayedStartChanged, object: nil)
+
         // Verify that destination exists
         if destinationKey != nil && destination == nil {
             destinationKey = nil
@@ -254,8 +322,18 @@ class DestinationManager: DestinationManagerProtocol {
             isWithinGeofence = isLocationWithinGeofence(origin: entity.getPOI(), location: userLocation)
         }
         
-        // Start audio if enabled and user is not within geofence
-        if let location = userLocation, enableAudio, !isWithinGeofence {
+        if !isVirtualPreview { lastUserLocation = userLocation }
+        delayedStartState = enableAudio && SettingsContext.shared.delayedStartEnabled ? .pending : .inactive
+        let shouldDelay: Bool
+        if let location = userLocation, !isVirtualPreview {
+            shouldDelay = delayedStartState != .inactive && !delayedStartState.shouldActivate(
+                distance: entity.distanceToClosestLocation(from: location), hasArrived: isWithinGeofence)
+        } else {
+            shouldDelay = delayedStartState != .inactive
+        }
+
+        // Arrival takes precedence over Delayed Start.
+        if let location = userLocation, enableAudio, !isWithinGeofence, !shouldDelay {
             enableDestinationAudio(userLocation: location)
         } else if isAudioEnabled {
             // If not, and the audio is already on, turn it off (e.g. user is within the geofence of the new beacon already)
@@ -375,6 +453,7 @@ class DestinationManager: DestinationManagerProtocol {
         // Remove all temporary reference entities
         try ReferenceEntity.removeAllTemporary()
         
+        delayedStartState = .inactive
         beaconClosestLocation = nil
         temporaryBeaconClosestLocation = nil
         
@@ -405,12 +484,20 @@ class DestinationManager: DestinationManagerProtocol {
     /// - Returns: True if the audio beacon was toggled, false otherwise (e.g. no destination is set or user's location is unknown).
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool {
-        let isRouteBeacon = AppContext.shared.eventProcessor.activeBehavior is RouteGuidance
-        guard destination != nil else {
+        toggleDestinationAudio(sendNotfication, automatic: automatic, forceMelody: forceMelody,
+                               userLocation: AppContext.shared.geolocationManager.location)
+    }
+
+    @discardableResult
+    func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool, userLocation: CLLocation?) -> Bool {
+        let isRouteBeacon = activeBehavior() is RouteGuidance
+        guard let destination = destination else {
             // Return if destination does not exist
             return false
         }
         
+        if !isVirtualPreview { lastUserLocation = userLocation }
+
         if isAudioEnabled {
             if !automatic {
                 GDATelemetry.track("beacon.toggled", with: ["enabled": "false", "route": String(isRouteBeacon)])
@@ -420,13 +507,22 @@ class DestinationManager: DestinationManagerProtocol {
                 finishBeaconPlayerOnRemove = true
             }
             
+            if !automatic {
+                let distance = userLocation.map {
+                    destination.distanceToClosestLocation(from: $0)
+                }
+                delayedStartState = .afterManualMute(enabled: SettingsContext.shared.delayedStartEnabled, distance: distance)
+            }
             return disableDestinationAudio(sendNotfication)
         }
         
-        guard let userLocation = AppContext.shared.geolocationManager.location else {
+        // Route/tour setup and resume requests must not bypass a pending delay.
+        guard !automatic || delayedStartState == .inactive else { return false }
+
+        guard let userLocation = userLocation else {
             return false
         }
-        
+
         if !automatic {
             GDATelemetry.track("beacon.toggled", with: ["enabled": "true", "route": String(isRouteBeacon)])
         }
@@ -468,7 +564,7 @@ class DestinationManager: DestinationManagerProtocol {
                               startMelody: SettingsContext.shared.playBeaconStartAndEndMelodies && !isUnmuting,
                               endMelody: SettingsContext.shared.playBeaconStartAndEndMelodies)
         
-        if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance || AppContext.shared.eventProcessor.activeBehavior is GuidedTour {
+        if activeBehavior() is RouteGuidance || activeBehavior() is GuidedTour {
             guard let hum = BeaconSound(ProximityBeacon.self, at: args.loc, isLocalized: false) else {
                 return false
             }
@@ -511,6 +607,8 @@ class DestinationManager: DestinationManagerProtocol {
             return false
         }
         
+        delayedStartState = .inactive
+
         if sendNotfication {
             notifyDestinationAudioChanged()
         }
@@ -649,11 +747,6 @@ class DestinationManager: DestinationManagerProtocol {
         // TODO: All of this logic (callout and view update logic) should moved into
         //       the BeaconCalloutGenerator
         
-        guard !AppContext.shared.eventProcessor.activeBehavior.blockedAutoGenerators.contains(where: { $0 == BeaconCalloutGenerator.self }) else {
-            GDLogAutoCalloutInfo("Skipping beacon geofence update. Beacon callouts are managed by the active behavior.")
-            return
-        }
-        
         guard let userInfo = notification.userInfo else {
             GDLogSpatialDataError("Error: No userInfo with location update")
             return
@@ -668,6 +761,14 @@ class DestinationManager: DestinationManagerProtocol {
             return
         }
         
+        guard !isVirtualPreview else { return }
+        updateDelayedStart(for: location)
+
+        guard !activeBehavior().blockedAutoGenerators.contains(where: { $0 == BeaconCalloutGenerator.self }) else {
+            GDLogAutoCalloutInfo("Skipping beacon geofence update. Beacon callouts are managed by the active behavior.")
+            return
+        }
+
         updateBeaconClosestLocation(for: location)
         
         updateNowPlayingDisplay(for: location)
@@ -681,6 +782,7 @@ class DestinationManager: DestinationManagerProtocol {
         // Disable audio when entering the geofence, but require the user to manually turn audio
         // back on if they leave the geofence
         if isWithinGeofence {
+            cancelDelayedStart()
             GDATelemetry.track("beacon.arrived")
             GDATelemetry.helper?.beaconCountArrived += 1
             
@@ -704,6 +806,62 @@ class DestinationManager: DestinationManagerProtocol {
                                                    SpatialDataContext.Keys.location: location])
     }
     
+    /// A completed waypoint must never be restarted by a later location fix.
+    func cancelDelayedStart() {
+        delayedStartState = .inactive
+        // Arrival/completion can occur while the original beacon is hushed for a demo.
+        if demoAudioState?.destinationKey == destinationKey {
+            demoAudioState?.delayedStart = .inactive
+            demoAudioState?.wasEnabled = false
+        }
+    }
+
+    /// Keep the original audio intent live while the helper temporarily replaces the destination.
+    /// Setting changes update this state too, so restoration cannot resurrect a canceled delay.
+    func beginBeaconDemo() {
+        guard demoAudioState == nil else { return }
+        demoAudioState = DemoAudioState(destinationKey: destinationKey, delayedStart: delayedStartState, wasEnabled: isAudioEnabled)
+        if isAudioEnabled { disableDestinationAudio(true) }
+    }
+
+    func endBeaconDemo(restoreAudio: Bool, userLocation: CLLocation?) {
+        guard let saved = demoAudioState else { return }
+        demoAudioState = nil
+        guard restoreAudio else { return }
+        delayedStartState = saved.wasEnabled ? .resumeWhenAllowed : saved.delayedStart
+        if let location = userLocation {
+            updateDelayedStart(for: location)
+        }
+    }
+
+    @objc private func onDelayedStartChanged() {
+        guard !SettingsContext.shared.delayedStartEnabled else { return }
+        delayedStartState.disable()
+        demoAudioState?.delayedStart.disable()
+        if let location = lastUserLocation {
+            updateDelayedStart(for: location)
+        }
+    }
+
+    func updateDelayedStart(for location: CLLocation) {
+        // Preview supplies virtual locations. They must not alter real arrival or delay state.
+        guard !isVirtualPreview else { return }
+        lastUserLocation = location
+        if !SettingsContext.shared.delayedStartEnabled {
+            delayedStartState.disable()
+        }
+        guard delayedStartState != .inactive, !isAudioEnabled,
+              !isAutomaticStartSuppressed, let poi = destination?.getPOI() else { return }
+
+        let distance = poi.distanceToClosestLocation(from: location)
+        // Check arrival even when a route/tour owns the ordinary geofence handling.
+        let hasArrived = isWithinGeofence || poi.contains(location: location.coordinate) || SettingsContext.isWithinArrivalDistance(
+            distance, arrivalDistance: SettingsContext.shared.enterImmediateVicinityDistance)
+        if delayedStartState.shouldActivate(distance: distance, hasArrived: hasArrived) {
+            enableDestinationAudio(userLocation: location, isUnmuting: true, notify: true)
+        }
+    }
+
     private func updateNowPlayingDisplay(for location: CLLocation? = nil) {
         if appDidInitialize {
             guard !(AppContext.shared.eventProcessor.activeBehavior is RouteGuidance) else {
@@ -731,6 +889,8 @@ class DestinationManager: DestinationManagerProtocol {
                 return
         }
         
+        audioEngineIsStopped = state != .started
+
         if state == .stopped && isAudioEnabled {
             toggleDestinationAudio()
             didInterruptBeacon = true
