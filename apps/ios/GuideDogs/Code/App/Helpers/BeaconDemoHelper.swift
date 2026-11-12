@@ -111,11 +111,9 @@ class BeaconDemoHelper {
                 // If the beacon is currently on and the style changed, toggle it off and then back on so that the change in beacon takes place.
                 hush()
                 
-                _ = try? beaconManager.setDestination(location: beaconLocation,
-                                                      address: nil,
-                                                      enableAudio: true,
-                                                      userLocation: userLocation,
-                                                      logContext: logContext)
+                _ = try? beaconManager.setPreviewDestination(location: beaconLocation,
+                                                             userLocation: userLocation,
+                                                             logContext: logContext)
                 previewDestinationKey = beaconManager.destinationKey
             }
             
@@ -144,11 +142,9 @@ class BeaconDemoHelper {
         
         shouldRestoreState = true
         
-        _ = try? beaconManager.setDestination(location: currentBeaconLocation,
-                                              address: nil,
-                                              enableAudio: true,
-                                              userLocation: userLocation,
-                                              logContext: logContext)
+        _ = try? beaconManager.setPreviewDestination(location: currentBeaconLocation,
+                                                     userLocation: userLocation,
+                                                     logContext: logContext)
         previewDestinationKey = beaconManager.destinationKey
         
         if shouldTimeOut {

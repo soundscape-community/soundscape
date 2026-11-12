@@ -48,6 +48,8 @@ protocol DestinationManagerProtocol: AnyObject {
     @discardableResult
     func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
 
+    func setPreviewDestination(location: CLLocation, userLocation: CLLocation?, logContext: String?) throws
+
     func clearDestination(logContext: String?) throws
 
     func cancelDelayedStart()

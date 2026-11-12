@@ -113,6 +113,7 @@ class DestinationManager: DestinationManagerProtocol {
     }
     
     private(set) var delayedStartState: DelayedBeaconStart = .inactive
+    private var delayedStartDidArrive = false
     private struct DemoAudioState {
         let destinationKey: String?
         var delayedStart: DelayedBeaconStart
@@ -323,6 +324,7 @@ class DestinationManager: DestinationManagerProtocol {
         }
         
         if !isVirtualPreview { lastUserLocation = userLocation }
+        delayedStartDidArrive = false
         delayedStartState = enableAudio && SettingsContext.shared.delayedStartEnabled ? .pending : .inactive
         let shouldDelay: Bool
         if let location = userLocation, !isVirtualPreview {
@@ -353,6 +355,14 @@ class DestinationManager: DestinationManagerProtocol {
         GDATelemetry.track("beacon.added", with: (logContext != nil) ? ["context": logContext!] : nil)
     }
     
+    func setPreviewDestination(location: CLLocation, userLocation: CLLocation?, logContext: String?) throws {
+        try setDestination(location: location, address: nil, enableAudio: false,
+                           userLocation: userLocation, logContext: logContext)
+        if let userLocation = userLocation, !isWithinGeofence {
+            enableDestinationAudio(userLocation: userLocation, notify: true)
+        }
+    }
+
     /// Creates a temporary reference entity for the location specified and sets it as the current
     /// destination. When this destination is later cleared, the temporary reference entity will be removed.
     ///
@@ -454,6 +464,7 @@ class DestinationManager: DestinationManagerProtocol {
         try ReferenceEntity.removeAllTemporary()
         
         delayedStartState = .inactive
+        delayedStartDidArrive = false
         beaconClosestLocation = nil
         temporaryBeaconClosestLocation = nil
         
@@ -516,8 +527,8 @@ class DestinationManager: DestinationManagerProtocol {
             return disableDestinationAudio(sendNotfication)
         }
         
-        // Route/tour setup and resume requests must not bypass a pending delay.
-        guard !automatic || delayedStartState == .inactive else { return false }
+        // Automatic resume must not bypass a pending delay or restart an arrived beacon.
+        guard !automatic || (delayedStartState == .inactive && !delayedStartDidArrive) else { return false }
 
         guard let userLocation = userLocation else {
             return false
@@ -608,6 +619,7 @@ class DestinationManager: DestinationManagerProtocol {
         }
         
         delayedStartState = .inactive
+        delayedStartDidArrive = false
 
         if sendNotfication {
             notifyDestinationAudioChanged()
@@ -808,6 +820,7 @@ class DestinationManager: DestinationManagerProtocol {
     
     /// A completed waypoint must never be restarted by a later location fix.
     func cancelDelayedStart() {
+        delayedStartDidArrive = delayedStartDidArrive || delayedStartState != .inactive
         delayedStartState = .inactive
         // Arrival/completion can occur while the original beacon is hushed for a demo.
         if demoAudioState?.destinationKey == destinationKey {
@@ -851,13 +864,18 @@ class DestinationManager: DestinationManagerProtocol {
             delayedStartState.disable()
         }
         guard delayedStartState != .inactive, !isAudioEnabled,
-              !isAutomaticStartSuppressed, let poi = destination?.getPOI() else { return }
+              let poi = destination?.getPOI() else { return }
 
         let distance = poi.distanceToClosestLocation(from: location)
         // Check arrival even when a route/tour owns the ordinary geofence handling.
         let hasArrived = isWithinGeofence || poi.contains(location: location.coordinate) || SettingsContext.isWithinArrivalDistance(
             distance, arrivalDistance: SettingsContext.shared.enterImmediateVicinityDistance)
-        if delayedStartState.shouldActivate(distance: distance, hasArrived: hasArrived) {
+        if hasArrived {
+            cancelDelayedStart()
+            return
+        }
+        guard !isAutomaticStartSuppressed else { return }
+        if delayedStartState.shouldActivate(distance: distance, hasArrived: false) {
             enableDestinationAudio(userLocation: location, isUnmuting: true, notify: true)
         }
     }

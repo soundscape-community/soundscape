@@ -689,6 +689,100 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         XCTAssertTrue(manager.isAudioEnabled)
     }
 
+    func testDistantMarkerDemoPlaysWithoutBypassingOrdinaryDelayedStart() throws {
+        for enabled in [false, true] {
+            SettingsContext.shared.delayedStartEnabled = enabled
+            try setBeacon(distance: 500)
+            let user = location(500)
+            let demo = BeaconDemoHelper(destinationManager: manager, userLocation: { user })
+            demo.prepare()
+            demo.play(shouldTimeOut: false, newBeaconLocation: location(1000))
+            XCTAssertTrue(manager.isAudioEnabled, "The VoiceOver marker-edit preview must play beyond 300 meters")
+            XCTAssertEqual(manager.delayedStartState, .inactive)
+            demo.updateBeaconLocation(location(1200))
+            XCTAssertTrue(manager.isAudioEnabled)
+            manager.toggleDestinationAudio(false, automatic: false, forceMelody: false, userLocation: user)
+            postLocation(user)
+            XCTAssertFalse(manager.isAudioEnabled)
+            demo.restoreState()
+            XCTAssertEqual(manager.destination!.distanceToClosestLocation(from: destination), 0, accuracy: 0.1)
+            XCTAssertEqual(manager.isAudioEnabled, !enabled)
+            demo.prepare()
+            demo.play(shouldTimeOut: false, newBeaconLocation: location(505))
+            XCTAssertFalse(manager.isAudioEnabled, "Preview playback must still respect Arrival Distance")
+            demo.restoreState()
+            try setBeacon(distance: 500)
+            XCTAssertEqual(manager.isAudioEnabled, !enabled)
+            try setBeacon(distance: 500, enableAudio: false)
+            XCTAssertFalse(manager.isAudioEnabled)
+        }
+    }
+
+    func testSleepingArrivalWithBlockedGeofenceCancelsAutomaticWake() throws {
+        for disableDuringSleep in [false, true] {
+            SettingsContext.shared.delayedStartEnabled = true
+            try setBeacon(distance: 500)
+            let behavior = BehaviorBase(blockedAutoGenerators: [BeaconCalloutGenerator.self])
+            behaviorOverride = behavior
+            behavior.sleep()
+            if disableDuringSleep { SettingsContext.shared.delayedStartEnabled = false }
+            postLocation(location(5))
+            XCTAssertFalse(manager.isAudioEnabled)
+            XCTAssertEqual(manager.delayedStartState, .inactive)
+            postLocation(location(500))
+            behavior.wake()
+            postLocation(location(200))
+            XCTAssertFalse(manager.isAudioEnabled)
+            XCTAssertFalse(manager.toggleDestinationAudio(false, automatic: true, forceMelody: true, userLocation: location(200)))
+            XCTAssertTrue(manager.toggleDestinationAudio(false, automatic: false, forceMelody: false, userLocation: location(200)))
+            XCTAssertTrue(manager.isAudioEnabled, "Arrival must not prevent an intentional manual unmute")
+            behaviorOverride = nil
+        }
+    }
+
+    func testSleepingWithoutArrivalRetainsPendingActivation() throws {
+        try setBeacon(distance: 500)
+        let behavior = BehaviorBase(blockedAutoGenerators: [BeaconCalloutGenerator.self])
+        behaviorOverride = behavior
+        behavior.sleep()
+        postLocation(location(200))
+        XCTAssertFalse(manager.isAudioEnabled)
+        XCTAssertEqual(manager.delayedStartState, .pending)
+        behavior.wake()
+        postLocation(location(200))
+        XCTAssertTrue(manager.isAudioEnabled)
+    }
+
+    func testRouteAndTourSleepArrivalDoesNotRestartPassedWaypoint() throws {
+        let motion = RouteGuidanceTest.TestMotionActivity()
+        let spatial = RouteGuidanceTest.TestSpatialData(motion, manager)
+        for isTour in [false, true] {
+            let navigation: BehaviorBase = isTour
+                ? GuidedTour(navigationContent(), spatialData: spatial, motion: motion)
+                : RouteGuidance(navigationContent(), spatialData: spatial, motion: motion)
+            navigation.userLocation = location(500)
+            behaviorOverride = navigation
+            navigation.activate(with: nil)
+            XCTAssertEqual(manager.delayedStartState, .pending)
+            navigation.sleep()
+            navigation.handleEvent(LocationUpdatedEvent(location(5)), completion: { _ in })
+            postLocation(location(5))
+            XCTAssertEqual(manager.delayedStartState, .inactive)
+            postLocation(location(500))
+            navigation.wake()
+            postLocation(location(200))
+            XCTAssertFalse(manager.isAudioEnabled)
+            XCTAssertFalse(manager.toggleDestinationAudio(false, automatic: true, forceMelody: true, userLocation: location(200)))
+            (navigation as? RouteGuidance)?.nextWaypoint()
+            (navigation as? GuidedTour)?.nextWaypoint()
+            XCTAssertEqual(manager.delayedStartState, .pending)
+            postLocation(location(800))
+            XCTAssertTrue(manager.isAudioEnabled)
+            _ = navigation.deactivate()
+            XCTAssertFalse(manager.isDestinationSet)
+        }
+    }
+
     func testSettingOffInVirtualPreviewWaitsForRealLocation() throws {
         try setBeacon(distance: 500)
         behaviorOverride = makePreview()
