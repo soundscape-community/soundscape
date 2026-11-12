@@ -4574,3 +4574,9 @@
 "settings.section.navilens" = "NaviLens";
 "settings.navilens.auto_snooze.title" = "Snooze When Opening NaviLens";
 "settings.navilens.auto_snooze.description" = "Automatically snooze Soundscape when opening NaviLens and resume when you return. Turn off to keep Soundscape active.";
+
+/* Toggle for starting beacon audio only when approaching the destination. */
+"beacon.settings.delayed_start" = "Delayed Start";
+
+/* Delayed Start uses a fixed 300-meter radius, independent of Arrival Distance. */
+"beacon.settings.delayed_start.explanation" = "New beacons stay muted until you are within 300 metres of your destination. Distance announcements continue. Unmute at any time to start the sound. Muting re-arms Delayed Start; if you are already within 300 metres, move outside that distance before it can start again.";
