@@ -94,6 +94,8 @@ class SettingsContext {
     
     // MARK: Initialization
     
+    /// Registers persisted settings and defaults, including Delayed Start disabled by default,
+    /// and validates the cached Arrival Distance.
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
 

@@ -451,6 +451,13 @@ class GuidedTour: BehaviorBase {
         saveState()
     }
     
+    /// Replaces the waypoint beacon immediately or waits for the current beacon and arrival callouts
+    /// to finish before setting the next one.
+    ///
+    /// - Parameters:
+    ///   - waypoint: Destination for the next beacon.
+    ///   - enableAudio: Whether to request audio for the new waypoint.
+    ///   - skipAsyncFinish: Stops playing audio without its ending melody before transitioning.
     private func setOrTransitionBeacon(to waypoint: LocationDetail, enableAudio: Bool = true, skipAsyncFinish: Bool = false) {
         hasDepartedForCurrentWaypoint = false
         
@@ -510,6 +517,8 @@ class GuidedTour: BehaviorBase {
         }
     }
     
+    /// Creates the waypoint destination using the latest available user location and starts distance callouts.
+    /// Leaves activation to Delayed Start when enabled; otherwise preserves the existing audio fallback.
     private func completeSetBeacon(waypoint: LocationDetail, enableAudio: Bool) {
         guard let userLocation = userLocation ?? AppContext.shared.geolocationManager.location else {
             return

@@ -131,6 +131,8 @@ class RouteGuidance: BehaviorBase {
         self.init(detail, spatialData: spatialData, motion: motion)
     }
 
+    /// Starts or resumes route guidance, replacing any existing destination with the current waypoint.
+    /// Registers route callouts and beacon transition handling before activating the behavior.
     override func activate(with parent: Behavior?) {
         if case .database(let id) = content.source {
             do {
@@ -263,6 +265,7 @@ class RouteGuidance: BehaviorBase {
         return super.deactivate()
     }
 
+    /// Remembers whether route beacon audio was playing, silences it, and pauses route time tracking.
     override func sleep() {
         super.sleep()
 
@@ -278,6 +281,8 @@ class RouteGuidance: BehaviorBase {
         lastSaveTime = nil
     }
 
+    /// Resumes route time tracking and requests restoration of audio that was playing before sleep.
+    /// The destination manager decides whether an automatic unmute is still allowed.
     override func wake() {
         // Reset the last save time so that we don't track all the time the app was asleep
         lastSaveTime = Date()
@@ -454,6 +459,13 @@ class RouteGuidance: BehaviorBase {
         saveState()
     }
 
+    /// Replaces the waypoint beacon immediately or waits for the current beacon and arrival callouts
+    /// to finish before setting the next one.
+    ///
+    /// - Parameters:
+    ///   - waypoint: Destination for the next beacon.
+    ///   - enableAudio: Whether to request audio for the new waypoint.
+    ///   - skipAsyncFinish: Stops playing audio without its ending melody before transitioning.
     private func setOrTransitionBeacon(to waypoint: LocationDetail, enableAudio: Bool = true, skipAsyncFinish: Bool = false) {
         // Notify the UI that we are transitioning between beacon locations
         NotificationCenter.default.post(name: .routeGuidanceTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: true])
@@ -513,6 +525,8 @@ class RouteGuidance: BehaviorBase {
         }
     }
 
+    /// Creates the waypoint destination using the latest available user location and starts distance callouts.
+    /// Leaves activation to Delayed Start when enabled; otherwise preserves the existing audio fallback.
     private func completeSetBeacon(waypoint: LocationDetail, enableAudio: Bool) {
         defer {
             NotificationCenter.default.post(name: .routeGuidanceTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: false])
@@ -555,6 +569,7 @@ class RouteGuidance: BehaviorBase {
         }
     }
 
+    /// Removes the route destination, including its pending activation, and logs any cleanup failure.
     private func clearBeacon() {
         if spatialDataContext.destinationManager.isDestinationSet {
             do {

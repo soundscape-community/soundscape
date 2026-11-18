@@ -40,6 +40,7 @@ class BeaconDemoHelper {
 
     private var userLocation: CLLocation? { currentLocation() }
 
+    /// Silences callouts and the beacon owned by this demo, leaving a replacement destination alone.
     private func hush() {
         if beaconManager.destinationKey == previewDestinationKey, beaconManager.isAudioEnabled {
             beaconManager.toggleDestinationAudio()
@@ -98,6 +99,14 @@ class BeaconDemoHelper {
         }
     }
     
+    /// Plays or refreshes a temporary beacon sample while this demo still owns the destination.
+    /// The sample bypasses Delayed Start, but still respects Arrival Distance.
+    ///
+    /// - Parameters:
+    ///   - styleChanged: Recreates an active sample to apply the selected sound.
+    ///   - shouldTimeOut: Stops the sample after eight seconds when enabled.
+    ///   - newBeaconLocation: Sample location, or a point ahead of the user when omitted.
+    ///   - logContext: Telemetry context for creating the sample destination.
     func play(styleChanged: Bool = false, shouldTimeOut: Bool = true, newBeaconLocation: CLLocation? = nil, logContext: String = "volume_controls.demo") {
         // Navigation may have replaced or removed the destination while settings were open.
         guard systemState != nil, beaconManager.destinationKey == previewDestinationKey else { return }
@@ -158,6 +167,8 @@ class BeaconDemoHelper {
         }
     }
     
+    /// Moves the demo audio for marker editing, including VoiceOver interaction, only while
+    /// the demo still owns the destination and a user location is available.
     func updateBeaconLocation(_ newBeaconLocation: CLLocation) {
         guard beaconManager.destinationKey == previewDestinationKey, let userLocation = userLocation else {
             return
@@ -166,6 +177,9 @@ class BeaconDemoHelper {
         beaconManager.updateDestinationLocation(newBeaconLocation, userLocation: userLocation)
     }
     
+    /// Restores callout settings and the original destination unless navigation has replaced or removed it.
+    /// The destination manager reconciles audio with current arrival, suppression, and Delayed Start
+    /// state so settings changes during the demo are not undone.
     func restoreState(logContext: String = "volume_controls.demo") {
         beaconTimer?.cancel()
         beaconTimer = nil

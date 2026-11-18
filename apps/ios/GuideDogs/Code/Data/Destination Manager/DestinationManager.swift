@@ -34,12 +34,18 @@ enum DelayedBeaconStart: Equatable {
     case armed
     case waitingForExit
 
+    /// Chooses the re-arming state after an intentional mute. With Delayed Start enabled, a mute
+    /// at or within 300 meters, or at an unknown distance, requires an outside fix before re-entry.
+    ///
+    /// - Returns: An armed state outside 300 meters, a waiting state inside, or inactive when disabled.
     static func afterManualMute(enabled: Bool, distance: CLLocationDistance?) -> Self {
         guard enabled else { return .inactive }
         // Without a location, require a known outside fix before re-arming.
         return distance.map { $0 > activationDistance ? .armed : .waitingForExit } ?? .waitingForExit
     }
 
+    /// Removes the distance delay while retaining a request to resume automatically muted audio.
+    /// Cancels manual re-arming without turning an intentional mute into a resume request.
     mutating func disable() {
         // Only an initial automatic delay may resume when the setting is disabled.
         // Re-arming after a manual mute must preserve that intentional silence.
@@ -50,6 +56,10 @@ enum DelayedBeaconStart: Equatable {
         }
     }
 
+    /// Evaluates the inclusive 300-meter threshold and re-arms an inside mute only after an outside fix.
+    /// Arrival cancels activation; a resume request made when disabling the setting ignores distance.
+    ///
+    /// - Returns: Whether activation is due. The caller must still enforce audio suppression.
     mutating func shouldActivate(distance: CLLocationDistance, hasArrived: Bool) -> Bool {
         guard self != .inactive else { return false }
         guard !hasArrived else {
@@ -216,6 +226,8 @@ class DestinationManager: DestinationManagerProtocol {
 
     // MARK: Initialization
     
+    /// Restores destination metadata without starting audio, removes stale temporary destinations,
+    /// and observes location, heading, settings, and audio-engine updates.
     init(userLocation: CLLocation? = nil, audioEngine engine: AudioEngineProtocol, collectionHeading: Heading,
          activeBehavior: @escaping () -> Behavior = { AppContext.shared.eventProcessor.activeBehavior }) {
         self.activeBehavior = activeBehavior
@@ -355,6 +367,10 @@ class DestinationManager: DestinationManagerProtocol {
         GDATelemetry.track("beacon.added", with: (logContext != nil) ? ["context": logContext!] : nil)
     }
     
+    /// Creates a temporary audible marker preview without arming the 300-meter delay.
+    /// Requires a user location and respects Arrival Distance before starting audio.
+    ///
+    /// - Throws: If the temporary destination cannot be created or set.
     func setPreviewDestination(location: CLLocation, userLocation: CLLocation?, logContext: String?) throws {
         try setDestination(location: location, address: nil, enableAudio: false,
                            userLocation: userLocation, logContext: logContext)
@@ -499,6 +515,11 @@ class DestinationManager: DestinationManagerProtocol {
                                userLocation: AppContext.shared.geolocationManager.location)
     }
 
+    /// Toggles beacon audio using the supplied location. Manual unmute overrides Delayed Start;
+    /// manual mute re-arms it and requires exit and re-entry when muted within 300 meters.
+    /// Automatic unmute cannot bypass pending activation or restart a reached delayed beacon.
+    ///
+    /// - Returns: Whether the audio state changed; unmuting requires a destination and user location.
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool, userLocation: CLLocation?) -> Bool {
         let isRouteBeacon = activeBehavior() is RouteGuidance
@@ -755,6 +776,9 @@ class DestinationManager: DestinationManagerProtocol {
     
     // MARK: Notifications
     
+    /// Uses real location updates to evaluate Delayed Start before delegating route or tour geofence handling.
+    /// For ordinary destinations, updates proximity and arrival notifications and silences audio on arrival.
+    /// Virtual Preview locations do not change the real beacon state.
     @objc private func onLocationUpdated(_ notification: Notification) {
         // TODO: All of this logic (callout and view update logic) should moved into
         //       the BeaconCalloutGenerator
@@ -837,6 +861,12 @@ class DestinationManager: DestinationManagerProtocol {
         if isAudioEnabled { disableDestinationAudio(true) }
     }
 
+    /// Ends demo suppression and reconciles the original beacon with current arrival and audio restrictions.
+    /// Uses the saved intent as updated during the demo, including setting changes and cancellation.
+    ///
+    /// - Parameters:
+    ///   - restoreAudio: Whether the helper restored the original destination and its audio intent should be resumed.
+    ///   - userLocation: Location for reevaluating playback; without one, activation remains deferred.
     func endBeaconDemo(restoreAudio: Bool, userLocation: CLLocation?) {
         guard let saved = demoAudioState else { return }
         demoAudioState = nil
@@ -847,6 +877,9 @@ class DestinationManager: DestinationManagerProtocol {
         }
     }
 
+    /// When Delayed Start is turned off, removes the delay from current and saved demo intent.
+    /// Attempts to resume automatically muted audio using the last real location, subject to suppression
+    /// and arrival checks; intentional manual mutes remain silent.
     @objc private func onDelayedStartChanged() {
         guard !SettingsContext.shared.delayedStartEnabled else { return }
         delayedStartState.disable()
@@ -856,6 +889,12 @@ class DestinationManager: DestinationManagerProtocol {
         }
     }
 
+    /// Evaluates pending activation using a real location, ignoring virtual Preview movement.
+    /// Arrival cancels the pending start even during sleep or when a route or tour owns geofence handling.
+    /// Otherwise starts at or within 300 meters, or resumes after the setting is disabled, only when
+    /// demo, sleep, and audio-engine suppression allow playback.
+    ///
+    /// - Parameter location: Location used for arrival and activation distance checks.
     func updateDelayedStart(for location: CLLocation) {
         // Preview supplies virtual locations. They must not alter real arrival or delay state.
         guard !isVirtualPreview else { return }
@@ -900,6 +939,8 @@ class DestinationManager: DestinationManagerProtocol {
         AudioSessionManager.setNowPlayingInfo(title: name, subtitle: formattedDistance)
     }
     
+    /// Tracks engine availability to suppress automatic starts while audio is stopped.
+    /// Mutes an interrupted beacon and requests an automatic unmute when the engine restarts.
     @objc private func onAudioEngineStateChanged(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
               let stateValue = userInfo[AudioEngine.Keys.audioEngineStateKey] as? Int,

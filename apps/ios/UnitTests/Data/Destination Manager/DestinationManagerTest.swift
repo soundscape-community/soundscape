@@ -246,6 +246,7 @@ final class DelayedBeaconStartTest: XCTestCase {
         XCTAssertTrue(state.shouldActivate(distance: 299.99, hasArrived: false))
     }
 
+    /// Checks that muting inside or exactly at 300 meters requires an outside fix before re-entry can activate.
     func testManualMuteInsideRequiresExitAndReentry() {
         for distance in [100.0, 300.0] {
             var state = DelayedBeaconStart.afterManualMute(enabled: true, distance: distance)
@@ -272,6 +273,7 @@ final class DelayedBeaconStartTest: XCTestCase {
         XCTAssertTrue(state.shouldActivate(distance: 100, hasArrived: false))
     }
 
+    /// Checks that arrival cancels both re-arming states even when a location fix skips the activation radius.
     func testArrivalCancelsEvenWhenJumpingAcrossActivationRadius() {
         for initial in [DelayedBeaconStart.armed, .waitingForExit] {
             var state = initial
@@ -282,6 +284,7 @@ final class DelayedBeaconStartTest: XCTestCase {
         }
     }
 
+    /// Checks that an inactive state cannot activate at any tested distance when manual re-arming is disabled.
     func testDisabledAndCompletedStartsStayInactive() {
         var state = DelayedBeaconStart.afterManualMute(enabled: false, distance: 400)
         XCTAssertEqual(state, .inactive)
@@ -372,6 +375,7 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         XCTAssertEqual(engine.starts, 2)
     }
 
+    /// Checks that repeated inside fixes preserve an intentional mute until the user exits and re-enters.
     func testManualMuteInsideDoesNotImmediatelyUnmute() throws {
         try setBeacon(distance: 200)
         XCTAssertTrue(manager.toggleDestinationAudio(false, automatic: false, forceMelody: false, userLocation: location(200)))
@@ -414,6 +418,7 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         XCTAssertEqual(manager.delayedStartState, .inactive)
     }
 
+    /// Checks several Arrival Distance settings: arrival cancels a pending start and leaving does not restart it.
     func testArrivalWinsAndLeavingDoesNotRestart() throws {
         for arrivalDistance in [1.0, 10.0, 50.0] {
             SettingsContext.shared.enterImmediateVicinityDistance = arrivalDistance
@@ -436,6 +441,7 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         XCTAssertTrue(manager.isAudioEnabled)
     }
 
+    /// Checks that the real callout generator still emits destination distance speech for a delayed, silent beacon.
     func testDistanceCalloutsContinueWhileDelayedAudioIsMuted() throws {
         try setBeacon(distance: 500)
         let suiteName = "DelayedStartCallouts.\(UUID().uuidString)"
@@ -490,6 +496,8 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
                                         userInfo: [SpatialDataContext.Keys.location: user])
     }
 
+    /// Checks actual location notifications with Delayed Start on and off: arrival is reported once,
+    /// audio stops, and subsequent fixes do not restart it.
     func testGeofenceNotificationsMutePlayingBeaconAndDoNotRestart() throws {
         for enabled in [false, true] {
             SettingsContext.shared.delayedStartEnabled = enabled
@@ -516,6 +524,7 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         }
     }
 
+    /// Checks that expanding Arrival Distance during a demo prevents restored audio, with Delayed Start on or off.
     func testDemoRestorationRespectsChangedArrivalDistanceWithSettingOnAndOff() throws {
         for enabled in [false, true] {
             SettingsContext.shared.delayedStartEnabled = enabled
@@ -609,6 +618,7 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         XCTAssertEqual(manager.delayedStartState, .inactive)
     }
 
+    /// Checks that closing a demo cannot recreate a destination removed during the session, whether or not a sample played.
     func testDemoDoesNotRestoreRemovedDestination() throws {
         for playSample in [false, true] {
             try setBeacon(distance: 500)
@@ -625,6 +635,8 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         }
     }
 
+    /// Checks that preview playback and restoration preserve a later, intentionally silent destination
+    /// with Delayed Start on or off, whether or not the original demo played a sample.
     func testDemoDoesNotOverwriteReplacementOrItsAudioIntent() throws {
         for enabled in [false, true] {
             SettingsContext.shared.delayedStartEnabled = enabled
@@ -647,6 +659,8 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         }
     }
 
+    /// Checks that arrival while the original beacon is suppressed cancels its saved audio intent
+    /// and that leaving before demo restoration does not revive it.
     func testArrivalDuringSilentDemoCancelsSavedIntent() throws {
         for enabled in [false, true] {
             SettingsContext.shared.delayedStartEnabled = enabled
@@ -689,6 +703,8 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         XCTAssertTrue(manager.isAudioEnabled)
     }
 
+    /// Checks that distant marker previews remain audible and movable while ordinary destinations retain
+    /// Delayed Start behavior; manual preview mute and Arrival Distance still suppress playback.
     func testDistantMarkerDemoPlaysWithoutBypassingOrdinaryDelayedStart() throws {
         for enabled in [false, true] {
             SettingsContext.shared.delayedStartEnabled = enabled
@@ -718,6 +734,8 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         }
     }
 
+    /// Checks that real arrival notifications cancel delayed activation during sleep even when ordinary
+    /// geofence handling is blocked, while preserving an intentional manual unmute after waking.
     func testSleepingArrivalWithBlockedGeofenceCancelsAutomaticWake() throws {
         for disableDuringSleep in [false, true] {
             SettingsContext.shared.delayedStartEnabled = true
@@ -753,6 +771,8 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         XCTAssertTrue(manager.isAudioEnabled)
     }
 
+    /// Checks route and tour sleep arrival: the passed waypoint stays silent after waking,
+    /// and selecting the next waypoint creates a fresh delay that can activate.
     func testRouteAndTourSleepArrivalDoesNotRestartPassedWaypoint() throws {
         let motion = RouteGuidanceTest.TestMotionActivity()
         let spatial = RouteGuidanceTest.TestSpatialData(motion, manager)
@@ -797,6 +817,7 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         XCTAssertTrue(manager.isAudioEnabled, "Normal audio should resume without reinstating the 300-meter delay")
     }
 
+    /// Checks that disabling Delayed Start resumes an automatic delay but preserves manual mutes inside and outside 300 meters.
     func testDisablingRestoresOnlyAutomaticallyDelayedAudio() throws {
         try setBeacon(distance: 500)
         SettingsContext.shared.delayedStartEnabled = false
@@ -815,6 +836,7 @@ final class DelayedStartDestinationManagerTest: XCTestCase {
         }
     }
 
+    /// Checks that disabling Delayed Start during sleep resumes after waking only if the destination was not reached.
     func testDisablingWhileAsleepDefersUntilWakeAndRespectsArrival() throws {
         for arrived in [false, true] {
             SettingsContext.shared.delayedStartEnabled = true
