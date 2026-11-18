@@ -16,6 +16,7 @@ struct BeaconSelectionView: View {
     @State var isPresented: Bool = false
     @State var selectedBeaconKey: String
     @State var areMelodiesEnabled: Bool
+    @State var delayedStartEnabled: Bool
     @State var arrivalDistance: Double
     @State var beaconRingingAngle: Double
     
@@ -25,6 +26,7 @@ struct BeaconSelectionView: View {
     init() {
         _selectedBeaconKey = State(initialValue: SettingsContext.shared.selectedBeacon)
         _areMelodiesEnabled = State(initialValue: SettingsContext.shared.playBeaconStartAndEndMelodies)
+        _delayedStartEnabled = State(initialValue: SettingsContext.shared.delayedStartEnabled)
         _arrivalDistance = State(initialValue: SettingsContext.shared.enterImmediateVicinityDistance)
         _beaconRingingAngle = State(initialValue: SettingsContext.shared.beaconRingingAngle)
         initialBeacon = SettingsContext.shared.selectedBeacon
@@ -45,6 +47,22 @@ struct BeaconSelectionView: View {
                             SettingsContext.shared.playBeaconStartAndEndMelodies = areMelodiesEnabled
                             beaconDemo.play(styleChanged: true)
                         })
+
+                    Toggle(GDLocalizedString("beacon.settings.delayed_start"), isOn: $delayedStartEnabled)
+                        .locationNameTextFormat()
+                        .padding()
+                        .background(Color.primaryBackground)
+                        .onChange(of: delayedStartEnabled) { enabled in
+                            SettingsContext.shared.delayedStartEnabled = enabled
+                        }
+
+                    HStack(spacing: 0) {
+                        GDLocalizedTextView("beacon.settings.delayed_start.explanation")
+                            .font(.caption)
+                            .foregroundColor(.primaryForeground)
+                            .padding()
+                        Spacer()
+                    }
 
                     SettingStepper(
                         value: $arrivalDistance,

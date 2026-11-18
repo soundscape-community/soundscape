@@ -3950,3 +3950,9 @@
 
 /* Accessibility label and announcement for a GPX recording error. %@ is the error description. {NumberedPlaceholder="%@"} */
 "gpx_recording.error.accessibility" = "Error: %@";
+
+/* Toggle for starting beacon audio only when approaching the destination. */
+"beacon.settings.delayed_start" = "Delayed Start";
+
+/* Delayed Start uses a fixed 300-meter radius, independent of Arrival Distance. */
+"beacon.settings.delayed_start.explanation" = "New beacons stay muted until you are within 300 meters of your destination. Distance announcements continue. Unmute at any time to start the sound. Muting re-arms Delayed Start; if you are already within 300 meters, move outside that distance before it can start again.";

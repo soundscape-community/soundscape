@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -303,6 +304,7 @@ class GuidedTour: BehaviorBase {
             return true
         }
         
+        spatialDataContext.destinationManager.cancelDelayedStart()
         state.visited.append(index)
         GDATelemetry.track("tourguide.waypoint_visited", with: ["context": telemetryContext])
         
@@ -449,6 +451,13 @@ class GuidedTour: BehaviorBase {
         saveState()
     }
     
+    /// Replaces the waypoint beacon immediately or waits for the current beacon and arrival callouts
+    /// to finish before setting the next one.
+    ///
+    /// - Parameters:
+    ///   - waypoint: Destination for the next beacon.
+    ///   - enableAudio: Whether to request audio for the new waypoint.
+    ///   - skipAsyncFinish: Stops playing audio without its ending melody before transitioning.
     private func setOrTransitionBeacon(to waypoint: LocationDetail, enableAudio: Bool = true, skipAsyncFinish: Bool = false) {
         hasDepartedForCurrentWaypoint = false
         
@@ -456,7 +465,7 @@ class GuidedTour: BehaviorBase {
         NotificationCenter.default.post(name: .tourTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: true])
         
         // Check if a beacon has already been set - meaning that we are transitioning from one waypoint to another
-        guard AppContext.shared.spatialDataContext.destinationManager.isDestinationSet else {
+        guard spatialDataContext.destinationManager.isDestinationSet else {
             completeSetBeacon(waypoint: waypoint, enableAudio: enableAudio)
             return
         }
@@ -464,13 +473,13 @@ class GuidedTour: BehaviorBase {
         // Ensure the beacon audio turns off when the app enters sleep mode
         if skipAsyncFinish && isBeaconAudioEnabled {
             // Toggle the audio off so that the next beacon starts immediately
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(forceMelody: false)
+            spatialDataContext.destinationManager.toggleDestinationAudio(forceMelody: false)
         }
         
         // Make sure the beacon is currently playing
-        guard isBeaconAsync, let id = AppContext.shared.spatialDataContext.destinationManager.beaconPlayerId else {
+        guard isBeaconAsync, let id = spatialDataContext.destinationManager.beaconPlayerId else {
             if !isBeaconAsync && isBeaconAudioEnabled {
-                AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(false, forceMelody: true)
+                spatialDataContext.destinationManager.toggleDestinationAudio(false, forceMelody: true)
             }
             
             let event: Event
@@ -501,15 +510,17 @@ class GuidedTour: BehaviorBase {
         GDLogInfo(.routeGuidance, "Start transition to next tour beacon...")
         
         do {
-            try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tourguide.set_beacon")
+            try spatialDataContext.destinationManager.clearDestination(logContext: "tourguide.set_beacon")
             GDLogInfo(.routeGuidance, "Awaiting finish of current tour beacon...")
         } catch {
             GDLogError(.routeGuidance, "Error: Unable to remove current beacon in Tour Guidance!")
         }
     }
     
+    /// Creates the waypoint destination using the latest available user location and starts distance callouts.
+    /// Leaves activation to Delayed Start when enabled; otherwise preserves the existing audio fallback.
     private func completeSetBeacon(waypoint: LocationDetail, enableAudio: Bool) {
-        guard let userLocation = AppContext.shared.geolocationManager.location else {
+        guard let userLocation = userLocation ?? AppContext.shared.geolocationManager.location else {
             return
         }
         
@@ -529,8 +540,8 @@ class GuidedTour: BehaviorBase {
                 try manager.setDestination(location: location, behavior: waypoint.displayName, enableAudio: enableAudio, userLocation: userLocation, logContext: "route")
             }
             
-            // Ensure the beacon audio turns on when the waypoint changes
-            if enableAudio && !manager.isAudioEnabled {
+            // Delayed Start owns activation, including keeping an already-arrived waypoint silent.
+            if enableAudio && !manager.isAudioEnabled && !SettingsContext.shared.delayedStartEnabled {
                 manager.toggleDestinationAudio(forceMelody: true)
             }
             
