@@ -457,7 +457,7 @@
 "telemetry.consent.title" = "Aiuta a migliorare Soundscape";
 
 /* Explains optional anonymous usage sharing and the exclusion of precise location */
-"telemetry.consent.message" = "Aiuta a migliorare Soundscape condividendo informazioni su come utilizzi l’app. Tutti i dati condivisi sono anonimi e la tua posizione precisa non viene mai condivisa. Puoi modificare la tua scelta in qualsiasi momento nelle Impostazioni.";
+"telemetry.consent.message" = "Aiuta a migliorare Soundscape condividendo informazioni su come utilizzi l’app. I dati condivisi sono anonimi e includono una posizione approssimativa; la tua posizione precisa non viene mai condivisa. Puoi modificare la tua scelta in qualsiasi momento nelle Impostazioni.";
 
 /* Declines usage sharing and remembers the choice */
 "telemetry.consent.dont_share" = "Non condividere";
