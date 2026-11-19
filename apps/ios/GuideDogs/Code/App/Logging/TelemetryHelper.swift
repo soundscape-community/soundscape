@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 private struct UserDefaultKeys {
     static let oobeComplete = "GDATelemetryOOBEComplete"
@@ -32,6 +33,8 @@ class TelemetryHelper {
     private static let walkingDetectionTimeInterval = TimeInterval(10)
     
     // MARK: Properties
+
+    var currentLocation: CLLocation? { appContext.geolocationManager.location }
 
     private let appContext: AppContext
     

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -70,6 +71,8 @@ class GeolocationManager: NSObject, GeolocationManagerProtocol {
                 return
             }
             
+            GDATelemetry.locationUpdated(location)
+
             // Propogate location update
             updateDelegate?.didUpdateLocation(location)
         }

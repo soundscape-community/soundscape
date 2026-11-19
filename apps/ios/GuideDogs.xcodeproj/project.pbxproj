@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A07E30000000000000000005 /* SwiftyH3 in Frameworks */ = {isa = PBXBuildFile; productRef = A07E20000000000000000005 /* SwiftyH3 */; };
 		2809B80C2379E95B00F6C9AC /* calibration_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80B2379E95B00F6C9AC /* calibration_success.wav */; };
 		2809B80E2379E9A000F6C9AC /* connection_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80D2379E9A000F6C9AC /* connection_success.wav */; };
 		2809B8102379E9C700F6C9AC /* low_confidence.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80F2379E9C700F6C9AC /* low_confidence.wav */; };
@@ -1609,6 +1610,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A07E30000000000000000004 /* PersistenceExporter in Frameworks */,
+				A07E30000000000000000005 /* SwiftyH3 in Frameworks */,
 				A07E30000000000000000003 /* OpenTelemetryProtocolExporterHTTP in Frameworks */,
 				A07E30000000000000000002 /* OpenTelemetrySdk in Frameworks */,
 				A07E30000000000000000001 /* OpenTelemetryApi in Frameworks */,
@@ -4535,6 +4537,7 @@
 			);
 			name = Soundscape;
 			packageProductDependencies = (
+				A07E20000000000000000005 /* SwiftyH3 */,
 				A07E20000000000000000004 /* PersistenceExporter */,
 				A07E20000000000000000003 /* OpenTelemetryProtocolExporterHTTP */,
 				A07E20000000000000000002 /* OpenTelemetrySdk */,
@@ -4619,6 +4622,7 @@
 			);
 			mainGroup = D3D7CFBF1B3D96460020B5E9;
 			packageReferences = (
+				A07E10000000000000000005 /* SwiftyH3 */,
 				A07E10000000000000000002 /* opentelemetry-swift-core */,
 				A07E10000000000000000001 /* opentelemetry-swift */,
 				2866A7BF2625013400EBA2D8 /* XCRemoteSwiftPackageReference "DZNEmptyDataSet" */,
@@ -6018,6 +6022,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A07E10000000000000000005 /* SwiftyH3 */ = {isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/pawelmajcher/SwiftyH3.git"; requirement = {kind = exactVersion; version = 0.6.0; }; };
 		283B0305264B03920092F74F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
@@ -6079,6 +6084,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A07E20000000000000000005 /* SwiftyH3 */ = {isa = XCSwiftPackageProductDependency; package = A07E10000000000000000005 /* SwiftyH3 */; productName = SwiftyH3; };
 		281BCBFE262638290031298D /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */;

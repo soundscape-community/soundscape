@@ -22,6 +22,7 @@ update the App Store privacy answers automatically.
 
 | Apple data type | Exported information | Purpose |
 | --- | --- | --- |
+| Coarse Location | H3 resolution 7 cell centre captured once per consented session | Analytics |
 | Device ID | The random, persistent installation identifier exported as `user_id` | Analytics |
 | Product Interaction | Usage events, sessions, tutorial progress, beacon and route actions | Analytics |
 | Other Diagnostic Data | Audio/migration errors, offline state, device model/OS and audio/headset context | Analytics, App Functionality |
@@ -34,9 +35,9 @@ collects no identity information. The random installation identifier correlates
 reports from the same installation; it is not connected to a real-world identity,
 an account, or an advertising identifier. Neither Soundscape nor its analytics
 providers link these reports to identity information or identity-enabling datasets.
-The wire key `user_id` does not determine Apple's data category. The consent screen
-describes sharing as anonymous, and the English settings footer describes the
-installation identifier. Reassess this declaration if identity collection or
+The wire key `user_id` does not determine Apple's data category. The English consent screen describes approximate location, and the English settings
+footer describes the installation identifier. Translations must be updated before
+release. Reassess this declaration if identity collection or
 identity linking is introduced. Accessibility settings describe enabled system
 features, not a stated
 diagnosis or disability; reassess Sensitive Info if the payload or its use changes.
@@ -46,7 +47,7 @@ cross-company advertising measurement, or data-broker sharing. This assumes the
 collector and analytics provider follow the same restriction. Persistent first-party
 analytics alone is not Apple's definition of tracking. Do not enable automatic IP
 geolocation or add fields or integrations without revisiting these declarations.
-The current telemetry payload has no location coordinates, search text, user audio,
+The current telemetry payload has no precise location coordinates, search text, user audio,
 crash reports, or performance measurements; on-device use alone does not make those
 types collected by telemetry. Review other app services separately for the complete
 App Store privacy answers.
@@ -217,6 +218,9 @@ equally to the report.
 
 ## Collector configuration
 
+For the collector ingestion and Mixpanel mapping contract, see
+[TelemetryCollector.md](TelemetryCollector.md).
+
 Set these build settings for each configuration that should support telemetry:
 
 - `SOUNDSCAPE_OTEL_LOGS_ENDPOINT`: a full HTTPS OTLP logs URL, including the path
@@ -254,7 +258,7 @@ built app's Info.plist.
 
 OpenTelemetry Swift and Swift Core are pinned to 2.6.0. Existing `GDATelemetry`
 calls emit INFO logs with the event name in `eventName`, no body, the occurrence
-timestamp, and string attributes. `user_id` is the existing client
+timestamp, and mostly string attributes (location coordinates are numeric). `user_id` is the existing client
 ID and overrides caller properties. Caller properties override helper snapshot
 properties. Screen views use `screen_view` and `screen_name`; value events use
 `value`. Existing device, app, accessibility, and experiment snapshots remain.
@@ -269,7 +273,7 @@ occurrences receive distinct IDs even when their names, attributes, and timestam
 otherwise match. This per-occurrence UUID is separate from the event names listed
 as `eventIds` by the source inventory above.
 
-Vector maps `event_id` to Mixpanel's `$insert_id` for deduplication. An upload can
+The collector must map `event_id` to Mixpanel's `$insert_id` for deduplication. An upload can
 succeed while its response is lost, causing the app or Vector to retry. Reusing
 the original ID lets Mixpanel recognize the repeated event without relying on
 the collector's fallback hash of event fields, which can merge distinct occurrences
@@ -290,6 +294,16 @@ The timeout uses elapsed seconds from `CLOCK_MONOTONIC_RAW`, which advances duri
 device sleep and is unaffected by wall-clock adjustments. Device sleep counts
 toward the timeout only while Soundscape is already in sleep or snooze mode.
 Event occurrence timestamps continue to use wall-clock dates.
+
+With sharing enabled, the first valid location available in each session is quantised
+using SwiftyH3 resolution 7. A current fix is accepted if at most two minutes old;
+otherwise the app waits for an existing location update. Only the cell centre is
+retained in session state and exported as numeric `geo.location.lat` and `geo.location.lon` on subsequent events. The
+collector maps these to Mixpanel's `$latitude` and `$longitude` for geographic inference. Events emitted earlier are
+not amended. Consent revocation clears the centre; renewed consent captures a fresh
+one. No additional location permission or location updates are requested. The
+collector's Vector mapping must preserve these numeric attributes and must not use
+its own IP address as a substitute when coordinates are absent.
 
 Session tracking is in memory and independent of consent; it does not collect or
 export events while sharing is disabled. Each event captures its session ID at

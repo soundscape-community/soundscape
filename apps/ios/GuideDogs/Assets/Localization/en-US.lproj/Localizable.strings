@@ -411,13 +411,13 @@
 "telemetry.consent.title" = "Help improve Soundscape";
 
 /* Explains optional anonymous usage sharing and the exclusion of precise location */
-"telemetry.consent.message" = "Help improve Soundscape by sharing information about how you use the app. All shared data is anonymous, and your precise location is never shared. You can change your choice at any time in Settings.";
+"telemetry.consent.message" = "Help improve Soundscape by sharing information about how you use the app. Shared data includes an approximate location; your precise location is never shared. You can change your choice at any time in Settings.";
 
 /* Declines usage sharing and remembers the choice */
 "telemetry.consent.dont_share" = "Don’t Share";
 
 /* Footer describing optional telemetry and its persistent installation identifier {NumberedPlaceholder="Soundscape"} */
-"settings.section.telemetry.footer" = "Help Soundscape improve by sharing usage events, diagnostics, app and accessibility settings, and motion activity. Reports include a random identifier for this installation. Sharing is optional and can be turned off at any time.";
+"settings.section.telemetry.footer" = "Help Soundscape improve by sharing usage events, diagnostics, app and accessibility settings, motion activity, and approximate session location. Reports include a random identifier for this installation. Sharing is optional and can be turned off at any time.";
 
 /* Settings title, Language */
 "settings.language.screen_title" = "Language";

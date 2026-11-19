@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import CoreLocation
 import UIKit
 
 public class GDATelemetry {
@@ -37,6 +38,7 @@ public class GDATelemetry {
     class func snapshotsReady() {
         eventChanges.lock()
         context.ready = true
+        captureCachedLocationIfNeeded()
         recordSnapshotIfNeeded()
         eventChanges.unlock()
         NotificationCenter.default.post(name: contextDidChange, object: nil)
@@ -47,9 +49,24 @@ public class GDATelemetry {
         let previousID = session.id
         session.operationStateChanged(to: state)
         let rotated = previousID != session.id
-        if rotated { recordSnapshotIfNeeded() }
+        if rotated {
+            captureCachedLocationIfNeeded()
+            recordSnapshotIfNeeded()
+        }
         eventChanges.unlock()
         if rotated { NotificationCenter.default.post(name: contextDidChange, object: nil) }
+    }
+
+    private class func captureCachedLocationIfNeeded() {
+        guard enabled, controller.collecting, let location = helper?.currentLocation else { return }
+        session.captureLocation(location)
+    }
+
+    class func locationUpdated(_ location: CLLocation) {
+        eventChanges.lock()
+        defer { eventChanges.unlock() }
+        guard enabled, controller.collecting else { return }
+        session.captureLocation(location)
     }
 
     private class func recordSnapshotIfNeeded() {
@@ -72,7 +89,7 @@ public class GDATelemetry {
         guard enabled, controller.collecting else { return nil }
         recordSnapshotIfNeeded()
         return TelemetryOccurrence(timestamp: Date(), sessionID: session.id,
-                                   consentEpoch: context.consentEpoch, snapshot: helper?.eventSnapshot ?? [:])
+                                   consentEpoch: context.consentEpoch, location: session.location, snapshot: helper?.eventSnapshot ?? [:])
     }
 
     class func initialize() {
@@ -91,7 +108,12 @@ public class GDATelemetry {
         let effectiveEnabled = sharingEnabled && pipeline.setEnabled(true)
         SettingsContext.shared.telemetryOptout = !effectiveEnabled
         SettingsContext.shared.telemetryConsentChoiceMade = true
-        if !effectiveEnabled { context.revokeConsent() }
+        if !effectiveEnabled {
+            context.revokeConsent()
+            session.clearLocation()
+        } else {
+            captureCachedLocationIfNeeded()
+        }
         recordSnapshotIfNeeded()
         eventChanges.unlock()
         NotificationCenter.default.post(name: contextDidChange, object: nil)
@@ -125,7 +147,8 @@ public class GDATelemetry {
         controller.record {
             let event = TelemetryEvent(name: eventName, timestamp: timestamp, properties: properties ?? [:],
                                        clientID: SettingsContext.shared.clientId, sessionID: occurrence?.sessionID ?? session.id,
-                                       snapshot: occurrence?.snapshot ?? helper?.eventSnapshot ?? [:])
+                                       snapshot: occurrence?.snapshot ?? helper?.eventSnapshot ?? [:],
+                                       location: occurrence != nil ? occurrence?.location : session.location)
             if debugLog {
                 print("[TEL] Event tracked: \(eventName) \(event.attributes)")
             }

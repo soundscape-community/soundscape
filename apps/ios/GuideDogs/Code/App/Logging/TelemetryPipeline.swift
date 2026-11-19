@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 import Foundation
+import CoreLocation
+import SwiftyH3
 import OpenTelemetryApi
 import OpenTelemetrySdk
 import OpenTelemetryProtocolExporterHttp
@@ -47,11 +49,22 @@ final class TelemetrySession {
     private struct State {
         var id = UUID().uuidString
         var sleepingSince: TimeInterval?
+        var location: TelemetryLocation?
     }
 
     private let state = Locked(initialValue: State())
 
     var id: String { state.protectedValue.id }
+    var location: TelemetryLocation? { state.protectedValue.location }
+
+    func captureLocation(_ fix: CLLocation, now: Date = Date()) {
+        state.locking { state in
+            guard state.location == nil else { return }
+            state.location = TelemetryLocation(fix: fix, now: now)
+        }
+    }
+
+    func clearLocation() { state.locking { $0.location = nil } }
 
     /// Elapsed seconds from a monotonic clock that includes device sleep, independent of wall-clock changes.
     func operationStateChanged(to operationState: OperationState,
@@ -64,10 +77,28 @@ final class TelemetrySession {
             case .normal:
                 if let since = state.sleepingSince, now - since >= Self.sleepTimeout {
                     state.id = UUID().uuidString
+                    state.location = nil
                 }
                 state.sleepingSince = nil
             }
         }
+    }
+}
+
+/// Only the H3 cell centre is retained in telemetry state.
+struct TelemetryLocation {
+    let latitude: Double
+    let longitude: Double
+
+    init?(fix: CLLocation, now: Date = Date()) {
+        let age = now.timeIntervalSince(fix.timestamp)
+        guard CLLocationCoordinate2DIsValid(fix.coordinate), fix.horizontalAccuracy >= 0,
+              age >= 0, age <= 120,
+              let cell = try? H3LatLng(latitudeDegs: fix.coordinate.latitude,
+                                       longitudeDegs: fix.coordinate.longitude).cell(at: .res7),
+              let centre = try? cell.center.coordinates else { return nil }
+        latitude = centre.latitude
+        longitude = centre.longitude
     }
 }
 
@@ -110,6 +141,7 @@ struct TelemetryOccurrence {
     let timestamp: Date
     let sessionID: String
     let consentEpoch: UUID
+    let location: TelemetryLocation?
     let snapshot: [String: String]
 }
 
@@ -119,7 +151,8 @@ struct TelemetryEvent {
     let attributes: [String: AttributeValue]
 
     init(name: String, timestamp: Date = Date(), properties: [String: String] = [:],
-         clientID: String, sessionID: String, snapshot: [String: String] = [:]) {
+         clientID: String, sessionID: String, snapshot: [String: String] = [:],
+         location: TelemetryLocation? = nil) {
         self.name = name
         self.timestamp = timestamp
         var values = properties.merging(snapshot) { current, _ in current }
@@ -127,7 +160,17 @@ struct TelemetryEvent {
         values["session_id"] = sessionID
         // Identify this occurrence once; exports and persisted retries reuse these attributes.
         values["event_id"] = UUID().uuidString
-        attributes = values.mapValues { .string($0) }
+        var attributes = values.mapValues { AttributeValue.string($0) }
+        // Only the quantised session location may populate geographic attributes.
+        attributes.removeValue(forKey: "geo.location.lat")
+        attributes.removeValue(forKey: "$latitude")
+        attributes.removeValue(forKey: "geo.location.lon")
+        attributes.removeValue(forKey: "$longitude")
+        if let location = location {
+            attributes["geo.location.lat"] = .double(location.latitude)
+            attributes["geo.location.lon"] = .double(location.longitude)
+        }
+        self.attributes = attributes
     }
 
     func emit(to logger: OpenTelemetryApi.Logger) {

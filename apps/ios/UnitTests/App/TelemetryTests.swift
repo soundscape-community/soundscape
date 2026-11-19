@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import UIKit
+import CoreLocation
 import XCTest
 import OpenTelemetryApi
 import OpenTelemetrySdk
@@ -82,6 +83,48 @@ final class TelemetryTests: XCTestCase {
     private func files(_ directory: URL) throws -> [URL] {
         try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
             .filter { UInt64($0.lastPathComponent) != nil }
+    }
+
+    func testSessionLocationIsQuantisedAndFixedUntilReset() throws {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        func fix(_ latitude: Double, _ longitude: Double, age: TimeInterval = 0, accuracy: Double = 10) -> CLLocation {
+            CLLocation(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
+                       altitude: 0, horizontalAccuracy: accuracy, verticalAccuracy: 10,
+                       timestamp: now.addingTimeInterval(-age))
+        }
+        let session = TelemetrySession()
+        session.captureLocation(fix(51.5, -0.12, age: 121), now: now)
+        session.captureLocation(fix(51.5, -0.12, accuracy: -1), now: now)
+        XCTAssertNil(session.location)
+        session.captureLocation(fix(51.5, -0.12), now: now)
+        let location = try XCTUnwrap(session.location)
+        XCTAssertNotEqual(location.latitude, 51.5)
+        XCTAssertNotEqual(location.longitude, -0.12)
+        session.captureLocation(fix(40.7, -74), now: now)
+        XCTAssertEqual(session.location?.latitude, location.latitude)
+        session.operationStateChanged(to: .sleep, at: 0)
+        session.operationStateChanged(to: .normal, at: TelemetrySession.sleepTimeout)
+        XCTAssertNil(session.location)
+        session.captureLocation(fix(40.7, -74), now: now)
+        XCTAssertNotEqual(session.location?.latitude, location.latitude)
+        session.clearLocation()
+        XCTAssertNil(session.location)
+    }
+
+    func testLocationIsNumericAndCannotBeOverridden() throws {
+        let fix = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 51.5, longitude: -0.12),
+                             altitude: 0, horizontalAccuracy: 10, verticalAccuracy: 10, timestamp: Date())
+        let location = try XCTUnwrap(TelemetryLocation(fix: fix))
+        let event = TelemetryEvent(name: "test", properties: ["geo.location.lat": "raw", "geo.location.lon": "raw", "$latitude": "raw"],
+                                   clientID: "client", sessionID: "session", location: location)
+        XCTAssertEqual(event.attributes["geo.location.lat"], .double(location.latitude))
+        XCTAssertNil(event.attributes["$latitude"])
+        XCTAssertEqual(event.attributes["geo.location.lon"], .double(location.longitude))
+        let withoutLocation = TelemetryEvent(name: "test", properties: ["geo.location.lat": "raw", "$longitude": "raw"],
+                                             clientID: "client", sessionID: "session")
+        XCTAssertNil(withoutLocation.attributes["geo.location.lat"])
+        XCTAssertNil(withoutLocation.attributes["geo.location.lon"])
+        XCTAssertNil(withoutLocation.attributes["$longitude"])
     }
 
     func testEventMappingPreservesTimestampAndPropertyPrecedence() throws {
