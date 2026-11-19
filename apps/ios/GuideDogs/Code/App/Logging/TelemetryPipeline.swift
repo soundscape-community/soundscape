@@ -42,17 +42,53 @@ struct TelemetryConfiguration {
     }
 }
 
+/// A separate random analytics identifier, shared only by sessions starting in the same UTC month.
+final class TelemetryInstallationID {
+    private static let key = "SoundscapeTelemetryMonthlyInstallationID"
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
+
+    func id(for date: Date) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let components = calendar.dateComponents([.year, .month], from: date)
+        let month = String(format: "%04d-%02d", components.year!, components.month!)
+        if let saved = defaults.dictionary(forKey: Self.key),
+           saved["month"] as? String == month,
+           let id = saved["id"] as? String, UUID(uuidString: id) != nil { return id }
+        let id = UUID().uuidString
+        defaults.set(["month": month, "id": id], forKey: Self.key)
+        return id
+    }
+}
+
 /// A process-local usage session. Backgrounding and device lock do not end it.
 final class TelemetrySession {
     static let sleepTimeout: TimeInterval = 30 * 60
 
     private struct State {
         var id = UUID().uuidString
+        var startedAt: Date
+        var installationID: String?
         var sleepingSince: TimeInterval?
         var location: TelemetryLocation?
     }
 
-    private let state = Locked(initialValue: State())
+    private let state: Locked<State>
+
+    init(startedAt: Date = Date()) {
+        state = Locked(initialValue: State(startedAt: startedAt))
+    }
+
+    func installationID(using store: TelemetryInstallationID) -> String {
+        state.locking { state in
+            if let id = state.installationID { return id }
+            let id = store.id(for: state.startedAt)
+            state.installationID = id
+            return id
+        }
+    }
 
     var id: String { state.protectedValue.id }
     var location: TelemetryLocation? { state.protectedValue.location }
@@ -68,7 +104,8 @@ final class TelemetrySession {
 
     /// Elapsed seconds from a monotonic clock that includes device sleep, independent of wall-clock changes.
     func operationStateChanged(to operationState: OperationState,
-                               at now: TimeInterval = TimeInterval(clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW)) / 1_000_000_000) {
+                               at now: TimeInterval = TimeInterval(clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW)) / 1_000_000_000,
+                               wallTime: Date = Date()) {
         state.locking { state in
             switch operationState {
             case .sleep, .snooze:
@@ -77,6 +114,8 @@ final class TelemetrySession {
             case .normal:
                 if let since = state.sleepingSince, now - since >= Self.sleepTimeout {
                     state.id = UUID().uuidString
+                    state.startedAt = wallTime
+                    state.installationID = nil
                     state.location = nil
                 }
                 state.sleepingSince = nil
@@ -130,7 +169,15 @@ struct TelemetryContextState {
                          accessibility: [String: String]) -> [String: String] {
         var result = [String: String]()
         for (prefix, values) in [("app", app), ("device", device), ("accessibility", accessibility)] {
-            for (key, value) in values { result["\(prefix).\(key)"] = value }
+            for (key, value) in values {
+                let name: String
+                switch (prefix, key) {
+                case ("device", "model"): name = "device.model.identifier"
+                case ("device", "os.version"): name = "os.version"
+                default: name = "\(prefix).\(key)"
+                }
+                result[name] = value
+            }
         }
         return result
     }
@@ -140,6 +187,7 @@ struct TelemetryContextState {
 struct TelemetryOccurrence {
     let timestamp: Date
     let sessionID: String
+    let installationID: String
     let consentEpoch: UUID
     let location: TelemetryLocation?
     let snapshot: [String: String]
@@ -156,11 +204,11 @@ struct TelemetryEvent {
         self.name = name
         self.timestamp = timestamp
         var values = properties.merging(snapshot) { current, _ in current }
-        values["user_id"] = clientID
-        values["session_id"] = sessionID
+        values["app.installation.id"] = clientID
+        values["session.id"] = sessionID
         // Identify this occurrence once; exports and persisted retries reuse these attributes.
         values["event_id"] = UUID().uuidString
-        var attributes = values.mapValues { AttributeValue.string($0) }
+        var attributes = Self.typedAttributes(values)
         // Only the quantised session location may populate geographic attributes.
         attributes.removeValue(forKey: "geo.location.lat")
         attributes.removeValue(forKey: "$latitude")
@@ -171,6 +219,34 @@ struct TelemetryEvent {
             attributes["geo.location.lon"] = .double(location.longitude)
         }
         self.attributes = attributes
+    }
+
+    /// Explicit schema: never guess types from arbitrary string values.
+    static func typedAttributes(_ values: [String: String]) -> [String: AttributeValue] {
+        let booleans: Set<String> = [
+            "first_launch", "success", "is_flat", "is_other_audio_playing", "is_mixing_with_others",
+            "app.settings.allow_callouts", "app.settings.mix_audio", "app.beacon.melodies_enabled",
+            "accessibility.voice_over", "accessibility.mono_audio", "accessibility.speak_screen",
+            "accessibility.speak_selection", "accessibility.bold_text", "accessibility.grayscale",
+            "accessibility.invert_colors", "accessibility.darker_system_colors",
+            "accessibility.assistive_touch", "accessibility.switch_control"
+        ]
+        let doubles: Set<String> = ["app.settings.voice.rate", "app.volume.beacon", "app.volume.tts",
+                                    "app.volume.other", "ar_headset.accuracy"]
+        var result: [String: AttributeValue] = [:]
+        for (key, value) in values {
+            if booleans.contains(key) {
+                if value == "true" { result[key] = .bool(true) }
+                else if value == "false" { result[key] = .bool(false) }
+            } else if doubles.contains(key) {
+                if let number = Double(value), number.isFinite { result[key] = .double(number) }
+            } else if key == "error.code" {
+                if let number = Int(value) { result[key] = .int(number) }
+            } else {
+                result[key] = .string(value)
+            }
+        }
+        return result
     }
 
     func emit(to logger: OpenTelemetryApi.Logger) {
@@ -371,7 +447,7 @@ final class TelemetryController {
                     provider = LoggerProviderBuilder().with(resource: Resource(attributes: [
                         "service.name": .string("soundscape"),
                         "service.version": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"),
-                        "service.build": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown")
+                        "app.build_id": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown")
                     ])).with(processors: [batch]).build()
                     pipelineConsent = consent
                 } catch {

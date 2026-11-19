@@ -416,8 +416,8 @@
 /* Declines usage sharing and remembers the choice */
 "telemetry.consent.dont_share" = "Don’t Share";
 
-/* Footer describing optional telemetry and its persistent installation identifier {NumberedPlaceholder="Soundscape"} */
-"settings.section.telemetry.footer" = "Help Soundscape improve by sharing usage events, diagnostics, app and accessibility settings, motion activity, and approximate session location. Reports include a random identifier for this installation. Sharing is optional and can be turned off at any time.";
+/* Footer describing optional telemetry and its monthly telemetry identifier {NumberedPlaceholder="Soundscape"} */
+"settings.section.telemetry.footer" = "Help Soundscape improve by sharing usage events, diagnostics, app and accessibility settings, motion activity, and approximate session location. Reports include a random identifier that changes monthly. Sharing is optional and can be turned off at any time.";
 
 /* Settings title, Language */
 "settings.language.screen_title" = "Language";

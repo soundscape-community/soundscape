@@ -85,6 +85,40 @@ final class TelemetryTests: XCTestCase {
             .filter { UInt64($0.lastPathComponent) != nil }
     }
 
+    func testInstallationIDRotatesOnFirstSessionOfUTCMonth() throws {
+        let suite = "TelemetryInstallationIDTests-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = TelemetryInstallationID(defaults: defaults)
+        let january = Date(timeIntervalSince1970: 1_738_368_000 - 1) // 2025-01-31 23:59:59 UTC
+        let february = january.addingTimeInterval(1)
+        let session = TelemetrySession(startedAt: january)
+        let first = session.installationID(using: store)
+        XCTAssertNotNil(UUID(uuidString: first))
+        XCTAssertEqual(TelemetrySession(startedAt: january).installationID(using: store), first)
+        XCTAssertEqual(session.installationID(using: store), first)
+        session.operationStateChanged(to: .sleep, at: 0)
+        session.operationStateChanged(to: .normal, at: 1800, wallTime: february)
+        let second = session.installationID(using: store)
+        XCTAssertNotEqual(first, second)
+        XCTAssertEqual(TelemetrySession(startedAt: february).installationID(using: TelemetryInstallationID(defaults: defaults)), second)
+        XCTAssertNotEqual(TelemetrySession(startedAt: february.addingTimeInterval(40 * 86400)).installationID(using: store), second)
+    }
+
+    func testInstallationIDKeepsOriginalSessionMonthWhenResolvedLate() throws {
+        let suite = "TelemetryInstallationIDTests-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = TelemetryInstallationID(defaults: defaults)
+        let start = Date(timeIntervalSince1970: 1_738_367_999)
+        let oldSession = TelemetrySession(startedAt: start)
+        let first = oldSession.installationID(using: store)
+        let newSession = TelemetrySession(startedAt: start.addingTimeInterval(1))
+        let second = newSession.installationID(using: store)
+        XCTAssertNotEqual(first, second)
+        XCTAssertEqual(oldSession.installationID(using: store), first)
+    }
+
     func testSessionLocationIsQuantisedAndFixedUntilReset() throws {
         let now = Date(timeIntervalSince1970: 1_700_000_000)
         func fix(_ latitude: Double, _ longitude: Double, age: TimeInterval = 0, accuracy: Double = 10) -> CLLocation {
@@ -133,10 +167,10 @@ final class TelemetryTests: XCTestCase {
         let provider = LoggerProviderBuilder().with(processors: [processor]).build()
         let timestamp = Date(timeIntervalSince1970: 123456)
         TelemetryEvent(name: "session.snapshot", timestamp: timestamp,
-                       properties: ["locale": "en-GB", "user_id": "caller", "event_id": "caller", "session_id": "caller"],
+                       properties: ["locale": "en-GB", "app.installation.id": "caller", "event_id": "caller", "session.id": "caller"],
                        clientID: "client", sessionID: "session",
-                       snapshot: ["locale": "en-US", "app.state": "active", "user_id": "snapshot",
-                                  "event_id": "snapshot", "session_id": "snapshot"])
+                       snapshot: ["locale": "en-US", "app.state": "active", "app.installation.id": "snapshot",
+                                  "event_id": "snapshot", "session.id": "snapshot"])
             .emit(to: provider.get(instrumentationScopeName: "tests"))
         let record = try XCTUnwrap(exporter.records.protectedValue.first)
         XCTAssertEqual(record.eventName, "session.snapshot")
@@ -144,8 +178,8 @@ final class TelemetryTests: XCTestCase {
         XCTAssertEqual(record.severity, .info)
         XCTAssertEqual(record.timestamp, timestamp)
         XCTAssertEqual(record.attributes["locale"], .string("en-GB"))
-        XCTAssertEqual(record.attributes["user_id"], .string("client"))
-        XCTAssertEqual(record.attributes["session_id"], .string("session"))
+        XCTAssertEqual(record.attributes["app.installation.id"], .string("client"))
+        XCTAssertEqual(record.attributes["session.id"], .string("session"))
         XCTAssertEqual(record.attributes["app.state"], .string("active"))
         let eventID = try eventID(record.attributes)
         XCTAssertEqual(UUID(uuidString: eventID)?.uuidString, eventID)
@@ -168,9 +202,9 @@ final class TelemetryTests: XCTestCase {
         let provider = LoggerProviderBuilder().with(processors: [processor]).build()
         let logger = provider.get(instrumentationScopeName: "tests")
         for (properties, snapshot) in [
-            (["event_id": "caller", "session_id": "caller"], [:]),
-            ([:], ["event_id": "snapshot", "session_id": "snapshot"]),
-            (["event_id": "caller", "session_id": "caller"], ["event_id": "snapshot", "session_id": "snapshot"])
+            (["event_id": "caller", "session.id": "caller"], [:]),
+            ([:], ["event_id": "snapshot", "session.id": "snapshot"]),
+            (["event_id": "caller", "session.id": "caller"], ["event_id": "snapshot", "session.id": "snapshot"])
         ] {
             let original = TelemetryEvent(name: "test", properties: properties, clientID: "client",
                                           sessionID: "session", snapshot: snapshot)
@@ -180,7 +214,7 @@ final class TelemetryTests: XCTestCase {
             original.emit(to: logger)
             XCTAssertEqual(exporter.records.protectedValue.suffix(2).map { $0.attributes["event_id"] },
                            [.string(eventID), .string(eventID)])
-            XCTAssertEqual(exporter.records.protectedValue.suffix(2).map { $0.attributes["session_id"] },
+            XCTAssertEqual(exporter.records.protectedValue.suffix(2).map { $0.attributes["session.id"] },
                            [.string("session"), .string("session")])
         }
         XCTAssertEqual(exporter.records.protectedValue.count, 6)
@@ -252,7 +286,7 @@ final class TelemetryTests: XCTestCase {
         original.emit(to: logger)
         wake.emit(to: logger)
         XCTAssertNotEqual(originalID, session.id)
-        XCTAssertEqual(exporter.records.protectedValue.map { $0.attributes["session_id"] },
+        XCTAssertEqual(exporter.records.protectedValue.map { $0.attributes["session.id"] },
                        [.string(originalID), .string(session.id)])
     }
 
@@ -295,17 +329,29 @@ final class TelemetryTests: XCTestCase {
         XCTAssertTrue(context.claimSuggestion(sessionID: "next", collecting: true, active: true))
     }
 
-    func testSnapshotPrefixesEveryFieldWithoutChangingStringValues() {
-        let app = ["version": "1.2", "settings.allow_callouts": "true", "volume.tts": "0.7"]
-        let device = ["locale": "en_GB", "model": "iPhone17,1", "os.version": "18.0", "audio.output": "headphones"]
-        let accessibility = ["voice_over": "true", "content_size": "UICTContentSizeCategoryL"]
-        let snapshot = TelemetryContextState.snapshot(app: app, device: device, accessibility: accessibility)
-        XCTAssertEqual(snapshot.count, app.count + device.count + accessibility.count)
-        for (prefix, fields) in [("app", app), ("device", device), ("accessibility", accessibility)] {
-            for (key, value) in fields { XCTAssertEqual(snapshot["\(prefix).\(key)"], value) }
-        }
-        XCTAssertNil(snapshot["locale"])
-        XCTAssertNil(snapshot["experiment"])
+    func testSnapshotUsesStandardDeviceNamesAndTypedValues() {
+        let snapshot = TelemetryContextState.snapshot(
+            app: ["settings.allow_callouts": "true", "volume.tts": "0.7"],
+            device: ["model": "iPhone17,1", "os.version": "18.0"],
+            accessibility: ["voice_over": "false"])
+        let values = TelemetryEvent.typedAttributes(snapshot)
+        XCTAssertEqual(values["device.model.identifier"], .string("iPhone17,1"))
+        XCTAssertEqual(values["os.version"], .string("18.0"))
+        XCTAssertEqual(values["app.settings.allow_callouts"], .bool(true))
+        XCTAssertEqual(values["app.volume.tts"], .double(0.7))
+        XCTAssertEqual(values["accessibility.voice_over"], .bool(false))
+    }
+
+    func testTypedAttributesUseExplicitSchema() {
+        let values = TelemetryEvent.typedAttributes(["first_launch": "true", "success": "false",
+            "error.code": "42", "ar_headset.accuracy": "1.25", "context": "true",
+            "app.volume.tts": "invalid"])
+        XCTAssertEqual(values["first_launch"], .bool(true))
+        XCTAssertEqual(values["success"], .bool(false))
+        XCTAssertEqual(values["error.code"], .int(42))
+        XCTAssertEqual(values["ar_headset.accuracy"], .double(1.25))
+        XCTAssertEqual(values["context"], .string("true"))
+        XCTAssertNil(values["app.volume.tts"])
     }
 
     func testConfigurationFailsClosed() {
@@ -436,10 +482,10 @@ final class TelemetryTests: XCTestCase {
         wait(for: [delivered], timeout: 12)
         XCTAssertEqual(exporter.records.protectedValue.map(\.eventName), ["offline"])
         XCTAssertEqual(exporter.records.protectedValue.first?.attributes["event_id"], .string(originalEventID))
-        XCTAssertEqual(exporter.records.protectedValue.first?.attributes["session_id"], .string(originalSessionID))
+        XCTAssertEqual(exporter.records.protectedValue.first?.attributes["session.id"], .string(originalSessionID))
         XCTAssertEqual(exporter.records.protectedValue.first?.resource.attributes["service.name"], .string("soundscape"))
         XCTAssertNotNil(exporter.records.protectedValue.first?.resource.attributes["service.version"])
-        XCTAssertNotNil(exporter.records.protectedValue.first?.resource.attributes["service.build"])
+        XCTAssertNotNil(exporter.records.protectedValue.first?.resource.attributes["app.build_id"])
         close(relaunched)
         XCTAssertTrue(try files(directory).isEmpty)
     }
@@ -458,7 +504,7 @@ final class TelemetryTests: XCTestCase {
         _ = decorator.forceFlush()
         XCTAssertEqual(exporter.records.protectedValue.count, 1)
         XCTAssertEqual(exporter.records.protectedValue.first?.attributes["event_id"], .string(originalEventID))
-        XCTAssertEqual(exporter.records.protectedValue.first?.attributes["session_id"], originalRecords.first?.attributes["session_id"])
+        XCTAssertEqual(exporter.records.protectedValue.first?.attributes["session.id"], originalRecords.first?.attributes["session.id"])
         XCTAssertTrue(try files(root).isEmpty)
         decorator.shutdown()
     }
@@ -489,7 +535,7 @@ final class TelemetryTests: XCTestCase {
             XCTAssertEqual(logs.first?.eventName, "test")
             let eventID = logs.first?.attributes.first(where: { $0.key == "event_id" })?.value.stringValue
             XCTAssertEqual(eventID, originalEventID)
-            let sessionID = logs.first?.attributes.first(where: { $0.key == "session_id" })?.value.stringValue
+            let sessionID = logs.first?.attributes.first(where: { $0.key == "session.id" })?.value.stringValue
             XCTAssertEqual(sessionID, "test-session")
         }
         decorator.shutdown()

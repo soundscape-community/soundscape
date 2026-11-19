@@ -134,7 +134,7 @@ extension TelemetryHelper {
             "settings.mix_audio": String(settings.audioSessionMixesWithOthers),
             
             "beacon.style": settings.selectedBeacon,
-            "beacon.melodiesEnabled": String(settings.playBeaconStartAndEndMelodies),
+            "beacon.melodies_enabled": String(settings.playBeaconStartAndEndMelodies),
             "volume.beacon": String(settings.beaconVolume),
             "volume.tts": String(settings.ttsVolume),
             "volume.other": String(settings.otherVolume),
@@ -158,7 +158,7 @@ extension TelemetryHelper {
             
             // If this device is a heading provider with an accuracy measure, add it to the telemetry
             if let headingProvider = connectedDevice as? UserHeadingProvider {
-                properties["ar_headset.accuracy"] = String(format: "%.02f", headingProvider.accuracy)
+                properties["ar_headset.accuracy"] = String(headingProvider.accuracy)
             }
         }
         

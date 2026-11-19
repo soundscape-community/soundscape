@@ -18,6 +18,7 @@ public class GDATelemetry {
     static var debugLog = false
 
     static let session = TelemetrySession()
+    private static let installationID = TelemetryInstallationID()
     
     private static let controller: TelemetryController = {
         let testing = ProcessInfo.processInfo.arguments.contains("-TESTING") ||
@@ -89,7 +90,7 @@ public class GDATelemetry {
         guard enabled, controller.collecting else { return nil }
         recordSnapshotIfNeeded()
         return TelemetryOccurrence(timestamp: Date(), sessionID: session.id,
-                                   consentEpoch: context.consentEpoch, location: session.location, snapshot: helper?.eventSnapshot ?? [:])
+                                   installationID: session.installationID(using: installationID), consentEpoch: context.consentEpoch, location: session.location, snapshot: helper?.eventSnapshot ?? [:])
     }
 
     class func initialize() {
@@ -146,7 +147,8 @@ public class GDATelemetry {
         let timestamp = occurrence?.timestamp ?? Date()
         controller.record {
             let event = TelemetryEvent(name: eventName, timestamp: timestamp, properties: properties ?? [:],
-                                       clientID: SettingsContext.shared.clientId, sessionID: occurrence?.sessionID ?? session.id,
+                                       clientID: occurrence?.installationID ?? session.installationID(using: installationID),
+                                       sessionID: occurrence?.sessionID ?? session.id,
                                        snapshot: occurrence?.snapshot ?? helper?.eventSnapshot ?? [:],
                                        location: occurrence != nil ? occurrence?.location : session.location)
             if debugLog {

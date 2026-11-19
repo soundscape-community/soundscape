@@ -23,7 +23,7 @@ update the App Store privacy answers automatically.
 | Apple data type | Exported information | Purpose |
 | --- | --- | --- |
 | Coarse Location | H3 resolution 7 cell centre captured once per consented session | Analytics |
-| Device ID | The random, persistent installation identifier exported as `user_id` | Analytics |
+| Device ID | A random monthly telemetry identifier exported as `app.installation.id` | Analytics |
 | Product Interaction | Usage events, sessions, tutorial progress, beacon and route actions | Analytics |
 | Other Diagnostic Data | Audio/migration errors, offline state, device model/OS and audio/headset context | Analytics, App Functionality |
 | Fitness | `routes.added.activity`, derived from Motion & Fitness activity detection | Analytics |
@@ -31,11 +31,11 @@ update the App Store privacy answers automatically.
 
 These categories are declared **not linked to the user's identity**
 (`NSPrivacyCollectedDataTypeLinked = false`). Soundscape has no user accounts and
-collects no identity information. The random installation identifier correlates
-reports from the same installation; it is not connected to a real-world identity,
+collects no identity information. The random telemetry installation identifier correlates reports from sessions
+starting in the same UTC calendar month; it is not connected to a real-world identity,
 an account, or an advertising identifier. Neither Soundscape nor its analytics
 providers link these reports to identity information or identity-enabling datasets.
-The wire key `user_id` does not determine Apple's data category. The English consent screen describes approximate location, and the English settings
+The wire key `app.installation.id` does not determine Apple's data category. The English consent screen describes approximate location, and the English settings
 footer describes the installation identifier. Translations must be updated before
 release. Reassess this declaration if identity collection or
 identity linking is introduced. Accessibility settings describe enabled system
@@ -86,16 +86,16 @@ add/arrival/removal, route creation, GPX saving, app-rating prompts/actions,
 selected deep-link actions, offline state, and selected audio/migration errors.
 
 `session.snapshot` replaces the separate `app_snapshot`, `device_snapshot` and
-`ios_accessibility` events. It carries the following context as string attributes:
+`ios_accessibility` events. It carries the following context:
 
 - `app.*`: version/build, language/voice/rate, units, callout
   and audio-mixing settings, beacon style/melodies, volumes and tutorial status.
-- `device.*`: locale, model identifier, OS version and audio output type.
+- `device.*`: locale, model identifier and audio output type; `os.version` contains the OS version.
 - `accessibility.*`: VoiceOver, mono audio, Speak Screen/Selection, bold text,
   content size, grayscale, inverted/darker colours, AssistiveTouch and Switch Control.
 
-The prefixes are prepended to the former keys, for example `app.settings.voice`,
-`device.os.version` and `accessibility.voice_over`. Shared event attributes and
+Snapshot keys include `app.settings.voice`, `device.model.identifier`, `os.version`,
+and `accessibility.voice_over`. Shared event attributes and
 identifiers are still attached. Beacon/headset state uses the shared `beacon.state`
 and `ar_headset.state` attributes, without duplicate `app.*` fields. First-use date
 and accumulated marker/beacon counters are not exported. The beacon-set counter
@@ -104,7 +104,7 @@ Initial context is captured after launch setup and
 saved-voice validation, then once per new session ID. Early startup errors may
 precede the initial snapshot. Enabling sharing after initialization emits current
 context; renewed consent emits fresh context even within the same session. No
-pre-consent activity is replayed. Mixpanel can derive sessions from `session_id`;
+pre-consent activity is replayed. The collector maps `session.id` to Mixpanel’s `session_id`;
 this snapshot is context, not an explicit session-start event.
 
 `navilens.suggested` records the first visible recommendation card while the app
@@ -171,7 +171,7 @@ last scanned declaration supplies properties to calls after the branches.
 Those property keys are not unioned across declarations. This currently affects
 no telemetry call sites in the app; conditional-compilation property analysis
 remains a scanner limitation.
-Automatically attached event snapshots, `user_id`, `event_id`, `session_id`, and
+Automatically attached event snapshots, `app.installation.id`, `event_id`, `session.id`, and
 OpenTelemetry resource attributes are outside this inventory. All conditional-compilation branches are
 scanned; tests, scripts, and dependencies outside `GuideDogs` are excluded. Comments
 and string contents do not count as calls, and internal unqualified forwarding
@@ -258,12 +258,14 @@ built app's Info.plist.
 
 OpenTelemetry Swift and Swift Core are pinned to 2.6.0. Existing `GDATelemetry`
 calls emit INFO logs with the event name in `eventName`, no body, the occurrence
-timestamp, and mostly string attributes (location coordinates are numeric). `user_id` is the existing client
-ID and overrides caller properties. Caller properties override helper snapshot
+timestamp, and typed attributes. `app.installation.id` is a random telemetry-only identifier and overrides caller
+properties. Caller properties override helper snapshot
 properties. Screen views use `screen_view` and `screen_name`; value events use
 `value`. Existing device, app, accessibility, and experiment snapshots remain.
 The resource contains `service.name=soundscape`, `service.version`, and
-`service.build`. Pipeline startup does not instantiate `AppContext`.
+`app.build_id` (the bundle build number). Pipeline startup does not instantiate `AppContext`.
+The collector maps OpenTelemetry identifiers to the Mixpanel fields described in
+[TelemetryCollector.md](TelemetryCollector.md).
 
 Each `TelemetryEvent` generates a UUID once at creation and exports it as the
 string attribute `event_id`. It is assigned after merging caller properties and
@@ -279,7 +281,15 @@ the original ID lets Mixpanel recognize the repeated event without relying on
 the collector's fallback hash of event fields, which can merge distinct occurrences
 with identical attributes and timestamps.
 
-The string attribute `session_id` is a random UUID for the current usage session.
+The app generates a random UUID for `app.installation.id`, separately from its
+existing client ID and without using an Apple identifier. It persists for sessions
+starting in the same UTC calendar month and changes when the first session in a new
+month records telemetry. A session that crosses a month boundary keeps its original
+ID until the next session. The ID is created only when telemetry is collected;
+delayed events and persisted replay retain their original ID. Opting out does not
+rotate it within the same month.
+
+The string attribute `session.id` is a random UUID for the current usage session.
 Every new app process starts a fresh session. Backgrounding, foregrounding, phone
 lock, and ordinary inactivity keep the same ID because background use is normal.
 Entering Soundscape sleep mode (the home screen Sleep button) keeps the ID until
@@ -309,8 +319,7 @@ Session tracking is in memory and independent of consent; it does not collect or
 export events while sharing is disabled. Each event captures its session ID at
 creation, after merging properties and snapshots so neither can override it.
 Batching, persistence, retries, and replay retain that original session ID, even
-after wake or a relaunch has started a new session. Neither `session_id` nor
-`event_id` changes the existing client `user_id`.
+after wake or a relaunch has started a new session. The installation ID is independent of the app’s existing client ID.
 
 The pipeline is:
 
@@ -380,12 +389,12 @@ For device verification with a test collector:
    networking. Verify persisted records replay with their original timestamps and
    `event_id` values. Retry an upload and confirm both OTLP requests carry the same
    ID, which Vector maps to Mixpanel's `$insert_id`.
-   Confirm replay also retains the original `session_id`, while newly created
+   Confirm replay also retains the original `session.id`, while newly created
    events after relaunch have a new session ID.
 4. While offline, opt out and re-enable. Restore networking and confirm no records
    from the previous consent period arrive. Repeat while an upload is in progress.
 5. Background and foreground the app, including locking and unlocking the phone,
-   and verify `session_id` stays the same. Use the home screen Sleep button and
+   and verify `session.id` stays the same. Use the home screen Sleep button and
    wake before 30 minutes: the ID stays the same. Sleep for at least 30 minutes
    (including time in snooze), then wake manually or by moving: the wake event and
    subsequent events use a new ID. Events recorded before wake keep their old ID.
