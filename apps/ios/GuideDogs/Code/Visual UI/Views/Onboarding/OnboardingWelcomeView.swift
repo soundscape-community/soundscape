@@ -18,19 +18,10 @@ struct OnboardingWelcomeView: View {
     
     let context: OnboardingBehavior.Context
     
-    @ViewBuilder
-    private var destination: some View {
-        if LocalizationContext.deviceLocale.identifierHyphened == LocalizationContext.currentAppLocale.identifierHyphened {
-            OnboardingHeadphoneView()
-        } else {
-            OnboardingLanguageView()
-        }
-    }
-    
     // MARK: `body`
     
     var body: some View {
-        NavigationView {
+        RouteStack(path: viewModel.path) {
             OnboardingContainer(coverImage: Image("permissions-intro"), accessibilityLabel: GDLocalizationUnnecessary("Soundscape")) {
                 Spacer()
                 
@@ -45,7 +36,19 @@ struct OnboardingWelcomeView: View {
                 
                 Spacer()
                 
-                OnboardingNavigationLink(text: GDLocalizedString("first_launch.welcome.button"), destination: destination)
+                let languageMatches = LocalizationContext.deviceLocale.identifierHyphened == LocalizationContext.currentAppLocale.identifierHyphened
+                OnboardingNavigationLink(text: GDLocalizedString("first_launch.welcome.button"),
+                                         route: viewModel.coordinator.firstRoute(languageMatches: languageMatches))
+            }
+        } destination: { route in
+            switch route {
+            case .language: OnboardingLanguageView()
+            case .headphones: OnboardingHeadphoneView()
+            case .callouts: OnboardingCalloutView()
+            case .authorizations: OnboardingAuthorizationView()
+            case .beacon: OnboardingBeaconView()
+            case .terms: OnboardingTermsView()
+            case .finish: OnboardingPromptView()
             }
         }
         .accentColor(.primaryForeground)

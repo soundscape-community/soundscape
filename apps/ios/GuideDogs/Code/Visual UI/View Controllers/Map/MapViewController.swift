@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -18,7 +19,7 @@ class MapViewController: UIViewController {
     
     // MARK: `IBOutlet`
     
-    @IBOutlet private weak var mapView: MKMapView!
+    private let mapView = MKMapView()
     
     // MARK: Properties
     
@@ -37,6 +38,21 @@ class MapViewController: UIViewController {
     
     // MARK: View Life Cycle
     
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor(named: "Background Base")
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(mapView)
+        NSLayoutConstraint.activate([
+            mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mapView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            mapView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         

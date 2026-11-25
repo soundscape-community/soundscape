@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -50,7 +51,7 @@ class OfflineBannerObserver: PersistentNotificationObserver {
         }
         
         if offlineState == .enteringOnline {
-            notificationViewController = BannerViewController(nibName: "OnlineBanner")
+            notificationViewController = ConnectivityBannerViewController(message: "banner.online.message", isOnline: true)
         }
         
         // Initialize delegate

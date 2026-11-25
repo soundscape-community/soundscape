@@ -3,10 +3,11 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import Foundation
+import UIKit
 import Combine
 
 class VirtualLocationViewController: UIViewController {
@@ -40,13 +41,11 @@ class VirtualLocationViewController: UIViewController {
         }
     }
     
-    // MARK: `IBOutlet`
-    
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet var contentViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var currentLocationLabel: UILabel!
-    @IBOutlet weak var backLabel: UILabel!
-    
+    private let contentView = UIView()
+    private lazy var contentViewHeightConstraint = contentView.heightAnchor.constraint(equalToConstant: 128)
+    private let currentLocationLabel = UILabel()
+    private let backLabel = UILabel()
+
     // MARK: Properties
     
     private var contentViewController: PreviewControlViewController?
@@ -106,7 +105,7 @@ class VirtualLocationViewController: UIViewController {
     }
 
     init() {
-        super.init(nibName: "VirtualLocationView", bundle: nil)
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -115,6 +114,53 @@ class VirtualLocationViewController: UIViewController {
     
     // MARK: View Life Cycle
     
+    override func loadView() {
+        view = UIView()
+
+        currentLocationLabel.numberOfLines = 0
+        currentLocationLabel.font = .preferredFont(forTextStyle: .caption1)
+        currentLocationLabel.textColor = .white
+        currentLocationLabel.adjustsFontForContentSizeCategory = true
+
+        let button = UIButton(type: .system)
+        button.accessibilityLabel = GDLocalizedString("preview.go_back.title")
+        button.accessibilityHint = GDLocalizedString("preview.go_back.accessibility_text")
+        button.addTarget(self, action: #selector(onBackButtonTouchUpInside), for: .touchUpInside)
+        backLabel.text = GDLocalizedString("preview.go_back.title")
+        backLabel.textAlignment = .center
+        backLabel.textColor = .white
+        backLabel.numberOfLines = 0
+        backLabel.font = .preferredFont(forTextStyle: .body)
+        backLabel.adjustsFontForContentSizeCategory = true
+        backLabel.isAccessibilityElement = false
+        backLabel.translatesAutoresizingMaskIntoConstraints = false
+        button.addSubview(backLabel)
+
+        let actions = UIStackView(arrangedSubviews: [button])
+        actions.alignment = .center
+        actions.axis = .vertical
+
+        let stack = UIStackView(arrangedSubviews: [currentLocationLabel, contentView, actions])
+        stack.axis = .vertical
+        stack.spacing = 12
+        stack.setCustomSpacing(24, after: contentView)
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(stack)
+        NSLayoutConstraint.activate([
+            contentViewHeightConstraint,
+            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 200),
+            button.heightAnchor.constraint(greaterThanOrEqualToConstant: 44),
+            backLabel.topAnchor.constraint(equalTo: button.topAnchor, constant: 4),
+            backLabel.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -4),
+            backLabel.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 8),
+            backLabel.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -8),
+            stack.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
+            stack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -24),
+            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8)
+        ])
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -122,7 +168,7 @@ class VirtualLocationViewController: UIViewController {
         
         // Add new child view controller
         // to the container view
-        self.add(viewController)
+        addChild(viewController)
         self.contentView.addSubview(viewController.view)
         
         // Set layout for `child.view`
@@ -237,7 +283,7 @@ class VirtualLocationViewController: UIViewController {
     
     // MARK: `IBAction`
     
-    @IBAction func onBackButtonTouchUpInside(_ sender: Any) {
+    @objc func onBackButtonTouchUpInside(_ sender: Any) {
         guard isTransitioning == false else {
             return
         }

@@ -12,10 +12,12 @@ import SwiftUI
 
 class HelpPage {
     /// This should contain a localized String
+    let id: String
     let title: String
     let index: IndexPath
     
-    init(title: String, index: IndexPath) {
+    init(id: String, title: String, index: IndexPath) {
+        self.id = id
         self.title = title
         self.index = index
     }
@@ -24,9 +26,9 @@ class HelpPage {
 class TextHelpPage: HelpPage {
     let text: [String]
     
-    init(title: String, text: [String], index: IndexPath) {
+    init(id: String, title: String, text: [String], index: IndexPath) {
         self.text = text
-        super.init(title: title, index: index)
+        super.init(id: id, title: title, index: index)
     }
 }
 
@@ -47,25 +49,27 @@ class SectionedHelpPage: HelpPage {
     /// This is a URL for a deeplink to another app or additional documentation on the internet
     let link: SectionedHelpPageDeepLink?
     
-    init(title: String, what: [String], when: [String], how: [String], link: SectionedHelpPageDeepLink? = nil, index: IndexPath) {
+    init(id: String, title: String, what: [String], when: [String], how: [String], link: SectionedHelpPageDeepLink? = nil, index: IndexPath) {
         self.what = what
         self.when = when
         self.how = how
         self.link = link
-        super.init(title: title, index: index)
+        super.init(id: id, title: title, index: index)
     }
 }
 
-struct FAQ {
+struct FAQ: Identifiable {
+    let id: String
     /// This should contain a localized String
     let question: String
     
     /// This should contain a localized String
     let answer: String
     
-    init(_ question: String, _ answer: String) {
-        self.question = question
-        self.answer = answer
+    init(_ key: String) {
+        id = key
+        self.question = GDLocalizedString(key + ".question")
+        self.answer = GDLocalizedString(key + ".answer")
     }
 }
 
@@ -81,106 +85,108 @@ class FAQListHelpPage: HelpPage {
     /// A list of localized FAQs
     let sections: [FAQSection]
     
-    init(title: String, sections: [FAQSection], index: IndexPath) {
+    init(id: String, title: String, sections: [FAQSection], index: IndexPath) {
         self.sections = sections
-        super.init(title: title, index: index)
+        super.init(id: id, title: title, index: index)
     }
 }
 
 // MARK: -
 
-class HelpViewController: BaseTableViewController {
+struct HelpView: View {
+    @ObservedObject var navigation: AppNavigationModel
+    var route: HelpRoute? = nil
     
     // MARK: Properties
     
     private var helpPages = [
         
         // Configuration
-        TextHelpPage(title: GDLocalizedString("voice.voices"),
+        TextHelpPage(id: "voice.voices", title: GDLocalizedString("voice.voices"),
                      text: [GDLocalizedString("help.config.voices.content")],
-                     index: IndexPath(row: 0, section: Section.configuration)),
+                     index: IndexPath(row: 0, section: HelpSection.configuration)),
         
         // Audio AR Headsets - AirPods
-        SectionedHelpPage(title: GDLocalizedString("help.using_headsets.airpods.title"),
+        SectionedHelpPage(id: "help.using_headsets.airpods.title", title: GDLocalizedString("help.using_headsets.airpods.title"),
                           what: [GDLocalizedString("help.using_headsets.airpods.what")],
                           when: [GDLocalizedString("help.using_headsets.airpods.when")],
                           how: [GDLocalizedString("help.using_headsets.airpods.how.1"),
                                 GDLocalizedString("help.using_headsets.airpods.how.2")],
-                          index: IndexPath(row: 1, section: Section.configuration)),
+                          index: IndexPath(row: 1, section: HelpSection.configuration)),
 
         // Audio AR Headsets - Bose Frames
-        SectionedHelpPage(title: GDLocalizedString("help.using_headsets.bose_frames.title"),
+        SectionedHelpPage(id: "help.using_headsets.bose_frames.title", title: GDLocalizedString("help.using_headsets.bose_frames.title"),
                           what: [GDLocalizedString("help.using_headsets.bose_frames.what")],
                           when: [GDLocalizedString("help.using_headsets.bose_frames.when")],
                           how: [GDLocalizedString("help.using_headsets.bose_frames.how.1"),
                                 GDLocalizedString("help.using_headsets.bose_frames.how.2"),
                                 GDLocalizedString("help.using_headsets.bose_frames.how.3"),
                                 GDLocalizedString("help.using_headsets.bose_frames.how.4")],
-                          index: IndexPath(row: 2, section: Section.configuration)),
+                          index: IndexPath(row: 2, section: HelpSection.configuration)),
         
         // Using Media Controls
-        SectionedHelpPage(title: GDLocalizedString("help.remote.page_title"),
+        SectionedHelpPage(id: "help.remote.page_title", title: GDLocalizedString("help.remote.page_title"),
                           what: [GDLocalizedString("help.text.remote_control.what")],
                           when: [GDLocalizedString("help.text.remote_control.when")],
                           how: [GDLocalizedString("help.text.remote_control.how")],
-                          index: IndexPath(row: 3, section: Section.configuration)),
+                          index: IndexPath(row: 3, section: HelpSection.configuration)),
         
         // Destination Beacons
-        SectionedHelpPage(title: GDLocalizedString("beacon.audio_beacon"),
+        SectionedHelpPage(id: "beacon.audio_beacon", title: GDLocalizedString("beacon.audio_beacon"),
                           what: [GDLocalizedString("help.text.destination_beacons.what")],
                           when: [GDLocalizedString("help.text.destination_beacons.when")],
                           how: [GDLocalizedString("help.text.destination_beacons.how.1"),
                                 GDLocalizedString("help.text.destination_beacons.how.2"),
                                 GDLocalizedString("help.text.destination_beacons.how.3")],
-                          index: IndexPath(row: 0, section: Section.beaconsAndCallouts)),
+                          index: IndexPath(row: 0, section: HelpSection.beaconsAndCallouts)),
 
         // Automatic Callouts
-        SectionedHelpPage(title: GDLocalizedString("callouts.automatic_callouts"),
+        SectionedHelpPage(id: "callouts.automatic_callouts", title: GDLocalizedString("callouts.automatic_callouts"),
                           what: [GDLocalizedString("help.text.automatic_callouts.what")],
                           when: [GDLocalizedString("help.text.automatic_callouts.when.1"),
                                  GDLocalizedString("help.text.automatic_callouts.when.2"),
                                  GDLocalizedString("help.text.automatic_callouts.when.3")],
                           how: [GDLocalizedString("help.text.automatic_callouts.how.1"),
                                 GDLocalizedString("help.text.automatic_callouts.how.2")],
-                          index: IndexPath(row: 1, section: Section.beaconsAndCallouts)),
+                          index: IndexPath(row: 1, section: HelpSection.beaconsAndCallouts)),
         
         // My Location
-        SectionedHelpPage(title: GDLocalizedString("directions.my_location"),
+        SectionedHelpPage(id: "directions.my_location", title: GDLocalizedString("directions.my_location"),
                           what: [GDLocalizedString("help.text.my_location.what")],
                           when: [GDLocalizedString("help.text.my_location.when")],
                           how: [GDLocalizedString("help.text.my_location.how")],
-                          index: IndexPath(row: 0, section: Section.homeScreen)),
+                          index: IndexPath(row: 0, section: HelpSection.homeScreen)),
         
         // Around Me
-        SectionedHelpPage(title: GDLocalizedString("help.orient.page_title"),
+        SectionedHelpPage(id: "help.orient.page_title", title: GDLocalizedString("help.orient.page_title"),
                           what: [GDLocalizedString("help.text.around_me.what")],
                           when: [GDLocalizedString("help.text.around_me.when")],
                           how: [GDLocalizedString("help.text.around_me.how")],
-                          index: IndexPath(row: 1, section: Section.homeScreen)),
+                          index: IndexPath(row: 1, section: HelpSection.homeScreen)),
         
         // Ahead of Me
-        SectionedHelpPage(title: GDLocalizedString("help.explore.page_title"),
+        SectionedHelpPage(id: "help.explore.page_title", title: GDLocalizedString("help.explore.page_title"),
                           what: [GDLocalizedString("help.text.ahead_of_me.what")],
                           when: [GDLocalizedString("help.text.ahead_of_me.when")],
                           how: [GDLocalizedString("help.text.ahead_of_me.how")],
-                          index: IndexPath(row: 2, section: Section.homeScreen)),
+                          index: IndexPath(row: 2, section: HelpSection.homeScreen)),
         
         // Nearby Markers
-        SectionedHelpPage(title: GDLocalizedString("callouts.nearby_markers"),
+        SectionedHelpPage(id: "callouts.nearby_markers", title: GDLocalizedString("callouts.nearby_markers"),
                           what: [GDLocalizedString("help.text.nearby_markers.what")],
                           when: [GDLocalizedString("help.text.nearby_markers.when")],
                           how: [GDLocalizedString("help.text.nearby_markers.how")],
-                          index: IndexPath(row: 3, section: Section.homeScreen)),
+                          index: IndexPath(row: 3, section: HelpSection.homeScreen)),
         
         // Markers
-        TextHelpPage(title: GDLocalizedString("markers.title"),
+        TextHelpPage(id: "markers.title", title: GDLocalizedString("markers.title"),
                      text: [GDLocalizedString("help.text.markers.content.1"),
                             GDLocalizedString("help.text.markers.content.2"),
                             GDLocalizedString("help.text.markers.content.3")],
-                     index: IndexPath(row: 0, section: Section.markersAndRoutes)),
+                     index: IndexPath(row: 0, section: HelpSection.markersAndRoutes)),
         
         // Routes
-        SectionedHelpPage(title: GDLocalizedString("routes.title"),
+        SectionedHelpPage(id: "routes.title", title: GDLocalizedString("routes.title"),
                           what: [GDLocalizedString("help.text.routes.content.what")],
                           when: [GDLocalizedString("help.text.routes.content.when")],
                           how: [
@@ -189,56 +195,56 @@ class HelpViewController: BaseTableViewController {
                            GDLocalizedString("help.text.routes.content.how.2"),
                             GDLocalizedString("help.text.routes.content.how.3")
                           ],
-                          index: IndexPath(row: 1, section: Section.markersAndRoutes)),
+                          index: IndexPath(row: 1, section: HelpSection.markersAndRoutes)),
         
         // Creating Markers
-        TextHelpPage(title: GDLocalizedString("help.creating_markers.page_title"),
+        TextHelpPage(id: "help.creating_markers.page_title", title: GDLocalizedString("help.creating_markers.page_title"),
                      text: [GDLocalizedString("help.text.creating_markers.content.1"),
                             GDLocalizedString("help.text.creating_markers.content.2")],
-                     index: IndexPath(row: 2, section: Section.markersAndRoutes)),
+                     index: IndexPath(row: 2, section: HelpSection.markersAndRoutes)),
         
         // Customizing Markers
-        TextHelpPage(title: GDLocalizedString("help.edit_markers.page_title"),
+        TextHelpPage(id: "help.edit_markers.page_title", title: GDLocalizedString("help.edit_markers.page_title"),
                      text: [GDLocalizedString("help.text.customizing_markers.content.1"),
                             GDLocalizedString("help.text.customizing_markers.content.2")],
-                     index: IndexPath(row: 3, section: Section.markersAndRoutes)),
+                     index: IndexPath(row: 3, section: HelpSection.markersAndRoutes)),
         
         // Frequently Asked Questions
-        FAQListHelpPage(title: GDLocalizedString("faq.title"),
+        FAQListHelpPage(id: "faq.title", title: GDLocalizedString("faq.title"),
                         sections: [FAQSection(heading: GDLocalizedString("faq.section.what_is_soundscape"),
-                                              faqs: [FAQ(GDLocalizedString("faq.when_to_use_soundscape.question"), GDLocalizedString("faq.when_to_use_soundscape.answer")),
-                                                     FAQ(GDLocalizedString("faq.markers_function.question"), GDLocalizedString("faq.markers_function.answer"))]),
+                                              faqs: [FAQ("faq.when_to_use_soundscape"),
+                                                     FAQ("faq.markers_function")]),
                                    FAQSection(heading: GDLocalizedString("faq.section.getting_the_best_experience"),
-                                              faqs: [FAQ(GDLocalizedString("faq.what_can_I_set.question"), GDLocalizedString("faq.what_can_I_set.answer")),
-                                                     FAQ(GDLocalizedString("faq.how_to_use_beacon.question"), GDLocalizedString("faq.how_to_use_beacon.answer")),
-                                                     FAQ(GDLocalizedString("faq.why_does_beacon_disappear.question"), GDLocalizedString("faq.why_does_beacon_disappear.answer")),
-                                                     FAQ(GDLocalizedString("faq.beacon_on_address.question"), GDLocalizedString("faq.beacon_on_address.answer")),
-                                                     FAQ(GDLocalizedString("faq.beacon_on_home.question"), GDLocalizedString("faq.beacon_on_home.answer")),
-                                                     FAQ(GDLocalizedString("faq.how_close_to_destination.question"), GDLocalizedString("faq.how_close_to_destination.answer")),
-                                                     FAQ(GDLocalizedString("faq.turn_beacon_back_on.question"), GDLocalizedString("faq.turn_beacon_back_on.answer")),
-                                                     FAQ(GDLocalizedString("faq.road_names.question"), GDLocalizedString("faq.road_names.answer")),
-                                                     FAQ(GDLocalizedString("faq.why_not_every_business.question"), GDLocalizedString("faq.why_not_every_business.answer")),
-                                                     FAQ(GDLocalizedString("faq.callouts_stopping_in_vehicle.question"), GDLocalizedString("faq.callouts_stopping_in_vehicle.answer")),
-                                                     FAQ(GDLocalizedString("faq.miss_a_callout.question"), GDLocalizedString("faq.miss_a_callout.answer"))]),
+                                              faqs: [FAQ("faq.what_can_I_set"),
+                                                     FAQ("faq.how_to_use_beacon"),
+                                                     FAQ("faq.why_does_beacon_disappear"),
+                                                     FAQ("faq.beacon_on_address"),
+                                                     FAQ("faq.beacon_on_home"),
+                                                     FAQ("faq.how_close_to_destination"),
+                                                     FAQ("faq.turn_beacon_back_on"),
+                                                     FAQ("faq.road_names"),
+                                                     FAQ("faq.why_not_every_business"),
+                                                     FAQ("faq.callouts_stopping_in_vehicle"),
+                                                     FAQ("faq.miss_a_callout")]),
                                    FAQSection(heading: GDLocalizedString("faq.section.how_soundscape_works"),
-                                              faqs: [FAQ(GDLocalizedString("faq.supported_phones.question"), GDLocalizedString("faq.supported_phones.answer")),
-                                                     FAQ(GDLocalizedString("faq.supported_headsets.question"), GDLocalizedString("faq.supported_headsets.answer")),
-                                                     FAQ(GDLocalizedString("faq.battery_impact.question"), GDLocalizedString("faq.battery_impact.answer")),
-                                                     FAQ(GDLocalizedString("faq.sleep_mode_battery.question"), GDLocalizedString("faq.sleep_mode_battery.answer")),
-                                                     FAQ(GDLocalizedString("faq.snooze_mode_battery.question"), GDLocalizedString("faq.snooze_mode_battery.answer")),
-                                                     FAQ(GDLocalizedString("faq.headset_battery_impact.question"), GDLocalizedString("faq.headset_battery_impact.answer")),
-                                                     FAQ(GDLocalizedString("faq.background_battery_impact.question"), GDLocalizedString("faq.background_battery_impact.answer")),
-                                                     FAQ(GDLocalizedString("faq.mobile_data_use.question"), GDLocalizedString("faq.mobile_data_use.answer")),
-                                                     FAQ(GDLocalizedString("faq.difference_from_map_apps.question"), GDLocalizedString("faq.difference_from_map_apps.answer")),
-                                                     FAQ(GDLocalizedString("faq.use_with_wayfinding_apps.question"), GDLocalizedString("faq.use_with_wayfinding_apps.answer")),
-                                                     FAQ(GDLocalizedString("faq.controlling_what_you_hear.question"), GDLocalizedString("faq.controlling_what_you_hear.answer")),
-                                                     FAQ(GDLocalizedString("faq.holding_phone_flat.question"), GDLocalizedString("faq.holding_phone_flat.answer")),
-                                                     FAQ(GDLocalizedString("faq.personalize_experience.question"), GDLocalizedString("faq.personalize_experience.answer")),
-                                                     FAQ(GDLocalizedString("faq.what_is_osm.question"), GDLocalizedString("faq.what_is_osm.answer"))])],
-                        index: IndexPath(row: 0, section: Section.faq)),
+                                              faqs: [FAQ("faq.supported_phones"),
+                                                     FAQ("faq.supported_headsets"),
+                                                     FAQ("faq.battery_impact"),
+                                                     FAQ("faq.sleep_mode_battery"),
+                                                     FAQ("faq.snooze_mode_battery"),
+                                                     FAQ("faq.headset_battery_impact"),
+                                                     FAQ("faq.background_battery_impact"),
+                                                     FAQ("faq.mobile_data_use"),
+                                                     FAQ("faq.difference_from_map_apps"),
+                                                     FAQ("faq.use_with_wayfinding_apps"),
+                                                     FAQ("faq.controlling_what_you_hear"),
+                                                     FAQ("faq.holding_phone_flat"),
+                                                     FAQ("faq.personalize_experience"),
+                                                     FAQ("faq.what_is_osm")])],
+                        index: IndexPath(row: 0, section: HelpSection.faq)),
         
         // Tips and Tricks
-        TextHelpPage(title: GDLocalizedString("faq.tips.title"),
+        TextHelpPage(id: "faq.tips.title", title: GDLocalizedString("faq.tips.title"),
                      text: [GDLocalizedString("faq.tip.beacon_quiet"),
                             GDLocalizedString("faq.tip.setting_beacon_on_address"),
                             GDLocalizedString("faq.tip.finding_bus_stops"),
@@ -248,240 +254,267 @@ class HelpViewController: BaseTableViewController {
                             GDLocalizedString("faq.tip.create_marker_at_bus_stop"),
                             GDLocalizedString("faq.tip.two_finger_double_tap"),
                             GDLocalizedString("faq.tip.reverse_route")],
-                     index: IndexPath(row: 1, section: Section.faq))
+                     index: IndexPath(row: 1, section: HelpSection.faq))
     ]
     
-    private struct Segues {
-        static let OpenHelpPage = "OpenHelpPage"
-        static let OpenGenericHelpPage = "OpenGenericHelpPage"
-        static let OpenOfflinePage = "showOfflineInfo"
-    }
-    
-    private struct Section {
+    private struct HelpSection {
         static let configuration = 0
         static let beaconsAndCallouts = 1
         static let homeScreen = 2
         static let markersAndRoutes = 3
         static let faq = 4
-        static let tutorials = 5
-        static let moreHelp = 6
-    }
-    
-    private struct Row {
-        static let destinations = 0
-        static let markers = 1
-        static let offline = 2
-        static let onboarding = 4
-    }
-    
-    private var currentIndex: IndexPath?
-    
-    @IBOutlet weak var largeBannerContainerView: UIView!
-    
-    // MARK: View Life Cycle
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        navigationController?.setNavigationBarHidden(false, animated: true)
-    }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return Section.moreHelp + 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case Section.configuration: return 5
-        case Section.moreHelp: return 1
-        case Section.tutorials: return 2
-        default:
-            if section == Section.faq {
-                return helpPages.filter({ $0.index.section == section}).count + 1 // Add one to account for the offline link
+    @ViewBuilder
+    var body: some View {
+        switch route {
+        case .none:
+            VStack(spacing: 0) {
+                NavigationBanner()
+                helpList
             }
-            
-            return helpPages.filter({ $0.index.section == section}).count
-        }
-    }
-    
-    // MARK: UITableViewDataSource
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case Section.configuration: return GDLocalizedString("help.configuration.section.title")
-        case Section.beaconsAndCallouts: return GDLocalizedString("settings.help.section.beacons_and_pois")
-        case Section.homeScreen: return GDLocalizedString("settings.help.section.home_screen_buttons")
-        case Section.markersAndRoutes: return GDLocalizedString("search.view_markers")
-        case Section.faq: return GDLocalizedString("faq.title")
-        case Section.tutorials: return GDLocalizedString("tutorial.title.plural")
-        case Section.moreHelp: return GDLocalizedString("help.more_help.section_title")
-        default:  return nil
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        switch section {
-        case Section.tutorials:
-            if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance {
-                return GDLocalizedString("help.tutorial.footer.disabled")
-            } else {
-                return nil
-            }
-        default: return nil
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "defaultCell", for: indexPath)
-        
-        switch indexPath.section {
-        case Section.moreHelp:
-            cell.textLabel?.text = GDLocalizedString("help.support")
-            cell.accessibilityTraits = .link
-            
-        case Section.tutorials:
-            if indexPath.row == Row.destinations {
-                cell.textLabel?.text = GDLocalizedString("tutorial.beacon.getting_started")
-            } else {
-                cell.textLabel?.text = GDLocalizedString("tutorial.markers.getting_started")
-            }
-            
-            if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance {
-                cell.textLabel?.isEnabled = false
-            }
-            
-        default:
-            // Special case for the offline page
-            if indexPath.section == Section.faq && indexPath.row == Row.offline {
-                cell.textLabel?.text = GDLocalizedString("help.offline.section_title")
-                return cell
-            }
-            
-            // Special case for app setup
-            if indexPath.section == Section.configuration && indexPath.row == Row.onboarding {
-                cell.textLabel?.text = GDLocalizedString("first_launch.help.title")
-                return cell
-            }
-            
-            guard let page = helpPages.firstIndex(where: { $0.index == indexPath }) else {
-                return cell
-            }
-            
-            cell.textLabel?.text = helpPages[page].title
-        }
-        
-        return cell
-    }
-    
-    // MARK: UITableViewDelegate
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentIndex = indexPath
-        
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        switch indexPath.section {
-        case Section.moreHelp:
-            // Open the DAD website
-            UIApplication.shared.open(AppContext.Links.companySupportURL)
-            
-        case Section.tutorials:
-            guard !(AppContext.shared.eventProcessor.activeBehavior is RouteGuidance) else {
-                return
-            }
-
-            if indexPath.row == Row.destinations {
-                let viewController = DestinationTutorialIntroViewController(source: self, logContext: "help_screen")
-                navigationController?.pushViewController(viewController, animated: true)
-            } else if indexPath.row == Row.markers {
-                let viewController = MarkerTutorialViewController(logContext: "help_screen")
-                navigationController?.pushViewController(viewController, animated: true)
-            }
-            
-        default:
-            // Special case for the offline page
-            if indexPath.section == Section.faq && indexPath.row == Row.offline {
-                performSegue(withIdentifier: Segues.OpenOfflinePage, sender: self)
-                return
-            }
-            
-            // Special case for app setup
-            if indexPath.section == Section.configuration && indexPath.row == Row.onboarding {
-                // Initialize view model
-                let viewModel = OnboardingViewModel()
-                // Initialize view and hosting controller
-                let rootView = OnboardingWelcomeView(context: .help).environmentObject(viewModel)
-                let viewController = UIHostingController(rootView: rootView)
-                
-                // Set dismiss handler
-                viewModel.dismiss = {
-                    viewController.dismiss(animated: true, completion: nil)
+            .navigationTitle(GDLocalizedString("settings.help.title"))
+            .toolbar(.visible, for: .navigationBar)
+        case .page(let id):
+            if let page = helpPages.first(where: { $0.id == id }) {
+                VStack(spacing: 0) {
+                    NavigationBanner()
+                    pageContent(page)
                 }
-                
-                present(viewController, animated: true, completion: nil)
-                return
+                .navigationTitle(page.title)
+                .toolbar(.visible, for: .navigationBar)
             }
-            
-            // Other help pages
-            guard let page = helpPages.firstIndex(where: { $0.index == currentIndex }) else {
-                return
-            }
-            
-            if helpPages[page] is SectionedHelpPage {
-                performSegue(withIdentifier: Segues.OpenHelpPage, sender: self)
-            } else if helpPages[page] is FAQListHelpPage {
-                guard let content = helpPages[page] as? FAQListHelpPage else {
-                    return
+        case .answer(let id):
+            if let answer = helpPages.compactMap({ $0 as? FAQListHelpPage })
+                .flatMap({ $0.sections }).flatMap({ $0.faqs }).first(where: { $0.id == id }) {
+                let paragraphs = answer.answer.split(separator: "\n").map(String.init)
+                VStack(spacing: 0) {
+                    NavigationBanner()
+                    HelpContentView(sections: [.init(title: answer.question, paragraphs: paragraphs)])
                 }
+                .navigationTitle(GDLocalizedString("faq.title.abbreviated"))
+                .toolbar(.visible, for: .navigationBar)
+            }
+        case .offline:
+            LegacyNavigationScreen { OfflineHelpPageViewController() }
+        case .beaconTutorial:
+            LegacyNavigationScreen {
+                let controller = DestinationTutorialIntroViewController(source: nil, logContext: "help_screen")
+                controller.onFinish = { navigation.close(.helpPage(.beaconTutorial)) }
+                return controller
+            }
+        case .markerTutorial:
+            LegacyNavigationScreen { MarkerTutorialViewController(logContext: "help_screen") }
+        }
+    }
 
-                let viewController = HelpPageFAQListTableViewController(faqList: content)
-
-                navigationController?.pushViewController(viewController, animated: true)
-            } else {
-                performSegue(withIdentifier: Segues.OpenGenericHelpPage, sender: self)
+    private var helpList: some View {
+        List {
+            SwiftUI.Section(GDLocalizedString("help.configuration.section.title")) {
+                pages(in: HelpSection.configuration)
+                helpLink(GDLocalizedString("first_launch.help.title")) { navigation.helpTutorial.wrappedValue = true }
+            }
+            SwiftUI.Section(GDLocalizedString("settings.help.section.beacons_and_pois")) {
+                pages(in: HelpSection.beaconsAndCallouts)
+            }
+            SwiftUI.Section(GDLocalizedString("settings.help.section.home_screen_buttons")) {
+                pages(in: HelpSection.homeScreen)
+            }
+            SwiftUI.Section(GDLocalizedString("search.view_markers")) {
+                pages(in: HelpSection.markersAndRoutes)
+            }
+            SwiftUI.Section(GDLocalizedString("faq.title")) {
+                pages(in: HelpSection.faq)
+                helpLink(GDLocalizedString("help.offline.section_title")) {
+                    navigation.open(.helpPage(.offline))
+                }
+            }
+            SwiftUI.Section {
+                Group {
+                    helpLink(GDLocalizedString("tutorial.beacon.getting_started")) {
+                        navigation.open(.helpPage(.beaconTutorial))
+                    }
+                    helpLink(GDLocalizedString("tutorial.markers.getting_started")) {
+                        navigation.open(.helpPage(.markerTutorial))
+                    }
+                }
+                .disabled(AppContext.shared.isRouteGuidanceActive)
+            } header: {
+                GDLocalizedTextView("tutorial.title.plural")
+            } footer: {
+                if AppContext.shared.isRouteGuidanceActive {
+                    GDLocalizedTextView("help.tutorial.footer.disabled")
+                }
+            }
+            SwiftUI.Section(GDLocalizedString("help.more_help.section_title")) {
+                Link(destination: AppContext.Links.companySupportURL) {
+                    GDLocalizedTextView("help.support")
+                }
             }
         }
+        .listStyle(.insetGrouped)
     }
-    
-    // MARK: Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        switch segue.destination {
-        case let helpVC as HelpPageViewController:
-            // Pass the selected object to the new view controller.
-            guard let page = helpPages.firstIndex(where: { $0.index == currentIndex }) else { return }
-            guard let content = helpPages[page] as? SectionedHelpPage else { return }
-            
-            helpVC.loadContent(content)
-            
-        case let genericVC as HelpPageGenericViewController:
-            // Pass the selected object to the new view controller.
-            guard let page = helpPages.firstIndex(where: { $0.index == currentIndex }) else { return }
-            guard let content = helpPages[page] as? TextHelpPage else { return }
-            
-            genericVC.loadContent(content)
-            
-        default:
-            return
+    private func pages(in section: Int) -> some View {
+        ForEach(helpPages.filter { $0.index.section == section }, id: \.id) { page in
+            helpLink(page.title) { navigation.open(.helpPage(.page(page.id))) }
         }
     }
-    
-    @IBAction func unwindToHome(segue: UIStoryboardSegue) {}
+
+    @ViewBuilder
+    private func pageContent(_ page: HelpPage) -> some View {
+        switch page {
+        case let sectioned as SectionedHelpPage:
+            HelpContentView(sections: [
+                .init(title: GDLocalizedString("help.text.section_title.what"), paragraphs: sectioned.what),
+                .init(title: GDLocalizedString("help.text.section_title.when"), paragraphs: sectioned.when),
+                .init(title: GDLocalizedString("help.text.section_title.how"), paragraphs: sectioned.how)
+            ], link: sectioned.link)
+        case let text as TextHelpPage:
+            HelpContentView(sections: [.init(paragraphs: text.text)])
+        case let faq as FAQListHelpPage:
+            List {
+                ForEach(faq.sections.indices, id: \.self) { index in
+                    let section = faq.sections[index]
+                    SwiftUI.Section(section.heading) {
+                        ForEach(section.faqs) { answer in
+                            helpLink(answer.question) { navigation.open(.helpPage(.answer(answer.id))) }
+                        }
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+        default:
+            EmptyView()
+        }
+    }
+
 }
 
-// MARK: - LargeBannerContainerView
-
-extension HelpViewController: LargeBannerContainerView {
-    
-    func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerView.setHeight(height)
-        tableView.reloadData()
+private func helpLink(_ title: String, action: @escaping () -> Void) -> some View {
+    Button(action: action) {
+        HStack {
+            Text(verbatim: title)
+            Spacer()
+            Image(systemName: "chevron.forward")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+        }
+        .contentShape(Rectangle())
     }
-    
+    .buttonStyle(.plain)
+}
+
+final class HelpScreenModel: ObservableObject {
+    let banner = UIView()
+    @Published var bannerHeight: CGFloat = 0
+    @Published var content: AnyView
+
+    init(content: AnyView) {
+        self.content = content
+    }
+}
+
+struct HelpScreen: View {
+    @ObservedObject var model: HelpScreenModel
+
+    var body: some View {
+        VStack(spacing: 0) {
+            EmbeddedView(content: model.banner)
+                .frame(height: model.bannerHeight)
+                .clipped()
+                .accessibilityHidden(model.bannerHeight == 0)
+            model.content
+        }
+    }
+}
+
+class HelpHostingController: UIHostingController<HelpScreen>, LargeBannerContainerView {
+    private let model: HelpScreenModel
+
+    var largeBannerContainerView: UIView! { model.banner }
+
+    init(title: String, content: AnyView = AnyView(EmptyView())) {
+        let model = HelpScreenModel(content: content)
+        self.model = model
+        super.init(rootView: HelpScreen(model: model))
+        self.title = title
+    }
+
+    required dynamic init?(coder: NSCoder) {
+        fatalError("Use init(title:content:)")
+    }
+
+    func setContent(_ content: AnyView) {
+        model.content = content
+    }
+
+    func setLargeBannerHeight(_ height: CGFloat) {
+        model.bannerHeight = height
+    }
+}
+
+struct HelpContentView: View {
+    struct ContentSection {
+        var title: String?
+        let paragraphs: [String]
+    }
+
+    let sections: [ContentSection]
+    var link: SectionedHelpPageDeepLink?
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                ForEach(sections.indices, id: \.self) { index in
+                    let section = sections[index]
+                    VStack(alignment: .leading, spacing: 12) {
+                        if let title = section.title {
+                            Text(verbatim: title)
+                                .font(.title2)
+                                .accessibilityAddTraits(.isHeader)
+                        }
+                        if section.paragraphs.isEmpty {
+                            GDLocalizedTextView("text.coming_soon")
+                        } else {
+                            ForEach(section.paragraphs.indices, id: \.self) { index in
+                                paragraph(section.paragraphs[index])
+                            }
+                        }
+                    }
+                }
+                if let link, UIApplication.shared.canOpenURL(link.url) {
+                    Link(destination: link.url) {
+                        Text(verbatim: link.title)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
+        }
+    }
+
+    private func paragraph(_ string: String) -> Text {
+        let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+            .documentType: NSAttributedString.DocumentType.html,
+            .characterEncoding: String.Encoding.utf8.rawValue
+        ]
+        guard let html = try? NSAttributedString(data: Data(string.utf8), options: options, documentAttributes: nil) else {
+            return Text(verbatim: string)
+        }
+        var formatted = AttributedString(html)
+        // Use the screen's body font and Dynamic Type while preserving emphasis.
+        for run in formatted.runs {
+            guard let font = run.uiKit.font else { continue }
+            let traits = font.fontDescriptor.symbolicTraits
+            var intent: InlinePresentationIntent = []
+            if traits.contains(.traitBold) { intent.insert(.stronglyEmphasized) }
+            if traits.contains(.traitItalic) { intent.insert(.emphasized) }
+            formatted[run.range].inlinePresentationIntent = intent
+            formatted[run.range].uiKit.font = nil
+            formatted[run.range].uiKit.foregroundColor = nil
+        }
+        return Text(formatted)
+    }
 }

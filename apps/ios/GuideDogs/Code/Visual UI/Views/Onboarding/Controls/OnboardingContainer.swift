@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -78,7 +79,7 @@ struct OnboardingContainer_Previews: PreviewProvider {
             
             Spacer()
             
-            OnboardingNavigationLink(text: "Continue", destination: EmptyView())
+            OnboardingNavigationLink(text: "Continue", route: .headphones)
         }
         
         // Try with long text that will require a scroll view
@@ -91,7 +92,7 @@ struct OnboardingContainer_Previews: PreviewProvider {
             
             Spacer()
             
-            OnboardingNavigationLink(text: "Continue", destination: EmptyView())
+            OnboardingNavigationLink(text: "Continue", route: .headphones)
 
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)

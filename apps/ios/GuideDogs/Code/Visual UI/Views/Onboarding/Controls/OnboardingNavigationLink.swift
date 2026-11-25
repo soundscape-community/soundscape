@@ -3,29 +3,30 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import SwiftUI
 
-struct OnboardingNavigationLink<Destination: View>: View {
+struct OnboardingNavigationLink: View {
     
     // MARK: Properties
     
     private let text: String
-    private let destination: Destination
+    private let route: OnboardingRoute
     
     // MARK: Initialization
     
-    init(text: String = GDLocalizedString("ui.continue"), destination: Destination) {
+    init(text: String = GDLocalizedString("ui.continue"), route: OnboardingRoute) {
         self.text = text
-        self.destination = destination
+        self.route = route
     }
     
     // MARK: `body`
     
     var body: some View {
-        NavigationLink(destination: destination) {
+        NavigationLink(value: route) {
             Text(text)
                 .onboardingButtonTextStyle()
         }
@@ -39,10 +40,10 @@ struct OnboardingNavigationLink_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingContainer {
             // Try default text
-            OnboardingNavigationLink(destination: EmptyView())
+            OnboardingNavigationLink(route: .headphones)
             
             // Try custom text
-            OnboardingNavigationLink(text: "Press Me!", destination: EmptyView())
+            OnboardingNavigationLink(text: "Press Me!", route: .headphones)
         }
     }
     

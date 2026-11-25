@@ -114,7 +114,7 @@ struct LanguageSettingsView: View {
         pendingLocale = nil
 
         LocalizationContext.currentAppLocale = locale
-        LaunchHelper.configureAppView(with: .main)
+        LaunchHelper.rebuildHome()
     }
 
     private func updateUnitsPreference(_ preference: UnitPreference) {

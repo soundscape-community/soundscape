@@ -3,12 +3,13 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 
-class OfflineBannerViewController: BannerViewController {
+class OfflineBannerViewController: ConnectivityBannerViewController {
     
     // MARK: `OfflineBannerViewController` State
     
@@ -18,15 +19,14 @@ class OfflineBannerViewController: BannerViewController {
         case nearbyTableView
         case offlineHelpView
         
-        var nibName: String {
+        var message: String {
             switch self {
-            case .default: return "OfflineDefaultBanner"
-            case .searchTableView: return "OfflineSearchBanner"
-            case .nearbyTableView: return "OfflineSearchBanner"
-            case .offlineHelpView: return "OfflineHelpBanner"
+            case .default: return "banner.offline_default.message"
+            case .searchTableView, .nearbyTableView: return "banner.offline_search.message"
+            case .offlineHelpView: return "banner.offline_help.message"
             }
         }
-        
+
         var segue: ViewControllerRepresentable? {
             switch self {
             case .default: return AnyViewControllerRepresentable.offlineHelp
@@ -37,9 +37,9 @@ class OfflineBannerViewController: BannerViewController {
         }
         
         init(in viewController: UIViewController) {
-            if viewController is SearchTableViewController || viewController is SearchResultsTableViewController {
+            if viewController is SearchTableViewController || viewController is SearchResultsViewController {
                 self = .searchTableView
-            } else if viewController is NearbyTableViewController || viewController is NearbyFilterTableViewController {
+            } else if (viewController as? NavigationBanner.Controller)?.isNearby == true {
                 self = .nearbyTableView
             } else if viewController is OfflineHelpPageViewController {
                 self = .offlineHelpView
@@ -51,18 +51,16 @@ class OfflineBannerViewController: BannerViewController {
     
     // MARK: Properties
     
-    var segue: ViewControllerRepresentable?
-    
-    // MARK: Initialization
-    
-    convenience init(in viewController: UIViewController) {
-        // Determine the state of the banner view
-        // controller
+    let segue: ViewControllerRepresentable?
+
+    init(in viewController: UIViewController) {
         let state = State(in: viewController)
-        
-        // Initialize `self`
-        self.init(nibName: state.nibName)
-        self.segue = state.segue
+        let segue = state.segue
+        self.segue = segue
+        super.init(message: state.message, opensHelp: segue != nil)
     }
-    
+
+    required init?(coder: NSCoder) {
+        fatalError("Use init(in:)")
+    }
 }

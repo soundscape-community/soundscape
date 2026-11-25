@@ -187,11 +187,7 @@ struct RouteDetailsView: View {
                                     return
                                 }
                                 
-                                let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-                                
-                                guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
-                                    return
-                                }
+                                let viewController = LocationDetailViewController()
                                 
                                 viewController.waypointDetail = WaypointDetail(index: index, routeDetail: route.detail)
                                 
@@ -314,13 +310,8 @@ extension RouteDetailsView {
             AppContext.shared.eventProcessor.deactivateCustom()
         }
         
-        // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
-        if let home = navHelper.host?.navigationController?.viewControllers.first as? HomeViewController {
-            home.shouldFocusOnBeacon = true
-        }
-        
         AppContext.shared.eventProcessor.activateCustom(behavior: guidance)
-        navHelper.popToRootViewController(animated: true)
+        navHelper.returnToHome(focusOnBeacon: true)
     }
     
     private func stopGuidance() {

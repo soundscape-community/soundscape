@@ -7,190 +7,141 @@
 //  Licensed under the MIT License.
 //
 
+import SwiftUI
 import UIKit
 
-class NewFeaturesViewController: UIViewController {
+final class NewFeaturesModel: ObservableObject {
+    let features: [FeatureInfo]
+    @Published var index = 0
+    var onDone: () -> Void = {}
 
-    // This view controller can be populated with either one of these two
-    var newFeatures: NewFeatures? // Will display only new features for this app version
-    var features: [FeatureInfo]? // Will display all the features in the array
-    
-    @IBOutlet weak var cardView: BaseCardView!
-    @IBOutlet weak var headerLabel: UILabel!
-    @IBOutlet weak var countLabel: AdjustableLabel!
-    @IBOutlet weak var acceptButton: UIButton!
-    @IBOutlet weak var footerView: UIView!
-    
-    @IBOutlet var topConstraint: NSLayoutConstraint!
-    @IBOutlet var bottomConstraint: NSLayoutConstraint!
-    
-    lazy var pageViewController: UIPageViewController = {
-        let vc = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-        vc.view.translatesAutoresizingMaskIntoConstraints = false
-        vc.dataSource = self
-        vc.delegate = self
-        return vc
-    }()
-    
-    var index = 0
-    var featurePages: [FeaturePageViewController] = []
-    var constraints: [NSLayoutConstraint] = []
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        guard newFeatures != nil || features != nil else {
-            return
-        }
-        
-        let featuresToDisplay = newFeatures != nil ? Array(newFeatures!.features.values.joined()) : features!
-        let sorted = featuresToDisplay.sorted(by: { ($0.version < $1.version) || ($0.version == $1.version && $0.order < $1.order) })
-        for feature in sorted {
-            featurePages.append(FeaturePageViewController.create(feature: feature))
-        }
-        
-        // Set up count and next button views
-        countLabel.delegate = self
-        refreshControls()
-        
-        // Setup the PageViewController
-        pageViewController.setViewControllers([featurePages[index]], direction: .forward, animated: false, completion: nil)
-        addChild(pageViewController)
-        view.addSubview(pageViewController.view)
-        
-        constraints.append(pageViewController.view.leadingAnchor.constraint(equalTo: cardView.leadingAnchor))
-        constraints.append(cardView.trailingAnchor.constraint(equalTo: pageViewController.view.trailingAnchor))
-        constraints.append(pageViewController.view.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 24.0))
-        constraints.append(footerView.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor))
-        
-        NSLayoutConstraint.activate(constraints)
-        
-        pageViewController.didMove(toParent: self)
+    init(features: [FeatureInfo]) {
+        self.features = features
     }
+}
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: headerLabel)
-    }
+struct NewFeaturesView: View {
+    @ObservedObject var model: NewFeaturesModel
+    @AccessibilityFocusState private var headerIsFocused: Bool
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+    var body: some View {
+        VStack(spacing: 20) {
+            GDLocalizedTextView("settings.new_feature.recent_updates")
+                .font(.title2.bold())
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityFocused($headerIsFocused)
 
-    @IBAction func onDismissTouchUpInside(_ sender: UIButton) {
-        guard index < featurePages.count - 1 else {
-            topConstraint.constant = view.frame.height
-            bottomConstraint.constant = -view.frame.height + 24
-            
-            UIView.animate(withDuration: 0.35, animations: {
-                self.view.layoutIfNeeded()
-            }, completion: { (_) in
-                self.dismiss(animated: true) {
-                    self.newFeatures?.newFeaturesDidShow()
-                }
-            })
-            
-            return
-        }
-        
-        index += 1
-        
-        changePage(to: index)
-    }
-    
-    fileprivate func changePage(to index: Int, direction animationDirection: UIPageViewController.NavigationDirection = .forward, focusOnHeader: Bool = true) {
-        let vc = featurePages[index]
-        
-        pageViewController.setViewControllers([vc], direction: animationDirection, animated: true, completion: { [weak self] (_) in
-            if focusOnHeader {
-                UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: vc.headerLabel)
+            if model.features.isEmpty {
+                closeButton(title: GDLocalizedString("general.alert.done"))
             } else {
-                let total = self?.featurePages.count ?? index + 1
-                UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: "\(index + 1) of \(total). \(vc.header ?? "")")
+                TabView(selection: $model.index) {
+                    ForEach(model.features.indices, id: \.self) { index in
+                        featurePage(model.features[index])
+                            .tag(index)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+
+                let feature = model.features[model.index]
+                let isLast = model.index == model.features.count - 1
+                GDLocalizedTextView("settings.new_feature.num_of_num", String(model.index + 1), String(model.features.count))
+                    .accessibilityAdjustableAction { direction in
+                        switch direction {
+                        case .increment: move(by: 1)
+                        case .decrement: move(by: -1)
+                        @unknown default: break
+                        }
+                    }
+
+                closeButton(title: feature.buttonLabel ?? GDLocalizedString(isLast ? "general.alert.done" : "general.alert.next"))
+                    .accessibilityHint(Text(verbatim: feature.buttonAccessibilityHint ?? GDLocalizedString(
+                        isLast ? "settings.new_feature.accept_button.acc_label" : "settings.new_feature.accept_button.acc_hint"
+                    )))
             }
-            
-            self?.refreshControls()
-        })
+        }
+        .padding(20)
+        .foregroundStyle(.white)
+        .background(Color("Background Base"), in: RoundedRectangle(cornerRadius: 16))
+        .padding(16)
+        .background { Color.black.opacity(0.5).ignoresSafeArea() }
+        .onAppear { headerIsFocused = true }
     }
-    
-    fileprivate func refreshControls() {
-        let title: String
-        var font = UIFont.preferredFont(forTextStyle: .body)
-        
-        if let buttonLabel = featurePages[index].buttonLabel {
-            title = buttonLabel
-        } else if index == featurePages.count - 1 {
-            title = GDLocalizedString("general.alert.done")
-            font = UIFont.systemFont(ofSize: font.pointSize, weight: .bold)
-        } else {
-            title = GDLocalizedString("general.alert.next")
+
+    private func featurePage(_ feature: FeatureInfo) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                if let image = feature.localizedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxHeight: 283)
+                        .accessibilityHidden(true)
+                }
+
+                Text(verbatim: feature.localizedTitle)
+                    .font(.title3.bold())
+                    .accessibilityAddTraits(.isHeader)
+
+                Text(description(for: feature))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 4)
         }
-        
-        let accessibilityHint: String
-        
-        if let buttonAccessibilityHint = featurePages[index].buttonAccessibilityHint {
-            accessibilityHint = buttonAccessibilityHint
-        } else {
-            accessibilityHint = index == featurePages.count - 1 ? GDLocalizedString("settings.new_feature.accept_button.acc_label") : GDLocalizedString("settings.new_feature.accept_button.acc_hint")
+    }
+
+    private func description(for feature: FeatureInfo) -> AttributedString {
+        let text = feature.localizedDescription
+        let attributed = NSMutableAttributedString(string: text)
+        if let start = feature.hyperlinkStart, let length = feature.hyperlinkLength,
+           let url = feature.hyperlinkURL, start >= 0, length > 0,
+           start <= attributed.length, length <= attributed.length - start {
+            attributed.addAttribute(.link, value: url, range: NSRange(location: start, length: length))
         }
-        
-        countLabel.text = GDLocalizedString("settings.new_feature.num_of_num", String(index + 1), String(featurePages.count))
-        acceptButton.setTitle(title, for: .normal)
-        acceptButton.accessibilityLabel = title
-        acceptButton.accessibilityHint = accessibilityHint
-        acceptButton.titleLabel?.font = font
+        return AttributedString(attributed)
+    }
+
+    private func closeButton(title: String) -> some View {
+        Button {
+            if model.index + 1 < model.features.count {
+                move(by: 1)
+            } else {
+                model.onDone()
+            }
+        } label: {
+            Text(verbatim: title)
+                .frame(maxWidth: .infinity, minHeight: 44)
+        }
+        .buttonStyle(.borderedProminent)
+    }
+
+    private func move(by offset: Int) {
+        let next = model.index + offset
+        guard model.features.indices.contains(next) else { return }
+        withAnimation { model.index = next }
     }
 }
 
-extension NewFeaturesViewController: AdjustableLabelDelegate {
-    func onAccessibilityIncrement() {
-        guard index < featurePages.count - 1 else {
-            return
-        }
-        
-        index += 1
-        
-        changePage(to: index, focusOnHeader: false)
-    }
-    
-    func onAccessibilityDecrement() {
-        guard index > 0 else {
-            return
-        }
-        
-        index -= 1
-        
-        changePage(to: index, direction: .reverse, focusOnHeader: false)
-    }
-}
+struct NewFeaturesPresentation: View {
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var model: NewFeaturesModel
+    let service: NewFeatures
 
-extension NewFeaturesViewController: UIPageViewControllerDelegate {
-    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        guard let vc = pageViewController.viewControllers?.first as? FeaturePageViewController, let newIndex = featurePages.firstIndex(of: vc) else {
-            return
+    init(service: NewFeatures) {
+        self.service = service
+        let features = service.features.values.joined().sorted {
+            $0.version < $1.version || ($0.version == $1.version && $0.order < $1.order)
         }
-        
-        self.index = newIndex
-        refreshControls()
+        _model = StateObject(wrappedValue: NewFeaturesModel(features: features))
     }
-}
 
-extension NewFeaturesViewController: UIPageViewControllerDataSource {
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let vc = viewController as? FeaturePageViewController, let index = featurePages.firstIndex(of: vc), index < featurePages.count - 1 else {
-            return nil
-        }
-        
-        return featurePages[index + 1]
-    }
-    
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let vc = viewController as? FeaturePageViewController, let index = featurePages.firstIndex(of: vc), index > 0 else {
-            return nil
-        }
-        
-        return featurePages[index - 1]
+    var body: some View {
+        NewFeaturesView(model: model)
+            .interactiveDismissDisabled()
+            .onAppear {
+                model.onDone = {
+                    service.newFeaturesDidShow()
+                    dismiss()
+                }
+            }
     }
 }

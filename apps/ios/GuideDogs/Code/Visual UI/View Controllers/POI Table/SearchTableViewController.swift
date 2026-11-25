@@ -11,82 +11,27 @@ import Foundation
 import SwiftUI
 import CoreLocation
 
-/// Very simple subclass of `StaticTableViewDataSource` that allows for adding some
-/// custom accessibility actions to cells in the table.
-private class SearchTableDataSource: StaticTableViewDataSource {
-    private let currentLocationActions: [UIAccessibilityCustomAction]
-    var showCurrentLocationActivityIndicator: Bool = false
-    
-    init(header: String?, cells: [StaticTableViewCell], currentLocationActions: [UIAccessibilityCustomAction]) {
-        self.currentLocationActions = currentLocationActions
-        
-        super.init(header: header, cells: cells)
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        
-        // Add accessibility action to the "Current Location" cell
-        if cells[indexPath.row].identifier == SearchTableViewController.MoreLocations.currentLocation.rawValue {
-            cell.accessibilityCustomActions = currentLocationActions
-            
-            if showCurrentLocationActivityIndicator, let activityCell = cell as? CustomDisclosureTableViewCell {
-                activityCell.showActivityIndicator()
-            }
-        }
-        
-        return cell
-    }
-}
-
-class SearchTableViewController: BaseTableViewController {
-    
-    fileprivate enum MoreLocations: String, StaticTableViewCell {
-        case markers = "MarkersTableViewCell"
-        case currentLocation = "CurrentLocationTableViewCell"
-        case nearby = "ExploreNearbyTableViewCell"
-        
-        var identifier: String {
-            return self.rawValue
-        }
-    }
-    
-    // MARK: Properties
-    
-    @IBOutlet weak var largeBannerContainerView: UIView!
-    
+class SearchTableViewController: UIViewController {
+    private let model = LocationBrowseModel()
+    var largeBannerContainerView: UIView! { model.banner }
     weak var delegate: POITableViewDelegate?
-    private var tableViewDataSource: UITableViewDataSource?
-    private var tableViewDelegate: UITableViewDelegate?
     private var searchController: UISearchController?
     var onDismissPreviewHandler: (() -> Void)?
     // If no delegate is provided, `logContext` allows for setting the context for the screen_view telemetry log
     var logContext: String = ""
     
-    private lazy var moreLocations: [MoreLocations] = {
-        var rows: [MoreLocations] = [
-            MoreLocations.nearby
-        ]
+    private var moreLocations: [HomeBrowseDestination] {
+        var rows: [HomeBrowseDestination] = [.nearby]
         
         if delegate?.allowMarkers ?? true {
-            rows.append(MoreLocations.markers)
+            rows.append(.markers)
         }
         
         if delegate?.allowCurrentLocation ?? true && AppContext.shared.isStreetPreviewing == false {
-            rows.append(MoreLocations.currentLocation)
+            rows.append(.currentLocation)
         }
         
         return rows
-    }()
-    
-    private var saveCurrentLocationAction: UIAccessibilityCustomAction {
-        return UIAccessibilityCustomAction(name: LocationAction.save(isEnabled: true).text) { [weak self] _ -> Bool in
-            DispatchQueue.main.async { [weak self] in
-                self?.saveCurrentLocation()
-            }
-            
-            return true
-        }
     }
     
     // MARK: View Life Cycle
@@ -94,11 +39,19 @@ class SearchTableViewController: BaseTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // If this is a release build, hide `Nearby Places Map`
-        if FeatureFlag.isEnabled(.developerTools) == false {
-            navigationItem.rightBarButtonItems = []
+        title = GDLocalizedString("poi_screen.screen_title.select_a_location")
+        let host = UIHostingController(rootView: LocationBrowseScreen(model: model, destinations: moreLocations) { [weak self] destination in
+            self?.didSelect(destination)
+        })
+        add(host) { content in
+            [
+                content.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                content.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                content.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ]
         }
-        
+
         // Initialize search controller
         self.searchController = UISearchController(delegate: self)
         
@@ -114,8 +67,6 @@ class SearchTableViewController: BaseTableViewController {
         // Search results will be displayed modally
         // Use this view controller to define presentation context
         self.definesPresentationContext = true
-        
-        updateTableView()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -124,100 +75,23 @@ class SearchTableViewController: BaseTableViewController {
         searchController?.isActive = false
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let viewController = segue.destination as? POITableViewController {
-            viewController.delegate = self.delegate
-            viewController.onDismissPreviewHandler = onDismissPreviewHandler
-        }
-        
-        if let viewController = segue.destination as? LocationDetailViewController {
-            let locationDetail = sender as? LocationDetail
-            viewController.locationDetail = locationDetail
-            viewController.onDismissPreviewHandler = onDismissPreviewHandler
-        }
-        
-        if let viewController = segue.destination as? MarkersAndRoutesListHostViewController {
-            viewController.onDismissPreviewHandler = onDismissPreviewHandler
-        }
-        
-        if let navigationController = segue.destination as? UINavigationController, let viewController = navigationController.topViewController as? PreviewViewController {
-            let locationDetail = sender as? LocationDetail
-            viewController.locationDetail = locationDetail
-            viewController.onDismissHandler = { [weak self] in
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
-        }
-        
-        if let viewController = segue.destination as? PreviewViewController {
-            let locationDetail = sender as? LocationDetail
-            viewController.locationDetail = locationDetail
-            viewController.onDismissHandler = onDismissPreviewHandler
-        }
+    private func showDetail(_ detail: LocationDetail) {
+        let controller = LocationDetailViewController()
+        controller.locationDetail = detail
+        controller.onDismissPreviewHandler = onDismissPreviewHandler
+        navigationController?.pushViewController(controller, animated: true)
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        preferredContentSize.height = UIView.preferredContentHeight(for: tableView)
-    }
-    
-    // `UITableView`
-    
-    private func updateTableView() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            
-            // Save reference to `tableViewDataSource` and `tableViewDelegate`
-            if self.parent is HomeViewController {
-                // Only support custom action on "Current Location" from the HomeViewController
-                self.tableViewDataSource = SearchTableDataSource(header: nil, cells: self.moreLocations, currentLocationActions: [self.saveCurrentLocationAction])
-            } else {
-                self.tableViewDataSource = StaticTableViewDataSource(header: nil, cells: self.moreLocations)
-            }
-            
-            self.tableViewDelegate = GenericTableViewDelegate.make(selectDelegate: self)
-        
-            // Update `tableView` and reload
-            self.tableView.dataSource = self.tableViewDataSource
-            self.tableView.delegate = self.tableViewDelegate
-            self.tableView.reloadData()
-        }
-    }
-    
-    /// Private method used by a custom accessibility action that allows for jumping straight to saving
-    /// the current location as a marker without loading the Location Details screen
-    private func saveCurrentLocation() {
-        guard let location = AppContext.shared.geolocationManager.location else {
-            self.present(ErrorAlerts.buildLocationAlert(), animated: true, completion: nil)
-            return
-        }
-        
-        if let dataSource = tableViewDataSource as? SearchTableDataSource {
-            dataSource.showCurrentLocationActivityIndicator = true
-            tableView.reloadData()
-        }
-        
-        let detail = LocationDetail(location: location, telemetryContext: "current_location")
-        
-        // If the location is not a marker, try to fetch an estimated name and
-        // address, if necessary
-        LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] (newValue) in
-            self?.didSelectLocationAction(.save(isEnabled: true), detail: newValue)
-        }
-    }
-    
+
 }
 
-extension SearchTableViewController: SearchResultsTableViewControllerDelegate {
+extension SearchTableViewController: SearchResultsViewControllerDelegate {
     
     func didSelectSearchResult(_ searchResult: POI) {
         if let delegate = delegate {
             delegate.didSelect(poi: searchResult)
         } else {
             let detail = LocationDetail(entity: searchResult, telemetryContext: "search_result")
-            performSegue(withIdentifier: "LocationDetailView", sender: detail)
+            showDetail(detail)
         }
     }
     
@@ -243,17 +117,25 @@ extension SearchTableViewController: SearchResultsTableViewControllerDelegate {
     
 }
 
-extension SearchTableViewController: TableViewSelectDelegate {
+extension SearchTableViewController {
     
-    func didSelect(rowAtIndexPath indexPath: IndexPath) {
+    private func didSelect(_ destination: HomeBrowseDestination) {
         DispatchQueue.main.async { [weak self] in
             guard let `self` = self else {
                 return
             }
             
-            if self.tableView.cellForRow(at: indexPath)?.reuseIdentifier == MoreLocations.currentLocation.identifier {
-                
-                // Selected current location cell
+            switch destination {
+            case .nearby:
+                let nearby = NearbyFilterViewController()
+                nearby.delegate = self.delegate
+                nearby.onDismissPreviewHandler = self.onDismissPreviewHandler
+                self.navigationController?.pushViewController(nearby, animated: true)
+            case .markers:
+                let markers = MarkersAndRoutesListHostViewController()
+                markers.onDismissPreviewHandler = self.onDismissPreviewHandler
+                self.navigationController?.pushViewController(markers, animated: true)
+            case .currentLocation:
                 guard let location = AppContext.shared.geolocationManager.location else {
                     self.present(ErrorAlerts.buildLocationAlert(), animated: true, completion: nil)
                     return
@@ -266,7 +148,7 @@ extension SearchTableViewController: TableViewSelectDelegate {
                     delegate.didSelect(currentLocation: location)
                 } else {
                     let detail = LocationDetail(location: location, telemetryContext: "current_location")
-                    self.performSegue(withIdentifier: "LocationDetailView", sender: detail)
+                    self.showDetail(detail)
                 }
             }
         }
@@ -290,13 +172,6 @@ extension SearchTableViewController: LocationActionDelegate {
             do {
                 switch action {
                 case .save, .edit:
-                    // Hide activity indicator if necessary
-                    if let dataSource = self.tableViewDataSource as? SearchTableDataSource,
-                       dataSource.showCurrentLocationActivityIndicator == true {
-                        dataSource.showCurrentLocationActivityIndicator = false
-                        self.tableView.reloadData()
-                    }
-                    
                     // Edit the marker at the given location
                     // Segue to the edit marker view
                     let config = EditMarkerConfig(detail: detail,
@@ -318,12 +193,17 @@ extension SearchTableViewController: LocationActionDelegate {
                 case .preview:
                     if AppContext.shared.isStreetPreviewing {
                         let alert = LocationActionAlert.restartPreview { [weak self] (_) in
-                            self?.performSegue(withIdentifier: "UnwindPreviewView", sender: detail)
+                            if let self {
+                                PreviewViewController.restart(from: self, at: detail)
+                            }
                         }
                         
                         self.present(alert, animated: true, completion: nil)
                     } else {
-                        self.performSegue(withIdentifier: "PreviewView", sender: detail)
+                        let preview = PreviewViewController.navigation(for: detail) { [weak self] in
+                            self?.navigationController?.popToRootViewController(animated: true)
+                        }
+                        self.present(preview, animated: true)
                     }
                 case .share:
                     // Create a URL to share a marker at the given location
@@ -365,8 +245,36 @@ extension SearchTableViewController: LocationActionDelegate {
 extension SearchTableViewController: LargeBannerContainerView {
     
     func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerView.setHeight(height)
-        tableView.reloadData()
+        model.bannerHeight = height
     }
     
+}
+
+
+private final class LocationBrowseModel: ObservableObject {
+    let banner = UIView()
+    @Published var bannerHeight: CGFloat = 0
+}
+
+private struct LocationBrowseScreen: View {
+    @ObservedObject var model: LocationBrowseModel
+    let destinations: [HomeBrowseDestination]
+    let select: (HomeBrowseDestination) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            EmbeddedView(content: model.banner)
+                .frame(height: model.bannerHeight)
+                .clipped()
+                .accessibilityHidden(model.bannerHeight == 0)
+            ScrollView {
+                VStack(spacing: 1) {
+                    ForEach(destinations, id: \.self) { destination in
+                        LocationBrowseButton(destination: destination) { select(destination) }
+                    }
+                }
+            }
+            .background(Color("Background Base"))
+        }
+    }
 }

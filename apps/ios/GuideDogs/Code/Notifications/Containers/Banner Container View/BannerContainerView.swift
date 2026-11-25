@@ -3,10 +3,15 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import Foundation
+import UIKit
+
+protocol BannerHosting: AnyObject {
+    var bannerHostingController: UIViewController { get }
+}
 
 ///
 /// The `BannerContainerView` is an abstraction of `LargeBannerContainerView` and `SmallBannerContainerView`
@@ -49,7 +54,7 @@ class BannerContainerView {
     }
     
     fileprivate init(containerViewController: UIViewController, containerView: UIView!, setContainerViewHeight: @escaping ((CGFloat) -> Void)) {
-        self.containerViewController = containerViewController
+        self.containerViewController = (containerViewController as? BannerHosting)?.bannerHostingController ?? containerViewController
         self.containerView = containerView
         self.setContainerViewHeight = setContainerViewHeight
     }

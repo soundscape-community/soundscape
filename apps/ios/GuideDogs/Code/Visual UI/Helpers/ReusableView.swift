@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -19,3 +20,5 @@ extension ReusableView where Self: UIView {
 extension UICollectionViewCell: ReusableView {}
 
 extension UITableViewCell: ReusableView {}
+
+extension UITableViewHeaderFooterView: ReusableView {}

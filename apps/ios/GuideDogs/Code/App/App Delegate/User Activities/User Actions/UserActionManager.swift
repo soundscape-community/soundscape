@@ -36,7 +36,8 @@ class UserActionManager {
     
     // MARK: Properties
     
-    private var pendingUserAction: UserAction?
+    private var pendingAudioAction: UserAction?
+    private let navigation = AppNavigationModel.shared
     private var homeViewControllerDidLoad = false
     
     // MARK: Initialization
@@ -74,53 +75,68 @@ class UserActionManager {
     
     @discardableResult
     func continueUserAction(_ userAction: UserAction) -> Bool {
-        guard homeViewControllerDidLoad else {
-            GDLogAppInfo("Pending user action: \(userAction.rawValue)")
-            pendingUserAction = userAction
+        switch userAction {
+        case .search: return receive(.search)
+        case .saveMarker: return receive(.saveMarker)
+        case .streetPreview: return receive(.streetPreview)
+        case .myLocation, .aroundMe, .aheadOfMe, .nearbyMarkers:
+            guard homeViewControllerDidLoad else {
+                pendingAudioAction = userAction
+                return true
+            }
+            wakeIfNeeded()
+            post(userAction)
             return true
         }
-        
+    }
+
+    private func wakeIfNeeded() {
         if AppContext.shared.state != .normal {
             AppContext.shared.wakeUp()
         }
+    }
 
-        let postNotification = {
-            // These actions will be handled by the home or the preview view controllers
-            NotificationCenter.default.post(name: Notification.Name.continueUserAction,
-                                            object: self,
-                                            userInfo: [Keys.userAction: userAction])
-        }
-        
-        switch userAction {
-        case .myLocation, .aroundMe, .aheadOfMe, .nearbyMarkers:
-            postNotification()
-            return true
+    private func post(_ action: UserAction) {
+        NotificationCenter.default.post(name: .continueUserAction,
+                                        object: self,
+                                        userInfo: [Keys.userAction: action])
+    }
+
+    private func receive(_ intent: AppNavigationIntent) -> Bool {
+        guard let ready = navigation.receive(intent) else { return true }
+        return present(ready)
+    }
+
+    private func present(_ intent: AppNavigationIntent) -> Bool {
+        wakeIfNeeded()
+
+        switch intent {
         case .search:
             if AppContext.shared.isStreetPreviewing {
-                // Street Preview has it's own search flow
-                postNotification()
+                post(.search)
                 return true
-            } else {
-                return actionSearch()
             }
+            return actionSearch()
         case .saveMarker:
             return actionSaveMarker()
         case .streetPreview:
             return actionStreetPreview()
         }
     }
-    
-    private func continuePendingUserActionIfNeeded() {
-        guard let pendingUserAction = pendingUserAction else { return }
-        continueUserAction(pendingUserAction)
-        self.pendingUserAction = nil
-    }
-    
+
     // MARK: Notifications
     
     @objc private func onHomeViewControllerDidLoad() {
         self.homeViewControllerDidLoad = true
-        continuePendingUserActionIfNeeded()
+        let intent = navigation.homeBecameReady()
+        let audioAction = pendingAudioAction
+        pendingAudioAction = nil
+        if let audioAction {
+            continueUserAction(audioAction)
+        }
+        if let intent {
+            _ = present(intent)
+        }
     }
     
     @objc private func onPushNotificationReceived(_ notification: Notification) {
@@ -144,14 +160,14 @@ class UserActionManager {
         }
         
         guard let rootViewController = rootViewController else { return false }
-        guard let searchResultsTableViewController = SearchResultsTableViewController.instantiateStandaloneConfiguration() else { return false }
+        guard let searchResultsTableViewController = SearchResultsViewController.instantiateStandaloneConfiguration() else { return false }
         rootViewController.present(searchResultsTableViewController, animated: true)
         
         return true
     }
     
     private func actionSaveMarker() -> Bool {
-        guard let rootViewController = AppContext.rootViewController else { return false }
+        guard let rootViewController = rootViewController else { return false }
         
         guard let location = AppContext.shared.geolocationManager.location else {
             rootViewController.present(ErrorAlerts.buildLocationAlert(), animated: true, completion: nil)
@@ -186,22 +202,16 @@ class UserActionManager {
             return false
         }
         
-        guard let rootViewController = AppContext.rootViewController else { return false }
+        guard let rootViewController = rootViewController else { return false }
         
         guard let location = AppContext.shared.geolocationManager.location else {
             rootViewController.present(ErrorAlerts.buildLocationAlert(), animated: true, completion: nil)
             return false
         }
         
-        let storyboard = UIStoryboard(name: "Preview", bundle: nil)
-        guard let nav = storyboard.instantiateInitialViewController() as? NavigationController,
-              let vc = nav.topViewController as? PreviewViewController else { return false }
-        
-        nav.modalPresentationStyle = .fullScreen
-        vc.locationDetail = LocationDetail(location: location, telemetryContext: "current_location.user_activity.street_preview")
-        
-        rootViewController.present(nav, animated: true)
-        
+        let detail = LocationDetail(location: location, telemetryContext: "current_location.user_activity.street_preview")
+        rootViewController.present(PreviewViewController.navigation(for: detail), animated: true)
+
         return true
     }
     
@@ -222,8 +232,9 @@ class UserActionManager {
     }
     
     private static var isSearching: Bool {
-        guard let rootViewController = AppContext.rootViewController?.visiblePresentedViewController as? UINavigationController else { return false }
-        return rootViewController.topViewController is SearchResultsTableViewController
+        let presented = AppContext.rootViewController?.visiblePresentedViewController
+        return presented is SearchResultsViewController
+            || (presented as? UINavigationController)?.topViewController is SearchResultsViewController
     }
     
 }

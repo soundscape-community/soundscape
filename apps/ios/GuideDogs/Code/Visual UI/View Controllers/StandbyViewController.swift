@@ -7,70 +7,91 @@
 //  Licensed under the MIT License.
 //
 
+import SwiftUI
 import UIKit
 
-class StandbyViewController: UIViewController {
-    
+class StandbyViewController: UIHostingController<StandbyView> {
     weak var delegate: DismissableViewControllerDelegate?
-    
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var messageLabel: UILabel!
-    @IBOutlet weak var snoozeContainer: UIView!
-    @IBOutlet weak var wakeContainer: UIView!
-    @IBOutlet weak var illustrationImage: UIImageView!
-    @IBOutlet var buttonSpacingConstraint: NSLayoutConstraint!
+    private var didSleep = false
+
+    init() {
+        super.init(rootView: StandbyView())
+    }
+
+    required dynamic init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
 
     override func viewDidAppear(_ animated: Bool) {
-        AppContext.shared.goToSleep()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onAppOperationStateDidChange), name: Notification.Name.appOperationStateDidChange, object: nil)
-        
+        super.viewDidAppear(animated)
+        guard !didSleep else { return }
+        didSleep = true
+
         view.accessibilityViewIsModal = true
-        
-        UIView.setGroupAccessibilityElement(for: snoozeContainer,
-                                            label: GDLocalizedString("sleep.wake_up_when_i_leave"),
-                                            traits: [.button])
-        
-        UIView.setGroupAccessibilityElement(for: wakeContainer,
-                                            label: GDLocalizedString("sleep.wake_up_now"),
-                                            traits: [.button])
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.appOperationStateDidChange, object: nil)
-    }
-    
-    @objc func onAppOperationStateDidChange() {
-        if AppContext.shared.state == .normal {
-            dismiss(animated: true) { [weak self] in
-                guard let `self` = self else {
-                    return
-                }
-                
-                self.delegate?.onDismissed(self)
-            }
-        }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onAppOperationStateDidChange),
+            name: .appOperationStateDidChange,
+            object: nil
+        )
+        AppContext.shared.goToSleep()
     }
 
-    @IBAction func snoozePressed() {
-        AppContext.shared.snooze()
-        
-        snoozeContainer.isHidden = true
-        buttonSpacingConstraint.isActive = false
-        
-        UIView.animate(withDuration: 0.4, animations: {
-            self.illustrationImage.image = #imageLiteral(resourceName: "snooze_Illustration")
-            self.titleLabel.text = GDLocalizedString("sleep.snoozing")
-            self.titleLabel.accessibilityLabel = GDLocalizedString("sleep.snoozing")
-            self.messageLabel.text = GDLocalizedString("sleep.snoozing.message")
-            self.view.layoutIfNeeded()
-        }, completion: { (_) in
-            UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: self.titleLabel)
-        })
+    @objc private func onAppOperationStateDidChange() {
+        guard AppContext.shared.state == .normal else { return }
+        NotificationCenter.default.removeObserver(self, name: .appOperationStateDidChange, object: nil)
+        dismiss(animated: true) {
+            self.delegate?.onDismissed(self)
+        }
     }
-    
-    @IBAction func wakeUpPressed() {
-        AppContext.shared.wakeUp()
+}
+
+struct StandbyView: View {
+    @State private var isSnoozing = false
+    @AccessibilityFocusState private var titleIsFocused: Bool
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 32) {
+                GDLocalizedTextView(isSnoozing ? "sleep.snoozing" : "sleep.sleeping")
+                    .font(.largeTitle)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($titleIsFocused)
+
+                Image(isSnoozing ? "snooze_Illustration" : "sleeping_Illustration")
+                    .accessibilityHidden(true)
+
+                GDLocalizedTextView(isSnoozing ? "sleep.snoozing.message" : "sleep.sleeping.message")
+
+                VStack(spacing: 12) {
+                    if !isSnoozing {
+                        Button {
+                            AppContext.shared.snooze()
+                            isSnoozing = true
+                            titleIsFocused = true
+                        } label: {
+                            GDLocalizedTextView("sleep.ui.wake_on_leave")
+                                .frame(maxWidth: .infinity, minHeight: 44)
+                        }
+                        .accessibilityLabel(Text(verbatim: GDLocalizedString("sleep.wake_up_when_i_leave")))
+                    }
+
+                    Button {
+                        AppContext.shared.wakeUp()
+                    } label: {
+                        GDLocalizedTextView("sleep.ui.wake_up_now")
+                            .frame(maxWidth: .infinity, minHeight: 44)
+                    }
+                    .accessibilityLabel(Text(verbatim: GDLocalizedString("sleep.wake_up_now")))
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(32)
+        }
+        .foregroundStyle(.white)
+        .background(Color("Background 2").ignoresSafeArea())
+        .accessibilityIgnoresInvertColors()
     }
-    
 }

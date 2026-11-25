@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -28,16 +29,9 @@ struct WaypointAddButton: View {
                 // view
                 hideKeyboard()
                 
-                let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-                
-                guard let navigationController = storyboard.instantiateViewController(identifier: "SearchWaypointNavigation") as? UINavigationController else {
-                    return
-                }
-                
-                guard let viewController = navigationController.topViewController as? SearchWaypointViewController else {
-                    return
-                }
-                
+                let viewController = SearchWaypointViewController()
+                let navigationController = NavigationController(rootViewController: viewController)
+
                 viewController.routeName = name
                 viewController.waypoints = $identifiableWaypoints
                 

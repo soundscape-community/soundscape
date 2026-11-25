@@ -21,10 +21,6 @@ struct OnboardingHeadphoneView: View {
         return contentIsHidden ? nil : Image("Welcome-buttons")
     }
     
-    @ViewBuilder
-    private var destination: some View {
-        OnboardingCalloutView()
-    }
     
     // MARK: `body`
     
@@ -48,7 +44,7 @@ struct OnboardingHeadphoneView: View {
                 
                 Spacer()
                 
-                OnboardingNavigationLink(destination: destination)
+                OnboardingNavigationLink(route: .callouts)
             } else {
                 Spacer()
             }

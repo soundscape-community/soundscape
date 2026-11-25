@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -47,8 +48,7 @@ struct MapView: UIViewControllerRepresentable {
     }
     
     func makeUIViewController(context: Context) -> MapViewController {
-        let storyboard = UIStoryboard(name: "Map", bundle: Bundle.main)
-        let viewController = storyboard.instantiateViewController(identifier: "MapViewController") as! MapViewController
+        let viewController = MapViewController()
         
         viewController.style = style
         viewController.delegate = context.coordinator

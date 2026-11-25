@@ -10,6 +10,7 @@
 import SwiftUI
 
 struct OnboardingBeaconView: View {
+    @EnvironmentObject private var viewModel: OnboardingViewModel
     
     // MARK: Properties
     
@@ -17,16 +18,6 @@ struct OnboardingBeaconView: View {
     @State private var selectedBeacon: BeaconOption?
     @State private var isAudioViewPresented = false
     
-    @ViewBuilder
-    private var destination: some View {
-        if FirstUseExperience.didComplete(.oobe) {
-            // If onboarding has already been completed,
-            // skip `OnboardingTermsView`
-            OnboardingPromptView()
-        } else {
-            OnboardingTermsView()
-        }
-    }
     
     // MARK: `body`
     
@@ -59,7 +50,7 @@ struct OnboardingBeaconView: View {
             
             Spacer()
             
-            OnboardingNavigationLink(destination: destination)
+            OnboardingNavigationLink(route: viewModel.coordinator.routeAfterBeacon)
                 .if(!didComplete, transform: { $0.hidden() })
         }
         .sheet(isPresented: $isAudioViewPresented) {
@@ -84,7 +75,7 @@ struct OnboardingBeaconView: View {
 struct OnboardingBeaconView_Previews: PreviewProvider {
     
     static var previews: some View {
-        OnboardingBeaconView()
+        OnboardingBeaconView().environmentObject(OnboardingViewModel())
     }
     
 }

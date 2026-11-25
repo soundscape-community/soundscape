@@ -16,15 +16,34 @@ class ThirdPartyNoticesViewController: UIViewController {
 
     // MARK: Properties
 
-    @IBOutlet weak var webview: WKWebView!
-    @IBOutlet weak var largeBannerContainerView: UIView!
-    @IBOutlet var largeBannerContainerHeightConstraint: NSLayoutConstraint!
-    
+    private let webview = WKWebView()
+    let largeBannerContainerView: UIView! = UIView()
+    private lazy var largeBannerContainerHeightConstraint = largeBannerContainerView.heightAnchor.constraint(equalToConstant: 0)
+
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor(named: "Background Base")
+        view.tintColor = UIColor(named: "Foreground 1")
+
+        let stack = UIStackView(arrangedSubviews: [largeBannerContainerView, webview])
+        stack.axis = .vertical
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(stack)
+        NSLayoutConstraint.activate([
+            largeBannerContainerHeightConstraint,
+            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+
     // MARK: View Life Cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = GDLocalizedString("settings.about.title.copyright")
         webview.navigationDelegate = self
         webview.scrollView.indicatorStyle = .white
         

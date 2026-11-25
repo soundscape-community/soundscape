@@ -8,72 +8,34 @@
 //
 
 import UIKit
-import CoreMotion
 import CoreLocation
+import CoreMotion
 import MessageUI
 import CocoaLumberjackSwift
 import Combine
+import SwiftUI
 
 extension Notification.Name {
     static let homeViewControllerDidLoad = Notification.Name("HomeViewControllerDidLoad")
 }
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, BannerHosting {
     
-    // MARK: Segues
-    
-    struct Segue {
-        
-        // Main Menu Segues
-        
-        static let showManageDevices = "ShowManageDevices"
-        static let showStatus = "ShowStatus"
-        static let showHelp = "ShowHelpSegue"
-        static let showSettings = "ShowSettingsSegue"
-        
-        /// This method returns the segue associated with items in the main menu.
-        ///
-        /// - Parameter menuItem: A menu item
-        /// - Returns: The segue associated with this menu item
-        static func segue(for menuItem: MenuItem) -> String? {
-            switch menuItem {
-            case .recreation: return nil
-            case .gpxRecording: return nil
-            case .devices:    return Segue.showManageDevices
-            case .help:       return Segue.showHelp
-            case .settings:   return Segue.showSettings
-            case .status:     return Segue.showStatus
-            default:          return nil
-            }
-        }
-    }
-    
-    // MARK: Properties
-    
-    // Banners
-    
-    @IBOutlet weak var largeBannerContainerView: UIView!
-    @IBOutlet var largeBannerContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var smallBannerContainerView: UIView!
-    @IBOutlet weak var smallBannerContainerHeightConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var sleepIcon: UIImageView!
-    @IBOutlet weak var sleepButton: UIButton!
-    
-    @IBOutlet var searchContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var cardContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var calloutPanelContainerView: UIView!
-    @IBOutlet var calloutPanelContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var cardContainerTopConstraints: [NSLayoutConstraint]!
-    
-    private var previousSearchContainerHeight = 0.0
-    
+    private let layout = HomeLayout()
+    private lazy var hosting = HomeHostingController(rootView: HomeView(layout: layout))
+    var bannerHostingController: UIViewController { hosting }
+    var largeBannerContainerView: UIView! { layout.largeBanner }
+    var smallBannerContainerView: UIView! { layout.smallBanner }
+
     fileprivate var lastLocation: CLLocation?
     
     // New feature view
     
+    private var didSignalHomeReady = false
+    private var canShowLaunchActivities = false
     fileprivate var didCheckForNewFeatures = false
     
+    private var sleepBarButton: UIBarButtonItem?
     var shouldFocusOnBeacon: Bool = false
     
     lazy var externalGPSBarButtonItem: UIBarButtonItem = {
@@ -114,12 +76,49 @@ class HomeViewController: UIViewController {
         DDLogDebug("\(String(describing: type(of: self))) deinitialized")
     }
 
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor(named: "Background Base")
+        view.accessibilityIgnoresInvertColors = true
+        extendedLayoutIncludesOpaqueBars = true
+
+        add(hosting) { content in
+            [
+                content.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+                content.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                content.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+                content.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            ]
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let menu = UIBarButtonItem(image: UIImage(named: "menu"), style: .plain,
+                                   target: self, action: #selector(onMenuTouchUpInside))
+        menu.accessibilityLabel = GDLocalizedString("ui.menu")
+        menu.accessibilityHint = GDLocalizedString("ui.menu.hint")
+        navigationItem.leftBarButtonItem = menu
+
+        let sleep = UIBarButtonItem(image: UIImage(named: "sleep_icon"), style: .plain,
+                                    target: self, action: #selector(onSleepTouchUpInside))
+        sleep.accessibilityLabel = GDLocalizedString("sleep.sleep")
+        sleep.accessibilityHint = GDLocalizedString("sleep.sleep.acc_hint")
+        navigationItem.rightBarButtonItem = sleep
+        sleepBarButton = sleep
+
+        layout.showCurrentLocation = { [weak self] in self?.showCurrentLocation() }
+        layout.saveCurrentLocation = { [weak self] in self?.saveCurrentLocation() }
+
+        let card = CardStateViewController()
+        cardViewController = card
+        embed(card, in: layout.card)
+
         // Initialize the search controller
         self.searchController = UISearchController(delegate: self)
         self.searchController?.delegate = self
+        self.searchController?.searchBar.searchTextField.overrideUserInterfaceStyle = .light
         self.searchController?.searchBar.searchTextField.accessibilityIdentifier = GDLocalizationUnnecessary("searchbar.home")
         
         // Add search controller to navigation bar
@@ -195,8 +194,7 @@ class HomeViewController: UIViewController {
             
             self.present(alert, animated: true)
         }))
-        
-        NotificationCenter.default.post(name: Notification.Name.homeViewControllerDidLoad, object: self)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -211,7 +209,11 @@ class HomeViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleAppWillEnterForeground(_:)), name: Notification.Name.appWillEnterForeground, object: nil)
         
-        guard checkPermissions() else {
+        let hasLocationPermission = checkPermissions()
+        canShowLaunchActivities = hasLocationPermission
+            && (UIDeviceManager.isSimulator || CMMotionActivityManager.authorizationStatus() == .authorized)
+
+        guard hasLocationPermission else {
             // Prevents edge case of New Feature Feature displaying after fixing location services
             // permissions on first launch (caused because iOS kills the app if you change the Motion
             // & Fitness setting in the Settings app).
@@ -226,32 +228,32 @@ class HomeViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        if !didSignalHomeReady {
+            didSignalHomeReady = true
+            NotificationCenter.default.post(name: .appDidInitialize, object: self)
+            NotificationCenter.default.post(name: .homeViewControllerDidLoad, object: self)
+        }
         
+        if AppNavigationModel.shared.shouldFocusOnBeacon {
+            AppNavigationModel.shared.shouldFocusOnBeacon = false
+            shouldFocusOnBeacon = true
+        }
         if shouldFocusOnBeacon, UIAccessibility.isVoiceOverRunning, let vc = cardViewController?.currentVC as? BeaconViewHostingController {
             GDLogAppInfo("Focusing VoiceOver on the beacon UI")
             UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: vc.view)
             shouldFocusOnBeacon = false
         }
         
-        guard !didCheckForNewFeatures else {
+        guard canShowLaunchActivities, !didCheckForNewFeatures else {
             return
         }
         
         if AppContext.shared.newFeatures.shouldShowNewFeatures() {
-            let vc = NewFeaturesViewController(nibName: "NewFeaturesView", bundle: nil)
-            
-            vc.newFeatures = AppContext.shared.newFeatures
-            vc.modalPresentationStyle = .fullScreen
-            vc.modalTransitionStyle = .crossDissolve
-            vc.accessibilityViewIsModal = true
-            
-            self.present(vc, animated: !UIAccessibility.isVoiceOverRunning, completion: nil)
-        } else {
-            // Attempt activities (e.g., user survey, share & rate app) that may be scheduled on app launch
-            // Coordinator ensures that only one activity is attempted when the view appears
+            AppNavigationModel.shared.newFeatures.wrappedValue = true
+        } else if presentedViewController == nil && AppNavigationModel.shared.coordinator.path.isEmpty {
             LaunchActivityCoordinator.coordinateActivitiesOnAppLaunch(from: self)
         }
-        
         didCheckForNewFeatures = true
     }
     
@@ -271,37 +273,24 @@ class HomeViewController: UIViewController {
     }
     
     private func updateCalloutButtonTraits() {
-        CalloutButtonPanelHostingViewController.updateTraitOverride(for: calloutButtonViewController, in: self)
+        CalloutButtonPanelHostingViewController.updateTraitOverride(for: calloutButtonViewController, in: hosting)
     }
     
-    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        super.preferredContentSizeDidChange(forChildContentContainer: container)
-        
-        if container is SearchTableViewController {
-            searchContainerHeightConstraint.constant = container.preferredContentSize.height
-            // Save value
-            previousSearchContainerHeight = container.preferredContentSize.height
-        }
+    fileprivate func updatePanelSize(_ container: UIContentContainer) {
         
         if container is CalloutButtonPanelHostingViewController {
-            calloutPanelContainerHeightConstraint.constant = container.preferredContentSize.height
+            layout.calloutHeight = container.preferredContentSize.height
         }
         
         if container is CardStateViewController {
-            cardContainerHeightConstraint.constant = container.preferredContentSize.height
+            layout.cardHeight = container.preferredContentSize.height
         }
     }
     
     private func configureSearchAndBrowseView() {
-        if AppContext.shared.eventProcessor.activeBehavior is GuidedTour {
-            navigationItem.searchController = nil
-            searchContainerHeightConstraint.constant = 0.0
-            NSLayoutConstraint.deactivate(cardContainerTopConstraints)
-        } else {
-            navigationItem.searchController = self.searchController
-            searchContainerHeightConstraint.constant = previousSearchContainerHeight
-            NSLayoutConstraint.activate(cardContainerTopConstraints)
-        }
+        let showsBrowse = !(AppContext.shared.eventProcessor.activeBehavior is GuidedTour)
+        navigationItem.searchController = showsBrowse ? searchController : nil
+        layout.showsBrowse = showsBrowse
     }
 
     private func configureNavigationBarButtonContrast() {
@@ -315,64 +304,42 @@ class HomeViewController: UIViewController {
 
     private func configureCalloutButtonPanelView() {
         calloutButtonViewController = CalloutButtonPanelHostingViewController.embed(
-            in: self,
-            containerView: calloutPanelContainerView,
+            in: hosting,
+            containerView: layout.callouts,
             logContext: telemetryContext
         )
     }
 
-    private func showRecreationActivities() {
-        show(AuthoredActivitiesListHostingController(), sender: self)
-    }
-    
     private func showOrRefreshExperiences() {
-        if navigationController?.visibleViewController is HomeViewController {
-            
-            // The HomeViewController is currently visible - show the AuthoredActivitiesList
-            showRecreationActivities()
-            
-        } else if let vc = navigationController?.visibleViewController as? MenuViewController {
-            
-            // The MenuViewController is currently visible - dismiss it and show the AuthoredActivitiesList
-            vc.dismiss(animated: true) { [weak self] in
-                self?.showRecreationActivities()
-            }
-            
-        } else {
-            
-            // Return to home and then show the AuthoredActivitiesList
+        let open = {
+            let navigation = AppNavigationModel.shared
+            navigation.returnHome()
+            navigation.open(.recreation)
+        }
+        if let menu = presentedViewController as? MenuViewController {
+            menu.dismiss(animated: true, completion: open)
+        } else if let navigationController, navigationController.topViewController !== self {
             CATransaction.begin()
-            navigationController?.popToViewController(self, animated: true)
-            CATransaction.setCompletionBlock { [weak self] in
-                self?.showRecreationActivities()
-            }
+            CATransaction.setCompletionBlock(open)
+            navigationController.popToViewController(self, animated: true)
             CATransaction.commit()
-            
+        } else {
+            open()
         }
     }
-    
+
     @discardableResult
     func checkPermissions() -> Bool {
         let geolocationManager = AppContext.shared.geolocationManager
-        
-        if !geolocationManager.coreLocationServicesEnabled {
-            self.performSegue(withIdentifier: "EnableLocationServices", sender: nil)
+
+        guard geolocationManager.coreLocationServicesEnabled,
+              geolocationManager.coreLocationAuthorizationStatus == .fullAccuracyLocationAuthorized else {
+            showPermission(.location)
             return false
         }
-        
-        switch geolocationManager.coreLocationAuthorizationStatus {
-        case .notDetermined:
-            self.performSegue(withIdentifier: "RequestLocationServices", sender: nil)
-            return false
-        case .reducedAccuracyLocationAuthorized, .denied:
-            self.performSegue(withIdentifier: "AuthorizeLocationServices", sender: nil)
-            return false
-        default:
-            // Authorized
-            break
-        }
-        
-        MotionActivityContext.requestAuthorization { [unowned self] (authorized, _) in
+
+        MotionActivityContext.requestAuthorization { [weak self] (authorized, _) in
+            guard let self = self else { return }
             if !authorized && !UIDeviceManager.isSimulator {
                 // While Motion & Fitness is not authorized, disable callouts
                 if SettingsContext.shared.automaticCalloutsEnabled {
@@ -380,29 +347,7 @@ class HomeViewController: UIViewController {
                     AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
                 }
                 
-                // Use additional context regarding authorization so we can distinguish between Fitness Tracking
-                // being turned off on the device and Motion & Fitness being disabled for the app
-                let motionAuth = CMMotionActivityManager.authorizationStatus()
-                
-                if motionAuth == .notDetermined {
-                    self.performSegue(withIdentifier: "RequestMotionFitness", sender: nil)
-                    return
-                }
-                
-                if motionAuth == .denied {
-                    self.performSegue(withIdentifier: "AuthorizeMotionFitness", sender: nil)
-                    return
-                }
-                
-                if motionAuth == .restricted {
-                    self.performSegue(withIdentifier: "EnableMotionFitness", sender: nil)
-                    return
-                }
-                
-                // We cannot distinguish between Fitness Tracking being turned off on the
-                // device and Motion & Fitness being disabled for the app
-                self.performSegue(withIdentifier: "AuthorizeMotionFitness", sender: nil)
-                return
+                self.showPermission(.motion)
             } else {
                 // If necessary, turn callouts back on
                 if MotionActivityContext.motionFitnessDidToggleCallouts {
@@ -417,31 +362,72 @@ class HomeViewController: UIViewController {
     
     // MARK: Navigation
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-        
-        if let vc = segue.destination as? LocationPermissionViewController {
-            vc.displayAsModal = true
-        } else if let vc = segue.destination as? MotionPermissionViewController {
-            vc.displayAsModal = true
-        } else if let vc = segue.destination as? StandbyViewController {
-            vc.delegate = self
-        } else if let vc = segue.destination as? LocationDetailViewController {
-            let locationDetail = sender as? LocationDetail
-            vc.locationDetail = locationDetail
-        } else if let vc = segue.destination as? CardStateViewController {
-            cardViewController = vc
-        } else if let navigationController = segue.destination as? UINavigationController,
-                  let viewController = navigationController.topViewController as? PreviewViewController {
-            let locationDetail = sender as? LocationDetail
-            viewController.locationDetail = locationDetail
+    private func embed(_ child: UIViewController, in container: UIView) {
+        hosting.addChild(child)
+        let content = child.view!
+        content.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(content)
+        NSLayoutConstraint.activate([
+            content.topAnchor.constraint(equalTo: container.topAnchor),
+            content.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            content.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            content.trailingAnchor.constraint(equalTo: container.trailingAnchor)
+        ])
+        child.didMove(toParent: hosting)
+    }
+
+    private func showPermission(_ service: PermissionRoute) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.navigationController?.topViewController === self else { return }
+            let navigation = AppNavigationModel.shared
+            guard navigation.coordinator.path.isEmpty, self.viewIfLoaded?.window != nil else { return }
+            navigation.open(.permission(service))
         }
     }
-    
-    @IBAction func unwindToHome(segue: UIStoryboardSegue) {
-        // Transparent navigation bar
-        navigationController?.navigationBar.configureAppearance(for: .transparentLightTitle)
+
+    private func showCurrentLocation() {
+        guard let location = AppContext.shared.geolocationManager.location else {
+            present(ErrorAlerts.buildLocationAlert(), animated: true)
+            return
+        }
+        showLocationDetail(LocationDetail(location: location, telemetryContext: "current_location"))
     }
+
+    private func saveCurrentLocation() {
+        guard !layout.isSavingCurrentLocation else { return }
+        guard let location = AppContext.shared.geolocationManager.location else {
+            present(ErrorAlerts.buildLocationAlert(), animated: true)
+            return
+        }
+
+        layout.isSavingCurrentLocation = true
+        let detail = LocationDetail(location: location, telemetryContext: "current_location")
+        LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] detail in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.layout.isSavingCurrentLocation = false
+                let navigation = AppNavigationModel.shared
+                guard self.navigationController?.topViewController === self, navigation.coordinator.path.isEmpty else { return }
+                let config = EditMarkerConfig(detail: detail,
+                                              route: nil,
+                                              context: "current_location",
+                                              addOrUpdateAction: .popViewController,
+                                              deleteAction: .popViewController,
+                                              leftBarButtonItemIsHidden: false)
+                navigation.openEditor(MarkerEditViewRepresentable(config: config))
+            }
+        }
+    }
+
+    private func showLocationDetail(_ detail: LocationDetail) {
+        AppNavigationModel.shared.showLocation(detail)
+    }
+
+    private func showPreview(_ detail: LocationDetail) {
+        present(PreviewViewController.navigation(for: detail), animated: true)
+    }
+
+
 }
 
 // MARK: UIViewControllerTransitioningDelegate
@@ -461,26 +447,9 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
             return nil
         }
         
-        return MenuAnimator(.close) { [weak self] (finished) in
-            guard finished else {
-                return
-            }
-
-            if dismissed.selected == .recreation {
-                self?.showRecreationActivities()
-                return
-            }
-
-            if dismissed.selected == .gpxRecording {
-                self?.show(GPXRecordingHostingController(), sender: self)
-                return
-            }
-            
-            guard let segue = Segue.segue(for: dismissed.selected) else {
-                return
-            }
-
-            self?.performSegue(withIdentifier: segue, sender: self)
+        return MenuAnimator(.close) { [weak self] finished in
+            guard finished else { return }
+            self?.layout.openMenuDestination(dismissed.selected)
         }
     }
 }
@@ -489,7 +458,7 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
 
 extension HomeViewController {
     
-    @IBAction func onMenuTouchUpInside() {
+    @objc func onMenuTouchUpInside() {
         // Construct the menu and present it
         let vc = MenuViewController()
         vc.transitioningDelegate = self
@@ -498,10 +467,12 @@ extension HomeViewController {
         present(vc, animated: true, completion: nil)
     }
     
-    @IBAction func onSleepTouchUpInside () {
-        performSegue(withIdentifier: "showStandbyScreen", sender: nil)
-        
-        return
+    @objc func onSleepTouchUpInside () {
+        let controller = StandbyViewController()
+        controller.delegate = self
+        controller.modalPresentationStyle = .fullScreen
+        controller.modalTransitionStyle = .crossDissolve
+        present(controller, animated: true)
     }
 
 }
@@ -548,37 +519,11 @@ extension HomeViewController {
 extension HomeViewController {
     
     fileprivate func updateExternalHardwareGeolocationIndicatorView(isExternal: Bool) {
-        // Show the external hardware indicator if needed
+        var buttons = sleepBarButton.map { [$0] } ?? []
         if isExternal {
-            // Check if the indicator is already showing
-            if var rightBarButtonItems = navigationItem.rightBarButtonItems {
-                    if rightBarButtonItems.contains(externalGPSBarButtonItem) {
-                        return
-                    } else {
-                        // We add the indicator to the current bar button items
-                        rightBarButtonItems.append(externalGPSBarButtonItem)
-                        DispatchQueue.main.async { [weak self] in
-                            self?.navigationItem.rightBarButtonItems = rightBarButtonItems
-                        }
-                }
-            } else {
-                // No other current bar button items. show only the indicator.
-                DispatchQueue.main.async { [weak self] in
-                    self?.navigationItem.rightBarButtonItem = self?.externalGPSBarButtonItem
-                }
-            }
-        } else {
-            // Hide the external hardware indicator if needed
-            self.navigationItem.remove(barButtonItem: externalGPSBarButtonItem)
+            buttons.append(externalGPSBarButtonItem)
         }
-        
-        var barButtonItems: [UIBarButtonItem] = []
-        
-        if isExternal {
-            barButtonItems.append(externalGPSBarButtonItem)
-        }
-        
-        navigationItem.rightBarButtonItems = barButtonItems
+        navigationItem.rightBarButtonItems = buttons
     }
     
 }
@@ -597,13 +542,13 @@ extension HomeViewController: DismissableViewControllerDelegate {
     
 }
 
-// MARK: - SearchResultsTableViewControllerDelegate
+// MARK: - SearchResultsViewControllerDelegate
 
-extension HomeViewController: SearchResultsTableViewControllerDelegate {
+extension HomeViewController: SearchResultsViewControllerDelegate {
     
     func didSelectSearchResult(_ searchResult: POI) {
         let detail = LocationDetail(entity: searchResult, telemetryContext: "search_result")
-        performSegue(withIdentifier: "LocationDetailView", sender: detail)
+        showLocationDetail(detail)
         
         searchController?.isActive = false
     }
@@ -652,16 +597,14 @@ extension HomeViewController: LocationActionDelegate {
                                                   deleteAction: .popToRootViewController,
                                                   leftBarButtonItemIsHidden: false)
                     
-                    if let vc = MarkerEditViewRepresentable(config: config).makeViewController() {
-                        self.navigationController?.pushViewController(vc, animated: true)
-                    }
+                    AppNavigationModel.shared.openEditor(MarkerEditViewRepresentable(config: config))
                 case .beacon:
                     // Set a beacon on the given location
                     // and segue to the home view
                     try LocationActionHandler.beacon(locationDetail: detail)
                     self.navigationController?.popToRootViewController(animated: true)
                 case .preview:
-                    self.performSegue(withIdentifier: "PreviewView", sender: detail)
+                    self.showPreview(detail)
                 case .share:
                     // Create a URL to share a marker at the given location
                     let url = try LocationActionHandler.share(locationDetail: detail)
@@ -722,7 +665,7 @@ extension HomeViewController: UISearchControllerDelegate {
 extension HomeViewController: LargeBannerContainerView {
     
     func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerHeightConstraint.constant = height
+        layout.largeBannerHeight = height
     }
     
 }
@@ -732,7 +675,7 @@ extension HomeViewController: LargeBannerContainerView {
 extension HomeViewController: SmallBannerContainerView {
     
     func setSmallBannerHeight(_ height: CGFloat) {
-        smallBannerContainerHeightConstraint.constant = height
+        layout.smallBannerHeight = height
     }
     
 }
@@ -760,4 +703,11 @@ private extension UIAlertController {
         return alert
     }
     
+}
+
+private final class HomeHostingController: UIHostingController<HomeView> {
+    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+        super.preferredContentSizeDidChange(forChildContentContainer: container)
+        (parent as? HomeViewController)?.updatePanelSize(container)
+    }
 }

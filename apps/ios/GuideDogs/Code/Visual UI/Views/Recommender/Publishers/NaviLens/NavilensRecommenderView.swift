@@ -93,13 +93,7 @@ struct NavilensRecommenderView: View {
     // MARK: Actions
 
     private func showNearbyNaviLensCodes() {
-        let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-
-        guard let viewController = storyboard.instantiateViewController(identifier: "NearbyTableViewController") as? NearbyTableViewController else {
-            GDLogAppError("Failed to instantiate NearbyTableViewController from POITable storyboard")
-            assertionFailure("Failed to instantiate NearbyTableViewController from POITable storyboard")
-            return
-        }
+        let viewController = NearbyResultsViewController()
 
         viewController.context = NearbyDataContext()
         viewController.currentFilter = NearbyTableFilter(type: .navilens)
@@ -109,13 +103,7 @@ struct NavilensRecommenderView: View {
     }
 
     private func showLocationDetail() {
-        let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-
-        guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
-            GDLogAppError("Failed to instantiate LocationDetailViewController from POITable storyboard")
-            assertionFailure("Failed to instantiate LocationDetailViewController from POITable storyboard")
-            return
-        }
+        let viewController = LocationDetailViewController()
 
         viewController.locationDetail = LocationDetail(entity: poi, telemetryContext: navilensRecommenderTelemetryContext)
 
@@ -172,12 +160,14 @@ class RecommenderNavigationHelper: ViewNavigationHelper, LocationAccessibilityAc
 
                     if AppContext.shared.isStreetPreviewing {
                         let alert = LocationActionAlert.restartPreview { [weak self] (_) in
-                            self?.previewPresenter?.performSegue(withIdentifier: "PreviewView", sender: detail)
+                            if let presenter = self?.previewPresenter {
+                                PreviewViewController.restart(from: presenter, at: detail)
+                            }
                         }
 
                         previewPresenter?.present(alert, animated: true, completion: nil)
                     } else {
-                        previewPresenter?.performSegue(withIdentifier: "PreviewView", sender: detail)
+                        previewPresenter?.present(PreviewViewController.navigation(for: detail), animated: true)
                     }
 
                 case .share:
@@ -218,7 +208,7 @@ class RecommenderNavigationHelper: ViewNavigationHelper, LocationAccessibilityAc
         var viewController = host as UIViewController?
 
         while let current = viewController {
-            if current is HomeViewController {
+            if current === LaunchHelper.homePresenter {
                 return current
             }
 

@@ -24,22 +24,14 @@ struct AnyViewControllerRepresentable: ViewControllerRepresentable {
     // MARK: `ViewControllerRepresentable`
     
     func makeViewController() -> UIViewController? {
-        let sIdentifier: String
-        let vIdentifier: String
-        
         switch destination {
         case .offlineHelp:
-            sIdentifier = "Help"
-            vIdentifier = "OfflinePage"
+            return OfflineHelpPageViewController()
         case .routeGuidance:
             return RouteDetailsViewHostingController.makeForActiveRoute()
         case .manageDevices:
-            sIdentifier = "Devices"
-            vIdentifier = "manageDevices"
+            return DevicesViewController()
         }
-        
-        let storyboard = UIStoryboard(name: sIdentifier, bundle: Bundle.main)
-        return storyboard.instantiateViewController(identifier: vIdentifier)
     }
     
 }

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -13,6 +14,7 @@ enum NavigationAction {
     case popToRootViewController
     case popToViewController(type: UIViewController.Type)
     case dismissesViewController
+    case perform(() -> Void)
 }
 
 class ViewNavigationHelper: ObservableObject {
@@ -35,6 +37,18 @@ class ViewNavigationHelper: ObservableObject {
         _isActive = isActive
     }
     
+    func returnToHome(focusOnBeacon: Bool = false) {
+        let navigation = AppNavigationModel.shared
+        if host?.navigationController is LegacyNavigationScreen.EmbeddedNavigationController {
+            navigation.returnHome(focusOnBeacon: focusOnBeacon)
+        } else {
+            if let first = host?.navigationController?.viewControllers.first, first === LaunchHelper.homePresenter {
+                navigation.shouldFocusOnBeacon = focusOnBeacon
+            }
+            popToRootViewController(animated: true)
+        }
+    }
+
     func popToRootViewController(animated: Bool) {
         guard let host = host else {
             isActive = false
@@ -109,6 +123,8 @@ class ViewNavigationHelper: ObservableObject {
             
         case .dismissesViewController:
             dismiss(animated: true)
+        case .perform(let action):
+            action()
         }
     }
 }

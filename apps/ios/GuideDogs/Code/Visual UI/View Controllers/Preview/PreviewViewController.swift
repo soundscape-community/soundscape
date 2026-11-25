@@ -12,26 +12,22 @@ import Combine
 
 class PreviewViewController: UIViewController {
     
-    // MARK: Segues
-    
-    private struct Segue {
-        static let showPOISelection = "ShowPOISelection"
-    }
-    
-    // MARK: `IBOutlet`
-    
-    @IBOutlet weak var largeBannerContainerView: UIView!
-    @IBOutlet var largeBannerContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var smallBannerContainerView: UIView!
-    @IBOutlet weak var smallBannerContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var virtualLocationView: UIView!
-    @IBOutlet var virtualLocationHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var activityIndicatorContainerView: UIView!
-    @IBOutlet weak var tutorialContainerView: UIView!
-    @IBOutlet weak var exitBarButtonItem: UIBarButtonItem!
-    @IBOutlet var calloutPanelContainerView: UIView!
-    @IBOutlet var calloutPanelContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var cardContainerViewHeightConstraint: NSLayoutConstraint!
+    private let cardContainerView = UIView()
+    let largeBannerContainerView: UIView! = UIView()
+    let smallBannerContainerView: UIView! = UIView()
+    private let virtualLocationView = UIView()
+    private let activityIndicatorContainerView = UIView()
+    private let tutorialContainerView = UIView()
+    private let calloutPanelContainerView = UIView()
+
+    private lazy var largeBannerContainerHeightConstraint = largeBannerContainerView.heightAnchor.constraint(equalToConstant: 0)
+    private lazy var smallBannerContainerHeightConstraint = smallBannerContainerView.heightAnchor.constraint(equalToConstant: 0)
+    private lazy var virtualLocationHeightConstraint = virtualLocationView.heightAnchor.constraint(equalToConstant: 270)
+    private lazy var calloutPanelContainerHeightConstraint = calloutPanelContainerView.heightAnchor.constraint(equalToConstant: 141)
+    private lazy var cardContainerViewHeightConstraint = cardContainerView.heightAnchor.constraint(equalToConstant: 214)
+
+    private lazy var exitBarButtonItem = UIBarButtonItem(title: GDLocalizedString("general.alert.exit"), style: .plain,
+                                                         target: self, action: #selector(onExitSelected))
     var roadToggleButton: UIBarButtonItem!
     
     // MARK: Properties
@@ -80,12 +76,122 @@ class PreviewViewController: UIViewController {
     
     // MARK: View Life Cycle
     
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor(named: "Background Base")
+        view.accessibilityIgnoresInvertColors = true
+        title = GDLocalizedString("preview.title")
+        navigationItem.leftBarButtonItem = exitBarButtonItem
+
+        let background = UIImageView(image: UIImage(named: "Background"))
+        background.contentMode = .scaleToFill
+        for backgroundView in [background, activityIndicatorContainerView, tutorialContainerView] {
+            backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        }
+        view.addSubview(background)
+        NSLayoutConstraint.activate([
+            background.topAnchor.constraint(equalTo: view.topAnchor),
+            background.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            background.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+
+        let search = UIButton(type: .system)
+        var configuration = UIButton.Configuration.filled()
+        configuration.title = GDLocalizedString("preview.search.label")
+        configuration.image = UIImage(named: "search_white_24dp")
+        configuration.imagePadding = 12
+        configuration.titleAlignment = .leading
+        configuration.baseBackgroundColor = Colors.Background.secondary
+        configuration.baseForegroundColor = Colors.Foreground.primary
+        search.configuration = configuration
+        search.contentHorizontalAlignment = .leading
+        search.accessibilityHint = GDLocalizedString("preview.search.accessibility_hint")
+        search.addTarget(self, action: #selector(showBrowse), for: .touchUpInside)
+        search.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+
+        let roundedContainers: [UIView] = [smallBannerContainerView, cardContainerView]
+        for container in roundedContainers {
+            container.layer.cornerRadius = 5
+            container.clipsToBounds = true
+        }
+
+        let scroll = UIScrollView()
+        scroll.bounces = false
+        let panels = UIStackView(arrangedSubviews: [virtualLocationView, search, smallBannerContainerView, cardContainerView])
+        panels.axis = .vertical
+        panels.spacing = 8
+        panels.isLayoutMarginsRelativeArrangement = true
+        panels.directionalLayoutMargins = .init(top: 24, leading: 20, bottom: 24, trailing: 20)
+        panels.translatesAutoresizingMaskIntoConstraints = false
+        scroll.addSubview(panels)
+        NSLayoutConstraint.activate([
+            virtualLocationHeightConstraint,
+            smallBannerContainerHeightConstraint,
+            cardContainerViewHeightConstraint,
+            panels.topAnchor.constraint(equalTo: scroll.contentLayoutGuide.topAnchor),
+            panels.bottomAnchor.constraint(equalTo: scroll.contentLayoutGuide.bottomAnchor),
+            panels.leadingAnchor.constraint(equalTo: scroll.contentLayoutGuide.leadingAnchor),
+            panels.trailingAnchor.constraint(equalTo: scroll.contentLayoutGuide.trailingAnchor),
+            panels.widthAnchor.constraint(equalTo: scroll.frameLayoutGuide.widthAnchor)
+        ])
+
+        let stack = UIStackView(arrangedSubviews: [largeBannerContainerView, scroll, calloutPanelContainerView])
+        stack.axis = .vertical
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(stack)
+        calloutPanelContainerHeightConstraint.priority = .defaultHigh
+        NSLayoutConstraint.activate([
+            largeBannerContainerHeightConstraint,
+            calloutPanelContainerHeightConstraint,
+            calloutPanelContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 141),
+            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            stack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+
+        for overlay in [activityIndicatorContainerView, tutorialContainerView] {
+            view.addSubview(overlay)
+            NSLayoutConstraint.activate([
+                overlay.topAnchor.constraint(equalTo: view.topAnchor),
+                overlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                overlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                overlay.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+        }
+        tutorialContainerView.isHidden = true
+    }
+
+    static func navigation(for detail: LocationDetail, onDismiss: (() -> Void)? = nil) -> NavigationController {
+        let preview = PreviewViewController()
+        preview.locationDetail = detail
+        preview.onDismissHandler = onDismiss
+        let navigation = NavigationController(rootViewController: preview)
+        navigation.modalPresentationStyle = .fullScreen
+        return navigation
+    }
+
+    @objc private func showBrowse() {
+        let search = SearchTableViewController()
+        search.logContext = "preview"
+        search.onDismissPreviewHandler = onDismissHandler
+        navigationController?.pushViewController(search, animated: true)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
 
         configureCalloutButtonPanelView()
+
+        let card = CardStateViewController()
+        addChild(card)
+        cardContainerView.addSubview(card.view)
+        card.view.frame = cardContainerView.bounds
+        card.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        card.didMove(toParent: self)
         
         // Initialize the road toggle button (this handles initial creation - all further updates are
         // handled by `configureToggleButton()`
@@ -178,13 +284,6 @@ class PreviewViewController: UIViewController {
         isActivatedAndStartedSubscriber?.cancel()
         isStoppedAndDeactivatedSubscriber?.cancel()
         userActionSubscriber?.cancel()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? SearchTableViewController {
-            vc.logContext = "preview"
-            vc.onDismissPreviewHandler = onDismissHandler
-        }
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -419,7 +518,7 @@ class PreviewViewController: UIViewController {
     
     // MARK: `IBAction`
     
-    @IBAction func onExitSelected(_ sender: Any) {
+    @objc func onExitSelected(_ sender: Any) {
         // Stop updates while exiting
         isActivatedAndStartedSubscriber?.cancel()
         
@@ -439,7 +538,25 @@ class PreviewViewController: UIViewController {
         configureToggleButton()
     }
     
-    @IBAction func unwindToPreview(segue: UIStoryboardSegue) { }
+    static func restart(from presenter: UIViewController, at detail: LocationDetail) {
+        if let navigation = presenter.navigationController,
+           let preview = navigation.viewControllers.first as? PreviewViewController {
+            navigation.popToRootViewController(animated: true)
+            preview.locationDetail = detail
+            return
+        }
+
+        var controller = AppContext.rootViewController?.presentedViewController
+        while let current = controller {
+            if let navigation = current as? UINavigationController,
+               let preview = navigation.viewControllers.first as? PreviewViewController {
+                navigation.popToRootViewController(animated: true)
+                preview.locationDetail = detail
+                return
+            }
+            controller = current.presentedViewController
+        }
+    }
     
     // MARK: Preview
     
@@ -498,7 +615,7 @@ class PreviewViewController: UIViewController {
 
         switch userAction {
         case .search:
-            self.performSegue(withIdentifier: Segue.showPOISelection, sender: userAction)
+            showBrowse()
         case .saveMarker:
             // Not supported in street preview
             break

@@ -3,252 +3,157 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import Foundation
+import SwiftUI
+import UIKit
 
 protocol PreviewControlDelegate: AnyObject {
     func previewControl(_ viewController: PreviewControlViewController, didSelect edge: RoadAdjacentDataView?)
 }
 
-class PreviewControlViewController: UIViewController {
-    
+class PreviewControlViewController: UIHostingController<PreviewControlView> {
     typealias State = VirtualLocationViewController.State
-    
-    // MARK: `IBOutlet`
-    
-    @IBOutlet weak var labelContainerView: UIView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var subtitleLabel: UILabel!
-    @IBOutlet weak var button: UIButton!
-    
-    // MARK: Properties
-    
-    weak var delegate: PreviewControlDelegate?
+
+    private let model = PreviewControlModel()
     private var headingSubscriber: Heading?
-    
-    var currentState: State = .orientation {
-        didSet {
-            guard oldValue != currentState else {
-                return
+    weak var delegate: PreviewControlDelegate?
+
+    var currentState: State {
+        get { model.state }
+        set {
+            guard model.state != newValue else { return }
+            model.state = newValue
+            if case .orientation = newValue {
+                model.heading = headingSubscriber?.value ?? 0
             }
-            
-            guard isViewLoaded else {
-                return
-            }
-            
-            configureView()
         }
     }
 
     init() {
-        super.init(nibName: "PreviewControlView", bundle: nil)
+        super.init(rootView: PreviewControlView(model: model))
+        model.select = { [weak self] in
+            guard let self else { return }
+            if case .edge(let edge) = self.currentState {
+                self.delegate?.previewControl(self, didSelect: edge)
+            } else {
+                self.delegate?.previewControl(self, didSelect: nil)
+            }
+        }
+        sizingOptions = .preferredContentSize
     }
 
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
-    // MARK: View Life Cycle
-    
+    @available(*, unavailable)
+    required dynamic init?(coder: NSCoder) { fatalError("Use init()") }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Listen for heading updates from the device
+        view.backgroundColor = .clear
         headingSubscriber = AppContext.shared.geolocationManager.heading(orderedBy: [.device])
-        
-        // Start heading updates
-        headingSubscriber?.onHeadingDidUpdate { [weak self] (newHeadingValue) in
-            guard let `self` = self else {
-                return
-            }
-            
-            guard let newValue = newHeadingValue?.value else {
-                return
-            }
-            
-            guard case .orientation = self.currentState else {
-                return
-            }
-            
-            DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else {
-                    return
-                }
-                
-                self.configureView(for: newValue)
+        model.heading = headingSubscriber?.value ?? 0
+        headingSubscriber?.onHeadingDidUpdate { [weak self] heading in
+            guard let value = heading?.value else { return }
+            DispatchQueue.main.async {
+                guard let self, case .orientation = self.currentState else { return }
+                self.model.heading = value
             }
         }
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // Configure initial view
-        configureView()
-        
-        // Calculated preferred height for the child view controller
-        let preferredContentHeight = UIView.preferredContentHeight(for: view)
-        view.setHeight(preferredContentHeight)
-    }
-    
+
     deinit {
-        // Stop heading updates
         headingSubscriber?.onHeadingDidUpdate(nil)
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        let width = preferredContentSize.width
-        let height = UIView.preferredContentHeightCompressedHeight(for: view)
-        
-        preferredContentSize = CGSize(width: width, height: height)
-    }
-    
-    // MARK: Manage State
-    
-    private func resetView() {
-        // Reset transformation
-        button.transform = CGAffineTransform.identity
-        
-        // Reset image view
-        button.imageView?.image = nil
-        button.imageView?.stopAnimating()
-        button.imageView?.animationImages = nil
-    }
-    
-    private func configureView() {
-        DispatchQueue.main.async { [weak self] in
-            guard let `self` = self else {
-                return
+}
+
+final class PreviewControlModel: ObservableObject {
+    @Published var state: VirtualLocationViewController.State = .orientation
+    @Published var heading = 0.0
+    var select: () -> Void = {}
+
+    var labels: (title: String, subtitle: String, spoken: String?) {
+        switch state {
+        case .orientation:
+            let instructions = GDLocalizedString("preview.callout.road_finder.instructions")
+            guard FeatureFlag.isEnabled(.developerTools) else { return (instructions, " ", instructions) }
+            let degrees = String(Int(heading.rounded(.toNearestOrEven)))
+            if let direction = CardinalDirection(direction: heading) {
+                let title = GDLocalizedString("preview.content.orientation.text.with_cardinal", degrees, direction.localizedAbbreviatedString)
+                let spoken = GDLocalizedString("preview.content.orientation.text.with_cardinal", degrees, direction.localizedString)
+                return (title, " ", spoken)
             }
-            
-            // Reset the current view
-            self.resetView()
-            
-            switch self.currentState {
-            case .orientation:
-                // Initialize image view
-                self.button.imageView?.image = UIImage(named: "preview_arrow")!
-                
-                // Configure initial view
-                self.configureView(for: self.headingSubscriber?.value ?? 0.0)
-            case .edge(let edge):
-                // Initialize image view
-                self.button.imageView?.image = UIImage(named: "go_animation1")!
-                // Initialize image view animations
-                self.button.imageView?.animationDuration = 1.0
-                self.button.imageView?.animationImages = [
-                    UIImage(named: "go_animation2")!,
-                    UIImage(named: "go_animation3")!,
-                    UIImage(named: "go_animation4")!,
-                    UIImage(named: "go_animation5")!
-                ]
-                
-                // Start animations
-                self.button.imageView?.startAnimating()
-                
-                let edgeDirection = edge.direction.bearing
-                
-                // Initialize title
-                let titleText: String
-                let titleAccessibilityText: String
-                
-                if let cDirection = CardinalDirection(direction: edgeDirection) {
-                    titleText = GDLocalizedString("preview.content.edge.text", cDirection.localizedAbbreviatedString, edge.direction.road.localizedName)
-                    titleAccessibilityText = GDLocalizedString("preview.content.edge.text", cDirection.localizedString, edge.direction.road.localizedName)
-                } else {
-                    titleText = edge.direction.road.localizedName
-                    titleAccessibilityText = edge.direction.road.localizedName
-                }
-                
-                // Initialize subtitle
-                let subtitleText = GDLocalizedString("preview.next_intersection.label", edge.endpoint.localizedName)
-                
-                // Initialize accessibility label
-                let accessibilityLabel = "\(titleAccessibilityText)\n\(subtitleText)"
-                
-                // Show labels
-                self.configureLabelView(titleText: titleText, subtitleText: subtitleText, accessibilityLabel: accessibilityLabel)
-            case .transition:
-                // Initialize image view
-                self.button.imageView?.image = UIImage(named: "travel1")!
-                // Initialize image view animations
-                self.button.imageView?.animationDuration = 1.0
-                self.button.imageView?.animationImages = [
-                    UIImage(named: "travel2")!,
-                    UIImage(named: "travel3")!,
-                    UIImage(named: "travel4")!,
-                    UIImage(named: "travel5")!
-                ]
-                
-                // Start animations
-                self.button.imageView?.startAnimating()
-                
-                // Hide labels
-                self.configureLabelView(titleText: nil, subtitleText: nil, accessibilityLabel: nil)
+            let title = GDLocalizedString("preview.content.orientation.text.without_cardinal", degrees)
+            return (title, " ", title)
+        case .edge(let edge):
+            let road = edge.direction.road.localizedName
+            let subtitle = GDLocalizedString("preview.next_intersection.label", edge.endpoint.localizedName)
+            guard let direction = CardinalDirection(direction: edge.direction.bearing) else {
+                return (road, subtitle, road + "\n" + subtitle)
             }
+            let title = GDLocalizedString("preview.content.edge.text", direction.localizedAbbreviatedString, road)
+            let spoken = GDLocalizedString("preview.content.edge.text", direction.localizedString, road)
+            return (title, subtitle, spoken + "\n" + subtitle)
+        case .transition:
+            return (" ", " ", nil)
         }
     }
-    
-    private func configureView(for heading: Double) {
-        let text: String
-        let accessibilityLabel: String
-        
-        let headingInt = Int(heading.rounded(.toNearestOrEven))
-        let headingStr = String(headingInt)
-        
-        if FeatureFlag.isEnabled(.developerTools) {
-            if let cDirection = CardinalDirection(direction: heading) {
-                text = GDLocalizedString("preview.content.orientation.text.with_cardinal", headingStr, cDirection.localizedAbbreviatedString)
-                accessibilityLabel = GDLocalizedString("preview.content.orientation.text.with_cardinal", headingStr, cDirection.localizedString)
-            } else {
-                text = GDLocalizedString("preview.content.orientation.text.without_cardinal", headingStr)
-                accessibilityLabel = GDLocalizedString("preview.content.orientation.text.without_cardinal", headingStr)
+}
+
+struct PreviewControlView: View {
+    @ObservedObject var model: PreviewControlModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        let labels = model.labels
+        VStack(spacing: 12) {
+            VStack(spacing: 0) {
+                Text(verbatim: labels.title)
+                    .foregroundStyle(Color("Foreground 1"))
+                Text(verbatim: labels.subtitle)
+                    .font(.caption2)
+                    .foregroundStyle(Color("Foreground 3"))
             }
-        } else {
-            // In release builds, display a prompt encouraging the user to rotate the phone
-            text = GDLocalizedString("preview.callout.road_finder.instructions")
-            accessibilityLabel = GDLocalizedString("preview.callout.road_finder.instructions")
+            .multilineTextAlignment(.center)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: labels.spoken ?? ""))
+            .accessibilityHidden(labels.spoken == nil)
+
+            Button(action: model.select) {
+                arrow
+                    .frame(width: 88, height: 88)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(GDLocalizedTextView("preview.go.title"))
+            .accessibilityHint(GDLocalizedTextView("preview.content.edge.text.accessibility_hint"))
         }
-        
-        // Show heading in the title label
-        configureLabelView(titleText: text, subtitleText: nil, accessibilityLabel: accessibilityLabel)
-        
-        // Rotate the image view
-        let angleInRadians = Measurement(value: heading, unit: UnitAngle.degrees).converted(to: .radians).value
-        self.button.transform = CGAffineTransform(rotationAngle: CGFloat(angleInRadians))
+        .frame(maxWidth: .infinity)
     }
-    
-    private func configureLabelView(titleText: String?, subtitleText: String?, accessibilityLabel: String?) {
-        // If there is no text to display, use whitespace to maintain the vertical
-        // spacing
-        titleLabel.text = titleText ?? " "
-        subtitleLabel.text = subtitleText ?? " "
-        
-        if let accessibilityLabel = accessibilityLabel {
-            // Present both labels as a single accessibility element
-            labelContainerView.accessibilityLabel = accessibilityLabel
-            labelContainerView.accessibilityElementsHidden = false
-        } else {
-            // Hide the labels
-            labelContainerView.accessibilityLabel = nil
-            labelContainerView.accessibilityElementsHidden = true
+
+    @ViewBuilder
+    private var arrow: some View {
+        switch model.state {
+        case .orientation:
+            image("preview_arrow").rotationEffect(.degrees(model.heading))
+        case .edge:
+            animatedArrow(prefix: "go_animation")
+        case .transition:
+            animatedArrow(prefix: "travel")
         }
     }
-    
-    // MARK: `IBAction`
-    
-    @IBAction private func onButtonTouchUpInside(_ sender: UIButton) {
-        var selectedEdge: RoadAdjacentDataView?
-        
-        if case .edge(let edge) = currentState {
-            selectedEdge = edge
+
+    private func animatedArrow(prefix: String) -> some View {
+        TimelineView(.animation(minimumInterval: 0.25, paused: reduceMotion)) { timeline in
+            let frame = reduceMotion ? 1 : 2 + Int(timeline.date.timeIntervalSinceReferenceDate * 4) % 4
+            image(prefix + String(frame))
         }
-        
-        delegate?.previewControl(self, didSelect: selectedEdge)
     }
-    
+
+    private func image(_ name: String) -> some View {
+        Image(name)
+            .resizable()
+            .scaledToFit()
+            .accessibilityHidden(true)
+    }
 }

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -52,11 +53,7 @@ class HeadsetCalibrationModalViewObserver: PersistentNotificationObserver {
             return nil
         }
         
-        guard let viewController = UIStoryboard(name: "Devices", bundle: nil).instantiateViewController(withIdentifier: "manageDevices") as? DevicesViewController else {
-            // Failed to instantiate view controller
-            return nil
-        }
-        
+        let viewController = DevicesViewController()
         viewController.launchedAutomatically = true
         
         return viewController

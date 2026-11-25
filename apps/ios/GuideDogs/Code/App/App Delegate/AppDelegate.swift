@@ -20,10 +20,11 @@ extension Notification.Name {
     static let didRegisterForRemoteNotifications = Notification.Name("GDADidRegisterForRemoteNotifications")
 }
 
-@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: Properties
+
+    private(set) static weak var current: AppDelegate?
 
     private let userActivityManager = UserActivityManager()
     private let urlResourceManager = URLResourceManager()
@@ -32,6 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: UIApplicationDelegate
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        Self.current = self
         GDATelemetry.initialize()
 
         // Check if we need to migrate Realm before we do anything else
@@ -50,22 +52,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             SettingsContext.shared.appUseCount += 1
         }
         
-        // Note: Remainder of app initialization is handled in DynamicLaunchViewController.swift and LaunchHelper.swift...
-        // DO NOT reference `AppContext.shared` until the notification `Notification.Name.appDidInitialize` is posted
-        
-        if let launchOptions = launchOptions {
-            pushNotificationManager.didFinishLaunchingWithOptions(launchOptions)
-        }
-
         return true
+    }
+
+    func application(_ application: UIApplication,
+                     configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        let configuration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+        if connectingSceneSession.role == .windowApplication {
+            configuration.delegateClass = SceneDelegate.self
+        }
+        return configuration
     }
 
     func handle(_ userActivity: NSUserActivity) -> Bool {
         return userActivityManager.onContinueUserActivity(userActivity)
     }
 
-    func handleLaunchNotification(payload: PushNotification.Payload) {
-        pushNotificationManager.didReceiveLaunchNotification(payload: payload)
+    func handleLaunchNotification(payload: PushNotification.Payload, deliveryID: String?) {
+        pushNotificationManager.receive(payload: payload, deliveryID: deliveryID, arrival: .launch)
     }
 
     func openURLResource(_ url: URL) -> Bool {

@@ -7,25 +7,28 @@
 //
 
 import UIKit
+import UserNotifications
 
 protocol SceneIncomingEventHandling: AnyObject {
     func openURLResource(_ url: URL) -> Bool
     func handle(_ userActivity: NSUserActivity) -> Bool
-    func handleLaunchNotification(payload: PushNotification.Payload)
+    func handleLaunchNotification(payload: PushNotification.Payload, deliveryID: String?)
 }
 
 extension AppDelegate: SceneIncomingEventHandling {}
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    var window: UIWindow?
     var incomingEventHandler: SceneIncomingEventHandling?
     var notificationCenter: NotificationCenter = .default
     var validateActive: () -> Void = { AppContext.shared.validateActive() }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        let response = connectionOptions.notificationResponse
+        let notification = response?.actionIdentifier == UNNotificationDismissActionIdentifier ? nil : response?.notification
         routeIncomingEvents(urls: connectionOptions.urlContexts.map(\.url),
                             activities: Array(connectionOptions.userActivities),
-                            notificationPayload: connectionOptions.notificationResponse?.notification.request.content.userInfo)
+                            notificationPayload: notification?.request.content.userInfo,
+                            notificationDeliveryID: notification.map(PushNotificationManager.deliveryID(for:)))
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -36,11 +39,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         routeIncomingEvents(urls: [], activities: [userActivity])
     }
 
-    func routeIncomingEvents(urls: [URL], activities: [NSUserActivity], notificationPayload: PushNotification.Payload? = nil) {
-        guard let handler = incomingEventHandler ?? (UIApplication.shared.delegate as? SceneIncomingEventHandling) else { return }
+    func routeIncomingEvents(urls: [URL], activities: [NSUserActivity], notificationPayload: PushNotification.Payload? = nil,
+                             notificationDeliveryID: String? = nil) {
+        guard let handler = incomingEventHandler ?? AppDelegate.current else { return }
 
         if let notificationPayload = notificationPayload {
-            handler.handleLaunchNotification(payload: notificationPayload)
+            handler.handleLaunchNotification(payload: notificationPayload, deliveryID: notificationDeliveryID)
         }
 
         for url in urls {

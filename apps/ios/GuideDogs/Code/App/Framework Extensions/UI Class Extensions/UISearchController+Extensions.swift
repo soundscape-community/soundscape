@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -10,20 +11,15 @@ import Foundation
 
 extension UISearchController {
     
-    convenience init?(delegate: SearchResultsTableViewControllerDelegate) {
-        let storyboard = UIStoryboard(name: "POITable", bundle: nil)
-        
-        // Initialize search results controller
-        guard let searchResultsController = storyboard.instantiateViewController(withIdentifier: "SearchResultsTableView")
-                as? SearchResultsTableViewController else { return nil }
-        
+    convenience init?(delegate: SearchResultsViewControllerDelegate) {
+        let searchResultsController = SearchResultsViewController()
         self.init(searchResultsController: searchResultsController, delegate: delegate)
     }
     
     /// - Note: When `displayInPlace` is `false` (default) the `UISearchController` uses the `searchResultsController` argument as it's property.
     /// When the value is `true`, that value will be `nil`.
-    convenience init(searchResultsController: SearchResultsTableViewController,
-                     delegate: SearchResultsTableViewControllerDelegate,
+    convenience init(searchResultsController: SearchResultsViewController,
+                     delegate: SearchResultsViewControllerDelegate,
                      displayInPlace: Bool = false) {
         // Pass `delegate` to new view
         searchResultsController.delegate = delegate

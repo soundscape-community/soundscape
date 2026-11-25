@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -11,16 +12,6 @@ import CoreLocation
 import SwiftUI
 
 class CardStateViewController: UIViewController {
-    
-    enum Segue {
-        case flagDetailView
-        
-        var identifier: String {
-            switch self {
-            case .flagDetailView: return "FlagDetailView"
-            }
-        }
-    }
     
     private enum State {
         case `default`
@@ -31,14 +22,11 @@ class CardStateViewController: UIViewController {
         var viewController: UIViewController? {
             switch self {
             case .default:
-                let storyboard = UIStoryboard(name: "main", bundle: Bundle.main)
-                return storyboard.instantiateViewController(withIdentifier: "RecommenderViewHostingController")
+                return RecommenderViewHostingController()
             case .beacon, .route:
-                let storyboard = UIStoryboard(name: "main", bundle: Bundle.main)
-                return storyboard.instantiateViewController(withIdentifier: "BeaconViewHostingController")
+                return BeaconViewHostingController()
             case .tour:
-                let storyboard = UIStoryboard(name: "main", bundle: Bundle.main)
-                return storyboard.instantiateViewController(withIdentifier: "TourCardContainerHost")
+                return TourCardContainerHostingController()
             }
         }
     }
@@ -146,25 +134,6 @@ class CardStateViewController: UIViewController {
         if container is TourCardContainerHostingController, currentVC is TourCardContainerHostingController {
             preferredContentSize.height = container.preferredContentSize.height
         }
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? LocationDetailViewController {
-            guard let detail = sender as? LocationDetail else {
-                return
-            }
-            
-            vc.locationDetail = detail
-            
-            // Setup the back button for the details page
-            let backItem = UIBarButtonItem()
-            backItem.title = GDLocalizedString("ui.back_button.title")
-            navigationItem.backBarButtonItem = backItem
-        }
-    }
-    
-    func performSegue(_ segue: Segue, sender: Any?) {
-        self.performSegue(withIdentifier: segue.identifier, sender: sender)
     }
     
     // MARK: Child View Controller Management

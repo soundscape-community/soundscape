@@ -780,20 +780,15 @@ final class TelemetryTests: XCTestCase {
     }
 
     @MainActor
-    func testSettingsRestoresTelemetrySectionAndAccessibleSwitch() throws {
-        let settings = try XCTUnwrap(UIStoryboard(name: "Settings", bundle: .main)
-            .instantiateInitialViewController() as? SettingsViewController)
-        settings.loadViewIfNeeded()
-        XCTAssertEqual(settings.numberOfSections(in: settings.tableView), 9)
-        let cell = try XCTUnwrap(settings.tableView(settings.tableView, cellForRowAt: IndexPath(row: 0, section: 8))
-            as? TelemetrySettingsTableViewCell)
-        XCTAssertEqual(cell.telemetrySwitch?.isOn, GDATelemetry.enabled)
-        XCTAssertEqual(cell.telemetrySwitch?.accessibilityLabel, GDLocalizedString("settings.section.share_usage_data"))
-        XCTAssertEqual(settings.tableView(settings.tableView, titleForHeaderInSection: 8), GDLocalizedString("settings.section.telemetry"))
-        XCTAssertEqual(settings.tableView(settings.tableView, titleForFooterInSection: 8), GDLocalizedString("settings.section.telemetry.footer"))
-        cell.telemetrySwitch?.isOn = !GDATelemetry.enabled
-        cell.configure()
-        XCTAssertEqual(cell.telemetrySwitch?.isOn, GDATelemetry.enabled)
+    func testSettingsRequiresConfirmationBeforeDisablingUsageSharing() {
+        let model = SettingsViewModel()
+        let sharing = model.usageSharing
+        let wasEnabled = GDATelemetry.enabled
+
+        XCTAssertEqual(sharing.wrappedValue, wasEnabled)
+        sharing.wrappedValue = false
+        XCTAssertEqual(model.confirmation, .stopSharing)
+        XCTAssertEqual(sharing.wrappedValue, wasEnabled)
     }
 
     // Accelerate only scheduling and file rotation; retain production size and retention limits.

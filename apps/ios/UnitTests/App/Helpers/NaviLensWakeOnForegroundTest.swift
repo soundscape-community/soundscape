@@ -58,28 +58,18 @@ final class NaviLensWakeOnForegroundTest: XCTestCase {
         helper.wakeUp()
     }
 
-    func testSettingsSwitchLoadsAndSavesAutoSnooze() throws {
+    @MainActor
+    func testSettingsSwitchLoadsAndSavesAutoSnooze() {
         let originalValue = SettingsContext.shared.naviLensAutoSnoozeEnabled
         defer { SettingsContext.shared.naviLensAutoSnoozeEnabled = originalValue }
 
-        let storyboard = UIStoryboard(name: "Settings", bundle: Bundle(for: SettingsViewController.self))
-        let controller = try XCTUnwrap(storyboard.instantiateInitialViewController() as? SettingsViewController)
-        controller.loadViewIfNeeded()
-        let tableView = try XCTUnwrap(controller.tableView)
-        let section = try XCTUnwrap((0..<controller.numberOfSections(in: tableView)).first {
-            controller.tableView(tableView, titleForHeaderInSection: $0) == GDLocalizedString("settings.section.navilens")
-        })
-        let indexPath = IndexPath(row: 0, section: section)
+        let preference = SettingsViewModel().naviLensAutoSnooze
 
         for enabled in [true, false] {
             SettingsContext.shared.naviLensAutoSnoozeEnabled = enabled
-            let cell = controller.tableView(tableView, cellForRowAt: indexPath)
-            let settingSwitch = try XCTUnwrap(cell.accessoryView as? UISwitch)
-            XCTAssertEqual(settingSwitch.isOn, enabled)
-            XCTAssertEqual(settingSwitch.accessibilityLabel, GDLocalizedString("settings.navilens.auto_snooze.title"))
+            XCTAssertEqual(preference.wrappedValue, enabled)
 
-            settingSwitch.isOn = !enabled
-            settingSwitch.sendActions(for: .valueChanged)
+            preference.wrappedValue = !enabled
             XCTAssertEqual(SettingsContext.shared.naviLensAutoSnoozeEnabled, !enabled)
         }
     }

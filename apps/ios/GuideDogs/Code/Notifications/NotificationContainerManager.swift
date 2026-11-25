@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -53,15 +54,25 @@ extension NotificationContainerManager: NotificationServerDelegate {
     }
     
     func performSegue<T>(_ server: NotificationServer<T>, destination: ViewControllerRepresentable) where T: NotificationProtocol {
-        guard let navigationController: NavigationController = currentViewController?.navigationController as? NavigationController else {
-            return
+        guard let currentViewController else { return }
+        let legacyStack = currentViewController.navigationController as? NavigationController
+        let isHome = currentViewController === LaunchHelper.homePresenter
+        if let legacyStack, !isHome {
+            legacyStack.performSegue(destination)
+        } else {
+            DispatchQueue.main.async {
+                AppNavigationModel.shared.openNotificationDestination(destination)
+            }
         }
-        
-        navigationController.performSegue(destination)
     }
     
     func popToRootViewController<T>(_ server: NotificationServer<T>) where T: NotificationProtocol {
-        currentViewController?.navigationController?.popToRootViewController(animated: true)
+        guard let currentViewController else { return }
+        if let navigation = currentViewController.navigationController as? NavigationController {
+            navigation.popToRootViewController(animated: true)
+        } else {
+            AppNavigationModel.shared.returnHome()
+        }
     }
     
 }

@@ -51,8 +51,7 @@ class PushNotificationManager: NSObject {
     
     private(set) var localPushNotificationManager = LocalPushNotificationManager()
     
-    private var notificationPresentationCompletion: ((UNNotificationPresentationOptions) -> Void)?
-    private var notificationResponseCompletion: (() -> Void)?
+    private var handledDeliveries: [String] = []
     
     // MARK: - Initialization
     
@@ -117,19 +116,25 @@ class PushNotificationManager: NSObject {
         //XXX removed Azure-specific implementation
     }
     
-    func didFinishLaunchingWithOptions(_ launchOptions: [UIApplication.LaunchOptionsKey: Any]) {
-        guard let remoteNotification = launchOptions[.remoteNotification] as? PushNotification.Payload else { return }
-        didReceiveLaunchNotification(payload: remoteNotification)
+    static func deliveryID(for notification: UNNotification) -> String {
+        notification.request.identifier + "/" + String(notification.date.timeIntervalSinceReferenceDate)
     }
 
-    func didReceiveLaunchNotification(payload: PushNotification.Payload) {
-        let pushNotification = PushNotification(payload: payload, arrivalContext: .launch)
-        didReceive(pushNotification: pushNotification)
+    func receive(payload: PushNotification.Payload, deliveryID: String?, arrival: PushNotification.ArrivalContext) {
+        if let deliveryID {
+            guard !handledDeliveries.contains(deliveryID) else { return }
+            handledDeliveries.append(deliveryID)
+            if handledDeliveries.count > 32 {
+                handledDeliveries.removeFirst()
+            }
+        }
+
+        didReceive(pushNotification: PushNotification(payload: payload, arrivalContext: arrival))
     }
-    
+
     // MARK: Receiving Push Notifications
     
-    func didReceive(pushNotification: PushNotification) {
+    private func didReceive(pushNotification: PushNotification) {
         guard appDidInitialize else {
             pendingPushNotification = pushNotification
             GDLogPushInfo("Did receive pending push notification")
@@ -180,13 +185,26 @@ extension PushNotificationManager: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        notificationPresentationCompletion = completionHandler
+        let payload = notification.request.content.userInfo
+        let deliveryID = Self.deliveryID(for: notification)
+        DispatchQueue.main.async { [weak self] in
+            self?.receive(payload: payload, deliveryID: deliveryID, arrival: .default)
+            completionHandler([])
+        }
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        notificationResponseCompletion = completionHandler
+        let payload = response.notification.request.content.userInfo
+        let deliveryID = Self.deliveryID(for: response.notification)
+        let didOpen = response.actionIdentifier != UNNotificationDismissActionIdentifier
+        DispatchQueue.main.async { [weak self] in
+            if didOpen {
+                self?.receive(payload: payload, deliveryID: deliveryID, arrival: .default)
+            }
+            completionHandler()
+        }
     }
     
 }

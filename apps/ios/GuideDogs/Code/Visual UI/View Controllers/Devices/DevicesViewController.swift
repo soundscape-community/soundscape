@@ -8,6 +8,7 @@
 //
 
 import UIKit
+import SwiftUI
 import SceneKit
 import SceneKit.ModelIO
 import AVFoundation
@@ -16,10 +17,6 @@ import Combine
 class DevicesViewController: UIViewController {
 
     // MARK: - Types
-    
-    private struct Segue {
-        static let unwind = "UnwindToHomeSegue"
-    }
     
     private enum ButtonState {
         case light
@@ -325,19 +322,11 @@ class DevicesViewController: UIViewController {
         }
     }
     
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var text: UILabel!
-    @IBOutlet weak var primaryBtn: RoundedSolidButton!
-    @IBOutlet weak var primaryBtnLabel: UILabel!
-    @IBOutlet weak var secondaryBtn: RoundedSolidButton!
-    @IBOutlet weak var secondaryBtnLabel: UILabel!
-    @IBOutlet weak var headsetViewContainer: RoundedView!
-    @IBOutlet weak var headsetView: SCNView!
-    @IBOutlet weak var deviceImageView: UIImageView!
-    
-    @IBOutlet var primaryBtnConstraints: [NSLayoutConstraint]!
-    @IBOutlet var secondaryBtnConstraints: [NSLayoutConstraint]!
-    
+    private let screen = DeviceScreenModel()
+    private let headsetView = SCNView()
+    var coordinatorBackButton: UIBarButtonItem?
+    var onReturnHome: (() -> Void)?
+
     private var headphoneMotionStatusSubscriber: AnyCancellable?
     private var bleDeviceCalibrationStatusSubscriber: AnyCancellable?
     
@@ -403,6 +392,27 @@ class DevicesViewController: UIViewController {
     
     // MARK: - Lifecycle
     
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor(named: "Background 1")
+        view.accessibilityIgnoresInvertColors = true
+        extendedLayoutIncludesOpaqueBars = true
+
+        headsetView.backgroundColor = .clear
+        screen.primaryAction = { [weak self] in self?.onPrimaryBtnTouchUpInside() }
+        screen.secondaryAction = { [weak self] in self?.onSecondaryBtnTouchUpInside() }
+        let host = UIHostingController(rootView: DeviceScreen(model: screen, scene: headsetView))
+        host.view.backgroundColor = .clear
+        add(host) { content in
+            [
+                content.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                content.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                content.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ]
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -478,7 +488,7 @@ class DevicesViewController: UIViewController {
         
         // Always start by focusing VO on the header
         if launchedAutomatically {
-            UIAccessibility.post(notification: .screenChanged, argument: primaryBtn)
+            screen.focusRequest += 1
         }
     }
     
@@ -509,58 +519,25 @@ class DevicesViewController: UIViewController {
     /// - Parameter withAnimations: Animates the changes to the image view and text label if True
     private func renderView(withAnimations: Bool = true) {
         GDLogHeadphoneMotionInfo("Rendering view for status: \(self.state)")
-        if withAnimations {
-            CATransaction.begin()
-            CATransaction.setAnimationDuration(0.3)
-            CATransaction.setCompletionBlock { [weak self] in
-                UIAccessibility.post(notification: .screenChanged, argument: self?.navigationItem.titleView)
-            }
-            
-            let transition = CATransition()
-            transition.type = CATransitionType.fade
-            
-            imageView.layer.add(transition, forKey: kCATransition)
-            text.layer.add(transition, forKey: kCATransition)
-        }
-
-        // Debug
-        if connectedDevice != nil {
-            GDLogHeadphoneMotionInfo("renderingView WITH a device connected")
-        } else {
-            GDLogHeadphoneMotionInfo("renderingView WITHOUT a device connected. Using the first in device manager which seems not to be very useful...")
-        }
-        
         let currentDevice = connectedDevice ?? AppContext.shared.deviceManager.devices.first
-        
-        imageView.image = state.backgroundImage
-        text.text = state.text(for: currentDevice)
-        
+        let sceneState = state.sceneState(for: currentDevice)
+        let update = {
+            self.screen.illustration = self.state.backgroundImage
+            self.screen.instructions = self.state.text(for: currentDevice)
+            self.screen.primaryTitle = self.state.primaryBtnText(for: currentDevice)
+            self.screen.usesLightPrimaryStyle = self.state.primaryBtnState == .light
+            self.screen.secondaryTitle = self.state.secondaryBtnIsHidden ? nil : self.state.secondaryBtnText
+            self.screen.secondaryHint = self.state.secondaryBtnHint(for: currentDevice)
+            self.screen.showsGenericHeadset = sceneState == .static
+            self.screen.showsScene = sceneState == .animating || sceneState == .active
+        }
         if withAnimations {
-            CATransaction.commit()
-        }
-        
-        navigationItem.rightBarButtonItem = nil
-        
-        secondaryBtn.isHidden = state.secondaryBtnIsHidden
-        secondaryBtn.accessibilityLabel = state.secondaryBtnText
-        secondaryBtn.accessibilityHint = state.secondaryBtnHint(for: currentDevice)
-        secondaryBtnLabel.isHidden = state.secondaryBtnIsHidden
-        secondaryBtnLabel.text = state.secondaryBtnText
-        secondaryBtnLabel.textColor = Colors.Background.secondary
-        
-        if state.secondaryBtnIsHidden {
-            NSLayoutConstraint.deactivate(secondaryBtnConstraints)
-            NSLayoutConstraint.activate(primaryBtnConstraints)
+            withAnimation(.easeInOut(duration: 0.3), update)
         } else {
-            NSLayoutConstraint.deactivate(primaryBtnConstraints)
-            NSLayoutConstraint.activate(secondaryBtnConstraints)
+            update()
         }
-        
-        primaryBtnLabel.text = state.primaryBtnText(for: currentDevice)
-        primaryBtnLabel.textColor = state.primaryBtnState == .light ? Colors.Background.secondary : Colors.Foreground.primary
-        primaryBtn.backgroundColor = state.primaryBtnState == .light ? Colors.Foreground.primary : Colors.Background.tertiary
-        primaryBtn.accessibilityLabel = primaryBtnLabel.text
-        
+        navigationItem.rightBarButtonItem = nil
+
         title = state.title
         
         navigationItem.hidesBackButton = state != .paired && state != .connected && state != .disconnected
@@ -568,44 +545,23 @@ class DevicesViewController: UIViewController {
         if state == .pairingAudio {
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: GDLocalizedString("general.alert.cancel"), style: .done, target: self, action: #selector(cancelConnection))
         } else {
-            navigationItem.leftBarButtonItem = nil
+            navigationItem.leftBarButtonItem = navigationItem.hidesBackButton ? nil : coordinatorBackButton
         }
-        
+
         headsetNode?.removeAllAnimations()
         deviceHeading = nil
-        
-        switch state.sceneState(for: currentDevice) {
-        case .hidden:
-            deviceImageView.isHidden = true
-            headsetViewContainer.isHidden = true
-            
-        case .static:
-            deviceImageView.image = UIImage(named: "GenericHeadset")
-            deviceImageView.isHidden = false
-            headsetView.isHidden = true
-            
-            headsetViewContainer.isHidden = false
-            
+        switch sceneState {
+        case .hidden, .static:
+            break
         case .animating:
-            deviceImageView.isHidden = true
-            headsetView.isHidden = false
             headsetNode?.eulerAngles = SCNVector3(0.2, 0.0, 0.0)
             setupCalibrationAnimation()
-            headsetViewContainer.isHidden = false
-            
         case .active:
-            deviceImageView.isHidden = true
-            headsetView.isHidden = false
             setupActiveAnimation()
-            
-            headsetViewContainer.isHidden = false
         }
-        
-        if !withAnimations {
-            UIAccessibility.post(notification: .screenChanged, argument: navigationItem.titleView)
-        }
+        UIAccessibility.post(notification: .screenChanged, argument: navigationItem.titleView)
     }
-    
+
     private func setupCalibrationAnimation() {
         let angles = CAKeyframeAnimation(keyPath: "eulerAngles")
         angles.values = [
@@ -716,7 +672,7 @@ class DevicesViewController: UIViewController {
         }
     }
     
-    @IBAction func onPrimaryBtnTouchUpInside() {
+    @objc func onPrimaryBtnTouchUpInside() {
         AppContext.shared.bleManager.authorizationStatus { authorized in
             guard authorized else {
                 let alert = ErrorAlerts.buildBLEAlert()
@@ -801,7 +757,7 @@ class DevicesViewController: UIViewController {
         case .completedPairing:
             // Return to the home screen
             AppContext.process(HeadsetTestEvent(.end))
-            performSegue(withIdentifier: Segue.unwind, sender: self)
+            returnToHome()
             
         case .paired, .connected:
             let alert = UIAlertController(title: GDLocalizedString("devices.forget_headset.prompt.forget"),
@@ -829,18 +785,28 @@ class DevicesViewController: UIViewController {
             AppContext.process(HeadsetTestEvent(.end))
             
             // Return to the home screen
-            performSegue(withIdentifier: Segue.unwind, sender: self)
+            returnToHome()
             
         default:
             return
         }
     }
     
-    @IBAction func onSecondaryBtnTouchUpInside() {
+    @objc func onSecondaryBtnTouchUpInside() {
         state = .testHeadset
         AppContext.process(HeadsetTestEvent(.start))
     }
     
+    private func returnToHome() {
+        if let onReturnHome {
+            onReturnHome()
+        } else if let navigationController, navigationController.viewControllers.first !== self {
+            navigationController.popToRootViewController(animated: true)
+        } else {
+            dismiss(animated: true)
+        }
+    }
+
     private func connectDevice(of type: Device.Type, name: String) {
         type.setupDevice { [weak self] (result) in
             guard let `self` = self else {

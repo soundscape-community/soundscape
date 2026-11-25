@@ -122,7 +122,10 @@ class AppContext {
     
     /// Returns the root view controller for the current app window
     class var rootViewController: UIViewController? {
-        return window?.rootViewController
+        if !AppNavigationModel.shared.coordinator.path.isEmpty {
+            return window?.rootViewController
+        }
+        return LaunchHelper.homeNavigationController ?? window?.rootViewController
     }
 
     /// The key window in the app's single window scene.
@@ -254,8 +257,7 @@ class AppContext {
             eventProcessor.process(GlyphEvent(.appLaunch))
         }
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.pushNotificationManager.start()
+        AppDelegate.current?.pushNotificationManager.start()
         
         hasStarted = true
     }

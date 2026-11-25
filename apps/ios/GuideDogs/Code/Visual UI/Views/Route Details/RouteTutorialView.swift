@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -22,13 +23,8 @@ struct RouteTutorialView: View {
             AppContext.shared.eventProcessor.deactivateCustom()
         }
         
-        // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
-        if let home = navHelper.host?.navigationController?.viewControllers.first as? HomeViewController {
-            home.shouldFocusOnBeacon = true
-        }
-        
         AppContext.shared.eventProcessor.activateCustom(behavior: guidance)
-        navHelper.popToRootViewController(animated: true)
+        navHelper.returnToHome(focusOnBeacon: true)
     }
     
     var body: some View {

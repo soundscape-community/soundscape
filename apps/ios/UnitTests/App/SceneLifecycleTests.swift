@@ -16,21 +16,29 @@ final class SceneLifecycleTests: XCTestCase {
     func testSceneConfigurationCreatesTheAppWindow() throws {
         let info = try XCTUnwrap(Bundle.main.infoDictionary)
         let manifest = try XCTUnwrap(info["UIApplicationSceneManifest"] as? [String: Any])
-        let configurations = try XCTUnwrap(manifest["UISceneConfigurations"] as? [String: Any])
-        let applicationScenes = try XCTUnwrap(configurations["UIWindowSceneSessionRoleApplication"] as? [[String: Any]])
-        let configuration = try XCTUnwrap(applicationScenes.first)
-
-        XCTAssertEqual(applicationScenes.count, 1)
         XCTAssertEqual(manifest["UIApplicationSupportsMultipleScenes"] as? Bool, false)
-        XCTAssertEqual(configuration["UISceneDelegateClassName"] as? String, NSStringFromClass(SceneDelegate.self))
-        XCTAssertEqual(configuration["UISceneStoryboardFile"] as? String, "Launch-Dynamic")
+        XCTAssertNil(manifest["UISceneConfigurations"])
         XCTAssertNil(info["UIMainStoryboardFile"])
-        XCTAssertEqual(info["UILaunchStoryboardName"] as? String, "Launch-Static")
+        XCTAssertNil(info["UILaunchStoryboardName"])
+        let launchScreen = try XCTUnwrap(info["UILaunchScreen"] as? [String: Any])
+        XCTAssertEqual(launchScreen["UIColorName"] as? String, "launchBackground")
+        XCTAssertEqual(launchScreen["UIImageName"] as? String, "launchScreenLogo")
 
         let window = try XCTUnwrap(AppContext.window)
-        XCTAssertTrue(window.windowScene?.delegate is SceneDelegate)
+        XCTAssertNotNil(window.windowScene)
+        XCTAssertEqual(AppContext.appState, UIApplication.shared.applicationState)
         XCTAssertNotNil(window.rootViewController)
-        XCTAssertTrue(AppContext.rootViewController === window.rootViewController)
+        XCTAssertNotNil(AppContext.rootViewController)
+    }
+
+    func testAppBundleHasNoInterfaceBuilderResources() throws {
+        let resources = try XCTUnwrap(Bundle.main.resourceURL)
+        let files = try XCTUnwrap(FileManager.default.enumerator(at: resources, includingPropertiesForKeys: nil))
+        let interfaceBuilderFiles = files.compactMap { $0 as? URL }.filter {
+            ["storyboardc", "nib", "storyboard", "xib"].contains($0.pathExtension)
+        }
+
+        XCTAssertTrue(interfaceBuilderFiles.isEmpty, "Found Interface Builder resources: \(interfaceBuilderFiles)")
     }
 
     @MainActor
@@ -83,13 +91,15 @@ final class SceneLifecycleTests: XCTestCase {
         let warmActivity = NSUserActivity(activityType: "services.soundscape.activity.search")
         let notificationPayload: PushNotification.Payload = ["aps": ["alert": "Open Soundscape"]]
 
-        delegate.routeIncomingEvents(urls: [coldURL], activities: [coldActivity], notificationPayload: notificationPayload)
+        delegate.routeIncomingEvents(urls: [coldURL], activities: [coldActivity],
+                                   notificationPayload: notificationPayload, notificationDeliveryID: "cold-notification")
         delegate.routeIncomingEvents(urls: [warmURL], activities: [warmActivity])
 
         XCTAssertEqual(handler.urls, [coldURL, warmURL])
         XCTAssertEqual(handler.activities.count, 2)
         XCTAssertTrue(handler.activities[0] === coldActivity)
         XCTAssertTrue(handler.activities[1] === warmActivity)
+        XCTAssertEqual(handler.notificationDeliveryIDs, ["cold-notification"])
         XCTAssertEqual(handler.notificationPayloads.count, 1)
         XCTAssertEqual(handler.notificationPayloads[0]["aps"] as? [String: String], ["alert": "Open Soundscape"])
     }
@@ -271,6 +281,7 @@ private final class IncomingEventSpy: SceneIncomingEventHandling {
     var urls: [URL] = []
     var activities: [NSUserActivity] = []
     var notificationPayloads: [PushNotification.Payload] = []
+    var notificationDeliveryIDs: [String?] = []
 
     func openURLResource(_ url: URL) -> Bool {
         urls.append(url)
@@ -282,7 +293,88 @@ private final class IncomingEventSpy: SceneIncomingEventHandling {
         return true
     }
 
-    func handleLaunchNotification(payload: PushNotification.Payload) {
+    func handleLaunchNotification(payload: PushNotification.Payload, deliveryID: String?) {
         notificationPayloads.append(payload)
+        notificationDeliveryIDs.append(deliveryID)
+    }
+}
+
+final class NavigationCoordinatorTests: XCTestCase {
+    func testFirstLaunchCompletesOnboardingBeforeHome() {
+        var coordinator = AppCoordinator()
+        coordinator.open(.settings)
+        XCTAssertTrue(coordinator.path.isEmpty)
+
+        coordinator.finishLaunch(needsOnboarding: true, needsConsent: true)
+        XCTAssertEqual(coordinator.stage, .onboarding)
+        coordinator.finishConsent()
+        XCTAssertEqual(coordinator.stage, .onboarding)
+        coordinator.finishOnboarding()
+        XCTAssertEqual(coordinator.stage, .home)
+    }
+
+    func testReturningLaunchKeepsHomeBehindConsent() {
+        var coordinator = AppCoordinator()
+        coordinator.finishLaunch(needsOnboarding: false, needsConsent: true)
+        XCTAssertEqual(coordinator.stage, .telemetryConsent)
+        coordinator.finishConsent()
+        XCTAssertEqual(coordinator.stage, .home)
+    }
+
+    func testHelpTutorialKeepsItsOwnNavigationAndReturnsToHelp() {
+        var coordinator = AppCoordinator()
+        coordinator.finishLaunch(needsOnboarding: false, needsConsent: false)
+        coordinator.setHelpTutorialPresented(true)
+        XCTAssertFalse(coordinator.isShowingHelpTutorial)
+        coordinator.open(.help)
+        coordinator.setHelpTutorialPresented(true)
+        XCTAssertTrue(coordinator.isShowingHelpTutorial)
+
+        var firstUse = OnboardingCoordinator(needsTerms: true)
+        var tutorial = OnboardingCoordinator(needsTerms: false)
+        firstUse.open(firstUse.firstRoute(languageMatches: false))
+        tutorial.open(tutorial.firstRoute(languageMatches: true))
+        tutorial.open(.callouts)
+        tutorial.updatePath([.headphones])
+        XCTAssertEqual(firstUse.path, [.language])
+        XCTAssertEqual(tutorial.path, [.headphones])
+        XCTAssertEqual(firstUse.routeAfterAuthorizations(allGranted: true), .beacon)
+        XCTAssertEqual(firstUse.routeAfterAuthorizations(allGranted: false), .terms)
+        XCTAssertEqual(tutorial.routeAfterAuthorizations(allGranted: false), .finish)
+
+        coordinator.setHelpTutorialPresented(false)
+        XCTAssertEqual(coordinator.path, [.help])
+    }
+
+    func testNavigationIntentWaitsForHomeAndDrainsOnce() {
+        var coordinator = AppCoordinator()
+        XCTAssertNil(coordinator.receive(.search))
+        XCTAssertNil(coordinator.homeBecameReady())
+        coordinator.finishLaunch(needsOnboarding: true, needsConsent: true)
+        XCTAssertNil(coordinator.receive(.saveMarker))
+        coordinator.finishOnboarding()
+        XCTAssertNil(coordinator.receive(.streetPreview))
+        XCTAssertEqual(coordinator.homeBecameReady(), .streetPreview)
+        XCTAssertNil(coordinator.homeBecameReady())
+        XCTAssertEqual(coordinator.receive(.search), .search)
+
+        coordinator.rebuildHome()
+        XCTAssertNil(coordinator.receive(.saveMarker))
+        XCTAssertEqual(coordinator.homeBecameReady(), .saveMarker)
+    }
+
+    func testBackUpdatesPathAndRouteIDsStayStable() {
+        var coordinator = AppCoordinator()
+        coordinator.finishLaunch(needsOnboarding: false, needsConsent: false)
+        coordinator.open(.settings)
+        coordinator.open(.settingsPage(.voice))
+        coordinator.open(.settingsPage(.voice))
+        XCTAssertEqual(coordinator.path, [.settings, .settingsPage(.voice)])
+        coordinator.updatePath([.settings])
+        XCTAssertEqual(coordinator.path, [.settings])
+
+        XCTAssertEqual(AppRoute.settingsPage(.voice).id, "settings/voice")
+        XCTAssertEqual(AppRoute.nearbyResults(nil).id, "nearby/all")
+        XCTAssertNotEqual(AppRoute.helpPage(.page("x")).id, AppRoute.helpPage(.answer("x")).id)
     }
 }

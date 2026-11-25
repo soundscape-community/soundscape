@@ -8,198 +8,38 @@
 //
 
 import UIKit
+import SwiftUI
 import CocoaLumberjackSwift
 
-class StatusTableViewController: BaseTableViewController {
+class TroubleshootingViewController: UIViewController {
+    private let model = TroubleshootingModel()
+    private var reenableCalloutsAfterReload = false
 
-    private struct Section {
-        static let gps = 0
-        static let audio = 1
-        static let url = 2
-        static let cache = 3
-        static let userData = 4
-        static let advanced = 5
-    }
-    
-    private struct CellIdentifier {
-        static let gps = "GPSStatus"
-        static let advanced = "AdvancedSetting"
-    }
-    
-    var reenableCalloutsAfterReload = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.estimatedRowHeight = 80
-        tableView.rowHeight = UITableView.automaticDimension
-        
-        tableView.registerCell(ButtonTableViewCell.self)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: CellIdentifier.advanced)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onLocationUpdated(notification:)),
-                                               name: Notification.Name.locationUpdated,
-                                               object: AppContext.shared.spatialDataContext)
+        title = GDLocalizedString("settings.section.troubleshooting")
+        let host = UIHostingController(rootView: TroubleshootingScreen(
+            model: model,
+            checkAudio: { [weak self] in self?.crosscheckTouchUpInside() },
+            configureServer: { [weak self] in self?.urlTouchUpInside() },
+            clearCache: { [weak self] in self?.clearCacheTouchUpInside() },
+            deleteUserData: { [weak self] in self?.deleteUserDataTouchUpInside() }
+        ))
+        add(host) { content in
+            [
+                content.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                content.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                content.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ]
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.spatialDataStateChanged, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.locationUpdated, object: AppContext.shared.spatialDataContext)
-    }
-    
-    @objc
-    private func onLocationUpdated(notification: Notification) {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadRows(at: [IndexPath(row: 0, section: Section.gps)], with: .none)
+        if isMovingFromParent {
+            NotificationCenter.default.removeObserver(self, name: .spatialDataStateChanged, object: nil)
         }
-    }
-    
-    // MARK: - Table view data source
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 6
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case Section.gps:     return 1
-        case Section.audio:   return 1
-        case Section.url:     return 1
-        case Section.cache:   return 1
-        case Section.userData: return 1 
-        case Section.advanced: return 1
-        default:              return 0
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case Section.gps:     return GDLocalizedString("troubleshooting.gps_status")
-        case Section.audio:   return GDLocalizedString("troubleshooting.check_audio")
-        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url")
-        case Section.cache:   return GDLocalizedString("troubleshooting.cache")
-        case Section.userData: return GDLocalizedString("troubleshooting.user_data") 
-        case Section.advanced: return GDLocalizationUnnecessary("Advanced")
-        default:              return nil
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        switch section {
-        case Section.gps:
-            if SettingsContext.shared.metricUnits {
-                return GDLocalizedString("troubleshooting.gps_status.explanation.meters")
-            } else {
-                return GDLocalizedString("troubleshooting.gps_status.explanation.feet")
-            }
-        case Section.audio: return GDLocalizedString("troubleshooting.check_audio.explanation")
-        case Section.url:     return GDLocalizedString("troubleshooting.tile_server_url.explanation")
-        case Section.cache: return GDLocalizedString("troubleshooting.cache.explanation")
-        case Section.userData: return GDLocalizedString("troubleshooting.user_data.explanation") 
-        default: return nil
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.section {
-        case Section.gps:
-            let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.gps, for: indexPath)
-            
-            guard let accuracy = AppContext.shared.geolocationManager.location?.horizontalAccuracy else {
-                return cell
-            }
-            
-            if SettingsContext.shared.metricUnits {
-                cell.textLabel?.text = GDLocalizedString("troubleshooting.gps_status.meters", String(Int(accuracy)))
-            } else {
-                let feet = Measurement(value: accuracy, unit: UnitLength.meters).converted(to: UnitLength.feet).value
-                cell.textLabel?.text = GDLocalizedString("troubleshooting.gps_status.feet", String(Int(feet)))
-            }
-            
-            return cell
-            
-        case Section.audio:
-            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-            
-            cell.backgroundColor = Colors.Background.quaternary
-            cell.button.removeTarget(nil, action: nil, for: .touchUpInside)
-            cell.button.addTarget(self, action: #selector(crosscheckTouchUpInside), for: .touchUpInside)
-            cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.check_audio")
-            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.check_audio.hint")
-            cell.button.backgroundColor = Colors.Background.primary
-            cell.label.text = GDLocalizedString("troubleshooting.check_audio")
-            
-            return cell
-            
-        case Section.url:
-            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-            
-            cell.backgroundColor = Colors.Background.quaternary
-            cell.button.removeTarget(nil, action: nil, for: .touchUpInside)
-            cell.button.addTarget(self, action: #selector(urlTouchUpInside), for: .touchUpInside)
-            cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.tile_server_url")
-            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.tile_server_url.explanation")
-            cell.button.backgroundColor = Colors.Background.primary
-            cell.label.text = SettingsContext.shared.servicesHostName
-            cell.label.textAlignment = .left
-
-            return cell
-            
-        case Section.cache:
-            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-            
-            cell.backgroundColor = Colors.Background.quaternary
-            cell.button.removeTarget(nil, action: nil, for: .touchUpInside)
-            cell.button.addTarget(self, action: #selector(clearCacheTouchUpInside), for: .touchUpInside)
-            cell.button.accessibilityLabel = GDLocalizedString("settings.clear_data")
-            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.cache.hint")
-            cell.button.backgroundColor = Colors.Background.error
-            cell.label.text = GDLocalizedString("settings.clear_data")
-            
-            return cell
-            
-        case Section.userData:
-            let cell: ButtonTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-            cell.backgroundColor = Colors.Background.quaternary
-            cell.button.removeTarget(nil, action: nil, for: .touchUpInside)
-            cell.button.addTarget(self, action: #selector(deleteUserDataTouchUpInside), for: .touchUpInside)
-            cell.button.accessibilityLabel = GDLocalizedString("troubleshooting.user_data.button")
-            cell.button.accessibilityHint = GDLocalizedString("troubleshooting.user_data.explanation")
-            cell.button.backgroundColor = Colors.Background.error
-            cell.label.text = GDLocalizedString("troubleshooting.user_data.button")
-            return cell
-
-        case Section.advanced:
-            let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.advanced, for: indexPath)
-            let settingSwitch: UISwitch
-
-            if let existingSwitch = cell.accessoryView as? UISwitch {
-                settingSwitch = existingSwitch
-            } else {
-                settingSwitch = UISwitch()
-                settingSwitch.addTarget(self, action: #selector(kalmanFilterSettingChanged(_:)), for: .valueChanged)
-                cell.accessoryView = settingSwitch
-            }
-
-            cell.selectionStyle = .none
-            cell.textLabel?.text = GDLocalizationUnnecessary("Disable Kalman filter")
-            settingSwitch.isOn = !SettingsContext.shared.kalmanFilterEnabled
-            return cell
-            
-        default:
-            fatalError()
-        }
-        
-    }
-
-}
-
-extension StatusTableViewController {
-    @objc func kalmanFilterSettingChanged(_ sender: UISwitch) {
-        SettingsContext.shared.kalmanFilterEnabled = !sender.isOn
     }
 
     @objc func urlTouchUpInside() {
@@ -213,7 +53,7 @@ extension StatusTableViewController {
                 if let userInput = textField.text, !userInput.isEmpty {
                     SettingsContext.shared.servicesHostName = userInput
                     // Update url button label
-                    self.tableView.reloadData()
+                    self.model.server = SettingsContext.shared.servicesHostName
                 }
             }
         }
@@ -222,7 +62,7 @@ extension StatusTableViewController {
             // reset SettingsContext.shared.servicesHostName to default value
             SettingsContext.shared.servicesHostName = ""
             // Update url button label
-            self.tableView.reloadData()
+            self.model.server = SettingsContext.shared.servicesHostName
         }
         
         let cancelAction = UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel)
@@ -327,6 +167,8 @@ extension StatusTableViewController {
             }
         }))
         
+        alert.popoverPresentationController?.sourceView = view
+        alert.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 1, height: 1)
         present(alert, animated: true, completion: nil)
     }
     
@@ -453,5 +295,93 @@ extension StatusTableViewController {
         }
         
         dismiss(animated: true, completion: nil)
+    }
+}
+
+
+private final class TroubleshootingModel: ObservableObject {
+    @Published var server = SettingsContext.shared.servicesHostName
+    @Published var disableKalman = !SettingsContext.shared.kalmanFilterEnabled {
+        didSet { SettingsContext.shared.kalmanFilterEnabled = !disableKalman }
+    }
+}
+
+private struct TroubleshootingScreen: View {
+    @ObservedObject var model: TroubleshootingModel
+    let checkAudio: () -> Void
+    let configureServer: () -> Void
+    let clearCache: () -> Void
+    let deleteUserData: () -> Void
+    @State private var accuracy: Double?
+
+    var body: some View {
+        Form {
+            Section {
+                if let accuracy {
+                    Text(accuracyLabel(accuracy))
+                }
+            } header: {
+                GDLocalizedTextView("troubleshooting.gps_status")
+            } footer: {
+                GDLocalizedTextView(SettingsContext.shared.metricUnits
+                                    ? "troubleshooting.gps_status.explanation.meters"
+                                    : "troubleshooting.gps_status.explanation.feet")
+            }
+
+            Section {
+                Button(action: checkAudio) { GDLocalizedTextView("troubleshooting.check_audio") }
+                    .accessibilityHint(GDLocalizedTextView("troubleshooting.check_audio.hint"))
+            } header: {
+                GDLocalizedTextView("troubleshooting.check_audio")
+            } footer: {
+                GDLocalizedTextView("troubleshooting.check_audio.explanation")
+            }
+
+            Section {
+                Button(model.server, action: configureServer)
+                    .accessibilityLabel(GDLocalizedTextView("troubleshooting.tile_server_url"))
+            } header: {
+                GDLocalizedTextView("troubleshooting.tile_server_url")
+            } footer: {
+                GDLocalizedTextView("troubleshooting.tile_server_url.explanation")
+            }
+
+            Section {
+                Button(role: .destructive, action: clearCache) { GDLocalizedTextView("settings.clear_data") }
+                    .accessibilityHint(GDLocalizedTextView("troubleshooting.cache.hint"))
+            } header: {
+                GDLocalizedTextView("troubleshooting.cache")
+            } footer: {
+                GDLocalizedTextView("troubleshooting.cache.explanation")
+            }
+
+            Section {
+                Button(role: .destructive, action: deleteUserData) { GDLocalizedTextView("troubleshooting.user_data.button") }
+            } header: {
+                GDLocalizedTextView("troubleshooting.user_data")
+            } footer: {
+                GDLocalizedTextView("troubleshooting.user_data.explanation")
+            }
+
+            Section(GDLocalizationUnnecessary("Advanced")) {
+                Toggle(GDLocalizationUnnecessary("Disable Kalman filter"), isOn: $model.disableKalman)
+            }
+        }
+        .onAppear(perform: updateAccuracy)
+        .onReceive(NotificationCenter.default.publisher(for: .locationUpdated).receive(on: RunLoop.main)) { _ in
+            updateAccuracy()
+        }
+    }
+
+    private func updateAccuracy() {
+        accuracy = AppContext.shared.geolocationManager.location?.horizontalAccuracy
+    }
+
+    private func accuracyLabel(_ accuracy: Double) -> String {
+        if SettingsContext.shared.metricUnits {
+            return GDLocalizedString("troubleshooting.gps_status.meters", String(Int(accuracy)))
+        }
+        let feet = Measurement(value: accuracy, unit: UnitLength.meters).converted(to: .feet).value
+        return GDLocalizedString("troubleshooting.gps_status.feet", String(Int(feet)))
     }
 }

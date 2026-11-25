@@ -123,13 +123,8 @@ extension GuidedTourDetailsView {
             AppContext.shared.eventProcessor.deactivateCustom()
         }
         
-        // Try to make VoiceOver focus on the beacon panel after we pop to the home view controller
-        if let home = navHelper.host?.navigationController?.viewControllers.first as? HomeViewController {
-            home.shouldFocusOnBeacon = true
-        }
-        
         AppContext.shared.eventProcessor.activateCustom(behavior: tour)
-        navHelper.popToRootViewController(animated: true)
+        navHelper.returnToHome(focusOnBeacon: true)
     }
     
     private func stopTour() {

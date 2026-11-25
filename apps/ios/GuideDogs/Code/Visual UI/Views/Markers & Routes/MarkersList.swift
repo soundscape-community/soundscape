@@ -115,11 +115,7 @@ struct MarkersList: View {
         Button {
             selectedDetail = LocationDetail(markerId: id, telemetryContext: "markers_list")
 
-            let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-
-            guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
-                return
-            }
+            let viewController = LocationDetailViewController()
 
             viewController.locationDetail = selectedDetail
             viewController.deleteAction = .popToViewController(type: MarkersAndRoutesListHostViewController.self)

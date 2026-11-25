@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -11,11 +12,9 @@ import MapKit
 
 class EditableMapViewController: UIViewController {
     
-    // MARK: `IBOutlet`
-    
-    @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var annotationImageView: UIImageView!
-    @IBOutlet weak var label: UILabel!
+    private let mapView = MKMapView()
+    private let annotationImageView = UIImageView(image: UIImage(named: "baseline_place_red_36pt"))
+    private let label = UILabel()
     
     // MARK: Properties
     
@@ -25,6 +24,60 @@ class EditableMapViewController: UIViewController {
     
     // MARK: View Life Cycle
     
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor(named: "Background Base")
+
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = .preferredFont(forTextStyle: .subheadline)
+        label.adjustsFontForContentSizeCategory = true
+        label.textColor = UIColor(named: "Background Base")
+
+        let hint = UIView()
+        hint.backgroundColor = UIColor(named: "Excluded")
+        label.translatesAutoresizingMaskIntoConstraints = false
+        hint.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: hint.topAnchor, constant: 8),
+            label.leadingAnchor.constraint(equalTo: hint.leadingAnchor, constant: 8),
+            label.trailingAnchor.constraint(equalTo: hint.trailingAnchor, constant: -8),
+            label.bottomAnchor.constraint(equalTo: hint.bottomAnchor, constant: -8)
+        ])
+
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+        let stack = UIStackView(arrangedSubviews: [hint, mapView])
+        stack.axis = .vertical
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(stack)
+
+        annotationImageView.isHidden = true
+        annotationImageView.contentMode = .scaleAspectFit
+        annotationImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(annotationImageView)
+
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            stack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            stack.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            annotationImageView.centerXAnchor.constraint(equalTo: mapView.centerXAnchor),
+            annotationImageView.bottomAnchor.constraint(equalTo: mapView.centerYAnchor),
+            annotationImageView.widthAnchor.constraint(equalToConstant: 36),
+            annotationImageView.heightAnchor.constraint(equalToConstant: 36)
+        ])
+
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: GDLocalizedString("general.alert.cancel"), style: .plain,
+            target: self, action: #selector(onLeftBarButtonItemSelected)
+        )
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: GDLocalizedString("general.alert.edit"), style: .plain,
+            target: self, action: #selector(onRightBarButtonItemSelected)
+        )
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -102,13 +155,13 @@ class EditableMapViewController: UIViewController {
     
     // MARK: `IBAction`
     
-    @IBAction func onLeftBarButtonItemSelected(_ sender: Any) {
+    @objc func onLeftBarButtonItemSelected(_ sender: Any) {
         // `Cancel` selected
         // Dismiss view
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func onRightBarButtonItemSelected(_ sender: Any) {
+    @objc func onRightBarButtonItemSelected(_ sender: Any) {
         guard let sender = sender as? UIBarButtonItem else {
             return
         }

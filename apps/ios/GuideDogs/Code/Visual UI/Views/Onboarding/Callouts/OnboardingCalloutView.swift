@@ -15,10 +15,6 @@ struct OnboardingCalloutView: View {
     
     @State private var didComplete = false
     
-    @ViewBuilder
-    private var destination: some View {
-        OnboardingAuthorizationView()
-    }
     
     // MARK: `body`
     
@@ -34,7 +30,7 @@ struct OnboardingCalloutView: View {
                 .padding(.horizontal, 8.0)
                 .foregroundColor(.primaryForeground)
             
-            OnboardingNavigationLink(destination: destination)
+            OnboardingNavigationLink(route: .authorizations)
                 .if(!didComplete, transform: { $0.hidden() })
         }
 

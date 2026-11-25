@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -75,8 +76,17 @@ class BannerContainer: NotificationContainer {
         }
         
         // Add `UIViewController` and `UIView`
-        bannerContainer.containerViewController.add(bannerViewController)
+        let presenter = bannerContainer.containerViewController
+        presenter.addChild(bannerViewController)
         bannerContainer.containerView.addSubview(bannerViewController.view)
+        bannerViewController.view.frame = CGRect(
+            origin: .zero,
+            size: CGSize(width: bannerContainer.containerView.bounds.width > 0
+                         ? bannerContainer.containerView.bounds.width : presenter.view.bounds.width,
+                         height: bannerContainer.containerView.bounds.height)
+        )
+        bannerViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        bannerViewController.view.layoutIfNeeded()
         
         // Update height of container
         if animated {
@@ -87,15 +97,8 @@ class BannerContainer: NotificationContainer {
             self.setContainerViewHeightForContentSize(content: bannerViewController, container: bannerContainer)
         }
         
-        // Set layout for `child.view`
-        bannerViewController.view.frame = bannerContainer.containerView.bounds
-        bannerViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        // Ready to display
-        bannerViewController.didMove(toParent: bannerContainer.containerViewController)
-        
-        bannerContainer.containerViewController.view.layoutSubviews()
-        
+        bannerViewController.didMove(toParent: presenter)
+
         // Save banner view controller and container
         self.bannerViewController = bannerViewController
         self.bannerContainer = bannerContainer

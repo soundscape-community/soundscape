@@ -166,7 +166,7 @@ struct RoutesList: View {
                                               spatialData: AppContext.shared.spatialDataContext,
                                               motion: AppContext.shared.motionActivityContext)
             AppContext.shared.eventProcessor.activateCustom(behavior: routeGuidance)
-            navHelper.popToRootViewController(animated: true)
+            navHelper.returnToHome(focusOnBeacon: true)
         }
         .conditionalAccessibilityAction(id == activeRouteID, named: Text(RouteActionState(.stopRoute).text)) {
 

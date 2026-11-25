@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -15,13 +16,10 @@ class SearchWaypointViewController: UIViewController {
     
     // MARK: Properties
     
-    @IBOutlet var searchContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var waypointAddContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet private var waypointAddContainerView: UIView!
-    
+
     var routeName: String?
     var waypoints: Binding<[IdentifiableLocationDetail]>?
-    private var hostingController: UIViewController?
+    private var hostingController: UIHostingController<WaypointSearchContent>?
     private var searchController: UISearchController?
     
     private var cancellable: AnyCancellable?
@@ -33,6 +31,22 @@ class SearchWaypointViewController: UIViewController {
         cancellable = nil
     }
     
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor(named: "Background Base")
+
+        let host = UIHostingController(rootView: waypointContent)
+        hostingController = host
+        add(host) { content in
+            [
+                content.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                content.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                content.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ]
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -72,63 +86,35 @@ class SearchWaypointViewController: UIViewController {
         cancellable = nil
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        waypointAddContainerView.sizeToFit()
-        
-        let height = UIView.preferredContentHeightCompressedHeight(for: waypointAddContainerView)
-        waypointAddContainerHeightConstraint.constant = height
+    @objc private func onDone() {
+        dismiss(animated: true)
     }
-    
-    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        super.preferredContentSizeDidChange(forChildContentContainer: container)
-        
-        if container is SearchTableViewController {
-            searchContainerHeightConstraint.constant = container.preferredContentSize.height
-        }
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let viewController = segue.destination as? SearchTableViewController {
-            viewController.delegate = self
-        }
-    }
-    
-    @objc
-    private func onDone() {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    private func updateWaypointAddList() {
-        if let hostingController = hostingController {
-            hostingController.remove()
-            self.hostingController = nil
-        }
-        
-        if let waypoints = waypoints {
-            let content = WaypointAddList(waypoints: waypoints)
-            hostingController = UIHostingController(rootView: AnyView(content))
-            
-            guard let hostingController = hostingController else {
-                return
-            }
-            
-            addChild(hostingController)
-            hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-            waypointAddContainerView.addSubview(hostingController.view)
-            
-            NSLayoutConstraint.activate([
-                hostingController.view.leadingAnchor.constraint(equalTo: waypointAddContainerView.leadingAnchor, constant: 0.0),
-                hostingController.view.trailingAnchor.constraint(equalTo: waypointAddContainerView.trailingAnchor, constant: 0.0),
-                hostingController.view.topAnchor.constraint(equalTo: waypointAddContainerView.topAnchor, constant: 0.0),
-                hostingController.view.bottomAnchor.constraint(equalTo: waypointAddContainerView.bottomAnchor, constant: 0.0)
-            ])
 
-            hostingController.didMove(toParent: self)
-        }
+    private var waypointContent: WaypointSearchContent {
+        WaypointSearchContent(
+            waypoints: waypoints,
+            showNearby: { [weak self] in
+                guard let self else { return }
+                let nearby = NearbyFilterViewController()
+                nearby.delegate = self
+                self.navigationController?.pushViewController(nearby, animated: true)
+            },
+            selectCurrentLocation: { [weak self] in
+                guard let self else { return }
+                guard let location = AppContext.shared.geolocationManager.location else {
+                    self.present(ErrorAlerts.buildLocationAlert(), animated: true)
+                    return
+                }
+                self.searchController?.isActive = false
+                self.didSelect(currentLocation: location)
+            }
+        )
     }
-    
+
+    private func updateWaypointAddList() {
+        hostingController?.rootView = waypointContent
+    }
+
     private func addedMarker(id: String) {
         guard var waypoints = waypoints else {
             return
@@ -154,12 +140,7 @@ class SearchWaypointViewController: UIViewController {
         searchController?.searchBar.searchTextField.text = nil
     }
     
-    // MARK: `IBAction`
-    
-    @IBAction func unwindToSearchWaypoint(segue: UIStoryboardSegue) {
-        // Reset search text
-        searchController?.searchBar.searchTextField.text = nil
-    }
+
 }
 
 // MARK: - POITableViewDelegate
@@ -231,9 +212,9 @@ extension SearchWaypointViewController: POITableViewDelegate {
     
 }
 
-// MARK: - SearchResultsTableViewControllerDelegate
+// MARK: - SearchResultsViewControllerDelegate
 
-extension SearchWaypointViewController: SearchResultsTableViewControllerDelegate {
+extension SearchWaypointViewController: SearchResultsViewControllerDelegate {
     
     func didSelectSearchResult(_ searchResult: POI) {
         didSelect(detail: LocationDetail(entity: searchResult))
@@ -269,4 +250,24 @@ extension SearchWaypointViewController: LocationActionDelegate {
         // need to implement both protocols to support the search and browse experience.
     }
     
+}
+
+
+private struct WaypointSearchContent: View {
+    let waypoints: Binding<[IdentifiableLocationDetail]>?
+    let showNearby: () -> Void
+    let selectCurrentLocation: () -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            LocationBrowseButton(destination: .nearby, action: showNearby)
+            if !AppContext.shared.isStreetPreviewing {
+                Divider()
+                LocationBrowseButton(destination: .currentLocation, action: selectCurrentLocation)
+            }
+            if let waypoints {
+                WaypointAddList(waypoints: waypoints)
+            }
+        }
+    }
 }

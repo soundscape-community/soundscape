@@ -13,16 +13,15 @@ import SwiftUI
 
 extension Notification.Name {
     static let appDidInitialize = Notification.Name("GDAAppDidInitialize")
+    static let rebuildHome = Notification.Name("GDARebuildHome")
     static let magicTapOccurred = Notification.Name("GDAMagicTapOccurred")
 }
 
 class LaunchHelper {
     
-    enum LaunchStoryboard: String {
-        case main = "main"
-        case firstLaunch = "FirstLaunch"
-    }
-    
+    static weak var homePresenter: UIViewController?
+    static weak var homeNavigationController: NavigationController?
+
     fileprivate static weak var configuredWindow: UIWindow?
     fileprivate static var magicTapEnabled: Bool = true
 
@@ -38,93 +37,15 @@ class LaunchHelper {
         return true
     }
     
-    class func configureAppView(with launchStoryboard: LaunchStoryboard) {
-        guard let window = AppContext.window else {
-            return
-        }
-        
-        window.configureWindow()
-        
-        let rootVC: UIViewController
-        
-        if launchStoryboard == .firstLaunch { // SwiftUI
-            // Initialize view model and set dismiss handler
-            let viewModel = OnboardingViewModel {
-                LaunchHelper.configureAppView(with: .main)
-            }
-            
-            let rootView = OnboardingWelcomeView(context: .firstUse).environmentObject(viewModel)
-            rootVC = UIHostingController(rootView: rootView)
-        } else { // UIKit
-            let storyboard = UIStoryboard(name: launchStoryboard.rawValue, bundle: nil)
-                    
-            // Make sure we can load the initial view controller from this storyboard
-            guard let viewController = storyboard.instantiateInitialViewController() else {
-                return
-            }
-            
-            rootVC = viewController
-            
-            NotificationCenter.default.post(name: NSNotification.Name.appDidInitialize, object: nil)
-        }
-        
-        window.replaceRootViewControllerWith(rootVC, animated: true, completion: nil)
+    static func rebuildHome() {
+        NotificationCenter.default.post(name: .rebuildHome, object: nil)
     }
 }
 
 extension UIWindow {
-    /// Use this method to change the `rootViewController` of the app's main window. This method
-    /// will properly dismiss the current view controller (if one exists) before setting the
-    /// replacement view controller.
-    ///
-    /// - Parameters:
-    ///   - replacementController: A new view controller to set to `rootViewController`
-    ///   - animated: Should the transition be animated
-    ///   - completion: Callback invoked on completion
-    fileprivate func replaceRootViewControllerWith(_ newRoot: UIViewController, animated: Bool, completion: (() -> Void)?) {
-        guard let currentRoot = rootViewController else {
-            rootViewController = newRoot
-            return
-        }
-        
-        guard let snapshot = snapshotView(afterScreenUpdates: true) else {
-            rootViewController = newRoot
-            return
-        }
-        
-        addSubview(snapshot)
-        
-        let dismissCompletion = { [weak self] () -> Void in // dismiss all modal view controllers
-            guard let `self` = self else {
-                return
-            }
-            
-            self.rootViewController = newRoot
-            self.bringSubviewToFront(snapshot)
-            
-            if animated {
-                UIView.animate(withDuration: 0.3, animations: {
-                    snapshot.alpha = 0
-                }, completion: { (_) in
-                    snapshot.removeFromSuperview()
-                    completion?()
-                })
-            } else {
-                snapshot.removeFromSuperview()
-                completion?()
-            }
-        }
-        
-        if currentRoot.presentedViewController != nil {
-            currentRoot.dismiss(animated: false, completion: dismissCompletion)
-        } else {
-            dismissCompletion()
-        }
-    }
-    
     // MARK: Configuration
     
-    fileprivate func configureWindow() {
+    func configureForSoundscape() {
         guard LaunchHelper.configuredWindow !== self else {
             return
         }

@@ -22,6 +22,7 @@ class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate
     var fadeInDuration: TimeInterval = 1.5
     var entityKey: String?
     weak var source: UIViewController?
+    var onFinish: (() -> Void)?
 
     init(source: UIViewController?, entityKey: String?) {
         self.source = source
@@ -152,7 +153,9 @@ class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate
             }
         }
 
-        if navigationController?.presentingViewController != nil {
+        if let onFinish {
+            onFinish()
+        } else if navigationController?.presentingViewController != nil {
             dismiss(animated: true)
         } else if let source = source {
             navigationController?.popToViewController(source, animated: true)

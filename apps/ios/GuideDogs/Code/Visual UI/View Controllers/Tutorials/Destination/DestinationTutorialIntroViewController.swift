@@ -13,6 +13,7 @@ import UIKit
 
 class DestinationTutorialIntroViewController: DestinationTutorialPage {
     weak var source: UIViewController?
+    var onFinish: (() -> Void)?
     private(set) var logContext: String?
     var entityKey: String?
 
@@ -73,11 +74,7 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
     override func perform(_ action: DestinationTutorialAction) {
         guard action == .setBeacon else { return }
 
-        let storyboard = UIStoryboard(name: "POITable", bundle: .main)
-        guard let picker = storyboard.instantiateInitialViewController() as? SearchTableViewController else {
-            GDLogAppError("Destination tutorial: unable to load POI table.")
-            return
-        }
+        let picker = SearchTableViewController()
         picker.delegate = self
         navigationController?.pushViewController(picker, animated: true)
     }
@@ -95,7 +92,9 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
 
     private func finishNavigation() {
         FirstUseExperience.setDidComplete(for: .beaconTutorial)
-        if navigationController?.presentingViewController != nil {
+        if let onFinish {
+            onFinish()
+        } else if navigationController?.presentingViewController != nil {
             dismiss(animated: true)
         } else if let source = source {
             navigationController?.popToViewController(source, animated: true)
@@ -113,6 +112,7 @@ extension DestinationTutorialIntroViewController: DestinationTutorialPageDelegat
 
     func pageComplete() {
         let tutorial = DestinationTutorialViewController(source: source, entityKey: entityKey)
+        tutorial.onFinish = onFinish
         guard let navigationController = navigationController else { return }
         var controllers = navigationController.viewControllers
         if controllers.last !== self {

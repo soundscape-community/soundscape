@@ -3,17 +3,18 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import Foundation
+import UIKit
 
 protocol FilterTableViewHeaderViewDelegate: AnyObject {
     var isEnabled: Bool { get }
     func didSelect(action: FilterTableViewHeaderView.Action)
 }
 
-class FilterTableViewHeaderView: UITableViewHeaderFooterView, NibLoadableView {
+class FilterTableViewHeaderView: UITableViewHeaderFooterView {
     
     enum Action: CaseIterable {
         case clear
@@ -47,13 +48,37 @@ class FilterTableViewHeaderView: UITableViewHeaderFooterView, NibLoadableView {
     weak var delegate: FilterTableViewHeaderViewDelegate?
     private var tapGestureRecognizer: UITapGestureRecognizer!
     
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var actionButton: UIButton!
+    let titleLabel = UILabel()
+    let actionButton = UIButton(type: .system)
     
     // MARK: View Life Cycle
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+
+        let background = UIView()
+        background.backgroundColor = Colors.Background.secondary
+        backgroundView = background
+        titleLabel.textColor = .white
+        titleLabel.font = .preferredFont(forTextStyle: .callout)
+        titleLabel.adjustsFontForContentSizeCategory = true
+        titleLabel.numberOfLines = 0
+        actionButton.titleLabel?.font = .preferredFont(forTextStyle: .callout)
+        actionButton.titleLabel?.adjustsFontForContentSizeCategory = true
+        actionButton.titleLabel?.numberOfLines = 0
+        actionButton.addTarget(self, action: #selector(onActionButtonTouchUpInside), for: .touchUpInside)
+        actionButton.setContentHuggingPriority(.required, for: .horizontal)
+        let row = UIStackView(arrangedSubviews: [titleLabel, actionButton])
+        row.spacing = 12
+        row.alignment = .center
+        row.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(row)
+        NSLayoutConstraint.activate([
+            row.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            row.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            row.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            row.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+        ])
         
         // Initialize tap gesture
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.onActionButtonTouchUpInside))
@@ -66,6 +91,10 @@ class FilterTableViewHeaderView: UITableViewHeaderFooterView, NibLoadableView {
         NotificationCenter.default.addObserver(self, selector: #selector(self.onAccessibilityVoiceOverStatusChanged), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("Use init(reuseIdentifier:)")
+    }
+
     // MARK: Notifications
     
     @objc private func onAccessibilityVoiceOverStatusChanged() {
@@ -78,7 +107,7 @@ class FilterTableViewHeaderView: UITableViewHeaderFooterView, NibLoadableView {
     
     // MARK: Actions
     
-    @IBAction func onActionButtonTouchUpInside() {
+    @objc func onActionButtonTouchUpInside() {
         guard let localizedTitle = actionButton.currentTitle else {
             return
         }

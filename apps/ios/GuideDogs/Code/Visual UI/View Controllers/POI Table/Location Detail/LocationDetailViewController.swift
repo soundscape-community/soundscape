@@ -10,27 +10,44 @@
 import SwiftUI
 import Combine
 
-class LocationDetailViewController: UIViewController {
+class LocationDetailViewController: UIHostingController<LocationDetailScreen> {
     
-    // MARK: `IBOutlet`
-    
-    @IBOutlet weak var largeBannerContainerView: UIView!
-    @IBOutlet var largeBannerContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
-    @IBOutlet var detailTableViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var actionTableViewViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet var scrollViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var scrollViewContentView: UIView!
-    
-    // MARK: Properties
-    
-    private var detailViewController: LocationDetailTableViewController?
-    private var actionViewController: LocationActionTableViewController?
+    private let model = LocationDetailScreenModel()
+    var largeBannerContainerView: UIView! { model.banner }
+
+    init() {
+        super.init(rootView: LocationDetailScreen(model: model))
+        model.performAction = { [weak self] action, detail in
+            self?.didSelectLocationAction(action, detail: detail)
+        }
+    }
+
+    required dynamic init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
+
     private var detailMapViewController: ExpandableMapViewController?
     
     var deleteAction: NavigationAction? = .popToRootViewController
     var onDismissPreviewHandler: (() -> Void)?
+    var initialAction: (() -> LocationAction?)?
+    var returnToHome: ((Bool) -> Void)?
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard let action = initialAction?(), let detail = locationDetail else { return }
+        LocationDetail.fetchNameAndAddressIfNeeded(for: detail) { [weak self] detail in
+            self?.didSelectLocationAction(action, detail: detail)
+        }
+    }
+
+    private func finishAtHome(focusOnBeacon: Bool = false) {
+        if let returnToHome {
+            returnToHome(focusOnBeacon)
+        } else {
+            navigationController?.popToRootViewController(animated: true)
+        }
+    }
     
     private var cancellable: AnyCancellable?
     
@@ -65,6 +82,23 @@ class LocationDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let map = ExpandableMapViewController()
+        if let detail = waypointDetail {
+            map.style = .waypoint(detail: detail)
+        } else if let detail = locationDetail {
+            map.style = .location(detail: detail)
+            map.isEditable = true
+        }
+        map.delegate = self
+        addChild(map)
+        map.view.frame = model.map.bounds
+        map.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        model.map.addSubview(map.view)
+        map.didMove(toParent: self)
+        detailMapViewController = map
+        model.detail = locationDetail
+        view.accessibilityIgnoresInvertColors = true
+
         // Configure the back button
         self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
         self.navigationController?.navigationBar.configureAppearance(for: .default)
@@ -73,6 +107,8 @@ class LocationDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        model.userLocation = AppContext.shared.geolocationManager.location
+
         guard let locationDetail = locationDetail else {
             return
         }
@@ -92,7 +128,7 @@ class LocationDetailViewController: UIViewController {
         }
         
         // Show activity indicator
-        activityIndicatorView.startAnimating()
+        model.isLoading = true
         
         if locationDetail.isMarker {
             // Reload the table view in case the marker details have
@@ -100,7 +136,7 @@ class LocationDetailViewController: UIViewController {
             reloadView()
             
             // Hide activity indicator
-            activityIndicatorView.stopAnimating()
+            model.isLoading = false
         } else {
             // If the location is not a marker, try to fetch an estimated name and
             // address, if necessary
@@ -112,7 +148,7 @@ class LocationDetailViewController: UIViewController {
                 self.locationDetail = newValue
                 
                 // Hide activity indicator
-                self.activityIndicatorView.stopAnimating()
+                self.model.isLoading = false
             }
         }
     }
@@ -121,63 +157,6 @@ class LocationDetailViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         NotificationCenter.default.removeObserver(self, name: UIContentSizeCategory.didChangeNotification, object: nil)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let viewController = segue.destination as? LocationDetailTableViewController {
-            viewController.locationDetail = locationDetail
-            detailViewController = viewController
-        }
-        
-        if let viewController = segue.destination as? LocationActionTableViewController {
-            viewController.locationDetail = locationDetail
-            viewController.delegate = self
-            actionViewController = viewController
-        }
-        
-        if let viewController = segue.destination as? ExpandableMapViewController {
-            if let detail = waypointDetail {
-                viewController.style = .waypoint(detail: detail)
-                viewController.isEditable = false
-            } else if let detail = locationDetail {
-                viewController.style = .location(detail: detail)
-                viewController.isEditable = true
-            }
-            
-            viewController.isExpanded = false
-            viewController.delegate = self
-            detailMapViewController = viewController
-        }
-        
-        if let navigationController = segue.destination as? UINavigationController, let viewController = navigationController.topViewController as? PreviewViewController {
-            let locationDetail = sender as? LocationDetail
-            viewController.locationDetail = locationDetail
-            viewController.onDismissHandler = { [weak self] in
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
-        }
-        
-        if let viewController = segue.destination as? PreviewViewController {
-            let locationDetail = sender as? LocationDetail
-            viewController.locationDetail = locationDetail
-            viewController.onDismissHandler = onDismissPreviewHandler
-        }
-    }
-    
-    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        super.preferredContentSizeDidChange(forChildContentContainer: container)
-        
-        if container is LocationDetailTableViewController {
-            detailTableViewHeightConstraint.constant = container.preferredContentSize.height
-            // Update the height of the scroll view and redraw the map to fill the remaining space
-            scrollViewHeightConstraint.constant = UIView.preferredContentHeight(for: scrollViewContentView)
-        }
-        
-        if container is LocationActionTableViewController {
-            actionTableViewViewHeightConstraint.constant = container.preferredContentSize.height
-            // Update the height of the scroll view and redraw the map to fill the remaining space
-            scrollViewHeightConstraint.constant = UIView.preferredContentHeight(for: scrollViewContentView)
-        }
     }
     
     private func reloadView() {
@@ -195,9 +174,7 @@ class LocationDetailViewController: UIViewController {
                 self.title = GDLocalizedString("location_detail.title.default")
             }
             
-            // Update child view controllers
-            self.detailViewController?.locationDetail = self.locationDetail
-            self.actionViewController?.locationDetail = self.locationDetail
+            self.model.detail = self.locationDetail
             
             if let detail = self.waypointDetail {
                 self.detailMapViewController?.style = .waypoint(detail: detail)
@@ -222,7 +199,7 @@ extension LocationDetailViewController: EditableMapViewControllerDelegate {
             self.locationDetail = locationDetail
         } else {
             // Show activity indicator
-            activityIndicatorView.startAnimating()
+            model.isLoading = true
             
             // If the location is not a marker, try to fetch an estimated name and
             // address, if necessary
@@ -234,7 +211,7 @@ extension LocationDetailViewController: EditableMapViewControllerDelegate {
                 self.locationDetail = newValue
                 
                 // Hide activity indicator
-                self.activityIndicatorView.stopAnimating()
+                self.model.isLoading = false
             }
         }
     }
@@ -294,25 +271,30 @@ extension LocationDetailViewController: LocationActionDelegate {
                     // and segue to the home view
                     try LocationActionHandler.beacon(locationDetail: detail)
                     
-                    if let home = self.navigationController?.viewControllers.first as? HomeViewController {
-                        home.shouldFocusOnBeacon = true
+                    if let first = self.navigationController?.viewControllers.first, first === LaunchHelper.homePresenter {
+                        AppNavigationModel.shared.shouldFocusOnBeacon = true
                     }
                     
                     if self.isPresentedModally && !self.isInPreviewController {
                         self.dismiss(animated: true)
                     } else {
-                        self.navigationController?.popToRootViewController(animated: true)
+                        self.finishAtHome(focusOnBeacon: true)
                     }
                     
                 case .preview:
                     if AppContext.shared.isStreetPreviewing {
                         let alert = LocationActionAlert.restartPreview { [weak self] (_) in
-                            self?.performSegue(withIdentifier: "UnwindPreviewView", sender: detail)
+                            if let self {
+                                PreviewViewController.restart(from: self, at: detail)
+                            }
                         }
                         
                         self.present(alert, animated: true, completion: nil)
                     } else {
-                        self.performSegue(withIdentifier: "PreviewView", sender: detail)
+                        let preview = PreviewViewController.navigation(for: detail) { [weak self] in
+                            self?.finishAtHome()
+                        }
+                        self.present(preview, animated: true)
                     }
                 case .share:
                     // Create a URL to share a marker at the given location
@@ -341,7 +323,7 @@ extension LocationDetailViewController: LocationActionDelegate {
                     if self.isPresentedModally && !self.isInPreviewController {
                         self.dismiss(animated: true)
                     } else {
-                        self.navigationController?.popToRootViewController(animated: true)
+                        self.finishAtHome()
                     }
                 }
             } catch let error as LocationActionError {
@@ -361,7 +343,7 @@ extension LocationDetailViewController: LocationActionDelegate {
 extension LocationDetailViewController: LargeBannerContainerView {
     
     func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerHeightConstraint.constant = height
+        model.bannerHeight = height
     }
     
 }

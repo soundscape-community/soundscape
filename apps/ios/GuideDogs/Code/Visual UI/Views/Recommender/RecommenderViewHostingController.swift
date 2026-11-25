@@ -13,18 +13,22 @@ import CocoaLumberjackSwift
 
 class RecommenderViewHostingController: UIHostingController<AnyView> {
     
-    required init?(coder aDecoder: NSCoder) {
+    init() {
         let navHelper = RecommenderNavigationHelper()
         let view = RecommenderView(viewModel: RecommenderViewModel())
             .environmentObject(navHelper as ViewNavigationHelper)
         
-        super.init(coder: aDecoder, rootView: AnyView(view))
+        super.init(rootView: AnyView(view))
         
         super.view.backgroundColor = UIColor.clear
         
         navHelper.host = self
     }
     
+    required dynamic init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         

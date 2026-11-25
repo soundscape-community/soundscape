@@ -15,28 +15,8 @@ struct OnboardingAuthorizationView: View {
     
     @ObservedObject private var location: AuthorizationViewModel
     @ObservedObject private var motion: AuthorizationViewModel
-    @State private var isNavigationLinkActive = false
-    
-    @ViewBuilder
-    private var destination: some View {
-        if motion.isAuthorized, location.isAuthorized {
-            // All authorizations were provided
-            // Navigate to the beacon selection view
-            OnboardingBeaconView()
-        } else {
-            // One or more authorizations were not provided
-            // Authorizations are required to listen to and select an
-            // audio beacon. Skip the beacon selection view.
-            if FirstUseExperience.didComplete(.oobe) {
-                // If onboarding has already been completed,
-                // skip `OnboardingTermsView`
-                OnboardingPromptView()
-            } else {
-                OnboardingTermsView()
-            }
-        }
-    }
-    
+    @EnvironmentObject private var viewModel: OnboardingViewModel
+
     // MARK: Initialization
     
     init() {
@@ -78,14 +58,6 @@ struct OnboardingAuthorizationView: View {
                     .onboardingButtonTextStyle()
             }
             .padding(.horizontal, 24.0)
-            
-            NavigationLink(
-                destination: destination,
-                isActive: $isNavigationLinkActive,
-                label: {
-                    EmptyView()
-                })
-                .accessibilityHidden(true)
         }
         .onChange(of: location.authorizationStatus, perform: { _ in
             tryRequestAuthorization()
@@ -106,7 +78,8 @@ struct OnboardingAuthorizationView: View {
             motion.requestAuthorization()
         } else {
             // All authorizations have been requested
-            isNavigationLinkActive = true
+            guard viewModel.coordinator.path.last == .authorizations else { return }
+            viewModel.open(viewModel.coordinator.routeAfterAuthorizations(allGranted: motion.isAuthorized && location.isAuthorized))
         }
     }
 
@@ -116,7 +89,7 @@ struct OnboardingAuthorizationView: View {
 struct OnboardingAuthorizationView_Previews: PreviewProvider {
     
     static var previews: some View {
-        OnboardingAuthorizationView()
+        OnboardingAuthorizationView().environmentObject(OnboardingViewModel())
     }
     
 }

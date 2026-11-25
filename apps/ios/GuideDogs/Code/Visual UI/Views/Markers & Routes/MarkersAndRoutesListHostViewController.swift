@@ -10,20 +10,22 @@
 import SwiftUI
 
 class MarkersAndRoutesListHostViewController: UIHostingController<AnyView> {
-    required init?(coder aDecoder: NSCoder) {
+    init() {
         let navHelper = MarkersAndRoutesListNavigationHelper()
         let root = MarkersAndRoutesList()
             .environmentObject(navHelper)
             .environmentObject(UserLocationStore())
             .environment(\.realmConfiguration, RealmHelper.databaseConfig)
         
-        super.init(coder: aDecoder, rootView: AnyView(root))
+        super.init(rootView: AnyView(root))
         
         navHelper.host = self
     }
     
-    @IBAction func unwindToMarkers(segue: UIStoryboardSegue) {}
-    
+    required dynamic init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
+
     var onDismissPreviewHandler: (() -> Void)?
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,22 +41,6 @@ class MarkersAndRoutesListHostViewController: UIHostingController<AnyView> {
         navigationBar?.scrollEdgeAppearance?.shadowColor = .clear
         navigationBar?.compactAppearance?.shadowColor = .clear
         navigationBar?.compactScrollEdgeAppearance?.shadowColor = .clear
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let navigationController = segue.destination as? UINavigationController, let viewController = navigationController.topViewController as? PreviewViewController {
-            let locationDetail = sender as? LocationDetail
-            viewController.locationDetail = locationDetail
-            viewController.onDismissHandler = { [weak self] in
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
-        }
-        
-        if let viewController = segue.destination as? PreviewViewController {
-            let locationDetail = sender as? LocationDetail
-            viewController.locationDetail = locationDetail
-            viewController.onDismissHandler = onDismissPreviewHandler
-        }
     }
     
     override func didMove(toParent parent: UIViewController?) {

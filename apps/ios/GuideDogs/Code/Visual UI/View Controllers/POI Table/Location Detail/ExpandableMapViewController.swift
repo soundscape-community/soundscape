@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -58,8 +59,7 @@ struct ExpandableMapView: UIViewControllerRepresentable {
     // MARK: `UIViewControllerRepresentable`
     
     func makeUIViewController(context: Context) -> ExpandableMapViewController {
-        let storyboard = UIStoryboard(name: "Map", bundle: Bundle.main)
-        let vc = storyboard.instantiateInitialViewController() as! ExpandableMapViewController
+        let vc = ExpandableMapViewController()
         
         vc.isExpanded = isExpanded
         vc.isEditable = isEditable
@@ -79,12 +79,10 @@ struct ExpandableMapView: UIViewControllerRepresentable {
 
 class ExpandableMapViewController: UIViewController {
     
-    // MARK: `IBOutlet`
-    
-    @IBOutlet private weak var accessibilityEditableMapView: UIView!
-    @IBOutlet private weak var mapView: MKMapView!
-    @IBOutlet private weak var mapsButton: UIButton!
-    @IBOutlet private weak var fullScreenButton: UIButton!
+    private let accessibilityEditableMapView = UIView()
+    private let mapView = MKMapView()
+    private let mapsButton = UIButton(type: .system)
+    private let fullScreenButton = UIButton(type: .system)
     
     // MARK: Properties
     
@@ -108,6 +106,57 @@ class ExpandableMapViewController: UIViewController {
     
     // MARK: View Life Cycle
     
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor(named: "Background Base")
+
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+        for content in [mapView, accessibilityEditableMapView] {
+            content.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(content)
+            NSLayoutConstraint.activate([
+                content.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                content.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                content.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                content.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            ])
+        }
+
+        configureButton(mapsButton, image: "arrow.triangle.branch", action: #selector(onDirectionsButtonTouchUpInside))
+        mapsButton.accessibilityLabel = GDLocalizedString("third_party_apps.general.maps")
+        mapsButton.accessibilityHint = GDLocalizedString("location_detail.action.directions.hint")
+        configureButton(fullScreenButton, image: "arrow.up.left.and.arrow.down.right", action: #selector(onFullScreenButtonTouchUpInside))
+
+        let buttons = UIStackView(arrangedSubviews: [mapsButton, fullScreenButton])
+        buttons.spacing = 12
+        buttons.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(buttons)
+        NSLayoutConstraint.activate([
+            buttons.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+            buttons.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -12)
+        ])
+
+        if isExpanded {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                title: GDLocalizedString("general.alert.cancel"), style: .plain,
+                target: self, action: #selector(onLeftBarButtonItemSelected)
+            )
+        }
+    }
+
+    private func configureButton(_ button: UIButton, image: String, action: Selector) {
+        button.setImage(UIImage(systemName: image), for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = UIColor.darkGray.withAlphaComponent(0.9)
+        button.layer.cornerRadius = 22
+        button.addTarget(self, action: action, for: .touchUpInside)
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        let width = button.widthAnchor.constraint(equalToConstant: 44)
+        width.priority = .defaultHigh
+        width.isActive = true
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -265,13 +314,13 @@ class ExpandableMapViewController: UIViewController {
     
     // MARK: `IBAction`
     
-    @IBAction func onLeftBarButtonItemSelected(_ sender: Any) {
+    @objc func onLeftBarButtonItemSelected(_ sender: Any) {
         // `Cancel` selected
         // Dismiss view
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction private func onDirectionsButtonTouchUpInside(_ sender: Any) {
+    @objc private func onDirectionsButtonTouchUpInside(_ sender: Any) {
         guard let style = style else {
             return
         }
@@ -297,60 +346,33 @@ class ExpandableMapViewController: UIViewController {
             // TODO: Add actions to open the given location in a third-party map application
             // These applications must also be defined in 'Queried URL Schemes' in Info.plist
             
+            alert.popoverPresentationController?.sourceView = mapsButton
+            alert.popoverPresentationController?.sourceRect = mapsButton.bounds
             present(alert, animated: true, completion: nil)
         }
     }
     
-    @IBAction private func onFullScreenButtonTouchUpInside(_ sender: Any) {
+    @objc private func onFullScreenButtonTouchUpInside(_ sender: Any) {
         guard let style = style else {
             return
         }
         
-        let storyboard = UIStoryboard(name: "Map", bundle: Bundle.main)
-        let navigationController: UINavigationController
-        
+        let controller: UIViewController
         if isEditable {
-            guard case .location(let detail) = style else {
-                // Currently, editing is not supported for waypoints
-                // or routes
-                return
-            }
-            
-            guard let nController = storyboard.instantiateViewController(identifier: "EditableMapNavigation") as? UINavigationController else {
-                return
-            }
-            
-            guard let vController = nController.viewControllers.first as? EditableMapViewController else {
-                return
-            }
-            
-            // Configure view controller
-            vController.locationDetail = detail
-            vController.delegate = self
-            
-            // Save view controllers
-            navigationController = nController
+            guard case .location(let detail) = style else { return }
+            let editor = EditableMapViewController()
+            editor.locationDetail = detail
+            editor.delegate = self
+            controller = editor
         } else {
-            guard let nController = storyboard.instantiateViewController(identifier: "ExpandableMapNavigation") as? UINavigationController else {
-                return
-            }
-            
-            guard let vController = nController.viewControllers.first as? ExpandableMapViewController else {
-                return
-            }
-            
-            // Configure view controller
-            vController.style = style
-            vController.isExpanded = true
-            vController.isEditable = isEditable
-            vController.isMapsButtonHidden = isMapsButtonHidden
-            
-            // Save view controllers
-            navigationController = nController
+            let map = ExpandableMapViewController()
+            map.style = style
+            map.isExpanded = true
+            map.isMapsButtonHidden = isMapsButtonHidden
+            controller = map
         }
-        
-        // Present modally
-        present(navigationController, animated: true, completion: nil)
+
+        present(NavigationController(rootViewController: controller), animated: true)
     }
     
 }
@@ -409,11 +431,7 @@ extension ExpandableMapViewController: MKMapViewDelegate {
                 return
             }
             
-            let storyboard = UIStoryboard(name: "POITable", bundle: Bundle.main)
-            
-            guard let viewController = storyboard.instantiateViewController(identifier: "LocationDetailView") as? LocationDetailViewController else {
-                return
-            }
+            let viewController = LocationDetailViewController()
             
             viewController.waypointDetail = annotation.detail
             viewController.deleteAction = nil

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -13,10 +14,10 @@ class TourCardContainerHostingController: UIHostingController<AnyView> {
     
     var style: BeaconStyle!
     
-    required init?(coder aDecoder: NSCoder) {
+    init() {
         guard let tour = AppContext.shared.eventProcessor.activeBehavior as? GuidedTour else {
             // Unexpected state
-            super.init(coder: aDecoder, rootView: AnyView(EmptyView()))
+            super.init(rootView: AnyView(EmptyView()))
             return
         }
         
@@ -26,13 +27,17 @@ class TourCardContainerHostingController: UIHostingController<AnyView> {
             .environmentObject(navHelper)
             .colorPalette(Palette.Theme.teal)
         
-        super.init(coder: aDecoder, rootView: AnyView(view))
+        super.init(rootView: AnyView(view))
         
         self.view.backgroundColor = .clear
         
         navHelper.host = self
     }
     
+    required dynamic init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         

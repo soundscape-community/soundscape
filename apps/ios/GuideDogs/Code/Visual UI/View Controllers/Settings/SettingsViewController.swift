@@ -7,289 +7,239 @@
 //  Licensed under the MIT License.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
-class SettingsViewController: BaseTableViewController {
-    private static let languageSettingsIndexPath = IndexPath(row: 0, section: Section.general.rawValue)
-    private static let voiceSettingsIndexPath = IndexPath(row: 1, section: Section.general.rawValue)
-    private static let volumeSettingsIndexPath = IndexPath(row: 2, section: Section.general.rawValue)
-    private static let siriShortcutsIndexPath = IndexPath(row: 4, section: Section.general.rawValue)
-    private static let beaconSettingsIndexPath = IndexPath(row: 0, section: Section.beacon.rawValue)
-    private static let aboutSettingsIndexPath = IndexPath(row: 0, section: Section.about.rawValue)
-    
-    private enum Section: Int, CaseIterable {
-        case general = 0
-        case beacon = 1
-        case callouts = 2
-        case audio = 3
-        case streetPreview = 4
-        case naviLens = 5
-        case troubleshooting = 6
-        case about = 7
-        case telemetry = 8
+struct SettingsScreen: View {
+    @ObservedObject var navigation: AppNavigationModel
+    @StateObject private var model = SettingsViewModel()
+
+    var body: some View {
+        SettingsView(model: model)
+            .navigationTitle(GDLocalizedString("settings.screen_title"))
+            .toolbar(.visible, for: .navigationBar)
+            .onAppear {
+                model.open = { [weak navigation] in navigation?.open(.settingsPage($0)) }
+                model.objectWillChange.send()
+                GDLogActionInfo("Opened 'Settings'")
+            }
     }
-    
-    private enum CalloutsRow: Int, CaseIterable {
-        case all = 0
-        case poi = 1
-        case mobility = 2
-        case intersections = 3
-        case beacon = 4
-        case shake = 5
-    }
-    
-    private static let cellIdentifiers: [IndexPath: String] = [
-        IndexPath(row: 0, section: Section.general.rawValue): "languageAndRegion",
-        IndexPath(row: 1, section: Section.general.rawValue): "voice",
-        IndexPath(row: 2, section: Section.general.rawValue): "volumeSettings",
-        IndexPath(row: 3, section: Section.general.rawValue): "manageDevices",
-        IndexPath(row: 4, section: Section.general.rawValue): "siriShortcuts",
-        
-        IndexPath(row: 0, section: Section.audio.rawValue): "mixAudio",
-        
-        IndexPath(row: 0, section: Section.beacon.rawValue): "beaconSettings",
+}
 
-        IndexPath(row: CalloutsRow.all.rawValue, section: Section.callouts.rawValue): "allCallouts",
-        IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue): "poiCallouts",
-        IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue): "mobilityCallouts",
-        IndexPath(row: CalloutsRow.intersections.rawValue, section: Section.callouts.rawValue): "intersectionCallouts",
-        IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue): "beaconCallouts",
-        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue): "shakeCallouts",
-        
-        IndexPath(row: 0, section: Section.streetPreview.rawValue): "streetPreview",
-        IndexPath(row: 0, section: Section.naviLens.rawValue): "naviLensAutoSnooze",
-        IndexPath(row: 0, section: Section.troubleshooting.rawValue): "troubleshooting",
-        IndexPath(row: 0, section: Section.about.rawValue): "about",
-        IndexPath(row: 0, section: Section.telemetry.rawValue): "telemetry"
-    ]
-    
-    private static let collapsibleCalloutIndexPaths: [IndexPath] = [
-        IndexPath(row: CalloutsRow.poi.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.mobility.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.intersections.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.beacon.rawValue, section: Section.callouts.rawValue),
-        IndexPath(row: CalloutsRow.shake.rawValue, section: Section.callouts.rawValue)
-    ]
-    
-    // MARK: Properties
+final class SettingsViewModel: ObservableObject {
+    enum Confirmation: String, Identifiable {
+        case mediaControls, stopSharing
 
-    @IBOutlet weak var largeBannerContainerView: UIView!
+        var id: String { rawValue }
 
-    // MARK: View Life Cycle
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        navigationController?.navigationBar.configureAppearance(for: .default)
-
-        GDLogActionInfo("Opened 'Settings'")
-
-        self.title = GDLocalizedString("settings.screen_title")
-        tableView.reloadData()
-    }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return Section.allCases.count
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sectionType = Section(rawValue: section) else { return 0 }
-        
-        switch sectionType {
-        case .general: return 5
-        case .beacon: return 1
-        case .callouts: return SettingsContext.shared.automaticCalloutsEnabled ? CalloutsRow.allCases.count : 1
-        case .audio: return 1
-        case .streetPreview: return 1
-        case .naviLens: return 1
-        case .troubleshooting: return 1
-        case .about: return 1
-        case .telemetry: return 1
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = SettingsViewController.cellIdentifiers[indexPath]
-        
-        guard let sectionType = Section(rawValue: indexPath.section) else {
-            return tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
+        var title: String {
+            switch self {
+            case .mediaControls: return "general.alert.confirmation_title"
+            case .stopSharing: return "settings.telemetry.optout.alert_title"
+            }
         }
 
-        switch sectionType {
-        case .callouts:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! CalloutSettingsCellView
-            cell.delegate = self
+        var message: String {
+            switch self {
+            case .mediaControls: return "setting.audio.mix_with_others.confirmation"
+            case .stopSharing: return "settings.telemetry.optout.alert_message"
+            }
+        }
 
-            if let rowType = CalloutsRow(rawValue: indexPath.row) {
-                switch rowType {
-                case .all: cell.type = .all
-                case .poi: cell.type = .poi
-                case .mobility: cell.type = .mobility
-                case .intersections: cell.type = .intersections
-                case .beacon: cell.type = .beacon
-                case .shake: cell.type = .shake
+        var action: String {
+            switch self {
+            case .mediaControls: return "settings.audio.mix_with_others.title"
+            case .stopSharing: return "settings.telemetry.optout.action"
+            }
+        }
+    }
+
+    @Published var confirmation: Confirmation?
+    var open: (SettingsRoute) -> Void = { _ in }
+
+    private let settings = SettingsContext.shared
+
+    var calloutsEnabled: Bool { settings.automaticCalloutsEnabled }
+    var naviLensAutoSnooze: Binding<Bool> { binding(\.naviLensAutoSnoozeEnabled) }
+
+    func binding(_ setting: ReferenceWritableKeyPath<SettingsContext, Bool>,
+                 also related: [ReferenceWritableKeyPath<SettingsContext, Bool>] = []) -> Binding<Bool> {
+        Binding {
+            self.settings[keyPath: setting]
+        } set: { isOn in
+            self.objectWillChange.send()
+            self.settings[keyPath: setting] = isOn
+            for keyPath in related {
+                self.settings[keyPath: keyPath] = isOn
+            }
+        }
+    }
+
+    var mediaControls: Binding<Bool> {
+        Binding {
+            !self.settings.audioSessionMixesWithOthers
+        } set: { enabled in
+            if enabled {
+                self.confirmation = .mediaControls
+            } else {
+                self.setMediaControls(false)
+            }
+        }
+    }
+
+    var usageSharing: Binding<Bool> {
+        Binding {
+            GDATelemetry.enabled
+        } set: { enabled in
+            if enabled {
+                self.setUsageSharing(true)
+            } else {
+                self.confirmation = .stopSharing
+            }
+        }
+    }
+
+    func confirm(_ confirmation: Confirmation) {
+        switch confirmation {
+        case .mediaControls: setMediaControls(true)
+        case .stopSharing: setUsageSharing(false)
+        }
+    }
+
+    private func setMediaControls(_ enabled: Bool) {
+        objectWillChange.send()
+        settings.audioSessionMixesWithOthers = !enabled
+        AppContext.shared.audioEngine.mixWithOthers = !enabled
+    }
+
+    private func setUsageSharing(_ enabled: Bool) {
+        objectWillChange.send()
+        GDATelemetry.setConsent(sharingEnabled: enabled)
+    }
+}
+
+struct SettingsView: View {
+    @ObservedObject var model: SettingsViewModel
+
+    var body: some View {
+        VStack(spacing: 0) {
+            NavigationBanner()
+
+            Form {
+                Section(GDLocalizedString("settings.section.general")) {
+                    row("settings.language.screen_title.2", .language)
+                    row("settings.general.voice", .voice)
+                    row("general.volume", .volume)
+                    row("menu.devices", .devices)
+                    row("siri_shortcuts.title.beta", .shortcuts)
+                }
+
+                Section {
+                    row("beacon.audio_beacon", .beacon)
+                } header: {
+                    GDLocalizedTextView("beacon.audio_beacon")
+                } footer: {
+                    GDLocalizedTextView("beacon.settings.description")
+                }
+
+                Section(GDLocalizedString("menu.manage_callouts")) {
+                    toggle("callouts.allow_callouts", "callouts.turn_on_off", model.binding(\.automaticCalloutsEnabled))
+                    if model.calloutsEnabled {
+                        toggle("callouts.places_and_landmarks", "callouts.places_and_landmarks.info",
+                               model.binding(\.placeSenseEnabled, also: [\.landmarkSenseEnabled, \.informationSenseEnabled]))
+                        toggle("callouts.mobility", "callouts.mobility.transportation_info",
+                               model.binding(\.mobilitySenseEnabled, also: [\.safetySenseEnabled]))
+                        toggle("callouts.intersections", "callouts.intersections.info", model.binding(\.intersectionSenseEnabled))
+                        toggle("callouts.audio_beacon", "callouts.audio_beacon.info", model.binding(\.destinationSenseEnabled))
+                        toggle("callouts.shake_callouts", "callouts.shake_callouts.info", model.binding(\.shakeCalloutsEnabled))
+                    }
+                }
+
+                Section {
+                    toggle("settings.audio.mix_with_others.title", nil, model.mediaControls)
+                        .disabled(AppContext.shared.isRouteGuidanceActive)
+                } header: {
+                    GDLocalizedTextView("settings.audio.media_controls")
+                } footer: {
+                    GDLocalizedTextView("settings.audio.mix_with_others.description")
+                }
+
+                Section {
+                    toggle("preview.include_unnamed_roads.title", nil, model.binding(\.previewIntersectionsIncludeUnnamedRoads))
+                } header: {
+                    GDLocalizedTextView("preview.title")
+                } footer: {
+                    GDLocalizedTextView("preview.include_unnamed_roads.subtitle")
+                }
+
+                Section {
+                    toggle("settings.navilens.auto_snooze.title", nil, model.naviLensAutoSnooze)
+                } header: {
+                    GDLocalizedTextView("settings.section.navilens")
+                } footer: {
+                    GDLocalizedTextView("settings.navilens.auto_snooze.description")
+                }
+
+                Section(GDLocalizedString("settings.section.troubleshooting")) {
+                    row("settings.section.troubleshooting", .troubleshooting)
+                }
+
+                Section(GDLocalizedString("settings.section.about")) {
+                    row("settings.about_app", .about)
+                }
+
+                Section {
+                    toggle("settings.section.share_usage_data", nil, model.usageSharing)
+                } header: {
+                    GDLocalizedTextView("settings.section.telemetry")
+                } footer: {
+                    GDLocalizedTextView("settings.section.telemetry.footer")
                 }
             }
-            
-            return cell
-            
-        case .telemetry:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! TelemetrySettingsTableViewCell
-            cell.parent = self
-            cell.configure()
-            
-            return cell
-            
-        case .naviLens:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
-            (cell.accessoryView as? UISwitch)?.isOn = SettingsContext.shared.naviLensAutoSnoozeEnabled
-            return cell
-
-        case .audio:
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath) as! MixAudioSettingCell
-            cell.delegate = self
-            return cell
-            
-        default:
-            return tableView.dequeueReusableCell(withIdentifier: identifier ?? "default", for: indexPath)
         }
-        
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        defer {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-
-        switch indexPath {
-        case SettingsViewController.languageSettingsIndexPath:
-            let controller = UIHostingController(rootView: LanguageSettingsView())
-            navigationController?.pushViewController(controller, animated: true)
-        case SettingsViewController.voiceSettingsIndexPath:
-            let controller = UIHostingController(rootView: VoiceSettingsView())
-            navigationController?.pushViewController(controller, animated: true)
-        case SettingsViewController.volumeSettingsIndexPath:
-            navigationController?.pushViewController(VolumeControlsHostViewController(), animated: true)
-        case SettingsViewController.beaconSettingsIndexPath:
-            navigationController?.pushViewController(BeaconSelectionHostViewController(), animated: true)
-        case SettingsViewController.siriShortcutsIndexPath:
-            navigationController?.pushViewController(SiriShortcutsTableViewController(), animated: true)
-        case SettingsViewController.aboutSettingsIndexPath:
-            navigationController?.pushViewController(AboutApplicationViewController(), animated: true)
-        default:
-            break
+        .alert(
+            GDLocalizedString(model.confirmation?.title ?? "general.alert.confirmation_title"),
+            isPresented: Binding(get: { model.confirmation != nil }, set: { if !$0 { model.confirmation = nil } }),
+            presenting: model.confirmation
+        ) { confirmation in
+            Button(role: .cancel) { } label: { GDLocalizedTextView("general.alert.cancel") }
+            Button(role: confirmation == .stopSharing ? .destructive : nil) {
+                model.confirm(confirmation)
+            } label: {
+                GDLocalizedTextView(confirmation.action)
+            }
+        } message: { confirmation in
+            GDLocalizedTextView(confirmation.message)
         }
     }
-    
-    @IBAction func onNaviLensAutoSnoozeChanged(_ sender: UISwitch) {
-        SettingsContext.shared.naviLensAutoSnoozeEnabled = sender.isOn
+
+    private func row(_ title: String, _ destination: SettingsRoute) -> some View {
+        Button {
+            model.open(destination)
+        } label: {
+            HStack {
+                GDLocalizedTextView(title)
+                Spacer()
+                Image(systemName: "chevron.forward")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
-    // MARK: UITableViewDataSource
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let sectionType = Section(rawValue: section) else { return nil }
-
-        switch sectionType {
-        case .general: return GDLocalizedString("settings.section.general")
-        case .audio: return GDLocalizedString("settings.audio.media_controls")
-        case .callouts: return GDLocalizedString("menu.manage_callouts")
-        case .about: return GDLocalizedString("settings.section.about")
-        case .streetPreview: return GDLocalizedString("preview.title")
-        case .naviLens: return GDLocalizedString("settings.section.navilens")
-        case .troubleshooting: return GDLocalizedString("settings.section.troubleshooting")
-        case .telemetry: return GDLocalizedString("settings.section.telemetry")
-        case .beacon: return GDLocalizedString("beacon.audio_beacon")
+    private func toggle(_ title: String, _ description: String?, _ value: Binding<Bool>) -> some View {
+        Toggle(isOn: value) {
+            VStack(alignment: .leading, spacing: 4) {
+                GDLocalizedTextView(title)
+                if let description {
+                    GDLocalizedTextView(description)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
     }
-    
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        guard let sectionType = Section(rawValue: section) else { return nil }
-
-        switch sectionType {
-        case .audio: return GDLocalizedString("settings.audio.mix_with_others.description")
-        case .naviLens: return GDLocalizedString("settings.navilens.auto_snooze.description")
-        case .streetPreview: return GDLocalizedString("preview.include_unnamed_roads.subtitle")
-        case .telemetry: return GDLocalizedString("settings.section.telemetry.footer")
-        case .beacon: return GDLocalizedString("beacon.settings.description")
-        default: return nil
-        }
-    }
-}
-
-extension SettingsViewController: MixAudioSettingCellDelegate {
-    func onSettingValueChanged(_ cell: MixAudioSettingCell, settingSwitch: UISwitch) {
-        // Note: The UI for this setting is "Enable Media Controls" but the setting is stored as
-        //       "Mixes with Others" (the inverse of "Enable Media Controls")
-        
-        guard settingSwitch.isOn else {
-            // If the setting switch is now off, the user disabled media controls. This doesn't
-            // require a warning alert, so just set mixesWithOthers to true and return.
-            updateSetting(true)
-            return
-        }
-        
-        // Otherwise, the user is turning on media controls, so we need to show a warning to make sure
-        // they understand what this change means in terms of how other audio apps will stop Soundscape
-        // from playing. This warning was added based on bug bash feedback on 12/3/20.
-        // Show an alert indicating that the user can download an enhanced version of the voice in Settings
-        let alert = UIAlertController(title: GDLocalizedString("general.alert.confirmation_title"),
-                                      message: GDLocalizedString("setting.audio.mix_with_others.confirmation"),
-                                      preferredStyle: .alert)
-        
-        let mixAction = UIAlertAction(title: GDLocalizedString("settings.audio.mix_with_others.title"), style: .default) { [weak self] (_) in
-            // Make the setting switch - turn off mixesWithOthers
-            self?.updateSetting(false)
-            self?.focusOnCell(cell)
-        }
-        alert.addAction(mixAction)
-        alert.preferredAction = mixAction
-        
-        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: { [weak self] (_) in
-            // Toggle the setting back off
-            settingSwitch.isOn = false
-
-            self?.focusOnCell(cell)
-        }))
-        
-        present(alert, animated: true)
-    }
-
-    private func updateSetting(_ newValue: Bool) {
-        SettingsContext.shared.audioSessionMixesWithOthers = newValue
-        AppContext.shared.audioEngine.mixWithOthers = newValue
-        
-    }
-    
-    private func focusOnCell(_ cell: MixAudioSettingCell) {
-        DispatchQueue.main.async {
-            UIAccessibility.post(notification: .layoutChanged, argument: cell)
-        }
-    }
-}
-
-extension SettingsViewController: CalloutSettingsCellViewDelegate {
-    func onCalloutSettingChanged(_ type: CalloutSettingCellType) {
-        guard type == .all else {
-            return
-        }
-        
-        let indexPaths = SettingsViewController.collapsibleCalloutIndexPaths
-        
-        if SettingsContext.shared.automaticCalloutsEnabled && !tableView.contains(indexPaths: indexPaths) {
-            tableView.insertRows(at: indexPaths, with: .automatic)
-        } else if !SettingsContext.shared.automaticCalloutsEnabled && tableView.contains(indexPaths: indexPaths) {
-            tableView.deleteRows(at: indexPaths, with: .automatic)
-        }
-    }
-}
-
-extension SettingsViewController: LargeBannerContainerView {
-    
-    func setLargeBannerHeight(_ height: CGFloat) {
-        largeBannerContainerView.setHeight(height)
-        tableView.reloadData()
-    }
-    
 }

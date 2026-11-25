@@ -381,11 +381,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
 
     private func addMarkerAction() {
 
-        let storyboard = UIStoryboard(name: "POITable", bundle: .main)
-        guard let viewController = storyboard.instantiateInitialViewController() as? SearchTableViewController else {
-            GDLogAppError("Marker tutorial: unable to load POI table.")
-            return
-        }
+        let viewController = SearchTableViewController()
 
         viewController.delegate = self
         navigationController?.pushViewController(viewController, animated: true)

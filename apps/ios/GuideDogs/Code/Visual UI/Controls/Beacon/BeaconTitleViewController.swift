@@ -17,7 +17,7 @@ struct BeaconTitleViewRepresentable: UIViewControllerRepresentable {
     // MARK: `UIViewControllerRepresentable`
     
     func makeUIViewController(context: Context) -> some UIViewController {
-        let viewController = BeaconTitleViewController(nibName: "BeaconTitleView", bundle: Bundle.main)
+        let viewController = BeaconTitleViewController()
         
         return viewController
     }
@@ -30,14 +30,12 @@ struct BeaconTitleViewRepresentable: UIViewControllerRepresentable {
 
 class BeaconTitleViewController: UIViewController {
     
-    // MARK: `IBOutlet`
-    
-    @IBOutlet private var titleLabel: UILabel!
-    @IBOutlet private var subtitleContainerView: UIView!
-    @IBOutlet private var subtitleLabel: UILabel!
-    @IBOutlet private var subtitleImageView: UIImageView!
-    @IBOutlet private var beaconLabel: UILabel!
-    
+    private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
+    private let subtitleImageView = UIImageView()
+    private let beaconLabel = UILabel()
+    private lazy var subtitleContainerView = UIStackView(arrangedSubviews: [subtitleImageView, subtitleLabel])
+
     // MARK: Properties
     
     private var userLocationStore = UserLocationStore()
@@ -49,6 +47,33 @@ class BeaconTitleViewController: UIViewController {
     
     // MARK: View Life Cycle
     
+    override func loadView() {
+        let content = BeaconTitleContentView()
+        view = content
+        content.isAccessibilityElement = true
+        content.accessibilityTraits = .button
+
+        for label in [titleLabel, subtitleLabel, beaconLabel] {
+            label.numberOfLines = 0
+            label.adjustsFontForContentSizeCategory = true
+            label.isAccessibilityElement = false
+        }
+        subtitleImageView.setContentHuggingPriority(.required, for: .horizontal)
+        subtitleContainerView.spacing = 6
+        subtitleContainerView.alignment = .center
+
+        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleContainerView, beaconLabel])
+        stack.axis = .vertical
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        content.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: content.topAnchor),
+            stack.leadingAnchor.constraint(equalTo: content.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: content.trailingAnchor),
+            stack.bottomAnchor.constraint(lessThanOrEqualTo: content.bottomAnchor)
+        ])
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -214,8 +239,8 @@ class BeaconTitleViewController: UIViewController {
                 .foregroundColor: UIColor(named: "Highlight Yellow")!
             ]
             
-            attributedString.addAttributes(nAttributes, range: NSRange(location: 0, length: nLabel.text.count))
-            attributedString.addAttributes(dAttributes, range: NSRange(location: nLabel.text.count, length: aLabel.text.count - nLabel.text.count))
+            attributedString.addAttributes(nAttributes, range: NSRange(location: 0, length: nLabel.text.utf16.count))
+            attributedString.addAttributes(dAttributes, range: NSRange(location: nLabel.text.utf16.count, length: aLabel.text.utf16.count - nLabel.text.utf16.count))
             
             beaconLabel.attributedText = attributedString
             

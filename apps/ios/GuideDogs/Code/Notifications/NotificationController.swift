@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -42,7 +43,10 @@ class NotificationController: NSObject {
 extension NotificationController: UINavigationControllerDelegate {
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        // Notify controllers
+        screenWillShow(viewController)
+    }
+
+    func screenWillShow(_ viewController: UIViewController) {
         alertContainerManager.viewControllerWillChange(viewController)
         largeBannerContainerManager.viewControllerWillChange(viewController)
         smallBannerContainerManager.viewControllerWillChange(viewController)

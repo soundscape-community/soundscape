@@ -15,10 +15,6 @@ struct OnboardingLanguageView: View {
     
     @State private var selectedLocale: Locale = LocalizationContext.currentAppLocale
     
-    @ViewBuilder
-    private var destination: some View {
-        OnboardingHeadphoneView()
-    }
     
     // MARK: `body`
     
@@ -34,7 +30,7 @@ struct OnboardingLanguageView: View {
             
             LanguagePickerView(selectedLocale: $selectedLocale)
             
-            OnboardingNavigationLink(destination: destination)
+            OnboardingNavigationLink(route: .headphones)
         }
 
     }

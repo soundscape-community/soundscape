@@ -7,253 +7,86 @@
 //  Licensed under the MIT License.
 //
 
-import UIKit
 import SafariServices
-import CocoaLumberjackSwift
+import SwiftUI
 
-class AboutHeaderCell: UITableViewCell {
-    private let logoImageView = UIImageView(image: UIImage(named: "launchScreenLogo"))
-    private let titleLabel = UILabel()
-    private let versionLabel = UILabel()
+struct AboutScreen: View {
+    let navigation: AppNavigationModel
+    @State private var webPage: WebPage?
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    var body: some View {
+        VStack(spacing: 0) {
+            NavigationBanner()
+            List {
+                VStack(spacing: 4) {
+                    Image("launchScreenLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .padding(.bottom, 10)
+                        .accessibilityHidden(true)
+                    Text(verbatim: "Soundscape").font(.headline)
+                    GDLocalizedTextView("settings.version.about.version", AppContext.appVersion, AppContext.appBuild)
+                        .font(.subheadline)
+                }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                .padding(.vertical, 16)
+                .accessibilityElement(children: .combine)
 
-        configureViewHierarchy()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-
-        configureViewHierarchy()
-    }
-
-    func configure(versionText: String) {
-        versionLabel.text = versionText
-    }
-
-    private func configureViewHierarchy() {
-        selectionStyle = .none
-        backgroundColor = Colors.Background.primary
-        contentView.backgroundColor = Colors.Background.primary
-
-        logoImageView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        versionLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        logoImageView.contentMode = .scaleAspectFit
-
-        titleLabel.text = GDLocalizationUnnecessary("Soundscape")
-        titleLabel.font = .preferredFont(forTextStyle: .headline)
-        titleLabel.adjustsFontForContentSizeCategory = true
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 0
-        titleLabel.textColor = Colors.Foreground.primary
-
-        versionLabel.font = .preferredFont(forTextStyle: .subheadline)
-        versionLabel.adjustsFontForContentSizeCategory = true
-        versionLabel.textAlignment = .center
-        versionLabel.numberOfLines = 0
-        versionLabel.textColor = Colors.Foreground.primary
-
-        contentView.addSubview(logoImageView)
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(versionLabel)
-
-        NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
-            logoImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            logoImageView.widthAnchor.constraint(equalToConstant: 100),
-            logoImageView.heightAnchor.constraint(equalToConstant: 100),
-
-            titleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 14),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
-
-            versionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            versionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
-            versionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
-            versionLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -24)
-        ])
-    }
-}
-
-class AboutApplicationViewController: BaseTableViewController, LargeBannerTableHeaderContainerView {
-    private static let aboutHeaderHeight: CGFloat = 220
-    private static let thirdPartyNoticesStoryboardIdentifier = "thirdPartyNotices"
-    
-    // MARK: Cell Content
-    private enum NavigationTarget {
-        case versionHistory
-        case thirdPartyNotices
-    }
-    
-    private struct AboutLinkCellModel {
-        let localizedTitle: String
-        
-        let navigationTarget: NavigationTarget?
-        let url: URL?
-
-        init(localizedTitle: String, url: URL) {
-            self.localizedTitle = localizedTitle
-            self.url = url
-            self.navigationTarget = nil
-        }
-        
-        init(localizedTitle: String, navigationTarget: NavigationTarget) {
-            self.localizedTitle = localizedTitle
-            self.url = nil
-            self.navigationTarget = navigationTarget
-        }
-    }
-    
-    // MARK: Properties
-    
-    private let sectionCount = 1
-    
-    private let headerPath = IndexPath(row: 0, section: 0)
-    private(set) var largeBannerContainerView: UIView! = UIView(frame: .zero)
-    
-    private var aboutLinks: [AboutLinkCellModel] {
-        var links = [
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), navigationTarget: .versionHistory),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.privacy_policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale)),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.service_agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale)),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), navigationTarget: .thirdPartyNotices),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.youtube_channel"), url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale))
-        ]
-        
-        if LocalizationContext.currentAppLocale == Locale.frFr {
-            // If the app is localized in fr-FR, include a link to the France Accessibility landing page
-            links.append(AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Accessibilité: partiellement conforme"), url: AppContext.Links.accessibilityFrance))
-        }
-        
-        return links
-    }
-
-    init() {
-        super.init(style: .plain)
-    }
-
-    @available(*, unavailable, message: "Use init()")
-    required init?(coder: NSCoder) {
-        fatalError("Use init()")
-    }
-    
-    // MARK: View Life Cycle
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        title = GDLocalizedString("settings.section.about")
-
-        tableView.registerCell(AboutHeaderCell.self)
-        tableView.registerCell(CustomDisclosureTableViewCell.self)
-
-        syncLargeBannerTableHeaderFrame()
-        tableView.tableFooterView = UIView(frame: .zero)
-        tableView.tintColor = Colors.Foreground.primary
-        tableView.separatorColor = Colors.Background.tertiary
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 44
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        syncLargeBannerTableHeaderFrame()
-    }
-
-    // MARK: UITableViewDelegate
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionCount
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return aboutLinks.count + 1
-        }
-        
-        return 0
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Handle the header cell separately
-        if indexPath == headerPath {
-            let cell: AboutHeaderCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-            cell.configure(versionText: GDLocalizedString("settings.version.about.version", AppContext.appVersion, AppContext.appBuild))
-            return cell
-        }
-        
-        // Make sure the index path is valid, otherwise return a default cell
-        guard indexPath.section < sectionCount, indexPath.row - 1 < aboutLinks.count, indexPath.row > 0 else {
-            return UITableViewCell(style: .default, reuseIdentifier: nil)
-        }
-        
-        // Set the title for the cell
-        let cell: CustomDisclosureTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-        cell.textLabel?.text = aboutLinks[indexPath.row - 1].localizedTitle
-        cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.adjustsFontForContentSizeCategory = true
-        cell.backgroundColor = Colors.Background.primary
-        cell.accessibilityTraits = [.button]
-        
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        defer {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-        
-        // Make sure the index path is valid, otherwise return a default cell
-        guard indexPath.section < sectionCount, indexPath.row - 1 < aboutLinks.count, indexPath.row > 0 else {
-            return
-        }
-        
-        let model = aboutLinks[indexPath.row - 1]
-
-        // If the cell navigates in-app, push the destination.
-        if let navigationTarget = model.navigationTarget {
-            switch navigationTarget {
-            case .versionHistory:
-                navigationController?.pushViewController(VersionHistoryTableViewController(), animated: true)
-            case .thirdPartyNotices:
-                let storyboard = UIStoryboard(name: "Settings", bundle: nil)
-                let viewController = storyboard.instantiateViewController(withIdentifier: AboutApplicationViewController.thirdPartyNoticesStoryboardIdentifier)
-                navigationController?.pushViewController(viewController, animated: true)
+                row(GDLocalizedString("settings.about.title.whats_new")) { navigation.open(.settingsPage(.versionHistory)) }
+                link("settings.about.title.privacy_policy", AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale))
+                link("settings.about.title.service_agreement", AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale))
+                row(GDLocalizedString("settings.about.title.copyright")) { navigation.open(.settingsPage(.notices)) }
+                link("settings.about.title.youtube_channel", AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale))
+                if LocalizationContext.currentAppLocale == .frFr {
+                    row("Accessibilité: partiellement conforme") {
+                        webPage = WebPage(url: AppContext.Links.accessibilityFrance)
+                    }
+                }
             }
-            
-            return
+            .listStyle(.plain)
         }
-        
-        // Otherwise, if the cell has a URL, load it
-        if let url = model.url {
-            openURL(url: url)
+        .navigationTitle(GDLocalizedString("settings.section.about"))
+        .toolbar(.visible, for: .navigationBar)
+        .sheet(item: $webPage) { page in
+            SafariPage(url: page.url).ignoresSafeArea()
+        }
+    }
+
+    private func link(_ title: String, _ url: URL) -> some View {
+        row(GDLocalizedString(title)) { webPage = WebPage(url: url) }
+    }
+
+    private func row(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(verbatim: title)
+                Spacer()
+                Image(systemName: "chevron.forward")
+                    .font(.footnote.weight(.semibold))
+                    .accessibilityHidden(true)
+            }
+            .foregroundStyle(.primary)
+            .contentShape(Rectangle())
+        }
+    }
+
+    private struct WebPage: Identifiable {
+        let url: URL
+        var id: URL { url }
+    }
+
+    private struct SafariPage: UIViewControllerRepresentable {
+        let url: URL
+
+        func makeUIViewController(context: Context) -> SFSafariViewController {
+            let controller = SFSafariViewController(url: url)
+            controller.preferredBarTintColor = Colors.Background.primary
+            controller.preferredControlTintColor = Colors.Foreground.primary
+            return controller
         }
 
+        func updateUIViewController(_ controller: SFSafariViewController, context: Context) {}
     }
-    
-    // MARK: Actions
-    
-    private func openURL(url: URL) {
-        DDLogInfo("Opening URL: \(url)")
-        
-        let safariVC = SFSafariViewController(url: url)
-        safariVC.preferredBarTintColor = Colors.Background.primary
-        safariVC.preferredControlTintColor = Colors.Foreground.primary
-        
-        present(safariVC, animated: true, completion: nil)
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        indexPath == headerPath ? AboutApplicationViewController.aboutHeaderHeight : UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        indexPath == headerPath ? AboutApplicationViewController.aboutHeaderHeight : 44
-    }
-
 }

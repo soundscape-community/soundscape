@@ -14,7 +14,16 @@ class OnboardingViewModel: ObservableObject {
     
     // MARK: Properties
     
+    @Published private(set) var coordinator: OnboardingCoordinator
     var dismiss: () -> Void
+
+    var path: Binding<[OnboardingRoute]> {
+        Binding(get: { self.coordinator.path }, set: { self.coordinator.updatePath($0) })
+    }
+
+    func open(_ route: OnboardingRoute) {
+        coordinator.open(route)
+    }
     @Published var isPresentingTelemetryConsent = false
     private var isOnboardingActive = false
     private var didComplete = false
@@ -59,6 +68,7 @@ class OnboardingViewModel: ObservableObject {
     
     init(dismiss: @escaping () -> Void = { }) {
         self.dismiss = dismiss
+        coordinator = OnboardingCoordinator(needsTerms: !FirstUseExperience.didComplete(.oobe))
     }
     
 }

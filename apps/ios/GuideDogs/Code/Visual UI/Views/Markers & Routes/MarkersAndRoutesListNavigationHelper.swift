@@ -52,17 +52,22 @@ class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccess
                     // Set a beacon on the given location
                     // and segue to the home view
                     try LocationActionHandler.beacon(locationDetail: detail)
-                    self.popToRootViewController(animated: true)
+                    self.returnToHome(focusOnBeacon: true)
                     
                 case .preview:
                     if AppContext.shared.isStreetPreviewing {
                         let alert = LocationActionAlert.restartPreview { [weak self] (_) in
-                            self?.host?.performSegue(withIdentifier: "UnwindPreviewView", sender: detail)
+                            if let host = self?.host {
+                                PreviewViewController.restart(from: host, at: detail)
+                            }
                         }
                         
                         self.host?.present(alert, animated: true, completion: nil)
                     } else {
-                        self.host?.performSegue(withIdentifier: "PreviewView", sender: detail)
+                        let preview = PreviewViewController.navigation(for: detail) { [weak self] in
+                            self?.returnToHome()
+                        }
+                        self.host?.present(preview, animated: true)
                     }
                     
                 case .share:
@@ -89,7 +94,7 @@ class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccess
 
                 case .navilens:
                     launchNaviLens(detail: detail)
-                    self.popToRootViewController(animated: true)
+                    self.returnToHome()
                 }
             } catch let error as LocationActionError {
                 let alert = LocationActionAlert.alert(for: error)

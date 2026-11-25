@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -11,7 +12,7 @@ import SwiftUI
 
 class BeaconViewHostingController: UIHostingController<AnyView> {
     
-    required init?(coder aDecoder: NSCoder) {
+    init() {
         let navHelper = ViewNavigationHelper()
         
         let view = BeaconView()
@@ -19,11 +20,15 @@ class BeaconViewHostingController: UIHostingController<AnyView> {
             .environmentObject(UserLocationStore())
             .environmentObject(navHelper)
         
-        super.init(coder: aDecoder, rootView: AnyView(view))
+        super.init(rootView: AnyView(view))
         
         navHelper.host = self
     }
     
+    required dynamic init?(coder: NSCoder) {
+        fatalError("Use init()")
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
