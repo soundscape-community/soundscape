@@ -130,7 +130,7 @@
 
 /* Declines usage sharing and remembers the choice */
 "telemetry.consent.dont_share" = "No compartir";
-"settings.section.telemetry.footer" = "Ayude a Soundscape a mejorar enviando automáticamente datos de uso, informes de errores y diagnósticos. No se recopilan datos personales.";
+"settings.section.telemetry.footer" = "Ayude a Soundscape a mejorar compartiendo datos sobre el uso, información de diagnóstico, ajustes de la aplicación y de accesibilidad, actividad de movimiento y la ubicación aproximada de la sesión. Los informes incluyen un identificador aleatorio que cambia cada mes. Compartir estos datos es opcional y se puede desactivar.";
 "settings.language.screen_title" = "Idioma";
 "settings.language.screen_title.2" = "Idioma y región";
 "settings.language.change_alert" = "¿Desea cambiar el idioma de la aplicación a %@?";
