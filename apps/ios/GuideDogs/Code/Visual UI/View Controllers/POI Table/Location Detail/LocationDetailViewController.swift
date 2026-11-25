@@ -74,17 +74,8 @@ class LocationDetailViewController: UIViewController {
         super.viewWillAppear(animated)
         
         guard let locationDetail = locationDetail else {
-            GDATelemetry.trackScreenView("location_details")
             return
         }
-        
-        // Track the screen view
-        var props: [String: String]?
-        if let context = locationDetail.telemetryContext {
-            props = ["context": context]
-        }
-        
-        GDATelemetry.trackScreenView("location_details", with: props)
         
         if let markerId = locationDetail.markerId {
             cancellable = NotificationCenter.default.publisher(for: .markerUpdated).sink { notification in
@@ -255,7 +246,6 @@ extension LocationDetailViewController: EditableMapViewControllerDelegate {
 extension LocationDetailViewController: LocationActionDelegate {
     
     func didSelectLocationAction(_ action: LocationAction, detail: LocationDetail) {
-        GDATelemetry.track(action.telemetryEvent, with: ["context": detail.telemetryContext ?? "", "source": "location_detail_view"])
         
         DispatchQueue.main.async { [weak self] in
             guard let `self` = self else {

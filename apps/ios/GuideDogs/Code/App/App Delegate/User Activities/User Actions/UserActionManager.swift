@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -82,9 +83,7 @@ class UserActionManager {
         if AppContext.shared.state != .normal {
             AppContext.shared.wakeUp()
         }
-        
-        GDATelemetry.track("user_activity.perform", value: userAction.rawValue)
-        
+
         let postNotification = {
             // These actions will be handled by the home or the preview view controllers
             NotificationCenter.default.post(name: Notification.Name.continueUserAction,

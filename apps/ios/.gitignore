@@ -27,3 +27,6 @@ AppStoreBuild
 
 # Ignore CocoaPods
 Pods/
+
+# Machine-local build settings
+/GuideDogs/Assets/Configurations/Local.xcconfig

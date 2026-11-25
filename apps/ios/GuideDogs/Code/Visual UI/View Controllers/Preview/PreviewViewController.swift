@@ -129,7 +129,6 @@ class PreviewViewController: UIViewController {
         self.activityIndicatorViewController = activityIndicatorViewController
         
         if FirstUseExperience.didComplete(.previewTutorial) == false {
-            GDATelemetry.track("preview.tutorial.presented")
             
             // Update state
             isPresentingTutorialViewController = true
@@ -155,9 +154,7 @@ class PreviewViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("street_preview")
-        
+
         updateCalloutButtonTraits()
         
         // Transparent navigation bar
@@ -437,9 +434,7 @@ class PreviewViewController: UIViewController {
     
     @objc func onRoadToggleButtonTouchUpInside() {
         SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads.toggle()
-        
-        GDATelemetry.track("preview.include_unnamed_roads", with: ["value": "\(SettingsContext.shared.previewIntersectionsIncludeUnnamedRoads)", "context": "preview"])
-        
+
         // Reconfigure the view
         configureToggleButton()
     }
@@ -528,7 +523,6 @@ class PreviewViewController: UIViewController {
 extension PreviewViewController: PreviewTutorialDelegate {
     
     func previewTutorialDidComplete() {
-        GDATelemetry.track("preview.tutorial.dismissed")
         
         // Update state
         isPresentingTutorialViewController = false

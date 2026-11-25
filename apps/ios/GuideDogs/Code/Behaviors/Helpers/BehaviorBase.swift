@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -77,7 +78,6 @@ class BehaviorBase: Behavior {
         
         self.parent = parent
         isActive = true
-        GDATelemetry.track("\(description.lowercased()).activate")
     }
     
     func willDeactivate() {
@@ -95,7 +95,6 @@ class BehaviorBase: Behavior {
         parent = nil
         
         isActive = false
-        GDATelemetry.track("\(description.lowercased()).deactivate")
         
         return tempParent
     }

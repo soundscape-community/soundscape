@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -531,12 +532,7 @@ extension Intersection {
         }
         
         guard let intersectionWithMostRoads = similarIntersections.max(by: { $0.roadIds.count < $1.roadIds.count }) else { return intersection }
-        
-        if intersection.key != intersectionWithMostRoads.key {
-            // Log that we prevented an intersection with missing roads to be represented
-            GDATelemetry.track("intersection.warning.multiple_objects", with: ["count": String(similarIntersections.count)])
-        }
-        
+
         return intersectionWithMostRoads
     }
     

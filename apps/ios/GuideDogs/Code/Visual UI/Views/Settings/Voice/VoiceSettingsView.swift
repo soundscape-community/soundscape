@@ -180,7 +180,6 @@ private final class VoiceSettingsModel: ObservableObject {
         }
 
         isScreenVisible = true
-        GDATelemetry.trackScreenView("settings.voice")
 
         let destinationManager = AppContext.shared.spatialDataContext.destinationManager
         if destinationManager.isAudioEnabled {
@@ -237,13 +236,6 @@ private final class VoiceSettingsModel: ObservableObject {
         SettingsContext.shared.speakingRate = speakingRate
         announceSpeakingRateTest()
 
-        GDATelemetry.track(
-            "settings.voice.rate",
-            with: [
-                "value": String(speakingRate),
-                "voice": SettingsContext.shared.voiceId ?? "not_set"
-            ]
-        )
     }
 
     func detail(for voice: VoiceCatalogueDescriptor) -> String {
@@ -373,7 +365,6 @@ private final class VoiceSettingsModel: ObservableObject {
                 return
             }
 
-            GDATelemetry.track("settings.voice.preview", with: ["voice": voice.name])
             AppContext.process(TTSVoicePreviewEvent(name: voice.name) { [weak self] _ in
                 Task { @MainActor in
                     self?.voicePreviewDidFinish(identifier: voice.identifier)
@@ -381,7 +372,6 @@ private final class VoiceSettingsModel: ObservableObject {
             })
         }
 
-        GDATelemetry.track("settings.voice.select", with: ["voice": voice.name])
         GDLogAppInfo("Selected voice: \(voice.name) (ID: \(voice.identifier))")
     }
 

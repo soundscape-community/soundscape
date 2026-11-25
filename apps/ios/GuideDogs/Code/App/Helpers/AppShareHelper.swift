@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -43,9 +44,7 @@ class AppShareHelper {
         let alert = UIAlertController(title: GDLocalizedString("share.prompt.title"),
                                       message: GDLocalizedString("share.prompt.message"),
                                       preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.not_now"), style: .cancel, handler: { (_) in
-            GDATelemetry.track("app.share.not_now")
-        }))
+        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.not_now"), style: .cancel))
         
         let shareAction = UIAlertAction(title: GDLocalizedString("share.title"), style: .default, handler: { (_) in
             share()
@@ -69,17 +68,9 @@ class AppShareHelper {
         }
         
         let activityViewController = UIActivityViewController(activityItems: [GDLocalizedString("share.action.message"), shareURL], applicationActivities: nil)
-        activityViewController.completionWithItemsHandler = { activityType, completed, _, error in
-            GDATelemetry.track("app.share.completion", with: ["activityType": activityType?.rawValue ?? "none",
-                                                              "completed": completed.description,
-                                                              "error": error?.localizedDescription ?? "none"])
-            
-        }
         
         rootViewController.present(activityViewController, animated: true, completion: nil)
-        
-        GDATelemetry.track("app.share.shown")
-        
+
         return true
     }
     

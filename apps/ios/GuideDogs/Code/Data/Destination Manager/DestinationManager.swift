@@ -405,17 +405,13 @@ class DestinationManager: DestinationManagerProtocol {
     /// - Returns: True if the audio beacon was toggled, false otherwise (e.g. no destination is set or user's location is unknown).
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool {
-        let isRouteBeacon = AppContext.shared.eventProcessor.activeBehavior is RouteGuidance
         guard destination != nil else {
             // Return if destination does not exist
             return false
         }
         
         if isAudioEnabled {
-            if !automatic {
-                GDATelemetry.track("beacon.toggled", with: ["enabled": "false", "route": String(isRouteBeacon)])
-            }
-            
+
             if forceMelody {
                 finishBeaconPlayerOnRemove = true
             }
@@ -426,11 +422,7 @@ class DestinationManager: DestinationManagerProtocol {
         guard let userLocation = AppContext.shared.geolocationManager.location else {
             return false
         }
-        
-        if !automatic {
-            GDATelemetry.track("beacon.toggled", with: ["enabled": "true", "route": String(isRouteBeacon)])
-        }
-        
+
         return enableDestinationAudio(userLocation: userLocation, isUnmuting: !forceMelody, notify: sendNotfication)
     }
     
@@ -682,7 +674,6 @@ class DestinationManager: DestinationManagerProtocol {
         // back on if they leave the geofence
         if isWithinGeofence {
             GDATelemetry.track("beacon.arrived")
-            GDATelemetry.helper?.beaconCountArrived += 1
             
             disableDestinationAudio()
         }

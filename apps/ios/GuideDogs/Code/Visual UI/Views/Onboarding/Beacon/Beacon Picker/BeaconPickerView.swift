@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -35,7 +36,6 @@ struct BeaconPickerView: View {
                     // Standard beacons
                     ForEach(allBeacons) { beacon in
                         Button {
-                            GDATelemetry.track("onboarding.beacon.selected", with: ["beacon": beacon.localizedName])
                             
                             // Save selected beacon
                             selectedBeacon = beacon

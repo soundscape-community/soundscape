@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -101,7 +102,6 @@ class Geocoder {
             
             guard error == nil else {
                 if let error = error as? CLError, error.code == CLError.Code.network {
-                    GDATelemetry.track("geocoder.apple.rate_limit_exceeded")
                     GDLogError(.application, "Apple Geocoder rate limit exceeded")
                 }
                 

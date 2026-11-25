@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -17,7 +18,6 @@ struct ShareRouteActivityViewRepresentable: ViewControllerRepresentable {
     // MARK: `ViewControllerRepresentable`
     
     func makeViewController() -> UIViewController? {
-        GDATelemetry.track("share.route")
         
         return SoundscapeDocumentAlert.shareRoute(route)
     }

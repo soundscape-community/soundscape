@@ -89,7 +89,6 @@ class DeviceManager: DeviceManagerProtocol {
         
         DeviceManager.store(device: device)
         
-        GDATelemetry.track("ar_headset.added", with: ["type": device.type.rawValue])
     }
     
     func remove(device: Device) {
@@ -114,7 +113,6 @@ class DeviceManager: DeviceManagerProtocol {
         
         device.deviceDelegate = nil
         
-        GDATelemetry.track("ar_headset.removed", with: ["type": device.type.rawValue])
     }
     
 }
@@ -128,7 +126,6 @@ extension DeviceManager: DeviceDelegate {
         
         delegate?.didConnectDevice(device)
         
-        GDATelemetry.track("ar_headset.connected", with: ["type": device.type.rawValue])
     }
     
     func didFailToConnectDevice(_ device: Device, error: DeviceError) {
@@ -142,7 +139,6 @@ extension DeviceManager: DeviceDelegate {
         
         delegate?.didDisconnectDevice(device)
         
-        GDATelemetry.track("ar_headset.disconnect", with: ["type": device.type.rawValue])
     }
     
 }

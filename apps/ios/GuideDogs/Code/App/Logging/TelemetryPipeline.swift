@@ -1,0 +1,502 @@
+// Copyright (c) Soundscape Community Contributors.
+// Licensed under the MIT License.
+
+import Foundation
+import CoreLocation
+import SwiftyH3
+import OpenTelemetryApi
+import OpenTelemetrySdk
+import OpenTelemetryProtocolExporterHttp
+import PersistenceExporter
+
+struct TelemetryConfiguration {
+    let endpoint: URL
+    let headers: [(String, String)]
+
+    init?(info: [String: Any]) {
+        guard let endpoint = info["SOUNDSCAPE_OTEL_LOGS_ENDPOINT"] as? String,
+              !endpoint.contains("$("),
+              let components = URLComponents(string: endpoint),
+              components.scheme?.lowercased() == "https",
+              let host = components.host, !host.isEmpty,
+              components.user == nil, components.password == nil,
+              components.fragment == nil, !components.path.isEmpty,
+              let url = components.url else { return nil }
+        self.endpoint = url
+        let rawHeaders = info["SOUNDSCAPE_OTEL_LOGS_HEADERS"] as? String ?? ""
+        if rawHeaders.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            headers = []
+        } else {
+            guard let data = rawHeaders.data(using: .utf8),
+                  let dictionary = (try? JSONSerialization.jsonObject(with: data)) as? [String: String],
+                  dictionary.allSatisfy({ key, value in
+                      !key.isEmpty && key.utf8.allSatisfy { byte in
+                          (65...90).contains(byte) || (97...122).contains(byte) || (48...57).contains(byte) ||
+                          "!#$%&'*+-.^_`|~".utf8.contains(byte)
+                      } && value.utf8.allSatisfy { byte in
+                          byte == 9 || (byte >= 32 && byte != 127)
+                      }
+                  }) else { return nil }
+            headers = dictionary.sorted { $0.key < $1.key }.map { ($0.key, $0.value) }
+        }
+    }
+}
+
+/// A separate random analytics identifier, shared only by sessions starting in the same UTC month.
+final class TelemetryInstallationID {
+    private static let key = "SoundscapeTelemetryMonthlyInstallationID"
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
+
+    func id(for date: Date) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let components = calendar.dateComponents([.year, .month], from: date)
+        let month = String(format: "%04d-%02d", components.year!, components.month!)
+        if let saved = defaults.dictionary(forKey: Self.key),
+           saved["month"] as? String == month,
+           let id = saved["id"] as? String, UUID(uuidString: id) != nil { return id }
+        let id = UUID().uuidString
+        defaults.set(["month": month, "id": id], forKey: Self.key)
+        return id
+    }
+}
+
+/// A process-local usage session. Backgrounding and device lock do not end it.
+final class TelemetrySession {
+    static let sleepTimeout: TimeInterval = 30 * 60
+
+    private struct State {
+        var id = UUID().uuidString
+        var startedAt: Date
+        var installationID: String?
+        var sleepingSince: TimeInterval?
+        var location: TelemetryLocation?
+    }
+
+    private let state: Locked<State>
+
+    init(startedAt: Date = Date()) {
+        state = Locked(initialValue: State(startedAt: startedAt))
+    }
+
+    func installationID(using store: TelemetryInstallationID) -> String {
+        state.locking { state in
+            if let id = state.installationID { return id }
+            let id = store.id(for: state.startedAt)
+            state.installationID = id
+            return id
+        }
+    }
+
+    var id: String { state.protectedValue.id }
+    var location: TelemetryLocation? { state.protectedValue.location }
+
+    func captureLocation(_ fix: CLLocation, now: Date = Date()) {
+        state.locking { state in
+            guard state.location == nil else { return }
+            state.location = TelemetryLocation(fix: fix, now: now)
+        }
+    }
+
+    func clearLocation() { state.locking { $0.location = nil } }
+
+    /// Elapsed seconds from a monotonic clock that includes device sleep, independent of wall-clock changes.
+    func operationStateChanged(to operationState: OperationState,
+                               at now: TimeInterval = TimeInterval(clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW)) / 1_000_000_000,
+                               wallTime: Date = Date()) {
+        state.locking { state in
+            switch operationState {
+            case .sleep, .snooze:
+                // Switching between sleep and snooze must not restart the timeout.
+                if state.sleepingSince == nil { state.sleepingSince = now }
+            case .normal:
+                if let since = state.sleepingSince, now - since >= Self.sleepTimeout {
+                    state.id = UUID().uuidString
+                    state.startedAt = wallTime
+                    state.installationID = nil
+                    state.location = nil
+                }
+                state.sleepingSince = nil
+            }
+        }
+    }
+}
+
+/// Only the H3 cell centre is retained in telemetry state.
+struct TelemetryLocation {
+    let latitude: Double
+    let longitude: Double
+
+    init?(fix: CLLocation, now: Date = Date()) {
+        let age = now.timeIntervalSince(fix.timestamp)
+        guard CLLocationCoordinate2DIsValid(fix.coordinate), fix.horizontalAccuracy >= 0,
+              age >= 0, age <= 120,
+              let cell = try? H3LatLng(latitudeDegs: fix.coordinate.latitude,
+                                       longitudeDegs: fix.coordinate.longitude).cell(at: .res6),
+              let centre = try? cell.center.coordinates else { return nil }
+        latitude = centre.latitude
+        longitude = centre.longitude
+    }
+}
+
+/// Guarded by GDATelemetry's event lock. Consent epochs also invalidate pending opens.
+struct TelemetryContextState {
+    var ready = false
+    private(set) var consentEpoch = UUID()
+    private var snapshotSessionID: String?
+    private var suggestionSessionID: String?
+
+    mutating func revokeConsent() {
+        consentEpoch = UUID()
+        snapshotSessionID = nil
+    }
+
+    mutating func claimSnapshot(sessionID: String, collecting: Bool) -> Bool {
+        guard collecting, ready, snapshotSessionID != sessionID else { return false }
+        snapshotSessionID = sessionID
+        return true
+    }
+
+    mutating func claimSuggestion(sessionID: String, collecting: Bool, active: Bool) -> Bool {
+        guard collecting, active, ready, suggestionSessionID != sessionID else { return false }
+        suggestionSessionID = sessionID
+        return true
+    }
+
+    static func snapshot(app: [String: String], device: [String: String],
+                         accessibility: [String: String]) -> [String: String] {
+        var result = [String: String]()
+        for (prefix, values) in [("app", app), ("device", device), ("accessibility", accessibility)] {
+            for (key, value) in values {
+                let name: String
+                switch (prefix, key) {
+                case ("device", "model"): name = "device.model.identifier"
+                case ("device", "os.version"): name = "os.version"
+                default: name = "\(prefix).\(key)"
+                }
+                result[name] = value
+            }
+        }
+        return result
+    }
+}
+
+/// Context captured at the user's action, rather than at asynchronous completion.
+struct TelemetryOccurrence {
+    let timestamp: Date
+    let sessionID: String
+    let installationID: String
+    let consentEpoch: UUID
+    let location: TelemetryLocation?
+    let snapshot: [String: String]
+}
+
+struct TelemetryEvent {
+    let name: String
+    let timestamp: Date
+    let attributes: [String: AttributeValue]
+
+    init(name: String, timestamp: Date = Date(), properties: [String: String] = [:],
+         clientID: String, sessionID: String, snapshot: [String: String] = [:],
+         location: TelemetryLocation? = nil) {
+        self.name = name
+        self.timestamp = timestamp
+        var values = properties.merging(snapshot) { current, _ in current }
+        values["app.installation.id"] = clientID
+        values["session.id"] = sessionID
+        // Identify this occurrence once; exports and persisted retries reuse these attributes.
+        values["event_id"] = UUID().uuidString
+        var attributes = Self.typedAttributes(values)
+        // Only the quantised session location may populate geographic attributes.
+        attributes.removeValue(forKey: "geo.location.lat")
+        attributes.removeValue(forKey: "$latitude")
+        attributes.removeValue(forKey: "geo.location.lon")
+        attributes.removeValue(forKey: "$longitude")
+        if let location = location {
+            attributes["geo.location.lat"] = .double(location.latitude)
+            attributes["geo.location.lon"] = .double(location.longitude)
+        }
+        self.attributes = attributes
+    }
+
+    /// Explicit schema: never guess types from arbitrary string values.
+    static func typedAttributes(_ values: [String: String]) -> [String: AttributeValue] {
+        let booleans: Set<String> = [
+            "first_launch", "success", "is_flat", "is_other_audio_playing", "is_mixing_with_others",
+            "app.settings.allow_callouts", "app.settings.mix_audio", "app.beacon.melodies_enabled",
+            "accessibility.voice_over", "accessibility.mono_audio", "accessibility.speak_screen",
+            "accessibility.speak_selection", "accessibility.bold_text", "accessibility.grayscale",
+            "accessibility.invert_colors", "accessibility.darker_system_colors",
+            "accessibility.assistive_touch", "accessibility.switch_control"
+        ]
+        let doubles: Set<String> = ["app.settings.voice.rate", "app.volume.beacon", "app.volume.tts",
+                                    "app.volume.other", "ar_headset.accuracy"]
+        var result: [String: AttributeValue] = [:]
+        for (key, value) in values {
+            if booleans.contains(key) {
+                if value == "true" { result[key] = .bool(true) }
+                else if value == "false" { result[key] = .bool(false) }
+            } else if doubles.contains(key) {
+                if let number = Double(value), number.isFinite { result[key] = .double(number) }
+            } else if key == "error.code" {
+                if let number = Int(value) { result[key] = .int(number) }
+            } else {
+                result[key] = .string(value)
+            }
+        }
+        return result
+    }
+
+    func emit(to logger: OpenTelemetryApi.Logger) {
+        logger.logRecordBuilder()
+            .setEventName(name)
+            .setTimestamp(timestamp)
+            .setSeverity(.info)
+            .setAttributes(attributes)
+            .emit()
+    }
+}
+
+/// One revocable consent period. The same lock protects request starts and disk writes
+/// against revocation. Network completion never holds this lock.
+final class TelemetryConsent: Sendable {
+    let active = Locked(initialValue: true)
+    let session: URLSession
+
+    init(session: URLSession? = nil) {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.urlCache = nil
+        configuration.httpCookieStorage = nil
+        self.session = session ?? URLSession(configuration: configuration)
+    }
+
+    func revoke() {
+        active.locking { $0 = false }
+        session.invalidateAndCancel()
+    }
+}
+
+final class ConsentHTTPClient: HTTPClient {
+    private let consent: TelemetryConsent
+    private let base: BaseHTTPClient
+
+    init(consent: TelemetryConsent) {
+        self.consent = consent
+        base = BaseHTTPClient(session: consent.session)
+    }
+
+    func send(request: URLRequest, completion: @escaping (Result<HTTPURLResponse, Error>) -> Void) {
+        let started = consent.active.locking { active in
+            guard active else { return false }
+            base.send(request: request, completion: completion)
+            return true
+        }
+        if !started { completion(.failure(URLError(.cancelled))) }
+    }
+
+    func send(request: URLRequest) async throws -> HTTPURLResponse {
+        try await withCheckedThrowingContinuation { continuation in
+            send(request: request) { continuation.resume(with: $0) }
+        }
+    }
+}
+
+/// The outer gate serializes synchronous disk writes with revocation. The inner
+/// network gate checks consent even during the decorator's unconditional shutdown flush.
+final class ConsentLogExporter: LogRecordExporter {
+    let consent: TelemetryConsent
+    let exporter: any LogRecordExporter
+    let protectsDiskWrites: Bool
+
+    init(consent: TelemetryConsent, exporter: any LogRecordExporter, protectsDiskWrites: Bool = false) {
+        self.consent = consent
+        self.exporter = exporter
+        self.protectsDiskWrites = protectsDiskWrites
+    }
+
+    func export(logRecords: [ReadableLogRecord], explicitTimeout: TimeInterval?) -> ExportResult {
+        if protectsDiskWrites {
+            return consent.active.locking { active in
+                guard active else { return .failure }
+                return exporter.export(logRecords: logRecords, explicitTimeout: explicitTimeout)
+            }
+        }
+        guard consent.active.protectedValue else { return .failure }
+        return exporter.export(logRecords: logRecords, explicitTimeout: explicitTimeout)
+    }
+
+    func forceFlush(explicitTimeout: TimeInterval?) -> ExportResult {
+        guard consent.active.protectedValue else { return .failure }
+        return exporter.forceFlush(explicitTimeout: explicitTimeout)
+    }
+
+    func shutdown(explicitTimeout: TimeInterval?) {
+        exporter.shutdown(explicitTimeout: explicitTimeout)
+    }
+}
+
+struct TelemetryStorage {
+    let root: URL
+
+    func purge() throws {
+        if FileManager.default.fileExists(atPath: root.path) {
+            try FileManager.default.removeItem(at: root)
+        }
+    }
+
+    func open(resuming: Bool) throws -> URL {
+        let marker = root.appendingPathComponent("current")
+        let savedID = resuming ? try? String(contentsOf: marker, encoding: .utf8) : nil
+        let identifier = savedID.flatMap(UUID.init(uuidString:))?.uuidString ?? UUID().uuidString
+        if savedID == nil { try purge() }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true,
+                                                attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
+        var excludedRoot = root
+        var values = URLResourceValues()
+        values.isExcludedFromBackup = true
+        try excludedRoot.setResourceValues(values)
+        let directory = root.appendingPathComponent(identifier, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true,
+                                                attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
+        // Directory enumeration can resolve /var to /private/var on devices.
+        // These are direct children, so compare names rather than aliased URLs.
+        for child in try FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil)
+            where child.lastPathComponent != marker.lastPathComponent && child.lastPathComponent != identifier {
+            try FileManager.default.removeItem(at: child)
+        }
+        try identifier.write(to: marker, atomically: true, encoding: .utf8)
+        return directory
+    }
+}
+
+/// Pipeline lifecycle and cleanup run on one utility queue. Consent revocation is
+/// synchronous, so queued events and requests cannot cross a disable/re-enable boundary.
+final class TelemetryController {
+    static let persistencePreset = PersistencePerformancePreset(
+        maxFileSize: 1 * 1_024 * 1_024, maxDirectorySize: 20 * 1_024 * 1_024,
+        maxFileAgeForWrite: 4.75, minFileAgeForRead: 5.25, maxFileAgeForRead: 7 * 24 * 60 * 60,
+        maxObjectsInFile: 500, maxObjectSize: 256 * 1_024, synchronousWrite: true,
+        initialExportDelay: 5, defaultExportDelay: 5, minExportDelay: 1, maxExportDelay: 20,
+        exportDelayChangeRate: 0.1)
+
+    private let queue = DispatchQueue(label: "org.soundscape.telemetry", qos: .utility)
+    private let current = Locked<TelemetryConsent?>(initialValue: nil)
+    private let configuration: TelemetryConfiguration?
+    private let storage: TelemetryStorage
+    private let exporterFactory: (TelemetryConsent, TelemetryConfiguration) -> any LogRecordExporter
+    private var processor: BatchLogRecordProcessor?
+    private var provider: LoggerProviderSdk?
+    private var pipelineConsent: TelemetryConsent?
+    private(set) var startupPreparationFailed = false
+
+    init(enabled: Bool, configuration: TelemetryConfiguration?, storage: TelemetryStorage,
+         exporterFactory: @escaping (TelemetryConsent, TelemetryConfiguration) -> any LogRecordExporter = { consent, config in
+             OtlpHttpLogExporter(endpoint: config.endpoint, httpClient: ConsentHTTPClient(consent: consent),
+                                 envVarHeaders: config.headers, requeueOnFailure: false)
+         }) {
+        self.configuration = configuration
+        self.storage = storage
+        self.exporterFactory = exporterFactory
+        startupPreparationFailed = !transition(enabled: enabled, resuming: true)
+    }
+
+    var collecting: Bool { current.protectedValue?.active.protectedValue == true }
+
+    @discardableResult
+    func setEnabled(_ enabled: Bool) -> Bool { transition(enabled: enabled, resuming: false) }
+
+    @discardableResult
+    private func transition(enabled: Bool, resuming: Bool) -> Bool {
+        current.locking { previous in
+            if !resuming && enabled && previous?.active.protectedValue == true { return true }
+            previous?.revoke()
+            previous = nil
+            // Open storage before reporting success, so callers never persist an
+            // enabled preference for a pipeline whose storage cannot be prepared.
+            let directory: URL?
+            if enabled && configuration != nil {
+                do {
+                    directory = try queue.sync {
+                        if !resuming { try storage.purge() }
+                        return try storage.open(resuming: resuming)
+                    }
+                } catch {
+                    GDLogAppError("Unable to prepare telemetry storage: \(error.localizedDescription)")
+                    return false
+                }
+            } else {
+                directory = nil
+            }
+            let consent = enabled && configuration != nil ? TelemetryConsent() : nil
+            previous = consent
+            queue.async { [self] in
+                _ = processor?.shutdown(explicitTimeout: 5)
+                processor = nil
+                provider = nil
+                pipelineConsent = nil
+                guard let consent = consent, consent.active.protectedValue,
+                      let configuration = configuration, let directory = directory else {
+                    // Retry a failed purge immediately; future opted-out launches
+                    // and re-enabling also retry before any export is possible.
+                    for attempt in 1...3 {
+                        do { try storage.purge(); return }
+                        catch {
+                            GDLogAppError("Unable to clear opted-out telemetry storage (attempt \(attempt)/3): \(error.localizedDescription)")
+                        }
+                    }
+                    return
+                }
+                let network = ConsentLogExporter(consent: consent, exporter: exporterFactory(consent, configuration))
+                let persistence = PersistenceLogExporterDecorator(logRecordExporter: network, storageURL: directory,
+                    exportCondition: { consent.active.protectedValue }, performancePreset: Self.persistencePreset)
+                let disk = ConsentLogExporter(consent: consent, exporter: persistence, protectsDiskWrites: true)
+                let batch = BatchLogRecordProcessor(logRecordExporter: disk, scheduleDelay: 2,
+                                                    maxQueueSize: 512, maxExportBatchSize: 64)
+                processor = batch
+                provider = LoggerProviderBuilder().with(resource: Resource(attributes: [
+                    "service.name": .string("soundscape"),
+                    "service.version": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"),
+                    "app.build_id": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown")
+                ])).with(processors: [batch]).build()
+                pipelineConsent = consent
+            }
+            return true
+        }
+    }
+
+    func record(_ makeEvent: () -> TelemetryEvent) {
+        guard let consent = current.protectedValue, consent.active.protectedValue else { return }
+        let event = makeEvent()
+        queue.async { [self] in
+            guard consent === pipelineConsent, consent.active.protectedValue, let provider = provider else { return }
+            event.emit(to: provider.get(instrumentationScopeName: "GDATelemetry"))
+        }
+    }
+
+    /// Close a consent period without deleting its already persisted records, as
+    /// on normal process exit. Reopening storage is safe only while still opted in.
+    func shutdown(completion: @escaping () -> Void) {
+        current.locking { consent in
+            consent?.revoke()
+            consent = nil
+            queue.async { [self] in
+                _ = processor?.shutdown(explicitTimeout: 5)
+                processor = nil
+                provider = nil
+                pipelineConsent = nil
+                completion()
+            }
+        }
+    }
+
+    /// Batch processor flush exports only to our synchronous disk writer; calling
+    /// the persistence exporter's forceFlush here would upload the entire backlog.
+    func persist(completion: @escaping () -> Void) {
+        queue.async { [self] in
+            processor?.forceFlush(timeout: 5)
+            completion()
+        }
+    }
+}

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -45,7 +46,6 @@ class AuthorizationViewModel: ObservableObject, AuthorizationProvider {
         
         provider.requestAuthorization()
         
-        GDATelemetry.track("onboarding.authorization.request", with: ["service": service.rawValue])
     }
     
 }
@@ -55,7 +55,6 @@ extension AuthorizationViewModel: AsyncAuthorizationProviderDelegate {
     func authorizationDidChange(_ authorization: AuthorizationStatus) {
         authorizationStatus = authorization
         
-        GDATelemetry.track("onboarding.authorization.status_changed", with: ["service": service.rawValue, "status": authorizationStatus.rawValue])
     }
     
 }

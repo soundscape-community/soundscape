@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -88,10 +89,8 @@ struct AccessibilityEditableMapView: View {
             accessibilityEditLocationHandler()
         }
         .accessibilityAction(named: GDLocalizedString("location_detail.map.edit.accessibility_action.current_location")) {
-            GDATelemetry.track("nudge_marker.current_location")
             
             guard let location = AppContext.shared.geolocationManager.location else {
-                GDATelemetry.track("nudge_marker.current_location.location_nil")
                 return
             }
             
@@ -103,10 +102,8 @@ struct AccessibilityEditableMapView: View {
     // MARK: Handlers
     
     private func accessibilityEditLocationHandler() {
-        GDATelemetry.track("nudge_marker", with: ["direction": viewModel.direction.rawValue])
         
         guard let degrees = viewModel.direction.degrees else {
-            GDATelemetry.track("nudge_marker.direction_nil", with: ["direction": viewModel.direction.rawValue])
             return
         }
         

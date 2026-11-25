@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -151,7 +152,6 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         courseDelegate?.courseProvider(self, didUpdateCourse: nil)
         
         engine.setup(for: [roadFeedbackStyle, compassFeedbackStyle])
-        GDATelemetry.track("preview.start")
         
         cancellationTokens.append(NotificationCenter.default.publisher(for: .appDidBecomeActive).sink { [weak self] _ in
             self?.resumePreview()
@@ -246,7 +246,6 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
     }
     
     override func deactivate() -> Behavior? {
-        GDATelemetry.track("preview.stop")
         
         UIApplication.shared.isIdleTimerDisabled = false
         
@@ -301,9 +300,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         guard let index = current.edges.firstIndex(where: { $0.endpoint == edge.endpoint }) else {
             return
         }
-        
-        GDATelemetry.track("preview.select")
-        
+
         isTransitioningSubject.value = true
         
         // Get the new decision point we are going to move to, and reset the current decision
@@ -332,9 +329,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         guard let last = previous.popLast() else {
             return
         }
-        
-        GDATelemetry.track("preview.undo")
-        
+
         isTransitioningSubject.value = true
 
         // Set the current edge to nil because the user requested to undo their last decision

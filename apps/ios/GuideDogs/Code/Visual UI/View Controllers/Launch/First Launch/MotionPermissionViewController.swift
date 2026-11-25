@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -21,9 +22,7 @@ class MotionPermissionViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("motion_permission")
-        
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(applicationDidBecomeActive),
                                                name: UIApplication.didBecomeActiveNotification,
@@ -64,28 +63,9 @@ class MotionPermissionViewController: UIViewController {
         case .authorized:
             showNextScreen()
         case .notDetermined:
-            MotionActivityContext.requestAuthorization { (_, error) in
-                let statusLabel: String
-                if let error = error as NSError?, !UIDeviceManager.isSimulator {
-                    switch error.code {
-                    case Int(CMErrorMotionActivityNotAvailable.rawValue):
-                        statusLabel = "not_available"
-                    case Int(CMErrorMotionActivityNotAuthorized.rawValue):
-                        statusLabel = "not_authorized"
-                    case Int(CMErrorMotionActivityNotEntitled.rawValue):
-                        statusLabel = "not_entitled"
-                    default:
-                        statusLabel = "error_code_\(error.code)"
-                    }
-                } else {
-                    statusLabel = "authorized"
-                }
-                
-                GDATelemetry.track("motion_permission_request", with: ["status": statusLabel])
-            }
+            MotionActivityContext.requestAuthorization(nil)
         default:
             if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-                GDATelemetry.track("open_settings", with: ["context": "authorize_motion_services_first_launch"])
                 UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
             }
         }

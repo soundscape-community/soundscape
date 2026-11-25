@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -228,9 +229,7 @@ struct RouteDetailsView: View {
             }
         }
         .actionSheet(isPresented: $showingSheet) { actionSheet }
-        .onAppear {
-            GDATelemetry.trackScreenView("route_details")
-        }
+
         .alert(isPresented: $isPresentingFirstUseShareAlert, content: {
             return SoundscapeDocumentAlert.firstUseExperience {
                 FirstUseExperience.setDidComplete(for: .share)
@@ -297,7 +296,6 @@ extension RouteDetailsView {
             showingSheet = true
             
         case .share:
-            GDATelemetry.track("routes.share", with: ["source": "route_detail_view"])
             
             if FirstUseExperience.didComplete(.share) {
                 presentShareActivityViewController()

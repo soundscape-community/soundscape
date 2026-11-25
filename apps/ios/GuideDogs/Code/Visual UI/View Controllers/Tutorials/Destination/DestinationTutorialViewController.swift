@@ -144,11 +144,9 @@ class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate
         AppContext.shared.isInTutorialMode = false
 
         if finished {
-            GDATelemetry.track("tutorial.beacon.finished")
             GDATelemetry.helper?.tutorialBeaconStatus = "finished"
             GDATelemetry.helper?.tutorialBeaconCount += 1
         } else {
-            GDATelemetry.track("tutorial.beacon.exit")
             if GDATelemetry.helper?.tutorialBeaconStatus != "finished" {
                 GDATelemetry.helper?.tutorialBeaconStatus = "exited"
             }

@@ -68,14 +68,12 @@ class CalloutSettingsCellView: UITableViewCell {
             for category in categories {
                 GDLogActionInfo("Toggled \(category) callouts to: \(isOn)")
                 
-                GDATelemetry.track("settings.autocallouts_\(category)", value: isOn.description)
             }
         }
         
         switch type {
         case .all:
             SettingsContext.shared.automaticCalloutsEnabled = isOn
-            GDATelemetry.track("settings.allow_callouts", value: isOn.description)
             return
             
         case .poi:
@@ -105,7 +103,6 @@ class CalloutSettingsCellView: UITableViewCell {
             return
         case .shake:
             SettingsContext.shared.shakeCalloutsEnabled = isOn
-            GDATelemetry.track("settings.shake_callouts", value: isOn.description)
         }
     }
 }

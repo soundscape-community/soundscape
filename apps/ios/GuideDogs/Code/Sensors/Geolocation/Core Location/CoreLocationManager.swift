@@ -479,9 +479,7 @@ extension CoreLocationManager: CLLocationManagerDelegate {
         let accuracy = isFullAccuracyAuthorized ? "full" : "reduced"
         
         GDLogLocationInfo("Location manager did change authorization to: \(status), accuracy: \(accuracy)")
-        
-        GDATelemetry.track("location_permission_request", with: ["status": status, "accuracy": accuracy])
-        
+
         authorizationDelegate?.authorizationDidChange(authorizationStatus)
     }
     

@@ -6,6 +6,7 @@
 //  with the ability to hush or restart the whole set of callouts.
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -264,9 +265,7 @@ class CalloutStateMachine {
             
             self.eventDelayCalloutAnnounced()
         }
-        
-        CalloutStateMachine.log(callout: callout, context: self.calloutGroup?.logContext)
-        
+
         state = .announcingCallout
     }
     
@@ -307,16 +306,5 @@ class CalloutStateMachine {
             calloutsDidFinish()
         }
     }
-    
-    class func log(callout: CalloutProtocol, context: String?) {
-        var properties = ["type": callout.logCategory,
-                          "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
-                          "audio.output": AppContext.shared.audioEngine.outputType]
-        
-        if let context =  context {
-            properties["context"] = context
-        }
-        
-        GDATelemetry.track("callout", with: properties)
-    }
+
 }

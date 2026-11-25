@@ -160,9 +160,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         toggleAppCalloutsOff()
         clearView()
         started = true
-        
-        GDATelemetry.trackScreenView("tutorial.markers", with: logContext == nil ? nil : ["context": logContext!])
-        
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleAudioSessionInterruption(_:)),
                                                name: AVAudioSession.interruptionNotification,
@@ -382,7 +380,6 @@ class MarkerTutorialViewController: BaseTutorialViewController {
     }
 
     private func addMarkerAction() {
-        GDATelemetry.track("tutorial.markers.add_marker")
 
         let storyboard = UIStoryboard(name: "POITable", bundle: .main)
         guard let viewController = storyboard.instantiateInitialViewController() as? SearchTableViewController else {
@@ -472,8 +469,6 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         FirstUseExperience.setDidComplete(for: .markerTutorial)
         AppContext.shared.isInTutorialMode = false
 
-        GDATelemetry.track("tutorial.markers." + (finished ? "finished" : "exit"))
-        
         if finished {
             GDATelemetry.helper?.tutorialMarkerStatus = "finished"
             GDATelemetry.helper?.tutorialMarkerCount += 1

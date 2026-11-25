@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -59,14 +60,7 @@ struct VolumeControls: View {
             otherTimer = nil
             
             beaconDemo.restoreState()
-            
-            let properties: [String: String] = [
-                "beacon": "\(SettingsContext.shared.beaconVolume)",
-                "tts": "\(SettingsContext.shared.ttsVolume)",
-                "other": "\(SettingsContext.shared.otherVolume)"
-            ]
-            
-            GDATelemetry.track("volume_settings.changed", with: properties)
+
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             beaconDemo.prepare()

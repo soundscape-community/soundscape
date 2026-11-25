@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -137,7 +138,6 @@ extension Route {
             }
             
             NotificationCenter.default.post(name: .routeDeleted, object: self, userInfo: [Route.Keys.id: id])
-            GDATelemetry.track("routes.removed")
         }
     }
     
@@ -153,7 +153,6 @@ extension Route {
         AppContext.shared.cloudKeyValueStore.update(route: route)
 
         NotificationCenter.default.post(name: .routeUpdated, object: self, userInfo: [Route.Keys.id: route.id])
-        GDATelemetry.track("routes.edited", with: ["activity": AppContext.shared.motionActivityContext.currentActivity.rawValue])
     }
     
     static func updateLastSelectedDate(id: String, _ lastSelectedDate: Date = Date()) throws {

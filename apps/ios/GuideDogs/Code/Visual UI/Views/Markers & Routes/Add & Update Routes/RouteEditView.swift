@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -297,9 +298,7 @@ struct RouteEditView: View {
             }
         })
         .alert(isPresented: $showAlert, content: { alertView })
-        .onAppear {
-            GDATelemetry.trackScreenView("route_edit")
-        }
+
     }
 }
 

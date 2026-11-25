@@ -148,4 +148,47 @@ final class NaviLensWakeOnForegroundTest: XCTestCase {
         XCTAssertEqual(state, .normal)
     }
 
+    func testLauncherReportsDestinationAndResultOnlyAfterOpenCompletes() {
+        for installed in [true, false] {
+            for success in [true, false] {
+                var completion: ((Bool) -> Void)?
+                var openedURL: URL?
+                var reports: [(String, Bool)] = []
+                var sleeps = 0
+                var wakes = 0
+                let launcher = NaviLensLauncher(canOpen: { url in
+                    XCTAssertEqual(url.scheme, "navilens")
+                    return installed
+                }, open: { url, callback in
+                    openedURL = url
+                    completion = callback
+                }, sleepUntilForeground: {
+                    sleeps += 1
+                    return true
+                }, wake: { wakes += 1 }, report: { reports.append(($0, $1)) })
+                launcher.launch()
+                XCTAssertEqual(openedURL?.scheme, installed ? "navilens" : "https")
+                XCTAssertEqual(sleeps, 1)
+                XCTAssertTrue(reports.isEmpty)
+                completion?(success)
+                XCTAssertEqual(reports.count, 1)
+                XCTAssertEqual(reports.first?.0, installed ? "navilens" : "app_store")
+                XCTAssertEqual(reports.first?.1, success)
+                XCTAssertEqual(wakes, success ? 0 : 1)
+            }
+        }
+    }
+
+    func testFailedLaunchDoesNotWakeWhenAutoSnoozeWasNotScheduled() {
+        var reports = 0
+        let launcher = NaviLensLauncher(canOpen: { _ in true }, open: { _, callback in callback(false) },
+                                       sleepUntilForeground: { false }, wake: { XCTFail("No pending wake") },
+                                       report: { _, success in
+                                           reports += 1
+                                           XCTAssertFalse(success)
+                                       })
+        launcher.launch()
+        XCTAssertEqual(reports, 1)
+    }
+
 }

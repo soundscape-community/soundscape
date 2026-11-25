@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -58,23 +59,19 @@ class ShareRouteAlertObserver: NotificationObserver {
     // MARK: Alerts
     
     private func defaultAlertActionHandler(_ action: UIAlertAction) {
-        GDATelemetry.track("url_resource.import_route.alert_cancel")
         
         // Reset `currentAlert` after it has been presented
         self.currentAlert = nil
     }
     
     private func presentImportRouteAlert(route: Route) {
-        GDATelemetry.track("url_resource.import_route.alert_import")
         
         // Save the imported location as a marker
         let saveHandler: (UIAlertAction) -> Void = { [weak self] (_) in
             guard let `self` = self else {
                 return
             }
-            
-            GDATelemetry.track("url_resource.import_route.save")
-            
+
             // Reset `currentAlert` after it has been presented
             self.currentAlert = nil
             
@@ -94,15 +91,12 @@ class ShareRouteAlertObserver: NotificationObserver {
     }
     
     private func presentImportExistingRouteAlert(newRoute: Route) {
-        GDATelemetry.track("url_resource.import_route.alert_existing")
         
         let replaceHandler: (UIAlertAction) -> Void = { [weak self] (_) in
             guard let `self` = self else {
                 return
             }
-            
-            GDATelemetry.track("url_resource.import_route.replace")
-            
+
             // Reset `currentAlert` after it has been presented
             self.currentAlert = nil
             
@@ -116,7 +110,6 @@ class ShareRouteAlertObserver: NotificationObserver {
     }
     
     private func presentErrorAlert() {
-        GDATelemetry.track("url_resource.import_route.alert_error")
         
         // Save alert
         self.currentAlert = SoundscapeDocumentAlert.importError(dismissHandler: defaultAlertActionHandler)

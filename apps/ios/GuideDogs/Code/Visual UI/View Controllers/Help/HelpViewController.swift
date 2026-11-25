@@ -14,21 +14,19 @@ class HelpPage {
     /// This should contain a localized String
     let title: String
     let index: IndexPath
-    let telemetryLabel: String
     
-    init(title: String, index: IndexPath, telemetryLabel: String) {
+    init(title: String, index: IndexPath) {
         self.title = title
         self.index = index
-        self.telemetryLabel = telemetryLabel
     }
 }
 
 class TextHelpPage: HelpPage {
     let text: [String]
     
-    init(title: String, text: [String], index: IndexPath, telemetryLabel: String) {
+    init(title: String, text: [String], index: IndexPath) {
         self.text = text
-        super.init(title: title, index: index, telemetryLabel: telemetryLabel)
+        super.init(title: title, index: index)
     }
 }
 
@@ -49,12 +47,12 @@ class SectionedHelpPage: HelpPage {
     /// This is a URL for a deeplink to another app or additional documentation on the internet
     let link: SectionedHelpPageDeepLink?
     
-    init(title: String, what: [String], when: [String], how: [String], link: SectionedHelpPageDeepLink? = nil, index: IndexPath, telemetryLabel: String) {
+    init(title: String, what: [String], when: [String], how: [String], link: SectionedHelpPageDeepLink? = nil, index: IndexPath) {
         self.what = what
         self.when = when
         self.how = how
         self.link = link
-        super.init(title: title, index: index, telemetryLabel: telemetryLabel)
+        super.init(title: title, index: index)
     }
 }
 
@@ -83,9 +81,9 @@ class FAQListHelpPage: HelpPage {
     /// A list of localized FAQs
     let sections: [FAQSection]
     
-    init(title: String, sections: [FAQSection], index: IndexPath, telemetryLabel: String) {
+    init(title: String, sections: [FAQSection], index: IndexPath) {
         self.sections = sections
-        super.init(title: title, index: index, telemetryLabel: telemetryLabel)
+        super.init(title: title, index: index)
     }
 }
 
@@ -100,8 +98,7 @@ class HelpViewController: BaseTableViewController {
         // Configuration
         TextHelpPage(title: GDLocalizedString("voice.voices"),
                      text: [GDLocalizedString("help.config.voices.content")],
-                     index: IndexPath(row: 0, section: Section.configuration),
-                     telemetryLabel: "help.config.voices"),
+                     index: IndexPath(row: 0, section: Section.configuration)),
         
         // Audio AR Headsets - AirPods
         SectionedHelpPage(title: GDLocalizedString("help.using_headsets.airpods.title"),
@@ -109,8 +106,7 @@ class HelpViewController: BaseTableViewController {
                           when: [GDLocalizedString("help.using_headsets.airpods.when")],
                           how: [GDLocalizedString("help.using_headsets.airpods.how.1"),
                                 GDLocalizedString("help.using_headsets.airpods.how.2")],
-                          index: IndexPath(row: 1, section: Section.configuration),
-                          telemetryLabel: "help.ar_headsets.airpods"),
+                          index: IndexPath(row: 1, section: Section.configuration)),
 
         // Audio AR Headsets - Bose Frames
         SectionedHelpPage(title: GDLocalizedString("help.using_headsets.bose_frames.title"),
@@ -120,16 +116,14 @@ class HelpViewController: BaseTableViewController {
                                 GDLocalizedString("help.using_headsets.bose_frames.how.2"),
                                 GDLocalizedString("help.using_headsets.bose_frames.how.3"),
                                 GDLocalizedString("help.using_headsets.bose_frames.how.4")],
-                          index: IndexPath(row: 2, section: Section.configuration),
-                          telemetryLabel: "help.ar_headsets.bose_frames"),
+                          index: IndexPath(row: 2, section: Section.configuration)),
         
         // Using Media Controls
         SectionedHelpPage(title: GDLocalizedString("help.remote.page_title"),
                           what: [GDLocalizedString("help.text.remote_control.what")],
                           when: [GDLocalizedString("help.text.remote_control.when")],
                           how: [GDLocalizedString("help.text.remote_control.how")],
-                          index: IndexPath(row: 3, section: Section.configuration),
-                          telemetryLabel: "help.media_controls"),
+                          index: IndexPath(row: 3, section: Section.configuration)),
         
         // Destination Beacons
         SectionedHelpPage(title: GDLocalizedString("beacon.audio_beacon"),
@@ -138,8 +132,7 @@ class HelpViewController: BaseTableViewController {
                           how: [GDLocalizedString("help.text.destination_beacons.how.1"),
                                 GDLocalizedString("help.text.destination_beacons.how.2"),
                                 GDLocalizedString("help.text.destination_beacons.how.3")],
-                          index: IndexPath(row: 0, section: Section.beaconsAndCallouts),
-                          telemetryLabel: "help.destinations"),
+                          index: IndexPath(row: 0, section: Section.beaconsAndCallouts)),
 
         // Automatic Callouts
         SectionedHelpPage(title: GDLocalizedString("callouts.automatic_callouts"),
@@ -149,48 +142,42 @@ class HelpViewController: BaseTableViewController {
                                  GDLocalizedString("help.text.automatic_callouts.when.3")],
                           how: [GDLocalizedString("help.text.automatic_callouts.how.1"),
                                 GDLocalizedString("help.text.automatic_callouts.how.2")],
-                          index: IndexPath(row: 1, section: Section.beaconsAndCallouts),
-                          telemetryLabel: "help.auto_callouts"),
+                          index: IndexPath(row: 1, section: Section.beaconsAndCallouts)),
         
         // My Location
         SectionedHelpPage(title: GDLocalizedString("directions.my_location"),
                           what: [GDLocalizedString("help.text.my_location.what")],
                           when: [GDLocalizedString("help.text.my_location.when")],
                           how: [GDLocalizedString("help.text.my_location.how")],
-                          index: IndexPath(row: 0, section: Section.homeScreen),
-                          telemetryLabel: "help.locate"),
+                          index: IndexPath(row: 0, section: Section.homeScreen)),
         
         // Around Me
         SectionedHelpPage(title: GDLocalizedString("help.orient.page_title"),
                           what: [GDLocalizedString("help.text.around_me.what")],
                           when: [GDLocalizedString("help.text.around_me.when")],
                           how: [GDLocalizedString("help.text.around_me.how")],
-                          index: IndexPath(row: 1, section: Section.homeScreen),
-                          telemetryLabel: "help.orient"),
+                          index: IndexPath(row: 1, section: Section.homeScreen)),
         
         // Ahead of Me
         SectionedHelpPage(title: GDLocalizedString("help.explore.page_title"),
                           what: [GDLocalizedString("help.text.ahead_of_me.what")],
                           when: [GDLocalizedString("help.text.ahead_of_me.when")],
                           how: [GDLocalizedString("help.text.ahead_of_me.how")],
-                          index: IndexPath(row: 2, section: Section.homeScreen),
-                          telemetryLabel: "help.explore"),
+                          index: IndexPath(row: 2, section: Section.homeScreen)),
         
         // Nearby Markers
         SectionedHelpPage(title: GDLocalizedString("callouts.nearby_markers"),
                           what: [GDLocalizedString("help.text.nearby_markers.what")],
                           when: [GDLocalizedString("help.text.nearby_markers.when")],
                           how: [GDLocalizedString("help.text.nearby_markers.how")],
-                          index: IndexPath(row: 3, section: Section.homeScreen),
-                          telemetryLabel: "help.nearby_markers"),
+                          index: IndexPath(row: 3, section: Section.homeScreen)),
         
         // Markers
         TextHelpPage(title: GDLocalizedString("markers.title"),
                      text: [GDLocalizedString("help.text.markers.content.1"),
                             GDLocalizedString("help.text.markers.content.2"),
                             GDLocalizedString("help.text.markers.content.3")],
-                     index: IndexPath(row: 0, section: Section.markersAndRoutes),
-                     telemetryLabel: "help.markers"),
+                     index: IndexPath(row: 0, section: Section.markersAndRoutes)),
         
         // Routes
         SectionedHelpPage(title: GDLocalizedString("routes.title"),
@@ -202,22 +189,19 @@ class HelpViewController: BaseTableViewController {
                            GDLocalizedString("help.text.routes.content.how.2"),
                             GDLocalizedString("help.text.routes.content.how.3")
                           ],
-                          index: IndexPath(row: 1, section: Section.markersAndRoutes),
-                          telemetryLabel: "help.routes"),
+                          index: IndexPath(row: 1, section: Section.markersAndRoutes)),
         
         // Creating Markers
         TextHelpPage(title: GDLocalizedString("help.creating_markers.page_title"),
                      text: [GDLocalizedString("help.text.creating_markers.content.1"),
                             GDLocalizedString("help.text.creating_markers.content.2")],
-                     index: IndexPath(row: 2, section: Section.markersAndRoutes),
-                     telemetryLabel: "help.creating_markers"),
+                     index: IndexPath(row: 2, section: Section.markersAndRoutes)),
         
         // Customizing Markers
         TextHelpPage(title: GDLocalizedString("help.edit_markers.page_title"),
                      text: [GDLocalizedString("help.text.customizing_markers.content.1"),
                             GDLocalizedString("help.text.customizing_markers.content.2")],
-                     index: IndexPath(row: 3, section: Section.markersAndRoutes),
-                     telemetryLabel: "help.edit_markers"),
+                     index: IndexPath(row: 3, section: Section.markersAndRoutes)),
         
         // Frequently Asked Questions
         FAQListHelpPage(title: GDLocalizedString("faq.title"),
@@ -251,8 +235,7 @@ class HelpViewController: BaseTableViewController {
                                                      FAQ(GDLocalizedString("faq.holding_phone_flat.question"), GDLocalizedString("faq.holding_phone_flat.answer")),
                                                      FAQ(GDLocalizedString("faq.personalize_experience.question"), GDLocalizedString("faq.personalize_experience.answer")),
                                                      FAQ(GDLocalizedString("faq.what_is_osm.question"), GDLocalizedString("faq.what_is_osm.answer"))])],
-                        index: IndexPath(row: 0, section: Section.faq),
-                        telemetryLabel: "help.faq"),
+                        index: IndexPath(row: 0, section: Section.faq)),
         
         // Tips and Tricks
         TextHelpPage(title: GDLocalizedString("faq.tips.title"),
@@ -265,8 +248,7 @@ class HelpViewController: BaseTableViewController {
                             GDLocalizedString("faq.tip.create_marker_at_bus_stop"),
                             GDLocalizedString("faq.tip.two_finger_double_tap"),
                             GDLocalizedString("faq.tip.reverse_route")],
-                     index: IndexPath(row: 1, section: Section.faq),
-                     telemetryLabel: "help.tips")
+                     index: IndexPath(row: 1, section: Section.faq))
     ]
     
     private struct Segues {
@@ -304,9 +286,7 @@ class HelpViewController: BaseTableViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("help")
-        
+
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
@@ -460,7 +440,6 @@ class HelpViewController: BaseTableViewController {
 
                 let viewController = HelpPageFAQListTableViewController(faqList: content)
 
-                GDATelemetry.trackScreenView(helpPages[page].telemetryLabel)
                 navigationController?.pushViewController(viewController, animated: true)
             } else {
                 performSegue(withIdentifier: Segues.OpenGenericHelpPage, sender: self)
@@ -480,7 +459,6 @@ class HelpViewController: BaseTableViewController {
             guard let content = helpPages[page] as? SectionedHelpPage else { return }
             
             helpVC.loadContent(content)
-            GDATelemetry.trackScreenView(helpPages[page].telemetryLabel)
             
         case let genericVC as HelpPageGenericViewController:
             // Pass the selected object to the new view controller.
@@ -488,7 +466,6 @@ class HelpViewController: BaseTableViewController {
             guard let content = helpPages[page] as? TextHelpPage else { return }
             
             genericVC.loadContent(content)
-            GDATelemetry.trackScreenView(helpPages[page].telemetryLabel)
             
         default:
             return

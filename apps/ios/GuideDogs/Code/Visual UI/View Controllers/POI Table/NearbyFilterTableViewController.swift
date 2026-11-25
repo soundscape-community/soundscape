@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -42,9 +43,7 @@ class NearbyFilterTableViewController: UITableViewController, POITableViewContro
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView(title ?? "Explore Nearby", with: ["context": delegate?.usageLog ?? ""])
-        
+
         if let delegate = delegate, delegate.doneNavigationItem {
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: GDLocalizedString("general.alert.done"), style: .done, target: self, action: #selector(self.onDone))
         }

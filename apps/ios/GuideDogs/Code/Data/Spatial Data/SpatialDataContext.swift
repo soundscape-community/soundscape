@@ -366,7 +366,6 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     }
     
     private func scheduleErrorRecovery() {
-        GDATelemetry.track("services.error.scheduling_retry")
         
         errorRecoveryTask = DispatchWorkItem { [weak self] in
             guard let `self` = self else { return }

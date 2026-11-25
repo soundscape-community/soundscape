@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -36,7 +37,6 @@ class DismissableBannerViewController: BannerViewController {
     
     @objc
     private func dismissBanner() {
-        GDATelemetry.track("banner_dismissed", with: ["nibName": nibName ?? "unknown"])
         
         delegate?.didDismiss(self)
     }

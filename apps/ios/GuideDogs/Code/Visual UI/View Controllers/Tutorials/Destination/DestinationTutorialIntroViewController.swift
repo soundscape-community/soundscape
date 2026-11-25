@@ -39,7 +39,6 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
 
-        GDATelemetry.trackScreenView("tutorial.beacons", with: logContext.map { ["context": $0] })
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleAudioSessionInterruption(_:)),
                                                name: AVAudioSession.interruptionNotification,
@@ -80,7 +79,6 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
             return
         }
         picker.delegate = self
-        GDATelemetry.track("tutorial.beacon.set_beacon")
         navigationController?.pushViewController(picker, animated: true)
     }
 
@@ -89,7 +87,6 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
     }
 
     @objc func exitTutorial() {
-        GDATelemetry.track("tutorial.beacon.exit")
         if GDATelemetry.helper?.tutorialBeaconStatus != "finished" {
             GDATelemetry.helper?.tutorialBeaconStatus = "exited"
         }

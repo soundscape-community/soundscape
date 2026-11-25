@@ -116,10 +116,6 @@ class MenuViewController: UIViewController {
         
         switch item {
         case .help:
-            // Log this here so that we only log one "help" screen view event for each time the user goes to the
-            // help pages (as opposed to using viewWillAppear: in the HelpViewController which would log every time
-            // the user goes to the help pages and returns from a specific help page to the list of help pages).
-            GDATelemetry.trackScreenView("help")
             select(.help)
             
         case .feedback:
@@ -128,7 +124,6 @@ class MenuViewController: UIViewController {
                                                     preferredStyle: .actionSheet) { [weak self] (mailClient) in
                 if let mailClient = mailClient {
                     print("Got: \(mailClient)")
-                    GDATelemetry.track("feedback.sent", with: ["mail_client": mailClient.rawValue])
 
                 }
                 self?.closeMenu()

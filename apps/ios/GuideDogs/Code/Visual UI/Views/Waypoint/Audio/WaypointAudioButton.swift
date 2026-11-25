@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -50,14 +51,6 @@ struct WaypointAudioButton: View {
     
     var body: some View {
         Button {
-            var isActivityActive = false
-            
-            if let tour = AppContext.shared.eventProcessor.activeBehavior as? GuidedTour, tour.content.id == activityID {
-                isActivityActive = true
-            }
-            
-            GDATelemetry.track("waypoint_detail.audio.toggle", with: ["isActivityActive": "\(isActivityActive)", "isPlaying": (!audio.isPlaying).description])
-            
             toggleAudio()
         } label: {
             VStack(spacing: 0) {

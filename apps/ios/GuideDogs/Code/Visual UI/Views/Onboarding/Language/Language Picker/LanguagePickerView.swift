@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -34,7 +35,6 @@ struct LanguagePickerView: View {
                     // Standard beacons
                     ForEach(allLocales, id: \.self) { locale in
                         Button {
-                            GDATelemetry.track("onboarding.language.selected", with: ["locale": locale.identifier])
                             
                             // Save app locale
                             LocalizationContext.currentAppLocale = locale

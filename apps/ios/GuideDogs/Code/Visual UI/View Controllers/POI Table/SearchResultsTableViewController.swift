@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -116,9 +117,7 @@ class SearchResultsTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.track("search.started", with: ["context": telemetryContext])
-        
+
         // Reset wasSearchCancelled flag
         wasSearchCancelled = false
         
@@ -432,7 +431,6 @@ extension SearchResultsTableViewController: TableViewSelectDelegate {
         }
         
         if let searchString: String = tableViewDataSource.model(for: indexPath) {
-            GDATelemetry.track("search_for_more_selected.search", with: ["context": telemetryContext])
             
             didSelectSearchStringResult(searchString)
         } else if let poi: POI = tableViewDataSource.model(for: indexPath) {

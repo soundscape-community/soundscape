@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -12,13 +13,7 @@ class OfflineHelpPageViewController: UIViewController {
     
     @IBOutlet weak var largeBannerContainerView: UIView!
     @IBOutlet var largeBannerContainerHeightConstraint: NSLayoutConstraint!
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("help.offline")
-    }
-    
+
 }
 
 extension OfflineHelpPageViewController: LargeBannerContainerView {

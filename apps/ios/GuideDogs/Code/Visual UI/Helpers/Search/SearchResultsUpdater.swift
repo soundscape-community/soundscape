@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -72,12 +73,7 @@ class SearchResultsUpdater: NSObject {
     // MARK: Selecting Search Results
     
     func selectSearchResult(_ poi: POI, completion: @escaping (SearchResult?, SearchResultError?) -> Void) {
-        if let delegate = delegate, delegate.isPresentingDefaultResults {
-            GDATelemetry.track("recent_entity_selected.search", with: ["context": delegate.telemetryContext])
-            completion(.entity(poi), nil)
-        } else {
-            completion(.entity(poi), nil)
-        }
+        completion(.entity(poi), nil)
     }
     
 }
@@ -114,9 +110,7 @@ extension SearchResultsUpdater: UISearchResultsUpdating {
         guard AppContext.shared.offlineContext.state == .online else {
             return
         }
-        
-        GDATelemetry.track("autosuggest.request_made", with: ["context": delegate?.telemetryContext ?? ""])
-        
+
         searchRequestToken?.cancel()
         
         //
@@ -159,9 +153,7 @@ extension SearchResultsUpdater: UISearchBarDelegate {
         guard AppContext.shared.offlineContext.state == .online else {
             return
         }
-        
-        GDATelemetry.track("search.request_made", with: ["context": delegate?.telemetryContext ?? ""])
-        
+
         searchRequestToken?.cancel()
         
         //

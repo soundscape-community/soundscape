@@ -1,3 +1,4 @@
+// Copyright (c) Soundscape Community Contributors.
 //
 //  Integrations.swift
 //  GuideDogs
@@ -77,24 +78,40 @@ final class NaviLensWakeOnForeground {
     }
 }
 
-func launchNaviLensApp() {
-    let wakeOnForeground = NaviLensWakeOnForeground.shared
-    let didScheduleWake = wakeOnForeground.sleepUntilForeground(autoSnoozeEnabled: SettingsContext.shared.naviLensAutoSnoozeEnabled)
+/// Injectable system boundaries keep launch reporting and failed-open recovery testable.
+struct NaviLensLauncher {
+    let canOpen: (URL) -> Bool
+    let open: (URL, @escaping (Bool) -> Void) -> Void
+    let sleepUntilForeground: () -> Bool
+    let wake: () -> Void
+    let report: (String, Bool) -> Void
 
-    // Launch NaviLens app, or open App Store listing if not installed
-    let navilensUrl = URL(string: "navilens://")!
-    let appStoreUrl = URL(string: "https://apps.apple.com/us/app/navilens/id1273704914")!
-    let url = UIApplication.shared.canOpenURL(navilensUrl) ? navilensUrl : appStoreUrl
-
-    UIApplication.shared.open(url) { success in
-        guard !success else {
-            return
-        }
-
-        if didScheduleWake {
-            wakeOnForeground.wakeUp()
+    func launch() {
+        let didScheduleWake = sleepUntilForeground()
+        let navilensURL = URL(string: "navilens://")!
+        let appStoreURL = URL(string: "https://apps.apple.com/us/app/navilens/id1273704914")!
+        let installed = canOpen(navilensURL)
+        open(installed ? navilensURL : appStoreURL) { success in
+            report(installed ? "navilens" : "app_store", success)
+            if !success && didScheduleWake { wake() }
         }
     }
+}
+
+func launchNaviLensApp() {
+    let occurrence = GDATelemetry.captureOccurrence()
+    let wakeOnForeground = NaviLensWakeOnForeground.shared
+    NaviLensLauncher(canOpen: { UIApplication.shared.canOpenURL($0) },
+                     open: { UIApplication.shared.open($0, completionHandler: $1) },
+                     sleepUntilForeground: {
+                         wakeOnForeground.sleepUntilForeground(autoSnoozeEnabled: SettingsContext.shared.naviLensAutoSnoozeEnabled)
+                     },
+                     wake: { wakeOnForeground.wakeUp() },
+                     report: { destination, success in
+                         guard let occurrence = occurrence else { return }
+                         GDATelemetry.track("navilens.launch", with: ["destination": destination,
+                                                                    "success": String(success)], occurrence: occurrence)
+                     }).launch()
 }
 
 func launchNaviLens(detail: LocationDetail) {

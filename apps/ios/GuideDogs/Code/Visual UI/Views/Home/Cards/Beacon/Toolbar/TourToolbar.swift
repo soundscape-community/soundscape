@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -136,7 +137,6 @@ struct TourToolbar: View {
                 HStack(spacing: 18.0) {
                     // Previous
                     Button {
-                        GDATelemetry.track("tour_toolbar.previous.selected")
                         
                         tour.previousWaypoint()
                     } label: {
@@ -149,7 +149,6 @@ struct TourToolbar: View {
                     
                     // Next
                     Button {
-                        GDATelemetry.track("tour_toolbar.next.selected")
                         
                         tour.nextWaypoint()
                     } label: {
@@ -162,7 +161,6 @@ struct TourToolbar: View {
                     
                     // Audio Beacon
                     Button {
-                        GDATelemetry.track("tour_toolbar.toggle_audio.selected", with: ["isPlaying": (!AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled).description])
                         
                         withAnimation {
                             BeaconActionHandler.toggleAudio()
@@ -179,7 +177,6 @@ struct TourToolbar: View {
                 }
                 
                 Button {
-                    GDATelemetry.track("tour_toolbar.end.selected", with: ["is_completed": tour.state.isFinal.description])
                     
                     AppContext.shared.eventProcessor.deactivateCustom()
                 } label: {

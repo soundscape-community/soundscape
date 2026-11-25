@@ -19,7 +19,6 @@ class MarkersAndRoutesListNavigationHelper: ViewNavigationHelper, LocationAccess
     }
     
     func didSelectLocationAction(_ action: LocationAction, entity: POI) {
-        GDATelemetry.track(action.telemetryEvent, with: ["context": "", "source": "accessibility_action"])
         
         let detail = LocationDetail(entity: entity, telemetryContext: "markers")
         

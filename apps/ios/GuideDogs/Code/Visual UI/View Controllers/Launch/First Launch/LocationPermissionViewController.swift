@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -25,9 +26,7 @@ class LocationPermissionViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("location_permission")
-        
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(applicationDidBecomeActive),
                                                name: UIApplication.didBecomeActiveNotification,
@@ -91,7 +90,6 @@ class LocationPermissionViewController: UIViewController {
             dismissView()
         default:
             if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-                GDATelemetry.track("open_settings", with: ["context": "authorize_location_services_first_launch"])
                 UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
             }
         }

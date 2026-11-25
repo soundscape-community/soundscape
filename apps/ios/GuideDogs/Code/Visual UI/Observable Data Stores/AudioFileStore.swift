@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -81,7 +82,6 @@ class AudioFileStore: ObservableObject {
     }
     
     func start() {
-        GDATelemetry.track("waypoint.audio.start")
         
         guard let url = localURL else {
             return
@@ -95,9 +95,7 @@ class AudioFileStore: ObservableObject {
             guard self.playerID == id else {
                 return
             }
-            
-            GDATelemetry.track("waypoint.audio.complete")
-            
+
             self.cleanupFinishedPlayer()
         }
         
@@ -109,9 +107,7 @@ class AudioFileStore: ObservableObject {
             guard self.playerID == id else {
                 return
             }
-            
-            GDATelemetry.track("waypoint.audio.stopped")
-            
+
             self.cleanupFinishedPlayer()
         }
         
@@ -125,7 +121,6 @@ class AudioFileStore: ObservableObject {
     }
     
     func stop() {
-        GDATelemetry.track("waypoint.audio.stop")
         
         guard let id = playerID else {
             return

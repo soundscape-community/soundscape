@@ -201,9 +201,7 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("home")
-        
+
         updateCalloutButtonTraits()
         
         navigationController?.setNavigationBarHidden(false, animated: true)

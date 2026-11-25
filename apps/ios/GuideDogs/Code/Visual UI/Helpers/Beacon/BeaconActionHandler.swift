@@ -78,7 +78,6 @@ struct BeaconActionHandler {
         }
 
         AppContext.process(BeaconCalloutEvent(beaconId: key, logContext: "home_screen"))
-        GDATelemetry.track("beacon.callout")
         return true
     }
 
@@ -93,8 +92,6 @@ struct BeaconActionHandler {
             return
         }
 
-        let isAudioEnabled = AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled
-        GDATelemetry.track("beacon.toggle_audio", value: String(isAudioEnabled))
     }
 
     ///
@@ -113,7 +110,6 @@ struct BeaconActionHandler {
         // Post accessibility annoucement
         UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: moreInformation)
 
-        GDATelemetry.track("beacon.more_info")
     }
 
     ///

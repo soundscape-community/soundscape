@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -96,9 +97,7 @@ struct GuidedTourDetailsView: View {
             },
                   secondaryButton: .cancel(GDLocalizedTextView("general.alert.cancel")))
         })
-        .onAppear {
-            GDATelemetry.trackScreenView("tour_details", with: ["isActivityActive": tour.isGuidanceActive.description])
-        }
+
     }
 }
 

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -76,9 +77,7 @@ struct RoutesList: View {
         } else if loader.routeIDs.isEmpty {
             EmptyMarkerOrRoutesView(.routes)
                 .background(Color.quaternaryBackground)
-                .onAppear {
-                    GDATelemetry.trackScreenView("routes_list.empty")
-                }
+
         } else {
             List {
                 SortStyleCell(listName: GDLocalizedString("routes.title"), sort: _sort)
@@ -109,9 +108,7 @@ struct RoutesList: View {
                 EmptyView()
             }
             .accessibilityHidden(true)
-            .onAppear {
-                GDATelemetry.trackScreenView("routes_list")
-            }
+
             .alert(isPresented: $isPresentingFirstUseShareAlert, content: {
                 return SoundscapeDocumentAlert.firstUseExperience {
                     FirstUseExperience.setDidComplete(for: .share)
@@ -164,7 +161,6 @@ struct RoutesList: View {
         .buttonStyle(.plain)
         .accessibilityAddTraits(.isButton)
         .conditionalAccessibilityAction(AppContext.shared.eventProcessor.activeBehavior is SoundscapeBehavior && activeRouteID == nil, named: Text(RouteActionState(.startRoute).text)) {
-            GDATelemetry.track("routes.start", with: ["source": "accessibility_action"])
 
             let routeGuidance = RouteGuidance(.init(source: .database(id: id)),
                                               spatialData: AppContext.shared.spatialDataContext,
@@ -173,19 +169,16 @@ struct RoutesList: View {
             navHelper.popToRootViewController(animated: true)
         }
         .conditionalAccessibilityAction(id == activeRouteID, named: Text(RouteActionState(.stopRoute).text)) {
-            GDATelemetry.track("routes.stop", with: ["source": "accessibility_action"])
 
             AppContext.shared.eventProcessor.deactivateCustom()
         }
         .conditionalAccessibilityAction(id != activeRouteID, named: Text(RouteActionState(.edit).text)) {
-            GDATelemetry.track("routes.edit", with: ["source": "accessibility_action"])
 
             selectedDetail = RouteDetail(source: .database(id: id))
             showEditView = true
             goToNavDestination = true
         }
         .accessibilityAction(named: Text(RouteActionState(.share).text), {
-            GDATelemetry.track("routes.share", with: ["source": "accessibility_action"])
 
             isPresentingForRouteId = id
 

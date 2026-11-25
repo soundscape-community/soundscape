@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -59,7 +60,6 @@ struct BeaconOptionCell: View {
             
             onSelected?()
             
-            GDATelemetry.track("settings.select_beacon", value: type)
         }, label: {
             // No-op - label is set by `BeaconOptionButtonStyle`
         })

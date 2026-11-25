@@ -93,21 +93,17 @@ class AboutApplicationViewController: BaseTableViewController, LargeBannerTableH
         
         let navigationTarget: NavigationTarget?
         let url: URL?
-        
-        let telemetryEventName: String?
-        
-        init(localizedTitle: String, url: URL, event: String? = nil) {
+
+        init(localizedTitle: String, url: URL) {
             self.localizedTitle = localizedTitle
             self.url = url
             self.navigationTarget = nil
-            self.telemetryEventName = event
         }
         
-        init(localizedTitle: String, navigationTarget: NavigationTarget, event: String? = nil) {
+        init(localizedTitle: String, navigationTarget: NavigationTarget) {
             self.localizedTitle = localizedTitle
             self.url = nil
             self.navigationTarget = navigationTarget
-            self.telemetryEventName = event
         }
     }
     
@@ -121,15 +117,15 @@ class AboutApplicationViewController: BaseTableViewController, LargeBannerTableH
     private var aboutLinks: [AboutLinkCellModel] {
         var links = [
             AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.whats_new"), navigationTarget: .versionHistory),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.privacy_policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale), event: "about.privacy_policy"),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.service_agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale), event: "about.services_agreement"),
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.privacy_policy"), url: AppContext.Links.privacyPolicyURL(for: LocalizationContext.currentAppLocale)),
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.service_agreement"), url: AppContext.Links.servicesAgreementURL(for: LocalizationContext.currentAppLocale)),
             AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.copyright"), navigationTarget: .thirdPartyNotices),
-            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.youtube_channel"), url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale), event: "about.youtube_channel")
+            AboutLinkCellModel(localizedTitle: GDLocalizedString("settings.about.title.youtube_channel"), url: AppContext.Links.youtubeURL(for: LocalizationContext.currentAppLocale))
         ]
         
         if LocalizationContext.currentAppLocale == Locale.frFr {
             // If the app is localized in fr-FR, include a link to the France Accessibility landing page
-            links.append(AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Accessibilité: partiellement conforme"), url: AppContext.Links.accessibilityFrance, event: "about.accessibility_fr_fr"))
+            links.append(AboutLinkCellModel(localizedTitle: GDLocalizationUnnecessary("Accessibilité: partiellement conforme"), url: AppContext.Links.accessibilityFrance))
         }
         
         return links
@@ -167,13 +163,7 @@ class AboutApplicationViewController: BaseTableViewController, LargeBannerTableH
 
         syncLargeBannerTableHeaderFrame()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        GDATelemetry.trackScreenView("settings.about")
-    }
-    
+
     // MARK: UITableViewDelegate
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -224,11 +214,7 @@ class AboutApplicationViewController: BaseTableViewController, LargeBannerTableH
         }
         
         let model = aboutLinks[indexPath.row - 1]
-        
-        if let eventName = model.telemetryEventName {
-            GDATelemetry.trackScreenView(eventName)
-        }
-        
+
         // If the cell navigates in-app, push the destination.
         if let navigationTarget = model.navigationTarget {
             switch navigationTarget {

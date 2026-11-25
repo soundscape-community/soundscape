@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -334,9 +335,6 @@ class AudioSessionManager {
             isInSpeakerMode = false
         }
         
-        GDATelemetry.track("audio_session.route_change", with: ["previous": previousOutputType,
-                                                                "current": currentOutputType,
-                                                                "reason": reasonDescription.replacingOccurrences(of: " ", with: "_")])
     }
     
     @objc func handleAudioSessionSilenceSecondaryAudioHint(_ notification: NSNotification) {

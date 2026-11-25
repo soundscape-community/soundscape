@@ -75,7 +75,6 @@ extension CloudKeyValueStore {
             set(object: data, forKey: CloudKeyValueStore.key(forRoute: route))
         } else {
             GDLogCloudInfo("Failed to initialize route")
-            GDATelemetry.track("route_backup.error.parameters_failed_to_initialize")
         }
     }
     
@@ -211,7 +210,6 @@ extension CloudKeyValueStore {
             rootViewController.present(alert, animated: true, completion: nil)
         }
         
-        GDATelemetry.track("route_backup.error.marker_deleted")
     }
     
     /// Check if there are markers in the imported route that does not exist in as reference entities

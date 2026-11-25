@@ -120,17 +120,6 @@ enum LocationAction {
         case .navilens: return UIImage(named: "navilens")
         }
     }
-    
-    // MARK: Telemetry
-    
-    var telemetryEvent: String {
-        switch self {
-        case .save: return "location_action.save"
-        case .edit: return "location_action.edit"
-        case .beacon: return "location_action.beacon"
-        case .preview: return "location_action.preview"
-        case .share: return "location_action.share"
-        case .navilens: return "location_action.navilens"
-        }
-    }
+
+
 }

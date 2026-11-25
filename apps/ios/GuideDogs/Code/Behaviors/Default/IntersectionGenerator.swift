@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -137,12 +138,7 @@ class IntersectionGenerator: AutomaticGenerator {
             
         case let event as IntersectionArrivalEvent:
             let callout = IntersectionCallout(.intersection, event.key, event.isRoundabout, event.heading)
-            
-            GDATelemetry.track("callout", with: ["context": "intersection.arrival",
-                                                 "type": callout.logCategory,
-                                                 "activity": AppContext.shared.motionActivityContext.currentActivity.rawValue,
-                                                 "audio.output": AppContext.shared.audioEngine.outputType])
-            
+
             return .playCallouts(CalloutGroup([callout], action: .interruptAndClear, logContext: "intersections"))
             
         case let event as IntersectionDepartureEvent:

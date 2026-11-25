@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -124,9 +125,7 @@ class DeviceReachabilityAlertObserver: NotificationObserver {
                     guard let `self` = self else {
                         return
                     }
-                    
-                    GDATelemetry.track("head_tracking.device_available_alert.settings_selected", with: ["device": device.rawValue])
-                    
+
                     // A device reachability alert should only be shown a maximum of once per
                     // session
                     self.didDismiss = true
@@ -148,9 +147,7 @@ class DeviceReachabilityAlertObserver: NotificationObserver {
                     guard let `self` = self else {
                         return
                     }
-                    
-                    GDATelemetry.track("head_tracking.device_available_alert.dismiss_selected", with: ["device": device.rawValue])
-                    
+
                     // A device reachability alert should only be shown a maximum of once per
                     // session
                     self.didDismiss = true

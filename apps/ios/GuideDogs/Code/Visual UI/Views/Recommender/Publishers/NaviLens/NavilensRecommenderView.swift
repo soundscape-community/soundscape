@@ -1,3 +1,4 @@
+// Copyright (c) Soundscape Community Contributors.
 //
 //  NavilensRecommenderView.swift
 //  Soundscape
@@ -16,6 +17,8 @@ struct NavilensRecommenderView: View {
     // MARK: Properties
 
     @EnvironmentObject var navHelper: ViewNavigationHelper
+
+    @State private var isVisible = false
 
     let poi: POI
 
@@ -74,6 +77,17 @@ struct NavilensRecommenderView: View {
         .background(Color.clear)
         .foregroundColor(Color.primaryForeground)
         .accessibleTextFormat()
+        .onAppear {
+            isVisible = true
+            GDATelemetry.trackNaviLensSuggestion()
+        }
+        .onDisappear { isVisible = false }
+        .onReceive(NotificationCenter.default.publisher(for: GDATelemetry.contextDidChange)) { _ in
+            if isVisible { GDATelemetry.trackNaviLensSuggestion() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            if isVisible { GDATelemetry.trackNaviLensSuggestion() }
+        }
     }
 
     // MARK: Actions
@@ -113,7 +127,6 @@ struct NavilensRecommenderView: View {
 class RecommenderNavigationHelper: ViewNavigationHelper, LocationAccessibilityActionDelegate {
 
     func didSelectLocationAction(_ action: LocationAction, entity: POI) {
-        GDATelemetry.track(action.telemetryEvent, with: ["context": navilensRecommenderTelemetryContext, "source": "accessibility_action"])
 
         let detail = LocationDetail(entity: entity, telemetryContext: navilensRecommenderTelemetryContext)
 

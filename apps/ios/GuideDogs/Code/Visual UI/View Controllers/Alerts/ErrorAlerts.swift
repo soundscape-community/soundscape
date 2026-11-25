@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -18,7 +19,6 @@ class ErrorAlerts {
         
         if let settingsAppUrl = URL(string: UIApplication.openSettingsURLString) {
             let openSettingsAction = UIAlertAction(title: GDLocalizedString("general.alert.open_settings"), style: .default, handler: { (_) in
-                GDATelemetry.track("open_settings", with: ["context": "fitness_tracking_error"])
                 UIApplication.shared.open(settingsAppUrl, options: [:], completionHandler: nil)
             })
             alertController.addAction(openSettingsAction)
@@ -44,7 +44,6 @@ class ErrorAlerts {
         
         if let settingsAppUrl = URL(string: UIApplication.openSettingsURLString) {
             let openSettingsAction = UIAlertAction(title: GDLocalizedString("general.alert.open_settings"), style: .default, handler: { (_) in
-                GDATelemetry.track("open_settings", with: ["context": "location_services_error"])
                 UIApplication.shared.open(settingsAppUrl, options: [:], completionHandler: nil)
             })
             alertController.addAction(openSettingsAction)
@@ -118,7 +117,6 @@ class ErrorAlerts {
         let openSettingsAction = UIAlertAction(title: GDLocalizedString("settings.screen_title"),
                                                style: .default) { (alertAction) in
                                                 if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-                                                    GDATelemetry.track("open_settings", with: ["context": "wifi_error"])
                                                     UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
                                                 }
                                                 
@@ -142,7 +140,6 @@ class ErrorAlerts {
         if let openSettingsURLString = URL(string: UIApplication.openSettingsURLString) {
             let openSettingsAction = UIAlertAction(title: GDLocalizedString("settings.screen_title"),
                                                    style: .default) { (_) in
-                GDATelemetry.track("open_settings", with: ["context": "ble_error"])
                 UIApplication.shared.open(openSettingsURLString, options: [:], completionHandler: nil)
             }
             
