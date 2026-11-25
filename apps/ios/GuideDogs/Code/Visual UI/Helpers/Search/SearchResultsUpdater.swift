@@ -34,9 +34,6 @@ class SearchResultsUpdater: NSObject {
     // MARK: Properties
     
     weak var delegate: SearchResultsUpdaterDelegate?
-    private var searchRequestToken: RequestToken?
-    private var searchResultsUpdating = false
-    private(set) var searchBarButtonClicked = false
     private var location: CLLocation?
     var context: Context = .partialSearchText
     private var localSearch: MKLocalSearch?
@@ -56,7 +53,7 @@ class SearchResultsUpdater: NSObject {
     }
     
     deinit {
-        searchRequestToken?.cancel()
+        localSearch?.cancel()
     }
     
     // MARK: Notifications
@@ -78,135 +75,76 @@ class SearchResultsUpdater: NSObject {
     
 }
 
-// MARK: - UISearchResultsUpdating
-
-extension SearchResultsUpdater: UISearchResultsUpdating {
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        searchBarButtonClicked = false
-        
-        if let searchBarText = searchController.searchBar.text, searchBarText.isEmpty == false {
-            // Fetch new search results
-            switch context {
-            case .partialSearchText: partialSearchWithText(searchText: searchBarText)
-            case .completeSearchText: searchWithText(searchText: searchBarText)
-            }
-        } else {
-            searchResultsUpdating = false
-            // There is no search text
-            // Clear current search results
+extension SearchResultsUpdater {
+    func update(query: String, context: Context) {
+        cancel()
+        let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else {
             delegate?.searchResultsDidUpdate([], searchLocation: nil)
-        }
-    }
-    
-    private func partialSearchWithText(searchText: String) {
-        if searchResultsUpdating == false {
-            searchResultsUpdating = true
-            // Notify the delegate when a new update
-            // begins
-            delegate?.searchResultsDidStartUpdating()
-        }
-        
-        guard AppContext.shared.offlineContext.state == .online else {
             return
         }
 
-        searchRequestToken?.cancel()
-        
-        //
-        // Fetch autosuggest results with new search text
-        //
+        delegate?.searchResultsDidStartUpdating()
+        guard AppContext.shared.offlineContext.state == .online else { return }
 
         let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = searchText
-        let coordinate = self.location!.coordinate
-        request.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        localSearch = MKLocalSearch(request: request)
-        localSearch!.start(completionHandler: searchWithTextCallback)
+        request.naturalLanguageQuery = query
+        if let location {
+            let distance: CLLocationDistance = context == .partialSearchText ? 1000 : 5000
+            request.region = MKCoordinateRegion(center: location.coordinate,
+                                                latitudinalMeters: distance, longitudinalMeters: distance)
+        }
+
+        let search = MKLocalSearch(request: request)
+        localSearch = search
+        search.start { [weak self, weak search] response, _ in
+            guard let self, let search, self.localSearch === search else { return }
+            self.localSearch = nil
+            let places = (response?.mapItems ?? []).compactMap(self.makePOI)
+            let sorted = self.location.map { places.sorted(byDistanceFrom: $0) } ?? places
+            if sorted.isEmpty {
+                self.delegate?.searchResultsDidUpdate(context == .partialSearchText ? query : nil)
+            } else {
+                self.delegate?.searchResultsDidUpdate(sorted, searchLocation: self.location)
+            }
+        }
+    }
+
+    func cancel() {
+        let search = localSearch
+        localSearch = nil
+        search?.cancel()
+    }
+
+    private func makePOI(_ item: MKMapItem) -> POI? {
+        guard let coordinate = item.placemark.location?.coordinate, let name = item.name else { return nil }
+        let place = item.placemark
+        let address = [
+            place.subThoroughfare,
+            place.thoroughfare.map { $0 + "," },
+            place.locality,
+            place.administrativeArea,
+            place.postalCode,
+            place.country
+        ].compactMap { $0 }.joined(separator: " ")
+        return GenericLocation(lat: coordinate.latitude, lon: coordinate.longitude, name: name, address: address)
     }
 }
 
-// MARK: - UISearchBarDelegate
+extension SearchResultsUpdater: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        update(query: searchController.searchBar.text ?? "", context: context)
+    }
+}
 
 extension SearchResultsUpdater: UISearchBarDelegate {
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBarButtonClicked = true
-        
-        guard let searchBarText = searchBar.text, searchBarText.isEmpty == false else {
-            // Return if there is no search text
-            return
-        }
-        
-        self.searchWithText(searchText: searchBarText)
+        guard let query = searchBar.text, !query.isEmpty else { return }
+        update(query: query, context: .completeSearchText)
     }
-    
+
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        cancel()
         delegate?.searchWasCancelled()
     }
-    
-    private func searchWithText(searchText: String) {
-        // Notify the delegate when a new update
-        // begins
-        delegate?.searchResultsDidStartUpdating()
-        
-        guard AppContext.shared.offlineContext.state == .online else {
-            return
-        }
-
-        searchRequestToken?.cancel()
-        
-        //
-        // Fetch search results given search text
-        //
-        
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = searchText
-        let coordinate = self.location!.coordinate
-        request.region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 5000, longitudinalMeters: 5000)
-        localSearch = MKLocalSearch(request: request)
-        localSearch!.start(completionHandler: searchWithTextCallback)
-    }
-    
-    private func searchWithTextCallback(using response: MKLocalSearch.Response?, error: Error?) -> Void {
-        localSearch = nil // finished with the MKLocalSearch instance
-        guard error == nil else {
-            return
-        }
-        var pois: [POI] = []
-        if let mapItems = response?.mapItems {
-            for result in mapItems {
-                let lat = result.placemark.location?.coordinate.latitude
-                let long = result.placemark.location?.coordinate.longitude
-                var addressParts: [String] = []
-                if let substreet = result.placemark.subThoroughfare {
-                    addressParts.append(substreet)
-                }
-                if let street = result.placemark.thoroughfare {
-                    addressParts.append(street + ",")
-                }
-                if let city = result.placemark.locality {
-                    addressParts.append(city)
-                }
-                if let state = result.placemark.administrativeArea {
-                    addressParts.append(state + ",")
-                }
-                if let postalCode = result.placemark.postalCode {
-                    addressParts.append(postalCode + ",")
-                }
-                if let country = result.placemark.country {
-                    addressParts.append(country)
-                }
-                let address = addressParts.joined(separator: " ")
-                pois.append(GenericLocation(lat: lat!, lon: long!, name: result.name!, address: address))
-            }
-        }
-        
-        if let currentLocation = self.location {
-            pois = pois.sorted(byDistanceFrom: currentLocation)
-        }
-        
-        delegate?.searchResultsDidUpdate(pois, searchLocation: self.location)
-    }
-    
 }

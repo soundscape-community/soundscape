@@ -41,7 +41,7 @@ class OfflineBannerViewController: ConnectivityBannerViewController {
                 self = .searchTableView
             } else if (viewController as? NavigationBanner.Controller)?.isNearby == true {
                 self = .nearbyTableView
-            } else if viewController is OfflineHelpPageViewController {
+            } else if viewController.isShowingOfflineHelp {
                 self = .offlineHelpView
             } else {
                 self = .default

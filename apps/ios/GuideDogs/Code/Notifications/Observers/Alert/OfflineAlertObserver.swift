@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -63,7 +64,7 @@ class OfflineAlertObserver: NotificationObserver {
             return ErrorAlerts.buildOfflineSearchAlert(learnMoreHandler: learnMoreHandler, dismissHandler: dismissHandler)
         }
         
-        if viewController is OfflineHelpPageViewController {
+        if viewController.isShowingOfflineHelp {
             return ErrorAlerts.buildOfflineHelpAlert(dismissHandler: dismissHandler)
         }
         

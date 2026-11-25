@@ -22,7 +22,7 @@ extension Notification.Name {
 class HomeViewController: UIViewController, BannerHosting {
     
     private let layout = HomeLayout()
-    private lazy var hosting = HomeHostingController(rootView: HomeView(layout: layout))
+    private lazy var hosting = HomeHostingController(rootView: HomeView(layout: layout, search: layout.search))
     var bannerHostingController: UIViewController { hosting }
     var largeBannerContainerView: UIView! { layout.largeBanner }
     var smallBannerContainerView: UIView! { layout.smallBanner }
@@ -35,20 +35,19 @@ class HomeViewController: UIViewController, BannerHosting {
     private var canShowLaunchActivities = false
     fileprivate var didCheckForNewFeatures = false
     
-    private var sleepBarButton: UIBarButtonItem?
     var shouldFocusOnBeacon: Bool = false
-    
-    lazy var externalGPSBarButtonItem: UIBarButtonItem = {
-        let icon = UIBarButtonItem(image: UIImage(named: "ic_settings_input_antenna_white"),
-                               style: .plain,
-                               target: nil,
-                               action: nil)
-        icon.accessibilityLabel = GDLocalizedString("bar_icon.external_GPS.acc_label")
-        return icon
-    }()
-    
-    private var searchController: UISearchController?
-    
+    var isSearching: Bool { layout.search.isActive }
+
+    func beginSearch() -> Bool {
+        guard layout.showsBrowse, !isSearching else { return false }
+        if layout.showsMenu {
+            layout.dismissMenu { [weak self] in self?.layout.search.begin() }
+        } else {
+            layout.search.begin()
+        }
+        return true
+    }
+
     // Experiences
     
     var cardViewController: CardStateViewController?
@@ -95,47 +94,22 @@ class HomeViewController: UIViewController, BannerHosting {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let menu = UIBarButtonItem(image: UIImage(named: "menu"), style: .plain,
-                                   target: self, action: #selector(onMenuTouchUpInside))
-        menu.accessibilityLabel = GDLocalizedString("ui.menu")
-        menu.accessibilityHint = GDLocalizedString("ui.menu.hint")
-        navigationItem.leftBarButtonItem = menu
-
-        let sleep = UIBarButtonItem(image: UIImage(named: "sleep_icon"), style: .plain,
-                                    target: self, action: #selector(onSleepTouchUpInside))
-        sleep.accessibilityLabel = GDLocalizedString("sleep.sleep")
-        sleep.accessibilityHint = GDLocalizedString("sleep.sleep.acc_hint")
-        navigationItem.rightBarButtonItem = sleep
-        sleepBarButton = sleep
-
         layout.showCurrentLocation = { [weak self] in self?.showCurrentLocation() }
         layout.saveCurrentLocation = { [weak self] in self?.saveCurrentLocation() }
+        layout.beginStandby = { AppNavigationModel.shared.showStandby() }
+        layout.sendFeedback = { [weak self] in self?.sendMenuFeedback() }
+        layout.search.onSelect = { [weak self] place in
+            self?.showLocationDetail(LocationDetail(entity: place, telemetryContext: "search_result"))
+        }
+        layout.search.onAction = { [weak self] action, detail in
+            self?.didSelectLocationAction(action, detail: detail)
+        }
 
         let card = CardStateViewController()
         cardViewController = card
         embed(card, in: layout.card)
-
-        // Initialize the search controller
-        self.searchController = UISearchController(delegate: self)
-        self.searchController?.delegate = self
-        self.searchController?.searchBar.searchTextField.overrideUserInterfaceStyle = .light
-        self.searchController?.searchBar.searchTextField.accessibilityIdentifier = GDLocalizationUnnecessary("searchbar.home")
-        
-        // Add search controller to navigation bar
-        configureSearchAndBrowseView()
-        self.navigationItem.hidesSearchBarWhenScrolling = false
-
-        // Don't allow ios 26 to move the search to the bottom.
-        if #available(iOS 26.0, *) {
-            self.navigationItem.searchBarPlacementAllowsToolbarIntegration = false
-        }
-        
-        // Search results will be displayed modally
-        // Use this view controller to define presentation context
-        self.definesPresentationContext = true
-        
-        self.navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
-        configureNavigationBarButtonContrast()
+        layout.showsBrowse = !(AppContext.shared.eventProcessor.activeBehavior is GuidedTour)
+        navigationItem.backBarButtonItem = UIBarButtonItem.defaultBackBarButtonItem
 
         configureCalloutButtonPanelView()
         
@@ -158,11 +132,11 @@ class HomeViewController: UIViewController, BannerHosting {
         })
         
         listeners.append(NotificationCenter.default.publisher(for: .behaviorActivated).receive(on: DispatchQueue.main).sink(receiveValue: { [weak self] _ in
-            self?.configureSearchAndBrowseView()
+            self?.layout.showsBrowse = !(AppContext.shared.eventProcessor.activeBehavior is GuidedTour)
         }))
         
         listeners.append(NotificationCenter.default.publisher(for: .behaviorDeactivated).receive(on: DispatchQueue.main).sink(receiveValue: { [weak self] _ in
-            self?.configureSearchAndBrowseView()
+            self?.layout.showsBrowse = !(AppContext.shared.eventProcessor.activeBehavior is GuidedTour)
         }))
         
         listeners.append(NotificationCenter.default.publisher(for: .didTryActivityUpdate).receive(on: DispatchQueue.main).sink(receiveValue: { [weak self] notification in
@@ -202,11 +176,8 @@ class HomeViewController: UIViewController, BannerHosting {
 
         updateCalloutButtonTraits()
         
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        // Transparent navigation bar
-        navigationController?.navigationBar.configureAppearance(for: .transparentLightTitle)
-        configureNavigationBarButtonContrast()
-        
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleAppWillEnterForeground(_:)), name: Notification.Name.appWillEnterForeground, object: nil)
         
         let hasLocationPermission = checkPermissions()
@@ -259,9 +230,11 @@ class HomeViewController: UIViewController, BannerHosting {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        layout.search.searchWasCancelled()
         
-        // Default navigation bar
-        navigationController?.navigationBar.configureAppearance(for: .default)
+        if navigationController?.topViewController !== self {
+            navigationController?.setNavigationBarHidden(false, animated: animated)
+        }
         
         NotificationCenter.default.removeObserver(self, name: Notification.Name.appWillEnterForeground, object: nil)
     }
@@ -269,7 +242,6 @@ class HomeViewController: UIViewController, BannerHosting {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         updateCalloutButtonTraits()
-        configureSearchAndBrowseView()
     }
     
     private func updateCalloutButtonTraits() {
@@ -287,21 +259,6 @@ class HomeViewController: UIViewController, BannerHosting {
         }
     }
     
-    private func configureSearchAndBrowseView() {
-        let showsBrowse = !(AppContext.shared.eventProcessor.activeBehavior is GuidedTour)
-        navigationItem.searchController = showsBrowse ? searchController : nil
-        layout.showsBrowse = showsBrowse
-    }
-
-    private func configureNavigationBarButtonContrast() {
-        let foregroundColor = UINavigationBar.Style.transparentLightTitle.foregroundColor
-
-        navigationItem.leftBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: foregroundColor)
-        navigationItem.rightBarButtonItem?.configureSoundscapeNavigationButton(foregroundColor: foregroundColor)
-        navigationItem.leftBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton(foregroundColor: foregroundColor) }
-        navigationItem.rightBarButtonItems?.forEach { $0.configureSoundscapeNavigationButton(foregroundColor: foregroundColor) }
-    }
-
     private func configureCalloutButtonPanelView() {
         calloutButtonViewController = CalloutButtonPanelHostingViewController.embed(
             in: hosting,
@@ -316,8 +273,8 @@ class HomeViewController: UIViewController, BannerHosting {
             navigation.returnHome()
             navigation.open(.recreation)
         }
-        if let menu = presentedViewController as? MenuViewController {
-            menu.dismiss(animated: true, completion: open)
+        if layout.showsMenu {
+            layout.dismissMenu(then: open)
         } else if let navigationController, navigationController.topViewController !== self {
             CATransaction.begin()
             CATransaction.setCompletionBlock(open)
@@ -430,51 +387,20 @@ class HomeViewController: UIViewController, BannerHosting {
 
 }
 
-// MARK: UIViewControllerTransitioningDelegate
-
-// This delegate is only used for animating the home screen menu in and off of the screen. This is not used for any of the other segues in the app.
-extension HomeViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        guard presented is MenuViewController else {
-            return nil
+private extension HomeViewController {
+    func sendMenuFeedback() {
+        let alert = UIAlertController(
+            email: GDLocalizationUnnecessary("community.soundscape@gmail.com"),
+            subject: GDLocalizedString("settings.feedback.subject"),
+            preferredStyle: .actionSheet
+        ) { _ in }
+        if let popover = alert.popoverPresentationController {
+            popover.sourceView = view
+            popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 1, height: 1)
+            popover.permittedArrowDirections = []
         }
-        
-        return MenuAnimator(.open)
+        present(alert, animated: true)
     }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        guard let dismissed = dismissed as? MenuViewController else {
-            return nil
-        }
-        
-        return MenuAnimator(.close) { [weak self] finished in
-            guard finished else { return }
-            self?.layout.openMenuDestination(dismissed.selected)
-        }
-    }
-}
-
-// MARK: Actions
-
-extension HomeViewController {
-    
-    @objc func onMenuTouchUpInside() {
-        // Construct the menu and present it
-        let vc = MenuViewController()
-        vc.transitioningDelegate = self
-        vc.modalPresentationStyle = .custom
-        
-        present(vc, animated: true, completion: nil)
-    }
-    
-    @objc func onSleepTouchUpInside () {
-        let controller = StandbyViewController()
-        controller.delegate = self
-        controller.modalPresentationStyle = .fullScreen
-        controller.modalTransitionStyle = .crossDissolve
-        present(controller, animated: true)
-    }
-
 }
 
 // MARK: Notifications
@@ -514,58 +440,8 @@ extension HomeViewController {
     
 }
 
-// MARK: Update View Methods
-
 extension HomeViewController {
-    
-    fileprivate func updateExternalHardwareGeolocationIndicatorView(isExternal: Bool) {
-        var buttons = sleepBarButton.map { [$0] } ?? []
-        if isExternal {
-            buttons.append(externalGPSBarButtonItem)
-        }
-        navigationItem.rightBarButtonItems = buttons
-    }
-    
-}
-
-// MARK: - DismissableViewControllerDelegate
-
-extension HomeViewController: DismissableViewControllerDelegate {
-    
-    func onDismissed(_ viewController: UIViewController) {
-        // If there is an active route guidance behavior, then unmute the audio beacon
-        if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance,
-           !AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled {
-            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
-        }
-    }
-    
-}
-
-// MARK: - SearchResultsViewControllerDelegate
-
-extension HomeViewController: SearchResultsViewControllerDelegate {
-    
-    func didSelectSearchResult(_ searchResult: POI) {
-        let detail = LocationDetail(entity: searchResult, telemetryContext: "search_result")
-        showLocationDetail(detail)
-        
-        searchController?.isActive = false
-    }
-    
-    var isCachingRequired: Bool {
-        // After a result is selected, we will navigate to the detail view for that location
-        // The detail view will disable any actions that require caching
-        return false
-    }
-    
-    var isAccessibilityActionsEnabled: Bool {
-        return true
-    }
-    
-    var telemetryContext: String {
-        return "home_screen"
-    }
+    var telemetryContext: String { "home_screen" }
 }
 
 // MARK: - LocationActionDelegate
@@ -582,8 +458,6 @@ extension HomeViewController: LocationActionDelegate {
                 // Do nothing if the action is disabled
                 return
             }
-            
-            self.searchController?.isActive = false
             
             do {
                 switch action {
@@ -638,24 +512,6 @@ extension HomeViewController: LocationActionDelegate {
                 self.present(alert, animated: true, completion: nil)
             }
         }
-    }
-    
-}
-
-// MARK: - UISearchControllerDelegate
-
-extension HomeViewController: UISearchControllerDelegate {
-    
-    func willPresentSearchController(_ searchController: UISearchController) {
-        // Default navigation bar
-        navigationController?.navigationBar.configureAppearance(for: .default)
-        
-        NSUserActivity(userAction: .search).becomeCurrent()
-    }
-    
-    func willDismissSearchController(_ searchController: UISearchController) {
-        // Transparent navigation bar
-        navigationController?.navigationBar.configureAppearance(for: .transparentLightTitle)
     }
     
 }

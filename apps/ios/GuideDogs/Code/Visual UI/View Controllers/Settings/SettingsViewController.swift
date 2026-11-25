@@ -17,6 +17,7 @@ struct SettingsScreen: View {
     var body: some View {
         SettingsView(model: model)
             .navigationTitle(GDLocalizedString("settings.screen_title"))
+            .navigationBarStyle(style: .darkBlue)
             .toolbar(.visible, for: .navigationBar)
             .onAppear {
                 model.open = { [weak navigation] in navigation?.open(.settingsPage($0)) }
@@ -196,7 +197,10 @@ struct SettingsView: View {
                     GDLocalizedTextView("settings.section.telemetry.footer")
                 }
             }
+            .settingsListBackground()
+            .environment(\.colorScheme, .dark)
         }
+        .background(Color.quaternaryBackground.ignoresSafeArea())
         .alert(
             GDLocalizedString(model.confirmation?.title ?? "general.alert.confirmation_title"),
             isPresented: Binding(get: { model.confirmation != nil }, set: { if !$0 { model.confirmation = nil } }),
@@ -228,6 +232,9 @@ struct SettingsView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .foregroundStyle(Color.primaryForeground)
+        .listRowBackground(Color.primaryBackground)
+        .listRowSeparatorTint(Color.secondaryBackground)
     }
 
     private func toggle(_ title: String, _ description: String?, _ value: Binding<Bool>) -> some View {
@@ -237,9 +244,13 @@ struct SettingsView: View {
                 if let description {
                     GDLocalizedTextView(description)
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.secondaryForeground)
                 }
             }
+            .foregroundStyle(Color.primaryForeground)
         }
+        .tint(.secondaryBackground)
+        .listRowBackground(Color.primaryBackground)
+        .listRowSeparatorTint(Color.secondaryBackground)
     }
 }

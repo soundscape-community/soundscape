@@ -23,6 +23,8 @@ final class AppNavigationModel: ObservableObject {
     private(set) var locations: [String: LocationDetail] = [:]
     private var locationActions: [String: LocationAction] = [:]
     var shouldFocusOnBeacon = false
+    private(set) var isStandbyActive = false
+    private var intentAfterStandby: (() -> Void)?
 
     func update(_ change: (inout AppCoordinator) -> Void) {
         var state = coordinator
@@ -106,6 +108,45 @@ final class AppNavigationModel: ObservableObject {
         Binding(get: { self.coordinator.isShowingHelpTutorial }, set: { presented in
             self.update { $0.setHelpTutorialPresented(presented) }
         })
+    }
+
+    var standby: Binding<Bool> {
+        Binding(get: { self.coordinator.isShowingStandby }, set: { presented in
+            self.update { $0.setStandbyPresented(presented) }
+        })
+    }
+
+    func showStandby() {
+        standby.wrappedValue = true
+        isStandbyActive = coordinator.isShowingStandby
+    }
+
+    func afterStandby(_ action: @escaping () -> Void) {
+        intentAfterStandby = action
+        // If the cover is still appearing, standbyDidAppear will wake the app once it goes to sleep.
+        if AppContext.shared.state != .normal {
+            AppContext.shared.wakeUp()
+            standby.wrappedValue = false
+        }
+    }
+
+    func standbyDidAppear() {
+        AppContext.shared.goToSleep()
+        if intentAfterStandby != nil {
+            AppContext.shared.wakeUp()
+            standby.wrappedValue = false
+        }
+    }
+
+    func standbyDidDismiss() {
+        isStandbyActive = false
+        if AppContext.shared.eventProcessor.activeBehavior is RouteGuidance,
+           !AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled {
+            AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio()
+        }
+        let action = intentAfterStandby
+        intentAfterStandby = nil
+        action?()
     }
 
     func receive(_ intent: AppNavigationIntent) -> AppNavigationIntent? {

@@ -274,6 +274,7 @@ struct HelpView: View {
                 helpList
             }
             .navigationTitle(GDLocalizedString("settings.help.title"))
+            .navigationBarStyle(style: .darkBlue)
             .toolbar(.visible, for: .navigationBar)
         case .page(let id):
             if let page = helpPages.first(where: { $0.id == id }) {
@@ -282,6 +283,7 @@ struct HelpView: View {
                     pageContent(page)
                 }
                 .navigationTitle(page.title)
+                .navigationBarStyle(style: .darkBlue)
                 .toolbar(.visible, for: .navigationBar)
             }
         case .answer(let id):
@@ -293,10 +295,17 @@ struct HelpView: View {
                     HelpContentView(sections: [.init(title: answer.question, paragraphs: paragraphs)])
                 }
                 .navigationTitle(GDLocalizedString("faq.title.abbreviated"))
+                .navigationBarStyle(style: .darkBlue)
                 .toolbar(.visible, for: .navigationBar)
             }
         case .offline:
-            LegacyNavigationScreen { OfflineHelpPageViewController() }
+            VStack(spacing: 0) {
+                NavigationBanner(isOfflineHelp: true)
+                OfflineHelpContentView()
+            }
+            .navigationTitle(GDLocalizedString("help.offline.section_title"))
+            .navigationBarStyle(style: .darkBlue)
+            .toolbar(.visible, for: .navigationBar)
         case .beaconTutorial:
             LegacyNavigationScreen {
                 let controller = DestinationTutorialIntroViewController(source: nil, logContext: "help_screen")
@@ -353,6 +362,9 @@ struct HelpView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .settingsListBackground()
+        .background(Color.quaternaryBackground.ignoresSafeArea())
+        .environment(\.colorScheme, .dark)
     }
 
     private func pages(in section: Int) -> some View {
@@ -404,6 +416,9 @@ private func helpLink(_ title: String, action: @escaping () -> Void) -> some Vie
         .contentShape(Rectangle())
     }
     .buttonStyle(.plain)
+    .foregroundStyle(Color.primaryForeground)
+    .listRowBackground(Color.primaryBackground)
+    .listRowSeparatorTint(Color.secondaryBackground)
 }
 
 final class HelpScreenModel: ObservableObject {
@@ -470,16 +485,21 @@ struct HelpContentView: View {
                 ForEach(sections.indices, id: \.self) { index in
                     let section = sections[index]
                     VStack(alignment: .leading, spacing: 12) {
+                        if index > sections.startIndex {
+                            Divider().overlay(Color.secondaryBackground)
+                        }
                         if let title = section.title {
                             Text(verbatim: title)
-                                .font(.title2)
+                                .font(index == sections.startIndex ? .title : .title3)
+                                .foregroundStyle(index == sections.startIndex ? Color.primaryForeground : Color.secondaryForeground)
                                 .accessibilityAddTraits(.isHeader)
                         }
                         if section.paragraphs.isEmpty {
                             GDLocalizedTextView("text.coming_soon")
                         } else {
                             ForEach(section.paragraphs.indices, id: \.self) { index in
-                                paragraph(section.paragraphs[index])
+                                let paragraph = section.paragraphs[index]
+                                HelpParagraph(source: paragraph).id(paragraph)
                             }
                         }
                     }
@@ -491,30 +511,52 @@ struct HelpContentView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(20)
+            .padding(24)
+        }
+        .foregroundStyle(Color.primaryForeground)
+        .tint(.secondaryForeground)
+        .background(Color.quaternaryBackground.ignoresSafeArea())
+    }
+}
+
+private struct HelpParagraph: View {
+    let source: String
+    @State private var formatted: AttributedString?
+
+    private var containsHTML: Bool {
+        source.contains("<") || source.contains("&")
+    }
+
+    var body: some View {
+        if containsHTML {
+            Text(formatted ?? AttributedString())
+                .task { await loadHTML() }
+        } else {
+            Text(verbatim: source)
         }
     }
 
-    private func paragraph(_ string: String) -> Text {
-        let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
-            .documentType: NSAttributedString.DocumentType.html,
-            .characterEncoding: String.Encoding.utf8.rawValue
-        ]
-        guard let html = try? NSAttributedString(data: Data(string.utf8), options: options, documentAttributes: nil) else {
-            return Text(verbatim: string)
+    private func loadHTML() async {
+        guard formatted == nil else { return }
+        // The synchronous HTML importer spins the main run loop and can reenter SwiftUI layout.
+        guard let (html, _) = try? await NSAttributedString.fromHTML(source) else {
+            if !Task.isCancelled { formatted = AttributedString(source) }
+            return
         }
-        var formatted = AttributedString(html)
+        guard !Task.isCancelled else { return }
+
+        var text = AttributedString(html)
         // Use the screen's body font and Dynamic Type while preserving emphasis.
-        for run in formatted.runs {
+        for run in text.runs {
             guard let font = run.uiKit.font else { continue }
             let traits = font.fontDescriptor.symbolicTraits
             var intent: InlinePresentationIntent = []
             if traits.contains(.traitBold) { intent.insert(.stronglyEmphasized) }
             if traits.contains(.traitItalic) { intent.insert(.emphasized) }
-            formatted[run.range].inlinePresentationIntent = intent
-            formatted[run.range].uiKit.font = nil
-            formatted[run.range].uiKit.foregroundColor = nil
+            text[run.range].inlinePresentationIntent = intent
+            text[run.range].uiKit.font = nil
+            text[run.range].uiKit.foregroundColor = nil
         }
-        return Text(formatted)
+        formatted = text
     }
 }

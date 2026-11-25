@@ -321,12 +321,12 @@ class AppContext {
         // Context has already been stopped.
         spatialDataContext.stop()
 
+        DeviceMotionManager.shared.stopDeviceMotionUpdates()
+        state = .snooze
+
+        // The location provider can report a failure synchronously and wake the app.
         geolocationManager.snoozeDelegate = self
         geolocationManager.snooze()
-        
-        DeviceMotionManager.shared.stopDeviceMotionUpdates()
-        
-        state = .snooze
     }
     
     /// Resumes location updates and motion activity updates

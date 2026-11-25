@@ -68,6 +68,7 @@ struct AppCoordinator {
     private(set) var stage: Stage = .starting
     private(set) var path: [AppRoute] = []
     private(set) var isShowingHelpTutorial = false
+    private(set) var isShowingStandby = false
     private(set) var isHomeReady = false
     private(set) var isShowingNewFeatures = false
     private var pendingIntent: AppNavigationIntent?
@@ -114,6 +115,11 @@ struct AppCoordinator {
     mutating func setNewFeaturesPresented(_ presented: Bool) {
         guard !presented || (stage == .home && path.isEmpty) else { return }
         isShowingNewFeatures = presented
+    }
+
+    mutating func setStandbyPresented(_ presented: Bool) {
+        guard !presented || (stage == .home && path.isEmpty && !isShowingNewFeatures) else { return }
+        isShowingStandby = presented
     }
 
     mutating func receive(_ intent: AppNavigationIntent) -> AppNavigationIntent? {

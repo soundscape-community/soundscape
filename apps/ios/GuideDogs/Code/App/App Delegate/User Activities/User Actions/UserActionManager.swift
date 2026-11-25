@@ -108,6 +108,10 @@ class UserActionManager {
     }
 
     private func present(_ intent: AppNavigationIntent) -> Bool {
+        if navigation.isStandbyActive {
+            navigation.afterStandby { [weak self] in _ = self?.present(intent) }
+            return true
+        }
         wakeIfNeeded()
 
         switch intent {
@@ -159,6 +163,13 @@ class UserActionManager {
             return false
         }
         
+        if navigation.coordinator.path.isEmpty,
+           let home = LaunchHelper.homePresenter as? HomeViewController,
+           !home.isPresentingModal,
+           home.beginSearch() {
+            return true
+        }
+
         guard let rootViewController = rootViewController else { return false }
         guard let searchResultsTableViewController = SearchResultsViewController.instantiateStandaloneConfiguration() else { return false }
         rootViewController.present(searchResultsTableViewController, animated: true)
@@ -220,18 +231,11 @@ class UserActionManager {
     private var rootViewController: UIViewController? {
         guard let rootViewController = AppContext.rootViewController else { return nil }
         
-        var visibleViewController = rootViewController.visiblePresentedViewController ?? rootViewController
-        
-        if visibleViewController is StandbyViewController {
-            // If the app is in a sleep or snooze state, the `rootViewController` will be `StandbyViewController`.
-            // We don't want to present views on top of it, but on its `presentingViewController`, which should be `HomeViewController`.
-            visibleViewController = visibleViewController.presentingViewController ?? rootViewController
-        }
-        
-        return visibleViewController
+        return rootViewController.visiblePresentedViewController ?? rootViewController
     }
     
     private static var isSearching: Bool {
+        if (LaunchHelper.homePresenter as? HomeViewController)?.isSearching == true { return true }
         let presented = AppContext.rootViewController?.visiblePresentedViewController
         return presented is SearchResultsViewController
             || (presented as? UINavigationController)?.topViewController is SearchResultsViewController

@@ -6,10 +6,11 @@ import UIKit
 
 struct NavigationBanner: View {
     var isNearby = false
+    var isOfflineHelp = false
     @StateObject private var size = Size()
 
     var body: some View {
-        BannerHost(size: size, isNearby: isNearby)
+        BannerHost(size: size, isNearby: isNearby, isOfflineHelp: isOfflineHelp)
             .frame(height: size.height)
             .clipped()
             .accessibilityHidden(size.height == 0)
@@ -22,9 +23,10 @@ struct NavigationBanner: View {
     private struct BannerHost: UIViewControllerRepresentable {
         let size: Size
         let isNearby: Bool
+        let isOfflineHelp: Bool
 
         func makeUIViewController(context: Context) -> Controller {
-            Controller(size: size, isNearby: isNearby)
+            Controller(size: size, isNearby: isNearby, isOfflineHelp: isOfflineHelp)
         }
 
         func updateUIViewController(_ controller: Controller, context: Context) {}
@@ -33,11 +35,13 @@ struct NavigationBanner: View {
     final class Controller: UIViewController, LargeBannerContainerView {
         private let size: Size
         let isNearby: Bool
+        let isOfflineHelp: Bool
         var largeBannerContainerView: UIView! { view }
 
-        fileprivate init(size: Size, isNearby: Bool) {
+        fileprivate init(size: Size, isNearby: Bool, isOfflineHelp: Bool) {
             self.size = size
             self.isNearby = isNearby
+            self.isOfflineHelp = isOfflineHelp
             super.init(nibName: nil, bundle: nil)
         }
 
@@ -54,5 +58,11 @@ struct NavigationBanner: View {
                 size?.height = height
             }
         }
+    }
+}
+
+extension UIViewController {
+    var isShowingOfflineHelp: Bool {
+        self is OfflineHelpPageViewController || (self as? NavigationBanner.Controller)?.isOfflineHelp == true
     }
 }

@@ -276,22 +276,8 @@ final class GPXRecordingController: ObservableObject {
         return task
     }
 
-    func share(_ file: GPXRecordingFile) {
-        Task {
-            do {
-                let url = try await repository.prepareForSharing(file)
-                let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                guard let viewController = Self.topViewController(from: AppContext.rootViewController) else {
-                    throw GPXRecordingError.storage(GDLocalizedString("gpx_recording.error.share_unavailable"))
-                }
-                activity.popoverPresentationController?.sourceView = viewController.view
-                activity.completionWithItemsHandler = { _, completed, _, _ in
-                }
-                viewController.present(activity, animated: true)
-            } catch {
-                self.error = .storage(error.localizedDescription)
-            }
-        }
+    func prepareForSharing(_ file: GPXRecordingFile) async throws -> URL {
+        try await repository.prepareForSharing(file)
     }
 
     private func load() async {
@@ -361,18 +347,5 @@ final class GPXRecordingController: ObservableObject {
         formatter.timeZone = TimeZone.current
         formatter.dateFormat = "yyyy-MM-dd HH-mm-ss"
         return formatter.string(from: Date())
-    }
-
-    private static func topViewController(from root: UIViewController?) -> UIViewController? {
-        if let presented = root?.presentedViewController {
-            return topViewController(from: presented)
-        }
-        if let navigationController = root as? UINavigationController {
-            return topViewController(from: navigationController.visibleViewController)
-        }
-        if let tabBarController = root as? UITabBarController {
-            return topViewController(from: tabBarController.selectedViewController)
-        }
-        return root
     }
 }

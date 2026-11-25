@@ -37,6 +37,10 @@ struct SoundscapeApp: App {
                     .sheet(isPresented: navigation.helpTutorial) {
                         HelpOnboardingSheet()
                     }
+                    .fullScreenCover(isPresented: navigation.standby, onDismiss: navigation.standbyDidDismiss) {
+                        StandbyView(onSleep: navigation.standbyDidAppear, onWake: { navigation.standby.wrappedValue = false })
+                            .interactiveDismissDisabled()
+                    }
                     .fullScreenCover(isPresented: navigation.newFeatures) {
                         NewFeaturesPresentation(service: AppContext.shared.newFeatures)
                     }
@@ -163,7 +167,7 @@ private struct HomeNavigationBridge: UIViewControllerRepresentable {
         let home = HomeViewController()
         let controller = NavigationController(rootViewController: home)
         LaunchHelper.homePresenter = home
-        controller.navigationBar.barStyle = .black
+        controller.setNavigationBarHidden(true, animated: false)
         controller.view.accessibilityIgnoresInvertColors = true
         LaunchHelper.homeNavigationController = controller
         return controller

@@ -9,9 +9,9 @@
 
 import SwiftUI
 
-class OfflineHelpPageViewController: HelpHostingController {
-    init() {
-        let page = HelpContentView(sections: [
+struct OfflineHelpContentView: View {
+    var body: some View {
+        HelpContentView(sections: [
             .init(title: GDLocalizedString("help.offline.page_title"),
                   paragraphs: [GDLocalizedString("help.offline.description")]),
             .init(title: GDLocalizedString("help.offline.limitations_heading"),
@@ -19,7 +19,13 @@ class OfflineHelpPageViewController: HelpHostingController {
             .init(title: GDLocalizedString("help.offline.troubleshooting_heading"),
                   paragraphs: [GDLocalizedString("help.offline.troubleshooting_description")])
         ])
-        super.init(title: GDLocalizedString("help.offline.section_title"), content: AnyView(page))
+    }
+}
+
+// Banner links inside a legacy navigation controller still push onto that controller.
+final class OfflineHelpPageViewController: HelpHostingController {
+    init() {
+        super.init(title: GDLocalizedString("help.offline.section_title"), content: AnyView(OfflineHelpContentView()))
     }
 
     required dynamic init?(coder: NSCoder) {

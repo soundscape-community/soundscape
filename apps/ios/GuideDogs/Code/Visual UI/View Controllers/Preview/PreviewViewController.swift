@@ -9,6 +9,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class PreviewViewController: UIViewController {
     
@@ -34,7 +35,7 @@ class PreviewViewController: UIViewController {
     
     private var virtualLocationViewController: VirtualLocationViewController?
     private weak var calloutButtonViewController: CalloutButtonPanelHostingViewController?
-    private weak var activityIndicatorViewController: PreviewActivityIndicatorViewController?
+    private let loadingState = PreviewLoadingState()
     private var previewTutorialViewController: PreviewTutorialViewController?
     private var isActivatedAndStartedSubscriber: AnyCancellable?
     private var isStoppedAndDeactivatedSubscriber: AnyCancellable?
@@ -226,13 +227,13 @@ class PreviewViewController: UIViewController {
         // Save view controller
         virtualLocationViewController = viewController
 
-        let activityIndicatorViewController = PreviewActivityIndicatorViewController()
+        let activityIndicatorViewController = UIHostingController(rootView: PreviewActivityIndicatorView(state: loadingState))
+        activityIndicatorViewController.view.backgroundColor = .clear
         addChild(activityIndicatorViewController)
         activityIndicatorContainerView.addSubview(activityIndicatorViewController.view)
         activityIndicatorViewController.view.frame = activityIndicatorContainerView.bounds
         activityIndicatorViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         activityIndicatorViewController.didMove(toParent: self)
-        self.activityIndicatorViewController = activityIndicatorViewController
         
         if FirstUseExperience.didComplete(.previewTutorial) == false {
             
@@ -348,7 +349,7 @@ class PreviewViewController: UIViewController {
         
         // If we are downloading data, pass the progress object to the
         // view controller
-        activityIndicatorViewController?.state = .activating(progress: progress)
+        loadingState.phase = .activating(progress: progress)
         
         // Configure initial view
         configureActivityIndicatorView(isHidden: isActivatedAndStarted)
@@ -509,6 +510,7 @@ class PreviewViewController: UIViewController {
         }
         
         navigationController?.navigationBar.configureAppearance(for: isHidden ? .transparentLightTitle : .default)
+        loadingState.isVisible = !isHidden
         configureContainerView(activityIndicatorContainerView, isHidden: isHidden, navigationBarIsHidden: false, roadToggleItemIsHidden: !isHidden)
     }
     
@@ -584,7 +586,7 @@ class PreviewViewController: UIViewController {
             }
             
             // Do not display progress while deactivating
-            activityIndicatorViewController?.state = .deactivating
+            loadingState.phase = .deactivating
             
             // Show the activity indicator view while stopping
             // and deactivating the behavior

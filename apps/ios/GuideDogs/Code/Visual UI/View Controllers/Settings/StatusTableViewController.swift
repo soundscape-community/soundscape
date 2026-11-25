@@ -233,7 +233,8 @@ class TroubleshootingViewController: UIViewController {
     }
     
     private func presentLoadingModal() {
-        let viewController = LoadingModalViewController(loadingMessage: GDLocalizedString("text.cleaning_things"))
+        let viewController = UIHostingController(rootView: LoadingModalView(message: GDLocalizedString("text.cleaning_things")))
+        viewController.view.backgroundColor = .clear
         viewController.modalPresentationStyle = .overCurrentContext
         viewController.modalTransitionStyle = .crossDissolve
 

@@ -20,6 +20,37 @@ final class SearchResultsModel: ObservableObject {
     var recent: [POI] = []
     var callouts: [POI] = []
     var location: CLLocation?
+
+    func reloadRecent() {
+        location = AppContext.shared.geolocationManager.location
+
+        // Initialize recent selections
+        let selections = SpatialDataCache.recentlySelectedObjects()
+
+        // Initialize recent callouts
+        let recentCallouts: [POI] = AppContext.shared.calloutHistory.callouts
+            .sorted(by: { return $0.timestamp > $1.timestamp })
+            .compactMap({
+                var poi: POI?
+
+                if let callout = $0 as? POICallout {
+                    poi = callout.poi
+                } else if let callout = $0 as? IntersectionCallout, let intersection = callout.intersection {
+                    let latitude = intersection.location.coordinate.latitude
+                    let longitude = intersection.location.coordinate.longitude
+                    let name = GDLocalizedString("intersection.named_intersection", intersection.localizedName)
+
+                    poi = GenericLocation(lat: latitude, lon: longitude, name: name)
+                } else if let callout = $0 as? WaypointArrivalCallout, let id = callout.waypoint.markerId, let marker = SpatialDataCache.referenceEntityByKey(id) {
+                    poi = marker.getPOI()
+                }
+
+                return poi
+            })
+
+        recent = selections
+        callouts = recentCallouts
+    }
 }
 
 struct SearchResultsScreen: View {

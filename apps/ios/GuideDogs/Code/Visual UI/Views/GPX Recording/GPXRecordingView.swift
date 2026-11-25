@@ -14,6 +14,8 @@ struct GPXRecordingView: View {
     @State private var showRecordingDiscardConfirmation = false
     @State private var showNamingDiscardConfirmation = false
     @FocusState private var isNameFieldFocused: Bool
+    @State private var requestedShare: GPXRecordingFile?
+    @State private var sharedFile: SharedFile?
 
     var body: some View {
         List {
@@ -66,7 +68,7 @@ struct GPXRecordingView: View {
                 } else {
                     ForEach(controller.recordings) { file in
                         Button {
-                            controller.share(file)
+                            requestedShare = file
                         } label: {
                             HStack(spacing: 12) {
                                 VStack(alignment: .leading, spacing: 4) {
@@ -93,6 +95,22 @@ struct GPXRecordingView: View {
             .listRowSeparatorTint(Color.secondaryBackground)
         }
         .settingsListBackground()
+        .safeAreaInset(edge: .top, spacing: 0) { NavigationBanner() }
+        .task(id: requestedShare?.id) {
+            guard let file = requestedShare else { return }
+            do {
+                let url = try await controller.prepareForSharing(file)
+                guard !Task.isCancelled else { return }
+                sharedFile = SharedFile(url: url)
+            } catch {
+                guard !Task.isCancelled else { return }
+                controller.error = .storage(error.localizedDescription)
+            }
+            requestedShare = nil
+        }
+        .sheet(item: $sharedFile) { file in
+            GPXShareSheet(url: file.url)
+        }
         .background(Color.quaternaryBackground.ignoresSafeArea())
         .listStyle(.plain)
         .tint(.primaryForeground)
@@ -119,7 +137,7 @@ struct GPXRecordingView: View {
                                                   description))
         }
         .fullScreenCover(isPresented: namingPresented) {
-            NavigationView {
+            NavigationStack {
                 Form {
                     Section(header: GPXRecordingSectionHeader(text: GDLocalizedString("gpx_recording.name.prompt"))) {
                         TextField(GDLocalizedString("gpx_recording.name"), text: $controller.proposedName)
@@ -318,20 +336,17 @@ private struct GPXRecordingActionButton: View {
     }
 }
 
-final class GPXRecordingHostingController: UIHostingController<GPXRecordingView> {
-    @MainActor
-    convenience init() {
-        self.init(controller: .shared)
+private struct SharedFile: Identifiable {
+    let url: URL
+    var id: URL { url }
+}
+
+private struct GPXShareSheet: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: [url], applicationActivities: nil)
     }
 
-    @MainActor
-    init(controller: GPXRecordingController) {
-        super.init(rootView: GPXRecordingView(controller: controller))
-        view.backgroundColor = Colors.Background.quaternary
-    }
-
-    @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }

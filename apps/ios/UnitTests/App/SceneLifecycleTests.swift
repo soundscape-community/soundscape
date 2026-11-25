@@ -363,6 +363,28 @@ final class NavigationCoordinatorTests: XCTestCase {
         XCTAssertEqual(coordinator.homeBecameReady(), .saveMarker)
     }
 
+    func testStandbyCanOnlyBeOpenedFromUncoveredHome() {
+        var coordinator = AppCoordinator()
+        coordinator.setStandbyPresented(true)
+        XCTAssertFalse(coordinator.isShowingStandby)
+
+        coordinator.finishLaunch(needsOnboarding: false, needsConsent: false)
+        coordinator.open(.settings)
+        coordinator.setStandbyPresented(true)
+        XCTAssertFalse(coordinator.isShowingStandby)
+
+        coordinator.close(.settings)
+        coordinator.setNewFeaturesPresented(true)
+        coordinator.setStandbyPresented(true)
+        XCTAssertFalse(coordinator.isShowingStandby)
+
+        coordinator.setNewFeaturesPresented(false)
+        coordinator.setStandbyPresented(true)
+        XCTAssertTrue(coordinator.isShowingStandby)
+        coordinator.setStandbyPresented(false)
+        XCTAssertFalse(coordinator.isShowingStandby)
+    }
+
     func testBackUpdatesPathAndRouteIDsStayStable() {
         var coordinator = AppCoordinator()
         coordinator.finishLaunch(needsOnboarding: false, needsConsent: false)

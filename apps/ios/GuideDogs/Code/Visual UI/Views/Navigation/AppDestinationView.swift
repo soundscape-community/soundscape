@@ -19,7 +19,8 @@ struct AppDestinationView: View {
         case .recreation:
             LegacyNavigationScreen { AuthoredActivitiesListHostingController() }
         case .gpxRecording:
-            LegacyNavigationScreen { GPXRecordingHostingController() }
+            GPXRecordingView(controller: .shared)
+                .toolbar(.visible, for: .navigationBar)
         case .settings:
             SettingsScreen(navigation: navigation)
         case .devices:
@@ -77,7 +78,7 @@ struct AppDestinationView: View {
         case .troubleshooting:
             LegacyNavigationScreen { TroubleshootingViewController() }
         case .shortcuts:
-            LegacyNavigationScreen { SiriShortcutsTableViewController() }
+            SiriShortcutsScreen()
         case .beacon:
             BeaconSelectionView().navigationTitle(GDLocalizedString("beacon.audio_beacon"))
                 .toolbar(.visible, for: .navigationBar)
