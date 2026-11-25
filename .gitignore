@@ -141,3 +141,6 @@ __pycache__/
 # Security excludes
 # =========================
 private_keys/
+
+# Local workspace data
+/.local/

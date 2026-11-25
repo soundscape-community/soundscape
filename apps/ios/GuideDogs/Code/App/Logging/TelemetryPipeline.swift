@@ -134,7 +134,7 @@ struct TelemetryLocation {
         guard CLLocationCoordinate2DIsValid(fix.coordinate), fix.horizontalAccuracy >= 0,
               age >= 0, age <= 120,
               let cell = try? H3LatLng(latitudeDegs: fix.coordinate.latitude,
-                                       longitudeDegs: fix.coordinate.longitude).cell(at: .res7),
+                                       longitudeDegs: fix.coordinate.longitude).cell(at: .res6),
               let centre = try? cell.center.coordinates else { return nil }
         latitude = centre.latitude
         longitude = centre.longitude
@@ -389,6 +389,7 @@ final class TelemetryController {
     private var processor: BatchLogRecordProcessor?
     private var provider: LoggerProviderSdk?
     private var pipelineConsent: TelemetryConsent?
+    private(set) var startupPreparationFailed = false
 
     init(enabled: Bool, configuration: TelemetryConfiguration?, storage: TelemetryStorage,
          exporterFactory: @escaping (TelemetryConsent, TelemetryConfiguration) -> any LogRecordExporter = { consent, config in
@@ -398,7 +399,7 @@ final class TelemetryController {
         self.configuration = configuration
         self.storage = storage
         self.exporterFactory = exporterFactory
-        transition(enabled: enabled, resuming: true)
+        startupPreparationFailed = !transition(enabled: enabled, resuming: true)
     }
 
     var collecting: Bool { current.protectedValue?.active.protectedValue == true }
@@ -412,16 +413,21 @@ final class TelemetryController {
             if !resuming && enabled && previous?.active.protectedValue == true { return true }
             previous?.revoke()
             previous = nil
-            if !resuming && enabled {
+            // Open storage before reporting success, so callers never persist an
+            // enabled preference for a pipeline whose storage cannot be prepared.
+            let directory: URL?
+            if enabled && configuration != nil {
                 do {
-                    // Drain lifecycle work before purging so queued startup cannot
-                    // recreate the old marker. The caller can now save renewed
-                    // consent without making revoked records resumable on relaunch.
-                    try queue.sync { try storage.purge() }
+                    directory = try queue.sync {
+                        if !resuming { try storage.purge() }
+                        return try storage.open(resuming: resuming)
+                    }
                 } catch {
-                    GDLogAppError("Unable to clear revoked telemetry storage: \(error.localizedDescription)")
+                    GDLogAppError("Unable to prepare telemetry storage: \(error.localizedDescription)")
                     return false
                 }
+            } else {
+                directory = nil
             }
             let consent = enabled && configuration != nil ? TelemetryConsent() : nil
             previous = consent
@@ -430,30 +436,31 @@ final class TelemetryController {
                 processor = nil
                 provider = nil
                 pipelineConsent = nil
-                do {
-                    // No exporter exists before opted-out launch cleanup has completed.
-                    guard let consent = consent, consent.active.protectedValue, let configuration = configuration else {
-                        try storage.purge()
-                        return
+                guard let consent = consent, consent.active.protectedValue,
+                      let configuration = configuration, let directory = directory else {
+                    // Retry a failed purge immediately; future opted-out launches
+                    // and re-enabling also retry before any export is possible.
+                    for attempt in 1...3 {
+                        do { try storage.purge(); return }
+                        catch {
+                            GDLogAppError("Unable to clear opted-out telemetry storage (attempt \(attempt)/3): \(error.localizedDescription)")
+                        }
                     }
-                    let directory = try storage.open(resuming: resuming)
-                    let network = ConsentLogExporter(consent: consent, exporter: exporterFactory(consent, configuration))
-                    let persistence = PersistenceLogExporterDecorator(logRecordExporter: network, storageURL: directory,
-                        exportCondition: { consent.active.protectedValue }, performancePreset: Self.persistencePreset)
-                    let disk = ConsentLogExporter(consent: consent, exporter: persistence, protectsDiskWrites: true)
-                    let batch = BatchLogRecordProcessor(logRecordExporter: disk, scheduleDelay: 2,
-                                                        maxQueueSize: 512, maxExportBatchSize: 64)
-                    processor = batch
-                    provider = LoggerProviderBuilder().with(resource: Resource(attributes: [
-                        "service.name": .string("soundscape"),
-                        "service.version": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"),
-                        "app.build_id": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown")
-                    ])).with(processors: [batch]).build()
-                    pipelineConsent = consent
-                } catch {
-                    consent?.revoke()
-                    GDLogAppError("Unable to prepare telemetry storage: \(error.localizedDescription)")
+                    return
                 }
+                let network = ConsentLogExporter(consent: consent, exporter: exporterFactory(consent, configuration))
+                let persistence = PersistenceLogExporterDecorator(logRecordExporter: network, storageURL: directory,
+                    exportCondition: { consent.active.protectedValue }, performancePreset: Self.persistencePreset)
+                let disk = ConsentLogExporter(consent: consent, exporter: persistence, protectsDiskWrites: true)
+                let batch = BatchLogRecordProcessor(logRecordExporter: disk, scheduleDelay: 2,
+                                                    maxQueueSize: 512, maxExportBatchSize: 64)
+                processor = batch
+                provider = LoggerProviderBuilder().with(resource: Resource(attributes: [
+                    "service.name": .string("soundscape"),
+                    "service.version": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"),
+                    "app.build_id": .string(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown")
+                ])).with(processors: [batch]).build()
+                pipelineConsent = consent
             }
             return true
         }

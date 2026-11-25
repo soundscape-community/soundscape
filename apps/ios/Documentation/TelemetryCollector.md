@@ -48,7 +48,7 @@ field; do not infer types from the contents of strings.
 
 Configure the Mixpanel project token and destination endpoint in the collector.
 These credentials are not included in app records. Mixpanel uses event coordinates
-for geographic inference; they are the centre of an H3 resolution 7 cell, captured
+for geographic inference; they are the centre of an H3 resolution 6 cell, captured
 once after consent for a session. Some events, including early events and events
 without a usable location, have no coordinates. Disable IP-derived geolocation for
 those events (for the import API, set event `ip` to `0`), so the collector's address

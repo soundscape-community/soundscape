@@ -3,6 +3,7 @@
 
 import UIKit
 import CoreLocation
+import SwiftyH3
 import XCTest
 import OpenTelemetryApi
 import OpenTelemetrySdk
@@ -28,6 +29,27 @@ private final class RecordingLogExporter: LogRecordExporter {
         return status
     }
     func shutdown(explicitTimeout: TimeInterval?) { onShutdown() }
+    func forceFlush(explicitTimeout: TimeInterval?) -> ExportResult { .success }
+}
+
+private final class BlockingLogExporter: LogRecordExporter {
+    let entered: () -> Void
+    let release: DispatchSemaphore
+    let order: Locked<[String]>
+
+    init(entered: @escaping () -> Void, release: DispatchSemaphore, order: Locked<[String]>) {
+        self.entered = entered
+        self.release = release
+        self.order = order
+    }
+
+    func export(logRecords: [ReadableLogRecord], explicitTimeout: TimeInterval?) -> ExportResult {
+        entered()
+        _ = release.wait(timeout: .now() + 5)
+        order.locking { $0.append("export") }
+        return .success
+    }
+    func shutdown(explicitTimeout: TimeInterval?) {}
     func forceFlush(explicitTimeout: TimeInterval?) -> ExportResult { .success }
 }
 
@@ -132,6 +154,9 @@ final class TelemetryTests: XCTestCase {
         XCTAssertNil(session.location)
         session.captureLocation(fix(51.5, -0.12), now: now)
         let location = try XCTUnwrap(session.location)
+        let expected = try H3LatLng(latitudeDegs: 51.5, longitudeDegs: -0.12).cell(at: .res6).center.coordinates
+        XCTAssertEqual(location.latitude, expected.latitude, accuracy: 0.000001)
+        XCTAssertEqual(location.longitude, expected.longitude, accuracy: 0.000001)
         XCTAssertNotEqual(location.latitude, 51.5)
         XCTAssertNotEqual(location.longitude, -0.12)
         session.captureLocation(fix(40.7, -74), now: now)
@@ -610,6 +635,22 @@ final class TelemetryTests: XCTestCase {
         XCTAssertEqual(exporter.attempts.protectedValue, 0)
     }
 
+    func testStorageOpenFailureCannotEnableCollection() throws {
+        let parent = root.appendingPathComponent("not-a-directory")
+        try Data("file".utf8).write(to: parent)
+        let storage = TelemetryStorage(root: parent.appendingPathComponent("telemetry"))
+        let resumed = TelemetryController(enabled: true, configuration: configuration, storage: storage)
+        XCTAssertTrue(resumed.startupPreparationFailed)
+        XCTAssertFalse(resumed.collecting)
+        close(resumed)
+
+        let controller = TelemetryController(enabled: false, configuration: configuration, storage: storage)
+        XCTAssertFalse(controller.setEnabled(true))
+        XCTAssertFalse(controller.collecting)
+        controller.record { XCTFail("Failed storage must not collect events"); return self.event() }
+        close(controller)
+    }
+
     func testOptoutLaunchAndInvalidConfigurationPurgeLeftovers() throws {
         for enabled in [false, true] {
             try Data("leftover".utf8).write(to: root.appendingPathComponent("old"))
@@ -672,20 +713,30 @@ final class TelemetryTests: XCTestCase {
 
     func testRevocationWaitsForInProgressDiskWrite() {
         let consent = TelemetryConsent()
-        let entered = expectation(description: "writing")
-        let revoked = expectation(description: "revoked")
+        let entered = expectation(description: "disk export entered")
+        let exported = expectation(description: "disk export completed")
+        let revoked = expectation(description: "revocation completed")
         let release = DispatchSemaphore(value: 0)
+        let revocationReturned = DispatchSemaphore(value: 0)
+        let order = Locked<[String]>(initialValue: [])
+        let exporter = BlockingLogExporter(entered: { entered.fulfill() }, release: release, order: order)
+        let gate = ConsentLogExporter(consent: consent, exporter: exporter, protectsDiskWrites: true)
+        let logRecords = records()
         DispatchQueue.global().async {
-            consent.active.locking { active in
-                XCTAssertTrue(active)
-                entered.fulfill()
-                _ = release.wait(timeout: .now() + 5)
-            }
+            XCTAssertEqual(gate.export(logRecords: logRecords, explicitTimeout: nil), .success)
+            exported.fulfill()
         }
         wait(for: [entered], timeout: 5)
-        DispatchQueue.global().async { consent.revoke(); revoked.fulfill() }
+        DispatchQueue.global().async {
+            consent.revoke()
+            order.locking { $0.append("revoked") }
+            revocationReturned.signal()
+            revoked.fulfill()
+        }
+        XCTAssertEqual(revocationReturned.wait(timeout: .now() + 0.1), .timedOut)
         release.signal()
-        wait(for: [revoked], timeout: 5)
+        wait(for: [exported, revoked], timeout: 5)
+        XCTAssertEqual(order.protectedValue, ["export", "revoked"])
         XCTAssertFalse(consent.active.protectedValue)
     }
 

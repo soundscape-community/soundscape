@@ -9,8 +9,9 @@ preference. An old enabled preference alone does not authorize collection: shari
 is paused until a choice is recorded, and old queued records are purged by the
 existing disabled-launch cleanup. Settings → Telemetry → Share Usage Data lets
 users change their choice later. A confirmed settings change also records a choice;
-canceling the opt-out confirmation does not. If enabling fails during storage
-cleanup, sharing remains disabled and the choice is still remembered. No collector
+canceling the opt-out confirmation does not. If storage cleanup or preparation fails, sharing remains disabled and the choice
+is still remembered. An opted-in launch that cannot prepare storage also turns
+sharing off. No collector
 configuration is included in the repository.
 
 ## Apple privacy declarations
@@ -22,7 +23,7 @@ update the App Store privacy answers automatically.
 
 | Apple data type | Exported information | Purpose |
 | --- | --- | --- |
-| Coarse Location | H3 resolution 7 cell centre captured once per consented session | Analytics |
+| Coarse Location | H3 resolution 6 cell centre captured once per consented session | Analytics |
 | Device ID | A random monthly telemetry identifier exported as `app.installation.id` | Analytics |
 | Product Interaction | Usage events, sessions, tutorial progress, beacon and route actions | Analytics |
 | Other Diagnostic Data | Audio/migration errors, offline state, device model/OS and audio/headset context | Analytics, App Functionality |
@@ -306,7 +307,7 @@ toward the timeout only while Soundscape is already in sleep or snooze mode.
 Event occurrence timestamps continue to use wall-clock dates.
 
 With sharing enabled, the first valid location available in each session is quantised
-using SwiftyH3 resolution 7. A current fix is accepted if at most two minutes old;
+using SwiftyH3 resolution 6. A current fix is accepted if at most two minutes old;
 otherwise the app waits for an existing location update. Only the cell centre is
 retained in session state and exported as numeric `geo.location.lat` and `geo.location.lon` on subsequent events. The
 collector maps these to Mixpanel's `$latitude` and `$longitude` for geographic inference. Events emitted earlier are
@@ -349,8 +350,8 @@ URLSession requests, invalidates pending launch telemetry, and serializes shutdo
 memory/disk cleanup. Re-enabling waits for queued cleanup and synchronously purges
 old storage before the enabled preference is saved, then creates a fresh consent
 period. If purging fails, consent remains disabled. Revoked tokens
-prevent SDK shutdown flushes from uploading old records. Opted-out launches purge
-leftover storage before any exporter can be created. Automated app tests disable
+prevent SDK shutdown flushes from uploading old records. Opt-out cleanup retries a failed purge three times and logs each failure; opted-out
+launches and re-enabling retry cleanup before any exporter can be created. Automated app tests disable
 real export (the existing `-TESTING` launch argument or XCTest detection); unit
 tests use injected exporters and URLProtocol stubs.
 

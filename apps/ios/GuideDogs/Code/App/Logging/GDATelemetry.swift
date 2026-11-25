@@ -25,9 +25,13 @@ public class GDATelemetry {
             ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || NSClassFromString("XCTestCase") != nil
         let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("SoundscapeTelemetry", isDirectory: true)
-        return TelemetryController(enabled: enabled,
+        let pipeline = TelemetryController(enabled: enabled,
             configuration: testing ? nil : TelemetryConfiguration(info: Bundle.main.infoDictionary ?? [:]),
             storage: TelemetryStorage(root: root))
+        if pipeline.startupPreparationFailed {
+            SettingsContext.shared.telemetryOptout = true
+        }
+        return pipeline
     }()
 
     // Serialize session rotation, consent, snapshot announcements and event enqueueing.
@@ -104,7 +108,12 @@ public class GDATelemetry {
         eventChanges.lock()
         // Initialize against the old preference before changing consent.
         let pipeline = controller
-        if !sharingEnabled { pipeline.setEnabled(false) }
+        if !sharingEnabled {
+            // Persist the choice before scheduling deletion, even if deletion fails.
+            SettingsContext.shared.telemetryOptout = true
+            SettingsContext.shared.telemetryConsentChoiceMade = true
+            pipeline.setEnabled(false)
+        }
         // Do not save renewed consent until revoked storage is gone.
         let effectiveEnabled = sharingEnabled && pipeline.setEnabled(true)
         SettingsContext.shared.telemetryOptout = !effectiveEnabled
