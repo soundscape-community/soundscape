@@ -65,6 +65,7 @@ jobs:
                 set -o pipefail
                 xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace \
                   -resultBundlePath Soundscape.xcresult \
+                  -parallel-testing-enabled NO \
                   -scheme Soundscape -enableThreadSanitizer NO \
                   -destination '${{ steps.simulator.outputs.destination }}' \
                   | tee xcodebuild-test.log | xcpretty
