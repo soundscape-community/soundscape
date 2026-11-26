@@ -539,8 +539,11 @@ final class ReferenceEntity: Identifiable {
            routeIDs.contains(guidance.content.id) {
             AppContext.shared.eventProcessor.deactivateCustom()
         }
-        try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "settings.delete_user_data")
         let removed = Set(markerIDs)
+        let destinations = AppContext.shared.spatialDataContext.destinationManager
+        if let key = destinations.destinationKey, removed.contains(key) {
+            destinations.clearDestinationState(logContext: "settings.delete_user_data")
+        }
         AppContext.shared.calloutHistory.remove { callout in
             (callout as? POICallout).map { removed.contains($0.key) } ?? false
         }

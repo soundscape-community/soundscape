@@ -371,7 +371,10 @@ class DestinationManager: DestinationManagerProtocol {
     func clearDestination(logContext: String?) throws {
         // Remove all temporary reference entities
         try ReferenceEntity.removeAllTemporary()
-        
+        clearDestinationState(logContext: logContext)
+    }
+
+    func clearDestinationState(logContext: String?) {
         beaconClosestLocation = nil
         temporaryBeaconClosestLocation = nil
         

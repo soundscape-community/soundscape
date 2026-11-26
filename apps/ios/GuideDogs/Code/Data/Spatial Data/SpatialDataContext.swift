@@ -76,6 +76,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     private var dispatchQueue = DispatchQueue(label: "services.soundscape.spatialdata", qos: .utility, attributes: .concurrent)
     private var fetchingTiles = false
     private var tileRequestID = UUID()
+    private var trackedStore: SpatialTileStore?
     
     /// Set of tiles the spatial data context is currently using to generate the list of spatial data result entities around the user
     private var tiles: Set<VectorTile> = []
@@ -159,6 +160,8 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         super.init()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.onNetworkConnectionDidChange), name: Notification.Name.networkConnectionChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onSpatialStoreInvalidated),
+                                               name: .spatialStoreInvalidated, object: nil)
         
         // Parse the super categories from the assets file
         guard let categories = SpatialDataContext.loadDefaultCategories() else {
@@ -228,10 +231,16 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     func clearCache() -> Bool {
         do {
             try dispatchQueue.sync(flags: .barrier) {
-                try StorageContext.shared.withSpatialStore { try $0.reset() }
-                tileRequestID = UUID()
-                fetchingTiles = false
-                tiles.removeAll()
+                let store = try StorageContext.shared.withSpatialStore { store in
+                    try store.reset()
+                    return store
+                }
+                invalidateTrackedTiles()
+                do {
+                    try store.reclaimDiskSpace()
+                } catch {
+                    GDLogSpatialDataError("Unable to reclaim disk space after clearing the spatial cache: \(error)")
+                }
             }
         } catch {
             GDLogSpatialDataError("Unable to clear the spatial cache: \(error)")
@@ -247,6 +256,25 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         return true
     }
     
+    private func invalidateTrackedTiles() {
+        trackedStore = nil
+        tileRequestID = UUID()
+        fetchingTiles = false
+        tiles.removeAll()
+    }
+
+    @objc private func onSpatialStoreInvalidated(_ notification: Notification) {
+        guard notification.object as? StorageContext === StorageContext.shared else { return }
+        let invalidated = dispatchQueue.sync(flags: .barrier) {
+            guard let trackedStore, !StorageContext.shared.isCurrentSpatialStore(trackedStore) else { return false }
+            invalidateTrackedTiles()
+            return true
+        }
+        if invalidated, deviceContext.isNetworkConnectionAvailable, let location = currentLocation ?? originalRequestLocation {
+            updateSpatialDataAsync(location: location, reloadPORs: true)
+        }
+    }
+
     func getDataView(for location: CLLocation, searchDistance: CLLocationDistance = SpatialDataContext.initialPOISearchDistance) -> SpatialDataViewProtocol? {
         var results: SpatialDataView?
         
@@ -372,7 +400,15 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         
         let prioritize = overridePrioritizeCurrent ?? (!currentCached && !reloadPORs)
         let request: (id: UUID, tiles: [VectorTile])? = dispatchQueue.sync(flags: .barrier) {
+            if let trackedStore, !StorageContext.shared.isCurrentSpatialStore(trackedStore) {
+                invalidateTrackedTiles()
+            }
             guard !fetchingTiles else { return nil }
+            guard let store = try? StorageContext.shared.spatial() else {
+                state = .error
+                return nil
+            }
+            trackedStore = store
             updateFilter.update(location: location)
             let (remaining, missing) = Self.checkForTiles(location: location, tiles: tiles,
                                                           includePORs: reloadPORs, prioritizeCurrent: prioritize)
@@ -419,16 +455,17 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                             error: error, dispatchGroup: dispatchGroup, progress: progress)
         }
 
+        guard let store = dispatchQueue.sync(execute: { tileRequestID == requestID ? trackedStore : nil }),
+              StorageContext.shared.isCurrentSpatialStore(store) else {
+            progress.completedUnitCount += 1
+            dispatchGroup?.leave()
+            return
+        }
         do {
             guard let categories = superCategories else { throw SpatialDataContextError.noCategories }
-            let connection = try dispatchQueue.sync { () -> (SpatialTileStore, Int)? in
-                guard tileRequestID == requestID else { return nil }
-                let store = try StorageContext.shared.spatial()
-                return (store, try store.epoch())
-            }
-            guard let (store, epoch) = connection else {
-                dispatchGroup?.leave()
-                return
+            let epoch = try dispatchQueue.sync {
+                guard tileRequestID == requestID else { throw SpatialStorageError.invalidatedFetch }
+                return try store.epoch()
             }
             serviceModel.getTileData(tile: tile, categories: categories, queue: networkQueue) { status, data, error in
                 self.networkQueue.async {
@@ -446,16 +483,23 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                         }
                         finish(nil)
                     } catch {
-                        if SpatialTileStore.isRebuildable(error) {
-                            do { _ = try StorageContext.shared.withSpatialStore { try $0.epoch() } }
-                            catch { GDLogSpatialDataError("Unable to recover spatial database: \(error)") }
-                        }
+                        Self.recoverSpatialStore(store, after: error)
                         finish(error)
                     }
                 }
             }
         } catch {
+            Self.recoverSpatialStore(store, after: error)
             finish(error)
+        }
+    }
+
+    private static func recoverSpatialStore(_ store: SpatialTileStore, after error: Error) {
+        guard SpatialTileStore.isRebuildable(error) else { return }
+        do {
+            _ = try StorageContext.shared.recoverSpatialStore(store, after: error)
+        } catch {
+            GDLogSpatialDataError("Unable to recover spatial database: \(error)")
         }
     }
 
@@ -468,7 +512,8 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         }
 
         let result: (location: CLLocation?, finished: Bool)? = dispatchQueue.sync(flags: .barrier) {
-            guard tileRequestID == requestID else { return nil }
+            guard tileRequestID == requestID, let trackedStore,
+                  StorageContext.shared.isCurrentSpatialStore(trackedStore) else { return nil }
             let isCurrent = tile == currentTile
             if let error {
                 GDLogSpatialDataError("Unable to fetch tile \(tile.quadKey): \(error)")

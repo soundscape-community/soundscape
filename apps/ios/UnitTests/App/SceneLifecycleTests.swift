@@ -6,6 +6,7 @@
 //  Licensed under the MIT License.
 //
 
+import SSData
 import UIKit
 import XCTest
 @testable import Soundscape
@@ -311,6 +312,46 @@ final class SceneLifecycleTests: XCTestCase {
         XCTAssertEqual(exported.waypoints.first?.marker?.location.entity?.lookupInformation, osmID)
         XCTAssertEqual(exported.waypoints.first?.marker?.location.coordinate.latitude, 55.9486)
         XCTAssertEqual(exported.waypoints.first?.marker?.location.coordinate.longitude, -3.1999)
+    }
+
+    func testCommittedUserDataWriteSucceedsWhenSnapshotRefreshFails() throws {
+        enum SnapshotError: Error { case unavailable }
+
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        var reads = 0
+        let storage = StorageContext(isolatedDirectory: root) { store in
+            reads += 1
+            if reads == 2 { throw SnapshotError.unavailable }
+            return try store.snapshot()
+        }
+        let id = try storage.write { store in
+            try store.save(marker: Marker(id: "saved", isTemp: false))
+            return "saved"
+        }
+
+        XCTAssertEqual(id, "saved")
+        XCTAssertFalse(storage.isUserStorageAvailable)
+        let recovered = try storage.write { try $0.markers() }
+        XCTAssertEqual(recovered.map(\.id), ["saved"])
+        XCTAssertTrue(storage.isUserStorageAvailable)
+    }
+
+    func testCacheRecoveryUsesOriginalErrorEvenWhenEpochIsReadable() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let storage = StorageContext(isolatedDirectory: root)
+        let original = try storage.spatial()
+        let epoch = try original.epoch()
+        try original.replace(key: "01", metadata: TileMetadata(etag: "", expiry: Date()), features: [], epoch: epoch)
+
+        let replacement = try storage.recoverSpatialStore(original, after: SpatialStorageError.incompatibleSchema)
+
+        XCTAssertFalse(storage.isCurrentSpatialStore(original))
+        XCTAssertTrue(storage.isCurrentSpatialStore(replacement))
+        XCTAssertNil(try replacement.metadata(for: "01"))
+        XCTAssertThrowsError(try original.epoch())
+        XCTAssertTrue(try storage.recoverSpatialStore(original, after: SpatialStorageError.incompatibleSchema) === replacement)
     }
 
     private func makeRouteFile(at url: URL, name: String) throws {

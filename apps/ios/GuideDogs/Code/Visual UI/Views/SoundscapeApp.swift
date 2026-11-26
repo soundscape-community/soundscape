@@ -48,10 +48,10 @@ struct SoundscapeApp: App {
             }
             .background(WindowConfigurationView())
             .onAppear(perform: launch.start)
-            .onReceive(NotificationCenter.default.publisher(for: .userStorageUnavailable)) { _ in
+            .onReceive(NotificationCenter.default.publisher(for: .userStorageUnavailable, object: StorageContext.shared)) { _ in
                 launch.userStorageUnavailable = true
             }
-            .onReceive(NotificationCenter.default.publisher(for: .userStorageRecovered)) { _ in
+            .onReceive(NotificationCenter.default.publisher(for: .userStorageRecovered, object: StorageContext.shared)) { _ in
                 launch.userStorageUnavailable = false
                 navigation.update { $0.rebuildHome() }
                 launch.homeGeneration += 1

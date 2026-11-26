@@ -137,8 +137,8 @@ struct MarkersAndRoutesList: View {
                 
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .userStorageUnavailable)) { _ in storageAvailable = false }
-        .onReceive(NotificationCenter.default.publisher(for: .userStorageRecovered)) { _ in storageAvailable = true }
+        .onReceive(NotificationCenter.default.publisher(for: .userStorageUnavailable, object: StorageContext.shared)) { _ in storageAvailable = false }
+        .onReceive(NotificationCenter.default.publisher(for: .userStorageRecovered, object: StorageContext.shared)) { _ in storageAvailable = true }
         .navigationTitle(GDLocalizedTextView("search.view_markers"))
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {

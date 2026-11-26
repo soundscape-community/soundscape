@@ -6,12 +6,15 @@ import Foundation
 import SSData
 
 extension Notification.Name {
+    static let spatialStoreInvalidated = Notification.Name("SoundscapeSpatialStoreInvalidated")
     static let userStorageUnavailable = Notification.Name("SoundscapeUserStorageUnavailable")
     static let userStorageRecovered = Notification.Name("SoundscapeUserStorageRecovered")
 }
 
 final class StorageContext {
     static let shared = StorageContext()
+
+    typealias SnapshotReader = (UserDataStore) throws -> (markers: [Marker], routes: [SavedRoute])
 
     private struct UserSnapshot {
         let markers: [Marker]
@@ -27,12 +30,19 @@ final class StorageContext {
     private let cacheLock = NSLock()
     private var cacheStore: SpatialTileStore?
     private let isolatedDirectory: URL?
+    private let readUserSnapshot: SnapshotReader
 
-    private init() {
+    private convenience init() {
         let preview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
-        isolatedDirectory = preview || BuildSettings.isTesting
+        let isolatedDirectory = preview || BuildSettings.isTesting
             ? FileManager.default.temporaryDirectory.appendingPathComponent("Soundscape-\(UUID().uuidString)")
             : nil
+        self.init(isolatedDirectory: isolatedDirectory)
+    }
+
+    init(isolatedDirectory: URL?, readUserSnapshot: @escaping SnapshotReader = { try $0.snapshot() }) {
+        self.isolatedDirectory = isolatedDirectory
+        self.readUserSnapshot = readUserSnapshot
     }
 
     func prepare(completion: @escaping () -> Void) {
@@ -78,18 +88,26 @@ final class StorageContext {
             reportUserFailure(error)
             throw error
         }
+        let result: T
         do {
-            let result = try operation(store)
-            try refresh(from: store)
-            return result
+            result = try operation(store)
         } catch {
-            if UserDataStore.isUnavailable(error) {
-                userStore = nil
-                snapshotLock.withLock { userAvailable = false }
-                reportUserFailure(error)
-            }
+            if UserDataStore.isUnavailable(error) { invalidateUserStore(error) }
             throw error
         }
+        do {
+            try refresh(from: store)
+        } catch {
+            GDLogAppError("User database write committed, but refreshing saved places failed: \(error)")
+            invalidateUserStore(error)
+        }
+        return result
+    }
+
+    private func invalidateUserStore(_ error: Error) {
+        userStore = nil
+        snapshotLock.withLock { userAvailable = false }
+        reportUserFailure(error)
     }
 
     func spatial() throws -> SpatialTileStore {
@@ -104,20 +122,40 @@ final class StorageContext {
         do {
             return try read(store)
         } catch {
-            guard SpatialTileStore.isRebuildable(error) else { throw error }
-            let recovered = try cacheLock.withLock {
-                if let cacheStore, cacheStore !== store { return cacheStore }
-                try store.close()
-                cacheStore = nil
-                return try openSpatial()
-            }
-            return try read(recovered)
+            return try read(recoverSpatialStore(store, after: error))
         }
     }
 
+    func isCurrentSpatialStore(_ store: SpatialTileStore) -> Bool {
+        cacheLock.withLock { cacheStore === store }
+    }
+
+    func recoverSpatialStore(_ store: SpatialTileStore, after error: Error) throws -> SpatialTileStore {
+        guard SpatialTileStore.isRebuildable(error) else { throw error }
+        return try cacheLock.withLock {
+            if cacheStore !== store {
+                if let cacheStore { return cacheStore }
+                return try openSpatial()
+            }
+            try store.close()
+            cacheStore = nil
+            defer {
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .spatialStoreInvalidated, object: self)
+                }
+            }
+            let rebuilt = try SpatialTileStore.rebuild(at: spatialURL())
+            cacheStore = rebuilt
+            return rebuilt
+        }
+    }
+
+    private func spatialURL() throws -> URL {
+        try directory(.cachesDirectory, name: "Maps").appendingPathComponent("tiles.sqlite")
+    }
+
     private func openSpatial() throws -> SpatialTileStore {
-        let url = try directory(.cachesDirectory, name: "Maps").appendingPathComponent("tiles.sqlite")
-        let store = try SpatialTileStore(url: url)
+        let store = try SpatialTileStore(url: spatialURL())
         cacheStore = store
         return store
     }
@@ -131,13 +169,13 @@ final class StorageContext {
         snapshotLock.withLock { userAvailable = true }
         if userFailure != nil {
             userFailure = nil
-            DispatchQueue.main.async { NotificationCenter.default.post(name: .userStorageRecovered, object: nil) }
+            DispatchQueue.main.async { NotificationCenter.default.post(name: .userStorageRecovered, object: self) }
         }
         return store
     }
 
     private func refresh(from store: UserDataStore) throws {
-        let data = try store.snapshot()
+        let data = try readUserSnapshot(store)
         snapshotLock.withLock {
             snapshot = UserSnapshot(markers: data.markers, routes: data.routes)
         }
@@ -146,7 +184,7 @@ final class StorageContext {
     private func reportUserFailure(_ error: Error) {
         GDLogAppError("User database unavailable: \(error)")
         userFailure = error
-        DispatchQueue.main.async { NotificationCenter.default.post(name: .userStorageUnavailable, object: nil) }
+        DispatchQueue.main.async { NotificationCenter.default.post(name: .userStorageUnavailable, object: self) }
     }
 
     private func directory(_ location: FileManager.SearchPathDirectory, name: String) throws -> URL {

@@ -109,10 +109,12 @@ struct RouteEditView: View {
     // MARK: Actions
     
     private func onCancel() {
+        guard !isSaving else { return }
         navHelper.popViewController(animated: true)
     }
     
     private func onDelete() {
+        guard !isSaving else { return }
         guard case .edit(let detail) = style else {
             return
         }
@@ -132,11 +134,11 @@ struct RouteEditView: View {
     }
     
     private func onDone() {
+        guard !isSaving else { return }
         // Remove leading and trailing whitespaces and new lines
         _name.wrappedValue = name.trimmingCharacters(in: .whitespacesAndNewlines)
         _description.wrappedValue = description.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        guard !isSaving else { return }
+
         isSaving = true
         Task { @MainActor in
             defer { isSaving = false }
@@ -279,12 +281,15 @@ struct RouteEditView: View {
             }
             
         }
+        .disabled(isSaving)
+        .interactiveDismissDisabled(isSaving)
         .navigationBarTitle(style.title, displayMode: .inline)
         // Hide `Back` button and present `Cancel` button
         .navigationBarBackButtonHidden(true)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(GDLocalizedString("general.alert.cancel")) {
+                    guard !isSaving else { return }
                     if routeContainsChanges {
                         alert = .cancel
                         showAlert = true
@@ -293,6 +298,7 @@ struct RouteEditView: View {
                     }
                 }
                 .foregroundColor(Color.primaryForeground)
+                .disabled(isSaving)
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -300,6 +306,7 @@ struct RouteEditView: View {
                     onDone()
                 }
                 .foregroundColor(Color.primaryForeground)
+                .disabled(isSaving)
                 .if(!isValid, transform: { $0.hidden() })
             }
         })

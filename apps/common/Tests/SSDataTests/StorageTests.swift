@@ -150,6 +150,26 @@ final class StorageTests: XCTestCase {
         XCTAssertNil(try store.metadata(for: "01"))
     }
 
+    func testExplicitCacheResetReclaimsDatabaseAndWALSpace() throws {
+        let url = try directory().appendingPathComponent("tiles.sqlite")
+        let store = try SpatialTileStore(url: url)
+        let epoch = try store.epoch()
+        let payload = Data(repeating: 42, count: 4 * 1024 * 1024)
+        try store.replace(key: "01", metadata: TileMetadata(etag: "", expiry: Date()),
+                          features: [TileFeature(key: "large", kind: .poi, payload: payload)], epoch: epoch)
+
+        try store.reset()
+        try store.reclaimDiskSpace()
+
+        let databaseSize = try XCTUnwrap(url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
+        let wal = URL(fileURLWithPath: url.path + "-wal")
+        let walSize = (try? wal.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+        XCTAssertLessThan(databaseSize + walSize, payload.count / 2)
+        XCTAssertNil(try store.metadata(for: "01"))
+        XCTAssertThrowsError(try store.replace(key: "01", metadata: TileMetadata(etag: "", expiry: Date()),
+                                               features: [], epoch: epoch))
+    }
+
     func testMapRecentsSurviveReopenAndClearWithCache() throws {
         let url = try directory().appendingPathComponent("tiles.sqlite")
         do {

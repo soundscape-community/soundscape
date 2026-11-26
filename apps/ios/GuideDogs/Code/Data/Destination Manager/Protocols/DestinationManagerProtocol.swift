@@ -49,6 +49,9 @@ protocol DestinationManagerProtocol: AnyObject {
     func setDestination(location: CLLocation, behavior: String, enableAudio: Bool, userLocation: CLLocation?, logContext: String?) throws -> String
 
     func clearDestination(logContext: String?) throws
+
+    /// Clears the destination after its stored marker has already been removed.
+    func clearDestinationState(logContext: String?)
     
     @discardableResult
     func toggleDestinationAudio(_ sendNotfication: Bool, automatic: Bool, forceMelody: Bool) -> Bool

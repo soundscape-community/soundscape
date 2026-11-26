@@ -114,9 +114,10 @@ class TroubleshootingViewController: UIViewController {
                     return
                 }
                 
-                // Clear the cache and keep the markers
-                if self?.resetSpatialCache() == false {
-                    DispatchQueue.main.async { self?.displayUnableToClearCacheWarning() }
+                DispatchQueue.global(qos: .utility).async { [weak self] in
+                    if !AppContext.shared.spatialDataContext.clearCache() {
+                        DispatchQueue.main.async { self?.displayUnableToClearCacheWarning() }
+                    }
                 }
             }
         }))
@@ -154,10 +155,6 @@ class TroubleshootingViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    private func resetSpatialCache() -> Bool {
-        AppContext.shared.spatialDataContext.clearCache()
-    }
-
     private func presentLoadingModal() {
         let viewController = UIHostingController(rootView: LoadingModalView(message: GDLocalizedString("text.cleaning_things")))
         viewController.view.backgroundColor = .clear

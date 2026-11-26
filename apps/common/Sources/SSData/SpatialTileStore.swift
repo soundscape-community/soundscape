@@ -47,15 +47,25 @@ public final class SpatialTileStore: Sendable {
             database = try Self.open(url)
         } catch {
             guard Self.isRebuildable(error) else { throw error }
-            for suffix in ["", "-wal", "-shm"] {
-                let file = URL(fileURLWithPath: url.path + suffix)
-                do {
-                    try FileManager.default.removeItem(at: file)
-                } catch let error as CocoaError where error.code == .fileNoSuchFile {
-                    continue
-                }
-            }
+            try Self.removeDatabaseFiles(at: url)
             database = try Self.open(url)
+        }
+    }
+
+    /// Call after closing all connections to the disposable database.
+    public static func rebuild(at url: URL) throws -> SpatialTileStore {
+        try removeDatabaseFiles(at: url)
+        return try SpatialTileStore(url: url)
+    }
+
+    private static func removeDatabaseFiles(at url: URL) throws {
+        for suffix in ["", "-wal", "-shm"] {
+            let file = URL(fileURLWithPath: url.path + suffix)
+            do {
+                try FileManager.default.removeItem(at: file)
+            } catch let error as CocoaError where error.code == .fileNoSuchFile {
+                continue
+            }
         }
     }
 
@@ -154,6 +164,13 @@ public final class SpatialTileStore: Sendable {
         try database.write { db in
             try db.execute(sql: "UPDATE cacheState SET epoch = epoch + 1")
             try db.execute(sql: "DELETE FROM tile; DELETE FROM recentSelection")
+        }
+    }
+
+    public func reclaimDiskSpace() throws {
+        try database.barrierWriteWithoutTransaction { db in
+            try db.execute(sql: "VACUUM")
+            try db.checkpoint(.truncate)
         }
     }
 
