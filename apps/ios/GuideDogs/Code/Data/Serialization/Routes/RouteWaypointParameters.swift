@@ -3,13 +3,14 @@
 //  SoundscapeUnitTests
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 
 /*
- Supports serialization of the Realm `RouteWaypoint` object
+ Supports serialization of a route waypoint
  */
 struct RouteWaypointParameters: Codable {
     
@@ -17,9 +18,7 @@ struct RouteWaypointParameters: Codable {
     
     let index: Int
     let markerId: String
-    // Marker parameters will be included when sharing routes via
-    // custom document type but will not be stored in iCloud because all markers
-    // are serialized and stored separately in iCloud
+    // Shared documents include marker details for offline import.
     let marker: MarkerParameters?
     
     // MARK: Initialization

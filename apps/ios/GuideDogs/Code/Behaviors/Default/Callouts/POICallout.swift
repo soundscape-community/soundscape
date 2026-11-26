@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -60,8 +61,7 @@ struct POICallout: POICalloutProtocol {
     
     let storedPOI: POI?
     
-    /// A computed property for accessing the POI referenced by this poiKey stored in this Callout object. Note
-    /// that we only store the POI's key and not the POI itself due to threading constraints with Realm
+    /// Resolves the current POI for the stable key stored in this callout.
     var poi: POI? {
         if let storedPOI = storedPOI {
             return storedPOI
@@ -94,8 +94,7 @@ struct POICallout: POICalloutProtocol {
         self.includePrefixSound = includePrefixSound
     }
     
-    /// Constructor for the POI callout. This version of the initializer should only be used for POI types that are NOT stored in Realm. For any underlying POI
-    /// types stored in Realm, use the constructor that takes a key for the Realm object instead
+    /// Creates a callout for a standalone POI value.
     ///
     /// - Parameters:
     ///   - calloutOrigin: Origin of the callout

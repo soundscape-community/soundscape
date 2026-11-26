@@ -83,7 +83,6 @@ class AppContext {
     private(set) var remoteCommandManager = RemoteCommandManager()
 
     private(set) var deviceManager: DeviceManager
-    private(set) var cloudKeyValueStore: CloudKeyValueStore
 
     private(set) var isFirstLaunch = false
     
@@ -230,7 +229,6 @@ class AppContext {
 
         LocalizationContext.configureAccessibilityLanguage()
         
-        cloudKeyValueStore = CloudKeyValueStore()
     }
     
     // MARK: Actions
@@ -266,7 +264,6 @@ class AppContext {
         geolocationManager.start()
         
         DeviceMotionManager.shared.startDeviceMotionUpdates()
-        cloudKeyValueStore.start()
         spatialDataContext.start()
         
         // Do not play the app launch sound if onboarding is in-progress

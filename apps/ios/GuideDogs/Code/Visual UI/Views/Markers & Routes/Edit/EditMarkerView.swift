@@ -287,7 +287,7 @@ struct EditMarkerView: View {
         if updatedLocation != nil {
             finalNickname = nickname.isEmpty ? updatedLocation?.nickname : nickname
         } else {
-            finalNickname = nickname.isEmpty || nickname == locationDetail.source.name ? nil : nickname
+            finalNickname = nickname.isEmpty || nickname == locationDetail.resolvedPOI?.localizedName ? nil : nickname
         }
         
         let finalAnnotation = annotation.isEmpty ? nil : annotation
@@ -303,13 +303,9 @@ struct EditMarkerView: View {
                                nickname: finalNickname,
                                address: detail.estimatedAddress,
                                annotation: finalAnnotation)
-        } else if case .entity(let id) = locationDetail.source, updatedLocation == nil {
-            // If this is a new marker that refers to an underlying POI, create a new reference point
-            markerId = try ReferenceEntity.add(entityKey: id,
-                                               nickname: finalNickname,
-                                               estimatedAddress: detail.estimatedAddress,
-                                               annotation: finalAnnotation,
-                                               context: config.context)
+        } else if case .entity = locationDetail.source, updatedLocation == nil, let poi = detail.resolvedPOI {
+            markerId = try ReferenceEntity.add(poi: poi, nickname: finalNickname, address: detail.estimatedAddress,
+                                               annotation: finalAnnotation, context: config.context)
         } else {
             // If this is a new marker in some generic location (not referencing an underlying POI), create
             // a reference point to the generic location

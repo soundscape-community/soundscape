@@ -3,9 +3,11 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
+import SSData
 import Foundation
 import MapKit
 
@@ -33,24 +35,9 @@ class GeometryUtils {
     /// * https://geojson.org
     /// * RFC 7946
     static func coordinates(geoJson: String) -> (type: GeometryType?, points: [Any]?) {
-        guard !geoJson.isEmpty, let jsonObject = GDAJSONObject(string: geoJson) else {
-                return (nil, nil)
-        }
-        
-        let geometryType: GeometryType?
-        if let typeString = jsonObject.string(atPath: "type") {
-            geometryType = GeometryType(rawValue: typeString)
-        } else {
-            geometryType = nil
-        }
-        
-        guard let geometry = jsonObject.array(atPath: "coordinates") else {
-            return (geometryType, nil)
-        }
-        
-        return (geometryType, geometry)
+        GeoJsonGeometry.coordinates(in: geoJson)
     }
-    
+
     /// Returns whether a coordinate lies inside of the region contained within the coordinate path.
     /// The path is always considered closed, regardless of whether the last point equals the first or not.
     static func geometryContainsLocation(location: CLLocationCoordinate2D, coordinates: [CLLocationCoordinate2D]) -> Bool {
@@ -497,46 +484,7 @@ extension GeometryUtils {
     /// this means that any geometrical shape is acceptable.
     /// - Note: In practice, for extremely irregular shapes, this can lead to center coordinates not inside the shape.
     static func centroid(coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D? {
-        if coordinates.isEmpty {
-            return nil
-        }
-        
-        if coordinates.count == 1 {
-            return coordinates[0]
-        }
-        
-        // We start with the widest bound box available for coordinates.
-        // We then loop thru the given coordinates and narrow it.
-        // This creates a minimum bounding box that contains all the coordinates.
-        var minLat: CLLocationDegrees = 90.0
-        var maxLat: CLLocationDegrees = -90.0
-        var minLon: CLLocationDegrees = 180.0
-        var maxLon: CLLocationDegrees = -180.0
-        
-        for coordinate in coordinates {
-            let lat = coordinate.latitude
-            let long = coordinate.longitude
-            
-            if lat < minLat {
-                minLat = lat
-            }
-            if long < minLon {
-                minLon = long
-            }
-            if lat > maxLat {
-                maxLat = lat
-            }
-            if long > maxLon {
-                maxLon = long
-            }
-        }
-        
-        // Create a span that represents the distance (delta) between the top and bottom (north-to-south) edges,
-        // and the right and left (east-to-west) edges of the box.
-        let span = MKCoordinateSpan(latitudeDelta: maxLat - minLat, longitudeDelta: maxLon - minLon)
-        
-        // Return the generated center coordinate for the bounding box
-        return CLLocationCoordinate2DMake((maxLat - span.latitudeDelta / 2.0), (maxLon - span.longitudeDelta / 2.0))
+        GeoJsonGeometry.boundingBoxCenter(coordinates)
     }
     
 }

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -24,7 +25,6 @@ class FirstUseExperience {
         case markerTutorial
         case previewTutorial
         case routeTutorial
-        case iCloudBackup
         case previewRoadFinder
         case previewRoadFinderError
         // `.addDevice` captures which devices (represented by `DeviceType`)
@@ -46,7 +46,6 @@ class FirstUseExperience {
             case .markerTutorial: return "GDAMarkerTutorialDidComplete"
             case .previewTutorial: return "GDAPreviewTutorialDidComplete"
             case .routeTutorial: return "GDARouteTutorialDidComplete"
-            case .iCloudBackup: return "GDASettingsInitialCloudSyncCompleted"
             case .previewRoadFinder: return "GDASettingsPreviewInitialRoadFinderComplete"
             case .previewRoadFinderError: return "GDASettingsPreviewInitialRoadFinderError"
             case .addDevice(let device): return "GDADidAddDevice_" + device.rawValue

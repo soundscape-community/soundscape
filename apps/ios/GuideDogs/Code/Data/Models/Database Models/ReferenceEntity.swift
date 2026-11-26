@@ -9,7 +9,7 @@
 
 import Foundation
 import CoreLocation
-import RealmSwift
+import SSData
 
 enum ReferenceEntityError: Error {
     case entityKeyDoesNotExist
@@ -24,7 +24,7 @@ extension Notification.Name {
     static let markerUpdated = Notification.Name("GDAMarkerUpdated")
 }
 
-class ReferenceEntity: Object, ObjectKeyIdentifiable {
+final class ReferenceEntity: Identifiable {
     // MARK: Constants
     
     struct Keys {
@@ -33,28 +33,76 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     
     // MARK: Properties
 
-    @Persisted(primaryKey: true) var id: String = UUID().uuidString // Primary key
-    @Persisted var entityKey: String?
-    @Persisted var lastUpdatedDate: Date?
-    @Persisted var lastSelectedDate: Date? = Date()
-    @Persisted var isNew: Bool = true
-    @Persisted var isTemp: Bool = true
+    var id: String = UUID().uuidString // Primary key
+    var entityKey: String?
+    var lastUpdatedDate: Date?
+    var lastSelectedDate: Date? = Date()
+    var isNew: Bool = true
+    var isTemp: Bool = true
     
-    @Persisted var latitude: CLLocationDegrees = 0.0
-    @Persisted var longitude: CLLocationDegrees = 0.0
+    var latitude: CLLocationDegrees = 0.0
+    var longitude: CLLocationDegrees = 0.0
     
-    @Persisted var nickname: String?
-    @Persisted var estimatedAddress: String?
-    @Persisted var annotation: String?
+    var nickname: String?
+    var estimatedAddress: String?
+    var annotation: String?
     
-    private lazy var _poi: POI? = {
-        guard let key = entityKey else {
-            return nil
+    private var savedPlace: SavedPlace?
+    
+    private var _poi: POI? {
+        guard let key = entityKey else { return nil }
+        return SpatialDataCache.searchMapByKey(key) ?? restoredPOI
+    }
+
+    var restoredPOI: POI? {
+        guard let place = savedPlace, let key = entityKey else { return nil }
+        if place.isAddress {
+            let address = Address()
+            address.key = key
+            address.name = place.name
+            address.addressLine = place.address
+            address.streetName = place.street
+            address.latitude = latitude
+            address.longitude = longitude
+            address.centroidLatitude = latitude
+            address.centroidLongitude = longitude
+            return address
         }
-        
-        return SpatialDataCache.searchByKey(key: key)
-    }()
-    
+        let poi = GDASpatialDataResultEntity()
+        poi.key = key
+        poi.name = place.name
+        poi.addressLine = place.address
+        poi.streetName = place.street
+        poi.latitude = latitude
+        poi.longitude = longitude
+        poi.centroidLatitude = latitude
+        poi.centroidLongitude = longitude
+        poi.amenity = ""
+        return poi
+    }
+
+    convenience init(stored: Marker) {
+        self.init()
+        id = stored.id
+        entityKey = stored.entityKey
+        latitude = stored.latitude
+        longitude = stored.longitude
+        nickname = stored.nickname
+        estimatedAddress = stored.estimatedAddress
+        annotation = stored.annotation
+        lastUpdatedDate = stored.lastUpdatedDate
+        lastSelectedDate = stored.lastSelectedDate
+        isNew = stored.isNew
+        isTemp = stored.isTemp
+        savedPlace = stored.place
+    }
+
+    var stored: Marker {
+        Marker(id: id, entityKey: entityKey, latitude: latitude, longitude: longitude, nickname: nickname,
+               estimatedAddress: estimatedAddress, annotation: annotation, lastUpdatedDate: lastUpdatedDate,
+               lastSelectedDate: lastSelectedDate, isNew: isNew, isTemp: isTemp, place: savedPlace)
+    }
+
     // MARK: Computed Properties
     
     /// CLLocationCoordinate2D for the referenced entity
@@ -180,38 +228,6 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         isTemp = temp
     }
     
-    convenience init?(markerParameters: MarkerParameters, entity: POI) {
-        guard let id = markerParameters.id else { return nil }
-        
-        self.init()
-
-        self.id = id
-        self.entityKey = entity.key
-        self.isNew = true
-        self.isTemp = false
-        
-        self.latitude = markerParameters.location.coordinate.latitude
-        self.longitude = markerParameters.location.coordinate.longitude
-        
-        if let nickname = markerParameters.nickname, nickname.isEmpty == false {
-            self.nickname = nickname
-        } else {
-            self.nickname = nil
-        }
-        
-        if let estimatedAddress = markerParameters.estimatedAddress, estimatedAddress.isEmpty == false {
-            self.estimatedAddress = estimatedAddress
-        } else {
-            self.estimatedAddress = nil
-        }
-        
-        if let annotation = markerParameters.annotation, annotation.isEmpty == false {
-            self.annotation = annotation
-        } else {
-            self.annotation = nil
-        }
-    }
-    
     // MARK: Methods
     
     /// Helper method for calculating the distance from this ReferenceEntity to
@@ -259,41 +275,20 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         return _poi ?? GenericLocation(ref: self)
     }
     
-    /// Updates the lastSelectedDate of the reference entity and, if the reference entity is not a
-    /// generic location, the lastSelectedDate of the underlying POI type in the cache.
-    ///
-    /// - Parameter date: Date to set
-    /// - Throws: If the realms cannot be accessed or the update cannot be committed
     func updateLastSelectedDate(to date: Date = Date()) throws {
-        let database = try RealmHelper.getDatabaseRealm()
-        
-        try database.write {
-            self.lastSelectedDate = date
-        }
-        
-        if let entity = getPOI() as? Object {
-            let cache = try RealmHelper.getCacheRealm()
-            
-            try cache.write {
-                entity[POI.Keys.lastSelectedDate] = date
-            }
-        }
-        
-        ReferenceEntity.notifyEntityUpdated(id)
+        try StorageContext.shared.write { try $0.selectMarker(id, at: date) }
+        lastSelectedDate = date
+        SpatialDataCache.recordSelection(getPOI(), at: date)
+        Self.notifyEntityUpdated(id)
     }
-    
+
     func setTemporary(_ flag: Bool) throws {
-        let database = try RealmHelper.getDatabaseRealm()
-        
-        let newFlag = self.isTemp && !flag
-        try database.write {
-            self.isTemp = flag
-            self.isNew = newFlag
-        }
-        
-        ReferenceEntity.notifyEntityUpdated(id)
+        try StorageContext.shared.write { try $0.setMarkerTemporary(id, flag) }
+        isNew = isTemp && !flag
+        isTemp = flag
+        Self.notifyEntityUpdated(id)
     }
-    
+
     // MARK: Static Methods
     
     static func add(detail: LocationDetail, telemetryContext: String?, isTemporary: Bool = false, notify: Bool = true) throws -> String {
@@ -305,10 +300,13 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
         
         switch detail.source {
         case .coordinate(let at):
-            let location = GenericLocation(lat: at.coordinate.latitude, lon: at.coordinate.longitude)
+            let location = GenericLocation(lat: at.coordinate.latitude, lon: at.coordinate.longitude,
+                                           name: detail.resolvedPOI?.localizedName ?? "", address: detail.resolvedPOI?.addressLine)
             return try add(location: location, nickname: detail.nickname, estimatedAddress: detail.estimatedAddress, annotation: detail.annotation, temporary: isTemporary, context: telemetryContext, notify: notify)
-        case .entity(let id):
-            return try add(entityKey: id, nickname: detail.nickname, estimatedAddress: detail.estimatedAddress, annotation: detail.annotation, temporary: isTemporary, context: telemetryContext, notify: notify)
+        case .entity:
+            guard let poi = detail.resolvedPOI else { throw ReferenceEntityError.entityDoesNotExist }
+            return try add(poi: poi, nickname: detail.nickname, address: detail.estimatedAddress,
+                           annotation: detail.annotation, context: telemetryContext, temporary: isTemporary, notify: notify)
         case .designData:
             throw ReferenceEntityError.cannotAddMarker
         case .screenshots:
@@ -329,64 +327,55 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Returns: ID of the new reference point
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
     static func add(entityKey: String, nickname: String? = nil, estimatedAddress: String? = nil, annotation: String? = nil, temporary: Bool = false, context: String? = nil, notify: Bool = true) throws -> String {
-        return try autoreleasepool {
-            let database = try RealmHelper.getDatabaseRealm()
-            let cache = try RealmHelper.getCacheRealm()
-            
-            if let existingMarker = SpatialDataCache.referenceEntityByEntityKey(entityKey) {
-                // Update and return the existing marker
-                try update(entity: existingMarker, nickname: nickname, address: estimatedAddress, annotation: annotation, context: context, isTemp: temporary)
-                
-                return existingMarker.id
-            }
-            
-            guard let entity = SpatialDataCache.searchByKey(key: entityKey) else {
-                // Return if entity does not exist (or doesn't exist in Realm)
-                throw ReferenceEntityError.entityDoesNotExist
-            }
-            
-            // In the case that the new entity is an address, backup the address in the estimated address
-            // field of the Reference Entity
-            var addr = estimatedAddress
-            if let addrEntity = entity as? Address {
-                addr = addrEntity.addressLine
-            }
-            
-            // Add reference entity
-            let reference = ReferenceEntity(coordinate: entity.centroidCoordinate,
-                                            entityKey: entityKey,
-                                            name: nickname,
-                                            estimatedAddress: addr,
-                                            annotation: annotation,
-                                            temp: temporary)
-            reference.lastUpdatedDate = Date()
-
-            // Set the last selected date on the POI
-            if let rlmEntity = entity as? Object {
-                try cache.write {
-                    rlmEntity[POI.Keys.lastSelectedDate] = reference.lastSelectedDate
-                }
-            }
-            
-            try database.write {
-                database.add(reference, update: .modified)
-            }
-            
-            if !temporary {
-                AppContext.shared.cloudKeyValueStore.store(referenceEntity: reference)
-
-                
-                NSUserActivity(userAction: .saveMarker).becomeCurrent()
-            }
-            
-            if notify {
-                notifyEntityAdded(reference.id)
-            }
-            
-            return reference.id
+        if let existing = SpatialDataCache.referenceEntityByEntityKey(entityKey) {
+            try update(entity: existing, nickname: nickname, address: estimatedAddress,
+                       annotation: annotation, context: context, isTemp: temporary)
+            return existing.id
         }
+        guard let entity = SpatialDataCache.searchByKey(key: entityKey) else {
+            throw ReferenceEntityError.entityDoesNotExist
+        }
+        let reference = makeReference(for: entity, nickname: nickname, address: estimatedAddress,
+                                      annotation: annotation, temporary: temporary)
+        try persistNew(reference, notify: notify)
+        return reference.id
     }
-    
+
+    static func add(poi: POI, nickname: String?, address: String?, annotation: String?,
+                    context: String?, temporary: Bool = false, notify: Bool = true) throws -> String {
+        if let existing = SpatialDataCache.referenceEntityByEntityKey(poi.key) {
+            try update(entity: existing, nickname: nickname, address: address, annotation: annotation,
+                       context: context, isTemp: temporary)
+            return existing.id
+        }
+        let reference = makeReference(for: poi, nickname: nickname, address: address, annotation: annotation,
+                                      temporary: temporary, preservePlace: SpatialDataCache.searchMapByKey(poi.key) == nil)
+        try persistNew(reference, notify: notify)
+        return reference.id
+    }
+
+    static func makeReference(for entity: POI, nickname: String?, address: String?,
+                              annotation: String?, temporary: Bool = false, preservePlace: Bool = false) -> ReferenceEntity {
+        let reference = ReferenceEntity(coordinate: entity.centroidCoordinate, entityKey: entity.key,
+                                        name: nickname, estimatedAddress: entity is Address ? entity.addressLine : address,
+                                        annotation: annotation, temp: temporary)
+        if entity is Address || preservePlace {
+            reference.savedPlace = SavedPlace(name: entity.localizedName, address: entity.addressLine,
+                                              street: entity.streetName, isAddress: entity is Address)
+        }
+        reference.lastUpdatedDate = Date()
+        return reference
+    }
+
+    private static func persistNew(_ reference: ReferenceEntity, notify: Bool) throws {
+        try StorageContext.shared.write { try $0.save(marker: reference.stored) }
+        SpatialDataCache.recordSelection(reference.getPOI())
+        if !reference.isTemp {
+            NSUserActivity(userAction: .saveMarker).becomeCurrent()
+        }
+        if notify { notifyEntityAdded(reference.id) }
+    }
+
     /// Updates the given reference entity
     ///
     /// - Parameters:
@@ -417,56 +406,31 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             updatedNickname = entity.getPOI().localizedName
         }
         
-        try autoreleasepool {
-            let database = try RealmHelper.getDatabaseRealm()
-            
-            let previousIsTemp = entity.isTemp
-            
-            try database.write {
-                // If the location was changed, then remove ref to the underlying POI (if one exists), and store
-                // the new location
-                if locChanged, let loc = location {
-                    entity.entityKey = nil
-                    entity.latitude = loc.latitude
-                    entity.longitude = loc.longitude
-                }
-                
-                // Ensure the nickname is not empty and is not the same as the given name
-                entity.nickname = updatedNickname
-                
-                // If an address was provided, update it
-                if let addressLine = address, addressLine.isEmpty == false {
-                    entity.estimatedAddress = addressLine
-                }
-                
-                if let annotation = annotation, annotation.isEmpty == false {
-                    entity.annotation = annotation
-                } else {
-                    entity.annotation = nil
-                }
-                
-                entity.isTemp = isTemp
-                // If the marker is temporary, do not set the `isNew` flag
-                // If the marker was previously temporary, set the `isNew` flag
-                entity.isNew = isTemp ? false : previousIsTemp
-                
-                entity.lastUpdatedDate = now
-            }
-            
-            // Update the lastSelectedDate to support recents
-            try entity.updateLastSelectedDate(to: now)
-            
-            AppContext.shared.cloudKeyValueStore.update(referenceEntity: entity)
-
-            ReferenceEntity.notifyEntityUpdated(entity.id)
-            
-            if locChanged {
-                // Update all routes whose first waypoint is the given entity
-                try Route.updateWaypointInAllRoutes(markerId: entity.id)
+        let edited = ReferenceEntity(stored: entity.stored)
+        if locChanged, let loc = location {
+            edited.entityKey = nil
+            edited.savedPlace = nil
+            edited.latitude = loc.latitude
+            edited.longitude = loc.longitude
+        }
+        edited.nickname = updatedNickname
+        if let address, !address.isEmpty { edited.estimatedAddress = address }
+        edited.annotation = annotation?.isEmpty == false ? annotation : nil
+        edited.isTemp = isTemp
+        edited.isNew = !isTemp && entity.isTemp
+        edited.lastUpdatedDate = now
+        edited.lastSelectedDate = now
+        try StorageContext.shared.write { try $0.save(marker: edited.stored) }
+        SpatialDataCache.recordSelection(edited.getPOI())
+        notifyEntityUpdated(edited.id)
+        if locChanged {
+            for route in SpatialDataCache.routesContaining(markerId: edited.id)
+                where route.waypoints.first?.markerId == edited.id {
+                Route.notifyUpdated(route.id)
             }
         }
     }
-    
+
     /// Constructs and saves a reference point for the generic location described by the
     /// provided coordinate and nickname.
     ///
@@ -479,7 +443,6 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     /// - Throws: If the database/cache cannot be accessed or the new reference entity cannot be added
     static func add(location: GenericLocation, nickname: String? = nil, estimatedAddress: String? = nil, annotation: String? = nil, temporary: Bool = false, context: String? = nil, notify: Bool = true) throws -> String {
         return try autoreleasepool {
-            let database = try RealmHelper.getDatabaseRealm()
             
             // If an existing marker is found at the same location, then return that marker's id. In the case that
             // `existingFlag.isTemp` matches `temporary`, then we can also update the underlying marker in case any
@@ -521,21 +484,7 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             let reference = ReferenceEntity(location: location, name: name, estimatedAddress: address, annotation: annotation, temp: temporary)
             reference.lastUpdatedDate = Date()
             
-            try database.write {
-                database.add(reference, update: .modified)
-            }
-            
-            if !temporary {
-                AppContext.shared.cloudKeyValueStore.store(referenceEntity: reference)
-
-                
-                NSUserActivity(userAction: .saveMarker).becomeCurrent()
-            }
-            
-            if notify {
-                notifyEntityAdded(reference.id)
-            }
-            
+            try persistNew(reference, notify: notify)
             return reference.id
         }
     }
@@ -572,77 +521,40 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
             return
         }
         
-        let database = try RealmHelper.getDatabaseRealm()
-        
-        guard let entity = database.object(ofType: ReferenceEntity.self, forPrimaryKey: id) else {
-            return
-        }
-        
-        // If the marker doesn't have an underlying entity it refers to, remove from the
-        // callout history so there isn't an empty card in the history
+        guard let entity = SpatialDataCache.referenceEntityByKey(id) else { return }
+        let affected = try StorageContext.shared.write { try $0.deleteMarker(id) }
         if entity.entityKey == nil {
-            AppContext.shared.calloutHistory.remove { (callout) -> Bool in
-                if let callout = callout as? POICallout, let calloutMarker = callout.marker {
-                    return calloutMarker.id == entity.id
-                }
-                
-                return false
+            AppContext.shared.calloutHistory.remove { callout in
+                (callout as? POICallout)?.key == id
             }
         }
-        
-        // Remove the marker from corresponding routes
-        try Route.removeWaypointFromAllRoutes(markerId: id)
-        
-        AppContext.shared.cloudKeyValueStore.remove(referenceEntity: entity)
-        
-        try database.write {
-            database.delete(entity)
-        }
-
-        
-        ReferenceEntity.notifyEntityRemoved(id)
+        affected.forEach(Route.notifyUpdated)
+        notifyEntityRemoved(id)
     }
-    
-    /// Removes all reference entities. Because the destination is a marker, this also clears the destination.
-    ///
-    /// - Throws: If the database/cache cannot be accessed or any reference entity cannot be removed
-    static func removeAll() throws {
-        // Remove the destination
-        try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "settings.clear_cache")
-        
-        let database = try RealmHelper.getDatabaseRealm()
-        
-        // There is no code to remove corresponding route waypoints
-        // because `ReferenceEntity.removeAll` is only called from `StatusTableViewController`
-        // which separately calls `Route.deleteAll`
-        
-        for entity in database.objects(ReferenceEntity.self) {
-            let id = entity.id
-            
-            AppContext.shared.cloudKeyValueStore.remove(referenceEntity: entity)
-            
-            try database.write {
-                database.delete(entity)
 
-                
-                ReferenceEntity.notifyEntityRemoved(id)
-            }
+    @MainActor
+    static func eraseUserData() async throws {
+        let (markerIDs, routeIDs) = try await StorageContext.shared.writeAsync { try $0.erase() }
+        if let guidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance,
+           routeIDs.contains(guidance.content.id) {
+            AppContext.shared.eventProcessor.deactivateCustom()
         }
+        try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "settings.delete_user_data")
+        let removed = Set(markerIDs)
+        AppContext.shared.calloutHistory.remove { callout in
+            (callout as? POICallout).map { removed.contains($0.key) } ?? false
+        }
+        routeIDs.forEach(Route.notifyDeleted)
+        markerIDs.forEach(notifyEntityRemoved)
     }
-    
-    /// Removes all temporary reference entities.
-    ///
-    /// - Throws: If the database/cache cannot be accessed or any reference entity cannot be removed
+
     static func removeAllTemporary() throws {
-        let database = try RealmHelper.getDatabaseRealm()
-        
-        for entity in database.objects(ReferenceEntity.self).filter("isTemp == true") {
-            try database.write {
-                database.delete(entity)
-            }
-        }
+        let storage = StorageContext.shared
+        if storage.isUserStorageAvailable && !storage.markers.contains(where: \.isTemp) { return }
+        let routes = try storage.write { try $0.deleteTemporaryMarkers() }
+        routes.forEach(Route.notifyUpdated)
     }
-    
+
     static func deleteActionMake(id: String, deleted: (() -> Void)? = nil, canceled: (() -> Void)? = nil) -> UIAlertController {
         // Create the action buttons for the alert.
         let deleteAction = UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive) { (_) in
@@ -671,43 +583,14 @@ class ReferenceEntity: Object, ObjectKeyIdentifiable {
     }
     
     static func objectKeys(sortedBy: SortStyle) -> [String] {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return []
-            }
-            
-            switch sortedBy {
-            case .alphanumeric:
-                return database.objects(ReferenceEntity.self)
-                    .filter("isTemp == false")
-                    .map({ entity -> (ref: ReferenceEntity, name: String) in
-                        return (ref: entity, name: entity.name)
-                    })
-                    .sorted(by: { $0.name < $1.name })
-                    .compactMap({ $0.ref.id })
-                
-            case .distance:
-                let loc = AppContext.shared.geolocationManager.location ?? CLLocation(latitude: 0.0, longitude: 0.0)
-                
-                return database.objects(ReferenceEntity.self)
-                    .filter("isTemp == false")
-                    .map({ entity -> (ref: ReferenceEntity, dist: CLLocationDistance) in
-                        return (ref: entity, dist: entity.distanceToClosestLocation(from: loc))
-                    })
-                    .sorted(by: { $0.dist < $1.dist })
-                    .compactMap({ $0.ref.id })
-            }
-        }
-    }
-    
-    static func cleanCorruptEntities() throws {
-        try autoreleasepool {
-            let entities = try RealmHelper.getDatabaseRealm().objects(ReferenceEntity.self).filter("isTemp == false")
-            
-            for ref in entities where ref.nickname == nil && ref._poi == nil {
-                // If the backing POI doesn't exist and this isn't a generic location (no nickname), remove the POR
-                try ReferenceEntity.remove(id: ref.id)
-            }
+        let markers = SpatialDataCache.referenceEntities()
+        switch sortedBy {
+        case .alphanumeric:
+            return markers.map { ($0.id, $0.name) }.sorted { $0.1 < $1.1 }.map { $0.0 }
+        case .distance:
+            let location = AppContext.shared.geolocationManager.location ?? CLLocation(latitude: 0, longitude: 0)
+            return markers.map { ($0.id, $0.distanceToClosestLocation(from: location)) }
+                .sorted { $0.1 < $1.1 }.map { $0.0 }
         }
     }
 }

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -12,25 +13,25 @@ import CoreLocation
 /// VectorTile is an object which identifies a single vector tile. This includes the x and y coordinates of
 /// the tile in the tile space, and the zoom level which specifies that tile space. Note that this class does
 /// not contain the actual POI contents of the tile (see TileData.swift).
-class VectorTile: Hashable {
-    enum VectorTileError: Error {
+public struct VectorTile: Hashable, Sendable {
+    public enum VectorTileError: Error {
         case zoomValueOutOfRange
         case invalidQuadKeySequence
     }
     
-    static let earthRadius = 6378137
-    static let minLatitude = -85.05112878
-    static let maxLatitude = 85.05112878
-    static let minLongitude: Double = -180
-    static let maxLongitude: Double = 180
+    public static let earthRadius = 6378137
+    public static let minLatitude = -85.05112878
+    public static let maxLatitude = 85.05112878
+    public static let minLongitude: Double = -180
+    public static let maxLongitude: Double = 180
     
-    let x: Int
-    let y: Int
-    let zoom: UInt
-    let quadKey: String
-    let id: String
+    public let x: Int
+    public let y: Int
+    public let zoom: UInt
+    public let quadKey: String
+    public let id: String
     
-    private(set) lazy var polygon: [CLLocationCoordinate2D] = {
+    public var polygon: [CLLocationCoordinate2D] {
         let (startPixelX, startPixelY) = VectorTile.getPixelXY(tileX: self.x, tileY: self.y)
         let (endPixelX, endPixelY) = VectorTile.getPixelXY(tileX: self.x + 1, tileY: self.y + 1)
         
@@ -42,17 +43,6 @@ class VectorTile: Hashable {
                 CLLocationCoordinate2D(latitude: endLat, longitude: endLon),
                 CLLocationCoordinate2D(latitude: endLat, longitude: startLon),
                 CLLocationCoordinate2D(latitude: startLat, longitude: startLon)]
-    }()
-    
-    /// Initializes a VectorTile object from a JSON object which must have keys "X", "Y", "ZoomLevel", "QuadKey", and "Id"
-    ///
-    /// - Parameter json: JSON object to parse
-    init(JSON json: GDAJSONObject) {
-        x = json.number(atPath: "X")!.intValue
-        y = json.number(atPath: "Y")!.intValue
-        zoom = json.number(atPath: "ZoomLevel")!.uintValue
-        quadKey = json.string(atPath: "QuadKey")!
-        id = json.string(atPath: "Id")!
     }
     
     /// Initializes a VectorTile object using a latitude, longitude, and zoom
@@ -61,7 +51,7 @@ class VectorTile: Hashable {
     ///   - lat: Latitude
     ///   - lon: Longitude
     ///   - zoomLevel: Zoom level
-    init(latitude lat: Double, longitude lon: Double, zoom zoomLevel: UInt) {
+    public init(latitude lat: Double, longitude lon: Double, zoom zoomLevel: UInt) {
         let (pixelX, pixelY) = VectorTile.getPixelXY(latitude: lat, longitude: lon, zoom: zoomLevel)
         let (tileX, tileY) = VectorTile.getTileXY(pixelX: pixelX, pixelY: pixelY)
         
@@ -86,7 +76,7 @@ class VectorTile: Hashable {
     ///   - tileX: Tile's X coordinate
     ///   - tileY: Tile's Y coordinate
     ///   - zoomLevel: Tile's zoom level
-    init(tileX: Int, tileY: Int, zoom zoomLevel: UInt) {
+    public init(tileX: Int, tileY: Int, zoom zoomLevel: UInt) {
         x = tileX
         y = tileY
         zoom = zoomLevel
@@ -105,7 +95,7 @@ class VectorTile: Hashable {
     /// Initializes a VectorTile object using a quadkey specifier
     ///
     /// - Parameter quad: Quadkey describing the vector tile x, y, and zoom
-    init(quadKey quad: String) {
+    public init(quadKey quad: String) {
         do {
             (x, y, zoom) = try VectorTile.getTileXYZ(quadkey: quad)
         } catch {
@@ -123,11 +113,11 @@ class VectorTile: Hashable {
     ///
     /// - Parameter lhs: First tile
     /// - Parameter rhs: Second tile
-    static func == (lhs: VectorTile, rhs: VectorTile) -> Bool {
+    public static func == (lhs: VectorTile, rhs: VectorTile) -> Bool {
         return lhs.x == rhs.x && lhs.y == rhs.y && lhs.zoom == rhs.zoom
     }
     
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(x)
         hasher.combine(y)
         hasher.combine(zoom)
@@ -139,7 +129,7 @@ class VectorTile: Hashable {
     ///   - location: The center of the region to search
     ///   - radius: The radius of the region to search
     /// - Returns: An array of tiles covering the searched region
-    static func tilesForRegion(_ location: CLLocation, radius: CLLocationDistance, zoom zoomLevel: UInt) -> [VectorTile] {
+    public static func tilesForRegion(_ location: CLLocation, radius: CLLocationDistance, zoom zoomLevel: UInt) -> [VectorTile] {
         let (pixelX, pixelY) = getPixelXY(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
         let radiusPixels = Int(radius / groundResolution(latitude: location.coordinate.latitude, zoom: zoomLevel))
         
@@ -168,7 +158,7 @@ class VectorTile: Hashable {
     ///   - location: The center of the region to search
     ///   - zoom: The zoom level of the tile
     /// - Returns: The tile containing the location
-    static func tileForLocation(_ location: CLLocation, zoom zoomLevel: UInt) -> VectorTile {
+    public static func tileForLocation(_ location: CLLocation, zoom zoomLevel: UInt) -> VectorTile {
         let (pixelX, pixelY) = getPixelXY(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
         
         let (x, y) = getTileXY(pixelX: pixelX, pixelY: pixelY)
@@ -183,7 +173,7 @@ class VectorTile: Hashable {
     ///   - minimum: Minimum value
     ///   - maximum: Maximum value
     /// - Returns: Clipped value
-    static func clip(_ value: Double, min minimum: Double, max maximum: Double) -> Double {
+    public static func clip(_ value: Double, min minimum: Double, max maximum: Double) -> Double {
         return min(max(value, minimum), maximum)
     }
     
@@ -191,7 +181,7 @@ class VectorTile: Hashable {
     ///
     /// - Parameter zoom: A zoom level (between 0 and 23)
     /// - Returns: Side length of the map in pixels
-    static func mapSize(zoom: UInt) -> UInt {
+    public static func mapSize(zoom: UInt) -> UInt {
         let base: UInt = 256
         return base << zoom
     }
@@ -203,7 +193,7 @@ class VectorTile: Hashable {
     ///   - latitude: Latitude (in degrees) at which to measure the ground resolution.
     ///   - zoom: Level of detail, from 1 (lowest detail) to 23 (highest detail).
     /// - Returns: The ground resolution, in meters per pixel.
-    static func groundResolution(latitude: Double, zoom: UInt) -> Double {
+    public static func groundResolution(latitude: Double, zoom: UInt) -> Double {
         let clippedLat = clip(latitude, min: minLatitude, max: maxLatitude)
         return cos(clippedLat * .pi / 180.0) * 2 * .pi * Double(earthRadius) / Double(mapSize(zoom: zoom))
     }
@@ -215,7 +205,7 @@ class VectorTile: Hashable {
     ///   - longitude: Longitude value
     ///   - zoomLevel: Zoom level
     /// - Returns: Pixe coordinate (x,y)
-    static func getPixelXY(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> (x: Int, y: Int) {
+    public static func getPixelXY(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> (x: Int, y: Int) {
         let lat = clip(latitude, min: minLatitude, max: maxLatitude)
         let lon = clip(longitude, min: minLongitude, max: maxLongitude)
         
@@ -231,7 +221,7 @@ class VectorTile: Hashable {
         return (pixelX, pixelY)
     }
     
-    static func getPixelXYObjC(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> [String: Int] {
+    public static func getPixelXYObjC(latitude: Double, longitude: Double, zoom zoomLevel: UInt) -> [String: Int] {
         let (x, y) = getPixelXY(latitude: latitude, longitude: longitude, zoom: zoomLevel)
         return ["x": x, "y": y]
     }
@@ -243,7 +233,7 @@ class VectorTile: Hashable {
     ///   - pixelY: Y coordinate of the pixel
     ///   - zoomLevel: Zoom level of the pixel
     /// - Returns: Latitude and longitude of the pixel
-    static func getLatLong(pixelX: Int, pixelY: Int, zoom zoomLevel: UInt) -> (lat: Double, lon: Double) {
+    public static func getLatLong(pixelX: Int, pixelY: Int, zoom zoomLevel: UInt) -> (lat: Double, lon: Double) {
         let size = Double(mapSize(zoom: zoomLevel))
         
         let x = (clip(Double(pixelX), min: 0, max: Double(size - 1)) / size) - 0.5
@@ -261,7 +251,7 @@ class VectorTile: Hashable {
     ///   - pixelX: X coordinate of the pixel
     ///   - pixelY: Y coordinate of the pixel
     /// - Returns: Tile coordinate (x, y)
-    static func getTileXY(pixelX: Int, pixelY: Int) -> (x: Int, y: Int) {
+    public static func getTileXY(pixelX: Int, pixelY: Int) -> (x: Int, y: Int) {
         return (pixelX / 256, pixelY / 256)
     }
     
@@ -271,7 +261,7 @@ class VectorTile: Hashable {
     ///   - tileX: X coordinate of the tile
     ///   - tileY: Y coordinate of the tile
     /// - Returns: Pixel coordinate (x, y)
-    static func getPixelXY(tileX: Int, tileY: Int) -> (x: Int, y: Int) {
+    public static func getPixelXY(tileX: Int, tileY: Int) -> (x: Int, y: Int) {
         return (tileX * 256, tileY * 256)
     }
     
@@ -284,7 +274,7 @@ class VectorTile: Hashable {
     ///   - latitude: Latitude value to check
     ///   - longitude: Longitude value to check
     /// - Returns: True if the (lat, lon) values are valid
-    static func isValidLocation(latitude: Double, longitude: Double) -> Bool {
+    public static func isValidLocation(latitude: Double, longitude: Double) -> Bool {
         if latitude < -85.05112878 || latitude > 85.05112878 {
             return false
         }
@@ -303,7 +293,7 @@ class VectorTile: Hashable {
     ///   - tileY: Y coordinate of the tile
     ///   - zoomLevel: Zoom level of the tile
     /// - Returns: True if the (X, Y, Zoom) values specify a valid tile
-    static func isValidTile(x tileX: Int, y tileY: Int, zoom zoomLevel: UInt) -> Bool {
+    public static func isValidTile(x tileX: Int, y tileY: Int, zoom zoomLevel: UInt) -> Bool {
         let size = Int(mapSize(zoom: zoomLevel) / 256)
         
         let validX = tileX >= 0 && tileX < size
@@ -320,7 +310,7 @@ class VectorTile: Hashable {
     ///   - zoomLevel: Zoom level of the tile
     /// - Returns: A quadkey string
     /// - Throws: Throws a VectorTileError.ZoomValueOutOfRange error if the zoom level is less than 0 or greater than 23
-    static func getQuadKey(tileX: Int, tileY: Int, zoom zoomLevel: UInt) throws -> String {
+    public static func getQuadKey(tileX: Int, tileY: Int, zoom zoomLevel: UInt) throws -> String {
         guard zoomLevel > 0 && zoomLevel < 24 else {
             throw VectorTileError.zoomValueOutOfRange
         }
@@ -350,7 +340,7 @@ class VectorTile: Hashable {
     /// - Parameter quadkey: A string quadkey
     /// - Returns: A tuple containing the x, y, and zoom values
     /// - Throws: Throws a VectorTileError.InvalidQuadKeySequence error if the quadkey string is contains invalid characters
-    static func getTileXYZ(quadkey: String) throws -> (x: Int, y: Int, zoom: UInt) {
+    public static func getTileXYZ(quadkey: String) throws -> (x: Int, y: Int, zoom: UInt) {
         var x: Int = 0
         var y: Int = 0
         let zoom: Int = quadkey.count

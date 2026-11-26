@@ -110,12 +110,14 @@ class TroubleshootingViewController: UIViewController {
             // Check that tiles can be downloaded before we attempt to delete the cache
             AppContext.shared.spatialDataContext.checkServiceConnection { [weak self] (success) in
                 guard success else {
-                    self?.displayUnableToClearCacheWarning()
+                    DispatchQueue.main.async { self?.displayUnableToClearCacheWarning() }
                     return
                 }
                 
                 // Clear the cache and keep the markers
-                self?.clearCache(false)
+                if self?.resetSpatialCache() == false {
+                    DispatchQueue.main.async { self?.displayUnableToClearCacheWarning() }
+                }
             }
         }))
         
@@ -123,21 +125,8 @@ class TroubleshootingViewController: UIViewController {
     }
     
     @objc func deleteUserDataTouchUpInside() {
-        // Only allow the cache to be deleted if we have a network connection to reload the cache
-        guard AppContext.shared.offlineContext.state != .offline else {
-            let alert = UIAlertController(title: GDLocalizedString("general.error.network_connection_required"),
-                                          message: GDLocalizedString("general.error.network_connection_required.deleting_data"),
-                                          preferredStyle: UIAlertController.Style.alert)
-            
-            alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.dismiss"), style: .cancel, handler: nil))
-            
-            present(alert, animated: true, completion: nil)
-            
-            return
-        }
-        
         let alert = UIAlertController(title: GDLocalizedString("settings.clear_cache.markers.alert_title"),
-                                      message: GDLocalizedString("settings.clear_cache.markers.alert_message"),
+                                      message: GDLocalizedString("general.alert.destructive_undone_message"),
                                       preferredStyle: UIAlertController.Style.actionSheet)
         
         alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.cancel"), style: .cancel, handler: { [weak self] _ in
@@ -146,92 +135,29 @@ class TroubleshootingViewController: UIViewController {
             }
         }))
         
-        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive, handler: { _ in
-            AppContext.shared.eventProcessor.hush(playSound: false)
-            
-            if SettingsContext.shared.automaticCalloutsEnabled {
-                self.reenableCalloutsAfterReload = true
-                SettingsContext.shared.automaticCalloutsEnabled = false
-            }    
-            self.presentLoadingModal()
-            
-            // Check that tiles can be downloaded before we attempt to delete the cache
-            AppContext.shared.spatialDataContext.checkServiceConnection { [weak self] (success) in
-                guard success else {
-                    self?.displayUnableToClearCacheWarning()
-                    return
+        alert.addAction(UIAlertAction(title: GDLocalizedString("general.alert.delete"), style: .destructive) { [weak self] _ in
+            Task { @MainActor in
+                do {
+                    try await ReferenceEntity.eraseUserData()
+                } catch {
+                    GDLogAppError("Unable to delete saved markers and routes: \(error)")
+                    let warning = UIAlertController(title: GDLocalizedString("general.alert.error.message"),
+                                                    message: nil, preferredStyle: .alert)
+                    warning.addAction(UIAlertAction(title: GDLocalizedString("general.alert.dismiss"), style: .cancel))
+                    self?.present(warning, animated: true)
                 }
-                
-                // Clear the cache and delete the markers
-                self?.clearCache(true)
             }
-        }))
-        
+        })
+
         alert.popoverPresentationController?.sourceView = view
         alert.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 1, height: 1)
         present(alert, animated: true, completion: nil)
     }
     
-    private func clearCache(_ deletePORs: Bool) {
-        guard let database = try? RealmHelper.getDatabaseRealm() else {
-            DDLogError("Error attempting to get database data!")
-            return
-        }
-        
-        var storedAddresses: [Address] = []
-        
-        if deletePORs {
-            do {
-                // Remove the reference entities (regardless of type)
-                try ReferenceEntity.removeAll()
-                
-                // Remove all routes
-                try Route.deleteAll()
-            } catch {
-                GDLogAppError("Failed to remove all Reference Entities!")
-            }
-        } else {
-            // Preserve addresses since they can't be reloaded like POI reference points can
-            for por in database.objects(ReferenceEntity.self) {
-                if let entity = por.getPOI() as? Address, storedAddresses.contains(where: { $0.key == entity.key }) == false {
-                    // Copy the address
-                    storedAddresses.append(Address(value: entity))
-                }
-            }
-        }
-        
-        let success = AppContext.shared.spatialDataContext.clearCache()
-
-        guard success else {
-            GDLogSpatialDataError("Error attempting to delete cached data!")
-            return
-        }
-        
-        guard storedAddresses.count > 0 else {
-            GDLogSpatialDataWarn("Cached data deleted")
-            return
-        }
-        
-        // Save stored addresses
-        guard let cache = try? RealmHelper.getCacheRealm() else {
-            GDLogSpatialDataError("Cached data deleted, but couldn't get cache realm to restore addresses!")
-            return
-        }
-        
-        do {
-            try cache.write {
-                for address in storedAddresses {
-                    cache.create(Address.self, value: address, update: .modified)
-                }
-            }
-        } catch {
-            GDLogSpatialDataError("Cached data deleted, but couldn't restore addresses!")
-            return
-        }
-        
-        GDLogSpatialDataWarn("Cached data deleted and addresses restored")
+    private func resetSpatialCache() -> Bool {
+        AppContext.shared.spatialDataContext.clearCache()
     }
-    
+
     private func presentLoadingModal() {
         let viewController = UIHostingController(rootView: LoadingModalView(message: GDLocalizedString("text.cleaning_things")))
         viewController.view.backgroundColor = .clear
@@ -286,13 +212,6 @@ class TroubleshootingViewController: UIViewController {
         
         if reenableCalloutsAfterReload {
             SettingsContext.shared.automaticCalloutsEnabled = true
-        }
-        
-        do {
-            try ReferenceEntity.cleanCorruptEntities()
-            GDLogAppVerbose("Successfully removed any corrupted Reference Entity objects (if any existed)")
-        } catch {
-            GDLogAppError("Unable to remove corrupted Reference Entity objects")
         }
         
         dismiss(animated: true, completion: nil)

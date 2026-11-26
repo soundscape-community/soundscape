@@ -3,11 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
-import RealmSwift
+import SSData
 import CoreLocation
 
 extension Notification.Name {
@@ -21,7 +22,7 @@ extension Notification.Name {
  routes include name, description and various properties which track
  route usage (e.g., `createdDate`, `lastUpdatedDate`, `lastSelectedDate`)
  */
-class Route: Object, ObjectKeyIdentifiable {
+final class Route: Identifiable {
     
     // MARK: Constants
     
@@ -32,23 +33,21 @@ class Route: Object, ObjectKeyIdentifiable {
     // MARK: Properties
     
     // Primary Key
-    @Persisted(primaryKey: true) var id: String = UUID().uuidString
-    @Persisted var name: String
-    // `description` is a `RLMObject` property so prepending `route` to
-    // property name
-    @Persisted var routeDescription: String?
-    @Persisted var waypoints: List<RouteWaypoint>
+    var id: String = UUID().uuidString
+    var name: String = ""
+    var routeDescription: String?
+    var waypoints: [RouteWaypoint] = []
     // Save the location of the first waypoint to support fast queries
     // for nearby routes
-    @Persisted var firstWaypointLatitude: CLLocationDegrees?
-    @Persisted var firstWaypointLongitude: CLLocationDegrees?
-    @Persisted var isNew: Bool = true
-    @Persisted var createdDate: Date = Date()
-    @Persisted var lastUpdatedDate: Date = Date()
+    var firstWaypointLatitude: CLLocationDegrees?
+    var firstWaypointLongitude: CLLocationDegrees?
+    var isNew: Bool = true
+    var createdDate: Date = Date()
+    var lastUpdatedDate: Date = Date()
     // `lastSelectedDate` is updated when the user selects an action
     // (`RouteAction` - start, share, etc.) for the route
-    @Persisted var lastSelectedDate: Date = Date()
-    @Persisted var reversedRouteId: String?
+    var lastSelectedDate: Date = Date()
+    var reversedRouteId: String?
     
     var firstWaypointLocation: CLLocation? {
         guard let latitude = firstWaypointLatitude, let longitude = firstWaypointLongitude else {
@@ -79,12 +78,12 @@ class Route: Object, ObjectKeyIdentifiable {
     // MARK: Initialization
     
     /**
-     * Initializes a route for which all associated markers have been added to the Realm database
+     * Initializes a route for which all associated markers have been added to the user database
      *
      * - Parameters:
      *     - name: Name of the route, required
      *     - description: Description of the route, optional
-     *     - waypoints: Array of waypoints - All waypoints are markers that exist in the Realm databse
+     *     - waypoints: Array of waypoints - All waypoints are markers that exist in the user database
      */
     convenience init(name: String, description: String?, waypoints: [RouteWaypoint]) {
         self.init()
@@ -101,41 +100,27 @@ class Route: Object, ObjectKeyIdentifiable {
         }
     }
     
-    /**
-     Only use this initializer when you made sure all the route waypoints (marker)
-     were already imported to the database.
-     */
-    convenience init(from parameters: RouteParameters) {
+    convenience init(saved: SavedRoute) {
         self.init()
-        
-        // Required Parameters
-        
-        id = parameters.id
-        name = parameters.name
-        routeDescription = parameters.routeDescription
-        
-        // Append waypoints
-        let pWaypoints = parameters.waypoints.compactMap({ return RouteWaypoint(from: $0) })
-        waypoints.append(objectsIn: pWaypoints)
-        
-        if let first = pWaypoints.ordered.first, let marker = SpatialDataCache.referenceEntityByKey(first.markerId) {
+        id = saved.id
+        name = saved.name
+        routeDescription = saved.routeDescription
+        waypoints = saved.waypoints.map { RouteWaypoint(stored: $0) }
+        isNew = saved.isNew
+        createdDate = saved.createdDate
+        lastUpdatedDate = saved.lastUpdatedDate
+        lastSelectedDate = saved.lastSelectedDate
+        reversedRouteId = saved.reversedRouteId
+        if let first = saved.waypoints.first, let marker = SpatialDataCache.referenceEntityByKey(first.markerId) {
             firstWaypointLatitude = marker.latitude
             firstWaypointLongitude = marker.longitude
         }
-        
-        // Optional Parameters
-        
-        if let pCreatedDate = parameters.createdDate {
-            createdDate = pCreatedDate
-        }
-        
-        if let pLastUpdatedDate = parameters.lastUpdatedDate {
-            lastUpdatedDate = pLastUpdatedDate
-        }
-        
-        if let pLastSelectedDate = parameters.lastSelectedDate {
-            lastSelectedDate = pLastSelectedDate
-        }
     }
-    
+
+    var saved: SavedRoute {
+        SavedRoute(id: id, name: name, routeDescription: routeDescription, waypoints: waypoints.map(\.stored),
+                   isNew: isNew, createdDate: createdDate, lastUpdatedDate: lastUpdatedDate,
+                   lastSelectedDate: lastSelectedDate, reversedRouteId: reversedRouteId)
+    }
+
 }

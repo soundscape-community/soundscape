@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -153,7 +154,7 @@ enum RouteAction: String, Action {
             }
             
         case .cache:
-            // To enable actions, add route to Realm database
+            // To enable actions, add route to the user database
             return []
             
         case .trailActivity(let activity):

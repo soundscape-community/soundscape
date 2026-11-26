@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -113,8 +114,8 @@ struct MarkerParameters: Codable {
         let entity: POI
         
         switch detail.source {
-        case .entity(let id):
-            guard let cachedEntity = SpatialDataCache.searchByKey(key: id) else {
+        case .entity:
+            guard let cachedEntity = detail.resolvedPOI else {
                 return nil
             }
             
@@ -214,9 +215,6 @@ extension MarkerParameters {
     typealias Completion = (Result<LocationDetail, Error>) -> Void
     
     func fetchMarker(completion: @escaping Completion) {
-        // Fetch the underlying entity
-        //
-        // For OSM entities, add or update the entity in the cache
         location.fetchEntity { (result) in
             switch result {
             case .success(let entity):

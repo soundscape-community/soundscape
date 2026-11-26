@@ -3,9 +3,11 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
+import SSData
 import Foundation
 
 enum HTTPStatusCode: Int {
@@ -31,22 +33,15 @@ class OSMServiceModel: OSMServiceModelProtocol {
         let url = URL(string: "\(SettingsContext.shared.servicesHostName)\(OSMServiceModel.path)/\(tile.zoom)/\(tile.x)/\(tile.y).json")!
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: ServiceModel.requestTimeout)
         
-        // Set the etag header
         do {
-            try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                var etag = ""
-                if let tiledata = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) {
-                    etag = tiledata.etag
-                }
+            if let etag = try StorageContext.shared.withSpatialStore({ try $0.metadata(for: tile.quadKey)?.etag }), !etag.isEmpty {
                 request.setValue(etag, forHTTPHeaderField: HTTPHeader.ifNoneMatch.rawValue)
             }
         } catch {
-            callback(.unknown, nil, NSError(domain: ServiceModel.errorRealm, code: 0, userInfo: nil))
+            callback(.unknown, nil, error)
             return
         }
-        
+
         // Set `App-Version` header
         request.setAppVersionHeader()
         

@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -19,9 +20,9 @@ class RouteDetail: RouteDetailProtocol {
     }
     
     enum Source {
-        // `Route` has been added to the Realm database
+        // `Route` has been added to the user database
         case database(id: String)
-        // `Route` has not been added to the Realm database
+        // `Route` has not been added to the user database
         // (e.g., on import via sharing activity)
         case cache(route: Route)
         case trailActivity(content: AuthoredActivityContent)

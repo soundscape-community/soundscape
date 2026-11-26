@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -45,9 +46,7 @@ struct DestinationCallout: POICalloutProtocol {
         return SpatialDataCache.referenceEntityByEntityKey(key)
     }
     
-    /// A computed property for accessing the POI referenced by the key stored in this Callout object. Note
-    /// that we only store the POI's key and not the POI itself due to threading constraints with Realm.
-    /// Also note that destinations are always markers, so the POI is obtained through the marker object.
+    /// Resolves the current POI for the stable key stored in this callout.
     var poi: POI? {
         return marker?.getPOI()
     }

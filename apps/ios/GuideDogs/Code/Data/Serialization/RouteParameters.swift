@@ -3,20 +3,16 @@
 //  SoundscapeUnitTests
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 
 /*
- Supports serialization of the Realm `Route` object
+ Supports serialization for sharing a saved route
  */
 struct RouteParameters: Codable {
-    
-    enum Context {
-        case backup
-        case share
-    }
     
     // MARK: Properties
     
@@ -24,8 +20,7 @@ struct RouteParameters: Codable {
     let name: String
     let routeDescription: String?
     let waypoints: [RouteWaypointParameters]
-    // `createdDate`, `lastUpdatedDate` and `lastSelectedDate` will be serialized and stored in iCloud but will not
-    // be included when sharing routes via custom document type
+    // Older documents may include these values. Shared routes omit them.
     let createdDate: Date?
     let lastUpdatedDate: Date?
     let lastSelectedDate: Date?
@@ -42,23 +37,10 @@ struct RouteParameters: Codable {
         self.lastSelectedDate = lastSelectedDate
     }
     
-    init?(route: Route, context: Context) {
-        let id = route.id
-        let name = route.name
-        let routeDescription = route.routeDescription
-        let waypoints = Array(route.waypoints).compactMap({ return RouteWaypointParameters(waypoint: $0) })
-        // Ignore `createdDate`, `lastUpdatedDate` and `lastSelectedDate` unless encoding data for iCloud backup
-        let createdDate = context == .backup ? route.createdDate : nil
-        let lastUpdatedDate = context == .backup ? route.lastUpdatedDate : nil
-        let lastSelectedDate = context == .backup ? route.lastSelectedDate : nil
-        
-        // When decoding a route from a URL resource (e.g., `context == .share`),
-        // all waypoints should include marker data
-        guard context == .backup || waypoints.contains(where: { $0.marker == nil }) == false else {
-            return nil
-        }
-        
-        self.init(id: id, name: name, routeDescription: routeDescription, waypoints: waypoints, createdDate: createdDate, lastUpdatedDate: lastUpdatedDate, lastSelectedDate: lastSelectedDate)
+    init?(route: Route) {
+        let waypoints = route.waypoints.ordered.map(RouteWaypointParameters.init(waypoint:))
+        guard waypoints.allSatisfy({ $0.marker != nil }) else { return nil }
+        self.init(id: route.id, name: route.name, routeDescription: route.routeDescription,
+                  waypoints: waypoints, createdDate: nil, lastUpdatedDate: nil, lastSelectedDate: nil)
     }
-    
 }

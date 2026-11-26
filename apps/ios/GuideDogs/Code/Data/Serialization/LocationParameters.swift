@@ -59,7 +59,7 @@ extension LocationParameters {
             let latitude = coordinate.latitude
             let longitude = coordinate.longitude
             
-            let genericLocation = GenericLocation(lat: latitude, lon: longitude, name: name)
+            let genericLocation = GenericLocation(lat: latitude, lon: longitude, name: name, address: address)
             
             completion(.success(genericLocation))
         }
@@ -73,31 +73,12 @@ extension LocationParameters {
     
     private func addOrUpdateOSMEntity(id: String, completion: @escaping Completion) {
         DispatchQueue.main.async {
-            if let entity = SpatialDataCache.searchByKey(key: id) as? GDASpatialDataResultEntity {
-                // Data for the OSM entity has already been cached on the device
-                completion(.success(entity))
-            } else {
-                // Create a new OSM entity and cache on the device
-                let entity = GDASpatialDataResultEntity(id: id, parameters: self)
-                
-                do {
-                    try autoreleasepool {
-                        let cache = try RealmHelper.getCacheRealm()
-                        
-                        try cache.write {
-                            cache.add(entity, update: .modified)
-                        }
-                        
-                        completion(.success(entity))
-                    }
-                } catch {
-                    // Failed to save the entity
-                    completion(.failure(error))
-                }
-            }
+            let entity = SpatialDataCache.searchByKey(key: id) as? GDASpatialDataResultEntity
+                ?? GDASpatialDataResultEntity(id: id, parameters: self)
+            completion(.success(entity))
         }
     }
-    
+
 }
 extension LocationParameters: UniversalLinkParameters {
     

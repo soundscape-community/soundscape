@@ -3,27 +3,27 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 import CoreLocation
-import RealmSwift
 
-class Address: Object {
+final class Address {
     
-    // MARK: Realm Properties
+    // MARK: Properties
     
-    @objc dynamic var key: String = UUID().uuidString
-    @objc dynamic var lastSelectedDate: Date?
-    @objc dynamic var name: String = ""
-    @objc dynamic var addressLine: String?
-    @objc dynamic var streetName: String?
-    @objc dynamic var latitude: CLLocationDegrees = 0.0
-    @objc dynamic var longitude: CLLocationDegrees = 0.0
-    @objc dynamic var centroidLatitude: CLLocationDegrees = 0.0
-    @objc dynamic var centroidLongitude: CLLocationDegrees = 0.0
-    @objc dynamic var searchString: String?
+    var key: String = UUID().uuidString
+    var lastSelectedDate: Date?
+    var name: String = ""
+    var addressLine: String?
+    var streetName: String?
+    var latitude: CLLocationDegrees = 0.0
+    var longitude: CLLocationDegrees = 0.0
+    var centroidLatitude: CLLocationDegrees = 0.0
+    var centroidLongitude: CLLocationDegrees = 0.0
+    var searchString: String?
     
     // MARK: Initialization
     
@@ -38,13 +38,6 @@ class Address: Object {
         centroidLatitude = geocodedAddress.location.coordinate.latitude
         centroidLongitude = geocodedAddress.location.coordinate.longitude
         self.searchString = searchString
-    }
-    
-    // MARK: Realm
-    
-    /// Indicates which property represents the primary key of this object
-    override static func primaryKey() -> String {
-        return "key"
     }
     
 }

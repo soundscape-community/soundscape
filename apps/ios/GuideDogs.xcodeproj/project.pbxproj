@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB1300000000000000000001 /* SSData in Frameworks */ = {isa = PBXBuildFile; productRef = AB1300000000000000000002 /* SSData */; };
 		2809B80C2379E95B00F6C9AC /* calibration_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80B2379E95B00F6C9AC /* calibration_success.wav */; };
 		2809B80E2379E9A000F6C9AC /* connection_success.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80D2379E9A000F6C9AC /* connection_success.wav */; };
 		2809B8102379E9C700F6C9AC /* low_confidence.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2809B80F2379E9C700F6C9AC /* low_confidence.wav */; };
@@ -23,7 +24,6 @@
 		281A9A9623AAAEB1008E548D /* TTSSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281A9A9523AAAEB1008E548D /* TTSSound.swift */; };
 		281A9A9823AAAEE7008E548D /* GlyphSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281A9A9723AAAEE7008E548D /* GlyphSound.swift */; };
 		281A9A9A23AAAF17008E548D /* GenericSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281A9A9923AAAF17008E548D /* GenericSound.swift */; };
-		281BCBFF262638290031298D /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 281BCBFE262638290031298D /* RealmSwift */; };
 		281CB8722016692F0059B8C4 /* CalloutHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB8712016692F0059B8C4 /* CalloutHistory.swift */; };
 		281CB8752016776E0059B8C4 /* BoundedStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB8742016776E0059B8C4 /* BoundedStack.swift */; };
 		281CB879201691D40059B8C4 /* StringCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281CB878201691D40059B8C4 /* StringCallout.swift */; };
@@ -65,7 +65,6 @@
 		283F160B202233A0009C2FFA /* POICalloutProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283F160A2022339F009C2FFA /* POICalloutProtocol.swift */; };
 		283F160D2022368D009C2FFA /* SpatialDataViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283F160C2022368D009C2FFA /* SpatialDataViewProtocol.swift */; };
 		283F1611202269C8009C2FFA /* POISearchProviderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283F1610202269C8009C2FFA /* POISearchProviderProtocol.swift */; };
-		283F161420226C15009C2FFA /* OSMPOISearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283F161320226C15009C2FFA /* OSMPOISearchProvider.swift */; };
 		2840B63D200E881E00B9A573 /* SpatialDataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2840B63C200E881E00B9A573 /* SpatialDataProtocol.swift */; };
 		2840B63F200E9D4400B9A573 /* DestinationManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2840B63E200E9D4400B9A573 /* DestinationManagerProtocol.swift */; };
 		2840B64C201007BB00B9A573 /* CalloutProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2840B64B201007BB00B9A573 /* CalloutProtocol.swift */; };
@@ -87,7 +86,6 @@
 		284D7950255B2F3200E8C72E /* EnvironmentSettingsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284D794F255B2F3200E8C72E /* EnvironmentSettingsProvider.swift */; };
 		284D798D255DE69500E8C72E /* TTSConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284D798C255DE69500E8C72E /* TTSConfigHelper.swift */; };
 		284EED93237DCC7900EE8331 /* Flight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284EED92237DCC7900EE8331 /* Flight.swift */; };
-		285302562032350F00E1E208 /* AddressSearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285302552032350F00E1E208 /* AddressSearchProvider.swift */; };
 		285C8B812304868F00E466DF /* ARHeadsetGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285C8B802304868E00E466DF /* ARHeadsetGenerator.swift */; };
 		285C8B83230496D900E466DF /* GlyphCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285C8B82230496D900E466DF /* GlyphCallout.swift */; };
 		286145EB2625099F000E5525 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 286145EA2625099F000E5525 /* SDWebImage */; };
@@ -211,7 +209,7 @@
 		28AA35F026C1E82800CBD680 /* MarkerLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28AA35EF26C1E82800CBD680 /* MarkerLoader.swift */; };
 		28AA35F226C2ECA100CBD680 /* RouteLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28AA35F126C2ECA100CBD680 /* RouteLoader.swift */; };
 		28AA35F426C31BC700CBD680 /* LocationCellTextPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28AA35F326C31BC700CBD680 /* LocationCellTextPadding.swift */; };
-		28B50A881FEAEBD900E8149C /* RealmHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B50A871FEAEBD900E8149C /* RealmHelper.swift */; };
+		28B50A881FEAEBD900E8149C /* StorageContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B50A871FEAEBD900E8149C /* StorageContext.swift */; };
 		28B59F4B21F92C180040B68F /* RouteGuidanceGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B59F4A21F92C170040B68F /* RouteGuidanceGenerator.swift */; };
 		28B59F4D21FA1BCE0040B68F /* GeneratorUpdateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B59F4C21FA1BCD0040B68F /* GeneratorUpdateFilter.swift */; };
 		28BA4A852655A98B00E1D273 /* UserLocationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA4A842655A98B00E1D273 /* UserLocationStore.swift */; };
@@ -237,7 +235,6 @@
 		28CDCC9527D963C60099A2EB /* BeaconCalloutGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CDCC9427D963C60099A2EB /* BeaconCalloutGenerator.swift */; };
 		28CDCC9727D9979D0099A2EB /* AutoCalloutSettingsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CDCC9627D9979D0099A2EB /* AutoCalloutSettingsProvider.swift */; };
 		28D07BF420B4C2BF00F314C5 /* GenericLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D07BF320B4C2BF00F314C5 /* GenericLocation.swift */; };
-		28D07BFA20B7103700F314C5 /* GenericLocationSearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D07BF920B7103600F314C5 /* GenericLocationSearchProvider.swift */; };
 		28D2C25B22177628001A5512 /* DismissableViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D2C25A22177627001A5512 /* DismissableViewControllerDelegate.swift */; };
 		28D6E37D1E956EBE00DD6646 /* categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 28D6E37C1E956EBE00DD6646 /* categories.json */; };
 		28D75737241C0CC2002F0E7A /* Thread+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D75736241C0CC2002F0E7A /* Thread+Extensions.swift */; };
@@ -249,7 +246,6 @@
 		28E60D441FE4905F00EAB5C0 /* CompassDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D431FE4905F00EAB5C0 /* CompassDirection.swift */; };
 		28E60D461FE490D900EAB5C0 /* POICallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D451FE490D900EAB5C0 /* POICallout.swift */; };
 		28E60D551FE9816500EAB5C0 /* POI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D541FE9816500EAB5C0 /* POI.swift */; };
-		28E60D5A1FE99BBE00EAB5C0 /* RealmMigrationTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E60D591FE99BBE00EAB5C0 /* RealmMigrationTools.swift */; };
 		28EB9C75237CBA3A0064E7EF /* ExperimentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EB9C74237CBA3A0064E7EF /* ExperimentConfiguration.swift */; };
 		28EB9C79237CC7D90064E7EF /* ExperimentServiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EB9C78237CC7D90064E7EF /* ExperimentServiceModel.swift */; };
 		28F0F9251F85A39D00B6A64F /* DestinationTutorialIntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F9241F85A39C00B6A64F /* DestinationTutorialIntroViewController.swift */; };
@@ -259,7 +255,6 @@
 		28F0F9301F86C38400B6A64F /* DestinationTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F92F1F86C38400B6A64F /* DestinationTutorialViewController.swift */; };
 		28F0F9321F86CD0600B6A64F /* DestinationTutorialPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F9311F86CD0600B6A64F /* DestinationTutorialPage.swift */; };
 		28F0F9341F86D43B00B6A64F /* GDASpatialDataResult+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0F9331F86D43B00B6A64F /* GDASpatialDataResult+Extensions.swift */; };
-		28F1ECE2262505DC00E964C0 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 28F1ECE1262505DC00E964C0 /* Realm */; };
 		28F40894215D8A4E00B34E6D /* ReverseGeocoderResultTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F40893215D8A4E00B34E6D /* ReverseGeocoderResultTypes.swift */; };
 		28F40896216296DF00B34E6D /* LocationCalloutComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F40895216296DF00B34E6D /* LocationCalloutComponents.swift */; };
 		28F93A8E211A56B300994402 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F93A8D211A56B300994402 /* UITextField+Extensions.swift */; };
@@ -412,7 +407,7 @@
 		6277B9C925A5354F0022A937 /* HeadphoneCalibrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6277B9C825A5354F0022A937 /* HeadphoneCalibrationManager.swift */; };
 		6279177F248EB836001D72F3 /* RoadAdjacentDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6279177E248EB836001D72F3 /* RoadAdjacentDataView.swift */; };
 		62791781248EBCA4001D72F3 /* IntersectionDecisionPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62791780248EBCA4001D72F3 /* IntersectionDecisionPoint.swift */; };
-		628855462656F98B00EFFB91 /* Route+Realm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628855452656F98B00EFFB91 /* Route+Realm.swift */; };
+		628855462656F98B00EFFB91 /* Route+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628855452656F98B00EFFB91 /* Route+Storage.swift */; };
 		6288559526584B2100EFFB91 /* RouteParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6288555C265721A300EFFB91 /* RouteParameters.swift */; };
 		6288559926584B2400EFFB91 /* RouteWaypointParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628855672657221300EFFB91 /* RouteWaypointParameters.swift */; };
 		629821B0251049AC00775CC2 /* NearbyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629821AF251049AC00775CC2 /* NearbyData.swift */; };
@@ -425,7 +420,6 @@
 		629F53C426BDEE2E00796B23 /* View+Modifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629F53C326BDEE2E00796B23 /* View+Modifiers.swift */; };
 		629F53CB26BDEEF300796B23 /* IdentifiableLocationDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629F53CA26BDEEF300796B23 /* IdentifiableLocationDetail.swift */; };
 		629F53CD26BDEF4B00796B23 /* Array+LocationDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629F53CC26BDEF4B00796B23 /* Array+LocationDetail.swift */; };
-		629F53CF26BDF06A00796B23 /* RouteRealmError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629F53CE26BDF06A00796B23 /* RouteRealmError.swift */; };
 		629F53E526CB293100796B23 /* PlainListRowBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629F53E426CB293100796B23 /* PlainListRowBackground.swift */; };
 		62B11A3727ACAAC50094FE66 /* RoundedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B11A3627ACAAC50094FE66 /* RoundedBackground.swift */; };
 		62B11A5927B337650094FE66 /* OnboardingTextStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B11A5827B337650094FE66 /* OnboardingTextStyle.swift */; };
@@ -544,9 +538,6 @@
 		B9DC022E244778A500F24051 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DC022D244778A500F24051 /* PushNotification.swift */; };
 		B9DD64F51E718F5E00ADFC3F /* MessageUI+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD64F41E718F5E00ADFC3F /* MessageUI+Extensions.swift */; };
 		B9E1FD6927CC4DC000EEE775 /* ActivityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E1FD6827CC4DC000EEE775 /* ActivityType.swift */; };
-		B9E63D0B26FE735600CCE4ED /* CloudKeyValueStore+Routes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E63D0826FE735600CCE4ED /* CloudKeyValueStore+Routes.swift */; };
-		B9E63D0C26FE735600CCE4ED /* CloudKeyValueStore+Markers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E63D0926FE735600CCE4ED /* CloudKeyValueStore+Markers.swift */; };
-		B9E63D0D26FE735600CCE4ED /* CloudKeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E63D0A26FE735600CCE4ED /* CloudKeyValueStore.swift */; };
 		B9EE98081E3656B7007ADBED /* UIDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EE98071E3656B7007ADBED /* UIDeviceManager.swift */; };
 		B9F0F96B1E10A40700F32F70 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F0F96A1E10A40700F32F70 /* BaseTableViewController.swift */; };
 		B9F749A21F16153900DC10C6 /* CoreLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F749A11F16153900DC10C6 /* CoreLocation+Extensions.swift */; };
@@ -558,7 +549,6 @@
 		C30DBD2423A4001900082B27 /* GenericTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DBD2323A4001900082B27 /* GenericTableViewDelegate.swift */; };
 		C30DBD2623A402E600082B27 /* POITableViewHeaderViewConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DBD2523A402E600082B27 /* POITableViewHeaderViewConfigurator.swift */; };
 		C30DBD2C23AA90FD00082B27 /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DBD2B23AA90FD00082B27 /* SearchTableViewCell.swift */; };
-		C30DDAC32252BAF000104085 /* RealmString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DDAC22252BAF000104085 /* RealmString.swift */; };
 		C30DDADF2255796B00104085 /* NotificationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DDADE2255796B00104085 /* NotificationProtocol.swift */; };
 		C30DDAE9225684BC00104085 /* GDASpatialDataResultEntity+Typeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DDAE8225684BC00104085 /* GDASpatialDataResultEntity+Typeable.swift */; };
 		C30DDAEC2256935F00104085 /* Typeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30DDAEB2256935F00104085 /* Typeable.swift */; };
@@ -679,13 +669,10 @@
 		C3FA2F01236A4A9500ADB8BC /* ModalViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FA2F00236A4A9500ADB8BC /* ModalViewContainer.swift */; };
 		D225D72E1E493A9700289270 /* LocationUpdateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D225D72D1E493A9700289270 /* LocationUpdateFilter.swift */; };
 		D22A38351E6100ED00C3AA71 /* ReverseGeocoderContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22A38341E6100ED00C3AA71 /* ReverseGeocoderContext.swift */; };
-		D22E23AF1E27EDE700E66FC6 /* VectorTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22E23AE1E27EDE700E66FC6 /* VectorTile.swift */; };
 		D235E5091E2709C500D45AE0 /* TileData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D235E5081E2709C500D45AE0 /* TileData.swift */; };
 		D298328C1E4A960300352A5A /* Intersection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D298328B1E4A960300352A5A /* Intersection.swift */; };
 		D29832901E4BF80600352A5A /* GeoJsonFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = D298328F1E4BF80600352A5A /* GeoJsonFeature.swift */; };
 		D29832921E4CF18100352A5A /* SuperCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832911E4CF18100352A5A /* SuperCategory.swift */; };
-		D29832941E4CF27900352A5A /* OsmTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832931E4CF27900352A5A /* OsmTag.swift */; };
-		D29832961E4E249700352A5A /* GeoJsonGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832951E4E249700352A5A /* GeoJsonGeometry.swift */; };
 		D30355D31B61401D00E1DDED /* GDAJSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D30355D21B61401D00E1DDED /* GDAJSONObject.m */; };
 		D395B0F71B41DA15005A6407 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D395B0F61B41DA15005A6407 /* Images.xcassets */; };
 		D4A72B0131A1000100C0FFEE /* URLResourceIdentifierTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A72B0031A1000100C0FFEE /* URLResourceIdentifierTest.swift */; };
@@ -782,7 +769,6 @@
 		283F160A2022339F009C2FFA /* POICalloutProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = POICalloutProtocol.swift; path = Code/Generators/Callouts/Protocols/POICalloutProtocol.swift; sourceTree = "<group>"; };
 		283F160C2022368D009C2FFA /* SpatialDataViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpatialDataViewProtocol.swift; path = "Code/Data/Spatial Data/Protocols/SpatialDataViewProtocol.swift"; sourceTree = "<group>"; };
 		283F1610202269C8009C2FFA /* POISearchProviderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = POISearchProviderProtocol.swift; path = "Code/Data/Spatial Data/Protocols/POISearchProviderProtocol.swift"; sourceTree = "<group>"; };
-		283F161320226C15009C2FFA /* OSMPOISearchProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OSMPOISearchProvider.swift; path = "Code/Data/Spatial Data/Search Providers/OSMPOISearchProvider.swift"; sourceTree = "<group>"; };
 		2840B63C200E881E00B9A573 /* SpatialDataProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpatialDataProtocol.swift; path = "Code/Data/Spatial Data/Protocols/SpatialDataProtocol.swift"; sourceTree = "<group>"; };
 		2840B63E200E9D4400B9A573 /* DestinationManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DestinationManagerProtocol.swift; path = "Code/Data/Destination Manager/Protocols/DestinationManagerProtocol.swift"; sourceTree = "<group>"; };
 		2840B64B201007BB00B9A573 /* CalloutProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CalloutProtocol.swift; path = Code/Generators/Callouts/Protocols/CalloutProtocol.swift; sourceTree = "<group>"; };
@@ -804,7 +790,6 @@
 		284D794F255B2F3200E8C72E /* EnvironmentSettingsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EnvironmentSettingsProvider.swift; path = Code/App/Settings/EnvironmentSettingsProvider.swift; sourceTree = "<group>"; };
 		284D798C255DE69500E8C72E /* TTSConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TTSConfigHelper.swift; path = "Code/Audio/Text To Speech/TTSConfigHelper.swift"; sourceTree = "<group>"; };
 		284EED92237DCC7900EE8331 /* Flight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Flight.swift; path = "Code/App/Feature Flags/Experiment Flighting/Flight.swift"; sourceTree = "<group>"; };
-		285302552032350F00E1E208 /* AddressSearchProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddressSearchProvider.swift; path = "Code/Data/Spatial Data/Search Providers/AddressSearchProvider.swift"; sourceTree = "<group>"; };
 		285C8B802304868E00E466DF /* ARHeadsetGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARHeadsetGenerator.swift; sourceTree = "<group>"; };
 		285C8B82230496D900E466DF /* GlyphCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlyphCallout.swift; sourceTree = "<group>"; };
 		286708D025005912002F962B /* street_non_1c.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = street_non_1c.wav; path = Assets/Sounds/street_non_1c.wav; sourceTree = "<group>"; };
@@ -925,7 +910,7 @@
 		28AA35EF26C1E82800CBD680 /* MarkerLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerLoader.swift; sourceTree = "<group>"; };
 		28AA35F126C2ECA100CBD680 /* RouteLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteLoader.swift; sourceTree = "<group>"; };
 		28AA35F326C31BC700CBD680 /* LocationCellTextPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCellTextPadding.swift; sourceTree = "<group>"; };
-		28B50A871FEAEBD900E8149C /* RealmHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RealmHelper.swift; path = Code/Data/Models/Helpers/RealmHelper.swift; sourceTree = "<group>"; };
+		28B50A871FEAEBD900E8149C /* StorageContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StorageContext.swift; path = Code/Data/Models/Helpers/StorageContext.swift; sourceTree = "<group>"; };
 		28B59F4A21F92C170040B68F /* RouteGuidanceGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteGuidanceGenerator.swift; sourceTree = "<group>"; };
 		28B59F4C21FA1BCD0040B68F /* GeneratorUpdateFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorUpdateFilter.swift; sourceTree = "<group>"; };
 		28BA4A842655A98B00E1D273 /* UserLocationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLocationStore.swift; sourceTree = "<group>"; };
@@ -951,7 +936,6 @@
 		28CDCC9427D963C60099A2EB /* BeaconCalloutGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeaconCalloutGenerator.swift; sourceTree = "<group>"; };
 		28CDCC9627D9979D0099A2EB /* AutoCalloutSettingsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AutoCalloutSettingsProvider.swift; path = Code/App/Settings/AutoCalloutSettingsProvider.swift; sourceTree = "<group>"; };
 		28D07BF320B4C2BF00F314C5 /* GenericLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GenericLocation.swift; path = "Code/Data/Models/Temp Models/GenericLocation.swift"; sourceTree = "<group>"; };
-		28D07BF920B7103600F314C5 /* GenericLocationSearchProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GenericLocationSearchProvider.swift; path = "Code/Data/Spatial Data/Search Providers/GenericLocationSearchProvider.swift"; sourceTree = "<group>"; };
 		28D2C25A22177627001A5512 /* DismissableViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableViewControllerDelegate.swift; sourceTree = "<group>"; };
 		28D6E37C1E956EBE00DD6646 /* categories.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = categories.json; path = "Assets/Default Super Categories/categories.json"; sourceTree = "<group>"; };
 		28D75736241C0CC2002F0E7A /* Thread+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Thread+Extensions.swift"; path = "Code/App/Framework Extensions/Base Type Extensions/Thread+Extensions.swift"; sourceTree = "<group>"; };
@@ -963,7 +947,6 @@
 		28E60D431FE4905F00EAB5C0 /* CompassDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CompassDirection.swift; path = Code/Data/Models/Helpers/CompassDirection.swift; sourceTree = "<group>"; };
 		28E60D451FE490D900EAB5C0 /* POICallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POICallout.swift; sourceTree = "<group>"; };
 		28E60D541FE9816500EAB5C0 /* POI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = POI.swift; path = Code/Data/Models/Protocols/POI.swift; sourceTree = "<group>"; };
-		28E60D591FE99BBE00EAB5C0 /* RealmMigrationTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RealmMigrationTools.swift; path = Code/Data/Models/Helpers/RealmMigrationTools.swift; sourceTree = "<group>"; };
 		28EB9C74237CBA3A0064E7EF /* ExperimentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExperimentConfiguration.swift; path = "Code/App/Feature Flags/Experiment Flighting/ExperimentConfiguration.swift"; sourceTree = "<group>"; };
 		28EB9C78237CC7D90064E7EF /* ExperimentServiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExperimentServiceModel.swift; path = "Code/App/Feature Flags/Experiment Flighting/ExperimentServiceModel.swift"; sourceTree = "<group>"; };
 		28F0F9241F85A39C00B6A64F /* DestinationTutorialIntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DestinationTutorialIntroViewController.swift; path = "Code/Visual UI/View Controllers/Tutorials/Destination/DestinationTutorialIntroViewController.swift"; sourceTree = "<group>"; };
@@ -1137,7 +1120,7 @@
 		6277B9C825A5354F0022A937 /* HeadphoneCalibrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeadphoneCalibrationManager.swift; path = "Code/Sensors/Motion/Headphone Motion/HeadphoneCalibrationManager.swift"; sourceTree = "<group>"; };
 		6279177E248EB836001D72F3 /* RoadAdjacentDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RoadAdjacentDataView.swift; path = Code/Data/Preview/RoadAdjacentDataView.swift; sourceTree = "<group>"; };
 		62791780248EBCA4001D72F3 /* IntersectionDecisionPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IntersectionDecisionPoint.swift; path = Code/Data/Preview/IntersectionDecisionPoint.swift; sourceTree = "<group>"; };
-		628855452656F98B00EFFB91 /* Route+Realm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Route+Realm.swift"; path = "Code/Data/Models/Extensions/Route/Route+Realm.swift"; sourceTree = "<group>"; };
+		628855452656F98B00EFFB91 /* Route+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Route+Storage.swift"; path = "Code/Data/Models/Extensions/Route/Route+Storage.swift"; sourceTree = "<group>"; };
 		6288555C265721A300EFFB91 /* RouteParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteParameters.swift; path = Code/Data/Serialization/RouteParameters.swift; sourceTree = "<group>"; };
 		628855672657221300EFFB91 /* RouteWaypointParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteWaypointParameters.swift; path = Code/Data/Serialization/Routes/RouteWaypointParameters.swift; sourceTree = "<group>"; };
 		629821AF251049AC00775CC2 /* NearbyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyData.swift; sourceTree = "<group>"; };
@@ -1150,7 +1133,6 @@
 		629F53C326BDEE2E00796B23 /* View+Modifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "View+Modifiers.swift"; path = "Code/App/Framework Extensions/SwiftUI/View+Modifiers.swift"; sourceTree = "<group>"; };
 		629F53CA26BDEEF300796B23 /* IdentifiableLocationDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableLocationDetail.swift; sourceTree = "<group>"; };
 		629F53CC26BDEF4B00796B23 /* Array+LocationDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Array+LocationDetail.swift"; path = "Code/App/Framework Extensions/Base Type Extensions/Array+LocationDetail.swift"; sourceTree = "<group>"; };
-		629F53CE26BDF06A00796B23 /* RouteRealmError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RouteRealmError.swift; path = "Code/Data/Models/Database Models/Routes/RouteRealmError.swift"; sourceTree = "<group>"; };
 		629F53E426CB293100796B23 /* PlainListRowBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainListRowBackground.swift; sourceTree = "<group>"; };
 		62B11A3627ACAAC50094FE66 /* RoundedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedBackground.swift; sourceTree = "<group>"; };
 		62B11A5627B337170094FE66 /* OnboardingButtonTextStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingButtonTextStyle.swift; sourceTree = "<group>"; };
@@ -1285,9 +1267,6 @@
 		B9DC022D244778A500F24051 /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
 		B9DD64F41E718F5E00ADFC3F /* MessageUI+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MessageUI+Extensions.swift"; path = "Code/App/Framework Extensions/UI Class Extensions/MessageUI+Extensions.swift"; sourceTree = "<group>"; };
 		B9E1FD6827CC4DC000EEE775 /* ActivityType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ActivityType.swift; path = Code/Sensors/Motion/ActivityType.swift; sourceTree = "<group>"; };
-		B9E63D0826FE735600CCE4ED /* CloudKeyValueStore+Routes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CloudKeyValueStore+Routes.swift"; sourceTree = "<group>"; };
-		B9E63D0926FE735600CCE4ED /* CloudKeyValueStore+Markers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CloudKeyValueStore+Markers.swift"; sourceTree = "<group>"; };
-		B9E63D0A26FE735600CCE4ED /* CloudKeyValueStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKeyValueStore.swift; sourceTree = "<group>"; };
 		B9EE98071E3656B7007ADBED /* UIDeviceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDeviceManager.swift; path = Code/Devices/UIDeviceManager.swift; sourceTree = "<group>"; };
 		B9F0F96A1E10A40700F32F70 /* BaseTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BaseTableViewController.swift; path = "Code/Visual UI/View Controllers/BaseTableViewController.swift"; sourceTree = "<group>"; };
 		B9F749A11F16153900DC10C6 /* CoreLocation+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CoreLocation+Extensions.swift"; path = "Code/App/Framework Extensions/Geo Extensions/CoreLocation+Extensions.swift"; sourceTree = "<group>"; };
@@ -1299,7 +1278,6 @@
 		C30DBD2323A4001900082B27 /* GenericTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericTableViewDelegate.swift; sourceTree = "<group>"; };
 		C30DBD2523A402E600082B27 /* POITableViewHeaderViewConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = POITableViewHeaderViewConfigurator.swift; sourceTree = "<group>"; };
 		C30DBD2B23AA90FD00082B27 /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SearchTableViewCell.swift; path = "Code/Visual UI/Controls/UITableView/SearchTableViewCell.swift"; sourceTree = "<group>"; };
-		C30DDAC22252BAF000104085 /* RealmString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RealmString.swift; path = "Code/Data/Models/Cache Models/RealmString.swift"; sourceTree = "<group>"; };
 		C30DDADE2255796B00104085 /* NotificationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationProtocol.swift; path = Code/Notifications/Notifications/NotificationProtocol.swift; sourceTree = "<group>"; };
 		C30DDAE8225684BC00104085 /* GDASpatialDataResultEntity+Typeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "GDASpatialDataResultEntity+Typeable.swift"; path = "Code/Data/Models/Extensions/OSM Entity/GDASpatialDataResultEntity+Typeable.swift"; sourceTree = "<group>"; };
 		C30DDAEB2256935F00104085 /* Typeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Typeable.swift; path = Code/Data/Models/Helpers/Types/Typeable.swift; sourceTree = "<group>"; };
@@ -1420,13 +1398,10 @@
 		C3FA2F03236B557F00ADB8BC /* sv-SE */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "sv-SE"; path = "sv-SE.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		D225D72D1E493A9700289270 /* LocationUpdateFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationUpdateFilter.swift; path = Code/Sensors/Geolocation/Filters/LocationUpdateFilter.swift; sourceTree = "<group>"; };
 		D22A38341E6100ED00C3AA71 /* ReverseGeocoderContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = ReverseGeocoderContext.swift; path = Code/Generators/Geocoding/ReverseGeocoderContext.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		D22E23AE1E27EDE700E66FC6 /* VectorTile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VectorTile.swift; path = Code/Data/Models/Helpers/VectorTile.swift; sourceTree = "<group>"; };
 		D235E5081E2709C500D45AE0 /* TileData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileData.swift; path = "Code/Data/Models/Cache Models/TileData.swift"; sourceTree = "<group>"; };
 		D298328B1E4A960300352A5A /* Intersection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Intersection.swift; path = "Code/Data/Models/Cache Models/Intersection.swift"; sourceTree = "<group>"; };
 		D298328F1E4BF80600352A5A /* GeoJsonFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GeoJsonFeature.swift; path = "Code/Data/Models/JSON Parsing/OSM/GeoJsonFeature.swift"; sourceTree = "<group>"; };
 		D29832911E4CF18100352A5A /* SuperCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuperCategory.swift; path = Code/Data/Models/Helpers/SuperCategory.swift; sourceTree = "<group>"; };
-		D29832931E4CF27900352A5A /* OsmTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OsmTag.swift; path = Code/Data/Models/Helpers/OsmTag.swift; sourceTree = "<group>"; };
-		D29832951E4E249700352A5A /* GeoJsonGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GeoJsonGeometry.swift; path = "Code/Data/Models/JSON Parsing/OSM/GeoJsonGeometry.swift"; sourceTree = "<group>"; };
 		D30355D11B61401D00E1DDED /* GDAJSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GDAJSONObject.h; path = Code/Data/Models/Helpers/GDAJSONObject.h; sourceTree = "<group>"; };
 		D30355D21B61401D00E1DDED /* GDAJSONObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = GDAJSONObject.m; path = Code/Data/Models/Helpers/GDAJSONObject.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D3266BF31CFC896900240E85 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
@@ -1473,6 +1448,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB1300000000000000000001 /* SSData in Frameworks */,
 				A07E30000000000000000004 /* PersistenceExporter in Frameworks */,
 				A07E30000000000000000005 /* SwiftyH3 in Frameworks */,
 				A07E30000000000000000003 /* OpenTelemetryProtocolExporterHTTP in Frameworks */,
@@ -1483,8 +1459,6 @@
 				2866A7D5262502D500EBA2D8 /* CocoaLumberjackSwift in Frameworks */,
 				91172A732AD8D56D00E6E8E9 /* CoreGPX in Frameworks */,
 				286145EB2625099F000E5525 /* SDWebImage in Frameworks */,
-				281BCBFF262638290031298D /* RealmSwift in Frameworks */,
-				28F1ECE2262505DC00E964C0 /* Realm in Frameworks */,
 				2866A7C12625013400EBA2D8 /* DZNEmptyDataSet in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1711,9 +1685,6 @@
 		283F161220226BCD009C2FFA /* Search Providers */ = {
 			isa = PBXGroup;
 			children = (
-				283F161320226C15009C2FFA /* OSMPOISearchProvider.swift */,
-				285302552032350F00E1E208 /* AddressSearchProvider.swift */,
-				28D07BF920B7103600F314C5 /* GenericLocationSearchProvider.swift */,
 			);
 			name = "Search Providers";
 			sourceTree = "<group>";
@@ -2227,7 +2198,6 @@
 				D298328B1E4A960300352A5A /* Intersection.swift */,
 				D235E5081E2709C500D45AE0 /* TileData.swift */,
 				C3B331232011615A00CD20F9 /* Address.swift */,
-				C30DDAC22252BAF000104085 /* RealmString.swift */,
 				B93C5F8924AA8AB600ED4066 /* IntersectionRoadId.swift */,
 			);
 			name = "Cache Models";
@@ -2381,15 +2351,12 @@
 				D30355D11B61401D00E1DDED /* GDAJSONObject.h */,
 				D30355D21B61401D00E1DDED /* GDAJSONObject.m */,
 				28A7AB0720F7CC1D00DF41D8 /* MarkerQueue.swift */,
-				D29832931E4CF27900352A5A /* OsmTag.swift */,
 				C325408620229EB9007D4E78 /* POIQueue.swift */,
 				28E60D411FE4903A00EAB5C0 /* Quadrant.swift */,
-				28B50A871FEAEBD900E8149C /* RealmHelper.swift */,
-				28E60D591FE99BBE00EAB5C0 /* RealmMigrationTools.swift */,
+				28B50A871FEAEBD900E8149C /* StorageContext.swift */,
 				B97140DD2048896800B15BD0 /* RoadDirection.swift */,
 				B97140D9204835BB00B15BD0 /* Roundabout.swift */,
 				D29832911E4CF18100352A5A /* SuperCategory.swift */,
-				D22E23AE1E27EDE700E66FC6 /* VectorTile.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2707,7 +2674,6 @@
 			children = (
 				623D3C2C264C59150005F405 /* Route.swift */,
 				623D3C34264C592F0005F405 /* RouteWaypoint.swift */,
-				629F53CE26BDF06A00796B23 /* RouteRealmError.swift */,
 			);
 			name = Routes;
 			sourceTree = "<group>";
@@ -2992,7 +2958,7 @@
 		628855442656F96800EFFB91 /* Route */ = {
 			isa = PBXGroup;
 			children = (
-				628855452656F98B00EFFB91 /* Route+Realm.swift */,
+				628855452656F98B00EFFB91 /* Route+Storage.swift */,
 			);
 			name = Route;
 			sourceTree = "<group>";
@@ -3527,9 +3493,6 @@
 		B9E63D0726FE735600CCE4ED /* Cloud */ = {
 			isa = PBXGroup;
 			children = (
-				B9E63D0A26FE735600CCE4ED /* CloudKeyValueStore.swift */,
-				B9E63D0926FE735600CCE4ED /* CloudKeyValueStore+Markers.swift */,
-				B9E63D0826FE735600CCE4ED /* CloudKeyValueStore+Routes.swift */,
 			);
 			name = Cloud;
 			path = Code/Data/Services/Cloud;
@@ -3539,7 +3502,6 @@
 			isa = PBXGroup;
 			children = (
 				D298328F1E4BF80600352A5A /* GeoJsonFeature.swift */,
-				D29832951E4E249700352A5A /* GeoJsonGeometry.swift */,
 			);
 			name = OSM;
 			sourceTree = "<group>";
@@ -4325,6 +4287,7 @@
 			);
 			name = Soundscape;
 			packageProductDependencies = (
+				AB1300000000000000000002 /* SSData */,
 				A07E20000000000000000005 /* SwiftyH3 */,
 				A07E20000000000000000004 /* PersistenceExporter */,
 				A07E20000000000000000003 /* OpenTelemetryProtocolExporterHTTP */,
@@ -4333,9 +4296,7 @@
 				2866A7C02625013400EBA2D8 /* DZNEmptyDataSet */,
 				2866A7CE2625028600EBA2D8 /* Reachability */,
 				2866A7D4262502D500EBA2D8 /* CocoaLumberjackSwift */,
-				28F1ECE1262505DC00E964C0 /* Realm */,
 				286145EA2625099F000E5525 /* SDWebImage */,
-				281BCBFE262638290031298D /* RealmSwift */,
 				283B0306264B03920092F74F /* SDWebImageSwiftUI */,
 				91172A722AD8D56D00E6E8E9 /* CoreGPX */,
 			);
@@ -4410,13 +4371,13 @@
 			);
 			mainGroup = D3D7CFBF1B3D96460020B5E9;
 			packageReferences = (
+				AB1300000000000000000003 /* XCLocalSwiftPackageReference "../common" */,
 				A07E10000000000000000005 /* XCRemoteSwiftPackageReference "SwiftyH3" */,
 				A07E10000000000000000002 /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */,
 				A07E10000000000000000001 /* XCRemoteSwiftPackageReference "opentelemetry-swift" */,
 				2866A7BF2625013400EBA2D8 /* XCRemoteSwiftPackageReference "DZNEmptyDataSet" */,
 				2866A7CD2625028600EBA2D8 /* XCRemoteSwiftPackageReference "Reachability" */,
 				2866A7D3262502D500EBA2D8 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
-				28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				286145E92625099F000E5525 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				283B0305264B03920092F74F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				91172A712AD8D56D00E6E8E9 /* XCRemoteSwiftPackageReference "CoreGPX" */,
@@ -4632,7 +4593,6 @@
 				568480931CBC9CEE004B4227 /* SettingsViewController.swift in Sources */,
 				C3A5848522BAF9E80014C55E /* DeviceHeadingProviderDelegate.swift in Sources */,
 				C38841D72268FCD100F6DFA5 /* POI+Distance.swift in Sources */,
-				C30DDAC32252BAF000104085 /* RealmString.swift in Sources */,
 				C3F4E4B222EA6EB7009C5E70 /* CoreLocationManager.swift in Sources */,
 				31013A6520D9ACBF00205D1F /* HomeViewController+RemoteControl.swift in Sources */,
 				C38841D22268FC0400F6DFA5 /* String+Similarity.swift in Sources */,
@@ -4708,7 +4668,6 @@
 				28FCD315281C93F0007CEFE7 /* HandledEventAction.swift in Sources */,
 				28EB9C75237CBA3A0064E7EF /* ExperimentConfiguration.swift in Sources */,
 				627004F126055AE000FBF5E5 /* DeviceReachabilityAlertObserver.swift in Sources */,
-				28E60D5A1FE99BBE00EAB5C0 /* RealmMigrationTools.swift in Sources */,
 				31F1370422B867B800FC1860 /* GeolocationManager.swift in Sources */,
 				282B62F424EC64A7007E5F8A /* Localizable.swift in Sources */,
 				6277B9C925A5354F0022A937 /* HeadphoneCalibrationManager.swift in Sources */,
@@ -4741,7 +4700,6 @@
 				C3B33115200EFE5700CD20F9 /* SpatialDataCache.swift in Sources */,
 				C38841DE22697C6100F6DFA5 /* Fetchable.swift in Sources */,
 				C364851C1F0DA28A0051D455 /* DestinationManager.swift in Sources */,
-				285302562032350F00E1E208 /* AddressSearchProvider.swift in Sources */,
 				288E5FE2269FA78400F7D4CD /* GeometryPreferenceReader.swift in Sources */,
 				C3BC95DF2322D70A00B78903 /* FilteredCourseProvider.swift in Sources */,
 				C365279A224AC5520056F570 /* BannerViewControllerDelegate.swift in Sources */,
@@ -4767,17 +4725,14 @@
 				281CB879201691D40059B8C4 /* StringCallout.swift in Sources */,
 				C3A5848722BAFA0B0014C55E /* UserHeadingProviderDelegate.swift in Sources */,
 				624DF68F27BED834000A634C /* AsyncAuthorizationProviderDelegate.swift in Sources */,
-				629F53CF26BDF06A00796B23 /* RouteRealmError.swift in Sources */,
 				B91D3F6427AB5546004159A8 /* UserAction.swift in Sources */,
 				6288559926584B2400EFFB91 /* RouteWaypointParameters.swift in Sources */,
-				283F161420226C15009C2FFA /* OSMPOISearchProvider.swift in Sources */,
 				28CC60A0254B63AB00A2ED18 /* EQParameters.swift in Sources */,
 				C3D6BAE51F7329BE009EEDE6 /* OSMServiceModelProtocol.swift in Sources */,
 				623ADD6C24EDECE80002C889 /* ImportedLocationDetail.swift in Sources */,
 				286A251A22F2446F008F8327 /* DevicesViewController.swift in Sources */,
 				C3A5847622BAF8CD0014C55E /* LocationProvider.swift in Sources */,
 				28F0F9301F86C38400B6A64F /* DestinationTutorialViewController.swift in Sources */,
-				D22E23AF1E27EDE700E66FC6 /* VectorTile.swift in Sources */,
 				62549237243BE95600DC49E5 /* RecreationalActivityLinkHandler.swift in Sources */,
 				568480981CBD6A19004B4227 /* Colors.swift in Sources */,
 				286A2AE32252B8A300A74724 /* BLEManager.swift in Sources */,
@@ -4839,7 +4794,6 @@
 				28246D1A21ED372A004C8F09 /* LinkedList.swift in Sources */,
 				C38841D52268FCC400F6DFA5 /* POI+Similarity.swift in Sources */,
 				C363227D22DFB6B700715374 /* Heading+Order.swift in Sources */,
-				D29832941E4CF27900352A5A /* OsmTag.swift in Sources */,
 				623E0102244767BB0081CA5B /* CoordinateParameters.swift in Sources */,
 				C36527A1224BF50E0056F570 /* Type.swift in Sources */,
 				B93C5F8724AA6DF100ED4066 /* GPXSimulator.swift in Sources */,
@@ -4900,7 +4854,7 @@
 				28F94F66248845690010D2B3 /* CustomDisclosureTableViewCell.swift in Sources */,
 				62B428F72626379D005101DC /* EditableMapViewController.swift in Sources */,
 				626789B626FA58570007E566 /* RouteCompleteViewRepresentable.swift in Sources */,
-				28B50A881FEAEBD900E8149C /* RealmHelper.swift in Sources */,
+				28B50A881FEAEBD900E8149C /* StorageContext.swift in Sources */,
 				C3942C5B23BFE3F300299CCC /* SearchTableViewCellConfigurator.swift in Sources */,
 				31CA500C21715F4F00049ADF /* GPXExtensions.swift in Sources */,
 				3175F10C1DE73F0D00CF563C /* Int+GDAExtension.swift in Sources */,
@@ -4948,7 +4902,6 @@
 				C324BBE822A1E8D400C83439 /* FilterPredicate.swift in Sources */,
 				C3FA2EFF236A4A8000ADB8BC /* AlertContainer.swift in Sources */,
 				C3E9B811224948F600E1E0E0 /* SmallBannerContainerView.swift in Sources */,
-				B9E63D0D26FE735600CCE4ED /* CloudKeyValueStore.swift in Sources */,
 				C3FA2EFB236A3A3700ADB8BC /* NotificationContainer.swift in Sources */,
 				289E2EFB234FE39F00357444 /* BaseBLEDevice.swift in Sources */,
 				28CC609A254B5F5800A2ED18 /* FilterBandParameters.swift in Sources */,
@@ -4977,7 +4930,6 @@
 				288E5FDC268647C000F7D4CD /* WaypointDepartureCallout.swift in Sources */,
 				62CE14C925C0DB75001CBC0B /* KalmanFilter+HeadphoneCalibration.swift in Sources */,
 				28C78D15203DF4C900732EC1 /* ErrorAlerts.swift in Sources */,
-				D29832961E4E249700352A5A /* GeoJsonGeometry.swift in Sources */,
 				28467EE92642068200FB4C9F /* RouteAction.swift in Sources */,
 				311E92E71DF1E9CF003A5E23 /* LogFormatter.swift in Sources */,
 				2837E8DB23C9349C00CDF11E /* BeaconSound.swift in Sources */,
@@ -5007,7 +4959,6 @@
 				C30DBD2623A402E600082B27 /* POITableViewHeaderViewConfigurator.swift in Sources */,
 				2872D15A26DEE8B3000BE465 /* IntersectionGenerator.swift in Sources */,
 				286DA3A81F9E6B3100C34C9C /* BorderedIcon.swift in Sources */,
-				28D07BFA20B7103700F314C5 /* GenericLocationSearchProvider.swift in Sources */,
 				62EACA2126697ED400DBDECC /* WaypointDetailAnnotation.swift in Sources */,
 				2873D64B211E05250034A297 /* LaunchHelper.swift in Sources */,
 				C317F2732372307A000579BA /* OfflineBannerViewController.swift in Sources */,
@@ -5062,7 +5013,7 @@
 				623E0104244767BB0081CA5B /* LocationParameters.swift in Sources */,
 				622AB2F6263767A8006BB729 /* MKMapViewDelegate+Extensions.swift in Sources */,
 				6258B38A2469DB220051F60B /* UniversalLinkVersion.swift in Sources */,
-				628855462656F98B00EFFB91 /* Route+Realm.swift in Sources */,
+				628855462656F98B00EFFB91 /* Route+Storage.swift in Sources */,
 				62B3FE3225A8D5D300FCCA4B /* FeatureFlag.swift in Sources */,
 				62549233243BE2EB00DC49E5 /* UniversalLinkPath.swift in Sources */,
 				2810C6B327C82BD1004E7386 /* ExplorationGenerator.swift in Sources */,
@@ -5070,7 +5021,6 @@
 				C354342522A5E85500FE3366 /* Filter.swift in Sources */,
 				626BB5912682532200E5355A /* LocalizedLabel.swift in Sources */,
 				281CB8842017B4A70059B8C4 /* InsideLocationCallout.swift in Sources */,
-				B9E63D0B26FE735600CCE4ED /* CloudKeyValueStore+Routes.swift in Sources */,
 				625F8524243BDAD10085AE05 /* UserActivityManager.swift in Sources */,
 				624DF68B27BED80C000A634C /* AuthorizationStatus.swift in Sources */,
 				3153765521FF1DFB008445AD /* CodeableDirection.swift in Sources */,
@@ -5138,7 +5088,6 @@
 				28F0F92A1F86A44800B6A64F /* DestinationTutorialMutePage.swift in Sources */,
 				623ADD6A24EDECBC0002C889 /* EstimatedLocationDetail.swift in Sources */,
 				28A16129283C4A4B0081CFA4 /* TourWaypointDistanceCallout.swift in Sources */,
-				B9E63D0C26FE735600CCE4ED /* CloudKeyValueStore+Markers.swift in Sources */,
 				621628BA2874CA8E00B1FF5B /* ColorPaletteKey.swift in Sources */,
 				286DC6A721E683CB001CD88A /* SoundscapeBehavior.swift in Sources */,
 				288E632424B501AA00F66EA6 /* RootedPreviewGraph.swift in Sources */,
@@ -5741,6 +5690,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		AB1300000000000000000003 /* XCLocalSwiftPackageReference "../common" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../common;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		283B0305264B03920092F74F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -5782,14 +5738,6 @@
 				minimumVersion = 3.7.4;
 			};
 		};
-		28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-cocoa";
-			requirement = {
-				kind = exactVersion;
-				version = 10.11.0;
-			};
-		};
 		91172A712AD8D56D00E6E8E9 /* XCRemoteSwiftPackageReference "CoreGPX" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/vincentneo/CoreGPX.git";
@@ -5825,10 +5773,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		281BCBFE262638290031298D /* RealmSwift */ = {
+		AB1300000000000000000002 /* SSData */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = RealmSwift;
+			package = AB1300000000000000000003 /* XCLocalSwiftPackageReference "../common" */;
+			productName = SSData;
 		};
 		283B0306264B03920092F74F /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -5854,11 +5802,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2866A7D3262502D500EBA2D8 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
 			productName = CocoaLumberjackSwift;
-		};
-		28F1ECE1262505DC00E964C0 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 28F1ECE0262505DC00E964C0 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = Realm;
 		};
 		91172A722AD8D56D00E6E8E9 /* CoreGPX */ = {
 			isa = XCSwiftPackageProductDependency;

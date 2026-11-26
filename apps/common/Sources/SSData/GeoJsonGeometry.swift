@@ -3,23 +3,21 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
+import CoreLocation
 import Foundation
 
 /// Geometry types from the GeoJSON spec ([link](https://tools.ietf.org/html/rfc7946)).
-/// Note that this looks like a very odd/inefficient way to define an `Enum:String` type. That is
-/// because it is. This was only defined this way so as to allow for Objective-C support. In
-/// Objective-C, enums must have an integer type, hence the additional work to allow for strings.
-///
 /// - point: The geometry consists of a single point
 /// - lineString: The geometry consists of at least two points
 /// - multiPoint: The geometry consists of any number of points
 /// - polygon: The geometry consists of an array of linear ring coordinate arrays (see spec above)
 /// - multiLineString: The geometry consists of an array of lineStrings
 /// - multiPolygon: The geometry consists of an array of polygons
-@objc public enum GeometryType: Int, RawRepresentable {
+public enum GeometryType: Int, RawRepresentable {
     /// The geometry consists of a single point
     case point
     
@@ -78,19 +76,19 @@ import Foundation
 }
 
 /// GeoJsonGeometry is a Swift representation of the `geometry` property in a GeoJSON feature.
-class GeoJsonGeometry {
+public final class GeoJsonGeometry {
     
     /// Type of this geometry from the parsed GeoJSON
-    private(set) var type: GeometryType
+    public private(set) var type: GeometryType
     
     /// String encoding of the coordinates in this geometry
-    private(set) var coordinateJSON: String
+    public private(set) var coordinateJSON: String
     
     /// Coordinates from the parsed GeoJSON
-    private(set) var coordinates: [[[[Double]]]]?
+    public private(set) var coordinates: [[[[Double]]]]?
     
     /// A single lat/lon coordinate in the case self.type is `Point`
-    var point: [Double]? {
+    public var point: [Double]? {
         guard type == .point else {
             return nil
         }
@@ -99,7 +97,7 @@ class GeoJsonGeometry {
     }
     
     /// An array of points in the case self.type is `LineString` or `MultiPoint`
-    var points: [[Double]]? {
+    public var points: [[Double]]? {
         guard type == .lineString || type == .multiPoint else {
             return nil
         }
@@ -108,7 +106,7 @@ class GeoJsonGeometry {
     }
     
     /// An array of lines in the case self.type is `Polygon` or `MultiLineString`
-    var polygon: [[[Double]]]? {
+    public var polygon: [[[Double]]]? {
         guard type == .polygon || type == .multiLineString else {
             return nil
         }
@@ -117,7 +115,7 @@ class GeoJsonGeometry {
     }
     
     /// An array of polygons in the case self.type is `MultiPolygon`
-    var multipolygon: [[[[Double]]]]? {
+    public var multipolygon: [[[[Double]]]]? {
         guard type == .multiPolygon else {
             return nil
         }
@@ -126,20 +124,43 @@ class GeoJsonGeometry {
     }
     
     /// The geometry's centroid, represented as `[longitude, latitude]`
-    var centroid: [Double]? {
+    public var centroid: [Double]? {
         guard let points = coordinates else {
             return nil
         }
         
-        let flattenedCoordinates = Array(points.toCoordinates().joined().joined())
-        guard let centroid = GeometryUtils.centroid(coordinates: flattenedCoordinates) else {
-            return nil
+        let flattenedCoordinates = points.joined().joined().map {
+            CLLocationCoordinate2D(latitude: $0[1], longitude: $0[0])
         }
-        
+        guard let centroid = Self.boundingBoxCenter(flattenedCoordinates) else { return nil }
+
         return [centroid.longitude, centroid.latitude]
     }
     
-    init?(geoJSON: [String: Any]) {
+    public static func coordinates(in json: String) -> (type: GeometryType?, points: [Any]?) {
+        guard let value = try? JSONSerialization.jsonObject(with: Data(json.utf8)) as? [String: Any] else {
+            return (nil, nil)
+        }
+        return ((value["type"] as? String).flatMap(GeometryType.init(rawValue:)), value["coordinates"] as? [Any])
+    }
+
+    public static func boundingBoxCenter(_ coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D? {
+        guard let first = coordinates.first else { return nil }
+        var minLatitude = first.latitude
+        var maxLatitude = first.latitude
+        var minLongitude = first.longitude
+        var maxLongitude = first.longitude
+        for coordinate in coordinates.dropFirst() {
+            minLatitude = min(minLatitude, coordinate.latitude)
+            maxLatitude = max(maxLatitude, coordinate.latitude)
+            minLongitude = min(minLongitude, coordinate.longitude)
+            maxLongitude = max(maxLongitude, coordinate.longitude)
+        }
+        return CLLocationCoordinate2D(latitude: maxLatitude - (maxLatitude - minLatitude) / 2,
+                                      longitude: maxLongitude - (maxLongitude - minLongitude) / 2)
+    }
+
+    public init?(geoJSON: [String: Any]) {
         // Parse the geometry type
         guard let typeString = geoJSON["type"] as? String else {
             return nil
@@ -192,7 +213,7 @@ class GeoJsonGeometry {
         }
     }
     
-    init?(point: [Double]) {
+    public init?(point: [Double]) {
         guard point.count == 2 else {
             return nil
         }
@@ -202,7 +223,7 @@ class GeoJsonGeometry {
         coordinateJSON = "{\"coordinates\": [\(point[0]),\(point[1])], \"type\": \"Point\"}"
     }
 
-    init?(copyFrom: GeoJsonGeometry?) {
+    public init?(copyFrom: GeoJsonGeometry?) {
         guard let copy = copyFrom else {
             return nil
         }
@@ -212,7 +233,7 @@ class GeoJsonGeometry {
         self.coordinates = copy.coordinates
     }
     
-    func validate() -> Bool {
+    public func validate() -> Bool {
         switch type {
         case .point:
             // A point must have 2 values (lat, lon)
@@ -249,7 +270,7 @@ class GeoJsonGeometry {
     }
     
     /// Finds the median point in the list of points, or if there are an even number of points, gets the mid point between the two median points. Returns nil if the geometry isn't a LineString
-    func getLineMedian() -> [Double]? {
+    public func getLineMedian() -> [Double]? {
         guard type == .lineString else {
             return nil
         }
@@ -289,7 +310,7 @@ class GeoJsonGeometry {
         return [lon, lat]
     }
     
-    func clipToFirstPoint() -> Bool {
+    public func clipToFirstPoint() -> Bool {
         guard let firstPoint = coordinates?[0][0][0] else {
             return false
         }
@@ -312,7 +333,7 @@ class GeoJsonGeometry {
         return true
     }
     
-    func clipToLastPoint() -> Bool {
+    public func clipToLastPoint() -> Bool {
         // Find the very last point - in the typical line case, this works just fine. In the multipolygon sort of case, this will be weird
         guard let firstIdx = coordinates?.count else {
             return false

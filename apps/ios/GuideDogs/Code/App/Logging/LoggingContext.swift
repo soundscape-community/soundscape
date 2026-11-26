@@ -81,7 +81,6 @@ enum LogContext: Int {
     case remoteManager
     case universalLink
     case push
-    case cloud
     case preview
     case cmHeadphoneMotion
     case routeGuidance
@@ -112,7 +111,6 @@ enum LogContext: Int {
         case .remoteManager: return "[RMT]"
         case .universalLink: return "[UNL]"
         case .push: return "[PSH]"
-        case .cloud: return "[CLD]"
         case .preview: return "[PRE]"
         case .cmHeadphoneMotion: return "[CMH]"
         case .routeGuidance: return "[RTG]"
@@ -314,10 +312,6 @@ public func GDLogPushInfo(_ message: String) {
 
 public func GDLogPushError(_ message: String) {
     DDLogError(message, context: LogContext.push.rawValue)
-}
-
-public func GDLogCloudInfo(_ message: String) {
-    DDLogInfo(message, context: LogContext.cloud.rawValue)
 }
 
 public func GDLogPreviewInfo(_ message: String) {

@@ -10,7 +10,6 @@
 import UIKit
 import SwiftUI
 import CoreLocation
-import RealmSwift
 
 struct MarkerRouteTabButton: View {
     let name: String
@@ -75,6 +74,7 @@ struct MarkersAndRoutesList: View {
     
     @State private var selectedList: List = .markers
     @State var sort: SortStyle
+    @State private var storageAvailable = StorageContext.shared.isUserStorageAvailable
     
     fileprivate enum List: String, CaseIterable, Identifiable {
         case markers
@@ -102,7 +102,16 @@ struct MarkersAndRoutesList: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                if selectedList == .markers {
+                if !storageAvailable {
+                    VStack(spacing: 12) {
+                        GDLocalizedTextView("storage.user_data.unavailable")
+                        Button(GDLocalizedString("storage.user_data.retry")) {
+                            StorageContext.shared.prepare { storageAvailable = StorageContext.shared.isUserStorageAvailable }
+                        }
+                    }
+                    .padding()
+                    .frame(maxHeight: .infinity)
+                } else if selectedList == .markers {
                     MarkersList(sort: $sort)
                 } else {
                     RoutesList(sort: $sort)
@@ -128,10 +137,12 @@ struct MarkersAndRoutesList: View {
                 
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .userStorageUnavailable)) { _ in storageAvailable = false }
+        .onReceive(NotificationCenter.default.publisher(for: .userStorageRecovered)) { _ in storageAvailable = true }
         .navigationTitle(GDLocalizedTextView("search.view_markers"))
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if selectedList == .routes {
+                if storageAvailable && selectedList == .routes {
                     NavigationLink(destination: RouteEditView(style: .add, deleteAction: nil).environmentObject(navHelper as ViewNavigationHelper)) {
                         Image(systemName: "plus")
                             .font(.system(size: 22)) // Purposely fix the size since this is in a nav bar
@@ -150,13 +161,12 @@ struct MarkersAndRoutesList: View {
 
 struct MarkersAndRoutesList_Previews: PreviewProvider {
     static var previews: some View {
-        Realm.bootstrap()
+        PreviewStorage.bootstrap()
         AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
         
         return NavigationView {
             MarkersAndRoutesList().navigationBarTitleDisplayMode(.inline)
         }
-        .environment(\.realmConfiguration, RealmHelper.databaseConfig)
         .environmentObject(UserLocationStore(designValue: CLLocation.sample))
         .environmentObject(MarkersAndRoutesListNavigationHelper())
     }

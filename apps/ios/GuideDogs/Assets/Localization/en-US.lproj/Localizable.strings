@@ -333,7 +333,7 @@
 "settings.clear_cache.markers.alert_title" = "Delete Markers and Routes?";
 
 /* Quotes written as \" Delete removes markers and beacons resetting the app to a new installation build and cannot be undone. */
-"settings.clear_cache.markers.alert_message" = "Are you sure you want to delete all markers and routes? Choosing \"Delete\" will delete all saved markers and routes, then clear cached map data. This action cannot be undone!";
+"settings.clear_cache.markers.alert_message" = "Are you sure you want to delete all markers and routes? Choosing \"Delete\" will delete all saved markers and routes. This action cannot be undone!";
 
 /* Alert title, the stored data wasn't deleted */
 "settings.clear_cache.no_service.title" = "Unable to Clear Stored Map Data";
@@ -3959,3 +3959,9 @@
 
 /* Accessibility label and announcement for a GPX recording error. %@ is the error description. {NumberedPlaceholder="%@"} */
 "gpx_recording.error.accessibility" = "Error: %@";
+
+
+// User storage recovery
+"storage.user_data.unavailable" = "Saved Markers and Routes Unavailable";
+"storage.user_data.unavailable.message" = "Soundscape couldn’t open your saved markers and routes. Your data has been kept. Map features may still be available.";
+"storage.user_data.retry" = "Retry";

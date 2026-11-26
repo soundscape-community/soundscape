@@ -366,7 +366,7 @@
 "settings.clear_cache.markers.alert_title" = "Delete Markers and Routes?";
 
 /*  */
-"settings.clear_cache.markers.alert_message" = "Are you sure you want to delete all markers and routes? Choosing \"Delete\" will delete all saved markers and routes, then clear cached map data. This action cannot be undone!";
+"settings.clear_cache.markers.alert_message" = "Are you sure you want to delete all markers and routes? Choosing \"Delete\" will delete all saved markers and routes. This action cannot be undone!";
 
 /*  */
 "settings.clear_cache.no_service.title" = "Unable to Clear Stored Map Data";
@@ -4583,3 +4583,9 @@
 "settings.section.navilens" = "NaviLens";
 "settings.navilens.auto_snooze.title" = "Snooze When Opening NaviLens";
 "settings.navilens.auto_snooze.description" = "Automatically snooze Soundscape when opening NaviLens and resume when you return. Turn off to keep Soundscape active.";
+
+
+// User storage recovery
+"storage.user_data.unavailable" = "Saved Markers and Routes Unavailable";
+"storage.user_data.unavailable.message" = "Soundscape couldn’t open your saved markers and routes. Your data has been kept. Map features may still be available.";
+"storage.user_data.retry" = "Retry";

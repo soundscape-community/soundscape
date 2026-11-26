@@ -48,6 +48,20 @@ struct SoundscapeApp: App {
             }
             .background(WindowConfigurationView())
             .onAppear(perform: launch.start)
+            .onReceive(NotificationCenter.default.publisher(for: .userStorageUnavailable)) { _ in
+                launch.userStorageUnavailable = true
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .userStorageRecovered)) { _ in
+                launch.userStorageUnavailable = false
+                navigation.update { $0.rebuildHome() }
+                launch.homeGeneration += 1
+            }
+            .alert(GDLocalizedString("storage.user_data.unavailable"), isPresented: $launch.userStorageUnavailable) {
+                Button(GDLocalizedString("storage.user_data.retry")) { StorageContext.shared.prepare {} }
+                Button(GDLocalizedString("general.alert.dismiss"), role: .cancel) {}
+            } message: {
+                GDLocalizedTextView("storage.user_data.unavailable.message")
+            }
             .onReceive(NotificationCenter.default.publisher(for: .rebuildHome)) { _ in
                 navigation.update { $0.rebuildHome() }
                 launch.homeGeneration += 1
@@ -84,6 +98,7 @@ struct SoundscapeApp: App {
 private final class AppLaunchModel: ObservableObject, ExperimentManagerDelegate {
     private let navigation = AppNavigationModel.shared
     @Published var homeGeneration = 0
+    @Published var userStorageUnavailable = false
     private(set) var onboarding: OnboardingViewModel?
     private var didStart = false
     private var validator: TTSVoiceValidator?
@@ -101,10 +116,13 @@ private final class AppLaunchModel: ObservableObject, ExperimentManagerDelegate 
                 UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
             }
         } else {
-            SpatialDataCache.useDefaultSearchProviders()
             SpatialDataCache.useDefaultGeocoder()
         }
 
+        StorageContext.shared.prepare { [weak self] in self?.continueStartup() }
+    }
+
+    private func continueStartup() {
         SettingsContext.shared.automaticCalloutsEnabled = true
         GDATelemetry.helper = TelemetryHelper(appContext: AppContext.shared)
 

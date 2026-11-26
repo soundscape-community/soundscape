@@ -114,6 +114,8 @@ struct LocationDetail {
     private let estimated: EstimatedLocationDetail?
     // Imported Properties
     private let imported: ImportedLocationDetail?
+    private let providedPOI: POI?
+    var resolvedPOI: POI? { providedPOI ?? source.entity }
     
     // Marker Properties
     
@@ -172,7 +174,7 @@ struct LocationDetail {
             return name
         }
         
-        if let name = source.name, name.isEmpty == false {
+        if let name = resolvedPOI?.localizedName, name.isEmpty == false {
             return name
         }
         
@@ -214,7 +216,7 @@ struct LocationDetail {
     }
     
     private var address: String? {
-        if let address = source.address, address.isEmpty == false {
+        if let address = resolvedPOI?.addressLine ?? source.address, address.isEmpty == false {
             return address
         }
         
@@ -308,7 +310,7 @@ struct LocationDetail {
         let imported = value.imported
         let telemetryContext = value.telemetryContext
         
-        self.init(source: source, location: newLocation, centerLocation: centerLocation, estimated: estimated, imported: imported, telemetryContext: telemetryContext)
+        self.init(source: source, location: newLocation, centerLocation: centerLocation, estimated: estimated, imported: imported, telemetryContext: telemetryContext, providedPOI: value.providedPOI)
     }
     
     private init(value: LocationDetail, estimated: EstimatedLocationDetail, telemetryContext: String?) {
@@ -317,40 +319,33 @@ struct LocationDetail {
         let centerLocation = value.centerLocation
         let imported = value.imported
         
-        self.init(source: source, location: location, centerLocation: centerLocation, estimated: estimated, imported: imported, telemetryContext: telemetryContext)
+        self.init(source: source, location: location, centerLocation: centerLocation, estimated: estimated, imported: imported, telemetryContext: telemetryContext, providedPOI: value.providedPOI)
     }
     
-    private init(source: Source, location: CLLocation, centerLocation: CLLocation, estimated: EstimatedLocationDetail?, imported: ImportedLocationDetail?, telemetryContext: String?) {
+    private init(source: Source, location: CLLocation, centerLocation: CLLocation, estimated: EstimatedLocationDetail?, imported: ImportedLocationDetail?, telemetryContext: String?, providedPOI: POI? = nil) {
         self.source = source
         self.location = location
         self.centerLocation = centerLocation
         self.estimated = estimated
         self.imported = imported
+        self.providedPOI = providedPOI
         self.telemetryContext = telemetryContext
     }
-    
-    // MARK: Realm
     
     func updateLastSelectedDate() {
         DispatchQueue.main.async {
             do {
                 if let marker = self.marker {
                     try marker.updateLastSelectedDate()
-                } else if var entity = self.source.entity as? SelectablePOI {
-                    try autoreleasepool {
-                        let cache = try RealmHelper.getCacheRealm()
-                         
-                        try cache.write {
-                            entity.lastSelectedDate = Date()
-                        }
-                    }
+                } else if let poi = self.resolvedPOI {
+                    SpatialDataCache.recordSelection(poi)
                 }
             } catch {
-                DDLogError("Failed to update last selected date in Realm")
+                DDLogError("Failed to update last selected date: \(error)")
             }
         }
     }
-    
+
 }
 
 // MARK: Public Initializers
@@ -381,7 +376,8 @@ extension LocationDetail {
     
     init(entity: POI, imported: ImportedLocationDetail? = nil, telemetryContext: String? = nil) {
         if let entity = entity as? GenericLocation {
-            self.init(location: entity.location, imported: imported, telemetryContext: telemetryContext)
+            self.init(source: .coordinate(at: entity.location), location: entity.location, centerLocation: entity.location,
+                      estimated: nil, imported: imported, telemetryContext: telemetryContext, providedPOI: entity)
         } else {
             let source: Source = .entity(id: entity.key)
             let location: CLLocation
@@ -393,7 +389,7 @@ extension LocationDetail {
                 location = entity.centroidLocation
             }
             
-            self.init(source: source, location: location, centerLocation: centerLocation, estimated: nil, imported: imported, telemetryContext: telemetryContext)
+            self.init(source: source, location: location, centerLocation: centerLocation, estimated: nil, imported: imported, telemetryContext: telemetryContext, providedPOI: entity)
         }
     }
     
@@ -442,7 +438,7 @@ extension LocationDetail {
     }
     
     static func updateLocationIfNeeded(for value: LocationDetail) -> LocationDetail {
-        guard let entity = value.source.entity else {
+        guard let entity = value.resolvedPOI else {
             // no-op
             return value
         }

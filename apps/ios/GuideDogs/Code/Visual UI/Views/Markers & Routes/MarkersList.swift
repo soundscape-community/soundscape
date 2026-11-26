@@ -8,7 +8,6 @@
 //
 
 import SwiftUI
-import RealmSwift
 import CoreLocation
 
 struct MarkersList: View {
@@ -152,7 +151,7 @@ struct MarkersList: View {
 
 struct MarkersList_Previews: PreviewProvider {
     static var previews: some View {
-        Realm.bootstrap()
+        PreviewStorage.bootstrap()
         AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
         
         return Group {

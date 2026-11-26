@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -30,8 +31,6 @@ class ServiceModel {
     
     /// String for identifying errors that originate from openscape services
     static let errorDomain = "GDAHTTPErrorDomain"
-    /// String for identifying errors that originate from Realm
-    static let errorRealm = "GDAHTTPErrorRealm"
     
     /// Domain part of the URL for learning resources
     private static let productionAssestsHostName = "https://soundscape.services"

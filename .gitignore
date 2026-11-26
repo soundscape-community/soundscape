@@ -119,10 +119,6 @@ node_modules/
 
 bower_components/
 
-# This is for fixing the 'Include of non-modular header inside framework module'
-# error that appears when building with the Realm library.
-apps/ios/Pods/Headers/Public/Realm
-
 # CLion build subdirectories
 cmake-build-debug/
 

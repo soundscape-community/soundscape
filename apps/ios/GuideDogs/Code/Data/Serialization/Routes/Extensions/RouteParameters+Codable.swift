@@ -47,8 +47,8 @@ extension RouteParameters {
         return try? encoder.encode(parameters)
     }
     
-    static func encode(from route: Route, context: RouteParameters.Context) -> Data? {
-        guard let parameters = RouteParameters(route: route, context: context) else {
+    static func encode(from route: Route) -> Data? {
+        guard let parameters = RouteParameters(route: route) else {
             GDLogURLResourceError("Failed to encode - Failed to initialize parameters")
             return nil
         }
@@ -56,18 +56,18 @@ extension RouteParameters {
         return encode(parameters)
     }
     
-    static func encode(from detail: RouteDetail, context: RouteParameters.Context) -> Data? {
+    static func encode(from detail: RouteDetail) -> Data? {
         guard case .database(let id) = detail.source else {
-            GDLogURLResourceError("Encoding is only supported for Realm routes")
+            GDLogURLResourceError("Encoding is only supported for saved routes")
             return nil
         }
         
         guard let route = SpatialDataCache.routeByKey(id) else {
-            GDLogURLResourceError("Failed to encode - Failed to fetch route from Realm")
+            GDLogURLResourceError("Failed to encode - Failed to fetch route from storage")
             return nil
         }
         
-        return encode(from: route, context: context)
+        return encode(from: route)
     }
     
     // MARK: File URLs
@@ -95,12 +95,12 @@ extension RouteParameters {
         return writeToTemporaryFile(encode(parameters))
     }
     
-    static func encodeAndWriteToTemporaryFile(from route: Route, context: RouteParameters.Context) -> URL? {
-        return writeToTemporaryFile(encode(from: route, context: context))
+    static func encodeAndWriteToTemporaryFile(from route: Route) -> URL? {
+        return writeToTemporaryFile(encode(from: route))
     }
     
-    static func encodeAndWriteToTemporaryFile(from detail: RouteDetail, context: RouteParameters.Context) -> URL? {
-        return writeToTemporaryFile(encode(from: detail, context: context))
+    static func encodeAndWriteToTemporaryFile(from detail: RouteDetail) -> URL? {
+        return writeToTemporaryFile(encode(from: detail))
     }
     
 }

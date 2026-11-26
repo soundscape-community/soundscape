@@ -3,12 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import SwiftUI
 import Combine
-import RealmSwift
 
 class RouteModel: ObservableObject {
     let id: String
@@ -108,7 +108,7 @@ struct RouteCell: View {
 
 struct RouteCell_Previews: PreviewProvider {
     static var previews: some View {
-        Realm.bootstrap()
+        PreviewStorage.bootstrap()
         
         return Group {
             RouteCell(model: RouteModel(id: Route.sample.id))

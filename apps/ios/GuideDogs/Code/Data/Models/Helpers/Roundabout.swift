@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -181,7 +182,7 @@ extension Roundabout {
             
             for roadIntersection in roadIntersections {
                 // Ignore the current intersection
-                guard !roadIntersection.isEqual(intersection) else {
+                guard roadIntersection != intersection else {
                     continue
                 }
                 

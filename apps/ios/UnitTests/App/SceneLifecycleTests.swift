@@ -265,6 +265,54 @@ final class SceneLifecycleTests: XCTestCase {
         XCTAssertEqual(supportedRoute.waypoints.first?.marker?.location.entity?.source, .osm)
     }
 
+    @MainActor
+    func testImportedRouteWithUncachedWaypointCanBeSavedAndShared() async throws {
+        let routeID = UUID().uuidString
+        let osmID = "imported-\(UUID().uuidString)"
+        let location = LocationParameters(name: "Imported entrance", address: "Castle Hill",
+                                          coordinate: CoordinateParameters(latitude: 55.9486, longitude: -3.1999),
+                                          entity: EntityParameters(source: .osm, lookupInformation: osmID))
+        let document = """
+        {
+          "id": "\(routeID)",
+          "name": "Imported walk",
+          "waypoints": [{
+            "index": 0,
+            "markerId": "source-marker-id",
+            "marker": { "location": \(String(decoding: try JSONEncoder().encode(location), as: UTF8.self)) }
+          }]
+        }
+        """
+        let parameters = try XCTUnwrap(RouteParameters.decode(Data(document.utf8)))
+        let imported = expectation(description: "Import resolves the waypoint")
+        let handler = RouteParametersHandler()
+        var draft: Route?
+        handler.makeRoute(from: parameters) { result in
+            draft = try? result.get()
+            imported.fulfill()
+        }
+        await fulfillment(of: [imported], timeout: 5)
+        let route = try XCTUnwrap(draft)
+        XCTAssertNil(SpatialDataCache.referenceEntityByEntityKey(osmID))
+
+        try await Route.add(route)
+        let stored = try XCTUnwrap(Route.object(forPrimaryKey: routeID))
+        let markerID = try XCTUnwrap(stored.waypoints.first?.markerId)
+        defer {
+            try? Route.delete(routeID)
+            try? ReferenceEntity.remove(id: markerID)
+        }
+        try StorageContext.shared.spatial().reset()
+
+        XCTAssertEqual(SpatialDataCache.referenceEntityByKey(markerID)?.getPOI().name, "Imported entrance")
+        XCTAssertEqual(SpatialDataCache.referenceEntityByKey(markerID)?.getPOI().addressLine, "Castle Hill")
+        let data = try XCTUnwrap(RouteParameters.encode(from: stored))
+        let exported = try XCTUnwrap(RouteParameters.decode(data))
+        XCTAssertEqual(exported.waypoints.first?.marker?.location.entity?.lookupInformation, osmID)
+        XCTAssertEqual(exported.waypoints.first?.marker?.location.coordinate.latitude, 55.9486)
+        XCTAssertEqual(exported.waypoints.first?.marker?.location.coordinate.longitude, -3.1999)
+    }
+
     private func makeRouteFile(at url: URL, name: String) throws {
         let parameters = RouteParameters(id: UUID().uuidString,
                                          name: name,

@@ -8,7 +8,7 @@
 //
 
 import Foundation
-import RealmSwift
+import SSData
 import CoreLocation
 
 enum SpatialDataState {
@@ -67,16 +67,15 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     fileprivate var currentLocation: CLLocation?
     fileprivate var originalRequestLocation: CLLocation?
 
-    fileprivate var prioritize = false
     private var expectedTilesCount = 0
     private var canceledTilesCount = 0
-    private var toFetch: [VectorTile] = []
     
     // MARK: Synchronized Properties
     
     private let networkQueue = DispatchQueue(label: "services.soundscape.spatialdata.network", qos: .utility)
     private var dispatchQueue = DispatchQueue(label: "services.soundscape.spatialdata", qos: .utility, attributes: .concurrent)
     private var fetchingTiles = false
+    private var tileRequestID = UUID()
     
     /// Set of tiles the spatial data context is currently using to generate the list of spatial data result entities around the user
     private var tiles: Set<VectorTile> = []
@@ -175,10 +174,6 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         // Register to receive a notification when the app has finished initializing
         NotificationCenter.default.addObserver(self, selector: #selector(self.onAppDidInitialize), name: NSNotification.Name.appDidInitialize, object: nil)
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleCloudKeyValueStoreDidChange),
-                                               name: .cloudKeyValueStoreDidChange,
-                                               object: nil)
     }
     
     @objc private func onAppDidInitialize() {
@@ -220,16 +215,8 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         
         motionActivityContext.startActivityUpdates()
         
-        if !FirstUseExperience.didComplete(.iCloudBackup) {
-            // Getting the `.initialSync` notification from iCloud is not reliable so we force sync
-            GDLogCloudInfo("Performing initial cloud sync")
-            AppContext.shared.cloudKeyValueStore.syncReferenceEntities(reason: .initialSync) {
-                AppContext.shared.cloudKeyValueStore.syncRoutes(reason: .initialSync)
-                FirstUseExperience.setDidComplete(for: .iCloudBackup)
-            }
-        }
     }
-    
+
     func stop() {
         geolocationManager?.updateDelegate = nil
         
@@ -239,48 +226,25 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     // MARK: - Instance Methods
     
     func clearCache() -> Bool {
-        let manager = FileManager.default
-        let config = RealmHelper.cacheConfig
-        
-        guard let fileURL = config.fileURL else {
+        do {
+            try dispatchQueue.sync(flags: .barrier) {
+                try StorageContext.shared.withSpatialStore { try $0.reset() }
+                tileRequestID = UUID()
+                fetchingTiles = false
+                tiles.removeAll()
+            }
+        } catch {
+            GDLogSpatialDataError("Unable to clear the spatial cache: \(error)")
             return false
         }
-        
-        // Recreate the cached data in a new
-        // Realm file
-        RealmHelper.incrementCacheConfig()
-        
-        let realmFiles = [fileURL,
-                          fileURL.appendingPathExtension("lock"),
-                          fileURL.appendingPathExtension("management"),
-                          fileURL.appendingPathExtension("note")]
-        
-        var failed = false
-        
-        for url in realmFiles {
-            do {
-                try manager.removeItem(at: url)
-            } catch {
-                GDLogSpatialDataError("Unable to delete \(url), error: \(error.localizedDescription)")
-                failed = true
-            }
-        }
-        
-        if !failed {
-            GDLogSpatialDataVerbose("Cache deleted!")
-        }
-        
-        dispatchQueue.sync(flags: .barrier) {
-            tiles.removeAll()
-        }
-        
+
         AppContext.shared.calloutHistory.clear()
         
         if let loc = geolocationManager?.location {
             updateSpatialDataAsync(location: loc, reloadPORs: true)
         }
         
-        return !failed
+        return true
     }
     
     func getDataView(for location: CLLocation, searchDistance: CLLocationDistance = SpatialDataContext.initialPOISearchDistance) -> SpatialDataViewProtocol? {
@@ -356,7 +320,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         
         serviceModel.getTileData(tile: tile, categories: [:], queue: networkQueue) { (statusCode, data, error) in
             // Make sure we don't encounter errors and successfully got the tile
-            guard error == nil, statusCode == .success, data != nil else {
+            guard error == nil, statusCode == .notModified || (statusCode == .success && data != nil) else {
                 completionHandler(false)
                 return
             }
@@ -406,178 +370,132 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         let current = VectorTile.tileForLocation(location, zoom: SpatialDataContext.zoomLevel)
         let currentCached = SpatialDataContext.isCached(tile: current)
         
-        if let overridePrioritizeCurrent = overridePrioritizeCurrent {
-            prioritize = overridePrioritizeCurrent
-        } else {
-            // Only prioritize the current tile if we don't have it cached and we aren't currently clearing and rebuilding the cache
-            prioritize = !currentCached && !reloadPORs
+        let prioritize = overridePrioritizeCurrent ?? (!currentCached && !reloadPORs)
+        let request: (id: UUID, tiles: [VectorTile])? = dispatchQueue.sync(flags: .barrier) {
+            guard !fetchingTiles else { return nil }
+            updateFilter.update(location: location)
+            let (remaining, missing) = Self.checkForTiles(location: location, tiles: tiles,
+                                                          includePORs: reloadPORs, prioritizeCurrent: prioritize)
+            tiles = remaining
+            tileRequestID = UUID()
+            fetchingTiles = !missing.isEmpty
+            canceledTilesCount = 0
+            expectedTilesCount = remaining.count + missing.count
+            originalRequestLocation = location
+            state = missing.isEmpty ? .ready : .loading
+            return (tileRequestID, missing)
         }
-        
-        let checked = dispatchQueue.sync(flags: .barrier) { () -> Bool in
-            guard !self.fetchingTiles else {
-                return false
-            }
-            
-            // Update the time/location filter
-            self.updateFilter.update(location: location)
-            
-            // Figure out which tiles we need to fetch
-            (self.tiles, self.toFetch) = SpatialDataContext.checkForTiles(location: location,
-                                                                          tiles: self.tiles,
-                                                                          includePORs: reloadPORs,
-                                                                          prioritizeCurrent: prioritize)
-            
-            // Update tile fetching state
-            self.fetchingTiles = true
-            self.canceledTilesCount = 0
-            self.expectedTilesCount = self.tiles.count + self.toFetch.count
-            self.originalRequestLocation = location
-            
-            return true
-        }
-        
-        // Only allow one update to occur at a time
-        guard checked else {
-            // If the current tile is already cached, pass on the location update immediately
-            if currentCached {
-                notifyLocationUpdated(location)
-            }
-            
-            // There are no tiles to fetch
+
+        guard let request else {
+            if currentCached { notifyLocationUpdated(location) }
             return nil
         }
-        
-        // Make sure there are tiles we need to cache
-        guard toFetch.count > 0 else {
-            GDLogSpatialDataVerbose("No new tiles to fetch")
-            
-            dispatchQueue.sync(flags: .barrier) {
-                fetchingTiles = false
-            }
-            
-            state = .ready
+        guard !request.tiles.isEmpty else {
             notifyLocationUpdated(location)
-            
-            // There are no tiles to fetch
             return nil
         }
-        
-        // We are fetching tiles, but if we already have the current tile, pass on the location update immediately
-        if !toFetch.contains(current) {
-            notifyLocationUpdated(location)
-        }
-        
-        // We actually have some tiles to fetch
-        GDLogSpatialDataVerbose("Fetching \(self.toFetch.count) tiles.")
-        
-        state = .loading
-        
-        // Enter the dispatch group for each tile
-        toFetch.forEach { _ in dispatchGroup?.enter() }
-        
-        let progress = Progress(totalUnitCount: Int64(toFetch.count))
-        
-        for tile in toFetch {
-            if !SpatialDataContext.needsFetching(tile: tile) {
-                processFetchedTile(tile, dispatchGroup: dispatchGroup, progress: progress)
-            } else {
-                fetchTileAsync(tile, dispatchGroup: dispatchGroup, progress: progress)
+        if !request.tiles.contains(current) { notifyLocationUpdated(location) }
+
+        let progress = Progress(totalUnitCount: Int64(request.tiles.count))
+        request.tiles.forEach { _ in dispatchGroup?.enter() }
+        networkQueue.async {
+            for tile in request.tiles {
+                if Self.needsFetching(tile: tile) {
+                    self.fetchTile(tile, requestID: request.id, prioritize: prioritize,
+                                   dispatchGroup: dispatchGroup, progress: progress)
+                } else {
+                    self.finishTile(tile, requestID: request.id, prioritize: prioritize,
+                                    dispatchGroup: dispatchGroup, progress: progress)
+                }
             }
         }
-        
         return progress
     }
-    
-    private func fetchTileAsync(_ tile: VectorTile, retryCount: UInt = 0, dispatchGroup: DispatchGroup?, progress: Progress?) {
-        guard let categories = superCategories else {
-            self.processFetchedTile(tile, retryCount: retryCount, error: SpatialDataContextError.noCategories, dispatchGroup: dispatchGroup, progress: progress)
+
+    private func fetchTile(_ tile: VectorTile, requestID: UUID, prioritize: Bool, retryCount: Int = 0,
+                           dispatchGroup: DispatchGroup?, progress: Progress) {
+        let finish: (Error?) -> Void = { error in
+            self.finishTile(tile, requestID: requestID, prioritize: prioritize, retryCount: retryCount,
+                            error: error, dispatchGroup: dispatchGroup, progress: progress)
+        }
+
+        do {
+            guard let categories = superCategories else { throw SpatialDataContextError.noCategories }
+            let connection = try dispatchQueue.sync { () -> (SpatialTileStore, Int)? in
+                guard tileRequestID == requestID else { return nil }
+                let store = try StorageContext.shared.spatial()
+                return (store, try store.epoch())
+            }
+            guard let (store, epoch) = connection else {
+                dispatchGroup?.leave()
+                return
+            }
+            serviceModel.getTileData(tile: tile, categories: categories, queue: networkQueue) { status, data, error in
+                self.networkQueue.async {
+                    do {
+                        if let error { throw error }
+                        switch status {
+                        case .success:
+                            guard let data else { throw SpatialDataContextError.missingData }
+                            try store.replace(key: tile.quadKey, metadata: TileMetadata(etag: data.etag, expiry: data.ttl),
+                                              features: data.featuresForStorage(), epoch: epoch)
+                        case .notModified:
+                            try store.extend(key: tile.quadKey, expiry: TileData.getNewExpiration(), epoch: epoch)
+                        case .unknown:
+                            throw SpatialDataContextError.missingData
+                        }
+                        finish(nil)
+                    } catch {
+                        if SpatialTileStore.isRebuildable(error) {
+                            do { _ = try StorageContext.shared.withSpatialStore { try $0.epoch() } }
+                            catch { GDLogSpatialDataError("Unable to recover spatial database: \(error)") }
+                        }
+                        finish(error)
+                    }
+                }
+            }
+        } catch {
+            finish(error)
+        }
+    }
+
+    private func finishTile(_ tile: VectorTile, requestID: UUID, prioritize: Bool, retryCount: Int = 0,
+                            error: Error? = nil, dispatchGroup: DispatchGroup?, progress: Progress) {
+        if error != nil, retryCount < 2, dispatchQueue.sync(execute: { tileRequestID == requestID }) {
+            fetchTile(tile, requestID: requestID, prioritize: prioritize, retryCount: retryCount + 1,
+                      dispatchGroup: dispatchGroup, progress: progress)
             return
         }
-        
-        serviceModel.getTileData(tile: tile, categories: categories, queue: networkQueue) { (statusCode, data, error) in
-            guard error == nil else {
-                self.processFetchedTile(tile, retryCount: retryCount, error: error, dispatchGroup: dispatchGroup, progress: progress)
-                return
+
+        let result: (location: CLLocation?, finished: Bool)? = dispatchQueue.sync(flags: .barrier) {
+            guard tileRequestID == requestID else { return nil }
+            let isCurrent = tile == currentTile
+            if let error {
+                GDLogSpatialDataError("Unable to fetch tile \(tile.quadKey): \(error)")
+                canceledTilesCount += 1
+                if isCurrent, !Self.isCached(tile: tile) { state = .error }
+            } else {
+                tiles.insert(tile)
             }
-            
-            guard statusCode == .success else {
-                SpatialDataContext.extendTileExpiration(tile)
-                self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
-                return
-            }
-            
-            guard let tileData = data else {
-                self.processFetchedTile(tile, retryCount: retryCount, error: SpatialDataContextError.missingData, dispatchGroup: dispatchGroup, progress: progress)
-                return
-            }
-            
-            SpatialDataContext.storeTile(tile, data: tileData)
-            self.processFetchedTile(tile, retryCount: retryCount, error: nil, dispatchGroup: dispatchGroup, progress: progress)
-        }
-    }
-    
-    private func processFetchedTile(_ tile: VectorTile, retryCount: UInt = 0, error: Error? = nil, dispatchGroup: DispatchGroup?, progress: Progress?) {
-        let loc = currentLocation ?? originalRequestLocation
-        
-        // If error is not nil, we were unable to get the tile
-        if error != nil {
-            // RECURSIVE: Retry the call up to three times total, and then cancel the call (a.k.a. give up and admit defeat)
-            if retryCount < 2 {
-                fetchTileAsync(tile, retryCount: (retryCount + 1), dispatchGroup: dispatchGroup, progress: progress)
-                return
-            }
-            
-            GDLogSpatialDataError("Unable to fetch tile \(tile.quadKey). Cancelling")
-            
-            canceledTilesCount += 1
-            
-            if tile == currentTile {
-                // The user is in an unsupported region, or has no internet, or Azure is down...
-                state = .error
-            }
-        } else {
-            // We got the tile
-            dispatchQueue.sync(flags: .barrier) {
-                _ = self.tiles.insert(tile)
-            }
-            
-            // If the tile we just fetched is the current tile (the tile the user is
-            // currently in), immediately pass on the location update...
-            if tile == currentTile, let location = loc {
-                notifyLocationUpdated(location, tilesChanged: true)
-            }
-        }
-        
-        var tilesCount = 0
-        dispatchQueue.sync(flags: .barrier) {
-            tilesCount = self.tiles.count
-        }
-        
-        // If we have fetched all of the tiles (minus the ones we had to cancel), then we are ready to finish up
-        if expectedTilesCount == tilesCount + canceledTilesCount {
-            dispatchQueue.sync(flags: .barrier) {
+            let finished = expectedTilesCount == tiles.count + canceledTilesCount
+            if finished {
                 fetchingTiles = false
+                if state != .error { state = .ready }
             }
-            
-            GDLogSpatialDataVerbose("Requested \(toFetch.count) tiles; Canceled \(canceledTilesCount); \(tilesCount) tiles ready.")
-            
-            if prioritize, let location = loc {
+            let location = (finished || (isCurrent && error == nil)) ? currentLocation ?? originalRequestLocation : nil
+            return (location, finished)
+        }
+
+        progress.completedUnitCount += 1
+        dispatchGroup?.leave()
+        if let result, let location = result.location {
+            notifyLocationUpdated(location, tilesChanged: true)
+            if result.finished && prioritize && error == nil {
                 updateSpatialDataAsync(location: location)
             }
-            
-            if state != .error {
-                state = .ready
-            }
-            
-            if let location = loc {
-                notifyLocationUpdated(location, tilesChanged: true)
-            }
         }
-        
-        progress?.completedUnitCount += 1
-        dispatchGroup?.leave()
     }
-    
+
     fileprivate func notifyLocationUpdated(_ location: CLLocation, tilesChanged: Bool = false) {
         DispatchQueue.main.async {
             AppContext.process(LocationUpdatedEvent(location))
@@ -621,79 +539,25 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     /// - Parameter tile: The VectorTile to check for
     private class func isCached(tile: VectorTile) -> Bool {
         do {
-            return try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                guard cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) != nil else {
-                    // The tile isn't in the cache
-                    GDLogSpatialDataVerbose("Tile Miss: (\(tile.x), \(tile.y), \(tile.zoom))")
-                    return false
-                }
-                
-                // The tile is cached and still has time to live, so return the cached version
-                GDLogSpatialDataVerbose("Tile Hit: (\(tile.x), \(tile.y), \(tile.zoom))")
-                return true
-            }
+            return try StorageContext.shared.withSpatialStore { try $0.metadata(for: tile.quadKey) } != nil
         } catch {
-            GDLogSpatialDataError("Failed `isCached(tile)` with error: \(error)")
+            GDLogSpatialDataError("Unable to check tile availability: \(error)")
             return false
         }
     }
-    
-    /// Checks if the tile needs to be fetched (it either isn't in the cache or it has expired)
-    /// - Parameter tile: VectorTile to check for
+
     private class func needsFetching(tile: VectorTile) -> Bool {
         do {
-            return try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                guard let cachedTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) else {
-                    // The tile isn't in the cache
-                    GDLogSpatialDataVerbose("Tile Miss: (\(tile.x), \(tile.y), \(tile.zoom))")
-                    return true
-                }
-                
-                guard cachedTile.ttl as Date > Date() else {
-                    // The tile is in the cache, but the cache has expired
-                    GDLogSpatialDataVerbose("Tile Expired: (\(tile.x), \(tile.y), \(tile.zoom))")
-                    return true
-                }
-                
-                // The tile is cached and still has time to live, so it doesn't need fetched
-                GDLogSpatialDataVerbose("Tile Hit: (\(tile.x), \(tile.y), \(tile.zoom))")
-                return false
+            guard let metadata = try StorageContext.shared.withSpatialStore({ try $0.metadata(for: tile.quadKey) }) else {
+                return true
             }
+            return metadata.expiry <= Date()
         } catch {
-            GDLogSpatialDataError("Failed `needsFetching(tile:`")
-            return false
+            GDLogSpatialDataError("Unable to check tile expiry: \(error)")
+            return true
         }
     }
-    
-    private class func storeTile(_ tile: VectorTile, data: TileData) {
-        do {
-            try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                // Remove the existing tiles before storing the updated tile so that we remove old (bad)
-                // intersection data from before we fixed the server intersection code (where multiple versions
-                // of the same intersection were being returned in adjacent tiles)
-                if let existingTile = SpatialDataCache.tileData(for: [tile]).first {
-                    try cache.write {
-                        cache.delete(existingTile.intersections)
-                    }
-                }
-                
-                try cache.write {
-                    cache.add(data, update: .modified)
-                }
-            }
-        } catch {
-            GDLogSpatialDataWarn("Unable to store tile (\(tile.x), \(tile.y), \(tile.zoom))")
-        }
-        
-        GDLogSpatialDataVerbose("Tile Add/Update: (\(tile.x), \(tile.y), \(tile.zoom))")
-    }
-    
+
     /// Given the user's location and the current set of tiles we have loaded and are tracking, this
     /// method returns the remaining set of tiles we should continue to track, and the list of new
     /// tiles we need to download.
@@ -725,44 +589,14 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
         return (remainingTiles, missingTiles)
     }
     
-    private class func extendTileExpiration(_ tile: VectorTile) {
-        do {
-            
-            try autoreleasepool {
-                let cache = try RealmHelper.getCacheRealm()
-                
-                guard let existingTile = cache.object(ofType: TileData.self, forPrimaryKey: tile.quadKey) else {
-                    return
-                }
-                
-                try cache.write {
-                    existingTile.ttl = TileData.getNewExpiration()
-                }
-            }
-        } catch {
-            GDLogSpatialDataWarn("Unable to extend tile's expiration (\(tile.x), \(tile.y), \(tile.zoom))")
-        }
-    }
-    
     private class func expireAllTiles() {
-        GDLogAppInfo("Expiring all stored tiles")
-        
-        autoreleasepool {
-            do {
-                let cache = try RealmHelper.getCacheRealm()
-                let tiles = cache.objects(TileData.self)
-                
-                try cache.write {
-                    for tile in tiles {
-                        tile.ttl = TileData.getExpiredTtl()
-                    }
-                }
-            } catch {
-                GDLogAppError("Unable to expire all tiles...")
-            }
+        do {
+            try StorageContext.shared.spatial().expireAll(at: TileData.getExpiredTtl())
+        } catch {
+            GDLogSpatialDataError("Unable to expire the spatial cache: \(error)")
         }
     }
-    
+
     private class func loadDefaultCategories() -> SuperCategories? {
         GDLogAppInfo("Loading default super categories")
         
@@ -832,48 +666,6 @@ extension SpatialDataContext: GeolocationManagerUpdateDelegate {
         }
         
         updateSpatialDataAsync(location: location)
-    }
-    
-}
-
-extension SpatialDataContext {
-    
-    @objc private func handleCloudKeyValueStoreDidChange(_ notification: Notification) {
-        guard let userInfo = notification.userInfo,
-            let changeReason = userInfo[CloudKeyValueStore.NotificationKeys.reason] as? CloudKeyValueStoreChangeReason,
-            let changedKeys = userInfo[CloudKeyValueStore.NotificationKeys.changedKeys] as? [String],
-            let cloudStore = notification.object as? CloudKeyValueStore else {
-                GDLogAppError("Unable to handle cloud key-value store did changed notification")
-                return
-        }
-        
-        switch changeReason {
-        case .initialSync, .serverChanged:
-            // Sync only changed keys
-            cloudStore.syncReferenceEntities(reason: changeReason, changedKeys: changedKeys) {
-                cloudStore.syncRoutes(reason: changeReason, changedKeys: changedKeys)
-            }
-        case .accountChanged:
-            // Sync all entities
-            cloudStore.syncReferenceEntities(reason: changeReason) {
-                cloudStore.syncRoutes(reason: changeReason)
-            }
-        case .quotaViolationChange:
-            showQuotaViolationAlert()
-        }
-    }
-    
-    private func showQuotaViolationAlert() {
-        guard let rootViewController = AppContext.rootViewController else { return }
-        
-        let alertController = UIAlertController(title: GDLocalizedString("icloud.kv_store.quota_violation_alert.title"),
-                                                message: GDLocalizedString("icloud.kv_store.quota_violation_alert.message"),
-                                                preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: GDLocalizationUnnecessary("Dismiss"), style: .cancel, handler: nil))
-        
-        DispatchQueue.main.async {
-            rootViewController.present(alertController, animated: true, completion: nil)
-        }
     }
     
 }

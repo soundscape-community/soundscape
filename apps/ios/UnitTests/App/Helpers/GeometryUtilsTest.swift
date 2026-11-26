@@ -7,6 +7,7 @@
 //  Copyright (c) Soundscape Community Contributors.
 //
 
+import SSData
 import XCTest
 import CoreLocation
 @testable import Soundscape

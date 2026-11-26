@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -38,7 +39,7 @@ class RouteParametersHandler {
     
     /**
      * Initializes a route that is being imported from a URL resource (e.g.,
-     * sharing activity) and associated markers may not exist the Realm database.
+     * sharing activity) and associated markers may not exist the user database.
      *
      * Fetches marker data for route waypoints
      *
@@ -111,7 +112,7 @@ class RouteParametersHandler {
     
     /**
      * Initializes a waypoint from marker data that is being imported from a URL resource (e.g.,
-     * sharing activity) and has not been added to the Realm database.
+     * sharing activity) and has not been added to the user database.
      *
      * Fetches marker data for route waypoints
      */

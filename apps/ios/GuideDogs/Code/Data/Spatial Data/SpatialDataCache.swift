@@ -8,41 +8,10 @@
 //
 
 import Foundation
-import RealmSwift
 import MapKit
+import SSData
 
-extension SpatialDataCache {
-    
-    struct Predicates {
-        
-        static func nickname(_ text: String) -> NSPredicate {
-            return NSPredicate(format: "nickname CONTAINS[c] %@", text)
-        }
-        
-        static let lastSelectedDate = NSPredicate(format: "lastSelectedDate != NULL")
-        
-        static func distance(_ coordinate: CLLocationCoordinate2D,
-                             span: CLLocationDistance? = nil,
-                             latKey: String = "centroidLatitude",
-                             lonKey: String = "centroidLongitude") -> NSPredicate {
-            let range = span ?? SpatialDataContext.cacheDistance * 2
-            
-            return NSPredicate(centerCoordinate: coordinate,
-                               span: range, /* `span` is the diameter */
-                               latitudeKey: latKey,
-                               longitudeKey: lonKey)
-        }
-
-        static func isTemporary(_ flag: Bool) -> NSPredicate {
-            return NSPredicate(format: "isTemp = %@", NSNumber(value: flag))
-        }
-    }
-}
-
-class SpatialDataCache: NSObject {
-    
-    // MARK: Geocoders
-    
+final class SpatialDataCache {
     private static var geocoder: Geocoder?
     
     static func useDefaultGeocoder() {
@@ -53,190 +22,108 @@ class SpatialDataCache: NSObject {
         self.geocoder = Geocoder(geocoder: geocoder)
     }
     
-    // MARK: Search Providers
-    
-    private static var poiSearchProviders: [POISearchProviderProtocol] = []
-    private static let osmPoiSearchProvider = OSMPOISearchProvider()
-    
-    static func useDefaultSearchProviders() {
-        register(provider: osmPoiSearchProvider)
-        register(provider: AddressSearchProvider())
-        register(provider: GenericLocationSearchProvider())
-    }
-    
+
+    private static var testProviders: [POISearchProviderProtocol] = []
+
     static func register(provider: POISearchProviderProtocol) {
-        guard !poiSearchProviders.contains(where: { $0.providerName == provider.providerName }) else {
-            return
-        }
-        
-        poiSearchProviders.append(provider)
+        guard !testProviders.contains(where: { $0.providerName == provider.providerName }) else { return }
+        testProviders.append(provider)
     }
-    
+
     static func removeAllProviders() {
-        poiSearchProviders = []
+        testProviders.removeAll()
     }
- 
-    // MARK: Realm Search
-    
-    fileprivate static func objectsFromAllProviders(predicate: NSPredicate) -> [POI] {
-        var pois: [POI] = []
-        
-        for provider in poiSearchProviders {
-            let providerPOIs = provider.objects(predicate: predicate)
-            pois.append(contentsOf: providerPOIs)
-        }
-        
-        return pois
-    }
-    
-    static func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance? = nil) -> [POI] {
-        guard let index = poiSearchProviders.firstIndex(where: { $0.providerName == "GenericLocationSearchProvider" }) else {
-            return []
-        }
-        
-        let predicate = Predicates.distance(location.coordinate,
-                                            span: range != nil ? range! * 2 : nil,
-                                            latKey: "latitude",
-                                            lonKey: "longitude")
-        
-        return poiSearchProviders[index].objects(predicate: predicate)
-    }
-    
-    /// Search all caches for a POI with the given key. Keys should be unique
-    /// across all POI types, so this will return the first POI any POISearchProviderProtocol
-    /// object finds
-    ///
-    /// - Parameter key: The key to search for
-    /// - Returns: Optionally a POI instance if one is found
-    static func searchByKey(key: String) -> POI? {
-        // In release builds, the default search provider (`POISearchProvider()`) is set in
-        // `AppDelegate.applicationDidFinishLaunchingWithOptions`. In unit tests, you should
-        // set the search provider in the `setUp` method of your unit test class (and call
-        // `SpatialDataSearch.removeAllProviders()` in the `tearDown` method).
-        assert(!poiSearchProviders.isEmpty, "A search provider must be specified for SpatialDataSearch")
-        
-        for provider in poiSearchProviders {
-            if let poi = provider.search(byKey: key) {
-                return poi
+
+    static func recordSelection(_ poi: POI, at date: Date = Date()) {
+        guard poi is GDASpatialDataResultEntity else { return }
+        let key = poi.key
+        DispatchQueue.global(qos: .utility).async {
+            do {
+                try StorageContext.shared.spatial().recordSelection(key: key, at: date)
+            } catch {
+                GDLogSpatialDataError("Unable to record map selection: \(error)")
             }
         }
-        
-        return nil
     }
-    
-    // MARK: Road Entities
+
+    static func recentlySelectedObjects() -> [POI] {
+        let mapEntries: [(String, Date)] = spatialRead { try $0.recentSelections(limit: 5) } ?? []
+        let mapPlaces: [(POI, Date)] = mapEntries.compactMap { key, date in
+            searchMapByKey(key).map { ($0, date) }
+        }
+        let markerPlaces: [(POI, Date)] = StorageContext.shared.markers.compactMap { marker in
+            guard !marker.isTemp, let date = marker.lastSelectedDate,
+                  marker.entityKey == nil || marker.place != nil else { return nil }
+            return (ReferenceEntity(stored: marker).getPOI(), date)
+        }
+        var keys: Set<String> = []
+        return (mapPlaces + markerPlaces).sorted { $0.1 > $1.1 }.map(\.0)
+            .filter { keys.insert($0.key).inserted }.prefix(5).map { $0 }
+    }
+
+    static func searchMapByKey(_ key: String) -> POI? {
+        if let supplied = testProviders.lazy.compactMap({ $0.search(byKey: key) }).first { return supplied }
+        return entity(key, kinds: [.poi, .road, .path])
+    }
+
+    static func searchByKey(key: String) -> POI? {
+        searchMapByKey(key) ?? referenceEntityByEntityKey(key)?.restoredPOI
+            ?? referenceEntityByKey(key)?.getPOI()
+    }
 
     static func road(withKey key: String) -> Road? {
-        return osmPoiSearchProvider.search(byKey: key) as? Road
+        entity(key, kinds: [.road, .path])
     }
-    
-    static func roads(withPredicate predicate: NSPredicate) -> [Road]? {
-        return osmPoiSearchProvider.objects(predicate: predicate) as? [Road]
-    }
-    
-    // MARK: Routes
-    
-    static func routeByKey(_ key: String) -> Route? {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return nil
-            }
-            
-            return database.object(ofType: Route.self, forPrimaryKey: key)
-        }
-    }
-    
-    static func routes(withPredicate predicate: NSPredicate? = nil) -> [Route] {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return []
-            }
-            
-            let results: Results<Route>
-            
-            if let predicate = predicate {
-                results = database.objects(Route.self).filter(predicate)
-            } else {
-                results = database.objects(Route.self)
-            }
-            
-            return Array(results)
-        }
-    }
-    
-    /// Loops through all Routes with `isNew == true` and sets `isNew` to false
-    static func clearNewRoutes() throws {
-        let newRoutes = routes(withPredicate: NSPredicate(format: "isNew == true"))
 
-        try autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return
-            }
-            
-            try database.write {
-                for route in newRoutes {
-                    route.isNew = false
-                }
-            }
+    private static func entity(_ key: String, kinds: [TileFeature.Kind]) -> GDASpatialDataResultEntity? {
+        spatialRead {
+            guard let feature = try $0.feature(key: key, kinds: kinds) else { return nil }
+            return try JSONDecoder().decode(GDASpatialDataResultEntity.self, from: feature.payload)
         }
     }
-    
+
+    static func routeByKey(_ key: String) -> Route? {
+        StorageContext.shared.routes.first { $0.id == key }.map(Route.init(saved:))
+    }
+
     static func routesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [Route] {
-        let predicate = Predicates.distance(coordinate, span: range * 2, latKey: "firstWaypointLatitude", lonKey: "firstWaypointLongitude")
-        return routes(withPredicate: predicate)
+        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: range * 2, longitudinalMeters: range * 2)
+        return StorageContext.shared.routes.map(Route.init(saved:)).filter {
+            guard let latitude = $0.firstWaypointLatitude, let longitude = $0.firstWaypointLongitude else { return false }
+            return contains(region, latitude: latitude, longitude: longitude)
+        }
     }
-    
+
     static func routesContaining(markerId: String) -> [Route] {
-        let predicate = NSPredicate(format: "SUBQUERY(waypoints, $waypoint, $waypoint.markerId == %@).@count > 0", markerId)
-        return routes(withPredicate: predicate)
+        StorageContext.shared.routes.filter { route in route.waypoints.contains { $0.markerId == markerId } }
+            .map(Route.init(saved:))
     }
-    
-    // MARK: Reference Entities
-    
+
+    static func clearNewRoutes() throws {
+        try StorageContext.shared.write { try $0.clearNewRoutes() }
+    }
+
+    static func clearNewReferenceEntities() throws {
+        try StorageContext.shared.write { try $0.clearNewMarkers() }
+    }
+
     static func containsReferenceEntity(withKey key: String) -> Bool {
-        return referenceEntityByKey(key) != nil
+        referenceEntityByKey(key) != nil
     }
-    
-    static func referenceEntities(with predicate: NSPredicate) -> [ReferenceEntity] {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return []
-            }
-            
-            return Array(database.objects(ReferenceEntity.self).filter(predicate))
-        }
-    }
-    
-    ///
-    /// Returns reference entity objects where `object.isTemp == isTemp`
-    ///
-    /// Parameter: isTemp true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
-    ///
+
     static func referenceEntities(isTemp: Bool = false) -> [ReferenceEntity] {
-        return referenceEntities(with: Predicates.isTemporary(isTemp))
+        StorageContext.shared.markers.filter { $0.isTemp == isTemp }.map(ReferenceEntity.init(stored:))
     }
-    
+
     static func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return nil
-            }
-            
-            return database.object(ofType: ReferenceEntity.self, forPrimaryKey: key)
-        }
+        StorageContext.shared.markers.first { $0.id == key }.map(ReferenceEntity.init(stored:))
     }
-    
+
     static func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity? {
-        return referenceEntities(with: NSPredicate(format: "entityKey = %@", key)).first ?? referenceEntityByKey(key)
+        let markers = StorageContext.shared.markers
+        return (markers.first { $0.entityKey == key } ?? markers.first { $0.id == key }).map(ReferenceEntity.init(stored:))
     }
-    
-    ///
-    /// Returns reference entity objects near the given coordinate and with the expected `isTemp` value (if expected value is provided)
-    ///
-    /// Parameters:
-    /// - coordinate returns objects near the given coordiante
-    /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
-    ///
+
     static func referenceEntityByLocation(_ coordinate: CLLocationCoordinate2D, isTemp: Bool? = false) -> ReferenceEntity? {
         return referenceEntitiesNear(coordinate, range: 1.0, isTemp: isTemp).first
     }
@@ -287,87 +174,47 @@ class SpatialDataCache: NSObject {
     /// - isTemp `nil` if objects should not be filtered by `isTemp`,  true if the returned objects should be marked as temporary and  false if the returned objects should not be marked as temporary
     ///
     static func referenceEntitiesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance, isTemp: Bool? = false) -> [ReferenceEntity] {
-        var predicate: NSPredicate
-        
-        if let isTemp = isTemp {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
-                Predicates.distance(coordinate, span: range * 2, latKey: "latitude", lonKey: "longitude"),
-                Predicates.isTemporary(isTemp)
-            ])
-        } else {
-            predicate = Predicates.distance(coordinate, span: range * 2, latKey: "latitude", lonKey: "longitude")
-        }
-        
-        return referenceEntities(with: predicate)
+        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: range * 2, longitudinalMeters: range * 2)
+        return StorageContext.shared.markers.filter { marker in
+            (isTemp == nil || marker.isTemp == isTemp) &&
+                contains(region, latitude: marker.latitude, longitude: marker.longitude)
+        }.map(ReferenceEntity.init(stored:))
     }
-    
-    /// Loops through all ReferenceEntities with `isNew == true` and sets `isNew` to false
-    static func clearNewReferenceEntities() throws {
-        let newReferenceEntities = referenceEntities(with: NSPredicate(format: "isNew == true"))
 
-        try autoreleasepool {
-            guard let database = try? RealmHelper.getDatabaseRealm() else {
-                return
-            }
-            
-            try database.write {
-                for entity in newReferenceEntities {
-                    entity.isNew = false
-                }
-            }
-        }
+
+    static func genericLocationsNear(_ location: CLLocation, range: CLLocationDistance? = nil) -> [POI] {
+        referenceEntitiesNear(location.coordinate, range: range ?? SpatialDataContext.cacheDistance)
+            .filter { $0.entityKey == nil }.map { $0.getPOI() }
     }
-    
-    // MARK: Intersection Entities
-    
-    static func intersectionEntities(with predicate: NSPredicate) -> [Intersection] {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getCacheRealm() else {
-                return []
-            }
-            
-            return Array(database.objects(Intersection.self).filter(predicate))
-        }
-    }
-    
+
     static func intersectionByKey(_ key: String) -> Intersection? {
-        return autoreleasepool {
-            guard let database = try? RealmHelper.getCacheRealm() else {
-                return nil
-            }
-            
-            return database.object(ofType: Intersection.self, forPrimaryKey: key)
+        spatialRead {
+            guard let feature = try $0.feature(key: key, kinds: [.intersection]) else { return nil }
+            return try JSONDecoder().decode(Intersection.self, from: feature.payload)
         }
     }
-    
-    /// Returns all the intersections that connect to a given road
-    static func intersections(forRoadKey roadKey: String) -> [Intersection]? {
-        return intersections(forRoadKey: roadKey, inRegion: nil)
-    }
-    
-    /// Returns all the intersections that connect to a given road
+
     static func intersection(forRoadKey roadKey: String, atCoordinate coordinate: CLLocationCoordinate2D) -> Intersection? {
-        return intersections(forRoadKey: roadKey)?.first(where: { $0.coordinate == coordinate })
+        intersections(forRoadKey: roadKey)?.first { $0.coordinate == coordinate }
     }
-    
-    /// Returns all the intersections that connect to a given road, within a region.
-    static func intersections(forRoadKey roadKey: String, inRegion region: MKCoordinateRegion?) -> [Intersection]? {
-        let roadsPredicate = NSPredicate(format: "ANY roadIds.id == '\(roadKey)'")
-        
-        let predicate: NSPredicate
-        
-        if let region = region {
-            let regionPredicate = NSPredicate(region: region)
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [regionPredicate, roadsPredicate])
-        } else {
-            predicate = roadsPredicate
+
+    static func intersections(forRoadKey roadKey: String, inRegion region: MKCoordinateRegion? = nil) -> [Intersection]? {
+        spatialRead {
+            let decoder = JSONDecoder()
+            return try $0.intersections(roadKey: roadKey).map { try decoder.decode(Intersection.self, from: $0.payload) }
+                .filter { intersection in
+                    guard let region else { return true }
+                    return contains(region, latitude: intersection.latitude, longitude: intersection.longitude)
+                }
         }
-        
-        return intersectionEntities(with: predicate)
     }
-    
-    // MARK: VectorTile Tools
-    
+
+    private static func contains(_ region: MKCoordinateRegion, latitude: Double, longitude: Double) -> Bool {
+        let longitudeOffset = abs((longitude - region.center.longitude).truncatingRemainder(dividingBy: 360))
+        return abs(latitude - region.center.latitude) <= region.span.latitudeDelta / 2
+            && min(longitudeOffset, 360 - longitudeOffset) <= region.span.longitudeDelta / 2
+    }
+
     static func tiles(forDestinations: Bool, forReferences: Bool, at zoomLevel: UInt) -> Set<VectorTile> {
         var tiles: Set<VectorTile> = []
         
@@ -392,34 +239,26 @@ class SpatialDataCache: NSObject {
         return Set(tiles)
     }
     
+
     static func tileData(for tiles: [VectorTile]) -> [TileData] {
+        spatialRead {
+            try $0.tiles(keys: tiles.map(\.quadKey)).map { try TileData(key: $0.0, metadata: $0.1, features: $0.2) }
+        } ?? []
+    }
+
+    static func isAddress(poi: POI) -> Bool {
+        poi is Address
+    }
+
+    private static func spatialRead<T>(_ read: (SpatialTileStore) throws -> T?) -> T? {
         do {
-            let cache = try RealmHelper.getCacheRealm()
-            return Array(cache.objects(TileData.self).filter(NSPredicate(format: "quadkey IN %@", tiles.map({ $0.quadKey }))))
+            return try StorageContext.shared.withSpatialStore(read)
         } catch {
-            return []
+            GDLogSpatialDataError("Spatial database read failed: \(error)")
+            return nil
         }
     }
-    
-    // MARK: POI Type
-    
-    static func isAddress(poi: POI) -> Bool {
-        return poi as? Address != nil
-    }
-    
-    // MARK: Search by POI Characteristic
-    
-    private static func lastSelectedObjects() -> [POI] {
-        let predicate: NSPredicate = Predicates.lastSelectedDate
-        
-        return objectsFromAllProviders(predicate: predicate)
-    }
-    
-    static func recentlySelectedObjects() -> [POI] {
-        let sortPredicate = Sort.lastSelected()
-        return SpatialDataCache.lastSelectedObjects().sorted(by: sortPredicate, maxLength: 5)
-    }
-    
+
     static func fetchEstimatedCoordinate(address: String, in region: CLRegion? = nil, completionHandler: @escaping (GeocodedAddress?) -> Void) {
         guard let geocoder = geocoder else {
             GDLogSpatialDataError("Geocode Coordinate Error - Geocoder has not been initialized")

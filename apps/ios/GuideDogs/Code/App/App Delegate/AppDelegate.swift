@@ -36,9 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Self.current = self
         GDATelemetry.initialize()
 
-        // Check if we need to migrate Realm before we do anything else
-        RealmMigrationTools.migrate(database: RealmHelper.databaseConfig, cache: RealmHelper.cacheConfig)
-
         do {
             try InternalStorage.migrateLegacyStorageIfNeeded()
         } catch {

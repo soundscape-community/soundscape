@@ -228,7 +228,7 @@ class URLResourceManager {
 extension URLResourceManager {
     
     static func shareRoute(_ route: Route) -> URL? {
-        return RouteParameters.encodeAndWriteToTemporaryFile(from: route, context: .share)
+        return RouteParameters.encodeAndWriteToTemporaryFile(from: route)
     }
     
 }

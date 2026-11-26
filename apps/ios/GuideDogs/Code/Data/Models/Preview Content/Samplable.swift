@@ -3,10 +3,11 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import RealmSwift
+import SSData
 import CoreLocation
 
 protocol Samplable {
@@ -28,19 +29,23 @@ extension ReferenceEntity: Samplable {
     static var samples: [ReferenceEntity] { [sample, sample2, sample3, sample4] }
     
     static var sample: ReferenceEntity {
-        ReferenceEntity(location: .init(lat: 47.622918, lon: -122.338521, name: "Republic"),
+        let entity = ReferenceEntity(location: .init(lat: 47.622918, lon: -122.338521, name: "Republic"),
                         name: "Republic",
                         estimatedAddress: "429 Westlake Ave N, Seattle, WA 98109",
                         annotation: "This is my favorite restaurant",
                         temp: false)
+        entity.id = PreviewStorage.markerIDs[0]
+        return entity
     }
     
     static var sample2: ReferenceEntity {
-        ReferenceEntity(location: .init(lat: 47.618433, lon: -122.338346, name: "Whole Foods"),
+        let entity = ReferenceEntity(location: .init(lat: 47.618433, lon: -122.338346, name: "Whole Foods"),
                         name: "Grocery Store",
                         estimatedAddress: nil,
                         annotation: nil,
                         temp: false)
+        entity.id = PreviewStorage.markerIDs[1]
+        return entity
     }
     
     static var sample3: ReferenceEntity {
@@ -50,6 +55,7 @@ extension ReferenceEntity: Samplable {
                                      annotation: nil,
                                      temp: false)
         entity.isNew = false
+        entity.id = PreviewStorage.markerIDs[2]
         return entity
     }
     
@@ -60,6 +66,7 @@ extension ReferenceEntity: Samplable {
                                      annotation: nil,
                                      temp: false)
         entity.isNew = false
+        entity.id = PreviewStorage.markerIDs[3]
         return entity
     }
 }
@@ -67,20 +74,13 @@ extension ReferenceEntity: Samplable {
 extension RouteWaypoint: Samplable {
     static var samples: [RouteWaypoint] { [sample, sample2, sample3, sample4] }
     
-    static var sample: RouteWaypoint {
-        RouteWaypoint(index: 0, markerId: ReferenceEntity.sample.id)!
-    }
-    
-    static var sample2: RouteWaypoint {
-        RouteWaypoint(index: 1, markerId: ReferenceEntity.sample2.id)!
-    }
-    
-    static var sample3: RouteWaypoint {
-        RouteWaypoint(index: 2, markerId: ReferenceEntity.sample3.id)!
-    }
-    
-    static var sample4: RouteWaypoint {
-        RouteWaypoint(index: 3, markerId: ReferenceEntity.sample4.id)!
+    static var sample: RouteWaypoint { sample(at: 0) }
+    static var sample2: RouteWaypoint { sample(at: 1) }
+    static var sample3: RouteWaypoint { sample(at: 2) }
+    static var sample4: RouteWaypoint { sample(at: 3) }
+
+    private static func sample(at index: Int) -> RouteWaypoint {
+        RouteWaypoint(stored: Waypoint(markerId: PreviewStorage.markerIDs[index], index: index))
     }
 }
 
@@ -88,46 +88,23 @@ extension Route: Samplable {
     static var samples: [Route] { [sample] }
     
     static var sample: Route {
-        Route(name: "Seattle Sightseeing Tour", description: "This is a little walk through Seattle's South Lake Union neighborhood", waypoints: RouteWaypoint.samples)
+        let route = Route(name: "Seattle Sightseeing Tour", description: "This is a little walk through Seattle's South Lake Union neighborhood", waypoints: RouteWaypoint.samples)
+        route.id = "preview-route"
+        return route
     }
 }
 
-extension Realm: Samplable {
-    static var samples: [Realm] { [sample] }
-    static var sample: Realm {
-        do {
-            let realm = try Realm(configuration: RealmHelper.databaseConfig)
-            try realm.write {
-                realm.deleteAll()
-                ReferenceEntity.samples.forEach { entity in
-                    realm.add(entity)
-                }
-                
-                Route.samples.forEach { route in
-                    realm.add(route)
-                }
-            }
-            return realm
-        } catch {
-            fatalError("Failed to create a test Realm")
-        }
-    }
-    
+enum PreviewStorage {
+    static let markerIDs = ["preview-republic", "preview-grocery", "preview-needle", "preview-museum"]
+
     static func bootstrap() {
+        guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" else { return }
         do {
-            if let fileURL = RealmHelper.databaseConfig.fileURL, FileManager.default.fileExists(atPath: fileURL.path) {
-                // Delete cached Realm file
-                try FileManager.default.removeItem(at: fileURL)
-            }
-            
-            let realm = try Realm(configuration: RealmHelper.databaseConfig)
-            try realm.write {
-                realm.deleteAll()
-                realm.add(ReferenceEntity.samples)
-                realm.add(Route.samples)
+            try StorageContext.shared.write { store in
+                try store.save(route: Route.sample.saved, importing: ReferenceEntity.samples.map(\.stored))
             }
         } catch {
-            print("Failed to bootstrap the default realm")
+            GDLogAppError("Unable to prepare preview storage: \(error)")
         }
     }
 }

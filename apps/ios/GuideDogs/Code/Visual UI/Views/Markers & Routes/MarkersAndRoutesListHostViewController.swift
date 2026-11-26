@@ -15,7 +15,6 @@ class MarkersAndRoutesListHostViewController: UIHostingController<AnyView> {
         let root = MarkersAndRoutesList()
             .environmentObject(navHelper)
             .environmentObject(UserLocationStore())
-            .environment(\.realmConfiguration, RealmHelper.databaseConfig)
         
         super.init(rootView: AnyView(root))
         

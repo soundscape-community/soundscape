@@ -9,7 +9,6 @@
 
 import SwiftUI
 import CoreLocation
-import RealmSwift
 
 struct WaypointAddList: View {
     
@@ -96,7 +95,7 @@ struct WaypointAddList_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        Realm.bootstrap()
+        PreviewStorage.bootstrap()
         
         AppContext.shared.geolocationManager.mockLocation(CLLocation.sample)
         
@@ -117,7 +116,6 @@ struct WaypointAddList_Previews: PreviewProvider {
             
             WaypointAddList(waypoints: .constant([]))
         }
-        .environment(\.realmConfiguration, RealmHelper.databaseConfig)
         
     }
     

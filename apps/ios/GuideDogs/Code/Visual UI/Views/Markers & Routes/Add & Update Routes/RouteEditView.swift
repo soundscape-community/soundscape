@@ -7,9 +7,9 @@
 //  Licensed under the MIT License.
 //
 
+import SSData
 import SwiftUI
 import CoreLocation
-import RealmSwift
 
 struct RouteEditView: View {
     private enum EditViewAlert {
@@ -58,6 +58,7 @@ struct RouteEditView: View {
     // Alerts
     @State private var alert: EditViewAlert?
     @State private var showAlert: Bool = false
+    @State private var isSaving = false
     
     let style: Style
     let deleteAction: NavigationAction?
@@ -135,36 +136,40 @@ struct RouteEditView: View {
         _name.wrappedValue = name.trimmingCharacters(in: .whitespacesAndNewlines)
         _description.wrappedValue = description.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        do {
-            switch style {
-            case .add: try onAddRoute()
-            case .edit(let detail): try onUpdateRoute(detail)
-            case .import(let route): try onImportRoute(route)
+        guard !isSaving else { return }
+        isSaving = true
+        Task { @MainActor in
+            defer { isSaving = false }
+            do {
+                switch style {
+                case .add: try await onAddRoute()
+                case .edit(let detail): try await onUpdateRoute(detail)
+                case .import(let route): try await onImportRoute(route)
+                }
+                navHelper.popViewController(animated: true)
+            } catch {
+                alert = .error
+                showAlert = true
             }
-            
-            navHelper.popViewController(animated: true)
-        } catch {
-            alert = .error
-            showAlert = true
         }
     }
-    
-    private func onAddRoute() throws {
+
+    private func onAddRoute() async throws {
         let route = Route(name: name, description: description, waypoints: identifiableWaypoints.asRouteWaypoint)
         
-        try Route.add(route)
+        try await Route.add(route)
     }
     
-    private func onUpdateRoute(_ detail: RouteDetail) throws {
+    private func onUpdateRoute(_ detail: RouteDetail) async throws {
         guard case .database(let id) = detail.source else {
             // Route does not exist in database
-            throw RouteRealmError.doesNotExist
+            throw UserDataError.missingRoute(detail.id)
         }
         
-        try Route.update(id: id, name: name, description: description, waypoints: identifiableWaypoints.asLocationDetail)
+        try await Route.update(id: id, name: name, description: description, waypoints: identifiableWaypoints.asLocationDetail)
     }
     
-    private func onImportRoute(_ route: Route) throws {
+    private func onImportRoute(_ route: Route) async throws {
         if name != route.name {
             // If the name has changed from what was imported,
             // update it
@@ -178,11 +183,12 @@ struct RouteEditView: View {
         
         if route.waypoints.ordered.asLocationDetail.compactMap({ return $0.source }) != identifiableWaypoints.compactMap({ return $0.locationDetail.source }) {
             // Update waypoints
-            route.waypoints.removeAll()
-            route.waypoints.append(objectsIn: identifiableWaypoints.asRouteWaypoint)
+            route.waypoints = identifiableWaypoints.asLocationDetail.enumerated().map {
+                RouteWaypoint(index: $0.offset, markerId: $0.element.markerId ?? "", importedLocationDetail: $0.element)
+            }
         }
         
-        try Route.add(route)
+        try await Route.add(route)
     }
     
     private var alertView: Alert {

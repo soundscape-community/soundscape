@@ -3,12 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import SwiftUI
 import Combine
-import RealmSwift
 import CoreLocation
 
 class MarkerModel: ObservableObject {
@@ -147,7 +147,7 @@ struct MarkerCell_Previews: PreviewProvider {
     static var userLocationStore = UserLocationStore(designValue: CLLocation.sample)
     
     static var previews: some View {
-        Realm.bootstrap()
+        PreviewStorage.bootstrap()
         
         return Group {
             MarkerCell(model: MarkerModel(id: ReferenceEntity.sample.id))

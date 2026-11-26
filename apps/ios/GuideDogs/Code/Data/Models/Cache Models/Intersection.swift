@@ -9,7 +9,6 @@
 
 import Foundation
 import CoreLocation
-import RealmSwift
 import CocoaLumberjackSwift
 
 //--------------------//
@@ -137,7 +136,7 @@ import CocoaLumberjackSwift
 // Example: (51.455464, -0.975333) Multi (cross) intersection with roads:
 // Oxford Road, West Street, Broad Street and St Mary's Butts.
 
-class Intersection: Object, Locatable, Localizable {
+final class Intersection: Codable, Hashable, Locatable, Localizable {
     
     // MARK: Types
     
@@ -161,21 +160,31 @@ class Intersection: Object, Locatable, Localizable {
         }
     }
     
-    // MARK: Realm properties
+    static func == (lhs: Intersection, rhs: Intersection) -> Bool {
+        lhs.key == rhs.key
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
+    }
+
+    private enum CodingKeys: String, CodingKey { case key, roadIds, latitude, longitude }
+
+    // MARK: Properties
     
     /// Synthesized primary key for this intersection
-    @objc dynamic var key: String = ""
+    var key: String = ""
     
     /// Array of the road POIs that meet at this intersection
-    let roadIds = List<IntersectionRoadId>()
+    var roadIds: [IntersectionRoadId] = []
     
     /// Latitude of the intersection
-    @objc dynamic var latitude: CLLocationDegrees = 0.0
+    var latitude: CLLocationDegrees = 0.0
     
     /// Longitude of the intersection
-    @objc dynamic var longitude: CLLocationDegrees = 0.0
+    var longitude: CLLocationDegrees = 0.0
     
-    // MARK: Non-Realm Properties
+    // MARK: Computed Properties
     
     /// The set of roads that participate in this intersection
     var roads: [Road] {
@@ -244,26 +253,6 @@ class Intersection: Object, Locatable, Localizable {
     }
     
     // MARK: Methods
-    
-    /// Returns the names of properties which Realm should ignore
-    ///
-    /// - Returns: List of ignored properties
-    static override func ignoredProperties() -> [String] {
-        return ["roads",
-                "distinctRoads",
-                "localizedRoadNames",
-                "_localizedName",
-                "localizedName",
-                "location",
-                "coordinate"]
-    }
-    
-    /// Indicates which property represents the primary key of this object
-    ///
-    /// - Returns: The name of the property that represents the primary key of this object
-    override static func primaryKey() -> String {
-        return "key"
-    }
     
     /// Returns the localized name for the intersection, which contains the
     /// localized names of the intersecting roads.

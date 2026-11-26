@@ -8,7 +8,6 @@
 //
 
 import SwiftUI
-import RealmSwift
 
 struct RoutesList: View {
     @EnvironmentObject var navHelper: MarkersAndRoutesListNavigationHelper
