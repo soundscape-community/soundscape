@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -90,10 +91,8 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
         let useAutomotive = automotive && geocoderResult.heading.isCourse
         
         var sounds: [Sound] = []
-        var notificationHandler: AsyncSoundsNotificationHandler?
-        var notificationName: Notification.Name?
-        var notificationObject: AlongsideGeocoderResult?
-        
+        var availableTail: (@MainActor () -> [any Sound])?
+
         guard let roadComponents = geocoderResult.getRoadCalloutComponents(useClosest: useClosestRoadIfAvailable) else {
             return Sounds.empty
         }
@@ -137,12 +136,7 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
             if let estimatedAddress = self.estimatedAddress?.stringWithSpelledOutDigits(withLocale: LocalizationContext.currentAppLocale) {
                 sounds.append(TTSSound(GDLocalizedString("directions.near_address", estimatedAddress), direction: .ahead))
             } else {
-                // If we don't have an address yet,
-                // listen for completion notification
-                notificationName = Notification.Name.estimatedAddressDidComplete
-                notificationObject = geocoderResult
-                
-                notificationHandler = { (_) -> [Sound] in
+                availableTail = {
                     guard let estimatedAddress = self.estimatedAddress?.stringWithSpelledOutDigits(withLocale: LocalizationContext.currentAppLocale) else {
                         return []
                     }
@@ -248,10 +242,7 @@ struct AlongRoadLocationCallout: LocationCalloutProtocol {
             }
         }
         
-        return Sounds(soundArray: sounds,
-                      onNotificationHandler: notificationHandler,
-                      notificationName: notificationName,
-                      notificationObject: notificationObject)
+        return Sounds(sounds, availableTail: availableTail)
     }
     
     func moreInfoDescription(for location: CLLocation?) -> String {

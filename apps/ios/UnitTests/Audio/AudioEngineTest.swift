@@ -1,33 +1,14 @@
 //
 //  AudioEngineTest.swift
-//  
+//  Soundscape
 //
-//  Created by Kai on 10/11/23.
+//  Copyright (c) Soundscape Community Contributors.
+//  Licensed under the MIT License.
 //
 
+import AVFAudio
 import XCTest
 @testable import Soundscape
-import AVFAudio
-
-private enum PromiseWaitError: Error {
-    case timedOut
-}
-
-private func waitForAudioBuffer(_ promise: Promise<AVAudioPCMBuffer?>, timeout: TimeInterval) throws -> AVAudioPCMBuffer? {
-    let expectation = XCTestExpectation(description: "Wait for audio buffer")
-    var buffer: AVAudioPCMBuffer?
-
-    promise.then { value in
-        buffer = value
-        expectation.fulfill()
-    }
-
-    guard XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed else {
-        throw PromiseWaitError.timedOut
-    }
-
-    return buffer
-}
 
 class TestAudioEnvironmentSettings: EnvironmentSettingsProvider {
     var envRenderingAlgorithm: AVAudio3DMixingRenderingAlgorithm = .auto
@@ -42,49 +23,6 @@ class TestAudioEnvironmentSettings: EnvironmentSettingsProvider {
     var envReverbFilterType: AVAudioUnitEQFilterType = .parametric
     var envReverbFilterFrequency: Float = 0
     var envReverbFilterGain: Float = 0
-}
-
-final class TestSound: SynchronouslyGeneratedSound {
-    let type: SoundType = .standard
-    let layerCount: Int = 1
-    let description: String
-
-    private var buffer: AVAudioPCMBuffer?
-
-    init(description: String, frequency: Float = 440, duration: TimeInterval = 1.0) {
-        self.description = description
-
-        let sampleRate = 44_100.0
-        let frameCount = AVAudioFrameCount(sampleRate * duration)
-        let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)!
-        let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount)!
-        buffer.frameLength = frameCount
-
-        if let samples = buffer.floatChannelData?[0] {
-            for frame in 0 ..< Int(frameCount) {
-                let phase = Float(frame) * frequency * 2 * .pi / Float(sampleRate)
-                samples[frame] = sin(phase) * 0.1
-            }
-        }
-
-        self.buffer = buffer
-    }
-
-    func generateBuffer(forLayer index: Int) -> AVAudioPCMBuffer? {
-        guard index == 0 else {
-            return nil
-        }
-
-        defer {
-            buffer = nil
-        }
-
-        return buffer
-    }
-
-    func equalizerParams(for layerIndex: Int) -> EQParameters? {
-        return nil
-    }
 }
 
 final class AudioEngineTest: XCTestCase {
@@ -116,159 +54,273 @@ final class AudioEngineTest: XCTestCase {
         }
     }
 
-    class TestAudioEngineDelegate: AudioEngineDelegate {
-        func didFinishPlaying() {
-            finish_count += 1
-        }
-        
-        var finish_count = 0
+    func testCompletionIsStoredAndOnlyResolvedOnce() async {
+        let state = PlaybackCompletion()
+        let handle = PlaybackHandle(state: state) { _ in }
+        async let first = handle.completion()
+        async let second = handle.completion()
+        state.resolve(.interrupted)
+        state.resolve(.completed)
+        let values = await [first, second, handle.completion()]
+        XCTAssertEqual(values, [.interrupted, .interrupted, .interrupted])
     }
-    
-    var audioEngine: AudioEngine?
-    
-    override func tearDown() {
-        super.tearDown()
-        // Stop and clean up the audio engine to prevent multiple engines running simultaneously
-        audioEngine?.stop()
-        audioEngine = nil
-    }
-    
-    /// Ensures the initial state is correct
-    func testInit() throws {
-        audioEngine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
-        let eng = audioEngine!
-        XCTAssertNil(eng.delegate)
-        XCTAssertFalse(eng.isInMonoMode) // currently always true as it is not implemented
-        XCTAssertFalse(eng.isDiscreteAudioPlaying)
-        XCTAssertFalse(eng.isRecording)
-        XCTAssertFalse(eng.mixWithOthers)
-    }
-    
-    func testPlayBad() throws {
-        // TODO: this
-    }
-    
-    /// Just playing a single `Sound`
-    func testDiscreteAudio2DSimple() throws {
-        audioEngine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
-        let eng = audioEngine!
-        let delegate = TestAudioEngineDelegate()
-        eng.delegate = delegate
-        let expectation = XCTestExpectation()
-        
-        XCTAssertEqual(delegate.finish_count, 0)
-        XCTAssertFalse(eng.isDiscreteAudioPlaying)
-        eng.play(TestSound(description: "testing a sound")) { success in
-            XCTAssertTrue(success)
-            XCTAssertEqual(delegate.finish_count, 1)
-            expectation.fulfill()
-        }
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: 30), .completed)
-        XCTAssertEqual(delegate.finish_count, 1)
-        XCTAssertFalse(eng.isDiscreteAudioPlaying)
-    }
-    
-    /// Play a series of queued sounds in sequence
-    func testDiscreteAudio2DSeveral() throws {
-        audioEngine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
-        let eng = audioEngine!
-        let delegate = TestAudioEngineDelegate()
-        eng.delegate = delegate
-        let expectations = [XCTestExpectation(description: "one"),
-                            XCTestExpectation(description: "two"),
-                            XCTestExpectation(description: "three")]
-        
-        XCTAssertEqual(delegate.finish_count, 0)
-        XCTAssertFalse(eng.isDiscreteAudioPlaying)
-        eng.play(TestSound(description: "one one one", frequency: 440)) { success in
-            XCTAssertTrue(success)
-            expectations[0].fulfill()
 
-            eng.play(TestSound(description: "two two two", frequency: 550)) { success in
-                XCTAssertTrue(success)
-                expectations[1].fulfill()
+    func testBeatTimingUsesIntroAndPhrasePosition() {
+        let timing = BeaconTiming(intro: 720, phrase: 960, beats: 4)
+        XCTAssertEqual(timing.next(after: nil).start, 720)
+        XCTAssertEqual(timing.next(after: 200).start, 720)
+        XCTAssertEqual(timing.next(after: 720).start, 960)
+        XCTAssertEqual(timing.next(after: 960).offset, 480)
+        XCTAssertEqual(timing.next(after: 1679).start, 1680)
+        XCTAssertEqual(timing.next(after: 1679).offset, 0)
+        XCTAssertEqual(timing.next(after: 1690).offset, 240)
+    }
 
-                eng.play(TestSound(description: "three three three", frequency: 660)) { success in
-                    XCTAssertTrue(success)
-                    expectations[2].fulfill()
+    func testPositionSeparatesCompassAndListenerRelativeBearings() {
+        let listener = AudioCoordinate(latitude: 50, longitude: 0)
+        let target = AudioCoordinate(latitude: 50, longitude: 0.01)
+        XCTAssertEqual(SoundType.compass(45, .ring).position(listener: listener, heading: 90, ring: 15)?.bearing, 45)
+        XCTAssertEqual(SoundType.relative(45, .ring).position(listener: listener, heading: 90, ring: 15)?.bearing, 135)
+        XCTAssertEqual(SoundType.localized(target, .ring).position(listener: listener, heading: 90, ring: 15)?.distance, 15)
+        XCTAssertGreaterThan(SoundType.localized(target, .real).position(listener: listener, heading: 90, ring: 15)?.distance ?? 0, 500)
+    }
+
+    @MainActor
+    func testOverlappingPlaybackOfOneDescriptionStopsIndependently() async throws {
+        let url = try makeAudioFile(duration: 0.20)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true, canStart: { true })
+        engine.start()
+        let layered = try XCTUnwrap(LayeredSound(GenericSound(url, direction: 15), GenericSound(url, direction: 15)))
+        let first = engine.play(layered)
+        let second = engine.play(layered)
+        first.stop()
+        let stopped = await first.completion()
+        XCTAssertEqual(stopped, .stopped)
+        await assertPlayback(second, result: .completed)
+    }
+
+    @MainActor
+    func testFinishDuringBeaconPreparationWaitsForOutro() async throws {
+        let phrase = try makeAudioFile(duration: 0.08)
+        let outro = try makeAudioFile(duration: 0.15)
+        defer {
+            try? FileManager.default.removeItem(at: phrase)
+            try? FileManager.default.removeItem(at: outro)
+        }
+        let asset = AudioAsset.file(phrase)
+        let beacon = TestBeaconSound(content: .beacon(AdaptiveBeacon(
+            assets: [asset], reference: AudioCoordinate(latitude: 0, longitude: 0),
+            beats: 2, intro: nil, outro: .file(outro), select: { _, _, _, _ in (asset, 1) })))
+        let engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true, canStart: { true })
+        engine.start()
+        let handle = engine.play(beacon)
+        let start = ContinuousClock.now
+        handle.finish()
+        await assertPlayback(handle, result: .completed)
+        XCTAssertGreaterThanOrEqual(start.duration(to: .now), .milliseconds(100))
+    }
+
+    @MainActor
+    func testStoppingSpeechDiscardsLatePCM() async {
+        let preparing = expectation(description: "synthesizer started")
+        let cancelled = expectation(description: "synthesizer cancelled")
+        let speech = DelayedSpeech(preparing: preparing, cancelled: cancelled)
+        let engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true,
+                                 canStart: { true }, makeSpeech: { _, _, output in
+            speech.setOutput(output)
+            return speech
+        })
+        engine.start()
+        let handle = engine.play(TTSSound("cancel while preparing"))
+        await fulfillment(of: [preparing], timeout: 5)
+        handle.stop()
+        await fulfillment(of: [cancelled], timeout: 5)
+        speech.emitLateAudio()
+        let result = await handle.completion()
+        XCTAssertEqual(result, .stopped)
+        XCTAssertFalse(engine.hasTransientAudio)
+    }
+
+    @MainActor
+    private func assertPlayback(_ handle: PlaybackHandle, result: PlaybackResult) async {
+        let completed = expectation(description: "playback finished")
+        Task {
+            let actual = await handle.completion()
+            XCTAssertEqual(actual, result)
+            completed.fulfill()
+        }
+        await fulfillment(of: [completed], timeout: 5)
+        handle.stop()
+    }
+
+    private func makeAudioFile(duration: Double) throws -> URL {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension("wav")
+        let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 1))
+        let file = try AVAudioFile(forWriting: url, settings: format.settings)
+        let frames = AVAudioFrameCount(format.sampleRate * duration)
+        let pcm = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames))
+        pcm.frameLength = frames
+        pcm.floatChannelData?[0].update(repeating: 0, count: Int(frames))
+        try file.write(from: pcm)
+        return url
+    }
+
+    func testStopBeforePreparationAndIndependentOperations() async {
+        let playback = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true)
+        let sound = TestAudioSound()
+        let first = playback.play(sound)
+        first.stop()
+        let result = await first.completion()
+        XCTAssertEqual(result, .stopped)
+
+        let second = playback.play(sound)
+        XCTAssertNotEqual(first, second)
+        let failure = await second.completion()
+        guard case .failed = failure else { return XCTFail("Expected an unavailable engine to fail") }
+    }
+}
+
+private struct TestBeaconSound: Sound {
+    let type = SoundType.standard
+    let content: SoundContent
+    let description = "test beacon"
+}
+
+private struct TestAudioSound: Sound {
+    let type = SoundType.standard
+    let content = SoundContent.asset(.bundle(name: "testMissingAsset", extension: "wav"))
+    let description = "test sound"
+}
+
+@MainActor
+private final class MockPlayback: AudioPlayback {
+    private(set) var operations: [PlaybackCompletion] = []
+    private(set) var stops = 0
+
+    nonisolated func play(_ request: AudioRequest) -> PlaybackHandle {
+        MainActor.assumeIsolated {
+            let state = PlaybackCompletion()
+            operations.append(state)
+            return PlaybackHandle(state: state) { [weak self] command in
+                guard case .stop = command else { return }
+                MainActor.assumeIsolated {
+                    self?.stops += 1
+                    state.resolve(.stopped)
                 }
             }
         }
-
-        XCTAssertEqual(XCTWaiter.wait(for: expectations, timeout: 30, enforceOrder: true), .completed)
-        XCTAssertEqual(delegate.finish_count, 3)
-        XCTAssertFalse(eng.isDiscreteAudioPlaying)
     }
 
-    func testSoundPlayedAfterStopDiscreteIsNotConsumedByInterruptedSequence() throws {
-        audioEngine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: false)
-        let eng = audioEngine!
-        let interrupted = XCTestExpectation(description: "interrupted sound")
-        let replacement = XCTestExpectation(description: "replacement sound")
+    nonisolated var hasTransientAudio: Bool { false }
+    nonisolated func stopTransientAudio() {}
+}
 
-        eng.play(TestSound(description: "interrupted", duration: 2.0)) { success in
-            XCTAssertFalse(success)
-            interrupted.fulfill()
+final class CalloutCoordinatorTest: XCTestCase {
+    @MainActor
+    func testClearSkipsPendingAndInterruptDoesNotAdvanceStalePlayback() async {
+        let playback = MockPlayback()
+        let coordinator = CalloutCoordinator(playback: playback, legacy: CalloutContext(
+            prefix: { _ in .empty }, sounds: { _, _ in Sounds(TestAudioSound()) }, record: { _ in }))
+        let firstStopped = expectation(description: "first interrupted")
+        let lastStarted = expectation(description: "replacement started")
+        let lastCompleted = expectation(description: "replacement completed")
+
+        let first = CalloutGroup([StringCallout(.system, "first")], logContext: "test")
+        first.onComplete = { result in
+            XCTAssertFalse(result)
+            firstStopped.fulfill()
         }
-        eng.stopDiscrete()
-        eng.play(TestSound(description: "replacement", duration: 0.1)) { success in
-            XCTAssertTrue(success)
-            replacement.fulfill()
+        let pending = CalloutGroup([StringCallout(.system, "pending")], logContext: "test")
+        pending.onStart = { XCTFail("cleared group started") }
+        let replacement = CalloutGroup([StringCallout(.system, "replacement")], action: .interruptAndClear, logContext: "test")
+        replacement.onStart = { lastStarted.fulfill() }
+        replacement.onComplete = { result in
+            XCTAssertTrue(result)
+            lastCompleted.fulfill()
         }
 
-        XCTAssertEqual(XCTWaiter.wait(for: [interrupted, replacement], timeout: 5), .completed)
-        XCTAssertFalse(eng.isDiscreteAudioPlaying)
+        coordinator.enqueue(first)
+        coordinator.enqueue(pending)
+        coordinator.enqueue(replacement)
+        await fulfillment(of: [firstStopped, lastStarted], timeout: 2, enforceOrder: true)
+        XCTAssertEqual(playback.stops, 1)
+        XCTAssertEqual(playback.operations.count, 2)
+
+        playback.operations[0].resolve(.completed)
+        playback.operations[1].resolve(.completed)
+        await fulfillment(of: [lastCompleted], timeout: 2)
+    }
+    @MainActor
+    func testInterruptedDelayCannotAdvanceReplacementGroup() async {
+        let playback = MockPlayback()
+        let delay = ControlledDelay()
+        let delayStarted = expectation(description: "delay requested")
+        let coordinator = CalloutCoordinator(playback: playback, legacy: CalloutContext(
+            prefix: { _ in .empty }, sounds: { _, _ in Sounds(TestAudioSound()) }, record: { _ in }),
+            delay: { _ in await delay.wait(started: delayStarted) })
+        let first = CalloutGroup([StringCallout(.system, "first"), StringCallout(.system, "old second")],
+                                 calloutDelay: 30, logContext: "test")
+        let replacement = CalloutGroup([StringCallout(.system, "replacement")], logContext: "test")
+        let lastCompleted = expectation(description: "replacement completed")
+        replacement.onComplete = { result in
+            XCTAssertTrue(result)
+            lastCompleted.fulfill()
+        }
+
+        coordinator.enqueue(first)
+        playback.operations[0].resolve(.completed)
+        await fulfillment(of: [delayStarted], timeout: 2)
+        coordinator.interruptCurrent(clearPending: true, hush: false)
+        coordinator.enqueue(replacement)
+        await delay.fire()
+        playback.operations[1].resolve(.completed)
+        await fulfillment(of: [lastCompleted], timeout: 2)
+        XCTAssertEqual(playback.operations.count, 2)
     }
 
 }
 
-final class TTSSoundTest: XCTestCase {
-    private func warmUpTTSIfAvailable() throws {
-        guard let voice = TTSConfigHelper.defaultVoice(forLocale: LocalizationContext.currentAppLocale) else {
-            throw XCTSkip("No default TTS voice is available for \(LocalizationContext.currentAppLocale.identifier)")
-        }
 
-        let warmupSound = TTSSound("soundscape tts warmup")
-
-        do {
-            guard try waitForAudioBuffer(warmupSound.nextBuffer(forLayer: 0), timeout: 45) != nil else {
-                throw XCTSkip("TTS voice \(voice.identifier) did not render audio in this simulator")
-            }
-        } catch PromiseWaitError.timedOut {
-            throw XCTSkip("TTS voice \(voice.identifier) did not become ready within 45 seconds")
+private actor ControlledDelay {
+    private var continuation: CheckedContinuation<Void, Never>?
+    func wait(started: XCTestExpectation) async {
+        await withCheckedContinuation {
+            continuation = $0
+            started.fulfill()
         }
     }
+    func fire() {
+        continuation?.resume()
+        continuation = nil
+    }
+}
 
-    func testTTSSoundProducesFloat32BuffersAndCompletes() throws {
-        try warmUpTTSIfAvailable()
 
-        let sound = TTSSound("testing the tts pipeline")
-        var buffers: [AVAudioPCMBuffer] = []
-        let deadline = Date().addingTimeInterval(60)
-        let maxBuffers = 200
-        var reachedTerminalNil = false
+// A lock allows the test to deliver a deliberately late Apple-style callback after cancellation.
+private final class DelayedSpeech: SpeechPCMSource, @unchecked Sendable {
+    let preparing: XCTestExpectation
+    let cancelled: XCTestExpectation
+    private let lock = NSLock()
+    private var output: SpeechPCMOutput?
 
-        while Date() < deadline && buffers.count < maxBuffers {
-            let timeout = buffers.isEmpty ? 30.0 : 10.0
-            let nextBuffer = try waitForAudioBuffer(sound.nextBuffer(forLayer: 0), timeout: timeout)
+    init(preparing: XCTestExpectation, cancelled: XCTestExpectation) {
+        self.preparing = preparing
+        self.cancelled = cancelled
+    }
 
-            guard let buffer = nextBuffer else {
-                reachedTerminalNil = true
-                break
-            }
+    func setOutput(_ output: @escaping SpeechPCMOutput) { lock.withLock { self.output = output } }
+    func start() { preparing.fulfill() }
+    func pause() {}
+    func resume() {}
+    func cancel() { cancelled.fulfill() }
 
-            buffers.append(buffer)
-        }
-
-        if !reachedTerminalNil {
-            if buffers.count >= maxBuffers {
-                XCTFail("TTSSound produced \(buffers.count) buffers without emitting terminal nil (cap=\(maxBuffers))")
-            } else {
-                XCTFail("TTSSound did not emit terminal nil before deadline (produced \(buffers.count) buffers)")
-            }
-        }
-        XCTAssertFalse(buffers.isEmpty)
-        XCTAssertTrue(buffers.allSatisfy { $0.frameLength > 0 })
-        XCTAssertTrue(buffers.allSatisfy { $0.format.commonFormat == .pcmFormatFloat32 })
+    func emitLateAudio() {
+        guard let format = AVAudioFormat(standardFormatWithSampleRate: 22_050, channels: 1),
+              let pcm = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 256) else { return }
+        pcm.frameLength = 256
+        let receive = lock.withLock { output }
+        receive?(.success(pcm))
+        receive?(.success(nil))
     }
 }

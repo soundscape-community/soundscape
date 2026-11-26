@@ -3,23 +3,13 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import CoreLocation
 
 class CheckAudioEvent: UserInitiatedEvent { }
-
-class TTSVoicePreviewEvent: UserInitiatedEvent {
-    var voiceName: String
-    
-    let completionHandler: ((Bool) -> Void)?
-    
-    init(name: String, completionHandler: ((Bool) -> Void)? = nil) {
-        self.voiceName = name
-        self.completionHandler = completionHandler
-    }
-}
 
 struct RepeatCalloutEvent: UserInitiatedEvent {
     let callout: CalloutProtocol
@@ -71,7 +61,6 @@ class SystemGenerator: ManualGenerator {
     
     private var eventTypes: [Event.Type] = [
         CheckAudioEvent.self,
-        TTSVoicePreviewEvent.self,
         GenericAnnouncementEvent.self,
         RepeatCalloutEvent.self
     ]
@@ -119,13 +108,6 @@ class SystemGenerator: ManualGenerator {
             }
             
             return .playCallouts(CalloutGroup(callouts, action: .interruptAndClear, logContext: "check_audio"))
-            
-        case let event as TTSVoicePreviewEvent:
-            let callout = StringCallout(.system, GDLocalizedString("voice.apple.preview", event.voiceName), position: Double.random(in: 0.0 ..< 360.0))
-            let group = CalloutGroup([callout], action: .interruptAndClear, logContext: "tts.preview_voice")
-            group.onComplete = event.completionHandler
-            
-            return .playCallouts(group)
             
         case let event as GenericAnnouncementEvent:
             let callout: StringCallout

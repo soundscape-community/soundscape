@@ -3,15 +3,15 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
-import CoreLocation
 
 enum AssetSelectorInput {
-    case heading(CLLocationDirection?, CLLocationDirection)
-    case location(CLLocation?, CLLocation)
+    case heading(Double?, Double, Double)
+    case location(AudioCoordinate?, AudioCoordinate)
 }
 
 /// `DynamicAudioEngineAsset`s are distinct from standard `AudioEngineAsset`s in several
@@ -24,12 +24,12 @@ enum AssetSelectorInput {
 /// of frames) and the implementation should indicate how many beats there are in the musical
 /// phrase the components compose - this allows for intelligently switching between assets on
 /// the beat.
-protocol DynamicAudioEngineAsset: AudioEngineAsset, CaseIterable, Hashable {
+protocol DynamicAudioEngineAsset: AudioEngineAsset, CaseIterable, Hashable, Sendable {
     typealias Volume = Float
     
     /// A block which takes a user heading and a bearing to a POI and returns the case for the
     /// asset that should be playing and the volume the player should be playing at.
-    typealias AssetSelector = (AssetSelectorInput) -> (asset: AllCases.Element, volume: Volume)?
+    typealias AssetSelector = @Sendable (AssetSelectorInput) -> (asset: AllCases.Element, volume: Volume)?
     
     static var selector: AssetSelector? { get }
     
@@ -73,15 +73,14 @@ extension DynamicAudioEngineAsset {
         let assets = Array(allCases)
         
         return { input in
-            if case .heading(let userHeading, let poiBearing) = input {
+            if case .heading(let userHeading, let poiBearing, let threshold) = input {
                 guard let userHeading = userHeading else {
                     return (assets[1], 1.0)
                 }
                 
-                let angle = userHeading.add(degrees: -poiBearing)
+                let angle = ((userHeading - poiBearing).truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
                 
                 // Configurable angle (in degrees) defining the width of the forward (on-axis) region.
-                let threshold = SettingsContext.shared.beaconRingingAngle
                 
                 if angle >= (360.0 - threshold) || angle <= threshold {
                     return (assets[0], 1.0)
@@ -116,12 +115,11 @@ extension DynamicAudioEngineAsset {
         let assets = Array(allCases)
         
         return { input in
-            if case .heading(let userHeading, let poiBearing) = input {
+            if case .heading(let userHeading, let poiBearing, let threshold) = input {
                 guard let userHeading = userHeading else { return (assets[2], 1.0) }
-                let angle = userHeading.add(degrees: -poiBearing)
+                let angle = ((userHeading - poiBearing).truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
                 
                 // Configurable angle (in degrees) defining the width of the forward (on-axis) region.
-                let threshold = SettingsContext.shared.beaconRingingAngle
                 if angle >= (360.0 - threshold) || angle <= threshold {
                     return (assets[0], 1.0)
                 } else if (angle >= 235 && angle <= (360.0 - threshold)) || (angle >= threshold && angle <= 125) {
@@ -161,12 +159,11 @@ extension DynamicAudioEngineAsset {
         let assets = Array(allCases)
         
         return { input in
-            if case .heading(let userHeading, let poiBearing) = input {
+            if case .heading(let userHeading, let poiBearing, let threshold) = input {
                 guard let userHeading = userHeading else { return (assets[3], 1.0) }
-                let angle = userHeading.add(degrees: -poiBearing)
+                let angle = ((userHeading - poiBearing).truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
                 
                 // Configurable angle (in degrees) defining the width of the forward (on-axis) region.
-                let threshold = SettingsContext.shared.beaconRingingAngle
                 if angle >= (360.0 - threshold) || angle <= threshold {
                     return (assets[0], 1.0)
                 } else if (angle >= 305 && angle <= (360.0 - threshold)) || (angle >= threshold && angle <= 55) {

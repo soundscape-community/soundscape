@@ -40,7 +40,6 @@ class DestinationManager: DestinationManagerProtocol {
     
     private struct BeaconArgs {
         let loc: CLLocation
-        let heading: Heading
         var startMelody: Bool
         var endMelody: Bool
     }
@@ -78,10 +77,10 @@ class DestinationManager: DestinationManagerProtocol {
     private var isGeofenceEnabled: Bool = true
     private var isWithinGeofence: Bool = false
     
-    private weak var audioEngine: AudioEngineProtocol!
+    private let audioEngine: any AudioPlayback
     
     private var finishBeaconPlayerOnRemove: Bool = false
-    private var _beaconPlayerId: AudioPlayerIdentifier? {
+    private var _beaconPlayerId: PlaybackHandle? {
         didSet {
             // Make sure there was a previous value and it doesn't equal the new value
             guard let oldID = oldValue, oldID != _beaconPlayerId else {
@@ -90,10 +89,10 @@ class DestinationManager: DestinationManagerProtocol {
             
             if destinationKey != nil && !finishBeaconPlayerOnRemove {
                 // The beacon was just muted - stop the audio without the end melody
-                audioEngine.stop(oldID)
+                oldID.stop()
             } else {
                 // Otherwise, the beacon was removed. Allow the end melody to play if one exists
-                audioEngine.finish(dynamicPlayerId: oldID)
+                oldID.finish()
             }
             
             if _beaconPlayerId == nil {
@@ -102,13 +101,13 @@ class DestinationManager: DestinationManagerProtocol {
         }
     }
     
-    var beaconPlayerId: AudioPlayerIdentifier? {
+    var beaconPlayerId: PlaybackHandle? {
         get {
             return _beaconPlayerId ?? hapticBeacon?.beacon
         }
     }
     
-    private(set) var proximityBeaconPlayerId: AudioPlayerIdentifier? {
+    private(set) var proximityBeaconPlayerId: PlaybackHandle? {
         didSet {
             // Make sure there was a previous value and it doesn't equal the new value
             guard let oldID = oldValue, oldID != proximityBeaconPlayerId else {
@@ -117,17 +116,16 @@ class DestinationManager: DestinationManagerProtocol {
             
             if destinationKey != nil {
                 // The beacon was just muted - stop the audio without the end melody
-                audioEngine.stop(oldID)
+                oldID.stop()
             } else {
                 // Otherwise, the beacon was removed. Allow the end melody to play if one exists
-                audioEngine.finish(dynamicPlayerId: oldID)
+                oldID.finish()
             }
         }
     }
     
     private var hapticBeacon: HapticBeacon?
     
-    private var didInterruptBeacon = false
     private let collectionHeading: Heading
     
     private(set) var isBeaconInBounds: Bool = false {
@@ -152,7 +150,7 @@ class DestinationManager: DestinationManagerProtocol {
 
     // MARK: Initialization
     
-    init(userLocation: CLLocation? = nil, audioEngine engine: AudioEngineProtocol, collectionHeading: Heading) {
+    init(userLocation: CLLocation? = nil, audioEngine engine: any AudioPlayback, collectionHeading: Heading) {
         self.collectionHeading = collectionHeading
         
         audioEngine = engine
@@ -202,7 +200,6 @@ class DestinationManager: DestinationManagerProtocol {
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.onDisableGeofence(_:)), name: NSNotification.Name.disableDestinationGeofence, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onAudioEngineStateChanged(_:)), name: NSNotification.Name.audioEngineStateChanged, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.onAppDidInitialize(_:)), name: NSNotification.Name.appDidInitialize, object: nil)
     }
@@ -456,7 +453,6 @@ class DestinationManager: DestinationManagerProtocol {
         }
         
         var args = BeaconArgs(loc: beaconLocation ?? destination.closestLocation(from: userLocation),
-                              heading: Heading(from: collectionHeading),
                               startMelody: SettingsContext.shared.playBeaconStartAndEndMelodies && !isUnmuting,
                               endMelody: SettingsContext.shared.playBeaconStartAndEndMelodies)
         
@@ -521,8 +517,19 @@ class DestinationManager: DestinationManagerProtocol {
             return
         }
         
-        isCurrentBeaconAsyncFinishable = sound.outroAsset != nil
-        _beaconPlayerId = audioEngine.play(sound, heading: args.heading)
+        isCurrentBeaconAsyncFinishable = args.endMelody
+        let handle = audioEngine.play(sound, heading: .collection)
+        _beaconPlayerId = handle
+        Task { @MainActor [weak self] in
+            let result = await handle.completion()
+            guard let self, self._beaconPlayerId == handle else { return }
+            if case .failed(let reason) = result {
+                GDLogAudioError("Destination beacon failed: \(reason)")
+            }
+            self._beaconPlayerId = nil
+            self.proximityBeaconPlayerId = nil
+            self.notifyDestinationAudioChanged()
+        }
     }
     
     /// Disables the audio beacon for the current destination, if one is set.
@@ -713,22 +720,6 @@ class DestinationManager: DestinationManagerProtocol {
         let formattedDistance = LanguageFormatter.formattedDistance(from: distance)
         
         AudioSessionManager.setNowPlayingInfo(title: name, subtitle: formattedDistance)
-    }
-    
-    @objc private func onAudioEngineStateChanged(_ notification: Notification) {
-        guard let userInfo = notification.userInfo,
-              let stateValue = userInfo[AudioEngine.Keys.audioEngineStateKey] as? Int,
-              let state = AudioEngine.State(rawValue: stateValue) else {
-                return
-        }
-        
-        if state == .stopped && isAudioEnabled {
-            toggleDestinationAudio()
-            didInterruptBeacon = true
-        } else if state == .started && didInterruptBeacon {
-            toggleDestinationAudio()
-            didInterruptBeacon = false
-        }
     }
     
     @objc private func onAppDidInitialize(_ notification: Notification) {

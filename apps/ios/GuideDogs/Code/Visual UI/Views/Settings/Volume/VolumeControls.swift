@@ -15,6 +15,7 @@ struct VolumeControls: View {
     
     @State private var ttsTimer: AnyCancellable?
     @State private var otherTimer: AnyCancellable?
+    @State private var demo: PlaybackHandle?
     
     var body: some View {
         ZStack {
@@ -59,6 +60,8 @@ struct VolumeControls: View {
             otherTimer?.cancel()
             otherTimer = nil
             
+            demo?.stop()
+            demo = nil
             beaconDemo.restoreState()
 
         }
@@ -71,44 +74,30 @@ struct VolumeControls: View {
     }
     
     private func demoTTS() {
-        // When VoiceOver is running, we will wait until the current announcement has finished
-        if !UIAccessibility.isVoiceOverRunning {
-            AppContext.shared.eventProcessor.hush(playSound: false)
-            AppContext.shared.audioEngine.stopDiscrete()
-            AppContext.process(GenericAnnouncementEvent(GDLocalizedString("voice.voice_rate_test")))
-        } else {
-            ttsTimer?.cancel()
-            ttsTimer = Timer.publish(every: 1.5, on: RunLoop.main, in: .common)
-                .autoconnect()
-                .first()
-                .sink { _ in
-                    AppContext.shared.eventProcessor.hush(playSound: false)
-                    AppContext.shared.audioEngine.stopDiscrete()
-                    AppContext.process(GenericAnnouncementEvent(GDLocalizedString("voice.voice_rate_test")))
-                    ttsTimer = nil
-                }
-        }
+        ttsTimer?.cancel()
+        if UIAccessibility.isVoiceOverRunning {
+            ttsTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect().first().sink { _ in
+                playDemo(TTSSound(GDLocalizedString("voice.voice_rate_test")))
+                ttsTimer = nil
+            }
+        } else { playDemo(TTSSound(GDLocalizedString("voice.voice_rate_test"))) }
     }
-    
+
     private func demoOther() {
-        // When VoiceOver is running, we will wait until the current announcement has finished
-        if !UIAccessibility.isVoiceOverRunning {
-            AppContext.shared.eventProcessor.hush(playSound: false)
-            AppContext.shared.audioEngine.stopDiscrete()
-            AppContext.process(GlyphEvent(.connectionSuccess))
-        } else {
-            otherTimer?.cancel()
-            otherTimer = Timer.publish(every: 1.5, on: RunLoop.main, in: .common)
-                .autoconnect()
-                .first()
-                .sink { _ in
-                    AppContext.shared.eventProcessor.hush(playSound: false)
-                    AppContext.shared.audioEngine.stopDiscrete()
-                    AppContext.process(GlyphEvent(.connectionSuccess))
-                    otherTimer = nil
-                }
-        }
+        otherTimer?.cancel()
+        if UIAccessibility.isVoiceOverRunning {
+            otherTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect().first().sink { _ in
+                playDemo(GlyphSound(.connectionSuccess))
+                otherTimer = nil
+            }
+        } else { playDemo(GlyphSound(.connectionSuccess)) }
     }
+
+    private func playDemo(_ sound: any Sound) {
+        demo?.stop()
+        demo = AppContext.shared.audioEngine.play(sound)
+    }
+
 }
 
 struct VolumeControls_Previews: PreviewProvider {

@@ -67,7 +67,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
     private let roadWindow = 60.0
     
     /// ID for the beacon that plays ambient audio when the wand isn't pointed at a road
-    private var roadWandBeacon: AudioPlayerIdentifier?
+    private var roadWandBeacon: PlaybackHandle?
     
     /// Haptic style triggered for available road direction feedback
     private let roadFeedbackStyle: HapticEngine.FeedbackStyle = .impactHeavy
@@ -307,6 +307,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         let next = edge.decisionPointForEndpoint()
         
         currentlyFocussedRoad.value = nil
+        roadWandBeacon?.setFocusBearing(nil)
         
         stopWands()
         
@@ -334,6 +335,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
 
         // Set the current edge to nil because the user requested to undo their last decision
         currentlyFocussedRoad.value = nil
+        roadWandBeacon?.setFocusBearing(nil)
         
         stopWands()
         
@@ -478,7 +480,7 @@ class PreviewBehavior<DecisionPoint: RootedPreviewGraph>: BehaviorBase {
         compassWand.stop()
         
         if let beacon = roadWandBeacon {
-            AppContext.shared.audioEngine.stop(beacon)
+            beacon.stop()
             roadWandBeacon = nil
         }
     }
@@ -500,34 +502,13 @@ extension PreviewBehavior: WandDelegate {
             return
         }
         
-        // Set up the ambient audio for the road finder
-        let silentDistance = 15.0
-        let maxDistance = roadWindow / 2 - silentDistance
-        
-        PreviewWandAsset.selector = { [weak self] input -> (PreviewWandAsset, PreviewWandAsset.Volume)? in
-            if case .heading(let userHeading, _) = input {
-                guard let `self` = self, let heading = userHeading else {
-                    return (PreviewWandAsset.noTarget, 0.0)
-                }
-                
-                if self.currentlyFocussedRoad.value == nil {
-                    return (PreviewWandAsset.noTarget, 0.0)
-                }
-                
-                let distance = self.roadWand.angleFromCurrentTarget(heading) ?? 0.0
-                let volume = distance < silentDistance ? 1.0 : 1.0 - max(min((distance - silentDistance) / maxDistance, 1.0), 0.0)
-                
-                return (PreviewWandAsset.noTarget, Float(volume))
-            }
-            
-            return nil
-        }
-        
-        guard let beacon = BeaconSound(PreviewWandAsset.self, at: currentDecisionPoint.value.node.location, isLocalized: false) else {
+        guard let beacon = BeaconSound(PreviewWandAsset.self, at: currentDecisionPoint.value.node.location, isLocalized: false, wand: .focus(window: roadWindow, followsLocation: false)) else {
             return
         }
         
-        roadWandBeacon = AppContext.shared.audioEngine.play(beacon, heading: AppContext.shared.geolocationManager.heading(orderedBy: [.device]))
+        roadWandBeacon?.stop()
+        roadWandBeacon = AppContext.shared.audioEngine.play(beacon, heading: .device)
+        roadWandBeacon?.setFocusBearing(currentlyFocussedRoad.value?.direction.bearing)
     }
     
     func wand(_ wand: Wand, didCrossThreshold target: Orientable) {
@@ -620,6 +601,7 @@ extension PreviewBehavior: WandDelegate {
         }
         
         currentlyFocussedRoad.value = dataView
+        roadWandBeacon?.setFocusBearing(target.bearing)
         mostRecentFocussedRoad = dataView
     }
     
@@ -663,6 +645,7 @@ extension PreviewBehavior: WandDelegate {
         
         GDLogPreviewInfo("Lost focus on road")
         currentlyFocussedRoad.value = nil
+        roadWandBeacon?.setFocusBearing(nil)
     }
 }
 

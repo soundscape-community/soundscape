@@ -3,90 +3,25 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 
-typealias AsyncSoundsNotificationHandler = (_ notification: Notification) -> [Sound]
+struct Sounds {
+    static let empty = Sounds()
+    let soundArray: [any Sound]
+    let availableTail: (@MainActor () -> [any Sound])?
 
-class Sounds {
-    
-    // MARK: Properties
-    
-    static var empty: Sounds {
-        return Sounds()
+    var isEmpty: Bool { soundArray.isEmpty }
+
+    init(_ sounds: [any Sound] = [], availableTail: (@MainActor () -> [any Sound])? = nil) {
+        soundArray = sounds
+        self.availableTail = availableTail
     }
-    
-    private let lock = NSLock()
-    private(set) var soundArray: [Sound]
-    private var onNotificationHandler: AsyncSoundsNotificationHandler?
-    private var notificationName: Notification.Name?
-    private var notificationObject: Any?
-    
-    var isEmpty: Bool {
-        return soundArray.isEmpty
-    }
-    
-    // MARK: Initialization
-        
-    init(_ sounds: [Sound] = []) {
-        self.soundArray = sounds
-    }
-    
-    convenience init(_ sound: Sound) {
+
+    init(_ sound: any Sound) {
         self.init([sound])
     }
-    
-    convenience init(soundArray: [Sound], onNotificationHandler: AsyncSoundsNotificationHandler?, notificationName: Notification.Name?, notificationObject: Any?) {
-        self.init(soundArray)
-        
-        self.onNotificationHandler = onNotificationHandler
-        self.notificationName = notificationName
-        self.notificationObject = notificationObject
-        
-        // We should have a value for `notificationName` to add an obeserver
-        guard let notificationName = self.notificationName else {
-            return
-        }
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.onAsyncSoundsCompleted),
-                                               name: notificationName,
-                                               object: notificationObject)
-    }
-    
-    // MARK: Iterate through array
-    
-    func next() -> Sound? {
-        lock.lock()
-        
-        defer {
-            lock.unlock()
-        }
-        
-        guard soundArray.count > 0 else {
-            return nil
-        }
-        
-        // Try to get next sound
-        return soundArray.removeFirst()
-    }
-    
-    // MARK: Notifications
-    
-    @objc private func onAsyncSoundsCompleted(_ notification: Notification) {
-        lock.lock()
-        
-        defer {
-            lock.unlock()
-        }
-        
-        guard let soundArray = onNotificationHandler?(notification) else {
-            return
-        }
-        
-        self.soundArray.append(contentsOf: soundArray)
-    }
-    
 }

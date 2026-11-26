@@ -90,7 +90,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         return SpatialDataCache.referenceEntityByEntityKey(selectedPOI.key)
     }
     
-    var player: FadeableAudioPlayer?
+    private let music = TutorialMusic()
     private var presentedAlertController: UIAlertController?
     private let viewState = MarkerTutorialViewState(exitTitle: GDLocalizedString("tutorial.skip"))
     private var hostingController: UIHostingController<MarkerTutorialView>?
@@ -155,7 +155,6 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         
         AppContext.shared.isInTutorialMode = true
         
-        setupAudioPlayer(with: "tutorial_background_music")
         
         toggleAppCalloutsOff()
         clearView()
@@ -196,28 +195,9 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         exitTutorial(finished: false)
     }
 
-    private func setupAudioPlayer(with filename: String) {
-        guard let player = FadeableAudioPlayer.fadeablePlayer(with: filename, fileTypeHint: AVFileType.mp3.rawValue) else {
-            GDLogAppError("Marker tutorial: audio error: file not found.")
-            return
-        }
-        
-        player.numberOfLoops = -1 // play indefinitely
-        self.player = player
-    }
-    
-    private func playMusic() {
-        guard let player = player, !player.isPlaying else {
-            return
-        }
-        
-        player.fadeIn(to: 0.1, duration: 1.5)
-    }
+    private func playMusic() { music.start(volume: 0.1, duration: 1.5) }
+    private func stopMusic(_ completion: (() -> Void)? = nil) { music.stop(completion) }
 
-    private func stopMusic() {
-         player?.fadeOut(nil)
-    }
-    
     // MARK: Parent Override
     
     override internal func play(delay: TimeInterval = 0.0, text: String, _ completion: ((Bool) -> Void)? = nil) {
@@ -494,7 +474,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
         guard let entityKey = referenceEntity?.entityKey else { return }
         guard let manager = AppContext.shared.spatialDataContext.destinationManager as? DestinationManager else { return }
         
-        player?.fadeOut({
+        stopMusic {
             _ = try? manager.setDestination(entityKey: entityKey, enableAudio: true, userLocation: AppContext.shared.geolocationManager.location, estimatedAddress: nil, logContext: "tutorial.markers")
             
             // If a user is inside the selected marker, the audio will not turn on.
@@ -503,7 +483,7 @@ class MarkerTutorialViewController: BaseTutorialViewController {
             }
             
             NotificationCenter.default.addObserver(self, selector: #selector(self.beaconInBounds), name: NSNotification.Name.beaconInBoundsDidChange, object: nil)
-        })
+        }
     }
     
     @objc func beaconInBounds(_ notification: Notification) {

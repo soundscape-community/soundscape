@@ -16,8 +16,8 @@ struct WaypointAudioButton: View {
     
     // MARK: Audio Player Management
     @StateObject private var audio: AudioFileStore = AudioFileStore()
-    @Binding private var isPlayingAudio: AudioPlayerIdentifier?
-    @State private var playerId: AudioPlayerIdentifier?
+    @Binding private var isPlayingAudio: PlaybackHandle?
+    @State private var playerId: PlaybackHandle?
     
     // MARK: Audio Clip Details
     
@@ -37,7 +37,7 @@ struct WaypointAudioButton: View {
     
     // MARK: Initialization
     
-    init(isPlayingAudio: Binding<UUID?>, activityID: String, remoteURL: URL, description: String) {
+    init(isPlayingAudio: Binding<PlaybackHandle?>, activityID: String, remoteURL: URL, description: String) {
         _isPlayingAudio = isPlayingAudio
         self.activityID = activityID
         self.remoteURL = remoteURL
@@ -160,7 +160,7 @@ struct WaypointAudioButton: View {
     private func startAudio() {
         // If another player is currently playing, stop it before starting the new one
         if let currentPlayerID = isPlayingAudio {
-            AppContext.shared.audioEngine.stop(currentPlayerID)
+            currentPlayerID.stop()
         }
         
         audio.start()
@@ -184,7 +184,7 @@ struct WaypointAudioButton_Previews: PreviewProvider {
     
     static var previews: some View {
         VStack(spacing: 2.0) {
-            WaypointAudioButton(isPlayingAudio: .constant(UUID()),
+            WaypointAudioButton(isPlayingAudio: .constant(nil),
                                 activityID: "",
                                 remoteURL: URL(fileURLWithPath: ""),
                                 description: audio1.description)
@@ -192,7 +192,7 @@ struct WaypointAudioButton_Previews: PreviewProvider {
                                 activityID: "",
                                 remoteURL: URL(fileURLWithPath: ""),
                                 description: audio2.description)
-            WaypointAudioButton(isPlayingAudio: .constant(UUID()),
+            WaypointAudioButton(isPlayingAudio: .constant(nil),
                                 activityID: "",
                                 remoteURL: URL(fileURLWithPath: ""),
                                 description: "This is a really really really really really really really really really really really really really really really really long description")

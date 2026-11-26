@@ -161,6 +161,7 @@ private final class VoiceSettingsModel: ObservableObject {
     private var didMuteBeacon = false
     private var isScreenVisible = false
     private var previewTask: Task<Void, Never>?
+    private var voicePlayback: PlaybackHandle?
     private var rateAnnouncementTask: Task<Void, Never>?
     private var displayedLocaleOrder: [String]?
 
@@ -349,7 +350,7 @@ private final class VoiceSettingsModel: ObservableObject {
         SettingsContext.shared.voiceId = voice.identifier
         rebuildCatalogue()
 
-        AppContext.shared.eventProcessor.hush()
+        voicePlayback?.stop()
 
         previewTask = Task { [weak self] in
             do {
@@ -365,11 +366,13 @@ private final class VoiceSettingsModel: ObservableObject {
                 return
             }
 
-            AppContext.process(TTSVoicePreviewEvent(name: voice.name) { [weak self] _ in
-                Task { @MainActor in
-                    self?.voicePreviewDidFinish(identifier: voice.identifier)
-                }
-            })
+            let sound = TTSSound(GDLocalizedString("voice.apple.preview", voice.name), compass: Double.random(in: 0..<360))
+            let handle = AppContext.shared.audioEngine.play(sound)
+            self.voicePlayback = handle
+            _ = await handle.completion()
+            guard self.voicePlayback == handle else { return }
+            self.voicePlayback = nil
+            self.voicePreviewDidFinish(identifier: voice.identifier)
         }
 
         GDLogAppInfo("Selected voice: \(voice.name) (ID: \(voice.identifier))")
@@ -407,9 +410,8 @@ private final class VoiceSettingsModel: ObservableObject {
     }
 
     private func playSpeakingRateTest() {
-        AppContext.shared.eventProcessor.hush(playSound: false)
-        AppContext.shared.audioEngine.stopDiscrete()
-        AppContext.process(GenericAnnouncementEvent(GDLocalizedString("voice.voice_rate_test")))
+        voicePlayback?.stop()
+        voicePlayback = AppContext.shared.audioEngine.play(TTSSound(GDLocalizedString("voice.voice_rate_test")))
     }
 
     private func cancelPendingAudio() {
@@ -417,12 +419,9 @@ private final class VoiceSettingsModel: ObservableObject {
         previewTask = nil
         rateAnnouncementTask?.cancel()
         rateAnnouncementTask = nil
-
-        if previewingVoiceIdentifier != nil {
-            previewingVoiceIdentifier = nil
-            AppContext.shared.eventProcessor.hush(playSound: false)
-            AppContext.shared.audioEngine.stopDiscrete()
-        }
+        voicePlayback?.stop()
+        voicePlayback = nil
+        previewingVoiceIdentifier = nil
     }
 }
 

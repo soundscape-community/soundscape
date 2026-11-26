@@ -53,7 +53,7 @@ extension CalloutOrigin {
 }
 
 class ARHeadsetGenerator: AutomaticGenerator {
-    private var calibrationPlayerId: AudioPlayerIdentifier?
+    private var calibrationPlayerId: PlaybackHandle?
     
     private var previousCalibrationState = DeviceCalibrationState.needsCalibrating
     
@@ -185,9 +185,7 @@ class ARHeadsetGenerator: AutomaticGenerator {
     }
     
     private func startCalibrationTrack() {
-        guard let id = AppContext.shared.audioEngine.play(looped: GenericSound(.calibrationInProgress)) else {
-            return
-        }
+        let id = AppContext.shared.audioEngine.play(GenericSound(.calibrationInProgress), loop: true)
         
         previousBeaconAudioEnabled = AppContext.shared.spatialDataContext.destinationManager.isAudioEnabled
         
@@ -209,7 +207,7 @@ class ARHeadsetGenerator: AutomaticGenerator {
         }
         
         calibrationPlayerId = nil
-        AppContext.shared.audioEngine.stop(id)
+        id.stop()
     }
     
 }

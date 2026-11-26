@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -13,7 +14,7 @@ struct WaypointAudioView: View {
     // MARK: Properties
     
     @ScaledMetric(relativeTo: .body) private var size: CGFloat = 64.0
-    @State private var isPlayingAudio: UUID?
+    @State private var isPlayingAudio: PlaybackHandle?
     @State private var calloutsEnabledDefault: Bool = true
     
     let activityID: String

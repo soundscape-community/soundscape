@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -27,7 +28,7 @@ extension CalloutOrigin {
 
 class HeadsetTestGenerator: ManualGenerator {
     
-    private var beaconPlayerId: AudioPlayerIdentifier?
+    private var beaconPlayerId: PlaybackHandle?
     
     func respondsTo(_ event: UserInitiatedEvent) -> Bool {
         return event is HeadsetTestEvent
@@ -107,7 +108,7 @@ class HeadsetTestGenerator: ManualGenerator {
             return
         }
         
-        AppContext.shared.audioEngine.stop(id)
+        id.stop()
         beaconPlayerId = nil
     }
     

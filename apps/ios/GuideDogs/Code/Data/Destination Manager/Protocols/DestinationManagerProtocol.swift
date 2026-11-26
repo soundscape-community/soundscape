@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -24,8 +25,8 @@ protocol DestinationManagerProtocol: AnyObject {
     
     var isCurrentBeaconAsyncFinishable: Bool { get }
     
-    var beaconPlayerId: AudioPlayerIdentifier? { get }
-    var proximityBeaconPlayerId: AudioPlayerIdentifier? { get }
+    var beaconPlayerId: PlaybackHandle? { get }
+    var proximityBeaconPlayerId: PlaybackHandle? { get }
     
     // MARK: Methods
     

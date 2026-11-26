@@ -34,7 +34,7 @@ extension Notification.Name {
 class RouteGuidance: BehaviorBase {
 
     struct PendingBeaconArgs {
-        let id: UUID
+        let handle: PlaybackHandle?
         let waypoint: LocationDetail
         let enableAudio: Bool
     }
@@ -61,8 +61,8 @@ class RouteGuidance: BehaviorBase {
     private var arrivedAtFinalWaypoint = false
     /// Seems related to beacons, somehow.
     private var isFinished = false
-    /// Receives `dynamicPlayerFinished` events
-    private var beaconObserver: AnyCancellable?
+    /// Waits for this guidance session’s retiring beacon.
+    private var beaconObserver: Task<Void, Never>?
     private var shouldRestoreBeaconAudioOnWake = false
     /// Unless `shouldResume = true`, the route's state will be reset each time the route is activated
     var shouldResume = false
@@ -196,37 +196,6 @@ class RouteGuidance: BehaviorBase {
         saveState()
         lastSaveTime = Date()
 
-        beaconObserver = NotificationCenter.default.publisher(for: Notification.Name.dynamicPlayerFinished).receive(on: RunLoop.main).sink { notification in
-            guard !self.isFinished else {
-                return
-            }
-
-            // and there is a pending beacon...
-            guard let args = self.pendingBeaconArgs else {
-                if self.progress.isDone {
-                    self.isFinished = true
-
-                    // Play the final arrival callouts
-                    self.delegate?.process(WaypointArrivalEvent(self.progress))
-                }
-
-                return
-            }
-
-            // When the beacon has been removed...
-            guard notification.userInfo?[AudioEngine.Keys.playerId] as? UUID == args.id else {
-                return
-            }
-
-            if self.isArrivingAtWaypoint {
-                // Play the arrival callouts and then finish setting the new beacon
-                self.delegate?.process(WaypointArrivalEvent(self.progress))
-            } else {
-                // Directly set the next beacon (the user used next/previous to change the beacon)
-                self.finishTransitioningBeacon()
-            }
-        }
-
         super.activate(with: parent)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
@@ -311,10 +280,16 @@ class RouteGuidance: BehaviorBase {
         guard index != content.waypoints.count - 1 else {
             arrivedAtFinalWaypoint = true
 
-            if isBeaconAsync && isBeaconAudioEnabled {
-                // Toggle off the beacon's audio. As soon as it finishes playing the ending melody,
-                // we will trigger the arrival callouts
-                AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(false, forceMelody: true)
+            let manager = spatialDataContext.destinationManager
+            if isBeaconAsync && isBeaconAudioEnabled, let handle = manager.beaconPlayerId {
+                manager.toggleDestinationAudio(false, forceMelody: true)
+                beaconObserver?.cancel()
+                beaconObserver = Task { @MainActor [weak self] in
+                    _ = await handle.completion()
+                    guard let self, !Task.isCancelled, !self.isFinished, self.arrivedAtFinalWaypoint else { return }
+                    self.isFinished = true
+                    self.delegate?.process(WaypointArrivalEvent(self.progress))
+                }
             } else {
                 if !isBeaconAsync && isBeaconAudioEnabled {
                     AppContext.shared.spatialDataContext.destinationManager.toggleDestinationAudio(false, forceMelody: true)
@@ -470,7 +445,7 @@ class RouteGuidance: BehaviorBase {
             let event: Event
             if isArrivingAtWaypoint {
                 // If arriving when the beacon is muted, then kick off the arrival callouts immediately
-                pendingBeaconArgs = .init(id: UUID(), waypoint: waypoint, enableAudio: enableAudio)
+                pendingBeaconArgs = .init(handle: nil, waypoint: waypoint, enableAudio: enableAudio)
                 event = WaypointArrivalEvent(progress)
             } else {
                 // If pressing the next button when the beacon is muted, then kick off the waypoint
@@ -490,13 +465,23 @@ class RouteGuidance: BehaviorBase {
         // to the beacon for the subsequent waypoint by first stopping the current beacon. So save
         // the arguments for the next beacon and clear the current beacon. As soon as the beacon is
         // stopped, we will complete the process to start the next beacon.
-        pendingBeaconArgs = .init(id: id, waypoint: waypoint, enableAudio: enableAudio)
+        pendingBeaconArgs = .init(handle: id, waypoint: waypoint, enableAudio: enableAudio)
 
         GDLogInfo(.routeGuidance, "Start transition to next route beacon...")
 
         do {
             try AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "route_guidance.set_beacon")
             GDLogInfo(.routeGuidance, "Awaiting finish of current route beacon...")
+            beaconObserver?.cancel()
+            beaconObserver = Task { @MainActor [weak self] in
+                _ = await id.completion()
+                guard let self, !Task.isCancelled, !self.isFinished, self.pendingBeaconArgs?.handle == id else { return }
+                if self.isArrivingAtWaypoint {
+                    self.delegate?.process(WaypointArrivalEvent(self.progress))
+                } else {
+                    self.finishTransitioningBeacon()
+                }
+            }
         } catch {
             pendingBeaconArgs = nil
             NotificationCenter.default.post(name: .routeGuidanceTransitionStateChanged, object: nil, userInfo: [Key.isTransitioning: false])

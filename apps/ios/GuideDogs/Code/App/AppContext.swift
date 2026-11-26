@@ -4,6 +4,7 @@
 //
 //  Copyright (c) Microsoft Corporation.
 //  Copyright (c) Soundscape Community Contributors.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -45,7 +46,12 @@ class AppContext {
     static let appBuild = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as! String
     static let appStoreId = "6449701760"
 
-    static var appState: UIApplication.State = .inactive
+    private static let appStateLock = NSLock()
+    private static var currentAppState: UIApplication.State = .inactive
+    static var appState: UIApplication.State {
+        get { appStateLock.withLock { currentAppState } }
+        set { appStateLock.withLock { currentAppState = newValue } }
+    }
     static let appLaunchedInBackground: Bool = UIApplication.shared.applicationState == .background
     
     // MARK: Properties
@@ -56,7 +62,7 @@ class AppContext {
     private(set) var reverseGeocoder: ReverseGeocoderContext
     
     private(set) var offlineContext: OfflineContext
-    private(set) var audioEngine: AudioEngineProtocol
+    private(set) var audioEngine: AudioEngine
     
     private var bleOnCancellable: AnyCancellable?
     private var bleAuthCancellable: AnyCancellable?
@@ -176,6 +182,11 @@ class AppContext {
         
         let destinationCollection = geolocationManager.heading(orderedBy: [.user, .device, .course])
         
+        audioEngine.bindHeadings(presentation: geolocationManager.presentationHeading,
+                                 device: geolocationManager.heading(orderedBy: [.device]),
+                                 collection: geolocationManager.heading(orderedBy: [.user, .device, .course]))
+        if let location = geolocationManager.location { audioEngine.updateUserLocation(location) }
+
         let destinationManager = DestinationManager(userLocation: geolocationManager.location,
                                                     audioEngine: audioEngine,
                                                     collectionHeading: destinationCollection)
@@ -196,13 +207,19 @@ class AppContext {
                                                  motionActivity: motionActivityContext,
                                                  deviceMotion: DeviceMotionManager.shared)
         
-        let stateMachine = CalloutStateMachine(audioEngine: audioEngine,
-                                               geo: geolocationManager,
-                                               motionActivityContext: motionActivityContext,
-                                               history: calloutHistory)
-        
+        let context = CalloutContext(
+            prefix: { [geo = geolocationManager] in $0.sounds(for: geo.location) },
+            sounds: { [geo = geolocationManager, motion = motionActivityContext] callout, group in
+                if let location = group.repeatingFromLocation {
+                    return callout.sounds(for: location, isRepeat: true)
+                }
+                return callout.sounds(for: geo.location, automotive: motion.isInVehicle)
+            },
+            record: { [history = calloutHistory] in history.insert($0) })
+        let callouts = CalloutCoordinator(playback: audioEngine, legacy: context)
+
         eventProcessor = EventProcessor(activeBehavior: defaultBehavior,
-                                        stateMachine: stateMachine,
+                                        callouts: callouts,
                                         audioEngine: audioEngine,
                                         data: spatialDataContext)
         

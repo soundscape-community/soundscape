@@ -3,1335 +3,966 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import Foundation
+import AudioToolbox
 import AVFoundation
 import CoreLocation
+import UIKit
 
 extension Notification.Name {
     static let audioEngineStateChanged = Notification.Name("GDAAudioEngineStateChanged")
-    static let dynamicPlayerFinished = Notification.Name("GDADynamicPlayerFinished")
-    static let discretePlayerFinished = Notification.Name("GDADiscretePlayerFinished")
-    static let discretePlayerDidStop = Notification.Name("GDADiscretePlayerDidStop")
 }
 
-/// This class builds and runs a graph of audio player nodes for playing all types of audio in
-/// Soundscape. This includes 3D and 2D audio. All 3D audio is localized using the HRTF algorithm
-/// built into Apple's `AVAudioEnvironmentNode`.
-///
-/// The node graph built by this object is completely dynamic. 2D audio players have their nodes
-/// connected directly to the audio engine's main mixer node (which outputs to the speakers/headphones).
-/// 3D audio players' nodes are connected to an environment node that is configured to work with audio at
-/// the same sample rate as the 3D audio player. This means that there may be multiple environment nodes
-/// (since there could be multiple 3D audio streams playing at different sample rates at the same time).
-/// All environment nodes are then connected to the audio engine's main mixer node.
-///
-///     {3D Players @ 48 kHz} ------|--- [Environment Node] ---|
-///                                                            |
-///     {3D Players @ 22.05 kHz} ---|--- [Environment Node] ---|
-///                                                            |
-///     {etc...} -------------------|--- [Environment Node] ---|--- [Main Mixer] ---> (Output to Speakers)
-///                                                            |
-///                                            {2D Players} ---|
-///
-///
-/// The audio engine can play both discrete audio (non-looped audio; see `DiscreteAudioPlayer` and
-/// `AudioEngineAsset`) and continuous audio (looped audio; see `ContinuousAudioPlayer` and
-/// `DynamicAudioEngineAsset`). When assets are passed into the audio engine using one of the various
-/// `play(...)` methods, the appropriate type of audio player is created, attached to the engine, and
-/// started. Discrete audio players are removed from the engine when they are done playing. Continuous
-/// audio players are removed from the engine when `stop(_:)` is called with the id for the continuous
-/// audio player. The audio engine has no knowledge of the implementation details of the various types
-/// of audio in openscape as those details are fully encapsulated in the objects that implement
-/// `AudioEngineAsset`, `Sound` (for discrete sounds), and/or `DynamicAudioEngineAsset` (for continuous
-/// sounds) . See examples of this in `ClassicBeacon.swift`, `V2Beacon.swift`, `ContinuousTrack`, `WandAsset.swift`,
-/// `GlyphSound.swift`, `TTSSound.swift`, and `GenericSound.swift`.
-class AudioEngine: AudioEngineProtocol {
-    
-    // MARK: Types
-    
-    enum State: Int {
-        case stopped
-        case starting
-        case started
+extension AudioCoordinate {
+    init(_ location: CLLocation) {
+        self.init(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
     }
-    
-    // MARK: Keys
-    
-    struct Keys {
-        static let audioEngineStateKey = "GDAAudioEngineStateKey"
-        static let playerId = "GDAAudioPlayerID"
-    }
-    
-    // MARK: Audio Session
-    
-    private var sessionManager: AudioSessionManager
-    
-    var session: AVAudioSession {
-        return sessionManager.session
-    }
-    
-    var outputType: String {
-        return sessionManager.outputType
-    }
-    
-    private var isConfigChangePending = false
-    
-    private var isSessionInterrupted = false
-    
-    private var isAwaitingRouteOverride = false
-    
-    private var routeOverrideCompletionHandler: ((AVAudioSession.PortOverride) -> Void)?
-    
-    private var state = State.stopped {
-        didSet {
-            guard state != oldValue else {
-                return
-            }
-            
-            // Store the current value, as it might change while switching threads
-            let state = self.state
-            
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .audioEngineStateChanged,
-                                                object: self,
-                                                userInfo: [AudioEngine.Keys.audioEngineStateKey: state.rawValue])
-            }
+}
+
+// The control queue is the sole owner of graph, session and operation state.
+// File preparation runs on a worker and transfers each finished buffer once.
+// Remove the Sendable escape hatch when the iOS renderer can use an isolated executor at the deployment baseline.
+final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked Sendable {
+    enum State: Int { case stopped, starting, started }
+    enum Keys { static let audioEngineStateKey = "GDAAudioEngineStateKey" }
+
+    private enum Channel { case effects, speech, beacon }
+
+    private final class Source {
+        let player = AVAudioPlayerNode()
+        let equalizer: AVAudioUnitEQ
+        let environment: AVAudioEnvironmentNode?
+        let spatialMixer: AVAudioMixerNode?
+        let type: SoundType
+        let channel: Channel
+        let voiceEQ: EQParameters?
+        var speech: SpeechPCMSource?
+        var queued = 0
+        var ended = false
+        var readyToPlay = false
+        let format: AVAudioFormat
+        var selectionGain: Float = 1
+
+        init(type: SoundType, channel: Channel, format: AVAudioFormat, voiceEQ: EQParameters?, spatial: Bool) {
+            self.format = format
+            self.type = type
+            self.channel = channel
+            self.voiceEQ = voiceEQ
+            equalizer = AVAudioUnitEQ(numberOfBands: voiceEQ?.bandParameters.count ?? 0)
+            environment = spatial ? AVAudioEnvironmentNode() : nil
+            spatialMixer = spatial ? AVAudioMixerNode() : nil
         }
     }
-    
-    // MARK: Engine
-    
-    weak var delegate: AudioEngineDelegate?
-    private var engine: AVAudioEngine
-    
-    // MARK: Nodes and Players
-    
-    private var environmentNodes: [AVAudioEnvironmentNode] = []
-    private var players: [AudioPlayer] = []
-    private var discretePlayerIds: [AudioPlayerIdentifier] = []
-    
-    // MARK: Sound Queue
-    
-    private var soundsQueue = Queue<(Sounds, CompletionCallback?)>()
-    private var currentSounds: Sounds?
-    private var currentSoundCompletion: CompletionCallback?
-    private var currentQueuePlayerID: AudioPlayerIdentifier?
-    
-    // MARK: Environment Info
-    
-    private weak var envSettings: EnvironmentSettingsProvider!
-    private var userLocation: CLLocation?
-    private var userHeading: Heading?
-    
-    // MARK: Recording State
-    
-    private(set) var isRecording = false
-    private var recordingFile: AVAudioFile?
-    
-    static var recordingDirectory: URL? {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("AudioRecordings")
-    }
-    
-    // MARK: Notification Observers
-    
-    private var engineConfigObserver: NSObjectProtocol?
-    private var applicationStateObserver: NSObjectProtocol?
-    private var callStateObserver: NSObjectProtocol?
-    
-    // MARK: Dispatch Queue
-    
-    private let queue = DispatchQueue(label: "services.soundscape.audioengine")
-    
-    // MARK: Public State
-    
-    /// This property is `true` when the output format of the engine only has one channel (e.g.
-    /// the audio route is the iPhone speakers instead of stereo headphones), or when the mono audio
-    /// accessibility setting is enabled. While it is not currently implemented, this could also be exposed
-    /// as a user setting within openscape as well.
-    private(set) var isInMonoMode: Bool = false
-    
-    /// Computed property that is `true` when there is currently discrete audio playing
-    var isDiscreteAudioPlaying: Bool {
-        return discretePlayerIds.contains { id in players.first(where: { $0.id == id })?.isPlaying ?? false }
-    }
-    
-    var mixWithOthers: Bool {
-        get {
-            return sessionManager.mixWithOthers
-        }
-        set {
-            guard sessionManager.mixWithOthers != newValue else {
-                return
-            }
-            
-            sessionManager.deactivate()
-            pause()
-            stop()
-            sessionManager.mixWithOthers = newValue
-            start()
+
+    private final class Beacon {
+        let description: AdaptiveBeacon
+        let source: Source
+        let buffers: [AudioAsset: AVAudioPCMBuffer]
+        let silence: AVAudioPCMBuffer
+        let timing: BeaconTiming
+        var selected: AudioAsset?
+        var hasScheduled = false
+        var finishing = false
+
+        init(_ description: AdaptiveBeacon, source: Source, buffers: [AudioAsset: AVAudioPCMBuffer], silence: AVAudioPCMBuffer) {
+            self.description = description
+            self.source = source
+            self.buffers = buffers
+            self.silence = silence
+            timing = BeaconTiming(intro: Int64(description.intro.flatMap { buffers[$0]?.frameLength } ?? 0),
+                                  phrase: Int64(silence.frameLength), beats: Int64(description.beats))
         }
     }
-    
-    // MARK: - Initialization
-    
-    init(envSettings: EnvironmentSettingsProvider, mixWithOthers: Bool) {
+
+    private final class Operation {
+        let request: AudioRequest
+        let completion: PlaybackCompletion
+        var sources: [Source] = []
+        var beacon: Beacon?
+        var gain: Float
+        var fadeGeneration: UInt64 = 0
+        var focus: Double?
+        var paused = false
+        var finishRequested = false
+        var generation: UInt64 = 0
+        var recovering = false
+        var speechSources: [UUID: SpeechPCMSource] = [:]
+        var speechPlayers: [UUID: Source] = [:]
+        var preparation = [UUID: DispatchWorkItem]()
+
+        init(_ request: AudioRequest, completion: PlaybackCompletion) {
+            self.request = request
+            self.gain = request.initialGain
+            self.completion = completion
+        }
+    }
+
+    private let control = DispatchQueue(label: "org.soundscape.audio.control")
+    private let files = DispatchQueue(label: "org.soundscape.audio.assets", qos: .userInitiated)
+    private let sessionManager: AudioSessionManager
+    private let envSettings: EnvironmentSettingsProvider
+    private let canStart: @Sendable () -> Bool
+    private var engine = AVAudioEngine()
+    private var state = State.stopped
+    private var operations: [ObjectIdentifier: Operation] = [:]
+    private var observers: [NSObjectProtocol] = []
+    private var graphObserver: NSObjectProtocol?
+    private var headings: [Heading] = []
+    private var interrupted = false
+    private var wantsRunning = false
+    private var routingCallback: ((AVAudioSession.PortOverride) -> Void)?
+    private var recordingFile: ExtAudioFileRef?
+    private struct Status {
+        var mixes: Bool
+        var transientCount = 0
+        var recording = false
+    }
+    private let statusLock = NSLock()
+    private var status: Status
+
+    private struct Scene {
+        var location: AudioCoordinate?
+        var presentation: Double?
+        var yaw: Double = 0
+        var device: Double?
+        var collection: Double?
+    }
+    private var scene = Scene()
+    private let sceneLock = NSLock()
+    private var pendingScene = Scene()
+    private var sceneScheduled = false
+
+    private let makeSpeech: (String, String?, @escaping SpeechPCMOutput) -> SpeechPCMSource
+    private static let voiceFilters: [String: EQParameters] = {
+        struct VoiceEQ: Decodable { let id: String; let filter: EQParameters }
+        guard let url = Bundle.main.url(forResource: "voiceFilters", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let filters = try? JSONDecoder().decode([VoiceEQ].self, from: data) else { return [:] }
+        return filters.reduce(into: [:]) { $0[$1.id] = $1.filter }
+    }()
+
+    init(envSettings: EnvironmentSettingsProvider, mixWithOthers: Bool,
+         canStart: @escaping @Sendable () -> Bool = { AppContext.appState != .inactive },
+         makeSpeech: @escaping (String, String?, @escaping SpeechPCMOutput) -> SpeechPCMSource = {
+             IOSSpeechPCMSource(text: $0, voiceID: $1, output: $2)
+         }) {
+        self.status = Status(mixes: mixWithOthers)
         self.envSettings = envSettings
-        
-        // Create the engine (all nodes are dynamically generated, so none are created in this initializer)
-        engine = AVAudioEngine()
-        
-        sessionManager = AudioSessionManager(mixWithOthers: mixWithOthers)
-        
-        // Listen for events from the audio session
+        self.canStart = canStart
+        self.makeSpeech = makeSpeech
+        sessionManager = AudioSessionManager(mixWithOthers: mixWithOthers, control: control)
         sessionManager.delegate = self
-        
-        // Listen for changes to the engine configuration so we can re-establish connections if connection
-        // formats need to change (specifically for the environment node).
-        engineConfigObserver = NotificationCenter.default.addObserver(forName: .AVAudioEngineConfigurationChange, object: engine, queue: nil) { [weak self] (_) in
-            GDLogAudioVerbose("Engine configuration changed. Reconnecting nodes and restarting engine.")
-            
-            self?.resetConfiguration()
+        observeGraph()
+        control.async { [weak self] in self?.sessionManager.configure() }
+        let center = NotificationCenter.default
+        for name in [Notification.Name.beaconVolumeChanged, .ttsVolumeChanged, .otherVolumeChanged, .beaconGainChanged, .beaconRingingAngleChanged] {
+            observers.append(center.addObserver(forName: name, object: nil, queue: nil) { [weak self] _ in
+                self?.control.async { [weak self] in self?.updateScene() }
+            })
         }
-        
-        // In some cases, it is necessary to restart the audio engine after the application did become active. See `start()` for more details.
-        applicationStateObserver = NotificationCenter.default.addObserver(forName: .appDidBecomeActive, object: nil, queue: nil) { [weak self] (_) in
-            GDLogAudioVerbose("Application did become active. Restarting engine.")
-            
-            guard let `self` = self else {
-                return
-            }
-            
-            self.queue.sync {
-                self.start()
-            }
-        }
-        
-        callStateObserver = NotificationCenter.default.addObserver(forName: .callStatusChanged, object: nil, queue: nil) { [weak self] (notification) in
-            guard let `self` = self else { return }
-            
-            guard let userInfo = notification.userInfo,
-                let typeValue = userInfo[CallManager.Keys.callStatusTypeKey] as? UInt,
-                let type = CallStatusType(rawValue: typeValue) else {
-                return
-            }
-            
-            switch type {
-            case .began:
-                // Handled by the audio session interruption
-                break
-            case .ended:
-                // Handled here as some interruption ended notifications may not be delivered by iOS
-                guard self.isSessionInterrupted else {
-                    return
+        for name in [AVAudioSession.routeChangeNotification, UIAccessibility.monoAudioStatusDidChangeNotification] {
+            observers.append(center.addObserver(forName: name, object: nil, queue: nil) { [weak self] _ in
+                self?.control.async { [weak self] in
+                    guard let self, self.wantsRunning, !self.interrupted else { return }
+                    if self.isInMonoMode != self.graphMono || !self.engine.isRunning { self.recover() }
                 }
-                
-                GDLogAudioVerbose("Call ended. Restarting engine.")
-                
-                self.queue.sync {
-                    self.start()
-                }
-            }
+            })
         }
-        
-        GDLogAudioVerbose("Initializing audio engine")
-        
-        // Call `connectNodes()` so that `isInMonoMode` gets set up (even though there aren't any nodes to connect yet)
-        connectNodes()
+        observers.append(center.addObserver(forName: .callStatusChanged, object: nil, queue: nil) { [weak self] notification in
+            guard let value = notification.userInfo?[CallManager.Keys.callStatusTypeKey] as? UInt,
+                  CallStatusType(rawValue: value) == .ended else { return }
+            self?.control.async { [weak self] in
+                guard let self, self.wantsRunning, self.interrupted, self.sessionManager.activate(force: true) else { return }
+                self.interrupted = false
+                self.recoverIfStopped()
+            }
+        })
+        observers.append(center.addObserver(forName: .appDidBecomeActive, object: nil, queue: nil) { [weak self] _ in
+            self?.control.async { [weak self] in
+                guard let self, self.wantsRunning else { return }
+                if self.interrupted {
+                    guard self.sessionManager.activate(force: true) else { return }
+                    self.interrupted = false
+                }
+                self.recoverIfStopped()
+            }
+        })
     }
-    
+
     deinit {
-        if let observer = engineConfigObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-        
-        if let observer = applicationStateObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-        
-        if let observer = callStateObserver {
-            NotificationCenter.default.removeObserver(observer)
+        observers.forEach(NotificationCenter.default.removeObserver)
+        if let graphObserver { NotificationCenter.default.removeObserver(graphObserver) }
+        stopRecordingOnControl()
+        for operation in operations.values { operation.completion.resolve(.stopped) }
+    }
+
+    var session: AVAudioSession { sessionManager.session }
+    var outputType: String { sessionManager.outputType }
+    var mixWithOthers: Bool {
+        get { statusLock.withLock { status.mixes } }
+        set {
+            statusLock.withLock { status.mixes = newValue }
+            control.async {
+                self.sessionManager.mixWithOthers = newValue
+                self.recoverIfStopped()
+            }
         }
     }
-    
-    // MARK: Engine Configuration
-    
-    private func resetConfiguration() {
-        GDLogAudioVerbose("Resetting configuration")
-        
-        // Track the state of connections of player nodes to the audio graph
-        for player in players {
-            player.updateConnectionState(.unknown)
+    var isInMonoMode: Bool { session.outputNumberOfChannels == 1 || UIAccessibility.isMonoAudioEnabled }
+    private var graphMono = false
+
+    func bindHeadings(presentation: Heading, device: Heading, collection: Heading) {
+        headings = [presentation, device, collection]
+        updateSensor {
+            $0.presentation = presentation.value
+            $0.yaw = presentation.value ?? 0
+            $0.device = device.value
+            $0.collection = collection.value
         }
-        
-        if engine.outputNode.outputFormat(forBus: 0).sampleRate == 0 || engine.outputNode.outputFormat(forBus: 0).channelCount == 0 {
-            GDLogAudioError("Output is not currenly enabled...")
+        presentation.onHeadingDidUpdate { [weak self] heading in
+            self?.updateSensor {
+                $0.presentation = heading?.value
+                if let heading { $0.yaw = heading.value }
+            }
         }
-        
-        queue.sync {
-            guard !isSessionInterrupted else {
-                // Will reset configuration after audio session interruption ends
-                isConfigChangePending = true
-                
-                GDLogAudioVerbose("Configuration change is pending audio interruption")
-                return
+        device.onHeadingDidUpdate { [weak self] heading in self?.updateSensor { $0.device = heading?.value } }
+        collection.onHeadingDidUpdate { [weak self] heading in self?.updateSensor { $0.collection = heading?.value } }
+    }
+
+    func updateUserLocation(_ location: CLLocation) {
+        let position = AudioCoordinate(location)
+        updateSensor { $0.location = position }
+    }
+
+    private func updateSensor(_ update: (inout Scene) -> Void) {
+        let schedule = sceneLock.withLock {
+            update(&pendingScene)
+            guard !sceneScheduled else { return false }
+            sceneScheduled = true
+            return true
+        }
+        if schedule {
+            control.async { [weak self] in
+                guard let self else { return }
+                self.scene = self.sceneLock.withLock {
+                    self.sceneScheduled = false
+                    return self.pendingScene
+                }
+                self.updateScene()
             }
-            
-            guard state != .stopped else {
-                // Will reset configuration when audio engine starts
-                isConfigChangePending = true
-                
-                GDLogAudioVerbose("Configuration change is pending audio engine start")
-                return
-            }
-            
-            isConfigChangePending = false
-            connectNodes()
-            start()
         }
     }
-    
-    /// Updates the value of `isInMonoMode` by checking the audio engine's current output configuration
-    /// and then reconnects all current nodes in the audio engine (regardless of whether `isInMonoMode`
-    /// changed or not). This is required when an engine configuration change is detected (e.g. when the
-    /// audio route changes) since the configuration change may require audio format changes to occur in
-    /// the node connections in the audio engine's node graph.
-    private func connectNodes() {
-        // Update mono mode property
-        isInMonoMode = engine.outputNode.outputFormat(forBus: 0).channelCount == 1 || UIAccessibility.isMonoAudioEnabled
-        GDLogAudioVerbose("Connecting audio graph in \(isInMonoMode ? "2D" : "3D") mode (from \(Thread.current.threadName))")
-        
-        // Access the `mainMixerNode` property so that the node gets constructed by the audio engine before we
-        // try to connect any other nodes. If this isn't referenced here, it will cause a crash
-        // when we try to detach the first player that plays...
-        engine.mainMixerNode.volume = 1.0
-        engine.mainMixerNode.outputVolume = 1.0
-        
-        // Clean up environment nodes that are still attached to the engine from it's previous configuration
-        for environment in environmentNodes {
-            guard let envEngine = environment.engine else {
-                continue
-            }
-            
-            envEngine.disconnectNodeInput(environment)
-            envEngine.disconnectNodeOutput(environment)
-            envEngine.detach(environment)
+
+    func start() {
+        control.async {
+            self.wantsRunning = true
+            self.recoverIfStopped()
         }
-        
-        // Connect the environment nodes to the main mixer
-        do {
-            try ObjC.catchException {
-                // Connect the audio players
-                for player in self.players {
-                    self.connectNodes(for: player)
+    }
+
+    func shutdown() {
+        control.async {
+            self.wantsRunning = false
+            for operation in Array(self.operations.values) { self.end(operation, .stopped) }
+            self.stopRecordingOnControl()
+            self.engine.stop()
+            self.sessionManager.deactivate()
+            self.publish(.stopped)
+        }
+    }
+
+    @discardableResult
+    func play(_ request: AudioRequest) -> PlaybackHandle {
+        let completion = PlaybackCompletion()
+        let id = ObjectIdentifier(completion)
+        let handle = PlaybackHandle(state: completion) { [weak self, weak completion] command in
+            self?.control.async { [weak self, weak completion] in
+                guard let self, let completion, let operation = self.operations[id], operation.completion === completion else { return }
+                switch command {
+                case .stop: self.end(operation, .stopped)
+                case .finish:
+                    operation.finishRequested = true
+                    if self.interrupted { self.end(operation, .interrupted); return }
+                    if let beacon = operation.beacon {
+                        self.finishBeacon(beacon, operation: operation)
+                        if operation.paused { beacon.source.player.play() }
+                    }
+                    else if !operation.request.sounds.contains(where: { if case .beacon = $0.content { return true }; return false }),
+                            operation.request.loops { self.end(operation, .stopped) }
+                case .paused(let paused):
+                    operation.paused = paused
+                    for source in operation.sources where source.readyToPlay {
+                        if paused { source.player.pause(); source.speech?.pause() }
+                        else { source.player.play(); if source.queued < 12 { source.speech?.resume() } }
+                    }
+                case .focus(let bearing):
+                    operation.focus = bearing
+                    if let beacon = operation.beacon { self.updateBeacon(beacon, operation: operation) }
+                case .fade(let gain, let seconds, let stop):
+                    self.fade(operation, to: gain, seconds: seconds, stop: stop)
+                case .gain(let gain):
+                    operation.fadeGeneration &+= 1
+                    operation.gain = max(0, min(gain, 1))
+                    operation.sources.forEach { self.update($0, operation: operation) }
                 }
             }
-        } catch {
-            GDLogAudioError(error.localizedDescription)
-            GDATelemetry.track("audio_engine.exception", with: [
-                "description": error.localizedDescription,
-                "location": "AudioEngine.swift:connectNodes()"
-            ])
+        }
+        control.async {
+            guard !completion.stopRequested else { completion.resolve(.stopped); return }
+            guard !self.interrupted else { completion.resolve(.interrupted); return }
+            guard self.wantsRunning, self.engine.isRunning || self.startGraph() else {
+                completion.resolve(.failed("Audio engine unavailable"))
+                return
+            }
+            let operation = Operation(request, completion: completion)
+            self.operations[id] = operation
+            if request.transient { self.statusLock.withLock { self.status.transientCount += 1 } }
+            self.run(operation)
+        }
+        return handle
+    }
+
+    private func fade(_ operation: Operation, to target: Float, seconds: Double, stop: Bool) {
+        operation.fadeGeneration &+= 1
+        let token = operation.fadeGeneration
+        let start = DispatchTime.now().uptimeNanoseconds
+        let initial = operation.gain
+        @Sendable func tick() {
+            guard alive(operation), operation.fadeGeneration == token else { return }
+            let elapsed = Double(DispatchTime.now().uptimeNanoseconds - start) / 1e9
+            let progress = seconds > 0 && seconds.isFinite ? min(1, elapsed / seconds) : 1
+            operation.gain = initial + (max(0, min(1, target)) - initial) * Float(progress)
+            operation.sources.forEach { update($0, operation: operation) }
+            if progress < 1 {
+                control.asyncAfter(deadline: .now() + .milliseconds(30)) { tick() }
+            } else if stop {
+                end(operation, .stopped)
+            }
+        }
+        tick()
+    }
+
+    var hasTransientAudio: Bool {
+        statusLock.withLock { status.transientCount > 0 }
+    }
+
+    func stopTransientAudio() {
+        control.async {
+            for operation in Array(self.operations.values) where operation.request.transient {
+                self.end(operation, .stopped)
+            }
         }
     }
-    
-    /// Connects the `AVAudioPlayerNode` of an `AudioPlayer` to the audio engine. If the `AudioPlayer`
-    /// only plays standard 2D audio, or if the audio engine is currently in mono mode, then the
-    /// player node will be connected directly to the engine's main mixer node. If the `AudioPlayer`
-    /// plays 3D audio, this method will find or create the appropriate `AVAudioEnvironment` node,
-    /// connect it to the engine if it isn't already, and connect the player's node to it instead of
-    /// connecting the player node directly to the engine's main mixer node.
-    ///
-    /// - Parameter player: The player to connect to the audio engine
-    private func connectNodes(for player: AudioPlayer) {
-        // Only prepared players can be connected to the audio graph (guarantees the node is attached to the engine)
-        guard player.state == .prepared else {
-            return
+
+    private func run(_ operation: Operation) {
+        sequence(operation.request.sounds[...], operation: operation) { [weak self, weak operation] in
+            guard let self, let operation else { return }
+            self.end(operation, .completed)
         }
-        
-        engine.mainMixerNode.outputVolume = 1.0
-        
-        for layer in player.layers {
-            // Wire the node up with the audio engine
-            connectLayer(layer, for: player)
-        }
-        
-        player.updateConnectionState(.connected)
     }
-    
-    private func connectLayer(_ layer: PreparableAudioLayer, for player: AudioPlayer) {
-        guard layer.isAttached else {
-            GDLogAudioError("Tried to connect layer within engine, but layer has not yet been attached. This condition should not be possible")
-            return
+
+    private func alive(_ operation: Operation) -> Bool {
+        operations[ObjectIdentifier(operation.completion)] === operation && !operation.completion.stopRequested
+    }
+
+    private func end(_ operation: Operation, _ result: PlaybackResult) {
+        guard operations.removeValue(forKey: ObjectIdentifier(operation.completion)) != nil else { return }
+        if operation.request.transient { statusLock.withLock { status.transientCount -= 1 } }
+        reset(operation)
+        operation.completion.resolve(operation.completion.stopRequested ? .stopped : result)
+    }
+
+    private func reset(_ operation: Operation) {
+        operation.generation &+= 1
+        operation.preparation.values.forEach { $0.cancel() }
+        operation.preparation.removeAll()
+        operation.speechSources.values.forEach { $0.cancel() }
+        operation.speechSources.removeAll()
+        operation.speechPlayers.removeAll()
+        operation.sources.forEach(detach)
+        operation.sources.removeAll()
+        operation.beacon = nil
+    }
+
+    private typealias LayerReady = ([Source]) -> Void
+
+    private func begin(_ sources: [Source], operation: Operation) {
+        let time = sources.count > 1 ? AVAudioTime(hostTime: mach_absolute_time() + AVAudioTime.hostTime(forSeconds: 0.02)) : nil
+        for source in sources {
+            source.readyToPlay = true
+            if !operation.paused || operation.finishRequested { source.player.play(at: time) }
         }
-        
-        // Disconnect any existing connections
-        do {
-            try ObjC.catchException { layer.disconnect() }
-        } catch {
-            GDLogAudioError(error.localizedDescription)
-            GDATelemetry.track("audio_engine.exception", with: [
-                "description": error.localizedDescription,
-                "location": "AudioEngine.swift:connectNodes(for:)"
-            ])
+    }
+
+    private func sequence(_ sounds: ArraySlice<any Sound>, operation: Operation, ready: LayerReady? = nil,
+                          done: @escaping () -> Void) {
+        guard alive(operation) else { return }
+        guard let sound = sounds.first else { ready?([]); done(); return }
+        render(sound, operation: operation, ready: ready) { [weak self, weak operation] in
+            guard let self, let operation else { return }
+            self.sequence(sounds.dropFirst(), operation: operation, done: done)
         }
-        
-        if isInMonoMode || !player.is3D {
-            layer.connect(to: engine.mainMixerNode)
-        } else {
-            // Lookup or create the environment node
-            let knownEnv = environmentNode(for: layer.format)
-            let environment = knownEnv ?? AVAudioEnvironmentNode()
-            
-            // If it's new, save it
-            if knownEnv == nil {
-                // Save the environment node for future use
-                environmentNodes.append(environment)
-                GDLogAudioVerbose("[ENV] Environment node created for sample rate \(layer.format?.sampleRate ?? -1) Hz (\(environmentNodes.count) total nodes)")
-                
-                if let userHeading = userHeading?.value {
-                    // Initialize orientation for new environment nodes
-                    environment.listenerAngularOrientation = AVAudio3DAngularOrientation(yaw: Float(userHeading), pitch: 0.0, roll: 0.0)
+    }
+
+    private func render(_ sound: any Sound, operation: Operation, ready: LayerReady? = nil, done: @escaping () -> Void) {
+        guard alive(operation) else { return }
+        switch sound.content {
+        case .sequence(let sounds): sequence(sounds[...], operation: operation, ready: ready, done: done)
+        case .parallel(let sounds):
+            guard !sounds.isEmpty else { ready?([]); done(); return }
+            var remaining = sounds.count
+            var awaitingStart = sounds.count
+            var sources: [Source] = []
+            for sound in sounds {
+                render(sound, operation: operation, ready: { [weak self, weak operation] layer in
+                    sources.append(contentsOf: layer)
+                    awaitingStart -= 1
+                    if awaitingStart == 0 {
+                        if let ready { ready(sources) }
+                        else if let self, let operation { self.begin(sources, operation: operation) }
+                    }
+                }) {
+                    remaining -= 1
+                    if remaining == 0 { done() }
                 }
             }
-            
-            // If it's not attached, attach and connect it
-            if environment.engine == nil {
-                engine.attach(environment)
-                GDLogAudioVerbose("[ENV] Attached environment node to engine (sample rate: \(layer.format?.sampleRate ?? -1) Hz)")
+        case .asset(let asset):
+            load([asset], operation: operation) { [weak self, weak operation] buffers in
+                guard let self, let operation, let buffer = buffers[asset] else { return }
+                let source = self.attach(type: sound.type, channel: .effects, format: buffer.format, operation: operation)
+                if operation.request.loops {
+                    source.player.scheduleBuffer(buffer, at: nil, options: .loops)
+                } else {
+                    self.schedule(buffer, source: source, operation: operation) {
+                        self.remove(source, operation: operation)
+                        done()
+                    }
+                }
+                if let ready { ready([source]) } else { self.begin([source], operation: operation) }
             }
-            
-            // Configure 3D rendering/mixing parameters
+        case .speech(let text): speak(text, type: sound.type, operation: operation, ready: ready, done: done)
+        case .beacon(let beacon): prepareBeacon(beacon, type: sound.type, operation: operation, ready: ready)
+        }
+    }
+
+    private func load(_ assets: [AudioAsset], operation: Operation, ready: @escaping ([AudioAsset: AVAudioPCMBuffer]) -> Void) {
+        let generation = operation.generation
+        let token = UUID()
+        let work = DispatchWorkItem { [weak self, weak operation] in
+            let result = Result { try assets.reduce(into: [:]) { $0[$1] = try Self.buffer(for: $1) } }
+            self?.control.async { [weak self, weak operation] in
+                guard let self, let operation, self.alive(operation), operation.generation == generation else { return }
+                operation.preparation.removeValue(forKey: token)
+                switch result {
+                case .success(let buffers): ready(buffers)
+                case .failure(let error): self.end(operation, .failed(String(describing: error)))
+                }
+            }
+        }
+        operation.preparation[token] = work
+        files.async(execute: work)
+    }
+
+    private static func buffer(for asset: AudioAsset) throws -> AVAudioPCMBuffer {
+        let url: URL?
+        var temporaryDirectory: URL?
+        defer {
+            if let temporaryDirectory { try? FileManager.default.removeItem(at: temporaryDirectory) }
+        }
+        switch asset {
+        case .bundle(let name, let ext): url = Bundle.main.url(forResource: name, withExtension: ext)
+        case .file(let file): url = file
+        case .catalog(let name, let ext):
+            let override = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                .first?.appendingPathComponent(name).appendingPathExtension(ext)
+            if let override, FileManager.default.fileExists(atPath: override.path) {
+                url = override
+            } else if let data = NSDataAsset(name: name)?.data {
+                let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                temporaryDirectory = directory
+                let file = directory.appendingPathComponent("audio").appendingPathExtension(ext)
+                try data.write(to: file)
+                url = file
+            } else { url = Bundle.main.url(forResource: name, withExtension: ext) }
+        }
+        guard let url else { throw AudioPreparationError.asset }
+        let file = try AVAudioFile(forReading: url)
+        guard file.length > 0, file.length <= Int64(UInt32.max),
+              let buffer = AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: AVAudioFrameCount(file.length)) else {
+            throw AudioPreparationError.format
+        }
+        try file.read(into: buffer)
+        return buffer
+    }
+
+    private func attach(type: SoundType, channel: Channel, format: AVAudioFormat, voiceEQ: EQParameters? = nil, operation: Operation) -> Source {
+        let spatial = type.position(listener: scene.location, heading: 0, ring: 1) != nil || {
+            if case .localized = type { return true }
+            return false
+        }()
+        let source = Source(type: type, channel: channel, format: format, voiceEQ: voiceEQ,
+                            spatial: spatial && format.channelCount == 1 && !graphMono)
+        engine.attach(source.player)
+        engine.attach(source.equalizer)
+        engine.connect(source.player, to: source.equalizer, format: format)
+        if let environment = source.environment, let mixer = source.spatialMixer {
+            engine.attach(environment)
+            engine.attach(mixer)
+            environment.distanceAttenuationParameters.referenceDistance = 2
             environment.reverbParameters.enable = envSettings.envRenderingReverbEnable
             environment.reverbParameters.level = envSettings.envRenderingReverbLevel
             environment.reverbParameters.loadFactoryReverbPreset(envSettings.envRenderingReverbPreset)
-            
             if envSettings.envReverbFilterActive {
-                environment.reverbParameters.filterParameters.bandwidth = envSettings.envReverbFilterBandwidth
-                environment.reverbParameters.filterParameters.bypass = envSettings.envReverbFilterBypass
-                environment.reverbParameters.filterParameters.filterType = envSettings.envReverbFilterType
-                environment.reverbParameters.filterParameters.frequency = envSettings.envReverbFilterFrequency
-                environment.reverbParameters.filterParameters.gain = envSettings.envReverbFilterGain
+                let band = environment.reverbParameters.filterParameters
+                band.bandwidth = envSettings.envReverbFilterBandwidth
+                band.bypass = envSettings.envReverbFilterBypass
+                band.filterType = envSettings.envReverbFilterType
+                band.frequency = envSettings.envReverbFilterFrequency
+                band.gain = envSettings.envReverbFilterGain
             }
-            
-            environment.distanceAttenuationParameters.referenceDistance = 2.0
-            environment.outputVolume = 1.0
-            
-            // Connect the player to the environment
-            layer.connect(to: environment)
-            engine.connect(environment, to: engine.mainMixerNode, format: AudioEngine.outputFormat(for: engine, sampleRate: layer.format?.sampleRate))
-            GDLogAudioVerbose("[ENV] Connected layer to environment node then to engine (sample rate: \(layer.format?.sampleRate ?? -1) Hz)")
+            engine.connect(source.equalizer, to: mixer, format: format)
+            engine.connect(mixer, to: environment, format: format)
+            let stereo = AVAudioFormat(standardFormatWithSampleRate: format.sampleRate, channels: 2)
+            engine.connect(environment, to: engine.mainMixerNode, format: stereo)
+            mixer.renderingAlgorithm = envSettings.envRenderingAlgorithm
+        } else {
+            engine.connect(source.equalizer, to: engine.mainMixerNode, format: format)
         }
+        if let voiceEQ {
+            for (band, filter) in zip(source.equalizer.bands, voiceEQ.bandParameters) {
+                band.bandwidth = filter.bandwidth
+                band.bypass = filter.bypass
+                band.filterType = filter.filterType
+                band.frequency = filter.frequency
+                band.gain = filter.gain
+            }
+        }
+        operation.sources.append(source)
+        update(source, operation: operation)
+        return source
     }
-    
-    /// Returns the environment node that matches the sample rate of the provided format if one
-    /// already exists. If a matching node does not yet exist, this method will create one and
-    /// return it.
-    ///
-    /// - Parameter format: Format of the audio that is going to be played using the environment node
-    ///
-    /// - Returns: An environment node that can play audio of with the specified format
-    private func environmentNode(for format: AVAudioFormat?) -> AVAudioEnvironmentNode? {
-        guard let format = format else {
-            return environmentNodes.first
-        }
-        
-        // If we already have an environment node for this sample rate, return it
-        if let node = environmentNodes.first(where: { $0.inputFormat(forBus: 0).sampleRate == format.sampleRate }) {
-            return node
-        }
-        
-        return nil
-    }
-    
-    /// Builds an `AVAudioFormat` object using the current channel count of the engine's output node
-    /// and either the sample rate provided or the sample rate of the output node of the engine if a
-    /// sample rate isn't provided. This is useful for setting the format of processing nodes (e.g. environment
-    /// nodes). Nodes that load their audio from a buffer or file, should use the format of the buffer or
-    /// file instead of this method.
-    ///
-    /// - Parameter rate: The rate to use in the format
-    ///
-    /// - Returns: An `AVAudioFormat` object
-    private class func outputFormat(for engine: AVAudioEngine, sampleRate rate: Double? = nil) -> AVAudioFormat {
-        let channels = engine.outputNode.outputFormat(forBus: 0).channelCount
-        let sampleRate = rate ?? engine.outputNode.outputFormat(forBus: 0).sampleRate
 
-        var layout: AVAudioChannelLayout?
-        
-        // This is probably overkill since we will likely never connect to any output other than stereo or mono...
-        
-        switch channels {
-        case 4: layout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_4)
-        case 5: layout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_5_0)
-        case 6: layout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_6_0)
-        case 7: layout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_7_0)
-        case 8: layout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_8)
-        default: layout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_Stereo)
-        }
-        
-        guard let selectedLayout = layout else {
-            // This shouldn't ever happen, but still have a sensible fallback
-            GDLogAudioError("Channel layout is nil")
-            return AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 48000, channels: 2, interleaved: false)!
-        }
+    private func detach(_ source: Source) {
+        source.speech?.cancel()
+        source.speech = nil
+        source.player.stop()
+        engine.detach(source.player)
+        engine.detach(source.equalizer)
+        if let mixer = source.spatialMixer { engine.detach(mixer) }
+        if let environment = source.environment { engine.detach(environment) }
+    }
 
-        return AVAudioFormat(standardFormatWithSampleRate: sampleRate, channelLayout: selectedLayout)
+    private func remove(_ source: Source, operation: Operation) {
+        guard let index = operation.sources.firstIndex(where: { $0 === source }) else { return }
+        operation.sources.remove(at: index)
+        detach(source)
     }
-    
-    // MARK: Start & Stop
-    
-    /// Before starting the audio engine, we check for phone call status and app state.
-    /// In some cases the flow of notifications is:
-    /// 1. Call started
-    /// 2. Application state inactive
-    /// 3. Audio session interruption began
-    ///
-    /// In other cases (detected on iPhone X):
-    /// 1. Call started
-    /// 2. Audio session interruption began
-    /// 3. Application state inactive
-    ///
-    /// When a phone call ends, the flow of notifications is:
-    /// 1. Call ended
-    /// 2. Audio session interruption ended
-    /// 3. Application state active
-    private func shouldStart() -> Bool {
-        if state == .starting {
-            GDLogAudioVerbose("Audio engine does not need to be started (it is already being started)")
-            return false
-        }
-        
-        // No need to start the engine if it's already running
-        if engine.isRunning {
-            GDLogAudioVerbose("Audio engine does not need to be started (it is already running)")
-            return false
-        }
-        
-        // Don't allow starting the engine if the app is inactive
-        if AppContext.appState == .inactive {
-            GDLogAudioVerbose("Audio engine does not need to be started (app state is inactive)")
-            return false
-        }
-        
-        // Don't allow starting the engine if there is a call in progress and the app is not in an active state
-        if AppContext.shared.callManager.callInProgress && AppContext.appState != .active {
-            GDLogAudioVerbose("Audio engine does not need to be started (a call is in progress and openscape isn't active)")
-            return false
-        }
-        
-        return true
-    }
-    
-    /// In some cases we stop the audio engine, such as an audio session interruption,
-    /// but because of iOS behavior where some 'audio session interruption ended' notifications
-    /// are not received, we don't know that the audio engine should be restarted.
-    /// For example: invoking and dismissing Siri while in foreground.
-    /// This makes sure we restart the audio engine if needed.
-    private func startEngineIfNeeded() {
-        guard AppContext.appState == .active && shouldStart() else {
-            return
-        }
-        
-        start()
-    }
-    
-    /// Starts the audio engine and starts listening for heading updates in order to update the
-    /// listener's orientation in any `AVAudioEnvironment` nodes.
-    ///
-    /// - Parameter isRestarting: True if this method is being called from within the playNextSound chain
-    /// - Parameter activateAudioSession: True if this method should also activate the audio session
-    func start(isRestarting: Bool, activateAudioSession: Bool = true) {
-        // Don't try to start when the app is inactive, such as when Siri is invoked,
-        // as it will generate the error "cannot interrupt other".
-        guard AppContext.appState != .inactive else {
-            return
-        }
-        
-        // Check if we should start before activating the session
-        guard shouldStart() else {
-            return
-        }
-        
-        if activateAudioSession {
-            // We try to forcibly activate the audio session, even if we believe it's not needed (`needsActivation == false`).
-            // This is because of the following issue:
-            // iOS does not provide a callback when the audio session was deactivated, or, a boolean to note if the session is active or not.
-            // Also, iOS may deactivate the audio session in the background, such as when activating Siri or finishing a call in the background.
-            // In this case, we need to try and reactivate the session to use the audio engine.
-            guard sessionManager.activate(force: true) else {
-                GDLogAudioError("Unable to start audio engine. Failed to activate the audio session.")
-                return
-            }
-            
-            // If the audio session was interrupted, but we successfully reactivated it, make sure to revert to `false`.
-            isSessionInterrupted = false
-        }
-        
-        if isConfigChangePending {
-            connectNodes()
-            isConfigChangePending = false
-        }
-        
-        state = .starting
-        
-        GDLogAudioInfo("Starting audio engine (from \(Thread.current.threadName))\(isRestarting ? " (restarting)" : "")")
-        
-        do {
-            try engine.start()
-        } catch let error as NSError {
-            state = .stopped
-            
-            // The engine couldn't be started
-            let avError = AVAudioSession.ErrorCode(rawValue: error.code) ?? .unspecified
-            
-            GDLogAudioError("Audio engine could not be started (\(error)) \(avError.description)")
-            
-            GDATelemetry.track("audio_engine.exception", with: [
-                "error.code": String(error.code),
-                "error.description": error.description,
-                "av_error.description": avError.description,
-                "location": "AudioEngine.swift:start()"
-            ])
-            
-            return
-        }
-        
-        state = .started
-        
-        // Listen to the user's heading in order to update the listener's orientation
-        userHeading = AppContext.shared.geolocationManager.presentationHeading
-        
-        if let heading = userHeading?.value {
-            self.updateUserHeading(heading)
-        }
-        
-        userHeading?.onHeadingDidUpdate { [weak self] (heading) in
-            guard let `self` = self, let heading = heading else {
-                return
-            }
-            
-            self.updateUserHeading(heading.value)
-        }
-        
-        // Check if there are any discrete audio players to resume. If there are none (or none that need resumed),
-        // then try to play the next sound in case there are other sounds in the queue.
-        if !isRestarting && !resume() {
-            playNextSound()
-        }
-    }
-    
-    /// Temporary method for handling changes to the audio session category and should only be called when changing the `mixWithOthers` property.
-    /// In cases of external interruptions like audio engine configuration changes or audio session interruptions, iOS stops nodes.
-    /// When manually changing the audio session category we need to do this ourselves to resume the audio engine and players properly.
-    private func pause() {
-        for player in players {
-            for layer in player.layers {
-                layer.player.stop()
-            }
-        }
-    }
-    
-    /// Stops the audio engine and stops listening to user orientation updates
-    func stop() {
-        userHeading = nil
-        engine.stop()
-        state = .stopped
-        
-        /// In order to minimize re-activision issues, we should try to not deactivate the audio session and let iOS do that when needed.
-        /// Because of this, use `needsActivation = true` instead of `deactivate()`...
-        sessionManager.needsActivation = true
 
-        GDLogAudioVerbose("Audio engine stopped (from \(Thread.current.threadName))")
-    }
-    
-    @discardableResult
-    private func resume() -> Bool {
-        GDLogAudioVerbose("Resuming \(players.count) players")
-        
-        // Resume players as need be
-        var didResume = false
-        
-        for player in players {
-            let isDiscrete = player is DiscreteAudioPlayer
-            GDLogAudioVerbose("Trying to resume player \(player.id.uuidString) (discrete? \(isDiscrete))")
-            
-            let didResumePlayer: Bool
-            do {
-                didResumePlayer = (try player.resumeIfNecessary()) || startPlayerIfPending(player)
-            } catch {
-                GDLogAudioError("Unable to resume player. Exception: \((error as NSError).localizedFailureReason ?? error.localizedDescription)")
-                GDATelemetry.track("audio_engine.exception", with: [
-                    "description": error.localizedDescription,
-                    "location": "AudioEngine.swift:resume()"
-                ])
-                
-                continue
-            }
-            
-            GDLogAudioVerbose("\(didResumePlayer ? "Resumed" : "Unable to resume") player \(player.id.uuidString)")
-            
-            if isDiscrete {
-                if didResumePlayer {
-                    didResume = true
-                } else {
-                    // If a discrete player could not be resumed, remove it from queue by marking it as done.
-                    // Without this, the player could be stuck in a `playing` state without actually playing.
-                    onDataPlayedBack(player.id)
-                }
+    private func schedule(_ buffer: AVAudioPCMBuffer, source: Source, operation: Operation,
+                          at time: AVAudioTime? = nil, options: AVAudioPlayerNodeBufferOptions = [], done: @escaping () -> Void) {
+        let generation = operation.generation
+        source.player.scheduleBuffer(buffer, at: time, options: options, completionCallbackType: .dataPlayedBack) { [weak self, weak operation, weak source] _ in
+            self?.control.async { [weak self, weak operation, weak source] in
+                guard let self, let operation, let source, self.alive(operation), operation.generation == generation,
+                      operation.sources.contains(where: { $0 === source }) else { return }
+                guard self.engine.isRunning else { self.recoverIfStopped(); return }
+                done()
             }
         }
-        
-        return didResume
     }
-    
-    private func startPlayerIfPending(_ player: AudioPlayer) -> Bool {
-        guard player.state == .prepared, !player.isPlaying else {
-            return false
-        }
-        
-        GDLogAudioVerbose("Starting pending player \(player.id.uuidString)")
-        startPreparedPlayer(player)
-        return true
-    }
-    
-    // MARK: Audio Players
-    
-    /// Starts an audio player by calling the `prepare` method and then playing the audio as soon
-    /// as the player finishes preparing itself. This method stores the audio player in the engine's
-    /// list of current players and returns the player's identifier so that the player can be looked
-    /// up later (for stopping it).
-    ///
-    /// - Parameters:
-    ///   - player: The player to start
-    ///   - heading: The heading object to pass to the player when it is started
-    ///
-    /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
-    private func play(_ player: AudioPlayer, heading: Heading? = nil) -> AudioPlayerIdentifier? {
-        players.append(player)
-        player.prepare(engine: engine) { [weak self] (success) in
-            guard success else {
-                GDLogAudioError("Unable to play audio track. Preparing the player failed.")
-                
-                // Automatically remove the player here since it couldn't be prepared
-                self?.players.removeAll(where: { $0.id == player.id })
-                
-                if player is DiscreteAudioPlayer {
-                    self?.discretePlayerIds.removeAll { $0 == player.id }
-                    
-                    if player.id == self?.currentQueuePlayerID {
-                        self?.currentQueuePlayerID = nil
-                        self?.playNextSound()
+
+    private func speak(_ text: String, type: SoundType, operation: Operation, ready: LayerReady?, done: @escaping () -> Void) {
+        let locale = LocalizationContext.currentAppLocale
+        let voice = SettingsContext.shared.voiceId ?? TTSConfigHelper.defaultVoice(forLocale: locale)?.identifier
+        let generation = operation.generation
+        let pending = SpeechInput()
+        let id = ObjectIdentifier(operation.completion)
+        let speech = makeSpeech(text, voice) { [weak self, weak completion = operation.completion] result in
+            guard pending.accept(result) else { return }
+            self?.control.async { [weak self, weak completion] in
+                guard let self, let completion, let operation = self.operations[id], operation.completion === completion,
+                      self.alive(operation), operation.generation == generation, let result = pending.take() else { return }
+                switch result {
+                case .failure(let error): self.end(operation, .failed(String(describing: error)))
+                case .success(nil):
+                    guard let source = operation.speechPlayers[pending.id] else {
+                        self.end(operation, .failed("Speech synthesis produced no audio"))
+                        return
+                    }
+                    guard !source.ended else { return }
+                    source.ended = true
+                    source.speech = nil
+                    if source.queued == 0 {
+                        operation.speechPlayers.removeValue(forKey: pending.id)
+                        self.remove(source, operation: operation)
+                        done()
+                    }
+                case .success(let buffer?):
+                    let source: Source
+                    let firstBuffer = operation.speechPlayers[pending.id] == nil
+                    if let current = operation.speechPlayers[pending.id] {
+                        source = current
+                    } else {
+                        source = self.attach(type: type, channel: .speech, format: buffer.format,
+                                             voiceEQ: voice.flatMap { Self.voiceFilters[$0] }, operation: operation)
+                        source.speech = operation.speechSources.removeValue(forKey: pending.id)
+                        operation.speechPlayers[pending.id] = source
+                    }
+                    guard !source.ended else { return }
+                    guard source.format == buffer.format else {
+                        self.end(operation, .failed("Speech PCM format changed mid-utterance"))
+                        return
+                    }
+                    guard source.queued < 64 else {
+                        self.end(operation, .failed(String(describing: AudioPreparationError.speechBufferLimit)))
+                        return
+                    }
+                    source.queued += 1
+                    if source.queued == 12 { source.speech?.pause() }
+                    self.schedule(buffer, source: source, operation: operation) { [weak self, weak source, weak operation] in
+                        guard let self, let source, let operation else { return }
+                        source.queued -= 1
+                        if source.queued == 4 && !operation.paused { source.speech?.resume() }
+                        if source.ended && source.queued == 0 {
+                            operation.speechPlayers.removeValue(forKey: pending.id)
+                            self.remove(source, operation: operation)
+                            done()
+                        }
+                    }
+                    if firstBuffer {
+                        if let ready { ready([source]) } else { self.begin([source], operation: operation) }
                     }
                 }
-                
-                return
             }
+        }
+        operation.speechSources[pending.id] = speech
+        speech.start()
+    }
 
-            self?.startPreparedPlayer(player, heading: heading)
-        }
-        
-        return player.id
-    }
-    
-    /// This method starts playing an audio player that is ready to be played. This method should
-    /// only be called on players that done being prepared.
-    ///
-    /// - Parameters:
-    ///   - player: The audio player to start
-    ///   - heading: The heading required by the audio player to render it's audio. This is only required by some audio players.
-    private func startPreparedPlayer(_ player: AudioPlayer, heading: Heading? = nil) {
-        queue.async { [unowned self] in
-            guard !player.isPlaying else {
-                GDLogAudioError("No need to start an audio player that is already playing.")
-                return
-            }
-            
-            guard player.state == .prepared else {
-                GDLogAudioError("Cannot start an audio player that is not ready. Make sure to call prepare()!")
-                return
-            }
-            
-            guard !self.isConfigChangePending else {
-                GDLogAudioError("Unable to play audio track. Config change is pending")
-                return
-            }
-            
-            if !self.engine.isRunning {
-                self.start(isRestarting: true)
-            }
-            
-            guard self.engine.isRunning else {
-                GDLogAudioError("Unable to play audio track. Audio engine is not currently running.")
-                return
-            }
-            
-            self.connectNodes(for: player)
-            self.logPlayer(player)
-            
-            do {
-                try player.play(heading ?? AppContext.shared.geolocationManager.presentationHeading, self.userLocation)
-            } catch {
-                let exceptionString = (error as NSError).localizedFailureReason ?? error.localizedDescription
-                GDLogAudioError("Exception: \(exceptionString)")
-                GDATelemetry.track("audio_engine.exception", with: [
-                    "description": error.localizedDescription,
-                    "location": "AudioEngine.swift:startPreparedPlayer(_:heading:).1"
-                ])
-                
-                // Restart the engine
-                self.stop()
-                self.start(isRestarting: true)
-                
-                // Connect nodes and retry one time
-                self.connectNodes()
-                self.logPlayer(player)
-                
-                do {
-                    try player.play(heading ?? AppContext.shared.geolocationManager.presentationHeading, self.userLocation)
-                } catch {
-                    GDLogAudioError("Exception (final try): \((error as NSError).localizedFailureReason ?? error.localizedDescription)")
-                    GDATelemetry.track("audio_engine.exception", with: [
-                        "description": error.localizedDescription,
-                        "location": "AudioEngine.swift:startPreparedPlayer(_:heading:).2"
-                    ])
+    // Synthesis callbacks may arrive faster than the graph consumes them.
+    // The lock guards the bounded PCM ingress. Buffers become immutable before crossing into it.
+    private final class SpeechInput: @unchecked Sendable {
+        let id = UUID()
+        private let lock = NSLock()
+        private var buffers: [Result<AVAudioPCMBuffer?, Error>] = []
+        private var terminal = false
+
+        func accept(_ result: Result<AVAudioPCMBuffer?, Error>) -> Bool {
+            lock.withLock {
+                guard !terminal else { return false }
+                if buffers.count == 64 {
+                    terminal = true
+                    buffers.append(.failure(AudioPreparationError.speechBufferLimit))
+                } else {
+                    switch result {
+                    case .success(.some): break
+                    case .success(nil), .failure: terminal = true
+                    }
+                    buffers.append(result)
                 }
+                return true
             }
         }
-    }
-    
-    private func logPlayer(_ player: AudioPlayer) {
-        let playerType = player is DiscreteAudioPlayer ? "Discrete" : "Continuous"
-        let monoMode = self.isInMonoMode ? " <MONO MODE>" : ""
-        GDLogAudioInfo("Play \(playerType): \(player.sound.formattedLog)\(monoMode) at \(Int(player.volume * 100))% (\(player.id))")
-    }
-    
-    /// Asynchronously stops a dynamic audio player by calling it's finish() func. If the
-    /// dynamic audio player's sound has an outro asset, then finish() will schedule the
-    /// outro to play before it calls stop().
-    ///
-    /// - Parameter dynamicPlayerId: ID of a dynamic audio player
-    func finish(dynamicPlayerId: AudioPlayerIdentifier) {
-        guard let player = players.first(where: { $0.id == dynamicPlayerId }) as? FinishableAudioPlayer else {
-            return
+
+        func take() -> Result<AVAudioPCMBuffer?, Error>? {
+            lock.withLock { buffers.isEmpty ? nil : buffers.removeFirst() }
         }
-        
-        player.finish()
     }
-    
-    /// Stops the audio player associated with the provided identifier. This operation is completed
-    /// asynchronously on the audio engine's queue in order to support thread safety and prevent
-    /// race conditions.
-    ///
-    /// - Parameter playerId: The identifier of the audio player to stop
-    func stop(_ playerId: AudioPlayerIdentifier) {
-        queue.async { [unowned self] in
-            guard let index = self.players.firstIndex(where: { $0.id == playerId }) else {
+
+    private func prepareBeacon(_ description: AdaptiveBeacon, type: SoundType, operation: Operation, ready: LayerReady?) {
+        load(description.assets + [description.intro, description.outro].compactMap { $0 }, operation: operation) { [weak self, weak operation] buffers in
+            guard let self, let operation else { return }
+            guard let firstAsset = description.assets.first, let first = buffers[firstAsset],
+                  buffers.values.allSatisfy({ $0.format == first.format }),
+                  description.assets.allSatisfy({ buffers[$0]?.frameLength == first.frameLength }),
+                  let silence = AVAudioPCMBuffer(pcmFormat: first.format, frameCapacity: first.frameLength) else {
+                self.end(operation, .failed("Incompatible beacon formats or phrase lengths"))
                 return
             }
-            
-            let player = self.players.remove(at: index)
-            player.stop()
-            
-            if let discrete = player as? DiscreteAudioPlayer, let ttsSound = discrete.sound as? TTSSound {
-                ttsSound.stopRendering()
+            silence.frameLength = first.frameLength
+            for channel in 0..<Int(first.format.channelCount) {
+                silence.floatChannelData?[channel].update(repeating: 0, count: Int(silence.frameLength))
             }
-            
-            GDLogAudioVerbose("Stopping player \(player.id.uuidString)")
-            
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .discretePlayerDidStop, object: self, userInfo: [ Keys.playerId: playerId ])
+            let source = self.attach(type: type, channel: .beacon, format: first.format, operation: operation)
+            let beacon = Beacon(description, source: source, buffers: buffers, silence: silence)
+            operation.beacon = beacon
+            if operation.finishRequested {
+                self.finishBeacon(beacon, operation: operation)
+            } else {
+                if let intro = description.intro.flatMap({ buffers[$0] }), !operation.recovering {
+                    source.player.scheduleBuffer(intro)
+                } else if beacon.timing.intro > 0, operation.recovering,
+                          let silence = AVAudioPCMBuffer(pcmFormat: first.format, frameCapacity: AVAudioFrameCount(beacon.timing.intro)) {
+                    silence.frameLength = silence.frameCapacity
+                    for channel in 0..<Int(first.format.channelCount) {
+                        silence.floatChannelData?[channel].update(repeating: 0, count: Int(silence.frameLength))
+                    }
+                    source.player.scheduleBuffer(silence)
+                }
+                self.updateBeacon(beacon, operation: operation)
             }
-        }
-    }
-    
-    // MARK: - Continuous Audio
-    
-    /// Plays a sound based on a dynamic audio asset using the provided heading object to select
-    /// the appropriate component of the dynamic asset component to play at any given time.
-    ///
-    /// - Parameters:
-    ///   - sound: The dynamic sound to play
-    ///   - heading: Heading used for selecting the dynamic asset component to play. If `nil`, the default presentation heading will be used.
-    ///
-    /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
-    @discardableResult
-    func play<T: DynamicSound>(_ sound: T, heading: Heading? = nil) -> AudioPlayerIdentifier? {
-        return queue.sync {
-            self.startEngineIfNeeded()
-            
-            guard self.state != .stopped else {
-                GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                return nil
-            }
-            
-            guard let player = DynamicAudioPlayer(sound: sound, queue: queue) else {
-                GDLogAudioError("Unable to play dynamic audio asset. Unable to load audio assets.")
-                return nil
-            }
-            
-            player.delegate = self
-            
-            // Dynamic assets require a heading for selecting the component to play, so default to the presentation
-            // heading if no heading was provided
-            return play(player, heading: heading ?? AppContext.shared.geolocationManager.presentationHeading)
-        }
-    }
-    
-    /// Plays audio in a continuous loop.
-    ///
-    /// - Parameter sound: A synchronously generated sound to play
-    ///
-    /// - Returns: A unique identifier for the player. `nil` if the player couldn't be started.
-    @discardableResult
-    func play(looped: SynchronouslyGeneratedSound) -> AudioPlayerIdentifier? {
-        return queue.sync {
-            self.startEngineIfNeeded()
-            
-            guard self.state != .stopped else {
-                GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                return nil
-            }
-            
-            guard let player = ContinuousAudioPlayer(looped, queue: queue) else {
-                GDLogAudioError("Unable to play continuous audio track. Unable to load audio assets.")
-                return nil
-            }
-            
-            return play(player)
-        }
-    }
-    
-    @discardableResult
-    /// Plays a sound without queuing it. This method is intended for playing simple audio files
-    ///
-    /// - Parameter sound: Sound to play
-    /// - Returns: Player ID
-    func play(_ sound: SynchronouslyGeneratedSound) -> AudioPlayerIdentifier? {
-        return queue.sync {
-            self.startEngineIfNeeded()
-            
-            guard self.state != .stopped else {
-                GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                return nil
-            }
-            
-            guard let player = DiscreteAudioPlayer(sound, queue: self.queue) else {
-                GDLogAudioError("Unable to play audio track. Unable to load audio assets.")
-                return nil
-            }
-            
-            player.delegate = self
-            
-            if let id = self.play(player) {
-                self.discretePlayerIds.append(id)
-                return id
-            }
-            
-            return nil
-        }
-    }
-    
-    // MARK: Discrete Queued Audio
-    
-    /// Plays a discrete `Sound` and calls the `completion` callback when the sound has finished
-    /// playing.
-    ///
-    /// - Parameter sounds: Sound to play
-    /// - Parameter callback: Completion callback
-    func play(_ sound: Sound, completion callback: CompletionCallback? = nil) {
-        play(Sounds(sound), completion: callback)
-    }
-    
-    /// Plays the discrete sounds contained in the `Sounds` object and calls the `completion` callback when
-    /// the sounds have finished playing.
-    ///
-    /// - Parameter sounds: Sounds to play
-    /// - Parameter callback: Completion callback
-    func play(_ sounds: Sounds, completion callback: CompletionCallback? = nil) {
-        queue.async { [unowned self] in
-            self.startEngineIfNeeded()
-            
-            guard self.state != .stopped else {
-                GDLogAudioError("Unable to play sounds. Audio engine is stopped.")
-                Task { @MainActor in callback?(false) }
-                return
-            }
-            
-            if !self.engine.isRunning {
-                self.start()
-            }
-        
-            guard self.engine.isRunning else {
-                self.soundsQueue.enqueue((sounds, callback))
-                GDLogAudioError("Unable to play sounds. Audio engine is not currently running. Sounds enqueued. Total queued items: \(self.soundsQueue.count)")
-                return
-            }
-            
-            // In some cases we have a value in `currentSounds`, but it's sounds array is empty.
-            // In this case discard the current sounds object.
-            if let currentSounds = self.currentSounds, currentSounds.isEmpty {
-                self.currentSounds = nil
-            }
-            
-            guard self.currentSounds == nil else {
-                self.soundsQueue.enqueue((sounds, callback))
-                GDLogAudioError("Unable to play sounds. There are current sounds playing. Sounds enqueued. Total queued items: \(self.soundsQueue.count)")
-                return
-            }
-            
-            self.currentSounds = sounds
-            self.currentSoundCompletion = callback
-            self.playNextSound()
-        }
-    }
-    
-    /// Stops any discrete sounds that are currently playing
-    ///
-    /// - Parameter with: Sound that should be played when the current sounds are stopped. This
-    ///                   should be used for earcons that indicate audio is stopping.
-    func stopDiscrete(with: Sound?) {
-        queue.async { [unowned self] in
-            if !self.soundsQueue.isEmpty {
-                GDLogAudioInfo("Clearing sounds queue (\(self.soundsQueue.count) items)")
-                self.soundsQueue.clear()
-            }
-            
-            guard self.currentSounds != nil else {
-                return
-            }
-            
-            GDLogAudioInfo("Stopping discrete sounds")
-            
-            if let stoppingSound = with {
-                self.soundsQueue.enqueue((Sounds(stoppingSound), nil))
-            }
-            
-            // Stop all of the discrete player nodes
-            self.discretePlayerIds.forEach { self.stop($0) }
-            self.discretePlayerIds.removeAll()
-            self.currentQueuePlayerID = nil
-            
-            self.finishDiscrete(success: false)
-        }
-    }
-    
-    private func stopAndRemoveDiscretePlayer(_ id: AudioPlayerIdentifier) {
-        guard discretePlayerIds.contains(id) else {
-            return
-        }
-        
-        discretePlayerIds.removeAll { $0 == id }
-        
-        if id == currentQueuePlayerID {
-            currentQueuePlayerID = nil
-        }
-        
-        guard let index = self.players.firstIndex(where: { $0.id == id }) else {
-            return
-        }
-        
-        let player = self.players.remove(at: index)
-        
-        for layer in player.layers {
-            layer.stop()
-            layer.detach()
-        }
-    }
-    
-    /// Starts playing the next sound if there are more sounds to be played in the current
-    /// `Sound` object. If there are no sounds left to play, then `finishDiscrete(:)` is
-    /// called so that the next `Sounds` object in the queue can be played.
-    private func playNextSound() {
-        guard !isAwaitingRouteOverride else {
-            return
-        }
-        
-        queue.async { [unowned self] in
-            guard self.currentQueuePlayerID == nil else {
-                GDLogAudioError("Tried to play next sound when the current sound was still playing (\(String(describing: self.currentQueuePlayerID)))...")
-                return
-            }
-            
-            // Get the next sound
-            guard let sound = self.currentSounds?.next() else {
-                self.delegate?.didFinishPlaying()
-                self.finishDiscrete(success: true)
-                return
-            }
-            
-            // Create a new discrete audio player and start it
-            guard let player = DiscreteAudioPlayer(sound, queue: self.queue) else {
-                return
-            }
-            
-            player.delegate = self
-            
-            if let id = self.play(player) {
-                self.discretePlayerIds.append(id)
-                self.currentQueuePlayerID = id
+            if self.alive(operation) {
+                if let ready { ready([source]) } else { self.begin([source], operation: operation) }
             }
         }
     }
-    
-    /// Called when the current `Sounds` object is done playing. Checks if there
-    /// are any more `Sounds` objects in the queue and starts the next one if there are.
-    ///
-    /// - Parameter success: Indicates if the sounds finished playing successfully
-    private func finishDiscrete(success: Bool) {
-        let callback = self.currentSoundCompletion
-        
-        self.currentSounds = nil
-        self.currentSoundCompletion = nil
-        
-        // If other sounds are waiting, start them before
-        if let (nextSounds, completion) = self.soundsQueue.dequeue() {
-            self.play(nextSounds, completion: completion)
-        }
-        
-        Task { @MainActor in
-            callback?(success)
+
+    private func playerFrame(_ player: AVAudioPlayerNode) -> Int64? {
+        player.lastRenderTime.flatMap { player.playerTime(forNodeTime: $0)?.sampleTime }
+    }
+
+    private func updateBeacon(_ beacon: Beacon, operation: Operation) {
+        guard !beacon.finishing else { return }
+        let heading = heading(for: operation.request.heading)
+        let target = beacon.description.select(scene.location, heading, SettingsContext.shared.beaconRingingAngle, operation.focus)
+        let source = beacon.source
+        source.selectionGain = target?.1 ?? 1
+        update(source, operation: operation)
+        guard !beacon.hasScheduled || beacon.selected != target?.0 else { return }
+        beacon.selected = target?.0
+        beacon.hasScheduled = true
+        let buffer = target.flatMap { beacon.buffers[$0.0] } ?? beacon.silence
+        let next = beacon.timing.next(after: playerFrame(source.player))
+        let rate = buffer.format.sampleRate
+        var start = next.start
+        if next.offset > 0, let tail = buffer.suffix(from: Int(next.offset)) {
+            source.player.scheduleBuffer(tail, at: AVAudioTime(sampleTime: start, atRate: rate), options: .interrupts)
+            start += Int64(tail.frameLength)
+            source.player.scheduleBuffer(buffer, at: AVAudioTime(sampleTime: start, atRate: rate), options: .loops)
+        } else {
+            source.player.scheduleBuffer(buffer, at: AVAudioTime(sampleTime: start, atRate: rate), options: [.interrupts, .loops])
         }
     }
-    
-    // MARK: 3D Audio Environment
-    
-    /// Method for updating the `listenerAngularOrientation` of all `AVAudioEnvironment` nodes
-    /// in the audio engine whenever there are presentation heading updates.
-    ///
-    /// - Parameter heading: Updated presentation heading
-    private func updateUserHeading(_ heading: CLLocationDirection) {
-        queue.async { [unowned self] in
-            for environment in self.environmentNodes {
-                environment.listenerAngularOrientation = AVAudio3DAngularOrientation(yaw: Float(heading), pitch: 0.0, roll: 0.0)
+
+    private func finishBeacon(_ beacon: Beacon, operation: Operation) {
+        guard !beacon.finishing else { return }
+        beacon.finishing = true
+        let source = beacon.source
+        let frame = beacon.hasScheduled ? beacon.timing.next(after: playerFrame(source.player)).start : 0
+        let outro = beacon.description.outro.flatMap { beacon.buffers[$0] }
+        let marker = AVAudioPCMBuffer(pcmFormat: beacon.silence.format, frameCapacity: 1)
+        marker?.frameLength = 1
+        if let marker {
+            for channel in 0..<Int(marker.format.channelCount) { marker.floatChannelData?[channel][0] = 0 }
+        }
+        guard let buffer = outro ?? marker else { end(operation, .failed("Unable to schedule beacon ending")); return }
+        schedule(buffer, source: source, operation: operation,
+                 at: AVAudioTime(sampleTime: frame, atRate: buffer.format.sampleRate),
+                 options: .interrupts) { [weak self, weak operation] in
+            guard let self, let operation else { return }
+            self.end(operation, .completed)
+        }
+    }
+
+    private func heading(for source: AudioRequest.HeadingSource) -> Double? {
+        switch source {
+        case .presentation: return scene.presentation
+        case .device: return scene.device
+        case .collection: return scene.collection
+        }
+    }
+
+    private func updateScene() {
+        for operation in operations.values {
+            operation.sources.forEach { update($0, operation: operation) }
+            if let beacon = operation.beacon { updateBeacon(beacon, operation: operation) }
+        }
+    }
+
+    private func update(_ source: Source, operation: Operation) {
+        let settings = SettingsContext.shared
+        let volume: Float
+        let gain: Float
+        switch source.channel {
+        case .effects:
+            volume = operation.request.usesEffectVolume ? settings.otherVolume : 1
+            gain = operation.request.usesEffectVolume ? settings.afxGain : 0
+        case .speech: volume = settings.ttsVolume; gain = settings.ttsGain
+        case .beacon: volume = settings.beaconVolume; gain = settings.beaconGain
+        }
+        source.equalizer.globalGain = max(-96, min(24, gain + (source.voiceEQ?.globalGain ?? 0)))
+        source.player.volume = volume * source.selectionGain * operation.gain
+        guard let environment = source.environment else { return }
+        let yaw = scene.yaw
+        environment.listenerAngularOrientation = AVAudio3DAngularOrientation(yaw: Float(yaw), pitch: 0, roll: 0)
+        let ring = source.channel == .beacon && heading(for: operation.request.heading) == nil ? 5 : envSettings.envRenderingDistance
+        if let position = source.type.position(listener: scene.location, heading: yaw, ring: ring) {
+            source.spatialMixer?.position = AVAudio3DPoint(from: position.bearing, distance: position.distance)
+        }
+    }
+
+    private func observeGraph() {
+        if let graphObserver { NotificationCenter.default.removeObserver(graphObserver) }
+        graphObserver = NotificationCenter.default.addObserver(forName: .AVAudioEngineConfigurationChange, object: engine, queue: nil) { [weak self] _ in
+            self?.control.async { [weak self] in
+                guard let self, self.wantsRunning, !self.interrupted else { return }
+                self.recoverIfStopped()
             }
         }
     }
-    
-    /// Method for updating the user's location in the audio engine. This is used by some audio
-    /// players when calculating where audio should be played.
-    ///
-    /// - Parameter location: User's updated location
-    func updateUserLocation(_ location: CLLocation) {
-        userLocation = location
+
+    private func publish(_ state: State) {
+        guard self.state != state else { return }
+        self.state = state
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .audioEngineStateChanged, object: self,
+                                            userInfo: [Keys.audioEngineStateKey: state.rawValue])
+        }
     }
-    
-    // MARK: Recording Output
-    
-    func startRecording() {
-        self.startEngineIfNeeded()
-        
-        guard self.state != .stopped else {
-            GDLogAudioError("Unable to start recording. Audio engine is stopped.")
-            return
-        }
-        
-        let engineFormat = engine.mainMixerNode.outputFormat(forBus: 0)
-        let settings: [String: Any] = [AVFormatIDKey: NSNumber(value: kAudioFormatMPEG4AAC),
-                                       AVSampleRateKey: NSNumber(value: engineFormat.sampleRate),
-                                       AVNumberOfChannelsKey: NSNumber(value: engineFormat.channelCount),
-                                       AVEncoderAudioQualityKey: NSNumber(value: AVAudioQuality.high.rawValue)]
-        
-        guard let format = AVAudioFormat(settings: settings) else {
-            return
-        }
-        
+
+    private func startGraph() -> Bool {
+        if engine.isRunning { return true }
+        guard wantsRunning, !interrupted, canStart(),
+              !sessionManager.needsActivation || sessionManager.activate() else { return false }
+        graphMono = isInMonoMode
+        publish(.starting)
+        _ = engine.mainMixerNode
         do {
-            guard let directory = AudioEngine.recordingDirectory else {
-                return
-            }
-            
-            // Check for directories and create them if necessary
-            if !FileManager.default.fileExists(atPath: directory.path) {
-                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
-            }
-            
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions = .withInternetDateTime
-            
-            let url = directory.appendingPathComponent(formatter.string(from: Date())).appendingPathExtension("m4a")
-            recordingFile = try AVAudioFile(forWriting: url, settings: format.settings, commonFormat: .pcmFormatFloat32, interleaved: engineFormat.isInterleaved)
+            try engine.start()
+            publish(.started)
+            return true
         } catch {
-            GDLogAudioError("Unable to create file to record to (\(error))")
+            GDLogAudioError("Could not start audio graph: \(error)")
+            publish(.stopped)
+            return false
         }
-        
-        engine.mainMixerNode.installTap(onBus: 0, bufferSize: 4096, format: nil) { [weak self] (buffer, _) in
-            do {
-                try self?.recordingFile?.write(from: buffer)
-            } catch {
-                GDLogAudioError("Unable to record buffer...")
+    }
+
+    private func recoverIfStopped() {
+        guard !engine.isRunning, wantsRunning, !interrupted else { return }
+        if operations.isEmpty { _ = startGraph() } else { recover() }
+    }
+
+    private func recover(replaceGraph: Bool = false) {
+        for operation in Array(operations.values) {
+            if operation.request.transient || operation.finishRequested {
+                end(operation, .interrupted)
+            } else {
+                reset(operation)
+                operation.recovering = true
             }
         }
-        
-        isRecording = true
+        stopRecordingOnControl()
+        engine.stop()
+        if replaceGraph {
+            engine = AVAudioEngine()
+            observeGraph()
+        }
+        guard startGraph() else {
+            for operation in Array(operations.values) { end(operation, .failed("Audio route recovery failed")) }
+            return
+        }
+        for operation in Array(operations.values) { run(operation) }
     }
-    
-    func stopRecording() {
+
+    // AudioSessionManager delivers these notifications on the control queue.
+    func interruptionBegan() {
+        guard !sessionManager.mixWithOthers else { return }
+        interrupted = true
+        stopRecordingOnControl()
+        for operation in Array(operations.values) {
+            if operation.request.transient || operation.finishRequested { end(operation, .interrupted) }
+            else { reset(operation); operation.recovering = true }
+        }
+        engine.stop()
+        publish(.stopped)
+    }
+
+    func interruptionEnded(shouldResume: Bool) {
+        guard interrupted, shouldResume || sessionManager.mixWithOthers else { return }
+        interrupted = false
+        recoverIfStopped()
+    }
+
+    func mediaServicesWereReset() {
+        interrupted = false
+        recover(replaceGraph: true)
+    }
+
+    func enableSpeakerMode(_ handler: ((AVAudioSession.PortOverride) -> Void)? = nil) {
+        control.async {
+            self.routingCallback = handler
+            if !self.sessionManager.enableSpeakerMode() { self.routingCallback = nil }
+        }
+    }
+
+    func disableSpeakerMode(_ handler: ((AVAudioSession.PortOverride) -> Void)? = nil) {
+        control.async {
+            self.routingCallback = handler
+            if !self.sessionManager.disableSpeakerMode() { self.routingCallback = nil }
+        }
+    }
+
+    func onOutputRouteOverriden(_ override: AVAudioSession.PortOverride) {
+        let callback = routingCallback
+        routingCallback = nil
+        DispatchQueue.main.async { callback?(override) }
+    }
+
+    static var recordingDirectory: URL? {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("AudioRecordings")
+    }
+
+    var isRecording: Bool { statusLock.withLock { status.recording } }
+
+    func startRecording() {
+        control.async {
+            guard self.recordingFile == nil, self.startGraph(), let directory = Self.recordingDirectory else { return }
+            let mixer = self.engine.mainMixerNode
+            let format = mixer.outputFormat(forBus: 0)
+            var output = AudioStreamBasicDescription(mSampleRate: format.sampleRate, mFormatID: kAudioFormatMPEG4AAC,
+                                                      mFormatFlags: 0, mBytesPerPacket: 0, mFramesPerPacket: 0,
+                                                      mBytesPerFrame: 0, mChannelsPerFrame: format.channelCount,
+                                                      mBitsPerChannel: 0, mReserved: 0)
+            var formatSize = UInt32(MemoryLayout<AudioStreamBasicDescription>.size)
+            guard AudioFormatGetProperty(kAudioFormatProperty_FormatInfo, 0, nil, &formatSize, &output) == noErr else { return }
+            do {
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                let url = directory.appendingPathComponent(ISO8601DateFormatter().string(from: Date())).appendingPathExtension("m4a")
+                var outputFile: ExtAudioFileRef?
+                guard ExtAudioFileCreateWithURL(url as CFURL, kAudioFileM4AType, &output, nil,
+                                                AudioFileFlags.eraseFile.rawValue, &outputFile) == noErr,
+                      let file = outputFile else { return }
+                var input = format.streamDescription.pointee
+                // Prime AudioToolbox’s asynchronous writer before the first audio callback.
+                guard ExtAudioFileSetProperty(file, kExtAudioFileProperty_ClientDataFormat, formatSize, &input) == noErr,
+                      ExtAudioFileWriteAsync(file, 0, nil) == noErr else {
+                    ExtAudioFileDispose(file)
+                    return
+                }
+                mixer.installTap(onBus: 0, bufferSize: 4096, format: nil) { buffer, _ in
+                    ExtAudioFileWriteAsync(file, buffer.frameLength, buffer.audioBufferList)
+                }
+                self.recordingFile = file
+                self.statusLock.withLock { self.status.recording = true }
+            } catch { GDLogAudioError("Could not start audio recording: \(error)") }
+        }
+    }
+
+    func stopRecording() { control.async { self.stopRecordingOnControl() } }
+
+    private func stopRecordingOnControl() {
+        guard let file = recordingFile else { return }
         engine.mainMixerNode.removeTap(onBus: 0)
         recordingFile = nil
-        isRecording = false
-    }
-    
-    // MARK: Speakerphone Mode
-    
-    func enableSpeakerMode(_ handler: ((AVAudioSession.PortOverride) -> Void)? = nil) {
-        routeOverrideCompletionHandler = handler
-        isAwaitingRouteOverride = sessionManager.enableSpeakerMode()
-        
-        if !isAwaitingRouteOverride {
-            GDLogAudioError("Enabling speaker mode failed")
-        }
-    }
-    
-    func disableSpeakerMode(_ handler: ((AVAudioSession.PortOverride) -> Void)? = nil) {
-        routeOverrideCompletionHandler = handler
-        isAwaitingRouteOverride = sessionManager.disableSpeakerMode()
-        
-        if !isAwaitingRouteOverride {
-            GDLogAudioError("Disabling speaker mode failed")
-        }
+        statusLock.withLock { status.recording = false }
+        ExtAudioFileDispose(file)
     }
 }
 
-// MARK: - DiscreteAudioPlayerDelegate
-
-extension AudioEngine: DiscreteAudioPlayerDelegate {
-    /// Delegate method that is called when a `Sound` object finishes playing all of its audio
-    func onDataPlayedBack(_ playerId: AudioPlayerIdentifier) {
-        guard discretePlayerIds.contains(playerId) else {
-            return
+private extension AVAudioPCMBuffer {
+    func suffix(from offset: Int) -> AVAudioPCMBuffer? {
+        guard offset >= 0, offset < Int(frameLength),
+              let result = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameLength - AVAudioFrameCount(offset)),
+              let input = floatChannelData, let output = result.floatChannelData else { return nil }
+        result.frameLength = result.frameCapacity
+        for channel in 0..<Int(format.channelCount) {
+            output[channel].update(from: input[channel].advanced(by: offset), count: Int(result.frameLength))
         }
-        
-        GDLogAudioVerbose("Player done (\(playerId.uuidString))")
-        
-        let shouldPlayNextSound = currentQueuePlayerID == playerId
-        
-        // Stop the player and remove it's id from tracking (we must check the currentQueuePlayerID against the playerId before doing this)
-        stopAndRemoveDiscretePlayer(playerId)
-        
-        if shouldPlayNextSound {
-            playNextSound()
-        } else {
-            NotificationCenter.default.post(name: Notification.Name.discretePlayerFinished, object: nil, userInfo: [Keys.playerId: playerId])
-        }
+        return result
     }
-    
-    func onLayerFormatChanged(_ playerId: AudioPlayerIdentifier, layer: Int) {
-        guard let player = players.first(where: { $0.id == playerId }) else {
-            return
-        }
-        
-        connectLayer(player.layers[layer], for: player)
-        self.logPlayer(player)
-    }
-}
-
-// MARK: - FinishableAudioPlayerDelegate
-
-extension AudioEngine: FinishableAudioPlayerDelegate {
-    func onPlayerFinished(_ playerId: AudioPlayerIdentifier) {
-        stop(playerId)
-        
-        NotificationCenter.default.post(name: Notification.Name.dynamicPlayerFinished, object: nil, userInfo: [Keys.playerId: playerId])
-    }
-}
-
-// MARK: - AudioSessionManagerDelegate
-
-extension AudioEngine: AudioSessionManagerDelegate {
-    
-    func sessionDidActivate() {
-        // Not all `interruptionBegan()` will be followed by `interruptionEnded()`.
-        // Make sure the interruption flag is cleared if the audio session is re-activated.
-        isSessionInterrupted = false
-        
-        // Don't try to start the engine if there's a call in progress and we're not active.
-        // The session might be activated by the system or remain active during interruptions,
-        // but we shouldn't start audio playback until the app is actually ready.
-        guard shouldStart() else {
-            GDLogAudioVerbose("Audio session activated but engine should not start yet")
-            return
-        }
-        
-        start(activateAudioSession: false)
-    }
-    
-    /// When the audio session mixes with others, interruptions will only be
-    /// received for actual interruptions, such as Siri and phone calls.
-    func interruptionBegan() {
-        guard !mixWithOthers else {
-            // If we mix with others, we don't want to stop the audio engine.
-            return
-        }
-        
-        isSessionInterrupted = true
-        
-        self.queue.async {
-            // Stop discrete players
-            self.stopDiscrete()
-            
-            // Stop audio engine
-            self.stop()
-        }
-    }
-    
-    /// Apple: "Apps that don't require user input to begin audio playback (such as games)
-    /// can ignore the `shouldResume` flag and resume playback when an interruption ends."
-    func interruptionEnded(shouldResume: Bool) {
-        isSessionInterrupted = false
-        
-        guard shouldResume || mixWithOthers else {
-            return
-        }
-        
-        // Note: currently, there is no way of pausing and resuming audio players that were stopped by iOS.
-        // For discrete audio it does not matter, as we discard them if they were interrupted, but for
-        // continuous audio players we need to manually re-create them if needed.
-        
-        self.queue.async {
-            self.start()
-        }
-    }
-    
-    func mediaServicesWereReset() {
-        GDLogAudioVerbose("Media services were reset. Reconnecting nodes and restarting engine.")
-        
-        engine = AVAudioEngine()
-        
-        if let observer = engineConfigObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-        
-        // Listen for changes to the engine configuration so we can re-establish connections if connection
-        // formats need to change (specifically for the environment node).
-        engineConfigObserver = NotificationCenter.default.addObserver(forName: Notification.Name.AVAudioEngineConfigurationChange, object: engine, queue: nil) { [weak self] (_) in
-            GDLogAudioVerbose("Engine configuration changed. Reconnecting nodes and restarting engine.")
-            
-            self?.resetConfiguration()
-        }
-        
-        // Update all the players with the new engines
-        for player in players {
-            for layer in player.layers {
-                layer.detach()
-                layer.attach(to: engine)
-            }
-        }
-        
-        connectNodes()
-        start()
-    }
-    
-    func onOutputRouteOverriden(_ override: AVAudioSession.PortOverride) {
-        guard isAwaitingRouteOverride else {
-            return
-        }
-        
-        isAwaitingRouteOverride = false
-        routeOverrideCompletionHandler?(override)
-        routeOverrideCompletionHandler = nil
-    }
-    
 }

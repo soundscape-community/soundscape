@@ -3,40 +3,50 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import AVFoundation
 import Combine
 
-class TTSVoiceValidator {
+final class TTSVoiceValidator {
     let identifier: String
-    
-    private var cancellable: AnyCancellable?
-    
-    init(identifier voice: String) {
-        self.identifier = voice
-    }
-    
+    private var source: SpeechPCMSource?
+
+    init(identifier: String) { self.identifier = identifier }
+
     func validate() -> Future<Bool, Never> {
-        return Future { [weak self] promise in
-            guard let id = self?.identifier,
-                  let voice = AVSpeechSynthesisVoice(identifier: id),
-                  let ttsAudioBufferPublisher = TTSAudioBufferPublisher(voice.name, voiceIdentifier: id) else {
-                promise(.success(false))
+        Future { [weak self] complete in
+            guard let self, let voice = AVSpeechSynthesisVoice(identifier: self.identifier) else {
+                complete(.success(false))
                 return
             }
-            
-            self?.cancellable = ttsAudioBufferPublisher.collect().sink(receiveCompletion: { [weak self] (result) in
+            let validation = Validation()
+            self.source = IOSSpeechPCMSource(text: voice.name, voiceID: voice.identifier) { result in
+                if let valid = validation.receive(result) { complete(.success(valid)) }
+            }
+            self.source?.start()
+        }
+    }
+
+    deinit { source?.cancel() }
+
+    // The synth can deliver PCM and end-of-stream from different callback contexts.
+    private final class Validation: @unchecked Sendable {
+        private let lock = NSLock()
+        private var receivedAudio = false
+        private var finished = false
+
+        func receive(_ result: Result<AVAudioPCMBuffer?, Error>) -> Bool? {
+            lock.withLock {
+                guard !finished else { return nil }
                 switch result {
-                case .failure: promise(.success(false))
-                case .finished: promise(.success(true))
+                case .success(.some): receivedAudio = true; return nil
+                case .success(nil): finished = true; return receivedAudio
+                case .failure: finished = true; return false
                 }
-                
-                self?.cancellable = nil
-            }, receiveValue: { (_) in
-                // Intentional no-op
-            })
+            }
         }
     }
 }

@@ -3,13 +3,13 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import AVFoundation
 
-class LayeredSound: Sound {
-    var type: SoundType
+final class LayeredSound: Sound {
+    let type: SoundType
     
     let description: String
     
@@ -57,22 +57,5 @@ class LayeredSound: Sound {
         }
     }
     
-    func nextBuffer(forLayer index: Int) -> Promise<AVAudioPCMBuffer?> {
-        guard index < layerCount else {
-            return Promise<AVAudioPCMBuffer?> { $0(nil) }
-        }
-        
-        return layeredSounds[index].nextBuffer(forLayer: 0)
-    }
-}
-
-extension LayeredSound: SoundBase {
-    /// Looks up the optional equalizer parameters for a given layer
-    func equalizerParams(for layerIndex: Int) -> EQParameters? {
-        guard layerIndex < layerCount else {
-            return nil
-        }
-        
-        return layeredSounds[layerIndex].equalizerParams(for: 0)
-    }
+    var content: SoundContent { .parallel(layeredSounds) }
 }

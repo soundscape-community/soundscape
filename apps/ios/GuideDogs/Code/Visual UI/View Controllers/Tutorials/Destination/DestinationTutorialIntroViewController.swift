@@ -17,7 +17,7 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
     private(set) var logContext: String?
     var entityKey: String?
 
-    var player: FadeableAudioPlayer?
+    private let music = TutorialMusic()
     var backgroundVolume: Float = 0.1
     var fadeInDuration: TimeInterval = 1.5
 
@@ -55,14 +55,6 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
         AppContext.shared.isInTutorialMode = true
         try? AppContext.shared.spatialDataContext.destinationManager.clearDestination(logContext: "tutorial.beacon.start_tutorial")
         navigationController?.setNavigationBarHidden(true, animated: true)
-
-        guard player == nil,
-              let player = FadeableAudioPlayer.fadeablePlayer(with: "tutorial_background_music",
-                                                               fileTypeHint: AVFileType.mp3.rawValue) else {
-            return
-        }
-        player.numberOfLoops = -1
-        self.player = player
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -107,8 +99,8 @@ class DestinationTutorialIntroViewController: DestinationTutorialPage {
 
 extension DestinationTutorialIntroViewController: DestinationTutorialPageDelegate {
     func getEntityKey() -> String? { entityKey }
-    func pauseBackgroundTrack(_ completion: (() -> Void)?) { player?.fadeOut(completion) }
-    func resumeBackgroundTrack() { player?.fadeIn(to: backgroundVolume, duration: fadeInDuration) }
+    func pauseBackgroundTrack(_ completion: (() -> Void)?) { music.stop(completion) }
+    func resumeBackgroundTrack() { music.start(volume: backgroundVolume, duration: fadeInDuration) }
 
     func pageComplete() {
         let tutorial = DestinationTutorialViewController(source: source, entityKey: entityKey)
@@ -151,4 +143,36 @@ extension DestinationTutorialIntroViewController: POITableViewDelegate {
     func didSelect(currentLocation location: CLLocation) {
         fatalError("The current location option should be disabled for this view controller!")
     }
+}
+
+@MainActor
+final class TutorialMusic {
+    private var handle: PlaybackHandle?
+
+    func start(volume: Float, duration: TimeInterval) {
+        guard handle == nil else { return }
+        let sound = AssetSound(asset: .catalog(name: "tutorial_background_music", extension: "mp3"))
+        let playback = AppContext.shared.audioEngine.play(AudioRequest(sounds: [sound], loops: true,
+                                                                        transient: false, initialGain: 0, usesEffectVolume: false))
+        handle = playback
+        playback.fade(to: volume, seconds: duration)
+        Task { [weak self] in
+            _ = await playback.completion()
+            if self?.handle == playback { self?.handle = nil }
+        }
+    }
+
+    func stop(_ completion: (() -> Void)? = nil) {
+        guard let playback = handle else { completion?(); return }
+        handle = nil
+        playback.fade(to: 0, seconds: 1, stop: true)
+        if let completion {
+            Task {
+                _ = await playback.completion()
+                completion()
+            }
+        }
+    }
+
+    deinit { handle?.stop() }
 }

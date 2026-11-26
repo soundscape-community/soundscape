@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -14,8 +15,8 @@ enum ClassicBeacon: String, DynamicAudioEngineAsset {
     case beatOn = "Classic_OnAxis"
     case beatOff = "Classic_OffAxis"
     
-    static var selector: AssetSelector? = ClassicBeacon.defaultSelector()
-    static var beatsInPhrase: Int = 2
+    static let selector: AssetSelector? = ClassicBeacon.defaultSelector()
+    static let beatsInPhrase: Int = 2
 }
 
 enum V2Beacon: String, DynamicAudioEngineAsset {
@@ -24,7 +25,7 @@ enum V2Beacon: String, DynamicAudioEngineAsset {
     case side   = "Current_B"
     case behind = "Current_Behind"
     
-    static var selector: AssetSelector? = V2Beacon.defaultSelector()
+    static let selector: AssetSelector? = V2Beacon.defaultSelector()
     static let beatsInPhrase: Int = 6
 }
 
@@ -35,7 +36,7 @@ enum TactileBeacon: String, DynamicAudioEngineAsset {
     case offset = "Tactile_OffAxis"
     case behind = "Tactile_Behind"
     
-    static var selector: AssetSelector? = TactileBeacon.defaultSelector()
+    static let selector: AssetSelector? = TactileBeacon.defaultSelector()
     static let beatsInPhrase: Int = 6
 }
 
@@ -45,7 +46,7 @@ enum FlareBeacon: String, DynamicAudioEngineAsset {
     case side   = "Flare_B"
     case behind = "Flare_Behind"
     
-    static var selector: AssetSelector? = FlareBeacon.defaultSelector()
+    static let selector: AssetSelector? = FlareBeacon.defaultSelector()
     static let beatsInPhrase: Int = 6
 }
 
@@ -55,7 +56,7 @@ enum ShimmerBeacon: String, DynamicAudioEngineAsset {
     case side   = "Shimmer_B"
     case behind = "Shimmer_Behind"
     
-    static var selector: AssetSelector? = ShimmerBeacon.defaultSelector()
+    static let selector: AssetSelector? = ShimmerBeacon.defaultSelector()
     static let beatsInPhrase: Int = 6
 }
 
@@ -65,7 +66,7 @@ enum PingBeacon: String, DynamicAudioEngineAsset {
     case side   = "Ping_B"
     case behind = "Tactile_Behind"
     
-    static var selector: AssetSelector? = PingBeacon.defaultSelector()
+    static let selector: AssetSelector? = PingBeacon.defaultSelector()
     static let beatsInPhrase: Int = 6
 }
 
@@ -74,7 +75,7 @@ enum DropBeacon: String, DynamicAudioEngineAsset {
     case offset = "Drop_A"
     case behind = "Drop_Behind"
     
-    static var selector: AssetSelector? = DropBeacon.defaultSelector()
+    static let selector: AssetSelector? = DropBeacon.defaultSelector()
     static let beatsInPhrase: Int = 6
 }
 
@@ -83,7 +84,7 @@ enum SignalBeacon: String, DynamicAudioEngineAsset {
     case offset = "Signal_A"
     case behind = "Drop_Behind"
     
-    static var selector: AssetSelector? = SignalBeacon.defaultSelector()
+    static let selector: AssetSelector? = SignalBeacon.defaultSelector()
     static let beatsInPhrase: Int = 6
 }
 
@@ -92,7 +93,7 @@ enum SignalSlowBeacon: String, DynamicAudioEngineAsset {
     case offset = "Signal_Slow_A"
     case behind = "Signal_Slow_Behind"
     
-    static var selector: AssetSelector? = SignalSlowBeacon.defaultSelector()
+    static let selector: AssetSelector? = SignalSlowBeacon.defaultSelector()
     static let beatsInPhrase: Int = 12
 }
 
@@ -101,7 +102,7 @@ enum SignalVerySlowBeacon: String, DynamicAudioEngineAsset {
     case offset = "Signal_Very_Slow_A"
     case behind = "Signal_Very_Slow_Behind"
     
-    static var selector: AssetSelector? = SignalVerySlowBeacon.defaultSelector()
+    static let selector: AssetSelector? = SignalVerySlowBeacon.defaultSelector()
     static let beatsInPhrase: Int = 18
 }
 
@@ -110,7 +111,7 @@ enum MalletBeacon: String, DynamicAudioEngineAsset {
     case offset = "Mallet_A"
     case behind = "Mallet_Behind"
     
-    static var selector: AssetSelector? = MalletBeacon.defaultSelector()
+    static let selector: AssetSelector? = MalletBeacon.defaultSelector()
     static let beatsInPhrase: Int = 6
 }
 
@@ -119,7 +120,7 @@ enum MalletSlowBeacon: String, DynamicAudioEngineAsset {
     case offset = "Mallet_Slow_A"
     case behind = "Mallet_Slow_Behind"
     
-    static var selector: AssetSelector? = MalletSlowBeacon.defaultSelector()
+    static let selector: AssetSelector? = MalletSlowBeacon.defaultSelector()
     static let beatsInPhrase: Int = 12
 }
 
@@ -128,7 +129,7 @@ enum MalletVerySlowBeacon: String, DynamicAudioEngineAsset {
     case offset = "Mallet_Very_Slow_A"
     case behind = "Mallet_Very_Slow_Behind"
     
-    static var selector: AssetSelector? = MalletVerySlowBeacon.defaultSelector()
+    static let selector: AssetSelector? = MalletVerySlowBeacon.defaultSelector()
     static let beatsInPhrase: Int = 18
 }
 
@@ -140,7 +141,7 @@ enum ProximityBeacon: String, DynamicAudioEngineAsset {
     
     static let beatsInPhrase: Int = 6
     
-    static var selector: AssetSelector? = { input in
+    static let selector: AssetSelector? = { input in
         if case .location(let user, let beacon) = input {
             guard let user = user else {
                 return (.far, 0.0)
@@ -168,13 +169,13 @@ enum BeaconAccents: String, DynamicAudioEngineAsset {
     case start = "Route_Start"
     case end = "Route_End"
     
-    static var selector: AssetSelector?
+    static let selector: AssetSelector? = nil
     static let beatsInPhrase: Int = 6
 }
 
 enum PreviewWandAsset: String, DynamicAudioEngineAsset {
     case noTarget = "2.4_roadFinder_loop_rev2_wFades"
     
-    static var selector: AssetSelector?
-    static var beatsInPhrase: Int = 1
+    static let selector: AssetSelector? = nil
+    static let beatsInPhrase: Int = 1
 }

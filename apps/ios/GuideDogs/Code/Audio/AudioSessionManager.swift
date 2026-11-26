@@ -12,7 +12,6 @@ import AVFoundation
 import MediaPlayer
 
 protocol AudioSessionManagerDelegate: AnyObject {
-    func sessionDidActivate()
     func interruptionBegan()
     func interruptionEnded(shouldResume: Bool)
     func mediaServicesWereReset()
@@ -27,6 +26,8 @@ class AudioSessionManager {
     // MARK: Properties
     
     let session = AVAudioSession.sharedInstance()
+    private let control: DispatchQueue
+    private var observers: [NSObjectProtocol] = []
     
     var needsActivation: Bool = true
     
@@ -75,9 +76,13 @@ class AudioSessionManager {
     
     // MARK: Initialization
     
-    init(mixWithOthers: Bool) {
+    init(mixWithOthers: Bool, control: DispatchQueue) {
+        self.control = control
         self.mixWithOthers = mixWithOthers
         
+    }
+
+    func configure() {
         registerObservers()
         configureAudioSession()
     }
@@ -89,50 +94,28 @@ class AudioSessionManager {
     // MARK: Observers
 
     private func registerObservers() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleMediaServicesWereReset(_:)),
-                                               name: AVAudioSession.mediaServicesWereResetNotification,
-                                               object: session)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleAudioSessionInterruption(_:)),
-                                               name: AVAudioSession.interruptionNotification,
-                                               object: session)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleAudioSessionRouteChange(_:)),
-                                               name: AVAudioSession.routeChangeNotification,
-                                               object: session)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleAudioSessionSilenceSecondaryAudioHint(_:)),
-                                               name: AVAudioSession.silenceSecondaryAudioHintNotification,
-                                               object: session)
+        observe(AVAudioSession.mediaServicesWereResetNotification, using: AudioSessionManager.handleMediaServicesWereReset)
+        observe(AVAudioSession.interruptionNotification, using: AudioSessionManager.handleAudioSessionInterruption)
+        observe(AVAudioSession.routeChangeNotification, using: AudioSessionManager.handleAudioSessionRouteChange)
+        observe(AVAudioSession.silenceSecondaryAudioHintNotification, using: AudioSessionManager.handleAudioSessionSilenceSecondaryAudioHint)
     }
-    
-    private func removeObservers() {
-        NotificationCenter.default.removeObserver(self,
-                                                  name: AVAudioSession.mediaServicesWereResetNotification,
-                                                  object: session)
-        
-        NotificationCenter.default.removeObserver(self,
-                                                  name: AVAudioSession.interruptionNotification,
-                                                  object: session)
-        
-        NotificationCenter.default.removeObserver(self,
-                                                  name: AVAudioSession.routeChangeNotification,
-                                                  object: session)
-        
-        NotificationCenter.default.removeObserver(self,
-                                                  name: AVAudioSession.silenceSecondaryAudioHintNotification,
-                                                  object: session)
-    }
-    
-    // MARK: Methods
 
-    /// - Returns: `true` if audio session configuration was successful, `false` otherwise.
-    @discardableResult
+    private func observe(_ name: Notification.Name, using handler: @escaping (AudioSessionManager) -> (Notification) -> Void) {
+        let observer = NotificationCenter.default.addObserver(forName: name, object: session, queue: nil) { [weak self] notification in
+            self?.control.async { [weak self] in
+                guard let self else { return }
+                handler(self)(notification)
+            }
+        }
+        observers.append(observer)
+    }
+
+    private func removeObservers() {
+        observers.forEach(NotificationCenter.default.removeObserver)
+    }
+
     private func configureAudioSession() -> Bool {
+        needsActivation = true
         do {
             try session.setCategory(.playback,
                                     mode: .default,
@@ -207,9 +190,7 @@ class AudioSessionManager {
             // is playing, the iOS will not know which one to control.
             becomeNowPlayingApp()
         }
-        
-        delegate?.sessionDidActivate()
-        
+
         return true
     }
     
@@ -250,12 +231,12 @@ class AudioSessionManager {
     
     // MARK: Notification Callbacks
     
-    @objc func handleMediaServicesWereReset(_ notification: NSNotification) {
+    private func handleMediaServicesWereReset(_ notification: Notification) {
         configureAudioSession()
         delegate?.mediaServicesWereReset()
     }
     
-    @objc func handleAudioSessionInterruption(_ notification: NSNotification) {
+    private func handleAudioSessionInterruption(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
               let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
               let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
@@ -268,7 +249,7 @@ class AudioSessionManager {
             // The interruption is due to the audio session being deactivated when the system suspended the app. Activation is required when appropriate.
             let wasSuspended = (userInfo[AVAudioSessionInterruptionWasSuspendedKey] as? Bool) ?? false
             
-            GDLogAudioSessionInfo("Interruption occurred (type: began, options: none\(wasSuspended ? ", reason: wasSuspended" : "")\(AppContext.shared.callManager.callInProgress ? ", call in progress" : ""))")
+            GDLogAudioSessionInfo("Interruption occurred (type: began, options: none\(wasSuspended ? ", reason: wasSuspended" : ""))")
             
             // Because of continuous live audio apps, we cannot know when the other audio player has stopped
             // when coming back from background we need to know when to activate
@@ -302,7 +283,7 @@ class AudioSessionManager {
         }
     }
     
-    @objc func handleAudioSessionRouteChange(_ notification: NSNotification) {
+    private func handleAudioSessionRouteChange(_ notification: Notification) {
         guard let userInfo = notification.userInfo else {
             GDLogAudioSessionInfo("Route change occurred. Could not parse user info.")
             return
@@ -337,7 +318,7 @@ class AudioSessionManager {
         
     }
     
-    @objc func handleAudioSessionSilenceSecondaryAudioHint(_ notification: NSNotification) {
+    private func handleAudioSessionSilenceSecondaryAudioHint(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
             let typeValue = userInfo[AVAudioSessionSilenceSecondaryAudioHintTypeKey] as? UInt,
             let type = AVAudioSession.SilenceSecondaryAudioHintType(rawValue: typeValue) else {

@@ -10,14 +10,14 @@
 import AVFoundation
 import UIKit
 
-class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate {
+class DestinationTutorialViewController: UIViewController {
     private(set) var steps: [DestinationTutorialPage] = []
     private(set) var currentPageIndex = 0
     private var presentedAlertController: UIAlertController?
     private var currentPage: DestinationTutorialPage?
     private var didDisableCallouts = false
 
-    var player: FadeableAudioPlayer?
+    private let music = TutorialMusic()
     var backgroundVolume: Float = 0.1
     var fadeInDuration: TimeInterval = 1.5
     var entityKey: String?
@@ -45,15 +45,6 @@ class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate
         view.backgroundColor = Colors.Background.tutorial
         showPage(at: 0, animated: false)
 
-        guard let player = FadeableAudioPlayer.fadeablePlayer(with: "tutorial_background_music",
-                                                               fileTypeHint: AVFileType.mp3.rawValue) else {
-            GDLogAppError("Destination tutorial error: file not found.")
-            return
-        }
-        player.numberOfLoops = -1
-        player.delegate = self
-        self.player = player
-
         NotificationCenter.default.post(name: .disableMagicTap, object: self)
         NotificationCenter.default.post(name: .disableDestinationGeofence, object: self)
         NotificationCenter.default.addObserver(self,
@@ -70,7 +61,7 @@ class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate
         super.viewWillAppear(animated)
         AppContext.shared.isInTutorialMode = true
         navigationController?.setNavigationBarHidden(true, animated: true)
-        player?.fadeIn(to: backgroundVolume, duration: fadeInDuration)
+        resumeBackgroundTrack()
         if SettingsContext.shared.automaticCalloutsEnabled {
             didDisableCallouts = true
             AppContext.process(ToggleAutoCalloutsEvent(playSound: false))
@@ -165,7 +156,7 @@ class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate
     }
 
     private func cleanupTutorialState() {
-        player?.fadeOut { [weak self] in self?.player = nil }
+        music.stop()
         NotificationCenter.default.post(name: .enableMagicTap, object: self)
         NotificationCenter.default.post(name: .enableDestinationGeofence, object: self)
         AppContext.shared.eventProcessor.hush(playSound: false)
@@ -183,8 +174,8 @@ class DestinationTutorialViewController: UIViewController, AVAudioPlayerDelegate
 
 extension DestinationTutorialViewController: DestinationTutorialPageDelegate {
     func getEntityKey() -> String? { entityKey }
-    func pauseBackgroundTrack(_ completion: (() -> Void)?) { player?.fadeOut(completion) }
-    func resumeBackgroundTrack() { player?.fadeIn(to: backgroundVolume, duration: fadeInDuration) }
+    func pauseBackgroundTrack(_ completion: (() -> Void)?) { music.stop(completion) }
+    func resumeBackgroundTrack() { music.start(volume: backgroundVolume, duration: fadeInDuration) }
     func pageComplete() { _ = goToNextPage() }
     func tutorialComplete() { finish(finished: true) }
 }

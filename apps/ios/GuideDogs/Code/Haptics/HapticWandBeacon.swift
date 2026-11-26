@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -21,7 +22,7 @@ class HapticWandBeacon: HapticBeacon {
     private let audioWindow = 60.0
     
     /// ID for the beacon that plays ambient audio when the wand isn't pointed at a road
-    private(set) var beacon: AudioPlayerIdentifier?
+    private(set) var beacon: PlaybackHandle?
     
     private var beaconLocation: CLLocation
     
@@ -40,6 +41,7 @@ class HapticWandBeacon: HapticBeacon {
     }
     
     deinit {
+        beacon?.stop()
         deviceOrientationToken?.cancel()
         deviceOrientationToken = nil
     }
@@ -74,17 +76,19 @@ class HapticWandBeacon: HapticBeacon {
         wand.stop()
         
         if let player = beacon {
-            AppContext.shared.audioEngine.stop(player)
+            player.stop()
             beacon = nil
         }
     }
     
-    private func playBeaconAudio () {
-        guard let sound = BeaconSound(PreviewWandAsset.self, at: beaconLocation, isLocalized: false) else {
+    private func playBeaconAudio() {
+        guard beacon == nil else { return }
+        guard let sound = BeaconSound(PreviewWandAsset.self, at: beaconLocation, isLocalized: false, wand: .focus(window: audioWindow, followsLocation: true)) else {
             return
         }
         
-        beacon = AppContext.shared.audioEngine.play(sound, heading: AppContext.shared.geolocationManager.heading(orderedBy: [.device]))
+        beacon = AppContext.shared.audioEngine.play(sound, heading: .device)
+        beacon?.setFocusBearing(isBeaconFocussed ? 0 : nil)
     }
     
     private func stopBeaconAudio() {
@@ -92,33 +96,11 @@ class HapticWandBeacon: HapticBeacon {
             return
         }
         
-        AppContext.shared.audioEngine.stop(id)
+        id.stop()
+        beacon = nil
     }
     
     func wandDidStart(_ wand: Wand) {
-        // Set up the ambient audio for the road finder
-        let silentDistance = 15.0
-        let maxDistance = audioWindow / 2 - silentDistance
-        
-        PreviewWandAsset.selector = { [weak self] input -> (PreviewWandAsset, PreviewWandAsset.Volume)? in
-            if case .heading(let userHeading, _) = input {
-                guard let `self` = self, let heading = userHeading else {
-                    return (PreviewWandAsset.noTarget, 0.0)
-                }
-                
-                guard self.isBeaconFocussed else {
-                    return (PreviewWandAsset.noTarget, 0.0)
-                }
-                
-                let distance = self.wand.angleFromCurrentTarget(heading) ?? 0.0
-                let volume = distance < silentDistance ? 1.0 : 1.0 - max(min((distance - silentDistance) / maxDistance, 1.0), 0.0)
-                
-                return (PreviewWandAsset.noTarget, Float(volume))
-            }
-            
-            return nil
-        }
-        
         if phoneIsFlat {
             playBeaconAudio()
         }
@@ -136,6 +118,7 @@ class HapticWandBeacon: HapticBeacon {
     
     func wand(_ wand: Wand, didGainFocus target: Orientable, isInitial: Bool) {
         isBeaconFocussed = true
+        beacon?.setFocusBearing(target.bearing)
     }
     
     func wand(_ wand: Wand, didLongFocus target: Orientable) {
@@ -144,5 +127,6 @@ class HapticWandBeacon: HapticBeacon {
     
     func wand(_ wand: Wand, didLoseFocus target: Orientable) {
         isBeaconFocussed = false
+        beacon?.setFocusBearing(nil)
     }
 }

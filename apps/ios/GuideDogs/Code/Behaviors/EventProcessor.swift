@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -14,17 +15,15 @@ extension Notification.Name {
     static let behaviorDeactivated = Notification.Name("GDABehaviorDeactivated")
 }
 
-class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
+class EventProcessor: BehaviorDelegate {
     
     struct Keys {
         static let behavior = "GDABehaviorKey"
     }
     
-    private var calloutQueue = Queue<CalloutGroup>()
-    private var currentCallouts: CalloutGroup?
     
-    private let stateMachine: CalloutStateMachine
-    private unowned let audioEngine: AudioEngineProtocol
+    private let callouts: CalloutCoordinator
+    private let audioEngine: any AudioPlayback
     private unowned let data: SpatialDataProtocol
     
     /// Current top level behavior in the behavior stack
@@ -39,15 +38,14 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
     
     // MARK: Setup and Initialization
     
-    init(activeBehavior: Behavior, stateMachine: CalloutStateMachine, audioEngine: AudioEngineProtocol, data: SpatialDataProtocol) {
+    init(activeBehavior: Behavior, callouts: CalloutCoordinator, audioEngine: any AudioPlayback, data: SpatialDataProtocol) {
         self.activeBehavior = activeBehavior
-        self.stateMachine = stateMachine
+        self.callouts = callouts
         self.audioEngine = audioEngine
         self.data = data
         
         // Setup the delegate for the base openscape behavior
         activeBehavior.delegate = self
-        stateMachine.delegate = self
     }
     
     /// Starts the event processor by activating the default openscape behavior. This method
@@ -128,8 +126,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         
         activeBehavior = parent
         
-        calloutQueue.clear()
-        stateMachine.hush(playSound: true)
+        interruptCurrent(playHush: true)
         
         NotificationCenter.default.post(name: Notification.Name.behaviorDeactivated, object: self)
     }
@@ -199,7 +196,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
                 }
                 
                 for case let .playCallouts(calloutGroup) in actions {
-                    self.enqueue(calloutGroup)
+                    self.callouts.enqueue(calloutGroup)
                 }
                 
                 for case let .processEvents(events) in actions {
@@ -211,134 +208,14 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         }
     }
     
-    // MARK: Callout Queueing
-    
-    /// Helper method for enqueueing multiple `CalloutGroup` objects at once. The value
-    /// the enqueue style of the first `CalloutGroup` in the array is maintained as specified,
-    /// but all remaining items in the array will be enqueued with the `.enqueue`
-    /// style.
-    ///
-    /// - Parameters:
-    ///   - callouts: `CalloutGroup` objects to enqueue
-    private func enqueue(_ callouts: [CalloutGroup]) {
-        // Enqueue the first group with the specified style
-        guard callouts.count > 0 else {
-            GDLogWarn(.eventProcessor, "Attempted to enqueue and enmpty group of callouts!")
-            return
-        }
-        
-        // Override the enqueue style of all callouts except the first to be .enqueue
-        callouts.dropFirst().forEach({ $0.action = .enqueue })
-        
-        // Enqueue all the callouts
-        callouts.forEach({ enqueue($0) })
-    }
-    
-    private func enqueue(_ callouts: CalloutGroup) {
-        GDLogEventProcessorInfo("Enqueueing \(callouts.callouts.count) callouts with style \(callouts.action)")
-        
-        switch callouts.action {
-        case .interruptAndClear:
-            if currentCallouts != nil && stateMachine.isPlaying {
-                clearQueue()
-                calloutQueue.enqueue(callouts)
-                stateMachine.stop()
-                return
-            }
-            
-        case .clear:
-            clearQueue()
-            
-        default:
-            break
-        }
-        
-        calloutQueue.enqueue(callouts)
-        
-        tryStartCallouts()
-    }
-    
-    private func clearQueue() {
-        while !calloutQueue.isEmpty {
-            if let group = calloutQueue.dequeue() {
-                group.delegate?.calloutsSkipped(for: group)
-            }
-        }
-    }
-    
-    private func nextValidCalloutGroup() -> CalloutGroup? {
-        while !calloutQueue.isEmpty {
-            guard let calloutGroup = calloutQueue.dequeue() else {
-                return nil
-            }
-            
-            if calloutGroup.isValid() {
-                return calloutGroup
-            }
-            
-            // Discard invalid callout group
-            GDLogEventProcessorInfo("Discarding invalid callout group with id: \(calloutGroup.id), context: \(calloutGroup.logContext)")
-            calloutGroup.delegate?.calloutsSkipped(for: calloutGroup)
-        }
-        
-        return nil
-    }
-    
-    // MARK: Callout State Machine
-    
-    private func tryStartCallouts() {
-        guard !stateMachine.isPlaying else {
-            GDLogEventProcessorInfo("Can't start callouts - state machine is playing (current state: \(stateMachine.currentState))")
-            return
-        }
-        
-        currentCallouts = nextValidCalloutGroup()
-        
-        guard let currentCallouts = currentCallouts else {
-            GDLogEventProcessorInfo("Can't start callouts - no callouts to start")
-            return
-        }
-        
-        GDLogEventProcessorInfo("Starting callouts")
-        
-        stateMachine.start(currentCallouts)
-    }
-    
-    func calloutsDidFinish(id: UUID) {
-        GDLogEventProcessorInfo("Callouts finished (\(id))")
-        
-        if let current = currentCallouts, current.id == id {
-            current.delegate?.calloutsCompleted(for: current, finished: true)
-            currentCallouts = nil
-        }
-        
-        if !calloutQueue.isEmpty {
-            tryStartCallouts()
-        }
-    }
-    
-    // MARK: - General Controls
-    
     func interruptCurrent(clearQueue clear: Bool = true, playHush: Bool = false) {
-        GDLogVerbose(.eventProcessor, "Interrupting current callouts")
-        
-        if playHush {
-            stateMachine.hush(playSound: playHush)
+        if Thread.isMainThread {
+            MainActor.assumeIsolated { callouts.interruptCurrent(clearPending: clear, hush: playHush) }
         } else {
-            stateMachine.stop()
-        }
-        
-        if let currentCallouts = currentCallouts {
-            currentCallouts.delegate?.calloutsCompleted(for: currentCallouts, finished: false)
-        }
-        
-        currentCallouts = nil
-        
-        if clear {
-            clearQueue()
+            DispatchQueue.main.async { self.callouts.interruptCurrent(clearPending: clear, hush: playHush) }
         }
     }
-    
+
     func hush(playSound: Bool = true, hushBeacon: Bool = true) {
         GDLogInfo(.eventProcessor, "Hushing event processor")
         
@@ -348,12 +225,13 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
             }
         }
         
+        audioEngine.stopTransientAudio()
         interruptCurrent(playHush: playSound)
     }
     
     @discardableResult
     func toggleAudio() -> Bool {
-        let isDiscreteAudioPlaying = audioEngine.isDiscreteAudioPlaying
+        let isDiscreteAudioPlaying = audioEngine.hasTransientAudio
         let isBeaconPlaying = data.destinationManager.isAudioEnabled
         let isDestinationSet = data.destinationManager.destinationKey != nil
         
@@ -376,6 +254,7 @@ class EventProcessor: CalloutStateMachineDelegate, BehaviorDelegate {
         
         // Hush callouts if needed
         if isDiscreteAudioPlaying {
+            audioEngine.stopTransientAudio()
             guard !AppContext.shared.eventProcessor.isCustomBehaviorActive else {
                 interruptCurrent(clearQueue: true, playHush: true)
                 return true

@@ -3,24 +3,33 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import AVFoundation
 
-/// This class is a very simple wrapper of `GenericSound`. It simply overrides the
-/// `description` property of `GenericSound` in order to have Glyphs be logged differently
-/// from other sounds.
-class GlyphSound: GenericSound {
-    
-    /// Human-readable description of the sound
-    override var description: String {
-        switch source {
-        case .file(let url):
-            return "[\(url.lastPathComponent)]"
-        case .bundle(let asset):
-            return "[\(asset.name)]"
-        }
+import CoreLocation
+
+struct GlyphSound: Sound {
+    private let asset: StaticAudioEngineAsset
+    let type: SoundType
+    var description: String { "[\(asset.name)]" }
+    var content: SoundContent { .asset(asset.audioAsset) }
+
+    init(_ asset: StaticAudioEngineAsset, type: SoundType = .standard) {
+        self.asset = asset
+        self.type = type
     }
-    
+
+    init(_ asset: StaticAudioEngineAsset, at: CLLocation) {
+        self.init(asset, type: .localized(AudioCoordinate(at), .ring))
+    }
+
+    init(_ asset: StaticAudioEngineAsset, compass: Double) {
+        self.init(asset, type: .compass(compass, .ring))
+    }
+
+    init(_ asset: StaticAudioEngineAsset, direction: Double) {
+        self.init(asset, type: .relative(direction, .ring))
+    }
 }

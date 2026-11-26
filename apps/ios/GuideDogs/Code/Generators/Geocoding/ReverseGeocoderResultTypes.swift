@@ -3,15 +3,12 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 import CoreLocation
-
-extension Notification.Name {
-    static let estimatedAddressDidComplete = Notification.Name("EstimatedAddressDidComplete")
-}
 
 protocol ReverseGeocoderResult {
     var location: CLLocation { get }
@@ -245,7 +242,9 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
     let intersectionKey: String?
     
     // Estimated address of the user's location
-    var estimatedAddress: GeocodedAddress?
+    private let addressLock = NSLock()
+    private var address: GeocodedAddress?
+    var estimatedAddress: GeocodedAddress? { addressLock.withLock { address } }
     
     // MARK: Computed Properties
     
@@ -283,8 +282,7 @@ class AlongsideGeocoderResult: ReverseGeocoderResult {
         intersectionKey = intersection
         
         SpatialDataCache.fetchEstimatedAddress(location: location) { (address) in
-            self.estimatedAddress = address
-            NotificationCenter.default.post(name: Notification.Name.estimatedAddressDidComplete, object: self)
+            self.addressLock.withLock { self.address = address }
         }
     }
     

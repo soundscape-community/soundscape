@@ -3,12 +3,13 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
 import Foundation
 
-enum StaticAudioEngineAsset: String, AudioEngineAsset {
+enum StaticAudioEngineAsset: String, AudioEngineAsset, Sendable {
     
     // MARK: Earcons/Glyphs
     

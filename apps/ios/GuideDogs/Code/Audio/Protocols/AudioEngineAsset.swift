@@ -3,10 +3,10 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
-import AVFoundation
 
 /// `AudioEngineAsset`s are objects that wrap up all the information needed for loading
 /// and playing audio files. Objects that implement this protocol are intended to be enums
@@ -39,38 +39,5 @@ extension AudioEngineAsset {
         return "wav"
     }
     
-    /// Loads a sound asset from a file in the main bundle into an AVAudioPCMBuffer.
-    ///
-    /// - Parameters:
-    ///   - asset: Name of the sound asset
-    ///   - ofType: Extension of the asset file
-    /// - Returns: PCM buffer with sound data if the asset could be found and loaded correctly, nil otherwise.
-    func load() -> AVAudioPCMBuffer? {
-        guard let path = Bundle.main.path(forResource: name, ofType: type) else {
-            assertionFailure("Audio asset could not be found (name: \(name), type: \(type))")
-            GDLogAudioError("Audio asset could not be found (name: \(name), type: \(type))")
-            return nil
-        }
-        
-        guard let url = URL(string: path) else {
-            assertionFailure("Audio asset URL not valid (name: \(name), type: \(type))")
-            GDLogAudioError("Audio asset URL not valid (name: \(name), type: \(type))")
-            return nil
-        }
-        
-        do {
-            let file = try AVAudioFile(forReading: url)
-            
-            guard let buffer = AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: AVAudioFrameCount(file.length)) else {
-                return nil
-            }
-            
-            try file.read(into: buffer)
-            
-            return buffer
-        } catch {
-            GDLogAudioError("Audio asset could not be loaded (name: \(name), type: \(type))")
-            return nil
-        }
-    }
+    var audioAsset: AudioAsset { .bundle(name: name, extension: type) }
 }

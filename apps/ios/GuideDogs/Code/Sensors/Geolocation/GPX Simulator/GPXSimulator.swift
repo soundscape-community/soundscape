@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -96,14 +97,13 @@ class GPXSimulator {
     private var timeIntervalBetweenLocations = defaultTimeIntervalBetweenLocations
 
     /// The audio player for the the optional background audio
-    private var audioPlayer: FadeableAudioPlayer?
+    private var audioPlayer: PlaybackHandle?
 
     let gpx: GPXRoot
     
     var audioConfiguration: AudioConfiguration? {
         didSet {
-            setupAudioPlayer()
-        }
+            }
     }
     
     // MARK: Computed Properties
@@ -182,24 +182,6 @@ class GPXSimulator {
         }
     }
     
-    private func setupAudioPlayer() {
-        guard let audioConfiguration = audioConfiguration else {
-            audioPlayer = nil
-            return
-        }
-        
-        guard let player = FadeableAudioPlayer.fadeablePlayer(with: audioConfiguration.filename) else {
-            audioPlayer = nil
-            GDLogAppError("GPXSimulator - audio error: file not found.")
-            return
-        }
-        
-        player.numberOfLoops = -1 // Play indefinitely
-        player.volume = audioConfiguration.volume
-        
-        audioPlayer = player
-    }
-    
     // MARK: Manage Simulator
     
     private func start() {
@@ -207,7 +189,14 @@ class GPXSimulator {
         
         isSimulating = true
         
-        audioPlayer?.fadeIn()
+        audioPlayer?.stop()
+        if let audioConfiguration {
+            let sound = AssetSound(asset: .catalog(name: audioConfiguration.filename, extension: "wav"))
+            let handle = AppContext.shared.audioEngine.play(AudioRequest(sounds: [sound], loops: true,
+                                                                        transient: false, initialGain: 0, usesEffectVolume: false))
+            audioPlayer = handle
+            handle.fade(to: audioConfiguration.volume, seconds: 1)
+        }
         
         startSimulatingActivity()
 
@@ -218,6 +207,7 @@ class GPXSimulator {
         reset()
         
         audioPlayer?.stop()
+        audioPlayer = nil
         
         stopSimulatingActivity()
     }
@@ -482,7 +472,7 @@ class GPXSimulator {
         simulateNextLocation()
         
         if audioConfiguration?.pauseWithSimulation ?? false {
-            audioPlayer?.play()
+            audioPlayer?.resume()
         }
     }
     

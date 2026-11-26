@@ -7,6 +7,7 @@
 //  Licensed under the MIT License.
 //
 
+import AVFoundation
 import Combine
 
 class AudioFileStore: ObservableObject {
@@ -19,11 +20,9 @@ class AudioFileStore: ObservableObject {
     private(set) var remoteURL: URL?
     
     private(set) var localURL: URL?
-    private(set) var playerID: AudioPlayerIdentifier?
+    private(set) var playerID: PlaybackHandle?
     private var timer: Timer?
     private var downloadListener: AnyCancellable?
-    private var finishedListener: AnyCancellable?
-    private var stoppedListener: AnyCancellable?
     
     /// Initializer that should only be used during design-time. This initializer overrides the default
     /// behavior in order to fake the isDownloaded state value to match the provided value.
@@ -38,12 +37,10 @@ class AudioFileStore: ObservableObject {
     deinit {
         downloadListener?.cancel()
         downloadListener = nil
+        playerID?.stop()
+        timer?.invalidate()
         
-        finishedListener?.cancel()
-        finishedListener = nil
         
-        stoppedListener?.cancel()
-        stoppedListener = nil
     }
     
     func load(activityID: String, remoteURL: URL) {
@@ -52,8 +49,7 @@ class AudioFileStore: ObservableObject {
         
         defer {
             if let url = localURL {
-                let sound = GenericSound(url)
-                duration = sound.duration ?? 0.0
+                updateDuration(url)
             }
         }
         
@@ -78,42 +74,30 @@ class AudioFileStore: ObservableObject {
             
             self.localURL = URL(fileURLWithPath: local)
             self.isDownloaded = true
+            if let url = self.localURL { self.updateDuration(url) }
         }
     }
     
+    private func updateDuration(_ url: URL) {
+        guard let file = try? AVAudioFile(forReading: url) else { return }
+        duration = Double(file.length) / file.processingFormat.sampleRate
+    }
+
     func start() {
         
         guard let url = localURL else {
             return
         }
         
-        finishedListener = NotificationCenter.default.publisher(for: .discretePlayerFinished).receive(on: RunLoop.main).sink { notification in
-            guard let id = notification.userInfo?[AudioEngine.Keys.playerId] as? AudioPlayerIdentifier else {
-                return
-            }
-            
-            guard self.playerID == id else {
-                return
-            }
-
+        let handle = AppContext.shared.audioEngine.play(GenericSound(url))
+        playerID = handle
+        Task { @MainActor [weak self] in
+            _ = await handle.completion()
+            guard let self, self.playerID == handle else { return }
             self.cleanupFinishedPlayer()
         }
-        
-        stoppedListener = NotificationCenter.default.publisher(for: .discretePlayerDidStop).receive(on: RunLoop.main).sink { notification in
-            guard let id = notification.userInfo?[AudioEngine.Keys.playerId] as? AudioPlayerIdentifier else {
-                return
-            }
-            
-            guard self.playerID == id else {
-                return
-            }
 
-            self.cleanupFinishedPlayer()
-        }
-        
-        playerID = AppContext.shared.audioEngine.play(GenericSound(url))
-        
-        let tickTock = Timer(timeInterval: 0.05, repeats: true, block: { _ in self.elapsed += 0.05 })
+        let tickTock = Timer(timeInterval: 0.05, repeats: true, block: { [weak self] _ in self?.elapsed += 0.05 })
         RunLoop.main.add(tickTock, forMode: .default)
         timer = tickTock
         
@@ -126,18 +110,14 @@ class AudioFileStore: ObservableObject {
             return
         }
         
-        AppContext.shared.audioEngine.stop(id)
+        id.stop()
         cleanupFinishedPlayer()
     }
     
     private func cleanupFinishedPlayer() {
         isPlaying = false
         
-        finishedListener?.cancel()
-        finishedListener = nil
         
-        stoppedListener?.cancel()
-        stoppedListener = nil
         
         timer?.invalidate()
         timer = nil

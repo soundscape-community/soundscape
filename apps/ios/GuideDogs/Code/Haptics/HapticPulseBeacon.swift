@@ -22,11 +22,10 @@ class HapticPulseBeacon: HapticBeacon {
     private let audioWindow = 60.0
     
     /// ID for the beacon that plays ambient audio when the wand isn't pointed at a road
-    private(set) var beacon: AudioPlayerIdentifier?
+    private(set) var beacon: PlaybackHandle?
     
     private var beaconLocation: CLLocation
     
-    private var isBeaconFocussed = false
     
     private var timerHeading: Heading?
     private var timerToken: AnyCancellable?
@@ -44,12 +43,8 @@ class HapticPulseBeacon: HapticBeacon {
                             beaconBearing: CLLocationDirection,
                             fullVolumeAngle: CLLocationDirection,
                             audioWindow: CLLocationDirection = 60.0) -> Float {
-        let relativeBearing = userHeading.bearing(to: beaconBearing)
-        let distance = min(relativeBearing, 360.0 - relativeBearing)
-        let fadeWidth = audioWindow / 2.0 - fullVolumeAngle
-        let volume = distance <= fullVolumeAngle ? 1.0 : 1.0 - max(min((distance - fullVolumeAngle) / fadeWidth, 1.0), 0.0)
-
-        return Float(volume)
+        WandBeaconPolicy.volume(heading: userHeading, bearing: beaconBearing,
+                                fullVolume: fullVolumeAngle, window: audioWindow)
     }
     
     required init(at: CLLocation) {
@@ -58,6 +53,7 @@ class HapticPulseBeacon: HapticBeacon {
     }
     
     deinit {
+        beacon?.stop()
         timerHeading = nil
         
         timerToken?.cancel()
@@ -104,17 +100,18 @@ class HapticPulseBeacon: HapticBeacon {
         deviceOrientationToken = nil
         
         if let player = beacon {
-            AppContext.shared.audioEngine.stop(player)
+            player.stop()
             beacon = nil
         }
     }
     
-    private func playBeaconAudio () {
-        guard let sound = BeaconSound(PreviewWandAsset.self, at: beaconLocation, isLocalized: false) else {
+    private func playBeaconAudio() {
+        guard beacon == nil else { return }
+        guard let sound = BeaconSound(PreviewWandAsset.self, at: beaconLocation, isLocalized: false, wand: .pulse(window: audioWindow)) else {
             return
         }
         
-        beacon = AppContext.shared.audioEngine.play(sound, heading: AppContext.shared.geolocationManager.heading(orderedBy: [.device]))
+        beacon = AppContext.shared.audioEngine.play(sound, heading: .device)
     }
     
     private func stopBeaconAudio() {
@@ -122,28 +119,11 @@ class HapticPulseBeacon: HapticBeacon {
             return
         }
         
-        AppContext.shared.audioEngine.stop(id)
+        id.stop()
+        beacon = nil
     }
     
     func wandDidStart(_ wand: Wand) {
-        // Set up the ambient audio for the road finder
-        PreviewWandAsset.selector = { [weak self] input -> (PreviewWandAsset, PreviewWandAsset.Volume)? in
-            if case .heading(let userHeading, let beaconBearing) = input {
-                guard let `self` = self, let heading = userHeading else {
-                    return (PreviewWandAsset.noTarget, 0.0)
-                }
-
-                let volume = HapticPulseBeacon.audioVolume(userHeading: heading,
-                                                           beaconBearing: beaconBearing,
-                                                           fullVolumeAngle: SettingsContext.shared.beaconRingingAngle,
-                                                           audioWindow: self.audioWindow)
-                
-                return (PreviewWandAsset.noTarget, volume)
-            }
-            
-            return nil
-        }
-        
         if phoneIsFlat {
             playBeaconAudio()
         }
@@ -160,7 +140,6 @@ class HapticPulseBeacon: HapticBeacon {
     }
     
     func wand(_ wand: Wand, didGainFocus target: Orientable, isInitial: Bool) {
-        isBeaconFocussed = true
         
         timerToken?.cancel()
         timerToken = nil
@@ -205,7 +184,6 @@ class HapticPulseBeacon: HapticBeacon {
     }
     
     func wand(_ wand: Wand, didLoseFocus target: Orientable) {
-        isBeaconFocussed = false
         
         timerHeading = nil
         timerToken?.cancel()
