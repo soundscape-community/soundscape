@@ -13,7 +13,7 @@ protocol AudioPlayback: Sendable {
     var hasTransientAudio: Bool { get }
     @discardableResult
     func play(_ request: AudioRequest) -> PlaybackHandle
-    func stopTransientAudio()
+    func stopAllTransientAudio()
 }
 
 extension AudioPlayback {
@@ -97,5 +97,43 @@ final class PlaybackCompletion: @unchecked Sendable {
             return pending
         }
         for waiter in waiters { waiter.resume(returning: result) }
+    }
+}
+
+extension AudioRequest {
+    var containsBeacon: Bool {
+        func containsBeacon(_ sound: any Sound) -> Bool {
+            switch sound.content {
+            case .beacon: return true
+            case .sequence(let children), .parallel(let children): return children.contains(where: containsBeacon)
+            case .asset, .speech: return false
+            }
+        }
+        return sounds.contains(where: containsBeacon)
+    }
+}
+
+// Mutated only by the playback service's serial owner.
+struct PlaybackLifecycle {
+    enum FinishAction { case wait, finishBeacon, stop, interrupt }
+
+    private(set) var generation: UInt64 = 0
+    private(set) var finishRequested = false
+
+    mutating func invalidatePreparation() { generation &+= 1 }
+
+    mutating func requestFinish(
+        request: AudioRequest, beaconReady: Bool, interrupted: Bool
+    ) -> FinishAction {
+        guard !finishRequested else { return .wait }
+        finishRequested = true
+        if interrupted { return .interrupt }
+        if beaconReady { return .finishBeacon }
+        if request.loops && !request.containsBeacon { return .stop }
+        return .wait
+    }
+
+    func survivesGraphLoss(request: AudioRequest) -> Bool {
+        !request.transient && !finishRequested
     }
 }

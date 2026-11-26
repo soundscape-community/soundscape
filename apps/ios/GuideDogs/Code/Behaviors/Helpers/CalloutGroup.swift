@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -58,7 +59,6 @@ class CalloutGroup: Equatable {
     let callouts: [CalloutProtocol]
     
     let playModeSounds: Bool
-    let stopSoundsBeforePlaying: Bool
     let calloutDelay: TimeInterval?
     let repeatingFromLocation: CLLocation?
     
@@ -77,13 +77,12 @@ class CalloutGroup: Equatable {
         return true
     }
     
-    init(_ callouts: [CalloutProtocol], prefix: CalloutProtocol? = nil, repeatingFromLocation: CLLocation? = nil, action: QueueAction = .enqueue, playModeSounds: Bool = false, stopSoundsBeforePlaying: Bool = false, calloutDelay: TimeInterval? = nil, logContext: String) {
+    init(_ callouts: [CalloutProtocol], prefix: CalloutProtocol? = nil, repeatingFromLocation: CLLocation? = nil, action: QueueAction = .enqueue, playModeSounds: Bool = false, calloutDelay: TimeInterval? = nil, logContext: String) {
         self.action = action
         self.callouts = callouts
         self.prefixCallout = prefix
         self.repeatingFromLocation = repeatingFromLocation
         self.playModeSounds = playModeSounds
-        self.stopSoundsBeforePlaying = stopSoundsBeforePlaying
         self.calloutDelay = calloutDelay
         self.logContext = logContext
     }

@@ -225,7 +225,7 @@ class EventProcessor: BehaviorDelegate {
             }
         }
         
-        audioEngine.stopTransientAudio()
+        audioEngine.stopAllTransientAudio()
         interruptCurrent(playHush: playSound)
     }
     
@@ -254,7 +254,7 @@ class EventProcessor: BehaviorDelegate {
         
         // Hush callouts if needed
         if isDiscreteAudioPlaying {
-            audioEngine.stopTransientAudio()
+            audioEngine.stopAllTransientAudio()
             guard !AppContext.shared.eventProcessor.isCustomBehaviorActive else {
                 interruptCurrent(clearQueue: true, playHush: true)
                 return true

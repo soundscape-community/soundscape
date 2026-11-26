@@ -134,7 +134,7 @@ class ARHeadsetGenerator: AutomaticGenerator {
         // Doing this check after defer allows us to still track the calibration state
         guard !calibrationOverriden else {
             if event.state == .calibrated && (previousCalibrationState == .calibrating || previousCalibrationState == .needsCalibrating) {
-                return CalloutGroup([GlyphCallout(.arHeadset, .calibrationSuccess)], playModeSounds: false, stopSoundsBeforePlaying: false, logContext: "ar_headset")
+                return CalloutGroup([GlyphCallout(.arHeadset, .calibrationSuccess)], playModeSounds: false, logContext: "ar_headset")
             } else {
                 return nil
             }

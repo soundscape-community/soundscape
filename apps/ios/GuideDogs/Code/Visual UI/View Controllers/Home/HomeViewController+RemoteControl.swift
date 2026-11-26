@@ -80,7 +80,7 @@ extension HomeViewController: RemoteCommandManagerDelegate {
         AppContext.process(ToggleAutoCalloutsEvent(playSound: true))
 
         // Play announcement
-        AppContext.shared.audioEngine.stopTransientAudio()
+        AppContext.shared.audioEngine.stopAllTransientAudio()
         let announcement = SettingsContext.shared.automaticCalloutsEnabled ? GDLocalizedString("callouts.callouts_on") : GDLocalizedString("callouts.callouts_off")
         AppContext.process(GenericAnnouncementEvent(announcement))
         return true

@@ -251,12 +251,9 @@ class AudioSessionManager {
             
             GDLogAudioSessionInfo("Interruption occurred (type: began, options: none\(wasSuspended ? ", reason: wasSuspended" : ""))")
             
-            // Because of continuous live audio apps, we cannot know when the other audio player has stopped
-            // when coming back from background we need to know when to activate
-            if !mixWithOthers || wasSuspended {
-                needsActivation = true
-            }
-            
+            // Mixing allows coexistence, but a delivered interruption still deactivates this session.
+            needsActivation = true
+
             delegate?.interruptionBegan()
         case .ended:
             /// The `shouldResume` option can be used as a hint for the type of the ended audio interruption. For example:

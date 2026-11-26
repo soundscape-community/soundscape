@@ -142,6 +142,117 @@ final class AudioEngineTest: XCTestCase {
         XCTAssertFalse(engine.hasTransientAudio)
     }
 
+    func testBackgroundCallProtectsStartup() {
+        XCTAssertFalse(AudioEngine.startupAllowed(appState: .inactive, callInProgress: false))
+        XCTAssertFalse(AudioEngine.startupAllowed(appState: .background, callInProgress: true))
+        XCTAssertTrue(AudioEngine.startupAllowed(appState: .background, callInProgress: false))
+        XCTAssertTrue(AudioEngine.startupAllowed(appState: .active, callInProgress: true))
+    }
+
+    func testBeaconTransitionsKeepPhaseThroughSilenceAndOutro() {
+        let assets = Array(ClassicBeacon.allCases)
+        let selector = ClassicBeacon.selector
+        XCTAssertEqual(selector?(.heading(1, 359, 15))?.asset, assets[0])
+        XCTAssertEqual(selector?(.heading(nil, 359, 15))?.asset, assets[1])
+        var beacon = BeaconProgression(timing: BeaconTiming(intro: 50, phrase: 100, beats: 4))
+        XCTAssertEqual(beacon.select(assets[0].audioAsset, at: nil)?.frame, 50)
+        XCTAssertNil(beacon.select(assets[0].audioAsset, at: 55))
+        let silence = beacon.select(nil, at: 78)
+        XCTAssertEqual(silence?.frame, 100)
+        XCTAssertEqual(silence?.phraseOffset, 50)
+        XCTAssertEqual(silence?.nextLoopFrame, 150)
+        XCTAssertEqual(beacon.select(assets[1].audioAsset, at: 149)?.phraseOffset, 0)
+        XCTAssertEqual(beacon.finish(at: 155), 175)
+        XCTAssertNil(beacon.select(nil, at: 160))
+        XCTAssertNil(beacon.finish(at: 175))
+    }
+
+    @MainActor
+    func testGlobalHushIncludesSubmittedPlaybackButLeavesNewPlaybackAlone() async throws {
+        let starting = expectation(description: "control queue held in startup")
+        starting.assertForOverFulfill = false
+        let gate = DispatchSemaphore(value: 0)
+        let engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true, canStart: {
+            starting.fulfill()
+            return gate.wait(timeout: .now() + 5) == .success
+        })
+        engine.start()
+        await fulfillment(of: [starting], timeout: 2)
+        let url = try makeAudioFile(duration: 0.08)
+        defer {
+            gate.signal()
+            try? FileManager.default.removeItem(at: url)
+        }
+        let independentLoop = engine.play(GenericSound(url), loop: true)
+        let beforeHush = engine.play(GenericSound(url))
+        XCTAssertTrue(engine.hasTransientAudio)
+        engine.stopAllTransientAudio()
+        XCTAssertFalse(engine.hasTransientAudio)
+        let afterHush = engine.play(GenericSound(url))
+        gate.signal()
+        gate.signal()
+        await assertPlayback(beforeHush, result: .stopped)
+        await assertPlayback(afterHush, result: .completed)
+        independentLoop.stop()
+        await assertPlayback(independentLoop, result: .stopped)
+    }
+
+    @MainActor
+    func testMixedSessionInterruptionCancelsSpeechAndRouteResetRestartsLoop() async throws {
+        let preparing = expectation(description: "synthesizer started")
+        let cancelled = expectation(description: "synthesizer cancelled")
+        let speech = DelayedSpeech(preparing: preparing, cancelled: cancelled)
+        let engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true,
+                                 canStart: { true }, makeSpeech: { _, _, output in
+            speech.setOutput(output)
+            return speech
+        })
+        engine.start()
+        let handle = engine.play(TTSSound("interrupted"))
+        await fulfillment(of: [preparing], timeout: 5)
+        NotificationCenter.default.post(name: AVAudioSession.interruptionNotification, object: engine.session,
+            userInfo: [AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.began.rawValue])
+        await fulfillment(of: [cancelled], timeout: 5)
+        speech.emitLateAudio()
+        await assertPlayback(handle, result: .interrupted)
+
+        let output = try makeAudioFile(duration: 0.10)
+        defer { try? FileManager.default.removeItem(at: output) }
+        NotificationCenter.default.post(name: AVAudioSession.interruptionNotification, object: engine.session,
+            userInfo: [AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.ended.rawValue,
+                       AVAudioSessionInterruptionOptionKey: AVAudioSession.InterruptionOptions.shouldResume.rawValue])
+        let loop = engine.play(GenericSound(output), loop: true)
+        // Media services reset is the strongest simulated route rebuild. The loop handle survives.
+        NotificationCenter.default.post(name: AVAudioSession.mediaServicesWereResetNotification, object: engine.session)
+        await assertPlayback(engine.play(GenericSound(output)), result: .completed)
+        loop.stop()
+        await assertPlayback(loop, result: .stopped)
+    }
+
+    @MainActor
+    func testStreamingSpeechCompletesAfterEndOfStreamAndPlayback() async {
+        let preparing = expectation(description: "synthesizer started")
+        let drained = expectation(description: "PCM played before end of stream")
+        drained.assertForOverFulfill = false
+        let speech = DelayedSpeech(preparing: preparing, resumed: drained)
+        let engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true,
+                                 canStart: { true }, makeSpeech: { _, _, output in
+            speech.setOutput(output)
+            return speech
+        })
+        engine.start()
+        let handle = engine.play(TTSSound("incremental"))
+        await fulfillment(of: [preparing], timeout: 5)
+        for _ in 0..<12 { speech.emitAudio(frames: 2_205) }
+        await fulfillment(of: [drained], timeout: 5)
+        XCTAssertTrue(engine.hasTransientAudio)
+        let started = ContinuousClock.now
+        speech.emitAudio(frames: 4_410)
+        speech.finish()
+        await assertPlayback(handle, result: .completed)
+        XCTAssertGreaterThan(started.duration(to: .now), .milliseconds(100))
+    }
+
     @MainActor
     private func assertPlayback(_ handle: PlaybackHandle, result: PlaybackResult) async {
         let completed = expectation(description: "playback finished")
@@ -197,11 +308,13 @@ private struct TestAudioSound: Sound {
 private final class MockPlayback: AudioPlayback {
     private(set) var operations: [PlaybackCompletion] = []
     private(set) var stops = 0
+    var onPlay: (() -> Void)?
 
     nonisolated func play(_ request: AudioRequest) -> PlaybackHandle {
         MainActor.assumeIsolated {
             let state = PlaybackCompletion()
             operations.append(state)
+            onPlay?()
             return PlaybackHandle(state: state) { [weak self] command in
                 guard case .stop = command else { return }
                 MainActor.assumeIsolated {
@@ -213,7 +326,7 @@ private final class MockPlayback: AudioPlayback {
     }
 
     nonisolated var hasTransientAudio: Bool { false }
-    nonisolated func stopTransientAudio() {}
+    nonisolated func stopAllTransientAudio() { XCTFail("The coordinator must not stop independent playback") }
 }
 
 final class CalloutCoordinatorTest: XCTestCase {
@@ -279,6 +392,37 @@ final class CalloutCoordinatorTest: XCTestCase {
         XCTAssertEqual(playback.operations.count, 2)
     }
 
+    @MainActor
+    func testValidityAndDelegateOrderThroughPrefixAndExit() async {
+        let playback = MockPlayback()
+        let coordinator = CalloutCoordinator(playback: playback, legacy: CalloutContext(
+            prefix: { _ in Sounds([TestAudioSound()], availableTail: { [TestAudioSound()] }) },
+            sounds: { _, _ in Sounds(TestAudioSound()) }, record: { _ in }))
+        let done = expectation(description: "group completion delegate")
+        let delegate = RecordingCalloutDelegate(done: done)
+        let invalid = CalloutGroup([], logContext: "invalid")
+        invalid.isValid = { false }
+        invalid.delegate = delegate
+        let group = CalloutGroup([StringCallout(.system, "outside"), StringCallout(.system, "inside")],
+                                 prefix: StringCallout(.system, "prefix"), playModeSounds: true, logContext: "test")
+        group.delegate = delegate
+        group.onStart = { delegate.events.append("onStart") }
+        group.onComplete = { delegate.events.append("onComplete:\($0)") }
+        coordinator.enqueue([invalid, group])
+        for index in 0..<3 {
+            let next = expectation(description: "next playback after \(index)")
+            playback.onPlay = { next.fulfill() }
+            playback.operations[index].resolve(.completed)
+            await fulfillment(of: [next], timeout: 2)
+            guard playback.operations.indices.contains(index + 1) else { return }
+        }
+        XCTAssertEqual(delegate.events.last, "onComplete:true")
+        playback.operations[3].resolve(.completed)
+        await fulfillment(of: [done], timeout: 2)
+        XCTAssertEqual(delegate.events, ["skipped group", "onStart", "started group", "region", "skipped callout",
+                                         "region", "starting callout", "finished callout:true", "onComplete:true", "completed group:true"])
+    }
+
 }
 
 
@@ -300,27 +444,59 @@ private actor ControlledDelay {
 // A lock allows the test to deliver a deliberately late Apple-style callback after cancellation.
 private final class DelayedSpeech: SpeechPCMSource, @unchecked Sendable {
     let preparing: XCTestExpectation
-    let cancelled: XCTestExpectation
+    let cancelled: XCTestExpectation?
+    let resumed: XCTestExpectation?
     private let lock = NSLock()
     private var output: SpeechPCMOutput?
 
-    init(preparing: XCTestExpectation, cancelled: XCTestExpectation) {
+    init(preparing: XCTestExpectation, cancelled: XCTestExpectation? = nil, resumed: XCTestExpectation? = nil) {
         self.preparing = preparing
         self.cancelled = cancelled
+        self.resumed = resumed
     }
 
     func setOutput(_ output: @escaping SpeechPCMOutput) { lock.withLock { self.output = output } }
     func start() { preparing.fulfill() }
     func pause() {}
-    func resume() {}
-    func cancel() { cancelled.fulfill() }
+    func resume() { resumed?.fulfill() }
+    func cancel() { cancelled?.fulfill() }
 
     func emitLateAudio() {
+        emitAudio(frames: 256)
+        finish()
+    }
+
+    func emitAudio(frames: AVAudioFrameCount) {
         guard let format = AVAudioFormat(standardFormatWithSampleRate: 22_050, channels: 1),
-              let pcm = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 256) else { return }
-        pcm.frameLength = 256
+              let pcm = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames) else { return }
+        pcm.frameLength = frames
+        pcm.floatChannelData?[0].update(repeating: 0, count: Int(frames))
         let receive = lock.withLock { output }
         receive?(.success(pcm))
+    }
+
+    func finish() {
+        let receive = lock.withLock { output }
         receive?(.success(nil))
+    }
+}
+
+private final class RecordingCalloutDelegate: CalloutGroupDelegate {
+    var events: [String] = []
+    let done: XCTestExpectation
+    init(done: XCTestExpectation) { self.done = done }
+
+    func isCalloutWithinRegionToLive(_ callout: CalloutProtocol) -> Bool {
+        events.append("region")
+        return events.contains("skipped callout")
+    }
+    func calloutSkipped(_ callout: CalloutProtocol) { events.append("skipped callout") }
+    func calloutStarting(_ callout: CalloutProtocol) { events.append("starting callout") }
+    func calloutFinished(_ callout: CalloutProtocol, completed: Bool) { events.append("finished callout:\(completed)") }
+    func calloutsSkipped(for group: CalloutGroup) { events.append("skipped group") }
+    func calloutsStarted(for group: CalloutGroup) { events.append("started group") }
+    func calloutsCompleted(for group: CalloutGroup, finished: Bool) {
+        events.append("completed group:\(finished)")
+        done.fulfill()
     }
 }

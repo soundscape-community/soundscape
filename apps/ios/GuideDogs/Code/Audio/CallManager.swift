@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -32,7 +33,12 @@ class CallManager: NSObject, CXCallObserverDelegate {
     // MARK: Properties
 
     private let callObserver = CXCallObserver()
-    private(set) var callInProgress = false
+    private let callStateLock = NSLock()
+    private var activeCall = false
+    private(set) var callInProgress: Bool {
+        get { callStateLock.withLock { activeCall } }
+        set { callStateLock.withLock { activeCall = newValue } }
+    }
 
     /// When a call ends while the app is inactive, we notify that the call ended only after the app becomes active.
     private var shouldNotifyCallEndedWhenAppIsActive = false
@@ -41,7 +47,8 @@ class CallManager: NSObject, CXCallObserverDelegate {
 
     override init() {
         super.init()
-        callObserver.setDelegate(self, queue: nil)
+        callObserver.setDelegate(self, queue: .main)
+        callInProgress = callObserver.calls.contains { !$0.hasEnded }
     }
     
     // MARK: CXCallObserverDelegate
@@ -49,7 +56,8 @@ class CallManager: NSObject, CXCallObserverDelegate {
     func callObserver(_ callObserver: CXCallObserver, callChanged call: CXCall) {
         DDLogInfo("[Call] Call status changed: <isOutgoing: \(call.isOutgoing)> <hasConnected: \(call.hasConnected)> <hasEnded: \(call.hasEnded)> <isOnHold: \(call.isOnHold)>")
         
-        if callInProgress && call.hasEnded {
+        let hasActiveCall = callObserver.calls.contains { !$0.hasEnded }
+        if callInProgress && !hasActiveCall {
             if AppContext.appState == .inactive {
                 // "Call ended" will be handled when the app is active again
                 shouldNotifyCallEndedWhenAppIsActive = true
@@ -57,7 +65,7 @@ class CallManager: NSObject, CXCallObserverDelegate {
             } else {
                 handleCallEnded()
             }
-        } else if !callInProgress {
+        } else if !callInProgress && hasActiveCall {
             handleCallStarted()
         }
     }
@@ -83,7 +91,7 @@ class CallManager: NSObject, CXCallObserverDelegate {
         callInProgress = false
         
         if shouldNotifyCallEndedWhenAppIsActive {
-            NotificationCenter.default.removeObserver(self, name: .callStatusChanged, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .appDidBecomeActive, object: nil)
             shouldNotifyCallEndedWhenAppIsActive = false
         }
         
@@ -93,7 +101,7 @@ class CallManager: NSObject, CXCallObserverDelegate {
     }
     
     @objc private func appDidBecomeActive(_ notification: Notification) {
-        guard shouldNotifyCallEndedWhenAppIsActive else {
+        guard shouldNotifyCallEndedWhenAppIsActive, !callObserver.calls.contains(where: { !$0.hasEnded }) else {
             return
         }
         

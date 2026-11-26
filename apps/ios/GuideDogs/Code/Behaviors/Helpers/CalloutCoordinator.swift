@@ -16,14 +16,19 @@ final class CalloutCoordinator {
     private let delay: @Sendable (TimeInterval) async throws -> Void
     private var pending: [CalloutGroup] = []
     private var group: CalloutGroup?
-    private var current: CalloutProtocol?
-    private var handle: PlaybackHandle?
-    private var idleHush: PlaybackHandle?
+    private enum Step {
+        case prefix, callout(CalloutProtocol), exit(Bool), hush(Bool)
+    }
+
+    private enum Phase {
+        case idle, advancing, delay(UInt64), finishing
+        case playing(Step, PlaybackHandle, (@MainActor () -> [any Sound])?)
+    }
+
+    private var phase: Phase = .idle
     private var timer: Task<Void, Never>?
     private var generation: UInt64 = 0
     private var index = 0
-    private var reported = false
-    private var ending = false
     private var interrupted = false
     private var playHushAtEnd = false
 
@@ -55,29 +60,24 @@ final class CalloutCoordinator {
 
     func interruptCurrent(clearPending: Bool, hush: Bool) {
         if clearPending { clear() }
-        guard group != nil else {
-            if hush {
-                idleHush?.stop()
-                let handle = playback.play(AudioRequest(sounds: [GlyphSound(.hush)]))
-                idleHush = handle
-                Task { [weak self] in
-                    _ = await handle.completion()
-                    guard let self, self.idleHush == handle else { return }
-                    self.idleHush = nil
-                    self.startNextIfIdle()
-                }
-            } else {
-                idleHush?.stop()
-            }
-            return
+        if group != nil {
+            interrupted = true
+            playHushAtEnd = playHushAtEnd || hush
         }
-        interrupted = true
-        playHushAtEnd = playHushAtEnd || hush
-        timer?.cancel()
-        timer = nil
-        generation &+= 1
-        if let handle { handle.stop() }
-        else { finishGroup(false, allowExit: !hush) }
+
+        switch phase {
+        case .idle:
+            if hush { play(Sounds(GlyphSound(.hush)), step: .hush(false)) }
+        case .playing(_, let handle, _):
+            handle.stop()
+        case .delay, .advancing:
+            timer?.cancel()
+            timer = nil
+            finishGroup(false, allowExit: !hush)
+        case .finishing:
+            // onComplete may synchronously request an interruption. Finish the transition after it returns.
+            break
+        }
     }
 
     private func clear() {
@@ -87,55 +87,55 @@ final class CalloutCoordinator {
     }
 
     private func startNextIfIdle() {
-        guard group == nil, idleHush == nil else { return }
-        while !pending.isEmpty {
+        while case .idle = phase, !pending.isEmpty {
             let next = pending.removeFirst()
             guard next.isValid() else { next.delegate?.calloutsSkipped(for: next); continue }
             group = next
+            phase = .advancing
             index = 0
-            reported = false
-            ending = false
             interrupted = false
             playHushAtEnd = false
             next.onStart?()
-            guard group === next, !interrupted else { return }
-            if next.stopSoundsBeforePlaying { playback.stopTransientAudio() }
+            guard isAdvancing(next) else { return }
             next.delegate?.calloutsStarted(for: next)
-            guard group === next, !interrupted else { return }
+            guard isAdvancing(next) else { return }
             var prefix: [any Sound] = next.playModeSounds ? [GlyphSound(.enterMode)] : []
             let extra = next.prefixCallout.map(legacy.prefix)
+            guard isAdvancing(next) else { return }
             prefix.append(contentsOf: extra?.soundArray ?? [])
-            if prefix.isEmpty { advanceCallout() }
-            else {
-                play(Sounds(prefix, availableTail: extra?.availableTail)) { result in
-                    if result == .completed { self.advanceCallout() }
-                    else { self.finishGroup(false, allowExit: self.interrupted && !self.playHushAtEnd) }
-                }
+            if prefix.isEmpty, extra?.availableTail == nil {
+                advanceCallout()
+            } else {
+                play(Sounds(prefix, availableTail: extra?.availableTail), step: .prefix)
             }
             return
         }
     }
 
+    private func isAdvancing(_ expected: CalloutGroup) -> Bool {
+        guard case .advancing = phase else { return false }
+        return group === expected && !interrupted
+    }
+
     private func advanceCallout() {
         guard let group else { return }
+        phase = .advancing
         while index < group.callouts.count {
             let callout = group.callouts[index]
             index += 1
-            if group.delegate?.isCalloutWithinRegionToLive(callout) == false {
+            let valid = group.delegate?.isCalloutWithinRegionToLive(callout) != false
+            guard isAdvancing(group) else { return }
+            if !valid {
                 group.delegate?.calloutSkipped(callout)
+                guard isAdvancing(group) else { return }
                 continue
             }
-            current = callout
             group.delegate?.calloutStarting(callout)
-            guard self.group === group, !interrupted else { return }
+            guard isAdvancing(group) else { return }
             legacy.record(callout)
             let sounds = legacy.sounds(callout, group)
-            play(sounds) { result in
-                self.current = nil
-                group.delegate?.calloutFinished(callout, completed: result == .completed)
-                if result == .completed { self.delayNext(group.calloutDelay) }
-                else { self.finishGroup(false, allowExit: self.interrupted && !self.playHushAtEnd) }
-            }
+            guard isAdvancing(group) else { return }
+            play(sounds, step: .callout(callout))
             return
         }
         finishGroup(true, allowExit: true)
@@ -145,52 +145,77 @@ final class CalloutCoordinator {
         guard let seconds, seconds >= 0, seconds.isFinite else { advanceCallout(); return }
         generation &+= 1
         let token = generation
+        phase = .delay(token)
         let delay = self.delay
         timer = Task { [weak self] in
             do { try await delay(seconds) } catch { return }
-            guard let self, self.generation == token else { return }
+            guard let self, case .delay(let current) = self.phase, current == token else { return }
             self.timer = nil
             self.advanceCallout()
         }
     }
 
-    private func play(_ sounds: Sounds, then done: @escaping (PlaybackResult) -> Void) {
+    private func play(_ sounds: Sounds, step: Step) {
         let handle = playback.play(AudioRequest(sounds: sounds.soundArray))
-        self.handle = handle
+        phase = .playing(step, handle, sounds.availableTail)
         Task { [weak self] in
             let result = await handle.completion()
-            guard let self, self.handle == handle else { return }
-            self.handle = nil
-            if self.interrupted && !self.ending { done(.stopped); return }
-            if result == .completed, let tail = sounds.availableTail?(), !tail.isEmpty {
-                self.play(Sounds(tail), then: done)
-            } else { done(result) }
+            self?.playbackCompleted(handle, result: result)
+        }
+    }
+
+    private func playbackCompleted(_ handle: PlaybackHandle, result: PlaybackResult) {
+        guard case .playing(let step, let current, let availableTail) = phase, current == handle else { return }
+
+        switch step {
+        case .prefix, .callout:
+            let completed = !interrupted && result == .completed
+            if completed, let tail = availableTail?(), !tail.isEmpty, !interrupted {
+                play(Sounds(tail), step: step)
+                return
+            }
+            phase = .advancing
+            guard let group else { return }
+            let finished = completed && !interrupted
+            if case .callout(let callout) = step {
+                group.delegate?.calloutFinished(callout, completed: finished)
+                guard self.group === group, case .advancing = phase else { return }
+            }
+            if finished {
+                if case .callout = step { delayNext(group.calloutDelay) }
+                else { advanceCallout() }
+            } else {
+                finishGroup(false, allowExit: interrupted && !playHushAtEnd)
+            }
+        case .exit(let success):
+            if playHushAtEnd {
+                play(Sounds(GlyphSound(.hush)), step: .hush(false))
+            } else {
+                releaseGroup(success && !interrupted && result == .completed)
+            }
+        case .hush(let success):
+            releaseGroup(success && !interrupted)
         }
     }
 
     private func finishGroup(_ success: Bool, allowExit: Bool) {
-        guard let group, !ending else { return }
-        ending = true
-        if !reported {
-            reported = true
-            group.onComplete?(success)
-        }
+        guard let group else { return }
+        phase = .finishing
+        group.onComplete?(success)
         if playHushAtEnd {
-            play(Sounds(GlyphSound(.hush))) { _ in self.releaseGroup(success && !self.interrupted) }
+            play(Sounds(GlyphSound(.hush)), step: .hush(success))
         } else if allowExit && group.playModeSounds {
-            play(Sounds(GlyphSound(.exitMode))) { _ in
-                if self.playHushAtEnd {
-                    self.play(Sounds(GlyphSound(.hush))) { _ in self.releaseGroup(false) }
-                } else { self.releaseGroup(success && !self.interrupted) }
-            }
-        } else { releaseGroup(success) }
+            play(Sounds(GlyphSound(.exitMode)), step: .exit(success))
+        } else { releaseGroup(success && !interrupted) }
     }
 
     private func releaseGroup(_ success: Bool) {
-        guard let group else { return }
-        self.group = nil
-        current = nil
-        group.delegate?.calloutsCompleted(for: group, finished: success)
+        let completed = group
+        group = nil
+        phase = .idle
+        interrupted = false
+        playHushAtEnd = false
+        if let completed { completed.delegate?.calloutsCompleted(for: completed, finished: success) }
         startNextIfIdle()
     }
 }

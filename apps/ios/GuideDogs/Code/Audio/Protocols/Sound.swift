@@ -70,7 +70,7 @@ enum WandBeaconPolicy: Sendable {
     }
 }
 
-struct BeaconTiming {
+struct BeaconTiming: Sendable {
     let intro: Int64
     let phrase: Int64
     let beats: Int64
@@ -90,4 +90,36 @@ struct AssetSound: Sound {
     var type: SoundType = .standard
     var content: SoundContent { .asset(asset) }
     var description: String { String(describing: asset) }
+}
+
+// Tracks the requested asset (including silence); native renderers apply the returned frame plan.
+struct BeaconProgression {
+    struct Transition: Equatable {
+        let asset: AudioAsset?
+        let frame: Int64
+        let phraseOffset: Int64
+        let nextLoopFrame: Int64
+    }
+
+    let timing: BeaconTiming
+    private var scheduled = false
+    private var selected: AudioAsset?
+    private(set) var finishing = false
+
+    init(timing: BeaconTiming) { self.timing = timing }
+
+    mutating func select(_ asset: AudioAsset?, at frame: Int64?) -> Transition? {
+        guard !finishing, !scheduled || selected != asset else { return nil }
+        scheduled = true
+        selected = asset
+        let next = timing.next(after: frame)
+        return Transition(asset: asset, frame: next.start, phraseOffset: next.offset,
+                          nextLoopFrame: next.start + (next.offset == 0 ? 0 : timing.phrase - next.offset))
+    }
+
+    mutating func finish(at frame: Int64?) -> Int64? {
+        guard !finishing else { return nil }
+        finishing = true
+        return scheduled ? timing.next(after: frame).start : 0
+    }
 }

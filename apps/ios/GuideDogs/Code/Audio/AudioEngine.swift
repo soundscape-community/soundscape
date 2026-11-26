@@ -62,18 +62,15 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         let source: Source
         let buffers: [AudioAsset: AVAudioPCMBuffer]
         let silence: AVAudioPCMBuffer
-        let timing: BeaconTiming
-        var selected: AudioAsset?
-        var hasScheduled = false
-        var finishing = false
+        var progression: BeaconProgression
 
         init(_ description: AdaptiveBeacon, source: Source, buffers: [AudioAsset: AVAudioPCMBuffer], silence: AVAudioPCMBuffer) {
             self.description = description
             self.source = source
             self.buffers = buffers
             self.silence = silence
-            timing = BeaconTiming(intro: Int64(description.intro.flatMap { buffers[$0]?.frameLength } ?? 0),
-                                  phrase: Int64(silence.frameLength), beats: Int64(description.beats))
+            progression = BeaconProgression(timing: BeaconTiming(intro: Int64(description.intro.flatMap { buffers[$0]?.frameLength } ?? 0),
+                                  phrase: Int64(silence.frameLength), beats: Int64(description.beats)))
         }
     }
 
@@ -86,8 +83,7 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         var fadeGeneration: UInt64 = 0
         var focus: Double?
         var paused = false
-        var finishRequested = false
-        var generation: UInt64 = 0
+        var lifecycle = PlaybackLifecycle()
         var recovering = false
         var speechSources: [UUID: SpeechPCMSource] = [:]
         var speechPlayers: [UUID: Source] = [:]
@@ -112,12 +108,14 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     private var graphObserver: NSObjectProtocol?
     private var headings: [Heading] = []
     private var interrupted = false
+    private var needsGraphReplacement = false
+    private var graphSampleRate: Double = 0
     private var wantsRunning = false
     private var routingCallback: ((AVAudioSession.PortOverride) -> Void)?
     private var recordingFile: ExtAudioFileRef?
     private struct Status {
         var mixes: Bool
-        var transientCount = 0
+        var transients: [ObjectIdentifier: PlaybackCompletion] = [:]
         var recording = false
     }
     private let statusLock = NSLock()
@@ -145,7 +143,10 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     }()
 
     init(envSettings: EnvironmentSettingsProvider, mixWithOthers: Bool,
-         canStart: @escaping @Sendable () -> Bool = { AppContext.appState != .inactive },
+         canStart: @escaping @Sendable () -> Bool = {
+             let state = AppContext.appState
+             return AudioEngine.startupAllowed(appState: state, callInProgress: AppContext.shared.callManager.callInProgress)
+         },
          makeSpeech: @escaping (String, String?, @escaping SpeechPCMOutput) -> SpeechPCMSource = {
              IOSSpeechPCMSource(text: $0, voiceID: $1, output: $2)
          }) {
@@ -167,7 +168,7 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
             observers.append(center.addObserver(forName: name, object: nil, queue: nil) { [weak self] _ in
                 self?.control.async { [weak self] in
                     guard let self, self.wantsRunning, !self.interrupted else { return }
-                    if self.isInMonoMode != self.graphMono || !self.engine.isRunning { self.recover() }
+                    self.recoverIfNeeded()
                 }
             })
         }
@@ -175,19 +176,13 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
             guard let value = notification.userInfo?[CallManager.Keys.callStatusTypeKey] as? UInt,
                   CallStatusType(rawValue: value) == .ended else { return }
             self?.control.async { [weak self] in
-                guard let self, self.wantsRunning, self.interrupted, self.sessionManager.activate(force: true) else { return }
-                self.interrupted = false
-                self.recoverIfStopped()
+                guard let self else { return }
+                self.resumeAfterSystemEvent()
             }
         })
         observers.append(center.addObserver(forName: .appDidBecomeActive, object: nil, queue: nil) { [weak self] _ in
             self?.control.async { [weak self] in
-                guard let self, self.wantsRunning else { return }
-                if self.interrupted {
-                    guard self.sessionManager.activate(force: true) else { return }
-                    self.interrupted = false
-                }
-                self.recoverIfStopped()
+                self?.resumeAfterSystemEvent()
             }
         })
     }
@@ -207,7 +202,7 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
             statusLock.withLock { status.mixes = newValue }
             control.async {
                 self.sessionManager.mixWithOthers = newValue
-                self.recoverIfStopped()
+                self.recoverIfNeeded()
             }
         }
     }
@@ -259,7 +254,7 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     func start() {
         control.async {
             self.wantsRunning = true
-            self.recoverIfStopped()
+            self.recoverIfNeeded()
         }
     }
 
@@ -284,14 +279,18 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
                 switch command {
                 case .stop: self.end(operation, .stopped)
                 case .finish:
-                    operation.finishRequested = true
-                    if self.interrupted { self.end(operation, .interrupted); return }
-                    if let beacon = operation.beacon {
-                        self.finishBeacon(beacon, operation: operation)
-                        if operation.paused { beacon.source.player.play() }
+                    let action = operation.lifecycle.requestFinish(
+                        request: operation.request, beaconReady: operation.beacon != nil, interrupted: self.interrupted)
+                    switch action {
+                    case .wait: break
+                    case .interrupt: self.end(operation, .interrupted)
+                    case .stop: self.end(operation, .stopped)
+                    case .finishBeacon:
+                        if let beacon = operation.beacon {
+                            self.finishBeacon(beacon, operation: operation)
+                            if operation.paused { beacon.source.player.play() }
+                        }
                     }
-                    else if !operation.request.sounds.contains(where: { if case .beacon = $0.content { return true }; return false }),
-                            operation.request.loops { self.end(operation, .stopped) }
                 case .paused(let paused):
                     operation.paused = paused
                     for source in operation.sources where source.readyToPlay {
@@ -310,17 +309,24 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
                 }
             }
         }
-        control.async {
-            guard !completion.stopRequested else { completion.resolve(.stopped); return }
-            guard !self.interrupted else { completion.resolve(.interrupted); return }
-            guard self.wantsRunning, self.engine.isRunning || self.startGraph() else {
-                completion.resolve(.failed("Audio engine unavailable"))
-                return
+        statusLock.withLock {
+            if request.transient { status.transients[id] = completion }
+            // Make reservation and control-queue submission indivisible with respect to global hush.
+            control.async {
+                guard !completion.stopRequested else { self.resolve(completion, .stopped); return }
+                guard !self.interrupted else { self.resolve(completion, .interrupted); return }
+                if self.needsGraphReplacement || !self.engine.isRunning, !self.operations.isEmpty {
+                    self.recoverIfNeeded()
+                }
+                guard self.wantsRunning, !self.needsGraphReplacement,
+                      self.engine.isRunning || self.startGraph() else {
+                    self.resolve(completion, .failed("Audio engine unavailable"))
+                    return
+                }
+                let operation = Operation(request, completion: completion)
+                self.operations[id] = operation
+                self.run(operation)
             }
-            let operation = Operation(request, completion: completion)
-            self.operations[id] = operation
-            if request.transient { self.statusLock.withLock { self.status.transientCount += 1 } }
-            self.run(operation)
         }
         return handle
     }
@@ -346,15 +352,26 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     }
 
     var hasTransientAudio: Bool {
-        statusLock.withLock { status.transientCount > 0 }
+        statusLock.withLock { status.transients.values.contains { !$0.stopRequested } }
     }
 
-    func stopTransientAudio() {
-        control.async {
-            for operation in Array(self.operations.values) where operation.request.transient {
-                self.end(operation, .stopped)
+    func stopAllTransientAudio() {
+        statusLock.withLock {
+            let targets = status.transients
+            targets.values.forEach { $0.requestStop() }
+            control.async {
+                for (id, completion) in targets {
+                    if let operation = self.operations[id], operation.completion === completion {
+                        self.end(operation, .stopped)
+                    }
+                }
             }
         }
+    }
+
+    private func resolve(_ completion: PlaybackCompletion, _ result: PlaybackResult) {
+        statusLock.withLock { _ = status.transients.removeValue(forKey: ObjectIdentifier(completion)) }
+        completion.resolve(completion.stopRequested ? .stopped : result)
     }
 
     private func run(_ operation: Operation) {
@@ -370,13 +387,12 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
 
     private func end(_ operation: Operation, _ result: PlaybackResult) {
         guard operations.removeValue(forKey: ObjectIdentifier(operation.completion)) != nil else { return }
-        if operation.request.transient { statusLock.withLock { status.transientCount -= 1 } }
         reset(operation)
-        operation.completion.resolve(operation.completion.stopRequested ? .stopped : result)
+        resolve(operation.completion, result)
     }
 
     private func reset(_ operation: Operation) {
-        operation.generation &+= 1
+        operation.lifecycle.invalidatePreparation()
         operation.preparation.values.forEach { $0.cancel() }
         operation.preparation.removeAll()
         operation.speechSources.values.forEach { $0.cancel() }
@@ -393,7 +409,7 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         let time = sources.count > 1 ? AVAudioTime(hostTime: mach_absolute_time() + AVAudioTime.hostTime(forSeconds: 0.02)) : nil
         for source in sources {
             source.readyToPlay = true
-            if !operation.paused || operation.finishRequested { source.player.play(at: time) }
+            if !operation.paused || operation.lifecycle.finishRequested { source.player.play(at: time) }
         }
     }
 
@@ -449,12 +465,12 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     }
 
     private func load(_ assets: [AudioAsset], operation: Operation, ready: @escaping ([AudioAsset: AVAudioPCMBuffer]) -> Void) {
-        let generation = operation.generation
+        let generation = operation.lifecycle.generation
         let token = UUID()
         let work = DispatchWorkItem { [weak self, weak operation] in
             let result = Result { try assets.reduce(into: [:]) { $0[$1] = try Self.buffer(for: $1) } }
             self?.control.async { [weak self, weak operation] in
-                guard let self, let operation, self.alive(operation), operation.generation == generation else { return }
+                guard let self, let operation, self.alive(operation), operation.lifecycle.generation == generation else { return }
                 operation.preparation.removeValue(forKey: token)
                 switch result {
                 case .success(let buffers): ready(buffers)
@@ -550,6 +566,8 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         source.speech?.cancel()
         source.speech = nil
         source.player.stop()
+        renderCompletions.removeAll { $0.source == ObjectIdentifier(source) }
+        stopCompletionTimerIfIdle()
         engine.detach(source.player)
         engine.detach(source.equalizer)
         if let mixer = source.spatialMixer { engine.detach(mixer) }
@@ -562,30 +580,74 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         detach(source)
     }
 
+    // The SDK does not guarantee a non-real-time callback context. One preallocated
+    // flag per callback keeps dispatch, ARC of native graph objects, and policy on control.
+    private final class RenderSignal: @unchecked Sendable {
+        private let flag = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
+        init() { flag.initialize(to: 0) }
+        deinit { flag.deinitialize(count: 1); flag.deallocate() }
+        func signal() { SoundscapeAudioSignal(flag) }
+        var isSignaled: Bool { SoundscapeAudioDidSignal(flag) }
+    }
+
+    private struct RenderCompletion {
+        let signal: RenderSignal
+        let source: ObjectIdentifier
+        let deliver: () -> Void
+    }
+    private var renderCompletions: [RenderCompletion] = []
+    private var completionTimer: DispatchSourceTimer?
+
     private func schedule(_ buffer: AVAudioPCMBuffer, source: Source, operation: Operation,
                           at time: AVAudioTime? = nil, options: AVAudioPlayerNodeBufferOptions = [], done: @escaping () -> Void) {
-        let generation = operation.generation
-        source.player.scheduleBuffer(buffer, at: time, options: options, completionCallbackType: .dataPlayedBack) { [weak self, weak operation, weak source] _ in
-            self?.control.async { [weak self, weak operation, weak source] in
-                guard let self, let operation, let source, self.alive(operation), operation.generation == generation,
-                      operation.sources.contains(where: { $0 === source }) else { return }
-                guard self.engine.isRunning else { self.recoverIfStopped(); return }
-                done()
-            }
+        let generation = operation.lifecycle.generation
+        let signal = RenderSignal()
+        renderCompletions.append(RenderCompletion(signal: signal, source: ObjectIdentifier(source)) { [weak self, weak operation, weak source] in
+            guard let self, let operation, let source, self.alive(operation), operation.lifecycle.generation == generation,
+                  operation.sources.contains(where: { $0 === source }) else { return }
+            guard self.engine.isRunning else { self.recoverIfNeeded(); return }
+            done()
+        })
+        if completionTimer == nil {
+            let timer = DispatchSource.makeTimerSource(queue: control)
+            timer.schedule(deadline: .now() + .milliseconds(5), repeating: .milliseconds(5), leeway: .milliseconds(1))
+            timer.setEventHandler { [weak self] in self?.drainRenderCompletions() }
+            completionTimer = timer
+            timer.activate()
         }
+        source.player.scheduleBuffer(buffer, at: time, options: options, completionCallbackType: .dataPlayedBack) { _ in
+            signal.signal()
+        }
+    }
+
+    private func drainRenderCompletions() {
+        var ready: [RenderCompletion] = []
+        renderCompletions.removeAll {
+            guard $0.signal.isSignaled else { return false }
+            ready.append($0)
+            return true
+        }
+        ready.forEach { $0.deliver() }
+        stopCompletionTimerIfIdle()
+    }
+
+    private func stopCompletionTimerIfIdle() {
+        guard renderCompletions.isEmpty else { return }
+        completionTimer?.cancel()
+        completionTimer = nil
     }
 
     private func speak(_ text: String, type: SoundType, operation: Operation, ready: LayerReady?, done: @escaping () -> Void) {
         let locale = LocalizationContext.currentAppLocale
         let voice = SettingsContext.shared.voiceId ?? TTSConfigHelper.defaultVoice(forLocale: locale)?.identifier
-        let generation = operation.generation
+        let generation = operation.lifecycle.generation
         let pending = SpeechInput()
         let id = ObjectIdentifier(operation.completion)
         let speech = makeSpeech(text, voice) { [weak self, weak completion = operation.completion] result in
             guard pending.accept(result) else { return }
             self?.control.async { [weak self, weak completion] in
                 guard let self, let completion, let operation = self.operations[id], operation.completion === completion,
-                      self.alive(operation), operation.generation == generation, let result = pending.take() else { return }
+                      self.alive(operation), operation.lifecycle.generation == generation, let result = pending.take() else { return }
                 switch result {
                 case .failure(let error): self.end(operation, .failed(String(describing: error)))
                 case .success(nil):
@@ -690,13 +752,13 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
             let source = self.attach(type: type, channel: .beacon, format: first.format, operation: operation)
             let beacon = Beacon(description, source: source, buffers: buffers, silence: silence)
             operation.beacon = beacon
-            if operation.finishRequested {
+            if operation.lifecycle.finishRequested {
                 self.finishBeacon(beacon, operation: operation)
             } else {
                 if let intro = description.intro.flatMap({ buffers[$0] }), !operation.recovering {
                     source.player.scheduleBuffer(intro)
-                } else if beacon.timing.intro > 0, operation.recovering,
-                          let silence = AVAudioPCMBuffer(pcmFormat: first.format, frameCapacity: AVAudioFrameCount(beacon.timing.intro)) {
+                } else if beacon.progression.timing.intro > 0, operation.recovering,
+                          let silence = AVAudioPCMBuffer(pcmFormat: first.format, frameCapacity: AVAudioFrameCount(beacon.progression.timing.intro)) {
                     silence.frameLength = silence.frameCapacity
                     for channel in 0..<Int(first.format.channelCount) {
                         silence.floatChannelData?[channel].update(repeating: 0, count: Int(silence.frameLength))
@@ -716,33 +778,31 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     }
 
     private func updateBeacon(_ beacon: Beacon, operation: Operation) {
-        guard !beacon.finishing else { return }
+        guard !beacon.progression.finishing else { return }
         let heading = heading(for: operation.request.heading)
         let target = beacon.description.select(scene.location, heading, SettingsContext.shared.beaconRingingAngle, operation.focus)
         let source = beacon.source
         source.selectionGain = target?.1 ?? 1
         update(source, operation: operation)
-        guard !beacon.hasScheduled || beacon.selected != target?.0 else { return }
-        beacon.selected = target?.0
-        beacon.hasScheduled = true
-        let buffer = target.flatMap { beacon.buffers[$0.0] } ?? beacon.silence
-        let next = beacon.timing.next(after: playerFrame(source.player))
+        guard let transition = beacon.progression.select(target?.0, at: playerFrame(source.player)) else { return }
+        let buffer = transition.asset.flatMap { beacon.buffers[$0] } ?? beacon.silence
         let rate = buffer.format.sampleRate
-        var start = next.start
-        if next.offset > 0, let tail = buffer.suffix(from: Int(next.offset)) {
-            source.player.scheduleBuffer(tail, at: AVAudioTime(sampleTime: start, atRate: rate), options: .interrupts)
-            start += Int64(tail.frameLength)
-            source.player.scheduleBuffer(buffer, at: AVAudioTime(sampleTime: start, atRate: rate), options: .loops)
+        let start = AVAudioTime(sampleTime: transition.frame, atRate: rate)
+        if transition.phraseOffset > 0 {
+            guard let tail = buffer.suffix(from: Int(transition.phraseOffset)) else {
+                end(operation, .failed("Unable to prepare beacon phase"))
+                return
+            }
+            source.player.scheduleBuffer(tail, at: start, options: .interrupts)
+            source.player.scheduleBuffer(buffer, at: AVAudioTime(sampleTime: transition.nextLoopFrame, atRate: rate), options: .loops)
         } else {
-            source.player.scheduleBuffer(buffer, at: AVAudioTime(sampleTime: start, atRate: rate), options: [.interrupts, .loops])
+            source.player.scheduleBuffer(buffer, at: start, options: [.interrupts, .loops])
         }
     }
 
     private func finishBeacon(_ beacon: Beacon, operation: Operation) {
-        guard !beacon.finishing else { return }
-        beacon.finishing = true
         let source = beacon.source
-        let frame = beacon.hasScheduled ? beacon.timing.next(after: playerFrame(source.player)).start : 0
+        guard let frame = beacon.progression.finish(at: playerFrame(source.player)) else { return }
         let outro = beacon.description.outro.flatMap { beacon.buffers[$0] }
         let marker = AVAudioPCMBuffer(pcmFormat: beacon.silence.format, frameCapacity: 1)
         marker?.frameLength = 1
@@ -800,7 +860,7 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         graphObserver = NotificationCenter.default.addObserver(forName: .AVAudioEngineConfigurationChange, object: engine, queue: nil) { [weak self] _ in
             self?.control.async { [weak self] in
                 guard let self, self.wantsRunning, !self.interrupted else { return }
-                self.recoverIfStopped()
+                self.recoverIfNeeded()
             }
         }
     }
@@ -814,11 +874,16 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         }
     }
 
+    static func startupAllowed(appState: UIApplication.State, callInProgress: Bool) -> Bool {
+        appState != .inactive && (appState == .active || !callInProgress)
+    }
+
     private func startGraph() -> Bool {
         if engine.isRunning { return true }
         guard wantsRunning, !interrupted, canStart(),
               !sessionManager.needsActivation || sessionManager.activate() else { return false }
         graphMono = isInMonoMode
+        graphSampleRate = session.sampleRate
         publish(.starting)
         _ = engine.mainMixerNode
         do {
@@ -832,14 +897,30 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         }
     }
 
-    private func recoverIfStopped() {
-        guard !engine.isRunning, wantsRunning, !interrupted else { return }
-        if operations.isEmpty { _ = startGraph() } else { recover() }
+    private func resumeAfterSystemEvent() {
+        guard wantsRunning, canStart() else { return }
+        if interrupted {
+            guard sessionManager.activate(force: true) else { return }
+            interrupted = false
+        }
+        recoverIfNeeded()
     }
 
-    private func recover(replaceGraph: Bool = false) {
+    private func recoverIfNeeded() {
+        guard wantsRunning, !interrupted else { return }
+        let outputChanged = graphMono != isInMonoMode || graphSampleRate != session.sampleRate
+        guard needsGraphReplacement || outputChanged || !engine.isRunning else { return }
+        guard canStart() else { return }
+        if operations.isEmpty && !engine.isRunning && !needsGraphReplacement {
+            _ = startGraph()
+        } else {
+            recover()
+        }
+    }
+
+    private func suspendOperations() {
         for operation in Array(operations.values) {
-            if operation.request.transient || operation.finishRequested {
+            if !operation.lifecycle.survivesGraphLoss(request: operation.request) {
                 end(operation, .interrupted)
             } else {
                 reset(operation)
@@ -848,7 +929,13 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
         }
         stopRecordingOnControl()
         engine.stop()
-        if replaceGraph {
+        publish(.stopped)
+    }
+
+    private func recover() {
+        suspendOperations()
+        if needsGraphReplacement {
+            needsGraphReplacement = false
             engine = AVAudioEngine()
             observeGraph()
         }
@@ -861,26 +948,19 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
 
     // AudioSessionManager delivers these notifications on the control queue.
     func interruptionBegan() {
-        guard !sessionManager.mixWithOthers else { return }
+        guard !interrupted else { return }
         interrupted = true
-        stopRecordingOnControl()
-        for operation in Array(operations.values) {
-            if operation.request.transient || operation.finishRequested { end(operation, .interrupted) }
-            else { reset(operation); operation.recovering = true }
-        }
-        engine.stop()
-        publish(.stopped)
+        suspendOperations()
     }
 
     func interruptionEnded(shouldResume: Bool) {
         guard interrupted, shouldResume || sessionManager.mixWithOthers else { return }
-        interrupted = false
-        recoverIfStopped()
+        resumeAfterSystemEvent()
     }
 
     func mediaServicesWereReset() {
-        interrupted = false
-        recover(replaceGraph: true)
+        needsGraphReplacement = true
+        recoverIfNeeded()
     }
 
     func enableSpeakerMode(_ handler: ((AVAudioSession.PortOverride) -> Void)? = nil) {
