@@ -17,8 +17,30 @@ final class StorageContext {
     typealias SnapshotReader = (UserDataStore) throws -> (markers: [Marker], routes: [SavedRoute])
 
     private struct UserSnapshot {
-        let markers: [Marker]
-        let routes: [SavedRoute]
+        var markerIDs: [String]
+        var routeIDs: [String]
+        var markers: [String: Marker]
+        var routes: [String: SavedRoute]
+
+        init(markers: [Marker], routes: [SavedRoute]) {
+            markerIDs = markers.map(\.id)
+            routeIDs = routes.map(\.id)
+            self.markers = Dictionary(uniqueKeysWithValues: markers.map { ($0.id, $0) })
+            self.routes = Dictionary(uniqueKeysWithValues: routes.map { ($0.id, $0) })
+        }
+
+        mutating func upsert(_ marker: Marker) {
+            if markers.updateValue(marker, forKey: marker.id) == nil { markerIDs.append(marker.id) }
+        }
+
+        mutating func upsert(_ route: SavedRoute) {
+            if routes.updateValue(route, forKey: route.id) == nil { routeIDs.append(route.id) }
+        }
+
+        mutating func removeMarkers(_ ids: Set<String>) {
+            for id in ids { markers[id] = nil }
+            markerIDs.removeAll(where: ids.contains)
+        }
     }
 
     private let userQueue = DispatchQueue(label: "org.soundscape.user-data", qos: .userInitiated)
@@ -31,6 +53,7 @@ final class StorageContext {
     private var cacheStore: SpatialTileStore?
     private let isolatedDirectory: URL?
     private let readUserSnapshot: SnapshotReader
+    private let readRoutes: (UserDataStore, [String]) throws -> [SavedRoute]
 
     private convenience init() {
         let preview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -40,9 +63,11 @@ final class StorageContext {
         self.init(isolatedDirectory: isolatedDirectory)
     }
 
-    init(isolatedDirectory: URL?, readUserSnapshot: @escaping SnapshotReader = { try $0.snapshot() }) {
+    init(isolatedDirectory: URL?, readUserSnapshot: @escaping SnapshotReader = { try $0.snapshot() },
+         readRoutes: @escaping (UserDataStore, [String]) throws -> [SavedRoute] = { try $0.routes(ids: $1) }) {
         self.isolatedDirectory = isolatedDirectory
         self.readUserSnapshot = readUserSnapshot
+        self.readRoutes = readRoutes
     }
 
     func prepare(completion: @escaping () -> Void) {
@@ -65,22 +90,175 @@ final class StorageContext {
 
     var isUserStorageAvailable: Bool { snapshotLock.withLock { userAvailable } }
 
-    var markers: [Marker] { snapshotLock.withLock { snapshot.markers } }
-    var routes: [SavedRoute] { snapshotLock.withLock { snapshot.routes } }
+    var markers: [Marker] { snapshotLock.withLock { snapshot.markerIDs.compactMap { snapshot.markers[$0] } } }
+    var routes: [SavedRoute] { snapshotLock.withLock { snapshot.routeIDs.compactMap { snapshot.routes[$0] } } }
 
-    func write<T>(_ operation: (UserDataStore) throws -> T) throws -> T {
-        try userQueue.sync { try writeInUserQueue(operation) }
-    }
+    func marker(id: String) -> Marker? { snapshotLock.withLock { snapshot.markers[id] } }
+    func route(id: String) -> SavedRoute? { snapshotLock.withLock { snapshot.routes[id] } }
 
-    func writeAsync<T: Sendable>(_ operation: @escaping @Sendable (UserDataStore) throws -> T) async throws -> T {
-        try await withCheckedThrowingContinuation { continuation in
-            userQueue.async {
-                continuation.resume(with: Result { try self.writeInUserQueue(operation) })
+    func saveMarker(_ marker: Marker) throws {
+        try userQueue.sync {
+            try commit({ try $0.save(marker: marker) }) { store, _ in
+                guard let saved = try store.marker(id: marker.id) else { throw UserDataError.missingMarker(marker.id) }
+                snapshotLock.withLock { snapshot.upsert(saved) }
             }
         }
     }
 
-    private func writeInUserQueue<T>(_ operation: (UserDataStore) throws -> T) throws -> T {
+    func selectMarker(_ id: String, at date: Date) throws {
+        try userQueue.sync {
+            try commit({ try $0.selectMarker(id, at: date) }) { _, _ in
+                try snapshotLock.withLock {
+                    guard snapshot.markers[id] != nil else { throw UserDataError.missingMarker(id) }
+                    snapshot.markers[id]?.lastSelectedDate = date
+                }
+            }
+        }
+    }
+
+    func setMarkerTemporary(_ id: String, _ flag: Bool) throws {
+        try userQueue.sync {
+            try commit({ try $0.setMarkerTemporary(id, flag) }) { _, _ in
+                try snapshotLock.withLock {
+                    guard let wasTemporary = snapshot.markers[id]?.isTemp else { throw UserDataError.missingMarker(id) }
+                    snapshot.markers[id]?.isNew = wasTemporary && !flag
+                    snapshot.markers[id]?.isTemp = flag
+                }
+            }
+        }
+    }
+
+    func selectRoute(_ id: String, at date: Date) throws {
+        try userQueue.sync {
+            try commit({ try $0.selectRoute(id, at: date) }) { _, _ in
+                try snapshotLock.withLock {
+                    guard snapshot.routes[id] != nil else { throw UserDataError.missingRoute(id) }
+                    snapshot.routes[id]?.lastSelectedDate = date
+                }
+            }
+        }
+    }
+
+    func clearNewMarkers() throws {
+        try userQueue.sync {
+            try commit({ try $0.clearNewMarkers() }) { _, _ in
+                snapshotLock.withLock {
+                    for id in snapshot.markerIDs where snapshot.markers[id]?.isNew == true {
+                        snapshot.markers[id]?.isNew = false
+                    }
+                }
+            }
+        }
+    }
+
+    func clearNewRoutes() throws {
+        try userQueue.sync {
+            try commit({ try $0.clearNewRoutes() }) { _, _ in
+                snapshotLock.withLock {
+                    for id in snapshot.routeIDs where snapshot.routes[id]?.isNew == true {
+                        snapshot.routes[id]?.isNew = false
+                    }
+                }
+            }
+        }
+    }
+
+    func saveRoute(_ route: SavedRoute, importing markers: [Marker]) throws {
+        try userQueue.sync { try saveRouteOnUserQueue(route, importing: markers) }
+    }
+
+    func saveRouteAsync(_ route: SavedRoute, importing markers: [Marker]) async throws {
+        try await onUserQueue { try self.saveRouteOnUserQueue(route, importing: markers) }
+    }
+
+    private func saveRouteOnUserQueue(_ route: SavedRoute, importing markers: [Marker]) throws {
+        try commit({ try $0.save(route: route, importing: markers) }) { store, _ in
+            let savedRoutes = try refreshedRoutes([route.id], from: store)
+            let savedMarkers = try markers.map { marker in
+                guard let saved = try store.marker(id: marker.id) else { throw UserDataError.missingMarker(marker.id) }
+                return saved
+            }
+            snapshotLock.withLock {
+                for marker in savedMarkers { snapshot.upsert(marker) }
+                for route in savedRoutes { snapshot.upsert(route) }
+            }
+        }
+    }
+
+    func deleteRoute(_ id: String) throws {
+        try userQueue.sync {
+            try commit({ try $0.deleteRoute(id) }) { store, _ in
+                let linked = route(id: id)?.reversedRouteId
+                let updated = try linked.map { try readRoutes(store, [$0]) } ?? []
+                snapshotLock.withLock {
+                    snapshot.routes[id] = nil
+                    snapshot.routeIDs.removeAll { $0 == id }
+                    for route in updated { snapshot.upsert(route) }
+                }
+            }
+        }
+    }
+
+    func reverseRoute(_ id: String, suggestedName: String) throws -> (SavedRoute?, created: Bool) {
+        try userQueue.sync {
+            try commit({ try $0.reverseRoute(id, suggestedName: suggestedName) }) { store, result in
+                guard result.created, let reversed = result.0 else { return }
+                let updated = try readRoutes(store, [id])
+                snapshotLock.withLock {
+                    snapshot.upsert(reversed)
+                    for route in updated { snapshot.upsert(route) }
+                }
+            }
+        }
+    }
+
+    func deleteMarker(_ id: String) throws -> [String] {
+        try userQueue.sync {
+            try commit({ try $0.deleteMarker(id) }) { store, ids in
+                try applyMarkerDeletion([id], routes: ids, from: store)
+            }
+        }
+    }
+
+    func deleteTemporaryMarkers() throws -> [String] {
+        try userQueue.sync {
+            try commit({ try $0.deleteTemporaryMarkers() }) { store, ids in
+                let temporary = snapshotLock.withLock { Set(snapshot.markers.values.filter(\.isTemp).map(\.id)) }
+                try applyMarkerDeletion(temporary, routes: ids, from: store)
+            }
+        }
+    }
+
+    private func applyMarkerDeletion(_ markers: Set<String>, routes: [String], from store: UserDataStore) throws {
+        let updated = try refreshedRoutes(routes, from: store)
+        snapshotLock.withLock {
+            snapshot.removeMarkers(markers)
+            for route in updated { snapshot.upsert(route) }
+        }
+    }
+
+    private func refreshedRoutes(_ ids: [String], from store: UserDataStore) throws -> [SavedRoute] {
+        let partners = snapshotLock.withLock { ids.compactMap { snapshot.routes[$0]?.reversedRouteId } }
+        let affected = Set(ids + partners)
+        return affected.isEmpty ? [] : try readRoutes(store, affected.sorted())
+    }
+
+    func eraseUserData() async throws -> (markerIDs: [String], routeIDs: [String]) {
+        try await onUserQueue {
+            try self.commit({ try $0.erase() }) { _, _ in
+                self.snapshotLock.withLock { self.snapshot = UserSnapshot(markers: [], routes: []) }
+            }
+        }
+    }
+
+    private func onUserQueue<T: Sendable>(_ operation: @escaping @Sendable () throws -> T) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            userQueue.async { continuation.resume(with: Result(catching: operation)) }
+        }
+    }
+
+    private func commit<T>(_ operation: (UserDataStore) throws -> T,
+                           apply: (UserDataStore, T) throws -> Void) throws -> T {
         let store: UserDataStore
         do {
             store = try openUserStore()
@@ -96,7 +274,7 @@ final class StorageContext {
             throw error
         }
         do {
-            try refresh(from: store)
+            try apply(store, result)
         } catch {
             GDLogAppError("User database write committed, but refreshing saved places failed: \(error)")
             invalidateUserStore(error)

@@ -68,7 +68,7 @@ extension Route {
         }
         let pendingRoute = saved
         let pendingMarkers = markers
-        try await StorageContext.shared.writeAsync { try $0.save(route: pendingRoute, importing: pendingMarkers) }
+        try await StorageContext.shared.saveRouteAsync(pendingRoute, importing: pendingMarkers)
         route.waypoints = resolved.map { RouteWaypoint(stored: $0) }
         if existing == nil {
             NotificationCenter.default.post(name: .routeAdded, object: self, userInfo: [Keys.id: route.id])
@@ -81,7 +81,7 @@ extension Route {
 
     static func delete(_ id: String) throws {
         let wasActive = object(forPrimaryKey: id)?.isActive == true
-        try StorageContext.shared.write { try $0.deleteRoute(id) }
+        try StorageContext.shared.deleteRoute(id)
         if wasActive { AppContext.shared.eventProcessor.deactivateCustom() }
         notifyDeleted(id)
     }
@@ -98,7 +98,7 @@ extension Route {
     }
 
     static func updateLastSelectedDate(id: String, _ lastSelectedDate: Date = Date()) throws {
-        try StorageContext.shared.write { try $0.selectRoute(id, at: lastSelectedDate) }
+        try StorageContext.shared.selectRoute(id, at: lastSelectedDate)
         NotificationCenter.default.post(name: .routeUpdated, object: self, userInfo: [Keys.id: id])
     }
 
@@ -113,7 +113,7 @@ extension Route {
 
     static func createReversedRoute(from route: Route) throws -> Route? {
         let name = GDLocalizedString("routes.reverse_name_format", route.name)
-        let result = try StorageContext.shared.write { try $0.reverseRoute(route.id, suggestedName: name) }
+        let result = try StorageContext.shared.reverseRoute(route.id, suggestedName: name)
         guard let saved = result.0 else { return nil }
         if result.created {
             NotificationCenter.default.post(name: .routeAdded, object: self, userInfo: [Keys.id: saved.id])

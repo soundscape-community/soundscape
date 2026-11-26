@@ -83,7 +83,7 @@ final class SpatialDataCache {
     }
 
     static func routeByKey(_ key: String) -> Route? {
-        StorageContext.shared.routes.first { $0.id == key }.map(Route.init(saved:))
+        StorageContext.shared.route(id: key).map(Route.init(saved:))
     }
 
     static func routesNear(_ coordinate: CLLocationCoordinate2D, range: CLLocationDistance) -> [Route] {
@@ -100,11 +100,11 @@ final class SpatialDataCache {
     }
 
     static func clearNewRoutes() throws {
-        try StorageContext.shared.write { try $0.clearNewRoutes() }
+        try StorageContext.shared.clearNewRoutes()
     }
 
     static func clearNewReferenceEntities() throws {
-        try StorageContext.shared.write { try $0.clearNewMarkers() }
+        try StorageContext.shared.clearNewMarkers()
     }
 
     static func containsReferenceEntity(withKey key: String) -> Bool {
@@ -116,7 +116,7 @@ final class SpatialDataCache {
     }
 
     static func referenceEntityByKey(_ key: String) -> ReferenceEntity? {
-        StorageContext.shared.markers.first { $0.id == key }.map(ReferenceEntity.init(stored:))
+        StorageContext.shared.marker(id: key).map(ReferenceEntity.init(stored:))
     }
 
     static func referenceEntityByEntityKey(_ key: String) -> ReferenceEntity? {

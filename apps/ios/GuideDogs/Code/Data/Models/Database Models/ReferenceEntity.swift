@@ -276,14 +276,14 @@ final class ReferenceEntity: Identifiable {
     }
     
     func updateLastSelectedDate(to date: Date = Date()) throws {
-        try StorageContext.shared.write { try $0.selectMarker(id, at: date) }
+        try StorageContext.shared.selectMarker(id, at: date)
         lastSelectedDate = date
         SpatialDataCache.recordSelection(getPOI(), at: date)
         Self.notifyEntityUpdated(id)
     }
 
     func setTemporary(_ flag: Bool) throws {
-        try StorageContext.shared.write { try $0.setMarkerTemporary(id, flag) }
+        try StorageContext.shared.setMarkerTemporary(id, flag)
         isNew = isTemp && !flag
         isTemp = flag
         Self.notifyEntityUpdated(id)
@@ -368,7 +368,7 @@ final class ReferenceEntity: Identifiable {
     }
 
     private static func persistNew(_ reference: ReferenceEntity, notify: Bool) throws {
-        try StorageContext.shared.write { try $0.save(marker: reference.stored) }
+        try StorageContext.shared.saveMarker(reference.stored)
         SpatialDataCache.recordSelection(reference.getPOI())
         if !reference.isTemp {
             NSUserActivity(userAction: .saveMarker).becomeCurrent()
@@ -420,7 +420,7 @@ final class ReferenceEntity: Identifiable {
         edited.isNew = !isTemp && entity.isTemp
         edited.lastUpdatedDate = now
         edited.lastSelectedDate = now
-        try StorageContext.shared.write { try $0.save(marker: edited.stored) }
+        try StorageContext.shared.saveMarker(edited.stored)
         SpatialDataCache.recordSelection(edited.getPOI())
         notifyEntityUpdated(edited.id)
         if locChanged {
@@ -522,7 +522,7 @@ final class ReferenceEntity: Identifiable {
         }
         
         guard let entity = SpatialDataCache.referenceEntityByKey(id) else { return }
-        let affected = try StorageContext.shared.write { try $0.deleteMarker(id) }
+        let affected = try StorageContext.shared.deleteMarker(id)
         if entity.entityKey == nil {
             AppContext.shared.calloutHistory.remove { callout in
                 (callout as? POICallout)?.key == id
@@ -534,7 +534,7 @@ final class ReferenceEntity: Identifiable {
 
     @MainActor
     static func eraseUserData() async throws {
-        let (markerIDs, routeIDs) = try await StorageContext.shared.writeAsync { try $0.erase() }
+        let (markerIDs, routeIDs) = try await StorageContext.shared.eraseUserData()
         if let guidance = AppContext.shared.eventProcessor.activeBehavior as? RouteGuidance,
            routeIDs.contains(guidance.content.id) {
             AppContext.shared.eventProcessor.deactivateCustom()
@@ -554,7 +554,7 @@ final class ReferenceEntity: Identifiable {
     static func removeAllTemporary() throws {
         let storage = StorageContext.shared
         if storage.isUserStorageAvailable && !storage.markers.contains(where: \.isTemp) { return }
-        let routes = try storage.write { try $0.deleteTemporaryMarkers() }
+        let routes = try storage.deleteTemporaryMarkers()
         routes.forEach(Route.notifyUpdated)
     }
 

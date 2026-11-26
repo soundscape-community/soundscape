@@ -100,9 +100,7 @@ enum PreviewStorage {
     static func bootstrap() {
         guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" else { return }
         do {
-            try StorageContext.shared.write { store in
-                try store.save(route: Route.sample.saved, importing: ReferenceEntity.samples.map(\.stored))
-            }
+            try StorageContext.shared.saveRoute(Route.sample.saved, importing: ReferenceEntity.samples.map(\.stored))
         } catch {
             GDLogAppError("Unable to prepare preview storage: \(error)")
         }

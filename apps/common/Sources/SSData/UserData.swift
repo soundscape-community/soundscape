@@ -158,6 +158,18 @@ public final class UserDataStore: Sendable {
         }
     }
 
+    public func marker(id: String) throws -> Marker? {
+        try database.read { db in
+            try Row.fetchOne(db, sql: "SELECT * FROM marker WHERE id = ?", arguments: [id]).map(Self.marker)
+        }
+    }
+
+    public func routes(ids: [String]) throws -> [SavedRoute] {
+        try database.read { db in
+            try ids.compactMap { try Self.fetchRoute($0, in: db) }
+        }
+    }
+
     public func snapshot() throws -> (markers: [Marker], routes: [SavedRoute]) {
         try database.read { db in
             let markers = try Row.fetchAll(db, sql: "SELECT * FROM marker ORDER BY rowid").map(Self.marker)

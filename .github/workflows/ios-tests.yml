@@ -3,14 +3,18 @@ on:
     push:
         branches:
             - main
+            - crossPlatform
         paths:
             - 'apps/ios/**'
+            - 'apps/common/**'
             - '.github/workflows/ios-tests.yml'
     pull_request:
         branches:
             - main
         paths:
             - 'apps/ios/**'
+            - 'apps/common/**'
+            - '.github/workflows/ios-tests.yml'
     workflow_dispatch:
 concurrency:
     group: ${{ github.ref }}
@@ -30,6 +34,10 @@ jobs:
                 gem install xcpretty
                 : > xcodebuild.log
                 : > xcodebuild-test.log
+            - name: Test SSData
+              run: |
+                set -o pipefail
+                swift test --package-path apps/common 2>&1 | tee ssdata-test.log
             # Resolve an installed iPhone simulator dynamically so runner image updates do not require downloads.
             - name: Resolve simulator destination
               id: simulator
@@ -56,6 +64,7 @@ jobs:
               run: |
                 set -o pipefail
                 xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace \
+                  -resultBundlePath Soundscape.xcresult \
                   -scheme Soundscape -enableThreadSanitizer NO \
                   -destination '${{ steps.simulator.outputs.destination }}' \
                   | tee xcodebuild-test.log | xcpretty
@@ -68,3 +77,5 @@ jobs:
                 path: |
                   xcodebuild.log
                   xcodebuild-test.log
+                  ssdata-test.log
+                  Soundscape.xcresult

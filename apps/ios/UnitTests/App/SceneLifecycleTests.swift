@@ -319,22 +319,80 @@ final class SceneLifecycleTests: XCTestCase {
 
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
-        var reads = 0
-        let storage = StorageContext(isolatedDirectory: root) { store in
-            reads += 1
-            if reads == 2 { throw SnapshotError.unavailable }
-            return try store.snapshot()
-        }
-        let id = try storage.write { store in
-            try store.save(marker: Marker(id: "saved", isTemp: false))
-            return "saved"
-        }
+        var failRefresh = true
+        let storage = StorageContext(isolatedDirectory: root, readRoutes: { store, ids in
+            if failRefresh { throw SnapshotError.unavailable }
+            return try store.routes(ids: ids)
+        })
+        let marker = Marker(id: "saved", isTemp: false)
+        let route = SavedRoute(id: "route", name: "Saved route", waypoints: [Waypoint(markerId: marker.id, index: 0)])
+        try storage.saveRoute(route, importing: [marker])
 
-        XCTAssertEqual(id, "saved")
         XCTAssertFalse(storage.isUserStorageAvailable)
-        let recovered = try storage.write { try $0.markers() }
-        XCTAssertEqual(recovered.map(\.id), ["saved"])
+        failRefresh = false
+        try storage.selectRoute(route.id, at: Date())
+        XCTAssertEqual(storage.marker(id: marker.id)?.id, marker.id)
+        XCTAssertEqual(storage.route(id: route.id)?.waypoints, route.waypoints)
         XCTAssertTrue(storage.isUserStorageAvailable)
+    }
+
+    @MainActor
+    func testTargetedWritesMatchDatabaseWithoutReloadingLibrary() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        var snapshotReads = 0
+        var routeReads: [[String]] = []
+        let storage = StorageContext(isolatedDirectory: root, readUserSnapshot: { store in
+            snapshotReads += 1
+            return try store.snapshot()
+        }, readRoutes: { store, ids in
+            routeReads.append(ids)
+            return try store.routes(ids: ids)
+        })
+
+        let marker = Marker(id: "point", isTemp: false)
+        try storage.saveMarker(marker)
+        let waypoints = [Waypoint(markerId: marker.id, index: 0)]
+        for index in 0..<200 {
+            try storage.saveRoute(SavedRoute(id: "route-\(index)", name: "Route \(index)", waypoints: waypoints), importing: [])
+        }
+        routeReads.removeAll()
+        let date = Date(timeIntervalSince1970: 100)
+        try storage.selectMarker(marker.id, at: date)
+        try storage.selectRoute("route-0", at: date)
+        XCTAssertEqual(storage.marker(id: marker.id)?.lastSelectedDate, date)
+        XCTAssertEqual(storage.route(id: "route-0")?.lastSelectedDate, date)
+        XCTAssertEqual(snapshotReads, 1)
+        XCTAssertTrue(routeReads.isEmpty)
+        XCTAssertEqual(storage.route(id: "route-199")?.waypoints, waypoints)
+
+        let temporary = Marker(id: "temporary")
+        let compound = SavedRoute(id: "compound", name: "Compound", waypoints: [
+            Waypoint(markerId: marker.id, index: 0), Waypoint(markerId: temporary.id, index: 1)
+        ])
+        try storage.saveRoute(compound, importing: [temporary])
+        let reverse = try XCTUnwrap(storage.reverseRoute(compound.id, suggestedName: "Reverse").0)
+        XCTAssertEqual(storage.route(id: compound.id)?.reversedRouteId, reverse.id)
+        XCTAssertEqual(Set(try storage.deleteTemporaryMarkers()), [compound.id, reverse.id])
+        XCTAssertEqual(storage.route(id: compound.id)?.waypoints, waypoints)
+        XCTAssertEqual(storage.route(id: reverse.id)?.waypoints, waypoints)
+        XCTAssertNil(storage.marker(id: temporary.id))
+        try storage.deleteRoute(reverse.id)
+        XCTAssertNil(storage.route(id: compound.id)?.reversedRouteId)
+
+        let badMarker = Marker(id: "rollback")
+        let invalid = SavedRoute(id: "invalid", name: "Invalid", waypoints: [Waypoint(markerId: "missing", index: 0)])
+        XCTAssertThrowsError(try storage.saveRoute(invalid, importing: [badMarker]))
+        XCTAssertNil(storage.marker(id: badMarker.id))
+        let snapshot = try UserDataStore(url: root.appendingPathComponent("Soundscape/UserData/places.sqlite")).snapshot()
+        XCTAssertEqual(storage.markers.map(\.id), snapshot.markers.map(\.id))
+        XCTAssertEqual(storage.routes.map(\.id), snapshot.routes.map(\.id))
+        XCTAssertEqual(storage.routes.map(\.waypoints), snapshot.routes.map(\.waypoints))
+        XCTAssertEqual(storage.routes.map(\.reversedRouteId), snapshot.routes.map(\.reversedRouteId))
+        _ = try await storage.eraseUserData()
+        XCTAssertTrue(storage.routes.isEmpty)
+        XCTAssertTrue(storage.markers.isEmpty)
+        XCTAssertEqual(snapshotReads, 1)
     }
 
     func testCacheRecoveryUsesOriginalErrorEvenWhenEpochIsReadable() throws {
