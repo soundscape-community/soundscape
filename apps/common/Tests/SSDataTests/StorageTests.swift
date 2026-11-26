@@ -170,6 +170,81 @@ final class StorageTests: XCTestCase {
                                                features: [], epoch: epoch))
     }
 
+    func testParseTileClassificationAndRelationshipsSurviveCacheEncoding() throws {
+        let json = Data("""
+        {
+          "features": [
+            {"feature_type":"tourism","feature_value":"museum","osm_ids":[10],
+             "properties":{"name":"Museum","name:fr":"Musée","tourism":"museum"},
+             "geometry":{"type":"Polygon","coordinates":[[[0,0],[2,0],[2,2],[0,0]]] }},
+            {"feature_type":"entrance","feature_value":"main","osm_ids":[11],
+             "properties":{"name":"Front entrance","entrance":"main"},
+             "geometry":{"type":"Point","coordinates":[0,0]}},
+            {"feature_type":"gd_entrance_list","feature_value":"","osm_ids":[10,11],
+             "properties":{},"geometry":{"type":"Point","coordinates":[0,0]}},
+            {"feature_type":"highway","feature_value":"residential","osm_ids":[20],
+             "properties":{"name":"Main Street"},"geometry":{"type":"LineString","coordinates":[[0,0],[2,0]]}},
+            {"feature_type":"highway","feature_value":"footway","osm_ids":[21],
+             "properties":{"name":"Riverside path"},"geometry":{"type":"LineString","coordinates":[[0,0],[0,2]]}},
+            {"feature_type":"highway","feature_value":"footway","osm_ids":[22],
+             "properties":{"name":"Crossing","footway":"crossing"},"geometry":{"type":"LineString","coordinates":[[-1,0],[1,0]]}},
+            {"feature_type":"highway","feature_value":"gd_intersection","osm_ids":[20,21],
+             "properties":{},"geometry":{"type":"Point","coordinates":[0,0]}},
+            {"feature_type":"highway","feature_value":"footway","osm_ids":[99],"properties":{"name":"Malformed"}}
+          ]
+        }
+        """.utf8)
+        let document = try XCTUnwrap(JSONSerialization.jsonObject(with: json) as? [String: Any])
+        let now = Date(timeIntervalSince1970: 120)
+        let tile = ParsedTile(json: document, quadkey: "01", etag: "test",
+                              categories: [.landmarks: ["museum"]],
+                              intersectionName: "Intersection", entranceListName: "Entrances", now: now)
+        XCTAssertEqual(tile.metadata.expiry, now.addingTimeInterval(604_800))
+        XCTAssertEqual(tile.roads.map(\.key), ["ft20"])
+        XCTAssertEqual(tile.paths.map(\.key), ["ft21"])
+        XCTAssertEqual(tile.pois.map(\.key), ["ft10", "ft11", "ft22"])
+        XCTAssertEqual(tile.pois.map(\.superCategory), ["landmark", "entrance", "mobility"])
+        XCTAssertEqual(tile.pois.first?.names.first?.string, "Musée")
+        XCTAssertEqual(tile.pois.first?.entranceIDs, ["ft11"])
+        XCTAssertEqual(tile.pois.last?.centroidLongitude, 0)
+        XCTAssertEqual(tile.pois.last?.centroidLatitude, 0)
+        XCTAssertEqual(tile.intersections.first?.key, "ft20ft210.00.0")
+        XCTAssertEqual(tile.intersections.first?.roadIDs, ["ft20", "ft21"])
+
+        let store = try SpatialTileStore(url: directory().appendingPathComponent("tiles.sqlite"))
+        try store.replace(key: tile.quadkey, metadata: tile.metadata,
+                          features: tile.featuresForStorage(), epoch: store.epoch())
+        let cached = try XCTUnwrap(store.tiles(keys: [tile.quadkey]).first)
+        let parsed = try ParsedTile(quadkey: cached.0, metadata: cached.1, features: cached.2)
+        XCTAssertEqual(parsed.pois.first?.entranceIDs, ["ft11"])
+        XCTAssertEqual(parsed.roads.map(\.key), tile.roads.map(\.key))
+        XCTAssertEqual(try store.intersections(roadKey: "ft20").first?.mapIntersection().roadIDs, ["ft20", "ft21"])
+    }
+
+    #if os(macOS)
+    func testOpeningAnOlderCacheRebuildsItWithoutChangingSavedPlaces() throws {
+        let folder = try directory()
+        let users = try UserDataStore(url: folder.appendingPathComponent("places.sqlite"))
+        let marker = Marker(id: "saved", isTemp: false)
+        try users.save(route: SavedRoute(id: "route", name: "Saved route", waypoints: [Waypoint(markerId: marker.id, index: 0)]),
+                       importing: [marker])
+
+        let url = folder.appendingPathComponent("tiles.sqlite")
+        let sqlite = Process()
+        sqlite.executableURL = URL(fileURLWithPath: "/usr/bin/sqlite3")
+        sqlite.arguments = [url.path, "PRAGMA user_version = 3; CREATE TABLE oldTile(payload BLOB); INSERT INTO oldTile VALUES (X'00');"]
+        try sqlite.run()
+        sqlite.waitUntilExit()
+        XCTAssertEqual(sqlite.terminationStatus, 0)
+
+        let rebuilt = try SpatialTileStore(url: url)
+        XCTAssertEqual(try rebuilt.epoch(), 0)
+        XCTAssertTrue(try rebuilt.tiles(keys: ["01"]).isEmpty)
+        XCTAssertEqual(try users.markers().map(\.id), ["saved"])
+        XCTAssertEqual(try users.routes().map(\.id), ["route"])
+    }
+    #endif
+
     func testMapRecentsSurviveReopenAndClearWithCache() throws {
         let url = try directory().appendingPathComponent("tiles.sqlite")
         do {

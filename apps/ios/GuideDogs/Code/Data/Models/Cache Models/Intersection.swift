@@ -7,6 +7,7 @@
 //  Licensed under the MIT License.
 //
 
+import SSData
 import Foundation
 import CoreLocation
 import CocoaLumberjackSwift
@@ -136,7 +137,7 @@ import CocoaLumberjackSwift
 // Example: (51.455464, -0.975333) Multi (cross) intersection with roads:
 // Oxford Road, West Street, Broad Street and St Mary's Butts.
 
-final class Intersection: Codable, Hashable, Locatable, Localizable {
+final class Intersection: Hashable, Locatable, Localizable {
     
     // MARK: Types
     
@@ -168,34 +169,43 @@ final class Intersection: Codable, Hashable, Locatable, Localizable {
         hasher.combine(key)
     }
 
-    private enum CodingKeys: String, CodingKey { case key, roadIds, latitude, longitude }
+    private var data: MapIntersection
 
-    // MARK: Properties
-    
-    /// Synthesized primary key for this intersection
-    var key: String = ""
-    
-    /// Array of the road POIs that meet at this intersection
-    var roadIds: [IntersectionRoadId] = []
-    
-    /// Latitude of the intersection
-    var latitude: CLLocationDegrees = 0.0
-    
-    /// Longitude of the intersection
-    var longitude: CLLocationDegrees = 0.0
-    
+    init(data: MapIntersection = MapIntersection()) {
+        self.data = data
+    }
+
+    var key: String {
+        get { data.key }
+        set { data.key = newValue }
+    }
+
+    var roadIds: [String] {
+        get { data.roadIDs }
+        set { data.roadIDs = newValue }
+    }
+
+    var latitude: CLLocationDegrees {
+        get { data.latitude }
+        set { data.latitude = newValue }
+    }
+
+    var longitude: CLLocationDegrees {
+        get { data.longitude }
+        set { data.longitude = newValue }
+    }
+
     // MARK: Computed Properties
     
     /// The set of roads that participate in this intersection
     var roads: [Road] {
-        roadIds.compactMap { SpatialDataCache.road(withKey: $0.id) }
+        roadIds.compactMap { SpatialDataCache.road(withKey: $0) }
     }
     
     // Some intersections can contain the same road more than once, for example if one road loops back to the intersection.
     // Example: https://www.openstreetmap.org/way/189315310
     var distinctRoads: [Road] {
         return roadIds
-            .map { $0.id }
             .dropDuplicates()
             .compactMap { SpatialDataCache.road(withKey: $0) }
     }
@@ -225,31 +235,6 @@ final class Intersection: Codable, Hashable, Locatable, Localizable {
     /// Calculated property which synthesizes a `CLLocationCoordinate2D` object for the coordinate of the intersection
     var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
-    }
-    
-    // MARK: Contructors
-    
-    /// Constructs an intersection given a GeoJsonFeature representing the intersection
-    ///
-    /// - Parameter feature: A GeoJsonFeature representing an intersection
-    convenience init(feature: GeoJsonFeature) {
-        self.init()
-        
-        for roadId in feature.osmIds {
-            self.roadIds.append(IntersectionRoadId(withId: roadId))
-            
-            self.key += String(roadId)
-        }
-        
-        if let lat = feature.geometry?.point?[1] {
-            latitude = lat
-        }
-        
-        if let lon = feature.geometry?.point?[0] {
-            longitude = lon
-        }
-        
-        self.key += String(latitude) + String(longitude)
     }
     
     // MARK: Methods

@@ -12,7 +12,7 @@ import Foundation
 
 protocol OSMServiceModelProtocol {
     // MARK: Type Alias
-    typealias TileDataLookupCallback = (HTTPStatusCode, TileData?, Error?) -> Void
+    typealias TileDataLookupCallback = (HTTPStatusCode, ParsedTile?, Error?) -> Void
     typealias DynamicDataLookupCallback = (HTTPStatusCode, String?, Error?) -> Void
     
     // MARK: Functions

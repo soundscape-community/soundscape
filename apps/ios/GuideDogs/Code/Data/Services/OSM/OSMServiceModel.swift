@@ -58,7 +58,10 @@ class OSMServiceModel: OSMServiceModelProtocol {
             }
             
             queue.async {
-                callback(status, TileData(withParsedData: json, quadkey: tile.quadKey, etag: etag, superCategories: categories), nil)
+                let tile = ParsedTile(json: json, quadkey: tile.quadKey, etag: etag, categories: categories,
+                                      intersectionName: GDLocalizedString("osm.tag.intersection"),
+                                      entranceListName: GDLocalizedString("directions.amenity.entrance_list"))
+                callback(status, tile, nil)
             }
         }
         

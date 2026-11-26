@@ -228,7 +228,7 @@ class ReverseGeocoderContext: ReverseGeocoder {
             synthesized.key = UUID().uuidString
             synthesized.latitude = closestLocation.coordinate.latitude
             synthesized.longitude = closestLocation.coordinate.longitude
-            synthesized.roadIds.append(IntersectionRoadId(withId: closestRoad.key))
+            synthesized.roadIds.append(closestRoad.key)
             
             return synthesized
         }

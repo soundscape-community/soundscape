@@ -474,10 +474,10 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
                         switch status {
                         case .success:
                             guard let data else { throw SpatialDataContextError.missingData }
-                            try store.replace(key: tile.quadKey, metadata: TileMetadata(etag: data.etag, expiry: data.ttl),
+                            try store.replace(key: tile.quadKey, metadata: data.metadata,
                                               features: data.featuresForStorage(), epoch: epoch)
                         case .notModified:
-                            try store.extend(key: tile.quadKey, expiry: TileData.getNewExpiration(), epoch: epoch)
+                            try store.extend(key: tile.quadKey, expiry: ParsedTile.expiry(), epoch: epoch)
                         case .unknown:
                             throw SpatialDataContextError.missingData
                         }
@@ -636,7 +636,7 @@ class SpatialDataContext: NSObject, SpatialDataProtocol {
     
     private class func expireAllTiles() {
         do {
-            try StorageContext.shared.spatial().expireAll(at: TileData.getExpiredTtl())
+            try StorageContext.shared.spatial().expireAll(at: Date(timeIntervalSinceNow: -1))
         } catch {
             GDLogSpatialDataError("Unable to expire the spatial cache: \(error)")
         }

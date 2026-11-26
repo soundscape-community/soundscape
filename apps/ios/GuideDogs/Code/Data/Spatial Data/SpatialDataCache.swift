@@ -78,7 +78,7 @@ final class SpatialDataCache {
     private static func entity(_ key: String, kinds: [TileFeature.Kind]) -> GDASpatialDataResultEntity? {
         spatialRead {
             guard let feature = try $0.feature(key: key, kinds: kinds) else { return nil }
-            return try JSONDecoder().decode(GDASpatialDataResultEntity.self, from: feature.payload)
+            return try GDASpatialDataResultEntity(data: feature.mapFeature())
         }
     }
 
@@ -190,7 +190,7 @@ final class SpatialDataCache {
     static func intersectionByKey(_ key: String) -> Intersection? {
         spatialRead {
             guard let feature = try $0.feature(key: key, kinds: [.intersection]) else { return nil }
-            return try JSONDecoder().decode(Intersection.self, from: feature.payload)
+            return try Intersection(data: feature.mapIntersection())
         }
     }
 
@@ -200,8 +200,7 @@ final class SpatialDataCache {
 
     static func intersections(forRoadKey roadKey: String, inRegion region: MKCoordinateRegion? = nil) -> [Intersection]? {
         spatialRead {
-            let decoder = JSONDecoder()
-            return try $0.intersections(roadKey: roadKey).map { try decoder.decode(Intersection.self, from: $0.payload) }
+            try $0.intersections(roadKey: roadKey).map { try Intersection(data: $0.mapIntersection()) }
                 .filter { intersection in
                     guard let region else { return true }
                     return contains(region, latitude: intersection.latitude, longitude: intersection.longitude)
@@ -242,7 +241,7 @@ final class SpatialDataCache {
 
     static func tileData(for tiles: [VectorTile]) -> [TileData] {
         spatialRead {
-            try $0.tiles(keys: tiles.map(\.quadKey)).map { try TileData(key: $0.0, metadata: $0.1, features: $0.2) }
+            try $0.tiles(keys: tiles.map(\.quadKey)).map { try TileData(parsed: ParsedTile(quadkey: $0.0, metadata: $0.1, features: $0.2)) }
         } ?? []
     }
 

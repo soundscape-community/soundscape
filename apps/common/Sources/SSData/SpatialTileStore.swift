@@ -40,7 +40,7 @@ public enum SpatialStorageError: Error {
 
 public final class SpatialTileStore: Sendable {
     private let database: DatabasePool
-    private static let schemaVersion = 3
+    private static let schemaVersion = 4
 
     public init(url: URL) throws {
         do {

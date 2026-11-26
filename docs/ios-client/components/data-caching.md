@@ -2,6 +2,8 @@
 
 Soundscape uses the `SSData` package in `apps/common` for SQLite storage. The iOS app supplies the database paths and coordinates location updates, downloads, and navigation.
 
+SSData parses tile GeoJSON and classifies map features, associates entrances with POIs, and encodes feature and intersection payloads for storage. The iOS app supplies localized parser labels and resolves map values for navigation and callouts.
+
 The spatial cache is in the app's Caches directory. Each tile owns its metadata and derived POI, road, path, and intersection rows. Nearby queries read the quadkeys covering the requested area. Feature keys and road membership indexes support lookups across tiles. The cache stores map recents separately from downloaded features, so refreshing a tile preserves those selections.
 
 A tile expires after seven days and remains readable offline. The next fetch can use its ETag to renew it or replace its features in one transaction. A category change expires all tiles and clears their ETags to force reprocessing. Multiple tiles can own copies of the same feature, which remain available until their tiles are replaced or evicted.

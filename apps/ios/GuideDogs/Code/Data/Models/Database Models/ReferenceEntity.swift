@@ -68,17 +68,8 @@ final class ReferenceEntity: Identifiable {
             address.centroidLongitude = longitude
             return address
         }
-        let poi = GDASpatialDataResultEntity()
-        poi.key = key
-        poi.name = place.name
-        poi.addressLine = place.address
-        poi.streetName = place.street
-        poi.latitude = latitude
-        poi.longitude = longitude
-        poi.centroidLatitude = latitude
-        poi.centroidLongitude = longitude
-        poi.amenity = ""
-        return poi
+        return GDASpatialDataResultEntity(data: MapFeature(key: key, name: place.name, addressLine: place.address,
+                                                           streetName: place.street, latitude: latitude, longitude: longitude))
     }
 
     convenience init(stored: Marker) {

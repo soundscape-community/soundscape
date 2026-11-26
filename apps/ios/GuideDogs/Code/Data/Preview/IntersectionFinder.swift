@@ -3,6 +3,7 @@
 //  Soundscape
 //
 //  Copyright (c) Microsoft Corporation.
+//  Copyright (c) Soundscape Community Contributors.
 //  Licensed under the MIT License.
 //
 
@@ -120,7 +121,7 @@ struct IntersectionFinder {
         
         // Find all intersections (involving more than one road segment) along the road
         let intersections = road.intersections.filter { (intersection) -> Bool in
-            let ids = intersection.roadIds.map { $0.id }
+            let ids = intersection.roadIds
             return Set(ids).count > 1
         }
         
@@ -211,7 +212,7 @@ struct IntersectionFinder {
             intersection.key = "-1"
             intersection.latitude = lastCoordinate.latitude
             intersection.longitude = lastCoordinate.longitude
-            intersection.roadIds.append(IntersectionRoadId(withId: road.key))
+            intersection.roadIds.append(road.key)
             
             return IntersectionSearchResult(intersection: intersection,
                                             road: road,

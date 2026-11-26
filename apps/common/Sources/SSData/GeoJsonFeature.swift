@@ -7,7 +7,6 @@
 //  Licensed under the MIT License.
 //
 
-import SSData
 import Foundation
 
 struct GeoJsonKeys {
@@ -39,7 +38,7 @@ struct GeoJsonKeys {
     static let i18nNamePrefix = "name:"
 }
 
-class GeoJsonFeature {
+final class GeoJsonFeature {
 
     // MARK: Properties
     
@@ -89,7 +88,7 @@ class GeoJsonFeature {
     
     // MARK: Initializers
     
-    init?(json: [String: Any], superCategories: SuperCategories) {
+    init?(json: [String: Any], superCategories: SuperCategories, intersectionName: String, entranceListName: String) {
         // Parse the OSM IDs
         if let ids = GeoJsonFeature.extractIDs(from: json) {
             osmIds = ids
@@ -99,20 +98,11 @@ class GeoJsonFeature {
         type = json[GeoJsonKeys.featureType] as? String ?? ""
         value = json[GeoJsonKeys.featureValue] as? String ?? ""
         
-        let nameObjects = GeoJsonFeature.extractNames(from: json)
+        let nameObjects = GeoJsonFeature.extractNames(from: json, intersectionName: intersectionName, entranceListName: entranceListName)
         
         // Entities should have a name or a tag (which will be transformed to a localized name at runtime)
-        guard nameObjects.name != nil || nameObjects.tag != nil else {
-            // Collect information about this nameless feature for later analysis
-            let propVal = type + "=" + value
-            
-            if !GeoJsonFeature.unhandledNamelessFeatures.contains(propVal) {
-                GeoJsonFeature.unhandledNamelessFeatures.insert(propVal)
-            }
-            
-            return nil
-        }
-        
+        guard nameObjects.name != nil || nameObjects.tag != nil else { return nil }
+
         name = nameObjects.name
         names = nameObjects.names
         nameTag = nameObjects.tag
@@ -353,20 +343,20 @@ extension GeoJsonFeature {
         })
     }
     
-    fileprivate static func extractNames(from json: [String: Any]) -> (name: String?, names: [String: String]?, tag: String?) {
+    fileprivate static func extractNames(from json: [String: Any], intersectionName: String, entranceListName: String) -> (name: String?, names: [String: String]?, tag: String?) {
         guard let properties = json[GeoJsonKeys.properties] as? [String: String] else { return (nil, nil, nil) }
         
         if let value = json[GeoJsonKeys.featureValue] as? String {
             // Special case: intersections (calculated intersections have value "gd_intersection" by definition)
             if value == "gd_intersection" {
-                return (name: GDLocalizedString("osm.tag.intersection"), nil, "intersection")
+                return (name: intersectionName, nil, "intersection")
             }
         }
         
         if let type = json[GeoJsonKeys.featureType] as? String {
             // Special case: entrance list (calculated entrance lists have type "gd_entrance_list" by definition)
             if type == "gd_entrance_list" {
-                return (name: GDLocalizedString("directions.amenity.entrance_list"), nil, nil)
+                return (name: entranceListName, nil, nil)
             }
         }
 
@@ -436,10 +426,7 @@ extension GeoJsonFeature {
 
 extension GeoJsonFeature {
     
-    /// Set for tracking unhandled nameless features
-    static var unhandledNamelessFeatures = Set<String>()
-    
-    /// Prioritized categories for handeling features with unknown categories
+    /// Prioritized categories for handling features with unknown categories
     static let prioritizedCategories = [SuperCategory.safety,
                                         SuperCategory.navilens,
                                         SuperCategory.mobility,
@@ -554,7 +541,7 @@ extension GeoJsonFeature {
                                 "bridleway"]
 
     struct FeatureNameTag {
-        static var crossing = "crossing"
+        static let crossing = "crossing"
     }
     
 }

@@ -513,7 +513,6 @@
 		B93C5F8624AA6DF100ED4066 /* GPXFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93C5F8324AA6DF100ED4066 /* GPXFileManager.swift */; };
 		B93C5F8724AA6DF100ED4066 /* GPXSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93C5F8424AA6DF100ED4066 /* GPXSimulator.swift */; };
 		B93C5F8824AA6DF100ED4066 /* GPXTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93C5F8524AA6DF100ED4066 /* GPXTracker.swift */; };
-		B93C5F8A24AA8AB600ED4066 /* IntersectionRoadId.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93C5F8924AA8AB600ED4066 /* IntersectionRoadId.swift */; };
 		B9478FA12447B1C6005ADCAF /* PushAlertObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9478FA02447B1C6005ADCAF /* PushAlertObserver.swift */; };
 		B9533FF924B4DB2400605B07 /* IntersectionFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9533FF824B4DB2400605B07 /* IntersectionFinder.swift */; };
 		B9533FFB24B4DCC100605B07 /* IntersectionSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9533FFA24B4DCC100605B07 /* IntersectionSearchResult.swift */; };
@@ -671,7 +670,6 @@
 		D22A38351E6100ED00C3AA71 /* ReverseGeocoderContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22A38341E6100ED00C3AA71 /* ReverseGeocoderContext.swift */; };
 		D235E5091E2709C500D45AE0 /* TileData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D235E5081E2709C500D45AE0 /* TileData.swift */; };
 		D298328C1E4A960300352A5A /* Intersection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D298328B1E4A960300352A5A /* Intersection.swift */; };
-		D29832901E4BF80600352A5A /* GeoJsonFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = D298328F1E4BF80600352A5A /* GeoJsonFeature.swift */; };
 		D29832921E4CF18100352A5A /* SuperCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29832911E4CF18100352A5A /* SuperCategory.swift */; };
 		D30355D31B61401D00E1DDED /* GDAJSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D30355D21B61401D00E1DDED /* GDAJSONObject.m */; };
 		D395B0F71B41DA15005A6407 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D395B0F61B41DA15005A6407 /* Images.xcassets */; };
@@ -1235,7 +1233,6 @@
 		B93C5F8324AA6DF100ED4066 /* GPXFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPXFileManager.swift; sourceTree = "<group>"; };
 		B93C5F8424AA6DF100ED4066 /* GPXSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPXSimulator.swift; sourceTree = "<group>"; };
 		B93C5F8524AA6DF100ED4066 /* GPXTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPXTracker.swift; sourceTree = "<group>"; };
-		B93C5F8924AA8AB600ED4066 /* IntersectionRoadId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IntersectionRoadId.swift; path = "Code/Data/Models/Cache Models/IntersectionRoadId.swift"; sourceTree = "<group>"; };
 		B9478FA02447B1C6005ADCAF /* PushAlertObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushAlertObserver.swift; path = Code/Notifications/Observers/Alert/PushAlertObserver.swift; sourceTree = "<group>"; };
 		B9533FF824B4DB2400605B07 /* IntersectionFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntersectionFinder.swift; path = Code/Data/Preview/IntersectionFinder.swift; sourceTree = "<group>"; };
 		B9533FFA24B4DCC100605B07 /* IntersectionSearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IntersectionSearchResult.swift; path = Code/Data/Preview/IntersectionSearchResult.swift; sourceTree = "<group>"; };
@@ -1400,7 +1397,6 @@
 		D22A38341E6100ED00C3AA71 /* ReverseGeocoderContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = ReverseGeocoderContext.swift; path = Code/Generators/Geocoding/ReverseGeocoderContext.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		D235E5081E2709C500D45AE0 /* TileData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileData.swift; path = "Code/Data/Models/Cache Models/TileData.swift"; sourceTree = "<group>"; };
 		D298328B1E4A960300352A5A /* Intersection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Intersection.swift; path = "Code/Data/Models/Cache Models/Intersection.swift"; sourceTree = "<group>"; };
-		D298328F1E4BF80600352A5A /* GeoJsonFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GeoJsonFeature.swift; path = "Code/Data/Models/JSON Parsing/OSM/GeoJsonFeature.swift"; sourceTree = "<group>"; };
 		D29832911E4CF18100352A5A /* SuperCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuperCategory.swift; path = Code/Data/Models/Helpers/SuperCategory.swift; sourceTree = "<group>"; };
 		D30355D11B61401D00E1DDED /* GDAJSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GDAJSONObject.h; path = Code/Data/Models/Helpers/GDAJSONObject.h; sourceTree = "<group>"; };
 		D30355D21B61401D00E1DDED /* GDAJSONObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = GDAJSONObject.m; path = Code/Data/Models/Helpers/GDAJSONObject.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -2198,7 +2194,6 @@
 				D298328B1E4A960300352A5A /* Intersection.swift */,
 				D235E5081E2709C500D45AE0 /* TileData.swift */,
 				C3B331232011615A00CD20F9 /* Address.swift */,
-				B93C5F8924AA8AB600ED4066 /* IntersectionRoadId.swift */,
 			);
 			name = "Cache Models";
 			sourceTree = "<group>";
@@ -3501,7 +3496,6 @@
 		C30DDACB2253E62300104085 /* OSM */ = {
 			isa = PBXGroup;
 			children = (
-				D298328F1E4BF80600352A5A /* GeoJsonFeature.swift */,
 			);
 			name = OSM;
 			sourceTree = "<group>";
@@ -4708,7 +4702,6 @@
 				289AE43B21E6794A00B7B153 /* Behavior.swift in Sources */,
 				B9EE98081E3656B7007ADBED /* UIDeviceManager.swift in Sources */,
 				28BA4A852655A98B00E1D273 /* UserLocationStore.swift in Sources */,
-				D29832901E4BF80600352A5A /* GeoJsonFeature.swift in Sources */,
 				C38841CF2268DDBE00F6DFA5 /* GDASpatialDataResultEntity+Distance.swift in Sources */,
 				286DC6B021E6BADB001CD88A /* RouteGuidanceState.swift in Sources */,
 				281CB8722016692F0059B8C4 /* CalloutHistory.swift in Sources */,
@@ -4842,7 +4835,6 @@
 				28467EEB264206A300FB4C9F /* RouteActionDelegate.swift in Sources */,
 				C35F391123C3E04E000D0D3D /* SearchResultError.swift in Sources */,
 				62549239243BE98F00DC49E5 /* UniversalLinkHandler.swift in Sources */,
-				B93C5F8A24AA8AB600ED4066 /* IntersectionRoadId.swift in Sources */,
 				C3DC32C61F4250F7004D29EF /* ReferenceEntity.swift in Sources */,
 				28306C9F1FB3D1E600EB3F6B /* SpatialDataView.swift in Sources */,
 				28F0F9321F86CD0600B6A64F /* DestinationTutorialPage.swift in Sources */,
