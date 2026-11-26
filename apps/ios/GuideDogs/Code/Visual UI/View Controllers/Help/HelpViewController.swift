@@ -95,7 +95,12 @@ class FAQListHelpPage: HelpPage {
 
 struct HelpView: View {
     @ObservedObject var navigation: AppNavigationModel
-    var route: HelpRoute? = nil
+    var route: HelpRoute?
+
+    init(navigation: AppNavigationModel, route: HelpRoute? = nil) {
+        self.navigation = navigation
+        self.route = route
+    }
     
     // MARK: Properties
     
