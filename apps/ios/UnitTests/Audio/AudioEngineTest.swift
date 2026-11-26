@@ -7,6 +7,7 @@
 //
 
 import AVFAudio
+import os
 import XCTest
 @testable import Soundscape
 
@@ -141,6 +142,76 @@ final class AudioEngineTest: XCTestCase {
         XCTAssertEqual(result, .stopped)
         XCTAssertFalse(engine.hasTransientAudio)
     }
+
+    #if DEBUG
+    @MainActor
+    func testStopAndShutdownRetireOnlyTheAffectedRenderCompletions() async {
+        let firstStarted = expectation(description: "first synthesizer started")
+        let secondStarted = expectation(description: "second synthesizer started")
+        let firstSpeech = DelayedSpeech(preparing: firstStarted)
+        let secondSpeech = DelayedSpeech(preparing: secondStarted)
+        let engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true,
+                                 canStart: { true }, makeSpeech: { text, _, output in
+            let speech = text == "first" ? firstSpeech : secondSpeech
+            speech.setOutput(output)
+            return speech
+        })
+        engine.start()
+        let first = engine.play(TTSSound("first"))
+        let second = engine.play(TTSSound("second"))
+        await fulfillment(of: [firstStarted, secondStarted], timeout: 5)
+        first.pause()
+        second.pause()
+        firstSpeech.emitAudio(frames: 22_050)
+        secondSpeech.emitAudio(frames: 22_050)
+        XCTAssertEqual(engine.renderCompletionStatus.pending, 2)
+        XCTAssertTrue(engine.renderCompletionStatus.isPolling)
+
+        first.stop()
+        await assertPlayback(first, result: .stopped)
+        XCTAssertEqual(engine.renderCompletionStatus.pending, 1)
+        XCTAssertTrue(engine.renderCompletionStatus.isPolling)
+
+        engine.shutdown()
+        await assertPlayback(second, result: .stopped)
+        XCTAssertEqual(engine.renderCompletionStatus.pending, 0)
+        XCTAssertFalse(engine.renderCompletionStatus.isPolling)
+    }
+
+    @MainActor
+    func testMediaResetRetiresRenderCompletionsWhenRestartIsBlocked() async throws {
+        let startupAllowed = OSAllocatedUnfairLock(initialState: true)
+        let preparing = expectation(description: "synthesizer started")
+        let speech = DelayedSpeech(preparing: preparing)
+        let engine = AudioEngine(envSettings: TestAudioEnvironmentSettings(), mixWithOthers: true,
+                                 canStart: { startupAllowed.withLock { $0 } }, makeSpeech: { _, _, output in
+            speech.setOutput(output)
+            return speech
+        })
+        defer { engine.shutdown() }
+        engine.start()
+        let handle = engine.play(TTSSound("queued when the graph is lost"))
+        await fulfillment(of: [preparing], timeout: 5)
+        handle.pause()
+        speech.emitAudio(frames: 22_050)
+        XCTAssertEqual(engine.renderCompletionStatus.pending, 1)
+        XCTAssertTrue(engine.renderCompletionStatus.isPolling)
+
+        startupAllowed.withLock { $0 = false }
+        NotificationCenter.default.post(name: AVAudioSession.mediaServicesWereResetNotification, object: engine.session)
+        XCTAssertEqual(engine.renderCompletionStatus.pending, 0)
+        XCTAssertFalse(engine.renderCompletionStatus.isPolling)
+        await assertPlayback(handle, result: .interrupted)
+
+        startupAllowed.withLock { $0 = true }
+        engine.start()
+        let url = try makeAudioFile(duration: 0.10)
+        defer { try? FileManager.default.removeItem(at: url) }
+        await assertPlayback(engine.play(GenericSound(url)), result: .completed)
+        XCTAssertEqual(engine.renderCompletionStatus.pending, 0)
+        XCTAssertFalse(engine.renderCompletionStatus.isPolling)
+    }
+    #endif
 
     func testBackgroundCallProtectsStartup() {
         XCTAssertFalse(AudioEngine.startupAllowed(appState: .inactive, callInProgress: false))

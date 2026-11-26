@@ -190,6 +190,7 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     deinit {
         observers.forEach(NotificationCenter.default.removeObserver)
         if let graphObserver { NotificationCenter.default.removeObserver(graphObserver) }
+        completionTimer?.cancel()
         stopRecordingOnControl()
         for operation in operations.values { operation.completion.resolve(.stopped) }
     }
@@ -263,7 +264,7 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
             self.wantsRunning = false
             for operation in Array(self.operations.values) { self.end(operation, .stopped) }
             self.stopRecordingOnControl()
-            self.engine.stop()
+            self.stopGraph()
             self.sessionManager.deactivate()
             self.publish(.stopped)
         }
@@ -452,7 +453,8 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
                 if operation.request.loops {
                     source.player.scheduleBuffer(buffer, at: nil, options: .loops)
                 } else {
-                    self.schedule(buffer, source: source, operation: operation) {
+                    self.schedule(buffer, source: source, operation: operation) { [weak self, weak source, weak operation] in
+                        guard let self, let source, let operation else { return }
                         self.remove(source, operation: operation)
                         done()
                     }
@@ -563,11 +565,13 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     }
 
     private func detach(_ source: Source) {
+        // Retire bookkeeping before stopping the node. AVFAudio's callback owns
+        // its signal separately, so even a late callback can safely write to it.
+        renderCompletions.removeAll { $0.source == ObjectIdentifier(source) }
+        stopCompletionTimerIfIdle()
         source.speech?.cancel()
         source.speech = nil
         source.player.stop()
-        renderCompletions.removeAll { $0.source == ObjectIdentifier(source) }
-        stopCompletionTimerIfIdle()
         engine.detach(source.player)
         engine.detach(source.equalizer)
         if let mixer = source.spatialMixer { engine.detach(mixer) }
@@ -598,6 +602,12 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     private var renderCompletions: [RenderCompletion] = []
     private var completionTimer: DispatchSourceTimer?
 
+    #if DEBUG
+    var renderCompletionStatus: (pending: Int, isPolling: Bool) {
+        control.sync { (renderCompletions.count, completionTimer != nil) }
+    }
+    #endif
+
     private func schedule(_ buffer: AVAudioPCMBuffer, source: Source, operation: Operation,
                           at time: AVAudioTime? = nil, options: AVAudioPlayerNodeBufferOptions = [], done: @escaping () -> Void) {
         let generation = operation.lifecycle.generation
@@ -621,6 +631,9 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
     }
 
     private func drainRenderCompletions() {
+        // A stopped graph may never signal its callbacks. Check even if none
+        // have fired, so cleanup does not depend on notification delivery.
+        guard engine.isRunning else { recoverIfNeeded(); return }
         var ready: [RenderCompletion] = []
         renderCompletions.removeAll {
             guard $0.signal.isSignaled else { return false }
@@ -908,9 +921,9 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
 
     private func recoverIfNeeded() {
         guard wantsRunning, !interrupted else { return }
+        let graphLost = needsGraphReplacement || !engine.isRunning
         let outputChanged = graphMono != isInMonoMode || graphSampleRate != session.sampleRate
-        guard needsGraphReplacement || outputChanged || !engine.isRunning else { return }
-        guard canStart() else { return }
+        guard graphLost || (outputChanged && canStart()) else { return }
         if operations.isEmpty && !engine.isRunning && !needsGraphReplacement {
             _ = startGraph()
         } else {
@@ -928,8 +941,14 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
             }
         }
         stopRecordingOnControl()
-        engine.stop()
+        stopGraph()
         publish(.stopped)
+    }
+
+    private func stopGraph() {
+        renderCompletions.removeAll()
+        stopCompletionTimerIfIdle()
+        engine.stop()
     }
 
     private func recover() {
@@ -939,6 +958,9 @@ final class AudioEngine: AudioPlayback, AudioSessionManagerDelegate, @unchecked 
             engine = AVAudioEngine()
             observeGraph()
         }
+        // The old graph is already invalid. Keep recoverable operations for
+        // the next allowed start, with no pending callbacks from that graph.
+        guard canStart() else { return }
         guard startGraph() else {
             for operation in Array(operations.values) { end(operation, .failed("Audio route recovery failed")) }
             return
