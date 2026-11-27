@@ -7,7 +7,11 @@
 //
 
 import Foundation
+#if canImport(CoreLocation)
 import CoreLocation
+#else
+import CoreLocationCompat
+#endif
 
 public struct LocalizedMapName: Codable, Sendable {
     public let language: String

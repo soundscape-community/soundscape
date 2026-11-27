@@ -15,6 +15,40 @@ For more technical details, see the [original README](https://github.com/microso
 
 See the [iOS client build documentation](https://github.com/soundscape-community/soundscape/blob/main/docs/ios-client/onboarding.md) in the repo, along with the [build tips](https://github.com/soundscape-community/soundscape/wiki/build-tips) on the wiki.
 
+### Shared SSData package
+
+Run `swift test --package-path apps/common` from the repository root on macOS or Ubuntu with Swift 6.1 or newer. On Ubuntu, install `libsqlite3-dev` first.
+
+On an Apple Silicon Mac, install Skip, Swiftly, JDK 21, and the Android SDK Command-Line Tools. The commands below were verified with Skip 1.9.23. Make `skip`, `swiftly`, `sdkmanager`, and `avdmanager` available on `PATH`, and set `JAVA_HOME` to your JDK. Run `swiftly init --skip-install` if Swiftly has not been initialized. [Skip setup](https://skip.dev/docs/gettingstarted/) · [Skip 1.9.23 binaries](https://github.com/skiptools/skip/releases/tag/1.9.23) · [Android SDK Command-Line Tools](https://developer.android.com/tools/sdkmanager)
+
+```sh
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+skip android sdk install --version 6.4.3
+export ANDROID_NDK_HOME="$HOME/Library/org.swift.swiftpm/swift-sdks/swift-6.4.3-RELEASE_android.artifactbundle/swift-android/android-ndk-r30"
+
+sdkmanager --sdk_root="$ANDROID_HOME" --licenses
+sdkmanager --sdk_root="$ANDROID_HOME" --install platform-tools emulator 'system-images;android-36;google_apis;arm64-v8a'
+avdmanager create avd --name ssdata-arm64 --package 'system-images;android-36;google_apis;arm64-v8a'
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+emulator -avd ssdata-arm64 -no-window -no-audio -no-snapshot &
+adb wait-for-device
+```
+
+Once `adb shell getprop sys.boot_completed` returns `1`, run the native Skip Fuse build or XCTest suite from the repository root. The helper targets ARM64 at API level 28 and uses the NDK supplied to Skip to compile the pinned SQLite 3.54.1 source with FTS5 and WAL snapshots.
+
+```sh
+apps/android/Scripts/ssdata-android.sh build
+apps/android/Scripts/ssdata-android.sh test
+```
+
+After the test, inspect the ELF dynamic dependencies of the test runner and its companion test library. The output should contain no `NEEDED` entry for `libsqlite3.so`.
+
+```sh
+test_dir=apps/android/.build/ssdata/out/Products/Debug-android-aarch64
+"$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-readelf" \
+  -d "$test_dir/SSDataTests-test-runner" "$test_dir/SSDataTests.so"
+```
+
 ## Getting involved
 
 Browse through the [open issues](https://github.com/soundscape-community/soundscape/issues). Items labeled "help-wanted" are particularly good candidates for contribution.

@@ -1,0 +1,31 @@
+# Copyright (c) Soundscape Community Contributors.
+# Licensed under the MIT License.
+
+name: SSData Linux tests
+
+on:
+  push:
+    branches: [main, crossPlatform]
+    paths:
+      - 'apps/common/**'
+      - 'apps/android/**'
+      - '.github/workflows/ssdata-tests.yml'
+  pull_request:
+    paths:
+      - 'apps/common/**'
+      - 'apps/android/**'
+      - '.github/workflows/ssdata-tests.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    container: swift:6.4.3-noble
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install system SQLite headers
+        run: |
+          apt-get update
+          apt-get install -y libsqlite3-dev
+      - name: Test SSData
+        run: swift test --package-path apps/common

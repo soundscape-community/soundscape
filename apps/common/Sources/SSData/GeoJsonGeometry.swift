@@ -7,7 +7,11 @@
 //  Licensed under the MIT License.
 //
 
+#if canImport(CoreLocation)
 import CoreLocation
+#else
+import CoreLocationCompat
+#endif
 import Foundation
 
 /// Geometry types from the GeoJSON spec ([link](https://tools.ietf.org/html/rfc7946)).

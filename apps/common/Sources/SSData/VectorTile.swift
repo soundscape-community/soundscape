@@ -8,7 +8,11 @@
 //
 
 import Foundation
+#if canImport(CoreLocation)
 import CoreLocation
+#else
+import CoreLocationCompat
+#endif
 
 /// VectorTile is an object which identifies a single vector tile. This includes the x and y coordinates of
 /// the tile in the tile space, and the zoom level which specifies that tile space. Note that this class does
